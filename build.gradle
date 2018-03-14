@@ -1,0 +1,82 @@
+group   = theGroup
+version = theVersion
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = theSourceCompatibility
+targetCompatibility = theSourceCompatibility
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url 'https://raw.githubusercontent.com/NawaMan/nawaman-maven-repository/master/'
+    }
+}
+
+dependencies {
+    compile 'org.projectlombok:lombok:1.16.16'
+    
+    testCompile 'junit:junit:4.12'
+}
+
+
+// IDE
+
+eclipse {
+    classpath {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+// Building/Publishing
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            
+            artifact sourceJar
+            artifact packageJavadoc
+        }
+    }
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+    
+    options {
+        setMemberLevel JavadocMemberLevel.PUBLIC
+        setAuthor true
+        
+        links "https://docs.oracle.com/javase/8/docs/api/"
+    }
+}
+
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allJava
+}
+
+task packageJavadoc(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-parameters"
+        options.compilerArgs << "-Xlint:unchecked"
+    }
+}
