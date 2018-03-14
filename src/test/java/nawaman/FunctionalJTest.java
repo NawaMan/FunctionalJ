@@ -1,11 +1,9 @@
 package nawaman;
 
 import static java.util.Arrays.asList;
-import static nawaman.functionalj.FunctionalJ.cache;
+import static nawaman.functionalj.FunctionalJ.cacheFor;
 import static nawaman.functionalj.FunctionalJ.it;
 import static nawaman.functionalj.FunctionalJ.only;
-import static nawaman.functionalj.FunctionalJ.withIndex;
-import static nawaman.functionalj.compose.Functional.compose;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -15,20 +13,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -39,8 +33,6 @@ import static java.util.Collections.singletonMap;
 import lombok.ToString;
 import lombok.Value;
 import lombok.val;
-import nawaman.functionalj.FunctionalJ;
-import nawaman.functionalj.compose.Functional;
 
 public class FunctionalJTest {
     
@@ -57,41 +49,6 @@ public class FunctionalJTest {
         persons.stream()
         .filter(only(Person::getName, startsWithTerm, "Jo"))
         .forEach(System.out::println);
-    }
-    
-    // Index
-    
-    @Test
-    public void testWithIndex() {
-        assertEquals("0: One, 1: Two, 2: Three",
-                asList("One", "Two", "Three").stream()
-                .map(withIndex((str, idx)->idx + ": " + str))
-                .collect(joining(", "))
-              );
-    }
-    
-    
-    // Cache
-    
-    private static Map<String, Integer> counts = new HashMap<>();
-    
-    public static String count(String text) {
-        counts.compute(text, (t, v)->(v==null)?1:v+1);
-        return counts.toString();
-    } 
-    
-    @Test
-    public void testCache() {
-        Function<String, String> f1 = cache(FunctionalJTest::count);
-        assertEquals("{One=1}", f1.apply("One"));
-        assertEquals("{One=1}", f1.apply("One"));
-        assertEquals("{One=1, Two=1}", f1.apply("Two"));
-        assertEquals("14", f1.andThen(String::length).apply("Two"));
-        
-        Function<String, String> f2 = cache(FunctionalJTest::count);
-        assertEquals("{One=1}", f2.apply("One"));
-        assertEquals("{One=1}", f2.apply("One"));
-        assertEquals("{One=1, Two=1}", f2.apply("Two"));
     }
     
     @Value
@@ -150,7 +107,7 @@ public class FunctionalJTest {
     
     public final List<String> winnerIds = asList("002", "003", "005");
 
-    private final Function<String, String> cityName = cache((Function<String, City>)citites::get).andThen(City::getName);
+    private final Function<String, String> cityName = cacheFor((Function<String, City>)citites::get).andThen(City::getName);
     
     public List<String> getWinners() {
         return winnerIds.stream()

@@ -105,11 +105,11 @@ public class FunctionalJ {
         return input -> body.accept(index.getAndIncrement());
     }
     
-    public static <INPUT, OUTPUT> Function<INPUT, OUTPUT> cache(Function<INPUT, OUTPUT> inFunction) {
+    public static <INPUT, OUTPUT> Function<INPUT, OUTPUT> cacheFor(Function<INPUT, OUTPUT> inFunction) {
         val cache = new ConcurrentHashMap<INPUT, OUTPUT>();
         return in -> cache.computeIfAbsent(in, inFunction::apply);
     }
-    public static <INPUT, OUTPUT> Function<INPUT, OUTPUT> cache(long time, Function<INPUT, OUTPUT> inFunction) {
+    public static <INPUT, OUTPUT> Function<INPUT, OUTPUT> cacheFor(long time, Function<INPUT, OUTPUT> inFunction) {
         val cache       = new ConcurrentHashMap<INPUT, OUTPUT>();
         val expiredTime = new ConcurrentHashMap<INPUT, Long>();
         return in -> {
