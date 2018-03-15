@@ -45,7 +45,7 @@ public class MayBeTest {
     public static <TYPE, RESULT, R> R map(IHaveMap<TYPE> withMap, Function<TYPE, RESULT> f) {
         return withMap.map(f);
     }
-    public static <TYPE, RESULT, IHAVEFMAP extends IHaveFMap<RESULT>> IHAVEFMAP fmap(IHaveFMap<TYPE> withFMap, Function<TYPE, IHAVEFMAP> f) {
+    public static <TYPE, RESULT, IHAVEFMAP extends IHaveFlatMap<RESULT>> IHAVEFMAP fmap(IHaveFlatMap<TYPE> withFMap, Function<TYPE, IHAVEFMAP> f) {
         return withFMap.fmap(f);
     }
     public static <TYPE, RESULT> RESULT chain(IHaveChain<TYPE> withChain, Function<TYPE, RESULT> f) {

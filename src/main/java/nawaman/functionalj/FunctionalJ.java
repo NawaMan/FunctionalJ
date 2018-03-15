@@ -124,25 +124,23 @@ public class FunctionalJ {
         };
     }
     
+    @SuppressWarnings("unchecked")
     public static <TYPE> Supplier<TYPE> lazy(Supplier<TYPE> supplier) {
-        val isFirst   = new AtomicBoolean(true);
-        val reference = new AtomicReference<Supplier<TYPE>>();
-        val exception = new AtomicReference<Throwable>();
+        val reference = new AtomicReference<Object>();
         return ()->{
-            while(reference.get() == null) {
-                if (exception.get() != null)
-                    throw (RuntimeException)exception.get();
-                
-                if (isFirst.compareAndSet(true, false)) {
-                    try {
-                        val value = supplier.get();
-                        reference.set(()->value);
-                    } catch (RuntimeException e) {
-                        exception.set(e);
-                    }
+            if (reference.compareAndSet(null, Boolean.TRUE)) {
+                try {
+                    val value = supplier.get();
+                    reference.set((Supplier<TYPE>)(()->value));
+                } catch (RuntimeException e) {
+                    reference.set(e);
                 }
             }
-            return reference.get().get();
+            while (!(reference.get() instanceof Supplier)) {
+                if (reference.get() instanceof RuntimeException)
+                    throw (RuntimeException)reference.get();
+            }
+            return ((Supplier<TYPE>)reference.get()).get();
         };
     }
     

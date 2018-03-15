@@ -2,7 +2,7 @@ package nawaman.functionalj.compose;
 
 import java.util.function.Function;
 
-public abstract class MayBe<TYPE> implements IHaveMap<TYPE>, IHaveFMap<TYPE>, IHaveChain<TYPE> {
+public abstract class MayBe<TYPE> implements IHaveMap<TYPE>, IHaveFlatMap<TYPE>, IHaveChain<TYPE> {
 
 
     public static <T> MayBe<T> empty() {
@@ -22,7 +22,7 @@ public abstract class MayBe<TYPE> implements IHaveMap<TYPE>, IHaveFMap<TYPE>, IH
     }
     
     @Override
-    public <RESULT, IHAVEFMAP extends IHaveFMap<RESULT>> IHAVEFMAP fmap(Function<TYPE, IHAVEFMAP> f) {
+    public <RESULT, IHAVEFMAP extends IHaveFlatMap<RESULT>> IHAVEFMAP fmap(Function<TYPE, IHAVEFMAP> f) {
         return (IHAVEFMAP) empty();
     }
     
@@ -66,7 +66,7 @@ public abstract class MayBe<TYPE> implements IHaveMap<TYPE>, IHaveFMap<TYPE>, IH
         }
         
         @Override
-        public <RESULT, IHAVEFMAP extends IHaveFMap<RESULT>> IHAVEFMAP fmap(Function<TYPE, IHAVEFMAP> f) {
+        public <RESULT, IHAVEFMAP extends IHaveFlatMap<RESULT>> IHAVEFMAP fmap(Function<TYPE, IHAVEFMAP> f) {
             return f.apply(this.data);
         }
 //        public MayBe<TYPE> concat(MayBe<TYPE> another) {

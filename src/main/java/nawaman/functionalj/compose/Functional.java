@@ -108,4 +108,8 @@ public class Functional {
         return promise.map(mapper);
     }
     
+    public static <I,R> Function<I,R> f(Function<I, R> f) {
+        return f;
+    }
+    
 }
