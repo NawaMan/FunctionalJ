@@ -75,6 +75,7 @@ public class ClosureConstantTest {
             new Thread(()->{
                 for (int l = 0; l < 1000; l++) {
                     sleep5();
+                    // Making the call.
                     counter.get();
                 }
                 latch.countDown();
@@ -90,7 +91,6 @@ public class ClosureConstantTest {
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
