@@ -5,7 +5,6 @@ import static nawaman.functionalj.FunctionalJ.cacheFor;
 import static nawaman.functionalj.FunctionalJ.lazy;
 import static nawaman.functionalj.FunctionalJ.withIndex;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
@@ -14,12 +13,11 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import static java.util.stream.Collectors.joining;
 
 import lombok.val;
-import nawaman.functionalj.FunctionalJ;
 
 public class ClosureConstantTest {
 
