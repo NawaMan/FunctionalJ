@@ -1,4 +1,4 @@
-package nawaman;
+package nawaman.functionalj;
 
 import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.cacheFor;
