@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.cacheFor;
 import static nawaman.functionalj.FunctionalJ.it;
 import static nawaman.functionalj.FunctionalJ.only;
+import static nawaman.functionalj.compose.Absent.absent;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -33,6 +34,12 @@ import static java.util.Collections.singletonMap;
 import lombok.ToString;
 import lombok.Value;
 import lombok.val;
+import nawaman.functionalj.compose.Absent;
+import nawaman.functionalj.compose.ArrayLens;
+import nawaman.functionalj.compose.Func3;
+import nawaman.functionalj.compose.Lens;
+import nawaman.functionalj.compose.LensSpec;
+import nawaman.functionalj.compose.ListLens;
 
 public class FunctionalJTest {
     
@@ -122,7 +129,7 @@ public class FunctionalJTest {
                     + "Ben @ Saskatoon, "
                     + "Charlie @ Bangkok, "
                     + "Frank @ Saskatoon"
-                + "]", getWinners());
+                + "]", getWinners().toString());
         assertEquals("["
                     + "Users: 002 @ S, "
                     + "Cities: S, "
@@ -159,18 +166,20 @@ public class FunctionalJTest {
         public Person withAge(int age)                      { return new Person(name, city, age, words, phones); }
         public Person withWords(List<String> words)         { return new Person(name, city, age, words, phones); }
         public Person withPhone(Map<String, String> phones) { return new Person(name, city, age, words, phones); }
+        
+        public static Lens<Person, String> _name = Lens.of(Person::withName, Person::name);
     }
     
     @Test
     public void testLense() {
-        val personName = new Lense<>(Person::withName, Person::name);
-        val personCity = new Lense<>(Person::withCity, Person::city);
-        val cityName   = new Lense<>(City::withName,   City::getName);
+        val personName = Lens.of(Person::withName, Person::name);
+        val personCity = Lens.of(Person::withCity, Person::city);
+        val cityName   = Lens.of(City::withName,   City::getName);
         val personCityName = personCity.compose(cityName);
         
         val person1 = new Person("Nawa", new City("R", "Regina"), 18, asList("Yo"), singletonMap("home", "555-555-5555"));
         
-        assertEquals("Regina", personCityName.get.apply(person1));
+        assertEquals("Regina", personCityName.read().apply(person1));
         
         assertEquals("FunctionalJTest.Person("
                 + "name=Nawa, "
@@ -190,7 +199,7 @@ public class FunctionalJTest {
                 + "age=18, "
                 + "words=[Yo], "
                 + "phones={home=555-555-5555})",
-                personName.set.apply(person1, "NawaMan").toString());
+                personName.change().apply(person1, "NawaMan").toString());
         
         assertEquals("FunctionalJTest.Person("
                 + "name=Nawa, "
@@ -200,7 +209,7 @@ public class FunctionalJTest {
                 + "age=18, "
                 + "words=[Yo], "
                 + "phones={home=555-555-5555})",
-                personCityName.set.apply(person1, "Bangkok").toString());
+                personCityName.change().apply(person1, "Bangkok").toString());
         assertEquals("FunctionalJTest.Person("
                 + "name=Nawa, "
                 + "city=FunctionalJTest.City("
@@ -212,13 +221,13 @@ public class FunctionalJTest {
                 personCityName.map(n->"City of " + n).andThen(Object::toString).apply(person1));
         
         String[] s = new String[] { "One", "Two", "Three" };
-        assertEquals("[One, 2, Three]", ArrayLense.at(1).set.andThen(Arrays::toString).apply(s, "2"));
+        assertEquals("[One, 2, Three]", ArrayLens.at(1).change().andThen(Arrays::toString).apply(s, "2"));
         
         List<String> l = asList("One", "Two", "Three");
-        assertEquals("[One, 2, Three]", ListLense.<String>at(1).set.andThen(List::toString).apply(l, "2"));
+        assertEquals("[One, 2, Three]", ListLens.<String>at(1).change().andThen(List::toString).apply(l, "2"));
         
-        val personWords = new Lense<>(Person::withWords, Person::words);
-        val firstWord  = personWords.compose(ListLense.<String>at(0));
+        val personWords = Lens.of(Person::withWords, Person::words);
+        val firstWord   = personWords.compose(ListLens.at(0));
         assertEquals("FunctionalJTest.Person("
                 + "name=Nawa, "
                 + "city=FunctionalJTest.City("
@@ -227,86 +236,71 @@ public class FunctionalJTest {
                 + "age=18, "
                 + "words=[Yee], "
                 + "phones={home=555-555-5555})",
-                firstWord.set.andThen(Object::toString).apply(person1, "Yee"));
+                firstWord.change().andThen(Object::toString).apply(person1, "Yee"));
+        
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        val map = (Map<String, Object>)(Map)Collections.singletonMap("key", "value");
+        
+        assertEquals("{key=value}",
+                map
+                .toString());
+        
+        val mapKey = Lens.mapAt("key");
+        assertEquals("{key=newValue}",
+                mapKey
+                .change()
+                .apply(map, "newValue")
+                .toString());
+        
+        val mapNewKey = Lens.mapAt("newKey");
+        assertEquals("{newKey=newValue, key=value}",
+                mapNewKey
+                .change()
+                .apply(map, "newValue")
+                .toString());
     }
     
-    public static class ArrayLense {
-        public static <TYPE> Function<TYPE[], TYPE> get(int index) {
-            return a -> a[index];
-        }
-        public static <TYPE> BiFunction<TYPE[], TYPE, TYPE[]> set(int index) {
-            return (a,t) -> {
-                val newA = (TYPE[])Array.newInstance(a.getClass().getComponentType(), a.length);
-                System.arraycopy(a, 0, newA, 0, a.length);
-                newA[index] = t;
-                return newA;
-            };
-        }
-        public static <TYPE> Lense<TYPE[], TYPE> at(int index) {
-            return new Lense<TYPE[], TYPE>(set(index), get(index));
-        }
-    }
-    public static class ListLense {
-        private static final Map<Class, Supplier<List>> newListSuppliers = new ConcurrentHashMap<>();
-        public static <TYPE> Function<List<TYPE>, TYPE> get(int index) {
-            return list -> list.get(index);
-        }
-        public static <TYPE> BiFunction<List<TYPE>, TYPE, List<TYPE>> set(int index) {
-            return (list,t) -> {
-                @SuppressWarnings("rawtypes")
-                Class<? extends List> listClass = list.getClass();
-                @SuppressWarnings("unchecked")
-                List<TYPE> newList = newListSuppliers.computeIfAbsent(listClass, clzz->{
-                    try {
-                        listClass.newInstance();
-                        return ()->{
-                            try {
-                                return listClass.newInstance();
-                            } catch (InstantiationException | IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
-                        };
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        return ()-> new ArrayList<>();
-                    }
-                }).get();
-                
-                newList.addAll(list);
-                newList.set(index, t);
-                return Collections.unmodifiableList(newList);
-            };
-        }
-        public static <TYPE> Lense<List<TYPE>, TYPE> at(int index) {
-            return new Lense<List<TYPE>, TYPE>(set(index), get(index));
-        }
+//    @Test
+//    public void testStringLense() {
+//        val personName = new Lens.StringLens<>(Person::withName, Person::name);
+//
+//        val person1 = new Person("Nawa", new City("R", "Regina"), 18, asList("Yo"), singletonMap("home", "555-555-5555"));
+//        
+//        assertEquals("Nawa", personName.read().apply(person1));
+//        
+//        assertEquals("FunctionalJTest.Person("
+//                + "name=Nawa, "
+//                + "city=FunctionalJTest.City("
+//                +   "id=R, "
+//                +   "name=Regina), "
+//                + "age=18, "
+//                + "words=[Yo], "
+//                + "phones={home=555-555-5555})",
+//                person1.toString());
+//        
+//        assertEquals("FunctionalJTest.Person("
+//                + "name=NawaMan, "
+//                + "city=FunctionalJTest.City("
+//                +   "id=R, "
+//                +   "name=Regina), "
+//                + "age=18, "
+//                + "words=[Yo], "
+//                + "phones={home=555-555-5555})",
+//                personName.change().apply(person1, "NawaMan").toString());
+//    }
+    
+    // Array, List, Map, Either, Reference lens
+    
+    private static int add3(int a, int b, int c) {
+        return a+b+c;
     }
     
-    public static class Lense<TYPE, SUB> {
-        public final BiFunction<TYPE, SUB, TYPE> set;
-        public final Function<TYPE, SUB>         get;
-        public Lense(BiFunction<TYPE, SUB, TYPE> setter, Function<TYPE, SUB> getter) {
-            this.set = setter;
-            this.get = getter;
-        }
-        public Function<TYPE, TYPE> map(Function<SUB, SUB> mapper) {
-            return t -> set.apply(t, get.andThen(mapper).apply(t));
-        }
-        public Function<TYPE, TYPE> peek(BiConsumer<TYPE,SUB> consume) {
-            return t -> {
-                consume.accept(t, get.apply(t));
-                return t;
-            };
-        }
-        public <SUBSUB> Lense<TYPE, SUBSUB> compose(Lense<SUB, SUBSUB> subLense) {
-            return new Lense<TYPE, SUBSUB> (
-                    (t,ss) ->{
-                        return set.apply(t, subLense.set.apply(get.apply(t), ss));
-                    },
-                    get.andThen(subLense.get)
-            );
-        }
+    @Test
+    public void testF3() {
+        val add3  = Func3.of(FunctionalJTest::add3);
+        val add_5 = add3.curry(absent(), 5, absent());
+        assertEquals(8, add_5.apply(1, 2).intValue());
     }
     
-    // Array, List, Map, Either, Reference lense
     
 }

@@ -35,9 +35,9 @@ public class FunctionalTest {
         assertEquals("Peter Pan",         pluck("name", new Person("Peter Pan", 50)));
         assertEquals(Integer.valueOf(50), pluck("age",  new Person("Peter Pan", 50)));
         
-        F2<String, Object, Object> pluck = Functional::pluck;
-        assertEquals("Peter Pan",         pluck.curry("name").apply(new Person("Peter Pan", 50)));
-        assertEquals(Integer.valueOf(50), pluck.curry("age").apply(new Person("Peter Pan", 50)));
+        Func2<String, Object, Object> pluck = Functional::pluck;
+        assertEquals("Peter Pan",         pluck.curry1("name").apply(new Person("Peter Pan", 50)));
+        assertEquals(Integer.valueOf(50), pluck.curry1("age").apply(new Person("Peter Pan", 50)));
     }
     
     @Test
