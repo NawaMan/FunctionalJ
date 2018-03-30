@@ -15,6 +15,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import lombok.AllArgsConstructor;
+import nawaman.functionalj.functions.Func2;
 
 public class FunctionalTest {
     
@@ -36,8 +37,8 @@ public class FunctionalTest {
         assertEquals(Integer.valueOf(50), pluck("age",  new Person("Peter Pan", 50)));
         
         Func2<String, Object, Object> pluck = Functional::pluck;
-        assertEquals("Peter Pan",         pluck.curry1("name").apply(new Person("Peter Pan", 50)));
-        assertEquals(Integer.valueOf(50), pluck.curry1("age").apply(new Person("Peter Pan", 50)));
+        assertEquals("Peter Pan",         pluck.apply1("name").apply(new Person("Peter Pan", 50)));
+        assertEquals(Integer.valueOf(50), pluck.apply1("age").apply(new Person("Peter Pan", 50)));
     }
     
     @Test

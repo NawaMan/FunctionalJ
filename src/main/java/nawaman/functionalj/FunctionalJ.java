@@ -14,17 +14,16 @@
 //  ========================================================================
 package nawaman.functionalj;
 
+import static java.util.Arrays.stream;
+import static nawaman.functionalj.FunctionalJ.themAll;
 import static nawaman.functionalj.FunctionalJ.CompanyField.theCompany;
 import static nawaman.functionalj.FunctionalJ.PersonField.thePerson;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -34,8 +33,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import org.hamcrest.core.IsNot;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -51,6 +48,10 @@ import lombok.experimental.Wither;
 import nawaman.functionalj.fields.CollectionField;
 import nawaman.functionalj.fields.ObjectField;
 import nawaman.functionalj.fields.StringField;
+import nawaman.functionalj.functions.Absent;
+import nawaman.functionalj.functions.Func1;
+import nawaman.functionalj.functions.Func2;
+import nawaman.functionalj.functions.Func3;
 
 /**
  * Collection of useful methods for functional programming.
@@ -66,6 +67,16 @@ public class FunctionalJ {
      * @return the function that take it and return it.
      **/
     public static <TYPE> Function<TYPE, TYPE> it() {
+        return it -> it;
+    }
+    
+    /**
+     * A shorter way to use Function.identity().
+     * 
+     * @param <TYPE> the type of it.
+     * @return the function that take it and return it.
+     **/
+    public static <TYPE> Function<TYPE, TYPE> themAll() {
         return it -> it;
     }
     
@@ -123,12 +134,31 @@ public class FunctionalJ {
             });
         };
     }
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> cacheFor(Func1<INPUT, OUTPUT> inFunction) {
+        val cache = new ConcurrentHashMap<INPUT, OUTPUT>();
+        return in -> cache.computeIfAbsent(in, inFunction::apply);
+    }
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> cacheFor(long time, Func1<INPUT, OUTPUT> inFunction) {
+        val cache       = new ConcurrentHashMap<INPUT, OUTPUT>();
+        val expiredTime = new ConcurrentHashMap<INPUT, Long>();
+        return in -> {
+            if (expiredTime.contains(in)
+             && expiredTime.get(in) > System.currentTimeMillis()) {
+                cache.remove(in);
+            }
+            return cache.computeIfAbsent(in, key->{
+                expiredTime.put(key, System.currentTimeMillis() + time);
+                return inFunction.apply(key);
+            });
+        };
+    }
     
     @SuppressWarnings("unchecked")
     public static <TYPE> Supplier<TYPE> lazy(Supplier<TYPE> supplier) {
         val reference = new AtomicReference<Object>();
+        val startKey  = new Object();
         return ()->{
-            if (reference.compareAndSet(null, Boolean.TRUE)) {
+            if (reference.compareAndSet(null, startKey)) {
                 try {
                     val value = supplier.get();
                     reference.set((Supplier<TYPE>)(()->value));
@@ -149,6 +179,37 @@ public class FunctionalJ {
             java.util.function.BiPredicate<O1, I2> tail,
             I2 tailInput) {
         return i->tail.test(head.apply(i), tailInput);
+    }
+    
+    @SafeVarargs
+    public static <T> Stream<T> streamConcat(Stream<T> ...  streams) {
+        return stream(streams)
+                .filter(Objects::nonNull)
+                .flatMap(themAll());
+    }
+    
+    public static <I1, I2, R> Func1<I1, R> recusive(Absent absent, I2 i2, Func3<Func2<I1, I2, R>, I1, I2, R> func3) {
+        Func2<I1, I2, R> grt = recusive(func3);
+        return grt.apply(absent, i2);
+    }
+    public static <I1, I2, R> Func1<I2, R> recusive(I1 i1, Absent absent, Func3<Func2<I1, I2, R>, I1, I2, R> func3) {
+        Func2<I1, I2, R> grt = recusive(func3);
+        return grt.apply(i1, absent);
+    }
+    public static <I1, I2, R> Func2<I1, I2, R> recusive(
+            Func3<Func2<I1, I2, R>, I1, I2, R> func3) {
+        AtomicReference<Func2<I1, I2, R>> selfRef = new AtomicReference<>();
+        Supplier<Func2<I1, I2, R>> self = selfRef::get;
+        Func2<I1, I2, R> selfFunc = (i1, i2) -> func3.apply(self.get(), i1, i2);
+        selfRef.set(selfFunc);
+        return selfFunc;
+    }
+    public static <I, R> Func1<I, R> recusive(Func2<Func1<I, R>, I, R> func2) {
+        AtomicReference<Func1<I, R>> selfRef = new AtomicReference<>();
+        Supplier<Func1<I, R>> self = selfRef::get;
+        Func1<I, R> selfFunc = (_i) -> func2.apply(self.get(), _i);
+        selfRef.set(cacheFor(selfFunc));
+        return selfFunc;
     }
     
     public static interface Data {

@@ -4,7 +4,8 @@ import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.cacheFor;
 import static nawaman.functionalj.FunctionalJ.it;
 import static nawaman.functionalj.FunctionalJ.only;
-import static nawaman.functionalj.compose.Absent.absent;
+import static nawaman.functionalj.functions.Absent.__;
+import static nawaman.functionalj.functions.Absent.absent;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -34,12 +35,12 @@ import static java.util.Collections.singletonMap;
 import lombok.ToString;
 import lombok.Value;
 import lombok.val;
-import nawaman.functionalj.compose.Absent;
 import nawaman.functionalj.compose.ArrayLens;
-import nawaman.functionalj.compose.Func3;
 import nawaman.functionalj.compose.Lens;
 import nawaman.functionalj.compose.LensSpec;
 import nawaman.functionalj.compose.ListLens;
+import nawaman.functionalj.functions.Absent;
+import nawaman.functionalj.functions.Func3;
 
 public class FunctionalJTest {
     
@@ -298,7 +299,7 @@ public class FunctionalJTest {
     @Test
     public void testF3() {
         val add3  = Func3.of(FunctionalJTest::add3);
-        val add_5 = add3.curry(absent(), 5, absent());
+        val add_5 = add3.apply(__, 5, __);
         assertEquals(8, add_5.apply(1, 2).intValue());
     }
     
