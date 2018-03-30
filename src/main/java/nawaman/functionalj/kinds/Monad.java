@@ -31,6 +31,8 @@ import nawaman.functionalj.functions.Func1;
  */
 public interface Monad<TYPE, DATA> {
     
+    public <TARGET> Monad<TYPE, TARGET> _unit(TARGET target);
+    
     /**
      * Map this functor to another functor using the mapper function.
      * 

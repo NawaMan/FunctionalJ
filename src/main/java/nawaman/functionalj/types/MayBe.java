@@ -36,6 +36,7 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         return (value != null) ? new Just<DATA>(value) : Nothing.instance;
     }
     
+    
     private MayBe() {
     }
     
@@ -45,6 +46,12 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
      * @return {@code true} if this instance has a value.
      */
     public abstract boolean isPresent();
+    
+    
+    public <TARGET> MayBe<TARGET> _unit(TARGET target) {
+        return MayBe.of(target);
+    }
+    
     
     //-- Sub classes --
     
@@ -75,7 +82,7 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         }
         
         public String toString() {
-            return "MayBe(" + this.data + ")";
+            return "Just(" + this.data + ")";
         }
         
         @Override
@@ -135,7 +142,7 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         }
         
         public String toString() {
-            return "MayBe(null)";
+            return "Nothing";
         }
         
         @Override

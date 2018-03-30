@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import nawaman.functionalj.functions.Func1;
 import nawaman.functionalj.kinds.Functor;
+import nawaman.functionalj.kinds.Monad;
 
 public interface PointFree {
     
@@ -72,5 +73,25 @@ public interface PointFree {
             });
         };
     }
+    
+    //== Monad ==
+    
+    /**
+     * Lift a regular function into a Monadic function.
+     * 
+     * @param  <INPUT>    the input data type.
+     * @param  <OUTPUT>   the output data type.
+     * @param  function   the function.
+     * @return            the lifted function.
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <INPUT, OUTPUT> Func1<Monad<?, INPUT>, Monad<?, OUTPUT>> lift(Func1<INPUT, OUTPUT> function) {
+        return monadInput -> {
+            return monadInput.flatMap(input -> {
+                return (Monad)monadInput._unit(function.apply(input));
+            });
+        };
+    }
+    
     
 }

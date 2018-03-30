@@ -52,6 +52,22 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     
     
     /**
+     * Compose this function to the given function.
+     * 
+     * @param  <FINAL>  the final result value.
+     * @param  after    the function to be run after this function.
+     * @return          the composed function.
+     */
+    public default <FINAL> Function<INPUT, FINAL> andThen(Func1<? super OUTPUT, ? extends FINAL> after) {
+        return input -> {
+            OUTPUT out1 = this.apply(input);
+            FINAL  out2 = after.apply(out1);
+            return out2;
+        };
+    }
+    
+    
+    /**
      * Create a curry function (a supplier) of the this function.
      * 
      * @param   input  the input value.
