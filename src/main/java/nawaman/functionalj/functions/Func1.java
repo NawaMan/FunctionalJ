@@ -58,7 +58,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
      * @param  after    the function to be run after this function.
      * @return          the composed function.
      */
-    public default <FINAL> Function<INPUT, FINAL> andThen(Func1<? super OUTPUT, ? extends FINAL> after) {
+    public default <FINAL> Func1<INPUT, FINAL> then(Func1<? super OUTPUT, ? extends FINAL> after) {
         return input -> {
             OUTPUT out1 = this.apply(input);
             FINAL  out2 = after.apply(out1);
