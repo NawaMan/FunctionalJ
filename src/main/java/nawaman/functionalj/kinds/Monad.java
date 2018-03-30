@@ -38,7 +38,7 @@ public interface Monad<TYPE, DATA> {
      * @param  target    the target data value.
      * @return           the newly created monad.
      */
-    public <TARGET> Monad<TYPE, TARGET> _unit(TARGET target);
+    public <TARGET> Monad<TYPE, TARGET> _of(TARGET target);
     
     /**
      * Map this functor to another functor using the mapper function.

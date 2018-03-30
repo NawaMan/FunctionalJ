@@ -48,7 +48,7 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
     public abstract boolean isPresent();
     
     
-    public <TARGET> MayBe<TARGET> _unit(TARGET target) {
+    public <TARGET> MayBe<TARGET> _of(TARGET target) {
         return MayBe.of(target);
     }
     

@@ -146,6 +146,15 @@ public interface PointFree {
     }
     
     
+    public static <TYPE, INPUT1, INPUT2, OUTPUT> 
+            Func1<INPUT1, Monad<TYPE, OUTPUT>> 
+            chain(
+                Func1<INPUT1, Monad<TYPE, INPUT2>> f1,
+                Func1<INPUT2, Monad<TYPE, OUTPUT>> f2) {
+        return input -> f1.apply(input).flatMap(f2);
+    }
+    
+    
     //== Functor ==
     
     //-- map --
@@ -226,7 +235,7 @@ public interface PointFree {
     public static <INPUT, OUTPUT> Func1<Monad<?, INPUT>, Monad<?, OUTPUT>> lift(Func1<INPUT, OUTPUT> function) {
         return monadInput -> {
             return monadInput.flatMap(input -> {
-                return (Monad)monadInput._unit(function.apply(input));
+                return (Monad)monadInput._of(function.apply(input));
             });
         };
     }
