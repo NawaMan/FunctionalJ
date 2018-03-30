@@ -147,11 +147,32 @@ public interface PointFree {
     
     
     public static <TYPE, INPUT1, INPUT2, OUTPUT> 
+            Func1<INPUT1, ? extends Monad<TYPE, OUTPUT>> 
+            chain(
+                Func1<INPUT1, ? extends Monad<TYPE, INPUT2>> f1,
+                Func1<INPUT2, ? extends Monad<TYPE, OUTPUT>> f2) {
+        return input -> {
+            return f1.apply(input)
+                     .flatMap(input2 ->{
+                         return f2.apply(input2);
+                     });
+        };
+    }
+    public static <TYPE, INPUT1, INPUT2, INPUT3, OUTPUT> 
             Func1<INPUT1, Monad<TYPE, OUTPUT>> 
             chain(
-                Func1<INPUT1, Monad<TYPE, INPUT2>> f1,
-                Func1<INPUT2, Monad<TYPE, OUTPUT>> f2) {
-        return input -> f1.apply(input).flatMap(f2);
+                Func1<INPUT1, ? extends Monad<TYPE, INPUT2>> f1,
+                Func1<INPUT2, ? extends Monad<TYPE, INPUT3>> f2,
+                Func1<INPUT3, ? extends Monad<TYPE, OUTPUT>> f3) {
+        return input -> {
+            return f1.apply(input)
+                     .flatMap(input2 ->{
+                         return f2.apply(input2)
+                                  .flatMap(input3 ->{
+                                      return f3.apply(input3);
+                                  });
+                     });
+        };
     }
     
     

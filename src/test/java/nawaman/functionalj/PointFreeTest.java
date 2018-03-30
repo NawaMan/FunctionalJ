@@ -1,8 +1,12 @@
 package nawaman.functionalj;
 
+import static nawaman.functionalj.PointFree.chain;
 import static nawaman.functionalj.PointFree.compose;
 import static nawaman.functionalj.PointFree.lift;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,6 +39,15 @@ public class PointFreeTest {
                         Func1.of(String::length),
                         Func1.of((Integer i) -> i * 2));
         assertEquals("Just(10)", lift(composed).apply(MayBe.of("Hello")).toString());
+    }
+    
+    @Test
+    public void testChain() {
+        val strLength = Func1.of((String s)  -> MayBe.of(s.length()));
+        val time2     = Func1.of((Integer i) -> MayBe.of(i * 2));
+        val plus1     = Func1.of((Integer i) -> MayBe.of(i + 1));
+        val strLengthTimes2Plus1 = chain(strLength, time2, plus1);
+        assertThat(strLengthTimes2Plus1.apply("Hello").toString()).isEqualTo("Just(11)");
     }
     
 }

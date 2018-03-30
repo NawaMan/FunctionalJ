@@ -18,12 +18,12 @@ package nawaman.functionalj.functions;
 /**
  * Function of three parameters.
  * 
- * @author NawaMan -- nawa@nawaman.net
- *
  * @param <INPUT1>  the first input data type.
  * @param <INPUT2>  the second input data type.
  * @param <INPUT3>  the third input data type.
  * @param <OUTPUT>  the output data type.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
 public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
@@ -56,6 +56,22 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      */
     public OUTPUT apply(INPUT1 input1, INPUT2 input2, INPUT3 input3);
     
+    
+    /**
+     * Compose this function to the given function.
+     * NOTE: Too bad the name 'compose' is already been taken :-(
+     * 
+     * @param  <FINAL>  the final result value.
+     * @param  after    the function to be run after this function.
+     * @return          the composed function.
+     */
+    public default <FINAL> Func3<INPUT1, INPUT2, INPUT3, FINAL> then(Func1<? super OUTPUT, ? extends FINAL> after) {
+        return (input1, input2, input3) -> {
+            OUTPUT out1 = this.apply(input1, input2, input3);
+            FINAL  out2 = after.apply(out1);
+            return out2;
+        };
+    }
     
     /**
      * Create a curry function of the this function.

@@ -15,68 +15,52 @@
 //  ========================================================================
 package nawaman.functionalj.functions;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
+import nawaman.functionalj.kinds.Monad;
+
 
 /**
- * Function of one parameter.
+ * Monadic Function of two parameters.
  * 
  * @param <INPUT>   the input data type.
+ * @param <MONAD>   the monad type.
  * @param <OUTPUT>  the output data type.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
+public interface MFunc1<INPUT, MONAD, OUTPUT> extends Func1<INPUT, Monad<MONAD, OUTPUT>> {
     
     /**
-     * Constructs a Func1 from function or lambda.
+     * Constructs a MFunc6 from function or lambda.
      * 
      * @param  function  the function or lambda.
      * @param  <INPUT>   the input data type.
+     * @param  <MONAD>   the monad type.
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func1.
      **/
-    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> of(Func1<INPUT, OUTPUT> function) {
-        return function;
+    public static <INPUT, MONAD, OUTPUT> MFunc1<INPUT, MONAD, OUTPUT> of(Func1<INPUT, Monad<MONAD, OUTPUT>> function) {
+        return input -> {
+            return function.apply(input);
+        };
     }
     
     
     /**
-     * Applies this function to the given input value.
-     *
-     * @param input  the input function.
-     * @return the function result.
-     */
-    public OUTPUT apply(INPUT input);
-    
-    
-    /**
-     * Compose this function to the given function.
-     * NOTE: Too bad the name 'compose' is already been taken :-(
+     * Chain this function to the given function (compose in the Monatic way).
      * 
      * @param  <FINAL>  the final result value.
      * @param  after    the function to be run after this function.
      * @return          the composed function.
      */
-    public default <FINAL> Func1<INPUT, FINAL> then(Func1<? super OUTPUT, ? extends FINAL> after) {
+    public default <FINAL> MFunc1<INPUT, MONAD, FINAL> 
+            chain(MFunc1<OUTPUT, MONAD, FINAL> after) {
         return input -> {
-            OUTPUT out1 = this.apply(input);
-            FINAL  out2 = after.apply(out1);
-            return out2;
+            return this.apply(input)
+                     .flatMap(output ->{
+                         return after.apply(output);
+                     });
         };
     }
     
-    
-    /**
-     * Create a curry function (a supplier) of the this function.
-     * 
-     * @param   input  the input value.
-     * @return         the Supplier.
-     */
-    public default Supplier<OUTPUT> curry(INPUT input) {
-        return () -> {
-            return this.apply(input);
-        };
-    }
 }
