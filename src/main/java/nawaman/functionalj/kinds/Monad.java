@@ -31,6 +31,13 @@ import nawaman.functionalj.functions.Func1;
  */
 public interface Monad<TYPE, DATA> {
     
+    /**
+     * Create a Monad of the same type for the given value.
+     * 
+     * @param  <TARGET>  the target data type.
+     * @param  target    the target data value.
+     * @return           the newly created monad.
+     */
     public <TARGET> Monad<TYPE, TARGET> _unit(TARGET target);
     
     /**
