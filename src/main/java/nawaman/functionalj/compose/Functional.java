@@ -7,8 +7,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import nawaman.functionalj.compose.PromiseTest.Promise;
-
 public class Functional {
 
     public static <VALUE, TYPE> VALUE pluck(String name, TYPE object) {
