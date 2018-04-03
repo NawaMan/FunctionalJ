@@ -1,5 +1,7 @@
 package nawaman.functionalj.types;
 
+import java.util.function.Supplier;
+
 import nawaman.functionalj.functions.Func1;
 import nawaman.functionalj.kinds.Functor;
 import nawaman.functionalj.kinds.Monad;
@@ -52,18 +54,27 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         return MayBe.of(target);
     }
     
+    public abstract DATA get();
+    
+    public abstract DATA or(DATA or);
+    
+    public abstract DATA orGet(Supplier<DATA> orSupplier);
+    
+    public abstract DATA orNull();
+    
+    public abstract DATA orThrow();
     
     //-- Sub classes --
     
     /**
      * MayBe with value.
      * 
-     * @param <TYPE>  the data type.
+     * @param <DATA>  the data type.
      */
-    public static class Just<TYPE> extends MayBe<TYPE> {
-        private TYPE data;
+    public static class Just<DATA> extends MayBe<DATA> {
+        private DATA data;
         
-        Just(TYPE data) {
+        Just(DATA data) {
             this.data = data;
         }
         
@@ -71,13 +82,33 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
             return true;
         }
         
+        public DATA get() {
+            return data;
+        }
+        
+        public DATA or(DATA or) {
+            return data;
+        }
+        
+        public DATA orGet(Supplier<DATA> orSupplier) {
+            return data;
+        }
+        
+        public DATA orNull() {
+            return data;
+        }
+        
+        public DATA orThrow() {
+            return data;
+        }
+        
         @Override
-        public <B> MayBe<B> map(Func1<TYPE, B> mapper) {
+        public <B> MayBe<B> map(Func1<DATA, B> mapper) {
             return MayBe.of(mapper.apply(data));
         }
         
         @Override
-        public <B> Monad<MayBe<?>, B> flatMap(Func1<TYPE, Monad<MayBe<?>, B>> mapper) {
+        public <B> Monad<MayBe<?>, B> flatMap(Func1<DATA, Monad<MayBe<?>, B>> mapper) {
             return mapper.apply(data);
         }
         
@@ -114,9 +145,9 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
     /**
      * MayBe with no value.
      * 
-     * @param <TYPE>  the data type.
+     * @param <DATA>  the data type.
      */
-    public static class Nothing<TYPE> extends MayBe<TYPE> {
+    public static class Nothing<DATA> extends MayBe<DATA> {
         
         @SuppressWarnings("rawtypes")
         private static final Nothing instance = new Nothing<>();
@@ -129,15 +160,35 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
             return false;
         }
         
+        public DATA get() {
+            return null;
+        }
+        
+        public DATA or(DATA or) {
+            return or;
+        }
+        
+        public DATA orNull() {
+            return null;
+        }
+        
+        public DATA orThrow() {
+            throw new NullPointerException();
+        }
+        
+        public DATA orGet(Supplier<DATA> orSupplier) {
+            return orSupplier.get();
+        }
+        
         @SuppressWarnings("unchecked")
         @Override
-        public <B> MayBe<B> map(Func1<TYPE, B> mapper) {
+        public <B> MayBe<B> map(Func1<DATA, B> mapper) {
             return (MayBe<B>)Nothing.instance;
         }
         
         @SuppressWarnings("unchecked")
         @Override
-        public <B> Monad<MayBe<?>, B> flatMap(Func1<TYPE, Monad<MayBe<?>, B>> mapper) {
+        public <B> Monad<MayBe<?>, B> flatMap(Func1<DATA, Monad<MayBe<?>, B>> mapper) {
             return (MayBe<B>)Nothing.instance;
         }
         

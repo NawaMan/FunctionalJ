@@ -66,7 +66,7 @@ public class FunctionalJ {
      * @param <TYPE> the type of it.
      * @return the function that take it and return it.
      **/
-    public static <TYPE> Function<TYPE, TYPE> it() {
+    public static <TYPE> Func1<TYPE, TYPE> it() {
         return it -> it;
     }
     
@@ -76,7 +76,7 @@ public class FunctionalJ {
      * @param <TYPE> the type of it.
      * @return the function that take it and return it.
      **/
-    public static <TYPE> Function<TYPE, TYPE> themAll() {
+    public static <TYPE> Func1<TYPE, TYPE> themAll() {
         return it -> it;
     }
     
