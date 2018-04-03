@@ -15,12 +15,7 @@
 package nawaman.functionalj;
 
 import static java.util.Arrays.stream;
-import static nawaman.functionalj.FunctionalJ.themAll;
-import static nawaman.functionalj.FunctionalJ.CompanyField.theCompany;
-import static nawaman.functionalj.FunctionalJ.PersonField.thePerson;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,9 +40,6 @@ import lombok.Value;
 import lombok.val;
 import lombok.experimental.Accessors;
 import lombok.experimental.Wither;
-import nawaman.functionalj.fields.CollectionField;
-import nawaman.functionalj.fields.ObjectField;
-import nawaman.functionalj.fields.StringField;
 import nawaman.functionalj.functions.Absent;
 import nawaman.functionalj.functions.Func1;
 import nawaman.functionalj.functions.Func2;
@@ -221,15 +213,15 @@ public class FunctionalJ {
         public String name();
         
     }
-    
-    public static interface PersonField<HOST> extends ObjectField<HOST, Person> {
-        public static PersonField<Person> thePerson = Person::me;
-        
-        public default StringField<HOST> name() {
-            return h->linkTo(Person::name).apply(h);
-        }
-    }
-    
+//    
+//    public static interface PersonField<HOST> extends ObjectField<HOST, Person> {
+//        public static PersonField<Person> thePerson = Person::me;
+//        
+//        public default StringField<HOST> name() {
+//            return h->linkTo(Person::name).apply(h);
+//        }
+//    }
+//    
     @Value
     @Builder
     @Accessors(fluent=true)
@@ -270,19 +262,19 @@ public class FunctionalJ {
         private Person person;
         private List<Person> people;
     }
-    
-    public static interface CompanyField<HOST> extends ObjectField<HOST, Company> {
-        
-        public static CompanyField<Company> theCompany = Company::me;
-        
-        public default PersonField<HOST> person() {
-            return h->linkTo(Company::person).apply(h);
-        }
-        public default CollectionField<HOST, Person, List<Person>> people() {
-            return h->linkTo(Company::people).apply(h);
-        }
-    }
-    
+//    
+//    public static interface CompanyField<HOST> extends ObjectField<HOST, Company> {
+//        
+//        public static CompanyField<Company> theCompany = Company::me;
+//        
+//        public default PersonField<HOST> person() {
+//            return h->linkTo(Company::person).apply(h);
+//        }
+//        public default CollectionField<HOST, Person, List<Person>> people() {
+//            return h->linkTo(Company::people).apply(h);
+//        }
+//    }
+//    
     public static void main(String[] args) {
         System.out.println(
                 Stream.of("One", "Two", "Three")
@@ -294,28 +286,28 @@ public class FunctionalJ {
         Stream.of("One", "Two", "Three").forEach(withIndex((str, idx)->{
             System.out.println(idx + ": " + str);
         }));
-        
-        System.out.println(
-                Stream.of(new ImmutablePerson("John"), new ImmutablePerson("Jack"), new ImmutablePerson("James"), null)
-                .filter(by(thePerson.name()).that.startsWith("Ja")
-                   .and(by(thePerson.name()).that.matches("^.*s$")))
-                .map(thePerson.name().concat(" is the name."))
-                .collect(toMap(it(), withIndex(it()))));
-        
-        Stream.of(new ImmutableCompany(new ImmutablePerson("John"), Collections.emptyList()),
-                  new ImmutableCompany(new ImmutablePerson("Smith"), Collections.emptyList()))
-            .filter(theCompany.person().name().startsWith("J"))
-            .forEach(System.out::println);
-        
-        Stream.of(new ImmutableCompany(new ImmutablePerson("John"), Collections.emptyList()),
-                  new ImmutableCompany(new ImmutablePerson("Smith"), Collections.emptyList()))
-            .filter(theCompany.person().name().startsWith("S"))
-            .forEach(System.out::println);
-        
-        Stream.of(new ImmutableCompany(new ImmutablePerson("John"), Arrays.asList(new ImmutablePerson("Adam"))),
-                new ImmutableCompany(new ImmutablePerson("Smith"), Collections.emptyList()))
-          .filter(by(theCompany.people()).that.contains(thePerson.name().startsWith("A")))
-          .forEach(System.out::println);
+//        
+//        System.out.println(
+//                Stream.of(new ImmutablePerson("John"), new ImmutablePerson("Jack"), new ImmutablePerson("James"), null)
+//                .filter(by(thePerson.name()).that.startsWith("Ja")
+//                   .and(by(thePerson.name()).that.matches("^.*s$")))
+//                .map(thePerson.name().concat(" is the name."))
+//                .collect(toMap(it(), withIndex(it()))));
+//        
+//        Stream.of(new ImmutableCompany(new ImmutablePerson("John"), Collections.emptyList()),
+//                  new ImmutableCompany(new ImmutablePerson("Smith"), Collections.emptyList()))
+//            .filter(theCompany.person().name().startsWith("J"))
+//            .forEach(System.out::println);
+//        
+//        Stream.of(new ImmutableCompany(new ImmutablePerson("John"), Collections.emptyList()),
+//                  new ImmutableCompany(new ImmutablePerson("Smith"), Collections.emptyList()))
+//            .filter(theCompany.person().name().startsWith("S"))
+//            .forEach(System.out::println);
+//        
+//        Stream.of(new ImmutableCompany(new ImmutablePerson("John"), Arrays.asList(new ImmutablePerson("Adam"))),
+//                new ImmutableCompany(new ImmutablePerson("Smith"), Collections.emptyList()))
+//          .filter(by(theCompany.people()).that.contains(thePerson.name().startsWith("A")))
+//          .forEach(System.out::println);
     }
     
 }
