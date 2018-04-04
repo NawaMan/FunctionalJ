@@ -60,9 +60,9 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
     
     public abstract DATA orGet(Supplier<DATA> orSupplier);
     
-    public abstract DATA orNull();
-    
     public abstract DATA orThrow();
+    
+    // TODO - To either
     
     //-- Sub classes --
     
@@ -78,26 +78,27 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
             this.data = data;
         }
         
+        @Override
         public boolean isPresent() {
             return true;
         }
         
+        @Override
         public DATA get() {
             return data;
         }
         
+        @Override
         public DATA or(DATA or) {
             return data;
         }
         
+        @Override
         public DATA orGet(Supplier<DATA> orSupplier) {
             return data;
         }
         
-        public DATA orNull() {
-            return data;
-        }
-        
+        @Override
         public DATA orThrow() {
             return data;
         }
@@ -156,26 +157,27 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
             super();
         }
         
+        @Override
         public boolean isPresent() {
             return false;
         }
         
+        @Override
         public DATA get() {
             return null;
         }
         
+        @Override
         public DATA or(DATA or) {
             return or;
         }
         
-        public DATA orNull() {
-            return null;
-        }
-        
+        @Override
         public DATA orThrow() {
             throw new NullPointerException();
         }
         
+        @Override
         public DATA orGet(Supplier<DATA> orSupplier) {
             return orSupplier.get();
         }

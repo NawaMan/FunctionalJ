@@ -4,10 +4,15 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import lombok.val;
+import nawaman.functionalj.types.MayBe;
 
 @FunctionalInterface
 public interface AnyField<HOST, TYPE> extends Function<HOST, TYPE> {
-
+    
+    public default MayBeField<HOST, TYPE> toMayBe() {
+        return host -> MayBe.of(this.apply(host));
+    }
+    
     public default BooleanField<HOST> is(TYPE value) {
         return booleanField(value != null, any -> any == value);
     }
