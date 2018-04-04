@@ -20,19 +20,25 @@ import lombok.val;
 
 public class MayBeFieldTest {
     
-    @AllArgsConstructor
     public static class Car {
         
         public static CarField<Car> theCar = car -> car;
+        
+        public Car(String color) {
+            this.color = color;
+        }
         
         private String color;
         public String color() { return color; }
     }
     
-    @AllArgsConstructor
     public static class Driver {
         
         public static DriverField<Driver> theDriver = driver -> driver;
+        
+        public Driver(Car car) {
+            this.car = car;
+        }
         
         private Car car;
         public Car car() { return car; }
