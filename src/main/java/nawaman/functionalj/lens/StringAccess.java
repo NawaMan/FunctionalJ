@@ -7,7 +7,7 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
     
     // Extra
     
-    public default BooleanAccess<HOST> isBlank() {
+    public default BooleanAccess<HOST> thatIsBlank() {
         return booleanAccess(true, str->str.trim().isEmpty());
     }
     
@@ -21,11 +21,11 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
         return stringAccess(suffix, str->str.concat(suffix));
     }
     
-    public default BooleanAccess<HOST> contentEquals(CharSequence charSequence) {
+    public default BooleanAccess<HOST> thatContentEquals(CharSequence charSequence) {
         return booleanAccess(false, str->str.contentEquals(charSequence));
     }
     
-    public default BooleanAccess<HOST> endsWith(String suffix) {
+    public default BooleanAccess<HOST> thatEndsWith(String suffix) {
         boolean isSuffixEmpty = (suffix == null) || suffix.isEmpty();
         return booleanAccess(isSuffixEmpty, str->str.endsWith(suffix));
     }
@@ -34,7 +34,7 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
         return stringAccess(null, str->str.format(format, (Object[])args));
     }
     
-    public default BooleanAccess<HOST> equalsIgnoreCase(String anotherString) {
+    public default BooleanAccess<HOST> thatEqualsIgnoreCase(String anotherString) {
         boolean isAnotherStringEmpty = (anotherString == null) || anotherString.isEmpty();
         return booleanAccess(isAnotherStringEmpty, str->str.equalsIgnoreCase(anotherString));
     }
@@ -55,7 +55,7 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
         return intAccess(-1, str->str.indexOf(needle, fromIndex));
     }
     
-    public default BooleanAccess<HOST> isEmpty() {
+    public default BooleanAccess<HOST> thatIsEmpty() {
         return booleanAccess(true, str->str.isEmpty());
     }
     
@@ -79,7 +79,7 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
         return intAccess(-1, str->str.length());
     }
     
-    public default BooleanAccess<HOST> matches(String regex) {
+    public default BooleanAccess<HOST> thatMatches(String regex) {
         return booleanAccess(false, str->str.matches(regex));
     }
     
@@ -101,11 +101,11 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
     
     // TODO Split
     
-    public default BooleanAccess<HOST> startsWith(String prefix) {
+    public default BooleanAccess<HOST> thatStartsWith(String prefix) {
         return booleanAccess(false, str->str.startsWith(prefix));
     }
     
-    public default BooleanAccess<HOST> startsWith(String prefix, int offset) {
+    public default BooleanAccess<HOST> thatStartsWith(String prefix, int offset) {
         return booleanAccess(false, str->str.startsWith(prefix, offset));
     }
     

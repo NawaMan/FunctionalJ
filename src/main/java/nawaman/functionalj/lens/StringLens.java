@@ -6,10 +6,6 @@ import nawaman.functionalj.functions.Func1;
 
 @FunctionalInterface
 public interface StringLens<HOST> extends AnyEqualableLens<HOST, String>, StringAccess<HOST> {
-
-    public default BooleanAccess<HOST> isBlank() {
-        return booleanAccess(true, str->str.trim().isEmpty());
-    }
     
     @Override
     default String apply(HOST host) {

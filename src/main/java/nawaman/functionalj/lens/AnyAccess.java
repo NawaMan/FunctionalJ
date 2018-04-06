@@ -13,22 +13,22 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
 //        return host -> MayBe.of(this.apply(host));
 //    }
 //    
-    public default BooleanAccess<HOST> is(DATA value) {
+    public default BooleanAccess<HOST> thatIs(DATA value) {
         return booleanAccess(value != null, any -> any == value);
     }
-    public default BooleanAccess<HOST> isNot(DATA value) {
+    public default BooleanAccess<HOST> thatIsNot(DATA value) {
         return booleanAccess(value == null, any -> any != value);
     }
-    public default BooleanAccess<HOST> equalsTo(DATA value) {
+    public default BooleanAccess<HOST> thatEqualsTo(DATA value) {
         return booleanAccess(value == null, any -> Objects.equals(any, value));
     }
-    public default BooleanAccess<HOST> notEqualsTo(DATA value) {
+    public default BooleanAccess<HOST> thatNotEqualsTo(DATA value) {
         return booleanAccess(value == null, any -> !Objects.equals(any, value));
     }
-    public default BooleanAccess<HOST> isNull() {
+    public default BooleanAccess<HOST> thatIsNull() {
         return booleanAccess(true, any -> any == null);
     }
-    public default BooleanAccess<HOST> isNotNull() {
+    public default BooleanAccess<HOST> thatIsNotNull() {
         return booleanAccess(false, any -> any != null);
     }
     public default IntegerAccess<HOST> getHashCode() {

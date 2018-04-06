@@ -2,9 +2,15 @@ package nawaman.functionalj.lens;
 
 import static java.util.Arrays.asList;
 import static nawaman.functionalj.lens.TryRun.Car.theCar;
+import static nawaman.functionalj.lens.TryRun.Company.theCompany;
 import static nawaman.functionalj.lens.TryRun.Driver.theDriver;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
+
+import static java.util.Collections.unmodifiableList;
 
 import lombok.ToString;
 import lombok.val;
@@ -37,9 +43,7 @@ public class TryRun {
             return new Car(color);
         }
         
-        public static class CarLens<HOST> 
-                extends    ObjectLensImpl<HOST, Car> 
-                implements Function<HOST, Car>, ObjectLens<HOST, Car> {
+        public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {
             
             public final StringLens<HOST> color = createSubLens(Car::color, Car::withColor, spec->()->spec);
             
@@ -67,25 +71,36 @@ public class TryRun {
             return new Driver(car);
         }
         
-        public static class DriverLens<HOST>
-                extends    ObjectLensImpl<HOST, Driver>
-                implements ObjectLens<HOST, Driver> {
+        public static class DriverLens<HOST> extends ObjectLensImpl<HOST, Driver> {
             
             public final Car.CarLens<HOST> car = createSubLens(Driver::car, Driver::withCar, spec->new Car.CarLens<>(spec));
             
             public DriverLens(LensSpec<HOST, Driver> spec) { super(spec); }
             
-            public final Func1<HOST, HOST> withCa(Car newCar) {
+            public final Func1<HOST, HOST> withCar(Car newCar) {
                 return DriverLens.this.car.to(newCar);
             }
         }
     }
     @ToString
     public static class Company {
-        private Driver driver;
-        public Company(Driver driver)            { this.driver = driver; }
-        public Driver  driver()                  { return driver; }
-        public Company withDriver(Driver driver) { return new Company(driver); }
+        public static CompanyLens<Company> theCompany = new CompanyLens<>(LensSpec.of(Company.class));
+        
+        private final List<Driver> drivers;
+        public Company(List<Driver> drivers)             { this.drivers = unmodifiableList(new ArrayList<>(drivers)); }
+        public List<Driver> drivers()                    { return drivers; }
+        public Company withDrivers(List<Driver> drivers) { return new Company(drivers); }
+        
+        public static class CompanyLens<HOST> extends ObjectLensImpl<HOST, Company>{
+            
+            public final CollectionLens<HOST, Driver, List<Driver>> drivers = createSubLens(Company::drivers, Company::withDrivers, spec->()->spec);
+            
+            public CompanyLens(LensSpec<HOST, Company> spec) { super(spec); }
+            
+            public final Func1<HOST, HOST> withDrivers(List<Driver> newDrivers) {
+                return CompanyLens.this.drivers.to(newDrivers);
+            }
+        }
     }
     
     public static void main(String[] args) {
@@ -93,14 +108,14 @@ public class TryRun {
         
         System.out.println(theCar.color.applyTo(car1));
         System.out.println(theCar.color.to("green").applyTo(car1));
-        System.out.println(theCar.color.isBlank().applyTo(car1));
+        System.out.println(theCar.color.thatIsBlank().applyTo(car1));
         System.out.println();
         
         val driver1 = new Driver(car1);
         System.out.println(theDriver.car.color.applyTo(driver1));
         System.out.println(theDriver.car.color.to("green").applyTo(driver1));
         System.out.println(theDriver.car.withColor("red").applyTo(driver1));
-        System.out.println(theDriver.car.color.isBlank().applyTo(driver1));
+        System.out.println(theDriver.car.color.thatIsBlank().applyTo(driver1));
         System.out.println();
         
         val drivers = asList(
@@ -109,8 +124,14 @@ public class TryRun {
                 theDriver.car.color.to("green").apply(driver1));
         drivers.stream()
         .map(theDriver.car)
-        .map(theCar.color.is("blue"))
+        .map(theCar.color.thatIs("blue"))
         .forEach(System.out::println);
+        System.out.println();
+        
+        val check = theCompany.drivers.thatContains(theDriver.car.color.thatIsNot("blue"));
+        System.out.println(check.applyTo(new Company(asList())));
+        System.out.println(check.applyTo(new Company(asList(driver1))));
+        System.out.println(check.applyTo(new Company(asList(driver1, driver1.withCar(new Car("red"))))));
     }
     
 }
