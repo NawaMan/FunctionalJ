@@ -1,6 +1,7 @@
 package nawaman.functionalj.fields;
 
 import static java.util.Arrays.asList;
+import static nawaman.functionalj.fields.MayBeFieldTest.Car.theCar;
 import static nawaman.functionalj.fields.MayBeFieldTest.Driver.theDriver;
 import static org.assertj.core.util.Arrays.asList;
 import static org.junit.Assert.*;
@@ -62,13 +63,14 @@ public class MayBeFieldTest {
     public void test() {
         val drivers = asList(
                 new Driver(new Car("blue")),
-                new Driver(new Car(null)));
+                new Driver(new Car(null)),
+                new Driver(null));
         String resultAsString
                 = drivers.stream()
-                .map(theDriver.car().color().toMayBe().map(String::length).or(-1))
+                .map(theDriver.car().toMayBe().map(Car::color).map(String::length).or(-1))
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
-        assertThat(resultAsString).isEqualTo("4,-1");
+        assertThat(resultAsString).isEqualTo("4,-1,-1");
     }
     
 }

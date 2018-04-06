@@ -50,6 +50,16 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
      */
     public OUTPUT apply(INPUT input);
     
+    /**
+     * Applies this function to the given input value.
+     *
+     * @param input  the input function.
+     * @return the function result.
+     */
+    public default OUTPUT applyTo(INPUT input) {
+        return apply(input);
+    }
+    
     
     /**
      * Compose this function to the given function.
