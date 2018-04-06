@@ -6,9 +6,7 @@ import static nawaman.functionalj.lens.TryRun.Company.theCompany;
 import static nawaman.functionalj.lens.TryRun.Driver.theDriver;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -50,7 +48,7 @@ public class TryRun {
             public CarLens(LensSpec<HOST, Car> spec) { super(spec); }
             
             public final Func1<HOST, HOST> withColor(String newColor) {
-                return CarLens.this.color.to(newColor);
+                return CarLens.this.color.changeTo(newColor);
             }
         }
     }
@@ -78,7 +76,7 @@ public class TryRun {
             public DriverLens(LensSpec<HOST, Driver> spec) { super(spec); }
             
             public final Func1<HOST, HOST> withCar(Car newCar) {
-                return DriverLens.this.car.to(newCar);
+                return DriverLens.this.car.changeTo(newCar);
             }
         }
     }
@@ -98,7 +96,7 @@ public class TryRun {
             public CompanyLens(LensSpec<HOST, Company> spec) { super(spec); }
             
             public final Func1<HOST, HOST> withDrivers(List<Driver> newDrivers) {
-                return CompanyLens.this.drivers.to(newDrivers);
+                return CompanyLens.this.drivers.changeTo(newDrivers);
             }
         }
     }
@@ -107,13 +105,13 @@ public class TryRun {
         val car1 = new Car("blue");
         
         System.out.println(theCar.color.applyTo(car1));
-        System.out.println(theCar.color.to("green").applyTo(car1));
+        System.out.println(theCar.color.changeTo("green").applyTo(car1));
         System.out.println(theCar.color.thatIsBlank().applyTo(car1));
         System.out.println();
         
         val driver1 = new Driver(car1);
         System.out.println(theDriver.car.color.applyTo(driver1));
-        System.out.println(theDriver.car.color.to("green").applyTo(driver1));
+        System.out.println(theDriver.car.color.changeTo("green").applyTo(driver1));
         System.out.println(theDriver.car.withColor("red").applyTo(driver1));
         System.out.println(theDriver.car.color.thatIsBlank().applyTo(driver1));
         System.out.println();
@@ -121,7 +119,7 @@ public class TryRun {
         val drivers = asList(
                 driver1,
                 driver1.withCar(new Car("red")),
-                theDriver.car.color.to("green").apply(driver1));
+                theDriver.car.color.changeTo("green").apply(driver1));
         drivers.stream()
         .map(theDriver.car)
         .map(theCar.color.thatIs("blue"))
@@ -132,6 +130,12 @@ public class TryRun {
         System.out.println(check.applyTo(new Company(asList())));
         System.out.println(check.applyTo(new Company(asList(driver1))));
         System.out.println(check.applyTo(new Company(asList(driver1, driver1.withCar(new Car("red"))))));
+        System.out.println();
+        
+        val findCarColor = theDriver.car.toMayBe().map(theCar.color);
+        System.out.println(findCarColor.applyTo(new Driver(null)));
+        System.out.println(findCarColor.applyTo(new Driver(new Car("blue"))));
+        System.out.println();
     }
     
 }

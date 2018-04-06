@@ -5,14 +5,16 @@ import java.util.function.Function;
 
 import lombok.val;
 import nawaman.functionalj.functions.Func1;
+import nawaman.functionalj.types.MayBe;
 
 @FunctionalInterface
 public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
-//    
-//    public default MayBeField<HOST, DATA> toMayBe() {
-//        return host -> MayBe.of(this.apply(host));
-//    }
-//    
+    
+    // TODO - See if we can return a lens here when this object is a lens.
+    public default MayBeAccess<HOST, DATA> toMayBe() {
+        return host -> MayBe.of(this.apply(host));
+    }
+    
     public default BooleanAccess<HOST> thatIs(DATA value) {
         return booleanAccess(value != null, any -> any == value);
     }

@@ -20,7 +20,7 @@ public interface StringLens<HOST> extends AnyEqualableLens<HOST, String>, String
     default String read(HOST host) {
         return lensSpec().getRead().apply(host);
     }
-    default Func1<HOST, HOST> to(String data) {
+    default Func1<HOST, HOST> changeTo(String data) {
         return host -> lensSpec().getWrite().apply(host, data);
     }
     

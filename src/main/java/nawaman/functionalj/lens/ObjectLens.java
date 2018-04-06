@@ -15,7 +15,7 @@ public interface ObjectLens<HOST, DATA> extends AnyEqualableLens<HOST, DATA>, Ob
     public default DATA apply(HOST host) {
         return lensSpec().getRead().apply(host);
     }
-    public default Func1<HOST, HOST> to(DATA data) {
+    public default Func1<HOST, HOST> changeTo(DATA data) {
         return host -> lensSpec().getWrite().apply(host, data);
     }
 

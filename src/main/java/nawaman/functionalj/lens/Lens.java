@@ -27,7 +27,7 @@ public interface Lens<HOST, DATA> extends Function<HOST, DATA>, BiFunction<HOST,
     default DATA read(HOST host) {
         return lensSpec().getRead().apply(host);
     }
-    default Function<HOST, HOST> to(DATA data) {
+    default Function<HOST, HOST> changeTo(DATA data) {
         return host -> lensSpec().getWrite().apply(host, data);
     }
     
