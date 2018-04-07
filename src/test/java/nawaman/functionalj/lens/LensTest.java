@@ -1,11 +1,12 @@
 package nawaman.functionalj.lens;
 
 import static java.util.Arrays.asList;
-import static nawaman.functionalj.lens.TryRunTest.Car.theCar;
-import static nawaman.functionalj.lens.TryRunTest.Company.theCompany;
-import static nawaman.functionalj.lens.TryRunTest.Driver.theDriver;
+import static nawaman.functionalj.lens.LensTest.Car.theCar;
+import static nawaman.functionalj.lens.LensTest.Company.theCompany;
+import static nawaman.functionalj.lens.LensTest.Driver.theDriver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +19,10 @@ import lombok.ToString;
 import lombok.val;
 import nawaman.functionalj.FunctionalJ;
 import nawaman.functionalj.functions.Func1;
+import nawaman.functionalj.types.MayBe;
 
 @SuppressWarnings("javadoc")
-public class TryRunTest {
+public class LensTest {
 
     private void assertThis(boolean expected, Object actual) {
         assertEquals(expected, actual);
@@ -28,7 +30,7 @@ public class TryRunTest {
     private void assertThis(String expected, Object actual) {
         if (expected == null)
              assertNull(actual);
-        else assertEquals(expected, String.valueOf(actual));
+        else assertEquals(expected, String.valueOf(actual).replaceAll(this.getClass().getSimpleName() + ".", ""));
     }
     
     @Test
@@ -36,14 +38,14 @@ public class TryRunTest {
         val car1 = new Car("blue");
         val driver1 = new Driver(car1);
         
-        assertThis("blue",                    theCar.color.applyTo(car1));
-        assertThis("TryRun.Car(color=green)", theCar.color.changeTo("green").applyTo(car1));
-        assertThis(false,                     theCar.color.thatIsBlank().applyTo(car1));
+        assertThis("blue",             theCar.color.applyTo(car1));
+        assertThis("Car(color=green)", theCar.color.changeTo("green").applyTo(car1));
+        assertThis(false,              theCar.color.thatIsBlank().applyTo(car1));
         
-        assertThis("blue",                                       theDriver.car.color.applyTo(driver1));
-        assertThis("TryRun.Driver(car=TryRun.Car(color=green))", theDriver.car.color.changeTo("green").applyTo(driver1));
-        assertThis("TryRun.Driver(car=TryRun.Car(color=red))",   theDriver.car.withColor("red").applyTo(driver1));
-        assertThis(false,                                        theDriver.car.color.thatIsBlank().applyTo(driver1));
+        assertThis("blue",                         theDriver.car.color.applyTo(driver1));
+        assertThis("Driver(car=Car(color=green))", theDriver.car.color.changeTo("green").applyTo(driver1));
+        assertThis("Driver(car=Car(color=red))",   theDriver.car.withColor("red").applyTo(driver1));
+        assertThis(false,                          theDriver.car.color.thatIsBlank().applyTo(driver1));
         
         val drivers = asList(
                 driver1,
@@ -104,6 +106,13 @@ public class TryRunTest {
             public final Func1<HOST, HOST> withColor(String newColor) {
                 return CarLens.this.color.changeTo(newColor);
             }
+            
+            public final CarLens<HOST> nullSafe() {
+                return new CarLens<>(this.lensSpec().toNullSafe());
+            }
+            public final CarLens<HOST> nullAware() {
+                return new CarLens<>(this.lensSpec().toNullSafe());
+            }
         }
     }
     @ToString
@@ -132,6 +141,13 @@ public class TryRunTest {
             public final Func1<HOST, HOST> withCar(Car newCar) {
                 return DriverLens.this.car.changeTo(newCar);
             }
+            
+            public final DriverLens<HOST> nullSafe() {
+                return new DriverLens<>(this.lensSpec().toNullSafe());
+            }
+            public final DriverLens<HOST> nullUnsafe() {
+                return new DriverLens<>(this.lensSpec().toNullUnsafe());
+            }
         }
     }
     @ToString
@@ -152,6 +168,33 @@ public class TryRunTest {
             public final Func1<HOST, HOST> withDrivers(List<Driver> newDrivers) {
                 return CompanyLens.this.drivers.changeTo(newDrivers);
             }
+        }
+    }
+    
+    // == Imposter ==
+    
+    public static interface IAmMe<T extends Func1<String, Integer>> extends Func1<String, Integer> {
+        T me();
+        
+        default Integer apply(String input) {
+            return me().apply(input);
+        }
+    }
+    
+    @Test
+    public void testNullSafety() {
+        val driverWithNoCar    = new Driver(null);
+        val nullSafeGetColor   = theDriver.car.color;
+        val nullUnsafeGetColor = theDriver.nullUnsafe().car.color;
+        val mayBeGetColor      = nullSafeGetColor.toMayBe();
+        
+        assertNull(nullSafeGetColor.applyTo(driverWithNoCar));
+        assertEquals(MayBe.nothing(), mayBeGetColor.applyTo(driverWithNoCar));
+        
+        try {
+            nullUnsafeGetColor.apply(driverWithNoCar);
+            fail("Expect an NPE.");
+        } catch (NullPointerException e) {
         }
     }
     

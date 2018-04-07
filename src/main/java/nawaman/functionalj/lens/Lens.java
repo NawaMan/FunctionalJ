@@ -3,6 +3,8 @@ package nawaman.functionalj.lens;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import lombok.val;
+
 @FunctionalInterface
 public interface Lens<HOST, DATA> extends Function<HOST, DATA>, BiFunction<HOST, DATA, HOST> {
     
@@ -16,19 +18,31 @@ public interface Lens<HOST, DATA> extends Function<HOST, DATA>, BiFunction<HOST,
     
     @Override
     default DATA apply(HOST host) {
-        return lensSpec().getRead().apply(host);
+        val spec  = lensSpec();
+        if (spec.isNullSafe() && (host == null))
+            return null;
+        
+        val read  = spec.getRead();
+        val value = read.apply(host);
+        return value;
     }
     
     @Override
     default HOST apply(HOST host, DATA data) {
-        return lensSpec().getWrite().apply(host, data);
+        val spec  = lensSpec();
+        if (spec.isNullSafe() && (host == null))
+            return null;
+        
+        val write    = spec.getWrite();
+        val newValue = write.apply(host, data);
+        return newValue;
     }
     
     default DATA read(HOST host) {
-        return lensSpec().getRead().apply(host);
+        return apply(host);
     }
     default Function<HOST, HOST> changeTo(DATA data) {
-        return host -> lensSpec().getWrite().apply(host, data);
+        return host -> apply(host, data);
     }
     
 }

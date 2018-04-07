@@ -1,5 +1,6 @@
 package nawaman.functionalj.types;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import nawaman.functionalj.functions.Func1;
@@ -19,10 +20,21 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
      * Get instance with no value.
      * 
      * @param <DATA>  the data type.
-     * @return  the MayBe instance with no value.
+     * @return        the MayBe instance with no value.
      */
     @SuppressWarnings("unchecked")
     public static <DATA> MayBe<DATA> empty() {
+        return Nothing.instance;
+    }
+    
+    /**
+     * Get instance with no value.
+     * 
+     * @param <DATA>  the data type.
+     * @return        the MayBe instance with no value.
+     */
+    @SuppressWarnings("unchecked")
+    public static <DATA> MayBe<DATA> nothing() {
         return Nothing.instance;
     }
     
@@ -31,11 +43,45 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
      * 
      * @param <DATA>  the data type.
      * @param value   the data value.
-     * @return  the MayBe instance with value.
+     * @return        the MayBe instance with value.
      */
     @SuppressWarnings("unchecked")
     public static <DATA> MayBe<DATA> of(DATA value) {
         return (value != null) ? new Just<DATA>(value) : Nothing.instance;
+    }
+    
+    /**
+     * Create a function from the given function but return MayBe as a result.
+     * 
+     * @param <I>       the input type.
+     * @param <O>       the output type.
+     * @param function  the function.
+     * @return          the result function.
+     */
+    public static <I, O> Func1<I, MayBe<O>> mayBe(Function<I, O> function) {
+        return input -> {
+            try {
+                return MayBe.of(function.apply(input));
+            } catch (NullPointerException e) {
+                return MayBe.empty();
+            }
+        };
+    }
+    
+    /**
+     * Return the maybe object from the running the supplier.
+     * If NPE is throw from that supplier, MayBe.nothing() is returned.
+     * 
+     * @param <T>       the data type.
+     * @param supplier  the supplier.
+     * @return          the may be result.
+     */
+    public static <T> MayBe<T> from(Supplier<T> supplier) {
+        try {
+            return MayBe.of(supplier.get());
+        } catch (NullPointerException e) {
+            return MayBe.nothing();
+        }
     }
     
     
@@ -54,12 +100,34 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         return MayBe.of(target);
     }
     
+    /**
+     * Returns the value inside this maybe.
+     * 
+     * @return  the value.
+     */
     public abstract DATA get();
     
+    /**
+     * Returns the value inside this maybe or given value in case of nothing.
+     * 
+     * @param or  the or value.
+     * @return    the value or the or value.
+     */
     public abstract DATA or(DATA or);
     
+    /**
+     * Returns the value inside this maybe or the value from the supplier.
+     * 
+     * @param orSupplier  the fallback supplier.
+     * @return            the value inside or the fallback back value.
+     */
     public abstract DATA orGet(Supplier<DATA> orSupplier);
     
+    /**
+     * Returns the value inside this maybe or throw NPE.
+     * 
+     * @return  the value inside.
+     */
     public abstract DATA orThrow();
     
     // TODO - To either
