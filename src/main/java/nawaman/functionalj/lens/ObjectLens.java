@@ -1,5 +1,7 @@
 package nawaman.functionalj.lens;
 
+import java.util.function.Function;
+
 import nawaman.functionalj.functions.Func1;
 
 @FunctionalInterface
@@ -15,5 +17,7 @@ public interface ObjectLens<HOST, DATA> extends AnyLens<HOST, DATA>, ObjectAcces
     public default Func1<HOST, HOST> changeTo(DATA data) {
         return host -> lensSpec().getWrite().apply(host, data);
     }
-
+    
+    
+    
 }

@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import static java.util.Collections.unmodifiableList;
 
-import lombok.ToString;
 import lombok.val;
 import nawaman.functionalj.FunctionalJ;
 import nawaman.functionalj.functions.Func1;
@@ -80,8 +79,8 @@ public class LensTest {
         public Car car();
     }
     
-    @ToString
     public static class Car implements CarSpec {
+        
         public static CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));
         
         private final String color;
@@ -96,6 +95,12 @@ public class LensTest {
         public Car withColor(String color) {
             return new Car(color);
         }
+        
+        @Override
+        public String toString() {
+            return "Car(color=" + color + ")";
+        }
+        
         
         public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {
             
@@ -115,8 +120,8 @@ public class LensTest {
             }
         }
     }
-    @ToString
     public static class Driver {
+        
         public static DriverLens<Driver> theDriver = new DriverLens<>(LensSpec.of(Driver.class));
         
         private final Car car;
@@ -131,6 +136,12 @@ public class LensTest {
         public Driver withCar(Car car) {
             return new Driver(car);
         }
+        
+        @Override
+        public String toString() {
+            return "Driver(car=" + car + ")";
+        }
+        
         
         public static class DriverLens<HOST> extends ObjectLensImpl<HOST, Driver> {
             
@@ -150,7 +161,6 @@ public class LensTest {
             }
         }
     }
-    @ToString
     public static class Company {
         public static CompanyLens<Company> theCompany = new CompanyLens<>(LensSpec.of(Company.class));
         
@@ -158,6 +168,12 @@ public class LensTest {
         public Company(List<Driver> drivers)             { this.drivers = unmodifiableList(new ArrayList<>(drivers)); }
         public List<Driver> drivers()                    { return drivers; }
         public Company withDrivers(List<Driver> drivers) { return new Company(drivers); }
+        
+        @Override
+        public String toString() {
+            return "Company [drivers=" + drivers + "]";
+        }
+        
         
         public static class CompanyLens<HOST> extends ObjectLensImpl<HOST, Company>{
             

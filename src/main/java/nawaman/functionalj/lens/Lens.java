@@ -6,7 +6,7 @@ import java.util.function.Function;
 import lombok.val;
 
 @FunctionalInterface
-public interface Lens<HOST, DATA> extends Function<HOST, DATA>, BiFunction<HOST, DATA, HOST> {
+public interface Lens<HOST, DATA> extends Function<HOST, DATA>, WriteLens<HOST, DATA> {
     
     public static <HOST, DATA> Lens<HOST, DATA> of(LensSpec<HOST, DATA> spec) {
         return ()->spec;

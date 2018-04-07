@@ -10,20 +10,18 @@ import nawaman.functionalj.functions.Func1;
 @Getter
 public class LensSpec<HOST, DATA> {
     
-    // TODO - 'write' lens generic types may be violated when done with reflection - HOST and HOST.
+    public static <DATA> Function<DATA, DATA>  selfRead()  { return self->self;        }
+    public static <DATA> WriteLens<DATA, DATA> selfWrite() { return (host,self)->self; }
     
-    public static <DATA> Function<DATA, DATA>         selfRead()  { return self->self;        }
-    public static <DATA> BiFunction<DATA, DATA, DATA> selfWrite() { return (host,self)->self; }
+    private final Function<HOST, DATA>  read;
+    private final WriteLens<HOST, DATA> write;
+    private final boolean               isNullSafe;  // May regret this later .. but WTH.
     
-    private final Function<HOST, DATA>         read;
-    private final BiFunction<HOST, DATA, HOST> write;
-    private final boolean                      isNullSafe;  // May regret this later .. but WTH.
-    
-    public LensSpec(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write) {
+    public LensSpec(Function<HOST, DATA> read, WriteLens<HOST, DATA> write) {
         this(read, write, true);
     }
     
-    public LensSpec(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write, boolean isNullSafe) {
+    public LensSpec(Function<HOST, DATA> read, WriteLens<HOST, DATA> write, boolean isNullSafe) {
         this.read       = read;
         this.write      = write;
         this.isNullSafe = isNullSafe;
