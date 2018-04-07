@@ -10,4 +10,5 @@ public interface ListLens<HOST, TYPE, LIST extends List<TYPE>>
     default LIST apply(HOST host) {
         return lensSpec().getRead().apply(host);
     }
+    
 }

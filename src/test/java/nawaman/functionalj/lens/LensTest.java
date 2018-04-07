@@ -161,6 +161,7 @@ public class LensTest {
         
         public static class CompanyLens<HOST> extends ObjectLensImpl<HOST, Company>{
             
+            // Will need a way to allow the collection lens to create the lens of the element.
             public final CollectionLens<HOST, Driver, List<Driver>> drivers = createSubLens(Company::drivers, Company::withDrivers, spec->()->spec);
             
             public CompanyLens(LensSpec<HOST, Company> spec) { super(spec); }
