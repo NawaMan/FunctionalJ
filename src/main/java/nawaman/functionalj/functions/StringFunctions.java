@@ -9,7 +9,7 @@ import lombok.val;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class StringFuncs {
+public class StringFunctions {
     
     private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
     

@@ -3,12 +3,10 @@ package nawaman.functionalj.compose;
 import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.recusive;
 import static nawaman.functionalj.FunctionalJ.streamConcat;
-import static nawaman.functionalj.PointFree.pull;
-import static nawaman.functionalj.PointFree.pull2;
 import static nawaman.functionalj.functions.Absent.__;
-import static nawaman.functionalj.functions.StringFuncs.strFormat;
-import static nawaman.functionalj.functions.StringFuncs.strFormat2;
-import static nawaman.functionalj.functions.StringFuncs.wrapWith;
+import static nawaman.functionalj.functions.StringFunctions.strFormat;
+import static nawaman.functionalj.functions.StringFunctions.strFormat2;
+import static nawaman.functionalj.functions.StringFunctions.wrapWith;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +18,9 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
+
+import static nawaman.functionalj.PointFree.pull;
+import static nawaman.functionalj.PointFree.pull2;
 
 import lombok.Builder;
 import lombok.val;
