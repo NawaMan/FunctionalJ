@@ -1,7 +1,5 @@
 package nawaman.functionalj.lens;
 
-import java.util.function.Predicate;
-
 @FunctionalInterface
 public interface IntegerLens<HOST> extends ComparableLens<HOST, Integer>, IntegerAccess<HOST> {
     

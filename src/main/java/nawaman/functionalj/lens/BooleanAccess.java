@@ -2,7 +2,7 @@ package nawaman.functionalj.lens;
 
 import java.util.function.Predicate;
 
-public interface BooleanAccess<HOST> extends AnyEqualableAccess<HOST, Boolean> , Predicate<HOST> {
+public interface BooleanAccess<HOST> extends AnyAccess<HOST, Boolean> , Predicate<HOST> {
     
     public default boolean test(HOST host) {
         return Boolean.TRUE.equals(this.apply(host));

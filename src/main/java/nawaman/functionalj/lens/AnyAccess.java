@@ -21,7 +21,7 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
     public default BooleanAccess<HOST> thatIsNot(DATA value) {
         return booleanAccess(value == null, any -> any != value);
     }
-    public default BooleanAccess<HOST> thatEqualsTo(DATA value) {
+    public default BooleanAccess<HOST> thatEquals(DATA value) {
         return booleanAccess(value == null, any -> Objects.equals(any, value));
     }
     public default BooleanAccess<HOST> thatNotEqualsTo(DATA value) {

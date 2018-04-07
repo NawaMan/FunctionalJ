@@ -1,11 +1,9 @@
 package nawaman.functionalj.lens;
 
-import java.util.function.Function;
-
 import nawaman.functionalj.functions.Func1;
 
 @FunctionalInterface
-public interface StringLens<HOST> extends AnyEqualableLens<HOST, String>, StringAccess<HOST> {
+public interface StringLens<HOST> extends AnyLens<HOST, String>, StringAccess<HOST> {
     
     @Override
     default String apply(HOST host) {

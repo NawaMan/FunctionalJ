@@ -1,12 +1,9 @@
 package nawaman.functionalj.lens;
 
-import java.util.function.Function;
-
-import nawaman.functionalj.FunctionalJ.Person;
 import nawaman.functionalj.functions.Func1;
 
 @FunctionalInterface
-public interface ObjectLens<HOST, DATA> extends AnyEqualableLens<HOST, DATA>, ObjectAccess<HOST, DATA> {
+public interface ObjectLens<HOST, DATA> extends AnyLens<HOST, DATA>, ObjectAccess<HOST, DATA> {
     
     @Override
     public LensSpec<HOST, DATA> lensSpec();
