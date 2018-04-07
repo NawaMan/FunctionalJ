@@ -48,4 +48,9 @@ public class StringFuncs {
         return (template, i1, i2) -> String.format(template, i1, i2);
     }
     
+    // TODO - More format
+    // Repeat
+    // Indent
+    // Padding
+    
 }
