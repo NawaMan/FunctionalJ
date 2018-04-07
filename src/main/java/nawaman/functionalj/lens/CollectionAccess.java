@@ -3,6 +3,7 @@ package nawaman.functionalj.lens;
 import java.util.Collection;
 import java.util.function.Predicate;
 
+@FunctionalInterface
 public interface CollectionAccess<HOST, TYPE, COLLECTION extends Collection<TYPE>> 
         extends ObjectAccess<HOST, COLLECTION> {
     
