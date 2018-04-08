@@ -13,6 +13,9 @@ public class StringFunctions {
     
     private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
     
+    public <I> Func1<I, String> str() {
+        return (i) -> String.valueOf(i);
+    }
     public <I1, I2> Func2<I1, I2, String> strConcat2() {
         return (i1, i2) -> String.valueOf(i1) + String.valueOf(i2);
     }

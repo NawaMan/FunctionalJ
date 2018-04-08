@@ -16,6 +16,7 @@
 package nawaman.functionalj.functions;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -60,6 +61,34 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return apply(input);
     }
     
+    /**
+     * Create a high-order function that will take another function that take the given input and return output.
+     * NOTE: Not sure if this a traverse.
+     * 
+     * @param <INPUT>   the input data type.
+     * @param <OUTPUT>  the output data type.
+     * @param input     the input.
+     * @return          the high-order function.
+     */
+    public static <INPUT,OUTPUT> Func1<Function<INPUT,OUTPUT>, OUTPUT> allApplyTo(INPUT input) {
+        return func -> {
+            return func.apply(input);
+        };
+    }
+    
+    /**
+     * Create a high-order function that will take another function that take the given input and return output.
+     * NOTE: Not sure if this a traverse.
+     * 
+     * @param <INPUT>   the input data type.
+     * @param input     the input.
+     * @return          the high-order function.
+     */
+    public static <INPUT> Predicate<Function<INPUT, Boolean>> allCheckWith(INPUT input) {
+        return func -> {
+            return func.apply(input);
+        };
+    }
     
     /**
      * Compose this function to the given function.
