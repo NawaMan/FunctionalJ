@@ -204,6 +204,19 @@ public class FunctionalJ {
         return selfFunc;
     }
     
+    public static Consumer<String> throwThis(Function<String, ? extends RuntimeException> exceptionCreator) {
+        return errMsg -> {
+            if (errMsg == null)
+                return;
+            
+            val exception = exceptionCreator.apply(errMsg);
+            if (exception == null)
+                return;
+            
+            throw exception;
+        };
+    }
+    
     public static interface Data {
         public default <D extends Data> D me() { return (D)this; }
     }
