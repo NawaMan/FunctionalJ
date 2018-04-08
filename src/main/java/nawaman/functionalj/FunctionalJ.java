@@ -44,6 +44,7 @@ import nawaman.functionalj.functions.Absent;
 import nawaman.functionalj.functions.Func1;
 import nawaman.functionalj.functions.Func2;
 import nawaman.functionalj.functions.Func3;
+import nawaman.functionalj.types.Tuple2;
 
 /**
  * Collection of useful methods for functional programming.
@@ -96,6 +97,38 @@ public class FunctionalJ {
     public static <INPUT, OUTPUT> Function<INPUT, OUTPUT> withIndex(Function<Integer, OUTPUT> body) {
         val index = new AtomicInteger();
         return input -> body.apply(index.getAndIncrement());
+    }
+    
+    public static class WithIndex<DATA> extends Tuple2<DATA, Integer> {
+        public WithIndex(DATA _1, Integer _2) {
+            super(_1, _2);
+        }
+        public int  index() { return _2.intValue(); }
+        public DATA data()  { return _1; }
+    }
+    
+    public static interface WithIndexFunction<INPUT, OUTPUT> extends Function<WithIndex<INPUT>, OUTPUT> {
+        
+    }
+    
+    public static interface WithIndexPredicate<INPUT> extends Predicate<WithIndex<INPUT>> {
+        
+    }
+    
+    public static <INPUT, OUTPUT> Function<INPUT, OUTPUT> withIndex(WithIndexFunction<INPUT, OUTPUT> body) {
+        val index = new AtomicInteger();
+        return input -> {
+            val withIndex = new WithIndex<INPUT>(input, index.getAndIncrement());
+            return body.apply(withIndex);
+        };
+    }
+    
+    public static <INPUT, OUTPUT> Predicate<INPUT> withIndex(WithIndexPredicate<INPUT> body) {
+        val index = new AtomicInteger();
+        return input -> {
+            val withIndex = new WithIndex<INPUT>(input, index.getAndIncrement());
+            return body.test(withIndex);
+        };
     }
     
     public static <INPUT, OUTPUT> Consumer<INPUT> withIndex(BiConsumer<INPUT, Integer> body) {
