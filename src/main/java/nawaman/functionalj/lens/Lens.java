@@ -11,6 +11,14 @@ public interface Lens<HOST, DATA> extends Function<HOST, DATA>, WriteLens<HOST, 
     public static <HOST, DATA> Lens<HOST, DATA> of(LensSpec<HOST, DATA> spec) {
         return ()->spec;
     }
+    public static <HOST, DATA> Lens<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write) {
+        val spec = new LensSpec<HOST, DATA>(read::apply, write::apply);
+        return ()->spec;
+    }
+    public static <HOST, DATA> Lens<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write, boolean isNullSafe) {
+        val spec = new LensSpec<HOST, DATA>(read::apply, write::apply, isNullSafe);
+        return ()->spec;
+    }
     
     
     public LensSpec<HOST, DATA> lensSpec();

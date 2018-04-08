@@ -47,8 +47,11 @@ public class LensSpec<HOST, DATA> {
         return new LensSpec<DATA, DATA>(selfRead(), selfWrite());
     }
     
-    public static <HOST, DATA>LensSpec<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write) {
+    public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write) {
         return new LensSpec<HOST, DATA>(read::apply, write::apply);
+    }
+    public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write, boolean isNullSafe) {
+        return new LensSpec<HOST, DATA>(read::apply, write::apply, isNullSafe);
     }
     
     public static <HOST, DATA, SUB, SUBLENS> SUBLENS createSubLens(
