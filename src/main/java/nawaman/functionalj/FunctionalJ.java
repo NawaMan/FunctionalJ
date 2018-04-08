@@ -89,12 +89,16 @@ public class FunctionalJ {
         return new ByThat<FIELD>(field);
     }
     
+    public static <INPUT> Predicate<INPUT> only(Function<INPUT, Boolean> check) {
+        return input -> check.apply(input);
+    }
+    
     public static <INPUT, OUTPUT> Function<INPUT, OUTPUT> withIndex(BiFunction<INPUT, Integer, OUTPUT> body) {
         val index = new AtomicInteger();
         return input -> body.apply(input, index.getAndIncrement());
     }
     
-    public static <INPUT, OUTPUT> Function<INPUT, OUTPUT> withIndex(Function<Integer, OUTPUT> body) {
+    public static <INPUT, OUTPUT> Function<INPUT, OUTPUT> usingIndex(Function<Integer, OUTPUT> body) {
         val index = new AtomicInteger();
         return input -> body.apply(index.getAndIncrement());
     }
@@ -104,14 +108,15 @@ public class FunctionalJ {
             super(_1, _2);
         }
         public int  index() { return _2.intValue(); }
-        public DATA data()  { return _1; }
+        public DATA value()  { return _1; }
+        
+        public String toString() {
+            // TODO - Umm .. this feels useful but it will break Tuple2.toString() contract.
+            return "[#" + _2 + ":" + _1 + "]";
+        }
     }
     
     public static interface WithIndexFunction<INPUT, OUTPUT> extends Function<WithIndex<INPUT>, OUTPUT> {
-        
-    }
-    
-    public static interface WithIndexPredicate<INPUT> extends Predicate<WithIndex<INPUT>> {
         
     }
     
@@ -123,12 +128,9 @@ public class FunctionalJ {
         };
     }
     
-    public static <INPUT, OUTPUT> Predicate<INPUT> withIndex(WithIndexPredicate<INPUT> body) {
+    public static <INPUT> Function<INPUT, WithIndex<INPUT>> withIndex() {
         val index = new AtomicInteger();
-        return input -> {
-            val withIndex = new WithIndex<INPUT>(input, index.getAndIncrement());
-            return body.test(withIndex);
-        };
+        return input -> new WithIndex<INPUT>(input, index.getAndIncrement());
     }
     
     public static <INPUT, OUTPUT> Consumer<INPUT> withIndex(BiConsumer<INPUT, Integer> body) {
@@ -327,7 +329,7 @@ public class FunctionalJ {
                     .collect(toMap(it(), withIndex((s,index)->index))));
         System.out.println(
                 Stream.of("One", "Two", "Three")
-                    .collect(toMap(it(), withIndex(it()))));
+                    .collect(toMap(it(), usingIndex(it()))));
         
         Stream.of("One", "Two", "Three").forEach(withIndex((str, idx)->{
             System.out.println(idx + ": " + str);

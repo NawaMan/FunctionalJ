@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.cacheFor;
 import static nawaman.functionalj.FunctionalJ.it;
 import static nawaman.functionalj.FunctionalJ.only;
+import static nawaman.functionalj.FunctionalJ.withIndex;
 import static nawaman.functionalj.functions.Absent.__;
 import static nawaman.functionalj.functions.Absent.absent;
 
@@ -20,11 +21,13 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -35,6 +38,7 @@ import static java.util.Collections.singletonMap;
 import lombok.ToString;
 import lombok.Value;
 import lombok.val;
+import nawaman.functionalj.FunctionalJ.WithIndex;
 import nawaman.functionalj.compose.ArrayLens;
 import nawaman.functionalj.compose.Lens;
 import nawaman.functionalj.compose.LensSpec;
@@ -301,6 +305,38 @@ public class FunctionalJTest {
         val add3  = Func3.of(FunctionalJTest::add3);
         val add_5 = add3.apply(__, 5, __);
         assertEquals(8, add_5.apply(1, 2).intValue());
+    }
+    
+    @Test
+    public void testWithIndexTuple() {
+        val list = asList("One", "Two", "Three");
+        assertEquals("0: One,1: Two,2: Three", 
+                list.stream()
+                .map(withIndex(item->{
+                    // TODO - It will be nice, if this can be feed to Func2 directly.
+                    return item.index()  + ": " + item.value();
+                }))
+                .collect(joining(",")));
+    }
+    
+    @Test
+    public void testCheckWithIndexTuple() {
+        val list = asList("One", "Two", "Three");
+        assertEquals("One,Three", 
+                list.stream()
+                .filter(only(withIndex(item-> item.index() != 1)))
+                .collect(joining(",")));
+    }
+    
+    @Test
+    public void testMapCheckWithIndexTuple() {
+        val list = asList("One", "Two", "Three");
+        assertEquals("0: One,2: Three", 
+                list.stream()
+                .map(withIndex())
+                .filter(item-> item.index() != 1)
+                .map(item->item.index()  + ": " + item.value())
+                .collect(joining(",")));
     }
     
     

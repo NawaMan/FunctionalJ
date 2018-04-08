@@ -17,4 +17,8 @@ public class Tuple2<T1, T2> {
         return _2;
     }
     
+    public String toString() {
+        return "[" + _1 + "," + _2 + "]";
+    }
+    
 }

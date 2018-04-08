@@ -3,6 +3,7 @@ package nawaman.functionalj;
 import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.cacheFor;
 import static nawaman.functionalj.FunctionalJ.lazy;
+import static nawaman.functionalj.FunctionalJ.usingIndex;
 import static nawaman.functionalj.FunctionalJ.withIndex;
 
 import java.util.Map;
