@@ -3,7 +3,6 @@ package nawaman.functionalj.lens;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import lombok.val;
 import nawaman.functionalj.functions.Func1;
 
 public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
