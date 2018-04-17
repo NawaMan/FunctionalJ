@@ -1,6 +1,11 @@
 package nawaman.functionalj.lens;
 
+import static java.lang.String.valueOf;
+import static nawaman.functionalj.FunctionalStrings.stringOf;
+
 import java.util.Locale;
+
+import nawaman.functionalj.FunctionalStrings;
 
 @FunctionalInterface
 public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
@@ -17,12 +22,21 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
         return intAccess(-1, str->str.compareToIgnoreCase(anotherString));
     }
     
-    public default StringAccess<HOST> concat(String suffix) {
-        return stringAccess(suffix, str->str.concat(suffix));
+    public default StringAccess<HOST> concat(Object suffix) {
+        return stringAccess(stringOf(suffix), str -> str + stringOf(suffix));
+    }
+    public default StringAccess<HOST> prefix(Object prefix) {
+        return stringAccess(stringOf(prefix), str -> stringOf(prefix) + str);
+    }
+    public default StringAccess<HOST> wrapBy(Object prefix, Object suffix) {
+        return stringAccess(stringOf(prefix) + stringOf(suffix), str -> stringOf(prefix) + str + stringOf(suffix));
     }
     
     public default BooleanAccess<HOST> thatContentEquals(CharSequence charSequence) {
         return booleanAccess(false, str->str.contentEquals(charSequence));
+    }
+    public default BooleanAccess<HOST> thatContains(CharSequence charSequence) {
+        return booleanAccess(false, str->str.contains(charSequence));
     }
     
     public default BooleanAccess<HOST> thatEndsWith(String suffix) {

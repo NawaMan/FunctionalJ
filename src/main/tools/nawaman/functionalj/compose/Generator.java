@@ -4,8 +4,8 @@ import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.recusive;
 import static nawaman.functionalj.FunctionalJ.streamConcat;
 import static nawaman.functionalj.functions.Absent.__;
-import static nawaman.functionalj.functions.StringFunctions.strFormat;
-import static nawaman.functionalj.functions.StringFunctions.strFormat2;
+import static nawaman.functionalj.functions.StringFunctions.format1With;
+import static nawaman.functionalj.functions.StringFunctions.format2With;
 import static nawaman.functionalj.functions.StringFunctions.wrapWith;
 
 import java.util.ArrayList;
@@ -289,7 +289,7 @@ public class Generator {
     private static Func1<Integer, FList<MethodDef>> generateApplyMethod() {
         val applyMethod = Func1.of((Integer n) -> {
             val _I1i1_to_Inin = startingFrom1
-                    .andThen(mapEach(strFormat("I%1$s i%1$s")))
+                    .andThen(mapEach(format1With("I%1$s i%1$s")))
                     .andThen(toList())
                     .apply(n);
             return new FList<MethodDef>(asList(
@@ -309,15 +309,15 @@ public class Generator {
             val retType
                     = startingFrom1
                     .andThen(selectOnly(onesThatAreNot(a)))
-                    .andThen(mapEach(strFormat("I%s")))
+                    .andThen(mapEach(format1With("I%s")))
                     .andThen(appendWith("R"))
                     .andThen(joinAllBy(","))
                     .andThen(wrapWith("Func" + (n - 1) + "<", ">"));
-            val params = strFormat("I%1$s i%1$s").apply(a);
+            val params = format1With("I%1$s i%1$s").apply(a);
             val inputs
                     = startingFrom1
                     .andThen(selectOnly(onesThatAreNot(a)))
-                    .andThen(mapEach(strFormat("i%s")))
+                    .andThen(mapEach(format1With("i%s")))
                     .andThen(joinAllBy(","))
                     .andThen(wrapWith("(", ")"))
                     .apply(n);
@@ -335,7 +335,7 @@ public class Generator {
         return Func1.of((Integer n) -> {
             val returnThisApply = generateReturnThisApply();
             val curryInput = startingFrom1
-                    .andThen(mapEach(strFormat("i%s")))
+                    .andThen(mapEach(format1With("i%s")))
                     .andThen(joinAllBy("->"))
                     .apply(n);
             return new FList<>(asList(
@@ -351,10 +351,10 @@ public class Generator {
     private static Func2<Integer, String, String> generateReturnThisApply() {
         return Func2.of((Integer n, String input) -> {
             val params = startingFrom1
-                    .andThen(mapEach(strFormat("i%s")))
+                    .andThen(mapEach(format1With("i%s")))
                     .andThen(joinAllBy(", "))
                     .apply(n);
-            return strFormat2("return %s -> this.apply(%s);").apply(input, params);
+            return format2With("return %s -> this.apply(%s);").apply(input, params);
         });
     }
 

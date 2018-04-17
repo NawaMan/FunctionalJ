@@ -5,6 +5,9 @@ import nawaman.functionalj.functions.Func1;
 @FunctionalInterface
 public interface StringLens<HOST> extends AnyLens<HOST, String>, StringAccess<HOST> {
     
+    // TODO - Add theString
+    // TODO - theString should have 'of' that take a string function.
+    
     @Override
     default String apply(HOST host) {
         return lensSpec().getRead().apply(host);
@@ -21,5 +24,6 @@ public interface StringLens<HOST> extends AnyLens<HOST, String>, StringAccess<HO
     default Func1<HOST, HOST> changeTo(String data) {
         return host -> lensSpec().getWrite().apply(host, data);
     }
+    // Add the chagne to that is supplier and function1
     
 }
