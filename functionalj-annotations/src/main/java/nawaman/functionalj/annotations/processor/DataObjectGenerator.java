@@ -18,11 +18,13 @@ import static nawaman.functionalj.functions.StringFunctions.toStr;
 import static nawaman.functionalj.functions.StringFunctions.wrapWith;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -35,6 +37,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Wither;
+import nawaman.functionalj.annotations.processor.DataObjectGenerator.GenField;
+import nawaman.functionalj.annotations.processor.DataObjectGenerator.GenMethod;
 import nawaman.functionalj.functions.Func1;
 import nawaman.functionalj.lens.IPostConstruct;
 import nawaman.functionalj.lens.StringLens;
@@ -214,8 +218,8 @@ public class DataObjectGenerator {
             GenElement.super
                 .getRequiredTypes()
                 .forEach(types::add);
-            for (val param : params) {
-                val paramType = param.getType();
+            for (GenParam param : params) {
+                Type paramType = param.getType();
                 if (types.contains(paramType))
                     continue;
                 types.add(paramType);
@@ -336,28 +340,17 @@ public class DataObjectGenerator {
             ).stream().collect(joining(" "));
         val recordLastLine = "}";
         
-        val getterToLensField = Func1.of((Getter getter)->{
-            val recName = recordClassName;
-            val name    = getter.getName();
-            val type    = getter.getType();
-            val t       = new Type(type.getSimpleName() + "Lens<HOST>", sourceSpec.getPackageName());
-            val withName = withMethodName(getter);
-            val spec    = "spec->()->spec"; // If Custom lens -> spec->new Brand.BrandLens<>(spec)
-            val value   = format("createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", recName, name, withName, spec);
-            val field = new GenField(PUBLIC, FINAL, INSTANCE, name, t, value);
-            return field;
-        });
-        val lensFields  = sourceSpec.getGetters().stream().map(getterToLensField);
+        Stream<GenField> lensFields  = sourceSpec.getGetters().stream().map(getter -> getterToLensField(getter, recordClassName, sourceSpec));
         
         
         val consParams = asList(new GenParam("spec", new Type("LensSpec<HOST, " + recordClassName + ">", "nawaman.functionalj.lens")));
         val consBody   = "super(spec);"; // This ignore the id for now.
         val cons       = new GenConstructor(PUBLIC, lensClassName, consParams, line(consBody));
         
-        val lensFieldDefs = lensFields           .map(GenField      ::toDefinition);
-        val lensConstDefs = asList(cons).stream().map(GenConstructor::toDefinition);
+        Stream<ILines> lensFieldDefs = lensFields           .map(field->field.toDefinition());
+        Stream<ILines> lensConstDefs = asList(cons).stream().map(GenConstructor::toDefinition);
         
-        val lensLines = asList(
+        val lensLines = (Stream<String>)asList(
                 line(lensFirstLine),
                 line(),
                 indent(lensFieldDefs),
@@ -372,6 +365,18 @@ public class DataObjectGenerator {
             .flatMap(ILines::lines)
             .filter(Objects::nonNull);
         return ()->lensLines;
+    }
+    
+    private static GenField getterToLensField(Getter getter, String recordClassName, Spec sourceSpec) {
+        val recName = recordClassName;
+        val name    = getter.getName();
+        val type    = getter.getType();
+        val t       = new Type(type.getSimpleName() + "Lens<HOST>", sourceSpec.getPackageName());
+        val withName = withMethodName(getter);
+        val spec    = "spec->()->spec"; // If Custom lens -> spec->new Brand.BrandLens<>(spec)
+        val value   = format("createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", recName, name, withName, spec);
+        val field = new GenField(PUBLIC, FINAL, INSTANCE, name, t, value);
+        return field;
     }
     
     public static Stream<String> generateRecordClass(RecordSpec recordSpec) {
@@ -457,30 +462,7 @@ public class DataObjectGenerator {
              extendeds   .add(sourceSpec.toType());
         else implementeds.add(sourceSpec.toType());
         
-        val getterToField = Func1.of((Getter getter)->{
-            // It should be good to convert this to tuple2 and apply to the method.
-            val name  = getter.getName();
-            val type  = getter.getType();
-            val field = new GenField(PRIVATE, FINAL, INSTANCE, name, type, null);
-            return field;
-        });
-        val getterToGetterMethod = Func1.of((Getter getter)->{
-            val name = getter.getName();
-            val type = getter.getType();
-            val params = new ArrayList<GenParam>();
-            val body   = "return " + getter.getName() + ";";
-            val method = new GenMethod(PUBLIC, MODIFIABLE, INSTANCE, type, name, params, line(body));
-            return method;
-        });
         val withMethodName = Func1.of(DataObjectGenerator::withMethodName);
-        val getterToWitherMethod = Func1.of((Getter getter) -> {
-            val name = withMethodName.apply(getter);
-            val type = sourceSpec.getTargetType();
-            val params = asList(new GenParam(getter.getName(), getter.getType()));
-            val paramCall = sourceSpec.getGetters().stream().map(Getter::getName).collect(joining(", "));
-            val returnLine = "return postProcess(new " + sourceSpec.getTargetClassName() + "(" + paramCall + "));";
-            return new GenMethod(PUBLIC, MODIFIABLE, INSTANCE, type, name, params, line(returnLine));
-        });
         // TODO - Improve this to make it more humand-made ... we should remove the long class name and use simple.
         val ipostConstruct = IPostConstruct.class.getSimpleName();
         val postConstructMethod = new GenMethod(
@@ -491,9 +473,9 @@ public class DataObjectGenerator {
                      "    ((" + ipostConstruct + ")object).postConstruct();",
                      "return object;"));
         
-        val getterFields  = sourceSpec.getGetters().stream().map(getterToField);
-        val getterMethods = sourceSpec.getGetters().stream().map(getterToGetterMethod);
-        val witherMethods = sourceSpec.getGetters().stream().map(getterToWitherMethod);
+        val getterFields  = sourceSpec.getGetters().stream().map(getter -> getterToField(getter));
+        val getterMethods = sourceSpec.getGetters().stream().map(getter -> getterToGetterMethod(getter));
+        val witherMethods = sourceSpec.getGetters().stream().map(getter -> getterToWitherMethod(sourceSpec, withMethodName, getter));
         
         val noArgsConstructor = Func1.of((Spec spec) ->{
             val name = spec.getTargetClassName();
@@ -506,7 +488,7 @@ public class DataObjectGenerator {
         });
         val allArgsConstructor = Func1.of((Spec spec) ->{
             val name = spec.getTargetClassName();
-            val params = spec.getGetters().stream()
+            List<GenParam> params = spec.getGetters().stream()
                     .map(getter -> {
                         val paramName = getter.getName();
                         val paramType = getter.getType();
@@ -519,28 +501,56 @@ public class DataObjectGenerator {
             return new GenConstructor(PUBLIC, name, params, ILines.of(()->body));
         });
         
-        val fields = getterFields.collect(toList());
-        val methods = asList(
+        List<GenField> fields = getterFields.collect(toList());
+        List<Stream<GenMethod>> flatMap = Arrays.<Stream<GenMethod>>asList(
                     getterMethods,
                     witherMethods,
                     Stream.of(postConstructMethod)
-                 ).stream()
-                .flatMap(themAll())
-                .collect(toList());
-        val constructors = asList(
-                    noArgsConstructor.apply(sourceSpec),
-                    allArgsConstructor.apply(sourceSpec)
+                 );
+        List<GenMethod> methods = flatMap.stream().flatMap(ms -> ms).collect(toList());
+        List<GenConstructor> constructors = Arrays.<GenConstructor>asList(
+                    (GenConstructor)noArgsConstructor.apply(sourceSpec),
+                    (GenConstructor)allArgsConstructor.apply(sourceSpec)
                 );
         
         val lensLines = asList(generateLensClass(sourceSpec));
                 
-        val recordSpec = new RecordSpec(
+        RecordSpec recordSpec = new RecordSpec(
                 sourceSpec.getTargetClassName(),
                 sourceSpec.getTargetPackageName(),
                 extendeds, implementeds,
                 constructors, fields, methods, lensLines);
         return recordSpec;
     }
+
+    private static GenMethod getterToWitherMethod(Spec sourceSpec,
+            final nawaman.functionalj.functions.Func1<nawaman.functionalj.annotations.processor.DataObjectGenerator.Getter, java.lang.String> withMethodName,
+            Getter getter) {
+        val name = withMethodName.apply(getter);
+        val type = sourceSpec.getTargetType();
+        val params = asList(new GenParam(getter.getName(), getter.getType()));
+        val paramCall = sourceSpec.getGetters().stream().map(Getter::getName).collect(joining(", "));
+        val returnLine = "return postProcess(new " + sourceSpec.getTargetClassName() + "(" + paramCall + "));";
+        return new GenMethod(PUBLIC, MODIFIABLE, INSTANCE, type, name, params, line(returnLine));
+    }
+
+    private static GenMethod getterToGetterMethod(Getter getter) {
+        val name = getter.getName();
+        val type = getter.getType();
+        val params = new ArrayList<GenParam>();
+        val body   = "return " + getter.getName() + ";";
+        val method = new GenMethod(PUBLIC, MODIFIABLE, INSTANCE, type, name, params, line(body));
+        return method;
+    }
+
+    private static GenField getterToField(Getter getter) {
+        // It should be good to convert this to tuple2 and apply to the method.
+        val name  = getter.getName();
+        val type  = getter.getType();
+        val field = new GenField(PRIVATE, FINAL, INSTANCE, name, type, null);
+        return field;
+    }
+    
     private static String withMethodName(Getter getter) {
         val name = getter.getName();
         return "with" + name.substring(0,1).toUpperCase() + name.substring(1);

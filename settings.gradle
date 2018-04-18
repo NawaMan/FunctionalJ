@@ -1,2 +1,6 @@
 
-rootProject.name = theName
+include ":functionalj-api"
+include ":functionalj-core"
+include ":functionalj-annotations"
+
+rootProject.name = theGroup

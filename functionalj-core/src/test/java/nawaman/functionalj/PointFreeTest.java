@@ -1,16 +1,12 @@
 package nawaman.functionalj;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 import static nawaman.functionalj.PointFree.chain;
 import static nawaman.functionalj.PointFree.compose;
 import static nawaman.functionalj.PointFree.lift;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.assertj.core.api.Assertions;
-import org.junit.Assert;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 import lombok.val;
 import nawaman.functionalj.functions.Func1;
@@ -47,7 +43,7 @@ public class PointFreeTest {
         val time2     = Func1.of((Integer i) -> MayBe.of(i * 2));
         val plus1     = Func1.of((Integer i) -> MayBe.of(i + 1));
         val strLengthTimes2Plus1 = chain(strLength, time2, plus1);
-        assertThat(strLengthTimes2Plus1.apply("Hello").toString()).isEqualTo("Just(11)");
+        assertEquals(strLengthTimes2Plus1.apply("Hello").toString(), "Just(11)");
     }
     
 }

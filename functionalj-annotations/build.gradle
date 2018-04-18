@@ -1,0 +1,22 @@
+version="${theVersion}.0"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://raw.githubusercontent.com/nawaman/nawaman-maven-repository/master/' }
+}
+
+dependencies {
+    compile project(':functionalj-api')
+    compile project(':functionalj-core')
+    
+    compileOnly 'org.projectlombok:lombok:1.16.16'
+    
+    compile 'nawaman:failablej:1.1.1'
+    compile 'nawaman:nullablej:3.1.2.0'
+    
+    //== Test ==
+    
+    testCompile 'junit:junit:4.12'
+    
+}
