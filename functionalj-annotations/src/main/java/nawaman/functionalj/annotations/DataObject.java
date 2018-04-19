@@ -8,7 +8,9 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DataObject {
-    
-    public boolean lens() default true;
+
+    public String  name();
+    public boolean noArgConstructor()  default true;
+    public boolean generateLensClass() default true;
     
 }

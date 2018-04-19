@@ -1,10 +1,14 @@
 package nawaman.functionalj.annotations.processor;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -12,21 +16,36 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
+
+import static java.util.stream.Collectors.toList;
 
 import lombok.val;
 import nawaman.functionalj.annotations.DataObject;
+import nawaman.functionalj.annotations.processor.generator.DataObjectGenerator;
+import nawaman.functionalj.annotations.processor.generator.DataObjectGenerator.RecordSpec;
+import nawaman.functionalj.annotations.processor.generator.Getter;
+import nawaman.functionalj.annotations.processor.generator.SourceSpec;
+import nawaman.functionalj.annotations.processor.generator.SourceSpec.Configurations;
+import nawaman.functionalj.annotations.processor.generator.Type;
 
 public class DataObjectAnnotationProcessor extends AbstractProcessor {
 
+    private Elements elementUtils;
+    private Filer    filer;
     private Messager messager;
-    private boolean hasError;
+    private boolean  hasError;
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        messager = processingEnv.getMessager();
+        elementUtils = processingEnv.getElementUtils();
+        filer        = processingEnv.getFiler();
+        messager     = processingEnv.getMessager();
     }
     
     @Override
@@ -51,7 +70,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(DataObject.class)) {
             val type        = (TypeElement)element;
-            val simpleName  = type.getSimpleName();
+            val simpleName  = type.getSimpleName().toString();
             val isInterface = ElementKind.INTERFACE.equals(element.getKind());
             val isClass     = ElementKind.CLASS    .equals(element.getKind());
             if (!isInterface && !isClass) {
@@ -59,24 +78,68 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
                 continue;
             }
             
-            val getters = type.getEnclosedElements().stream()
-            .filter(elmt  ->elmt.getKind().equals(ElementKind.METHOD))
-            .map   (elmt  ->((ExecutableElement)elmt))
-            .filter(method->method.getParameters().isEmpty())
-            .map   (method->method.getSimpleName() + ": " +  method.getReturnType().toString())
-            .collect(Collectors.joining(","));
+            List<Getter> getters = type.getEnclosedElements().stream()
+                    .filter(elmt  ->elmt.getKind().equals(ElementKind.METHOD))
+                    .map   (elmt  ->((ExecutableElement)elmt))
+                    .filter(method->method.getParameters().isEmpty())
+                    .map   (method->createGetterFromMethod(method))
+                    .collect(toList());
             
-            val packageName = getPackage(type);
-            error(element, "Element: " + simpleName + " - " + packageName + " - " + isClass + " & " + isInterface + "(" + getters + ")");
+            val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
+            val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
+            val dataObject     = element.getAnnotation(DataObject.class);
+            val specTargetName = dataObject.name();
+            val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
+            val configures     = new Configurations();
+            configures.noArgConstructor  = dataObject.noArgConstructor();
+            configures.generateLensClass = dataObject.generateLensClass();
+            SourceSpec sourceSpec = new SourceSpec(sourceName, packageName, targetName, packageName, isClass, configures, getters);
+            try {
+                RecordSpec recordSpec = DataObjectGenerator.generateRecordSpec(sourceSpec);
+                generateCode(element, recordSpec);
+            } catch (Exception e) {
+                error(element, "Problem generating the class: " + packageName + "." + specTargetName + ": " + e.getMessage() + ":" + e.getClass() + " @ " + e.getStackTrace()[0]);
+            }
         }
         return hasError;
     }
+
+    private Getter createGetterFromMethod(ExecutableElement method) {
+        String methodName = method.getSimpleName().toString();
+        Type   returnType = getType(method.getReturnType());
+        Getter getter     = new Getter(methodName, returnType);
+        return getter;
+    }
     
-    private String getPackage(TypeElement type) {
-        Element element = type;
-        while (!element.getKind().equals(ElementKind.PACKAGE))
-            element = element.getEnclosingElement();
-        return ((QualifiedNameable)element).getQualifiedName().toString();
+    private Type getType(TypeMirror typeMirror) {
+        val typeStr = typeMirror.toString();
+        if (typeMirror instanceof PrimitiveType) {
+            // This is no right ... but let goes with this.
+            if ("int".equals(typeStr))
+                return Type.INT;
+            if ("boolean".equals(typeStr))
+                return Type.BOOL;
+        }
+        if (typeMirror instanceof DeclaredType) {
+            val typeElement = ((TypeElement)((DeclaredType)typeMirror).asElement());
+            val typeName = typeElement.getSimpleName().toString();
+            if (typeName.equals("String"))
+                return Type.STRING;
+            
+            val packageName = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
+            return new Type(typeName, packageName);
+        }
+        return null;
+    }
+    
+    public void generateCode(Element element, RecordSpec recordSpec) throws IOException {
+        String className   = recordSpec.getClassName();
+        String packageName = recordSpec.getPackageName();
+        
+        try (Writer writer = filer.createSourceFile(packageName + "." + className, element).openWriter()) {
+            String content = DataObjectGenerator.generateRecordClass(recordSpec).collect(Collectors.joining("\n"));
+            writer.write(content);
+        }
     }
     
 }

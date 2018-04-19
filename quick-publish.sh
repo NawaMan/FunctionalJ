@@ -1,7 +1,7 @@
 #!/bin/bash
 gradle clean build publishToMavenLocal -x test
 
-PROJECTREPO=~/.m2/repository/nawaman
+PROJECTREPO=~/.m2/repository/functionalj
 PUBLISHREPO=../nawaman-maven-repository
 
 if [ -d $PUBLISHREPO ]; then

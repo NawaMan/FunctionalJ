@@ -1,5 +1,4 @@
 
-include ":functionalj-api"
 include ":functionalj-core"
 include ":functionalj-annotations"
 

@@ -1,17 +1,17 @@
-package nawaman.functionalj.annotations.processor;
+package nawaman.functionalj.annotations.processor.generator;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
-import static java.util.stream.IntStream.range;
 import static java.util.stream.Stream.concat;
 import static nawaman.functionalj.FunctionalJ.themAll;
-import static nawaman.functionalj.annotations.processor.DataObjectGenerator.Accessibility.PRIVATE;
-import static nawaman.functionalj.annotations.processor.DataObjectGenerator.Accessibility.PUBLIC;
-import static nawaman.functionalj.annotations.processor.DataObjectGenerator.ILines.indent;
-import static nawaman.functionalj.annotations.processor.DataObjectGenerator.ILines.line;
-import static nawaman.functionalj.annotations.processor.DataObjectGenerator.Modifiability.FINAL;
-import static nawaman.functionalj.annotations.processor.DataObjectGenerator.Modifiability.MODIFIABLE;
-import static nawaman.functionalj.annotations.processor.DataObjectGenerator.Scope.INSTANCE;
+import static nawaman.functionalj.annotations.processor.generator.DataObjectGenerator.Accessibility.PRIVATE;
+import static nawaman.functionalj.annotations.processor.generator.DataObjectGenerator.Accessibility.PUBLIC;
+import static nawaman.functionalj.annotations.processor.generator.DataObjectGenerator.ILines.indent;
+import static nawaman.functionalj.annotations.processor.generator.DataObjectGenerator.ILines.line;
+import static nawaman.functionalj.annotations.processor.generator.DataObjectGenerator.Modifiability.FINAL;
+import static nawaman.functionalj.annotations.processor.generator.DataObjectGenerator.Modifiability.MODIFIABLE;
+import static nawaman.functionalj.annotations.processor.generator.DataObjectGenerator.Scope.INSTANCE;
+import static nawaman.functionalj.annotations.processor.generator.DataObjectGenerator.Scope.STATIC;
 import static nawaman.functionalj.functions.StringFunctions.format1With;
 import static nawaman.functionalj.functions.StringFunctions.prependWith;
 import static nawaman.functionalj.functions.StringFunctions.toStr;
@@ -19,12 +19,10 @@ import static nawaman.functionalj.functions.StringFunctions.wrapWith;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -37,61 +35,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Wither;
-import nawaman.functionalj.annotations.processor.DataObjectGenerator.GenField;
-import nawaman.functionalj.annotations.processor.DataObjectGenerator.GenMethod;
 import nawaman.functionalj.functions.Func1;
 import nawaman.functionalj.lens.IPostConstruct;
-import nawaman.functionalj.lens.StringLens;
+import nawaman.functionalj.lens.LensSpec;
+import nawaman.functionalj.lens.ObjectLensImpl;
 
 @SuppressWarnings("javadoc")
 public class DataObjectGenerator {
-
-    
-    @Value
-    @Wither
-    public static class Spec {
-        
-        private String specClassName;
-        private String packageName;
-        private String targetClassName;
-        private String targetPackageName;
-        private boolean isClass;
-        private List<Getter> getters;
-        
-        public Type getTargetType() {
-            return new Type(targetClassName, targetPackageName);
-        }
-        public Type toType() {
-            return new Type(specClassName, packageName);
-        }
-    }
-    
-    @Value
-    @Wither
-    public static class Getter {
-        
-        private String name;
-        private Type type;
-        
-    }
-    
-    @Value
-    @Wither
-    public static class Type {
-        
-        private String simpleName;
-        private String packageName;
-        
-        public String fullName() {
-            return packageName + "." + simpleName;
-        }
-        
-    }
-    
-    
-    
-    
-    // == output ==
     
     public static interface IRequireTypes {
         public Stream<Type> getRequiredTypes();
@@ -322,11 +272,11 @@ public class DataObjectGenerator {
             return Stream.of(type);
         }
         public String toDefinition() {
-            return type.simpleName + " " + name;
+            return type.getSimpleName() + " " + name;
         }
     }
 
-    private static ILines generateLensClass(Spec sourceSpec) {
+    private static ILines generateLensClass(SourceSpec sourceSpec) {
         val recordClassName = sourceSpec.getTargetClassName();
         val lensClassName   = recordClassName + "Lens";
         val lensFirstLine   = asList(
@@ -367,15 +317,15 @@ public class DataObjectGenerator {
         return ()->lensLines;
     }
     
-    private static GenField getterToLensField(Getter getter, String recordClassName, Spec sourceSpec) {
-        val recName = recordClassName;
-        val name    = getter.getName();
-        val type    = getter.getType();
-        val t       = new Type(type.getSimpleName() + "Lens<HOST>", sourceSpec.getPackageName());
-        val withName = withMethodName(getter);
-        val spec    = "spec->()->spec"; // If Custom lens -> spec->new Brand.BrandLens<>(spec)
-        val value   = format("createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", recName, name, withName, spec);
-        val field = new GenField(PUBLIC, FINAL, INSTANCE, name, t, value);
+    private static GenField getterToLensField(Getter getter, String recordClassName, SourceSpec sourceSpec) {
+        val recName      = recordClassName;
+        val name         = getter.getName();
+        val type         = getter.getType();
+        val lensType     = type.getLensType(null).withGeneric("HOST");
+        val withName     = withMethodName(getter);
+        val spec         = "spec->()->spec"; // If Custom lens -> spec->new Brand.BrandLens<>(spec)
+        val value        = format("createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", recName, name, withName, spec);
+        val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }
     
@@ -408,27 +358,31 @@ public class DataObjectGenerator {
         
         types.remove(new Type(recordSpec.getClassName(), recordSpec.getPackageName()));
         
-        val knownLensClasses = new HashMap<String, String>();
-        knownLensClasses.put(String.class.getCanonicalName(), StringLens.class.getCanonicalName());
-        
         val implicitImports = asList(
                 "java.lang.String"
         );
         val alwaysImports = asList(
-                IPostConstruct.class.getCanonicalName()
+                IPostConstruct.class.getCanonicalName(),
+                ObjectLensImpl.class.getCanonicalName(),
+                LensSpec.class.getCanonicalName()
         );
         val lensImport = types.stream()
-                .map(Type::fullName)
-                .map(knownLensClasses::get)
-                .filter(Objects::nonNull);
+                .map(type -> type.getLensType(type))
+                .filter(Objects::nonNull)
+                .map(Type::fullName);
         
         val imports = concat(concat(
                     alwaysImports.stream(),
                     lensImport),
                     types.stream()
                         .map(Type::fullName)
+                        .filter(type -> !".int".equals(type))
+                        .filter(type -> !".boolean".equals(type))
                         .filter(type -> !implicitImports.contains(type))
                  )
+                .map(name -> name.replaceAll("<[ .,_$a-zA-Z0-9]*>$", ""))
+                .sorted()
+                .distinct()
                 .map(wrapWith("import ", ";"));
         
         val recordLines = asList(
@@ -454,7 +408,7 @@ public class DataObjectGenerator {
         return recordLines;
     }
     
-    public static RecordSpec generateRecordSpec(Spec sourceSpec) {
+    public static RecordSpec generateRecordSpec(SourceSpec sourceSpec) {
         val extendeds    = new ArrayList<Type>();
         val implementeds = new ArrayList<Type>();
         
@@ -463,7 +417,6 @@ public class DataObjectGenerator {
         else implementeds.add(sourceSpec.toType());
         
         val withMethodName = Func1.of(DataObjectGenerator::withMethodName);
-        // TODO - Improve this to make it more humand-made ... we should remove the long class name and use simple.
         val ipostConstruct = IPostConstruct.class.getSimpleName();
         val postConstructMethod = new GenMethod(
                 PRIVATE, MODIFIABLE, INSTANCE,
@@ -477,16 +430,16 @@ public class DataObjectGenerator {
         val getterMethods = sourceSpec.getGetters().stream().map(getter -> getterToGetterMethod(getter));
         val witherMethods = sourceSpec.getGetters().stream().map(getter -> getterToWitherMethod(sourceSpec, withMethodName, getter));
         
-        val noArgsConstructor = Func1.of((Spec spec) ->{
-            val name = spec.getTargetClassName();
-            val body = "this(" +
-                        range(0, spec.getGetters().size())
-                            .mapToObj(i -> "null")
-                            .collect(joining(", ")) +
-                       ");";
+        val noArgsConstructor = Func1.of((SourceSpec spec) ->{
+            val name        = spec.getTargetClassName();
+            val paramString = spec.getGetters().stream()
+                    .map(getter -> getter.getType().defaultValue())
+                    .map(String::valueOf)
+                    .collect(joining(", "));
+            val body = "this(" + paramString + ");";
             return new GenConstructor(PUBLIC, name, emptyList(), line(body));
         });
-        val allArgsConstructor = Func1.of((Spec spec) ->{
+        val allArgsConstructor = Func1.of((SourceSpec spec) ->{
             val name = spec.getTargetClassName();
             List<GenParam> params = spec.getGetters().stream()
                     .map(getter -> {
@@ -501,20 +454,32 @@ public class DataObjectGenerator {
             return new GenConstructor(PUBLIC, name, params, ILines.of(()->body));
         });
         
-        List<GenField> fields = getterFields.collect(toList());
+        val recordClassName = sourceSpec.getTargetClassName();
+        val lensClassName   = recordClassName + "Lens";
+        val lensType        = new Type(recordClassName + "." + recordClassName + "Lens<" + recordClassName + ">", sourceSpec.getPackageName());
+        val defaultValue    = String.format("new %1$s<>(%2$s.of(%3$s.class));", lensClassName, LensSpec.class.getSimpleName(), recordClassName);
+        val theField = new GenField(PUBLIC, FINAL, STATIC, "the"+recordClassName, lensType, defaultValue);
+        
+        List<GenField> fields = asList(
+                    Stream.of(theField),
+                    getterFields
+                ).stream()
+                .filter(Objects::nonNull)
+                .flatMap(themAll())
+                .collect(toList());
         List<Stream<GenMethod>> flatMap = Arrays.<Stream<GenMethod>>asList(
                     getterMethods,
                     witherMethods,
                     Stream.of(postConstructMethod)
                  );
         List<GenMethod> methods = flatMap.stream().flatMap(ms -> ms).collect(toList());
-        List<GenConstructor> constructors = Arrays.<GenConstructor>asList(
-                    (GenConstructor)noArgsConstructor.apply(sourceSpec),
-                    (GenConstructor)allArgsConstructor.apply(sourceSpec)
-                );
+        List<GenConstructor> constructors = new ArrayList<>();
+        if (sourceSpec.getConfigures().noArgConstructor)
+            constructors.add((GenConstructor)noArgsConstructor.apply(sourceSpec));
+        constructors.add((GenConstructor)allArgsConstructor.apply(sourceSpec));
         
         val lensLines = asList(generateLensClass(sourceSpec));
-                
+        
         RecordSpec recordSpec = new RecordSpec(
                 sourceSpec.getTargetClassName(),
                 sourceSpec.getTargetPackageName(),
@@ -523,8 +488,8 @@ public class DataObjectGenerator {
         return recordSpec;
     }
 
-    private static GenMethod getterToWitherMethod(Spec sourceSpec,
-            final nawaman.functionalj.functions.Func1<nawaman.functionalj.annotations.processor.DataObjectGenerator.Getter, java.lang.String> withMethodName,
+    private static GenMethod getterToWitherMethod(SourceSpec sourceSpec,
+            final nawaman.functionalj.functions.Func1<Getter, java.lang.String> withMethodName,
             Getter getter) {
         val name = withMethodName.apply(getter);
         val type = sourceSpec.getTargetType();
