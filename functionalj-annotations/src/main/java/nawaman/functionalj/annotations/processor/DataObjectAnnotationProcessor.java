@@ -1,5 +1,7 @@
 package nawaman.functionalj.annotations.processor;
 
+import static nawaman.functionalj.annotations.processor.generator.DataObjectBuilder.generateDataObjSpec;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedHashSet;
@@ -27,9 +29,10 @@ import static java.util.stream.Collectors.toList;
 
 import lombok.val;
 import nawaman.functionalj.annotations.DataObject;
-import nawaman.functionalj.annotations.processor.generator.DataObjectGenerator;
-import nawaman.functionalj.annotations.processor.generator.DataObjectGenerator.RecordSpec;
+import nawaman.functionalj.annotations.processor.generator.DataObjectBuilder;
+import nawaman.functionalj.annotations.processor.generator.DataObjectCodeGenerator;
 import nawaman.functionalj.annotations.processor.generator.Getter;
+import nawaman.functionalj.annotations.processor.generator.DataObjectSpec;
 import nawaman.functionalj.annotations.processor.generator.SourceSpec;
 import nawaman.functionalj.annotations.processor.generator.SourceSpec.Configurations;
 import nawaman.functionalj.annotations.processor.generator.Type;
@@ -95,8 +98,8 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             configures.generateLensClass = dataObject.generateLensClass();
             SourceSpec sourceSpec = new SourceSpec(sourceName, packageName, targetName, packageName, isClass, configures, getters);
             try {
-                RecordSpec recordSpec = DataObjectGenerator.generateRecordSpec(sourceSpec);
-                generateCode(element, recordSpec);
+                DataObjectSpec dataObjSpec = generateDataObjSpec(sourceSpec);
+                generateCode(element, dataObjSpec);
             } catch (Exception e) {
                 error(element, "Problem generating the class: " + packageName + "." + specTargetName + ": " + e.getMessage() + ":" + e.getClass() + " @ " + e.getStackTrace()[0]);
             }
@@ -132,12 +135,12 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         return null;
     }
     
-    public void generateCode(Element element, RecordSpec recordSpec) throws IOException {
+    public void generateCode(Element element, DataObjectSpec recordSpec) throws IOException {
         String className   = recordSpec.getClassName();
         String packageName = recordSpec.getPackageName();
         
         try (Writer writer = filer.createSourceFile(packageName + "." + className, element).openWriter()) {
-            String content = DataObjectGenerator.generateRecordClass(recordSpec).collect(Collectors.joining("\n"));
+            String content = DataObjectCodeGenerator.generateDataObjectClass(recordSpec).collect(Collectors.joining("\n"));
             writer.write(content);
         }
     }
