@@ -15,13 +15,18 @@
 //  ========================================================================
 package nawaman.functionalj.annotations.processor.generator;
 
-import lombok.val;
-
-class Utils {
+/**
+ * Classes implementing this interface as a definition in code.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
+public interface IGenerateDefinition extends IRequireTypes {
     
-    public static String withMethodName(Getter getter) {
-        val name = getter.getName();
-        return "with" + name.substring(0,1).toUpperCase() + name.substring(1);
-    }
-
+    /**
+     * Generate definition.
+     * 
+     * @return  the definition.
+     */
+    public ILines toDefinition();
+    
 }

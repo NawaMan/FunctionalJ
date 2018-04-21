@@ -13,19 +13,15 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package nawaman.functionalj.annotations;
+package nawaman.functionalj.annotations.processor.generator;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.val;
 
-@Target({ ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DataObject {
-
-    public String  name();
-    public boolean noArgConstructor()  default true;
-    public boolean generateLensClass() default true;
+class utils {
     
+    static String withMethodName(Getter getter) {
+        val name = getter.getName();
+        return "with" + name.substring(0,1).toUpperCase() + name.substring(1);
+    }
+
 }

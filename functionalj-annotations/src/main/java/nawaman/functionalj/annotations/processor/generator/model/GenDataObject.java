@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package nawaman.functionalj.annotations.processor.generator;
+package nawaman.functionalj.annotations.processor.generator.model;
 
 import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.themAll;
@@ -30,15 +30,19 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 import lombok.val;
-import nawaman.functionalj.annotations.processor.generator.model.GenClass;
-import nawaman.functionalj.annotations.processor.generator.model.GenConstructor;
-import nawaman.functionalj.annotations.processor.generator.model.GenField;
-import nawaman.functionalj.annotations.processor.generator.model.GenMethod;
+import nawaman.functionalj.annotations.processor.generator.DataObjectSpec;
+import nawaman.functionalj.annotations.processor.generator.ILines;
+import nawaman.functionalj.annotations.processor.generator.Type;
 import nawaman.functionalj.lens.IPostConstruct;
 import nawaman.functionalj.lens.LensSpec;
 import nawaman.functionalj.lens.ObjectLensImpl;
 
-public class DataObjectCode implements ILines {
+/**
+ * Representation of DataObject class.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
+public class GenDataObject implements ILines {
     
     private static final List<String> implicitImports = asList(
             "java.lang.String",
@@ -56,7 +60,12 @@ public class DataObjectCode implements ILines {
     
     private DataObjectSpec dataClass;
     
-    public DataObjectCode(DataObjectSpec dataObjSpec) {
+    /**
+     * Construct a GenDataObject with the data object spec.
+     * 
+     * @param dataObjSpec  the spec.
+     */
+    public GenDataObject(DataObjectSpec dataObjSpec) {
         this.dataClass = dataObjSpec;
     }
     

@@ -15,7 +15,9 @@
 //  ========================================================================
 package nawaman.functionalj.annotations.processor.generator;
 
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
+import static nawaman.functionalj.FunctionalJ.delimitWith;
 import static nawaman.functionalj.FunctionalJ.themAll;
 import static nawaman.functionalj.functions.StringFunctions.prependWith;
 import static nawaman.functionalj.functions.StringFunctions.strNotNullOrEmpty;
@@ -131,6 +133,22 @@ public interface ILines {
     }
     
     /**
+     * Create a combine clean lines of the given list of ILines.
+     * 
+     * @param listOfILines  the list of ILines.
+     * @return             the lines.
+     */
+    @SafeVarargs
+    public static ILines linesOf(List<ILines> ... listOfILines) {
+        return ILines.linesOf(
+                stream  (listOfILines)
+                .filter (list -> !list.isEmpty())
+                .flatMap(delimitWith(asList(ILines.emptyLine)))
+                .flatMap(List::stream)
+                .map    (ILines.class::cast));
+    }
+    
+    /**
      * Create indented lines (4 spaces) for the given lines.
      * 
      * @param lines  the lines.
@@ -193,10 +211,32 @@ public interface ILines {
      * @return              the result lines.
      */
     public static ILines flatenLines(ILines ... arrayOflines) {
+        return flatenLines(
+                stream(arrayOflines));
+    }
+    
+    /**
+     * Given an stream of lines, create one (clean) single ILines.
+     * 
+     * @param streamOflines  the stream.
+     * @return               the result lines.
+     */
+    public static ILines flatenLines(Stream<ILines> streamOflines) {
         return ILines.line(
-                stream(arrayOflines)
+                streamOflines
                 .flatMap(ILines::lines)
                 .filter(Objects::nonNull));
+    }
+    
+    /**
+     * Create a combine stream of ILines given the ILines separate each one with an empty indented line.
+     * 
+     * @param   iLines  the input lines.
+     * @return          the result lines.
+     */
+    public static Stream<ILines> withSeparateIndentedSpace(ILines ... iLines) {
+        return Stream.of(iLines)
+                .flatMap(delimitWith(()->indent()));
     }
     
 }

@@ -19,6 +19,7 @@ import static java.util.Arrays.stream;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -93,6 +94,33 @@ public class FunctionalJ {
      **/
     public static <IN, OUT> Func1<IN, Stream<OUT>> allList(Func1<IN, ? extends List<OUT>> mapper) {
         return it -> mapper.apply(it).stream();
+    }
+    
+    public static <IN> Func1<IN, Stream<IN>> delimitWith(IN delimiter) {
+        val isFirst = new AtomicBoolean(true);
+        return in -> {
+            if (isFirst.getAndSet(false))
+                return Stream.of(in);
+            return Stream.of(delimiter, in);
+        };
+    }
+    
+    public static <IN> Func1<IN, Stream<IN>> delimitWith(Supplier<? extends IN> delimiter) {
+        val isFirst = new AtomicBoolean(true);
+        return in -> {
+            if (isFirst.getAndSet(false))
+                return Stream.of(in);
+            return Stream.of(delimiter.get(), in);
+        };
+    }
+    
+    public static <IN> Func1<IN, Stream<IN>> delimitWith(Func1<IN, ? extends IN> delimiter) {
+        val isFirst = new AtomicBoolean(true);
+        return in -> {
+            if (isFirst.getAndSet(false))
+                return Stream.of(in);
+            return Stream.of(delimiter.apply(in), in);
+        };
     }
     
     /**

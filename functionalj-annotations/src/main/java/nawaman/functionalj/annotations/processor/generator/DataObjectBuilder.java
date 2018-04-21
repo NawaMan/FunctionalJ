@@ -61,7 +61,7 @@ public class DataObjectBuilder {
              extendeds   .add(sourceSpec.toType());
         else implementeds.add(sourceSpec.toType());
         
-        val withMethodName = Func1.of(Utils::withMethodName);
+        val withMethodName = Func1.of(utils::withMethodName);
         val ipostConstruct = IPostConstruct.class.getSimpleName();
         val postConstructMethod = new GenMethod(
                 PRIVATE, MODIFIABLE, INSTANCE,
@@ -198,7 +198,7 @@ public class DataObjectBuilder {
         val name        = getter.getName();
         val type        = getter.getType().declaredType();
         val lensType    = type.lensType().withGeneric("HOST");
-        val withName    = Utils.withMethodName(getter);
+        val withName    = utils.withMethodName(getter);
         val spec        = "spec->()->spec"; // If Custom lens -> spec->new Brand.BrandLens<>(spec)
         val value       = format("createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
         val field       = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);

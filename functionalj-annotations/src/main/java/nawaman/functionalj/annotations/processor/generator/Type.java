@@ -28,29 +28,43 @@ import nawaman.functionalj.lens.BooleanLens;
 import nawaman.functionalj.lens.IntegerLens;
 import nawaman.functionalj.lens.StringLens;
 
+/**
+ * Data type.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
 @Value
 @Accessors(fluent=true)
 @Wither
 @Builder
 public class Type implements IRequireTypes {
     
+    /** int type */
     public static final Type INT     = new Type("int",     "");
+    /** boolean type */
     public static final Type BOOL    = new Type("boolean", "");
-    public static final Type STR     = new Type("String",  "");
+    /** Integer type */
     public static final Type INTEGER = Type.of(Integer.class);
+    /** Boolean type */
     public static final Type BOOLEAN = Type.of(Boolean.class);
+    /** String type */
     public static final Type STRING  = Type.of(String .class);
     
     private static final Map<Type, Type> lensTypes = new HashMap<>();
     static {
         lensTypes.put(INT,     of(IntegerLens.class));
         lensTypes.put(BOOL,    of(BooleanLens.class));
-        lensTypes.put(STR,     of(StringLens .class));
         lensTypes.put(INTEGER, of(IntegerLens.class));
         lensTypes.put(BOOLEAN, of(BooleanLens.class));
         lensTypes.put(STRING,  of(StringLens .class));
     }
     
+    /**
+     * Create a type of the given class.
+     * 
+     * @param clzz  the class.
+     * @return      the type.
+     */
     public static Type of(Class<?> clzz) {
         val pckg = clzz.getPackage().getName().toString();
         val name = clzz.getCanonicalName().toString().substring(pckg.length() + 1 );
@@ -62,6 +76,14 @@ public class Type implements IRequireTypes {
     private String packageName;
     private String generic;
     
+    /**
+     * Construct a type with the parameters.
+     * 
+     * @param encloseName  the enclose component name.
+     * @param simpleName   the simple name.
+     * @param packageName  the package name.
+     * @param generic      the generic value.
+     */
     public Type(String encloseName, String simpleName, String packageName, String generic) {
         this.encloseName = encloseName;
         this.simpleName  = simpleName;
@@ -69,6 +91,12 @@ public class Type implements IRequireTypes {
         this.generic     = generic;
     }
     
+    /**
+     * Construct a type with the parameters.
+     * 
+     * @param simpleName   the simple name.
+     * @param packageName  the package name.
+     */
     public Type(String simpleName, String packageName) {
         this(null, simpleName, packageName, null);
     }
@@ -78,27 +106,51 @@ public class Type implements IRequireTypes {
         return Stream.of(this);
     }
     
+    /**
+     * Returns the full type name without the generic.
+     * 
+     * @return  the full name.
+     */
     public String fullName() {
         return packageName + "." + ((encloseName != null) ? encloseName + "." : "") + simpleName;
     }
     
+    /**
+     * Returns the full type name with the generic.
+     * 
+     * @return  the full name.
+     */
     public String fullNameWithGeneric() {
         return fullName() + ((generic != null) ? "<" + generic + ">" : "");
     }
     
+    /**
+     * Returns the simple name without the generic.
+     * 
+     * @return  the simple name.
+     */
     public String simpleNameWithGeneric() {
         return simpleName() + ((generic != null) ? "<" + generic + ">" : "");
     }
     
+    /**
+     * Returns the declared type of this class (in case of non-primitive, declared type is the type).
+     * 
+     * @return  the declared type.
+     */
     public Type declaredType() {
         if (INT.equals(this))
             return INTEGER;
         if (BOOL.equals(this))
             return BOOLEAN;
-        if (STR.equals(this))
-            return STRING;
         return this;
     }
+    
+    /**
+     * Returns the default value - to be used in the declaration of fields.
+     * 
+     * @return  the default value.
+     */
     public Object defaultValue() {
         if (INT.equals(this))
             return 0;
@@ -107,6 +159,11 @@ public class Type implements IRequireTypes {
         return null;
     }
     
+    /**
+     * Returns the lens type of this type.
+     * 
+     * @return  the lens type.
+     */
     public Type lensType() {
         val lensType = lensTypes.get(this);
         if (lensType != null)

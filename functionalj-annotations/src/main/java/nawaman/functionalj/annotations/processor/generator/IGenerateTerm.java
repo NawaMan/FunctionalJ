@@ -13,19 +13,27 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package nawaman.functionalj.annotations;
+package nawaman.functionalj.annotations.processor.generator;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.stream.Stream;
 
-@Target({ ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DataObject {
-
-    public String  name();
-    public boolean noArgConstructor()  default true;
-    public boolean generateLensClass() default true;
+/**
+ * Classes implementing this interface as a term in code.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
+public interface IGenerateTerm extends IRequireTypes {
+    
+    @Override
+    public default Stream<Type> requiredTypes() {
+        return Stream.empty();
+    }
+    
+    /**
+     * Generate term.
+     * 
+     * @return  the term.
+     */
+    public String toTerm();
     
 }

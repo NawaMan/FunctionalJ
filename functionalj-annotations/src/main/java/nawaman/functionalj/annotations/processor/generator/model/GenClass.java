@@ -1,15 +1,30 @@
+//  ========================================================================
+//  Copyright (c) 2017 Nawapunth Manusitthipol (NawaMan).
+//  ------------------------------------------------------------------------
+//  All rights reserved. This program and the accompanying materials
+//  are made available under the terms of the Eclipse Public License v1.0
+//  and Apache License v2.0 which accompanies this distribution.
+//
+//      The Eclipse Public License is available at
+//      http://www.eclipse.org/legal/epl-v10.html
+//
+//      The Apache License v2.0 is available at
+//      http://www.opensource.org/licenses/apache2.0.php
+//
+//  You may elect to redistribute this code under either of these licenses.
+//  ========================================================================
 package nawaman.functionalj.annotations.processor.generator.model;
 
 import static java.util.Arrays.asList;
-import static java.util.Arrays.stream;
 import static nawaman.functionalj.FunctionalJ.allLists;
 import static nawaman.functionalj.FunctionalJ.themAll;
 import static nawaman.functionalj.annotations.processor.generator.ILines.flatenLines;
 import static nawaman.functionalj.annotations.processor.generator.ILines.indent;
 import static nawaman.functionalj.annotations.processor.generator.ILines.line;
+import static nawaman.functionalj.annotations.processor.generator.ILines.linesOf;
 import static nawaman.functionalj.annotations.processor.generator.ILines.oneLineOf;
+import static nawaman.functionalj.annotations.processor.generator.ILines.withSeparateIndentedSpace;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -20,14 +35,20 @@ import lombok.Value;
 import lombok.val;
 import lombok.experimental.Accessors;
 import lombok.experimental.Wither;
+import nawaman.functionalj.annotations.processor.generator.IGenerateDefinition;
 import nawaman.functionalj.annotations.processor.generator.ILines;
 import nawaman.functionalj.annotations.processor.generator.IRequireTypes;
 import nawaman.functionalj.annotations.processor.generator.Type;
 
+/**
+ * Representation of a generated class.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
 @Value
 @Wither
 @Accessors(fluent=true)
-public class GenClass implements IRequireTypes {
+public class GenClass implements IGenerateDefinition {
     
     private final Accessibility accessibility;
     private final Scope         scope;
@@ -59,13 +80,8 @@ public class GenClass implements IRequireTypes {
                 .flatMap(themAll());
     }
     
-    /**
-     * Create and return the definition of this class.
-     * 
-     * @return the definition of the this class.
-     */
+    @Override
     public ILines toDefinition() {
-        // TODO - Should be good to be able to trim to null and add prefix or suffix when not null easily.
         val extendedList    = extendeds()   .stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
         val implementedList = implementeds().stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
         
@@ -79,48 +95,24 @@ public class GenClass implements IRequireTypes {
         val firstLine
                 = oneLineOf(
                     accessibility, scope, modifiability, "class", className,
-                    prefixWith(extendedList,    "extends "),
-                    prefixWith(implementedList, "implements "),
+                    utils.prefixWith(extendedList,    "extends "),
+                    utils.prefixWith(implementedList, "implements "),
                     "{");
         
         val lastLine = "}";
         
         val componentLines
-                = getComponentLines(
+                = linesOf(
                     fieldDefs,
                     constructorDefs,
                     methodDefs,
                     innerClassDefs,
                     moreDefs);
         
-        val lines
-                = flatenLines(
-                    line(firstLine),
-                    indent(),
-                    indent(componentLines),
-                    indent(),
-                    line(lastLine));
+        val lines = flatenLines(withSeparateIndentedSpace(
+                line  (firstLine),
+                indent(componentLines),
+                line  (lastLine)));
         return lines;
-    }
-    
-    @SafeVarargs
-    private static List<ILines> getComponentLines(List<ILines> ... components) {
-        val contents = new ArrayList<ILines>();
-        stream(components)
-        .filter (list  -> !list.isEmpty())
-        .forEach(lines -> {
-            contents.addAll(lines);
-            contents.add(ILines.emptyLine);
-        });
-        contents.remove(contents.size() - 1);
-        return contents;
-    }
-    
-    private static String prefixWith(String str, String prefix) {
-        if (str == null)
-            return null;
-        if (str.isEmpty())
-            return null;
-        return prefix + str;
     }
 }

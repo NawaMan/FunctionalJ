@@ -2,6 +2,7 @@ package nawaman.functionalj;
 
 import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.cacheFor;
+import static nawaman.functionalj.FunctionalJ.delimitWith;
 import static nawaman.functionalj.FunctionalJ.it;
 import static nawaman.functionalj.FunctionalJ.only;
 import static nawaman.functionalj.FunctionalJ.withIndex;
@@ -337,6 +338,15 @@ public class FunctionalJTest {
                 .filter(item-> item.index() != 1)
                 .map(item->item.index()  + ": " + item.value())
                 .collect(joining(",")));
+    }
+    
+    @Test
+    public void testDelimitWith() {
+        val list = asList("One", "Two", "Three");
+        assertEquals("One-:-Two-:-Three", 
+                list.stream()
+                .flatMap(delimitWith(":"))
+                .collect(joining("-")));
     }
     
     

@@ -13,19 +13,16 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package nawaman.functionalj.annotations;
+package nawaman.functionalj.annotations.processor.generator.model;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Target({ ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DataObject {
-
-    public String  name();
-    public boolean noArgConstructor()  default true;
-    public boolean generateLensClass() default true;
+class utils {
+    
+    static String prefixWith(String str, String prefix) {
+        if (str == null)
+            return null;
+        if (str.isEmpty())
+            return null;
+        return prefix + str;
+    }
     
 }

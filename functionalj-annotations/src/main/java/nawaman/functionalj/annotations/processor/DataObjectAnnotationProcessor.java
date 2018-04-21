@@ -1,3 +1,18 @@
+//  ========================================================================
+//  Copyright (c) 2017 Nawapunth Manusitthipol (NawaMan).
+//  ------------------------------------------------------------------------
+//  All rights reserved. This program and the accompanying materials
+//  are made available under the terms of the Eclipse Public License v1.0
+//  and Apache License v2.0 which accompanies this distribution.
+//
+//      The Eclipse Public License is available at
+//      http://www.eclipse.org/legal/epl-v10.html
+//
+//      The Apache License v2.0 is available at
+//      http://www.opensource.org/licenses/apache2.0.php
+//
+//  You may elect to redistribute this code under either of these licenses.
+//  ========================================================================
 package nawaman.functionalj.annotations.processor;
 
 import static nawaman.functionalj.annotations.processor.generator.DataObjectBuilder.generateDataObjSpec;
@@ -29,11 +44,11 @@ import static java.util.stream.Collectors.toList;
 
 import lombok.val;
 import nawaman.functionalj.annotations.DataObject;
-import nawaman.functionalj.annotations.processor.generator.DataObjectCode;
 import nawaman.functionalj.annotations.processor.generator.DataObjectSpec;
 import nawaman.functionalj.annotations.processor.generator.Getter;
 import nawaman.functionalj.annotations.processor.generator.SourceSpec;
 import nawaman.functionalj.annotations.processor.generator.SourceSpec.Configurations;
+import nawaman.functionalj.annotations.processor.generator.model.GenDataObject;
 import nawaman.functionalj.annotations.processor.generator.Type;
 
 public class DataObjectAnnotationProcessor extends AbstractProcessor {
@@ -139,7 +154,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         String packageName = recordSpec.packageName();
         
         try (Writer writer = filer.createSourceFile(packageName + "." + className, element).openWriter()) {
-            String content = new DataObjectCode(recordSpec).lines().collect(Collectors.joining("\n"));
+            String content = new GenDataObject(recordSpec).lines().collect(Collectors.joining("\n"));
             writer.write(content);
         }
     }

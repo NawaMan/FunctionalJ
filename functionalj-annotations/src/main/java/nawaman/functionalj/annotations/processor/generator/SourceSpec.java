@@ -20,6 +20,11 @@ import java.util.List;
 import lombok.Value;
 import lombok.experimental.Wither;
 
+/**
+ * Source specification of the data object.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
 @Value
 @Wither
 public class SourceSpec {
@@ -32,14 +37,20 @@ public class SourceSpec {
     private Configurations configures;
     private List<Getter> getters;
     
+    /** Configurations */
     public static class Configurations {
+        
+        /** Should the no arguments constructor be created. */
         public boolean noArgConstructor  = false;
+        /** Should the lens class be generated. */
         public boolean generateLensClass = false;
     }
     
+    /** @return the target type. */
     public Type getTargetType() {
         return new Type(targetClassName, targetPackageName);
     }
+    /** @return the type of this source. */
     public Type toType() {
         return new Type(specClassName, packageName);
     }
