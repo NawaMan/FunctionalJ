@@ -2,10 +2,7 @@ package nawaman.functionalj.annotations.processor.generator;
 
 import static java.util.Arrays.asList;
 import static nawaman.functionalj.annotations.processor.generator.DataObjectBuilder.generateDataObjSpec;
-import static nawaman.functionalj.annotations.processor.generator.DataObjectCodeGenerator.generateDataObjectClass;
 import static org.junit.Assert.assertEquals;
-
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -34,7 +31,7 @@ public class GeneratorTest {
                 );
         
         val dataObjSpec = generateDataObjSpec(sourceSpec);
-        val generated   = generateDataObjectClass(dataObjSpec).collect(Collectors.joining("\n"));
+        val generated   = new DataObjectCode(dataObjSpec).toText();
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 

@@ -1,20 +1,38 @@
+//  ========================================================================
+//  Copyright (c) 2017 Nawapunth Manusitthipol (NawaMan).
+//  ------------------------------------------------------------------------
+//  All rights reserved. This program and the accompanying materials
+//  are made available under the terms of the Eclipse Public License v1.0
+//  and Apache License v2.0 which accompanies this distribution.
+//
+//      The Eclipse Public License is available at
+//      http://www.eclipse.org/legal/epl-v10.html
+//
+//      The Apache License v2.0 is available at
+//      http://www.opensource.org/licenses/apache2.0.php
+//
+//  You may elect to redistribute this code under either of these licenses.
+//  ========================================================================
 package nawaman.functionalj.annotations.processor.generator;
 
-import static nawaman.functionalj.annotations.processor.generator.Accessibility.PUBLIC;
-import static nawaman.functionalj.annotations.processor.generator.Modifiability.MODIFIABLE;
-import static nawaman.functionalj.annotations.processor.generator.Scope.NONE;
+import static nawaman.functionalj.annotations.processor.generator.model.Accessibility.PUBLIC;
+import static nawaman.functionalj.annotations.processor.generator.model.Modifiability.MODIFIABLE;
+import static nawaman.functionalj.annotations.processor.generator.model.Scope.NONE;
 
 import java.util.List;
 
 import lombok.Value;
 import lombok.experimental.Delegate;
-import nawaman.functionalj.annotations.processor.generator.model.ClassSpec;
+import nawaman.functionalj.annotations.processor.generator.model.GenClass;
+import nawaman.functionalj.annotations.processor.generator.model.GenConstructor;
+import nawaman.functionalj.annotations.processor.generator.model.GenField;
+import nawaman.functionalj.annotations.processor.generator.model.GenMethod;
 
 @Value
 public class DataObjectSpec {
     
     @Delegate
-    private ClassSpec classSpec;
+    private GenClass classSpec;
     
     private String sourceClassName;
     private String sourcePackageName;
@@ -29,9 +47,9 @@ public class DataObjectSpec {
             List<GenConstructor> constructors,
             List<GenField>       fields,
             List<GenMethod>      methods,
-            List<ClassSpec>      innerClasses,
+            List<GenClass>      innerClasses,
             List<ILines>         mores) {
-        this.classSpec = new ClassSpec(PUBLIC, NONE, MODIFIABLE, new Type(className, packageName), null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
+        this.classSpec = new GenClass(PUBLIC, NONE, MODIFIABLE, new Type(className, packageName), null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
         this.sourceClassName = sourceClassName;
         this.sourcePackageName = sourcePackageName;
     }

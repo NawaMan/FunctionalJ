@@ -1,6 +1,7 @@
-package nawaman.functionalj.annotations.processor.generator;
+package nawaman.functionalj.annotations.processor.generator.model;
 
 import static java.util.Arrays.asList;
+import static nawaman.functionalj.annotations.processor.generator.ILines.oneLineOf;
 import static nawaman.functionalj.functions.StringFunctions.toStr;
 
 import java.util.Objects;
@@ -12,6 +13,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Wither;
+import nawaman.functionalj.annotations.processor.generator.ILines;
+import nawaman.functionalj.annotations.processor.generator.Type;
 
 @Value
 @Wither
@@ -23,19 +26,15 @@ public class GenField implements GenElement {
     private String        name;
     private Type          type;
     private String        defaultValue;
-//    private List<Type>    additionalTypes;    // TODO - Take care of this.
     
     public ILines toDefinition() {
-        val def = asList(
+        val def = oneLineOf(
                     accessibility, 
                     scope, 
                     modifiability, 
                     type.simpleNameWithGeneric(), 
                     name
-                ).stream()
-                .map(toStr())
-                .filter(Objects::nonNull)
-                .collect(joining(" "));
+                );
         
         val value = (defaultValue != null) ? " = " + defaultValue : "";
         return ()->Stream.of(def + value + ";");

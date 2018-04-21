@@ -1,4 +1,4 @@
-package nawaman.functionalj.annotations.processor.generator;
+package nawaman.functionalj.annotations.processor.generator.model;
 
 public enum Accessibility {
     PUBLIC, PRIVATE, PROTECTED, PACKAGE;

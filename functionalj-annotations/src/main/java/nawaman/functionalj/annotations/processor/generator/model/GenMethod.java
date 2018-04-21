@@ -1,4 +1,4 @@
-package nawaman.functionalj.annotations.processor.generator;
+package nawaman.functionalj.annotations.processor.generator.model;
 
 import static java.util.Arrays.asList;
 import static nawaman.functionalj.annotations.processor.generator.ILines.indent;
@@ -17,6 +17,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Wither;
+import nawaman.functionalj.annotations.processor.generator.ILines;
+import nawaman.functionalj.annotations.processor.generator.Type;
 
 @Value
 @Wither
@@ -32,11 +34,11 @@ public class GenMethod implements GenElement {
     private ILines         body;
     
     @Override
-    public Stream<Type> getRequiredTypes() {
+    public Stream<Type> requiredTypes() {
         Set<Type> types = new HashSet<>();
         types.add(type);
         GenElement.super
-            .getRequiredTypes()
+            .requiredTypes()
             .forEach(types::add);
         for (GenParam param : params) {
             Type paramType = param.getType();
@@ -44,7 +46,7 @@ public class GenMethod implements GenElement {
                 continue;
             types.add(paramType);
             param
-                .getRequiredTypes()
+                .requiredTypes()
                 .forEach(types::add);
         }
         return types.stream();
@@ -52,17 +54,14 @@ public class GenMethod implements GenElement {
     
     public ILines toDefinition() {
         val paramDefs = params.stream().map(GenParam::toDefinition).collect(joining(", "));
-        val definition = Stream.of(accessibility, modifiability, scope, type.simpleName(), name + "(" + paramDefs + ")", "{")
-                        .map(toStr())
-                        .filter(Objects::nonNull)
-                        .collect(joining(" "));
-        return ()->asList(
-                        line(definition),
-                        indent(body),
-                        line("}")
-                    )
-                    .stream()
-                    .flatMap(ILines::lines)
-                    .filter(Objects::nonNull);
+        val definition
+                = ILines.oneLineOf(
+                    accessibility, modifiability, scope,
+                    type.simpleName(), name + "(" + paramDefs + ")",
+                    "{");
+        return ILines.flatenLines(
+                line(definition),
+                indent(body),
+                line("}"));
     }
 }

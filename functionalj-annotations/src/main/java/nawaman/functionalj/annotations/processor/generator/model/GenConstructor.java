@@ -1,4 +1,4 @@
-package nawaman.functionalj.annotations.processor.generator;
+package nawaman.functionalj.annotations.processor.generator.model;
 
 import static java.util.Arrays.asList;
 import static nawaman.functionalj.annotations.processor.generator.ILines.indent;
@@ -17,6 +17,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Wither;
+import nawaman.functionalj.annotations.processor.generator.ILines;
+import nawaman.functionalj.annotations.processor.generator.IRequireTypes;
+import nawaman.functionalj.annotations.processor.generator.Type;
 
 @Value
 @Wither
@@ -30,29 +33,26 @@ public class GenConstructor implements IRequireTypes {
     public ILines toDefinition() {
         val paramDefs = params.stream().map(GenParam::toDefinition).collect(joining(", "));
         val definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{")
-                        .map(toStr())
-                        .filter(Objects::nonNull)
+                        .map(    toStr())
+                        .filter( Objects::nonNull)
                         .collect(joining(" "));
-        return ()->asList(
-                        line(definition),
-                        indent(body),
-                        line("}")
-                    )
-                    .stream()
-                    .flatMap(ILines::lines)
-                    .filter(Objects::nonNull);
+        return ILines.flatenLines(
+                line(definition),
+                indent(body),
+                line("}"));
     }
     
     @Override
-    public Stream<Type> getRequiredTypes() {
+    public Stream<Type> requiredTypes() {
         Set<Type> types = new HashSet<>();
         for (val param : params) {
             val paramType = param.getType();
             if (types.contains(paramType))
                 continue;
+            
             types.add(paramType);
             param
-                .getRequiredTypes()
+                .requiredTypes()
                 .forEach(types::add);
         }
         return types.stream();

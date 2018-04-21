@@ -29,10 +29,9 @@ import static java.util.stream.Collectors.toList;
 
 import lombok.val;
 import nawaman.functionalj.annotations.DataObject;
-import nawaman.functionalj.annotations.processor.generator.DataObjectBuilder;
-import nawaman.functionalj.annotations.processor.generator.DataObjectCodeGenerator;
-import nawaman.functionalj.annotations.processor.generator.Getter;
+import nawaman.functionalj.annotations.processor.generator.DataObjectCode;
 import nawaman.functionalj.annotations.processor.generator.DataObjectSpec;
+import nawaman.functionalj.annotations.processor.generator.Getter;
 import nawaman.functionalj.annotations.processor.generator.SourceSpec;
 import nawaman.functionalj.annotations.processor.generator.SourceSpec.Configurations;
 import nawaman.functionalj.annotations.processor.generator.Type;
@@ -140,7 +139,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         String packageName = recordSpec.packageName();
         
         try (Writer writer = filer.createSourceFile(packageName + "." + className, element).openWriter()) {
-            String content = DataObjectCodeGenerator.generateDataObjectClass(recordSpec).collect(Collectors.joining("\n"));
+            String content = new DataObjectCode(recordSpec).lines().collect(Collectors.joining("\n"));
             writer.write(content);
         }
     }

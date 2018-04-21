@@ -1,6 +1,9 @@
-package nawaman.functionalj.annotations.processor.generator;
+package nawaman.functionalj.annotations.processor.generator.model;
 
 import java.util.stream.Stream;
+
+import nawaman.functionalj.annotations.processor.generator.IRequireTypes;
+import nawaman.functionalj.annotations.processor.generator.Type;
 
 public interface GenElement extends IRequireTypes {
     public Accessibility getAccessibility();
@@ -15,7 +18,7 @@ public interface GenElement extends IRequireTypes {
     public <E extends GenElement> E withName(String name);
     
     @Override
-    public default Stream<Type> getRequiredTypes() {
+    public default Stream<Type> requiredTypes() {
         return Stream.of(getType());
     }
     

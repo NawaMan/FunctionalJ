@@ -1,4 +1,4 @@
-package nawaman.functionalj.annotations.processor.generator;
+package nawaman.functionalj.annotations.processor.generator.model;
 
 public enum Modifiability {
     FINAL, MODIFIABLE;

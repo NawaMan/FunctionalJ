@@ -1,16 +1,31 @@
+//  ========================================================================
+//  Copyright (c) 2017 Nawapunth Manusitthipol (NawaMan).
+//  ------------------------------------------------------------------------
+//  All rights reserved. This program and the accompanying materials
+//  are made available under the terms of the Eclipse Public License v1.0
+//  and Apache License v2.0 which accompanies this distribution.
+//
+//      The Eclipse Public License is available at
+//      http://www.eclipse.org/legal/epl-v10.html
+//
+//      The Apache License v2.0 is available at
+//      http://www.opensource.org/licenses/apache2.0.php
+//
+//  You may elect to redistribute this code under either of these licenses.
+//  ========================================================================
 package nawaman.functionalj.annotations.processor.generator;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.themAll;
-import static nawaman.functionalj.annotations.processor.generator.Accessibility.PRIVATE;
-import static nawaman.functionalj.annotations.processor.generator.Accessibility.PUBLIC;
 import static nawaman.functionalj.annotations.processor.generator.ILines.line;
 import static nawaman.functionalj.annotations.processor.generator.ILines.linesOf;
-import static nawaman.functionalj.annotations.processor.generator.Modifiability.FINAL;
-import static nawaman.functionalj.annotations.processor.generator.Modifiability.MODIFIABLE;
-import static nawaman.functionalj.annotations.processor.generator.Scope.INSTANCE;
-import static nawaman.functionalj.annotations.processor.generator.Scope.STATIC;
+import static nawaman.functionalj.annotations.processor.generator.model.Accessibility.PRIVATE;
+import static nawaman.functionalj.annotations.processor.generator.model.Accessibility.PUBLIC;
+import static nawaman.functionalj.annotations.processor.generator.model.Modifiability.FINAL;
+import static nawaman.functionalj.annotations.processor.generator.model.Modifiability.MODIFIABLE;
+import static nawaman.functionalj.annotations.processor.generator.model.Scope.INSTANCE;
+import static nawaman.functionalj.annotations.processor.generator.model.Scope.STATIC;
 import static nawaman.functionalj.functions.StringFunctions.format1With;
 
 import java.util.ArrayList;
@@ -25,7 +40,12 @@ import static java.util.stream.Collectors.toList;
 import static java.util.Collections.emptyList;
 
 import lombok.val;
-import nawaman.functionalj.annotations.processor.generator.model.ClassSpec;
+import nawaman.functionalj.FunctionalJ;
+import nawaman.functionalj.annotations.processor.generator.model.GenClass;
+import nawaman.functionalj.annotations.processor.generator.model.GenConstructor;
+import nawaman.functionalj.annotations.processor.generator.model.GenField;
+import nawaman.functionalj.annotations.processor.generator.model.GenMethod;
+import nawaman.functionalj.annotations.processor.generator.model.GenParam;
 import nawaman.functionalj.functions.Func1;
 import nawaman.functionalj.lens.IPostConstruct;
 import nawaman.functionalj.lens.LensSpec;
@@ -78,7 +98,7 @@ public class DataObjectBuilder {
             val body = spec.getGetters().stream()
                     .map(Getter::getName)
                     .map(format1With("this.%1$s = %1$s;"));
-            return new GenConstructor(PUBLIC, name, params, linesOf(()->body));
+            return new GenConstructor(PUBLIC, name, params, ILines.of(()->body));
         });
         
         val dataObjClassName = sourceSpec.getTargetClassName();
@@ -86,27 +106,27 @@ public class DataObjectBuilder {
         val defaultValue     = String.format("new %1$s<>(%2$s.of(%3$s.class))", lensType.simpleName(), LensSpec.class.getSimpleName(), dataObjClassName);
         val theField         = new GenField(PUBLIC, FINAL, STATIC, "the"+dataObjClassName, lensType, defaultValue);
         
-        List<GenField> fields = asList(
+        val fields = asList(
                     Stream.of(theField),
                     getterFields
                 ).stream()
                 .filter(Objects::nonNull)
                 .flatMap(themAll())
                 .collect(toList());
-        List<Stream<GenMethod>> flatMap = Arrays.<Stream<GenMethod>>asList(
+        val flatMap = Arrays.<Stream<GenMethod>>asList(
                     getterMethods,
                     witherMethods,
                     Stream.of(postConstructMethod)
                  );
-        List<GenMethod> methods = flatMap.stream().flatMap(ms -> ms).collect(toList());
-        List<GenConstructor> constructors = new ArrayList<>();
+        val methods = flatMap.stream().flatMap(themAll()).collect(toList());
+        val constructors = new ArrayList<GenConstructor>();
         if (sourceSpec.getConfigures().noArgConstructor)
             constructors.add((GenConstructor)noArgsConstructor.apply(sourceSpec));
         constructors.add((GenConstructor)allArgsConstructor.apply(sourceSpec));
         
         val innerClasses = asList(generateLensClass(sourceSpec));
         
-        DataObjectSpec dataObjSpec = new DataObjectSpec(
+        val dataObjSpec = new DataObjectSpec(
                 sourceSpec.getTargetClassName(),
                 sourceSpec.getTargetPackageName(),
                 sourceSpec.getSpecClassName(),
@@ -144,10 +164,9 @@ public class DataObjectBuilder {
         return method;
     }
     
-    // TODO - This should generate a class data not lines.
-    public static ClassSpec generateLensClass(SourceSpec sourceSpec) {
+    public static GenClass generateLensClass(SourceSpec sourceSpec) {
         val dataObjClassName = sourceSpec.getTargetClassName();
-        val lensClass = new Type.TypeBuilder()
+        val lensType = new Type.TypeBuilder()
                 .encloseName(dataObjClassName)
                 .simpleName(dataObjClassName + "Lens")
                 .packageName(sourceSpec.getPackageName())
@@ -160,10 +179,10 @@ public class DataObjectBuilder {
         val lensSpecType = new Type.TypeBuilder().packageName("nawaman.functionalj.lens").simpleName("LensSpec").generic("HOST, " + dataObjClassName).build();
         val consParams   = asList(new GenParam("spec", lensSpecType));
         val consBody     = "super(spec);"; // This ignore the id for now.
-        val constructors = new GenConstructor(PUBLIC, lensClass.simpleName(), consParams, line(consBody));
+        val constructors = new GenConstructor(PUBLIC, lensType.simpleName(), consParams, line(consBody));
         
-        val lensClassSpec = new ClassSpec(
-                PUBLIC, STATIC, MODIFIABLE, lensClass, "HOST",
+        val lensClass = new GenClass(
+                PUBLIC, STATIC, MODIFIABLE, lensType, "HOST",
                 asList(superType.withGeneric("HOST, " + dataObjClassName)),
                 emptyList(),
                 asList(constructors),
@@ -171,7 +190,7 @@ public class DataObjectBuilder {
                 emptyList(),
                 emptyList(),
                 emptyList());
-        return lensClassSpec;
+        return lensClass;
     }
     
     private static GenField getterToLensField(Getter getter, String dataObjectClassName, SourceSpec sourceSpec) {
