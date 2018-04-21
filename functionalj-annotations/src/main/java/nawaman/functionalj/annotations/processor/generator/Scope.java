@@ -1,10 +1,10 @@
 package nawaman.functionalj.annotations.processor.generator;
 
 public enum Scope {
-    STATIC, INSTANCE;
+    STATIC, INSTANCE, NONE;
     
     public String toString() {
-        return (this == INSTANCE)
+        return ((this == INSTANCE) || (this == NONE))
                 ? null
                 : name().toLowerCase();
     }

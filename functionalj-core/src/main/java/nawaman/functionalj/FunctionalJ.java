@@ -74,6 +74,28 @@ public class FunctionalJ {
     }
     
     /**
+     * A shorter way to use Function.identity().
+     * 
+     * @param <IN>  the input type.
+     * @param <OUT> the output type.
+     * @return the function that take it and return it.
+     **/
+    public static <IN extends List<? extends OUT>, OUT> Func1<? super IN, Stream<? extends OUT>> allLists() {
+        return it -> it.stream();
+    }
+    
+    /**
+     * A shorter way to use Function.identity().
+     * 
+     * @param <IN>  the input type.
+     * @param <OUT> the output type.
+     * @return the function that take it and return it.
+     **/
+    public static <IN, OUT> Func1<IN, Stream<OUT>> allList(Func1<IN, ? extends List<OUT>> mapper) {
+        return it -> mapper.apply(it).stream();
+    }
+    
+    /**
      * My crazy obsession of making the code read sometimes make me do this kind of thing.
      * This useless class will make 
      * 

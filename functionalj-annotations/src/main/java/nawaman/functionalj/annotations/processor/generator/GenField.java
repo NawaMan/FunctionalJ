@@ -26,10 +26,17 @@ public class GenField implements GenElement {
 //    private List<Type>    additionalTypes;    // TODO - Take care of this.
     
     public ILines toDefinition() {
-        val def = asList(accessibility, modifiability, scope, type.getSimpleName(), name).stream()
+        val def = asList(
+                    accessibility, 
+                    scope, 
+                    modifiability, 
+                    type.simpleNameWithGeneric(), 
+                    name
+                ).stream()
                 .map(toStr())
                 .filter(Objects::nonNull)
                 .collect(joining(" "));
+        
         val value = (defaultValue != null) ? " = " + defaultValue : "";
         return ()->Stream.of(def + value + ";");
     }

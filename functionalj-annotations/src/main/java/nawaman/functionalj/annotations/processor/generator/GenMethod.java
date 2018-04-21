@@ -52,7 +52,7 @@ public class GenMethod implements GenElement {
     
     public ILines toDefinition() {
         val paramDefs = params.stream().map(GenParam::toDefinition).collect(joining(", "));
-        val definition = Stream.of(accessibility, modifiability, scope, type.getSimpleName(), name + "(" + paramDefs + ")", "{")
+        val definition = Stream.of(accessibility, modifiability, scope, type.simpleName(), name + "(" + paramDefs + ")", "{")
                         .map(toStr())
                         .filter(Objects::nonNull)
                         .collect(joining(" "));

@@ -5,8 +5,8 @@ import static java.util.Arrays.asList;
 import static nawaman.functionalj.FunctionalJ.themAll;
 import static nawaman.functionalj.annotations.processor.generator.Accessibility.PRIVATE;
 import static nawaman.functionalj.annotations.processor.generator.Accessibility.PUBLIC;
-import static nawaman.functionalj.annotations.processor.generator.ILines.indent;
 import static nawaman.functionalj.annotations.processor.generator.ILines.line;
+import static nawaman.functionalj.annotations.processor.generator.ILines.linesOf;
 import static nawaman.functionalj.annotations.processor.generator.Modifiability.FINAL;
 import static nawaman.functionalj.annotations.processor.generator.Modifiability.MODIFIABLE;
 import static nawaman.functionalj.annotations.processor.generator.Scope.INSTANCE;
@@ -25,9 +25,11 @@ import static java.util.stream.Collectors.toList;
 import static java.util.Collections.emptyList;
 
 import lombok.val;
+import nawaman.functionalj.annotations.processor.generator.model.ClassSpec;
 import nawaman.functionalj.functions.Func1;
 import nawaman.functionalj.lens.IPostConstruct;
 import nawaman.functionalj.lens.LensSpec;
+import nawaman.functionalj.lens.ObjectLensImpl;
 
 public class DataObjectBuilder {
     
@@ -76,14 +78,13 @@ public class DataObjectBuilder {
             val body = spec.getGetters().stream()
                     .map(Getter::getName)
                     .map(format1With("this.%1$s = %1$s;"));
-            return new GenConstructor(PUBLIC, name, params, ILines.of(()->body));
+            return new GenConstructor(PUBLIC, name, params, linesOf(()->body));
         });
         
         val dataObjClassName = sourceSpec.getTargetClassName();
-        val lensClassName   = dataObjClassName + "Lens";
-        val lensType        = new Type(dataObjClassName + "." + dataObjClassName + "Lens<" + dataObjClassName + ">", sourceSpec.getPackageName());
-        val defaultValue    = String.format("new %1$s<>(%2$s.of(%3$s.class));", lensClassName, LensSpec.class.getSimpleName(), dataObjClassName);
-        val theField        = new GenField(PUBLIC, FINAL, STATIC, "the"+dataObjClassName, lensType, defaultValue);
+        val lensType         = sourceSpec.getTargetType().lensType().withGeneric(dataObjClassName);
+        val defaultValue     = String.format("new %1$s<>(%2$s.of(%3$s.class))", lensType.simpleName(), LensSpec.class.getSimpleName(), dataObjClassName);
+        val theField         = new GenField(PUBLIC, FINAL, STATIC, "the"+dataObjClassName, lensType, defaultValue);
         
         List<GenField> fields = asList(
                     Stream.of(theField),
@@ -103,7 +104,7 @@ public class DataObjectBuilder {
             constructors.add((GenConstructor)noArgsConstructor.apply(sourceSpec));
         constructors.add((GenConstructor)allArgsConstructor.apply(sourceSpec));
         
-        val lensLines = asList(generateLensClass(sourceSpec));
+        val innerClasses = asList(generateLensClass(sourceSpec));
         
         DataObjectSpec dataObjSpec = new DataObjectSpec(
                 sourceSpec.getTargetClassName(),
@@ -111,7 +112,7 @@ public class DataObjectBuilder {
                 sourceSpec.getSpecClassName(),
                 sourceSpec.getPackageName(),
                 extendeds, implementeds,
-                constructors, fields, methods, lensLines);
+                constructors, fields, methods, innerClasses, emptyList());
         return dataObjSpec;
     }
     
@@ -144,52 +145,40 @@ public class DataObjectBuilder {
     }
     
     // TODO - This should generate a class data not lines.
-    public static ILines generateLensClass(SourceSpec sourceSpec) {
+    public static ClassSpec generateLensClass(SourceSpec sourceSpec) {
         val dataObjClassName = sourceSpec.getTargetClassName();
-        val lensClassName   = dataObjClassName + "Lens";
-        val lensFirstLine   = asList(
-                "public",
-                "static",
-                "class",
-                lensClassName + "<HOST>",
-                "extends",
-                "ObjectLensImpl<HOST, " + dataObjClassName + ">",
-                "{"
-            ).stream().collect(joining(" "));
-        val dataObjLastLine = "}";
+        val lensClass = new Type.TypeBuilder()
+                .encloseName(dataObjClassName)
+                .simpleName(dataObjClassName + "Lens")
+                .packageName(sourceSpec.getPackageName())
+                .generic("HOST")
+                .build();
+        val superType = Type.of(ObjectLensImpl.class);
         
         Stream<GenField> lensFields  = sourceSpec.getGetters().stream().map(getter -> getterToLensField(getter, dataObjClassName, sourceSpec));
         
+        val lensSpecType = new Type.TypeBuilder().packageName("nawaman.functionalj.lens").simpleName("LensSpec").generic("HOST, " + dataObjClassName).build();
+        val consParams   = asList(new GenParam("spec", lensSpecType));
+        val consBody     = "super(spec);"; // This ignore the id for now.
+        val constructors = new GenConstructor(PUBLIC, lensClass.simpleName(), consParams, line(consBody));
         
-        val consParams = asList(new GenParam("spec", new Type("LensSpec<HOST, " + dataObjClassName + ">", "nawaman.functionalj.lens")));
-        val consBody   = "super(spec);"; // This ignore the id for now.
-        val cons       = new GenConstructor(PUBLIC, lensClassName, consParams, line(consBody));
-        
-        Stream<ILines> lensFieldDefs = lensFields           .map(field->field.toDefinition());
-        Stream<ILines> lensConstDefs = asList(cons).stream().map(GenConstructor::toDefinition);
-        
-        val lensLines = (Stream<String>)asList(
-                line(lensFirstLine),
-                line(),
-                indent(lensFieldDefs),
-                line(),
-                indent(lensConstDefs),
-                line(),
-//                indent(methodDefs),
-//                line(),
-                line(dataObjLastLine)
-            )
-            .stream()
-            .flatMap(ILines::lines)
-            .filter(Objects::nonNull);
-        return ()->lensLines;
+        val lensClassSpec = new ClassSpec(
+                PUBLIC, STATIC, MODIFIABLE, lensClass, "HOST",
+                asList(superType.withGeneric("HOST, " + dataObjClassName)),
+                emptyList(),
+                asList(constructors),
+                lensFields.collect(toList()),
+                emptyList(),
+                emptyList(),
+                emptyList());
+        return lensClassSpec;
     }
     
     private static GenField getterToLensField(Getter getter, String dataObjectClassName, SourceSpec sourceSpec) {
         val dataObjName = dataObjectClassName;
         val name        = getter.getName();
-        val type        = getter.getType();
-        val lensType    = type.getLensType(null).withGeneric("HOST");
+        val type        = getter.getType().declaredType();
+        val lensType    = type.lensType().withGeneric("HOST");
         val withName    = Utils.withMethodName(getter);
         val spec        = "spec->()->spec"; // If Custom lens -> spec->new Brand.BrandLens<>(spec)
         val value       = format("createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);

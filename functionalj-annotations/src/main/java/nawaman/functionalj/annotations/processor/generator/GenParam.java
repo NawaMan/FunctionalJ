@@ -16,6 +16,6 @@ public class GenParam implements IRequireTypes {
         return Stream.of(type);
     }
     public String toDefinition() {
-        return type.getSimpleName() + " " + name;
+        return type.simpleNameWithGeneric() + " " + name;
     }
 }

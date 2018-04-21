@@ -136,8 +136,8 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     }
     
     public void generateCode(Element element, DataObjectSpec recordSpec) throws IOException {
-        String className   = recordSpec.getClassName();
-        String packageName = recordSpec.getPackageName();
+        String className   = recordSpec.simpleName();
+        String packageName = recordSpec.packageName();
         
         try (Writer writer = filer.createSourceFile(packageName + "." + className, element).openWriter()) {
             String content = DataObjectCodeGenerator.generateDataObjectClass(recordSpec).collect(Collectors.joining("\n"));

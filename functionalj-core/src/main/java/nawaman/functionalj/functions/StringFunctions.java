@@ -5,6 +5,7 @@ import static nawaman.functionalj.functions.Absent.__;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 import lombok.val;
 import lombok.experimental.UtilityClass;
@@ -18,6 +19,11 @@ public class StringFunctions {
     public <I> Func1<I, String> toStr() {
         return (i) -> stringOf(i);
     }
+    
+    public static Predicate<? super String> strNotNullOrEmpty() {
+        return str -> (str != null) && !str.isEmpty();
+    }
+    
     public <I1, I2> Func2<I1, I2, String> concat2() {
         return (i1, i2) -> stringOf(i1) + stringOf(i2);
     }

@@ -47,7 +47,7 @@ public class GeneratorTest {
                 "\n" + 
                 "public class Car implements Model.ICar {\n" + 
                 "    \n" + 
-                "    public final static Car.CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));;\n" + 
+                "    public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));\n" + 
                 "    private final int anint;\n" + 
                 "    private final boolean anbool;\n" + 
                 "    private final String anstring;\n" + 
@@ -84,15 +84,15 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    \n" + 
                 "    public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {\n" + 
-                "    \n" + 
+                "        \n" + 
                 "        public final IntegerLens<HOST> anint = createSubLens(Car::anint, Car::withAnint, spec->()->spec);\n" + 
                 "        public final BooleanLens<HOST> anbool = createSubLens(Car::anbool, Car::withAnbool, spec->()->spec);\n" + 
                 "        public final StringLens<HOST> anstring = createSubLens(Car::anstring, Car::withAnstring, spec->()->spec);\n" + 
-                "    \n" + 
+                "        \n" + 
                 "        public CarLens(LensSpec<HOST, Car> spec) {\n" + 
                 "            super(spec);\n" + 
                 "        }\n" + 
-                "    \n" + 
+                "        \n" + 
                 "    }\n" + 
                 "    \n" + 
                 "}", generated);

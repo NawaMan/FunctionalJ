@@ -2,24 +2,29 @@ package nawaman.functionalj.annotations.processor.generator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
+import lombok.Builder;
 import lombok.Value;
 import lombok.val;
+import lombok.experimental.Accessors;
 import lombok.experimental.Wither;
 import nawaman.functionalj.lens.BooleanLens;
 import nawaman.functionalj.lens.IntegerLens;
 import nawaman.functionalj.lens.StringLens;
 
 @Value
+@Accessors(fluent=true)
 @Wither
-public class Type {
+@Builder
+public class Type implements IRequireTypes {
     
     public static final Type INT     = new Type("int",     "");
     public static final Type BOOL    = new Type("boolean", "");
     public static final Type STR     = new Type("String",  "");
-    public static final Type INTEGER = new Type(Integer.class.getSimpleName(), Integer.class.getPackage().getName());
-    public static final Type BOOLEAN = new Type(Boolean.class.getSimpleName(), Boolean.class.getPackage().getName());
-    public static final Type STRING  = new Type(String .class.getSimpleName(), String .class.getPackage().getName());
+    public static final Type INTEGER = Type.of(Integer.class);
+    public static final Type BOOLEAN = Type.of(Boolean.class);
+    public static final Type STRING  = Type.of(String .class);
     
     private static final Map<Type, Type> lensTypes = new HashMap<>();
     static {
@@ -37,15 +42,37 @@ public class Type {
         return new Type(name, pckg);
     }
     
+    private String encloseName;
     private String simpleName;
     private String packageName;
+    private String generic;
     
-    public String fullName() {
-        return packageName + "." + simpleName;
+    public Type(String encloseName, String simpleName, String packageName, String generic) {
+        this.encloseName = encloseName;
+        this.simpleName  = simpleName;
+        this.packageName = packageName;
+        this.generic     = generic;
     }
     
-    public Type withGeneric(String generic) {
-        return new Type(simpleName + "<" + generic + ">", packageName);
+    public Type(String simpleName, String packageName) {
+        this(null, simpleName, packageName, null);
+    }
+    
+    @Override
+    public Stream<Type> getRequiredTypes() {
+        return Stream.of(this);
+    }
+    
+    public String fullName() {
+        return packageName + "." + ((encloseName != null) ? encloseName + "." : "") + simpleName;
+    }
+    
+    public String fullNameWithGeneric() {
+        return fullName() + ((generic != null) ? "<" + generic + ">" : "");
+    }
+    
+    public String simpleNameWithGeneric() {
+        return simpleName() + ((generic != null) ? "<" + generic + ">" : "");
     }
     
     public Type declaredType() {
@@ -65,9 +92,20 @@ public class Type {
         return null;
     }
     
-    public Type getLensType(Type fallback) {
-        val type = lensTypes.get(this);
-        return (type != null) ? type : (fallback != null) ? fallback : new Type(this.declaredType().getSimpleName() + "Lens", this.getPackageName());
+    public Type lensType() {
+        val lensType = lensTypes.get(this);
+        if (lensType != null)
+            return lensType;
+        
+        if (simpleName().endsWith("Lens"))
+            return this;
+        
+        return new TypeBuilder()
+                .encloseName(simpleName())
+                .simpleName(simpleName() + "Lens")
+                .packageName(packageName())
+                .generic("HOST")
+                .build();
     }
     
     @Override
@@ -99,12 +137,6 @@ public class Type {
         result = prime * result + ((packageName == null) ? 0 : packageName.hashCode());
         result = prime * result + ((simpleName == null) ? 0 : simpleName.hashCode());
         return result;
-    }
-
-    public Type(String simpleName, String packageName) {
-        super();
-        this.simpleName = simpleName;
-        this.packageName = packageName;
     }
     
 }
