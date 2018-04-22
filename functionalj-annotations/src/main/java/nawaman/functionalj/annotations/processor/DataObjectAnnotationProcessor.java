@@ -112,7 +112,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
             
             val configures = new Configurations();
-            configures.noArgConstructor  = dataObject.generateNoArgConstructor();
+            configures.generateNoArgConstructor  = dataObject.generateNoArgConstructor();
             configures.generateLensClass = dataObject.generateLensClass();
             
             try {

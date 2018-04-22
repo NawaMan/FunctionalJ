@@ -44,8 +44,8 @@ import nawaman.functionalj.annotations.processor.generator.Type;
 public class GenMethod implements IGenerateDefinition {
     
     private Accessibility  accessibility;
-    private Modifiability  modifiability;
     private Scope          scope;
+    private Modifiability  modifiability;
     private Type           type;
     private String         name;
     private List<GenParam> params;

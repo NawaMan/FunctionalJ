@@ -51,6 +51,8 @@ import nawaman.functionalj.annotations.processor.generator.model.GenParam;
  */
 public class DataObjectBuilder {
     
+    private static final String POST_CONSTRUCT = "postConstruct";
+    
     private SourceSpec sourceSpec;
     
     /**
@@ -71,15 +73,17 @@ public class DataObjectBuilder {
         val extendeds    = new ArrayList<Type>();
         val implementeds = new ArrayList<Type>();
         
-        if (sourceSpec.isClass())
-             extendeds   .add(sourceSpec.toType());
-        else implementeds.add(sourceSpec.toType());
+        if (sourceSpec.getConfigures().coupleWithDefinition) {
+            if (sourceSpec.isClass())
+                 extendeds   .add(sourceSpec.toType());
+            else implementeds.add(sourceSpec.toType());
+        }
         
         val withMethodName = (Function<Getter, String>)(utils::withMethodName);
         val ipostConstruct = Core.IPostConstruct.simpleName();
         val postConstructMethod = new GenMethod(
-                PRIVATE, MODIFIABLE, INSTANCE,
-                sourceSpec.getTargetType(), "postProcess",
+                PRIVATE, STATIC, MODIFIABLE,
+                sourceSpec.getTargetType(), POST_CONSTRUCT,
                 asList(new GenParam("object", sourceSpec.getTargetType())),
                 ILines.line(
                 asList(
@@ -136,7 +140,7 @@ public class DataObjectBuilder {
                  );
         val methods = flatMap.stream().flatMap(themAll()).collect(toList());
         val constructors = new ArrayList<GenConstructor>();
-        if (sourceSpec.getConfigures().noArgConstructor)
+        if (sourceSpec.getConfigures().generateNoArgConstructor)
             constructors.add((GenConstructor)noArgsConstructor.apply(sourceSpec));
         constructors.add((GenConstructor)allArgsConstructor.apply(sourceSpec));
         
@@ -169,8 +173,8 @@ public class DataObjectBuilder {
         val type = sourceSpec.getTargetType();
         val params = asList(new GenParam(getter.getName(), getter.getType()));
         val paramCall = sourceSpec.getGetters().stream().map(Getter::getName).collect(joining(", "));
-        val returnLine = "return postProcess(new " + sourceSpec.getTargetClassName() + "(" + paramCall + "));";
-        return new GenMethod(PUBLIC, MODIFIABLE, INSTANCE, type, name, params, line(returnLine));
+        val returnLine = "return " + POST_CONSTRUCT + "(new " + sourceSpec.getTargetClassName() + "(" + paramCall + "));";
+        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
     }
     
     private GenMethod getterToGetterMethod(Getter getter) {
@@ -178,7 +182,7 @@ public class DataObjectBuilder {
         val type = getter.getType();
         val params = new ArrayList<GenParam>();
         val body   = "return " + getter.getName() + ";";
-        val method = new GenMethod(PUBLIC, MODIFIABLE, INSTANCE, type, name, params, line(body));
+        val method = new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(body));
         return method;
     }
     

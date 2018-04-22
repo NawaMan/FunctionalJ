@@ -40,10 +40,12 @@ public class SourceSpec {
     /** Configurations */
     public static class Configurations {
         
-        /** Should the no arguments constructor be created. */
-        public boolean noArgConstructor  = false;
+        /** Should extends/implements with the definition class/interface */
+        public boolean coupleWithDefinition = true;
+        /** Should the no-arguments constructor be created. */
+        public boolean generateNoArgConstructor  = true;
         /** Should the lens class be generated. */
-        public boolean generateLensClass = false;
+        public boolean generateLensClass = true;
     }
     
     /** @return the target type. */

@@ -17,7 +17,12 @@ package nawaman.functionalj.annotations.processor.generator;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import lombok.val;
@@ -27,27 +32,27 @@ import nawaman.functionalj.annotations.processor.generator.model.GenDataObject;
 @SuppressWarnings("javadoc")
 public class GeneratorTest {
     
+    private Configurations configures = new Configurations();
+    {
+        configures.coupleWithDefinition     = true;
+        configures.generateNoArgConstructor = true;
+        configures.generateLensClass        = true;
+    }
+    
+    private String  definitionClassName = "Definitions.CarDef";
+    private String  targetClassName     = "Car";
+    private String  packageName         = "me.test";
+    private boolean isClass             = false;
+    
+    private List<Getter> getters = asList(
+            new Getter("anint",    Type.INT),
+            new Getter("anbool",   Type.BOOL),
+            new Getter("anstring", Type.STRING)
+    );
+    
     @Test
-    public void test() {
-        val configures     = new Configurations();
-        configures.noArgConstructor  = true;
-        configures.generateLensClass = true;
-        val sourceSpec = new SourceSpec(
-                    "Model.ICar",   // specClassName
-                    "me.test",      // packageName
-                    "Car",          // targetClassName
-                    "me.test",      // targetPackageName
-                    false,          // isClass
-                    configures,     // Configurations
-                    asList(
-                            new Getter("anint", Type.INT),
-                            new Getter("anbool", Type.BOOL),
-                            new Getter("anstring", Type.STRING)
-                    )
-                );
-        
-        val dataObjSpec = new DataObjectBuilder(sourceSpec).build();
-        val generated   = new GenDataObject(dataObjSpec).toText();
+    public void testStandard() {
+        val generated = generate();
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
@@ -58,7 +63,7 @@ public class GeneratorTest {
                 "import nawaman.functionalj.lens.ObjectLensImpl;\n" + 
                 "import nawaman.functionalj.lens.StringLens;\n" + 
                 "\n" + 
-                "public class Car implements Model.ICar {\n" + 
+                "public class Car implements Definitions.CarDef {\n" + 
                 "    \n" + 
                 "    public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));\n" + 
                 "    private final int anint;\n" + 
@@ -84,15 +89,15 @@ public class GeneratorTest {
                 "        return anstring;\n" + 
                 "    }\n" + 
                 "    public Car withAnint(int anint) {\n" + 
-                "        return postProcess(new Car(anint, anbool, anstring));\n" + 
+                "        return postConstruct(new Car(anint, anbool, anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnbool(boolean anbool) {\n" + 
-                "        return postProcess(new Car(anint, anbool, anstring));\n" + 
+                "        return postConstruct(new Car(anint, anbool, anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnstring(String anstring) {\n" + 
-                "        return postProcess(new Car(anint, anbool, anstring));\n" + 
+                "        return postConstruct(new Car(anint, anbool, anstring));\n" + 
                 "    }\n" + 
-                "    private Car postProcess(Car object) {\n" + 
+                "    private static Car postConstruct(Car object) {\n" + 
                 "        if (object instanceof IPostConstruct)\n" + 
                 "            ((IPostConstruct)object).postConstruct();\n" + 
                 "        return object;\n" + 
@@ -113,4 +118,63 @@ public class GeneratorTest {
                 "}", generated);
     }
     
+    @Test
+    public void testDecouplingWithSuper() {
+        val generatedWith = generate(()->{
+            configures.coupleWithDefinition = true;
+        });
+        assertTrue(generatedWith.contains("Definitions.CarDef"));
+        
+        val generatedWithout = generate(()->{
+            configures.coupleWithDefinition = false;
+        });
+        assertFalse(generatedWithout.contains("Definitions.CarDef"));
+    }
+    
+    @Test
+    public void testIsClassOrInteface() {
+        val generatedWith = generate(()->{
+            isClass = true;
+        });
+        assertTrue(generatedWith.contains(" extends Definitions.CarDef"));
+        
+        val generatedWithout = generate(()->{
+            isClass = false;
+        });
+        assertTrue(generatedWithout.contains(" implements Definitions.CarDef"));
+    }
+    
+    @Test
+    public void testoArgConstructor() {
+        val generatedWith = generate(()->{
+            configures.generateNoArgConstructor = true;
+        });
+        assertTrue(generatedWith.contains("public Car() {"));
+        
+        val generatedWithout = generate(()->{
+            configures.generateNoArgConstructor = false;
+        });
+        assertFalse(generatedWithout.contains("public Car() {"));
+    }
+    
+    private String generate() {
+        return generate(null);
+    }
+    
+    private String generate(Runnable setting) {
+        if (setting != null)
+            setting.run();
+        
+        SourceSpec sourceSpec = new SourceSpec(
+                    definitionClassName, // specClassName
+                    packageName,         // packageName
+                    targetClassName,     // targetClassName
+                    packageName,         // targetPackageName
+                    isClass,             // isClass
+                    configures,          // Configurations
+                    getters);
+        val dataObjSpec = new DataObjectBuilder(sourceSpec).build();
+        val generated   = new GenDataObject(dataObjSpec).toText();
+        return generated;
+    }
 }
