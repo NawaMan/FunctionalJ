@@ -17,7 +17,6 @@ package nawaman.functionalj.annotations.processor.generator.model;
 
 import static nawaman.functionalj.annotations.processor.generator.ILines.indent;
 import static nawaman.functionalj.annotations.processor.generator.ILines.line;
-import static nawaman.functionalj.functions.StringFunctions.toStr;
 
 import java.util.HashSet;
 import java.util.List;
@@ -69,13 +68,13 @@ public class GenConstructor implements IGenerateDefinition {
     public ILines toDefinition() {
         val paramDefs = params.stream().map(GenParam::toTerm).collect(joining(", "));
         val definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{")
-                .map(    toStr())
-                .filter( Objects::nonNull)
+                .map    (utils.toStr())
+                .filter (Objects::nonNull)
                 .collect(joining(" "));
         return ILines.flatenLines(
-                line(definition),
+                line  (definition),
                 indent(body),
-                line("}"));
+                line  ("}"));
     }
     
 }

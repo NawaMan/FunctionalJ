@@ -24,9 +24,7 @@ import lombok.Value;
 import lombok.val;
 import lombok.experimental.Accessors;
 import lombok.experimental.Wither;
-import nawaman.functionalj.lens.BooleanLens;
-import nawaman.functionalj.lens.IntegerLens;
-import nawaman.functionalj.lens.StringLens;
+import nawaman.functionalj.annotations.processor.Core;
 
 /**
  * Data type.
@@ -52,11 +50,11 @@ public class Type implements IRequireTypes {
     
     private static final Map<Type, Type> lensTypes = new HashMap<>();
     static {
-        lensTypes.put(INT,     of(IntegerLens.class));
-        lensTypes.put(BOOL,    of(BooleanLens.class));
-        lensTypes.put(INTEGER, of(IntegerLens.class));
-        lensTypes.put(BOOLEAN, of(BooleanLens.class));
-        lensTypes.put(STRING,  of(StringLens .class));
+        lensTypes.put(INT,     Core.IntegerLens.type());
+        lensTypes.put(BOOL,    Core.BooleanLens.type());
+        lensTypes.put(INTEGER, Core.IntegerLens.type());
+        lensTypes.put(BOOLEAN, Core.BooleanLens.type());
+        lensTypes.put(STRING,  Core.StringLens .type());
     }
     
     /**

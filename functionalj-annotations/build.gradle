@@ -7,8 +7,6 @@ repositories {
 }
 
 dependencies {
-    compile project(':functionalj-core')
-    
     compileOnly 'org.projectlombok:lombok:1.16.16'
     
     //== Test ==

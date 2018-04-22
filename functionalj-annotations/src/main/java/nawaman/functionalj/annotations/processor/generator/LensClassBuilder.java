@@ -17,6 +17,7 @@ package nawaman.functionalj.annotations.processor.generator;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static nawaman.functionalj.annotations.processor.Core.ObjectLensImpl;
 import static nawaman.functionalj.annotations.processor.generator.ILines.line;
 import static nawaman.functionalj.annotations.processor.generator.model.Accessibility.PUBLIC;
 import static nawaman.functionalj.annotations.processor.generator.model.Modifiability.FINAL;
@@ -35,7 +36,6 @@ import nawaman.functionalj.annotations.processor.generator.model.GenClass;
 import nawaman.functionalj.annotations.processor.generator.model.GenConstructor;
 import nawaman.functionalj.annotations.processor.generator.model.GenField;
 import nawaman.functionalj.annotations.processor.generator.model.GenParam;
-import nawaman.functionalj.lens.ObjectLensImpl;
 
 /**
  * Builder for lens class.
@@ -49,7 +49,7 @@ public class LensClassBuilder {
     /**
      * Construct a lens class builder.
      * 
-     * @param sourceSpec
+     * @param sourceSpec  the source spec.
      */
     public LensClassBuilder(SourceSpec sourceSpec) {
         this.sourceSpec = sourceSpec;
@@ -64,24 +64,29 @@ public class LensClassBuilder {
         val dataObjClassName = sourceSpec.getTargetClassName();
         val lensType = new Type.TypeBuilder()
                 .encloseName(dataObjClassName)
-                .simpleName(dataObjClassName + "Lens")
+                .simpleName (dataObjClassName + "Lens")
                 .packageName(sourceSpec.getPackageName())
-                .generic("HOST")
+                .generic    ("HOST")
                 .build();
-        val superType = Type.of(ObjectLensImpl.class);
+        val superType = ObjectLensImpl.type();
         
         Stream<GenField> lensFields  = sourceSpec.getGetters().stream().map(getter -> getterToLensField(getter, dataObjClassName, sourceSpec));
         
-        val lensSpecType = new Type.TypeBuilder().packageName("nawaman.functionalj.lens").simpleName("LensSpec").generic("HOST, " + dataObjClassName).build();
+        val lensSpecType = new Type.TypeBuilder()
+                .packageName("nawaman.functionalj.lens")
+                .simpleName ("LensSpec")
+                .generic    ("HOST, " + dataObjClassName)
+                .build();
+        
         val consParams   = asList(new GenParam("spec", lensSpecType));
         val consBody     = "super(spec);"; // This ignore the id for now.
         val constructors = new GenConstructor(PUBLIC, lensType.simpleName(), consParams, line(consBody));
         
         val lensClass = new GenClass(
                 PUBLIC, STATIC, MODIFIABLE, lensType, "HOST",
-                asList(superType.withGeneric("HOST, " + dataObjClassName)),
+                asList   (superType.withGeneric("HOST, " + dataObjClassName)),
                 emptyList(),
-                asList(constructors),
+                asList   (constructors),
                 lensFields.collect(toList()),
                 emptyList(),
                 emptyList(),

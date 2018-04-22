@@ -16,10 +16,10 @@
 package nawaman.functionalj.annotations.processor.generator.model;
 
 import static java.util.Arrays.asList;
-import static nawaman.functionalj.FunctionalJ.themAll;
 import static nawaman.functionalj.annotations.processor.generator.ILines.line;
 import static nawaman.functionalj.annotations.processor.generator.ILines.linesOf;
-import static nawaman.functionalj.functions.StringFunctions.wrapWith;
+import static nawaman.functionalj.annotations.processor.generator.model.utils.themAll;
+import static nawaman.functionalj.annotations.processor.generator.model.utils.wrapWith;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,12 +30,10 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 import lombok.val;
+import nawaman.functionalj.annotations.processor.Core;
 import nawaman.functionalj.annotations.processor.generator.DataObjectSpec;
 import nawaman.functionalj.annotations.processor.generator.ILines;
 import nawaman.functionalj.annotations.processor.generator.Type;
-import nawaman.functionalj.lens.IPostConstruct;
-import nawaman.functionalj.lens.LensSpec;
-import nawaman.functionalj.lens.ObjectLensImpl;
 
 /**
  * Representation of DataObject class.
@@ -53,9 +51,9 @@ public class GenDataObject implements ILines {
     );
     
     private static final List<Type> alwaysImports = asList(
-            Type.of(IPostConstruct.class),
-            Type.of(ObjectLensImpl.class),
-            Type.of(LensSpec.class)
+            Core.IPostConstruct.type(),
+            Core.ObjectLensImpl.type(),
+            Core.LensSpec.type()
     );
     
     private DataObjectSpec dataClass;
@@ -75,13 +73,13 @@ public class GenDataObject implements ILines {
         String packageDef = "package " + dataClass.type().packageName() + ";";
         ILines dataObjDef = dataClass.getClassSpec().toDefinition();
         ILines lines
-                = linesOf(
+                = linesOf(Stream.of(
                     line(packageDef),
-                    emptyLine,
                     line(imports),
-                    emptyLine,
                     dataObjDef
-                );
+                )
+                .filter (Objects::nonNull)
+                .flatMap(utils.delimitWith(emptyLine)));
         return lines.lines();
     }
     
@@ -96,7 +94,7 @@ public class GenDataObject implements ILines {
         types.remove(dataClass.type());
         
         val lensImport = types.stream()
-                .filter(Objects::nonNull)
+                .filter (Objects::nonNull)
                 .collect(toList());
         
         val thisPackage  = (String)dataClass.type().packageName();
@@ -110,15 +108,15 @@ public class GenDataObject implements ILines {
                 lensImport.stream(),
                 types.stream(),
                 dataClass.innerClasses().stream()
-                    .map(GenClass::requiredTypes)
+                    .map    (GenClass::requiredTypes)
                     .flatMap(themAll())
             ).stream()
             .flatMap(themAll())
             .collect(toList());
         val importList = importTypes.stream()
                 .filter(type->!thisPackage.equals(type.packageName()))
-                .map(Type::declaredType)
-                .map(Type::fullName)
+                .map   (Type::declaredType)
+                .map   (Type::fullName)
                 .filter(type -> !implicitImports.contains(type))
                 .filter(isLensClass.negate())
                 .filter(isSuperClass.negate())

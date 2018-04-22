@@ -29,11 +29,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DataObject {
     
-    /** The name of the target class. */
+    /** @return the name of the target class. */
     public String  name();
-    /** The flag indicating that the no-arguments constructor should be created - default to true. */
+    /** @return the flag indicating that the no-arguments constructor should be created - default to true. */
     public boolean generateNoArgConstructor() default true;
-    /** The flag indicating that the lens class should be created - default to true. */
+    /** @return the flag indicating that the lens class should be created - default to true. */
     public boolean generateLensClass() default true;
     
 }

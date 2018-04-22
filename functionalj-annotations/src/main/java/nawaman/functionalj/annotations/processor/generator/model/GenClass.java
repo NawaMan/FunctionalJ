@@ -16,14 +16,14 @@
 package nawaman.functionalj.annotations.processor.generator.model;
 
 import static java.util.Arrays.asList;
-import static nawaman.functionalj.FunctionalJ.allLists;
-import static nawaman.functionalj.FunctionalJ.themAll;
 import static nawaman.functionalj.annotations.processor.generator.ILines.flatenLines;
 import static nawaman.functionalj.annotations.processor.generator.ILines.indent;
 import static nawaman.functionalj.annotations.processor.generator.ILines.line;
 import static nawaman.functionalj.annotations.processor.generator.ILines.linesOf;
 import static nawaman.functionalj.annotations.processor.generator.ILines.oneLineOf;
 import static nawaman.functionalj.annotations.processor.generator.ILines.withSeparateIndentedSpace;
+import static nawaman.functionalj.annotations.processor.generator.model.utils.allLists;
+import static nawaman.functionalj.annotations.processor.generator.model.utils.themAll;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -75,8 +75,8 @@ public class GenClass implements IGenerateDefinition {
                         mores
                 ).stream()
                 .flatMap(allLists())
-                .map(IRequireTypes.class::cast)
-                .map(IRequireTypes::requiredTypes)
+                .map    (IRequireTypes.class::cast)
+                .map    (IRequireTypes::requiredTypes)
                 .flatMap(themAll());
     }
     

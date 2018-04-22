@@ -15,9 +15,53 @@
 //  ========================================================================
 package nawaman.functionalj.annotations.processor.generator;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 import lombok.val;
 
 class utils {
+    
+    static <IN> Function<IN, Stream<IN>> delimitWith(IN delimiter) {
+        val isFirst = new AtomicBoolean(true);
+        return in -> {
+            if (isFirst.getAndSet(false))
+                return Stream.of(in);
+            return Stream.of(delimiter, in);
+        };
+    }
+    
+    static <IN> Function<IN, Stream<IN>> delimitWith(Supplier<? extends IN> delimiter) {
+        val isFirst = new AtomicBoolean(true);
+        return in -> {
+            if (isFirst.getAndSet(false))
+                return Stream.of(in);
+            return Stream.of(delimiter.get(), in);
+        };
+    }
+    
+    static <I> Function<I, String> prependWith(String prefix) {
+        return in -> prefix + in;
+    }
+    
+    static String stringOf(Object obj) {
+        return (obj == null) ? null : String.valueOf(obj);
+    }
+    
+    static Predicate<? super String> strNotNullOrEmpty() {
+        return str -> (str != null) && !str.isEmpty();
+    }
+    
+    static <TYPE> Function<TYPE, TYPE> themAll() {
+        return it -> it;
+    }
+    
+    static <I> Function<I, String> toStr() {
+        return (i) -> stringOf(i);
+    }
     
     static String withMethodName(Getter getter) {
         val name = getter.getName();

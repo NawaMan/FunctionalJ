@@ -16,7 +16,6 @@
 package nawaman.functionalj.annotations.processor.generator;
 
 import static java.util.Arrays.asList;
-import static nawaman.functionalj.FunctionalJ.themAll;
 import static nawaman.functionalj.annotations.processor.generator.ILines.line;
 import static nawaman.functionalj.annotations.processor.generator.model.Accessibility.PRIVATE;
 import static nawaman.functionalj.annotations.processor.generator.model.Accessibility.PUBLIC;
@@ -24,12 +23,13 @@ import static nawaman.functionalj.annotations.processor.generator.model.Modifiab
 import static nawaman.functionalj.annotations.processor.generator.model.Modifiability.MODIFIABLE;
 import static nawaman.functionalj.annotations.processor.generator.model.Scope.INSTANCE;
 import static nawaman.functionalj.annotations.processor.generator.model.Scope.STATIC;
-import static nawaman.functionalj.functions.StringFunctions.format1With;
+import static nawaman.functionalj.annotations.processor.generator.utils.themAll;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -38,13 +38,11 @@ import static java.util.stream.Collectors.toList;
 import static java.util.Collections.emptyList;
 
 import lombok.val;
+import nawaman.functionalj.annotations.processor.Core;
 import nawaman.functionalj.annotations.processor.generator.model.GenConstructor;
 import nawaman.functionalj.annotations.processor.generator.model.GenField;
 import nawaman.functionalj.annotations.processor.generator.model.GenMethod;
 import nawaman.functionalj.annotations.processor.generator.model.GenParam;
-import nawaman.functionalj.functions.Func1;
-import nawaman.functionalj.lens.IPostConstruct;
-import nawaman.functionalj.lens.LensSpec;
 
 /**
  * Builder for a data object.
@@ -77,8 +75,8 @@ public class DataObjectBuilder {
              extendeds   .add(sourceSpec.toType());
         else implementeds.add(sourceSpec.toType());
         
-        val withMethodName = Func1.of(utils::withMethodName);
-        val ipostConstruct = IPostConstruct.class.getSimpleName();
+        val withMethodName = (Function<Getter, String>)(utils::withMethodName);
+        val ipostConstruct = Core.IPostConstruct.simpleName();
         val postConstructMethod = new GenMethod(
                 PRIVATE, MODIFIABLE, INSTANCE,
                 sourceSpec.getTargetType(), "postProcess",
@@ -95,7 +93,7 @@ public class DataObjectBuilder {
         val getterMethods = getters.stream().map(getter -> getterToGetterMethod(getter));
         val witherMethods = getters.stream().map(getter -> getterToWitherMethod(sourceSpec, withMethodName, getter));
         
-        val noArgsConstructor = Func1.of((SourceSpec spec) ->{
+        val noArgsConstructor = (Function<SourceSpec, GenConstructor>)((SourceSpec spec) ->{
             val name        = spec.getTargetClassName();
             val paramString = spec.getGetters().stream()
                     .map(getter -> getter.getType().defaultValue())
@@ -104,7 +102,7 @@ public class DataObjectBuilder {
             val body = "this(" + paramString + ");";
             return new GenConstructor(PUBLIC, name, emptyList(), line(body));
         });
-        val allArgsConstructor = Func1.of((SourceSpec spec) ->{
+        val allArgsConstructor = (Function<SourceSpec, GenConstructor>)((SourceSpec spec) ->{
             val name = spec.getTargetClassName();
             List<GenParam> params = spec.getGetters().stream()
                     .map(getter -> {
@@ -115,13 +113,13 @@ public class DataObjectBuilder {
                     .collect(toList());
             val body = spec.getGetters().stream()
                     .map(Getter::getName)
-                    .map(format1With("this.%1$s = %1$s;"));
+                    .map(arg ->String.format("this.%1$s = %1$s;", arg));
             return new GenConstructor(PUBLIC, name, params, ILines.of(()->body));
         });
         
         val dataObjClassName = sourceSpec.getTargetClassName();
         val lensType         = sourceSpec.getTargetType().lensType().withGeneric(dataObjClassName);
-        val defaultValue     = String.format("new %1$s<>(%2$s.of(%3$s.class))", lensType.simpleName(), LensSpec.class.getSimpleName(), dataObjClassName);
+        val defaultValue     = String.format("new %1$s<>(%2$s.of(%3$s.class))", lensType.simpleName(), Core.LensSpec.simpleName(), dataObjClassName);
         val theField         = new GenField(PUBLIC, FINAL, STATIC, "the"+dataObjClassName, lensType, defaultValue);
         
         val fields = asList(
@@ -166,7 +164,7 @@ public class DataObjectBuilder {
     }
     
     private GenMethod getterToWitherMethod(SourceSpec sourceSpec,
-            Func1<Getter, String> withMethodName, Getter getter) {
+            Function<Getter, String> withMethodName, Getter getter) {
         val name = withMethodName.apply(getter);
         val type = sourceSpec.getTargetType();
         val params = asList(new GenParam(getter.getName(), getter.getType()));

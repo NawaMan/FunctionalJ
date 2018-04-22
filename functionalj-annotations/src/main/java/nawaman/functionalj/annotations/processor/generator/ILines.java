@@ -17,11 +17,11 @@ package nawaman.functionalj.annotations.processor.generator;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
-import static nawaman.functionalj.FunctionalJ.delimitWith;
-import static nawaman.functionalj.FunctionalJ.themAll;
-import static nawaman.functionalj.functions.StringFunctions.prependWith;
-import static nawaman.functionalj.functions.StringFunctions.strNotNullOrEmpty;
-import static nawaman.functionalj.functions.StringFunctions.toStr;
+import static nawaman.functionalj.annotations.processor.generator.utils.delimitWith;
+import static nawaman.functionalj.annotations.processor.generator.utils.prependWith;
+import static nawaman.functionalj.annotations.processor.generator.utils.strNotNullOrEmpty;
+import static nawaman.functionalj.annotations.processor.generator.utils.themAll;
+import static nawaman.functionalj.annotations.processor.generator.utils.toStr;
 
 import java.util.List;
 import java.util.Objects;
@@ -109,7 +109,7 @@ public interface ILines {
         return ()-> Stream.of(stream)
                 .flatMap(themAll())
                 .flatMap(ILines::lines)
-                .filter(Objects::nonNull);
+                .filter (Objects::nonNull);
     }
     
     /**
@@ -187,8 +187,8 @@ public interface ILines {
         return ()-> Stream.of(stream)
                 .flatMap(themAll())
                 .flatMap(ILines::lines)
-                .filter(Objects::nonNull)
-                .map(prependWith("    "));
+                .filter (Objects::nonNull)
+                .map    (prependWith("    "));
     }
     
     /**
