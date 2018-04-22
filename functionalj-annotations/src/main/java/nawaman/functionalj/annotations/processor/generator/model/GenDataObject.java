@@ -72,9 +72,9 @@ public class GenDataObject implements ILines {
     public Stream<String> lines() {
         val importList = importListLines();
         val imports    = importList.map(wrapWith("import ", ";")).collect(toList());
-        val packageDef = "package " + dataClass.packageName() + ";";
-        val dataObjDef = dataClass.getClassSpec().toDefinition();
-        val lines
+        String packageDef = "package " + dataClass.type().packageName() + ";";
+        ILines dataObjDef = dataClass.getClassSpec().toDefinition();
+        ILines lines
                 = linesOf(
                     line(packageDef),
                     emptyLine,
@@ -99,7 +99,7 @@ public class GenDataObject implements ILines {
                 .filter(Objects::nonNull)
                 .collect(toList());
         
-        val thisPackage  = (String)dataClass.packageName();
+        val thisPackage  = (String)dataClass.type().packageName();
         val lensClass    = (String)dataClass.type().lensType().fullName();
         val superClass   = (String)dataClass.getSourcePackageName() + "." + dataClass.getSourceClassName();
         val isLensClass  = (Predicate<String>)((String name) -> name.equals(lensClass));

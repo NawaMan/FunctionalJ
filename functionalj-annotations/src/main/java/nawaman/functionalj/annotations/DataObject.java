@@ -20,10 +20,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * This annotation marks classes to create data object class.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DataObject {
-
+    
+    
     public String  name();
     public boolean noArgConstructor()  default true;
     public boolean generateLensClass() default true;

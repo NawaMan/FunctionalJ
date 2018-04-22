@@ -28,6 +28,11 @@ import nawaman.functionalj.annotations.processor.generator.model.GenConstructor;
 import nawaman.functionalj.annotations.processor.generator.model.GenField;
 import nawaman.functionalj.annotations.processor.generator.model.GenMethod;
 
+/**
+ * Specification for DataObject.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
 @Value
 public class DataObjectSpec {
     
@@ -37,6 +42,21 @@ public class DataObjectSpec {
     private String sourceClassName;
     private String sourcePackageName;
     
+    /**
+     * Constructs a DataObjetSpec.
+     * 
+     * @param className           the name of the generated class.
+     * @param packageName         the package name.
+     * @param sourceClassName     the name of the source class.
+     * @param sourcePackageName   the name of the source paclage.
+     * @param extendeds           the list of extensions.
+     * @param implementeds        the list of implementations.
+     * @param constructors        the list of constructors.
+     * @param fields              the list of fields.
+     * @param methods             the list of methods.
+     * @param innerClasses        the list of inner classes.
+     * @param mores               other ILines.
+     */
     public DataObjectSpec(
             String className,
             String packageName,
@@ -54,23 +74,16 @@ public class DataObjectSpec {
         this.sourcePackageName = sourcePackageName;
     }
     
-    public String simpleName() {
-        return type().simpleName();
-    }
-    
-    public String simpleNameWithGeneric() {
-        return type().simpleNameWithGeneric();
-    }
-    
-    public String packageName() {
-        return type().packageName();
-    }
-    
+    /**
+     * Returns the lens type of this class.
+     * 
+     * @return the lens type of this class.
+     */
     public Type getLensType() {
         return new Type.TypeBuilder()
-                .encloseName(simpleName())
-                .simpleName(simpleName() + "Lens")
-                .packageName(packageName())
+                .encloseName(type().simpleName())
+                .simpleName(type().simpleName() + "Lens")
+                .packageName(type().packageName())
                 .generic("HOST")
                 .build();
     }
