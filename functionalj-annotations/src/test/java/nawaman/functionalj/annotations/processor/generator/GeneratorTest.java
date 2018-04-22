@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import lombok.val;
@@ -34,9 +33,10 @@ public class GeneratorTest {
     
     private Configurations configures = new Configurations();
     {
-        configures.coupleWithDefinition     = true;
-        configures.generateNoArgConstructor = true;
-        configures.generateLensClass        = true;
+        configures.coupleWithDefinition      = true;
+        configures.generateNoArgConstructor  = true;
+        configures.generateAllArgConstructor = true;
+        configures.generateLensClass         = true;
     }
     
     private String  definitionClassName = "Definitions.CarDef";
@@ -145,7 +145,7 @@ public class GeneratorTest {
     }
     
     @Test
-    public void testoArgConstructor() {
+    public void testNoArgConstructor() {
         val generatedWith = generate(()->{
             configures.generateNoArgConstructor = true;
         });
@@ -155,6 +155,34 @@ public class GeneratorTest {
             configures.generateNoArgConstructor = false;
         });
         assertFalse(generatedWithout.contains("public Car() {"));
+    }
+    
+    @Test
+    public void testAllArgConstructor() {
+        val generatedWith = generate(()->{
+            configures.generateAllArgConstructor = true;
+        });
+        assertTrue(generatedWith.contains("public Car(int anint, boolean anbool, String anstring) {"));
+        
+        val generatedWithout = generate(()->{
+            configures.generateAllArgConstructor = false;
+        });
+        assertTrue(generatedWithout.contains("private Car(int anint, boolean anbool, String anstring) {"));
+    }
+    
+    @Test
+    public void testLensClass() {
+        val generatedWith = generate(()->{
+            configures.generateLensClass = true;
+        });
+        assertTrue(generatedWith.contains("public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));"));
+        assertTrue(generatedWith.contains("public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {"));
+        
+        val generatedWithout = generate(()->{
+            configures.generateLensClass = false;
+        });
+        assertFalse(generatedWithout.contains("public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));"));
+        assertFalse(generatedWithout.contains("public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {"));
     }
     
     private String generate() {

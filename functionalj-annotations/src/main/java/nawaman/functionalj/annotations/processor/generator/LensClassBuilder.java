@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.Collections.emptyList;
 
 import lombok.val;
+import nawaman.functionalj.annotations.processor.Core;
 import nawaman.functionalj.annotations.processor.generator.model.GenClass;
 import nawaman.functionalj.annotations.processor.generator.model.GenConstructor;
 import nawaman.functionalj.annotations.processor.generator.model.GenField;
@@ -92,6 +93,19 @@ public class LensClassBuilder {
                 emptyList(),
                 emptyList());
         return lensClass;
+    }
+    
+    /**
+     * Generate the Lens field ("theXxx" field).
+     * 
+     * @return the generated field.
+     */
+    public GenField generateTheLensField() {
+        val dataObjClassName = sourceSpec.getTargetClassName();
+        val lensType         = sourceSpec.getTargetType().lensType().withGeneric(dataObjClassName);
+        val defaultValue     = String.format("new %1$s<>(%2$s.of(%3$s.class))", lensType.simpleName(), Core.LensSpec.simpleName(), dataObjClassName);
+        val theField         = new GenField(PUBLIC, FINAL, STATIC, "the"+dataObjClassName, lensType, defaultValue);
+        return theField;
     }
     
     private GenField getterToLensField(Getter getter, String dataObjectClassName, SourceSpec sourceSpec) {

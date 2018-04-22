@@ -44,6 +44,8 @@ public class SourceSpec {
         public boolean coupleWithDefinition = true;
         /** Should the no-arguments constructor be created. */
         public boolean generateNoArgConstructor  = true;
+        /** Should the all-arguments constructor be created. */
+        public boolean generateAllArgConstructor  = true;
         /** Should the lens class be generated. */
         public boolean generateLensClass = true;
     }

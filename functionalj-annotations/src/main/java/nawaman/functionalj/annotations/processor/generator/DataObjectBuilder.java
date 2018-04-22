@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -39,6 +40,8 @@ import static java.util.Collections.emptyList;
 
 import lombok.val;
 import nawaman.functionalj.annotations.processor.Core;
+import nawaman.functionalj.annotations.processor.generator.model.Accessibility;
+import nawaman.functionalj.annotations.processor.generator.model.GenClass;
 import nawaman.functionalj.annotations.processor.generator.model.GenConstructor;
 import nawaman.functionalj.annotations.processor.generator.model.GenField;
 import nawaman.functionalj.annotations.processor.generator.model.GenMethod;
@@ -70,6 +73,7 @@ public class DataObjectBuilder {
      * @return  the data object.
      **/
     public DataObjectSpec build() {
+        // TODO - Find sometime to clean this up - it is a mess.
         val extendeds    = new ArrayList<Type>();
         val implementeds = new ArrayList<Type>();
         
@@ -85,17 +89,66 @@ public class DataObjectBuilder {
                 PRIVATE, STATIC, MODIFIABLE,
                 sourceSpec.getTargetType(), POST_CONSTRUCT,
                 asList(new GenParam("object", sourceSpec.getTargetType())),
-                ILines.line(
-                asList(
+                line(
                     "if (object instanceof " + ipostConstruct + ")",
                     "    ((" + ipostConstruct + ")object).postConstruct();",
                     "return object;"
-                )));
+                ));
         
         val getters = sourceSpec.getGetters();
         val getterFields  = getters.stream().map(getter -> getterToField(getter));
         val getterMethods = getters.stream().map(getter -> getterToGetterMethod(getter));
         val witherMethods = getters.stream().map(getter -> getterToWitherMethod(sourceSpec, withMethodName, getter));
+        
+        GenField theField = null;
+        GenClass lensClass = null;
+        if (sourceSpec.getConfigures().generateLensClass) {
+            val lensClassBuilder = new LensClassBuilder(sourceSpec);
+            lensClass            = lensClassBuilder.build();
+            theField             = lensClassBuilder.generateTheLensField();
+        }
+        
+        val fields = asList(
+                    Stream.of(theField),
+                    getterFields
+                ).stream()
+                .filter(Objects::nonNull)
+                .flatMap(themAll())
+                .filter(Objects::nonNull)
+                .collect(toList());
+        val flatMap = Arrays.<Stream<GenMethod>>asList(
+                    getterMethods,
+                    witherMethods,
+                    Stream.of(postConstructMethod)
+                 );
+        val methods = flatMap.stream().flatMap(themAll()).collect(toList());
+        
+        val constructors = asList(
+                    noArgConstructor(),
+                    allArgConstructor()
+                ).stream()
+                .filter(Objects::nonNull)
+                .collect(toList());
+        
+        val innerClasses = asList(
+                    lensClass
+                 ).stream()
+                .filter(Objects::nonNull)
+                .collect(toList());;
+        
+        val dataObjSpec = new DataObjectSpec(
+                sourceSpec.getTargetClassName(),
+                sourceSpec.getTargetPackageName(),
+                sourceSpec.getSpecClassName(),
+                sourceSpec.getPackageName(),
+                extendeds, implementeds,
+                constructors, fields, methods, innerClasses, emptyList());
+        return dataObjSpec;
+    }
+    
+    private GenConstructor noArgConstructor() {
+        if (!sourceSpec.getConfigures().generateNoArgConstructor)
+            return null;
         
         val noArgsConstructor = (Function<SourceSpec, GenConstructor>)((SourceSpec spec) ->{
             val name        = spec.getTargetClassName();
@@ -106,7 +159,11 @@ public class DataObjectBuilder {
             val body = "this(" + paramString + ");";
             return new GenConstructor(PUBLIC, name, emptyList(), line(body));
         });
-        val allArgsConstructor = (Function<SourceSpec, GenConstructor>)((SourceSpec spec) ->{
+        return noArgsConstructor.apply(sourceSpec);
+    }
+    
+    private GenConstructor allArgConstructor() {
+        val allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>)((spec, acc) ->{
             val name = spec.getTargetClassName();
             List<GenParam> params = spec.getGetters().stream()
                     .map(getter -> {
@@ -118,45 +175,13 @@ public class DataObjectBuilder {
             val body = spec.getGetters().stream()
                     .map(Getter::getName)
                     .map(arg ->String.format("this.%1$s = %1$s;", arg));
-            return new GenConstructor(PUBLIC, name, params, ILines.of(()->body));
+            return new GenConstructor(acc, name, params, ILines.of(()->body));
         });
-        
-        val dataObjClassName = sourceSpec.getTargetClassName();
-        val lensType         = sourceSpec.getTargetType().lensType().withGeneric(dataObjClassName);
-        val defaultValue     = String.format("new %1$s<>(%2$s.of(%3$s.class))", lensType.simpleName(), Core.LensSpec.simpleName(), dataObjClassName);
-        val theField         = new GenField(PUBLIC, FINAL, STATIC, "the"+dataObjClassName, lensType, defaultValue);
-        
-        val fields = asList(
-                    Stream.of(theField),
-                    getterFields
-                ).stream()
-                .filter(Objects::nonNull)
-                .flatMap(themAll())
-                .collect(toList());
-        val flatMap = Arrays.<Stream<GenMethod>>asList(
-                    getterMethods,
-                    witherMethods,
-                    Stream.of(postConstructMethod)
-                 );
-        val methods = flatMap.stream().flatMap(themAll()).collect(toList());
-        val constructors = new ArrayList<GenConstructor>();
-        if (sourceSpec.getConfigures().generateNoArgConstructor)
-            constructors.add((GenConstructor)noArgsConstructor.apply(sourceSpec));
-        constructors.add((GenConstructor)allArgsConstructor.apply(sourceSpec));
-        
-        val lensClassBuilder = new LensClassBuilder(sourceSpec);
-        val lensClass        = lensClassBuilder.build();
-        
-        val innerClasses = asList(lensClass);
-        
-        val dataObjSpec = new DataObjectSpec(
-                sourceSpec.getTargetClassName(),
-                sourceSpec.getTargetPackageName(),
-                sourceSpec.getSpecClassName(),
-                sourceSpec.getPackageName(),
-                extendeds, implementeds,
-                constructors, fields, methods, innerClasses, emptyList());
-        return dataObjSpec;
+        val allArgsConstAccessibility
+                = sourceSpec.getConfigures().generateAllArgConstructor
+                ? Accessibility.PUBLIC
+                : Accessibility.PRIVATE;
+        return allArgsConstructor.apply(sourceSpec, allArgsConstAccessibility);
     }
     
     private GenField getterToField(Getter getter) {
