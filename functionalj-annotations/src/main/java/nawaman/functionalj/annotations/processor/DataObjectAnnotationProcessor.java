@@ -20,7 +20,6 @@ import java.io.Writer;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -38,12 +37,12 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import lombok.val;
 import nawaman.functionalj.annotations.DataObject;
 import nawaman.functionalj.annotations.processor.generator.DataObjectBuilder;
-import nawaman.functionalj.annotations.processor.generator.DataObjectSpec;
 import nawaman.functionalj.annotations.processor.generator.Getter;
 import nawaman.functionalj.annotations.processor.generator.SourceSpec;
 import nawaman.functionalj.annotations.processor.generator.SourceSpec.Configurations;
@@ -111,14 +110,21 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             val dataObject     = element.getAnnotation(DataObject.class);
             val specTargetName = dataObject.name();
             val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
-            val configures     = new Configurations();
-            configures.noArgConstructor  = dataObject.noArgConstructor();
+            
+            val configures = new Configurations();
+            configures.noArgConstructor  = dataObject.generateNoArgConstructor();
             configures.generateLensClass = dataObject.generateLensClass();
             
-            SourceSpec sourceSpec = new SourceSpec(sourceName, packageName, targetName, packageName, isClass, configures, getters);
             try {
-                DataObjectSpec dataObjSpec =  new DataObjectBuilder(sourceSpec).build();
-                generateCode(element, dataObjSpec);
+                val sourceSpec
+                        = new SourceSpec(
+                            sourceName, packageName, targetName, packageName,
+                            isClass,
+                            configures, getters);
+                val dataObjSpec = new DataObjectBuilder(sourceSpec).build();
+                val className   = (String)dataObjSpec.type().fullName();
+                val content     = new GenDataObject(dataObjSpec).lines().collect(joining("\n"));
+                generateCode(element, className, content);
             } catch (Exception e) {
                 error(element, "Problem generating the class: "
                                 + packageName + "." + specTargetName
@@ -158,12 +164,8 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         return null;
     }
     
-    private void generateCode(Element element, DataObjectSpec dataObjectSpec) throws IOException {
-        String className   = dataObjectSpec.type().simpleName();
-        String packageName = dataObjectSpec.type().packageName();
-        
-        try (Writer writer = filer.createSourceFile(packageName + "." + className, element).openWriter()) {
-            String content = new GenDataObject(dataObjectSpec).lines().collect(Collectors.joining("\n"));
+    private void generateCode(Element element, String className, String content) throws IOException {
+        try (Writer writer = filer.createSourceFile(className, element).openWriter()) {
             writer.write(content);
         }
     }

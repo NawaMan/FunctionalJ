@@ -83,10 +83,12 @@ public class DataObjectBuilder {
                 PRIVATE, MODIFIABLE, INSTANCE,
                 sourceSpec.getTargetType(), "postProcess",
                 asList(new GenParam("object", sourceSpec.getTargetType())),
-                line(String.format(
-                     "if (object instanceof %1$s)",
-                     "    ((%1$s)object).postConstruct();",
-                     "return object;", ipostConstruct)));
+                ILines.line(
+                asList(
+                    "if (object instanceof " + ipostConstruct + ")",
+                    "    ((" + ipostConstruct + ")object).postConstruct();",
+                    "return object;"
+                )));
         
         val getters = sourceSpec.getGetters();
         val getterFields  = getters.stream().map(getter -> getterToField(getter));

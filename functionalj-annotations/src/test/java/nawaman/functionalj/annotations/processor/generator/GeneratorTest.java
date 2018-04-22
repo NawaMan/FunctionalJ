@@ -93,7 +93,9 @@ public class GeneratorTest {
                 "        return postProcess(new Car(anint, anbool, anstring));\n" + 
                 "    }\n" + 
                 "    private Car postProcess(Car object) {\n" + 
-                "        if (object instanceof     ((%1$s)object).postConstruct();)\n" + 
+                "        if (object instanceof IPostConstruct)\n" + 
+                "            ((IPostConstruct)object).postConstruct();\n" + 
+                "        return object;\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {\n" + 
