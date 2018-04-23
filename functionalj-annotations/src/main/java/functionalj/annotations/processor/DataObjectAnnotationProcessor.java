@@ -16,6 +16,7 @@
 package functionalj.annotations.processor;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -45,8 +46,8 @@ import functionalj.annotations.DataObject;
 import functionalj.annotations.processor.generator.DataObjectBuilder;
 import functionalj.annotations.processor.generator.Getter;
 import functionalj.annotations.processor.generator.SourceSpec;
-import functionalj.annotations.processor.generator.Type;
 import functionalj.annotations.processor.generator.SourceSpec.Configurations;
+import functionalj.annotations.processor.generator.Type;
 import functionalj.annotations.processor.generator.model.GenDataObject;
 import lombok.val;
 
@@ -103,10 +104,12 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
                     .filter(elmt  ->elmt.getKind().equals(ElementKind.METHOD))
                     .map   (elmt  ->((ExecutableElement)elmt))
                     .filter(method->!method.isDefault())
+                    .filter(method->!isClass || isAbstract(method))
                     .filter(method->!(method.getReturnType() instanceof NoType))
                     .filter(method->method.getParameters().isEmpty())
                     .map   (method->createGetterFromMethod(method))
                     .collect(toList());
+            
             
             val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
             val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
@@ -138,7 +141,17 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         }
         return hasError;
     }
-
+    
+    private boolean isAbstract(ExecutableElement method) {
+        try (val writer = new StringWriter()) {
+            elementUtils.printElements(writer, method);
+            return writer.toString().contains(" abstract ");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
     private Getter createGetterFromMethod(ExecutableElement method) {
         String methodName = method.getSimpleName().toString();
         Type   returnType = getType(method.getReturnType());

@@ -20,19 +20,19 @@ public class SimpleDataObjectTest {
         
         public String name();
         
-//        public default String nameUpperCase() {
-//            return name().toUpperCase();
-//        }
+        public default String nameUpperCase() {
+            return name().toUpperCase();
+        }
     }
         
     @Test
-    public void testSimpleDoInterface_readLens() {
+    public void testReadLens_getProperty() {
         val obj1 = new SimpleFromInteface("Obj1");
         assertEquals("Obj1", theSimpleFromInteface.name.apply(obj1));
     }
         
     @Test
-    public void testSimpleDoInterface_writeLens() {
+    public void testWriteLens_createNewObject() {
         val obj1 = new SimpleFromInteface("Obj1");
         assertEquals("Obj1",               obj1.name());
         assertEquals("Object1",            theSimpleFromInteface.name.changeTo("Object1").apply(obj1).name());
@@ -42,7 +42,7 @@ public class SimpleDataObjectTest {
     }
     
     @Test
-    public void testSimpleDoInterface_withStream() {
+    public void testWithStream_createNewObject() {
         val list = Arrays.asList(
                     new SimpleFromInteface("Obj1"),
                     new SimpleFromInteface("Obj2"),
@@ -55,9 +55,13 @@ public class SimpleDataObjectTest {
     }
     
     @Test
-    public void testSimpleDoInterface_noArgConstructor() {
+    public void testNoArgConstructor_null() {
         assertNull(new SimpleFromInteface().name());
-        
+    }
+    
+    @Test
+    public void testDefaultMethod_callNormally() {
+        assertEquals("OBJ1", new SimpleFromInteface("Obj1").nameUpperCase());
     }
     
 }
