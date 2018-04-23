@@ -46,7 +46,6 @@ public enum Core {
     StringLens ("StringLens"),
     
     ObjectLensImpl("ObjectLensImpl"),
-    IPostConstruct("IPostConstruct"),
     LensSpec      ("LensSpec")
     ;
     

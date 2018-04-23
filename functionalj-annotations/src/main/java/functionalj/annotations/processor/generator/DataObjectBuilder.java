@@ -38,7 +38,7 @@ import static java.util.stream.Collectors.toList;
 
 import static java.util.Collections.emptyList;
 
-import functionalj.annotations.processor.Core;
+import functionalj.annotations.IPostReConstruct;
 import functionalj.annotations.processor.generator.model.Accessibility;
 import functionalj.annotations.processor.generator.model.GenClass;
 import functionalj.annotations.processor.generator.model.GenConstructor;
@@ -54,7 +54,7 @@ import lombok.val;
  */
 public class DataObjectBuilder {
     
-    private static final String POST_CONSTRUCT = "postConstruct";
+    private static final String POST_CONSTRUCT = "postReConstruct";
     
     private SourceSpec sourceSpec;
     
@@ -83,15 +83,15 @@ public class DataObjectBuilder {
             else implementeds.add(sourceSpec.toType());
         }
         
-        val withMethodName = (Function<Getter, String>)(utils::withMethodName);
-        val ipostConstruct = Core.IPostConstruct.simpleName();
-        val postConstructMethod = new GenMethod(
+        val withMethodName   = (Function<Getter, String>)(utils::withMethodName);
+        val ipostReConstruct = Type.of(IPostReConstruct.class).simpleName();
+        val postReConstructMethod = new GenMethod(
                 PRIVATE, STATIC, MODIFIABLE,
                 sourceSpec.getTargetType(), POST_CONSTRUCT,
                 asList(new GenParam("object", sourceSpec.getTargetType())),
                 line(
-                    "if (object instanceof " + ipostConstruct + ")",
-                    "    ((" + ipostConstruct + ")object).postConstruct();",
+                    "if (object instanceof " + ipostReConstruct + ")",
+                    "    ((" + ipostReConstruct + ")object).postReConstruct();",
                     "return object;"
                 ));
         
@@ -119,7 +119,7 @@ public class DataObjectBuilder {
         val flatMap = Arrays.<Stream<GenMethod>>asList(
                     getterMethods,
                     witherMethods,
-                    Stream.of(postConstructMethod)
+                    Stream.of(postReConstructMethod)
                  );
         val methods = flatMap.stream().flatMap(themAll()).collect(toList());
         

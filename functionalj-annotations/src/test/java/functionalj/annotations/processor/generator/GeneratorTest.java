@@ -60,8 +60,8 @@ public class GeneratorTest {
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
+                "import functionalj.annotations.IPostReConstruct;\n" +
                 "import functionalj.lens.BooleanLens;\n" + 
-                "import functionalj.lens.IPostConstruct;\n" + 
                 "import functionalj.lens.IntegerLens;\n" + 
                 "import functionalj.lens.LensSpec;\n" + 
                 "import functionalj.lens.ObjectLensImpl;\n" + 
@@ -93,17 +93,17 @@ public class GeneratorTest {
                 "        return anstring;\n" + 
                 "    }\n" + 
                 "    public Car withAnint(int anint) {\n" + 
-                "        return postConstruct(new Car(anint, anbool, anstring));\n" + 
+                "        return postReConstruct(new Car(anint, anbool, anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnbool(boolean anbool) {\n" + 
-                "        return postConstruct(new Car(anint, anbool, anstring));\n" + 
+                "        return postReConstruct(new Car(anint, anbool, anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnstring(String anstring) {\n" + 
-                "        return postConstruct(new Car(anint, anbool, anstring));\n" + 
+                "        return postReConstruct(new Car(anint, anbool, anstring));\n" + 
                 "    }\n" + 
-                "    private static Car postConstruct(Car object) {\n" + 
-                "        if (object instanceof IPostConstruct)\n" + 
-                "            ((IPostConstruct)object).postConstruct();\n" + 
+                "    private static Car postReConstruct(Car object) {\n" + 
+                "        if (object instanceof IPostReConstruct)\n" + 
+                "            ((IPostReConstruct)object).postReConstruct();\n" + 
                 "        return object;\n" + 
                 "    }\n" + 
                 "    \n" + 

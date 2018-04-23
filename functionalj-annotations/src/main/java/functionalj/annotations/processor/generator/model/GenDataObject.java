@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
+import functionalj.annotations.IPostReConstruct;
 import functionalj.annotations.processor.Core;
 import functionalj.annotations.processor.generator.DataObjectSpec;
 import functionalj.annotations.processor.generator.ILines;
@@ -51,7 +52,7 @@ public class GenDataObject implements ILines {
     );
     
     private static final List<Type> alwaysImports = asList(
-            Core.IPostConstruct.type(),
+            Type.of(IPostReConstruct.class),
             Core.ObjectLensImpl.type(),
             Core.LensSpec.type()
     );

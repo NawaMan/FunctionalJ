@@ -32,6 +32,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
@@ -101,6 +102,8 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             List<Getter> getters = type.getEnclosedElements().stream()
                     .filter(elmt  ->elmt.getKind().equals(ElementKind.METHOD))
                     .map   (elmt  ->((ExecutableElement)elmt))
+                    .filter(method->!method.isDefault())
+                    .filter(method->!(method.getReturnType() instanceof NoType))
                     .filter(method->method.getParameters().isEmpty())
                     .map   (method->createGetterFromMethod(method))
                     .collect(toList());
