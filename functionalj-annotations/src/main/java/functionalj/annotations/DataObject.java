@@ -30,8 +30,8 @@ import java.lang.annotation.Target;
 public @interface DataObject {
     
     /** @return the name of the target class. */
-    public String  name();
-
+    public String  name() default "";
+    
     /**
      * @return the flag indicating that the generated class should extends or implements the definition
      *   class/interface - default to true.
@@ -41,7 +41,11 @@ public @interface DataObject {
     /** @return the flag indicating that the no-arguments constructor should be created - default to true. */
     public boolean generateNoArgConstructor() default true;
     
+    /** @return the flag indicating that the no-arguments constructor should be created - default to true. */
+    public boolean generateAllArgConstructor() default true;
+    
     /** @return the flag indicating that the lens class should be created - default to true. */
     public boolean generateLensClass() default true;
+    
     
 }

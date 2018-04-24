@@ -119,7 +119,14 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             
             val configures = new Configurations();
             configures.generateNoArgConstructor  = dataObject.generateNoArgConstructor();
-            configures.generateLensClass = dataObject.generateLensClass();
+            configures.generateAllArgConstructor = dataObject.generateAllArgConstructor();
+            configures.generateLensClass         = dataObject.generateLensClass();
+            
+            if (!configures.generateNoArgConstructor
+             && !configures.generateAllArgConstructor) {
+                error(element, "generateNoArgConstructor and generateAllArgConstructor must be be false at the same time.");
+                continue;
+            }
             
             try {
                 val sourceSpec
@@ -143,6 +150,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     }
     
     private boolean isAbstract(ExecutableElement method) {
+        // Seriously ... no other way?
         try (val writer = new StringWriter()) {
             elementUtils.printElements(writer, method);
             return writer.toString().contains(" abstract ");
