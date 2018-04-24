@@ -145,8 +145,8 @@ public class DataObjectBuilder {
         val noArgsConstructor = (Function<SourceSpec, GenConstructor>)((SourceSpec spec) ->{
             val name        = spec.getTargetClassName();
             val paramString = spec.getGetters().stream()
-                    .map(getter -> getter.getType().defaultValue())
-                    .map(String::valueOf)
+                    .map    (getter -> getter.getType().defaultValue())
+                    .map    (String::valueOf)
                     .collect(joining(", "));
             val body = "this(" + paramString + ");";
             return new GenConstructor(PUBLIC, name, emptyList(), line(body));
@@ -158,15 +158,11 @@ public class DataObjectBuilder {
         val allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>)((spec, acc) ->{
             val name = spec.getTargetClassName();
             List<GenParam> params = spec.getGetters().stream()
-                    .map(getter -> {
-                        val paramName = getter.getName();
-                        val paramType = getter.getType();
-                        return new GenParam(paramName, paramType);
-                    })
+                    .map    (this::getterToGenParam)
                     .collect(toList());
             val body = spec.getGetters().stream()
                     .map(Getter::getName)
-                    .map(arg ->String.format("this.%1$s = %1$s;", arg));
+                    .map(arg -> String.format("this.%1$s = %1$s;", arg));
             return new GenConstructor(acc, name, params, ILines.of(()->body));
         });
         val allArgsConstAccessibility
@@ -182,6 +178,12 @@ public class DataObjectBuilder {
         val type  = getter.getType();
         val field = new GenField(PRIVATE, FINAL, INSTANCE, name, type, null);
         return field;
+    }
+    
+    private GenParam getterToGenParam(Getter getter) {
+        val paramName = getter.getName();
+        val paramType = getter.getType();
+        return new GenParam(paramName, paramType);
     }
     
     private GenMethod getterToWitherMethod(SourceSpec sourceSpec,

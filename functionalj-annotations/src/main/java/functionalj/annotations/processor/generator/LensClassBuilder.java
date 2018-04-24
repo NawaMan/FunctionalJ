@@ -109,14 +109,15 @@ public class LensClassBuilder {
     }
     
     private GenField getterToLensField(Getter getter, String dataObjectClassName, SourceSpec sourceSpec) {
-        val dataObjName = dataObjectClassName;
-        val name        = getter.getName();
-        val type        = getter.getType().declaredType();
-        val lensType    = type.lensType().withGeneric("HOST");
-        val withName    = utils.withMethodName(getter);
-        val spec        = "spec->()->spec"; // If Custom lens -> spec->new Brand.BrandLens<>(spec)
-        val value       = format("createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
-        val field       = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
+        val dataObjName  = dataObjectClassName;
+        val name         = getter.getName();
+        val type         = getter.getType().declaredType();
+        val lensType     = type.lensType().withGeneric("HOST");
+        val withName     = utils.withMethodName(getter);
+        val isCustomLens = type.lensType().isCustomLens();
+        val spec         = isCustomLens ? "spec->new " + lensType.simpleName() + "<>(spec)" : "spec->()->spec";
+        val value        = format("createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }
     

@@ -89,6 +89,7 @@ public class GenDataObject implements ILines {
         dataClass.fields()      .stream().flatMap(GenField      ::requiredTypes).forEach(types::add);
         dataClass.methods()     .stream().flatMap(GenMethod     ::requiredTypes).forEach(types::add);
         dataClass.constructors().stream().flatMap(GenConstructor::requiredTypes).forEach(types::add);
+        dataClass.innerClasses().stream().flatMap(GenClass      ::requiredTypes).forEach(types::add);
         dataClass.extendeds()   .forEach(types::add);
         dataClass.implementeds().forEach(types::add);
         
@@ -99,6 +100,7 @@ public class GenDataObject implements ILines {
                 .collect(toList());
         
         val thisPackage  = (String)dataClass.type().packageName();
+        val thisEnclose  = (String)dataClass.type().encloseName();
         val lensClass    = (String)dataClass.type().lensType().fullName();
         val superClass   = (String)dataClass.getSourcePackageName() + "." + dataClass.getSourceClassName();
         val isLensClass  = (Predicate<String>)((String name) -> name.equals(lensClass));
@@ -115,7 +117,7 @@ public class GenDataObject implements ILines {
             .flatMap(themAll())
             .collect(toList());
         val importList = importTypes.stream()
-                .filter(type->!thisPackage.equals(type.packageName()))
+                .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisEnclose, type.encloseName()))
                 .map   (Type::declaredType)
                 .map   (Type::fullName)
                 .filter(type -> !implicitImports.contains(type))

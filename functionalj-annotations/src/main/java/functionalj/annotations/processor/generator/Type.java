@@ -177,6 +177,15 @@ public class Type implements IRequireTypes {
                 .generic("HOST")
                 .build();
     }
+
+    /**
+     * Check if this lens is custom lens.
+     * 
+     * @return {@code true} if this lens is a custom lens.
+     */
+    public boolean isCustomLens() {
+        return !lensTypes.values().contains(this.lensType());
+    }
     
     @Override
     public boolean equals(Object obj) {
