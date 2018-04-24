@@ -15,11 +15,17 @@
 //  ========================================================================
 package functionalj.annotations.processor.generator;
 
+import static java.util.Arrays.stream;
+
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 import lombok.val;
 
@@ -66,6 +72,22 @@ class utils {
     static String withMethodName(Getter getter) {
         val name = getter.getName();
         return "with" + name.substring(0,1).toUpperCase() + name.substring(1);
+    }
+    
+    @SafeVarargs
+    static <T> List<T> listOf(T ... ts) {
+        return stream(ts)
+                .filter(Objects::nonNull)
+                .collect(toList());
+    }
+    
+    @SafeVarargs
+    static <T> List<T> listOf(Stream<T> ... ts) {
+        return stream(ts)
+                .filter(Objects::nonNull)
+                .flatMap(themAll())
+                .filter(Objects::nonNull)
+                .collect(toList());
     }
 
 }

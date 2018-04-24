@@ -22,13 +22,13 @@ import static functionalj.annotations.processor.generator.model.Modifiability.FI
 import static functionalj.annotations.processor.generator.model.Modifiability.MODIFIABLE;
 import static functionalj.annotations.processor.generator.model.Scope.INSTANCE;
 import static functionalj.annotations.processor.generator.model.Scope.STATIC;
+import static functionalj.annotations.processor.generator.utils.listOf;
 import static functionalj.annotations.processor.generator.utils.themAll;
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -108,14 +108,10 @@ public class DataObjectBuilder {
             theField             = lensClassBuilder.generateTheLensField();
         }
         
-        val fields = asList(
+        val fields = listOf(
                     Stream.of(theField),
                     getterFields
-                ).stream()
-                .filter(Objects::nonNull)
-                .flatMap(themAll())
-                .filter(Objects::nonNull)
-                .collect(toList());
+                );
         val flatMap = Arrays.<Stream<GenMethod>>asList(
                     getterMethods,
                     witherMethods,
@@ -123,18 +119,14 @@ public class DataObjectBuilder {
                  );
         val methods = flatMap.stream().flatMap(themAll()).collect(toList());
         
-        val constructors = asList(
+        val constructors = listOf(
                     noArgConstructor(),
                     allArgConstructor()
-                ).stream()
-                .filter(Objects::nonNull)
-                .collect(toList());
+                );
         
-        val innerClasses = asList(
+        val innerClasses = listOf(
                     lensClass
-                 ).stream()
-                .filter(Objects::nonNull)
-                .collect(toList());;
+                 );
         
         val dataObjSpec = new DataObjectSpec(
                 sourceSpec.getTargetClassName(),
@@ -179,8 +171,8 @@ public class DataObjectBuilder {
         });
         val allArgsConstAccessibility
                 = sourceSpec.getConfigures().generateAllArgConstructor
-                ? Accessibility.PUBLIC
-                : Accessibility.PRIVATE;
+                ? PUBLIC
+                : PRIVATE;
         return allArgsConstructor.apply(sourceSpec, allArgsConstAccessibility);
     }
     
