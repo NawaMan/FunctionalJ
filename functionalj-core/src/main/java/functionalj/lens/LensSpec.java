@@ -61,29 +61,43 @@ public class LensSpec<HOST, DATA> {
             Func1<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
         val lensSpec = dataLens.lensSpec();
         
-        Function<HOST, SUB> hostSubRead = host ->{
-            val read  = lensSpec.getRead();
-            val value = read.apply(host);
-            if (lensSpec.isNullSafe() && (value == null))
+        val readValue    = lensSpec.getRead();
+        val writeValue   = lensSpec.getWrite();
+        val isNullSafe   = lensSpec.isNullSafe();
+        val hostSubRead  = createSubRead(readValue, readSub,              isNullSafe);
+        val hostSubWrite = createSubWrite(readValue, writeValue, writeSub, isNullSafe);
+        val hostSubSpec  = LensSpec.of(hostSubRead, hostSubWrite).withNullSafety(lensSpec.isNullSafe());
+        return subLensCreator.apply(hostSubSpec);
+    }
+    
+    public static <DATA, SUB, HOST> Function<HOST, SUB> createSubRead(
+            Function<HOST, DATA> readValue,
+            Function<DATA, SUB>  readSub, 
+            boolean              isNullSafe) {
+        return host ->{
+            val value = readValue.apply(host);
+            if (isNullSafe && (value == null))
                 return null;
             
             val subValue = readSub.apply(value);
             return subValue;
         };
-        BiFunction<HOST, SUB, HOST> hostSubWrite = (host, newSubValue)->{
-            val readValue  = lensSpec.getRead();
-            val oldValue   = readValue.apply(host);
-            if (lensSpec.isNullSafe() && (oldValue == null))
+    }
+    
+    public static <HOST, DATA, SUB> BiFunction<HOST, SUB, HOST> createSubWrite(
+            Function<HOST, DATA>        readValue,
+            WriteLens<HOST, DATA>       writeValue,
+            BiFunction<DATA, SUB, DATA> writeSub,
+            boolean                     isNullSafe) {
+        return (host, newSubValue)->{
+            val oldValue = readValue.apply(host);
+            if (isNullSafe && (oldValue == null))
                 return null;
             
-            val newValue   = writeSub.apply(oldValue, newSubValue);
-            val writeValue = lensSpec.getWrite();
-            val newHost    = writeValue.apply(host, newValue);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
             return newHost;
         };
-        
-        val hostSubSpec = LensSpec.of(hostSubRead, hostSubWrite).withNullSafety(lensSpec.isNullSafe());
-        return subLensCreator.apply(hostSubSpec);
     }
     
 }

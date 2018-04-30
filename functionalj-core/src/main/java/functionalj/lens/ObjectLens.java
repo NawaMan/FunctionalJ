@@ -18,6 +18,4 @@ public interface ObjectLens<HOST, DATA> extends AnyLens<HOST, DATA>, ObjectAcces
         return host -> lensSpec().getWrite().apply(host, data);
     }
     
-    
-    
 }

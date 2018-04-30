@@ -36,7 +36,7 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
     public default IntegerAccess<HOST> getHashCode() {
         return intAccess(Integer.MIN_VALUE, any -> any.hashCode());
     }
-    public default StringAccess<HOST> getToString() {
+    public default StringAccess<HOST> convertToString() {
         return stringAccess(null, any -> any.toString());
     }
     

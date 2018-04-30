@@ -1,5 +1,7 @@
 package functionalj.lens;
 
+import static functionalj.lens.Access.theItem;
+import static functionalj.lens.Access.theString;
 import static functionalj.lens.LensTest.Car.theCar;
 import static functionalj.lens.LensTest.Company.theCompany;
 import static functionalj.lens.LensTest.Driver.theDriver;
@@ -10,6 +12,9 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.junit.Test;
 
@@ -17,10 +22,8 @@ import static java.util.Collections.unmodifiableList;
 
 import functionalj.FunctionalJ;
 import functionalj.functions.Func1;
-import functionalj.lens.CollectionLens;
-import functionalj.lens.LensSpec;
-import functionalj.lens.ObjectLensImpl;
-import functionalj.lens.StringLens;
+import functionalj.functions.Func2;
+import functionalj.lens.LensTest.Driver.DriverLens;
 import functionalj.types.MayBe;
 import lombok.val;
 
@@ -73,6 +76,9 @@ public class LensTest {
         val findCarColor = theDriver.car.toMayBe().map(theCar.color);
         assertThis("Nothing",    findCarColor.applyTo(new Driver(null)));
         assertThis("Just(blue)", findCarColor.applyTo(new Driver(new Car("blue"))));
+        
+        val company = new Company(asList(driver1, driver1.withCar(new Car("red"))));
+         assertEquals("Driver(car=Car(color=blue))", theCompany.drivers.first().apply(company).toString());
     }
 
     
@@ -182,7 +188,8 @@ public class LensTest {
         public static class CompanyLens<HOST> extends ObjectLensImpl<HOST, Company>{
             
             // Will need a way to allow the collection lens to create the lens of the element.
-            public final CollectionLens<HOST, Driver, List<Driver>> drivers = createSubLens(Company::drivers, Company::withDrivers, spec->()->spec);
+            public final ListLens<HOST, List<Driver>, Driver, Driver.DriverLens<HOST>> drivers
+                    = createSubListLens(Company::drivers, Company::withDrivers, DriverLens::new);
             
             public CompanyLens(LensSpec<HOST, Company> spec) { super(spec); }
             
@@ -217,6 +224,89 @@ public class LensTest {
             fail("Expect an NPE.");
         } catch (NullPointerException e) {
         }
+    }
+    
+    public class WithNames {
+        
+        private List<String> names = new ArrayList<>();
+        
+        public WithNames(List<String> names) {
+            this.names.addAll(names);
+        }
+        
+        public List<String> names() {
+            return names;
+        }
+        
+        public WithNames withNames(List<String> newNames) {
+            return new WithNames(newNames);
+        }
+    }
+    
+    @Test
+    public void testListAccess() {
+        val accSub = new AccessWithSub<WithNames, List<String>, String, StringAccess<WithNames>>() {
+            @Override
+            public List<String> apply(WithNames input) {
+                return input.names();
+            }
+            @Override
+            public StringAccess<WithNames> createSubAccess(Func1<List<String>, String> accessToSub) {
+                return withNames -> accessToSub.apply(this.apply(withNames));
+            }
+        };
+        val listAcc = new ListAccess<WithNames, List<String>, String, StringAccess<WithNames>>() {
+            @Override
+            public AccessWithSub<WithNames, List<String>, String, StringAccess<WithNames>> lensSpecWithSub() {
+                return accSub;
+            }
+        };
+        
+        assertEquals("One", listAcc.first().apply(new WithNames(asList("One", "Two"))));
+        assertEquals("One", Optional.of(new WithNames(asList("One", "Two")))
+                .map(listAcc.first())
+                .get());
+        assertEquals("[One, Two]", Optional.of(new WithNames(asList("One", "Two", "Three", "Four")))
+                .map(listAcc.filter(theString.length().thatEquals(3)))
+                .map(theItem().convertToString())
+                .get());
+        assertEquals("ONE", Optional.of(new WithNames(asList("One", "Two")))
+                .map(listAcc.first())
+                .map(theString.toUpperCase())
+                .get());
+    }
+    
+    public class WithCars {
+
+        private List<Car> cars = new ArrayList<>();
+        
+        public WithCars(List<Car> cars) {
+            this.cars.addAll(cars);
+        }
+        
+        public List<Car> cars() {
+            return cars;
+        }
+        
+        public WithCars withCars(List<Car> newCars) {
+            return new WithCars(newCars);
+        }
+        
+        @Override
+        public String toString() {
+            return "WithCars [cars=" + cars + "]";
+        }
+        
+    }
+    
+    @Test
+    public void testListLens() {
+        val listLens = ListLens.createListLens(WithCars::cars, WithCars::withCars, subSpec -> new Car.CarLens<>(subSpec));
+        
+        val withCars = new WithCars(asList(new Car("Blue")));
+        assertEquals("WithCars [cars=[Car(color=Blue)]]",  withCars.toString());
+        assertEquals("Car(color=Blue)",                    listLens.first().apply(withCars).toString());
+        assertEquals("WithCars [cars=[Car(color=Green)]]", listLens.first().withColor("Green").apply(withCars).toString());
     }
     
 }
