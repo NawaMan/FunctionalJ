@@ -48,6 +48,9 @@ public class LensSpec<HOST, DATA> {
     }
     
     public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write) {
+        if (write == null)
+            return new LensSpec<HOST, DATA>(read::apply, null);
+        
         return new LensSpec<HOST, DATA>(read::apply, write::apply);
     }
     public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write, boolean isNullSafe) {

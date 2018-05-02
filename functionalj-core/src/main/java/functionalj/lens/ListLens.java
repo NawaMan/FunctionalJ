@@ -35,40 +35,36 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
         return lensSpec().getRead().apply(host);
     }
     
-    
-    public default SUBLENS first() {
-        return at(0);
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default SUBLENS last() {
-        return createSubLens(
-                (list) -> {
-                    if (list == null)
-                        return null;
-                    return list.get(list.size() - 1);
-                },
-                (list, newValue)->{
-                    val newList = new ArrayList<>(list);
-                    newList.set(list.size() - 1, newValue);
-                    return (LIST)newList;
-                });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default SUBLENS at(int index) {
-        return createSubLens(
-                (list) -> {
-                    if (list == null)
-                        return null;
-                    return list.get(index);
-                },
-                (list, newValue)->{
-                    val newList = new ArrayList<>(list);
-                    newList.set(index, newValue);
-                    return (LIST)newList;
-                });
-    }
+//    
+//    public default SUBLENS first() {
+//        return at(0);
+//    }
+//    
+//    @SuppressWarnings("unchecked")
+//    public default SUBLENS last() {
+//        return createSubLens(
+//                (list) -> {
+//                    return list.get(list.size() - 1);
+//                },
+//                (list, newValue)->{
+//                    val newList = new ArrayList<>(list);
+//                    newList.set(list.size() - 1, newValue);
+//                    return (LIST)newList;
+//                });
+//    }
+//    
+//    @SuppressWarnings("unchecked")
+//    public default SUBLENS at(int index) {
+//        return createSubLens(
+//                (list) -> {
+//                    return list.get(index);
+//                },
+//                (list, newValue)->{
+//                    val newList = new ArrayList<>(list);
+//                    newList.set(index, newValue);
+//                    return (LIST)newList;
+//                });
+//    }
     // Add filterMap
 //    public default ListLens<HOST, LIST, TYPE, SUBLENS> filter(Predicate<TYPE> checker) {
 //        val spec        = lensSpecWithSub();

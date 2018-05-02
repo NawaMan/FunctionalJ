@@ -6,14 +6,22 @@ import java.util.function.Function;
 import functionalj.functions.Func1;
 import functionalj.types.MayBe;
 import lombok.val;
+import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
 public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
     
     // TODO - See if we can return a lens here when this object is a lens.
+    // TOD change this to Nullable
     public default MayBeAccess<HOST, DATA> toMayBe() {
         return host -> MayBe.of(this.apply(host));
     }
+
+// TODO - Not enough information at this point
+//    public default <ANYACCESS extends AnyAccess<HOST, DATA>> 
+//            NullableAccess<HOST, Nullable<DATA>, DATA, ANYACCESS> toNullable() {
+//        return createNullableSubAccess(this, Nullable::of, func1 -> func1)
+//    }
     
     public default BooleanAccess<HOST> thatIs(DATA value) {
         return booleanAccess(value != null, any -> any == value);
@@ -64,5 +72,35 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
     public default BooleanAccess<HOST> booleanAccess(boolean defaultValue, Function<DATA, Boolean> function) {
         return host -> processValue(host, defaultValue, function);
     }
+ 
+
+ // TODO - Not enough information at this point
+//    public default <SUB, DATAACCESS extends AnyAccess<HOST, DATA>, SUBACCESS extends AnyAccess<HOST, SUB>>
+//            NullableAccess<HOST, Nullable<SUB>, SUB, SUBACCESS> createNullableSubAccess(
+//                    DATAACCESS                 dataAccess,
+//                    Func1<DATA, Nullable<SUB>> getElement,
+//                    Func1<Func1<HOST, SUB>, SUBACCESS> createSub) {
+//        return ()->{
+//            return new AccessWithSub<HOST, Nullable<SUB>, SUB, SUBACCESS>() {
+//                @Override
+//                public Nullable<SUB> apply(HOST host) {
+//                    val list     = dataAccess.apply(host);
+//                    val nullable = getElement.apply(list);
+//                    return nullable;
+//                }
+//                
+//                @Override
+//                public SUBACCESS createSubAccess(Func1<Nullable<SUB>, SUB> accessToSub) {
+//                    return createSub.apply((HOST host) -> {
+//                        val nullableSub = getElement.apply(AnyAccess.this.apply(host));
+//                        val sub         = accessToSub.apply(nullableSub);
+//                        return sub;
+//                    });
+//                }
+//                
+//            };
+//        };
+//    }
+    
     
 }

@@ -8,13 +8,12 @@ import static functionalj.lens.LensTest.Driver.theDriver;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import org.junit.Test;
 
@@ -22,7 +21,6 @@ import static java.util.Collections.unmodifiableList;
 
 import functionalj.FunctionalJ;
 import functionalj.functions.Func1;
-import functionalj.functions.Func2;
 import functionalj.lens.LensTest.Driver.DriverLens;
 import functionalj.types.MayBe;
 import lombok.val;
@@ -78,7 +76,7 @@ public class LensTest {
         assertThis("Just(blue)", findCarColor.applyTo(new Driver(new Car("blue"))));
         
         val company = new Company(asList(driver1, driver1.withCar(new Car("red"))));
-         assertEquals("Driver(car=Car(color=blue))", theCompany.drivers.first().apply(company).toString());
+         assertEquals("Driver(car=Car(color=blue))", theCompany.drivers.first().get().apply(company).toString());
     }
 
     
@@ -262,16 +260,16 @@ public class LensTest {
             }
         };
         
-        assertEquals("One", listAcc.first().apply(new WithNames(asList("One", "Two"))));
+        assertEquals("One", listAcc.first().get().apply(new WithNames(asList("One", "Two"))));
         assertEquals("One", Optional.of(new WithNames(asList("One", "Two")))
-                .map(listAcc.first())
+                .map(listAcc.first().get())
                 .get());
         assertEquals("[One, Two]", Optional.of(new WithNames(asList("One", "Two", "Three", "Four")))
                 .map(listAcc.filter(theString.length().thatEquals(3)))
                 .map(theItem().convertToString())
                 .get());
         assertEquals("ONE", Optional.of(new WithNames(asList("One", "Two")))
-                .map(listAcc.first())
+                .map(listAcc.first().get())
                 .map(theString.toUpperCase())
                 .get());
     }
@@ -305,8 +303,11 @@ public class LensTest {
         
         val withCars = new WithCars(asList(new Car("Blue")));
         assertEquals("WithCars [cars=[Car(color=Blue)]]",  withCars.toString());
-        assertEquals("Car(color=Blue)",                    listLens.first().apply(withCars).toString());
-        assertEquals("WithCars [cars=[Car(color=Green)]]", listLens.first().withColor("Green").apply(withCars).toString());
+        assertEquals("Car(color=Blue)",                    listLens.first().get().apply(withCars).toString());
+//        assertEquals("WithCars [cars=[Car(color=Green)]]", listLens.first().withColor("Green").apply(withCars).toString());
+        
+        assertTrue(listLens.first().isPresent().apply(withCars));
+        assertEquals("Car(color=Blue)", listLens.first().get().convertToString().apply(withCars));
     }
     
 }
