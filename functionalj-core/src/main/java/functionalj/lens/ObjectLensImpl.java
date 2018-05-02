@@ -5,9 +5,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import functionalj.functions.Func1;
-import functionalj.lens.LensTest.Company;
-import functionalj.lens.LensTest.Driver;
-import functionalj.lens.LensTest.Driver.DriverLens;
 import lombok.val;
 
 public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
