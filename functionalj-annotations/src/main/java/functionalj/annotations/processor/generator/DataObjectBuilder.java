@@ -111,7 +111,7 @@ public class DataObjectBuilder {
         val fields = listOf(
                     Stream.of(theField),
                     getterFields
-                );
+                 );
         val flatMap = Arrays.<Stream<GenMethod>>asList(
                     getterMethods,
                     witherMethods,

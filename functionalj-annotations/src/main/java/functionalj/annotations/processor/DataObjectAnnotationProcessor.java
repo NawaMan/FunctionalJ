@@ -107,7 +107,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
                     .filter(method->!isClass || isAbstract(method))
                     .filter(method->!(method.getReturnType() instanceof NoType))
                     .filter(method->method.getParameters().isEmpty())
-                    .map   (method->createGetterFromMethod(method))
+                    .map   (method->createGetterFromMethod(element, method))
                     .collect(toList());
             
             
@@ -160,14 +160,14 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         return false;
     }
     
-    private Getter createGetterFromMethod(ExecutableElement method) {
+    private Getter createGetterFromMethod(Element element, ExecutableElement method) {
         String methodName = method.getSimpleName().toString();
-        Type   returnType = getType(method.getReturnType());
+        Type   returnType = getType(element, method.getReturnType());
         Getter getter     = new Getter(methodName, returnType);
         return getter;
     }
     
-    private Type getType(TypeMirror typeMirror) {
+    private Type getType(Element element, TypeMirror typeMirror) {
         val typeStr = typeMirror.toString();
         if (typeMirror instanceof PrimitiveType) {
             // This is no right ... but let goes with this.
@@ -181,8 +181,8 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             val typeName = typeElement.getSimpleName().toString();
             if (typeName.equals("String"))
                 return Type.STRING;
-            
-            val packageName = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
+
+            val packageName = elementUtils.getPackageOf(element).getQualifiedName().toString();
             return new Type(typeName, packageName);
         }
         return null;

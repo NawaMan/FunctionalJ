@@ -116,6 +116,7 @@ public class GenDataObject implements ILines {
             ).stream()
             .flatMap(themAll())
             .collect(toList());
+        
         val importList = importTypes.stream()
                 .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisEnclose, type.encloseName()))
                 .map   (Type::declaredType)
