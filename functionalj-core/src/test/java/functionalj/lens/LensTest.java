@@ -114,7 +114,9 @@ public class LensTest {
             
             public final StringLens<HOST> color = createSubLens(Car::color, Car::withColor, spec->()->spec);
             
-            public CarLens(LensSpec<HOST, Car> spec) { super(spec); }
+            public CarLens(LensSpec<HOST, Car> spec) { 
+                super(spec);
+            }
             
             public final Func1<HOST, HOST> withColor(String newColor) {
                 return CarLens.this.color.changeTo(newColor);
@@ -153,7 +155,7 @@ public class LensTest {
         
         public static class DriverLens<HOST> extends ObjectLensImpl<HOST, Driver> {
             
-            public final Car.CarLens<HOST> car = createSubLens(Driver::car, Driver::withCar, spec->new Car.CarLens<>(spec));
+            public final Car.CarLens<HOST> car = new Car.CarLens<>(this.lensSpec().then(LensSpec.of(Driver::car, Driver::withCar)));
             
             public DriverLens(LensSpec<HOST, Driver> spec) { super(spec); }
             
@@ -209,10 +211,12 @@ public class LensTest {
     
     @Test
     public void testNullSafety() {
-        val driverWithNoCar    = new Driver(null);
-        val nullSafeGetColor   = theDriver.car.color;
-        val nullUnsafeGetColor = theDriver.nullUnsafe().car.color;
-        val mayBeGetColor      = nullSafeGetColor.toMayBe();
+        val driverWithNoCar     = new Driver(null);
+        val nullSafeGetColor    = theDriver.car.color;
+        val nullUnsafeGetDriver = theDriver.nullUnsafe();
+        val nullUnsafeGetCar    = nullUnsafeGetDriver.car;
+        val nullUnsafeGetColor  = nullUnsafeGetCar.color;
+        val mayBeGetColor       = nullSafeGetColor.toMayBe();
         
         assertNull(nullSafeGetColor.applyTo(driverWithNoCar));
         assertEquals(MayBe.nothing(), mayBeGetColor.applyTo(driverWithNoCar));

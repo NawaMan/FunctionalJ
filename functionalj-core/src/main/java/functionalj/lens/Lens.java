@@ -16,7 +16,7 @@ public interface Lens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HOST,
         return ()->spec;
     }
     public static <HOST, DATA> Lens<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write, boolean isNullSafe) {
-        val spec = new LensSpec<HOST, DATA>(read::apply, write::apply, isNullSafe);
+        val spec = LensSpec.of(read::apply, write::apply, isNullSafe);
         return ()->spec;
     }
     
