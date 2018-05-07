@@ -11,30 +11,35 @@ import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
-public interface ListAccess<HOST, LIST extends List<TYPE>, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
-        extends CollectionAccess<HOST, LIST, TYPE, SUBACCESS> {
+public interface ListAccess<HOST, LIST extends List<SUB>, SUB, SUBACCESS extends AnyAccess<HOST, SUB>> 
+        extends CollectionAccess<HOST, LIST, SUB, SUBACCESS> {
     
     // Change this to findXXX as it returns Nullable
-    public default NullableAccess<HOST, Nullable<TYPE>, TYPE, SUBACCESS> first() {
-        return createNullableSubAccess(Func1.of((LIST list) -> {
+    public default NullableAccess<HOST, SUB, SUBACCESS> first() {
+        @SuppressWarnings("unchecked")
+        val nullableSubAccess = (NullableAccess<HOST, SUB, SUBACCESS>)createNullableSubAccess(Func1.of((LIST list) -> {
             if (list == null)
                 return null;
             if (list.isEmpty())
                 return null;
             return list.get(0);
         }));
+        return nullableSubAccess;
     }
-    public default NullableAccess<HOST, Nullable<TYPE>, TYPE, SUBACCESS> last() {
-        return createNullableSubAccess(Func1.of((LIST list) -> {
+    public default NullableAccess<HOST, SUB, SUBACCESS> last() {
+        @SuppressWarnings("unchecked")
+        val nullableSubAccess = (NullableAccess<HOST, SUB, SUBACCESS>)createNullableSubAccess(Func1.of((LIST list) -> {
             if (list == null)
                 return null;
             if (list.isEmpty())
                 return null;
             return list.get(list.size() - 1);
         }));
+        return nullableSubAccess;
     }
-    public default NullableAccess<HOST, Nullable<TYPE>, TYPE, SUBACCESS> at(int index) {
-        return createNullableSubAccess(Func1.of((LIST list) -> {
+    public default NullableAccess<HOST, SUB, SUBACCESS> at(int index) {
+        @SuppressWarnings("unchecked")
+        val nullableSubAccess = (NullableAccess<HOST, SUB, SUBACCESS>)createNullableSubAccess(Func1.of((LIST list) -> {
             if (list == null)
                 return null;
             if (list.isEmpty())
@@ -45,39 +50,21 @@ public interface ListAccess<HOST, LIST extends List<TYPE>, TYPE, SUBACCESS exten
                 return null;
             return list.get(index);
         }));
+        return nullableSubAccess;
     }
-    public default ListAccess<HOST, LIST, TYPE, SUBACCESS> filter(Predicate<TYPE> checker) {
+    public default ListAccess<HOST, LIST, SUB, SUBACCESS> filter(Predicate<SUB> checker) {
         val spec        = lensSpecWithSub();
-        val specWithSub = new AccessWithSub<HOST, LIST, TYPE, SUBACCESS>() {
+        val specWithSub = new AccessWithSub<HOST, LIST, SUB, SUBACCESS>() {
             @SuppressWarnings("unchecked")
             @Override
             public LIST apply(HOST host) {
                 return (LIST)spec.apply(host).stream().filter(checker).collect(toList());
             }
             @Override
-            public SUBACCESS createSubAccess(Func1<LIST, TYPE> accessToSub) {
+            public SUBACCESS createSubAccess(Func1<LIST, SUB> accessToSub) {
                 return spec.createSubAccess(accessToSub);
             }
         };
         return () -> specWithSub;
-    }
-    
-    public default NullableAccess<HOST, Nullable<TYPE>, TYPE, SUBACCESS> createNullableSubAccess(Func1<LIST, TYPE> getElement) {
-        return ()->{
-            return new AccessWithSub<HOST, Nullable<TYPE>, TYPE, SUBACCESS>() {
-                @Override
-                public Nullable<TYPE> apply(HOST host) {
-                    val list    = ListAccess.this.apply(host);
-                    val element = getElement.apply(list);
-                    return Nullable.of(element);
-                }
-                
-                @Override
-                public SUBACCESS createSubAccess(Func1<Nullable<TYPE>, TYPE> accessToSub) {
-                    return ListAccess.this.createSubAccess((Func1<LIST, TYPE>)getElement);
-                }
-                
-            };
-        };
     }
 }

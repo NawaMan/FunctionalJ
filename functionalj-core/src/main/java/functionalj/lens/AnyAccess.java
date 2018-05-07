@@ -72,7 +72,6 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
     public default BooleanAccess<HOST> booleanAccess(boolean defaultValue, Function<DATA, Boolean> function) {
         return host -> processValue(host, defaultValue, function);
     }
- 
 
  // TODO - Not enough information at this point
 //    public default <SUB, DATAACCESS extends AnyAccess<HOST, DATA>, SUBACCESS extends AnyAccess<HOST, SUB>>
