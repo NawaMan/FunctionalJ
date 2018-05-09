@@ -1,14 +1,13 @@
 package functionalj.lens;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
 import functionalj.functions.Func1;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
 public interface ListAccess<HOST, LIST extends List<SUB>, SUB, SUBACCESS extends AnyAccess<HOST, SUB>> 
@@ -61,7 +60,7 @@ public interface ListAccess<HOST, LIST extends List<SUB>, SUB, SUBACCESS extends
                 return (LIST)spec.apply(host).stream().filter(checker).collect(toList());
             }
             @Override
-            public SUBACCESS createSubAccess(Func1<LIST, SUB> accessToSub) {
+            public SUBACCESS createSubAccess(Function<LIST, SUB> accessToSub) {
                 return spec.createSubAccess(accessToSub);
             }
         };

@@ -1,7 +1,7 @@
 package functionalj.lens;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import functionalj.functions.Func1;
 import functionalj.functions.Func2;
@@ -21,7 +21,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
     }
     
     @Override
-    public default SUBLENS createSubAccess(Func1<LIST, TYPE> accessToSub) {
+    public default SUBLENS createSubAccess(Function<LIST, TYPE> accessToSub) {
         return lensSpecWithSub().createSubAccess(accessToSub);
     }
     

@@ -14,6 +14,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.junit.Test;
 
@@ -22,8 +23,8 @@ import static java.util.Collections.unmodifiableList;
 import functionalj.FunctionalJ;
 import functionalj.functions.Func1;
 import functionalj.lens.LensTest.Driver.DriverLens;
-import functionalj.types.MayBe;
 import lombok.val;
+import nawaman.nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
 public class LensTest {
@@ -71,9 +72,9 @@ public class LensTest {
         assertThis(true,  checkForCompanyWithBlueCar.applyTo(new Company(asList(driver1))));
         assertThis(true,  checkForCompanyWithBlueCar.applyTo(new Company(asList(driver1, driver1.withCar(new Car("red"))))));
         
-        val findCarColor = theDriver.car.toMayBe().map(theCar.color);
-        assertThis("Nothing",    findCarColor.applyTo(new Driver(null)));
-        assertThis("Just(blue)", findCarColor.applyTo(new Driver(new Car("blue"))));
+        val findCarColor = theDriver.car.toNullable().map(theCar.color);
+        assertThis("Nullable.EMPTY",    findCarColor.applyTo(new Driver(null)));
+        assertThis("Nullable.of(blue)", findCarColor.applyTo(new Driver(new Car("blue"))));
         
         val company = new Company(asList(driver1, driver1.withCar(new Car("red"))));
          assertEquals("Driver(car=Car(color=blue))", theCompany.drivers.first().get().apply(company).toString());
@@ -216,10 +217,10 @@ public class LensTest {
         val nullUnsafeGetDriver = theDriver.nullUnsafe();
         val nullUnsafeGetCar    = nullUnsafeGetDriver.car;
         val nullUnsafeGetColor  = nullUnsafeGetCar.color;
-        val mayBeGetColor       = nullSafeGetColor.toMayBe();
+        val mayBeGetColor       = nullSafeGetColor.toNullable();
         
         assertNull(nullSafeGetColor.applyTo(driverWithNoCar));
-        assertEquals(MayBe.nothing(), mayBeGetColor.applyTo(driverWithNoCar));
+        assertEquals(Nullable.empty(), mayBeGetColor.applyTo(driverWithNoCar));
         
         try {
             nullUnsafeGetColor.apply(driverWithNoCar);
@@ -253,7 +254,7 @@ public class LensTest {
                 return input.names();
             }
             @Override
-            public StringAccess<WithNames> createSubAccess(Func1<List<String>, String> accessToSub) {
+            public StringAccess<WithNames> createSubAccess(Function<List<String>, String> accessToSub) {
                 return withNames -> accessToSub.apply(this.apply(withNames));
             }
         };

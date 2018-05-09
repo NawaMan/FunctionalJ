@@ -1,11 +1,14 @@
 package functionalj.lens;
 
+import static functionalj.compose.Functional.pipe;
+
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import functionalj.functions.Func1;
 import lombok.val;
+import nawaman.nullablej.nullable.Nullable;
 
 public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
     

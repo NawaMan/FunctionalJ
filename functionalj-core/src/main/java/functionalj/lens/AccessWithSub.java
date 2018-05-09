@@ -1,5 +1,7 @@
 package functionalj.lens;
 
+import java.util.function.Function;
+
 import functionalj.functions.Func1;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
@@ -8,7 +10,7 @@ public interface AccessWithSub<HOST, TYPE, SUB, SUBACCESS extends AnyAccess<HOST
     
     public TYPE apply(HOST host);
     
-    public SUBACCESS createSubAccess(Func1<TYPE, SUB> accessToSub);
+    public SUBACCESS createSubAccess(Function<TYPE, SUB> accessToSub);
     
     
     public default NullableAccess<HOST, SUB, SUBACCESS> createNullableSubAccess(Func1<TYPE, SUB> getElement) {
@@ -20,7 +22,7 @@ public interface AccessWithSub<HOST, TYPE, SUB, SUBACCESS extends AnyAccess<HOST
                 return Nullable.of(element);
             }
             @Override
-            public SUBACCESS createSubAccess(Func1<Nullable<SUB>, SUB> accessToSub) {
+            public SUBACCESS createSubAccess(Function<Nullable<SUB>, SUB> accessToSub) {
                 return AccessWithSub.this.createSubAccess((Func1<TYPE, SUB>)getElement);
             }
         };

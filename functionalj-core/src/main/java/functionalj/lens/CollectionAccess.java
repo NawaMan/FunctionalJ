@@ -1,6 +1,7 @@
 package functionalj.lens;
 
 import java.util.Collection;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import functionalj.functions.Func1;
@@ -17,7 +18,7 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
     }
     
     @Override
-    public default SUBACCESS createSubAccess(Func1<COLLECTION, TYPE> accessToSub) {
+    public default SUBACCESS createSubAccess(Function<COLLECTION, TYPE> accessToSub) {
         return lensSpecWithSub().createSubAccess(accessToSub);
     }
     

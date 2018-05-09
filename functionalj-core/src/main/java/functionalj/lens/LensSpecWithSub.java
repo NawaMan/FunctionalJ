@@ -14,7 +14,7 @@ public interface LensSpecWithSub<HOST, TYPE, SUB, SUBLENS extends AnyAccess<HOST
     public SUBLENS              createSubLens(LensSpec<HOST, SUB> subSpec);
     
     @Override
-    public default SUBLENS createSubAccess(Func1<TYPE, SUB> accessToSub) {
+    public default SUBLENS createSubAccess(Function<TYPE, SUB> accessToSub) {
         val read = getSpec().getRead().andThen(accessToSub);
         val spec = LensSpec.of(read, null);
         return createSubLens(spec);

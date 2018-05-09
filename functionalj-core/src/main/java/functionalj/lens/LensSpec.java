@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.val;
 
 @Getter
-public class LensSpec<HOST, DATA> {
+public class LensSpec<HOST, DATA> implements Function<HOST, DATA> {
     
     public static <DATA> Function<DATA, DATA>  selfRead()  { return self->self;        }
     public static <DATA> WriteLens<DATA, DATA> selfWrite() { return (host,self)->self; }
@@ -33,6 +33,9 @@ public class LensSpec<HOST, DATA> {
     public static <DATA> LensSpec<DATA, DATA> of(Class<DATA> dataClass) {
         return new LensSpec<DATA, DATA>(selfRead(), selfWrite());
     }
+    public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read) {
+        return of(read::apply, null);
+    }
     public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write) {
         if (write == null)
             return new LensSpec<HOST, DATA>(read::apply, null);
@@ -54,6 +57,10 @@ public class LensSpec<HOST, DATA> {
         this.read       = read;
         this.write      = write;
         this.isNullSafe = isNullSafe;
+    }
+    
+    public DATA apply(HOST host) {
+        return read.apply(host);
     }
     
     public boolean isNullSafe() {

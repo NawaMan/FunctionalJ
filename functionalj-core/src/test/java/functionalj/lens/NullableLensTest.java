@@ -1,15 +1,12 @@
 package functionalj.lens;
 
-import static org.junit.Assert.*;
+import static functionalj.compose.Functional.pipe;
+
+import java.util.function.Function;
 
 import org.junit.Test;
 
 import functionalj.functions.Func1;
-import functionalj.lens.LensTest.Car;
-import functionalj.lens.LensTest.CarSpec;
-import functionalj.lens.LensTest.Driver;
-import functionalj.lens.LensTest.Car.CarLens;
-import functionalj.lens.LensTest.Driver.DriverLens;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -45,7 +42,8 @@ public class NullableLensTest {
             
             public final StringLens<HOST> color = createSubLens(Car::color, Car::withColor, spec->()->spec);
             
-            public CarLens(LensSpec<HOST, Car> spec) { super(spec); }
+            public CarLens(LensSpec<HOST, Car> spec)   { super(spec); }
+            public CarLens(Function<HOST, Car> access) { super(LensSpec.of(access)); }
             
             public final Func1<HOST, HOST> withColor(String newColor) {
                 return CarLens.this.color.changeTo(newColor);
@@ -90,27 +88,12 @@ public class NullableLensTest {
         public static class DriverLens<HOST> extends ObjectLensImpl<HOST, Driver> {
             
             public final Car.CarLens<HOST> car = createSubLens(Driver::car, Driver::withCar, Car.CarLens::new);
-//            
-//            public final NullableAccess<HOST, Nullable<Car>, Car, Car.CarLens<HOST>> findCar
-//                    = new NullableAccess<HOST, Nullable<Car>, NullableLensTest.Car, Car.CarLens<HOST>>() {
-//                        public AccessWithSub<HOST, Nullable<Car>, Car, Car.CarLens<HOST>> lensSpecWithSub() {
-//                            return new AccessWithSub<HOST, Nullable<Car>, Car, Car.CarLens<HOST>>() {
-//                                @Override
-//                                public Nullable<Car> apply(HOST host) {
-//                                    DriverLens
-//                                    return ; Func1.of(Driver::findCar).apply(host);
-//                                }
-//                                @Override
-//                                public Car.CarLens<HOST> createSubAccess(
-//                                        Func1<Nullable<Car>, Car> accessToSub) {
-//                                    // TODO Auto-generated method stub
-//                                    return null;
-//                                }
-//                            };
-//                        }
-//                    };
-//            
-            public DriverLens(LensSpec<HOST, Driver> spec) { super(spec); }
+            
+            public final NullableAccess<HOST, Car, Car.CarLens<HOST>> findCar
+                        = AnyAccess.createNullableAccess(DriverLens.this.car.then(Nullable::of), Car.CarLens::new);
+
+            public DriverLens(LensSpec<HOST, Driver> spec)   { super(spec); }
+            public DriverLens(Function<HOST, Driver> access) { super(LensSpec.of(access)); }
             
             public final Func1<HOST, HOST> withCar(Car newCar) {
                 return DriverLens.this.car.changeTo(newCar);

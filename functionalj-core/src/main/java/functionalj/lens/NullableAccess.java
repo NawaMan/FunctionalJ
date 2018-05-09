@@ -1,8 +1,10 @@
 package functionalj.lens;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.Func1;
+import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
@@ -17,7 +19,7 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     }
     
     @Override
-    public default SUBACCESS createSubAccess(Func1<Nullable<TYPE>, TYPE> accessToSub) {
+    public default SUBACCESS createSubAccess(Function<Nullable<TYPE>, TYPE> accessToSub) {
         return accessWithSub().createSubAccess(accessToSub);
     }
     
@@ -26,6 +28,51 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
             return nullable.get();
         });
     }
+    
+    public default <TARGET> 
+    NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> map(Func1<TYPE, TARGET> mapper) {
+        val accessWithSub = new AccessWithSub<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
+            @Override
+            public Nullable<TARGET> apply(HOST host) {
+                return NullableAccess.this.apply(host).map(mapper);
+            }
+            @Override
+            public AnyAccess<HOST, TARGET> createSubAccess(Function<Nullable<TARGET>, TARGET> accessToSub) {
+                return host->{
+                    return accessToSub.apply(apply(host));
+                };
+            }
+        };
+        return new NullableAccess<HOST, TARGET, AnyAccess<HOST,TARGET>>() {
+            @Override
+            public AccessWithSub<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST, TARGET>> accessWithSub() {
+                return accessWithSub;
+            }
+        };
+    }
+    
+    public default <TARGET> 
+    NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> flatMap(Func1<TYPE, Nullable<TARGET>> mapper) {
+        val accessWithSub = new AccessWithSub<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
+            @Override
+            public Nullable<TARGET> apply(HOST host) {
+                return NullableAccess.this.apply(host).flatMap(mapper);
+            }
+            @Override
+            public AnyAccess<HOST, TARGET> createSubAccess(Function<Nullable<TARGET>, TARGET> accessToSub) {
+                return host->{
+                    return accessToSub.apply(apply(host));
+                };
+            }
+        };
+        return new NullableAccess<HOST, TARGET, AnyAccess<HOST,TARGET>>() {
+            @Override
+            public AccessWithSub<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST, TARGET>> accessWithSub() {
+                return accessWithSub;
+            }
+        };
+    }
+    
     public default BooleanAccess<HOST> isPresent() {
         return host -> {
             return NullableAccess.this.apply(host).isPresent();

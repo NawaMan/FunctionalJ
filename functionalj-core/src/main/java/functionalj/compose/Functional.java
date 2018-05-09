@@ -85,6 +85,46 @@ public class Functional {
             Function<I6, R> f6) {
         return f1.andThen(f2).andThen(f3).andThen(f4).andThen(f5).andThen(f6);
     }
+    
+    public static <I1, I2, R> Function<I1, R> pipe(
+            Function<I1, I2> f1,
+            Function<I2, R> f2) {
+        return f1.andThen(f2);
+    }
+    
+    public static <I1, I2, I3, R> Function<I1, R> pipe(
+            Function<I1, I2> f1,
+            Function<I2, I3> f2,
+            Function<I3, R> f3) {
+        return f1.andThen(f2).andThen(f3);
+    }
+    
+    public static <I1, I2, I3, I4, R> Function<I1, R> pipe(
+            Function<I1, I2> f1,
+            Function<I2, I3> f2,
+            Function<I3, I4> f3,
+            Function<I4, R> f4) {
+        return f1.andThen(f2).andThen(f3).andThen(f4);
+    }
+    
+    public static <I1, I2, I3, I4, I5, R> Function<I1, R> pipe(
+            Function<I1, I2> f1,
+            Function<I2, I3> f2,
+            Function<I3, I4> f3,
+            Function<I4, I5> f4,
+            Function<I5, R> f5) {
+        return f1.andThen(f2).andThen(f3).andThen(f4).andThen(f5);
+    }
+    
+    public static <I1, I2, I3, I4, I5, I6, R> Function<I1, R> pipe(
+            Function<I1, I2> f1,
+            Function<I2, I3> f2,
+            Function<I3, I4> f3,
+            Function<I4, I5> f4,
+            Function<I5, I6> f5,
+            Function<I6, R> f6) {
+        return f1.andThen(f2).andThen(f3).andThen(f4).andThen(f5).andThen(f6);
+    }
 
     public static <I, R> Supplier<R> curry(Function<I, R> f, I i) {
         return () -> f.apply(i);
