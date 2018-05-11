@@ -1,11 +1,9 @@
 package functionalj.lens;
 
 import static functionalj.FunctionalStrings.stringOf;
-import static java.lang.String.valueOf;
 
 import java.util.Locale;
-
-import functionalj.FunctionalStrings;
+import java.util.function.Function;
 
 @FunctionalInterface
 public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
@@ -152,6 +150,10 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
     
     public default StringAccess<HOST> trim() {
         return stringAccess(null, str->str.trim());
+    }
+
+    public default Function<HOST, HOST> changeTo(String string) {
+        return null;
     }
     
 }

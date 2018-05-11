@@ -61,7 +61,7 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
     }
     
     public default NullableAccess<HOST, DATA, AnyAccess<HOST, DATA>> toNullable() {
-        AccessCreator<HOST, DATA, AnyAccess<HOST, DATA>> createSubLens = new AccessCreator<HOST, DATA, AnyAccess<HOST, DATA>>() {
+        Function<Function<HOST, DATA>, AnyAccess<HOST, DATA>> createSubLens = new Function<Function<HOST, DATA>, AnyAccess<HOST, DATA>>() {
             @Override
             public AnyAccess<HOST, DATA> apply(Function<HOST, DATA> t) {
                 return new AnyAccess<HOST, DATA>() {
@@ -81,7 +81,7 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
     public static <HOST, TYPE, TYPELENS extends AnyAccess<HOST, TYPE>> 
             NullableAccess<HOST, TYPE, TYPELENS> createNullableAccess(
                         Func1<HOST, Nullable<TYPE>>         accessNullable,
-                        AccessCreator<HOST, TYPE, TYPELENS> createSubLens) {
+                        Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
         val accessWithSub = new AccessWithSub<HOST, Nullable<TYPE>, TYPE, TYPELENS>() {
             @Override
             public Nullable<TYPE> apply(HOST host) {
@@ -96,47 +96,5 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
             return accessWithSub;
         };
     }
-//    
-//    @FunctionalInterface
-//    public static interface NullableLens<HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>>
-//                extends ObjectLens<HOST, Nullable<TYPE>>, NullableAccess<HOST, TYPE, TYPELENS> {
-//        @Override
-//        default AccessWithSub<HOST, Nullable<TYPE>, TYPE, TYPELENS> accessWithSub() {
-//            return new AccessWithSub<HOST, Nullable<TYPE>, TYPE, TYPELENS>() {
-//                @Override
-//                public Nullable<TYPE> apply(HOST host) {
-//                    return lensSpec().apply(host);
-//                }
-//                @Override
-//                public TYPELENS createSubAccess(Function<Nullable<TYPE>, TYPE> accessToSub) {
-//                    // TODO Auto-generated method stub
-//                    return null;
-//                }
-//            };
-//        }
-//        @Override
-//        public default Nullable<TYPE> apply(HOST host) {
-//            return lensSpec().apply(host);
-//        }
-//    }
-//    
-//    
-//    public static <HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>> 
-//            NullableLens<HOST, TYPE, TYPELENS> createNullableLens(
-//                        Func1<HOST, Nullable<TYPE>>         accessNullable,
-//                        AccessCreator<HOST, TYPE, TYPELENS> createSubLens) {
-//        val accessWithSub = new AccessWithSub<HOST, Nullable<TYPE>, TYPE, TYPELENS>() {
-//            @Override
-//            public Nullable<TYPE> apply(HOST host) {
-//                return accessNullable.apply(host);
-//            }
-//            @Override
-//            public TYPELENS createSubAccess(Function<Nullable<TYPE>, TYPE> accessToSub) {
-//                return createSubLens.apply(pipe(this::apply, accessToSub));
-//            }
-//        };
-//        return (NullableAccess<HOST, TYPE, TYPELENS>)() -> {
-//            return accessWithSub;
-//        };
-//    }
+    
 }
