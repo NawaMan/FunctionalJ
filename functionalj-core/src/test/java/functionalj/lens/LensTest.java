@@ -1,7 +1,7 @@
 package functionalj.lens;
 
-import static functionalj.lens.Access.theItem;
-import static functionalj.lens.Access.theString;
+import static functionalj.lens.Accesses.theItem;
+import static functionalj.lens.Accesses.theString;
 import static functionalj.lens.LensTest.Car.theCar;
 import static functionalj.lens.LensTest.Company.theCompany;
 import static functionalj.lens.LensTest.Driver.theDriver;
@@ -250,7 +250,7 @@ public class LensTest {
     
     @Test
     public void testListAccess() {
-        val accSub = new AccessWithSub<WithNames, List<String>, String, StringAccess<WithNames>>() {
+        val accSub = new AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>>() {
             @Override
             public List<String> apply(WithNames input) {
                 return input.names();
@@ -262,7 +262,7 @@ public class LensTest {
         };
         val listAcc = new ListAccess<WithNames, List<String>, String, StringAccess<WithNames>>() {
             @Override
-            public AccessWithSub<WithNames, List<String>, String, StringAccess<WithNames>> lensSpecWithSub() {
+            public AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>> lensSpecWithSub() {
                 return accSub;
             }
         };

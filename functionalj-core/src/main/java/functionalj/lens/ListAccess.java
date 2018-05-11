@@ -41,7 +41,7 @@ public interface ListAccess<HOST, LIST extends List<SUB>, SUB, SUBACCESS extends
     
     public default ListAccess<HOST, LIST, SUB, SUBACCESS> filter(Predicate<SUB> checker) {
         val spec        = lensSpecWithSub();
-        val specWithSub = new AccessWithSub<HOST, LIST, SUB, SUBACCESS>() {
+        val specWithSub = new AccessParameterized<HOST, LIST, SUB, SUBACCESS>() {
             @SuppressWarnings("unchecked")
             @Override
             public LIST apply(HOST host) {

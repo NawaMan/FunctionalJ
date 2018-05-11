@@ -8,7 +8,7 @@ import functionalj.functions.Func2;
 import lombok.val;
 
 public interface LensSpecWithSub<HOST, TYPE, SUB, SUBLENS extends AnyAccess<HOST, SUB>>
-            extends AccessWithSub<HOST, TYPE, SUB, SUBLENS> {
+            extends AccessParameterized<HOST, TYPE, SUB, SUBLENS> {
     
     public LensSpec<HOST, TYPE> getSpec();
     public SUBLENS              createSubLens(LensSpec<HOST, SUB> subSpec);

@@ -24,7 +24,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
     
     public LensSpecWithSub<HOST, LIST, TYPE, SUBLENS> lensSpecWithSub();
     
-    public default AccessWithSub<HOST, LIST, TYPE, SUBLENS> accessWithSub() {
+    public default AccessParameterized<HOST, LIST, TYPE, SUBLENS> accessWithSub() {
         return lensSpecWithSub();
     }
     

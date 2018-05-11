@@ -8,9 +8,9 @@ import functionalj.functions.Func1;
 
 @FunctionalInterface
 public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
-        extends ObjectAccess<HOST, COLLECTION>, AccessWithSub<HOST, COLLECTION, TYPE, AnyAccess<HOST,TYPE>> {
+        extends ObjectAccess<HOST, COLLECTION>, AccessParameterized<HOST, COLLECTION, TYPE, AnyAccess<HOST,TYPE>> {
     
-    public AccessWithSub<HOST, COLLECTION, TYPE, SUBACCESS> lensSpecWithSub();
+    public AccessParameterized<HOST, COLLECTION, TYPE, SUBACCESS> lensSpecWithSub();
     
     @Override
     public default COLLECTION apply(HOST input) {
