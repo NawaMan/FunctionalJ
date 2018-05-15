@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 
-import functionalj.functions.Func1;
 import lombok.val;
 
 @FunctionalInterface

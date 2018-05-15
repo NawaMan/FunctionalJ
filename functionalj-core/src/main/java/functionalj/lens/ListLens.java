@@ -3,16 +3,11 @@ package functionalj.lens;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-import functionalj.functions.Func1;
-import functionalj.functions.Func2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -85,7 +80,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
                     return (LIST)newList;
                 });
     }
-    // Add filterMap
+    
     public default Function<HOST, HOST> selectiveMap(Predicate<TYPE> checker, Function<TYPE, TYPE> mapper) {
         return host -> {
             val newList = apply(host).stream()
@@ -96,15 +91,15 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
     }
     
     
-    public default SUBLENS createSubLens(Func1<LIST, TYPE> readSub, Func2<LIST, TYPE, LIST> writeSub) {
+    public default SUBLENS createSubLens(Function<LIST, TYPE> readSub, BiFunction<LIST, TYPE, LIST> writeSub) {
         return (SUBLENS)LensSpec.createSubLens(this, readSub, writeSub, lensSpecWithSub()::createSubLens);
     }
     
     public static <HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ListLens<HOST, LIST, TYPE, SUBLENS> 
         createListLens(
-            Func1<HOST, LIST> read,
-            Func2<HOST, LIST, HOST> write,
-            Func1<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+            Function<HOST, LIST>                    read,
+            BiFunction<HOST, LIST, HOST>            write,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val spec = LensSpecWithSub.createLensSpecWithSub(read, write, subCreator);
         val listLens = (ListLens<HOST, LIST, TYPE, SUBLENS>)()->spec;
         return listLens;

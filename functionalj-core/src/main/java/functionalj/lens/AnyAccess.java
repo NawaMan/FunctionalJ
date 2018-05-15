@@ -104,7 +104,7 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
                 return hostToData.apply(host);
             };
         };
-        Func1<HOST, Nullable<DATA>> accessToNullable = host -> {
+        Function<HOST, Nullable<DATA>> accessToNullable = host -> {
             return Nullable.of(AnyAccess.this.apply(host));
         };
         return createNullableAccess(accessToNullable, createSubLens);

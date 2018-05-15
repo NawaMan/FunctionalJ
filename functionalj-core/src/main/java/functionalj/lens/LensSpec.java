@@ -4,7 +4,6 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import functionalj.functions.Func1;
 import lombok.Getter;
 import lombok.val;
 
@@ -80,10 +79,10 @@ public class LensSpec<HOST, DATA> implements Function<HOST, DATA> {
     }
     
     public static <HOST, DATA, SUB, SUBLENS> SUBLENS createSubLens(
-            ObjectLens<HOST, DATA>              dataLens,
-            Function<DATA, SUB>                 readSub,
-            BiFunction<DATA, SUB, DATA>         writeSub,
-            Func1<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
+            ObjectLens<HOST, DATA>                 dataLens,
+            Function<DATA, SUB>                    readSub,
+            BiFunction<DATA, SUB, DATA>            writeSub,
+            Function<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
         val lensSpec    = dataLens.lensSpec();
         val hostSubSpec = lensSpec.then(LensSpec.of(readSub, writeSub, lensSpec.isNullSafe));
         return subLensCreator.apply(hostSubSpec);

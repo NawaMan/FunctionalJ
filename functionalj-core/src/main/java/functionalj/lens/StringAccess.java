@@ -129,10 +129,6 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
         return stringAccess(null, str->str.substring(beginIndex, endIndex));
     }
     
-    // TODO: subSequence == 
-    // TODO: toCharArray()
-    // TODO: getBytes()
-    
     public default StringAccess<HOST> toLowerCase() {
         return stringAccess(null, str->str.toLowerCase());
     }

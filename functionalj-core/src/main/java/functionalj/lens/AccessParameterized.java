@@ -2,7 +2,6 @@ package functionalj.lens;
 
 import java.util.function.Function;
 
-import functionalj.functions.Func1;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -14,7 +13,7 @@ public interface AccessParameterized<HOST, TYPE, PARAMETER, PARAMETERACCESS exte
     public PARAMETERACCESS createSubAccess(Function<TYPE, PARAMETER> accessToParameter);
     
     
-    public default NullableAccess<HOST, PARAMETER, PARAMETERACCESS> createNullableParameterAccess(Func1<TYPE, PARAMETER> getElement) {
+    public default NullableAccess<HOST, PARAMETER, PARAMETERACCESS> createNullableParameterAccess(Function<TYPE, PARAMETER> getElement) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<PARAMETER>, PARAMETER, PARAMETERACCESS>() {
             @Override
             public Nullable<PARAMETER> apply(HOST host) {
@@ -24,7 +23,7 @@ public interface AccessParameterized<HOST, TYPE, PARAMETER, PARAMETERACCESS exte
             }
             @Override
             public PARAMETERACCESS createSubAccess(Function<Nullable<PARAMETER>, PARAMETER> accessToSub) {
-                return AccessParameterized.this.createSubAccess((Func1<TYPE, PARAMETER>)getElement);
+                return AccessParameterized.this.createSubAccess((Function<TYPE, PARAMETER>)getElement);
             }
         };
         return ()->accessWithSub;

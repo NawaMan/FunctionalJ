@@ -3,7 +3,6 @@ package functionalj.lens;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.functions.Func1;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -30,7 +29,7 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     }
     
     public default <TARGET> 
-    NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> map(Func1<TYPE, TARGET> mapper) {
+    NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> map(Function<TYPE, TARGET> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Nullable<TARGET> apply(HOST host) {
@@ -52,7 +51,7 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     }
     
     public default <TARGET> 
-    NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> flatMap(Func1<TYPE, Nullable<TARGET>> mapper) {
+    NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> flatMap(Function<TYPE, Nullable<TARGET>> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Nullable<TARGET> apply(HOST host) {

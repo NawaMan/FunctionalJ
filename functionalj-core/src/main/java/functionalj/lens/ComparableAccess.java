@@ -1,7 +1,5 @@
 package functionalj.lens;
 
-import java.util.function.Function;
-
 public interface ComparableAccess<HOST, TYPE extends Comparable<TYPE>> extends AnyAccess<HOST, TYPE> {
     
     public default IntegerAccess<HOST> compareTo(TYPE anotherValue) {
