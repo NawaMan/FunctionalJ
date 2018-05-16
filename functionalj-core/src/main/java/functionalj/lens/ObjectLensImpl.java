@@ -35,7 +35,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         val writeThis  = this.lensSpec().getWrite();
         val subRead    = (Function<HOST, LIST>)        LensSpec.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
         val subWrite   = (BiFunction<HOST, LIST, HOST>)LensSpec.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
-        val spec       = LensSpecWithSub.createLensSpecWithSub(subRead, subWrite, subLensCreator);
+        val spec       = LensSpecParameterized.createLensSpecParameterized(subRead, subWrite, subLensCreator);
         val listLens   = (ListLens<HOST, LIST, SUB, SUBLENS>)()->spec;
         return listLens;
     }

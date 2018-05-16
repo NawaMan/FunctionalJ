@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 import lombok.val;
 
-public interface LensSpecWithSub<HOST, TYPE, SUB, SUBLENS extends AnyAccess<HOST, SUB>>
+public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyAccess<HOST, SUB>>
             extends AccessParameterized<HOST, TYPE, SUB, SUBLENS> {
     
     public LensSpec<HOST, TYPE> getSpec();
@@ -23,11 +23,11 @@ public interface LensSpecWithSub<HOST, TYPE, SUB, SUBLENS extends AnyAccess<HOST
     }
     
     public static <HOST, TYPE, SUB, SUBLENS extends AnyLens<HOST, SUB>> 
-        LensSpecWithSub<HOST, TYPE, SUB, SUBLENS> createLensSpecWithSub(
+        LensSpecParameterized<HOST, TYPE, SUB, SUBLENS> createLensSpecParameterized(
             Function<HOST, TYPE> read,
             BiFunction<HOST, TYPE, HOST> write,
             Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
-        val spec = new LensSpecWithSub<HOST, TYPE, SUB, SUBLENS>() {
+        val spec = new LensSpecParameterized<HOST, TYPE, SUB, SUBLENS>() {
             @Override
             public LensSpec<HOST, TYPE> getSpec() {
                 return LensSpec.of(read, write);

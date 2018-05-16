@@ -1,0 +1,6 @@
+- Create ObjectLensWithSub
+- Create an interface for each custom Object that has Lens in its type
+- MapAccess and MapLens
+- NullableLens
+- OptionalAccess and OptionalLens
+- Generator for the above types

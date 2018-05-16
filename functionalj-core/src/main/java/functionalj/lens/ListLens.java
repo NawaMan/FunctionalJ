@@ -17,7 +17,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
             ObjectLens<HOST, LIST>,
             ListAccess<HOST, LIST, TYPE, SUBLENS> {
     
-    public LensSpecWithSub<HOST, LIST, TYPE, SUBLENS> lensSpecWithSub();
+    public LensSpecParameterized<HOST, LIST, TYPE, SUBLENS> lensSpecWithSub();
     
     public default AccessParameterized<HOST, LIST, TYPE, SUBLENS> accessWithSub() {
         return lensSpecWithSub();
@@ -100,7 +100,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
             Function<HOST, LIST>                    read,
             BiFunction<HOST, LIST, HOST>            write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        val spec = LensSpecWithSub.createLensSpecWithSub(read, write, subCreator);
+        val spec = LensSpecParameterized.createLensSpecParameterized(read, write, subCreator);
         val listLens = (ListLens<HOST, LIST, TYPE, SUBLENS>)()->spec;
         return listLens;
     }
