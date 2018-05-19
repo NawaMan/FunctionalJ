@@ -8,7 +8,9 @@ import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
 public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
-            extends ObjectAccess<HOST, Nullable<TYPE>>, AccessParameterized<HOST, Nullable<TYPE>, TYPE, SUBACCESS> {
+            extends
+                ObjectAccess<HOST, Nullable<TYPE>>,
+                AccessParameterized<HOST, Nullable<TYPE>, TYPE, SUBACCESS> {
     
     public AccessParameterized<HOST, Nullable<TYPE>, TYPE, SUBACCESS> accessWithSub();
     

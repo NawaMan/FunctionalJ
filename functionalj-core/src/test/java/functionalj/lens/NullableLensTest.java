@@ -1,12 +1,22 @@
 package functionalj.lens;
 
 import static functionalj.compose.Functional.pipe;
+import static functionalj.lens.NullableLensTest.Driver.theDriver;
+import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+import org.junit.Assert;
 import org.junit.Test;
 
+import static java.util.stream.Collectors.toList;
+
 import functionalj.functions.Func1;
+import functionalj.lens.LensTest.Car;
+import functionalj.lens.LensTest.Driver;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -61,44 +71,47 @@ public class NullableLensTest {
     public static class Driver {
         
         public static DriverLens<Driver> theDriver = new DriverLens<>(LensSpec.of(Driver.class));
+
+        private final Car           firstCar;
+        private final Nullable<Car> secondCar;
         
-        private final Car car;
-        
-        public Driver(Car car) {
-            this.car = car;
+        public Driver(Car firstCar, Nullable<Car> secondCar) {
+            this.firstCar  = firstCar;
+            this.secondCar = secondCar;
         }
         
-        public Car car() {
-            return car;
+        public Car firstCar() {
+            return firstCar;
         }
-        public Driver withCar(Car car) {
-            return new Driver(car);
+        public Driver withFirstCar(Car car) {
+            return new Driver(car, secondCar);
         }
         
-        public Nullable<Car> findCar() {
-            return Nullable.of(car);
+        public Nullable<Car> secondCar() {
+            return secondCar;
+        }
+        public Driver withSecondCar(Nullable<Car> secondCar) {
+            return new Driver(firstCar, secondCar);
         }
         
         @Override
         public String toString() {
-            return "Driver(car=" + car + ")";
+            return "Driver(firstCar=" + firstCar + ",secondCar=" + secondCar + ")";
         }
         
         
         public static class DriverLens<HOST> extends ObjectLensImpl<HOST, Driver> {
-            
-            public final Car.CarLens<HOST> car = createSubLens(Driver::car, Driver::withCar, Car.CarLens::new);
-            
-            public final NullableAccess<HOST, Car, Car.CarLens<HOST>> findCar
-                        = AnyAccess.createNullableAccess(DriverLens.this.car.then(Nullable::of), Car.CarLens::new);
 
+            public final Car.CarLens<HOST> firstCar = new Car.CarLens<>(this.lensSpec().then(LensSpec.of(Driver::firstCar, Driver::withFirstCar)));
+            
+            public final NullableLens<HOST, Car, Car.CarLens<HOST>> secondCar
+                        = NullableLens.createNullableLens(
+                                this.lensSpec().then(LensSpec.of(Driver::secondCar, Driver::withSecondCar)),
+                                Car.CarLens::new);
+            
             public DriverLens(LensSpec<HOST, Driver> spec)   { super(spec); }
             public DriverLens(Function<HOST, Driver> access) { super(LensSpec.of(access)); }
-            
-            public final Func1<HOST, HOST> withCar(Car newCar) {
-                return DriverLens.this.car.changeTo(newCar);
-            }
-            
+
             public final DriverLens<HOST> nullSafe() {
                 return new DriverLens<>(this.lensSpec().toNullSafe());
             }
@@ -110,8 +123,22 @@ public class NullableLensTest {
     
     @Test
     public void test() {
-        val L1 = new ObjectLensImpl<Driver, Car>(LensSpec.of(Driver::car, null));
-        val L2 = new ObjectLensImpl<Car, String>(LensSpec.of(Car::color,  null));
+        Driver blueDriver = new Driver(new Car("blue"), Nullable.of(new Car("blue")));
+        Driver nullDriver = new Driver(null,            Nullable.empty());
+        
+        assertEquals("Driver(firstCar=Car(color=blue),secondCar=Nullable.of(Car(color=blue)))", blueDriver.toString());
+        assertEquals("Driver(firstCar=null,secondCar=Nullable.EMPTY)",                          nullDriver.toString());
+        
+        val drivers = Arrays.asList(blueDriver, nullDriver);
+        assertEquals(
+                   "[" 
+                +      "Driver(firstCar=Car(color=green),secondCar=Nullable.of(Car(color=green))), "
+                +      "Driver(firstCar=null,secondCar=Nullable.EMPTY)"
+                +  "]",
+                drivers.stream()
+                .map(theDriver.firstCar       .withColor("green"))
+                .map(theDriver.secondCar.get().withColor("green"))
+                .collect(toList()).toString());
     }
     
 }

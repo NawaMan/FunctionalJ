@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -30,6 +31,17 @@ public class ClosureConstantTest {
         assertEquals("0: One, 1: Two, 2: Three",
                 asList("One", "Two", "Three").stream()
                 .map(withIndex((str, idx)->idx + ": " + str))
+                .collect(joining(", "))
+              );
+    }
+    @Test
+    public void testGrouping() {
+        assertEquals("[One, Two], [Three, Four], [Five]",
+                asList("One", "Two", "Three", "Four", "Five").stream()
+                .collect(Collectors.groupingBy(withIndex((str, idx) -> (idx / 2))))
+                .values()
+                .stream()
+                .map   (each -> each.toString())
                 .collect(joining(", "))
               );
     }

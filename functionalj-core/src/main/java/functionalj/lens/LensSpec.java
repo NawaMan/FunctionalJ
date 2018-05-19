@@ -125,7 +125,7 @@ public class LensSpec<HOST, DATA> implements Function<HOST, DATA> {
         return (host, newSubValue)->{
             val oldValue = readValue.apply(host);
             if (isNullSafe.getAsBoolean() && (oldValue == null))
-                return null;
+                return host;
             
             val newValue = writeSub.apply(oldValue, newSubValue);
             val newHost  = writeValue.apply(host, newValue);

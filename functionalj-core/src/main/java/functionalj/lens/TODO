@@ -4,3 +4,5 @@
 - NullableLens
 - OptionalAccess and OptionalLens
 - Generator for the above types
+- Make Nullable and Optional lens transparents (don't see it as object)
+- Annotate the getter to be null sensitive (Null unsafe)

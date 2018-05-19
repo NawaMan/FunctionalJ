@@ -17,4 +17,8 @@ public interface WriteLens<HOST, DATA> {
         return apply(host, newValue);
     }
     
+    public default BiFunction<HOST, DATA, HOST> toBiFunction() {
+        return this::apply;
+    }
+    
 }
