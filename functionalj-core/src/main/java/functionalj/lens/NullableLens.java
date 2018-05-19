@@ -1,6 +1,7 @@
 package functionalj.lens;
 
-import java.util.List;
+import static functionalj.lens.Lenses.createLensSpecParameterized;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -12,6 +13,18 @@ public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
                     extends 
                         ObjectLens<HOST, Nullable<TYPE>>,
                         NullableAccess<HOST, TYPE, SUBLENS> {
+    
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+        NullableLens<HOST, TYPE, SUBLENS> of(
+            LensSpec<HOST, Nullable<TYPE>> nullableLensSpec,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        val read  = nullableLensSpec.getRead();
+        val write = nullableLensSpec.getWrite().toBiFunction();
+        val spec  = createLensSpecParameterized(read, write, subCreator);
+        val nullableLens = (NullableLens<HOST, TYPE, SUBLENS>)()->spec;
+        return nullableLens;
+    }
+    
     
     public LensSpecParameterized<HOST, Nullable<TYPE>, TYPE, SUBLENS> lensSpecWithSub();
 
@@ -33,22 +46,6 @@ public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     @Override
     public default Nullable<TYPE> apply(HOST host) {
         return lensSpec().getRead().apply(host);
-    }
-    
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> NullableLens<HOST, TYPE, SUBLENS> 
-        createNullableLens(
-            Function<HOST, Nullable<TYPE>>          read,
-            BiFunction<HOST, Nullable<TYPE>, HOST>  write,
-            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        val spec = LensSpecParameterized.createLensSpecParameterized(read, write, subCreator);
-        val nullableLens = (NullableLens<HOST, TYPE, SUBLENS>)()->spec;
-        return nullableLens;
-    }
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> NullableLens<HOST, TYPE, SUBLENS> 
-        createNullableLens(
-            LensSpec<HOST, Nullable<TYPE>> nullableLensSpec,
-            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        return createNullableLens(nullableLensSpec.getRead(), nullableLensSpec.getWrite().toBiFunction(), subCreator);
     }
     
     public default SUBLENS get() {

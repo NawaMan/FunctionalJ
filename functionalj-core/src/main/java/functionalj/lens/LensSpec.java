@@ -5,7 +5,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import lombok.Getter;
-import lombok.val;
 
 @Getter
 public class LensSpec<HOST, DATA> implements Function<HOST, DATA> {
@@ -78,59 +77,11 @@ public class LensSpec<HOST, DATA> implements Function<HOST, DATA> {
         return SUPPLY_FALSE.equals(this.isNullSafe) ? this : new LensSpec<>(read, write, SUPPLY_FALSE);
     }
     
-    public static <HOST, DATA, SUB, SUBLENS> SUBLENS createSubLens(
-            ObjectLens<HOST, DATA>                 dataLens,
-            Function<DATA, SUB>                    readSub,
-            BiFunction<DATA, SUB, DATA>            writeSub,
-            Function<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
-        val lensSpec    = dataLens.lensSpec();
-        val hostSubSpec = lensSpec.then(LensSpec.of(readSub, writeSub, lensSpec.isNullSafe));
-        return subLensCreator.apply(hostSubSpec);
-    }
-    
     public <SUB> LensSpec<HOST, SUB> then(LensSpec<DATA, SUB> sub) {
         return LensSpec.of(
-                createSubRead (read,        sub.read,  isNullSafe),
-                createSubWrite(read, write, sub.write, isNullSafe),
+                Lenses.createSubRead (read,        sub.read,  isNullSafe),
+                Lenses.createSubWrite(read, write, sub.write, isNullSafe),
                 isNullSafe);
-    }
-    
-    public static <DATA, SUB, HOST> Function<HOST, SUB> createSubRead(
-            Function<HOST, DATA> readValue,
-            Function<DATA, SUB>  readSub, 
-            BooleanSupplier      isNullSafe) {
-        return host ->{
-            val value = readValue.apply(host);
-            if (isNullSafe.getAsBoolean() && (value == null))
-                return null;
-            
-            val subValue = readSub.apply(value);
-            return subValue;
-        };
-    }
-    
-    public static <HOST, DATA, SUB> BiFunction<HOST, SUB, HOST> createSubWrite(
-            Function<HOST, DATA>         readValue,
-            WriteLens<HOST, DATA>        writeValue,
-            BiFunction<DATA, SUB, DATA>  writeSub,
-            BooleanSupplier              isNullSafe) {
-        return createSubWrite(readValue, writeValue, WriteLens.of(writeSub), isNullSafe);
-    }
-    
-    public static <HOST, DATA, SUB> BiFunction<HOST, SUB, HOST> createSubWrite(
-            Function<HOST, DATA>  readValue,
-            WriteLens<HOST, DATA> writeValue,
-            WriteLens<DATA, SUB>  writeSub,
-            BooleanSupplier       isNullSafe) {
-        return (host, newSubValue)->{
-            val oldValue = readValue.apply(host);
-            if (isNullSafe.getAsBoolean() && (oldValue == null))
-                return host;
-            
-            val newValue = writeSub.apply(oldValue, newSubValue);
-            val newHost  = writeValue.apply(host, newValue);
-            return newHost;
-        };
     }
     
 }

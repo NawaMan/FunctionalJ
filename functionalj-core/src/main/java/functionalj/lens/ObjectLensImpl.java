@@ -22,7 +22,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
             Function<DATA, SUB>                    readSub,
             BiFunction<DATA, SUB, DATA>            writeSub,
             Function<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
-        return LensSpec.createSubLens(this, readSub, writeSub, subLensCreator);
+        return Lenses.createSubLens(this, readSub, writeSub, subLensCreator);
     }
     
     public <LIST extends List<SUB>, SUB, SUBLENS extends AnyLens<HOST, SUB>> 
@@ -33,9 +33,9 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         
         val readThis   = this.lensSpec().getRead();
         val writeThis  = this.lensSpec().getWrite();
-        val subRead    = (Function<HOST, LIST>)        LensSpec.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
-        val subWrite   = (BiFunction<HOST, LIST, HOST>)LensSpec.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
-        val spec       = LensSpecParameterized.createLensSpecParameterized(subRead, subWrite, subLensCreator);
+        val subRead    = (Function<HOST, LIST>)        Lenses.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
+        val subWrite   = (BiFunction<HOST, LIST, HOST>)Lenses.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
+        val spec       = Lenses.createLensSpecParameterized(subRead, subWrite, subLensCreator);
         val listLens   = (ListLens<HOST, LIST, SUB, SUBLENS>)()->spec;
         return listLens;
     }

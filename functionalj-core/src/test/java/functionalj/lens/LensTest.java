@@ -315,7 +315,7 @@ public class LensTest {
     
     @Test
     public void testListLens() {
-        val listLens = ListLens.createListLens(WithCars::cars, WithCars::withCars, Car.CarLens::new);
+        val listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
         
         val withCars = new WithCars(asList(new Car("Blue")));
         assertEquals("WithCars [cars=[Car(color=Blue)]]",  withCars.toString());
@@ -342,7 +342,7 @@ public class LensTest {
         val withTwoCars = new WithCars(asList(new Car("Blue"), new Car("Green")));
         assertEquals("WithCars [cars=[Car(color=Blue), Car(color=Green)]]", withTwoCars.toString());
         
-        val listLens = ListLens.createListLens(WithCars::cars, WithCars::withCars, Car.CarLens::new);
+        val listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
         assertEquals("WithCars [cars=[Car(color=Red), Car(color=Green)]]", 
                 listLens.selectiveMap(
                         theCar.color.thatIs("Blue"), 

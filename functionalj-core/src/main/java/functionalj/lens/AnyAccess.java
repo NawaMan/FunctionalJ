@@ -1,6 +1,6 @@
 package functionalj.lens;
 
-import static functionalj.compose.Functional.pipe;
+import static functionalj.lens.AccessUtil.createNullableAccess;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -77,56 +77,43 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
         if (value == null)
             return defaultValue;
         
-        return function.apply(value);
+        val newValue = function.apply(value);
+        return newValue;
     }
     
     public default IntegerAccess<HOST> intAccess(int defaultValue, Function<DATA, Integer> function) {
         return host -> {
-            return processValue(host, defaultValue, function);
+            val intValue = processValue(host, defaultValue, function);
+            return intValue;
         };
     }
     
     public default StringAccess<HOST> stringAccess(String defaultValue, Function<DATA, String> function) {
         return host -> {
-            return processValue(host, defaultValue, function);
+            val stringValue = processValue(host, defaultValue, function);
+            return stringValue;
         };
     }
     
     public default BooleanAccess<HOST> booleanAccess(boolean defaultValue, Function<DATA, Boolean> function) {
         return host -> {
-            return processValue(host, defaultValue, function);
+            val booleanValue = processValue(host, defaultValue, function);
+            return booleanValue;
         };
     }
     
     public default NullableAccess<HOST, DATA, AnyAccess<HOST, DATA>> toNullable() {
         Function<Function<HOST, DATA>, AnyAccess<HOST, DATA>> createSubLens = (Function<HOST, DATA> hostToData) -> {
             return (AnyAccess<HOST, DATA>)(HOST host) -> {
-                return hostToData.apply(host);
+                val value = hostToData.apply(host);
+                return value;
             };
         };
         Function<HOST, Nullable<DATA>> accessToNullable = host -> {
-            return Nullable.of(AnyAccess.this.apply(host));
+            val value = AnyAccess.this.apply(host);
+            return Nullable.of(value);
         };
         return createNullableAccess(accessToNullable, createSubLens);
-    }
-    
-    public static <HOST, TYPE, TYPELENS extends AnyAccess<HOST, TYPE>> 
-            NullableAccess<HOST, TYPE, TYPELENS> createNullableAccess(
-                        Function<HOST, Nullable<TYPE>>           accessNullable,
-                        Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
-        val accessWithSub = new AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPELENS>() {
-            @Override
-            public Nullable<TYPE> apply(HOST host) {
-                return accessNullable.apply(host);
-            }
-            @Override
-            public TYPELENS createSubAccess(Function<Nullable<TYPE>, TYPE> accessToParameter) {
-                val hostToParameter = pipe(this::apply, accessToParameter);
-                val parameterLens   = createSubLens.apply(hostToParameter);
-                return parameterLens;
-            }
-        };
-        return () -> accessWithSub;
     }
     
 }

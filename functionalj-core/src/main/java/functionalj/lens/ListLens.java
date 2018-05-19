@@ -17,6 +17,16 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
             ObjectLens<HOST, LIST>,
             ListAccess<HOST, LIST, TYPE, SUBLENS> {
     
+
+    public static <HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ListLens<HOST, LIST, TYPE, SUBLENS> 
+        of(
+            Function<HOST, LIST>                    read,
+            BiFunction<HOST, LIST, HOST>            write,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        return Lenses.createListLens(read, write, subCreator);
+    }
+    
+    
     public LensSpecParameterized<HOST, LIST, TYPE, SUBLENS> lensSpecWithSub();
     
     public default AccessParameterized<HOST, LIST, TYPE, SUBLENS> accessWithSub() {
@@ -86,23 +96,14 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
             val newList = apply(host).stream()
                     .map(each -> checker.test(each) ? mapper.apply(each) : each)
                     .collect(toList());
-            return apply(host, (LIST)newList);
+            val newHost = apply(host, (LIST)newList);
+            return newHost;
         };
     }
     
     
     public default SUBLENS createSubLens(Function<LIST, TYPE> readSub, BiFunction<LIST, TYPE, LIST> writeSub) {
-        return (SUBLENS)LensSpec.createSubLens(this, readSub, writeSub, lensSpecWithSub()::createSubLens);
-    }
-    
-    public static <HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ListLens<HOST, LIST, TYPE, SUBLENS> 
-        createListLens(
-            Function<HOST, LIST>                    read,
-            BiFunction<HOST, LIST, HOST>            write,
-            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        val spec = LensSpecParameterized.createLensSpecParameterized(read, write, subCreator);
-        val listLens = (ListLens<HOST, LIST, TYPE, SUBLENS>)()->spec;
-        return listLens;
+        return (SUBLENS)Lenses.createSubLens(this, readSub, writeSub, lensSpecWithSub()::createSubLens);
     }
     
 }

@@ -1,7 +1,5 @@
 package functionalj.lens;
 
-import java.util.function.Function;
-
 import functionalj.functions.Func1;
 
 @FunctionalInterface
