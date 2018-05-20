@@ -3,6 +3,7 @@ package functionalj.lens;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -44,7 +45,7 @@ public interface ListAccess<HOST, LIST extends List<SUB>, SUB, SUBACCESS extends
             @SuppressWarnings("unchecked")
             @Override
             public LIST apply(HOST host) {
-                return (LIST)spec.apply(host).stream().filter(checker).collect(toList());
+                return (LIST)spec.apply(host).stream().filter(checker).collect(Collectors.toList());
             }
             @Override
             public SUBACCESS createSubAccess(Function<LIST, SUB> accessToSub) {

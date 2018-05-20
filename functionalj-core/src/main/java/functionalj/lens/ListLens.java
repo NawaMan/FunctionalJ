@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -103,7 +104,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
         return host -> {
             val newList = apply(host).stream()
                     .map(each -> checker.test(each) ? mapper.apply(each) : each)
-                    .collect(toList());
+                    .collect(Collectors.toList());
             val newHost = apply(host, (LIST)newList);
             return newHost;
         };

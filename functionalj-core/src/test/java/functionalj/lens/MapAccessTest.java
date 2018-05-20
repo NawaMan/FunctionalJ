@@ -1,16 +1,12 @@
 package functionalj.lens;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 import org.junit.Test;
-
-import static java.util.Collections.singletonMap;
 
 import lombok.val;
 
