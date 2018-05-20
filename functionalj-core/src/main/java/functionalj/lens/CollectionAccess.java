@@ -8,16 +8,16 @@ import java.util.function.Predicate;
 public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
         extends ObjectAccess<HOST, COLLECTION>, AccessParameterized<HOST, COLLECTION, TYPE, AnyAccess<HOST,TYPE>> {
     
-    public AccessParameterized<HOST, COLLECTION, TYPE, SUBACCESS> lensSpecWithSub();
+    public AccessParameterized<HOST, COLLECTION, TYPE, SUBACCESS> accessParameterized();
     
     @Override
     public default COLLECTION apply(HOST input) {
-        return lensSpecWithSub().apply(input);
+        return accessParameterized().apply(input);
     }
     
     @Override
     public default SUBACCESS createSubAccess(Function<COLLECTION, TYPE> accessToSub) {
-        return lensSpecWithSub().createSubAccess(accessToSub);
+        return accessParameterized().createSubAccess(accessToSub);
     }
     
     public default BooleanAccess<HOST> thatContains(TYPE value) {

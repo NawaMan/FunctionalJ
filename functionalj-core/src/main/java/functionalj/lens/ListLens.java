@@ -18,29 +18,37 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
             ListAccess<HOST, LIST, TYPE, SUBLENS> {
     
 
-    public static <HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ListLens<HOST, LIST, TYPE, SUBLENS> 
-        of(
-            Function<HOST, LIST>                    read,
-            BiFunction<HOST, LIST, HOST>            write,
-            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+    public static <HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> 
+            ListLens<HOST, LIST, TYPE, SUBLENS> of(
+                Function<HOST, LIST>                    read,
+                BiFunction<HOST, LIST, HOST>            write,
+                Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         return Lenses.createListLens(read, write, subCreator);
     }
+    public static <HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> 
+            ListLens<HOST, LIST, TYPE, SUBLENS> of(LensSpecParameterized<HOST, LIST, TYPE, SUBLENS> spec) {
+        return new ListLens<HOST, LIST, TYPE, SUBLENS>() {
+            @Override
+            public LensSpecParameterized<HOST, LIST, TYPE, SUBLENS> lensSpecParameterized() {
+                return spec;
+            }
+        };
+    }
     
+    public LensSpecParameterized<HOST, LIST, TYPE, SUBLENS> lensSpecParameterized();
     
-    public LensSpecParameterized<HOST, LIST, TYPE, SUBLENS> lensSpecWithSub();
-    
-    public default AccessParameterized<HOST, LIST, TYPE, SUBLENS> accessWithSub() {
-        return lensSpecWithSub();
+    public default AccessParameterized<HOST, LIST, TYPE, SUBLENS> accessParameterized() {
+        return lensSpecParameterized();
     }
     
     @Override
     public default SUBLENS createSubAccess(Function<LIST, TYPE> accessToSub) {
-        return lensSpecWithSub().createSubAccess(accessToSub);
+        return accessParameterized().createSubAccess(accessToSub);
     }
     
     @Override
     public default LensSpec<HOST, LIST> lensSpec() {
-        return lensSpecWithSub().getSpec();
+        return lensSpecParameterized().getSpec();
     }
     
     @Override
@@ -103,7 +111,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
     
     
     public default SUBLENS createSubLens(Function<LIST, TYPE> readSub, BiFunction<LIST, TYPE, LIST> writeSub) {
-        return (SUBLENS)Lenses.createSubLens(this, readSub, writeSub, lensSpecWithSub()::createSubLens);
+        return (SUBLENS)Lenses.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }
     
 }

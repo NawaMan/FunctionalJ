@@ -16,7 +16,7 @@ public interface ListAccess<HOST, LIST extends List<SUB>, SUB, SUBACCESS extends
         return at(0);
     }
     public default SUBACCESS last() {
-        return lensSpecWithSub().createSubAccess((LIST list) -> {
+        return accessParameterized().createSubAccess((LIST list) -> {
             if (list == null)
                 return null;
             if (list.isEmpty())
@@ -25,7 +25,7 @@ public interface ListAccess<HOST, LIST extends List<SUB>, SUB, SUBACCESS extends
         });
     }
     public default SUBACCESS at(int index) {
-        return lensSpecWithSub().createSubAccess((LIST list) -> {
+        return accessParameterized().createSubAccess((LIST list) -> {
             if (list == null)
                 return null;
             if (list.isEmpty())
@@ -39,7 +39,7 @@ public interface ListAccess<HOST, LIST extends List<SUB>, SUB, SUBACCESS extends
     }
     
     public default ListAccess<HOST, LIST, SUB, SUBACCESS> filter(Predicate<SUB> checker) {
-        val spec        = lensSpecWithSub();
+        val spec        = accessParameterized();
         val specWithSub = new AccessParameterized<HOST, LIST, SUB, SUBACCESS>() {
             @SuppressWarnings("unchecked")
             @Override

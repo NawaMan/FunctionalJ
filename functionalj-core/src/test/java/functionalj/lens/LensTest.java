@@ -262,7 +262,8 @@ public class LensTest {
         };
         val listAcc = new ListAccess<WithNames, List<String>, String, StringAccess<WithNames>>() {
             @Override
-            public AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>> lensSpecWithSub() {
+            public AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>> accessParameterized() {
+                // TODO Auto-generated method stub
                 return accSub;
             }
         };

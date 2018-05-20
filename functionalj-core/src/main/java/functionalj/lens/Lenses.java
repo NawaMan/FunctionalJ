@@ -105,7 +105,7 @@ public class Lenses {
             BiFunction<HOST, LIST, HOST>            write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val spec = Lenses.createLensSpecParameterized(read, write, subCreator);
-        val listLens = (ListLens<HOST, LIST, TYPE, SUBLENS>)()->spec;
+        val listLens = ListLens.of(spec);
         return listLens;
     }
 
