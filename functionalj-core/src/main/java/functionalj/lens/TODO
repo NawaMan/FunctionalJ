@@ -1,8 +1,8 @@
 - Create ObjectLensWithSub
 - Create an interface for each custom Object that has Lens in its type
 - MapAccess and MapLens
-- NullableLens
-- OptionalAccess and OptionalLens
-- Generator for the above types
-- Make Nullable and Optional lens transparents (don't see it as object)
++ NullableLens
++ OptionalAccess and OptionalLens
++ Make Nullable and Optional lens transparents (don't see it as object)
 - Annotate the getter to be null sensitive (Null unsafe)
+- Generator for the above types
