@@ -1,5 +1,6 @@
 package functionalj.lens;
 
+import static functionalj.lens.Accesses.theString;
 import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedHashMap;
@@ -47,6 +48,10 @@ public class MapAccessTest {
         
         assertEquals("2", mapAccess.get("name1").apply(map).toString());
         assertEquals("4", mapAccess.get("name2").apply(map).toString());
+        
+        
+        assertEquals("[name1=2]", mapAccess.filterEntries(entry -> entry.getKey().endsWith("1")).apply(map).toString());
+        assertEquals("[name1=2]", mapAccess.filter(theString.thatEndsWith("1")).apply(map).toString());
     }
     
 }
