@@ -1,6 +1,5 @@
 package functionalj.lens;
 
-import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
@@ -32,18 +31,18 @@ public class LensSpec<HOST, DATA> implements Function<HOST, DATA> {
         return new LensSpec<DATA, DATA>(selfRead(), selfWrite());
     }
     public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read) {
-        return of(read::apply, null);
+        return of(read::apply, (WriteLens<HOST,DATA>)null);
     }
-    public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write) {
+    public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, WriteLens<HOST, DATA> write) {
         if (write == null)
             return new LensSpec<HOST, DATA>(read::apply, null);
         
         return new LensSpec<HOST, DATA>(read::apply, write::apply);
     }
-    public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write, boolean isNullSafe) {
+    public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, WriteLens<HOST, DATA> write, boolean isNullSafe) {
         return new LensSpec<HOST, DATA>(read::apply, write::apply, booleanSupplierOf(isNullSafe));
     }
-    public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, BiFunction<HOST, DATA, HOST> write, BooleanSupplier isNullSafe) {
+    public static <HOST, DATA> LensSpec<HOST, DATA> of(Function<HOST, DATA> read, WriteLens<HOST, DATA> write, BooleanSupplier isNullSafe) {
         return new LensSpec<HOST, DATA>(read::apply, write::apply, isNullSafe);
     }
     

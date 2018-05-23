@@ -88,7 +88,7 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
     }
     
     public default IntegerAccess<HOST> length() {
-        return intAccess(-1, str->str.length());
+        return intAccess(0, str->str.length());
     }
     
     public default BooleanAccess<HOST> thatMatches(String regex) {

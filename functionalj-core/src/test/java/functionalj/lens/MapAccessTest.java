@@ -14,9 +14,9 @@ import lombok.val;
 public class MapAccessTest {
     
     @Test
-    public void test() {
+    public void testMapAccess() {
         val mapAccess = new MapAccess<
-                                Map<String, Integer>, Map<String,Integer>, String, Integer, 
+                                Map<String, Integer>, String, Integer, 
                                 StringAccess<Map<String, Integer>>, IntegerAccess<Map<String, Integer>>>() {
             @Override
             public AccessParameterized2<Map<String, Integer>, Map<String, Integer>, String, Integer, StringAccess<Map<String, Integer>>, IntegerAccess<Map<String, Integer>>> accessParameterized2() {
@@ -53,5 +53,27 @@ public class MapAccessTest {
         assertEquals("[name1=2]", mapAccess.filterEntries(entry -> entry.getKey().endsWith("1")).apply(map).toString());
         assertEquals("[name1=2]", mapAccess.filter(theString.thatEndsWith("1")).apply(map).toString());
     }
+    
+    @Test
+    public void testMapLens() {
+        val mapLens = MapLens.<Map<String, String>, String, String, StringLens<Map<String,String>>, StringLens<Map<String,String>>>
+                of(
+                    map -> map,
+                    (map, newMap) -> newMap,
+                    spec->()->spec,
+                    spec->()->spec);
+        
+        
+        val map = new LinkedHashMap<String, String>();
+        map.put("name1", "2");
+        map.put("name2", "42");
+        
+        assertEquals("2",  mapLens.get("name1")        .apply(map));
+        assertEquals(null, mapLens.get("name")         .apply(map));
+        assertEquals("0",  mapLens.get("name").length().apply(map) + "");
+        
+        assertEquals("{name2=42, name1=5}", mapLens.get("name1").changeTo("5").apply(map) + "");
+    }
+    
     
 }

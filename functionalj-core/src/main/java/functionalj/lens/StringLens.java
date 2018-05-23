@@ -5,6 +5,10 @@ import functionalj.functions.Func1;
 @FunctionalInterface
 public interface StringLens<HOST> extends AnyLens<HOST, String>, StringAccess<HOST> {
     
+    public static <HOST> StringLens<HOST> of(LensSpec<HOST, String> spec) {
+        return () -> spec;
+    }
+    
     @Override
     default String apply(HOST host) {
         return lensSpec().getRead().apply(host);

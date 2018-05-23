@@ -13,33 +13,33 @@ import functionalj.functions.Func1;
 import lombok.val;
 
 @FunctionalInterface
-public interface MapAccess<HOST, MAP extends Map<KEY, VALUE>, KEY, VALUE, 
+public interface MapAccess<HOST, KEY, VALUE, 
                             KEYACCESS extends AnyAccess<HOST,KEY>, 
                             VALUEACCESS extends AnyAccess<HOST,VALUE>>
-                    extends AccessParameterized2<HOST, MAP, KEY, VALUE, KEYACCESS, VALUEACCESS> {
+                    extends AccessParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> {
 
-    public AccessParameterized2<HOST, MAP, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2();
+    public AccessParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2();
     
     @Override
-    public default MAP apply(HOST host) {
+    public default Map<KEY, VALUE> apply(HOST host) {
         return accessParameterized2().apply(host);
     }
 
     @Override
-    public default KEYACCESS createSubAccess1(Function<MAP, KEY> accessToParameter) {
+    public default KEYACCESS createSubAccess1(Function<Map<KEY, VALUE>, KEY> accessToParameter) {
         return keyAccess(accessToParameter);
     }
 
     @Override
-    public default VALUEACCESS createSubAccess2(Function<MAP, VALUE> accessToParameter) {
+    public default VALUEACCESS createSubAccess2(Function<Map<KEY, VALUE>, VALUE> accessToParameter) {
         return valueAccess(accessToParameter);
     }
 
-    public default KEYACCESS keyAccess(Function<MAP, KEY> accessToParameter) {
+    public default KEYACCESS keyAccess(Function<Map<KEY, VALUE>, KEY> accessToParameter) {
         return accessParameterized2().createSubAccess1(accessToParameter);
     }
 
-    public default VALUEACCESS valueAccess(Function<MAP, VALUE> accessToParameter) {
+    public default VALUEACCESS valueAccess(Function<Map<KEY, VALUE>, VALUE> accessToParameter) {
         return accessParameterized2().createSubAccess2(accessToParameter);
     }
     
@@ -85,13 +85,13 @@ public interface MapAccess<HOST, MAP extends Map<KEY, VALUE>, KEY, VALUE,
     public default CollectionAccess<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>,
                     MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>> 
             entries() {
-        val entryCollectionSpec = createEntryCollectionSpec(map -> map.entrySet());
+        val entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map -> map.entrySet());
         return () -> entryCollectionSpec;
     }
     public default CollectionAccess<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>, 
                     MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>> 
             filterEntries(Predicate<Map.Entry<KEY, VALUE>> entryPredicate) {
-        val entryCollectionSpec = createEntryCollectionSpec(map->{
+        val entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map->{
             return map.entrySet().stream().filter(entryPredicate).collect(toSet());
         });
         return () -> entryCollectionSpec;
@@ -99,7 +99,7 @@ public interface MapAccess<HOST, MAP extends Map<KEY, VALUE>, KEY, VALUE,
     public default CollectionAccess<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>, 
                     MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>> 
             filterEntries(BiPredicate<KEY, VALUE> entryBiPredicate) {
-        val entryCollectionSpec = createEntryCollectionSpec(map->{
+        val entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map->{
             return map.entrySet().stream()
                     .filter(entry -> entryBiPredicate.test(entry.getKey(), entry.getValue()))
                     .collect(toSet());
@@ -109,7 +109,7 @@ public interface MapAccess<HOST, MAP extends Map<KEY, VALUE>, KEY, VALUE,
     public default CollectionAccess<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>, 
                     MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>> 
             filter(Predicate<KEY> keyPredicate) {
-        val entryCollectionSpec = createEntryCollectionSpec(map->{
+        val entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map->{
             return map.entrySet().stream()
                     .filter(entry->keyPredicate.test(entry.getKey()))
                     .collect(toSet());
@@ -118,108 +118,113 @@ public interface MapAccess<HOST, MAP extends Map<KEY, VALUE>, KEY, VALUE,
     }
     
     public default CollectionAccess<HOST, Collection<KEY>, KEY, KEYACCESS> keys() {
-        val keyCollectionSpec = createKeyCollectionSpec(Map::keySet);
+        val keyCollectionSpec = Helper.createKeyCollectionSpec(accessParameterized2(), Map::keySet);
         return () -> keyCollectionSpec;
     }
     
     public default CollectionAccess<HOST, Collection<VALUE>, VALUE, VALUEACCESS> values() {
-        val valueCollectionSpec = createValueCollectionSpec(Map::values);
+        val valueCollectionSpec = Helper.createValueCollectionSpec(accessParameterized2(), Map::values);
         return () -> valueCollectionSpec;
     }
     
-    // Find a place for this.
-    
-    public default AccessParameterized<HOST, Collection<KEY>, KEY, KEYACCESS> createKeyCollectionSpec(
-            Function<Map<KEY, VALUE>, Collection<KEY>> getKeys) {
-        val spec = accessParameterized2();
-        return new AccessParameterized<HOST, Collection<KEY>, KEY, KEYACCESS>() {
-            @Override
-            public Collection<KEY> apply(HOST host) {
-                return getKeys.apply(spec.apply(host));
-            }
-            @Override
-            public KEYACCESS createSubAccess(Function<Collection<KEY>, KEY> accessToKey) {
-                return spec.createSubAccess1(map -> {
-                    val keySet    = getKeys.apply(map);
-                    val keyAccess = accessToKey.apply(keySet);
-                    return keyAccess;
-                });
-            }
-        };
-    }
-    
-    public default AccessParameterized<HOST, Collection<VALUE>, VALUE, VALUEACCESS> createValueCollectionSpec(
-            Function<Map<KEY, VALUE>, Collection<VALUE>> getValues) {
-        val spec = accessParameterized2();
-        return new AccessParameterized<HOST, Collection<VALUE>, VALUE, VALUEACCESS>() {
-            @Override
-            public Collection<VALUE> apply(HOST host) {
-                return getValues.apply(spec.apply(host));
-            }
-            @Override
-            public VALUEACCESS createSubAccess(Function<Collection<VALUE>, VALUE> accessToValue) {
-                return spec.createSubAccess2(map -> {
-                    val values      = getValues.apply(map);
-                    val valueAccess = accessToValue.apply(values);
-                    return valueAccess;
-                });
-            }
-        };
-    }
-    
-    public default AccessParameterized<HOST, Collection<Entry<KEY, VALUE>>, Entry<KEY, VALUE>, MapEntryAccess<HOST, Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>>
-        createEntryCollectionSpec(
-            Function<Map<KEY, VALUE>, Collection<Map.Entry<KEY, VALUE>>> accessEntrySet) {
-        val spec = accessParameterized2();
-        return new AccessParameterized<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>,
-                                MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>>() {
-            @Override
-            public Collection<Map.Entry<KEY, VALUE>> apply(HOST host) {
-                return accessEntrySet.apply(spec.apply(host));
-            }
-            @Override
-            public MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>
-                    createSubAccess(Function<Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>> accessToSub) {
-                val entrySpec = createEntrySpec(spec, (MAP map) -> {
-                    val keyAccess = accessToSub.apply(accessEntrySet.apply(map));
-                    return keyAccess;
-                });
-                return  () -> entrySpec;
-            }
-        };
-    }
+    public static class Helper {
+        
+        public static <HOST, KEY, VALUE, KEYACCESS extends AnyAccess<HOST,KEY>, VALUEACCESS extends AnyAccess<HOST,VALUE>>
+            AccessParameterized<HOST, Collection<KEY>, KEY, KEYACCESS> createKeyCollectionSpec(
+                    AccessParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> spec,
+                    Function<Map<KEY, VALUE>, Collection<KEY>> getKeys) {
+            return new AccessParameterized<HOST, Collection<KEY>, KEY, KEYACCESS>() {
+                @Override
+                public Collection<KEY> apply(HOST host) {
+                    return getKeys.apply(spec.apply(host));
+                }
+                @Override
+                public KEYACCESS createSubAccess(Function<Collection<KEY>, KEY> accessToKey) {
+                    return spec.createSubAccess1(map -> {
+                        val keySet    = getKeys.apply(map);
+                        val keyAccess = accessToKey.apply(keySet);
+                        return keyAccess;
+                    });
+                }
+            };
+        }
 
-    public default AccessParameterized2<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> createEntrySpec(
-            AccessParameterized2<HOST, MAP, KEY, VALUE, KEYACCESS, VALUEACCESS> mapAccessSpec,
-            Func1<MAP, Map.Entry<KEY, VALUE>>                                   accessEntry) {
-        AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> entrySpec
-        = new AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>() {
-            @Override
-            public Entry<KEY, VALUE> apply(HOST host) {
-                val map   = mapAccessSpec.apply(host);
-                val entry = accessEntry.apply(map);
-                return entry;
-            }
-            
-            @Override
-            public KEYACCESS createSubAccess1(Function<Entry<KEY, VALUE>, KEY> accessToKey) {
-                return mapAccessSpec.createSubAccess1(map -> {
+        public static <HOST, KEY, VALUE, KEYACCESS extends AnyAccess<HOST,KEY>, VALUEACCESS extends AnyAccess<HOST,VALUE>>
+            AccessParameterized<HOST, Collection<VALUE>, VALUE, VALUEACCESS> createValueCollectionSpec(
+                    AccessParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> spec,
+                    Function<Map<KEY, VALUE>, Collection<VALUE>> getValues) {
+            return new AccessParameterized<HOST, Collection<VALUE>, VALUE, VALUEACCESS>() {
+                @Override
+                public Collection<VALUE> apply(HOST host) {
+                    return getValues.apply(spec.apply(host));
+                }
+                @Override
+                public VALUEACCESS createSubAccess(Function<Collection<VALUE>, VALUE> accessToValue) {
+                    return spec.createSubAccess2(map -> {
+                        val values      = getValues.apply(map);
+                        val valueAccess = accessToValue.apply(values);
+                        return valueAccess;
+                    });
+                }
+            };
+        }
+
+        public static <HOST, KEY, VALUE, KEYACCESS extends AnyAccess<HOST,KEY>, VALUEACCESS extends AnyAccess<HOST,VALUE>>
+            AccessParameterized<HOST, Collection<Entry<KEY, VALUE>>, Entry<KEY, VALUE>, MapEntryAccess<HOST, Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>>
+            createEntryCollectionSpec(
+                    AccessParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> spec,
+                    Function<Map<KEY, VALUE>, Collection<Map.Entry<KEY, VALUE>>> accessEntrySet) {
+            return new AccessParameterized<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>,
+                                    MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>>() {
+                @Override
+                public Collection<Map.Entry<KEY, VALUE>> apply(HOST host) {
+                    return accessEntrySet.apply(spec.apply(host));
+                }
+                @Override
+                public MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>
+                        createSubAccess(Function<Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>> accessToSub) {
+                    val entrySpec = createEntrySpec(spec, (Map<KEY, VALUE> map) -> {
+                        val keyAccess = accessToSub.apply(accessEntrySet.apply(map));
+                        return keyAccess;
+                    });
+                    return  () -> entrySpec;
+                }
+            };
+        }
+
+        public static <HOST, KEY, VALUE, KEYACCESS extends AnyAccess<HOST,KEY>, VALUEACCESS extends AnyAccess<HOST,VALUE>>
+            AccessParameterized2<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> createEntrySpec(
+                AccessParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> mapAccessSpec,
+                Func1<Map<KEY, VALUE>, Map.Entry<KEY, VALUE>>                                   accessEntry) {
+            AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> entrySpec
+            = new AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>() {
+                @Override
+                public Entry<KEY, VALUE> apply(HOST host) {
+                    val map   = mapAccessSpec.apply(host);
                     val entry = accessEntry.apply(map);
-                    val key   = accessToKey.apply(entry);
-                    return key;
-                });
-            }
-            
-            @Override
-            public VALUEACCESS createSubAccess2(Function<Entry<KEY, VALUE>, VALUE> accessToValue) {
-                return mapAccessSpec.createSubAccess2(map -> {
-                    val entry = accessEntry.apply(map);
-                    val value = accessToValue.apply(entry);
-                    return value;
-                });
-            }
-        };
-        return entrySpec;
+                    return entry;
+                }
+                
+                @Override
+                public KEYACCESS createSubAccess1(Function<Entry<KEY, VALUE>, KEY> accessToKey) {
+                    return mapAccessSpec.createSubAccess1(map -> {
+                        val entry = accessEntry.apply(map);
+                        val key   = accessToKey.apply(entry);
+                        return key;
+                    });
+                }
+                
+                @Override
+                public VALUEACCESS createSubAccess2(Function<Entry<KEY, VALUE>, VALUE> accessToValue) {
+                    return mapAccessSpec.createSubAccess2(map -> {
+                        val entry = accessEntry.apply(map);
+                        val value = accessToValue.apply(entry);
+                        return value;
+                    });
+                }
+            };
+            return entrySpec;
+        }
     }
     
 }

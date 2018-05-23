@@ -2,7 +2,6 @@ package functionalj.lens;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -20,7 +19,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
     public static <HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> 
             ListLens<HOST, LIST, TYPE, SUBLENS> of(
                 Function<HOST, LIST>                    read,
-                BiFunction<HOST, LIST, HOST>            write,
+                WriteLens<HOST, LIST>                   write,
                 Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         return Lenses.createListLens(read, write, subCreator);
     }
@@ -109,7 +108,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
     }
     
     
-    public default SUBLENS createSubLens(Function<LIST, TYPE> readSub, BiFunction<LIST, TYPE, LIST> writeSub) {
+    public default SUBLENS createSubLens(Function<LIST, TYPE> readSub, WriteLens<LIST, TYPE> writeSub) {
         return (SUBLENS)Lenses.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }
     

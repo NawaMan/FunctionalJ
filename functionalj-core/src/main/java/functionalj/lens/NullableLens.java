@@ -2,7 +2,6 @@ package functionalj.lens;
 
 import static functionalj.lens.Lenses.createLensSpecParameterized;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import lombok.val;
@@ -19,7 +18,7 @@ public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
             LensSpec<HOST, Nullable<TYPE>> nullableLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val read  = nullableLensSpec.getRead();
-        val write = nullableLensSpec.getWrite().toBiFunction();
+        val write = nullableLensSpec.getWrite();
         val spec  = createLensSpecParameterized(read, write, subCreator);
         val nullableLens = (NullableLens<HOST, TYPE, SUBLENS>)()->spec;
         return nullableLens;
@@ -49,10 +48,10 @@ public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     }
     
     public default SUBLENS get() {
-        BiFunction<HOST, TYPE, HOST> write = (HOST host, TYPE newValue)->{
+        WriteLens<HOST, TYPE> write = (HOST host, TYPE newValue)->{
             return lensSpec().getWrite().apply(host, Nullable.of(newValue));
         };
-        LensSpec<HOST, TYPE> subSpec = LensSpec.of(lensSpec().getRead().andThen(Nullable::get), write );
+        LensSpec<HOST, TYPE> subSpec = LensSpec.of(lensSpec().getRead().andThen(Nullable::get), write);
         return lensSpecWithSub().createSubLens(subSpec);
     }
     

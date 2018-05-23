@@ -3,7 +3,6 @@ package functionalj.lens;
 import static functionalj.lens.Lenses.createLensSpecParameterized;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import lombok.val;
@@ -19,7 +18,7 @@ public interface OptionalLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
             LensSpec<HOST, Optional<TYPE>> optionalLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val read  = optionalLensSpec.getRead();
-        val write = optionalLensSpec.getWrite().toBiFunction();
+        val write = optionalLensSpec.getWrite();
         val spec  = createLensSpecParameterized(read, write, subCreator);
         val optionalLens = (OptionalLens<HOST, TYPE, SUBLENS>)()->spec;
         return optionalLens;
@@ -49,10 +48,10 @@ public interface OptionalLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     }
     
     public default SUBLENS get() {
-        BiFunction<HOST, TYPE, HOST> write = (HOST host, TYPE newValue)->{
+        WriteLens<HOST, TYPE> write = (HOST host, TYPE newValue)->{
             return lensSpec().getWrite().apply(host, Optional.of(newValue));
         };
-        LensSpec<HOST, TYPE> subSpec = LensSpec.of(lensSpec().getRead().andThen(Optional::get), write );
+        LensSpec<HOST, TYPE> subSpec = LensSpec.of(lensSpec().getRead().andThen(Optional::get), write);
         return lensSpecWithSub().createSubLens(subSpec);
     }
     
