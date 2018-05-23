@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 import lombok.val;
 
 @FunctionalInterface
-public interface ListAccess<HOST, SUB, SUBACCESS extends AnyAccess<HOST, SUB>> 
-        extends CollectionAccess<HOST, List<SUB>, SUB, SUBACCESS> {
+public interface ListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> 
+        extends CollectionAccess<HOST, List<TYPE>, TYPE, TYPEACCESS> {
     
-    public default SUBACCESS first() {
+    public default TYPEACCESS first() {
         return at(0);
     }
-    public default SUBACCESS last() {
-        return accessParameterized().createSubAccess((List<SUB> list) -> {
+    public default TYPEACCESS last() {
+        return accessParameterized().createSubAccess((List<TYPE> list) -> {
             if (list == null)
                 return null;
             if (list.isEmpty())
@@ -23,8 +23,8 @@ public interface ListAccess<HOST, SUB, SUBACCESS extends AnyAccess<HOST, SUB>>
             return list.get(list.size() - 1);
         });
     }
-    public default SUBACCESS at(int index) {
-        return accessParameterized().createSubAccess((List<SUB> list) -> {
+    public default TYPEACCESS at(int index) {
+        return accessParameterized().createSubAccess((List<TYPE> list) -> {
             if (list == null)
                 return null;
             if (list.isEmpty())
@@ -37,15 +37,15 @@ public interface ListAccess<HOST, SUB, SUBACCESS extends AnyAccess<HOST, SUB>>
         });
     }
     
-    public default ListAccess<HOST, SUB, SUBACCESS> filter(Predicate<SUB> checker) {
+    public default ListAccess<HOST, TYPE, TYPEACCESS> filter(Predicate<TYPE> checker) {
         val spec        = accessParameterized();
-        val specWithSub = new AccessParameterized<HOST, List<SUB>, SUB, SUBACCESS>() {
+        val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, TYPEACCESS>() {
             @Override
-            public List<SUB> apply(HOST host) {
+            public List<TYPE> apply(HOST host) {
                 return spec.apply(host).stream().filter(checker).collect(Collectors.toList());
             }
             @Override
-            public SUBACCESS createSubAccess(Function<List<SUB>, SUB> accessToSub) {
+            public TYPEACCESS createSubAccess(Function<List<TYPE>, TYPE> accessToSub) {
                 return spec.createSubAccess(accessToSub);
             }
         };

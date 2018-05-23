@@ -9,37 +9,37 @@ import java.util.stream.Collectors;
 import lombok.val;
 
 @FunctionalInterface
-public interface ListLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         extends
             ObjectLens<HOST, List<TYPE>>,
-            ListAccess<HOST, TYPE, SUBLENS> {
+            ListAccess<HOST, TYPE, TYPELENS> {
     
 
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> 
-            ListLens<HOST, TYPE, SUBLENS> of(
+    public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
+            ListLens<HOST, TYPE, TYPELENS> of(
                 Function<HOST, List<TYPE>>                    read,
                 WriteLens<HOST, List<TYPE>>                   write,
-                Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+                Function<LensSpec<HOST, TYPE>, TYPELENS> subCreator) {
         return Lenses.createListLens(read, write, subCreator);
     }
-    public static <HOST,  TYPE, SUBLENS extends AnyLens<HOST, TYPE>> 
-            ListLens<HOST, TYPE, SUBLENS> of(LensSpecParameterized<HOST, List<TYPE>, TYPE, SUBLENS> spec) {
-        return new ListLens<HOST, TYPE, SUBLENS>() {
+    public static <HOST,  TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
+            ListLens<HOST, TYPE, TYPELENS> of(LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS> spec) {
+        return new ListLens<HOST, TYPE, TYPELENS>() {
             @Override
-            public LensSpecParameterized<HOST, List<TYPE>, TYPE, SUBLENS> lensSpecParameterized() {
+            public LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS> lensSpecParameterized() {
                 return spec;
             }
         };
     }
     
-    public LensSpecParameterized<HOST, List<TYPE>, TYPE, SUBLENS> lensSpecParameterized();
+    public LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS> lensSpecParameterized();
     
-    public default AccessParameterized<HOST, List<TYPE>, TYPE, SUBLENS> accessParameterized() {
+    public default AccessParameterized<HOST, List<TYPE>, TYPE, TYPELENS> accessParameterized() {
         return lensSpecParameterized();
     }
     
     @Override
-    public default SUBLENS createSubAccess(Function<List<TYPE>, TYPE> accessToSub) {
+    public default TYPELENS createSubAccess(Function<List<TYPE>, TYPE> accessToSub) {
         return accessParameterized().createSubAccess(accessToSub);
     }
     
@@ -54,12 +54,12 @@ public interface ListLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     }
     
     
-    public default SUBLENS first() {
+    public default TYPELENS first() {
         return at(0);
     }
     
     @SuppressWarnings("unchecked")
-    public default SUBLENS last() {
+    public default TYPELENS last() {
         return createSubLens(
                 (list) -> {
                     if (list == null)
@@ -76,7 +76,7 @@ public interface ListLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     }
     
     @SuppressWarnings("unchecked")
-    public default SUBLENS at(int index) {
+    public default TYPELENS at(int index) {
         return createSubLens(
                 (list) -> {
                     if (list == null)
@@ -107,8 +107,8 @@ public interface ListLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     }
     
     
-    public default SUBLENS createSubLens(Function<List<TYPE>, TYPE> readSub, WriteLens<List<TYPE>, TYPE> writeSub) {
-        return (SUBLENS)Lenses.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
+    public default TYPELENS createSubLens(Function<List<TYPE>, TYPE> readSub, WriteLens<List<TYPE>, TYPE> writeSub) {
+        return Lenses.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }
     
 }
