@@ -24,16 +24,16 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         return Lenses.createSubLens(this, readSub, writeSub, subLensCreator);
     }
     
-    public <LIST extends List<SUB>, SUB, SUBLENS extends AnyLens<HOST, SUB>> 
-            ListLens<HOST, LIST, SUB, SUBLENS> createSubListLens(
-                Function<DATA, LIST>                   readSub,
-                WriteLens<DATA, LIST>                  writeSub,
+    public <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
+            ListLens<HOST, SUB, SUBLENS> createSubListLens(
+                Function<DATA, List<SUB>>                   readSub,
+                WriteLens<DATA, List<SUB>>                  writeSub,
                 Function<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
         
         val readThis   = this.lensSpec().getRead();
         val writeThis  = this.lensSpec().getWrite();
-        val subRead    = (Function<HOST, LIST>) Lenses.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
-        val subWrite   = (WriteLens<HOST, LIST>)Lenses.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
+        val subRead    = (Function<HOST, List<SUB>>) Lenses.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
+        val subWrite   = (WriteLens<HOST, List<SUB>>)Lenses.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
         val spec       = Lenses.createLensSpecParameterized(subRead, subWrite, subLensCreator);
         val listLens   = ListLens.of(spec);
         return listLens;

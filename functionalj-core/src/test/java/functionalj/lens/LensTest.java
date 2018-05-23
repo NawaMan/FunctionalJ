@@ -191,7 +191,7 @@ public class LensTest {
         public static class CompanyLens<HOST> extends ObjectLensImpl<HOST, Company>{
             
             // Will need a way to allow the collection lens to create the lens of the element.
-            public final ListLens<HOST, List<Driver>, Driver, Driver.DriverLens<HOST>> drivers
+            public final ListLens<HOST, Driver, Driver.DriverLens<HOST>> drivers
                     = createSubListLens(Company::drivers, Company::withDrivers, DriverLens::new);
             
             public CompanyLens(LensSpec<HOST, Company> spec) { super(spec); }
@@ -260,7 +260,7 @@ public class LensTest {
                 return withNames -> accessToSub.apply(this.apply(withNames));
             }
         };
-        val listAcc = new ListAccess<WithNames, List<String>, String, StringAccess<WithNames>>() {
+        val listAcc = new ListAccess<WithNames, String, StringAccess<WithNames>>() {
             @Override
             public AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>> accessParameterized() {
                 // TODO Auto-generated method stub
@@ -302,7 +302,7 @@ public class LensTest {
         
         public static class WithCarLens<HOST> extends ObjectLensImpl<HOST, WithCars>{
             
-            public final ListLens<HOST, List<Car>, Car, Car.CarLens<HOST>> cars
+            public final ListLens<HOST, Car, Car.CarLens<HOST>> cars
                     = createSubListLens(WithCars::cars, WithCars::withCars, Car.CarLens::new);
             
             public WithCarLens(LensSpec<HOST, WithCars> spec) { super(spec); }

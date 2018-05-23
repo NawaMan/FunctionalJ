@@ -79,9 +79,6 @@ public interface MapAccess<HOST, KEY, VALUE,
         return containsEntry(entry -> entryBiPredicate.test(entry.getKey(), entry.getValue()));
     }
     
-    // L: put
-    // L: filterMap
-    
     public default CollectionAccess<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>,
                     MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>> 
             entries() {

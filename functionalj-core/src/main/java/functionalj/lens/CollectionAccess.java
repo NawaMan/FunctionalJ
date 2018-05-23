@@ -49,7 +49,7 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
         return () -> specWithSub;
     }
     
-    public default ListAccess<HOST, List<TYPE>, TYPE, SUBACCESS> toList() {
+    public default ListAccess<HOST, TYPE, SUBACCESS> toList() {
         val spec        = accessParameterized();
         val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, SUBACCESS>() {
             @Override

@@ -72,7 +72,7 @@ public class MapAccessTest {
         assertEquals(null, mapLens.get("name")         .apply(map));
         assertEquals("0",  mapLens.get("name").length().apply(map) + "");
         
-        assertEquals("{name2=42, name1=5}", mapLens.get("name1").changeTo("5").apply(map) + "");
+        assertEquals("{name1=5, name2=42}", mapLens.get("name1").changeTo("5").apply(map) + "");
     }
     
     

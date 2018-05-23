@@ -8,49 +8,48 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
-public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+public interface ListLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
         extends
-            ObjectLens<HOST, LIST>,
-            ListAccess<HOST, LIST, TYPE, SUBLENS> {
+            ObjectLens<HOST, List<TYPE>>,
+            ListAccess<HOST, TYPE, SUBLENS> {
     
 
-    public static <HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> 
-            ListLens<HOST, LIST, TYPE, SUBLENS> of(
-                Function<HOST, LIST>                    read,
-                WriteLens<HOST, LIST>                   write,
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> 
+            ListLens<HOST, TYPE, SUBLENS> of(
+                Function<HOST, List<TYPE>>                    read,
+                WriteLens<HOST, List<TYPE>>                   write,
                 Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         return Lenses.createListLens(read, write, subCreator);
     }
-    public static <HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> 
-            ListLens<HOST, LIST, TYPE, SUBLENS> of(LensSpecParameterized<HOST, LIST, TYPE, SUBLENS> spec) {
-        return new ListLens<HOST, LIST, TYPE, SUBLENS>() {
+    public static <HOST,  TYPE, SUBLENS extends AnyLens<HOST, TYPE>> 
+            ListLens<HOST, TYPE, SUBLENS> of(LensSpecParameterized<HOST, List<TYPE>, TYPE, SUBLENS> spec) {
+        return new ListLens<HOST, TYPE, SUBLENS>() {
             @Override
-            public LensSpecParameterized<HOST, LIST, TYPE, SUBLENS> lensSpecParameterized() {
+            public LensSpecParameterized<HOST, List<TYPE>, TYPE, SUBLENS> lensSpecParameterized() {
                 return spec;
             }
         };
     }
     
-    public LensSpecParameterized<HOST, LIST, TYPE, SUBLENS> lensSpecParameterized();
+    public LensSpecParameterized<HOST, List<TYPE>, TYPE, SUBLENS> lensSpecParameterized();
     
-    public default AccessParameterized<HOST, LIST, TYPE, SUBLENS> accessParameterized() {
+    public default AccessParameterized<HOST, List<TYPE>, TYPE, SUBLENS> accessParameterized() {
         return lensSpecParameterized();
     }
     
     @Override
-    public default SUBLENS createSubAccess(Function<LIST, TYPE> accessToSub) {
+    public default SUBLENS createSubAccess(Function<List<TYPE>, TYPE> accessToSub) {
         return accessParameterized().createSubAccess(accessToSub);
     }
     
     @Override
-    public default LensSpec<HOST, LIST> lensSpec() {
+    public default LensSpec<HOST, List<TYPE>> lensSpec() {
         return lensSpecParameterized().getSpec();
     }
     
     @Override
-    public default LIST apply(HOST host) {
+    public default List<TYPE> apply(HOST host) {
         return lensSpec().getRead().apply(host);
     }
     
@@ -72,7 +71,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
                 (list, newValue)->{
                     val newList = new ArrayList<>(list);
                     newList.set(list.size() - 1, newValue);
-                    return (LIST)newList;
+                    return newList;
                 });
     }
     
@@ -93,7 +92,7 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
                 (list, newValue)->{
                     val newList = new ArrayList<>(list);
                     newList.set(index, newValue);
-                    return (LIST)newList;
+                    return newList;
                 });
     }
     
@@ -102,13 +101,13 @@ public interface ListLens<HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends A
             val newList = apply(host).stream()
                     .map(each -> checker.test(each) ? mapper.apply(each) : each)
                     .collect(Collectors.toList());
-            val newHost = apply(host, (LIST)newList);
+            val newHost = apply(host, newList);
             return newHost;
         };
     }
     
     
-    public default SUBLENS createSubLens(Function<LIST, TYPE> readSub, WriteLens<LIST, TYPE> writeSub) {
+    public default SUBLENS createSubLens(Function<List<TYPE>, TYPE> readSub, WriteLens<List<TYPE>, TYPE> writeSub) {
         return (SUBLENS)Lenses.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }
     

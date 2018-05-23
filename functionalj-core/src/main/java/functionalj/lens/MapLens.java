@@ -12,7 +12,9 @@ public interface MapLens<HOST, KEY, VALUE,
                     extends
                         ObjectLens<HOST, Map<KEY, VALUE>>,
                         MapAccess<HOST, KEY, VALUE, KEYLENS, VALUELENS> {
+
     
+    // TODO: filterMap
     
     public static <HOST, KEY, VALUE, KEYLENS extends Lens<HOST,KEY>, VALUELENS extends Lens<HOST,VALUE>>
             MapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> of(

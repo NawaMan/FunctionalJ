@@ -100,10 +100,10 @@ public class Lenses {
     
     //== List ==
     
-    public static <HOST, LIST extends List<TYPE>, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ListLens<HOST, LIST, TYPE, SUBLENS> 
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ListLens<HOST, TYPE, SUBLENS> 
         createListLens(
-            Function<HOST, LIST>                    read,
-            WriteLens<HOST, LIST>                   write,
+            Function<HOST, List<TYPE>>                    read,
+            WriteLens<HOST, List<TYPE>>                   write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val spec = Lenses.createLensSpecParameterized(read, write, subCreator);
         val listLens = ListLens.of(spec);
