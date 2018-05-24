@@ -180,7 +180,7 @@ public interface MapAccess<HOST, KEY, VALUE,
                 @Override
                 public MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>
                         createSubAccess(Function<Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>> accessToSub) {
-                    val entrySpec = createEntrySpec(spec, (Map<KEY, VALUE> map) -> {
+                    AccessParameterized2<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> entrySpec = createEntrySpec(spec, (Map<KEY, VALUE> map) -> {
                         val keyAccess = accessToSub.apply(accessEntrySet.apply(map));
                         return keyAccess;
                     });
