@@ -120,5 +120,34 @@ public class Lenses {
                     Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
         return MapLens.of(read, write, keyLensCreator, valueLensCreator);
     }
+    
+    //== Map ==
+
+    public static <KEYLENS extends Lens<HOST, KEY>, HOST, VALUELENS extends Lens<HOST, VALUE>, KEY, VALUE>
+            LensSpecParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> createMapLensSpec(
+                    Function<HOST,  Map<KEY, VALUE>>           read,
+                    WriteLens<HOST, Map<KEY, VALUE>>           write,
+                    Function<LensSpec<HOST, KEY>,   KEYLENS>   keyLensCreator,
+                    Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
+        return new LensSpecParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS>() {
+
+            @Override
+            public LensSpec<HOST, Map<KEY, VALUE>> getSpec() {
+                return LensSpec.of(read, write);
+            }
+
+            @Override
+            public KEYLENS createSubLens1(
+                    LensSpec<HOST, KEY> subSpec) {
+                return keyLensCreator.apply(subSpec);
+            }
+
+            @Override
+            public VALUELENS createSubLens2(
+                    LensSpec<HOST, VALUE> subSpec) {
+                return valueLensCreator.apply(subSpec);
+            }
+        };
+    }
 
 }

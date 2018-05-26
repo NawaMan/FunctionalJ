@@ -106,7 +106,6 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         };
     }
     
-    
     public default TYPELENS createSubLens(Function<List<TYPE>, TYPE> readSub, WriteLens<List<TYPE>, TYPE> writeSub) {
         return Lenses.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }

@@ -73,6 +73,8 @@ public class MapAccessTest {
         assertEquals("0",  mapLens.get("name").length().apply(map) + "");
         
         assertEquals("{name1=5, name2=42}", mapLens.get("name1").changeTo("5").apply(map) + "");
+        
+        assertEquals("{name1=2, name2=24}", mapLens.selectiveMap(theString.thatEndsWith("2"), __->"24").apply(map) + "");
     }
     
     

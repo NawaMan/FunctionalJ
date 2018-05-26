@@ -1,9 +1,15 @@
 package functionalj.lens;
 
+import static functionalj.lens.Lenses.createMapLensSpec;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
+import functionalj.functions.Func1;
+import functionalj.types.Tuple2;
 import lombok.val;
 
 public interface MapLens<HOST, KEY, VALUE, 
@@ -12,9 +18,6 @@ public interface MapLens<HOST, KEY, VALUE,
                     extends
                         ObjectLens<HOST, Map<KEY, VALUE>>,
                         MapAccess<HOST, KEY, VALUE, KEYLENS, VALUELENS> {
-
-    
-    // TODO: filterMap
     
     public static <HOST, KEY, VALUE, KEYLENS extends Lens<HOST,KEY>, VALUELENS extends Lens<HOST,VALUE>>
             MapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> of(
@@ -24,33 +27,6 @@ public interface MapLens<HOST, KEY, VALUE,
                     Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
         val spec = createMapLensSpec(read, write, keyLensCreator, valueLensCreator);    
         return ()->spec;
-    }
-
-    public static <KEYLENS extends Lens<HOST, KEY>, HOST, VALUELENS extends Lens<HOST, VALUE>, KEY, VALUE>
-            LensSpecParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> createMapLensSpec(
-                    Function<HOST,  Map<KEY, VALUE>>           read,
-                    WriteLens<HOST, Map<KEY, VALUE>>           write,
-                    Function<LensSpec<HOST, KEY>,   KEYLENS>   keyLensCreator,
-                    Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
-        return new LensSpecParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS>() {
-
-            @Override
-            public LensSpec<HOST, Map<KEY, VALUE>> getSpec() {
-                return LensSpec.of(read, write);
-            }
-
-            @Override
-            public KEYLENS createSubLens1(
-                    LensSpec<HOST, KEY> subSpec) {
-                return keyLensCreator.apply(subSpec);
-            }
-
-            @Override
-            public VALUELENS createSubLens2(
-                    LensSpec<HOST, VALUE> subSpec) {
-                return valueLensCreator.apply(subSpec);
-            }
-        };
     }
     
     public LensSpecParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> lensSpecParameterized2();
@@ -84,4 +60,64 @@ public interface MapLens<HOST, KEY, VALUE,
                 lensSpecParameterized2()::createSubLens2);
     }
     
+    public default Function<HOST, HOST> selectiveMap(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {
+        val mapEntry = Func1.of((Map.Entry<KEY, VALUE> each) ->{
+            val key   = each.getKey();
+            val value = each.getValue();
+            if (!checker.test(key)) 
+                return each;
+            
+            val newValue = mapper.apply(value);
+            return (Map.Entry<KEY, VALUE>)new Tuple2<KEY, VALUE>(key, newValue);
+        });
+        
+        return host -> {
+            val newMap = new LinkedHashMap<KEY, VALUE>();
+            apply(host).entrySet().stream()
+                    .map    (mapEntry)
+                    .forEach(entry -> {
+                        val key   = entry.getKey();
+                        val value = entry.getValue();
+                        if (!checker.test(key)) 
+                            newMap.put(key, value);
+                        else {
+                            val newValue = mapper.apply(value);
+                            newMap.put(key, newValue);
+                        }
+                    });
+            val newHost = apply(host, newMap);
+            return newHost;
+        };
+    }
+
+    
+    public default Function<HOST, HOST> selectiveMap(BiPredicate<KEY, VALUE> checker, Function<VALUE, VALUE> mapper) {
+        val mapEntry = Func1.of((Map.Entry<KEY, VALUE> each) ->{
+            val key   = each.getKey();
+            val value = each.getValue();
+            if (!checker.test(key, value)) 
+                return each;
+            
+            val newValue = mapper.apply(value);
+            return (Map.Entry<KEY, VALUE>)new Tuple2<KEY, VALUE>(key, newValue);
+        });
+        
+        return host -> {
+            val newMap = new LinkedHashMap<KEY, VALUE>();
+            apply(host).entrySet().stream()
+                    .map    (mapEntry)
+                    .forEach(entry -> {
+                        val key   = entry.getKey();
+                        val value = entry.getValue();
+                        if (!checker.test(key, value)) 
+                            newMap.put(key, value);
+                        else {
+                            val newValue = mapper.apply(value);
+                            newMap.put(key, newValue);
+                        }
+                    });
+            val newHost = apply(host, newMap);
+            return newHost;
+        };
+    }
 }
