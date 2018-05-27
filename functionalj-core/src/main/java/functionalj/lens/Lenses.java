@@ -110,6 +110,24 @@ public class Lenses {
         return listLens;
     }
     
+    public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> ListLens<HOST, TYPE, TYPELENS>
+            createSubListLens(
+                LensSpec<HOST, List<TYPE>>                              spec,
+                LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS> specParameterized,
+                Function<HOST, List<TYPE>>                              read) {
+        val newSpec = new LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS>() {
+            @Override
+            public LensSpec<HOST, List<TYPE>> getSpec() {
+                return new LensSpec<>(read, spec.getWrite(), spec.getIsNullSafe());
+            }
+            @Override
+            public TYPELENS createSubLens(LensSpec<HOST, TYPE> subSpec) {
+                return specParameterized.createSubLens(subSpec);
+            }
+        };
+        return () -> newSpec;
+    }
+    
     //== Map ==
 
     public static <HOST, KEY, VALUE, KEYLENS extends Lens<HOST,KEY>, VALUELENS extends Lens<HOST,VALUE>>
@@ -121,8 +139,6 @@ public class Lenses {
         return MapLens.of(read, write, keyLensCreator, valueLensCreator);
     }
     
-    //== Map ==
-
     public static <KEYLENS extends Lens<HOST, KEY>, HOST, VALUELENS extends Lens<HOST, VALUE>, KEY, VALUE>
             LensSpecParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> createMapLensSpec(
                     Function<HOST,  Map<KEY, VALUE>>           read,

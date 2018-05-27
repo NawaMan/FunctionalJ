@@ -124,6 +124,8 @@ public interface MapAccess<HOST, KEY, VALUE,
         return () -> valueCollectionSpec;
     }
     
+    //== Just some helpers -- ignore this ==
+    
     public static class Helper {
         
         public static <HOST, KEY, VALUE, KEYACCESS extends AnyAccess<HOST,KEY>, VALUEACCESS extends AnyAccess<HOST,VALUE>>

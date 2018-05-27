@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import functionalj.functions.Func1;
 import lombok.val;
 
 @FunctionalInterface
@@ -17,8 +18,8 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
 
     public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             ListLens<HOST, TYPE, TYPELENS> of(
-                Function<HOST, List<TYPE>>                    read,
-                WriteLens<HOST, List<TYPE>>                   write,
+                Function<HOST, List<TYPE>>               read,
+                WriteLens<HOST, List<TYPE>>              write,
                 Function<LensSpec<HOST, TYPE>, TYPELENS> subCreator) {
         return Lenses.createListLens(read, write, subCreator);
     }
@@ -53,6 +54,9 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         return lensSpec().getRead().apply(host);
     }
     
+    public default TYPELENS createSubLens(Function<List<TYPE>, TYPE> readSub, WriteLens<List<TYPE>, TYPE> writeSub) {
+        return Lenses.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
+    }
     
     public default TYPELENS first() {
         return at(0);
@@ -75,7 +79,6 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                 });
     }
     
-    @SuppressWarnings("unchecked")
     public default TYPELENS at(int index) {
         return createSubLens(
                 (list) -> {
@@ -96,7 +99,7 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                 });
     }
     
-    public default Function<HOST, HOST> selectiveMap(Predicate<TYPE> checker, Function<TYPE, TYPE> mapper) {
+    public default Func1<HOST, HOST> changeTo(Predicate<TYPE> checker, Function<TYPE, TYPE> mapper) {
         return host -> {
             val newList = apply(host).stream()
                     .map(each -> checker.test(each) ? mapper.apply(each) : each)
@@ -104,10 +107,6 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
             val newHost = apply(host, newList);
             return newHost;
         };
-    }
-    
-    public default TYPELENS createSubLens(Function<List<TYPE>, TYPE> readSub, WriteLens<List<TYPE>, TYPE> writeSub) {
-        return Lenses.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }
     
 }

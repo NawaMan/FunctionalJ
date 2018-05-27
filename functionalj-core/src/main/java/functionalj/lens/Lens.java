@@ -2,6 +2,7 @@ package functionalj.lens;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import lombok.val;
 
@@ -50,7 +51,29 @@ public interface Lens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HOST,
         return apply(host);
     }
     default Function<HOST, HOST> changeTo(DATA data) {
-        return host -> apply(host, data);
+        return host -> {
+            return apply(host, data);
+        };
+    }
+    default Function<HOST, HOST> changeTo(Supplier<DATA> dataSupplier) {
+        return host -> {
+            val newValue = dataSupplier.get();
+            return apply(host, newValue);
+        };
+    }
+    default Function<HOST, HOST> changeTo(Function<DATA, DATA> dataMapper) {
+        return host -> {
+            val oldValue = read(host);
+            val newValue = dataMapper.apply(oldValue);
+            return apply(host, newValue);
+        };
+    }
+    default Function<HOST, HOST> changeTo(BiFunction<HOST, DATA, DATA> mapper) {
+        return host -> {
+            val oldValue = read(host);
+            val newValue = mapper.apply(host, oldValue);
+            return apply(host, newValue);
+        };
     }
     
 }

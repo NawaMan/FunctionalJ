@@ -53,14 +53,16 @@ public interface MapLens<HOST, KEY, VALUE,
             newMap.put(key, value);
             return newMap;
         };
-        Function<Map<KEY, VALUE>, VALUE> read = map -> map.get(key);
+        Function<Map<KEY, VALUE>, VALUE> read = map -> {
+            return map.get(key);
+        };
         return Lenses.createSubLens(this, 
                 read,
                 write,
                 lensSpecParameterized2()::createSubLens2);
     }
     
-    public default Function<HOST, HOST> selectiveMap(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {
+    public default Function<HOST, HOST> changeTo(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {
         val mapEntry = Func1.of((Map.Entry<KEY, VALUE> each) ->{
             val key   = each.getKey();
             val value = each.getValue();
@@ -91,7 +93,7 @@ public interface MapLens<HOST, KEY, VALUE,
     }
 
     
-    public default Function<HOST, HOST> selectiveMap(BiPredicate<KEY, VALUE> checker, Function<VALUE, VALUE> mapper) {
+    public default Function<HOST, HOST> changeTo(BiPredicate<KEY, VALUE> checker, Function<VALUE, VALUE> mapper) {
         val mapEntry = Func1.of((Map.Entry<KEY, VALUE> each) ->{
             val key   = each.getKey();
             val value = each.getValue();

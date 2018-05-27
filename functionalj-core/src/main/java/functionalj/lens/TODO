@@ -7,3 +7,6 @@
 + Make Nullable and Optional lens transparents (don't see it as object)
 - Annotate the getter to be null sensitive (Null unsafe)
 - Generator for the above types
+
+- Tuples
+- Tuples to function params
