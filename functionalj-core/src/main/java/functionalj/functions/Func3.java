@@ -15,6 +15,8 @@
 //  ========================================================================
 package functionalj.functions;
 
+import functionalj.types.ITuple3;
+
 /**
  * Function of three parameters.
  * 
@@ -55,6 +57,16 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @return         the function result.
      */
     public OUTPUT apply(INPUT1 input1, INPUT2 input2, INPUT3 input3);
+    
+    /**
+     * Applies this function to the given input values.
+     *
+     * @param  input the tuple input.
+     * @return       the function result.
+     */
+    public default OUTPUT apply(ITuple3<INPUT1, INPUT2, INPUT3> input) {
+        return apply(input._1(), input._2(), input._3());
+    }
     
     
     /**

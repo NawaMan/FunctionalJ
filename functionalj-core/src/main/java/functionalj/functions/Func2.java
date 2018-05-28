@@ -17,6 +17,8 @@ package functionalj.functions;
 
 import java.util.function.BiFunction;
 
+import functionalj.types.ITuple2;
+
 /**
  * Function of two parameters.
  * 
@@ -51,6 +53,16 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @return         the function result.
      */
     public OUTPUT apply(INPUT1 input1, INPUT2 input2);
+    
+    /**
+     * Applies this function to the given input values.
+     *
+     * @param  input the tuple input.
+     * @return       the function result.
+     */
+    public default OUTPUT apply(ITuple2<INPUT1, INPUT2> input) {
+        return apply(input._1(), input._2());
+    }
     
     
     /**

@@ -23,4 +23,15 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT> {
         return supplier;
     }
     
+    /**
+     * Constructs a Func0 from supplier or lambda.
+     * 
+     * @param  supplier  the supplier or lambda.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func0.
+     **/
+    public static <OUTPUT> Func0<OUTPUT> from(Supplier<OUTPUT> supplier) {
+        return ()->supplier.get();
+    }
+    
 }

@@ -42,6 +42,18 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return function;
     }
     
+    /**
+     * Constructs a Func1 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT>   the input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func1.
+     **/
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> from(Function<INPUT, OUTPUT> function) {
+        return input->function.apply(input);
+    }
+    
     
     /**
      * Applies this function to the given input value.

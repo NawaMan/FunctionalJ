@@ -15,6 +15,8 @@
 //  ========================================================================
 package functionalj.functions;
 
+import functionalj.types.ITuple6;
+
 /**
  * Function of five parameters.
  * 
@@ -64,6 +66,17 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
      * @return         the function result.
      */
     public OUTPUT apply(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6);
+    
+    
+    /**
+     * Applies this function to the given input values.
+     *
+     * @param  input the tuple input.
+     * @return       the function result.
+     */
+    public default OUTPUT apply(ITuple6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> input) {
+        return apply(input._1(), input._2(), input._3(), input._4(), input._5(), input._6());
+    }
     
     
     /**

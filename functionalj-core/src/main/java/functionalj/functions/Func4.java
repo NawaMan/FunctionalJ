@@ -15,6 +15,8 @@
 //  ========================================================================
 package functionalj.functions;
 
+import functionalj.types.ITuple4;
+
 /**
  * Function of four parameters.
  * 
@@ -58,6 +60,17 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @return         the function result.
      */
     public OUTPUT apply(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4);
+    
+    
+    /**
+     * Applies this function to the given input values.
+     *
+     * @param  input the tuple input.
+     * @return       the function result.
+     */
+    public default OUTPUT apply(ITuple4<INPUT1, INPUT2, INPUT3, INPUT4> input) {
+        return apply(input._1(), input._2(), input._3(), input._4());
+    }
     
     
     /**
