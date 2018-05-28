@@ -15,7 +15,7 @@
 //  ========================================================================
 package functionalj.kinds;
 
-import functionalj.functions.Func1;
+import java.util.function.Function;
 
 /**
  * Functor is data structure with one parameterized type and the flatMap function.
@@ -26,7 +26,7 @@ import functionalj.functions.Func1;
  * 
  * @author NawaMan -- nawa@nawaman.net
  *
- * @param <TYPE>  the functor type.
+ * @param <TYPE>  the monad type.
  * @param <DATA>  the data type
  */
 public interface Monad<TYPE, DATA> {
@@ -47,6 +47,6 @@ public interface Monad<TYPE, DATA> {
      * @param mapper    the mapper function.
      * @return          another functor.
      */
-    public <TARGET> Monad<TYPE, TARGET> flatMap(Func1<DATA, Monad<TYPE, TARGET>> mapper);
+    public <TARGET> Monad<TYPE, TARGET> flatMap(Function<DATA, Monad<TYPE, TARGET>> mapper);
     
 }

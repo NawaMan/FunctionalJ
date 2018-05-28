@@ -1,11 +1,16 @@
 package functionalj.types;
 
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.functions.Func1;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
+import lombok.val;
+import nawaman.nullablej.nullable.Nullable;
 
 /**
  * This data structure represents data that may or may have value.
@@ -14,7 +19,8 @@ import functionalj.kinds.Monad;
  *
  * @param <DATA>  the data type.
  */
-public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayBe<?>, DATA> {
+public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayBe<?>, DATA>//, Nullable<DATA> 
+{
     
     /**
      * Get instance with no value.
@@ -84,6 +90,31 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         }
     }
     
+    /**
+     * Create a MayBe from the given nullable.
+     * 
+     * @param <T>       the data type.
+     * @param nullable  the nullable.
+     * @return          the may be result.
+     */
+    public static <T> MayBe<T> from(Nullable<T> nullable) {
+        return nullable.isNotNull()
+                ? new Just<T>(nullable.get()) 
+                : MayBe.nothing();
+    }
+    
+    /**
+     * Create a MayBe from the given optional.
+     * 
+     * @param <T>       the data type.
+     * @param optional  the optional.
+     * @return          the may be result.
+     */
+    public static <T> MayBe<T> from(Optional<T> optional) {
+        return optional.isPresent()
+                ? new Just<T>(optional.get())
+                : MayBe.nothing();
+    }
     
     private MayBe() {
     }
@@ -113,7 +144,7 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
      * @param or  the or value.
      * @return    the value or the or value.
      */
-    public abstract DATA or(DATA or);
+    public abstract DATA orElse(DATA or);
     
     /**
      * Returns the value inside this maybe or the value from the supplier.
@@ -121,14 +152,49 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
      * @param orSupplier  the fallback supplier.
      * @return            the value inside or the fallback back value.
      */
-    public abstract DATA orGet(Supplier<DATA> orSupplier);
+    public abstract DATA orElseGet(Supplier<? extends DATA> orSupplier);
     
     /**
      * Returns the value inside this maybe or throw NPE.
      * 
      * @return  the value inside.
      */
-    public abstract DATA orThrow();
+    public abstract DATA orElseThrow();
+    
+    /**
+     * Returns the value inside this maybe or throw the supplied exception.
+     * 
+     * @param exceptionSupplier  the exception supplier.
+     * @param <THROWABLE>        the exception type.
+     * @return                   the value inside.
+     * @throws THROWABLE         the exception thrown if the MayBe has no data.
+     */
+    public abstract <THROWABLE extends Throwable> DATA orElseThrow(Supplier<? extends THROWABLE> exceptionSupplier) throws THROWABLE;
+    
+    /**
+     * Returns this MayBe object if the value is null or fail the condition test otherwise return empty MayBe.
+     * 
+     * @param theCondition  the condition to be filter in.
+     * @return  this object or empty MayBe.
+     */
+    public abstract MayBe<DATA> filter(Predicate<? super DATA> theCondition);
+    
+    /**
+     * Apply the mapper if the value is not null then return the result wrapped with MayBe otherwise return empty MayBe.
+     * 
+     * @param mapper    the mapper.
+     * @return          the result MayBe or empty MayBe.
+     * @param <TARGET>  the target of the mapping.
+     */
+    public abstract <TARGET> MayBe<TARGET> map(Function<DATA, TARGET> mapper);
+    
+    /**
+     * Run a body of code with the value is not null. Then returns itself.
+     * 
+     * @param theConsumer  the consumer.
+     * @return  the value.
+     */
+    public abstract MayBe<DATA> peek(Consumer<? super DATA> theConsumer) ;
     
     // TODO - To either
     
@@ -157,28 +223,66 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         }
         
         @Override
-        public DATA or(DATA or) {
+        public DATA orElse(DATA or) {
             return data;
         }
         
         @Override
-        public DATA orGet(Supplier<DATA> orSupplier) {
+        public DATA orElseGet(Supplier<? extends DATA> orSupplier) {
             return data;
         }
         
         @Override
-        public DATA orThrow() {
+        public DATA orElseThrow() {
             return data;
         }
         
         @Override
-        public <B> MayBe<B> map(Func1<DATA, B> mapper) {
-            return MayBe.of(mapper.apply(data));
+        public <THROWABLE extends Throwable> DATA orElseThrow(Supplier<? extends THROWABLE> exceptionSupplier) throws THROWABLE {
+            return data;
         }
         
+
         @Override
-        public <B> Monad<MayBe<?>, B> flatMap(Func1<DATA, Monad<MayBe<?>, B>> mapper) {
-            return mapper.apply(data);
+        public MayBe<DATA> filter(Predicate<? super DATA> theCondition) {
+            val value = get();
+            if (value == null)
+                return this;
+            
+            val isPass = theCondition.test(value);
+            if (!isPass)
+                return MayBe.empty();
+            
+            return this;
+        }
+
+        @Override
+        public <TARGET> MayBe<TARGET> map(Function<DATA, TARGET> mapper) {
+            val value = get();
+            if (value == null)
+                return MayBe.nothing();
+                
+            val newValue = mapper.apply(value);
+            return MayBe.of(newValue);
+        }
+
+        @Override
+        public <TARGET> Monad<MayBe<?>, TARGET> flatMap(Function<DATA, Monad<MayBe<?>, TARGET>> mapper) {
+            val value = get();
+            if (value == null)
+                return MayBe.nothing();
+                
+            val newNullableValue = mapper.apply(value);
+            return newNullableValue;
+        }
+
+        @Override
+        public MayBe<DATA> peek(Consumer<? super DATA> theConsumer) {
+            val value = get();
+            if (value != null)
+                theConsumer.accept(value);
+            
+            return this;
         }
         
         public String toString() {
@@ -236,30 +340,43 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         }
         
         @Override
-        public DATA or(DATA or) {
+        public DATA orElse(DATA or) {
             return or;
         }
         
         @Override
-        public DATA orThrow() {
+        public DATA orElseThrow() {
             throw new NullPointerException();
         }
         
         @Override
-        public DATA orGet(Supplier<DATA> orSupplier) {
+        public <THROWABLE extends Throwable> DATA orElseThrow(Supplier<? extends THROWABLE> exceptionSupplier) throws THROWABLE {
+            throw exceptionSupplier.get();
+        }
+        
+        @Override
+        public DATA orElseGet(Supplier<? extends DATA> orSupplier) {
             return orSupplier.get();
         }
         
-        @SuppressWarnings("unchecked")
         @Override
-        public <B> MayBe<B> map(Func1<DATA, B> mapper) {
-            return (MayBe<B>)Nothing.instance;
+        public MayBe<DATA> filter(Predicate<? super DATA> theCondition) {
+            return MayBe.nothing();
         }
-        
-        @SuppressWarnings("unchecked")
+
         @Override
-        public <B> Monad<MayBe<?>, B> flatMap(Func1<DATA, Monad<MayBe<?>, B>> mapper) {
-            return (MayBe<B>)Nothing.instance;
+        public <TARGET> Monad<MayBe<?>, TARGET> flatMap(Function<DATA, Monad<MayBe<?>, TARGET>> mapper) {
+            return MayBe.nothing();
+        }
+
+        @Override
+        public <TARGET> MayBe<TARGET> map(Function<DATA, TARGET> mapper) {
+            return MayBe.nothing();
+        }
+
+        @Override
+        public MayBe<DATA> peek(Consumer<? super DATA> theConsumer) {
+            return null;
         }
         
         public String toString() {

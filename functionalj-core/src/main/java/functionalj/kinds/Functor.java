@@ -15,7 +15,7 @@
 //  ========================================================================
 package functionalj.kinds;
 
-import functionalj.functions.Func1;
+import java.util.function.Function;
 
 /**
  * Functor is data structure with one parameterized type and the map function.
@@ -38,6 +38,6 @@ public interface Functor<TYPE,DATA> {
      * @param mapper    the mapper function.
      * @return          another functor.
      */
-    public <TARGET> Functor<TYPE,TARGET> map(Func1<DATA, TARGET> mapper);
+    public <TARGET> Functor<TYPE,TARGET> map(Function<DATA, TARGET> mapper);
     
 }

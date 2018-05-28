@@ -2,7 +2,7 @@ package functionalj.types;
 
 import java.util.Map;
 
-public class Tuple2<T1, T2> implements Map.Entry<T1, T2> {
+public class Tuple2<T1, T2> implements ITuple2<T1, T2>, Map.Entry<T1, T2> {
     
     public final T1 _1;
     public final T2 _2;
