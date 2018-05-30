@@ -8,5 +8,5 @@
 - Annotate the getter to be null sensitive (Null unsafe)
 - Generator for the above types
 
-- Tuples
-- Tuples to function params
++ Tuples
++ Tuples to function params

@@ -19,8 +19,7 @@ import nawaman.nullablej.nullable.Nullable;
  *
  * @param <DATA>  the data type.
  */
-public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayBe<?>, DATA>//, Nullable<DATA> 
-{
+public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayBe<?>, DATA> {
     
     /**
      * Get instance with no value.
