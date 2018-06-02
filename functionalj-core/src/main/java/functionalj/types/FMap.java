@@ -1,5 +1,5 @@
 package functionalj.types;
 
-public interface FMap {
+public interface FMap<KEY, VALUE> {
     
 }

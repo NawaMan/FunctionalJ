@@ -16,3 +16,7 @@
 - FList
 - FMap
 - Promise
+- Prism -> Multiple Promise combine to one.
+- StoreRef, StoreList, StoreMap
+
+- Clean up TYPE,VALUE,DATA

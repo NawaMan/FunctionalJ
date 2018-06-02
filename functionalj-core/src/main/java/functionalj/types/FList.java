@@ -1,5 +1,5 @@
 package functionalj.types;
 
-public interface FList {
+public interface FList<DATA> {
     
 }

@@ -1,5 +1,7 @@
 package functionalj.types;
 
-public interface Promise {
+public interface Promise<DATA> {
+    
+    
     
 }
