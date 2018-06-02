@@ -1,7 +1,2 @@
-connection.arguments=
-connection.java.home=null
-connection.jvm.arguments=
 connection.project.dir=functionalj-core
-derived.resources=.gradle,build
 eclipse.preferences.version=1
-project.path=\:

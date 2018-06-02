@@ -10,3 +10,9 @@
 
 + Tuples
 + Tuples to function params
+
+- Failable
+- Pipe
+- FList
+- FMap
+- Promise
