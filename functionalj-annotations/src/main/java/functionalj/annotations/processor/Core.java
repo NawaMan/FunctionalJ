@@ -41,14 +41,16 @@ import functionalj.annotations.processor.generator.Type;
 @SuppressWarnings("javadoc")
 public enum Core {
     
-    IntegerLens("IntegerLens"),
-    BooleanLens("BooleanLens"),
-    StringLens ("StringLens"),
-    ListLens   ("ListLens"),
+    IntegerLens ("IntegerLens"),
+    BooleanLens ("BooleanLens"),
+    StringLens  ("StringLens"),
+    ListLens    ("ListLens"),
+    NullableLens("NullableLens"),
     
     ObjectLensImpl("ObjectLensImpl"),
     LensSpec      ("LensSpec"),
     ReadOnlyList  ("ReadOnlyList", "functionalj.types"),
+    Nullable      ("Nullable",     "nawaman.nullablej.nullable"),
     ;
     
     private static final String LENS_PACKAGE = "functionalj.lens";

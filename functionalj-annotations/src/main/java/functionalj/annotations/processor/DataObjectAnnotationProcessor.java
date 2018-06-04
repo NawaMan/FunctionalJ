@@ -133,7 +133,6 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
                             sourceName, packageName, targetName, packageName,
                             isClass,
                             configures, getters);
-                System.err.println(sourceSpec);
                 val dataObjSpec = new DataObjectBuilder(sourceSpec).build();
                 val className   = (String)dataObjSpec.type().fullName("");
                 val content     = new GenDataObject(dataObjSpec).lines().collect(joining("\n"));

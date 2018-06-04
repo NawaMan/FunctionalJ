@@ -175,6 +175,9 @@ public class DataObjectBuilder {
         if (getter.getType().isList()) {
             val getterName = getter.getName();
             return String.format("this.%1$s = ReadOnlyList.of(%1$s);", getterName);
+        } else if (getter.getType().isNullable()) {
+            val getterName = getter.getName();
+            return String.format("this.%1$s = Nullable.of((%1$s == null) ? null : %1$s.get());", getterName);
         } else {
             val getterName = getter.getName();
             return String.format("this.%1$s = %1$s;", getterName);
@@ -239,7 +242,7 @@ public class DataObjectBuilder {
                         .map    (Getter::getName)
                         .map    (gName -> gName.equals(getterName) ? gName + ".apply(this." + gName + ")" : gName)
                         .collect(joining(", "));
-        val returnLine = "return " + POST_CONSTRUCT + "(new " + sourceSpec.getTargetClassName() + "(" + paramCall + ")));";
+        val returnLine = "return " + POST_CONSTRUCT + "(new " + sourceSpec.getTargetClassName() + "(" + paramCall + "));";
         return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
     }
     private GenMethod getterToWitherMethodBiFunction(SourceSpec sourceSpec,
@@ -253,7 +256,7 @@ public class DataObjectBuilder {
                 .map    (Getter::getName)
                 .map    (gName -> gName.equals(getterName) ? gName + ".apply(this, this." + gName + ")" : gName)
                 .collect(joining(", "));
-        val returnLine = "return " + POST_CONSTRUCT + "(new " + sourceSpec.getTargetClassName() + "(" + paramCall + ")));";
+        val returnLine = "return " + POST_CONSTRUCT + "(new " + sourceSpec.getTargetClassName() + "(" + paramCall + "));";
         return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
     }
     

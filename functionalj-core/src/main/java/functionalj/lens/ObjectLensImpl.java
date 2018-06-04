@@ -44,7 +44,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
     }
     
     protected <SUB, SUBLENS extends Lens<HOST, SUB>> 
-            NullableLens<HOST, SUB, SUBLENS> createNullableLens(
+            NullableLens<HOST, SUB, SUBLENS> createSubNullableLens(
                 Function<DATA,  Nullable<SUB>>         readSub,
                 WriteLens<DATA, Nullable<SUB>>         writeSub,
                 Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
@@ -58,7 +58,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
     }
     
     protected <SUB, SUBLENS extends Lens<HOST, SUB>> 
-            OptionalLens<HOST, SUB, SUBLENS> createOptionalLens(
+            OptionalLens<HOST, SUB, SUBLENS> createSubOptionalLens(
                 Function<DATA,  Optional<SUB>>         readSub,
                 WriteLens<DATA, Optional<SUB>>         writeSub,
                 Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
@@ -72,7 +72,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
     }
     
     protected <SUB, SUBLENS extends Lens<HOST, SUB>> 
-            MayBeLens<HOST, SUB, SUBLENS> createMayBeLens(
+            MayBeLens<HOST, SUB, SUBLENS> createSubMayBeLens(
                 Function<DATA,  MayBe<SUB>>            readSub,
                 WriteLens<DATA, MayBe<SUB>>            writeSub,
                 Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
