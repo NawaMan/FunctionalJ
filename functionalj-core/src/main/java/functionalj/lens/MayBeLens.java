@@ -8,22 +8,21 @@ import functionalj.types.MayBe;
 import lombok.val;
 
 @FunctionalInterface
-public interface MayBeLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+public interface MayBeLens<HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>>
                     extends 
                         ObjectLens<HOST, MayBe<TYPE>>,
                         MayBeAccess<HOST, TYPE, SUBLENS> {
     
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>>
         MayBeLens<HOST, TYPE, SUBLENS> of(
-            LensSpec<HOST, MayBe<TYPE>> nullableLensSpec,
+            LensSpec<HOST, MayBe<TYPE>>             nullableLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val read  = nullableLensSpec.getRead();
         val write = nullableLensSpec.getWrite();
-        val spec  = createLensSpecParameterized(read, write, subCreator);
+        val spec  = Lenses.createLensSpecParameterized(read, write, subCreator);
         val nullableLens = (MayBeLens<HOST, TYPE, SUBLENS>)()->spec;
         return nullableLens;
     }
-    
     
     public LensSpecParameterized<HOST, MayBe<TYPE>, TYPE, SUBLENS> lensSpecWithSub();
 

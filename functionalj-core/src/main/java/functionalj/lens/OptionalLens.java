@@ -8,12 +8,12 @@ import java.util.function.Function;
 import lombok.val;
 
 @FunctionalInterface
-public interface OptionalLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+public interface OptionalLens<HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>>
                     extends 
                         ObjectLens<HOST, Optional<TYPE>>,
                         OptionalAccess<HOST, TYPE, SUBLENS> {
     
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
+    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>>
         OptionalLens<HOST, TYPE, SUBLENS> of(
             LensSpec<HOST, Optional<TYPE>> optionalLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {

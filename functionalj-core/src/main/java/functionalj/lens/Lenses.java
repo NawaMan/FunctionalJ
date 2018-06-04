@@ -2,10 +2,12 @@ package functionalj.lens;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
+import functionalj.types.MayBe;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -60,8 +62,8 @@ public class Lenses {
     }
     
     //== Parameterized ==
-
-    public static <HOST, TYPE, SUB, SUBLENS extends AnyLens<HOST, SUB>> 
+    
+    public static <HOST, TYPE, SUB, SUBLENS extends Lens<HOST, SUB>> 
         LensSpecParameterized<HOST, TYPE, SUB, SUBLENS> createLensSpecParameterized(
             Function<HOST, TYPE>                   read,
             WriteLens<HOST, TYPE>                  write,
@@ -81,26 +83,67 @@ public class Lenses {
     
     //== Nullable ==
     
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> NullableLens<HOST, TYPE, SUBLENS> 
+    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> NullableLens<HOST, TYPE, SUBLENS> 
         createNullableLens(
             Function<HOST, Nullable<TYPE>>          read,
             WriteLens<HOST, Nullable<TYPE>>         write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val spec = createLensSpecParameterized(read, write, subCreator);
-        val nullableLens = (NullableLens<HOST, TYPE, SUBLENS>)()->spec;
-        return nullableLens;
+        val lens = (NullableLens<HOST, TYPE, SUBLENS>)()->spec;
+        return lens;
     }
     
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> NullableLens<HOST, TYPE, SUBLENS> 
+    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> NullableLens<HOST, TYPE, SUBLENS> 
         createNullableLens(
             LensSpec<HOST, Nullable<TYPE>> nullableLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        return createNullableLens(nullableLensSpec.getRead(), nullableLensSpec.getWrite(), subCreator);
+        val lens = createNullableLens(nullableLensSpec.getRead(), nullableLensSpec.getWrite(), subCreator);
+        return lens;
+    }
+    
+    //== Optional ==
+    
+    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> OptionalLens<HOST, TYPE, SUBLENS> 
+        createOptionalLens(
+            Function<HOST, Optional<TYPE>>          read,
+            WriteLens<HOST, Optional<TYPE>>         write,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        val spec = createLensSpecParameterized(read, write, subCreator);
+        val lens = (OptionalLens<HOST, TYPE, SUBLENS>)()->spec;
+        return lens;
+    }
+    
+    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> OptionalLens<HOST, TYPE, SUBLENS> 
+        createOptionalLens(
+            LensSpec<HOST, Optional<TYPE>> spec,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        val lens = createOptionalLens(spec.getRead(), spec.getWrite(), subCreator);
+        return lens;
+    }
+    
+    //== MayBe ==
+    
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> MayBeLens<HOST, TYPE, SUBLENS> 
+        createMayBeLens(
+            Function<HOST, MayBe<TYPE>>          read,
+            WriteLens<HOST, MayBe<TYPE>>         write,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        val spec = createLensSpecParameterized(read, write, subCreator);
+        val lens = (MayBeLens<HOST, TYPE, SUBLENS>)()->spec;
+        return lens;
+    }
+    
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> MayBeLens<HOST, TYPE, SUBLENS> 
+        createMayBeLens(
+            LensSpec<HOST, MayBe<TYPE>> spec,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        val lens = createMayBeLens(spec.getRead(), spec.getWrite(), subCreator);
+        return lens;
     }
     
     //== List ==
     
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ListLens<HOST, TYPE, SUBLENS> 
+    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> ListLens<HOST, TYPE, SUBLENS> 
         createListLens(
             Function<HOST, List<TYPE>>                    read,
             WriteLens<HOST, List<TYPE>>                   write,
@@ -110,7 +153,7 @@ public class Lenses {
         return listLens;
     }
     
-    public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> ListLens<HOST, TYPE, TYPELENS>
+    public static <HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>> ListLens<HOST, TYPE, TYPELENS>
             createSubListLens(
                 LensSpec<HOST, List<TYPE>>                              spec,
                 LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS> specParameterized,
