@@ -35,7 +35,6 @@ public interface Monad<TYPE, DATA> {
      * Create a Monad of the same type for the given value.
      * 
      * @param  <TARGET>  the target data type.
-     * @param  <MONAD>   the target monad.
      * @param  target    the target data value.
      * @return           the newly created monad.
      */

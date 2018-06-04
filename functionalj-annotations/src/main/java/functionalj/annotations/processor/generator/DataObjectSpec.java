@@ -18,6 +18,7 @@ package functionalj.annotations.processor.generator;
 import static functionalj.annotations.processor.generator.model.Accessibility.PUBLIC;
 import static functionalj.annotations.processor.generator.model.Modifiability.MODIFIABLE;
 import static functionalj.annotations.processor.generator.model.Scope.NONE;
+import static java.util.Arrays.asList;
 
 import java.util.List;
 
@@ -84,7 +85,7 @@ public class DataObjectSpec {
                 .encloseName(type().simpleName())
                 .simpleName(type().simpleName() + "Lens")
                 .packageName(type().packageName())
-                .generic("HOST")
+                .generics(asList(new Type("HOST", null)))
                 .build();
     }
     

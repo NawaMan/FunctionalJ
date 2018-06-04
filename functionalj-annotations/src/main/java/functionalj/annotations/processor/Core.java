@@ -44,9 +44,11 @@ public enum Core {
     IntegerLens("IntegerLens"),
     BooleanLens("BooleanLens"),
     StringLens ("StringLens"),
+    ListLens   ("ListLens"),
     
     ObjectLensImpl("ObjectLensImpl"),
-    LensSpec      ("LensSpec")
+    LensSpec      ("LensSpec"),
+    ReadOnlyList  ("ReadOnlyList", "functionalj.types"),
     ;
     
     private static final String LENS_PACKAGE = "functionalj.lens";

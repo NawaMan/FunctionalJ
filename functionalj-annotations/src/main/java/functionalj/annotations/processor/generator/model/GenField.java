@@ -46,16 +46,16 @@ public class GenField implements IGenerateDefinition {
     
     @Override
     public Stream<Type> requiredTypes() {
-        return Stream.of(getType());
+        return getType().requiredTypes();
     }
     
     @Override
-    public ILines toDefinition() {
+    public ILines toDefinition(String currentPackage) {
         val def = oneLineOf(
                     accessibility, 
                     scope, 
                     modifiability, 
-                    type.simpleNameWithGeneric(), 
+                    type.simpleNameWithGeneric(currentPackage), 
                     name
                 );
         

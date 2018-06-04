@@ -81,14 +81,14 @@ public class GenClass implements IGenerateDefinition {
     }
     
     @Override
-    public ILines toDefinition() {
+    public ILines toDefinition(String currentPackage) {
         val extendedList    = extendeds()   .stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
         val implementedList = implementeds().stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
         
-        val fieldDefs       = fields()      .stream().map(GenField      ::toDefinition).collect(toList());
-        val constructorDefs = constructors().stream().map(GenConstructor::toDefinition).collect(toList());
-        val methodDefs      = methods()     .stream().map(GenMethod     ::toDefinition).collect(toList());
-        val innerClassDefs  = innerClasses().stream().map(GenClass      ::toDefinition).collect(toList());
+        val fieldDefs       = fields()      .stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        val constructorDefs = constructors().stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        val methodDefs      = methods()     .stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        val innerClassDefs  = innerClasses().stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
         val moreDefs        = mores()       .stream().collect(toList());
         
         val className = type().simpleNameWithGeneric();

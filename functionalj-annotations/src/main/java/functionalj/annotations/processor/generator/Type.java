@@ -17,10 +17,15 @@ package functionalj.annotations.processor.generator;
 
 import static java.util.Arrays.asList;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import functionalj.annotations.processor.Core;
 import lombok.Builder;
@@ -41,23 +46,29 @@ import lombok.experimental.Wither;
 public class Type implements IRequireTypes {
     
     /** int type */
-    public static final Type INT     = new Type("int",     "");
+    public static final Type INT = new Type("int",     "");
     /** boolean type */
-    public static final Type BOOL    = new Type("boolean", "");
+    public static final Type BOOL = new Type("boolean", "");
+    /** string type */
+    public static final Type STR = new Type("String", "");
     /** Integer type */
     public static final Type INTEGER = Type.of(Integer.class);
     /** Boolean type */
     public static final Type BOOLEAN = Type.of(Boolean.class);
     /** String type */
-    public static final Type STRING  = Type.of(String .class);
+    public static final Type STRING = Type.of(String .class);
+    /** List type */
+    public static final Type LIST = Type.of(List.class);
     
     private static final Map<Type, Type> lensTypes = new HashMap<>();
     static {
         lensTypes.put(INT,     Core.IntegerLens.type());
         lensTypes.put(BOOL,    Core.BooleanLens.type());
+        lensTypes.put(STR,     Core.StringLens .type());
         lensTypes.put(INTEGER, Core.IntegerLens.type());
         lensTypes.put(BOOLEAN, Core.BooleanLens.type());
         lensTypes.put(STRING,  Core.StringLens .type());
+        lensTypes.put(LIST,    Core.ListLens   .type());
     }
     
     /**
@@ -72,10 +83,10 @@ public class Type implements IRequireTypes {
         return new Type(name, pckg);
     }
     
-    private String encloseName;
-    private String simpleName;
-    private String packageName;
-    private String generic;
+    private String     encloseName;
+    private String     simpleName;
+    private String     packageName;
+    private List<Type> generics;
     
     /**
      * Construct a type with the parameters.
@@ -83,13 +94,43 @@ public class Type implements IRequireTypes {
      * @param encloseName  the enclose component name.
      * @param simpleName   the simple name.
      * @param packageName  the package name.
-     * @param generic      the generic value.
+     * @param generics     the generic value.
      */
-    public Type(String encloseName, String simpleName, String packageName, String generic) {
+    public Type(String encloseName, String simpleName, String packageName, String ... generics) {
         this.encloseName = encloseName;
         this.simpleName  = simpleName;
         this.packageName = packageName;
-        this.generic     = generic;
+        this.generics    = asList(generics).stream().map(generic->new Type(generic, null)).collect(toList());
+    }
+    
+    /**
+     * Construct a type with the parameters.
+     * 
+     * @param encloseName  the enclose component name.
+     * @param simpleName   the simple name.
+     * @param packageName  the package name.
+     * @param generics     the generic value.
+     */
+    public Type(String encloseName, String simpleName, String packageName, Type ... generics) {
+        this(encloseName, simpleName, packageName, asList(generics));
+    }
+    /**
+     * Construct a type with the parameters.
+     * 
+     * @param encloseName  the enclose component name.
+     * @param simpleName   the simple name.
+     * @param packageName  the package name.
+     * @param generics     the generic value.
+     */
+    public Type(String encloseName, String simpleName, String packageName, List<Type> generics) {
+        this.encloseName = encloseName;
+        this.simpleName  = simpleName;
+        this.packageName = packageName;
+        
+        List<Type> genericList = (generics == null)
+                            ? null
+                            : generics.stream().filter(Objects::nonNull).collect(toList());
+        this.generics = ((genericList == null) || genericList.isEmpty()) ? new ArrayList<Type>() : genericList;
     }
     
     /**
@@ -99,30 +140,55 @@ public class Type implements IRequireTypes {
      * @param packageName  the package name.
      */
     public Type(String simpleName, String packageName) {
-        this(null, simpleName, packageName, null);
+        this(null, simpleName, packageName, (List<Type>)null);
     }
     
     @Override
     public Stream<Type> requiredTypes() {
-        return Stream.of(this);
+        return Stream.concat(
+                Stream.of(this), 
+                this.generics()
+                    .stream()
+                    .filter(type -> !((type.packageName == null) && (type.encloseName == null))));
     }
     
     /**
-     * Returns the full type name without the generic.
+     * Returns the full type name without the generic without the package name opt-out when same package.
      * 
      * @return  the full name.
      */
     public String fullName() {
-        return packageName + "." + ((encloseName != null) ? encloseName + "." : "") + simpleName;
+        return fullName("");
+    }
+    /**
+     * Returns the full type name without the generic.
+     * 
+     * @param currentPackage  the current package so that the package can be opt-out or null if it should never.
+     * @return  the full name.
+     */
+    public String fullName(String currentPackage) {
+        return getPackageText(currentPackage) + getEncloseNameText() + simpleName;
+    }
+
+    private String getEncloseNameText() {
+        return (encloseName != null) ? encloseName + "." : "";
+    }
+
+    private String getPackageText(String currentPackage) {
+        if ((currentPackage == null) || currentPackage.equals(packageName))
+            return "";
+        
+        return (packageName == null) ? "" : packageName + ".";
     }
     
     /**
      * Returns the full type name with the generic.
      * 
+     * @param currentPackage  the current package.
      * @return  the full name.
      */
-    public String fullNameWithGeneric() {
-        return fullName() + ((generic != null) ? "<" + generic + ">" : "");
+    public String fullNameWithGeneric(String currentPackage) {
+        return fullName(currentPackage) + getGenericText(currentPackage);
     }
     
     /**
@@ -131,7 +197,28 @@ public class Type implements IRequireTypes {
      * @return  the simple name.
      */
     public String simpleNameWithGeneric() {
-        return simpleName() + ((generic != null) ? "<" + generic + ">" : "");
+        return simpleNameWithGeneric("");
+    }
+    
+    /**
+     * Returns the simple name without the generic.
+     * 
+     * @param currentPackage  the current package.
+     * @return  the simple name.
+     */
+    public String simpleNameWithGeneric(String currentPackage) {
+        return simpleName() + getGenericText(currentPackage);
+    }
+    
+    private String getGenericText(String currentPackage) {
+        if (generics == null)
+            return "";
+        if (generics.isEmpty())
+            return "";
+        return "<" + generics.stream()
+                .map(type->type.simpleNameWithGeneric())
+                .collect(joining(", "))
+             + ">";
     }
     
     /**
@@ -177,7 +264,7 @@ public class Type implements IRequireTypes {
                 .encloseName(simpleName())
                 .simpleName(simpleName() + "Lens")
                 .packageName(packageName())
-                .generic("HOST")
+                .generics(asList(new Type("HOST", "")))
                 .build();
     }
 
@@ -187,7 +274,20 @@ public class Type implements IRequireTypes {
      * @return {@code true} if this lens is a custom lens.
      */
     public boolean isCustomLens() {
-        return !lensTypes.values().contains(this.lensType());
+        val lensType = this.lensType();
+        return !lensTypes.values().contains(lensType)
+            && !lensTypes.values().stream()
+             .anyMatch(type -> type.simpleName() .equals(lensType.simpleName())
+                            && type.packageName().equals(lensType.packageName()));
+    }
+    
+    /**
+     * Check if this type is a list type.
+     * 
+     * @return {@code true} if this type is a list.
+     */
+    public boolean isList() {
+        return this.fullName("").equals("java.util.List");
     }
     
     @Override

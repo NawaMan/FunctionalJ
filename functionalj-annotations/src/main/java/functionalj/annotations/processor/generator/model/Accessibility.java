@@ -28,7 +28,7 @@ public enum Accessibility implements IGenerateTerm {
     PUBLIC, PRIVATE, PROTECTED, PACKAGE;
     
     @Override
-    public String toTerm() {
+    public String toTerm(String currentPackage) {
         return (this == PACKAGE)
                 ? null
                 : name().toLowerCase();
@@ -36,6 +36,6 @@ public enum Accessibility implements IGenerateTerm {
     
     @Override
     public String toString() {
-        return toTerm();
+        return toTerm(null);
     }
 }

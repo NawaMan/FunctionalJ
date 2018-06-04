@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 
+import functionalj.annotations.processor.Core;
 import functionalj.annotations.processor.generator.IGenerateDefinition;
 import functionalj.annotations.processor.generator.ILines;
 import functionalj.annotations.processor.generator.Type;
@@ -55,18 +56,22 @@ public class GenConstructor implements IGenerateDefinition {
             val paramType = param.getType();
             if (types.contains(paramType))
                 continue;
-            
-            types.add(paramType);
+
+            paramType
+                .requiredTypes()
+                .forEach(types::add);
             param
                 .requiredTypes()
                 .forEach(types::add);
+            if (paramType.isList())
+                types.add(Core.ReadOnlyList.type());
         }
         return types.stream();
     }
     
     @Override
-    public ILines toDefinition() {
-        val paramDefs = params.stream().map(GenParam::toTerm).collect(joining(", "));
+    public ILines toDefinition(String currentPackage) {
+        val paramDefs = params.stream().map(param -> param.toTerm(currentPackage)).collect(joining(", "));
         val definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{")
                 .map    (utils.toStr())
                 .filter (Objects::nonNull)

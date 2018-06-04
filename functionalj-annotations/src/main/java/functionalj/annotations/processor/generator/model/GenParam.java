@@ -35,11 +35,11 @@ public class GenParam implements IGenerateTerm {
     
     @Override
     public Stream<Type> requiredTypes() {
-        return Stream.of(type);
+        return type.requiredTypes();
     }
     
     @Override
-    public String toTerm() {
-        return type.simpleNameWithGeneric() + " " + name;
+    public String toTerm(String currentPackage) {
+        return type.simpleNameWithGeneric(currentPackage) + " " + name;
     }
 }

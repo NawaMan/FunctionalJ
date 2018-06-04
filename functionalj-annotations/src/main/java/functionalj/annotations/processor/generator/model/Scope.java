@@ -27,7 +27,7 @@ public enum Scope implements IGenerateTerm {
     STATIC, INSTANCE, NONE;
     
     @Override
-    public String toTerm() {
+    public String toTerm(String currentPackage) {
         return ((this == INSTANCE) || (this == NONE))
                 ? null
                 : name().toLowerCase();
@@ -35,7 +35,7 @@ public enum Scope implements IGenerateTerm {
     
     @Override
     public String toString() {
-        return toTerm();
+        return toTerm(null);
     }
     
 }

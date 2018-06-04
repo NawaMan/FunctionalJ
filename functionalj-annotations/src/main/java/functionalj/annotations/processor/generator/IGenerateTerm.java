@@ -32,8 +32,9 @@ public interface IGenerateTerm extends IRequireTypes {
     /**
      * Generate term.
      * 
+     * @param  currentPackage  the current package.
      * @return  the term.
      */
-    public String toTerm();
+    public String toTerm(String currentPackage);
     
 }

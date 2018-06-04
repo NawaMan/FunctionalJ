@@ -71,8 +71,9 @@ public class GenDataObject implements ILines {
     public Stream<String> lines() {
         val importList = importListLines();
         val imports    = importList.map(wrapWith("import ", ";")).collect(toList());
-        String packageDef = "package " + dataClass.type().packageName() + ";";
-        ILines dataObjDef = dataClass.getClassSpec().toDefinition();
+        String packageName = dataClass.type().packageName();
+        String packageDef = "package " + packageName + ";";
+        ILines dataObjDef = dataClass.getClassSpec().toDefinition(packageName);
         ILines lines
                 = linesOf(Stream.of(
                     line(packageDef),
@@ -99,12 +100,13 @@ public class GenDataObject implements ILines {
                 .filter (Objects::nonNull)
                 .collect(toList());
         
-        val thisPackage  = (String)dataClass.type().packageName();
-        val thisEnclose  = (String)dataClass.type().encloseName();
-        val lensClass    = (String)dataClass.type().lensType().fullName();
-        val superClass   = (String)dataClass.getSourcePackageName() + "." + dataClass.getSourceClassName();
-        val isLensClass  = (Predicate<String>)((String name) -> name.equals(lensClass));
-        val isSuperClass = (Predicate<String>)((String name) -> name.equals(superClass));
+        val thisPackage   = (String)dataClass.type().packageName();
+        val thisEnclose   = (String)dataClass.type().encloseName();
+        val thisClassName = (String)dataClass.type().simpleName();
+        val lensClass     = (String)dataClass.type().lensType().fullName(thisPackage);
+        val superClass    = (String)dataClass.getSourcePackageName() + "." + dataClass.getSourceClassName();
+        val isLensClass   = (Predicate<String>)((String name) -> name.equals(lensClass));
+        val isSuperClass  = (Predicate<String>)((String name) -> name.equals(superClass));
         
         val importTypes = (List<Type>)asList(
                 alwaysImports.stream(),
@@ -118,7 +120,8 @@ public class GenDataObject implements ILines {
             .collect(toList());
         
         val importList = importTypes.stream()
-                .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisEnclose, type.encloseName()))
+                .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisEnclose,   type.encloseName()))
+                .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisClassName, type.encloseName()))
                 .map   (Type::declaredType)
                 .map   (Type::fullName)
                 .filter(type -> !implicitImports.contains(type))

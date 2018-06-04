@@ -110,7 +110,6 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
                     .map   (method->createGetterFromMethod(element, method))
                     .collect(toList());
             
-            
             val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
             val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
             val dataObject     = element.getAnnotation(DataObject.class);
@@ -135,7 +134,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
                             isClass,
                             configures, getters);
                 val dataObjSpec = new DataObjectBuilder(sourceSpec).build();
-                val className   = (String)dataObjSpec.type().fullName();
+                val className   = (String)dataObjSpec.type().fullName(null);
                 val content     = new GenDataObject(dataObjSpec).lines().collect(joining("\n"));
                 generateCode(element, className, content);
             } catch (Exception e) {
@@ -170,7 +169,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     private Type getType(Element element, TypeMirror typeMirror) {
         val typeStr = typeMirror.toString();
         if (typeMirror instanceof PrimitiveType) {
-            // This is no right ... but let goes with this.
+            // This is not right ... but let goes with this.
             if ("int".equals(typeStr))
                 return Type.INT;
             if ("boolean".equals(typeStr))
@@ -181,11 +180,24 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             val typeName = typeElement.getSimpleName().toString();
             if (typeName.equals("String"))
                 return Type.STRING;
-
-            val packageName = elementUtils.getPackageOf(element).getQualifiedName().toString();
-            return new Type(typeName, packageName);
+            
+            val generics = ((DeclaredType)typeMirror).getTypeArguments().stream()
+                    .map(typeArg -> getType(element, (TypeMirror)typeArg))
+                    .collect(toList());
+            
+            val packageName = getPackageName(element, typeElement);
+            return new Type(null, typeName, packageName, generics);
         }
         return null;
+    }
+
+    private String getPackageName(Element element, TypeElement typeElement) {
+        val typePackage = elementUtils.getPackageOf(typeElement).toString();
+        if (!typePackage.isEmpty())
+            return typePackage;
+        
+        val packageName = elementUtils.getPackageOf(element).getQualifiedName().toString();
+        return packageName;
     }
     
     private void generateCode(Element element, String className, String content) throws IOException {

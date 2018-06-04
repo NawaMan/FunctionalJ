@@ -126,7 +126,7 @@ public class DataObjectBuilder {
         
         val innerClasses = listOf(
                     lensClass
-                 );
+                );
         
         val dataObjSpec = new DataObjectSpec(
                 sourceSpec.getTargetClassName(),
@@ -161,8 +161,15 @@ public class DataObjectBuilder {
                     .map    (this::getterToGenParam)
                     .collect(toList());
             val body = spec.getGetters().stream()
-                    .map(Getter::getName)
-                    .map(arg -> String.format("this.%1$s = %1$s;", arg));
+                    .map(getter -> {
+                        if (getter.getType().isList()) {
+                            val getterName = getter.getName();
+                            return String.format("this.%1$s = ReadOnlyList.of(%1$s);", getterName);
+                        } else {
+                            val getterName = getter.getName();
+                            return String.format("this.%1$s = %1$s;", getterName);
+                        }
+                    });
             return new GenConstructor(acc, name, params, ILines.of(()->body));
         });
         val allArgsConstAccessibility

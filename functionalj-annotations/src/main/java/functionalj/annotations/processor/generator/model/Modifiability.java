@@ -28,7 +28,7 @@ public enum Modifiability implements IGenerateTerm {
     FINAL, MODIFIABLE;
     
     @Override
-    public String toTerm() {
+    public String toTerm(String currentPackage) {
         return (this == MODIFIABLE)
                 ? null
                 : name().toLowerCase();
@@ -36,7 +36,7 @@ public enum Modifiability implements IGenerateTerm {
     
     @Override
     public String toString() {
-        return toTerm();
+        return toTerm(null);
     }
     
 }

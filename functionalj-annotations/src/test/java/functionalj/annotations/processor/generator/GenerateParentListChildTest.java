@@ -1,7 +1,7 @@
 package functionalj.annotations.processor.generator;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import functionalj.annotations.processor.generator.model.GenDataObject;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class GenerateParentChildTest {
+public class GenerateParentListChildTest {
     
     private Configurations configures = new Configurations();
     {
@@ -28,40 +28,59 @@ public class GenerateParentChildTest {
     private boolean isClass             = false;
     
     private List<Getter> getters = asList(
-            new Getter("child", new Type.TypeBuilder()
-                                .simpleName("Child")
-                                .packageName("me.test")
+            new Getter("names", new Type.TypeBuilder()
+                                .simpleName("List")
+                                .generics(asList(new Type("String", "java.lang")))
+                                .packageName("java.util")
+                                .build()),
+            new Getter("children", new Type.TypeBuilder()
+                                .simpleName("List")
+                                .generics(asList(new Type("Child", "me.test")))
+                                .packageName("java.util")
                                 .build())
     );
     
     @Test
     public void testParent() {
         val code = generate();
+        /* */
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
-                "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IPostReConstruct;\n" +
                 "import functionalj.lens.LensSpec;\n" + 
+                "import functionalj.lens.ListLens;\n" + 
                 "import functionalj.lens.ObjectLensImpl;\n" + 
+                "import functionalj.lens.StringLens;\n" + 
+                "import functionalj.types.ReadOnlyList;\n" +
+                "import java.util.List;\n" + 
                 "import me.test.Child.ChildLens;\n" + 
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
-                "    private final Child child;\n" + 
+                "    private final List<String> names;\n" + 
+                "    private final List<Child> children;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
-                "        this(null);\n" + 
+                "        this(null, null);\n" + 
                 "    }\n" + 
-                "    public Parent(Child child) {\n" + 
-                "        this.child = child;\n" + 
+                "    public Parent(List<String> names, List<Child> children) {\n" + 
+                "        this.names = ReadOnlyList.of(names);\n" + 
+                "        this.children = ReadOnlyList.of(children);\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public Child child() {\n" + 
-                "        return child;\n" + 
+                "    public List<String> names() {\n" + 
+                "        return names;\n" + 
                 "    }\n" + 
-                "    public Parent withChild(Child child) {\n" + 
-                "        return postReConstruct(new Parent(child));\n" + 
+                "    public List<Child> children() {\n" + 
+                "        return children;\n" + 
+                "    }\n" + 
+                "    public Parent withNames(List<String> names) {\n" + 
+                "        return postReConstruct(new Parent(names, children));\n" + 
+                "    }\n" + 
+                "    public Parent withChildren(List<Child> children) {\n" + 
+                "        return postReConstruct(new Parent(names, children));\n" + 
                 "    }\n" + 
                 "    private static Parent postReConstruct(Parent object) {\n" + 
                 "        if (object instanceof IPostReConstruct)\n" + 
@@ -71,7 +90,8 @@ public class GenerateParentChildTest {
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
-                "        public final ChildLens<HOST> child = createSubLens(Parent::child, Parent::withChild, ChildLens::new);\n" + 
+                "        public final ListLens<HOST, String, StringLens<HOST>> names = createSubListLens(Parent::names, Parent::withNames, spec->()->spec);\n" + 
+                "        public final ListLens<HOST, Child, ChildLens<HOST>> children = createSubListLens(Parent::children, Parent::withChildren, ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 
                 "            super(spec);\n" + 
@@ -80,6 +100,7 @@ public class GenerateParentChildTest {
                 "    }\n" + 
                 "    \n" + 
                 "}", code);
+        /* */
     }
     
     private String generate() {

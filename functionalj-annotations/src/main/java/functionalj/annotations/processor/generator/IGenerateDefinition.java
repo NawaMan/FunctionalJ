@@ -25,8 +25,9 @@ public interface IGenerateDefinition extends IRequireTypes {
     /**
      * Generate definition.
      * 
+     * @param currentPackage  the current package.
      * @return  the definition.
      */
-    public ILines toDefinition();
+    public ILines toDefinition(String currentPackage);
     
 }

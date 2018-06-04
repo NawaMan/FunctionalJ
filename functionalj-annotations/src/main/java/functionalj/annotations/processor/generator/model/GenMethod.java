@@ -60,7 +60,9 @@ public class GenMethod implements IGenerateDefinition {
             Type paramType = param.getType();
             if (types.contains(paramType))
                 continue;
-            types.add(paramType);
+            paramType
+                .requiredTypes()
+                .forEach(types::add);
             param
                 .requiredTypes()
                 .forEach(types::add);
@@ -69,12 +71,12 @@ public class GenMethod implements IGenerateDefinition {
     }
     
     @Override
-    public ILines toDefinition() {
-        val paramDefs = params.stream().map(GenParam::toTerm).collect(joining(", "));
+    public ILines toDefinition(String currentPackage) {
+        val paramDefs = params.stream().map(param -> param.toTerm(currentPackage)).collect(joining(", "));
         val definition
                 = ILines.oneLineOf(
                     accessibility, modifiability, scope,
-                    type.simpleName(), name + "(" + paramDefs + ")",
+                    type.simpleNameWithGeneric(""), name + "(" + paramDefs + ")",
                     "{");
         return ILines.flatenLines(
                 line(definition),
