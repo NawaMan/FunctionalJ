@@ -115,7 +115,7 @@ public class LensClassBuilder {
         val withName     = utils.withMethodName(getter);
         
         GenField field;
-        if (isList(type)) {
+        if (type.isList()) {
             field = createGenListLensField(dataObjName, name, type, withName);
         } else {
             field = createLensField(dataObjName, name, type, withName);
@@ -141,11 +141,6 @@ public class LensClassBuilder {
         val value        = format("createSubListLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
         val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
-    }
-
-    private boolean isList(Type type) {
-        val fullName = type.fullName("");
-        return fullName.equals("java.util.List");
     }
     
 }
