@@ -12,7 +12,7 @@ import functionalj.annotations.processor.generator.model.GenDataObject;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class GenerateParentNullableOptionalMayBeChildTest {
+public class GenerateParentNullableChildTest {
     
     private Configurations configures = new Configurations();
     {
