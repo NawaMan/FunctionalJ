@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -96,9 +97,9 @@ public class DataObjectBuilder {
                 ));
         
         val getters = sourceSpec.getGetters();
-        val getterFields  = getters.stream().map(getter -> getterToField(getter));
-        val getterMethods = getters.stream().map(getter -> getterToGetterMethod(getter));
-        val witherMethods = getters.stream().map(getter -> getterToWitherMethod(sourceSpec, withMethodName, getter));
+        val getterFields  = getters.stream().map    (getter -> getterToField(getter));
+        val getterMethods = getters.stream().map    (getter -> getterToGetterMethod(getter));
+        val witherMethods = getters.stream().flatMap(getter -> getterToWitherMethods(sourceSpec, withMethodName, getter));
         
         GenField theField = null;
         GenClass lensClass = null;
@@ -160,16 +161,7 @@ public class DataObjectBuilder {
             List<GenParam> params = spec.getGetters().stream()
                     .map    (this::getterToGenParam)
                     .collect(toList());
-            val body = spec.getGetters().stream()
-                    .map(getter -> {
-                        if (getter.getType().isList()) {
-                            val getterName = getter.getName();
-                            return String.format("this.%1$s = ReadOnlyList.of(%1$s);", getterName);
-                        } else {
-                            val getterName = getter.getName();
-                            return String.format("this.%1$s = %1$s;", getterName);
-                        }
-                    });
+            val body = spec.getGetters().stream().map(this::initGetterField);
             return new GenConstructor(acc, name, params, ILines.of(()->body));
         });
         val allArgsConstAccessibility
@@ -177,6 +169,16 @@ public class DataObjectBuilder {
                 ? PUBLIC
                 : PRIVATE;
         return allArgsConstructor.apply(sourceSpec, allArgsConstAccessibility);
+    }
+
+    private String initGetterField(Getter getter) {
+        if (getter.getType().isList()) {
+            val getterName = getter.getName();
+            return String.format("this.%1$s = ReadOnlyList.of(%1$s);", getterName);
+        } else {
+            val getterName = getter.getName();
+            return String.format("this.%1$s = %1$s;", getterName);
+        }
     }
     
     private GenField getterToField(Getter getter) {
@@ -193,13 +195,65 @@ public class DataObjectBuilder {
         return new GenParam(paramName, paramType);
     }
     
-    private GenMethod getterToWitherMethod(SourceSpec sourceSpec,
+    private Stream<GenMethod> getterToWitherMethods(SourceSpec sourceSpec,
+            Function<Getter, String> withMethodName, Getter getter) {
+        return Stream.of(
+                    getterToWitherMethodValue(sourceSpec, withMethodName, getter),
+                    getterToWitherMethodSupplier(sourceSpec, withMethodName, getter),
+                    getterToWitherMethodFunction(sourceSpec, withMethodName, getter),
+                    getterToWitherMethodBiFunction(sourceSpec, withMethodName, getter)
+                );
+    }
+    
+    private GenMethod getterToWitherMethodValue(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
         val name = withMethodName.apply(getter);
         val type = sourceSpec.getTargetType();
         val params = asList(new GenParam(getter.getName(), getter.getType()));
         val paramCall = sourceSpec.getGetters().stream().map(Getter::getName).collect(joining(", "));
         val returnLine = "return " + POST_CONSTRUCT + "(new " + sourceSpec.getTargetClassName() + "(" + paramCall + "));";
+        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
+    }
+    private GenMethod getterToWitherMethodSupplier(SourceSpec sourceSpec,
+            Function<Getter, String> withMethodName, Getter getter) {
+        val name       = withMethodName.apply(getter);
+        val type       = sourceSpec.getTargetType();
+        val getterName = getter.getName();
+        val getterType = getter.getType();
+        val params     = asList(new GenParam(getter.getName(), Type.of(Supplier.class, getterType)));
+        val paramCall  = sourceSpec.getGetters().stream()
+                            .map    (Getter::getName)
+                            .map    (gName -> gName.equals(getterName) ? gName + ".get()" : gName)
+                            .collect(joining(", "));
+        val returnLine = "return " + POST_CONSTRUCT + "(new " + sourceSpec.getTargetClassName() + "(" + paramCall + "));";
+        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
+    }
+    private GenMethod getterToWitherMethodFunction(SourceSpec sourceSpec,
+            Function<Getter, String> withMethodName, Getter getter) {
+        val name       = withMethodName.apply(getter);
+        val type       = sourceSpec.getTargetType();
+        val getterName = getter.getName();
+        val getterType = getter.getType();
+        val params     = asList(new GenParam(getterName, Type.of(Function.class, getterType, getterType)));
+        val paramCall  = sourceSpec.getGetters().stream()
+                        .map    (Getter::getName)
+                        .map    (gName -> gName.equals(getterName) ? gName + ".apply(this." + gName + ")" : gName)
+                        .collect(joining(", "));
+        val returnLine = "return " + POST_CONSTRUCT + "(new " + sourceSpec.getTargetClassName() + "(" + paramCall + ")));";
+        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
+    }
+    private GenMethod getterToWitherMethodBiFunction(SourceSpec sourceSpec,
+            Function<Getter, String> withMethodName, Getter getter) {
+        val name       = withMethodName.apply(getter);
+        val type       = sourceSpec.getTargetType();
+        val getterName = getter.getName();
+        val getterType = getter.getType();
+        val params     = asList(new GenParam(getterName, Type.of(BiFunction.class, type, getterType, getterType)));
+        val paramCall  = sourceSpec.getGetters().stream()
+                .map    (Getter::getName)
+                .map    (gName -> gName.equals(getterName) ? gName + ".apply(this, this." + gName + ")" : gName)
+                .collect(joining(", "));
+        val returnLine = "return " + POST_CONSTRUCT + "(new " + sourceSpec.getTargetClassName() + "(" + paramCall + ")));";
         return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
     }
     

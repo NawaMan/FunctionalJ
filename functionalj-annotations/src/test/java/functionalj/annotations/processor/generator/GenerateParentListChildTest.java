@@ -47,13 +47,16 @@ public class GenerateParentListChildTest {
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
-                "import functionalj.annotations.IPostReConstruct;\n" +
+                "import functionalj.annotations.IPostReConstruct;\n" + 
                 "import functionalj.lens.LensSpec;\n" + 
                 "import functionalj.lens.ListLens;\n" + 
                 "import functionalj.lens.ObjectLensImpl;\n" + 
                 "import functionalj.lens.StringLens;\n" + 
-                "import functionalj.types.ReadOnlyList;\n" +
+                "import functionalj.types.ReadOnlyList;\n" + 
                 "import java.util.List;\n" + 
+                "import java.util.function.BiFunction;\n" + 
+                "import java.util.function.Function;\n" + 
+                "import java.util.function.Supplier;\n" + 
                 "import me.test.Child.ChildLens;\n" + 
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef {\n" + 
@@ -79,8 +82,26 @@ public class GenerateParentListChildTest {
                 "    public Parent withNames(List<String> names) {\n" + 
                 "        return postReConstruct(new Parent(names, children));\n" + 
                 "    }\n" + 
+                "    public Parent withNames(Supplier<List<String>> names) {\n" + 
+                "        return postReConstruct(new Parent(names.get(), children));\n" + 
+                "    }\n" + 
+                "    public Parent withNames(Function<List<String>, List<String>> names) {\n" + 
+                "        return postReConstruct(new Parent(names.apply(this.names), children)));\n" + 
+                "    }\n" + 
+                "    public Parent withNames(BiFunction<Parent, List<String>, List<String>> names) {\n" + 
+                "        return postReConstruct(new Parent(names.apply(this, this.names), children)));\n" + 
+                "    }\n" + 
                 "    public Parent withChildren(List<Child> children) {\n" + 
                 "        return postReConstruct(new Parent(names, children));\n" + 
+                "    }\n" + 
+                "    public Parent withChildren(Supplier<List<Child>> children) {\n" + 
+                "        return postReConstruct(new Parent(names, children.get()));\n" + 
+                "    }\n" + 
+                "    public Parent withChildren(Function<List<Child>, List<Child>> children) {\n" + 
+                "        return postReConstruct(new Parent(names, children.apply(this.children))));\n" + 
+                "    }\n" + 
+                "    public Parent withChildren(BiFunction<Parent, List<Child>, List<Child>> children) {\n" + 
+                "        return postReConstruct(new Parent(names, children.apply(this, this.children))));\n" + 
                 "    }\n" + 
                 "    private static Parent postReConstruct(Parent object) {\n" + 
                 "        if (object instanceof IPostReConstruct)\n" + 

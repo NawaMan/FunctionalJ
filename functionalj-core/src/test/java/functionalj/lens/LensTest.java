@@ -15,7 +15,9 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -105,6 +107,15 @@ public class LensTest {
         }
         public Car withColor(String color) {
             return new Car(color);
+        }
+        public Car withColor(Supplier<String> color) {
+            return new Car(color.get());
+        }
+        public Car withColor(Function<String,String> color) {
+            return new Car(color.apply(this.color));
+        }
+        public Car withColor(BiFunction<Car, String,String> color) {
+            return new Car(color.apply(this,this.color));
         }
         
         @Override

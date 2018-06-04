@@ -43,6 +43,9 @@ public class GenerateParentChildTest {
                 "import functionalj.annotations.IPostReConstruct;\n" + 
                 "import functionalj.lens.LensSpec;\n" + 
                 "import functionalj.lens.ObjectLensImpl;\n" + 
+                "import java.util.function.BiFunction;\n" + 
+                "import java.util.function.Function;\n" + 
+                "import java.util.function.Supplier;\n" + 
                 "import me.test.Child.ChildLens;\n" + 
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef {\n" + 
@@ -62,6 +65,15 @@ public class GenerateParentChildTest {
                 "    }\n" + 
                 "    public Parent withChild(Child child) {\n" + 
                 "        return postReConstruct(new Parent(child));\n" + 
+                "    }\n" + 
+                "    public Parent withChild(Supplier<Child> child) {\n" + 
+                "        return postReConstruct(new Parent(child.get()));\n" + 
+                "    }\n" + 
+                "    public Parent withChild(Function<Child, Child> child) {\n" + 
+                "        return postReConstruct(new Parent(child.apply(this.child))));\n" + 
+                "    }\n" + 
+                "    public Parent withChild(BiFunction<Parent, Child, Child> child) {\n" + 
+                "        return postReConstruct(new Parent(child.apply(this, this.child))));\n" + 
                 "    }\n" + 
                 "    private static Parent postReConstruct(Parent object) {\n" + 
                 "        if (object instanceof IPostReConstruct)\n" + 

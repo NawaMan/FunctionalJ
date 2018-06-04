@@ -133,8 +133,9 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
                             sourceName, packageName, targetName, packageName,
                             isClass,
                             configures, getters);
+                System.err.println(sourceSpec);
                 val dataObjSpec = new DataObjectBuilder(sourceSpec).build();
-                val className   = (String)dataObjSpec.type().fullName(null);
+                val className   = (String)dataObjSpec.type().fullName("");
                 val content     = new GenDataObject(dataObjSpec).lines().collect(joining("\n"));
                 generateCode(element, className, content);
             } catch (Exception e) {
@@ -192,7 +193,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     }
 
     private String getPackageName(Element element, TypeElement typeElement) {
-        val typePackage = elementUtils.getPackageOf(typeElement).toString();
+        val typePackage = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
         if (!typePackage.isEmpty())
             return typePackage;
         

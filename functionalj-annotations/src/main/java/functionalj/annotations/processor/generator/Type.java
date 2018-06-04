@@ -74,13 +74,14 @@ public class Type implements IRequireTypes {
     /**
      * Create a type of the given class.
      * 
-     * @param clzz  the class.
+     * @param clzz      the class.
+     * @param generics  the generic for this type.
      * @return      the type.
      */
-    public static Type of(Class<?> clzz) {
+    public static Type of(Class<?> clzz, Type ... generics) {
         val pckg = clzz.getPackage().getName().toString();
         val name = clzz.getCanonicalName().toString().substring(pckg.length() + 1 );
-        return new Type(name, pckg);
+        return new Type(name, pckg).withGenerics(asList(generics));
     }
     
     private String     encloseName;

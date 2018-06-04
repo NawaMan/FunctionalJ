@@ -15,11 +15,11 @@ public class ReadOnlyList<DATA> implements List<DATA> {
     
     private final List<DATA> data;
     
-    public <DATA> ReadOnlyList of(DATA ... data) {
+    public static <DATA> ReadOnlyList of(DATA ... data) {
         return new ReadOnlyList<>(asList(data));
     }
     
-    public <DATA> ReadOnlyList of(List<DATA> data) {
+    public static <DATA> ReadOnlyList of(List<DATA> data) {
         if (data instanceof ReadOnlyList)
             return (ReadOnlyList)data;
         

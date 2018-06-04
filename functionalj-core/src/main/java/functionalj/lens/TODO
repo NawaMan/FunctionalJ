@@ -6,7 +6,11 @@
 + OptionalAccess and OptionalLens
 + Make Nullable and Optional lens transparents (don't see it as object)
 - Annotate the getter to be null sensitive (Null unsafe)
-- Generator for the above types
++ Generator for list
+- Generator for map
+- Generator for MayBe
+- Generator for Nullable
+- Generator for Optional
 - Date, LocalDate, LocalTime
 
 + Tuples
