@@ -1,7 +1,7 @@
 package functionalj.annotations.processor.generator;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -70,10 +70,10 @@ public class GenerateParentChildTest {
                 "        return postReConstruct(new Parent(child.get()));\n" + 
                 "    }\n" + 
                 "    public Parent withChild(Function<Child, Child> child) {\n" + 
-                "        return postReConstruct(new Parent(child.apply(this.child))));\n" + 
+                "        return postReConstruct(new Parent(child.apply(this.child)));\n" + 
                 "    }\n" + 
                 "    public Parent withChild(BiFunction<Parent, Child, Child> child) {\n" + 
-                "        return postReConstruct(new Parent(child.apply(this, this.child))));\n" + 
+                "        return postReConstruct(new Parent(child.apply(this, this.child)));\n" + 
                 "    }\n" + 
                 "    private static Parent postReConstruct(Parent object) {\n" + 
                 "        if (object instanceof IPostReConstruct)\n" + 

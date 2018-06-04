@@ -1,6 +1,5 @@
 package functionalj.annotations;
 
-import java.util.List;
 import java.util.Optional;
 
 import functionalj.types.MayBe;

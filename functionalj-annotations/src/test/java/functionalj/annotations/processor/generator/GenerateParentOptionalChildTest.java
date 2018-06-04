@@ -12,7 +12,7 @@ import functionalj.annotations.processor.generator.model.GenDataObject;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class GenerateParentListChildTest {
+public class GenerateParentOptionalChildTest {
     
     private Configurations configures = new Configurations();
     {
@@ -28,13 +28,13 @@ public class GenerateParentListChildTest {
     private boolean isClass             = false;
     
     private List<Getter> getters = asList(
-            new Getter("names", new Type.TypeBuilder()
-                                .simpleName("List")
+            new Getter("optionalName", new Type.TypeBuilder()
+                                .simpleName("Optional")
                                 .generics(asList(new Type("String", "java.lang")))
                                 .packageName("java.util")
                                 .build()),
-            new Getter("children", new Type.TypeBuilder()
-                                .simpleName("List")
+            new Getter("optionalChild", new Type.TypeBuilder()
+                                .simpleName("Optional")
                                 .generics(asList(new Type("Child", "me.test")))
                                 .packageName("java.util")
                                 .build())
@@ -49,59 +49,58 @@ public class GenerateParentListChildTest {
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
                 "import functionalj.lens.LensSpec;\n" + 
-                "import functionalj.lens.ListLens;\n" + 
                 "import functionalj.lens.ObjectLensImpl;\n" + 
+                "import functionalj.lens.OptionalLens;\n" + 
                 "import functionalj.lens.StringLens;\n" + 
-                "import functionalj.types.ReadOnlyList;\n" + 
-                "import java.util.List;\n" + 
+                "import java.util.Optional;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
-                "import me.test.Child.ChildLens;\n" + 
+                "import me.test.Child.ChildLens;\n" +
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
-                "    private final List<String> names;\n" + 
-                "    private final List<Child> children;\n" + 
+                "    private final Optional<String> optionalName;\n" + 
+                "    private final Optional<Child> optionalChild;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
                 "        this(null, null);\n" + 
                 "    }\n" + 
-                "    public Parent(List<String> names, List<Child> children) {\n" + 
-                "        this.names = ReadOnlyList.of(names);\n" + 
-                "        this.children = ReadOnlyList.of(children);\n" + 
+                "    public Parent(Optional<String> optionalName, Optional<Child> optionalChild) {\n" + 
+                "        this.optionalName = optionalName;\n" + 
+                "        this.optionalChild = optionalChild;\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public List<String> names() {\n" + 
-                "        return names;\n" + 
+                "    public Optional<String> optionalName() {\n" + 
+                "        return optionalName;\n" + 
                 "    }\n" + 
-                "    public List<Child> children() {\n" + 
-                "        return children;\n" + 
+                "    public Optional<Child> optionalChild() {\n" + 
+                "        return optionalChild;\n" + 
                 "    }\n" + 
-                "    public Parent withNames(List<String> names) {\n" + 
-                "        return postReConstruct(new Parent(names, children));\n" + 
+                "    public Parent withOptionalName(Optional<String> optionalName) {\n" + 
+                "        return postReConstruct(new Parent(optionalName, optionalChild));\n" + 
                 "    }\n" + 
-                "    public Parent withNames(Supplier<List<String>> names) {\n" + 
-                "        return postReConstruct(new Parent(names.get(), children));\n" + 
+                "    public Parent withOptionalName(Supplier<Optional<String>> optionalName) {\n" + 
+                "        return postReConstruct(new Parent(optionalName.get(), optionalChild));\n" + 
                 "    }\n" + 
-                "    public Parent withNames(Function<List<String>, List<String>> names) {\n" + 
-                "        return postReConstruct(new Parent(names.apply(this.names), children));\n" + 
+                "    public Parent withOptionalName(Function<Optional<String>, Optional<String>> optionalName) {\n" + 
+                "        return postReConstruct(new Parent(optionalName.apply(this.optionalName), optionalChild));\n" + 
                 "    }\n" + 
-                "    public Parent withNames(BiFunction<Parent, List<String>, List<String>> names) {\n" + 
-                "        return postReConstruct(new Parent(names.apply(this, this.names), children));\n" + 
+                "    public Parent withOptionalName(BiFunction<Parent, Optional<String>, Optional<String>> optionalName) {\n" + 
+                "        return postReConstruct(new Parent(optionalName.apply(this, this.optionalName), optionalChild));\n" + 
                 "    }\n" + 
-                "    public Parent withChildren(List<Child> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children));\n" + 
+                "    public Parent withOptionalChild(Optional<Child> optionalChild) {\n" + 
+                "        return postReConstruct(new Parent(optionalName, optionalChild));\n" + 
                 "    }\n" + 
-                "    public Parent withChildren(Supplier<List<Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children.get()));\n" + 
+                "    public Parent withOptionalChild(Supplier<Optional<Child>> optionalChild) {\n" + 
+                "        return postReConstruct(new Parent(optionalName, optionalChild.get()));\n" + 
                 "    }\n" + 
-                "    public Parent withChildren(Function<List<Child>, List<Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children.apply(this.children)));\n" + 
+                "    public Parent withOptionalChild(Function<Optional<Child>, Optional<Child>> optionalChild) {\n" + 
+                "        return postReConstruct(new Parent(optionalName, optionalChild.apply(this.optionalChild)));\n" + 
                 "    }\n" + 
-                "    public Parent withChildren(BiFunction<Parent, List<Child>, List<Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children.apply(this, this.children)));\n" + 
+                "    public Parent withOptionalChild(BiFunction<Parent, Optional<Child>, Optional<Child>> optionalChild) {\n" + 
+                "        return postReConstruct(new Parent(optionalName, optionalChild.apply(this, this.optionalChild)));\n" + 
                 "    }\n" + 
                 "    private static Parent postReConstruct(Parent object) {\n" + 
                 "        if (object instanceof IPostReConstruct)\n" + 
@@ -111,8 +110,8 @@ public class GenerateParentListChildTest {
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
-                "        public final ListLens<HOST, String, StringLens<HOST>> names = createSubListLens(Parent::names, Parent::withNames, spec->()->spec);\n" + 
-                "        public final ListLens<HOST, Child, ChildLens<HOST>> children = createSubListLens(Parent::children, Parent::withChildren, ChildLens::new);\n" + 
+                "        public final OptionalLens<HOST, String, StringLens<HOST>> optionalName = createSubOptionalLens(Parent::optionalName, Parent::withOptionalName, spec->()->spec);\n" + 
+                "        public final OptionalLens<HOST, Child, ChildLens<HOST>> optionalChild = createSubOptionalLens(Parent::optionalChild, Parent::withOptionalChild, ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 
                 "            super(spec);\n" + 

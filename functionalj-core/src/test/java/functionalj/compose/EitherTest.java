@@ -1,17 +1,5 @@
 package functionalj.compose;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import org.junit.Test;
-
-import static functionalj.compose.Either.emap;
-import static functionalj.compose.Functional.compose;
-import static functionalj.compose.Functional.curry2;
-import static org.junit.Assert.*;
-
-import lombok.val;
-
 public class EitherTest {
 //    
 //    @Test

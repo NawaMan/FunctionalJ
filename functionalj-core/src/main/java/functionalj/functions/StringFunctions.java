@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
-import functionalj.FunctionalStrings;
-import lombok.val;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

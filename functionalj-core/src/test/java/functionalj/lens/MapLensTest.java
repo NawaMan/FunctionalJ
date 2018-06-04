@@ -1,7 +1,7 @@
 package functionalj.lens;
 
 import static functionalj.lens.Accesses.theString;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

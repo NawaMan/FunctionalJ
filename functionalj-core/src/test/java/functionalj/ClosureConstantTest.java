@@ -2,9 +2,9 @@ package functionalj;
 
 import static functionalj.FunctionalJ.cacheFor;
 import static functionalj.FunctionalJ.lazy;
-import static functionalj.FunctionalJ.usingIndex;
 import static functionalj.FunctionalJ.withIndex;
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,8 +14,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 import static java.util.stream.Collectors.joining;
 

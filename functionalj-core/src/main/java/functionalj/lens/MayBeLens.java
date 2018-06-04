@@ -1,7 +1,5 @@
 package functionalj.lens;
 
-import static functionalj.lens.Lenses.createLensSpecParameterized;
-
 import java.util.function.Function;
 
 import functionalj.types.MayBe;

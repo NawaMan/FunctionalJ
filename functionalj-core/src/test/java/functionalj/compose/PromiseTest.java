@@ -8,19 +8,14 @@ import static functionalj.compose.Promise.promiseThenDo;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import java.util.Scanner;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.junit.After;
 import org.junit.Test;
 
-import functionalj.compose.Either;
-import functionalj.compose.Functional;
-import functionalj.compose.Promise;
 import lombok.val;
 
 public class PromiseTest {

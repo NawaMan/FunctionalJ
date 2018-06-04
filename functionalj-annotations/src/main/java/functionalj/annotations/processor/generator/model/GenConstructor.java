@@ -67,6 +67,8 @@ public class GenConstructor implements IGenerateDefinition {
                 types.add(Core.ReadOnlyList.type());
             if (paramType.isNullable())
                 types.add(Core.Nullable.type());
+            if (paramType.isOptional())
+                types.add(Core.Optional.type());
         }
         return types.stream();
     }

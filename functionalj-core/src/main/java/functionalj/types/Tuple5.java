@@ -1,7 +1,5 @@
 package functionalj.types;
 
-import java.util.Map;
-
 public class Tuple5<T1, T2, T3, T4, T5> implements ITuple5<T1, T2, T3, T4, T5> {
     
     public final T1 _1;

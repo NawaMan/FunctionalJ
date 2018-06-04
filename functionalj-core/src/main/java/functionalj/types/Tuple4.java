@@ -1,7 +1,5 @@
 package functionalj.types;
 
-import java.util.Map;
-
 public class Tuple4<T1, T2, T3, T4> implements ITuple4<T1, T2, T3, T4> {
     
     public final T1 _1;

@@ -1,22 +1,16 @@
 package functionalj.lens;
 
-import static functionalj.compose.Functional.pipe;
 import static functionalj.lens.NullableLensTest.Driver.theDriver;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
 
 import functionalj.functions.Func1;
-import functionalj.lens.LensTest.Car;
-import functionalj.lens.LensTest.Driver;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 

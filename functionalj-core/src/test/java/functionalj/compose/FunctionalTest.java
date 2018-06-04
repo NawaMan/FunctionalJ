@@ -1,21 +1,16 @@
 package functionalj.compose;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-
-import org.junit.Test;
-
-import functionalj.compose.Functional;
-import functionalj.functions.Func2;
-
 import static functionalj.compose.Functional.compose;
 import static functionalj.compose.Functional.curry1;
 import static functionalj.compose.Functional.pluck;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.Array;
+import java.util.function.Function;
+
+import org.junit.Test;
+
+import functionalj.functions.Func2;
 import lombok.AllArgsConstructor;
 
 public class FunctionalTest {

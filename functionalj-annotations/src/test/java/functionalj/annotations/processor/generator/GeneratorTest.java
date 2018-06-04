@@ -24,10 +24,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.annotations.processor.generator.DataObjectBuilder;
-import functionalj.annotations.processor.generator.Getter;
-import functionalj.annotations.processor.generator.SourceSpec;
-import functionalj.annotations.processor.generator.Type;
 import functionalj.annotations.processor.generator.SourceSpec.Configurations;
 import functionalj.annotations.processor.generator.model.GenDataObject;
 import lombok.val;
@@ -102,10 +98,10 @@ public class GeneratorTest {
                 "        return postReConstruct(new Car(anint.get(), anbool, anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnint(Function<int, int> anint) {\n" + 
-                "        return postReConstruct(new Car(anint.apply(this.anint), anbool, anstring)));\n" + 
+                "        return postReConstruct(new Car(anint.apply(this.anint), anbool, anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnint(BiFunction<Car, int, int> anint) {\n" + 
-                "        return postReConstruct(new Car(anint.apply(this, this.anint), anbool, anstring)));\n" + 
+                "        return postReConstruct(new Car(anint.apply(this, this.anint), anbool, anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnbool(boolean anbool) {\n" + 
                 "        return postReConstruct(new Car(anint, anbool, anstring));\n" + 
@@ -114,10 +110,10 @@ public class GeneratorTest {
                 "        return postReConstruct(new Car(anint, anbool.get(), anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnbool(Function<boolean, boolean> anbool) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool.apply(this.anbool), anstring)));\n" + 
+                "        return postReConstruct(new Car(anint, anbool.apply(this.anbool), anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnbool(BiFunction<Car, boolean, boolean> anbool) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool.apply(this, this.anbool), anstring)));\n" + 
+                "        return postReConstruct(new Car(anint, anbool.apply(this, this.anbool), anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnstring(String anstring) {\n" + 
                 "        return postReConstruct(new Car(anint, anbool, anstring));\n" + 
@@ -126,10 +122,10 @@ public class GeneratorTest {
                 "        return postReConstruct(new Car(anint, anbool, anstring.get()));\n" + 
                 "    }\n" + 
                 "    public Car withAnstring(Function<String, String> anstring) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool, anstring.apply(this.anstring))));\n" + 
+                "        return postReConstruct(new Car(anint, anbool, anstring.apply(this.anstring)));\n" + 
                 "    }\n" + 
                 "    public Car withAnstring(BiFunction<Car, String, String> anstring) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool, anstring.apply(this, this.anstring))));\n" + 
+                "        return postReConstruct(new Car(anint, anbool, anstring.apply(this, this.anstring)));\n" + 
                 "    }\n" + 
                 "    private static Car postReConstruct(Car object) {\n" + 
                 "        if (object instanceof IPostReConstruct)\n" + 
