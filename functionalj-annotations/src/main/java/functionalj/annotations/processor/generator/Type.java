@@ -63,6 +63,8 @@ public class Type implements IRequireTypes {
     public static final Type NULLABLE = Core.Nullable.type();
     /** Optional type */
     public static final Type OPTIONAL = Core.Optional.type();
+    /** MayBe type */
+    public static final Type MAYBE = Core.MayBe.type();
     
     private static final Map<Type, Type> lensTypes = new HashMap<>();
     static {
@@ -75,6 +77,7 @@ public class Type implements IRequireTypes {
         lensTypes.put(LIST,     Core.ListLens    .type());
         lensTypes.put(NULLABLE, Core.NullableLens.type());
         lensTypes.put(OPTIONAL, Core.OptionalLens.type());
+        lensTypes.put(MAYBE,    Core.MayBeLens   .type());
     }
     
     /**
@@ -313,6 +316,15 @@ public class Type implements IRequireTypes {
      */
     public boolean isOptional() {
         return this.fullName("").equals("java.util.Optional");
+    }
+    
+    /**
+     * Check if this type is a MayBe type.
+     * 
+     * @return {@code true} if this type is a MayBe.
+     */
+    public boolean isMayBe() {
+        return this.fullName("").equals("functionalj.types.MayBe");
     }
     
     @Override

@@ -121,6 +121,8 @@ public class LensClassBuilder {
             field = createGenNullableLensField(dataObjName, name, type, withName);
         } else if (type.isOptional()) {
             field = createGenOptionalLensField(dataObjName, name, type, withName);
+        } else if (type.isMayBe()) {
+            field = createGenMayBeLensField(dataObjName, name, type, withName);
         } else {
             field = createLensField(dataObjName, name, type, withName);
         }
@@ -167,6 +169,17 @@ public class LensClassBuilder {
         val isCustomLens = paramType.lensType().isCustomLens();
         val spec         = isCustomLens ? paramType.lensType().simpleName() + "::new" : "spec->()->spec";
         val value        = format("createSubOptionalLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
+        return field;
+    }
+    
+    private GenField createGenMayBeLensField(String dataObjName, String name, Type type, String withName) {
+        val paramType    = type.generics().get(0);
+        val lensGenerics = asList(new Type("HOST", null), paramType, paramType.lensType().withGenerics(asList(new Type("HOST", null))));
+        val lensType     = type.lensType().withGenerics(lensGenerics);
+        val isCustomLens = paramType.lensType().isCustomLens();
+        val spec         = isCustomLens ? paramType.lensType().simpleName() + "::new" : "spec->()->spec";
+        val value        = format("createSubMayBeLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
         val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }

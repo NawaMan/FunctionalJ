@@ -47,12 +47,14 @@ public enum Core {
     ListLens    ("ListLens"),
     NullableLens("NullableLens"),
     OptionalLens("OptionalLens"),
+    MayBeLens   ("MayBeLens"),
     
     ObjectLensImpl("ObjectLensImpl"),
     LensSpec      ("LensSpec"),
     ReadOnlyList  ("ReadOnlyList", "functionalj.types"),
     Nullable      ("Nullable",     "nawaman.nullablej.nullable"),
     Optional      ("Optional",     "java.util"),
+    MayBe         ("MayBe",        "functionalj.types"),
     ;
     
     private static final String LENS_PACKAGE = "functionalj.lens";
