@@ -175,6 +175,9 @@ public class DataObjectBuilder {
         if (getter.getType().isList()) {
             val getterName = getter.getName();
             return String.format("this.%1$s = ReadOnlyList.of(%1$s);", getterName);
+        } else if (getter.getType().isMap()) {
+            val getterName = getter.getName();
+            return String.format("this.%1$s = ReadOnlyMap.of(%1$s);", getterName);
         } else if (getter.getType().isNullable()) {
             val getterName = getter.getName();
             return String.format("this.%1$s = Nullable.of((%1$s == null) ? null : %1$s.get());", getterName);
@@ -201,9 +204,9 @@ public class DataObjectBuilder {
     private Stream<GenMethod> getterToWitherMethods(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
         return Stream.of(
-                    getterToWitherMethodValue(sourceSpec, withMethodName, getter),
-                    getterToWitherMethodSupplier(sourceSpec, withMethodName, getter),
-                    getterToWitherMethodFunction(sourceSpec, withMethodName, getter),
+                    getterToWitherMethodValue(     sourceSpec, withMethodName, getter),
+                    getterToWitherMethodSupplier(  sourceSpec, withMethodName, getter),
+                    getterToWitherMethodFunction(  sourceSpec, withMethodName, getter),
                     getterToWitherMethodBiFunction(sourceSpec, withMethodName, getter)
                 );
     }

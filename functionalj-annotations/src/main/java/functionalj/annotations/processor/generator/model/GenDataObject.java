@@ -120,7 +120,7 @@ public class GenDataObject implements ILines {
             .collect(toList());
         
         val importList = importTypes.stream()
-                .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisEnclose,   type.encloseName()))
+//                .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisEnclose,   type.encloseName()))
                 .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisClassName, type.encloseName()))
                 .map   (Type::declaredType)
                 .map   (Type::fullName)

@@ -55,7 +55,8 @@ public class GenerateParentOptionalChildTest {
                 "import java.util.Optional;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
-                "import java.util.function.Supplier;\n" + 
+                "import java.util.function.Supplier;\n" +
+                "import me.test.Child;\n" +  
                 "import me.test.Child.ChildLens;\n" +
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef {\n" + 

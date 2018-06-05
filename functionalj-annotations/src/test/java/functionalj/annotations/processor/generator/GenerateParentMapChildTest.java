@@ -12,7 +12,7 @@ import functionalj.annotations.processor.generator.model.GenDataObject;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class GenerateParentListChildTest {
+public class GenerateParentMapChildTest {
     
     private Configurations configures = new Configurations();
     {
@@ -28,14 +28,11 @@ public class GenerateParentListChildTest {
     private boolean isClass             = false;
     
     private List<Getter> getters = asList(
-            new Getter("names", new Type.TypeBuilder()
-                                .simpleName("List")
-                                .generics(asList(new Type("String", "java.lang")))
-                                .packageName("java.util")
-                                .build()),
             new Getter("children", new Type.TypeBuilder()
-                                .simpleName("List")
-                                .generics(asList(new Type("Child", "me.test")))
+                                .simpleName("Map")
+                                .generics(asList(
+                                        new Type("String", "java.lang"), 
+                                        new Type("Child",  "me.test")))
                                 .packageName("java.util")
                                 .build())
     );
@@ -49,11 +46,11 @@ public class GenerateParentListChildTest {
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
                 "import functionalj.lens.LensSpec;\n" + 
-                "import functionalj.lens.ListLens;\n" + 
+                "import functionalj.lens.MapLens;\n" + 
                 "import functionalj.lens.ObjectLensImpl;\n" + 
                 "import functionalj.lens.StringLens;\n" + 
-                "import functionalj.types.ReadOnlyList;\n" + 
-                "import java.util.List;\n" + 
+                "import functionalj.types.ReadOnlyMap;\n" + 
+                "import java.util.Map;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
@@ -63,46 +60,29 @@ public class GenerateParentListChildTest {
                 "public class Parent implements Definitions.ParentDef {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
-                "    private final List<String> names;\n" + 
-                "    private final List<Child> children;\n" + 
+                "    private final Map<String, Child> children;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
-                "        this(null, null);\n" + 
+                "        this(null);\n" + 
                 "    }\n" + 
-                "    public Parent(List<String> names, List<Child> children) {\n" + 
-                "        this.names = ReadOnlyList.of(names);\n" + 
-                "        this.children = ReadOnlyList.of(children);\n" + 
+                "    public Parent(Map<String, Child> children) {\n" + 
+                "        this.children = ReadOnlyMap.of(children);\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public List<String> names() {\n" + 
-                "        return names;\n" + 
-                "    }\n" + 
-                "    public List<Child> children() {\n" + 
+                "    public Map<String, Child> children() {\n" + 
                 "        return children;\n" + 
                 "    }\n" + 
-                "    public Parent withNames(List<String> names) {\n" + 
-                "        return postReConstruct(new Parent(names, children));\n" + 
+                "    public Parent withChildren(Map<String, Child> children) {\n" + 
+                "        return postReConstruct(new Parent(children));\n" + 
                 "    }\n" + 
-                "    public Parent withNames(Supplier<List<String>> names) {\n" + 
-                "        return postReConstruct(new Parent(names.get(), children));\n" + 
+                "    public Parent withChildren(Supplier<Map<String, Child>> children) {\n" + 
+                "        return postReConstruct(new Parent(children.get()));\n" + 
                 "    }\n" + 
-                "    public Parent withNames(Function<List<String>, List<String>> names) {\n" + 
-                "        return postReConstruct(new Parent(names.apply(this.names), children));\n" + 
+                "    public Parent withChildren(Function<Map<String, Child>, Map<String, Child>> children) {\n" + 
+                "        return postReConstruct(new Parent(children.apply(this.children)));\n" + 
                 "    }\n" + 
-                "    public Parent withNames(BiFunction<Parent, List<String>, List<String>> names) {\n" + 
-                "        return postReConstruct(new Parent(names.apply(this, this.names), children));\n" + 
-                "    }\n" + 
-                "    public Parent withChildren(List<Child> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children));\n" + 
-                "    }\n" + 
-                "    public Parent withChildren(Supplier<List<Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children.get()));\n" + 
-                "    }\n" + 
-                "    public Parent withChildren(Function<List<Child>, List<Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children.apply(this.children)));\n" + 
-                "    }\n" + 
-                "    public Parent withChildren(BiFunction<Parent, List<Child>, List<Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children.apply(this, this.children)));\n" + 
+                "    public Parent withChildren(BiFunction<Parent, Map<String, Child>, Map<String, Child>> children) {\n" + 
+                "        return postReConstruct(new Parent(children.apply(this, this.children)));\n" + 
                 "    }\n" + 
                 "    private static Parent postReConstruct(Parent object) {\n" + 
                 "        if (object instanceof IPostReConstruct)\n" + 
@@ -112,8 +92,7 @@ public class GenerateParentListChildTest {
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
-                "        public final ListLens<HOST, String, StringLens<HOST>> names = createSubListLens(Parent::names, Parent::withNames, spec->()->spec);\n" + 
-                "        public final ListLens<HOST, Child, ChildLens<HOST>> children = createSubListLens(Parent::children, Parent::withChildren, ChildLens::new);\n" + 
+                "        public final MapLens<HOST, String, Child, StringLens<HOST>, ChildLens<HOST>> children = createSubMapLens(Parent::children, Parent::withChildren, spec->()->spec, ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 
                 "            super(spec);\n" + 

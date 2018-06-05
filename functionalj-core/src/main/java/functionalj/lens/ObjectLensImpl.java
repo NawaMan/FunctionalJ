@@ -86,7 +86,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
     }
         
     protected <KEY, VALUE, KEYLENS extends Lens<HOST,KEY>, VALUELENS extends Lens<HOST,VALUE>>
-        MapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> of(
+        MapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> createSubMapLens(
                 Function<DATA,  Map<KEY, VALUE>>           readSub,
                 WriteLens<DATA, Map<KEY, VALUE>>           writeSub,
                 Function<LensSpec<HOST, KEY>,   KEYLENS>   keyLensCreator,

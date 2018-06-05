@@ -48,7 +48,6 @@ public class ReadOnlyList<DATA> implements List<DATA> {
 
     @Override
     public final Iterator<DATA> iterator() {
-        // TODO - Block remove().
         return data.iterator();
     }
 
@@ -136,19 +135,16 @@ public class ReadOnlyList<DATA> implements List<DATA> {
 
     @Override
     public final ListIterator<DATA> listIterator() {
-        // TODO - Block remove set add.
         return data.listIterator();
     }
 
     @Override
     public final ListIterator<DATA> listIterator(int index) {
-        // TODO - Block remove set add.
         return data.listIterator(index);
     }
 
     @Override
     public final List<DATA> subList(int fromIndex, int toIndex) {
-        // TODO - Make it also ReadOnlyList
         return data.subList(fromIndex, toIndex);
     }
     

@@ -59,6 +59,8 @@ public class Type implements IRequireTypes {
     public static final Type STRING = Type.of(String .class);
     /** List type */
     public static final Type LIST = Type.of(List.class);
+    /** Map type */
+    public static final Type MAP = Type.of(Map.class);
     /** Nullable type */
     public static final Type NULLABLE = Core.Nullable.type();
     /** Optional type */
@@ -75,6 +77,7 @@ public class Type implements IRequireTypes {
         lensTypes.put(BOOLEAN,  Core.BooleanLens .type());
         lensTypes.put(STRING,   Core.StringLens  .type());
         lensTypes.put(LIST,     Core.ListLens    .type());
+        lensTypes.put(MAP,      Core.MapLens     .type());
         lensTypes.put(NULLABLE, Core.NullableLens.type());
         lensTypes.put(OPTIONAL, Core.OptionalLens.type());
         lensTypes.put(MAYBE,    Core.MayBeLens   .type());
@@ -298,6 +301,15 @@ public class Type implements IRequireTypes {
      */
     public boolean isList() {
         return this.fullName("").equals("java.util.List");
+    }
+    
+    /**
+     * Check if this type is a map type.
+     * 
+     * @return {@code true} if this type is a map.
+     */
+    public boolean isMap() {
+        return this.fullName("").equals("java.util.Map");
     }
     
     /**
