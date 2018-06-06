@@ -5,20 +5,21 @@
 + NullableLens
 + OptionalAccess and OptionalLens
 + Make Nullable and Optional lens transparents (don't see it as object)
-- Annotate the getter to be null sensitive (Null unsafe)
+/ Annotate the getter to be null sensitive (Null unsafe) -- no-need.
 + Generator for list
-- Generator for map
-- Generator for MayBe
-- Generator for Nullable
-- Generator for Optional
++ Generator for map
++ Generator for MayBe
++ Generator for Nullable
++ Generator for Optional
 - Date, LocalDate, LocalTime
+- withList should have arvs
 
 + Tuples
 + Tuples to function params
 
 - Failable
 - Pipe
-- FList
++ FunctionalList
 - FMap
 - Promise
 - Prism -> Multiple Promise combine to one.

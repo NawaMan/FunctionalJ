@@ -17,6 +17,8 @@ package functionalj.annotations.processor.generator;
 
 import static java.util.Arrays.asList;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,13 +48,25 @@ import lombok.experimental.Wither;
 public class Type implements IRequireTypes {
     
     /** int type */
-    public static final Type INT = new Type("int",     "");
+    public static final Type INT = new Type("int", "");
+    /** long type */
+    public static final Type LNG = new Type("long", "");
+    /** double type */
+    public static final Type DBL = new Type("double", "");
     /** boolean type */
     public static final Type BOOL = new Type("boolean", "");
     /** string type */
     public static final Type STR = new Type("String", "");
     /** Integer type */
     public static final Type INTEGER = Type.of(Integer.class);
+    /** Long type */
+    public static final Type LONG = Type.of(Long.class);
+    /** Double type */
+    public static final Type DOUBLE = Type.of(Double.class);
+    /** BigInteger type */
+    public static final Type BIGINTEGER = Type.of(BigInteger.class);
+    /** BigDecimal type */
+    public static final Type BIGDECIMAL = Type.of(BigDecimal.class);
     /** Boolean type */
     public static final Type BOOLEAN = Type.of(Boolean.class);
     /** String type */
@@ -70,17 +84,23 @@ public class Type implements IRequireTypes {
     
     private static final Map<Type, Type> lensTypes = new HashMap<>();
     static {
-        lensTypes.put(INT,      Core.IntegerLens .type());
-        lensTypes.put(BOOL,     Core.BooleanLens .type());
-        lensTypes.put(STR,      Core.StringLens  .type());
-        lensTypes.put(INTEGER,  Core.IntegerLens .type());
-        lensTypes.put(BOOLEAN,  Core.BooleanLens .type());
-        lensTypes.put(STRING,   Core.StringLens  .type());
-        lensTypes.put(LIST,     Core.ListLens    .type());
-        lensTypes.put(MAP,      Core.MapLens     .type());
-        lensTypes.put(NULLABLE, Core.NullableLens.type());
-        lensTypes.put(OPTIONAL, Core.OptionalLens.type());
-        lensTypes.put(MAYBE,    Core.MayBeLens   .type());
+        lensTypes.put(INT,        Core.IntegerLens   .type());
+        lensTypes.put(LNG,        Core.LongLens      .type());
+        lensTypes.put(DBL,        Core.DoubleLens    .type());
+        lensTypes.put(BOOL,       Core.BooleanLens   .type());
+        lensTypes.put(STR,        Core.StringLens    .type());
+        lensTypes.put(INTEGER,    Core.IntegerLens   .type());
+        lensTypes.put(LONG,       Core.LongLens      .type());
+        lensTypes.put(DOUBLE,     Core.DoubleLens    .type());
+        lensTypes.put(BIGINTEGER, Core.BigIntegerLens.type());
+        lensTypes.put(BIGDECIMAL, Core.BigDecimalLens.type());
+        lensTypes.put(BOOLEAN,    Core.BooleanLens   .type());
+        lensTypes.put(STRING,     Core.StringLens    .type());
+        lensTypes.put(LIST,       Core.ListLens      .type());
+        lensTypes.put(MAP,        Core.MapLens       .type());
+        lensTypes.put(NULLABLE,   Core.NullableLens  .type());
+        lensTypes.put(OPTIONAL,   Core.OptionalLens  .type());
+        lensTypes.put(MAYBE,      Core.MayBeLens     .type());
     }
     
     /**

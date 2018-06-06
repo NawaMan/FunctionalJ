@@ -41,14 +41,18 @@ import functionalj.annotations.processor.generator.Type;
 @SuppressWarnings("javadoc")
 public enum Core {
     
-    IntegerLens ("IntegerLens"),
-    BooleanLens ("BooleanLens"),
-    StringLens  ("StringLens"),
-    ListLens    ("ListLens"),
-    MapLens     ("MapLens"),
-    NullableLens("NullableLens"),
-    OptionalLens("OptionalLens"),
-    MayBeLens   ("MayBeLens"),
+    IntegerLens   ("IntegerLens"),
+    LongLens      ("LongLens"),
+    DoubleLens    ("DoubleLens"),
+    BigIntegerLens("BigIntegerLens"),
+    BigDecimalLens("BigDecimalLens"),
+    BooleanLens   ("BooleanLens"),
+    StringLens    ("StringLens"),
+    ListLens      ("ListLens"),
+    MapLens       ("MapLens"),
+    NullableLens  ("NullableLens"),
+    OptionalLens  ("OptionalLens"),
+    MayBeLens     ("MayBeLens"),
     
     ObjectLensImpl("ObjectLensImpl"),
     LensSpec      ("LensSpec"),

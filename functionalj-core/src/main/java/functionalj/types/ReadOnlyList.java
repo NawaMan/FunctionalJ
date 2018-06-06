@@ -7,10 +7,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableList;
 
-public class ReadOnlyList<DATA> implements List<DATA> {
+public class ReadOnlyList<DATA> implements List<DATA>, Supplier<Stream<DATA>> {
     
     private final List<DATA> data;
     
@@ -30,7 +32,16 @@ public class ReadOnlyList<DATA> implements List<DATA> {
     }
     
     // TODO - Add with and append.
-
+    
+    public Stream<DATA> stream() {
+        return this.data.stream();
+    }
+    
+    @Override
+    public Stream<DATA> get() {
+        return stream();
+    }
+    
     @Override
     public final int size() {
         return data.size();
