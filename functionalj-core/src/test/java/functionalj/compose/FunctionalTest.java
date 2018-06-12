@@ -40,7 +40,7 @@ public class FunctionalTest {
     @Test
     public void testCompose() {
         Function<String, Integer> counts = compose(curry1(String::split, " "), Array::getLength);
-        System.out.println(counts.apply("One Two"));
+        assertEquals("2", counts.apply("One Two").toString());
     }
     
 }

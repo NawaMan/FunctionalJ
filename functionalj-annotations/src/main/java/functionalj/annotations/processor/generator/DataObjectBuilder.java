@@ -174,7 +174,7 @@ public class DataObjectBuilder {
     private String initGetterField(Getter getter) {
         if (getter.getType().isList()) {
             val getterName = getter.getName();
-            return String.format("this.%1$s = ReadOnlyList.of(%1$s);", getterName);
+            return String.format("this.%1$s = ImmutableList.of(%1$s);", getterName);
         } else if (getter.getType().isMap()) {
             val getterName = getter.getName();
             return String.format("this.%1$s = ReadOnlyMap.of(%1$s);", getterName);

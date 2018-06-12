@@ -1,13 +1,12 @@
 package functionalj.compose;
 
 import static functionalj.compose.Functional.compose;
-import static functionalj.compose.Functional.curry;
 import static functionalj.compose.Functional.curry1;
 import static functionalj.compose.Functional.curry2;
 import static functionalj.compose.Promise.promiseThenDo;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.junit.Assert.assertEquals;
 
-import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -28,7 +27,7 @@ public class PromiseTest {
             sleep();
             return "Hello world!";
         }).handle((str, e)->{
-            System.out.println(str);
+            assertEquals("Hello world!", str);
             done();
             return null;
         });
@@ -42,7 +41,6 @@ public class PromiseTest {
             return "Hello world!";
         });
         Functional.pmap(helloWorld, curry2(String::concat, "It say: "));
-        System.out.println("Done?");
     }
     
     @Test
@@ -51,32 +49,14 @@ public class PromiseTest {
                 promiseFrom(),
                 promiseMap(curry2(String::concat, "It say: ")),
                 promiseThenDo(s->{
-                    System.out.println("S: " + s);
+                    assertEquals("S: It say: Hello world!", "S: " + s);
                     done();
                 }));
         
-//        logPromise.apply(askUser("Printing the file passed in:"));
         logPromise.apply(()->{
             sleep();
             return "Hello world!";
         });
-        System.out.println("Done?");
-    }
-
-    private Function<String, String> askUser() {
-        return message -> {
-            try (Scanner sc = new Scanner(System.in)) {
-                System.out.println(message);
-                if (sc.hasNextLine()) {
-                    done();
-                    return sc.nextLine();
-                }
-                return null;
-            }
-        };
-    }
-    private Supplier<String> askUser(String message) {
-        return curry(askUser(), message);
     }
 
     private <TYPE, RESULT> Function<Promise<TYPE>, Promise<RESULT>> promiseMap(Function<TYPE, RESULT> mapper) {

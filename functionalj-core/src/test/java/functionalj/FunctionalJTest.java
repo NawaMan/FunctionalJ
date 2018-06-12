@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -38,9 +39,11 @@ public class FunctionalJTest {
         
         val persons = asList(new Person("John"), new Person("Jack"), new Person("Jim"));
         val startsWithTerm = (BiPredicate<String, String>)String::startsWith;
-        persons.stream()
-        .filter(only(Person::getName, startsWithTerm, "Jo"))
-        .forEach(System.out::println);
+        assertEquals("[Person(name=John)]", 
+                persons.stream()
+                .filter(only(Person::getName, startsWithTerm, "Jo"))
+                .collect(toList())
+                .toString());
     }
     
     @Value

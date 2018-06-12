@@ -101,7 +101,7 @@ public class GenDataObject implements ILines {
                 .collect(toList());
         
         val thisPackage   = (String)dataClass.type().packageName();
-        val thisEnclose   = (String)dataClass.type().encloseName();
+//        val thisEnclose   = (String)dataClass.type().encloseName();
         val thisClassName = (String)dataClass.type().simpleName();
         val lensClass     = (String)dataClass.type().lensType().fullName(thisPackage);
         val superClass    = (String)dataClass.getSourcePackageName() + "." + dataClass.getSourceClassName();

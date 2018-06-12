@@ -52,7 +52,7 @@ public class GenerateParentListChildTest {
                 "import functionalj.lens.ListLens;\n" + 
                 "import functionalj.lens.ObjectLensImpl;\n" + 
                 "import functionalj.lens.StringLens;\n" + 
-                "import functionalj.types.ReadOnlyList;\n" + 
+                "import functionalj.types.ImmutableList;\n" + 
                 "import java.util.List;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
@@ -70,8 +70,8 @@ public class GenerateParentListChildTest {
                 "        this(null, null);\n" + 
                 "    }\n" + 
                 "    public Parent(List<String> names, List<Child> children) {\n" + 
-                "        this.names = ReadOnlyList.of(names);\n" + 
-                "        this.children = ReadOnlyList.of(children);\n" + 
+                "        this.names = ImmutableList.of(names);\n" + 
+                "        this.children = ImmutableList.of(children);\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public List<String> names() {\n" + 
