@@ -1,34 +1,54 @@
 package functionalj.types;
 
-import static java.util.stream.Stream.concat;
-
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Spliterator;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import lombok.val;
 
 public interface IList<DATA, SELF extends IList<DATA, SELF>> extends List<DATA>, ICanStream<DATA, SELF> {
+
+    public static <T> IList<T, ?> empty() {
+        return ImmutableList.empty();
+    }
     
-    @Override
-    public <TARGET, TARGET_SELF extends ICanStream<TARGET, TARGET_SELF>> 
-            TARGET_SELF stream(Function<Stream<DATA>, Stream<TARGET>> action);
+    public static <T> IList<T, ?> of(Collection<T> data) {
+        return ImmutableList.of(data);
+    }
+    
+    public static <T> IList<T, ?> of(T ... data) {
+        return ImmutableList.of(data);
+    }
+    
+    public static <T> IList<T, ?> of(ICanStream<T, ?> icanStream) {
+        return ImmutableList.of(icanStream);
+    }
+    
+    public static <T> IList<T, ?> of(FunctionalList<T> functionalList) {
+        return ImmutableList.of(functionalList);
+    }
+    
+    public static <T> IList<T, ?> of(IList<T, ?> iList) {
+        return ImmutableList.of(iList);
+    }
+    
+    public static <T> IList<T, ?> listOf(T ... data) {
+        return ImmutableList.of(data);
+    }
     
     
     @Override
     public Stream<DATA> stream();
     
-    public ImmutableList<DATA> toImmutableList();
+    public default ImmutableList<DATA> toImmutableList() {
+        return ImmutableList.of(this);
+    }
     
     
     @Override
@@ -43,15 +63,15 @@ public interface IList<DATA, SELF extends IList<DATA, SELF>> extends List<DATA>,
     }
 
     public default boolean isEmpty() {
-        return Helper.hasFirst(stream());
+        return Helper.hasAt(stream(), 0);
     }
 
     public default boolean contains(Object o) {
-        return Helper.hasFirst(stream().filter(each -> Objects.equals(each, o)));
+        return Helper.hasAt(stream().filter(each -> Objects.equals(each, o)), 0);
     }
     
     public default boolean contains(Predicate<DATA> predicate) {
-        return Helper.hasFirst(stream().filter(predicate));
+        return Helper.hasAt(stream().filter(predicate), 0);
     }
     
     public default boolean containsAll(Collection<?> c) {
@@ -66,7 +86,14 @@ public interface IList<DATA, SELF extends IList<DATA, SELF>> extends List<DATA>,
 
     public <T> T[] toArray(T[] a);
     
-    public DATA get(int index);
+    public default DATA get(int index) {
+        val ref   = new AtomicReference<DATA>();
+        val found = ICanStream.Helper.hasAt(this.stream(), index, ref);
+        if (!found)
+            throw new IndexOutOfBoundsException("" + index);
+        
+        return ref.get();
+    }
     
     public int indexOf(Object o) ;
 
@@ -82,110 +109,6 @@ public interface IList<DATA, SELF extends IList<DATA, SELF>> extends List<DATA>,
     @Override
     public default Spliterator<DATA> spliterator() {
         return ICanStream.super.spliterator();
-    }
-    
-    public default DATA first() {
-        val valueRef = new AtomicReference<DATA>();
-        if (!Helper.hasFirst(stream(), valueRef)) {
-            throw new IndexOutOfBoundsException("1");
-        }
-        
-        return valueRef.get();
-    }
-    
-    public default SELF rest() {
-        return stream(stream -> stream.skip(1));
-    }
-    
-    //== Modified methods ==
-    
-    public default SELF with(int index, DATA value) {
-        if (index < 0)
-            throw new IndexOutOfBoundsException(index + "");
-        if (index >= size())
-            throw new IndexOutOfBoundsException(index + " vs " + size());
-        
-        val i = new AtomicInteger();
-        return stream(stream -> stream.map(each -> (i.getAndIncrement() == index) ? value : each));
-    }
-    
-    public default SELF insertAt(int index, DATA ... elements) {
-        if ((elements == null) || (elements.length == 0))
-            return (SELF)this;
-        
-        return streamFrom((Supplier<Stream<DATA>> iStream)->{
-            return (Stream<DATA>)concat(
-                    iStream.get().limit(index), concat(
-                    Stream.of(elements),
-                    iStream.get().skip(index + 1)));
-        });
-    }
-    
-    public default SELF insertAllAt(int index, Collection<? extends DATA> collection) {
-        if ((collection == null)
-          || collection.isEmpty())
-            return (SELF)this;
-        
-        return streamFrom((Supplier<Stream<DATA>> iStream)->{
-            return (Stream<DATA>)concat(
-                    iStream.get().limit(index), concat(
-                    collection.stream(),
-                    iStream.get().skip(index + 1)));
-        });
-    }
-    
-    public default SELF insertAllAt(int index, ICanStream<? extends DATA, ?> iCanStream) {
-        if (iCanStream == null)
-            return (SELF)this;
-        
-        return streamFrom((Supplier<Stream<DATA>> iStream)->{
-            return (Stream<DATA>)concat(
-                    iStream.get().limit(index), concat(
-                    iCanStream.stream(),
-                    iStream.get().skip(index + 1)));
-        });
-    }
-    
-    public default SELF excludeAt(int index) {
-        if (index < 0)
-            throw new IndexOutOfBoundsException("index: " + index);
-        
-        return streamFrom((Supplier<Stream<DATA>> iStream)->{
-            return concat(
-                    iStream.get().limit(index), 
-                    iStream.get().skip(index + 2));
-        });
-    }
-    
-    public default SELF excludeFrom(int fromIndexInclusive, int count) {
-        if (fromIndexInclusive < 0)
-            throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive);
-        if (count <= 0)
-            throw new IndexOutOfBoundsException("count: " + count);
-        
-        return streamFrom((Supplier<Stream<DATA>> iStream)->{
-            return concat(
-                    stream().limit(fromIndexInclusive), 
-                    stream().skip(fromIndexInclusive + count));
-        });
-    }
-    
-    public default SELF excludeBetween(int fromIndexInclusive, int toIndexExclusive) {
-        if (fromIndexInclusive < 0)
-            throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive);
-        if (toIndexExclusive < 0)
-            throw new IndexOutOfBoundsException("toIndexExclusive: " + toIndexExclusive);
-        if (fromIndexInclusive > toIndexExclusive)
-            throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive
-                                            + ", toIndexExclusive: " + toIndexExclusive);
-        if (fromIndexInclusive == toIndexExclusive)
-            return (SELF)this;
-        
-        return streamFrom((Supplier<Stream<DATA>> iStream)->{
-            return concat(
-                    stream().limit(fromIndexInclusive), 
-                    stream().skip(toIndexExclusive + 1));
-        });
     }
     
     //== Mutable methods are not supported.

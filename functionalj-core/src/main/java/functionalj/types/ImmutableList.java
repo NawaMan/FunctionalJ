@@ -29,7 +29,7 @@ import static java.util.Collections.unmodifiableList;
 
 import lombok.val;
 
-public class ImmutableList<DATA> extends FunctionalList<DATA> {
+public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     
     private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();
     
@@ -56,6 +56,24 @@ public class ImmutableList<DATA> extends FunctionalList<DATA> {
             return ImmutableList.empty();
         
         return new ImmutableList<T>(icanStream.toList());
+    }
+    
+    public static <T> ImmutableList<T> of(FunctionalList<T> functionalList) {
+        if (functionalList instanceof ImmutableList)
+            return (ImmutableList<T>)functionalList;
+        if (functionalList == null)
+            return ImmutableList.empty();
+        
+        return new ImmutableList<T>(functionalList.toList());
+    }
+    
+    public static <T> ImmutableList<T> of(IList<T, ?> iList) {
+        if (iList instanceof ImmutableList)
+            return (ImmutableList<T>)iList;
+        if (iList == null)
+            return ImmutableList.empty();
+        
+        return new ImmutableList<T>(iList.toList());
     }
     
     public static <T> ImmutableList<T> listOf(T ... data) {

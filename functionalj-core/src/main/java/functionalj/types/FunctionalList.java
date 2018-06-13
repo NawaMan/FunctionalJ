@@ -1,11 +1,15 @@
 package functionalj.types;
 
-import java.util.ListIterator;
+import java.util.Iterator;
+import java.util.Spliterator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public abstract class FunctionalList<DATA> implements IList<DATA, FunctionalList<DATA>> {
+public abstract class FunctionalList<DATA> 
+                    implements 
+                        IList<DATA, FunctionalList<DATA>>, 
+                        IFunctionalList<DATA,FunctionalList<DATA>> {
 
     @Override
     public abstract FunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier);
@@ -18,21 +22,27 @@ public abstract class FunctionalList<DATA> implements IList<DATA, FunctionalList
     public abstract Stream<DATA> stream();
 
     @Override
-    public abstract <T> T[] toArray(T[] a);
+    public ImmutableList<DATA> toImmutableList() {
+        return ImmutableList.of(this);
+    }
+    
+    @Override
+    public Iterator<DATA> iterator() {
+        return stream().iterator();
+    }
+    
+    @Override
+    public Spliterator<DATA> spliterator() {
+        return stream().spliterator();
+    }
+
+    @Override
+    public int size() {
+        return (int)stream().count();
+    }
 
     @Override
     public abstract DATA get(int index);
-
-    @Override
-    public abstract int indexOf(Object o);
-
-    @Override
-    public abstract int lastIndexOf(Object o);
-
-    @Override
-    public abstract ListIterator<DATA> listIterator();
-
-    @Override
-    public abstract ListIterator<DATA> listIterator(int index);
+    
     
 }

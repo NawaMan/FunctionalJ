@@ -44,32 +44,6 @@ public interface ICanStream<DATA, SELF extends ICanStream<DATA, SELF>> extends I
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
     
-    // Streamable, Supllier<Stream>
-    public default SELF append(DATA ... values) {
-        return stream(stream -> Stream.concat(stream, Stream.of(values)));
-    }
-
-    public default SELF appendAll(Collection<? extends DATA> c) {
-        if ((c == null) || c.isEmpty())
-            return (SELF)this;
-        
-        return stream(stream -> Stream.concat(stream, c.stream()));
-    }
-
-    public default SELF appendAll(ICanStream<? extends DATA, ?> c) {
-        if (c == null)
-            return (SELF)this;
-        
-        return stream(stream -> Stream.concat(stream, c.stream()));
-    }
-    
-    public default SELF appendAll(Supplier<Stream<? extends DATA>> s) {
-        if (s == null)
-            return (SELF)this;
-        
-        return stream(stream -> Stream.concat(stream, s.get()));
-    }
-    
     public default SELF filter(Predicate<? super DATA> predicate) {
         if (predicate == null)
             return (SELF)this;
@@ -222,27 +196,29 @@ public interface ICanStream<DATA, SELF extends ICanStream<DATA, SELF>> extends I
     }
     
     public static class Helper {
-    
-        public static <T> boolean hasFirst(Stream<T> stream) {
-            return hasFirst(stream, null);
+
+        private static final Object dummy = new Object();
+        
+        public static <T> boolean hasAt(Stream<T> stream, long index) {
+            return hasAt(stream, index, null);
         }
     
-        public static <T> boolean hasFirst(Stream<T> stream, AtomicReference<T> resultValue) {
+        public static <T> boolean hasAt(Stream<T> stream, long index, AtomicReference<T> resultValue) {
             // Note: It is done this way to avoid interpreting 'null' as no-value
             
-            val dummy = new Object();
             val ref = new AtomicReference<Object>(dummy);
             stream
-            .peek(value -> ref.set(value))
-            .findFirst()
-            .orElse(null);
+                .skip(index)
+                .peek(value -> ref.set(value))
+                .findFirst()
+                .orElse(null);
             
             @SuppressWarnings("unchecked")
             val value = (T)ref.get();
             val found = (dummy != value);
             
-            if (found && (resultValue != null)) {
-                resultValue.set(value);
+            if (resultValue != null) {
+                resultValue.set(found ? value : null);
             }
             
             return found;

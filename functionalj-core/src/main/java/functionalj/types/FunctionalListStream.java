@@ -14,8 +14,9 @@ import static java.util.stream.Collectors.joining;
 
 import lombok.val;
 
-// TODO - create unit tests to make sure all IList types behave consistently.
-public class FunctionalListStream<SOURCE, DATA> extends FunctionalList<DATA> {
+// TODO - create unit tests to make sure all IList, IFunctionalList types behave consistently.
+public class FunctionalListStream<SOURCE, DATA> 
+                extends FunctionalList<DATA> {
     
     private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();
     
@@ -23,11 +24,23 @@ public class FunctionalListStream<SOURCE, DATA> extends FunctionalList<DATA> {
     private final Function<Stream<SOURCE>, Stream<DATA>> action;
     private volatile List<DATA> target = null;
     
-    FunctionalListStream(Supplier<Stream<SOURCE>> streamSupplier, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FunctionalListStream(Collection<SOURCE> collection, Function<Stream<SOURCE>, Stream<DATA>> action) {
+        this.action = Objects.requireNonNull(action);
+        this.source = collection;
+    }
+    public FunctionalListStream(Supplier<Stream<SOURCE>> streamSupplier, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streamSupplier;
     }
-    FunctionalListStream(IList<SOURCE, ?> iList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FunctionalListStream(ICanStream<SOURCE, ?> iCanStream, Function<Stream<SOURCE>, Stream<DATA>> action) {
+        this.action = Objects.requireNonNull(action);
+        this.source = iCanStream;
+    }
+    public FunctionalListStream(IList<SOURCE, ?> iList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+        this.action = Objects.requireNonNull(action);
+        this.source = iList;
+    }
+    public FunctionalListStream(FunctionalList<SOURCE> iList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = iList;
     }
