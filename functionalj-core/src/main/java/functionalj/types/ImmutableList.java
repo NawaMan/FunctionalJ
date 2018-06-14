@@ -29,7 +29,7 @@ import static java.util.Collections.unmodifiableList;
 
 import lombok.val;
 
-public final class ImmutableList<DATA> extends FunctionalList<DATA> {
+public final class ImmutableList<DATA> extends AbstractFunctionalList<DATA> {
     
     private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();
     
@@ -39,26 +39,30 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     public static final <T> ImmutableList<T> empty() {
         return (ImmutableList<T>)EMPTY;
     }
-    
     public static <T> ImmutableList<T> of(Collection<T> data) {
         return new ImmutableList<T>(data);
     }
-    
     public static <T> ImmutableList<T> of(T ... data) {
         return new ImmutableList<>(Arrays.asList(data));
     }
-    
     @SuppressWarnings("unchecked")
-    public static <T> ImmutableList<T> of(ICanStream<T, ?> icanStream) {
-        if (icanStream instanceof ImmutableList)
-            return (ImmutableList<T>)icanStream;
-        if (icanStream == null)
+    public static <T> ImmutableList<T> of(Streamable<T, ?> streamable) {
+        if (streamable instanceof ImmutableList)
+            return (ImmutableList<T>)streamable;
+        if (streamable == null)
             return ImmutableList.empty();
         
-        return new ImmutableList<T>(icanStream.toList());
+        return new ImmutableList<T>(streamable.toList());
     }
-    
-    public static <T> ImmutableList<T> of(FunctionalList<T> functionalList) {
+    public static <T> ImmutableList<T> of(ReadOnlyList<T, ?> readOnlyList) {
+        if (readOnlyList instanceof ImmutableList)
+            return (ImmutableList<T>)readOnlyList;
+        if (readOnlyList == null)
+            return ImmutableList.empty();
+        
+        return new ImmutableList<T>(readOnlyList.toList());
+    }
+    public static <T> ImmutableList<T> of(FunctionalList<T, ?> functionalList) {
         if (functionalList instanceof ImmutableList)
             return (ImmutableList<T>)functionalList;
         if (functionalList == null)
@@ -66,16 +70,14 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         
         return new ImmutableList<T>(functionalList.toList());
     }
-    
-    public static <T> ImmutableList<T> of(IList<T, ?> iList) {
-        if (iList instanceof ImmutableList)
-            return (ImmutableList<T>)iList;
-        if (iList == null)
+    public static <T> ImmutableList<T> of(AbstractFunctionalList<T> functionalList) {
+        if (functionalList instanceof ImmutableList)
+            return (ImmutableList<T>)functionalList;
+        if (functionalList == null)
             return ImmutableList.empty();
         
-        return new ImmutableList<T>(iList.toList());
+        return new ImmutableList<T>(functionalList.toList());
     }
-    
     public static <T> ImmutableList<T> listOf(T ... data) {
         return new ImmutableList<T>(Arrays.asList(data));
     }
@@ -95,7 +97,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     }
     
     @Override
-    public FunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier) {
+    public AbstractFunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier) {
         return new FunctionalListStream<DATA, DATA>((Supplier<Stream<DATA>>) ()->{
                     return supplier.apply(()->{
                         return (Stream<DATA>)ImmutableList.this.stream();
@@ -106,7 +108,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <TARGET, TARGET_SELF extends ICanStream<TARGET, TARGET_SELF>> TARGET_SELF stream(
+    public <TARGET, TARGET_SELF extends Streamable<TARGET, TARGET_SELF>> TARGET_SELF stream(
             Function<Stream<DATA>, Stream<TARGET>> action) {
         return (TARGET_SELF)new FunctionalListStream<DATA, TARGET>(this, action);
     }
@@ -118,7 +120,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     
     @SuppressWarnings("unchecked")
     @Override
-    public FunctionalList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
+    public AbstractFunctionalList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
         if (fromIndexInclusive < 0)
             throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive);
         if (toIndexExclusive < 0)
@@ -126,7 +128,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         if (fromIndexInclusive > toIndexExclusive)
             throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive + ", toIndexExclusive: " + toIndexExclusive);
         if (fromIndexInclusive == toIndexExclusive)
-            return (FunctionalList<DATA>)ImmutableList.empty();
+            return (AbstractFunctionalList<DATA>)ImmutableList.empty();
         if ((fromIndexInclusive == 0) && (toIndexExclusive == data.size()))
             return this;
         

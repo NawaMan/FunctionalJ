@@ -22,11 +22,11 @@ import java.util.stream.Stream;
 
 import lombok.val;
 
-public interface ICanStream<DATA, SELF extends ICanStream<DATA, SELF>> extends Iterable<DATA> {
+public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends Iterable<DATA> {
     
     public Stream<DATA> stream();
     
-    public <TARGET, TARGET_SELF extends ICanStream<TARGET, TARGET_SELF>> 
+    public <TARGET, TARGET_SELF extends Streamable<TARGET, TARGET_SELF>> 
             TARGET_SELF stream(Function<Stream<DATA>, Stream<TARGET>> action);
     
     public SELF streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier);
@@ -77,11 +77,11 @@ public interface ICanStream<DATA, SELF extends ICanStream<DATA, SELF>> extends I
         return stream(stream -> stream.filter(data -> !collection.contains(data)));
     }
     
-    public default <TARGET, TARGET_SELF extends ICanStream<TARGET, TARGET_SELF>> TARGET_SELF map(Function<? super DATA, ? extends TARGET> mapper) {
+    public default <TARGET, TARGET_SELF extends Streamable<TARGET, TARGET_SELF>> TARGET_SELF map(Function<? super DATA, ? extends TARGET> mapper) {
         return stream(stream -> stream.map(mapper));
     }
 
-    public default <TARGET, TARGET_SELF extends ICanStream<TARGET, TARGET_SELF>> TARGET_SELF flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+    public default <TARGET, TARGET_SELF extends Streamable<TARGET, TARGET_SELF>> TARGET_SELF flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
         return stream(stream -> stream.flatMap(mapper));
     }
 

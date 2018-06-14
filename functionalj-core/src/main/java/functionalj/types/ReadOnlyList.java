@@ -12,34 +12,30 @@ import java.util.stream.Stream;
 
 import lombok.val;
 
-public interface IList<DATA, SELF extends IList<DATA, SELF>> extends List<DATA>, ICanStream<DATA, SELF> {
+public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>> 
+                    extends List<DATA>, Streamable<DATA, SELF> {
 
-    public static <T> IList<T, ?> empty() {
+    public static <T> ReadOnlyList<T, ?> empty() {
         return ImmutableList.empty();
     }
     
-    public static <T> IList<T, ?> of(Collection<T> data) {
+    public static <T> ReadOnlyList<T, ?> of(Collection<T> data) {
         return ImmutableList.of(data);
     }
-    
-    public static <T> IList<T, ?> of(T ... data) {
+    public static <T> ReadOnlyList<T, ?> of(T ... data) {
         return ImmutableList.of(data);
     }
-    
-    public static <T> IList<T, ?> of(ICanStream<T, ?> icanStream) {
-        return ImmutableList.of(icanStream);
+    public static <T> ReadOnlyList<T, ?> of(Streamable<T, ?> streamable) {
+        return ImmutableList.of(streamable);
     }
-    
-    public static <T> IList<T, ?> of(FunctionalList<T> functionalList) {
+    public static <T> ReadOnlyList<T, ?> of(ReadOnlyList<T, ?> readOnlyList) {
+        return ImmutableList.of(readOnlyList);
+    }
+    public static <T> ReadOnlyList<T, ?> of(FunctionalList<T, ?> functionalList) {
         return ImmutableList.of(functionalList);
     }
-    
-    public static <T> IList<T, ?> of(IList<T, ?> iList) {
-        return ImmutableList.of(iList);
-    }
-    
-    public static <T> IList<T, ?> listOf(T ... data) {
-        return ImmutableList.of(data);
+    public static <T> ReadOnlyList<T, ?> of(AbstractFunctionalList<T> functionalList) {
+        return ImmutableList.of(functionalList);
     }
     
     
@@ -88,7 +84,7 @@ public interface IList<DATA, SELF extends IList<DATA, SELF>> extends List<DATA>,
     
     public default DATA get(int index) {
         val ref   = new AtomicReference<DATA>();
-        val found = ICanStream.Helper.hasAt(this.stream(), index, ref);
+        val found = Streamable.Helper.hasAt(this.stream(), index, ref);
         if (!found)
             throw new IndexOutOfBoundsException("" + index);
         
@@ -108,7 +104,7 @@ public interface IList<DATA, SELF extends IList<DATA, SELF>> extends List<DATA>,
     
     @Override
     public default Spliterator<DATA> spliterator() {
-        return ICanStream.super.spliterator();
+        return Streamable.super.spliterator();
     }
     
     //== Mutable methods are not supported.

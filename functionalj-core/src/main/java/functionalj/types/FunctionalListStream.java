@@ -14,9 +14,9 @@ import static java.util.stream.Collectors.joining;
 
 import lombok.val;
 
-// TODO - create unit tests to make sure all IList, IFunctionalList types behave consistently.
+// TODO - create unit tests to make sure all ReadOnlyList, FunctionalList types behave consistently.
 public class FunctionalListStream<SOURCE, DATA> 
-                extends FunctionalList<DATA> {
+                extends AbstractFunctionalList<DATA> {
     
     private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();
     
@@ -32,17 +32,21 @@ public class FunctionalListStream<SOURCE, DATA>
         this.action = Objects.requireNonNull(action);
         this.source = streamSupplier;
     }
-    public FunctionalListStream(ICanStream<SOURCE, ?> iCanStream, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FunctionalListStream(Streamable<SOURCE, ?> streamable, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
-        this.source = iCanStream;
+        this.source = streamable;
     }
-    public FunctionalListStream(IList<SOURCE, ?> iList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FunctionalListStream(ReadOnlyList<SOURCE, ?> readOnlyList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
-        this.source = iList;
+        this.source = readOnlyList;
     }
-    public FunctionalListStream(FunctionalList<SOURCE> iList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FunctionalListStream(FunctionalList<SOURCE, ?> abstractFunctionalList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
-        this.source = iList;
+        this.source = abstractFunctionalList;
+    }
+    public FunctionalListStream(AbstractFunctionalList<SOURCE> abstractFunctionalList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+        this.action = Objects.requireNonNull(action);
+        this.source = abstractFunctionalList;
     }
     
     public final synchronized void materialize() {
@@ -60,15 +64,15 @@ public class FunctionalListStream<SOURCE, DATA>
             return Stream.empty();
         if (source instanceof Supplier)
             return (Stream<SOURCE>)((Supplier)source).get();
-        if (source instanceof ICanStream)
-            return (Stream<SOURCE>)((ICanStream)source).stream();
+        if (source instanceof Streamable)
+            return (Stream<SOURCE>)((Streamable)source).stream();
         if (source instanceof Collection)
             return ((Collection)source).stream();
         throw new IllegalStateException();
     }
     
     @Override
-    public FunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier) {
+    public AbstractFunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier) {
         return new FunctionalListStream<>(()->{
                     return supplier.apply(()->{
                         return FunctionalListStream.this.stream();
@@ -79,7 +83,7 @@ public class FunctionalListStream<SOURCE, DATA>
     
     @SuppressWarnings("unchecked")
     @Override
-    public <TARGET, TARGET_SELF extends ICanStream<TARGET, TARGET_SELF>> 
+    public <TARGET, TARGET_SELF extends Streamable<TARGET, TARGET_SELF>> 
             TARGET_SELF stream(Function<Stream<DATA>, Stream<TARGET>> action) {
         return (TARGET_SELF)new FunctionalListStream<DATA, TARGET>(this, action);
     }
@@ -95,7 +99,7 @@ public class FunctionalListStream<SOURCE, DATA>
     }
     
     @Override
-    public FunctionalList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
+    public AbstractFunctionalList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
         if (fromIndexInclusive < 0)
             throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive);
         if (toIndexExclusive < 0)
@@ -103,7 +107,7 @@ public class FunctionalListStream<SOURCE, DATA>
         if (fromIndexInclusive > toIndexExclusive)
             throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive + ", toIndexExclusive: " + toIndexExclusive);
         if (fromIndexInclusive == toIndexExclusive)
-            return (FunctionalList<DATA>)new ImmutableList<DATA>(Collections.emptyList());
+            return (AbstractFunctionalList<DATA>)new ImmutableList<DATA>(Collections.emptyList());
         
         materialize();
         if ((fromIndexInclusive == 0) && (toIndexExclusive == target.size()))

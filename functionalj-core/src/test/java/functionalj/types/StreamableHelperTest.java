@@ -12,23 +12,23 @@ import org.junit.Test;
 
 import lombok.val;
 
-public class ICanStreamHelperTest {
+public class StreamableHelperTest {
     
     @Test
     public void at() {
         val list     = Arrays.asList("One", "Two", "Three");
         val valueRef = new AtomicReference<String>();
         
-        assertTrue(ICanStream.Helper.hasAt(list.stream(), 0, valueRef));
+        assertTrue(Streamable.Helper.hasAt(list.stream(), 0, valueRef));
         assertEquals("One", valueRef.get());
         
-        assertTrue(ICanStream.Helper.hasAt(list.stream(), 1, valueRef));
+        assertTrue(Streamable.Helper.hasAt(list.stream(), 1, valueRef));
         assertEquals("Two", valueRef.get());
 
-        assertTrue(ICanStream.Helper.hasAt(list.stream(), 2, valueRef));
+        assertTrue(Streamable.Helper.hasAt(list.stream(), 2, valueRef));
         assertEquals("Three", valueRef.get());
         
-        assertFalse(ICanStream.Helper.hasAt(list.stream(), 3, valueRef));
+        assertFalse(Streamable.Helper.hasAt(list.stream(), 3, valueRef));
         assertEquals(null, valueRef.get());
     }
     
