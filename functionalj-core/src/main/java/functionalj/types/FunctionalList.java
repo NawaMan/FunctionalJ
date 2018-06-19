@@ -2,6 +2,7 @@ package functionalj.types;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -81,6 +82,10 @@ public abstract class FunctionalList<DATA>
     @Override
     public ImmutableList<DATA> toImmutableList() {
         return ImmutableList.of(this);
+    }
+    @Override
+    public List<DATA> toList() {
+        return this;
     }
     
     @Override

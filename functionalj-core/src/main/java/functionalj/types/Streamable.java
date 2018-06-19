@@ -58,6 +58,10 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
         return stream().collect(Collectors.toList());
     }
     
+    public default ImmutableList<DATA> toImmutableList() {
+        return ImmutableList.of(stream());
+    }
+    
     public default Iterator<DATA> iterator() {
         return stream().iterator();
     }

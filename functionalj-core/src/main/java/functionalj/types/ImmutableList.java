@@ -132,7 +132,12 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         return stream(stream -> stream.skip(fromIndexInclusive).limit(toIndexExclusive - fromIndexInclusive));
     }
     
+    @Override
     public ImmutableList<DATA> toImmutableList() {
+        return this;
+    }
+    @Override
+    public List<DATA> toList() {
         return this;
     }
 

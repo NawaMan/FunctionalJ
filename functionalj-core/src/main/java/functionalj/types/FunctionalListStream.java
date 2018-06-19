@@ -114,9 +114,14 @@ public class FunctionalListStream<SOURCE, DATA>
         return __stream(stream -> stream.skip(fromIndexInclusive).limit(toIndexExclusive - fromIndexInclusive));
     }
     
+    @Override
     public ImmutableList<DATA> toImmutableList() {
         materialize();
         return new ImmutableList<DATA>(target);
+    }
+    @Override
+    public List<DATA> toList() {
+        return this;
     }
     
     @Override

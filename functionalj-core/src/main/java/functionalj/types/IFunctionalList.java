@@ -4,6 +4,7 @@ import static java.util.stream.Stream.concat;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,6 +45,7 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
     @Override
     public Stream<DATA> stream();
 
+    @Override
     public default ImmutableList<DATA> toImmutableList() {
         return ImmutableList.of((Streamable<DATA, ?>)this);
     }

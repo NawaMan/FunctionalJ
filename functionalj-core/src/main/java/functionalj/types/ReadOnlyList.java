@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.val;
@@ -42,8 +43,13 @@ public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>>
     @Override
     public Stream<DATA> stream();
     
+    @Override
     public default ImmutableList<DATA> toImmutableList() {
         return ImmutableList.of(this);
+    }
+    @Override
+    public default List<DATA> toList() {
+        return this;
     }
     
     
