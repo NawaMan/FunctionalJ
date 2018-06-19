@@ -31,10 +31,10 @@ public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>>
     public static <T> ReadOnlyList<T, ?> of(ReadOnlyList<T, ?> readOnlyList) {
         return ImmutableList.of(readOnlyList);
     }
-    public static <T> ReadOnlyList<T, ?> of(FunctionalList<T, ?> functionalList) {
+    public static <T> ReadOnlyList<T, ?> of(IFunctionalList<T, ?> functionalList) {
         return ImmutableList.of(functionalList);
     }
-    public static <T> ReadOnlyList<T, ?> of(AbstractFunctionalList<T> functionalList) {
+    public static <T> ReadOnlyList<T, ?> of(FunctionalList<T> functionalList) {
         return ImmutableList.of(functionalList);
     }
     
@@ -106,6 +106,60 @@ public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>>
     public default Spliterator<DATA> spliterator() {
         return Streamable.super.spliterator();
     }
+    
+//    // TODO - Let's do this later.
+//    public default Map<Integer, DATA> asMap() {
+//        return new ReadOnlyMap<Integer, DATA>() {
+//
+//            @Override
+//            public int size() {
+//                return ReadOnlyList.this.size();
+//            }
+//
+//            @Override
+//            public Set<Integer> keySet() {
+//                // TODO Auto-generated method stub
+//                return null;
+//            }
+//
+//            @Override
+//            public Collection<DATA> values() {
+//                return ReadOnlyList.this;
+//            }
+//
+//            @Override
+//            public Set<Entry<Integer, DATA>> entrySet() {
+//                // TODO Auto-generated method stub
+//                return null;
+//            }
+//
+//            @Override
+//            public boolean containsKey(Object key) {
+//                if (!(key instanceof Integer))
+//                    return false;
+//                
+//                val index = ((Integer)key).intValue();
+//                if (index < 0)
+//                    return false;
+//                
+//                return index >= ReadOnlyList.this.size();
+//            }
+//
+//            @Override
+//            public boolean containsValue(Object value) {
+//                return ReadOnlyList.this.contains(value);
+//            }
+//
+//            @Override
+//            public DATA get(Object key) {
+//                if (!(key instanceof Integer))
+//                    return null;
+//                
+//                return ReadOnlyList.this.get(((Integer)key).intValue());
+//            }
+//            
+//        };
+//    }
     
     //== Mutable methods are not supported.
 

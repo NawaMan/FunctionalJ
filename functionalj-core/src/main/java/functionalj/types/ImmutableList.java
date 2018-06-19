@@ -23,13 +23,14 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableList;
 
 import lombok.val;
 
-public final class ImmutableList<DATA> extends AbstractFunctionalList<DATA> {
+public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     
     private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();
     
@@ -54,6 +55,9 @@ public final class ImmutableList<DATA> extends AbstractFunctionalList<DATA> {
         
         return new ImmutableList<T>(streamable.toList());
     }
+    public static <T> ImmutableList<T> of(Stream<T> stream) {
+        return new ImmutableList<T>(stream.collect(Collectors.toList()));
+    }
     public static <T> ImmutableList<T> of(ReadOnlyList<T, ?> readOnlyList) {
         if (readOnlyList instanceof ImmutableList)
             return (ImmutableList<T>)readOnlyList;
@@ -62,7 +66,7 @@ public final class ImmutableList<DATA> extends AbstractFunctionalList<DATA> {
         
         return new ImmutableList<T>(readOnlyList.toList());
     }
-    public static <T> ImmutableList<T> of(FunctionalList<T, ?> functionalList) {
+    public static <T> ImmutableList<T> of(IFunctionalList<T, ?> functionalList) {
         if (functionalList instanceof ImmutableList)
             return (ImmutableList<T>)functionalList;
         if (functionalList == null)
@@ -70,7 +74,7 @@ public final class ImmutableList<DATA> extends AbstractFunctionalList<DATA> {
         
         return new ImmutableList<T>(functionalList.toList());
     }
-    public static <T> ImmutableList<T> of(AbstractFunctionalList<T> functionalList) {
+    public static <T> ImmutableList<T> of(FunctionalList<T> functionalList) {
         if (functionalList instanceof ImmutableList)
             return (ImmutableList<T>)functionalList;
         if (functionalList == null)
@@ -97,20 +101,13 @@ public final class ImmutableList<DATA> extends AbstractFunctionalList<DATA> {
     }
     
     @Override
-    public AbstractFunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier) {
+    public FunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier) {
         return new FunctionalListStream<DATA, DATA>((Supplier<Stream<DATA>>) ()->{
                     return supplier.apply(()->{
                         return (Stream<DATA>)ImmutableList.this.stream();
                     });
                 },
                 noAction);
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <TARGET, TARGET_SELF extends Streamable<TARGET, TARGET_SELF>> TARGET_SELF stream(
-            Function<Stream<DATA>, Stream<TARGET>> action) {
-        return (TARGET_SELF)new FunctionalListStream<DATA, TARGET>(this, action);
     }
     
     @Override
@@ -120,7 +117,7 @@ public final class ImmutableList<DATA> extends AbstractFunctionalList<DATA> {
     
     @SuppressWarnings("unchecked")
     @Override
-    public AbstractFunctionalList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
+    public FunctionalList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
         if (fromIndexInclusive < 0)
             throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive);
         if (toIndexExclusive < 0)
@@ -128,7 +125,7 @@ public final class ImmutableList<DATA> extends AbstractFunctionalList<DATA> {
         if (fromIndexInclusive > toIndexExclusive)
             throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive + ", toIndexExclusive: " + toIndexExclusive);
         if (fromIndexInclusive == toIndexExclusive)
-            return (AbstractFunctionalList<DATA>)ImmutableList.empty();
+            return (FunctionalList<DATA>)ImmutableList.empty();
         if ((fromIndexInclusive == 0) && (toIndexExclusive == data.size()))
             return this;
         

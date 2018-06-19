@@ -26,10 +26,32 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
     
     public Stream<DATA> stream();
     
-    public <TARGET, TARGET_SELF extends Streamable<TARGET, TARGET_SELF>> 
-            TARGET_SELF stream(Function<Stream<DATA>, Stream<TARGET>> action);
-    
     public SELF streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier);
+    
+    
+    public <TARGET> Streamable<TARGET, ?> stream(Function<Stream<DATA>, Stream<TARGET>> action);
+    
+    public default <TARGET> Streamable<TARGET, ?> map(Function<? super DATA, ? extends TARGET> mapper) {
+        return stream(stream -> stream.map(mapper));
+    }
+    
+    public default <TARGET> Streamable<TARGET, ?> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+        return stream(stream -> stream.flatMap(mapper));
+    }
+    
+    public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> 
+            TARGET_SELF __stream(Function<Stream<DATA>, Stream<TARGET>> action);
+    
+    public default  <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> 
+            TARGET_SELF __map(Function<? super DATA, ? extends TARGET> mapper) {
+        return __stream(stream -> stream.map(mapper));
+    }
+    
+    public default <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> 
+            TARGET_SELF __flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+        return __stream(stream -> stream.flatMap(mapper));
+    }
+    
     
     
     public default List<DATA> toList() {
@@ -48,79 +70,77 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
         if (predicate == null)
             return (SELF)this;
         
-        return stream(stream -> stream.filter(predicate));
+        return __stream(stream -> stream.filter(predicate));
     }
     
     public default SELF exclude(Predicate<? super DATA> predicate) {
         if (predicate == null)
             return (SELF)this;
         
-        return stream(stream -> stream.filter(data -> !predicate.test(data)));
+        return __stream(stream -> stream.filter(data -> !predicate.test(data)));
     }
     
     public default SELF filter(DATA o) {
-        return stream(stream -> stream.filter(each -> Objects.equals(o, each)));
+        return __stream(stream -> stream.filter(each -> Objects.equals(o, each)));
     }
     
     public default SELF exclude(DATA o) {
-        return stream(stream -> stream.filter(each -> !Objects.equals(o, each)));
+        return __stream(stream -> stream.filter(each -> !Objects.equals(o, each)));
     }
     
     public default SELF filter(Collection<? super DATA> collection) {
         if (collection == null)
             return (SELF)this;
         
-        return stream(stream -> stream.filter(data -> !collection.contains(data)));
+        return __stream(stream -> stream.filter(data -> !collection.contains(data)));
     }
     
     public default SELF exclude(Collection<? super DATA> collection) {
-        return stream(stream -> stream.filter(data -> !collection.contains(data)));
+        return __stream(stream -> stream.filter(data -> !collection.contains(data)));
     }
     
-    public default <TARGET, TARGET_SELF extends Streamable<TARGET, TARGET_SELF>> TARGET_SELF map(Function<? super DATA, ? extends TARGET> mapper) {
-        return stream(stream -> stream.map(mapper));
+    public default SELF selectiveMap(Predicate<DATA> filter, Function<DATA, DATA> mapper) {
+        return __stream(stream -> stream.map(each -> {
+            return filter.test(each)
+                    ? mapper.apply(each)
+                    : each;
+        }));
     }
-
-    public default <TARGET, TARGET_SELF extends Streamable<TARGET, TARGET_SELF>> TARGET_SELF flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
-        return stream(stream -> stream.flatMap(mapper));
-    }
-
-//    // Selective map
     
     public default SELF distinct() {
-        return stream(stream -> stream.distinct());
+        return __stream(stream -> stream.distinct());
     }
     
     public default SELF sorted() {
-        return stream(stream -> stream.sorted());
+        return __stream(stream -> stream.sorted());
     }
     
     public default SELF sorted(Comparator<? super DATA> comparator) {
         if (comparator == null)
             return sorted();
         
-        return stream(stream -> stream.sorted(comparator));
+        return __stream(stream -> stream.sorted(comparator));
     }
     
     public default SELF peek(Consumer<? super DATA> action) {
         if (action == null)
             return (SELF)this;
         
-        return stream(stream -> stream.peek(action));
+        return __stream(stream -> stream.peek(action));
     }
     
     public default SELF limit(Long maxSize) {
         if ((maxSize == null) || (maxSize.longValue() < 0))
             return (SELF)this;
         
-        return stream(stream -> stream.limit(maxSize));
+        return __stream(stream -> stream.limit(maxSize));
     }
     
     public default SELF skip(Long startAt){
         if ((startAt == null) || (startAt.longValue() < 0))
             return (SELF)this;
         
-        return stream(stream -> stream.skip(startAt));
+        return __stream(stream -> stream.skip(startAt));
     }
     
     public default void forEach(Consumer<? super DATA> action) {

@@ -16,8 +16,8 @@ import lombok.val;
 
 // TODO - create unit tests to make sure all ReadOnlyList, FunctionalList types behave consistently.
 public class FunctionalListStream<SOURCE, DATA> 
-                extends AbstractFunctionalList<DATA> {
-    
+                extends FunctionalList<DATA> {
+
     private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();
     
     private final Object                                 source;
@@ -40,12 +40,17 @@ public class FunctionalListStream<SOURCE, DATA>
         this.action = Objects.requireNonNull(action);
         this.source = readOnlyList;
     }
-    public FunctionalListStream(FunctionalList<SOURCE, ?> abstractFunctionalList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FunctionalListStream(IFunctionalList<SOURCE, ?> abstractFunctionalList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = abstractFunctionalList;
     }
-    public FunctionalListStream(AbstractFunctionalList<SOURCE> abstractFunctionalList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FunctionalListStream(FunctionalList<SOURCE> abstractFunctionalList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
+        this.source = abstractFunctionalList;
+    }
+    @SuppressWarnings("unchecked")
+    public FunctionalListStream(FunctionalList<DATA> abstractFunctionalList) {
+        this.action = s -> (Stream<DATA>)s;
         this.source = abstractFunctionalList;
     }
     
@@ -72,20 +77,13 @@ public class FunctionalListStream<SOURCE, DATA>
     }
     
     @Override
-    public AbstractFunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier) {
+    public FunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier) {
         return new FunctionalListStream<>(()->{
                     return supplier.apply(()->{
                         return FunctionalListStream.this.stream();
                     });
                 },
                 noAction);
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <TARGET, TARGET_SELF extends Streamable<TARGET, TARGET_SELF>> 
-            TARGET_SELF stream(Function<Stream<DATA>, Stream<TARGET>> action) {
-        return (TARGET_SELF)new FunctionalListStream<DATA, TARGET>(this, action);
     }
     
     @Override
@@ -99,7 +97,7 @@ public class FunctionalListStream<SOURCE, DATA>
     }
     
     @Override
-    public AbstractFunctionalList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
+    public FunctionalList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
         if (fromIndexInclusive < 0)
             throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive);
         if (toIndexExclusive < 0)
@@ -107,13 +105,13 @@ public class FunctionalListStream<SOURCE, DATA>
         if (fromIndexInclusive > toIndexExclusive)
             throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive + ", toIndexExclusive: " + toIndexExclusive);
         if (fromIndexInclusive == toIndexExclusive)
-            return (AbstractFunctionalList<DATA>)new ImmutableList<DATA>(Collections.emptyList());
+            return (FunctionalList<DATA>)new ImmutableList<DATA>(Collections.emptyList());
         
         materialize();
         if ((fromIndexInclusive == 0) && (toIndexExclusive == target.size()))
             return this;
         
-        return stream(stream -> stream.skip(fromIndexInclusive).limit(toIndexExclusive - fromIndexInclusive));
+        return __stream(stream -> stream.skip(fromIndexInclusive).limit(toIndexExclusive - fromIndexInclusive));
     }
     
     public ImmutableList<DATA> toImmutableList() {
