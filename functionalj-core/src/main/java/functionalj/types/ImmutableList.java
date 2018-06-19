@@ -34,7 +34,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     
     private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();
     
-    private final static ImmutableList EMPTY = new ImmutableList<>(Collections.emptyList());
+    private final static ImmutableList<?> EMPTY = new ImmutableList<>(Collections.emptyList());
     
     @SuppressWarnings("unchecked")
     public static final <T> ImmutableList<T> empty() {
@@ -43,6 +43,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     public static <T> ImmutableList<T> of(Collection<T> data) {
         return new ImmutableList<T>(data);
     }
+    @SafeVarargs
     public static <T> ImmutableList<T> of(T ... data) {
         return new ImmutableList<>(Arrays.asList(data));
     }
@@ -58,6 +59,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     public static <T> ImmutableList<T> of(Stream<T> stream) {
         return new ImmutableList<T>(stream.collect(Collectors.toList()));
     }
+    @SuppressWarnings("unchecked")
     public static <T> ImmutableList<T> of(ReadOnlyList<T, ?> readOnlyList) {
         if (readOnlyList instanceof ImmutableList)
             return (ImmutableList<T>)readOnlyList;
@@ -66,6 +68,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         
         return new ImmutableList<T>(readOnlyList.toList());
     }
+    @SuppressWarnings("unchecked")
     public static <T> ImmutableList<T> of(IFunctionalList<T, ?> functionalList) {
         if (functionalList instanceof ImmutableList)
             return (ImmutableList<T>)functionalList;
@@ -195,5 +198,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     public int hashCode() {
         return this.data.hashCode();
     }
+    
+    
     
 }
