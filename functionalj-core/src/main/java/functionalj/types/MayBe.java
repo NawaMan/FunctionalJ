@@ -111,7 +111,7 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
      */
     public static <T> MayBe<T> from(Optional<T> optional) {
         return optional.isPresent()
-                ? new Just<T>(optional.get())
+                ? new Just<T>(optional.orElse(null))
                 : MayBe.nothing();
     }
     

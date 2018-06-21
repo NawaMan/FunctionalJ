@@ -27,5 +27,10 @@ public class ImmutableListTest {
                         .subList(3, 3)
                         .toString());
     }
+    @Test
+    public void testSorted() {
+        assertEquals("[1, 2, One, Two]", "" + ImmutableList.of("1", "One", "2", "Two").sorted());
+        assertEquals("[1, 2, One, Two]", "" + ImmutableList.of("2", "Two", "1", "One").sorted());
+    }
     
 }

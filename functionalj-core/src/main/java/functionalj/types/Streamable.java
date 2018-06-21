@@ -52,8 +52,6 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
         return __stream(stream -> stream.flatMap(mapper));
     }
     
-    
-    
     public default List<DATA> toList() {
         return stream().collect(Collectors.toList());
     }
@@ -88,6 +86,10 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
         return __stream(stream -> stream.filter(each -> Objects.equals(o, each)));
     }
     
+    public default SELF onlyNonNull() {
+        return __stream(stream -> stream.filter(Objects::nonNull));
+    }
+    
     public default SELF exclude(DATA o) {
         return __stream(stream -> stream.filter(each -> !Objects.equals(o, each)));
     }
@@ -103,7 +105,7 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
         return __stream(stream -> stream.filter(data -> !collection.contains(data)));
     }
     
-    public default SELF selectiveMap(Predicate<DATA> filter, Function<DATA, DATA> mapper) {
+    public default SELF selectiveMap(Predicate<? super DATA> filter, Function<DATA, DATA> mapper) {
         return __stream(stream -> stream.map(each -> {
             return filter.test(each)
                     ? mapper.apply(each)

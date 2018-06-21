@@ -1,88 +1,62 @@
 package functionalj.types;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
+import functionalj.annotations.Child;
 
-public class ReadOnlyMap<KEY, VALUE> implements Map<KEY, VALUE> {
+public interface ReadOnlyMap<KEY, VALUE> extends Map<KEY, VALUE> {
     
-    private final Map<KEY, VALUE> data;
-    
-    public static <KEY, VALUE> ReadOnlyMap of(Map<KEY, VALUE> data) {
-        if (data instanceof ReadOnlyMap)
-            return (ReadOnlyMap)data;
-        
-        return new ReadOnlyMap<>(data);
-    }
-    
-    public ReadOnlyMap(Map<KEY, VALUE> data) {
-        this.data = (data instanceof ReadOnlyMap) ? data : unmodifiableMap(new LinkedHashMap<>(data));
-    }
-    
-    // TODO - Add with and append.
+    @Override
+    public int size();
 
     @Override
-    public int size() {
-        return data.size();
+    public default boolean isEmpty() {
+        return size() == 0;
     }
 
     @Override
-    public boolean isEmpty() {
-        return data.isEmpty();
-    }
+    public Set<KEY> keySet();
 
     @Override
-    public boolean containsKey(Object key) {
-        return data.containsKey(key);
-    }
+    public Collection<VALUE> values();
 
     @Override
-    public boolean containsValue(Object value) {
-        return data.containsValue(value);
-    }
+    public Set<Entry<KEY, VALUE>> entrySet() ;
 
     @Override
-    public VALUE get(Object key) {
-        return data.get(key);
-    }
+    public boolean containsKey(Object key);
 
     @Override
-    public VALUE put(KEY key, VALUE value) {
+    public boolean containsValue(Object value);
+
+    @Override
+    public VALUE get(Object key);
+
+    @Override
+    public default VALUE put(KEY key, VALUE value) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VALUE remove(Object key) {
+    public default VALUE remove(Object key) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void putAll(Map<? extends KEY, ? extends VALUE> m) {
+    public default void putAll(Map<? extends KEY, ? extends VALUE> m) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void clear() {
+    public default void clear() {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public Set<KEY> keySet() {
-        return unmodifiableSet(data.keySet());
-    }
-
-    @Override
-    public Collection<VALUE> values() {
-        return unmodifiableCollection(data.values());
-    }
-
-    @Override
-    public Set<Entry<KEY, VALUE>> entrySet() {
-        return unmodifiableSet(data.entrySet());
+    
+    // TODO - Remove this after they are all done.
+    public static Map<String, Child> of(Map<String, Child> children) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

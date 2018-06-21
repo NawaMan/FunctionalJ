@@ -2,22 +2,20 @@ package functionalj.types;
 
 import java.util.Map;
 
-public class Tuple2<T1, T2> implements ITuple2<T1, T2>, Map.Entry<T1, T2> {
+public class IntTuple<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T2> {
     
-    public final T1 _1;
-    public final T2 _2;
+    public final int _1;
+    public final T2  _2;
     
-    public Tuple2(T1 _1, T2 _2) {
+    public IntTuple(int _1, T2 _2) {
         this._1 = _1;
         this._2 = _2;
     }
-    
-    public Tuple2(Map.Entry<? extends T1, ? extends T2> entry) {
-        this._1 = entry.getKey();
-        this._2 = entry.getValue();
+
+    public int _int() {
+        return _1;
     }
-    
-    public T1 _1() {
+    public Integer _1() {
         return _1;
     }
     public T2 _2() {
@@ -29,7 +27,7 @@ public class Tuple2<T1, T2> implements ITuple2<T1, T2>, Map.Entry<T1, T2> {
     }
 
     @Override
-    public T1 getKey() {
+    public Integer getKey() {
         return _1();
     }
 
