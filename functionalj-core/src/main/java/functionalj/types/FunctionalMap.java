@@ -4,9 +4,12 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public abstract class FunctionalMap<KEY, VALUE>
@@ -33,22 +36,13 @@ public abstract class FunctionalMap<KEY, VALUE>
     public abstract boolean hasValue(Predicate<? super VALUE> valueCheck);
     
     @Override
-    public abstract boolean has(Predicate<? super Entry<KEY, VALUE>> entryCheck);
-    
-    @Override
-    public abstract boolean has(BiPredicate<? super KEY, ? super VALUE> entryCheck);
-    
-    @Override
     public abstract Optional<VALUE> findBy(KEY key);
+
+    @Override
+    public abstract FunctionalList<VALUE> select(Predicate<? super KEY> keyPredicate);
     
     @Override
-    public abstract FunctionalList<Tuple2<KEY, VALUE>> selectBy(Predicate<? super KEY> keyPredicate);
-    
-    @Override
-    public abstract FunctionalList<Tuple2<KEY, VALUE>> selectEntry(Predicate<? super Entry<KEY, VALUE>> entryCheck);
-    
-    @Override
-    public abstract FunctionalList<Tuple2<KEY, VALUE>> selectEntry(BiPredicate<? super KEY, ? super VALUE> entryCheck);
+    public abstract FunctionalList<Tuple2<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
     
     @Override
     public abstract FunctionalMap<KEY, VALUE> with(KEY key, VALUE value);
@@ -57,16 +51,28 @@ public abstract class FunctionalMap<KEY, VALUE>
     public abstract FunctionalMap<KEY, VALUE> withAll(Map<? extends KEY, ? extends VALUE> entries);
     
     @Override
+    public abstract FunctionalMap<KEY, VALUE> defaultTo(KEY key, VALUE value);
+    
+    @Override
+    public abstract FunctionalMap<KEY, VALUE> defaultBy(KEY key, Supplier<VALUE> value);
+    
+    @Override
+    public abstract FunctionalMap<KEY, VALUE> defaultBy(KEY key, Function<KEY, VALUE> value);
+    
+    @Override
+    public abstract FunctionalMap<KEY, VALUE> defaultTo(Map<? extends KEY, ? extends VALUE> entries);
+    
+    @Override
     public abstract FunctionalMap<KEY, VALUE> exclude(KEY key);
     
     @Override
     public abstract FunctionalMap<KEY, VALUE> filter(Predicate<? super KEY> keyCheck);
     
     @Override
-    public abstract FunctionalMap<KEY, VALUE> filterEntry(Predicate<? super Entry<KEY, VALUE>> entryCheck);
+    public abstract FunctionalMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck);
     
     @Override
-    public abstract FunctionalMap<KEY, VALUE> filterEntry(BiPredicate<? super KEY, ? super VALUE> entryCheck);
+    public abstract FunctionalMap<KEY, VALUE> filterByEntry(Predicate<Entry<? super KEY, ? super VALUE>> entryCheck);
 
     @Override
     public abstract FunctionalList<KEY> keys();
@@ -95,6 +101,11 @@ public abstract class FunctionalMap<KEY, VALUE>
     @Override
     public abstract <TARGET> FunctionalMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper);
     
+    @Override
+    public abstract void forEach(BiConsumer<? super KEY, ? super VALUE> action);
+    
+    @Override
+    public abstract void forEach(Consumer<? super Map.Entry<? super KEY, ? super VALUE>> action);
     
     public String toString() {
         return "{" +

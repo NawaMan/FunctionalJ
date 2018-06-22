@@ -24,6 +24,13 @@ public class FunctionalListStream<SOURCE, DATA>
     private final Function<Stream<SOURCE>, Stream<DATA>> action;
     private volatile List<DATA> target = null;
     
+    public static <DATA> FunctionalListStream<DATA, DATA> of(FunctionalList<DATA> abstractFunctionalList) {
+        return new FunctionalListStream<>(abstractFunctionalList);
+    }
+    public static <DATA> FunctionalListStream<DATA, DATA> of(Supplier<Stream<DATA>> abstractFunctionalList) {
+        return new FunctionalListStream<>(abstractFunctionalList, s->s);
+    }
+    
     public FunctionalListStream(Collection<SOURCE> collection, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = collection;

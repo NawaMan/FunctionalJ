@@ -80,13 +80,14 @@ public abstract class FunctionalList<DATA>
     public abstract Stream<DATA> stream();
     
     @Override
-    public ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.of(this);
-    }
-    @Override
     public List<DATA> toList() {
         return this;
     }
+    
+    @Override
+    public ImmutableList<DATA> toImmutableList() {
+        return ImmutableList.of(this);
+    }    
     
     @Override
     public Iterator<DATA> iterator() {

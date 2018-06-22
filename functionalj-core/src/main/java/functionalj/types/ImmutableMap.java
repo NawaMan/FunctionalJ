@@ -18,7 +18,7 @@ public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VAL
         return new ImmutableMap<KEY, VALUE>(stream);
     }
     public ImmutableMap(Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>> stream) {
-        super(ImmutableList.of(stream.map(entry -> {
+        super(null, ImmutableList.of(stream.map(entry -> {
             val keyHash = calculateHash(entry.getKey());
             @SuppressWarnings("unchecked")
             val tuple = (entry instanceof Tuple2)

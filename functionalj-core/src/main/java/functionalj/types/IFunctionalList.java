@@ -3,10 +3,13 @@ package functionalj.types;
 import static java.util.stream.Stream.concat;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -83,6 +86,7 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
         return __stream(stream -> Stream.concat(stream, Stream.of(values)));
     }
 
+    @SuppressWarnings("unchecked")
     public default SELF appendAll(Collection<? extends DATA> c) {
         if ((c == null) || c.isEmpty())
             return (SELF)this;
@@ -90,6 +94,7 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
         return __stream(stream -> Stream.concat(stream, c.stream()));
     }
 
+    @SuppressWarnings("unchecked")
     public default SELF appendAll(Streamable<? extends DATA, ?> c) {
         if (c == null)
             return (SELF)this;
@@ -97,6 +102,7 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
         return __stream(stream -> Stream.concat(stream, c.stream()));
     }
     
+    @SuppressWarnings("unchecked")
     public default SELF appendAll(Supplier<Stream<? extends DATA>> s) {
         if (s == null)
             return (SELF)this;
@@ -175,6 +181,7 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
         });
     }
     
+    @SuppressWarnings("unchecked")
     public default SELF excludeBetween(int fromIndexInclusive, int toIndexExclusive) {
         if (fromIndexInclusive < 0)
             throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive);
@@ -191,6 +198,37 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
                     stream().limit(fromIndexInclusive), 
                     stream().skip(toIndexExclusive + 1));
         });
+    }
+    
+    public default <KEY> FunctionalMap<KEY, FunctionalList<DATA>> groupingBy(Function<? super DATA, ? extends KEY> classifier) {
+        val theMap = new HashMap<KEY, FunctionalList<DATA>>();
+        stream()
+            .collect(Collectors.groupingBy(classifier))
+            .forEach((key,list)->theMap.put(key, ImmutableList.of(list)));
+        return ImmutableMap.of(theMap);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <KEY> FunctionalMap<KEY, DATA> toMap(Function<? super DATA, ? extends KEY> keyMapper) {
+        val theMap = stream().collect(Collectors.toMap(keyMapper, data -> data));
+        return (FunctionalMap<KEY, DATA>) ImmutableMap.of(theMap);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <KEY, VALUE> FunctionalMap<KEY, VALUE> toMap(
+                Function<? super DATA, ? extends KEY>   keyMapper,
+                Function<? super DATA, ? extends VALUE> valueMapper) {
+        val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper));
+        return (FunctionalMap<KEY, VALUE>) ImmutableMap.of(theMap);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <KEY, VALUE> FunctionalMap<KEY, VALUE> toMap(
+                Function<? super DATA, ? extends KEY>   keyMapper,
+                Function<? super DATA, ? extends VALUE> valueMapper,
+                BinaryOperator<VALUE> mergeFunction) {
+        val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
+        return (FunctionalMap<KEY, VALUE>) ImmutableMap.of(theMap);
     }
     
 }

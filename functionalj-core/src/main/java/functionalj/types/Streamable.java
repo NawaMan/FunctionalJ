@@ -1,11 +1,14 @@
 package functionalj.types;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicReference;
@@ -58,6 +61,14 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
     
     public default ImmutableList<DATA> toImmutableList() {
         return ImmutableList.of(stream());
+    }
+
+    public default ArrayList<DATA> toMutableList() {
+        return new ArrayList<DATA>(toList());
+    }
+
+    public default Set<DATA> toSet() {
+        return new HashSet<DATA>(stream().collect(Collectors.toSet()));
     }
     
     public default Iterator<DATA> iterator() {

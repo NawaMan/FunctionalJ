@@ -1,6 +1,7 @@
 package functionalj.types;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -8,6 +9,7 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import lombok.val;
@@ -112,60 +114,6 @@ public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>>
         return Streamable.super.spliterator();
     }
     
-//    // TODO - Let's do this later.
-//    public default Map<Integer, DATA> asMap() {
-//        return new ReadOnlyMap<Integer, DATA>() {
-//
-//            @Override
-//            public int size() {
-//                return ReadOnlyList.this.size();
-//            }
-//
-//            @Override
-//            public Set<Integer> keySet() {
-//                // TODO Auto-generated method stub
-//                return null;
-//            }
-//
-//            @Override
-//            public Collection<DATA> values() {
-//                return ReadOnlyList.this;
-//            }
-//
-//            @Override
-//            public Set<Entry<Integer, DATA>> entrySet() {
-//                // TODO Auto-generated method stub
-//                return null;
-//            }
-//
-//            @Override
-//            public boolean containsKey(Object key) {
-//                if (!(key instanceof Integer))
-//                    return false;
-//                
-//                val index = ((Integer)key).intValue();
-//                if (index < 0)
-//                    return false;
-//                
-//                return index >= ReadOnlyList.this.size();
-//            }
-//
-//            @Override
-//            public boolean containsValue(Object value) {
-//                return ReadOnlyList.this.contains(value);
-//            }
-//
-//            @Override
-//            public DATA get(Object key) {
-//                if (!(key instanceof Integer))
-//                    return null;
-//                
-//                return ReadOnlyList.this.get(((Integer)key).intValue());
-//            }
-//            
-//        };
-//    }
-    
     //== Mutable methods are not supported.
 
     @Override
@@ -215,6 +163,16 @@ public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>>
 
     @Override
     public default DATA remove(int index) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public default void replaceAll(UnaryOperator<DATA> operator) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public default void sort(Comparator<? super DATA> c) {
         throw new UnsupportedOperationException();
     }
     
