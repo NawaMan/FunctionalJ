@@ -123,8 +123,7 @@ public class FunctionalListStream<SOURCE, DATA>
     
     @Override
     public ImmutableList<DATA> toImmutableList() {
-        materialize();
-        return new ImmutableList<DATA>(target);
+        return new ImmutableList<DATA>(this);
     }
     @Override
     public List<DATA> toList() {
@@ -133,48 +132,75 @@ public class FunctionalListStream<SOURCE, DATA>
     
     @Override
     public int size() {
-        materialize();
-        return target.size();
+        if (target != null)
+            return target.size();
+        
+        return (int)stream().count();
     }
 
     @Override
     public boolean isEmpty() {
-        materialize();
-        return target.isEmpty();
+        if (target != null)
+            return target.isEmpty();
+        
+        return stream().count() == 0L;
     }
 
     @Override
     public <T> T[] toArray(T[] a) {
-        materialize();
-        return target.toArray(a);
+        if (target != null)
+            return target.toArray(a);
+        
+        return toList().toArray(a);
     }
 
     @Override
     public DATA get(int index) {
-        materialize();
-        return target.get(index);
+        if (target != null)
+            return target.get(index);
+        
+        return stream()
+                .skip(index)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public int indexOf(Object o) {
+        if (target != null)
+            return target.indexOf(o);
+        
+        // TODO - for now.
         materialize();
         return target.indexOf(o);
     }
 
     @Override
     public int lastIndexOf(Object o) {
+        if (target != null)
+            return target.indexOf(o);
+        
+        // TODO - for now.
         materialize();
         return target.lastIndexOf(o);
     }
 
     @Override
     public ListIterator<DATA> listIterator() {
+        if (target != null)
+            return target.listIterator();
+        
+        // TODO - for now.
         materialize();
         return target.listIterator();
     }
 
     @Override
     public ListIterator<DATA> listIterator(int index) {
+        if (target != null)
+            return target.listIterator(index);
+        
+        // TODO - for now.
         materialize();
         return target.listIterator(index);
     }
