@@ -232,6 +232,8 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
         return stream().findAny();
     }
     
+    // TODO segment
+    
     public static class Helper {
 
         private static final Object dummy = new Object();

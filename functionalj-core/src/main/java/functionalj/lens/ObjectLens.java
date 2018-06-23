@@ -5,6 +5,11 @@ import functionalj.functions.Func1;
 @FunctionalInterface
 public interface ObjectLens<HOST, DATA> extends AnyLens<HOST, DATA>, ObjectAccess<HOST, DATA> {
     
+    public static <H, D> ObjectLens<H, D> of(LensSpec<H, D> spec) {
+        return () -> spec;
+    }
+    
+    
     @Override
     public LensSpec<HOST, DATA> lensSpec();
     

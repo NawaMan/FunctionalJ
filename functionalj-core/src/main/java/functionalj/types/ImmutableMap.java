@@ -24,7 +24,7 @@ public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VAL
             val tuple = (entry instanceof Tuple2)
                     ? (Tuple2<KEY, VALUE>)entry
                     : new Tuple2<KEY, VALUE>(entry);
-            return new IntTuple<Tuple2<KEY, VALUE>>(keyHash, tuple);
+            return new IntTuple2<Tuple2<KEY, VALUE>>(keyHash, tuple);
         })));
     }
     

@@ -21,12 +21,12 @@ import lombok.val;
 
 public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
     
-    private static final Supplier<Stream<IntTuple<Tuple2<?, ?>>>> EmptyStreamSupplier = ()->Stream.empty();
+    private static final Supplier<Stream<IntTuple2<Tuple2<?, ?>>>> EmptyStreamSupplier = ()->Stream.empty();
 
-    private final FunctionalList<IntTuple<Tuple2<KEY, VALUE>>> entries;
+    private final FunctionalList<IntTuple2<Tuple2<KEY, VALUE>>> entries;
     private final boolean isKeyComparable;
     
-    FunctionalMapStream(Boolean isKeyComparable, FunctionalList<IntTuple<Tuple2<KEY, VALUE>>> entries) {
+    FunctionalMapStream(Boolean isKeyComparable, FunctionalList<IntTuple2<Tuple2<KEY, VALUE>>> entries) {
         // TODO - Thinking about sorting by hash to take advantage of binary search
         this.entries         = entries;
         this.isKeyComparable = (isKeyComparable != null)
@@ -95,7 +95,7 @@ public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
         return entries
                 .filter (entry -> entry._int() == keyHash)
                 .filter (entry -> Objects.equals(entry._2._1, key))
-                .map    (entry -> entry._2._2)
+                .map    (entry -> entry._2()._2())
                 .findAny();
     }
     
@@ -141,7 +141,7 @@ public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
         // Find the way to put in it in the same location.
         int keyHash    = calculateHash(key);
         val valueEntry = new Tuple2<KEY, VALUE>(key, value);
-        val mapEntry   = new IntTuple<Tuple2<KEY, VALUE>>(keyHash, valueEntry);
+        val mapEntry   = new IntTuple2<Tuple2<KEY, VALUE>>(keyHash, valueEntry);
         val newEntries = entries
                             .filter(entry -> !Objects.equals(key, entry._2._1))
                             .append(mapEntry);
@@ -171,22 +171,22 @@ public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
         int keyHash = calculateHash(key);
         val newIsKeyComparable = isKeyComparable && ((key == null) || (key instanceof Comparable));
         return new FunctionalMapStream<KEY, VALUE>(newIsKeyComparable, FunctionalListStream.of(() -> {
-                    val ref = new AtomicReference<Supplier<Stream<IntTuple<Tuple2<KEY, VALUE>>>>>(()->{
+                    val ref = new AtomicReference<Supplier<Stream<IntTuple2<Tuple2<KEY, VALUE>>>>>(()->{
                         val valueEntry = new Tuple2<KEY, VALUE>(key, valueFunction.apply(key));
-                        val mapEntry   = new IntTuple<Tuple2<KEY, VALUE>>(keyHash, valueEntry);
+                        val mapEntry   = new IntTuple2<Tuple2<KEY, VALUE>>(keyHash, valueEntry);
                         return Stream.of(mapEntry);
                     });
                     @SuppressWarnings({ "unchecked", "rawtypes" })
-                    val main = new AtomicReference<Supplier<Stream<IntTuple<Tuple2<KEY, VALUE>>>>>(()->{
+                    val main = new AtomicReference<Supplier<Stream<IntTuple2<Tuple2<KEY, VALUE>>>>>(()->{
                         return entries.filter(entry -> {
                             boolean found = (entry._1 == keyHash) && Objects.equals(key, entry._2._1);
                             if (found) {
-                                ref.set((Supplier<Stream<IntTuple<Tuple2<KEY, VALUE>>>>)(Supplier)EmptyStreamSupplier);
+                                ref.set((Supplier<Stream<IntTuple2<Tuple2<KEY, VALUE>>>>)(Supplier)EmptyStreamSupplier);
                             }
                             return true;
                         }).stream();
                     });
-                    return (Stream<IntTuple<Tuple2<KEY, VALUE>>>)Stream.of(main, ref).
+                    return (Stream<IntTuple2<Tuple2<KEY, VALUE>>>)Stream.of(main, ref).
                             flatMap(each -> each.get().get());
                 }));
     }
@@ -301,7 +301,7 @@ public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
         return new FunctionalMapStream<>(isKeyComparable, 
                 entries
                 .map(intTuple -> 
-                    new IntTuple<>(intTuple._1, 
+                    new IntTuple2<>(intTuple._1, 
                             new Tuple2<>(intTuple._2._1, 
                                     mapper.apply(intTuple._2._2)))));
     }
