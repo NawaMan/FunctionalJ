@@ -65,7 +65,15 @@ public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T
     
     
     // == Access == 
-
+    
+    /**
+     * @author manusitn
+     *
+     * @param <HOST>
+     * @param <T2>
+     * @param <T2ACCESS>
+     */
+    @FunctionalInterface
     public static interface IntTuple2Access<HOST, T2, T2ACCESS extends AnyAccess<HOST,T2>>
             extends AccessParameterized<HOST, IntTuple2<T2>, T2, T2ACCESS> {
 
@@ -79,6 +87,11 @@ public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T
         @Override
         public default T2ACCESS createSubAccess(Function<IntTuple2<T2>, T2> accessToParameter) {
             return accessParameterized().createSubAccess(IntTuple2::_2);
+        }
+
+        @Override
+        public default T2ACCESS createSubAccessFromHost(Function<HOST, T2> accessToParameter) {
+            return accessParameterized().createSubAccessFromHost(accessToParameter);
         }
         
         public default IntegerAccess<HOST> _1() {

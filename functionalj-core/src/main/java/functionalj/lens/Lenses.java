@@ -7,6 +7,7 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
+import functionalj.types.FunctionalList;
 import functionalj.types.MayBe;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
@@ -145,8 +146,8 @@ public class Lenses {
     
     public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> ListLens<HOST, TYPE, SUBLENS> 
         createListLens(
-            Function<HOST, List<TYPE>>                    read,
-            WriteLens<HOST, List<TYPE>>                   write,
+            Function<HOST, List<TYPE>>              read,
+            WriteLens<HOST, List<TYPE>>             write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val spec = Lenses.createLensSpecParameterized(read, write, subCreator);
         val listLens = ListLens.of(spec);
@@ -165,7 +166,7 @@ public class Lenses {
             }
             @Override
             public TYPELENS createSubLens(LensSpec<HOST, TYPE> subSpec) {
-                return specParameterized.createSubLens(subSpec);
+                return specParameterized.createSubAccessFromHost(subSpec.getRead());
             }
         };
         return () -> newSpec;
@@ -207,6 +208,36 @@ public class Lenses {
                 return valueLensCreator.apply(subSpec);
             }
         };
+    }
+    
+    //== FunctionalList ==
+    
+    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> FunctionalListLens<HOST, TYPE, SUBLENS> 
+        createFunctionalListLens(
+            Function<HOST,  FunctionalList<TYPE>>   read,
+            WriteLens<HOST, FunctionalList<TYPE>>   write,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        val spec = Lenses.createLensSpecParameterized(read, write, subCreator);
+        val listLens = FunctionalListLens.of(spec);
+        return listLens;
+    }
+    
+    public static <HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>> FunctionalListLens<HOST, TYPE, TYPELENS>
+            createSubFunctionalListLens(
+                LensSpec<HOST, FunctionalList<TYPE>>                              spec,
+                LensSpecParameterized<HOST, FunctionalList<TYPE>, TYPE, TYPELENS> specParameterized,
+                Function<HOST, FunctionalList<TYPE>>                              read) {
+        val newSpec = new LensSpecParameterized<HOST, FunctionalList<TYPE>, TYPE, TYPELENS>() {
+            @Override
+            public LensSpec<HOST, FunctionalList<TYPE>> getSpec() {
+                return new LensSpec<>(read, spec.getWrite(), spec.getIsNullSafe());
+            }
+            @Override
+            public TYPELENS createSubLens(LensSpec<HOST, TYPE> subSpec) {
+                return specParameterized.createSubLens(subSpec);
+            }
+        };
+        return () -> newSpec;
     }
 
 }

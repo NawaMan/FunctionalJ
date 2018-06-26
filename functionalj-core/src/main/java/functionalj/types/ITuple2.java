@@ -33,6 +33,16 @@ public interface ITuple2<T1, T2> {
         public default _2ACCESS createSubAccess2(Function<Tuple2<_1, _2>, _2> accessToParameter) {
             return accessParameterized2().createSubAccess2(Tuple2::_2);
         }
+
+        @Override
+        default _1ACCESS createSubAccessFromHost1(Function<HOST, _1> accessToParameter) {
+            return accessParameterized2().createSubAccessFromHost1(accessToParameter);
+        }
+
+        @Override
+        default _2ACCESS createSubAccessFromHost2(Function<HOST, _2> accessToParameter) {
+            return accessParameterized2().createSubAccessFromHost2(accessToParameter);
+        }
         
         public default _1ACCESS _1() {
             return accessParameterized2().createSubAccess1(Tuple2::_1);

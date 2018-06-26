@@ -60,35 +60,38 @@ public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>>
     }
     
     //== Access list ==
-    
+
+    @Override
     public default int size() {
         return (int)stream().count();
     }
-
+    
+    @Override
     public default boolean isEmpty() {
         return Helper.hasAt(stream(), 0);
     }
-
+    
+    @Override
     public default boolean contains(Object o) {
         return Helper.hasAt(stream().filter(each -> Objects.equals(each, o)), 0);
     }
     
-    public default boolean contains(Predicate<DATA> predicate) {
-        return Helper.hasAt(stream().filter(predicate), 0);
-    }
-    
+    @Override
     public default boolean containsAll(Collection<?> c) {
         return c.stream()
                 .allMatch(each -> stream()
                                     .anyMatch(o -> Objects.equals(each, o)));
     }
     
+    @Override
     public default Object[] toArray() {
         return stream().toArray();
     }
-
+    
+    @Override
     public <T> T[] toArray(T[] a);
     
+    @Override
     public default DATA get(int index) {
         val ref   = new AtomicReference<DATA>();
         val found = Streamable.Helper.hasAt(this.stream(), index, ref);
@@ -98,12 +101,16 @@ public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>>
         return ref.get();
     }
     
+    @Override
     public int indexOf(Object o) ;
-
+    
+    @Override
     public int lastIndexOf(Object o);
-
+    
+    @Override
     public ListIterator<DATA> listIterator();
-
+    
+    @Override
     public ListIterator<DATA> listIterator(int index);
 
     @Override

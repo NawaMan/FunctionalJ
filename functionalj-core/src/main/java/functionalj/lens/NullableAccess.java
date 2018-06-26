@@ -20,8 +20,8 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     }
     
     @Override
-    public default SUBACCESS createSubAccess(Function<Nullable<TYPE>, TYPE> accessToSub) {
-        return accessWithSub().createSubAccess(accessToSub);
+    public default SUBACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToSub) {
+        return accessWithSub().createSubAccessFromHost(accessToSub);
     }
     
     public default SUBACCESS get() {
@@ -38,10 +38,8 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
                 return NullableAccess.this.apply(host).map(mapper);
             }
             @Override
-            public AnyAccess<HOST, TARGET> createSubAccess(Function<Nullable<TARGET>, TARGET> accessToSub) {
-                return host->{
-                    return accessToSub.apply(apply(host));
-                };
+            public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
+                return accessToParameter::apply;
             }
         };
         return new NullableAccess<HOST, TARGET, AnyAccess<HOST,TARGET>>() {
@@ -60,10 +58,8 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
                 return NullableAccess.this.apply(host).flatMap(mapper);
             }
             @Override
-            public AnyAccess<HOST, TARGET> createSubAccess(Function<Nullable<TARGET>, TARGET> accessToSub) {
-                return host->{
-                    return accessToSub.apply(apply(host));
-                };
+            public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
+                return accessToParameter::apply;
             }
         };
         return new NullableAccess<HOST, TARGET, AnyAccess<HOST,TARGET>>() {

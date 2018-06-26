@@ -19,10 +19,8 @@ public class AccessUtil {
                 return accessNullable.apply(host);
             }
             @Override
-            public TYPELENS createSubAccess(Function<Nullable<TYPE>, TYPE> accessToParameter) {
-                val hostToParameter = pipe(this::apply, accessToParameter);
-                val parameterLens   = createSubLens.apply(hostToParameter);
-                return parameterLens;
+            public TYPELENS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return createSubLens.apply(accessToParameter);
             }
         };
         return () -> accessWithSub;

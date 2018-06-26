@@ -18,10 +18,10 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     public default Optional<TYPE> apply(HOST input) {
         return accessWithSub().apply(input);
     }
-    
+
     @Override
-    public default SUBACCESS createSubAccess(Function<Optional<TYPE>, TYPE> accessToSub) {
-        return accessWithSub().createSubAccess(accessToSub);
+    public default SUBACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToSub) {
+        return accessWithSub().createSubAccessFromHost(accessToSub);
     }
     
     public default SUBACCESS get() {
@@ -38,10 +38,8 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
                 return OptionalAccess.this.apply(host).map(mapper);
             }
             @Override
-            public AnyAccess<HOST, TARGET> createSubAccess(Function<Optional<TARGET>, TARGET> accessToSub) {
-                return host->{
-                    return accessToSub.apply(apply(host));
-                };
+            public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
+                return accessToParameter::apply;
             }
         };
         return new OptionalAccess<HOST, TARGET, AnyAccess<HOST,TARGET>>() {
@@ -60,10 +58,8 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
                 return OptionalAccess.this.apply(host).flatMap(mapper);
             }
             @Override
-            public AnyAccess<HOST, TARGET> createSubAccess(Function<Optional<TARGET>, TARGET> accessToSub) {
-                return host->{
-                    return accessToSub.apply(apply(host));
-                };
+            public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
+                return accessToParameter::apply;
             }
         };
         return new OptionalAccess<HOST, TARGET, AnyAccess<HOST,TARGET>>() {

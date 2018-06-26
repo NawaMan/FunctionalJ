@@ -42,14 +42,13 @@ public class ListAccessTest {
                 return input.names();
             }
             @Override
-            public StringAccess<WithNames> createSubAccess(Function<List<String>, String> accessToSub) {
-                return withNames -> accessToSub.apply(this.apply(withNames));
+            public StringAccess<WithNames> createSubAccessFromHost(Function<WithNames, String> accessToParameter) {
+                return accessToParameter::apply;
             }
         };
         val listAcc = new ListAccess<WithNames, String, StringAccess<WithNames>>() {
             @Override
             public AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>> accessParameterized() {
-                // TODO Auto-generated method stub
                 return accSub;
             }
         };

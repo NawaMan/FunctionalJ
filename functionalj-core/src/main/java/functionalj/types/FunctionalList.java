@@ -1,13 +1,18 @@
 package functionalj.types;
 
+import static functionalj.FunctionalJ.withIndex;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import functionalj.lens.Accesses;
 
 public abstract class FunctionalList<DATA> 
                     implements 
@@ -85,6 +90,16 @@ public abstract class FunctionalList<DATA>
     }
     
     @Override
+    public IFunctionalList<DATA, ?> toIFunctionalList() {
+        return this;
+    }
+    
+    @Override
+    public FunctionalList<DATA> toFunctionalList() {
+        return this;
+    }
+    
+    @Override
     public ImmutableList<DATA> toImmutableList() {
         return ImmutableList.of(this);
     }    
@@ -107,5 +122,10 @@ public abstract class FunctionalList<DATA>
     @Override
     public abstract DATA get(int index);
     
+    public FunctionalList<Integer> indexesOf(Predicate<? super DATA> check) {
+        return this
+                .map(withIndex((data, index)-> check.test(data) ? index : -1))
+                .filter(Accesses.theInteger.thatNotEqualsTo(-1));
+    }
     
 }

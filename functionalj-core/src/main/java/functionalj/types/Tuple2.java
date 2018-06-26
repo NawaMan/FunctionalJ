@@ -71,6 +71,7 @@ public class Tuple2<T1, T2> implements ITuple2<T1, T2>, Map.Entry<T1, T2> {
         return Tuple2Lens.of(t -> t, (t, newT) -> newT, keyLensCreator, valueLensCreator);
     }
     
+    @FunctionalInterface
     public static interface Tuple2Lens<HOST, T1, T2, 
                 T1LENS extends Lens<HOST,T1>, 
                 T2LENS extends Lens<HOST,T2>>

@@ -21,8 +21,20 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
     }
     
     @Override
-    public default SUBACCESS createSubAccess(Function<COLLECTION, TYPE> accessToSub) {
-        return accessParameterized().createSubAccess(accessToSub);
+    public default SUBACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToSub) {
+        return accessParameterized().createSubAccessFromHost(accessToSub);
+    }
+    
+    public default IntegerAccess<HOST> size() {
+        return intAccess(0, collection -> collection.size());
+    }
+    
+    public default BooleanAccess<HOST> thatIsEmpty() {
+        return booleanAccess(false, collection -> collection.isEmpty());
+    }
+    
+    public default BooleanAccess<HOST> thatIsNotEmpty() {
+        return booleanAccess(false, collection -> !collection.isEmpty());
     }
     
     public default BooleanAccess<HOST> thatContains(TYPE value) {
@@ -42,8 +54,8 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
                 return (COLLECTION)spec.apply(host).stream().filter(checker).collect(Collectors.toList());
             }
             @Override
-            public SUBACCESS createSubAccess(Function<COLLECTION, TYPE> accessToSub) {
-                return spec.createSubAccess(accessToSub);
+            public SUBACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return spec.createSubAccessFromHost(accessToParameter);
             }
         };
         return () -> specWithSub;
@@ -61,20 +73,11 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
                 return new ArrayList<TYPE>(collection);
             }
             @Override
-            public SUBACCESS createSubAccess(Function<List<TYPE>, TYPE> accessToSub) {
-                return spec.createSubAccess(collection -> {
-                    val list = (collection  instanceof List) ? (List<TYPE>)collection : new ArrayList<TYPE>(collection);
-                    return accessToSub.apply(list);
-                });
+            public SUBACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return spec.createSubAccessFromHost(accessToParameter);
             }
         };
         return () -> specWithSub;
     }
-    
-    
-//    
-//    public default StreamField<HOST, TYPE> stream() {
-//        return host -> this.apply(host).stream();
-//    }
     
 }

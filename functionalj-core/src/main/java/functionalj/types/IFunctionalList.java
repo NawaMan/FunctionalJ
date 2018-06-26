@@ -1,5 +1,8 @@
 package functionalj.types;
 
+import static functionalj.FunctionalJ.withIndex;
+import static functionalj.lens.Accesses.theInteger;
+import static functionalj.lens.Accesses.theObject;
 import static java.util.stream.Stream.concat;
 
 import java.util.Collection;
@@ -10,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,7 +50,12 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
     
     @Override
     public Stream<DATA> stream();
-
+    
+    @Override
+    public default IFunctionalList<DATA, ?> toIFunctionalList() {
+        return this;
+    }
+    
     @Override
     public default ImmutableList<DATA> toImmutableList() {
         return ImmutableList.of((Streamable<DATA, ?>)this);
@@ -80,6 +89,20 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
         return __stream(stream -> stream.skip(1));
     }
     
+    public default FunctionalList<Integer> indexesOf(Predicate<? super DATA> check) {
+        return this
+                .map   (withIndex((data, index)-> check.test(data) ? index : -1))
+                .filter(theInteger.thatNotEqualsTo(-1))
+                .toFunctionalList();
+    }
+    
+    public default FunctionalList<IntTuple2<DATA>> select(Predicate<? super DATA> check) {
+        return this
+                .map   (withIndex((data, index)-> check.test(data) ? new IntTuple2<DATA>(index, data) : null))
+                .filter(theObject.thatIsNotNull())
+                .toFunctionalList();
+    }
+    
     //== Modified methods ==
     
     public default SELF append(DATA ... values) {
@@ -87,27 +110,27 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
     }
 
     @SuppressWarnings("unchecked")
-    public default SELF appendAll(Collection<? extends DATA> c) {
-        if ((c == null) || c.isEmpty())
+    public default SELF appendAll(Collection<? extends DATA> collection) {
+        if ((collection == null) || collection.isEmpty())
             return (SELF)this;
         
-        return __stream(stream -> Stream.concat(stream, c.stream()));
+        return __stream(stream -> Stream.concat(stream, collection.stream()));
     }
 
     @SuppressWarnings("unchecked")
-    public default SELF appendAll(Streamable<? extends DATA, ?> c) {
-        if (c == null)
+    public default SELF appendAll(Streamable<? extends DATA, ?> streamable) {
+        if (streamable == null)
             return (SELF)this;
         
-        return __stream(stream -> Stream.concat(stream, c.stream()));
+        return __stream(stream -> Stream.concat(stream, streamable.stream()));
     }
     
     @SuppressWarnings("unchecked")
-    public default SELF appendAll(Supplier<Stream<? extends DATA>> s) {
-        if (s == null)
+    public default SELF appendAll(Supplier<Stream<? extends DATA>> supplier) {
+        if (supplier == null)
             return (SELF)this;
         
-        return __stream(stream -> Stream.concat(stream, s.get()));
+        return __stream(stream -> Stream.concat(stream, supplier.get()));
     }
     
     public default SELF with(int index, DATA value) {

@@ -35,6 +35,16 @@ public class MapAccessTest {
                             Function<Map<String, Integer>, Integer> accessToParameter) {
                         return map -> accessToParameter.apply(map);
                     }
+                    @Override
+                    public StringAccess<Map<String, Integer>> createSubAccessFromHost1(
+                            Function<Map<String, Integer>, String> accessToParameter) {
+                        return accessToParameter::apply;
+                    }
+                    @Override
+                    public IntegerAccess<Map<String, Integer>> createSubAccessFromHost2(
+                            Function<Map<String, Integer>, Integer> accessToParameter) {
+                        return accessToParameter::apply;
+                    }
                 };
             }
         };

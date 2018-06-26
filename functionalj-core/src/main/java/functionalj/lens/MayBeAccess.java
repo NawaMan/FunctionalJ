@@ -19,10 +19,10 @@ public interface MayBeAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>
     public default MayBe<TYPE> apply(HOST input) {
         return accessWithSub().apply(input);
     }
-    
+
     @Override
-    public default SUBACCESS createSubAccess(Function<MayBe<TYPE>, TYPE> accessToSub) {
-        return accessWithSub().createSubAccess(accessToSub);
+    public default SUBACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToSub) {
+        return accessWithSub().createSubAccessFromHost(accessToSub);
     }
     
     public default SUBACCESS get() {
@@ -39,10 +39,8 @@ public interface MayBeAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>
                 return MayBeAccess.this.apply(host).map(mapper);
             }
             @Override
-            public AnyAccess<HOST, TARGET> createSubAccess(Function<MayBe<TARGET>, TARGET> accessToSub) {
-                return host->{
-                    return accessToSub.apply(apply(host));
-                };
+            public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
+                return accessToParameter::apply;
             }
         };
         return new MayBeAccess<HOST, TARGET, AnyAccess<HOST,TARGET>>() {
@@ -66,10 +64,8 @@ public interface MayBeAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>
                         });
             }
             @Override
-            public AnyAccess<HOST, TARGET> createSubAccess(Function<MayBe<TARGET>, TARGET> accessToSub) {
-                return host->{
-                    return accessToSub.apply(apply(host));
-                };
+            public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
+                return accessToParameter::apply;
             }
         };
         return new MayBeAccess<HOST, TARGET, AnyAccess<HOST,TARGET>>() {

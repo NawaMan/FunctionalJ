@@ -59,6 +59,14 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
         return stream().collect(Collectors.toList());
     }
     
+    public default IFunctionalList<DATA, ?> toIFunctionalList() {
+        return toImmutableList();
+    }
+    
+    public default FunctionalList<DATA> toFunctionalList() {
+        return toImmutableList();
+    }
+    
     public default ImmutableList<DATA> toImmutableList() {
         return ImmutableList.of(stream());
     }

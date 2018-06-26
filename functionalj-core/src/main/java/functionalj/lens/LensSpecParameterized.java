@@ -9,7 +9,7 @@ public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends Lens<HOS
     
     public LensSpec<HOST, TYPE> getSpec();
     public SUBLENS              createSubLens(LensSpec<HOST, SUB> subSpec);
-
+    
     @Override
     public default TYPE apply(HOST host) {
         return getSpec().getRead().apply(host);
@@ -20,5 +20,10 @@ public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends Lens<HOS
         val read = getSpec().getRead().andThen(accessToSub);
         val spec = LensSpec.of(read);
         return createSubLens(spec);
+    }
+    
+    @Override
+    public default SUBLENS createSubAccessFromHost(Function<HOST, SUB> accessToParameter) {
+        return createSubLens(LensSpec.of(accessToParameter));
     }
 }
