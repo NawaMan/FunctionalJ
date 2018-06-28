@@ -49,7 +49,7 @@ public class GenerateParentMapChildTest {
                 "import functionalj.lens.MapLens;\n" + 
                 "import functionalj.lens.ObjectLensImpl;\n" + 
                 "import functionalj.lens.StringLens;\n" + 
-                "import functionalj.types.ReadOnlyMap;\n" + 
+                "import functionalj.types.ImmutableMap;\n" + 
                 "import java.util.Map;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
@@ -66,7 +66,7 @@ public class GenerateParentMapChildTest {
                 "        this(null);\n" + 
                 "    }\n" + 
                 "    public Parent(Map<String, Child> children) {\n" + 
-                "        this.children = ReadOnlyMap.of(children);\n" + 
+                "        this.children = ImmutableMap.of(children);\n" +
                 "    }\n" + 
                 "    \n" + 
                 "    public Map<String, Child> children() {\n" + 
