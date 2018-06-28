@@ -7,8 +7,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import functionalj.annotations.Child;
-
 public interface ReadOnlyMap<KEY, VALUE> extends Map<KEY, VALUE> {
     
     @Override
@@ -108,11 +106,4 @@ public interface ReadOnlyMap<KEY, VALUE> extends Map<KEY, VALUE> {
         throw new UnsupportedOperationException();
     }
     
-    
-    
-    // TODO - Remove this after they are all done.
-    public static Map<String, Child> of(Map<String, Child> children) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

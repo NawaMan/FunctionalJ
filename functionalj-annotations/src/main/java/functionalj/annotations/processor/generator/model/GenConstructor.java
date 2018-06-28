@@ -66,7 +66,7 @@ public class GenConstructor implements IGenerateDefinition {
             if (paramType.isList())
                 types.add(Core.ImmutableList.type());
             if (paramType.isMap())
-                types.add(Core.ReadOnlyMap.type());
+                types.add(Core.ImmutableMap.type());
             if (paramType.isNullable())
                 types.add(Core.Nullable.type());
             if (paramType.isOptional())

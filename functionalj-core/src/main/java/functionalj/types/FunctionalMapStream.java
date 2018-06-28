@@ -171,7 +171,7 @@ public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
         int keyHash = calculateHash(key);
         val newIsKeyComparable = isKeyComparable && ((key == null) || (key instanceof Comparable));
         return new FunctionalMapStream<KEY, VALUE>(newIsKeyComparable, FunctionalListStream.of(() -> {
-                    val ref = new AtomicReference<Supplier<Stream<IntTuple2<Tuple2<KEY, VALUE>>>>>(()->{
+                AtomicReference<Supplier<Stream<IntTuple2<Tuple2<KEY, VALUE>>>>> ref = new AtomicReference<>(()->{
                         val valueEntry = new Tuple2<KEY, VALUE>(key, valueFunction.apply(key));
                         val mapEntry   = new IntTuple2<Tuple2<KEY, VALUE>>(keyHash, valueEntry);
                         return Stream.of(mapEntry);

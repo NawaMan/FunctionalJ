@@ -57,7 +57,7 @@ public enum Core {
     ObjectLensImpl("ObjectLensImpl"),
     LensSpec      ("LensSpec"),
     ImmutableList ("ImmutableList", "functionalj.types"),
-    ReadOnlyMap   ("ReadOnlyMap",   "functionalj.types"),
+    ImmutableMap  ("ImmutableMap",  "functionalj.types"),
     Nullable      ("Nullable",      "nawaman.nullablej.nullable"),
     Optional      ("Optional",      "java.util"),
     MayBe         ("MayBe",         "functionalj.types"),
