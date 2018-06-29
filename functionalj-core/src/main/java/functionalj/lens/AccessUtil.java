@@ -1,7 +1,5 @@
 package functionalj.lens;
 
-import static functionalj.compose.Functional.pipe;
-
 import java.util.function.Function;
 
 import lombok.val;

@@ -1,21 +1,19 @@
 package functionalj.lens;
 
-import static functionalj.FunctionalStrings.stringOf;
+import static functionalj.StringFuncs.stringOf;
 
 import java.util.Locale;
 import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
+
+import functionalj.functions.Func1;
+import lombok.val;
 
 @FunctionalInterface
-public  interface StringAccess<HOST> 
-        extends 
-            ObjectAccess<HOST,String>, 
-            AccessCreator<HOST, String, StringAccess<HOST>> {
-    
-    @Override
-    public default StringAccess<HOST> newAccess(Function<HOST, String> accessToValue) {
-        return accessToValue::apply;
-    }
+public  interface StringAccess<HOST> extends ObjectAccess<HOST,String>{
     
     // Extra
     
@@ -29,14 +27,28 @@ public  interface StringAccess<HOST>
         return intAccess(-1, str->str.compareToIgnoreCase(anotherString));
     }
     
-    public default StringAccess<HOST> concat(Object suffix) {
-        return stringAccess(stringOf(suffix), str -> str + stringOf(suffix));
+    public default StringAccess<HOST> concat(Object ... suffixes) {
+        return stringAccess("", str -> {
+            val eachToString = __internal__.stringFromOf(str);
+            String suffix = Stream.of(suffixes).map(eachToString).collect(joining());
+            return str + suffix;
+        });
     }
-    public default StringAccess<HOST> prefix(Object prefix) {
-        return stringAccess(stringOf(prefix), str -> stringOf(prefix) + str);
+    
+    public default StringAccess<HOST> prefix(Object ... prefixes) {
+        return stringAccess("", str -> {
+            val eachToString = __internal__.stringFromOf(str);
+            String prefix = Stream.of(prefixes).map(eachToString).collect(joining());
+            return prefix + str;
+        });
     }
     public default StringAccess<HOST> wrapBy(Object prefix, Object suffix) {
-        return stringAccess(stringOf(prefix) + stringOf(suffix), str -> stringOf(prefix) + str + stringOf(suffix));
+        return stringAccess("", str -> { 
+            val eachToString = __internal__.stringFromOf(str);
+            String prefixStr = eachToString.apply(prefix);
+            String suffixStr = eachToString.apply(suffix);
+            return prefixStr + str + suffixStr;
+        });
     }
     
     public default BooleanAccess<HOST> thatContentEquals(CharSequence charSequence) {
@@ -52,7 +64,11 @@ public  interface StringAccess<HOST>
     }
     
     public default StringAccess<HOST> format(String format, Object... args) {
-        return stringAccess(null, str->str.format(format, (Object[])args));
+        return stringAccess(null, str->{
+            val eachToString = __internal__.stringFromOf(str);
+            val argStrs      = Stream.of(args).map(eachToString).toArray();
+            return str.format(format, (Object[])argStrs);
+        });
     }
     
     public default BooleanAccess<HOST> thatEqualsIgnoreCase(String anotherString) {
@@ -155,6 +171,33 @@ public  interface StringAccess<HOST>
     
     public default StringAccess<HOST> trim() {
         return stringAccess(null, str->str.trim());
+    }
+    
+    public static StringAccess<String> $(Object ... objs) {
+        return str -> {
+            val eachToString = __internal__.stringFromOf(str);
+            return Stream.of(objs).map(eachToString).collect(joining());
+        };
+    }
+    
+    public static final class __internal__ {
+        private static Func1<Object, String> stringFromOf(String str) {
+            return each -> stringFrom(each, str);
+        }
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        private static String stringFrom(Object each, String str) {
+            if (each instanceof Supplier) {
+                Supplier supplier = (Supplier)each;
+                Object   newValue = supplier.get();
+                return stringOf(newValue);
+            }
+            if (each instanceof Function) {
+                Function function = (Function)each;
+                Object   newValue = function.apply(str);
+                return stringOf(newValue);
+            }
+            return stringOf(each);
+        }
     }
     
 }

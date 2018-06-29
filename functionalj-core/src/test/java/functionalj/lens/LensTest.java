@@ -1,10 +1,10 @@
 package functionalj.lens;
 
-import static functionalj.lens.Accesses.$S;
-import static functionalj.lens.Accesses.theString;
 import static functionalj.lens.LensTest.Car.theCar;
 import static functionalj.lens.LensTest.Company.theCompany;
 import static functionalj.lens.LensTest.Driver.theDriver;
+import static functionalj.lens.Lenses.$S;
+import static functionalj.lens.Lenses.theString;
 import static functionalj.types.ImmutableList.listOf;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;

@@ -1,7 +1,7 @@
 package functionalj.lens;
 
-import static functionalj.lens.Accesses.theItem;
-import static functionalj.lens.Accesses.theString;
+import static functionalj.lens.Lenses.theItem;
+import static functionalj.lens.Lenses.theString;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 

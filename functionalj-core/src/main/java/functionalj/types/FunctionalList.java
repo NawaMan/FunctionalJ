@@ -1,6 +1,7 @@
 package functionalj.types;
 
 import static functionalj.FunctionalJ.withIndex;
+import static functionalj.lens.Lenses.theInteger;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -11,8 +12,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import functionalj.lens.Accesses;
 
 public abstract class FunctionalList<DATA> 
                     implements 
@@ -125,7 +124,7 @@ public abstract class FunctionalList<DATA>
     public FunctionalList<Integer> indexesOf(Predicate<? super DATA> check) {
         return this
                 .map(withIndex((data, index)-> check.test(data) ? index : -1))
-                .filter(Accesses.theInteger.thatNotEqualsTo(-1));
+                .filter(theInteger.thatNotEqualsTo(-1));
     }
     
 }

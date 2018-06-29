@@ -3,6 +3,7 @@ package functionalj.lens;
 import static functionalj.lens.Accesses.ofString;
 import static functionalj.lens.Accesses.theList;
 import static functionalj.types.ImmutableList.listOf;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -21,8 +22,10 @@ public class AccessCreatorTest {
                     listOf("AE", "BEE", "SEE")
                 );
         
-        System.out.println(lists.map(theList(ofString()).first().toLowerCase()));
-        System.out.println(lists.map(theList(ofString()).first().toLowerCase()));
+        val theStrListLens = Lenses.theList(Lenses.ofString());
+        
+        assertEquals("[one, ae]", "" + lists.map(theStrList         .first().toLowerCase()));
+        assertEquals("[one, ae]", "" + lists.map(theList(ofString()).first().toLowerCase()));
     }
     
 }

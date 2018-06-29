@@ -1,11 +1,10 @@
 package functionalj.types;
 
-import static functionalj.lens.Accesses.theString;
-import static org.junit.Assert.*;
+import static functionalj.lens.Lenses.theString;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.lens.Accesses;
 import lombok.val;
 
 public class FunctionalListTest {

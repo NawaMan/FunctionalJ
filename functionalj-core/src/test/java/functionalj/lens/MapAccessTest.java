@@ -1,6 +1,6 @@
 package functionalj.lens;
 
-import static functionalj.lens.Accesses.theString;
+import static functionalj.lens.Lenses.theString;
 import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedHashMap;

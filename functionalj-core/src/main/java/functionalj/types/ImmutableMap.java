@@ -3,7 +3,6 @@ package functionalj.types;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
 public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VALUE> {

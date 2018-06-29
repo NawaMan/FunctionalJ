@@ -7,13 +7,34 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import functionalj.lens.Accesses.__internal__;
 import functionalj.types.FunctionalList;
 import functionalj.types.MayBe;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
 public class Lenses {
+    
+    public static final AnyLens<Object, Object> theObject  = AnyLens    .of(LensSpec.of(Object.class));
+    public static final BooleanLens<Boolean>    theBoolean = BooleanLens.of(LensSpec.of(Boolean.class));
+    public static final StringLens<String>      theString  = StringLens .of(LensSpec.of(String.class));
+    public static final IntegerLens<Integer>    theInteger = IntegerLens.of(LensSpec.of(Integer.class));
+    
+    public static final BooleanLens<Boolean>    $B = theBoolean;
+    public static final StringLens<String>      $S = theString;
+    public static final IntegerLens<Integer>    $I = theInteger;
+    
+    
+    public static <T> AnyLens<T, T> theItem() {
+        return AnyLens.of(LensSpec.of((T item) -> item, (T host, T newItem) -> newItem));
+    }
+    public static <T> ObjectLens<T, T> theObject() {
+        return ObjectLens.of(LensSpec.of((T item) -> item, (T host, T newItem) -> newItem));
+    }
+    public static <T extends Comparable<T>> ComparableLens<T, T> theComparable() {
+        return ComparableLens.of(LensSpec.of((T item) -> item, (T host, T newItem) -> newItem));
+    }
+    
+    
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <H> LensCreator<H, String, StringAccess<H>, StringLens<H>> ofString() {
@@ -152,8 +173,9 @@ public class Lenses {
     
     public static <TYPE, SUBACCESS extends AnyAccess<List<TYPE>, TYPE>, SUBLENS extends Lens<List<TYPE>, TYPE>> ListLens<List<TYPE>, TYPE, SUBLENS> 
         theList(LensCreator<List<TYPE>, TYPE, SUBACCESS, SUBLENS> subCreator) {
-        val spec = Lenses.createLensSpecParameterized(l -> l, (l, n)->n, subCreator::newLenes);
-        val listLens = ListLens.of(spec);
+        LensSpecParameterized<List<TYPE>, List<TYPE>, TYPE, SUBLENS> spec
+                = Lenses.createLensSpecParameterized(l -> l, (l, n)->n, subCreator::newLenes);
+        ListLens<List<TYPE>, TYPE, SUBLENS> listLens = ListLens.of(spec);
         return listLens;
     }
     

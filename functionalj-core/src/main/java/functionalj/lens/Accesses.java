@@ -7,12 +7,16 @@ import functionalj.types.FunctionalList;
 import lombok.val;
 
 public interface Accesses {
-    // TODO - theString should have 'of' that take a string function.
     
-    public static final AnyAccess<Object, Object> theObject  = (Object  item) -> item;
-    public static final BooleanAccess<Boolean>    theBoolean = (Boolean item) -> item;
-    public static final StringAccess<String>      theString  = (String  item) -> item;
-    public static final IntegerAccess<Integer>    theInteger = (Integer item) -> item;
+    public static <H> BooleanAccess<H> $B(Function<H, Boolean> access) {
+        return access::apply;
+    }
+    public static <H> IntegerAccess<H> $I(Function<H, Integer> access) {
+        return access::apply;
+    }
+    public static <H> StringAccess<H> $S(Function<H, String> access) {
+        return access::apply;
+    }
 
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -20,19 +24,14 @@ public interface Accesses {
         return (AccessCreator<H, Boolean, BooleanAccess<H>>)(AccessCreator)__internal__.accessCreatorBoolean;
     }
     @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <H> AccessCreator<H, Integer, IntegerAccess<H>> ofInteger() {
+        return (AccessCreator<H, Integer, IntegerAccess<H>>)(AccessCreator)__internal__.accessCreatorInteger;
+    }
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <H> AccessCreator<H, String, StringAccess<H>> ofString() {
         return (AccessCreator<H, String, StringAccess<H>>)(AccessCreator)__internal__.accessCreatorString;
     }
     
-    public static <T> AnyAccess<T, T> theItem() {
-        return (T item) -> item;
-    }
-    public static <T> ObjectAccess<T, T> theObject() {
-        return (T item) -> item;
-    }
-    public static <T extends Comparable<T>> ComparableAccess<T, T> theComparable() {
-        return (T item) -> item;
-    }
     
     // List
     
@@ -91,6 +90,15 @@ public interface Accesses {
             @Override
             public BooleanAccess<Object> newAccess(Function<Object, Boolean> accessToValue) {
                 return accessToValue::apply;
+            }
+        };
+        private static final AccessCreator<Object, Integer, IntegerAccess<Object>> accessCreatorInteger
+        = new AccessCreator<Object, Integer, IntegerAccess<Object>>() {
+            @Override
+            public IntegerAccess<Object> newAccess(Function<Object, Integer> accessToValue) {
+                return host -> {
+                    return accessToValue.apply(host);
+                };
             }
         };
         private static final AccessCreator<Object, String, StringAccess<Object>> accessCreatorString
