@@ -5,8 +5,8 @@ import java.util.function.Function;
 
 import lombok.Getter;
 
-@Getter
-public class LensSpec<HOST, DATA> implements Function<HOST, DATA> {
+public class LensSpec<HOST, DATA> 
+            implements Function<HOST, DATA> {
     
     public static <DATA> Function<DATA, DATA>  selfRead()  { return self->self;        }
     public static <DATA> WriteLens<DATA, DATA> selfWrite() { return (host,self)->self; }
@@ -14,6 +14,17 @@ public class LensSpec<HOST, DATA> implements Function<HOST, DATA> {
     private final Function<HOST, DATA>  read;
     private final WriteLens<HOST, DATA> write;
     private final BooleanSupplier       isNullSafe;  // May regret this later .. but WTH.
+    
+    public Function<HOST, DATA> getRead() {
+        return read;
+    }
+    public WriteLens<HOST, DATA> getWrite() {
+        return write;
+    }
+    public BooleanSupplier getIsNullSafe() {
+        return isNullSafe;
+    }
+    
     
     public static final BooleanSupplier SUPPLY_TRUE = new BooleanSupplier() {
         @Override public boolean getAsBoolean() { return true; }
