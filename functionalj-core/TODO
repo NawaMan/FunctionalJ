@@ -22,7 +22,16 @@
 + FunctionalList
 - FMap
 - Promise
-- Prism -> Multiple Promise combine to one.
+- Prism -> Multiple Promise combine to one. create an obj from supplier/function of each fields.
 - StoreRef, StoreList, StoreMap
 
 - Clean up TYPE,VALUE,DATA
+
+- TupleLens
+- List lens should has similar interface as FunctionalListLens
+- StreamPlus
+- Builder
+- ExhaughBuilder
+- MapBasedDataObject
+- Remove MayBe?
+- Remove Kinds?

@@ -1,8 +1,11 @@
 package functionalj.lens;
 
+import static functionalj.lens.Accesses.$S;
+import static functionalj.lens.Accesses.theString;
 import static functionalj.lens.LensTest.Car.theCar;
 import static functionalj.lens.LensTest.Company.theCompany;
 import static functionalj.lens.LensTest.Driver.theDriver;
+import static functionalj.types.ImmutableList.listOf;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -234,6 +237,28 @@ public class LensTest {
             fail("Expect an NPE.");
         } catch (NullPointerException e) {
         }
+    }
+    
+    public void testShortHand() {
+        val lists = listOf(
+                    listOf("ONE", "TWO", "THREE"),
+                    listOf("AE", "BEE", "SEE")
+                );
+        
+        val theStrListLens = Lenses.theList(Lenses.ofString());
+        assertEquals(
+                "[[ONE (3), TWO, THREE], [AE (2), BEE, SEE]]",
+                "" + lists
+                        .map(theStrListLens
+                                .first()
+                                .changeTo(theString.concat(" (", $S.length(), ")"))));
+        
+        assertEquals(
+                "[[ONE (3), TWO, THREE], [AE (2), BEE, SEE]]",
+                "" + lists
+                        .map(theStrListLens
+                                .first()
+                                .changeTo(theString.format("%s (%s)", $S, $S.length()))));
     }
     
 }

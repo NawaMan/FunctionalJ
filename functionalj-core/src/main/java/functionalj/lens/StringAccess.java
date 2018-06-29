@@ -4,9 +4,18 @@ import static functionalj.FunctionalStrings.stringOf;
 
 import java.util.Locale;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 @FunctionalInterface
-public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
+public  interface StringAccess<HOST> 
+        extends 
+            ObjectAccess<HOST,String>, 
+            AccessCreator<HOST, String, StringAccess<HOST>> {
+    
+    @Override
+    public default StringAccess<HOST> newAccess(Function<HOST, String> accessToValue) {
+        return accessToValue::apply;
+    }
     
     // Extra
     
@@ -146,10 +155,6 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String> {
     
     public default StringAccess<HOST> trim() {
         return stringAccess(null, str->str.trim());
-    }
-
-    public default Function<HOST, HOST> changeTo(String string) {
-        return null;
     }
     
 }

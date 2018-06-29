@@ -1,7 +1,9 @@
 package functionalj.lens;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 
+@FunctionalInterface
 public interface BooleanAccess<HOST> extends AnyAccess<HOST, Boolean> , Predicate<HOST> {
     
     public default boolean test(HOST host) {

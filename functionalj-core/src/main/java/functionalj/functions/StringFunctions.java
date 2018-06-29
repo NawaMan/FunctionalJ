@@ -1,6 +1,6 @@
 package functionalj.functions;
 
-import static functionalj.FunctionalStrings.stringOf;
+import static functionalj.StringFuncs.stringOf;
 import static functionalj.functions.Absent.__;
 
 import java.util.Map;

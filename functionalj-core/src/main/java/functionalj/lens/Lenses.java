@@ -7,12 +7,18 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
+import functionalj.lens.Accesses.__internal__;
 import functionalj.types.FunctionalList;
 import functionalj.types.MayBe;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
 public class Lenses {
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <H> LensCreator<H, String, StringAccess<H>, StringLens<H>> ofString() {
+        return (LensCreator<H, String, StringAccess<H>, StringLens<H>>)(LensCreator)__internal__.lensCreatorString;
+    }
     
     public static <HOST, DATA, SUB, SUBLENS> SUBLENS createSubLens(
             ObjectLens<HOST, DATA>                 dataLens,
@@ -144,6 +150,13 @@ public class Lenses {
     
     //== List ==
     
+    public static <TYPE, SUBACCESS extends AnyAccess<List<TYPE>, TYPE>, SUBLENS extends Lens<List<TYPE>, TYPE>> ListLens<List<TYPE>, TYPE, SUBLENS> 
+        theList(LensCreator<List<TYPE>, TYPE, SUBACCESS, SUBLENS> subCreator) {
+        val spec = Lenses.createLensSpecParameterized(l -> l, (l, n)->n, subCreator::newLenes);
+        val listLens = ListLens.of(spec);
+        return listLens;
+    }
+    
     public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> ListLens<HOST, TYPE, SUBLENS> 
         createListLens(
             Function<HOST, List<TYPE>>              read,
@@ -240,4 +253,18 @@ public class Lenses {
         return () -> newSpec;
     }
 
+    public static final class __internal__ {
+        private static final LensCreator<Object, String, StringAccess<Object>, StringLens<Object>> lensCreatorString
+        = new LensCreator<Object, String, StringAccess<Object>, StringLens<Object>>() {
+            @Override
+            public StringLens<Object> newLenes(LensSpec<Object, String> spec) {
+                return StringLens.of(spec);
+            }
+            
+            @Override
+            public StringAccess<Object> newAccess(Function<Object, String> accessToValue) {
+                return accessToValue::apply;
+            }
+        };
+    }
 }

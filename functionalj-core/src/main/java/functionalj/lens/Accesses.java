@@ -9,11 +9,21 @@ import lombok.val;
 public interface Accesses {
     // TODO - theString should have 'of' that take a string function.
     
-    public static final AnyAccess<Object, Object> theObject   = (Object  item) -> item;
+    public static final AnyAccess<Object, Object> theObject  = (Object  item) -> item;
     public static final BooleanAccess<Boolean>    theBoolean = (Boolean item) -> item;
     public static final StringAccess<String>      theString  = (String  item) -> item;
     public static final IntegerAccess<Integer>    theInteger = (Integer item) -> item;
 
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <H> AccessCreator<H, Boolean, BooleanAccess<H>> ofBoolean() {
+        return (AccessCreator<H, Boolean, BooleanAccess<H>>)(AccessCreator)__internal__.accessCreatorBoolean;
+    }
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <H> AccessCreator<H, String, StringAccess<H>> ofString() {
+        return (AccessCreator<H, String, StringAccess<H>>)(AccessCreator)__internal__.accessCreatorString;
+    }
+    
     public static <T> AnyAccess<T, T> theItem() {
         return (T item) -> item;
     }
@@ -25,6 +35,21 @@ public interface Accesses {
     }
     
     // List
+    
+    public static <TYPE, TYPEACCESS extends AnyAccess<List<TYPE>, TYPE>> 
+            ListAccess<List<TYPE>, TYPE, TYPEACCESS> theList(AccessCreator<List<TYPE>, TYPE, TYPEACCESS> typeAccessCreator) {
+        val accessParameterized = new AccessParameterized<List<TYPE>, List<TYPE>, TYPE, TYPEACCESS>() {
+            @Override
+            public List<TYPE> apply(List<TYPE> list) {
+                return list;
+            }
+            @Override
+            public TYPEACCESS createSubAccessFromHost(Function<List<TYPE>, TYPE> accessToParameter) {
+                return typeAccessCreator.newAccess(accessToParameter);
+            }
+        };
+        return () -> accessParameterized;
+    }
     
     public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> ListAccess<HOST, TYPE, TYPEACCESS>
             createSubListAccess(
@@ -58,6 +83,25 @@ public interface Accesses {
             }
         };
         return () -> specWithSub;
+    }
+    
+    public static final class __internal__ {
+        private static final AccessCreator<Object, Boolean, BooleanAccess<Object>> accessCreatorBoolean 
+        = new AccessCreator<Object, Boolean, BooleanAccess<Object>>() {
+            @Override
+            public BooleanAccess<Object> newAccess(Function<Object, Boolean> accessToValue) {
+                return accessToValue::apply;
+            }
+        };
+        private static final AccessCreator<Object, String, StringAccess<Object>> accessCreatorString
+        = new AccessCreator<Object, String, StringAccess<Object>>() {
+            @Override
+            public StringAccess<Object> newAccess(Function<Object, String> accessToValue) {
+                return host -> {
+                    return accessToValue.apply(host);
+                };
+            }
+        };
     }
     
 }

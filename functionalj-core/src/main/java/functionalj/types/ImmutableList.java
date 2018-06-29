@@ -85,6 +85,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         
         return new ImmutableList<T>(functionalList.toList());
     }
+    @SafeVarargs
     public static <T> ImmutableList<T> listOf(T ... data) {
         return new ImmutableList<T>(Arrays.asList(data));
     }

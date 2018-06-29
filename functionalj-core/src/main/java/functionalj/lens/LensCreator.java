@@ -2,8 +2,11 @@ package functionalj.lens;
 
 import java.util.function.Function;
 
-@FunctionalInterface
-public interface LensCreator<HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>>
-                    extends Function<LensSpec<HOST, TYPE>, TYPELENS> {
+public interface LensCreator<HOST, TYPE, TYPEACCESS extends AnyAccess<?, TYPE>, TYPELENS extends Lens<?, TYPE>> 
+                    extends AccessCreator<HOST, TYPE, TYPEACCESS>{
+    
+    public TYPELENS newLenes(LensSpec<HOST, TYPE> spec);
+
+    public TYPEACCESS newAccess(Function<HOST, TYPE> accessToValue);
     
 }
