@@ -9,6 +9,7 @@ public interface StringLens<HOST> extends AnyLens<HOST, String>, StringAccess<HO
         return () -> spec;
     }
     
+    
     @Override
     default String apply(HOST host) {
         return lensSpec().getRead().apply(host);

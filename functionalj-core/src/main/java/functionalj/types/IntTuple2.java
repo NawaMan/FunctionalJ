@@ -10,9 +10,9 @@ import java.util.function.ToIntFunction;
 
 import functionalj.lens.AccessParameterized;
 import functionalj.lens.AnyAccess;
+import functionalj.lens.AnyLens;
 import functionalj.lens.IntegerAccess;
 import functionalj.lens.IntegerLens;
-import functionalj.lens.Lens;
 import functionalj.lens.LensSpec;
 import functionalj.lens.LensSpecParameterized;
 import functionalj.lens.Lenses;
@@ -25,9 +25,9 @@ public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T
     public final int _1;
     public final T2  _2;
     
-    public IntTuple2(int _1, T2 _2) {
+    public IntTuple2(int _1, T2 T2) {
         this._1 = _1;
-        this._2 = _2;
+        this._2 = T2;
     }
 
     public int _int() {
@@ -97,7 +97,7 @@ public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T
         public default IntegerAccess<HOST> _1() {
             return intAccess(0, IntTuple2::_1);
         }
-        public default T2ACCESS _2() {
+        public default T2ACCESS T2() {
             return accessParameterized().createSubAccess(IntTuple2::_2);
         }
     }
@@ -107,56 +107,56 @@ public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T
     public static IntTuple2Lens<IntTuple2<Object>, Object, ObjectLens<IntTuple2<Object>, Object>>
                         genericIntTuple2 = createTheTuple(ObjectLens::of);
     
-    public static <T2, T2LENS extends Lens<IntTuple2<T2>, T2>> 
+    public static <T2, T2LENS extends AnyLens<IntTuple2<T2>, T2>> 
             IntTuple2Lens<IntTuple2<T2>, T2, T2LENS> createTheTuple(
-                Function<LensSpec<IntTuple2<T2>, T2>, T2LENS> _2LensCreator) {
-        return IntTuple2Lens.of(t -> t, (t, newT) -> newT, _2LensCreator);
+                Function<LensSpec<IntTuple2<T2>, T2>, T2LENS> T2LensCreator) {
+        return IntTuple2Lens.of(t -> t, (t, newT) -> newT, T2LensCreator);
     }
     
 
-    public static interface IntTuple2Lens<HOST, _2, _2LENS extends Lens<HOST,_2>>
+    public static interface IntTuple2Lens<HOST, T2, T2LENS extends AnyLens<HOST,T2>>
             extends
-                ObjectLens<HOST, IntTuple2<_2>>,
-                IntTuple2Access<HOST, _2, _2LENS> {
+                ObjectLens<HOST, IntTuple2<T2>>,
+                IntTuple2Access<HOST, T2, T2LENS> {
 
-        public static <HOST, _2, _2LENS extends Lens<HOST,_2>>
-                IntTuple2Lens<HOST, _2, _2LENS> of(
-                        Function<HOST,  IntTuple2<_2>>      read,
-                        WriteLens<HOST, IntTuple2<_2>>      write,
-                        Function<LensSpec<HOST, _2>, _2LENS> valueLensCreator) {
-            val spec = new LensSpecParameterized<HOST, IntTuple2<_2>, _2, _2LENS>() {
-                @Override public LensSpec<HOST, IntTuple2<_2>> getSpec()          { return LensSpec.of(read, write);        }
-                @Override public _2LENS createSubLens(LensSpec<HOST, _2> subSpec) { return valueLensCreator.apply(subSpec); }
+        public static <HOST, T2, T2LENS extends AnyLens<HOST,T2>>
+                IntTuple2Lens<HOST, T2, T2LENS> of(
+                        Function<HOST,  IntTuple2<T2>>      read,
+                        WriteLens<HOST, IntTuple2<T2>>      write,
+                        Function<LensSpec<HOST, T2>, T2LENS> valueLensCreator) {
+            val spec = new LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS>() {
+                @Override public LensSpec<HOST, IntTuple2<T2>> getSpec()          { return LensSpec.of(read, write);        }
+                @Override public T2LENS createSubLens(LensSpec<HOST, T2> subSpec) { return valueLensCreator.apply(subSpec); }
             };    
             return ()->spec;
         }
 
-        public LensSpecParameterized<HOST, IntTuple2<_2>, _2, _2LENS> lensSpecParameterized();
+        public LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS> lensSpecParameterized();
         
         @Override
-        public default AccessParameterized<HOST, IntTuple2<_2>, _2, _2LENS> accessParameterized() {
+        public default AccessParameterized<HOST, IntTuple2<T2>, T2, T2LENS> accessParameterized() {
             return lensSpecParameterized();
         }
 
         @Override
-        public default LensSpec<HOST, IntTuple2<_2>> lensSpec() {
+        public default LensSpec<HOST, IntTuple2<T2>> lensSpec() {
             return lensSpecParameterized().getSpec();
         }
         
         @Override
-        default IntTuple2<_2> apply(HOST host) {
+        default IntTuple2<T2> apply(HOST host) {
             return IntTuple2Access.super.apply(host);
         }
         
         public default IntegerLens<HOST> _1() {
-            WriteLens<IntTuple2<_2>, Integer> write = (tuple, _1) -> new IntTuple2<_2>(_1, tuple._2);
-            Function <IntTuple2<_2>, Integer> read  = IntTuple2::_1;
+            WriteLens<IntTuple2<T2>, Integer> write = (tuple, _1) -> new IntTuple2<T2>(_1, tuple._2);
+            Function <IntTuple2<T2>, Integer> read  = IntTuple2::_1;
             return Lenses.createSubLens(this, read, write, IntegerLens::of);
         }
         
-        public default _2LENS _2() {
-            val write = (WriteLens<IntTuple2<_2>, _2>)((tuple, _2) -> new IntTuple2<_2>(tuple._1, _2));
-            val read  = (Function <IntTuple2<_2>, _2>)IntTuple2::_2;
+        public default T2LENS T2() {
+            val write = (WriteLens<IntTuple2<T2>, T2>)((tuple, T2) -> new IntTuple2<T2>(tuple._1, T2));
+            val read  = (Function <IntTuple2<T2>, T2>)IntTuple2::_2;
             return Lenses.createSubLens(this, read, write, lensSpecParameterized()::createSubLens);
         }
         
@@ -167,9 +167,9 @@ public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T
             };
         }
         
-        public default Function<HOST, HOST> change2To(_2 _2value) {
+        public default Function<HOST, HOST> change2To(T2 T2value) {
             return host -> {
-                val newTuple = new IntTuple2<>(apply(host)._1, _2value);
+                val newTuple = new IntTuple2<>(apply(host)._1, T2value);
                 return apply(host, newTuple);
             };
         }
@@ -187,9 +187,9 @@ public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T
             };
         }
         
-        public default Function<HOST, HOST> change2By(Supplier<_2> _2valueSupplier) {
+        public default Function<HOST, HOST> change2By(Supplier<T2> T2valueSupplier) {
             return host -> {
-                val newTuple = new IntTuple2<>(apply(host)._1, _2valueSupplier.get());
+                val newTuple = new IntTuple2<>(apply(host)._1, T2valueSupplier.get());
                 return apply(host, newTuple);
             };
         }
@@ -219,16 +219,16 @@ public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T
             };
         }
         
-        public default Function<HOST, HOST> change2By(Function<_2,_2> _2valueTransformer) {
+        public default Function<HOST, HOST> change2By(Function<T2,T2> T2valueTransformer) {
             return host -> {
                 val oldTuple = apply(host);
-                val new_2 = _2valueTransformer.apply(oldTuple._2);
-                val newTuple = new IntTuple2<>(oldTuple._1, new_2);
+                val newT2 = T2valueTransformer.apply(oldTuple._2);
+                val newTuple = new IntTuple2<>(oldTuple._1, newT2);
                 return apply(host, newTuple);
             };
         }
         
-        public default Function<HOST, HOST> change1By(BiFunction<Integer,_2,Integer> _1valueTransformer) {
+        public default Function<HOST, HOST> change1By(BiFunction<Integer,T2,Integer> _1valueTransformer) {
             return host -> {
                 val oldTuple = apply(host);
                 val new_1    = _1valueTransformer.apply(oldTuple._1, oldTuple._2);
@@ -237,11 +237,11 @@ public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T
             };
         }
         
-        public default Function<HOST, HOST> change2By(BiFunction<Integer,_2,_2> _2valueTransformer) {
+        public default Function<HOST, HOST> change2By(BiFunction<Integer,T2,T2> T2valueTransformer) {
             return host -> {
                 val oldTuple = apply(host);
-                val new_2    = _2valueTransformer.apply(oldTuple._1, oldTuple._2);
-                val newTuple = new IntTuple2<>(oldTuple._1, new_2);
+                val newT2    = T2valueTransformer.apply(oldTuple._1, oldTuple._2);
+                val newTuple = new IntTuple2<>(oldTuple._1, newT2);
                 return apply(host, newTuple);
             };
         }

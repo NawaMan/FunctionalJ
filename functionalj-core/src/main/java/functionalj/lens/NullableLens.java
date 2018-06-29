@@ -8,12 +8,12 @@ import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
-public interface NullableLens<HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>>
+public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
                     extends 
                         ObjectLens<HOST, Nullable<TYPE>>,
                         NullableAccess<HOST, TYPE, SUBLENS> {
     
-    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>>
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
         NullableLens<HOST, TYPE, SUBLENS> of(
             LensSpec<HOST, Nullable<TYPE>> nullableLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {

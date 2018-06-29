@@ -15,13 +15,13 @@ import functionalj.types.Tuple2;
 import lombok.val;
 
 public interface MapLens<HOST, KEY, VALUE, 
-                            KEYLENS   extends Lens<HOST,KEY>, 
-                            VALUELENS extends Lens<HOST,VALUE>>
+                            KEYLENS   extends AnyLens<HOST,KEY>, 
+                            VALUELENS extends AnyLens<HOST,VALUE>>
                     extends
                         ObjectLens<HOST, Map<KEY, VALUE>>,
                         MapAccess<HOST, KEY, VALUE, KEYLENS, VALUELENS> {
     
-    public static <HOST, KEY, VALUE, KEYLENS extends Lens<HOST,KEY>, VALUELENS extends Lens<HOST,VALUE>>
+    public static <HOST, KEY, VALUE, KEYLENS extends AnyLens<HOST,KEY>, VALUELENS extends AnyLens<HOST,VALUE>>
             MapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> of(
                     Function<HOST,  Map<KEY, VALUE>>           read,
                     WriteLens<HOST, Map<KEY, VALUE>>           write,

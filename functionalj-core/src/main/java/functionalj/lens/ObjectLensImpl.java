@@ -29,7 +29,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         return Lenses.createSubLens(this, readSub, writeSub, subLensCreator);
     }
     
-    protected <SUB, SUBLENS extends Lens<HOST, SUB>> 
+    protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
             ListLens<HOST, SUB, SUBLENS> createSubListLens(
                 Function<DATA, List<SUB>>                   readSub,
                 WriteLens<DATA, List<SUB>>                  writeSub,
@@ -43,7 +43,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         return listLens;
     }
     
-    protected <SUB, SUBLENS extends Lens<HOST, SUB>> 
+    protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
             NullableLens<HOST, SUB, SUBLENS> createSubNullableLens(
                 Function<DATA,  Nullable<SUB>>         readSub,
                 WriteLens<DATA, Nullable<SUB>>         writeSub,
@@ -57,7 +57,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         return lens;
     }
     
-    protected <SUB, SUBLENS extends Lens<HOST, SUB>> 
+    protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
             OptionalLens<HOST, SUB, SUBLENS> createSubOptionalLens(
                 Function<DATA,  Optional<SUB>>         readSub,
                 WriteLens<DATA, Optional<SUB>>         writeSub,
@@ -71,7 +71,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         return lens;
     }
     
-    protected <SUB, SUBLENS extends Lens<HOST, SUB>> 
+    protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
             MayBeLens<HOST, SUB, SUBLENS> createSubMayBeLens(
                 Function<DATA,  MayBe<SUB>>            readSub,
                 WriteLens<DATA, MayBe<SUB>>            writeSub,
@@ -85,7 +85,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         return lens;
     }
         
-    protected <KEY, VALUE, KEYLENS extends Lens<HOST,KEY>, VALUELENS extends Lens<HOST,VALUE>>
+    protected <KEY, VALUE, KEYLENS extends AnyLens<HOST,KEY>, VALUELENS extends AnyLens<HOST,VALUE>>
         MapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> createSubMapLens(
                 Function<DATA,  Map<KEY, VALUE>>           readSub,
                 WriteLens<DATA, Map<KEY, VALUE>>           writeSub,
@@ -97,4 +97,5 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         val subWrite   = (WriteLens<HOST, Map<KEY, VALUE>>)Lenses.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
         return MapLens.of(subRead, subWrite, keyLensCreator, valueLensCreator);
     }
+    
 }

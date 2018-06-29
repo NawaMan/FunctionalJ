@@ -10,20 +10,20 @@ import functionalj.functions.Func1;
 import lombok.val;
 
 @FunctionalInterface
-public interface ListLens<HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>>
+public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         extends
             ObjectLens<HOST, List<TYPE>>,
             ListAccess<HOST, TYPE, TYPELENS> {
     
 
-    public static <HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>> 
+    public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             ListLens<HOST, TYPE, TYPELENS> of(
                 Function<HOST, List<TYPE>>               read,
                 WriteLens<HOST, List<TYPE>>              write,
                 Function<LensSpec<HOST, TYPE>, TYPELENS> subCreator) {
         return Lenses.createListLens(read, write, subCreator);
     }
-    public static <HOST,  TYPE, TYPELENS extends Lens<HOST, TYPE>> 
+    public static <HOST,  TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             ListLens<HOST, TYPE, TYPELENS> of(LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS> spec) {
         return new ListLens<HOST, TYPE, TYPELENS>() {
             @Override

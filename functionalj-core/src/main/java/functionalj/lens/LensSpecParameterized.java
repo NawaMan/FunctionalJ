@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import lombok.val;
 
-public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends Lens<HOST, SUB>>
+public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyLens<HOST, SUB>>
             extends AccessParameterized<HOST, TYPE, SUB, SUBLENS> {
     
     public LensSpec<HOST, TYPE> getSpec();

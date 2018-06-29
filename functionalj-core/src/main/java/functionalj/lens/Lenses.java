@@ -37,8 +37,8 @@ public class Lenses {
     
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <H> LensCreator<H, String, StringAccess<H>, StringLens<H>> ofString() {
-        return (LensCreator<H, String, StringAccess<H>, StringLens<H>>)(LensCreator)__internal__.lensCreatorString;
+    public static <H> LensType<H, String, StringAccess<H>, StringLens<H>> ofString() {
+        return (LensType<H, String, StringAccess<H>, StringLens<H>>)(LensType)__internal__.lensCreatorString;
     }
     
     public static <HOST, DATA, SUB, SUBLENS> SUBLENS createSubLens(
@@ -91,7 +91,7 @@ public class Lenses {
     
     //== Parameterized ==
     
-    public static <HOST, TYPE, SUB, SUBLENS extends Lens<HOST, SUB>> 
+    public static <HOST, TYPE, SUB, SUBLENS extends AnyLens<HOST, SUB>> 
         LensSpecParameterized<HOST, TYPE, SUB, SUBLENS> createLensSpecParameterized(
             Function<HOST, TYPE>                   read,
             WriteLens<HOST, TYPE>                  write,
@@ -111,7 +111,7 @@ public class Lenses {
     
     //== Nullable ==
     
-    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> NullableLens<HOST, TYPE, SUBLENS> 
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> NullableLens<HOST, TYPE, SUBLENS> 
         createNullableLens(
             Function<HOST, Nullable<TYPE>>          read,
             WriteLens<HOST, Nullable<TYPE>>         write,
@@ -121,7 +121,7 @@ public class Lenses {
         return lens;
     }
     
-    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> NullableLens<HOST, TYPE, SUBLENS> 
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> NullableLens<HOST, TYPE, SUBLENS> 
         createNullableLens(
             LensSpec<HOST, Nullable<TYPE>> nullableLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
@@ -131,7 +131,7 @@ public class Lenses {
     
     //== Optional ==
     
-    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> OptionalLens<HOST, TYPE, SUBLENS> 
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> OptionalLens<HOST, TYPE, SUBLENS> 
         createOptionalLens(
             Function<HOST, Optional<TYPE>>          read,
             WriteLens<HOST, Optional<TYPE>>         write,
@@ -141,7 +141,7 @@ public class Lenses {
         return lens;
     }
     
-    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> OptionalLens<HOST, TYPE, SUBLENS> 
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> OptionalLens<HOST, TYPE, SUBLENS> 
         createOptionalLens(
             LensSpec<HOST, Optional<TYPE>> spec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
@@ -171,15 +171,15 @@ public class Lenses {
     
     //== List ==
     
-    public static <TYPE, SUBACCESS extends AnyAccess<List<TYPE>, TYPE>, SUBLENS extends Lens<List<TYPE>, TYPE>> ListLens<List<TYPE>, TYPE, SUBLENS> 
-        theList(LensCreator<List<TYPE>, TYPE, SUBACCESS, SUBLENS> subCreator) {
+    public static <TYPE, SUBACCESS extends AnyAccess<List<TYPE>, TYPE>, SUBLENS extends AnyLens<List<TYPE>, TYPE>> ListLens<List<TYPE>, TYPE, SUBLENS> 
+        theList(LensType<List<TYPE>, TYPE, SUBACCESS, SUBLENS> subCreator) {
         LensSpecParameterized<List<TYPE>, List<TYPE>, TYPE, SUBLENS> spec
-                = Lenses.createLensSpecParameterized(l -> l, (l, n)->n, subCreator::newLenes);
+                = Lenses.createLensSpecParameterized(l -> l, (l, n)->n, subCreator::newLens);
         ListLens<List<TYPE>, TYPE, SUBLENS> listLens = ListLens.of(spec);
         return listLens;
     }
     
-    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> ListLens<HOST, TYPE, SUBLENS> 
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ListLens<HOST, TYPE, SUBLENS> 
         createListLens(
             Function<HOST, List<TYPE>>              read,
             WriteLens<HOST, List<TYPE>>             write,
@@ -189,7 +189,7 @@ public class Lenses {
         return listLens;
     }
     
-    public static <HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>> ListLens<HOST, TYPE, TYPELENS>
+    public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> ListLens<HOST, TYPE, TYPELENS>
             createSubListLens(
                 LensSpec<HOST, List<TYPE>>                              spec,
                 LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS> specParameterized,
@@ -209,7 +209,7 @@ public class Lenses {
     
     //== Map ==
 
-    public static <HOST, KEY, VALUE, KEYLENS extends Lens<HOST,KEY>, VALUELENS extends Lens<HOST,VALUE>>
+    public static <HOST, KEY, VALUE, KEYLENS extends AnyLens<HOST,KEY>, VALUELENS extends AnyLens<HOST,VALUE>>
             MapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> of(
                     Function<HOST,  Map<KEY, VALUE>>           read,
                     WriteLens<HOST, Map<KEY, VALUE>>           write,
@@ -218,7 +218,7 @@ public class Lenses {
         return MapLens.of(read, write, keyLensCreator, valueLensCreator);
     }
     
-    public static <KEYLENS extends Lens<HOST, KEY>, HOST, VALUELENS extends Lens<HOST, VALUE>, KEY, VALUE>
+    public static <KEYLENS extends AnyLens<HOST, KEY>, HOST, VALUELENS extends AnyLens<HOST, VALUE>, KEY, VALUE>
             LensSpecParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> createMapLensSpec(
                     Function<HOST,  Map<KEY, VALUE>>           read,
                     WriteLens<HOST, Map<KEY, VALUE>>           write,
@@ -247,7 +247,7 @@ public class Lenses {
     
     //== FunctionalList ==
     
-    public static <HOST, TYPE, SUBLENS extends Lens<HOST, TYPE>> FunctionalListLens<HOST, TYPE, SUBLENS> 
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> FunctionalListLens<HOST, TYPE, SUBLENS> 
         createFunctionalListLens(
             Function<HOST,  FunctionalList<TYPE>>   read,
             WriteLens<HOST, FunctionalList<TYPE>>   write,
@@ -257,7 +257,7 @@ public class Lenses {
         return listLens;
     }
     
-    public static <HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>> FunctionalListLens<HOST, TYPE, TYPELENS>
+    public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> FunctionalListLens<HOST, TYPE, TYPELENS>
             createSubFunctionalListLens(
                 LensSpec<HOST, FunctionalList<TYPE>>                              spec,
                 LensSpecParameterized<HOST, FunctionalList<TYPE>, TYPE, TYPELENS> specParameterized,
@@ -276,10 +276,41 @@ public class Lenses {
     }
 
     public static final class __internal__ {
-        private static final LensCreator<Object, String, StringAccess<Object>, StringLens<Object>> lensCreatorString
-        = new LensCreator<Object, String, StringAccess<Object>, StringLens<Object>>() {
+        
+        public static abstract class AbstractLensCreator<H, T, TA extends AnyAccess<H, T>, TL extends AnyLens<H, T>> 
+                implements LensType<H, T, TA, TL>{
+            
+            private final Class<T>  dataClass;
+            private final Class<TA> accessClass;
+            private final Class<TL> lensClass;
+            
+            protected AbstractLensCreator(Class<T> dataClass, Class<? extends AnyAccess> accessClass, Class<? extends AnyLens> lensClass) {
+                this.dataClass   = dataClass;
+                this.accessClass = (Class)accessClass;
+                this.lensClass   = (Class)lensClass;
+            }
+
             @Override
-            public StringLens<Object> newLenes(LensSpec<Object, String> spec) {
+            public Class<T> getDataClass() {
+                return dataClass;
+            }
+
+            @Override
+            public Class<TA> getAccessClass() {
+                return accessClass;
+            }
+
+            @Override
+            public Class<TL> getLensClass() {
+                return lensClass;
+            }
+            
+        }
+        
+        private static final LensType<Object, String, StringAccess<Object>, StringLens<Object>> lensCreatorString
+        = new AbstractLensCreator<Object, String, StringAccess<Object>, StringLens<Object>>(String.class, StringAccess.class, StringLens.class) {
+            @Override
+            public StringLens<Object> newLens(LensSpec<Object, String> spec) {
                 return StringLens.of(spec);
             }
             

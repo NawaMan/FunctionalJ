@@ -9,20 +9,20 @@ import functionalj.types.FunctionalList;
 import functionalj.types.ImmutableList;
 import lombok.val;
 
-public interface FunctionalListLens<HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>>
+public interface FunctionalListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         extends
             ObjectLens<HOST, FunctionalList<TYPE>>,
             FunctionalListAccess<HOST, TYPE, TYPELENS> {
     
 
-    public static <HOST, TYPE, TYPELENS extends Lens<HOST, TYPE>> 
+    public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             FunctionalListLens<HOST, TYPE, TYPELENS> of(
                 Function<HOST,  FunctionalList<TYPE>>    read,
                 WriteLens<HOST, FunctionalList<TYPE>>    write,
                 Function<LensSpec<HOST, TYPE>, TYPELENS> subCreator) {
         return Lenses.createFunctionalListLens(read, write, subCreator);
     }
-    public static <HOST,  TYPE, TYPELENS extends Lens<HOST, TYPE>> 
+    public static <HOST,  TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             FunctionalListLens<HOST, TYPE, TYPELENS> of(LensSpecParameterized<HOST, FunctionalList<TYPE>, TYPE, TYPELENS> spec) {
         return ()->spec;
     }

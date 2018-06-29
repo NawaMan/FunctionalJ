@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.lens.AccessParameterized2;
-import functionalj.lens.Lens;
+import functionalj.lens.AnyLens;
 import functionalj.lens.LensSpec;
 import functionalj.lens.LensSpecParameterized2;
 import functionalj.lens.Lenses;
@@ -64,7 +64,7 @@ public class Tuple2<T1, T2> implements ITuple2<T1, T2>, Map.Entry<T1, T2> {
                         genericTuple2 = createTheTuple(ObjectLens::of, ObjectLens::of);
     
     
-    public static <T1,T2, T1LENS extends Lens<Tuple2<T1, T2>, T1>, T2LENS extends Lens<Tuple2<T1, T2>, T2>> 
+    public static <T1,T2, T1LENS extends AnyLens<Tuple2<T1, T2>, T1>, T2LENS extends AnyLens<Tuple2<T1, T2>, T2>> 
             Tuple2Lens<Tuple2<T1,T2>, T1, T2, T1LENS, T2LENS> createTheTuple(
                 Function<LensSpec<Tuple2<T1, T2>, T1>, T1LENS> keyLensCreator,
                 Function<LensSpec<Tuple2<T1, T2>, T2>, T2LENS> valueLensCreator) {
@@ -73,13 +73,13 @@ public class Tuple2<T1, T2> implements ITuple2<T1, T2>, Map.Entry<T1, T2> {
     
     @FunctionalInterface
     public static interface Tuple2Lens<HOST, T1, T2, 
-                T1LENS extends Lens<HOST,T1>, 
-                T2LENS extends Lens<HOST,T2>>
+                T1LENS extends AnyLens<HOST,T1>, 
+                T2LENS extends AnyLens<HOST,T2>>
             extends
                 ObjectLens<HOST, Tuple2<T1, T2>>,
                 ITuple2.ITuple2Access<HOST, T1, T2, T1LENS, T2LENS> {
 
-        public static <HOST, _1, _2, _1LENS extends Lens<HOST,_1>, _2LENS extends Lens<HOST,_2>>
+        public static <HOST, _1, _2, _1LENS extends AnyLens<HOST,_1>, _2LENS extends AnyLens<HOST,_2>>
                 Tuple2Lens<HOST, _1, _2, _1LENS, _2LENS> of(
                         Function<HOST,  Tuple2<_1, _2>>      read,
                         WriteLens<HOST, Tuple2<_1, _2>>      write,
