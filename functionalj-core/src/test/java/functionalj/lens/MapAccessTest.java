@@ -9,6 +9,10 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
+import functionalj.lens.core.AccessParameterized2;
+import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.MapAccess;
+import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
 public class MapAccessTest {

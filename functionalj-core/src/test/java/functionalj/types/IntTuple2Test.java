@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import functionalj.lens.StringLens;
+import functionalj.lens.lenses.StringLens;
 import functionalj.types.IntTuple2.IntTuple2Lens;
 import lombok.val;
 

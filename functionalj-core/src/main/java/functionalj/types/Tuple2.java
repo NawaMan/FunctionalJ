@@ -5,13 +5,13 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.lens.AccessParameterized2;
-import functionalj.lens.AnyLens;
-import functionalj.lens.LensSpec;
-import functionalj.lens.LensSpecParameterized2;
-import functionalj.lens.LensUtils;
-import functionalj.lens.ObjectLens;
-import functionalj.lens.WriteLens;
+import functionalj.lens.core.AccessParameterized2;
+import functionalj.lens.core.LensSpec;
+import functionalj.lens.core.LensSpecParameterized2;
+import functionalj.lens.core.LensUtils;
+import functionalj.lens.core.WriteLens;
+import functionalj.lens.lenses.AnyLens;
+import functionalj.lens.lenses.ObjectLens;
 import lombok.val;
 
 public class Tuple2<T1, T2> implements ITuple2<T1, T2>, Map.Entry<T1, T2> {

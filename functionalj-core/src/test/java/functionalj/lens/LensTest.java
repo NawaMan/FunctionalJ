@@ -25,6 +25,10 @@ import static java.util.Collections.unmodifiableList;
 import functionalj.FunctionalJ;
 import functionalj.functions.Func1;
 import functionalj.lens.LensTest.Driver.DriverLens;
+import functionalj.lens.core.LensSpec;
+import functionalj.lens.lenses.ListLens;
+import functionalj.lens.lenses.ObjectLensImpl;
+import functionalj.lens.lenses.StringLens;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -253,7 +257,7 @@ public class LensTest {
                     listOf("AE", "BEE", "SEE")
                 );
         
-        val theStrListLens = Lenses.theList.of(LensTypes.ofString());
+        val theStrListLens = theList.of(LensTypes.STRING());
         assertEquals(
                 "[[ONE (3), TWO, THREE], [AE (2), BEE, SEE]]",
                 "" + lists

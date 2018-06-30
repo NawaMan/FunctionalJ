@@ -48,10 +48,10 @@ public class GenerateParentListChildTest {
                 "package me.test;\n" + 
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
-                "import functionalj.lens.LensSpec;\n" + 
-                "import functionalj.lens.ListLens;\n" + 
-                "import functionalj.lens.ObjectLensImpl;\n" + 
-                "import functionalj.lens.StringLens;\n" + 
+                "import functionalj.lens.core.LensSpec;\n" + 
+                "import functionalj.lens.lenses.ListLens;\n" + 
+                "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
+                "import functionalj.lens.lenses.StringLens;\n" + 
                 "import functionalj.types.ImmutableList;\n" + 
                 "import java.util.List;\n" + 
                 "import java.util.function.BiFunction;\n" + 

@@ -12,6 +12,9 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
+import functionalj.lens.core.AccessParameterized;
+import functionalj.lens.lenses.ListAccess;
+import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
 public class ListAccessTest {

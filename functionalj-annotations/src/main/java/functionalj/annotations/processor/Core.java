@@ -41,36 +41,41 @@ import functionalj.annotations.processor.generator.Type;
 @SuppressWarnings("javadoc")
 public enum Core {
     
-    IntegerLens   ("IntegerLens"),
-    LongLens      ("LongLens"),
-    DoubleLens    ("DoubleLens"),
-    BigIntegerLens("BigIntegerLens"),
-    BigDecimalLens("BigDecimalLens"),
-    BooleanLens   ("BooleanLens"),
-    StringLens    ("StringLens"),
-    ListLens      ("ListLens"),
-    MapLens       ("MapLens"),
-    NullableLens  ("NullableLens"),
-    OptionalLens  ("OptionalLens"),
-    MayBeLens     ("MayBeLens"),
+    BigDecimalLens    ("BigDecimalLens"),
+    BigIntegerLens    ("BigIntegerLens"),
+    BooleanLens       ("BooleanLens"),
+    DoubleLens        ("DoubleLens"),
+    FunctionalListLens("FunctionalListLens"),
+    IntegerLens       ("IntegerLens"),
+    ListLens          ("ListLens"),
+    LongLens          ("LongLens"),
+    MapLens           ("MapLens"),
+    MayBeLens         ("MayBeLens"),
+    NullableLens      ("NullableLens"),
+    ObjectLens        ("ObjectLens"),
+    ObjectLensImpl    ("ObjectLensImpl"),
+    OptionalLens      ("OptionalLens"),
+    StringLens        ("StringLens"),
     
-    ObjectLensImpl("ObjectLensImpl"),
-    LensSpec      ("LensSpec"),
+    
+    LensSpec ("LensSpec", "functionalj.lens.core"),
+    
     ImmutableList ("ImmutableList", "functionalj.types"),
     ImmutableMap  ("ImmutableMap",  "functionalj.types"),
+    
     Nullable      ("Nullable",      "nawaman.nullablej.nullable"),
     Optional      ("Optional",      "java.util"),
     MayBe         ("MayBe",         "functionalj.types"),
     ;
     
-    private static final String LENS_PACKAGE = "functionalj.lens";
+    private static final String LENSES_PACKAGE = "functionalj.lens.lenses";
     
     private String simpleName;
     private String packageName;
     private Type   type = null;
     
     private Core(String simpleName) {
-        this(simpleName, LENS_PACKAGE);
+        this(simpleName, LENSES_PACKAGE);
     }
     
     private Core(String simpleName, String packageName) {

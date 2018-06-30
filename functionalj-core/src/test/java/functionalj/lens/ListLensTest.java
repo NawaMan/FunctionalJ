@@ -13,6 +13,9 @@ import org.junit.Test;
 
 import functionalj.functions.Func1;
 import functionalj.lens.LensTest.Car;
+import functionalj.lens.core.LensSpec;
+import functionalj.lens.lenses.ListLens;
+import functionalj.lens.lenses.ObjectLensImpl;
 import lombok.val;
 
 public class ListLensTest {

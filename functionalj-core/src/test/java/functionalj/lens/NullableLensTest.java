@@ -11,6 +11,11 @@ import org.junit.Test;
 import static java.util.stream.Collectors.toList;
 
 import functionalj.functions.Func1;
+import functionalj.lens.core.LensSpec;
+import functionalj.lens.core.LensUtils;
+import functionalj.lens.lenses.NullableLens;
+import functionalj.lens.lenses.ObjectLensImpl;
+import functionalj.lens.lenses.StringLens;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 

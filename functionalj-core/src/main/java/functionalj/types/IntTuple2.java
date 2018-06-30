@@ -8,16 +8,16 @@ import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
-import functionalj.lens.AccessParameterized;
-import functionalj.lens.AnyAccess;
-import functionalj.lens.AnyLens;
-import functionalj.lens.IntegerAccess;
-import functionalj.lens.IntegerLens;
-import functionalj.lens.LensSpec;
-import functionalj.lens.LensSpecParameterized;
-import functionalj.lens.LensUtils;
-import functionalj.lens.ObjectLens;
-import functionalj.lens.WriteLens;
+import functionalj.lens.core.AccessParameterized;
+import functionalj.lens.core.LensSpec;
+import functionalj.lens.core.LensSpecParameterized;
+import functionalj.lens.core.LensUtils;
+import functionalj.lens.core.WriteLens;
+import functionalj.lens.lenses.AnyAccess;
+import functionalj.lens.lenses.AnyLens;
+import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerLens;
+import functionalj.lens.lenses.ObjectLens;
 import lombok.val;
 
 public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T2> {

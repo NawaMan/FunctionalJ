@@ -57,11 +57,11 @@ public class GeneratorTest {
                 "package me.test;\n" + 
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
-                "import functionalj.lens.BooleanLens;\n" + 
-                "import functionalj.lens.IntegerLens;\n" + 
-                "import functionalj.lens.LensSpec;\n" + 
-                "import functionalj.lens.ObjectLensImpl;\n" + 
-                "import functionalj.lens.StringLens;\n" + 
+                "import functionalj.lens.core.LensSpec;\n" + 
+                "import functionalj.lens.lenses.BooleanLens;\n" + 
+                "import functionalj.lens.lenses.IntegerLens;\n" + 
+                "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
+                "import functionalj.lens.lenses.StringLens;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 

@@ -2,8 +2,8 @@ package functionalj.types;
 
 import java.util.function.Function;
 
-import functionalj.lens.AccessParameterized2;
-import functionalj.lens.AnyAccess;
+import functionalj.lens.core.AccessParameterized2;
+import functionalj.lens.lenses.AnyAccess;
 
 public interface ITuple2<T1, T2> {
 

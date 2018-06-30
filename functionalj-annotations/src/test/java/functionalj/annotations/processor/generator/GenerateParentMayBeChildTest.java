@@ -48,11 +48,12 @@ public class GenerateParentMayBeChildTest {
                 "package me.test;\n" + 
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
-                "import functionalj.lens.LensSpec;\n" + 
-                "import functionalj.lens.MayBeLens;\n" + 
-                "import functionalj.lens.ObjectLensImpl;\n" + 
-                "import functionalj.lens.StringLens;\n" + 
+                "import functionalj.lens.core.LensSpec;\n" + 
+                "import functionalj.lens.lenses.MayBeLens;\n" + 
+                "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
+                "import functionalj.lens.lenses.StringLens;\n" + 
                 "import functionalj.types.MayBe;\n" + 
+                
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 

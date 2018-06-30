@@ -48,16 +48,16 @@ public class GenerateParentOptionalChildTest {
                 "package me.test;\n" + 
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
-                "import functionalj.lens.LensSpec;\n" + 
-                "import functionalj.lens.ObjectLensImpl;\n" + 
-                "import functionalj.lens.OptionalLens;\n" + 
-                "import functionalj.lens.StringLens;\n" + 
+                "import functionalj.lens.core.LensSpec;\n" + 
+                "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
+                "import functionalj.lens.lenses.OptionalLens;\n" + 
+                "import functionalj.lens.lenses.StringLens;\n" + 
                 "import java.util.Optional;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
-                "import java.util.function.Supplier;\n" +
-                "import me.test.Child;\n" +  
-                "import me.test.Child.ChildLens;\n" +
+                "import java.util.function.Supplier;\n" + 
+                "import me.test.Child;\n" + 
+                "import me.test.Child.ChildLens;\n" + 
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef {\n" + 
                 "    \n" + 

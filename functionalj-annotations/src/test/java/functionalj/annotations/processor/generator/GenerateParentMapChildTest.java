@@ -45,10 +45,10 @@ public class GenerateParentMapChildTest {
                 "package me.test;\n" + 
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
-                "import functionalj.lens.LensSpec;\n" + 
-                "import functionalj.lens.MapLens;\n" + 
-                "import functionalj.lens.ObjectLensImpl;\n" + 
-                "import functionalj.lens.StringLens;\n" + 
+                "import functionalj.lens.core.LensSpec;\n" + 
+                "import functionalj.lens.lenses.MapLens;\n" + 
+                "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
+                "import functionalj.lens.lenses.StringLens;\n" + 
                 "import functionalj.types.ImmutableMap;\n" + 
                 "import java.util.Map;\n" + 
                 "import java.util.function.BiFunction;\n" + 
@@ -66,7 +66,7 @@ public class GenerateParentMapChildTest {
                 "        this(null);\n" + 
                 "    }\n" + 
                 "    public Parent(Map<String, Child> children) {\n" + 
-                "        this.children = ImmutableMap.of(children);\n" +
+                "        this.children = ImmutableMap.of(children);\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public Map<String, Child> children() {\n" + 

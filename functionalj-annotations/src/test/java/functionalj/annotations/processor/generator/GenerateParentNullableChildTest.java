@@ -48,15 +48,15 @@ public class GenerateParentNullableChildTest {
                 "package me.test;\n" + 
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
-                "import functionalj.lens.LensSpec;\n" + 
-                "import functionalj.lens.NullableLens;\n" + 
-                "import functionalj.lens.ObjectLensImpl;\n" + 
-                "import functionalj.lens.StringLens;\n" + 
+                "import functionalj.lens.core.LensSpec;\n" + 
+                "import functionalj.lens.lenses.NullableLens;\n" + 
+                "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
+                "import functionalj.lens.lenses.StringLens;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
                 "import me.test.Child;\n" + 
-                "import me.test.Child.ChildLens;\n" +
+                "import me.test.Child.ChildLens;\n" + 
                 "import nawaman.nullablej.nullable.Nullable;\n" + 
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef {\n" + 
