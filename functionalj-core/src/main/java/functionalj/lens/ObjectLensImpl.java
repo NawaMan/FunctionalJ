@@ -26,7 +26,7 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
             Function<DATA, SUB>                    readSub,
             WriteLens<DATA, SUB>                   writeSub,
             Function<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
-        return Lenses.createSubLens(this, readSub, writeSub, subLensCreator);
+        return LensUtils.createSubLens(this, readSub, writeSub, subLensCreator);
     }
     
     protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
@@ -36,9 +36,9 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
                 Function<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
         val readThis   = this.lensSpec().getRead();
         val writeThis  = this.lensSpec().getWrite();
-        val subRead    = (Function<HOST, List<SUB>>) Lenses.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
-        val subWrite   = (WriteLens<HOST, List<SUB>>)Lenses.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
-        val spec       = Lenses.createLensSpecParameterized(subRead, subWrite, subLensCreator);
+        val subRead    = (Function<HOST, List<SUB>>) LensUtils.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
+        val subWrite   = (WriteLens<HOST, List<SUB>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
+        val spec       = LensUtils.createLensSpecParameterized(subRead, subWrite, subLensCreator);
         val listLens   = ListLens.of(spec);
         return listLens;
     }
@@ -50,9 +50,9 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
                 Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
         val readThis   = this.lensSpec().getRead();
         val writeThis  = this.lensSpec().getWrite();
-        val subRead    = (Function<HOST, Nullable<SUB>>) Lenses.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
-        val subWrite   = (WriteLens<HOST, Nullable<SUB>>)Lenses.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
-        val spec = Lenses.createLensSpecParameterized(subRead, subWrite, subCreator);
+        val subRead    = (Function<HOST, Nullable<SUB>>) LensUtils.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
+        val subWrite   = (WriteLens<HOST, Nullable<SUB>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
+        val spec = LensUtils.createLensSpecParameterized(subRead, subWrite, subCreator);
         val lens = (NullableLens<HOST, SUB, SUBLENS>)()->spec;
         return lens;
     }
@@ -64,9 +64,9 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
                 Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
         val readThis   = this.lensSpec().getRead();
         val writeThis  = this.lensSpec().getWrite();
-        val subRead    = (Function<HOST, Optional<SUB>>) Lenses.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
-        val subWrite   = (WriteLens<HOST, Optional<SUB>>)Lenses.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
-        val spec = Lenses.createLensSpecParameterized(subRead, subWrite, subCreator);
+        val subRead    = (Function<HOST, Optional<SUB>>) LensUtils.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
+        val subWrite   = (WriteLens<HOST, Optional<SUB>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
+        val spec = LensUtils.createLensSpecParameterized(subRead, subWrite, subCreator);
         val lens = (OptionalLens<HOST, SUB, SUBLENS>)()->spec;
         return lens;
     }
@@ -78,9 +78,9 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
                 Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
         val readThis   = this.lensSpec().getRead();
         val writeThis  = this.lensSpec().getWrite();
-        val subRead    = (Function<HOST, MayBe<SUB>>) Lenses.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
-        val subWrite   = (WriteLens<HOST, MayBe<SUB>>)Lenses.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
-        val spec = Lenses.createLensSpecParameterized(subRead, subWrite, subCreator);
+        val subRead    = (Function<HOST, MayBe<SUB>>) LensUtils.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
+        val subWrite   = (WriteLens<HOST, MayBe<SUB>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
+        val spec = LensUtils.createLensSpecParameterized(subRead, subWrite, subCreator);
         val lens = (MayBeLens<HOST, SUB, SUBLENS>)()->spec;
         return lens;
     }
@@ -93,8 +93,8 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
                 Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
         val readThis   = this.lensSpec().getRead();
         val writeThis  = this.lensSpec().getWrite();
-        val subRead    = (Function<HOST, Map<KEY, VALUE>>) Lenses.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
-        val subWrite   = (WriteLens<HOST, Map<KEY, VALUE>>)Lenses.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
+        val subRead    = (Function<HOST, Map<KEY, VALUE>>) LensUtils.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
+        val subWrite   = (WriteLens<HOST, Map<KEY, VALUE>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
         return MapLens.of(subRead, subWrite, keyLensCreator, valueLensCreator);
     }
     

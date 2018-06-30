@@ -22,8 +22,6 @@ public class AccessCreatorTest {
                     listOf("AE", "BEE", "SEE")
                 );
         
-        val theStrListLens = Lenses.theList(Lenses.ofString());
-        
         assertEquals("[one, ae]", "" + lists.map(theStrList         .first().toLowerCase()));
         assertEquals("[one, ae]", "" + lists.map(theList(ofString()).first().toLowerCase()));
     }

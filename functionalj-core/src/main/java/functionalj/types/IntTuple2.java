@@ -15,7 +15,7 @@ import functionalj.lens.IntegerAccess;
 import functionalj.lens.IntegerLens;
 import functionalj.lens.LensSpec;
 import functionalj.lens.LensSpecParameterized;
-import functionalj.lens.Lenses;
+import functionalj.lens.LensUtils;
 import functionalj.lens.ObjectLens;
 import functionalj.lens.WriteLens;
 import lombok.val;
@@ -151,13 +151,13 @@ public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T
         public default IntegerLens<HOST> _1() {
             WriteLens<IntTuple2<T2>, Integer> write = (tuple, _1) -> new IntTuple2<T2>(_1, tuple._2);
             Function <IntTuple2<T2>, Integer> read  = IntTuple2::_1;
-            return Lenses.createSubLens(this, read, write, IntegerLens::of);
+            return LensUtils.createSubLens(this, read, write, IntegerLens::of);
         }
         
         public default T2LENS T2() {
             val write = (WriteLens<IntTuple2<T2>, T2>)((tuple, T2) -> new IntTuple2<T2>(tuple._1, T2));
             val read  = (Function <IntTuple2<T2>, T2>)IntTuple2::_2;
-            return Lenses.createSubLens(this, read, write, lensSpecParameterized()::createSubLens);
+            return LensUtils.createSubLens(this, read, write, lensSpecParameterized()::createSubLens);
         }
         
         public default Function<HOST, HOST> change1To(int _1value) {

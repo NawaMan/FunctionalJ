@@ -17,7 +17,7 @@ public interface MayBeLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val read  = nullableLensSpec.getRead();
         val write = nullableLensSpec.getWrite();
-        val spec  = Lenses.createLensSpecParameterized(read, write, subCreator);
+        val spec  = LensUtils.createLensSpecParameterized(read, write, subCreator);
         val nullableLens = (MayBeLens<HOST, TYPE, SUBLENS>)()->spec;
         return nullableLens;
     }

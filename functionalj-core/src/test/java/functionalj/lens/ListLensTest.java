@@ -61,7 +61,7 @@ public class ListLensTest {
         assertEquals("WithCars [cars=[Car(color=Green)]]", listLens.first().withColor("Green").apply(withCars).toString());
         
         assertTrue(listLens.first().toNullable().isPresent().apply(withCars));
-        assertEquals("Car(color=Blue)", listLens.first().toNullable().get().convertToString().apply(withCars));
+        assertEquals("Car(color=Blue)", listLens.first().toNullable().get().asString().apply(withCars));
         
         val withNoCars = new WithCars(asList());
         assertFalse(listLens.first().toNullable().isPresent().apply(withNoCars));

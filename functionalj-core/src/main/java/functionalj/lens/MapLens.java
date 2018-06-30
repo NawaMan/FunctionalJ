@@ -1,7 +1,5 @@
 package functionalj.lens;
 
-import static functionalj.lens.Lenses.createMapLensSpec;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,7 +25,7 @@ public interface MapLens<HOST, KEY, VALUE,
                     WriteLens<HOST, Map<KEY, VALUE>>           write,
                     Function<LensSpec<HOST, KEY>,   KEYLENS>   keyLensCreator,
                     Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
-        val spec = createMapLensSpec(read, write, keyLensCreator, valueLensCreator);    
+        val spec = LensUtils.createMapLensSpec(read, write, keyLensCreator, valueLensCreator);    
         return ()->spec;
     }
     
@@ -58,10 +56,7 @@ public interface MapLens<HOST, KEY, VALUE,
         Function<Map<KEY, VALUE>, VALUE> read = map -> {
             return map.get(key);
         };
-        return Lenses.createSubLens(this, 
-                read,
-                write,
-                lensSpecParameterized2()::createSubLens2);
+        return LensUtils.createSubLens(this, read, write, lensSpecParameterized2()::createSubLens2);
     }
     
     public default Function<HOST, HOST> changeTo(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {

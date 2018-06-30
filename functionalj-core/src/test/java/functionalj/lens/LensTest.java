@@ -4,6 +4,7 @@ import static functionalj.lens.LensTest.Car.theCar;
 import static functionalj.lens.LensTest.Company.theCompany;
 import static functionalj.lens.LensTest.Driver.theDriver;
 import static functionalj.lens.Lenses.$S;
+import static functionalj.lens.Lenses.theList;
 import static functionalj.lens.Lenses.theString;
 import static functionalj.types.ImmutableList.listOf;
 import static java.util.Arrays.asList;
@@ -239,13 +240,20 @@ public class LensTest {
         }
     }
     
+    public void testNullSafetyMethods() {
+        val driverWithNoCar = new Driver(null);
+        
+        assertNull(theDriver.car.color.apply(driverWithNoCar));
+        assertEquals("N/A", theDriver.car.color.or("N/A").apply(driverWithNoCar));
+    }
+    
     public void testShortHand() {
         val lists = listOf(
                     listOf("ONE", "TWO", "THREE"),
                     listOf("AE", "BEE", "SEE")
                 );
         
-        val theStrListLens = Lenses.theList(Lenses.ofString());
+        val theStrListLens = Lenses.theList.of(LensTypes.ofString());
         assertEquals(
                 "[[ONE (3), TWO, THREE], [AE (2), BEE, SEE]]",
                 "" + lists

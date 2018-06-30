@@ -99,7 +99,7 @@ public class NullableLensTest {
             public final Car.CarLens<HOST> firstCar = new Car.CarLens<>(this.lensSpec().then(LensSpec.of(Driver::firstCar, Driver::withFirstCar)));
             
             public final NullableLens<HOST, Car, Car.CarLens<HOST>> secondCar
-                        = Lenses.createNullableLens(
+                        = LensUtils.createNullableLens(
                                 this.lensSpec().then(LensSpec.of(Driver::secondCar, Driver::withSecondCar)),
                                 Car.CarLens::new);
             

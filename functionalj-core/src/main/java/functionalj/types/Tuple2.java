@@ -9,7 +9,7 @@ import functionalj.lens.AccessParameterized2;
 import functionalj.lens.AnyLens;
 import functionalj.lens.LensSpec;
 import functionalj.lens.LensSpecParameterized2;
-import functionalj.lens.Lenses;
+import functionalj.lens.LensUtils;
 import functionalj.lens.ObjectLens;
 import functionalj.lens.WriteLens;
 import lombok.val;
@@ -113,13 +113,13 @@ public class Tuple2<T1, T2> implements ITuple2<T1, T2>, Map.Entry<T1, T2> {
         public default T1LENS _1() {
             WriteLens<Tuple2<T1, T2>, T1> write = (tuple, _1) -> new Tuple2<T1, T2>(_1, tuple._2);
             Function<Tuple2<T1, T2>, T1>  read  = Tuple2::_1;
-            return Lenses.createSubLens(this, read, write, lensSpecParameterized2()::createSubLens1);
+            return LensUtils.createSubLens(this, read, write, lensSpecParameterized2()::createSubLens1);
         }
         
         public default T2LENS _2() {
             WriteLens<Tuple2<T1, T2>, T2> write = (tuple, _2) -> new Tuple2<T1, T2>(tuple._1, _2);
             Function<Tuple2<T1, T2>, T2>  read  = Tuple2::_2;
-            return Lenses.createSubLens(this, read, write, lensSpecParameterized2()::createSubLens2);
+            return LensUtils.createSubLens(this, read, write, lensSpecParameterized2()::createSubLens2);
         }
         
         public default Function<HOST, HOST> change1To(T1 _1value) {

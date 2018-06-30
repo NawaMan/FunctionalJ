@@ -1,6 +1,5 @@
 package functionalj.lens;
 
-import static functionalj.lens.Lenses.ofString;
 import static functionalj.lens.Lenses.theList;
 import static functionalj.types.ImmutableList.listOf;
 import static org.junit.Assert.assertEquals;
@@ -9,19 +8,21 @@ import org.junit.Test;
 
 import lombok.val;
 
-public class LensCreatorTest {
+public class LensTypeTest {
     
-
     @Test
     public void testLensCreator() {
         val lists = listOf(
                     listOf("ONE", "TWO", "THREE"),
                     listOf("AE", "BEE", "SEE")
                 );
+
+        assertEquals("[true, false]", "" + lists.map(theList.first().thatEquals("ONE")));
         
-        val theStrListLens = Lenses.theList(Lenses.ofString());
+        val theStrListLens = theList.of(LensTypes.ofString());
         
         assertEquals("[one, ae]", "" + lists.map(theStrListLens     .first().toLowerCase()));
-        assertEquals("[one, ae]", "" + lists.map(theList(ofString()).first().toLowerCase()));
+        assertEquals("[one, ae]", "" + lists.map(theList.of(LensTypes.ofString()).first().toLowerCase()));
     }
+    
 }

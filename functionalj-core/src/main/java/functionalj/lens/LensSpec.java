@@ -3,13 +3,11 @@ package functionalj.lens;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import lombok.Getter;
-
 public class LensSpec<HOST, DATA> 
             implements Function<HOST, DATA> {
     
-    public static <DATA> Function<DATA, DATA>  selfRead()  { return self->self;        }
-    public static <DATA> WriteLens<DATA, DATA> selfWrite() { return (host,self)->self; }
+    public static <DATA> Function<DATA, DATA>  selfRead()  { return self->self;                }
+    public static <DATA> WriteLens<DATA, DATA> selfWrite() { return (self,newValue)->newValue; }
     
     private final Function<HOST, DATA>  read;
     private final WriteLens<HOST, DATA> write;
@@ -89,8 +87,8 @@ public class LensSpec<HOST, DATA>
     
     public <SUB> LensSpec<HOST, SUB> then(LensSpec<DATA, SUB> sub) {
         return LensSpec.of(
-                Lenses.createSubRead (read,        sub.read,  isNullSafe),
-                Lenses.createSubWrite(read, write, sub.write, isNullSafe),
+                LensUtils.createSubRead (read,        sub.read,  isNullSafe),
+                LensUtils.createSubWrite(read, write, sub.write, isNullSafe),
                 isNullSafe);
     }
     

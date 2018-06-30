@@ -20,7 +20,7 @@ public interface FunctionalListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, T
                 Function<HOST,  FunctionalList<TYPE>>    read,
                 WriteLens<HOST, FunctionalList<TYPE>>    write,
                 Function<LensSpec<HOST, TYPE>, TYPELENS> subCreator) {
-        return Lenses.createFunctionalListLens(read, write, subCreator);
+        return LensUtils.createFunctionalListLens(read, write, subCreator);
     }
     public static <HOST,  TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             FunctionalListLens<HOST, TYPE, TYPELENS> of(LensSpecParameterized<HOST, FunctionalList<TYPE>, TYPE, TYPELENS> spec) {
@@ -55,7 +55,7 @@ public interface FunctionalListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, T
     }
     
     public default TYPELENS createSubLens(Function<FunctionalList<TYPE>, TYPE> readSub, WriteLens<FunctionalList<TYPE>, TYPE> writeSub) {
-        return Lenses.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
+        return LensUtils.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }
     
     public default TYPELENS first() {

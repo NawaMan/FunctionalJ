@@ -59,7 +59,7 @@ public class ListAccessTest {
                 .get());
         assertEquals("[One, Two]", Optional.of(new WithNames(asList("One", "Two", "Three", "Four")))
                 .map(listAcc.filter(theString.length().thatEquals(3)))
-                .map(theItem().convertToString())
+                .map(theItem().asString())
                 .get());
         assertEquals("ONE", Optional.of(new WithNames(asList("One", "Two")))
                 .map(listAcc.first())

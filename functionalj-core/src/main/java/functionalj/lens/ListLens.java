@@ -21,7 +21,7 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                 Function<HOST, List<TYPE>>               read,
                 WriteLens<HOST, List<TYPE>>              write,
                 Function<LensSpec<HOST, TYPE>, TYPELENS> subCreator) {
-        return Lenses.createListLens(read, write, subCreator);
+        return LensUtils.createListLens(read, write, subCreator);
     }
     public static <HOST,  TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             ListLens<HOST, TYPE, TYPELENS> of(LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS> spec) {
@@ -55,7 +55,7 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
     }
     
     public default TYPELENS createSubLens(Function<List<TYPE>, TYPE> readSub, WriteLens<List<TYPE>, TYPE> writeSub) {
-        return Lenses.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
+        return LensUtils.createSubLens(this, readSub, writeSub, lensSpecParameterized()::createSubLens);
     }
     
     public default TYPELENS first() {

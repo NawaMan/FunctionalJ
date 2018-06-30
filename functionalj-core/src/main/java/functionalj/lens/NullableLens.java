@@ -1,6 +1,6 @@
 package functionalj.lens;
 
-import static functionalj.lens.Lenses.createLensSpecParameterized;
+import static functionalj.lens.LensUtils.createLensSpecParameterized;
 
 import java.util.function.Function;
 

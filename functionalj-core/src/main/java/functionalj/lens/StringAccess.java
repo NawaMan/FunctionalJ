@@ -29,7 +29,7 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String>{
     
     public default StringAccess<HOST> concat(Object ... suffixes) {
         return stringAccess("", str -> {
-            val eachToString = __internal__.stringFromOf(str);
+            val eachToString = __internal__.stringFrom(str);
             String suffix = Stream.of(suffixes).map(eachToString).collect(joining());
             return str + suffix;
         });
@@ -37,14 +37,14 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String>{
     
     public default StringAccess<HOST> prefix(Object ... prefixes) {
         return stringAccess("", str -> {
-            val eachToString = __internal__.stringFromOf(str);
+            val eachToString = __internal__.stringFrom(str);
             String prefix = Stream.of(prefixes).map(eachToString).collect(joining());
             return prefix + str;
         });
     }
     public default StringAccess<HOST> wrapBy(Object prefix, Object suffix) {
         return stringAccess("", str -> { 
-            val eachToString = __internal__.stringFromOf(str);
+            val eachToString = __internal__.stringFrom(str);
             String prefixStr = eachToString.apply(prefix);
             String suffixStr = eachToString.apply(suffix);
             return prefixStr + str + suffixStr;
@@ -65,7 +65,7 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String>{
     
     public default StringAccess<HOST> format(String format, Object... args) {
         return stringAccess(null, str->{
-            val eachToString = __internal__.stringFromOf(str);
+            val eachToString = __internal__.stringFrom(str);
             val argStrs      = Stream.of(args).map(eachToString).toArray();
             return str.format(format, (Object[])argStrs);
         });
@@ -175,13 +175,26 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String>{
     
     public static StringAccess<String> $(Object ... objs) {
         return str -> {
-            val eachToString = __internal__.stringFromOf(str);
+            val eachToString = __internal__.stringFrom(str);
             return Stream.of(objs).map(eachToString).collect(joining());
         };
     }
+
+    // Override - too bad have to duplicate. 
+    // TODO - Find better way
+    public default StringAccess<HOST> or(String fallbackValue) {
+        return functionalj.lens.AnyAccess.__internal__.or(this, fallbackValue)::apply;
+    }
+    public default StringAccess<HOST> orGet(Supplier<String> fallbackValueSupplier) {
+        return functionalj.lens.AnyAccess.__internal__.orGet(this, fallbackValueSupplier)::apply;
+    }
+    public default StringAccess<HOST> orGet(Function<HOST, String> fallbackValueFunction) {
+        return functionalj.lens.AnyAccess.__internal__.orGet(this, fallbackValueFunction)::apply;
+    }
+    
     
     public static final class __internal__ {
-        private static Func1<Object, String> stringFromOf(String str) {
+        private static Func1<Object, String> stringFrom(String str) {
             return each -> stringFrom(each, str);
         }
         @SuppressWarnings({ "rawtypes", "unchecked" })

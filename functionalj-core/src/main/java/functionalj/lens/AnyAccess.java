@@ -4,6 +4,7 @@ import static functionalj.lens.AccessUtil.createNullableAccess;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import functionalj.functions.Func1;
 import lombok.val;
@@ -61,7 +62,7 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
                     return any.hashCode();
                 });
     }
-    public default StringAccess<HOST> convertToString() {
+    public default StringAccess<HOST> asString() {
         return stringAccess(
                 null,
                 any -> {
@@ -69,36 +70,62 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
                 });
     }
     
-    public default <TARGET> TARGET processValue(HOST host, TARGET defaultValue, Function<DATA, TARGET> function) {
-        if (host == null)
-            return defaultValue;
-        
-        val value = this.apply(host);
-        if (value == null)
-            return defaultValue;
-        
-        val newValue = function.apply(value);
-        return newValue;
-    }
-    
     public default IntegerAccess<HOST> intAccess(int defaultValue, Function<DATA, Integer> function) {
         return host -> {
-            val intValue = processValue(host, defaultValue, function);
+            val intValue = __internal__.processValue(this, host, defaultValue, function);
             return intValue;
         };
     }
     
     public default StringAccess<HOST> stringAccess(String defaultValue, Function<DATA, String> function) {
         return host -> {
-            val stringValue = processValue(host, defaultValue, function);
+            val stringValue = __internal__.processValue(this, host, defaultValue, function);
             return stringValue;
         };
     }
     
     public default BooleanAccess<HOST> booleanAccess(boolean defaultValue, Function<DATA, Boolean> function) {
         return host -> {
-            val booleanValue = processValue(host, defaultValue, function);
+            val booleanValue = __internal__.processValue(this, host, defaultValue, function);
             return booleanValue;
+        };
+    }
+    
+    public default AnyAccess<HOST, DATA> or(DATA fallbackValue) {
+        return __internal__.or(this, fallbackValue);
+    }
+    
+    public default AnyAccess<HOST, DATA> orGet(Supplier<DATA> fallbackValueSupplier) {
+        return __internal__.orGet(this, fallbackValueSupplier);
+    }
+    
+    public default AnyAccess<HOST, DATA> orGet(Function<HOST, DATA> fallbackValueFunction) {
+        return __internal__.orGet(this, fallbackValueFunction);
+    }
+    
+    public default <EXCEPTION extends RuntimeException> AnyAccess<HOST, DATA> orThrow() {
+        return host -> {
+            if (host == null)
+                throw new NullPointerException();
+            
+            val value = this.apply(host);
+            if (value == null)
+                throw new NullPointerException();
+            
+            return value;
+        };
+    }
+    
+    public default <EXCEPTION extends RuntimeException> AnyAccess<HOST, DATA> orThrow(Supplier<EXCEPTION> exceptionSupplier) {
+        return host -> {
+            if (host == null)
+                throw exceptionSupplier.get();
+            
+            val value = this.apply(host);
+            if (value == null)
+                throw exceptionSupplier.get();
+            
+            return value;
         };
     }
     
@@ -114,6 +141,60 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
             return Nullable.of(value);
         };
         return createNullableAccess(accessToNullable, createSubLens);
+    }
+    
+    public static class __internal__ {
+        
+        public static <HOST, DATA, TARGET> TARGET processValue(AnyAccess<HOST, DATA> access, HOST host, TARGET defaultValue, Function<DATA, TARGET> function) {
+            if (host == null)
+                return defaultValue;
+            
+            val value = access.apply(host);
+            if (value == null)
+                return defaultValue;
+            
+            val newValue = function.apply(value);
+            return newValue;
+        }
+        
+        public static <HOST, DATA> AnyAccess<HOST, DATA> or(AnyAccess<HOST, DATA> access, DATA fallbackValue) {
+            return host -> {
+                if (host == null)
+                    return fallbackValue;
+                
+                val value = access.apply(host);
+                if (value == null)
+                    return fallbackValue;
+                
+                return value;
+            };
+        }
+        
+        public static <HOST, DATA> AnyAccess<HOST, DATA> orGet(AnyAccess<HOST, DATA> access, Supplier<DATA> fallbackValueSupplier) {
+            return host -> {
+                if (host == null)
+                    return fallbackValueSupplier.get();
+                
+                val value = access.apply(host);
+                if (value == null)
+                    return fallbackValueSupplier.get();
+                
+                return value;
+            };
+        }
+        
+        public static <HOST, DATA> AnyAccess<HOST, DATA> orGet(AnyAccess<HOST, DATA> access, Function<HOST, DATA> fallbackValueFunction) {
+            return host -> {
+                if (host == null)
+                    return fallbackValueFunction.apply(host);
+                
+                val value = access.apply(host);
+                if (value == null)
+                    return fallbackValueFunction.apply(host);
+                
+                return value;
+            };
+        }
     }
     
 }
