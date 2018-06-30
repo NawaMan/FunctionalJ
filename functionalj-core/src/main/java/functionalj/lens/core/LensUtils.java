@@ -1,4 +1,4 @@
-package functionalj.lens;
+package functionalj.lens.core;
 
 import java.util.List;
 import java.util.Map;
@@ -7,6 +7,14 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
+import functionalj.lens.lenses.AnyLens;
+import functionalj.lens.lenses.FunctionalListLens;
+import functionalj.lens.lenses.ListLens;
+import functionalj.lens.lenses.MapLens;
+import functionalj.lens.lenses.MayBeLens;
+import functionalj.lens.lenses.NullableLens;
+import functionalj.lens.lenses.ObjectLens;
+import functionalj.lens.lenses.OptionalLens;
 import functionalj.types.FunctionalList;
 import functionalj.types.MayBe;
 import lombok.val;
@@ -143,24 +151,6 @@ public class LensUtils {
     }
     
     //== List ==
-    
-    public static class TheListLensCreator implements ListLens<List<?>, Object, ObjectLens<List<?>, Object>> {
-
-        private static final LensSpecParameterized<List<?>, List<?>, Object, ObjectLens<List<?>, Object>> 
-                common = createLensSpecParameterized(l -> l, (l, n)->n, ObjectLens::of);
-        
-        public <TYPE, SUBACCESS extends AnyAccess<List<TYPE>, TYPE>, SUBLENS extends AnyLens<List<TYPE>, TYPE>> 
-        ListLens<List<TYPE>, TYPE, SUBLENS> of(LensType<List<TYPE>, TYPE, SUBACCESS, SUBLENS> type) {
-            LensSpecParameterized<List<TYPE>, List<TYPE>, TYPE, SUBLENS> spec
-                    = createLensSpecParameterized(LensSpec.selfRead(), LensSpec.selfWrite(), s -> type.newLens(s));
-            ListLens<List<TYPE>, TYPE, SUBLENS> listLens = ListLens.of(spec);
-            return listLens;
-        }
-        @Override
-        public LensSpecParameterized<List<?>, List<Object>, Object, ObjectLens<List<?>, Object>> lensSpecParameterized() {
-            return (LensSpecParameterized)common;
-        }
-    }
     
     public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ListLens<HOST, TYPE, SUBLENS> 
         createListLens(

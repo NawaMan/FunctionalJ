@@ -1,7 +1,8 @@
-package functionalj.lens;
+package functionalj.lens.core;
 
 import java.util.function.Function;
 
+import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
 public interface LensSpecParameterized2<HOST, TYPE, SUB1, SUB2,

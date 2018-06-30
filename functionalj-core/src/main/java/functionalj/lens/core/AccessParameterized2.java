@@ -1,7 +1,8 @@
-package functionalj.lens;
+package functionalj.lens.core;
 
 import java.util.function.Function;
 
+import functionalj.lens.lenses.AnyAccess;
 import lombok.val;
 
 public interface AccessParameterized2<HOST, TYPE, PARAMETER1, PARAMETER2,

@@ -1,4 +1,4 @@
-package functionalj.lens;
+package functionalj.lens.core;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;

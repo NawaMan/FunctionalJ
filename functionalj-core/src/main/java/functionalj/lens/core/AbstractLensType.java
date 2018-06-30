@@ -1,7 +1,10 @@
-package functionalj.lens;
+package functionalj.lens.core;
+
+import functionalj.lens.lenses.AnyAccess;
+import functionalj.lens.lenses.AnyLens;
 
 public abstract class AbstractLensType<H, T, TA extends AnyAccess<H, T>, TL extends AnyLens<H, T>> 
-        implements LensType<H, T, TA, TL>{
+        implements LensType<H, T, TA, TL> {
     
     private final Class<T>  dataClass;
     private final Class<TA> accessClass;

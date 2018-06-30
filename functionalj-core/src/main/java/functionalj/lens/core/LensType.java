@@ -1,6 +1,9 @@
-package functionalj.lens;
+package functionalj.lens.core;
 
 import java.util.function.Function;
+
+import functionalj.lens.lenses.AnyAccess;
+import functionalj.lens.lenses.AnyLens;
 
 public interface LensType<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>, TYPELENS extends AnyLens<HOST, TYPE>> 
                     extends AccessCreator<HOST, TYPE, TYPEACCESS>{
