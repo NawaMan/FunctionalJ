@@ -65,9 +65,14 @@ public class FunctionalListStream<SOURCE, DATA>
         if (target != null)
             return;
         
-        val oldStraam = getSourceStream();
-        val newStream = action.apply(oldStraam);
-        target = newStream.collect(Collectors.toList());
+        synchronized (this) {
+            if (target != null)
+                return;
+            
+            val oldStraam = getSourceStream();
+            val newStream = action.apply(oldStraam);
+            target = newStream.collect(Collectors.toList());
+        }
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })

@@ -14,7 +14,6 @@ import functionalj.kinds.Monad;
 import funtionalj.failable.FailableBiFunction;
 import funtionalj.failable.FailableFunc0;
 import funtionalj.failable.FailableFunction;
-import funtionalj.failable.FailableSupplier;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -29,16 +28,10 @@ public interface Result<DATA>
                         Tuple2<DATA, Exception>,
                         Nullable<DATA> {
     
-    //TODO - Make it dynamic like List
-    
     public Tuple2<DATA, Exception> asTuple();
     
     public default DATA getValue() {
         return asTuple()._1();
-    }
-    
-    public default Exception getException() {
-        return asTuple()._2();
     }
     
     @Override
@@ -55,134 +48,169 @@ public interface Result<DATA>
     public default DATA _1() {
         return asTuple()._1();
     }
+    
+    // TODO - Think about possible inconsistency when both value and exception are not null.
+    
+    public default Exception getException() {
+        return (asTuple()._1() != null) ? null : asTuple()._2();
+    }
+    
     @Override
     public default Exception _2() {
-        return asTuple()._2();
+        return (asTuple()._1() != null) ? null : asTuple()._2();
     }
+    
+    public default ImmutableResult<DATA> toImmutable() {
+        return ImmutableResult.of(this);
+    }
+    
+    // TODO - See we can dry this up.
     
     @SuppressWarnings("unchecked")
     @Override
     public default <TARGET> Result<TARGET> _map(Function<? super DATA, TARGET> mapper) {
-        DATA value = getValue();
-        if (value == null)
-            return (ImmutableResult<TARGET>)this;
-        
-        return ImmutableResult.from((Supplier<TARGET>)()->{
-            return mapper.apply(value);
+        return new ResultDerived<TARGET, DATA>(this, source -> {
+            val exception = source._2();
+            if (exception != null)
+                return (Result<TARGET>)this;
+            
+            val value = source._1();
+            val newValue  = mapper.apply(value);
+            return __internal__.createNewTuple(source, newValue);
+        });
+    }
+    
+    @Override
+    public default <TARGET> Result<TARGET> map(Function<? super DATA, TARGET> mapper) {
+        return _map(mapper);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <TARGET> Result<TARGET> map(BiFunction<DATA, Exception, TARGET> mapper) {
+        return new ResultDerived<TARGET, DATA>(this, source -> {
+            val exception = source._2();
+            if (exception != null)
+                return (Result<TARGET>)this;
+            
+            val value = source._1();
+            val newValue  = mapper.apply(value, exception);
+            return __internal__.createNewTuple(source, newValue);
+        });
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <TARGET> Result<TARGET> map(FailableFunction<DATA, TARGET> mapper) {
+        return new ResultDerived<TARGET, DATA>(this, source -> {
+            val exception = source._2();
+            if (exception != null)
+                return (Result<TARGET>)this;
+            
+            val value = source._1();
+            try {
+                val newValue  = mapper.apply(value);
+                return __internal__.createNewTuple(source, newValue);
+            } catch (Exception e) {
+                return __internal__.createNewTuple(e);
+            }
+        });
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <TARGET> Result<TARGET> map(FailableBiFunction<DATA, Exception, TARGET> mapper) {
+        return new ResultDerived<TARGET, DATA>(this, source -> {
+            val exception = source._2();
+            if (exception != null)
+                return (Result<TARGET>)this;
+            
+            val value = source._1();
+            try {
+                val newValue  = mapper.apply(value, exception);
+                return __internal__.createNewTuple(source, newValue);
+            } catch (Exception e) {
+                return __internal__.createNewTuple(e);
+            }
         });
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public default <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
-        DATA value = getValue();
-        if (value == null)
-            return (ImmutableResult<TARGET>)this;
-        
-        return ImmutableResult.from((Supplier<TARGET>)()->{
-            Result<TARGET> newResult = (ImmutableResult<TARGET>)mapper.apply(value);
-            return newResult.getValue();
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <TARGET> Result<TARGET> map(BiFunction<DATA, Exception, TARGET> mapper) {
-        DATA value = getValue();
-        if (value == null)
-            return (ImmutableResult<TARGET>)this;
-        
-        return ImmutableResult.from((Supplier<TARGET>)()->{
-            val exception = getException();
-            return mapper.apply(value, exception);
+        return new ResultDerived<TARGET, DATA>(this, source -> {
+            val exception = source._2();
+            if (exception != null)
+                return (Result<TARGET>)this;
+            
+            val value = source._1();
+            val newValue = (Result<TARGET>)mapper.apply(value);
+            return newValue;
         });
     }
     
     @SuppressWarnings("unchecked")
     public default <TARGET> Result<TARGET> flatMap(BiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
-        DATA value = getValue();
-        if (value == null)
-            return (ImmutableResult<TARGET>)this;
-        
-        return ImmutableResult.from((Supplier<TARGET>)()->{
-            val exception = getException();
-            Result<TARGET> newResult = (Result<TARGET>)mapper.apply(value, exception);
-            return newResult.getValue();
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <TARGET> Result<TARGET> map(FailableFunction<DATA, TARGET> mapper) {
-        DATA value = getValue();
-        if (value == null)
-            return (ImmutableResult<TARGET>)this;
-        
-        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
-            return mapper.apply(value);
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <TARGET> Result<TARGET> map(FailableBiFunction<DATA, Exception, TARGET> mapper) {
-        DATA value = getValue();
-        if (value == null)
-            return (ImmutableResult<TARGET>)this;
-        
-        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
-            val exception = getException();
-            return mapper.apply(value, exception);
+        return new ResultDerived<TARGET, DATA>(this, source -> {
+            val exception = source._2();
+            if (exception != null)
+                return (Result<TARGET>)this;
+            
+            val value = source._1();
+            val newValue = (Result<TARGET>)mapper.apply(value, exception);
+            return newValue;
         });
     }
     
     @SuppressWarnings("unchecked")
     public default <TARGET> Result<TARGET> flatMap(FailableFunction<DATA, Monad<Result<?>, TARGET>> mapper) {
-        DATA value = getValue();
-        if (value == null)
-            return (ImmutableResult<TARGET>)this;
-        
-        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
-            Result<TARGET> newResult = (ImmutableResult<TARGET>)mapper.apply(value);
-            return newResult.getValue();
-        });
-    }
-    @Override
-    public default <TARGET> Result<TARGET> map(Function<? super DATA, TARGET> mapper) {
-        DATA value = getValue();
-        if (value == null)
-            return (ImmutableResult<TARGET>)this;
-        
-        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
-            return mapper.apply(value);
+        return new ResultDerived<TARGET, DATA>(this, source -> {
+            val exception = source._2();
+            if (exception != null)
+                return (Result<TARGET>)this;
+            
+            val value = source._1();
+            try {
+                val newValue = (Result<TARGET>)mapper.apply(value);
+                return newValue;
+            } catch (Exception e) {
+                return __internal__.createNewTuple(e);
+            }
         });
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public default <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
-        DATA value = getValue();
-        if (value == null)
-            return (ImmutableResult<TARGET>)this;
-        
-        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
-            Result<TARGET> newResult = (ImmutableResult<TARGET>)mapper.apply(value);
-            return newResult.getValue();
+        return new ResultDerived<TARGET, DATA>(this, source -> {
+            val exception = source._2();
+            if (exception != null)
+                return (Result<TARGET>)this;
+            
+            val value = source._1();
+            val newValue = (Result<TARGET>)mapper.apply(value);
+            return newValue;
         });
-    }
-    @Override
-    public default Result<DATA> peek(Consumer<? super DATA> theConsumer) {
-        Nullable.super.peek(theConsumer);
-        return this;
     }
     
     @SuppressWarnings("unchecked")
     public default <TARGET> Result<TARGET> flatMap(FailableBiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
-        DATA value = getValue();
-        if (value == null)
-            return (ImmutableResult<TARGET>)this;
-        
-        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
-            val exception = getException();
-            Result<TARGET> newResult = (ImmutableResult<TARGET>)mapper.apply(value, exception);
-            return newResult.getValue();
+        return new ResultDerived<TARGET, DATA>(this, source -> {
+            val exception = source._2();
+            if (exception != null)
+                return (Result<TARGET>)this;
+            
+            val value = source._1();
+            try {
+                val newValue = (Result<TARGET>)mapper.apply(value, exception);
+                return newValue;
+            } catch (Exception e) {
+                return __internal__.createNewTuple(e);
+            }
         });
+    }
+    
+    @Override
+    public default Result<DATA> peek(Consumer<? super DATA> theConsumer) {
+        Nullable.super.peek(theConsumer);
+        return this;
     }
     
     public default boolean isValue() {
@@ -209,6 +237,14 @@ public interface Result<DATA>
     public default boolean isException() {
         val exception = getException();
         return exception != null;
+    }
+    
+    public default boolean isImmutable() {
+        return this instanceof ImmutableResult;
+    }
+    
+    public default boolean isNotImmutable() {
+        return !(this instanceof ImmutableResult);
     }
     
     public default Result<DATA> ensureNotNull() {
@@ -348,4 +384,31 @@ public interface Result<DATA>
     public default Optional<DATA> toOptional() {
         return Optional.ofNullable(this.get());
     }
+    
+    public static <D> String resultToString(Result<D> result) {
+        Exception exception = result.getException();
+        if (exception == null)
+             return "Result:{ Value: "     + result.getValue() + " }";
+        else return "Result:{ Exception: " + exception  + " }";
+    }
+    
+    public static class __internal__ {
+        
+        public static <DATA, TARGET> Tuple2<TARGET, Exception> createNewTuple(Tuple2<DATA, Exception> source, TARGET newValue) {
+            Exception exception = source._2();
+            Tuple2<TARGET, Exception> newTuple = new Tuple2<TARGET, Exception>() {
+                @Override public TARGET    _1() { return newValue;  }
+                @Override public Exception _2() { return (newValue != null) ? null : exception; }
+            };
+            return newTuple;
+        }
+        public static <DATA, TARGET> Tuple2<TARGET, Exception> createNewTuple(Exception exception) {
+            Tuple2<TARGET, Exception> newTuple = new Tuple2<TARGET, Exception>() {
+                @Override public TARGET    _1() { return null;      }
+                @Override public Exception _2() { return exception; }
+            };
+            return newTuple;
+        }
+    }
+    
 }

@@ -4,40 +4,43 @@ import java.util.function.Supplier;
 
 import funtionalj.failable.FailableSupplier;
 
-public final class ImmutableResult<VALUE> 
+public final class ImmutableResult<DATA> 
                 implements 
-                    Result<VALUE> {
+                    Result<DATA> {
 
     private static final ImmutableResult NULL = new ImmutableResult<>(null, null);
     
-    public static <VALUE> ImmutableResult<VALUE> of(VALUE value) {
-        return new ImmutableResult<VALUE>(value, null);
+    public static <D> ImmutableResult<D> of(D value) {
+        return new ImmutableResult<D>(value, null);
     }
-    public static <VALUE> ImmutableResult<VALUE> of(VALUE value, Exception exception) {
-        return new ImmutableResult<VALUE>(value, exception);
+    public static <D> ImmutableResult<D> of(D value, Exception exception) {
+        return new ImmutableResult<D>(value, exception);
     }
-    public static <VALUE> ImmutableResult<VALUE> of(Tuple2<VALUE, Exception> tuple) {
-        if (tuple != null)
-            return ImmutableResult.of(null, tuple._2());
+    public static <D> ImmutableResult<D> of(Tuple2<D, Exception> tuple) {
+        if (tuple instanceof ImmutableResult)
+            return (ImmutableResult<D>)tuple;
+        
+        if (tuple == null)
+            return ImmutableResult.ofNull();
             
         return ImmutableResult.of(tuple._1(), null);
     }
-    public static <VALUE> ImmutableResult<VALUE> from(Supplier<VALUE> supplier) {
+    public static <D> ImmutableResult<D> from(Supplier<D> supplier) {
         try {
             return ImmutableResult.of(supplier.get());
         } catch (RuntimeException e) {
             return ImmutableResult.of(null, e);
         }
     }
-    public static <VALUE> ImmutableResult<VALUE> from(FailableSupplier<VALUE> supplier) {
+    public static <D> ImmutableResult<D> from(FailableSupplier<D> supplier) {
         try {
             return ImmutableResult.of(supplier.get());
         } catch (Exception e) {
             return ImmutableResult.of(null, e);
         }
     }
-    public static <VALUE> ImmutableResult<VALUE> ofNull() {
-        return (ImmutableResult<VALUE>)NULL;
+    public static <D> ImmutableResult<D> ofNull() {
+        return (ImmutableResult<D>)NULL;
     }
 
     @Override
@@ -45,15 +48,23 @@ public final class ImmutableResult<VALUE>
         return ImmutableResult.of(target);
     }
     
-    private Tuple2<VALUE, Exception> data;
+    private Tuple2<DATA, Exception> data;
     
-    public ImmutableResult(VALUE value, Exception exception) {
-        this.data = new ImmutableTuple2<VALUE, Exception>(value, exception);
+    public ImmutableResult(DATA value, Exception exception) {
+        this.data = new ImmutableTuple2<DATA, Exception>(value, (value != null) ? null : exception);
     }
     
     @Override
-    public Tuple2<VALUE, Exception> asTuple() {
+    public Tuple2<DATA, Exception> asTuple() {
         return data;
+    }
+    
+    public ImmutableResult<DATA> toImmutable() {
+        return this;
+    }
+    
+    public String toString() {
+        return Result.resultToString(this);
     }
     
 }
