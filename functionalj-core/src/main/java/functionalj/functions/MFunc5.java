@@ -65,7 +65,7 @@ public interface MFunc5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, MONAD, OUTPUT> e
             chain(MFunc1<OUTPUT, MONAD, FINAL> after) {
         return (input1, input2, input3, input4, input5) -> {
             return this.apply(input1, input2, input3, input4, input5)
-                     .flatMap(output ->{
+                     ._flatMap(output ->{
                          return after.apply(output);
                      });
         };

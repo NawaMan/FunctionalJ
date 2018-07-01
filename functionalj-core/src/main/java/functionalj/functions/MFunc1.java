@@ -57,7 +57,7 @@ public interface MFunc1<INPUT, MONAD, OUTPUT> extends Func1<INPUT, Monad<MONAD, 
             chain(MFunc1<OUTPUT, MONAD, FINAL> after) {
         return input -> {
             return this.apply(input)
-                     .flatMap(output ->{
+                     ._flatMap(output ->{
                          return after.apply(output);
                      });
         };

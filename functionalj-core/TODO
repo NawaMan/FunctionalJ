@@ -17,7 +17,7 @@
 + Tuples
 + Tuples to function params
 
-- Failable
++ Failable
 - Pipe
 + FunctionalList
 - FMap
@@ -27,14 +27,14 @@
 
 - Clean up TYPE,VALUE,DATA
 
-- TupleLens
++ TupleLens
 - List lens should has similar interface as FunctionalListLens
 - StreamPlus
 - Builder
 - ExhaughBuilder
 - MapBasedDataObject
-- Remove MayBe?
-- Remove Kinds?
+- Remove MayBe? -- let's keep it ... using _ prefix
+- Remove Kinds? -- let's keep it ... using _ prefix
 - List each
 
 - Spead (duplicate) or,orGet join to every corner of the Access world.

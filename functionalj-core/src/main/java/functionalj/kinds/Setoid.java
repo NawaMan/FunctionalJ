@@ -1,7 +1,7 @@
 package functionalj.kinds;
 
-public interface Setoid<TYPE,DATA> {
+public interface Setoid<TYPE, DATA> {
     
-    public boolean equals(Setoid<TYPE,DATA> another);
+    public boolean _equals(Setoid<TYPE,DATA> another);
     
 }

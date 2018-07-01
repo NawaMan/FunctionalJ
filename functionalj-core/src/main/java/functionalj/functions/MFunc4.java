@@ -63,7 +63,7 @@ public interface MFunc4<INPUT1, INPUT2, INPUT3, INPUT4, MONAD, OUTPUT> extends F
             chain(MFunc1<OUTPUT, MONAD, FINAL> after) {
         return (input1, input2, input3, input4) -> {
             return this.apply(input1, input2, input3, input4)
-                     .flatMap(output ->{
+                     ._flatMap(output ->{
                          return after.apply(output);
                      });
         };

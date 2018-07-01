@@ -2,6 +2,6 @@ package functionalj.kinds;
 
 public interface Comonad<TYPE, DATA> extends Functor<TYPE, DATA> {
     
-    public DATA extract();
+    public DATA _extract();
     
 }

@@ -47,6 +47,6 @@ public interface Monad<TYPE, DATA> {
      * @param mapper    the mapper function.
      * @return          another functor.
      */
-    public <TARGET> Monad<TYPE, TARGET> flatMap(Function<DATA, Monad<TYPE, TARGET>> mapper);
+    public <TARGET> Monad<TYPE, TARGET> _flatMap(Function<? super DATA, Monad<TYPE, TARGET>> mapper);
     
 }

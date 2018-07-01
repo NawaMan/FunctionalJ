@@ -7,8 +7,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.functions.Func1;
+import functionalj.kinds.Comonad;
+import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
+import functionalj.kinds.Peekable;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -19,8 +22,15 @@ import nawaman.nullablej.nullable.Nullable;
  *
  * @param <DATA>  the data type.
  */
-public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayBe<?>, DATA> {
-    
+public abstract class MayBe<DATA> 
+                implements 
+                    Functor<MayBe<?>, DATA>, 
+                    Monad<MayBe<?>, DATA>, 
+                    Comonad<MayBe<?>, DATA>,
+                    Filterable<MayBe<?>,DATA>,
+                    Peekable<MayBe<?>, DATA>,
+                    Nullable<DATA> {
+
     /**
      * Get instance with no value.
      * 
@@ -126,24 +136,33 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
     public abstract boolean isPresent();
     
     
+    public <TARGET> MayBe<TARGET> _of(TARGET target) {
+        return MayBe.of(target);
+    }
     
-//    
-//    public <TARGET> MayBe<TARGET> _of(TARGET target) {
-//        return MayBe.of(target);
-//    }
-//    
     /**
      * Returns the value inside this maybe.
      * 
      * @return  the value.
      */
     public abstract DATA get();
-
-    @Override
-    public abstract <TARGET> MayBe<TARGET> map(Function<DATA, TARGET> mapper);
-
     
-    public abstract <TARGET> Monad<MayBe<?>, TARGET> flatMap(Function<DATA, Monad<MayBe<?>, TARGET>> mapper);
+    @Override
+    public DATA _extract() {
+        return get();
+    }
+    
+    @Override
+    public abstract <TARGET> MayBe<TARGET> _map(Function<? super DATA, TARGET> mapper);
+    
+    @Override
+    public abstract <TARGET> MayBe<TARGET> map(Function<? super DATA, TARGET> mapper);
+    
+    @Override
+    public abstract <TARGET> MayBe<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper);
+    
+    @Override
+    public abstract <TARGET> Monad<MayBe<?>, TARGET> _flatMap(Function<? super DATA, Monad<MayBe<?>, TARGET>> mapper);
     
     /**
      * Returns the value inside this maybe or given value in case of nothing.
@@ -184,17 +203,34 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
      * @param theCondition  the condition to be filter in.
      * @return  this object or empty MayBe.
      */
+    @Override
     public abstract MayBe<DATA> filter(Predicate<? super DATA> theCondition);
     
-    /**
-     * Run a body of code with the value is not null. Then returns itself.
-     * 
-     * @param theConsumer  the consumer.
-     * @return  the value.
-     */
-    public abstract MayBe<DATA> peek(Consumer<? super DATA> theConsumer) ;
+    @Override
+    public MayBe<DATA> peek(Consumer<? super DATA> theConsumer) {
+        val value = get();
+        if (value != null)
+            theConsumer.accept(value);
+        
+        return this;
+    }
     
-    // TODO - To either
+    @Override
+    public MayBe<DATA> _peek(Function<? super DATA, ? extends Object> theConsumer) {
+        val value = get();
+        if (value != null) {
+            theConsumer.apply(value);
+        }
+        
+        return this;
+    }
+    
+    /**
+     * Convert this maybe to a result.
+     * 
+     * @return the result representation of the value in the may OR a null.
+     */
+    public abstract ImmutableResult<DATA> toResult();
     
     //-- Sub classes --
     
@@ -227,12 +263,22 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         }
 
         @Override
-        public <TARGET> MayBe<TARGET> map(Function<DATA, TARGET> mapper) {
+        public <TARGET> MayBe<TARGET> _map(Function<? super DATA, TARGET> mapper) {
             return MayBe.of(mapper.apply(data));
         }
-
+        
         @Override
-        public <TARGET> Monad<MayBe<?>, TARGET> flatMap(Function<DATA, Monad<MayBe<?>, TARGET>> mapper) {
+        public <TARGET> MayBe<TARGET> map(Function<? super DATA, TARGET> mapper) {
+            return MayBe.of(mapper.apply(data));
+        }
+        
+        @Override
+        public <TARGET> MayBe<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
+            return MayBe.of(((MayBe<TARGET>)mapper.apply(data)).get());
+        }
+        
+        @Override
+        public <TARGET> Monad<MayBe<?>, TARGET> _flatMap(Function<? super DATA, Monad<MayBe<?>, TARGET>> mapper) {
             return MayBe.of(((MayBe<TARGET>)mapper.apply(data)).get());
         }
         
@@ -268,14 +314,10 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
             
             return this;
         }
-        
+
         @Override
-        public MayBe<DATA> peek(Consumer<? super DATA> theConsumer) {
-            val value = get();
-            if (value != null)
-                theConsumer.accept(value);
-            
-            return this;
+        public MayBe<DATA> _filter(Function<? super DATA, Boolean> predicate) {
+            return filter(predicate::apply);
         }
         
         public String toString() {
@@ -305,6 +347,11 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
             } else if (!data.equals(other.data))
                 return false;
             return true;
+        }
+        
+        @Override
+        public ImmutableResult<DATA> toResult() {
+            return ImmutableResult.of(this.get());
         }
     }
     
@@ -338,13 +385,23 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         }
 
         @Override
-        public <TARGET> MayBe<TARGET> map(Function<DATA, TARGET> mapper) {
-            return MayBe.nothing();
+        public <TARGET> MayBe<TARGET> _map(Function<? super DATA, TARGET> mapper) {
+            return MayBe.empty();
         }
-
+        
         @Override
-        public <TARGET> Monad<MayBe<?>, TARGET> flatMap(Function<DATA, Monad<MayBe<?>, TARGET>> mapper) {
-            return MayBe.nothing();
+        public <TARGET> MayBe<TARGET> map(Function<? super DATA, TARGET> mapper) {
+            return MayBe.empty();
+        }
+        
+        @Override
+        public <TARGET> MayBe<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
+            return MayBe.empty();
+        }
+        
+        @Override
+        public <TARGET> Monad<MayBe<?>, TARGET> _flatMap(Function<? super DATA, Monad<MayBe<?>, TARGET>> mapper) {
+            return MayBe.empty();
         }
         
         @Override
@@ -371,10 +428,10 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         public MayBe<DATA> filter(Predicate<? super DATA> theCondition) {
             return MayBe.nothing();
         }
-        
+
         @Override
-        public MayBe<DATA> peek(Consumer<? super DATA> theConsumer) {
-            return null;
+        public MayBe<DATA> _filter(Function<? super DATA, Boolean> predicate) {
+            return MayBe.nothing();
         }
         
         public String toString() {
@@ -392,6 +449,11 @@ public abstract class MayBe<DATA> implements Functor<MayBe<?>, DATA>, Monad<MayB
         @Override
         public boolean equals(Object obj) {
             return (this == obj);
+        }
+        
+        @Override
+        public ImmutableResult<DATA> toResult() {
+            return ImmutableResult.of(null, null);
         }
         
     }

@@ -42,7 +42,7 @@ public abstract class FunctionalMap<KEY, VALUE>
     public abstract FunctionalList<VALUE> select(Predicate<? super KEY> keyPredicate);
     
     @Override
-    public abstract FunctionalList<Tuple2<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
+    public abstract FunctionalList<ImmutableTuple2<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
     
     @Override
     public abstract FunctionalMap<KEY, VALUE> with(KEY key, VALUE value);
@@ -84,7 +84,7 @@ public abstract class FunctionalMap<KEY, VALUE>
     public abstract Set<Entry<KEY, VALUE>> entrySet();
     
     @Override
-    public abstract FunctionalList<Tuple2<KEY, VALUE>> entries();
+    public abstract FunctionalList<ImmutableTuple2<KEY, VALUE>> entries();
     
     @Override
     public abstract Map<KEY, VALUE> toMap();

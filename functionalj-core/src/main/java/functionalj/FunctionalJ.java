@@ -36,7 +36,7 @@ import functionalj.functions.Absent;
 import functionalj.functions.Func1;
 import functionalj.functions.Func2;
 import functionalj.functions.Func3;
-import functionalj.types.Tuple2;
+import functionalj.types.ImmutableTuple2;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -153,7 +153,7 @@ public class FunctionalJ {
         return input -> body.apply(index.getAndIncrement());
     }
     
-    public static class WithIndex<DATA> extends Tuple2<DATA, Integer> {
+    public static class WithIndex<DATA> extends ImmutableTuple2<DATA, Integer> {
         public WithIndex(DATA _1, Integer _2) {
             super(_1, _2);
         }

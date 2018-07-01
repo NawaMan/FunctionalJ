@@ -30,7 +30,7 @@ public interface IFunctionalMap<KEY, VALUE, SELF extends IFunctionalMap<KEY, VAL
     
     public FunctionalList<VALUE> select(Predicate<? super KEY> keyPredicate);
     
-    public FunctionalList<Tuple2<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
+    public FunctionalList<ImmutableTuple2<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
     
     public FunctionalMap<KEY, VALUE> with(KEY key, VALUE value);
     
@@ -58,7 +58,7 @@ public interface IFunctionalMap<KEY, VALUE, SELF extends IFunctionalMap<KEY, VAL
     
     public Set<Entry<KEY, VALUE>> entrySet();
     
-    public FunctionalList<Tuple2<KEY, VALUE>> entries();
+    public FunctionalList<ImmutableTuple2<KEY, VALUE>> entries();
     
     public Map<KEY, VALUE> toMap();
     

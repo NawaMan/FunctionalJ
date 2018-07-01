@@ -1,9 +1,9 @@
 package functionalj.kinds;
 
-import functionalj.functions.Func1;
+import java.util.function.Function;
 
-public interface Filterable<TYPE,DATA> {
+public interface Filterable<TYPE, DATA> {
     
-    public Filterable<TYPE,DATA> filter(Func1<DATA, Boolean> predicate);
+    public Filterable<TYPE, DATA> _filter(Function<? super DATA, Boolean> predicate);
     
 }

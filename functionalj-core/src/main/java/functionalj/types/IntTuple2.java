@@ -20,7 +20,7 @@ import functionalj.lens.lenses.IntegerLens;
 import functionalj.lens.lenses.ObjectLens;
 import lombok.val;
 
-public class IntTuple2<T2> implements ITuple2<Integer, T2>, Map.Entry<Integer, T2> {
+public class IntTuple2<T2> implements Tuple2<Integer, T2>, Map.Entry<Integer, T2> {
 
     public final int _1;
     public final T2  _2;

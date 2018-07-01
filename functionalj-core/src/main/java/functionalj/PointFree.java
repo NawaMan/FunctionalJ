@@ -153,7 +153,7 @@ public interface PointFree {
                 Func1<INPUT2, ? extends Monad<TYPE, OUTPUT>> f2) {
         return input -> {
             return f1.apply(input)
-                     .flatMap(input2 ->{
+                     ._flatMap(input2 ->{
                          return f2.apply(input2);
                      });
         };
@@ -166,9 +166,9 @@ public interface PointFree {
                 Func1<INPUT3, ? extends Monad<TYPE, OUTPUT>> f3) {
         return input -> {
             return f1.apply(input)
-                     .flatMap(input2 ->{
+                     ._flatMap(input2 ->{
                          return f2.apply(input2)
-                                  .flatMap(input3 ->{
+                                  ._flatMap(input3 ->{
                                       return f3.apply(input3);
                                   });
                      });
@@ -184,7 +184,7 @@ public interface PointFree {
             <TYPE, DATA, TARGET>
             Functor<TYPE, TARGET> 
             map(Functor<TYPE, DATA> functor, Func1<DATA, TARGET> mapper) {
-        return functor.map(mapper);
+        return functor._map(mapper);
     }
     
     //-- pull - only for Functor of Function --
@@ -194,7 +194,7 @@ public interface PointFree {
             Function<INPUT, Functor<FUNCTOR, TARGET>> 
             pull(Functor<FUNCTOR, Func1<INPUT, TARGET>> org) {
         return input -> { 
-            return org.map(functor -> { 
+            return org._map(functor -> { 
                 return functor.apply(input);
             });
         };
@@ -204,8 +204,8 @@ public interface PointFree {
             Function<INPUT, Functor<FUNCTOR1, Functor<FUNCTOR2, TARGET>>> 
             pull2(Functor<FUNCTOR1, ? extends Functor<FUNCTOR2, Func1<INPUT, TARGET>>> org) {
         return input -> { 
-            return org.map(functor1 -> { 
-                return functor1.map(functor2 -> {
+            return org._map(functor1 -> { 
+                return functor1._map(functor2 -> {
                     return functor2.apply(input);
                 });
             });
@@ -216,9 +216,9 @@ public interface PointFree {
             Function<INPUT, Functor<FUNCTOR1, Functor<FUNCTOR2, Functor<FUNCTOR3, TARGET>>>>
             pull3(Functor<FUNCTOR1, ? extends Functor<FUNCTOR2, ? extends Functor<FUNCTOR3, Func1<INPUT, TARGET>>>> org) {
         return input -> {
-            return org.map(functor1 -> {
-                return functor1.map(functor2 -> {
-                    return functor2.map(functor3 -> {
+            return org._map(functor1 -> {
+                return functor1._map(functor2 -> {
+                    return functor2._map(functor3 -> {
                         return functor3.apply(input);
                     });
                 });
@@ -230,10 +230,10 @@ public interface PointFree {
             Function<INPUT, Functor<FUNCTOR1, Functor<FUNCTOR2, Functor<FUNCTOR3, Functor<FUNCTOR4, TARGET>>>>>
             pull4(Functor<FUNCTOR1, ? extends Functor<FUNCTOR2, ? extends Functor<FUNCTOR3, ? extends Functor<FUNCTOR4, Func1<INPUT, TARGET>>>>> org) {
         return input -> {
-            return org.map(functor1 -> {
-                return functor1.map(functor2 -> {
-                    return functor2.map(functor3 -> {
-                        return functor3.map(functor4 -> {
+            return org._map(functor1 -> {
+                return functor1._map(functor2 -> {
+                    return functor2._map(functor3 -> {
+                        return functor3._map(functor4 -> {
                             return functor4.apply(input);
                         });
                     });
@@ -255,7 +255,7 @@ public interface PointFree {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <INPUT, OUTPUT> Func1<Monad<?, INPUT>, Monad<?, OUTPUT>> lift(Func1<INPUT, OUTPUT> function) {
         return monadInput -> {
-            return monadInput.flatMap(input -> {
+            return monadInput._flatMap(input -> {
                 return (Monad)monadInput._of(function.apply(input));
             });
         };

@@ -20,10 +20,10 @@ public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VAL
         super(null, ImmutableList.of(stream.map(entry -> {
             int keyHash = calculateHash(entry.getKey());
             @SuppressWarnings("unchecked")
-            Tuple2<KEY, VALUE> tuple = (entry instanceof Tuple2)
-                    ? (Tuple2<KEY, VALUE>)entry
-                    : new Tuple2<KEY, VALUE>(entry);
-            return new IntTuple2<Tuple2<KEY, VALUE>>(keyHash, tuple);
+            ImmutableTuple2<KEY, VALUE> tuple = (entry instanceof ImmutableTuple2)
+                    ? (ImmutableTuple2<KEY, VALUE>)entry
+                    : new ImmutableTuple2<KEY, VALUE>(entry);
+            return new IntTuple2<ImmutableTuple2<KEY, VALUE>>(keyHash, tuple);
         })));
     }
     
@@ -34,28 +34,28 @@ public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VAL
     }
 
     @SafeVarargs
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> ofEntries(Tuple2<KEY, VALUE> ... entries) {
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> ofEntries(ImmutableTuple2<KEY, VALUE> ... entries) {
         return new ImmutableMap<KEY, VALUE>(Stream.of(entries));
     }
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
             KEY key0, VALUE value0) {
-        return ofEntries(new Tuple2<KEY, VALUE>(key0, value0));
+        return ofEntries(new ImmutableTuple2<KEY, VALUE>(key0, value0));
     }
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
             KEY key0, VALUE value0,
             KEY key1, VALUE value1) {
         return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new Tuple2<KEY, VALUE>(key0, value0),
-                new Tuple2<KEY, VALUE>(key1, value1));
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1));
     }
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
             KEY key0, VALUE value0,
             KEY key1, VALUE value1,
             KEY key2, VALUE value2) {
         return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new Tuple2<KEY, VALUE>(key0, value0),
-                new Tuple2<KEY, VALUE>(key1, value1),
-                new Tuple2<KEY, VALUE>(key2, value2));
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2));
     }
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
             KEY key0, VALUE value0,
@@ -63,10 +63,10 @@ public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VAL
             KEY key2, VALUE value2,
             KEY key3, VALUE value3) {
         return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new Tuple2<KEY, VALUE>(key0, value0),
-                new Tuple2<KEY, VALUE>(key1, value1),
-                new Tuple2<KEY, VALUE>(key2, value2),
-                new Tuple2<KEY, VALUE>(key3, value3));
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3));
     }
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
             KEY key0, VALUE value0,
@@ -75,11 +75,11 @@ public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VAL
             KEY key3, VALUE value3,
             KEY key4, VALUE value4) {
         return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new Tuple2<KEY, VALUE>(key0, value0),
-                new Tuple2<KEY, VALUE>(key1, value1),
-                new Tuple2<KEY, VALUE>(key2, value2),
-                new Tuple2<KEY, VALUE>(key3, value3),
-                new Tuple2<KEY, VALUE>(key4, value4));
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3),
+                new ImmutableTuple2<KEY, VALUE>(key4, value4));
     }
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
             KEY key0, VALUE value0,
@@ -89,12 +89,12 @@ public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VAL
             KEY key4, VALUE value4,
             KEY key5, VALUE value5) {
         return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new Tuple2<KEY, VALUE>(key0, value0),
-                new Tuple2<KEY, VALUE>(key1, value1),
-                new Tuple2<KEY, VALUE>(key2, value2),
-                new Tuple2<KEY, VALUE>(key3, value3),
-                new Tuple2<KEY, VALUE>(key4, value4),
-                new Tuple2<KEY, VALUE>(key5, value5));
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3),
+                new ImmutableTuple2<KEY, VALUE>(key4, value4),
+                new ImmutableTuple2<KEY, VALUE>(key5, value5));
     }
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
             KEY key0, VALUE value0,
@@ -105,12 +105,12 @@ public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VAL
             KEY key5, VALUE value5,
             KEY key6, VALUE value6) {
         return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new Tuple2<KEY, VALUE>(key0, value0),
-                new Tuple2<KEY, VALUE>(key1, value1),
-                new Tuple2<KEY, VALUE>(key2, value2),
-                new Tuple2<KEY, VALUE>(key3, value3),
-                new Tuple2<KEY, VALUE>(key4, value4),
-                new Tuple2<KEY, VALUE>(key5, value5),
-                new Tuple2<KEY, VALUE>(key6, value6));
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3),
+                new ImmutableTuple2<KEY, VALUE>(key4, value4),
+                new ImmutableTuple2<KEY, VALUE>(key5, value5),
+                new ImmutableTuple2<KEY, VALUE>(key6, value6));
     }
 }

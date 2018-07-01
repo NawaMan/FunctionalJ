@@ -1,282 +1,351 @@
 package functionalj.types;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.kinds.Comonad;
+import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
 import funtionalj.failable.FailableBiFunction;
 import funtionalj.failable.FailableFunc0;
 import funtionalj.failable.FailableFunction;
 import funtionalj.failable.FailableSupplier;
+import lombok.val;
+import nawaman.nullablej.nullable.Nullable;
 
-public final class Result<VALUE> implements Functor<Result<?>, VALUE>, Monad<Result<?>, VALUE>, ITuple2<VALUE, Throwable> {
-    
-    private static final Result NULL = new Result<>(null, null);
-    
-    public static <VALUE> Result<VALUE> of(VALUE value) {
-        return new Result<VALUE>(value, null);
-    }
-    public static <VALUE> Result<VALUE> of(VALUE value, Throwable throwable) {
-        return new Result<VALUE>(value, throwable);
-    }
-    public static <VALUE> Result<VALUE> of(ITuple2<VALUE, Throwable> tuple) {
-        if (tuple != null)
-            return Result.of(null, tuple._2());
-            
-        return Result.of(tuple._1(), null);
-    }
-    public static <VALUE> Result<VALUE> from(Supplier<VALUE> supplier) {
-        try {
-            return Result.of(supplier.get());
-        } catch (RuntimeException e) {
-            return Result.of(null, e);
-        }
-    }
-    public static <VALUE> Result<VALUE> from(FailableSupplier<VALUE> supplier) {
-        try {
-            return Result.of(supplier.get());
-        } catch (Throwable e) {
-            return Result.of(null, e);
-        }
-    }
-    public static <VALUE> Result<VALUE> ofNull() {
-        return (Result<VALUE>)NULL;
-    }
 
+@FunctionalInterface
+public interface Result<DATA>
+                    extends 
+                        Functor<Result<?>, DATA>, 
+                        Monad<Result<?>, DATA>, 
+                        Comonad<Result<?>, DATA>,
+                        Filterable<Result<?>, DATA>,
+                        Tuple2<DATA, Exception>,
+                        Nullable<DATA> {
+    
+    //TODO - Make it dynamic like List
+    
+    public Tuple2<DATA, Exception> asTuple();
+    
+    public default DATA getValue() {
+        return asTuple()._1();
+    }
+    
+    public default Exception getException() {
+        return asTuple()._2();
+    }
+    
     @Override
-    public <TARGET> Result<TARGET> _of(TARGET target) {
-        return Result.of(target);
-    }
-    
-    private VALUE     value;
-    private Throwable throwable;
-    
-    public Result(VALUE value, Throwable throwable) {
-        this.value     = value;
-        this.throwable = throwable;
-    }
-    
-    public final VALUE getValue() {
-        return value;
-    }
-    public final Throwable getThrowable() {
-        return throwable;
-    }
-
-    @Override
-    public VALUE _1() {
+    public default DATA get() {
         return getValue();
     }
+    
     @Override
-    public Throwable _2() {
-        return getThrowable();
+    public default DATA _extract() {
+        return getValue();
+    }
+    
+    @Override
+    public default DATA _1() {
+        return asTuple()._1();
+    }
+    @Override
+    public default Exception _2() {
+        return asTuple()._2();
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public <TARGET> Result<TARGET> map(Function<VALUE, TARGET> mapper) {
+    public default <TARGET> Result<TARGET> _map(Function<? super DATA, TARGET> mapper) {
+        DATA value = getValue();
         if (value == null)
-            return (Result<TARGET>)this;
+            return (ImmutableResult<TARGET>)this;
         
-        return Result.from((Supplier<TARGET>)()->{
+        return ImmutableResult.from((Supplier<TARGET>)()->{
             return mapper.apply(value);
         });
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <TARGET> Result<TARGET> flatMap(Function<VALUE, Monad<Result<?>, TARGET>> mapper) {
+    public default <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
+        DATA value = getValue();
         if (value == null)
-            return (Result<TARGET>)this;
+            return (ImmutableResult<TARGET>)this;
         
-        return Result.from((Supplier<TARGET>)()->{
-            Result<TARGET> newResult = (Result<TARGET>)mapper.apply(value);
+        return ImmutableResult.from((Supplier<TARGET>)()->{
+            Result<TARGET> newResult = (ImmutableResult<TARGET>)mapper.apply(value);
             return newResult.getValue();
         });
     }
     
     @SuppressWarnings("unchecked")
-    public <TARGET> Result<TARGET> map(BiFunction<VALUE, Throwable, TARGET> mapper) {
+    public default <TARGET> Result<TARGET> map(BiFunction<DATA, Exception, TARGET> mapper) {
+        DATA value = getValue();
         if (value == null)
-            return (Result<TARGET>)this;
+            return (ImmutableResult<TARGET>)this;
         
-        return Result.from((Supplier<TARGET>)()->{
-            return mapper.apply(value, throwable);
+        return ImmutableResult.from((Supplier<TARGET>)()->{
+            val exception = getException();
+            return mapper.apply(value, exception);
         });
     }
     
     @SuppressWarnings("unchecked")
-    public <TARGET> Result<TARGET> flatMap(BiFunction<VALUE, Throwable, Monad<Result<?>, TARGET>> mapper) {
+    public default <TARGET> Result<TARGET> flatMap(BiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
+        DATA value = getValue();
         if (value == null)
-            return (Result<TARGET>)this;
+            return (ImmutableResult<TARGET>)this;
         
-        return Result.from((Supplier<TARGET>)()->{
-            Result<TARGET> newResult = (Result<TARGET>)mapper.apply(value, throwable);
+        return ImmutableResult.from((Supplier<TARGET>)()->{
+            val exception = getException();
+            Result<TARGET> newResult = (Result<TARGET>)mapper.apply(value, exception);
             return newResult.getValue();
         });
     }
     
     @SuppressWarnings("unchecked")
-    public <TARGET> Result<TARGET> map(FailableFunction<VALUE, TARGET> mapper) {
+    public default <TARGET> Result<TARGET> map(FailableFunction<DATA, TARGET> mapper) {
+        DATA value = getValue();
         if (value == null)
-            return (Result<TARGET>)this;
+            return (ImmutableResult<TARGET>)this;
         
-        return Result.from((FailableSupplier<TARGET>)()->{
+        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
             return mapper.apply(value);
         });
     }
     
     @SuppressWarnings("unchecked")
-    public <TARGET> Result<TARGET> flatMap(FailableFunction<VALUE, Monad<Result<?>, TARGET>> mapper) {
+    public default <TARGET> Result<TARGET> map(FailableBiFunction<DATA, Exception, TARGET> mapper) {
+        DATA value = getValue();
         if (value == null)
-            return (Result<TARGET>)this;
+            return (ImmutableResult<TARGET>)this;
         
-        return Result.from((FailableSupplier<TARGET>)()->{
-            Result<TARGET> newResult = (Result<TARGET>)mapper.apply(value);
-            return newResult.getValue();
+        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
+            val exception = getException();
+            return mapper.apply(value, exception);
         });
     }
     
     @SuppressWarnings("unchecked")
-    public <TARGET> Result<TARGET> map(FailableBiFunction<VALUE, Throwable, TARGET> mapper) {
+    public default <TARGET> Result<TARGET> flatMap(FailableFunction<DATA, Monad<Result<?>, TARGET>> mapper) {
+        DATA value = getValue();
         if (value == null)
-            return (Result<TARGET>)this;
+            return (ImmutableResult<TARGET>)this;
         
-        return Result.from((FailableSupplier<TARGET>)()->{
-            return mapper.apply(value, throwable);
+        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
+            Result<TARGET> newResult = (ImmutableResult<TARGET>)mapper.apply(value);
+            return newResult.getValue();
+        });
+    }
+    @Override
+    public default <TARGET> Result<TARGET> map(Function<? super DATA, TARGET> mapper) {
+        DATA value = getValue();
+        if (value == null)
+            return (ImmutableResult<TARGET>)this;
+        
+        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
+            return mapper.apply(value);
         });
     }
     
-    @SuppressWarnings("unchecked")
-    public <TARGET> Result<TARGET> flatMap(FailableBiFunction<VALUE, Throwable, Monad<Result<?>, TARGET>> mapper) {
+    @Override
+    public default <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
+        DATA value = getValue();
         if (value == null)
-            return (Result<TARGET>)this;
+            return (ImmutableResult<TARGET>)this;
         
-        return Result.from((FailableSupplier<TARGET>)()->{
-            Result<TARGET> newResult = (Result<TARGET>)mapper.apply(value, throwable);
+        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
+            Result<TARGET> newResult = (ImmutableResult<TARGET>)mapper.apply(value);
+            return newResult.getValue();
+        });
+    }
+    @Override
+    public default Result<DATA> peek(Consumer<? super DATA> theConsumer) {
+        Nullable.super.peek(theConsumer);
+        return this;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <TARGET> Result<TARGET> flatMap(FailableBiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
+        DATA value = getValue();
+        if (value == null)
+            return (ImmutableResult<TARGET>)this;
+        
+        return ImmutableResult.from((FailableSupplier<TARGET>)()->{
+            val exception = getException();
+            Result<TARGET> newResult = (ImmutableResult<TARGET>)mapper.apply(value, exception);
             return newResult.getValue();
         });
     }
     
-    public boolean isValue() {
-        return throwable == null;
+    public default boolean isValue() {
+        val exception = getException();
+        return exception == null;
     }
     
-    public boolean isNotNull() {
-        if (throwable != null)
+    public default boolean isNotNull() {
+        val exception = getException();
+        if (exception != null)
             return false;
+        DATA value = getValue();
         return (value != null);
     }
     
-    public boolean isNull() {
-        if (throwable != null)
+    public default boolean isNull() {
+        val exception = getException();
+        if (exception != null)
             return false;
+        DATA value = getValue();
         return (value == null);
     }
     
-    public boolean isThrowable() {
-        return throwable != null;
+    public default boolean isException() {
+        val exception = getException();
+        return exception != null;
     }
     
-    public Result<VALUE> ensureNotNull() {
+    public default Result<DATA> ensureNotNull() {
+        DATA value = getValue();
         if (value != null)
             return this;
-        return new Result<VALUE>(null, new NullPointerException());
+        return ImmutableResult.of(null, new NullPointerException());
     }
     
-    public Result<VALUE> makeNullable() {
-        if (throwable instanceof NullPointerException)
-            return ofNull();
+    public default Result<DATA> makeNullable() {
+        val exception = getException();
+        if (exception instanceof NullPointerException)
+            return ImmutableResult.ofNull();
         
         return this;
     }
     
-    public Result<VALUE> filter(Predicate<VALUE> check) {
+    public default Result<DATA> filter(Predicate<? super DATA> theCondition) {
+        DATA value = get();
         if (value == null)
             return this;
-        if (check.test(value))
-            return this;
-        return Result.ofNull();
-    }
-    
-    public Result<VALUE> otherwise(VALUE otherwiseValue) {
-        if (value == null)
-            return Result.of(otherwiseValue, null);
+        
+        val isPass = theCondition.test(value);
+        if (!isPass)
+            return ImmutableResult.ofNull();
+        
         return this;
     }
     
-    public Result<VALUE> otherwiseGet(Supplier<VALUE> otherwiseSupplier) {
+    @Override
+    public default Result<DATA> _filter(Function<? super DATA, Boolean> predicate) {
+        return filter(predicate::apply);
+    }
+    
+    public default Result<DATA> otherwise(DATA otherwiseValue) {
+        DATA value = getValue();
+        if (value == null)
+            return ImmutableResult.of(otherwiseValue, null);
+        return this;
+    }
+    
+    public default Result<DATA> otherwiseGet(Supplier<DATA> otherwiseSupplier) {
+        DATA value = getValue();
         if (value == null)
             return this;
         
-        return Result.from((Supplier<VALUE>)()->{
+        return ImmutableResult.from((Supplier<DATA>)()->{
             return otherwiseSupplier.get();
         });
     }
     
-    public Result<VALUE> otherwiseGet(FailableFunc0<VALUE> otherwiseSupplier) {
+    public default Result<DATA> otherwiseGet(FailableFunc0<DATA> otherwiseSupplier) {
+        DATA value = getValue();
         if (value != null)
             return this;
         
-        return Result.from((FailableFunc0<VALUE>)()->{
+        return ImmutableResult.from((FailableFunc0<DATA>)()->{
             return otherwiseSupplier.get();
         });
     }
     
-    public VALUE orElse(VALUE elseValue) {
+    public default DATA orElse(DATA elseValue) {
+        DATA value = getValue();
         if (value == null)
             return elseValue;
         return value;
     }
     
-    public VALUE orElseGet(Supplier<VALUE> elseSupplier) {
+    public default DATA orElseGet(Supplier<? extends DATA> elseSupplier) {
+        DATA value = getValue();
         if (value == null)
             return elseSupplier.get();
         return value;
     }
     
-    public MayBe<MayBe<VALUE>> asMayBe() {
-        if (throwable != null)
+    public default MayBe<MayBe<DATA>> asMayBe() {
+        val exception = getException();
+        if (exception != null)
             return MayBe.nothing();
+        DATA value = getValue();
         return MayBe.of(MayBe.of(value));
     }
     
-    public MayBe<VALUE> getMayBeValue() {
+    public default MayBe<DATA> getMayBeValue() {
+        DATA value = getValue();
         return MayBe.of(value);
     }
     
-    public MayBe<Throwable> getMayBeThrowable() {
-        return MayBe.of(throwable);
+    public default MayBe<Exception> getMayBeException() {
+        val exception = getException();
+        return MayBe.of(exception);
     }
     
-    public VALUE orThrow() throws Throwable {
-        if (throwable != null)
-            throw throwable;
+    public default DATA orThrow() throws Exception {
+        val exception = getException();
+        if (exception != null)
+            throw exception;
+        DATA value = getValue();
         return value;
     }
-    public VALUE orThrowRuntimeException() {
-        if (throwable == null)
+    public default DATA orThrowRuntimeException() {
+        val exception = getException();
+        if (exception == null) {
+            DATA value = getValue();
             return value;
+        }
         
-        if (throwable instanceof RuntimeException)
-            throw (RuntimeException)throwable;
+        if (exception instanceof RuntimeException)
+            throw (RuntimeException)exception;
         
-        throw new RuntimeException(throwable);
+        throw new RuntimeException(exception);
     }
-    public <THROWABLE extends Throwable> 
-            VALUE orThrow(Function<Throwable, THROWABLE> toThrowable) throws THROWABLE {
-        if (throwable == null)
+    public default <THROWABLE extends Exception> DATA orThrow(Function<Exception, THROWABLE> toException) 
+            throws THROWABLE {
+        val exception = getException();
+        if (exception == null) {
+            DATA value = getValue();
             return value;
-        throw toThrowable.apply(throwable);
+        }
+        throw toException.apply(exception);
     }
-    public <RUNTIMEEXCEPTION extends RuntimeException> 
-            VALUE orThrowRuntimeException(Function<Throwable, RUNTIMEEXCEPTION> toRuntimeException) {
-        if (throwable == null)
+    public default <RUNTIMEEXCEPTION extends RuntimeException> 
+            DATA orThrowRuntimeException(Function<Exception, RUNTIMEEXCEPTION> toRuntimeException) {
+        val exception = getException();
+        if (exception == null) {
+            DATA value = getValue();
             return value;
-        throw toRuntimeException.apply(throwable);
+        }
+        throw toRuntimeException.apply(exception);
     }
 
+    @Override
+    public default <TARGET> Monad<Result<?>, TARGET> _of(TARGET target) {
+        return ImmutableResult.of(target);
+    }
+    
+    public default Optional<DATA> toOptional() {
+        return Optional.ofNullable(this.get());
+    }
 }

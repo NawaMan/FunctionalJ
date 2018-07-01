@@ -14,7 +14,7 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized2;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
-import functionalj.types.Tuple2;
+import functionalj.types.ImmutableTuple2;
 import lombok.val;
 
 public interface MapLens<HOST, KEY, VALUE, 
@@ -72,7 +72,7 @@ public interface MapLens<HOST, KEY, VALUE,
                 return each;
             
             val newValue = mapper.apply(value);
-            return (Map.Entry<KEY, VALUE>)new Tuple2<KEY, VALUE>(key, newValue);
+            return (Map.Entry<KEY, VALUE>)new ImmutableTuple2<KEY, VALUE>(key, newValue);
         });
         
         val newMap = new LinkedHashMap<KEY, VALUE>();
@@ -104,7 +104,7 @@ public interface MapLens<HOST, KEY, VALUE,
                 return each;
             
             val newValue = mapper.apply(value);
-            return (Map.Entry<KEY, VALUE>)new Tuple2<KEY, VALUE>(key, newValue);
+            return (Map.Entry<KEY, VALUE>)new ImmutableTuple2<KEY, VALUE>(key, newValue);
         });
         
         return host -> {

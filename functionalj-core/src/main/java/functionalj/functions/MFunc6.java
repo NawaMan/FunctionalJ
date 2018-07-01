@@ -67,7 +67,7 @@ public interface MFunc6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, MONAD, O
             chain(MFunc1<OUTPUT, MONAD, FINAL> after) {
         return (input1, input2, input3, input4, input5, input6) -> {
             return this.apply(input1, input2, input3, input4, input5, input6)
-                     .flatMap(output ->{
+                     ._flatMap(output ->{
                          return after.apply(output);
                      });
         };

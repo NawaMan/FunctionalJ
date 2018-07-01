@@ -15,7 +15,7 @@
 //  ========================================================================
 package functionalj.functions;
 
-import functionalj.types.ITuple5;
+import functionalj.types.Tuple5;
 
 /**
  * Function of five parameters.
@@ -71,7 +71,7 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
      * @param  input the tuple input.
      * @return       the function result.
      */
-    public default OUTPUT apply(ITuple5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> input) {
+    public default OUTPUT apply(Tuple5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> input) {
         return apply(input._1(), input._2(), input._3(), input._4(), input._5());
     }
     

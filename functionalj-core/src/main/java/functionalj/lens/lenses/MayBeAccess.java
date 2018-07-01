@@ -3,7 +3,6 @@ package functionalj.lens.lenses;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.kinds.Monad;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.types.MayBe;
 import lombok.val;
@@ -44,37 +43,22 @@ public interface MayBeAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>
                 return accessToParameter::apply;
             }
         };
-        return new MayBeAccess<HOST, TARGET, AnyAccess<HOST,TARGET>>() {
-            @Override
-            public AccessParameterized<HOST, MayBe<TARGET>, TARGET, AnyAccess<HOST, TARGET>> accessWithSub() {
-                return accessWithSub;
-            }
-        };
+        return () -> accessWithSub;
     }
     
-    public default <TARGET> 
-    MayBeAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> flatMap(Function<TYPE, MayBe<TARGET>> mapper) {
+    public default <TARGET> MayBeAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> flatMap(Function<TYPE, MayBe<TARGET>> mapper) {
         val accessWithSub = new AccessParameterized<HOST, MayBe<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
-            @SuppressWarnings("unchecked")
             @Override
             public MayBe<TARGET> apply(HOST host) {
                 return (MayBe<TARGET>) MayBeAccess.this.apply(host)
-                        .flatMap(value -> {
-                            Monad newMonad = mapper.apply(value);
-                            return newMonad;
-                        });
+                        .flatMap(value -> mapper.apply(value));
             }
             @Override
             public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {
                 return accessToParameter::apply;
             }
         };
-        return new MayBeAccess<HOST, TARGET, AnyAccess<HOST,TARGET>>() {
-            @Override
-            public AccessParameterized<HOST, MayBe<TARGET>, TARGET, AnyAccess<HOST, TARGET>> accessWithSub() {
-                return accessWithSub;
-            }
-        };
+        return () -> accessWithSub;
     }
     
     public default BooleanAccess<HOST> isPresent() {

@@ -7,6 +7,8 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensType;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.AnyLens;
+import functionalj.lens.lenses.ObjectAccess;
+import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.StringAccess;
 import functionalj.lens.lenses.StringLens;
 
@@ -32,6 +34,13 @@ public interface LensTypes {
     }
     
     
+    public static <H> LensType<H, Object, AnyAccess<H, Object>, AnyLens<H, Object>> OBJECT() {
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        LensType<H, Object, AnyAccess<H, Object>, AnyLens<H, Object>> type 
+            = (LensType<H, Object, AnyAccess<H, Object>, AnyLens<H, Object>>)(LensType)__internal__.objectLensType;
+        return type;
+    }
+    
     public static <H> LensType<H, String, StringAccess<H>, StringLens<H>> STRING() {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         LensType<H, String, StringAccess<H>, StringLens<H>> type 
@@ -42,8 +51,12 @@ public interface LensTypes {
     
     public static final class __internal__ {
         
+        static final LensType<Object, Object, ObjectAccess<Object, Object>, ObjectLens<Object, Object>> objectLensType
+                = LensTypes.of(Object.class, ObjectAccess.class, ObjectLens.class, access -> access::apply, ObjectLens::of);
+        
         static final LensType<Object, String, StringAccess<Object>, StringLens<Object>> stringLensType
                 = LensTypes.of(String.class, StringAccess.class, StringLens.class, access -> access::apply, StringLens::of);
+    
     }
     
 }
