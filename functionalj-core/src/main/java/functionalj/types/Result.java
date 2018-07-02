@@ -1,5 +1,7 @@
 package functionalj.types;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -7,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.functions.Func3;
 import functionalj.kinds.Comonad;
 import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
@@ -18,9 +21,8 @@ import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
 
-@FunctionalInterface
-public interface Result<DATA>
-                    extends 
+public abstract class Result<DATA>
+                    implements 
                         Functor<Result<?>, DATA>, 
                         Monad<Result<?>, DATA>, 
                         Comonad<Result<?>, DATA>,
@@ -28,233 +30,167 @@ public interface Result<DATA>
                         Tuple2<DATA, Exception>,
                         Nullable<DATA> {
     
-    public Tuple2<DATA, Exception> asTuple();
+    protected abstract Object getData();
     
-    public default DATA getValue() {
-        return asTuple()._1();
+    protected <T> T processData(Func3<Boolean, DATA, Exception, T> processor) {
+        val data      = getData();
+        val isValue   = ((data == null) || !(data instanceof ExceptionHolder));
+        val value     = isValue ? (DATA)data : null;
+        val exception = isValue ? null         : ((ExceptionHolder)data).getException();
+        return processor.apply(isValue, value, exception);
+    }
+    
+    public DATA getValue() {
+        val data = getData();
+        return (data instanceof ExceptionHolder) ? null : (DATA)data;
+    }
+    
+    public Exception getException() {
+        val data = getData();
+        return (data instanceof ExceptionHolder) ? ((ExceptionHolder)data).getException() : null;
     }
     
     @Override
-    public default DATA get() {
+    public DATA get() {
         return getValue();
     }
     
     @Override
-    public default DATA _extract() {
+    public DATA _extract() {
         return getValue();
     }
     
     @Override
-    public default DATA _1() {
-        return asTuple()._1();
-    }
-    
-    // TODO - Think about possible inconsistency when both value and exception are not null.
-    
-    public default Exception getException() {
-        return (asTuple()._1() != null) ? null : asTuple()._2();
+    public DATA _1() {
+        return getValue();
     }
     
     @Override
-    public default Exception _2() {
-        return (asTuple()._1() != null) ? null : asTuple()._2();
+    public Exception _2() {
+        return getException();
     }
     
-    public default ImmutableResult<DATA> toImmutable() {
+    public Tuple2<DATA, Exception> asTuple() {
+        return new Tuple2<DATA, Exception>() {
+            @Override public DATA _1()      { return getValue();     }
+            @Override public Exception _2() { return getException(); }
+        };
+    }
+    
+    public ImmutableResult<DATA> toImmutable() {
         return ImmutableResult.of(this);
     }
     
-    // TODO - See we can dry this up.
-    
-    @SuppressWarnings("unchecked")
     @Override
-    public default <TARGET> Result<TARGET> _map(Function<? super DATA, TARGET> mapper) {
-        return new ResultDerived<TARGET, DATA>(this, source -> {
-            val exception = source._2();
-            if (exception != null)
-                return (Result<TARGET>)this;
-            
-            val value = source._1();
-            val newValue  = mapper.apply(value);
-            return __internal__.createNewTuple(source, newValue);
-        });
+    public <TARGET> Result<TARGET> _map(Function<? super DATA, TARGET> mapper) {
+        return new ResultDerived<>(this, (s, e) -> mapper.apply(s));
     }
     
     @Override
-    public default <TARGET> Result<TARGET> map(Function<? super DATA, TARGET> mapper) {
+    public <TARGET> Result<TARGET> map(Function<? super DATA, TARGET> mapper) {
         return _map(mapper);
     }
     
-    @SuppressWarnings("unchecked")
-    public default <TARGET> Result<TARGET> map(BiFunction<DATA, Exception, TARGET> mapper) {
-        return new ResultDerived<TARGET, DATA>(this, source -> {
-            val exception = source._2();
-            if (exception != null)
-                return (Result<TARGET>)this;
-            
-            val value = source._1();
-            val newValue  = mapper.apply(value, exception);
-            return __internal__.createNewTuple(source, newValue);
-        });
+    public <TARGET> Result<TARGET> map(BiFunction<DATA, Exception, TARGET> mapper) {
+        return new ResultDerived<>(this, (s, e) -> mapper.apply(s, e));
     }
     
-    @SuppressWarnings("unchecked")
-    public default <TARGET> Result<TARGET> map(FailableFunction<DATA, TARGET> mapper) {
-        return new ResultDerived<TARGET, DATA>(this, source -> {
-            val exception = source._2();
-            if (exception != null)
-                return (Result<TARGET>)this;
-            
-            val value = source._1();
-            try {
-                val newValue  = mapper.apply(value);
-                return __internal__.createNewTuple(source, newValue);
-            } catch (Exception e) {
-                return __internal__.createNewTuple(e);
-            }
-        });
+    public <TARGET> Result<TARGET> failableMap(FailableFunction<DATA, TARGET> mapper) {
+        return new ResultDerived<>(this, (s, e) -> mapper.apply(s));
     }
     
-    @SuppressWarnings("unchecked")
-    public default <TARGET> Result<TARGET> map(FailableBiFunction<DATA, Exception, TARGET> mapper) {
-        return new ResultDerived<TARGET, DATA>(this, source -> {
-            val exception = source._2();
-            if (exception != null)
-                return (Result<TARGET>)this;
-            
-            val value = source._1();
-            try {
-                val newValue  = mapper.apply(value, exception);
-                return __internal__.createNewTuple(source, newValue);
-            } catch (Exception e) {
-                return __internal__.createNewTuple(e);
-            }
-        });
+    public <TARGET> Result<TARGET> failableMap(FailableBiFunction<DATA, Exception, TARGET> mapper) {
+        return new ResultDerived<>(this, (s, e) -> mapper.apply(s, e));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public default <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
-        return new ResultDerived<TARGET, DATA>(this, source -> {
-            val exception = source._2();
-            if (exception != null)
-                return (Result<TARGET>)this;
-            
-            val value = source._1();
-            val newValue = (Result<TARGET>)mapper.apply(value);
-            return newValue;
+    public <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
+        return new ResultDerived<>(this, (s, e) -> {
+            val monad = (Result<TARGET>)mapper.apply(s);
+            return monad.orThrow();
         });
     }
     
-    @SuppressWarnings("unchecked")
-    public default <TARGET> Result<TARGET> flatMap(BiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
-        return new ResultDerived<TARGET, DATA>(this, source -> {
-            val exception = source._2();
-            if (exception != null)
-                return (Result<TARGET>)this;
-            
-            val value = source._1();
-            val newValue = (Result<TARGET>)mapper.apply(value, exception);
-            return newValue;
+    public <TARGET> Result<TARGET> flatMap(BiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
+        return new ResultDerived<>(this, (s, e) -> {
+            val monad = (Result<TARGET>)mapper.apply(s, e);
+            return monad.orThrow();
         });
     }
     
-    @SuppressWarnings("unchecked")
-    public default <TARGET> Result<TARGET> flatMap(FailableFunction<DATA, Monad<Result<?>, TARGET>> mapper) {
-        return new ResultDerived<TARGET, DATA>(this, source -> {
-            val exception = source._2();
-            if (exception != null)
-                return (Result<TARGET>)this;
-            
-            val value = source._1();
-            try {
-                val newValue = (Result<TARGET>)mapper.apply(value);
-                return newValue;
-            } catch (Exception e) {
-                return __internal__.createNewTuple(e);
-            }
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public default <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
-        return new ResultDerived<TARGET, DATA>(this, source -> {
-            val exception = source._2();
-            if (exception != null)
-                return (Result<TARGET>)this;
-            
-            val value = source._1();
-            val newValue = (Result<TARGET>)mapper.apply(value);
-            return newValue;
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <TARGET> Result<TARGET> flatMap(FailableBiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
-        return new ResultDerived<TARGET, DATA>(this, source -> {
-            val exception = source._2();
-            if (exception != null)
-                return (Result<TARGET>)this;
-            
-            val value = source._1();
-            try {
-                val newValue = (Result<TARGET>)mapper.apply(value, exception);
-                return newValue;
-            } catch (Exception e) {
-                return __internal__.createNewTuple(e);
-            }
+    public <TARGET> Result<TARGET> failableFlatMap(FailableFunction<DATA, Monad<Result<?>, TARGET>> mapper) {
+        return new ResultDerived<>(this, (s, e) -> {
+            val monad = (Result<TARGET>)mapper.apply(s);
+            return monad.orThrow();
         });
     }
     
     @Override
-    public default Result<DATA> peek(Consumer<? super DATA> theConsumer) {
+    public <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
+        return new ResultDerived<>(this, (s, e) -> {
+            val monad = (Nullable<TARGET>)mapper.apply(s);
+            return monad.orElse(null);
+        });
+    }
+    
+    public <TARGET> Result<TARGET> failableFlatMap(FailableBiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
+        return new ResultDerived<>(this, (s, e) -> {
+            val monad = (Nullable<TARGET>)mapper.apply(s, e);
+            return monad.orElse(null);
+        });
+    }
+    
+    @Override
+    public Result<DATA> peek(Consumer<? super DATA> theConsumer) {
         Nullable.super.peek(theConsumer);
         return this;
     }
     
-    public default boolean isValue() {
+    public boolean isValue() {
         val exception = getException();
         return exception == null;
     }
     
-    public default boolean isNotNull() {
-        val exception = getException();
-        if (exception != null)
-            return false;
-        DATA value = getValue();
-        return (value != null);
+    public boolean isNotNull() {
+        return processData((isValue, value, exception) -> {
+            if (exception != null)
+                return false;
+            
+            return (value != null);
+        });
     }
     
-    public default boolean isNull() {
-        val exception = getException();
-        if (exception != null)
-            return false;
-        DATA value = getValue();
-        return (value == null);
+    public boolean isNull() {
+        return processData((isValue, value, exception) -> {
+            if (exception != null)
+                return false;
+            
+            return (value == null);
+        });
     }
     
-    public default boolean isException() {
+    public boolean isException() {
         val exception = getException();
         return exception != null;
     }
     
-    public default boolean isImmutable() {
+    public boolean isImmutable() {
         return this instanceof ImmutableResult;
     }
     
-    public default boolean isNotImmutable() {
+    public boolean isNotImmutable() {
         return !(this instanceof ImmutableResult);
     }
     
-    public default Result<DATA> ensureNotNull() {
+    public Result<DATA> ensureNotNull() {
         DATA value = getValue();
         if (value != null)
             return this;
+        
         return ImmutableResult.of(null, new NullPointerException());
     }
     
-    public default Result<DATA> makeNullable() {
+    public Result<DATA> makeNullable() {
         val exception = getException();
         if (exception instanceof NullPointerException)
             return ImmutableResult.ofNull();
@@ -262,7 +198,7 @@ public interface Result<DATA>
         return this;
     }
     
-    public default Result<DATA> filter(Predicate<? super DATA> theCondition) {
+    public Result<DATA> filter(Predicate<? super DATA> theCondition) {
         DATA value = get();
         if (value == null)
             return this;
@@ -275,18 +211,18 @@ public interface Result<DATA>
     }
     
     @Override
-    public default Result<DATA> _filter(Function<? super DATA, Boolean> predicate) {
+    public Result<DATA> _filter(Function<? super DATA, Boolean> predicate) {
         return filter(predicate::apply);
     }
     
-    public default Result<DATA> otherwise(DATA otherwiseValue) {
+    public Result<DATA> otherwise(DATA otherwiseValue) {
         DATA value = getValue();
         if (value == null)
             return ImmutableResult.of(otherwiseValue, null);
         return this;
     }
     
-    public default Result<DATA> otherwiseGet(Supplier<DATA> otherwiseSupplier) {
+    public Result<DATA> otherwiseGet(Supplier<DATA> otherwiseSupplier) {
         DATA value = getValue();
         if (value == null)
             return this;
@@ -296,7 +232,7 @@ public interface Result<DATA>
         });
     }
     
-    public default Result<DATA> otherwiseGet(FailableFunc0<DATA> otherwiseSupplier) {
+    public Result<DATA> otherwiseGet(FailableFunc0<DATA> otherwiseSupplier) {
         DATA value = getValue();
         if (value != null)
             return this;
@@ -306,108 +242,125 @@ public interface Result<DATA>
         });
     }
     
-    public default DATA orElse(DATA elseValue) {
+    public DATA orElse(DATA elseValue) {
         DATA value = getValue();
         if (value == null)
             return elseValue;
+        
         return value;
     }
     
-    public default DATA orElseGet(Supplier<? extends DATA> elseSupplier) {
+    public DATA orElseGet(Supplier<? extends DATA> elseSupplier) {
         DATA value = getValue();
         if (value == null)
             return elseSupplier.get();
+        
         return value;
     }
     
-    public default MayBe<MayBe<DATA>> asMayBe() {
-        val exception = getException();
-        if (exception != null)
-            return MayBe.nothing();
-        DATA value = getValue();
-        return MayBe.of(MayBe.of(value));
+    public MayBe<MayBe<DATA>> asMayBe() {
+        return processData((isValue, value, exception) -> {
+            if (exception != null)
+                return MayBe.nothing();
+            
+            return MayBe.of(MayBe.of(value));
+        });
     }
     
-    public default MayBe<DATA> getMayBeValue() {
+    public MayBe<DATA> getMayBeValue() {
         DATA value = getValue();
         return MayBe.of(value);
     }
     
-    public default MayBe<Exception> getMayBeException() {
+    public MayBe<Exception> getMayBeException() {
         val exception = getException();
         return MayBe.of(exception);
     }
     
-    public default DATA orThrow() throws Exception {
-        val exception = getException();
-        if (exception != null)
-            throw exception;
-        DATA value = getValue();
-        return value;
-    }
-    public default DATA orThrowRuntimeException() {
-        val exception = getException();
-        if (exception == null) {
-            DATA value = getValue();
+    public DATA orThrow() throws Exception {
+        val data = processData((isValue, value, exception) -> {
+            if (exception != null)
+                return new ExceptionHolder(exception);
+            
             return value;
-        }
+        });
         
-        if (exception instanceof RuntimeException)
-            throw (RuntimeException)exception;
+        if (data instanceof ExceptionHolder)
+            throw ((ExceptionHolder)data).getException();
         
-        throw new RuntimeException(exception);
+        return (DATA)data;
     }
-    public default <THROWABLE extends Exception> DATA orThrow(Function<Exception, THROWABLE> toException) 
-            throws THROWABLE {
-        val exception = getException();
-        if (exception == null) {
-            DATA value = getValue();
-            return value;
-        }
-        throw toException.apply(exception);
+    public DATA orThrowRuntimeException() {
+        val data = processData((isValue, value, exception) -> {
+            if (exception == null) {
+                return value;
+            }
+            
+            if (exception instanceof RuntimeException)
+                return new ExceptionHolder((RuntimeException)exception);
+            
+            return new ExceptionHolder(new RuntimeException(exception));
+        });
+        
+        if (data instanceof ExceptionHolder)
+            throw (RuntimeException)((ExceptionHolder)data).getException();
+        
+        return (DATA)data;
     }
-    public default <RUNTIMEEXCEPTION extends RuntimeException> 
+    public <EXCEPTION extends Exception> DATA orThrow(Function<Exception, EXCEPTION> toException) 
+            throws EXCEPTION {
+        val data = processData((isValue, value, exception) -> {
+            if (exception == null) {
+                return value;
+            }
+            return new ExceptionHolder(toException.apply(exception));
+        });
+        
+        if (data instanceof ExceptionHolder)
+            throw (EXCEPTION)((ExceptionHolder)data).getException();
+        
+        return (DATA)data;
+    }
+    public <RUNTIMEEXCEPTION extends RuntimeException> 
             DATA orThrowRuntimeException(Function<Exception, RUNTIMEEXCEPTION> toRuntimeException) {
-        val exception = getException();
-        if (exception == null) {
-            DATA value = getValue();
-            return value;
-        }
-        throw toRuntimeException.apply(exception);
+        val data = processData((isValue, value, exception) -> {
+            if (exception == null)
+                return value;
+            
+            throw toRuntimeException.apply(exception);
+        });
+        
+        if (data instanceof ExceptionHolder)
+            throw (RUNTIMEEXCEPTION)((ExceptionHolder)data).getException();
+        
+        return (DATA)data;
     }
 
     @Override
-    public default <TARGET> Monad<Result<?>, TARGET> _of(TARGET target) {
+    public <TARGET> Monad<Result<?>, TARGET> _of(TARGET target) {
         return ImmutableResult.of(target);
     }
     
-    public default Optional<DATA> toOptional() {
+    public Optional<DATA> toOptional() {
         return Optional.ofNullable(this.get());
     }
     
-    public static <D> String resultToString(Result<D> result) {
-        Exception exception = result.getException();
-        if (exception == null)
-             return "Result:{ Value: "     + result.getValue() + " }";
-        else return "Result:{ Exception: " + exception  + " }";
+    public String toString() {
+        return processData((isValue, value, exception) -> {
+            if (exception == null)
+                return "Result:{ Value: "     + value      + " }";
+           else return "Result:{ Exception: " + exception  + " }";
+        });
     }
     
-    public static class __internal__ {
-        
-        public static <DATA, TARGET> Tuple2<TARGET, Exception> createNewTuple(Tuple2<DATA, Exception> source, TARGET newValue) {
-            Exception exception = source._2();
-            Tuple2<TARGET, Exception> newTuple = new Tuple2<TARGET, Exception>() {
-                @Override public TARGET    _1() { return newValue;  }
-                @Override public Exception _2() { return (newValue != null) ? null : exception; }
-            };
-            return newTuple;
+    
+    public static class ExceptionHolder {
+        private final Exception exception;
+        ExceptionHolder(Exception exception) {
+            this.exception = requireNonNull(exception);
         }
-        public static <DATA, TARGET> Tuple2<TARGET, Exception> createNewTuple(Exception exception) {
-            Tuple2<TARGET, Exception> newTuple = new Tuple2<TARGET, Exception>() {
-                @Override public TARGET    _1() { return null;      }
-                @Override public Exception _2() { return exception; }
-            };
-            return newTuple;
+        public Exception getException() {
+            return exception;
         }
     }
     

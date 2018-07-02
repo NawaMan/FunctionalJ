@@ -4,9 +4,7 @@ import java.util.function.Supplier;
 
 import funtionalj.failable.FailableSupplier;
 
-public final class ImmutableResult<DATA> 
-                implements 
-                    Result<DATA> {
+public final class ImmutableResult<DATA> extends Result<DATA> {
 
     private static final ImmutableResult NULL = new ImmutableResult<>(null, null);
     
@@ -48,23 +46,20 @@ public final class ImmutableResult<DATA>
         return ImmutableResult.of(target);
     }
     
-    private Tuple2<DATA, Exception> data;
+    private final Object data;
     
     public ImmutableResult(DATA value, Exception exception) {
-        this.data = new ImmutableTuple2<DATA, Exception>(value, (value != null) ? null : exception);
+        this.data = ((value == null) && (exception != null))
+                ? new ExceptionHolder(exception)
+                : value;
     }
     
-    @Override
-    public Tuple2<DATA, Exception> asTuple() {
+    protected Object getData() {
         return data;
     }
     
     public ImmutableResult<DATA> toImmutable() {
         return this;
-    }
-    
-    public String toString() {
-        return Result.resultToString(this);
     }
     
 }
