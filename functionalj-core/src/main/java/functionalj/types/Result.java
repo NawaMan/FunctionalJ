@@ -174,6 +174,26 @@ public abstract class Result<DATA>
         return exception != null;
     }
     
+    public boolean isAvailable() {
+        val exception = getException();
+        return !(exception instanceof ResultNotAvailableException);
+    }
+    
+    public boolean isNotAvailable() {
+        val exception = getException();
+        return (exception instanceof ResultNotAvailableException);
+    }
+    
+    public boolean isNotReady() {
+        val exception = getException();
+        return (exception instanceof ResultNotReadyException);
+    }
+    
+    public boolean isCancelled() {
+        val exception = getException();
+        return (exception instanceof ResultCancelledException);
+    }
+    
     public boolean isImmutable() {
         return this instanceof ImmutableResult;
     }
