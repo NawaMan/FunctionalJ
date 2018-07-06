@@ -26,6 +26,7 @@ import functionalj.FunctionalJ;
 import functionalj.functions.Func1;
 import functionalj.lens.LensTest.Driver.DriverLens;
 import functionalj.lens.core.LensSpec;
+import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.ListLens;
 import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.StringLens;
@@ -126,7 +127,14 @@ public class LensTest {
         }
         
         
-        public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {
+        public static class CarLens<HOST> 
+                        extends ObjectLensImpl<HOST, Car>
+                        implements ConcreteAccess<HOST, Car, CarLens<HOST>>  {
+            
+            @Override
+            public CarLens<HOST> newAccess(Function<HOST, Car> access) {
+                return new CarLens<HOST>(LensSpec.of(access));
+            }
             
             public final StringLens<HOST> color = createSubLens(Car::color, Car::withColor, spec->()->spec);
             
@@ -169,7 +177,16 @@ public class LensTest {
         }
         
         
-        public static class DriverLens<HOST> extends ObjectLensImpl<HOST, Driver> {
+        public static class DriverLens<HOST> 
+                extends 
+                    ObjectLensImpl<HOST, Driver>
+                implements
+                    ConcreteAccess<HOST, Driver, DriverLens<HOST>> {
+            
+            @Override
+            public DriverLens<HOST> newAccess(Function<HOST, Driver> access) {
+                return new DriverLens<HOST>(LensSpec.of(access));
+            }
             
             public final Car.CarLens<HOST> car = new Car.CarLens<>(this.lensSpec().then(LensSpec.of(Driver::car, Driver::withCar)));
             
@@ -248,7 +265,7 @@ public class LensTest {
         val driverWithNoCar = new Driver(null);
         
         assertNull(theDriver.car.color.apply(driverWithNoCar));
-        assertEquals("N/A", theDriver.car.color.or("N/A").apply(driverWithNoCar));
+        assertEquals("N/A", theDriver.car.color.orDefaultTo("N/A").apply(driverWithNoCar));
     }
     
     public void testShortHand() {

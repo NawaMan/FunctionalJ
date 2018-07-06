@@ -11,7 +11,12 @@ import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
-public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
+public interface AnyAccess<HOST, DATA> 
+        extends Func1<HOST, DATA> {
+
+    public default AnyAccess<HOST, DATA> newAccess(Function<HOST, DATA> access) {
+        return access::apply;
+    }
     
     public default BooleanAccess<HOST> thatIs(DATA value) {
         return booleanAccess(
@@ -91,56 +96,20 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
         };
     }
     
-    public default AnyAccess<HOST, DATA> or(DATA fallbackValue) {
-        return __internal__.or(this, fallbackValue);
+    public default AnyAccess<HOST, DATA> orDefaultTo(DATA fallbackValue) {
+        return __internal__.orDefaultTo(this, fallbackValue)::apply;
     }
-    
-    public default AnyAccess<HOST, DATA> orGet(Supplier<DATA> fallbackValueSupplier) {
-        return __internal__.orGet(this, fallbackValueSupplier);
+    public default AnyAccess<HOST, DATA> orDefaultFrom(Supplier<? extends DATA> fallbackValueSupplier) {
+        return __internal__.orDefaultFrom(this, fallbackValueSupplier)::apply;
     }
-    
-    public default AnyAccess<HOST, DATA> orGet(Function<HOST, DATA> fallbackValueFunction) {
-        return __internal__.orGet(this, fallbackValueFunction);
-    }
-    
     public default <EXCEPTION extends RuntimeException> AnyAccess<HOST, DATA> orThrow() {
-        return host -> {
-            if (host == null)
-                throw new NullPointerException();
-            
-            val value = this.apply(host);
-            if (value == null)
-                throw new NullPointerException();
-            
-            return value;
-        };
+        return __internal__.orThrow(this)::apply;
     }
-    
     public default <EXCEPTION extends RuntimeException> AnyAccess<HOST, DATA> orThrow(Supplier<EXCEPTION> exceptionSupplier) {
-        return host -> {
-            if (host == null)
-                throw exceptionSupplier.get();
-            
-            val value = this.apply(host);
-            if (value == null)
-                throw exceptionSupplier.get();
-            
-            return value;
-        };
+        return __internal__.orThrow(this, exceptionSupplier)::apply;
     }
-    
-    public default NullableAccess<HOST, DATA, AnyAccess<HOST, DATA>> toNullable() {
-        Function<Function<HOST, DATA>, AnyAccess<HOST, DATA>> createSubLens = (Function<HOST, DATA> hostToData) -> {
-            return (AnyAccess<HOST, DATA>)(HOST host) -> {
-                val value = hostToData.apply(host);
-                return value;
-            };
-        };
-        Function<HOST, Nullable<DATA>> accessToNullable = host -> {
-            val value = AnyAccess.this.apply(host);
-            return Nullable.of(value);
-        };
-        return createNullableAccess(accessToNullable, createSubLens);
+    public default NullableAccess<HOST, DATA, ? extends AnyAccess<HOST, DATA>> toNullable() {
+        return __internal__.toNullable(this, f -> (AnyAccess<HOST, DATA>)f::apply);
     }
     
     public static class __internal__ {
@@ -157,7 +126,7 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
             return newValue;
         }
         
-        public static <HOST, DATA> AnyAccess<HOST, DATA> or(AnyAccess<HOST, DATA> access, DATA fallbackValue) {
+        public static <HOST, DATA> Function<HOST, DATA> orDefaultTo(Function<HOST, DATA> access, DATA fallbackValue) {
             return host -> {
                 if (host == null)
                     return fallbackValue;
@@ -170,7 +139,7 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
             };
         }
         
-        public static <HOST, DATA> AnyAccess<HOST, DATA> orGet(AnyAccess<HOST, DATA> access, Supplier<DATA> fallbackValueSupplier) {
+        public static <HOST, DATA> Function<HOST, DATA> orDefaultFrom(Function<? super HOST, DATA> access, Supplier<? extends DATA> fallbackValueSupplier) {
             return host -> {
                 if (host == null)
                     return fallbackValueSupplier.get();
@@ -182,18 +151,41 @@ public interface AnyAccess<HOST, DATA> extends Func1<HOST, DATA> {
                 return value;
             };
         }
-        
-        public static <HOST, DATA> AnyAccess<HOST, DATA> orGet(AnyAccess<HOST, DATA> access, Function<HOST, DATA> fallbackValueFunction) {
+        public static <HOST, DATA> Function<HOST, DATA> orThrow(Function<HOST, DATA> access) {
             return host -> {
                 if (host == null)
-                    return fallbackValueFunction.apply(host);
+                    throw new NullPointerException();
                 
                 val value = access.apply(host);
                 if (value == null)
-                    return fallbackValueFunction.apply(host);
+                    throw new NullPointerException();
                 
                 return value;
             };
+        }
+        public static <HOST, DATA, EXCEPTION extends RuntimeException> 
+                Function<HOST, DATA> orThrow(Function<HOST, DATA> access, Supplier<EXCEPTION> exceptionSupplier) {
+            return host -> {
+                if (host == null)
+                    throw exceptionSupplier.get();
+                
+                val value = access.apply(host);
+                if (value == null)
+                    throw exceptionSupplier.get();
+                
+                return value;
+            };
+        }
+        public static <HOST, DATA, ACCESS extends AnyAccess<HOST, DATA>> 
+                NullableAccess<HOST, DATA, ACCESS> toNullable(
+                        Function<HOST, DATA>                   access, 
+                        Function<Function<HOST, DATA>, ACCESS> createSubLens) {
+            return createNullableAccess(
+                    host -> {
+                        val value = access.apply(host);
+                        return Nullable.of(value);
+                    },
+                    createSubLens);
         }
     }
     

@@ -254,4 +254,6 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
         return (FunctionalMap<KEY, VALUE>) ImmutableMap.of(theMap);
     }
     
+    // toMap(String,Function) ...
+    
 }

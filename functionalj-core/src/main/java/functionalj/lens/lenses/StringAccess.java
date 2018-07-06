@@ -13,7 +13,15 @@ import functionalj.functions.Func1;
 import lombok.val;
 
 @FunctionalInterface
-public  interface StringAccess<HOST> extends ObjectAccess<HOST,String>{
+public interface StringAccess<HOST> 
+        extends 
+            ObjectAccess<HOST, String>, 
+            ConcreteAccess<HOST, String, StringAccess<HOST>> {
+    
+    @Override
+    public default StringAccess<HOST> newAccess(Function<HOST, String> access) {
+        return access::apply;
+    }
     
     // Extra
     
@@ -179,19 +187,6 @@ public  interface StringAccess<HOST> extends ObjectAccess<HOST,String>{
             return Stream.of(objs).map(eachToString).collect(joining());
         };
     }
-
-    // Override - too bad have to duplicate. 
-    // TODO - Find better way
-    public default StringAccess<HOST> or(String fallbackValue) {
-        return functionalj.lens.lenses.AnyAccess.__internal__.or(this, fallbackValue)::apply;
-    }
-    public default StringAccess<HOST> orGet(Supplier<String> fallbackValueSupplier) {
-        return functionalj.lens.lenses.AnyAccess.__internal__.orGet(this, fallbackValueSupplier)::apply;
-    }
-    public default StringAccess<HOST> orGet(Function<HOST, String> fallbackValueFunction) {
-        return functionalj.lens.lenses.AnyAccess.__internal__.orGet(this, fallbackValueFunction)::apply;
-    }
-    
     
     public static final class __internal__ {
         private static Func1<Object, String> stringFrom(String str) {

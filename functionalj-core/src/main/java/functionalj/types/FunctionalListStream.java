@@ -15,6 +15,7 @@ import static java.util.stream.Collectors.joining;
 import lombok.val;
 
 // TODO - create unit tests to make sure all ReadOnlyList, FunctionalList types behave consistently.
+// TODO - Add Integer lenght here to help with a few operations.
 public class FunctionalListStream<SOURCE, DATA> 
                 extends FunctionalList<DATA> {
 

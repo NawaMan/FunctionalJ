@@ -5,14 +5,17 @@ import java.math.BigInteger;
 import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
-public interface BigIntegerLens<HOST> extends ComparableLens<HOST, BigInteger>, BigIntegerAccess<HOST> {
+public interface BigIntegerLens<HOST> 
+        extends
+            BigIntegerAccess<HOST>,
+            ComparableLens<HOST, BigInteger> {
     
     public static <HOST> BigIntegerLens<HOST> of(LensSpec<HOST, BigInteger> spec) {
         return () -> spec;
     }
     
     @Override
-    default BigInteger apply(HOST host) {
+    public default BigInteger apply(HOST host) {
         return lensSpec().getRead().apply(host);
     }
 

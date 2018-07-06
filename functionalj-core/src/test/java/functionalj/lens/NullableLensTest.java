@@ -49,7 +49,7 @@ public class NullableLensTest {
         
         public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {
             
-            public final StringLens<HOST> color = createSubLens(Car::color, Car::withColor, spec->()->spec);
+            public final StringLens<HOST> color = createSubLens(Car::color, Car::withColor, StringLens::of);
             
             public CarLens(LensSpec<HOST, Car> spec)   { super(spec); }
             public CarLens(Function<HOST, Car> access) { super(LensSpec.of(access)); }

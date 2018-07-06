@@ -136,7 +136,7 @@ public class LensClassBuilder {
     private GenField createLensField(String dataObjName, String name, Type type, String withName) {
         val lensType     = type.lensType().withGenerics(asList(new Type("HOST", null)));
         val isCustomLens = type.lensType().isCustomLens();
-        val spec         = isCustomLens ? lensType.simpleName() + "::new" : "spec->()->spec";
+        val spec         = isCustomLens ? lensType.simpleName() + "::new" : lensType.simpleName() + "::of";
         val value        = format("createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
         val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;

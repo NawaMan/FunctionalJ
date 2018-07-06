@@ -4,7 +4,10 @@ import functionalj.functions.Func1;
 import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
-public interface StringLens<HOST> extends AnyLens<HOST, String>, StringAccess<HOST> {
+public interface StringLens<HOST>
+        extends
+            StringAccess<HOST>,
+            AnyLens<HOST, String> {
     
     public static <HOST> StringLens<HOST> of(LensSpec<HOST, String> spec) {
         return () -> spec;

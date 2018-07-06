@@ -1,9 +1,19 @@
 package functionalj.lens.lenses;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @FunctionalInterface
-public interface BooleanAccess<HOST> extends AnyAccess<HOST, Boolean> , Predicate<HOST> {
+public interface BooleanAccess<HOST> 
+        extends 
+            AnyAccess<HOST, Boolean>, 
+            Predicate<HOST>, 
+            ConcreteAccess<HOST, Boolean, BooleanAccess<HOST>> {
+    
+    @Override
+    public default BooleanAccess<HOST> newAccess(Function<HOST, Boolean> access) {
+        return access::apply;
+    }
     
     public default boolean test(HOST host) {
         return Boolean.TRUE.equals(this.apply(host));
@@ -18,4 +28,6 @@ public interface BooleanAccess<HOST> extends AnyAccess<HOST, Boolean> , Predicat
     public default BooleanAccess<HOST> and(boolean anotherBoolean) {
         return booleanAccess(false, bool -> bool && anotherBoolean);
     }
+    
 }
+

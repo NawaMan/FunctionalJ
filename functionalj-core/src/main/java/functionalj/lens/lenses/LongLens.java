@@ -3,7 +3,10 @@ package functionalj.lens.lenses;
 import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
-public interface LongLens<HOST> extends ComparableLens<HOST, Long>, LongAccess<HOST> {
+public interface LongLens<HOST> 
+        extends
+            LongAccess<HOST>,
+            ComparableLens<HOST, Long> {
     
     public static <HOST> LongLens<HOST> of(LensSpec<HOST, Long> spec) {
         return () -> spec;

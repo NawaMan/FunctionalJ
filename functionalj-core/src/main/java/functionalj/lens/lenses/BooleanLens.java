@@ -5,7 +5,10 @@ import java.util.function.Predicate;
 import functionalj.lens.core.LensSpec;
 
 @FunctionalInterface
-public interface BooleanLens<HOST> extends AnyLens<HOST, Boolean> , Predicate<HOST>, BooleanAccess<HOST> {
+public interface BooleanLens<HOST>
+        extends
+            BooleanAccess<HOST>,
+            AnyLens<HOST, Boolean> , Predicate<HOST> {
     
     public static <HOST> BooleanLens<HOST> of(LensSpec<HOST, Boolean> spec) {
         return () -> spec;

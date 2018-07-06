@@ -150,6 +150,9 @@ public abstract class FunctionalList<DATA>
                             mapper6.apply(each))));
     }
     
+    // TODO - Extends this to 10.
+    // Umm Why are they here ... and not in Streamable?
+    
     @Override
     public abstract Stream<DATA> stream();
     
