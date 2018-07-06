@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import lombok.val;
 
-public class ConcreteAccessTest {
+public class AccessOrXXXTest {
     
     @Test
     public void testOrDefaultTo() {
