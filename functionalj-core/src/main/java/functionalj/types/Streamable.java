@@ -55,6 +55,71 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
         return __stream(stream -> stream.flatMap(mapper));
     }
     
+    public default <T1, T2, TARGET_SELF extends Streamable<Tuple2<T1, T2>, ?>> 
+            TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2) {
+        return __map(each -> new ImmutableTuple2<T1, T2>(
+                                    mapper1.apply(each), 
+                                    mapper2.apply(each)));
+    }
+    
+    public default <T1, T2, T3, TARGET_SELF extends Streamable<Tuple3<T1, T2, T3>, ?>> 
+            TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3) {
+        return __map(each -> new ImmutableTuple3<T1, T2, T3>(
+                                    mapper1.apply(each), 
+                                    mapper2.apply(each), 
+                                    mapper3.apply(each)));
+    }
+    
+    public default <T1, T2, T3, T4, TARGET_SELF extends Streamable<Tuple4<T1, T2, T3, T4>, ?>> 
+            TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4) {
+        return __map(each -> new ImmutableTuple4<T1, T2, T3, T4>(
+                                    mapper1.apply(each), 
+                                    mapper2.apply(each), 
+                                    mapper3.apply(each), 
+                                    mapper4.apply(each)));
+    }
+    
+    public default <T1, T2, T3, T4, T5, TARGET_SELF extends Streamable<Tuple5<T1, T2, T3, T4, T5>, ?>> 
+            TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Function<? super DATA, ? extends T5> mapper5) {
+        return __map(each -> new ImmutableTuple5<T1, T2, T3, T4, T5>(
+                                    mapper1.apply(each), 
+                                    mapper2.apply(each), 
+                                    mapper3.apply(each), 
+                                    mapper4.apply(each), 
+                                    mapper5.apply(each)));
+    }
+    
+    public default <T1, T2, T3, T4, T5, T6, TARGET_SELF extends Streamable<Tuple6<T1, T2, T3, T4, T5, T6>, ?>> 
+            TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Function<? super DATA, ? extends T5> mapper5,
+                Function<? super DATA, ? extends T6> mapper6) {
+        return __map(each -> new ImmutableTuple6<T1, T2, T3, T4, T5, T6>(
+                                    mapper1.apply(each), 
+                                    mapper2.apply(each), 
+                                    mapper3.apply(each), 
+                                    mapper4.apply(each), 
+                                    mapper5.apply(each), 
+                                    mapper6.apply(each)));
+    }
+    
     public default List<DATA> toList() {
         return stream().collect(Collectors.toList());
     }
@@ -77,6 +142,155 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> extends I
 
     public default Set<DATA> toSet() {
         return new HashSet<DATA>(stream().collect(Collectors.toSet()));
+    }
+    
+    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
+            KEY key, Function<? super DATA, ? extends VALUE> mapper) {
+        return __map(data -> ImmutableMap.of(key, mapper.apply(data)));
+    }
+    
+    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
+            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
+            KEY key2, Function<? super DATA, ? extends VALUE> mapper2) {
+        return __map(data -> ImmutableMap.of(
+                key1, mapper1.apply(data),
+                key2, mapper2.apply(data)));
+    }
+    
+    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
+            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
+            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
+            KEY key3, Function<? super DATA, ? extends VALUE> mapper3) {
+        return __map(data -> ImmutableMap.of(
+                key1, mapper1.apply(data),
+                key2, mapper2.apply(data),
+                key3, mapper3.apply(data)));
+    }
+    
+    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
+            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
+            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
+            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
+            KEY key4, Function<? super DATA, ? extends VALUE> mapper4) {
+        return __map(data -> ImmutableMap.of(
+                key1, mapper1.apply(data),
+                key2, mapper2.apply(data),
+                key3, mapper3.apply(data),
+                key4, mapper4.apply(data)));
+    }
+    
+    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
+            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
+            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
+            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
+            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
+            KEY key5, Function<? super DATA, ? extends VALUE> mapper5) {
+        return __map(data -> ImmutableMap.of(
+                key1, mapper1.apply(data),
+                key2, mapper2.apply(data),
+                key3, mapper3.apply(data),
+                key4, mapper4.apply(data),
+                key5, mapper5.apply(data)));
+    }
+    
+    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
+            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
+            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
+            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
+            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
+            KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
+            KEY key6, Function<? super DATA, ? extends VALUE> mapper6) {
+        return __map(data -> ImmutableMap.of(
+                key1, mapper1.apply(data),
+                key2, mapper2.apply(data),
+                key3, mapper3.apply(data),
+                key4, mapper4.apply(data),
+                key5, mapper5.apply(data),
+                key6, mapper6.apply(data)));
+    }
+    
+    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
+            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
+            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
+            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
+            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
+            KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
+            KEY key6, Function<? super DATA, ? extends VALUE> mapper6,
+            KEY key7, Function<? super DATA, ? extends VALUE> mapper7) {
+        return __map(data -> ImmutableMap.of(
+                key1, mapper1.apply(data),
+                key2, mapper2.apply(data),
+                key3, mapper3.apply(data),
+                key4, mapper4.apply(data),
+                key5, mapper5.apply(data),
+                key6, mapper6.apply(data),
+                key7, mapper7.apply(data)));
+    }
+    
+    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
+            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
+            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
+            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
+            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
+            KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
+            KEY key6, Function<? super DATA, ? extends VALUE> mapper6,
+            KEY key7, Function<? super DATA, ? extends VALUE> mapper7,
+            KEY key8, Function<? super DATA, ? extends VALUE> mapper8) {
+        return __map(data -> ImmutableMap.of(
+                key1, mapper1.apply(data),
+                key2, mapper2.apply(data),
+                key3, mapper3.apply(data),
+                key4, mapper4.apply(data),
+                key5, mapper5.apply(data),
+                key6, mapper6.apply(data),
+                key7, mapper7.apply(data),
+                key8, mapper8.apply(data)));
+    }
+    
+    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
+            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
+            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
+            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
+            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
+            KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
+            KEY key6, Function<? super DATA, ? extends VALUE> mapper6,
+            KEY key7, Function<? super DATA, ? extends VALUE> mapper7,
+            KEY key8, Function<? super DATA, ? extends VALUE> mapper8,
+            KEY key9, Function<? super DATA, ? extends VALUE> mapper9) {
+        return __map(data -> ImmutableMap.of(
+                key1, mapper1.apply(data),
+                key2, mapper2.apply(data),
+                key3, mapper3.apply(data),
+                key4, mapper4.apply(data),
+                key5, mapper5.apply(data),
+                key6, mapper6.apply(data),
+                key7, mapper7.apply(data),
+                key8, mapper8.apply(data),
+                key9, mapper9.apply(data)));
+    }
+    
+    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
+            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
+            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
+            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
+            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
+            KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
+            KEY key6, Function<? super DATA, ? extends VALUE> mapper6,
+            KEY key7, Function<? super DATA, ? extends VALUE> mapper7,
+            KEY key8, Function<? super DATA, ? extends VALUE> mapper8,
+            KEY key9, Function<? super DATA, ? extends VALUE> mapper9,
+            KEY key10, Function<? super DATA, ? extends VALUE> mapper10) {
+        return __map(data -> ImmutableMap.of(
+                key1, mapper1.apply(data),
+                key2, mapper2.apply(data),
+                key3, mapper3.apply(data),
+                key4, mapper4.apply(data),
+                key5, mapper5.apply(data),
+                key6, mapper6.apply(data),
+                key7, mapper7.apply(data),
+                key8, mapper8.apply(data),
+                key9, mapper9.apply(data),
+                key10, mapper10.apply(data)));
     }
     
     public default Iterator<DATA> iterator() {

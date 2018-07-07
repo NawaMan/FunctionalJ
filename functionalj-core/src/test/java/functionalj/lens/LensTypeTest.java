@@ -1,6 +1,6 @@
 package functionalj.lens;
 
-import static functionalj.lens.Lenses.theList;
+import static functionalj.lens.Access.theList;
 import static functionalj.types.ImmutableList.listOf;
 import static org.junit.Assert.assertEquals;
 

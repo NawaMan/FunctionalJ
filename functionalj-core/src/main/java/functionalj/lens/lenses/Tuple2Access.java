@@ -4,17 +4,39 @@ import java.util.function.Function;
 
 import functionalj.lens.core.AccessParameterized2;
 import functionalj.types.Tuple2;
+import lombok.val;
 
 public interface Tuple2Access<HOST, T1, T2, 
                         T1ACCESS extends AnyAccess<HOST,T1>, 
                         T2ACCESS extends AnyAccess<HOST,T2>>
-        extends AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1ACCESS, T2ACCESS> {
+        extends
+            AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1ACCESS, T2ACCESS>, 
+            ConcreteAccess<HOST, Tuple2<T1, T2>, Tuple2Access<HOST, T1, T2, T1ACCESS, T2ACCESS>> {
 
     public AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1ACCESS, T2ACCESS> accessParameterized2();
     
     @Override
     public default Tuple2<T1, T2> apply(HOST host) {
         return accessParameterized2().apply(host);
+    }
+    
+    @Override
+    public default Tuple2Access<HOST, T1, T2, T1ACCESS, T2ACCESS> newAccess(Function<HOST, Tuple2<T1, T2>> access) {
+        val accessParam = new AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1ACCESS, T2ACCESS>() {
+            @Override
+            public Tuple2<T1, T2> apply(HOST host) {
+                return access.apply(host);
+            }
+            @Override
+            public T1ACCESS createSubAccessFromHost1(Function<HOST, T1> accessToParameter) {
+                return Tuple2Access.this.createSubAccessFromHost1(accessToParameter);
+            }
+            @Override
+            public T2ACCESS createSubAccessFromHost2(Function<HOST, T2> accessToParameter) {
+                return Tuple2Access.this.createSubAccessFromHost2(accessToParameter);
+            }
+        };
+        return () -> accessParam;
     }
 
     @Override

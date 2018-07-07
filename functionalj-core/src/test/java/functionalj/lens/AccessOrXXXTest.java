@@ -1,11 +1,16 @@
 package functionalj.lens;
 
-import static functionalj.lens.Lenses.theString;
+import static functionalj.lens.LensTypes.STRING;
+import static functionalj.lens.Access.theString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import functionalj.lens.lenses.Tuple2Access;
+import functionalj.types.ImmutableTuple;
+import functionalj.types.ImmutableTuple2;
+import functionalj.types.Tuple2;
 import lombok.val;
 
 public class AccessOrXXXTest {
@@ -60,6 +65,17 @@ public class AccessOrXXXTest {
             assertEquals("This should never happen!", e.getMessage());
             // Expected!
         }
+    }
+    
+    @Test
+    public void testTuple2Access() {
+        val theTupleStrStr = Access.theTuple2.of(STRING(), STRING());
+        
+        theTupleStrStr._1().length().apply(ImmutableTuple.of("ONE","TWO"));
+        val theTuple2 = theTupleStrStr.orDefaultTo(ImmutableTuple.of("A", "B"));
+        
+        assertEquals("null", "" + theTupleStrStr.apply(null));
+        assertEquals("[A,B]", "" +theTuple2.apply(null));
     }
     
 }

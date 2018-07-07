@@ -20,7 +20,7 @@
 + Failable
 - Pipe
 + FunctionalList
-- FMap
++ FMap
 - Promise
 - Prism -> Multiple Promise combine to one. create an obj from supplier/function of each fields.
 - StoreRef, StoreList, StoreMap

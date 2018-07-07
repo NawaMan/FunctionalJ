@@ -21,7 +21,7 @@ import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
 import functionalj.types.Tuple2;
 
-public interface Lenses {
+public interface Access {
     
     public static final AnyLens<Object, Object> theObject  = AnyLens    .of(LensSpec.of(Object.class));
     public static final BooleanLens<Boolean>    theBoolean = BooleanLens.of(LensSpec.of(Boolean.class));

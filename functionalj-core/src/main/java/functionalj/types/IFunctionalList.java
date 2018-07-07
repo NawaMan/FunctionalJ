@@ -1,8 +1,8 @@
 package functionalj.types;
 
 import static functionalj.FunctionalJ.withIndex;
-import static functionalj.lens.Lenses.theInteger;
-import static functionalj.lens.Lenses.theObject;
+import static functionalj.lens.Access.theInteger;
+import static functionalj.lens.Access.theObject;
 import static java.util.stream.Stream.concat;
 
 import java.util.Collection;
