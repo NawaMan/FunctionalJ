@@ -1,9 +1,9 @@
 package functionalj.types;
 
 import static functionalj.functions.StringFunctions.appendWith;
-import static functionalj.lens.LensTypes.STRING;
 import static functionalj.lens.Access.theTuple2;
 import static functionalj.lens.Access.theTupleOf;
+import static functionalj.lens.LensTypes.STRING;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;

@@ -2,7 +2,10 @@ package functionalj.types;
 
 import static functionalj.lens.Access.theString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
@@ -45,6 +48,26 @@ public class FunctionalListTest {
                         "index",   __ -> index.getAndIncrement(), 
                         "word",   theString, 
                         "length", theString.length().asString()));
+    }
+    
+    @Test
+    public void testStreamCloseHasNoEffect() {
+        val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
+        val lengthLessThanFive = list.indexesOf(theString.length().thatLessThan(4));
+        val isOnClosedCalled = new AtomicBoolean(false);
+        assertEquals("[0, 1, 5]", "" + lengthLessThanFive);
+        assertEquals("[0, 1, 5]", "" + lengthLessThanFive);
+        lengthLessThanFive.onClose(()->{
+            if (isOnClosedCalled.get())
+                fail("Hash already called.");
+            
+            isOnClosedCalled.set(true);
+        });
+        lengthLessThanFive.close();
+        assertEquals("[0, 1, 5]", "" + lengthLessThanFive);
+        assertEquals("[0, 1, 5]", "" + lengthLessThanFive);
+        
+        assertFalse(isOnClosedCalled.get());
     }
     
 }

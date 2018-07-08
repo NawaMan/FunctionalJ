@@ -17,34 +17,83 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import lombok.val;
 
-public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> 
-        extends StreamPlus<DATA, SELF> {
+
+
+public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>> 
+        extends Iterable<DATA>, Stream<DATA> {
+    
+    public static <D> StreamPlus<D, ?> of(Stream<D> stream) {
+        if (stream instanceof StreamPlus)
+            return (StreamPlus)stream;
+        
+        return new Impl<>(stream);
+    }
+    
+    public static <D> StreamPlus<D, ?> of(D ... data) {
+        return StreamPlus.of(Stream.of(data));
+    }
+    
     
     public Stream<DATA> stream();
     
-    public SELF streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier);
+    public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> 
+            TARGET_SELF __of(Stream<TARGET> targetStream);
     
     
-    public <TARGET> Streamable<TARGET, ?> stream(Function<Stream<DATA>, Stream<TARGET>> action);
+    // Simple implementation.
     
-    @Override
-    public default void close() {
-        // Unclosable.
+    public static class Impl<DATA> implements StreamPlus<DATA, Impl<DATA>> {
+        private final Stream<DATA> sourceStream;
+        
+        public Impl(Stream<DATA> sourceStream) {
+            this.sourceStream = sourceStream;
+        }
+    
+        @Override
+        public Stream<DATA> stream() {
+            return sourceStream;
+        }
+    
+        @SuppressWarnings("unchecked")
+        @Override
+        public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> TARGET_SELF __of(Stream<TARGET> targetStream) {
+            return (TARGET_SELF)new Impl<TARGET>(targetStream);
+        }
+    
     }
     
-    public default <TARGET> Streamable<TARGET, ?> map(Function<? super DATA, ? extends TARGET> mapper) {
-        return stream(stream -> stream.map(mapper));
+    // -- Service methods --
+    
+    public default <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> 
+            TARGET_SELF __stream(Function<Stream<DATA>, Stream<TARGET>> action) {
+        return this.__of(action.apply(this.stream()));
     }
     
-    public default <TARGET> Streamable<TARGET, ?> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+    
+    public default <TARGET> StreamPlus<TARGET, ?> stream(Function<Stream<DATA>, Stream<TARGET>> action) {
+        return new Impl<TARGET>(action.apply(this.stream()));
+    }
+    
+    public default <TARGET> StreamPlus<TARGET, ?> map(Function<? super DATA, ? extends TARGET> mapper) {
+        return new Impl<TARGET>(this.stream().map(mapper));
+    }
+    
+    public default <TARGET> StreamPlus<TARGET, ?> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
         return stream(stream -> stream.flatMap(mapper));
     }
     
@@ -57,6 +106,8 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>>
             TARGET_SELF __flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
         return __stream(stream -> stream.flatMap(mapper));
     }
+    
+    // TODO - Think about making this Tuple concern
     
     public default <T1, T2, TARGET_SELF extends StreamPlus<Tuple2<T1, T2>, ?>> 
             TARGET_SELF map(
@@ -122,6 +173,88 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>>
                                     mapper5.apply(each), 
                                     mapper6.apply(each)));
     }
+    
+    @Override
+    public default IntStream mapToInt(ToIntFunction<? super DATA> mapper) {
+        return stream().mapToInt(mapper);
+    }
+
+    @Override
+    public default LongStream mapToLong(ToLongFunction<? super DATA> mapper) {
+        return stream().mapToLong(mapper);
+    }
+
+    @Override
+    public default DoubleStream mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+        return stream().mapToDouble(mapper);
+    }
+
+    @Override
+    public default IntStream flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
+        return stream().flatMapToInt(mapper);
+    }
+
+    @Override
+    public default LongStream flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
+        return stream().flatMapToLong(mapper);
+    }
+
+    @Override
+    public default DoubleStream flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
+        return stream().flatMapToDouble(mapper);
+    }
+
+    @Override
+    public default Stream<DATA> limit(long maxSize) {
+        return stream().limit(maxSize);
+    }
+
+    @Override
+    public default Stream<DATA> skip(long n) {
+        return stream().skip(n);
+    }
+
+    @Override
+    public default Object[] toArray() {
+        return stream().toArray();
+    }
+
+    @Override
+    public default <A> A[] toArray(IntFunction<A[]> generator) {
+        return stream().toArray(generator);
+    }
+
+    @Override
+    public default boolean isParallel() {
+        return stream().isParallel();
+    }
+
+    @Override
+    public default Stream<DATA> sequential() {
+        return stream().sequential();
+    }
+
+    @Override
+    public default Stream<DATA> parallel() {
+        return stream().parallel();
+    } 
+
+    @Override
+    public default Stream<DATA> unordered() {
+        return stream().unordered();
+    }
+    
+    @Override
+    public default Stream<DATA> onClose(Runnable closeHandler) {
+        return stream().onClose(closeHandler);
+    }
+
+    @Override
+    public default void close() {
+        stream().close();
+    }
+    
+    //== More functionality ==
     
     public default List<DATA> toList() {
         return stream().collect(Collectors.toList());
@@ -489,4 +622,5 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>>
         }
         
     }
+    
 }

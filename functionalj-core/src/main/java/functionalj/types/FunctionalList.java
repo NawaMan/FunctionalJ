@@ -17,6 +17,11 @@ public abstract class FunctionalList<DATA>
                     implements 
                         ReadOnlyList<DATA, FunctionalList<DATA>>, 
                         IFunctionalList<DATA, FunctionalList<DATA>> {
+
+    @Override
+    public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> TARGET_SELF __of(Stream<TARGET> targetStream) {
+        return (TARGET_SELF)FunctionalList.of(targetStream);
+    }
     
     public static <T> FunctionalList<T> empty() {
         return ImmutableList.empty();
@@ -46,23 +51,17 @@ public abstract class FunctionalList<DATA>
     @Override
     public abstract FunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier);
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> 
-            TARGET_SELF __stream(Function<Stream<DATA>, Stream<TARGET>> action) {
-        return (TARGET_SELF)stream(action);
-    }
     
     @SuppressWarnings("unchecked")
     @Override
-    public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> 
+    public <TARGET, TARGET_SELF extends StreamPlus<TARGET, ?>> 
             TARGET_SELF __map(Function<? super DATA, ? extends TARGET> mapper) {
         return (TARGET_SELF)map(mapper);
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> 
+    public <TARGET, TARGET_SELF extends StreamPlus<TARGET, ?>> 
             TARGET_SELF __flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
         return (TARGET_SELF)flatMap(mapper);
     }

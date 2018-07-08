@@ -1,16 +1,13 @@
 package functionalj.lens;
 
-import static functionalj.lens.LensTypes.STRING;
 import static functionalj.lens.Access.theString;
+import static functionalj.lens.LensTypes.STRING;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import functionalj.lens.lenses.Tuple2Access;
 import functionalj.types.ImmutableTuple;
-import functionalj.types.ImmutableTuple2;
-import functionalj.types.Tuple2;
 import lombok.val;
 
 public class AccessOrXXXTest {
