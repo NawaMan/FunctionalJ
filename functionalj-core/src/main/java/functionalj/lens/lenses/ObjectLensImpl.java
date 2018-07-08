@@ -9,6 +9,7 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
 import functionalj.types.FunctionalList;
+import functionalj.types.FunctionalMap;
 import functionalj.types.MayBe;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
@@ -114,6 +115,18 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         val subRead    = (Function<HOST, Map<KEY, VALUE>>) LensUtils.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
         val subWrite   = (WriteLens<HOST, Map<KEY, VALUE>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
         return MapLens.of(subRead, subWrite, keyLensCreator, valueLensCreator);
+    }   
+    protected <KEY, VALUE, KEYLENS extends AnyLens<HOST,KEY>, VALUELENS extends AnyLens<HOST,VALUE>>
+        FunctionalMapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> createSubFunctionalMapLens(
+                Function<DATA,  FunctionalMap<KEY, VALUE>>           readSub,
+                WriteLens<DATA, FunctionalMap<KEY, VALUE>>           writeSub,
+                Function<LensSpec<HOST, KEY>,   KEYLENS>   keyLensCreator,
+                Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
+        val readThis   = this.lensSpec().getRead();
+        val writeThis  = this.lensSpec().getWrite();
+        val subRead    = (Function<HOST, FunctionalMap<KEY, VALUE>>) LensUtils.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
+        val subWrite   = (WriteLens<HOST, FunctionalMap<KEY, VALUE>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
+        return FunctionalMapLens.of(subRead, subWrite, keyLensCreator, valueLensCreator);
     }
     
 }

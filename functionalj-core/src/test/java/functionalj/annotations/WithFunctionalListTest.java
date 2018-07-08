@@ -1,9 +1,6 @@
 package functionalj.annotations;
 
-import static functionalj.annotations.ParentWithFunctionalList.theParentWithFunctionalList;
-
 import functionalj.types.FunctionalList;
-import functionalj.types.ImmutableList;
 
 @SuppressWarnings("javadoc")
 public class WithFunctionalListTest {

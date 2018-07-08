@@ -16,6 +16,7 @@ import functionalj.lens.lenses.NullableLens;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.OptionalLens;
 import functionalj.types.FunctionalList;
+import functionalj.types.FunctionalMap;
 import functionalj.types.MayBe;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
@@ -247,4 +248,34 @@ public class LensUtils {
         };
         return () -> newSpec;
     }
+    
+    // == FunctionalMap ==
+    
+    public static <KEYLENS extends AnyLens<HOST, KEY>, HOST, VALUELENS extends AnyLens<HOST, VALUE>, KEY, VALUE>
+            LensSpecParameterized2<HOST, FunctionalMap<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> createFunctionalMapLensSpec(
+                    Function<HOST,  FunctionalMap<KEY, VALUE>>           read,
+                    WriteLens<HOST, FunctionalMap<KEY, VALUE>>           write,
+                    Function<LensSpec<HOST, KEY>,   KEYLENS>   keyLensCreator,
+                    Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
+        return new LensSpecParameterized2<HOST, FunctionalMap<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS>() {
+
+            @Override
+            public LensSpec<HOST, FunctionalMap<KEY, VALUE>> getSpec() {
+                return LensSpec.of(read, write);
+            }
+
+            @Override
+            public KEYLENS createSubLens1(
+                    LensSpec<HOST, KEY> subSpec) {
+                return keyLensCreator.apply(subSpec);
+            }
+
+            @Override
+            public VALUELENS createSubLens2(
+                    LensSpec<HOST, VALUE> subSpec) {
+                return valueLensCreator.apply(subSpec);
+            }
+        };
+    }
+    
 }
