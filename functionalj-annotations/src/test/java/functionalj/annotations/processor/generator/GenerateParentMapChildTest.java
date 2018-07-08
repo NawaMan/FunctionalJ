@@ -92,7 +92,7 @@ public class GenerateParentMapChildTest {
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
-                "        public final MapLens<HOST, String, Child, StringLens<HOST>, ChildLens<HOST>> children = createSubMapLens(Parent::children, Parent::withChildren, spec->()->spec, ChildLens::new);\n" + 
+                "        public final MapLens<HOST, String, Child, StringLens<HOST>, ChildLens<HOST>> children = createSubMapLens(Parent::children, Parent::withChildren, StringLens::of, ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 
                 "            super(spec);\n" + 

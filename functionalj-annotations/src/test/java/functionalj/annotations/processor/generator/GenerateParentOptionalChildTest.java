@@ -111,7 +111,7 @@ public class GenerateParentOptionalChildTest {
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
-                "        public final OptionalLens<HOST, String, StringLens<HOST>> optionalName = createSubOptionalLens(Parent::optionalName, Parent::withOptionalName, spec->()->spec);\n" + 
+                "        public final OptionalLens<HOST, String, StringLens<HOST>> optionalName = createSubOptionalLens(Parent::optionalName, Parent::withOptionalName, StringLens::of);\n" + 
                 "        public final OptionalLens<HOST, Child, ChildLens<HOST>> optionalChild = createSubOptionalLens(Parent::optionalChild, Parent::withOptionalChild, ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 

@@ -29,7 +29,7 @@
 
 + TupleLens
 - List lens should has similar interface as FunctionalListLens
-- StreamPlus
++ StreamPlus
 - Builder
 - ExhaughBuilder
 - MapBasedDataObject

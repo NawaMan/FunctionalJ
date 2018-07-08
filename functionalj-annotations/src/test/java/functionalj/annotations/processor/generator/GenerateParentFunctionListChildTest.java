@@ -12,7 +12,7 @@ import functionalj.annotations.processor.generator.model.GenDataObject;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class GenerateParentMayBeChildTest {
+public class GenerateParentFunctionListChildTest {
     
     private Configurations configures = new Configurations();
     {
@@ -28,13 +28,13 @@ public class GenerateParentMayBeChildTest {
     private boolean isClass             = false;
     
     private List<Getter> getters = asList(
-            new Getter("mayBeName", new Type.TypeBuilder()
-                                .simpleName("MayBe")
+            new Getter("names", new Type.TypeBuilder()
+                                .simpleName("FunctionalList")
                                 .generics(asList(new Type("String", "java.lang")))
                                 .packageName("functionalj.types")
                                 .build()),
-            new Getter("mayBeChild", new Type.TypeBuilder()
-                                .simpleName("MayBe")
+            new Getter("children", new Type.TypeBuilder()
+                                .simpleName("FunctionalList")
                                 .generics(asList(new Type("Child", "me.test")))
                                 .packageName("functionalj.types")
                                 .build())
@@ -49,60 +49,60 @@ public class GenerateParentMayBeChildTest {
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
                 "import functionalj.lens.core.LensSpec;\n" + 
-                "import functionalj.lens.lenses.MayBeLens;\n" + 
+                "import functionalj.lens.lenses.FunctionalListLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
-                "import functionalj.types.MayBe;\n" + 
-                
+                "import functionalj.types.FunctionalList;\n" + 
+                "import functionalj.types.ImmutableList;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
                 "import me.test.Child;\n" + 
-                "import me.test.Child.ChildLens;\n" +
+                "import me.test.Child.ChildLens;\n" + 
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
-                "    private final MayBe<String> mayBeName;\n" + 
-                "    private final MayBe<Child> mayBeChild;\n" + 
+                "    private final FunctionalList<String> names;\n" + 
+                "    private final FunctionalList<Child> children;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
                 "        this(null, null);\n" + 
                 "    }\n" + 
-                "    public Parent(MayBe<String> mayBeName, MayBe<Child> mayBeChild) {\n" + 
-                "        this.mayBeName = mayBeName;\n" + 
-                "        this.mayBeChild = mayBeChild;\n" + 
+                "    public Parent(FunctionalList<String> names, FunctionalList<Child> children) {\n" + 
+                "        this.names = ImmutableList.of(names);\n" + 
+                "        this.children = ImmutableList.of(children);\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public MayBe<String> mayBeName() {\n" + 
-                "        return mayBeName;\n" + 
+                "    public FunctionalList<String> names() {\n" + 
+                "        return names;\n" + 
                 "    }\n" + 
-                "    public MayBe<Child> mayBeChild() {\n" + 
-                "        return mayBeChild;\n" + 
+                "    public FunctionalList<Child> children() {\n" + 
+                "        return children;\n" + 
                 "    }\n" + 
-                "    public Parent withMayBeName(MayBe<String> mayBeName) {\n" + 
-                "        return postReConstruct(new Parent(mayBeName, mayBeChild));\n" + 
+                "    public Parent withNames(FunctionalList<String> names) {\n" + 
+                "        return postReConstruct(new Parent(names, children));\n" + 
                 "    }\n" + 
-                "    public Parent withMayBeName(Supplier<MayBe<String>> mayBeName) {\n" + 
-                "        return postReConstruct(new Parent(mayBeName.get(), mayBeChild));\n" + 
+                "    public Parent withNames(Supplier<FunctionalList<String>> names) {\n" + 
+                "        return postReConstruct(new Parent(names.get(), children));\n" + 
                 "    }\n" + 
-                "    public Parent withMayBeName(Function<MayBe<String>, MayBe<String>> mayBeName) {\n" + 
-                "        return postReConstruct(new Parent(mayBeName.apply(this.mayBeName), mayBeChild));\n" + 
+                "    public Parent withNames(Function<FunctionalList<String>, FunctionalList<String>> names) {\n" + 
+                "        return postReConstruct(new Parent(names.apply(this.names), children));\n" + 
                 "    }\n" + 
-                "    public Parent withMayBeName(BiFunction<Parent, MayBe<String>, MayBe<String>> mayBeName) {\n" + 
-                "        return postReConstruct(new Parent(mayBeName.apply(this, this.mayBeName), mayBeChild));\n" + 
+                "    public Parent withNames(BiFunction<Parent, FunctionalList<String>, FunctionalList<String>> names) {\n" + 
+                "        return postReConstruct(new Parent(names.apply(this, this.names), children));\n" + 
                 "    }\n" + 
-                "    public Parent withMayBeChild(MayBe<Child> mayBeChild) {\n" + 
-                "        return postReConstruct(new Parent(mayBeName, mayBeChild));\n" + 
+                "    public Parent withChildren(FunctionalList<Child> children) {\n" + 
+                "        return postReConstruct(new Parent(names, children));\n" + 
                 "    }\n" + 
-                "    public Parent withMayBeChild(Supplier<MayBe<Child>> mayBeChild) {\n" + 
-                "        return postReConstruct(new Parent(mayBeName, mayBeChild.get()));\n" + 
+                "    public Parent withChildren(Supplier<FunctionalList<Child>> children) {\n" + 
+                "        return postReConstruct(new Parent(names, children.get()));\n" + 
                 "    }\n" + 
-                "    public Parent withMayBeChild(Function<MayBe<Child>, MayBe<Child>> mayBeChild) {\n" + 
-                "        return postReConstruct(new Parent(mayBeName, mayBeChild.apply(this.mayBeChild)));\n" + 
+                "    public Parent withChildren(Function<FunctionalList<Child>, FunctionalList<Child>> children) {\n" + 
+                "        return postReConstruct(new Parent(names, children.apply(this.children)));\n" + 
                 "    }\n" + 
-                "    public Parent withMayBeChild(BiFunction<Parent, MayBe<Child>, MayBe<Child>> mayBeChild) {\n" + 
-                "        return postReConstruct(new Parent(mayBeName, mayBeChild.apply(this, this.mayBeChild)));\n" + 
+                "    public Parent withChildren(BiFunction<Parent, FunctionalList<Child>, FunctionalList<Child>> children) {\n" + 
+                "        return postReConstruct(new Parent(names, children.apply(this, this.children)));\n" + 
                 "    }\n" + 
                 "    private static Parent postReConstruct(Parent object) {\n" + 
                 "        if (object instanceof IPostReConstruct)\n" + 
@@ -112,8 +112,8 @@ public class GenerateParentMayBeChildTest {
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
-                "        public final MayBeLens<HOST, String, StringLens<HOST>> mayBeName = createSubMayBeLens(Parent::mayBeName, Parent::withMayBeName, StringLens::of);\n" + 
-                "        public final MayBeLens<HOST, Child, ChildLens<HOST>> mayBeChild = createSubMayBeLens(Parent::mayBeChild, Parent::withMayBeChild, ChildLens::new);\n" + 
+                "        public final FunctionalListLens<HOST, String, StringLens<HOST>> names = createSubFunctionalListLens(Parent::names, Parent::withNames, StringLens::of);\n" + 
+                "        public final FunctionalListLens<HOST, Child, ChildLens<HOST>> children = createSubFunctionalListLens(Parent::children, Parent::withChildren, ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 
                 "            super(spec);\n" + 

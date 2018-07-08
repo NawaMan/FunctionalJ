@@ -81,7 +81,12 @@ public class Type implements IRequireTypes {
     public static final Type OPTIONAL = Core.Optional.type();
     /** MayBe type */
     public static final Type MAYBE = Core.MayBe.type();
+    /** FunctionalList type */
+    public static final Type FUNCTIONAL_LIST = Core.FunctionalList.type();
+    /** FunctionalMap type */
+    public static final Type FUNCTIONAL_MAP = Core.FunctionalMap.type();
     
+    // These are lens types that are in the main lens package.
     private static final Map<Type, Type> lensTypes = new HashMap<>();
     static {
         lensTypes.put(INT,        Core.IntegerLens   .type());
@@ -101,6 +106,9 @@ public class Type implements IRequireTypes {
         lensTypes.put(NULLABLE,   Core.NullableLens  .type());
         lensTypes.put(OPTIONAL,   Core.OptionalLens  .type());
         lensTypes.put(MAYBE,      Core.MayBeLens     .type());
+        
+        lensTypes.put(FUNCTIONAL_LIST, Core.FunctionalListLens.type());
+        lensTypes.put(FUNCTIONAL_MAP,  Core.FunctionalMapLens.type());
     }
     
     /**
@@ -286,7 +294,7 @@ public class Type implements IRequireTypes {
      * @return  the lens type.
      */
     public Type lensType() {
-        val lensType = lensTypes.get(this);
+        val lensType = lensTypes.get(this.declaredType());
         if (lensType != null)
             return lensType;
         
@@ -330,6 +338,24 @@ public class Type implements IRequireTypes {
      */
     public boolean isMap() {
         return this.fullName("").equals("java.util.Map");
+    }
+    
+    /**
+     * Check if this type is a functional list type.
+     * 
+     * @return {@code true} if this type is a functional list.
+     */
+    public boolean isFunctionalList() {
+        return this.fullName("").equals("functionalj.types.FunctionalList");
+    }
+    
+    /**
+     * Check if this type is a functional map type.
+     * 
+     * @return {@code true} if this type is a functional map.
+     */
+    public boolean isFunctionalMap() {
+        return this.fullName("").equals("functionalj.types.FunctionalMap");
     }
     
     /**

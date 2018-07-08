@@ -46,6 +46,7 @@ public enum Core {
     BooleanLens       ("BooleanLens"),
     DoubleLens        ("DoubleLens"),
     FunctionalListLens("FunctionalListLens"),
+    FunctionalMapLens ("FunctionalMapLens"),
     IntegerLens       ("IntegerLens"),
     ListLens          ("ListLens"),
     LongLens          ("LongLens"),
@@ -59,9 +60,11 @@ public enum Core {
     
     
     LensSpec ("LensSpec", "functionalj.lens.core"),
-    
-    ImmutableList ("ImmutableList", "functionalj.types"),
-    ImmutableMap  ("ImmutableMap",  "functionalj.types"),
+
+    FunctionalList("FunctionalList", "functionalj.types"),
+    FunctionalMap ("FunctionalMap",  "functionalj.types"),
+    ImmutableList ("ImmutableList",  "functionalj.types"),
+    ImmutableMap  ("ImmutableMap",   "functionalj.types"),
     
     Nullable      ("Nullable",      "nawaman.nullablej.nullable"),
     Optional      ("Optional",      "java.util"),

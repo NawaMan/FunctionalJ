@@ -112,7 +112,7 @@ public class GenerateParentListChildTest {
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
-                "        public final ListLens<HOST, String, StringLens<HOST>> names = createSubListLens(Parent::names, Parent::withNames, spec->()->spec);\n" + 
+                "        public final ListLens<HOST, String, StringLens<HOST>> names = createSubListLens(Parent::names, Parent::withNames, StringLens::of);\n" + 
                 "        public final ListLens<HOST, Child, ChildLens<HOST>> children = createSubListLens(Parent::children, Parent::withChildren, ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 

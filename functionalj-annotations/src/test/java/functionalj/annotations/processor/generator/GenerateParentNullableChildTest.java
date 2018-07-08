@@ -111,7 +111,7 @@ public class GenerateParentNullableChildTest {
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
-                "        public final NullableLens<HOST, String, StringLens<HOST>> nullableName = createSubNullableLens(Parent::nullableName, Parent::withNullableName, spec->()->spec);\n" + 
+                "        public final NullableLens<HOST, String, StringLens<HOST>> nullableName = createSubNullableLens(Parent::nullableName, Parent::withNullableName, StringLens::of);\n" + 
                 "        public final NullableLens<HOST, Child, ChildLens<HOST>> nullableChild = createSubNullableLens(Parent::nullableChild, Parent::withNullableChild, ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 
