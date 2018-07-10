@@ -429,6 +429,8 @@ public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>>
                 key10, mapper10.apply(data)));
     }
     
+    // TODO - toMapBuilder
+    
     public default Iterator<DATA> iterator() {
         return stream().iterator();
     }

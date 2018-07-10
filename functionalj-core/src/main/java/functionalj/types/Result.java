@@ -151,6 +151,16 @@ public abstract class Result<DATA>
         return exception == null;
     }
     
+    // No exeption -> can be null
+    public Result<DATA> ifValue(Consumer<? super DATA> consumer) {
+        return processData((isValue, value, exception) -> {
+            if (exception == null)
+                consumer.accept(value);
+            
+            return this;
+        });
+    }
+    
     public boolean isNotNull() {
         return processData((isValue, value, exception) -> {
             if (exception != null)
@@ -158,6 +168,21 @@ public abstract class Result<DATA>
             
             return (value != null);
         });
+    }
+    
+    // No exception -> non-null value (aka ifPresent)
+    public Result<DATA> ifNotNull(Consumer<? super DATA> consumer) {
+        processData((isValue, value, exception) -> {
+            if (exception != null)
+                return false;
+            
+            val isNotNull = (value != null);
+            if (isNotNull) {
+                consumer.accept(value);
+            }
+            return isNotNull;
+        });
+        return this;
     }
     
     public boolean isNull() {
@@ -169,9 +194,26 @@ public abstract class Result<DATA>
         });
     }
     
+    // TODO - All action/consumer should be nullable.
+    
+    public Result<DATA> ifNull(Runnable action) {
+        if (isNull())
+            action.run();
+        
+        return this;
+    }
+    
     public boolean isException() {
         val exception = getException();
         return exception != null;
+    }
+    
+    public Result<DATA> ifException(Consumer<? super Exception> consumer) {
+        val exception = getException();
+        if (exception != null)
+            consumer.accept(exception);
+        
+        return this;
     }
     
     public boolean isAvailable() {
@@ -179,9 +221,25 @@ public abstract class Result<DATA>
         return !(exception instanceof ResultNotAvailableException);
     }
     
+    public Result<DATA> ifAvailable(Consumer<? super DATA> consumer) {
+        if (isAvailable()) {
+            val value = getValue();
+            consumer.accept(value);
+        }
+            
+        return this;
+    }
+    
     public boolean isNotAvailable() {
         val exception = getException();
         return (exception instanceof ResultNotAvailableException);
+    }
+    
+    public Result<DATA> ifNotAvailable(Runnable action) {
+        if (isNotAvailable())
+            action.run();
+            
+        return this;
     }
     
     public boolean isNotReady() {
@@ -189,9 +247,23 @@ public abstract class Result<DATA>
         return (exception instanceof ResultNotReadyException);
     }
     
+    public Result<DATA> ifNotReady(Runnable action) {
+        if (isNotAvailable())
+            action.run();
+            
+        return this;
+    }
+    
     public boolean isCancelled() {
         val exception = getException();
         return (exception instanceof ResultCancelledException);
+    }
+    
+    public Result<DATA> ifCancelled(Runnable action) {
+        if (isNotAvailable())
+            action.run();
+            
+        return this;
     }
     
     public boolean isImmutable() {

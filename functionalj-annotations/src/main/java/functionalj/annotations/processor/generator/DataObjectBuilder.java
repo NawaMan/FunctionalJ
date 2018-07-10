@@ -209,14 +209,46 @@ public class DataObjectBuilder {
     
     private Stream<GenMethod> getterToWitherMethods(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
-        return Stream.of(
+        val stream = Stream.of(
                     getterToWitherMethodValue(     sourceSpec, withMethodName, getter),
                     getterToWitherMethodSupplier(  sourceSpec, withMethodName, getter),
                     getterToWitherMethodFunction(  sourceSpec, withMethodName, getter),
                     getterToWitherMethodBiFunction(sourceSpec, withMethodName, getter)
                 );
+        val isList 
+                =  getter.getType().isList()
+                || getter.getType().isFunctionalList();
+        if (!isList)
+            return stream;
+        
+        val arrayMethod = getterToWitherMethodArray(sourceSpec, withMethodName, getter);
+        return Stream.concat(
+                Stream.of(arrayMethod),
+                stream);
     }
     
+    // TODO - Should be refactored ... may be to classes.
+    
+    private GenMethod getterToWitherMethodArray(SourceSpec sourceSpec,
+            Function<Getter, String> withMethodName, Getter getter) {
+        val listName = getter.getName(); 
+        val name = withMethodName.apply(getter);
+        val type = sourceSpec.getTargetType();
+        val params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0)));
+        val isFList = getter.getType().isFunctionalList();
+        val newArray = isFList ? "functionalj.types.ImmutableList.of" : "java.util.Arrays.asList";
+        val paramCall 
+                = sourceSpec
+                .getGetters()
+                .stream()
+                .map(g -> listName.equals(g.getName()) 
+                        ? newArray + "(" + g.getName() + ")"
+                        : g.getName())
+                .collect(joining(", "));
+        val usedTypes = asList(isFList ? Type.FUNCTIONAL_LIST : Type.of(Arrays.class));
+        val returnLine = "return " + POST_CONSTRUCT + "(new " + sourceSpec.getTargetClassName() + "(" + paramCall + "));";
+        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine), usedTypes, true);
+    }
     private GenMethod getterToWitherMethodValue(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
         val name = withMethodName.apply(getter);

@@ -1,5 +1,5 @@
-- Create ObjectLensWithSub
-- Create an interface for each custom Object that has Lens in its type
++ Create ObjectLensWithSub
++ Create an interface for each custom Object that has Lens in its type
 + MapAccess
 + MapLens
 + NullableLens
@@ -12,7 +12,7 @@
 + Generator for Nullable
 + Generator for Optional
 - Date, LocalDate, LocalTime
-- withList should have arvs
++ withList should have arvs
 
 + Tuples
 + Tuples to function params

@@ -80,6 +80,9 @@ public class GenerateParentFunctionListChildTest {
                 "    public FunctionalList<Child> children() {\n" + 
                 "        return children;\n" + 
                 "    }\n" + 
+                "    public Parent withNames(String ... names) {\n" + 
+                "        return postReConstruct(new Parent(functionalj.types.ImmutableList.of(names), children));\n" + 
+                "    }\n" + 
                 "    public Parent withNames(FunctionalList<String> names) {\n" + 
                 "        return postReConstruct(new Parent(names, children));\n" + 
                 "    }\n" + 
@@ -91,6 +94,9 @@ public class GenerateParentFunctionListChildTest {
                 "    }\n" + 
                 "    public Parent withNames(BiFunction<Parent, FunctionalList<String>, FunctionalList<String>> names) {\n" + 
                 "        return postReConstruct(new Parent(names.apply(this, this.names), children));\n" + 
+                "    }\n" + 
+                "    public Parent withChildren(Child ... children) {\n" + 
+                "        return postReConstruct(new Parent(names, functionalj.types.ImmutableList.of(children)));\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(FunctionalList<Child> children) {\n" + 
                 "        return postReConstruct(new Parent(names, children));\n" + 

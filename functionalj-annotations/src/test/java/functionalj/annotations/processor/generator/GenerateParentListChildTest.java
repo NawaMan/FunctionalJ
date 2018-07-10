@@ -80,6 +80,9 @@ public class GenerateParentListChildTest {
                 "    public List<Child> children() {\n" + 
                 "        return children;\n" + 
                 "    }\n" + 
+                "    public Parent withNames(String ... names) {\n" + 
+                "        return postReConstruct(new Parent(java.util.Arrays.asList(names), children));\n" + 
+                "    }\n" + 
                 "    public Parent withNames(List<String> names) {\n" + 
                 "        return postReConstruct(new Parent(names, children));\n" + 
                 "    }\n" + 
@@ -91,6 +94,9 @@ public class GenerateParentListChildTest {
                 "    }\n" + 
                 "    public Parent withNames(BiFunction<Parent, List<String>, List<String>> names) {\n" + 
                 "        return postReConstruct(new Parent(names.apply(this, this.names), children));\n" + 
+                "    }\n" + 
+                "    public Parent withChildren(Child ... children) {\n" + 
+                "        return postReConstruct(new Parent(names, java.util.Arrays.asList(children)));\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(List<Child> children) {\n" + 
                 "        return postReConstruct(new Parent(names, children));\n" + 

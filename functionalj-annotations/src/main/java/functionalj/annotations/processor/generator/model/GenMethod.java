@@ -18,6 +18,7 @@ package functionalj.annotations.processor.generator.model;
 import static functionalj.annotations.processor.generator.ILines.indent;
 import static functionalj.annotations.processor.generator.ILines.line;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,9 +26,12 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 
+import static java.util.Collections.emptyList;
+
 import functionalj.annotations.processor.generator.IGenerateDefinition;
 import functionalj.annotations.processor.generator.ILines;
 import functionalj.annotations.processor.generator.Type;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;
@@ -40,6 +44,7 @@ import lombok.experimental.Wither;
  */
 @Value
 @Wither
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 public class GenMethod implements IGenerateDefinition {
     
@@ -50,6 +55,13 @@ public class GenMethod implements IGenerateDefinition {
     private String         name;
     private List<GenParam> params;
     private ILines         body;
+    private List<Type>     usedTypes;
+    private boolean        isVarAgrs;
+    
+    public GenMethod(Accessibility accessibility, Scope scope, Modifiability modifiability, Type type, String name,
+            List<GenParam> params, ILines body) {
+        this(accessibility, scope, modifiability, type, name, params, body, emptyList(), false);
+    }
     
     @Override
     public Stream<Type> requiredTypes() {
@@ -72,15 +84,23 @@ public class GenMethod implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        val paramDefs = params.stream().map(param -> param.toTerm(currentPackage)).collect(joining(", "));
+        val paramDefs 
+            = params.stream()
+                .map(param -> param.toTerm(currentPackage))
+                .collect(joining(", "));
+        val paramDefsToText
+            = isVarAgrs 
+            ? paramDefs.replaceAll("([^ ]+)$", "... $1") 
+            : paramDefs;
         val definition
                 = ILines.oneLineOf(
                     accessibility, modifiability, scope,
-                    type.simpleNameWithGeneric(""), name + "(" + paramDefs + ")",
+                    type.simpleNameWithGeneric(""), name + "(" + paramDefsToText + ")",
                     "{");
         return ILines.flatenLines(
                 line(definition),
                 indent(body),
                 line("}"));
     }
+    
 }
