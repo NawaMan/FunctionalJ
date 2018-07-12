@@ -1,5 +1,6 @@
 package functionalj.functions;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -32,6 +33,22 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT> {
      **/
     public static <OUTPUT> Func0<OUTPUT> from(Supplier<OUTPUT> supplier) {
         return ()->supplier.get();
+    }
+    
+    /**
+     * Get the value from the supplier that might be null.
+     * 
+     * @param <O>       the output type.
+     * @param <F>       the fallback data type
+     * @param supplier  the suppler.
+     * @param fallback  the fallback value.
+     * @return  the result or the fallback type.
+     */
+    public static <O, F extends O> O getOrElse(Supplier<O> supplier, F fallback) {
+        if (supplier == null)
+            return fallback;
+        
+        return supplier.get();
     }
     
 }

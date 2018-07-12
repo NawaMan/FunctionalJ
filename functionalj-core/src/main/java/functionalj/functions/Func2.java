@@ -16,6 +16,7 @@
 package functionalj.functions;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import functionalj.types.Tuple2;
 
@@ -119,6 +120,26 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     @SuppressWarnings("javadoc")
     public default Func1<INPUT2, OUTPUT> apply(INPUT1 i1, Absent a2) {
         return i2 -> this.apply(i1, i2);
+    }
+    
+    /**
+     * Apply the input value to the function that might be null.
+     * 
+     * @param <I1>      the input 1 type.
+     * @param <I2>      the input 2 type.
+     * @param <O>       the output type.
+     * @param <F>       the fallback data type
+     * @param function  the function.
+     * @param input1    the input 1 value.
+     * @param input2    the input 2 value.
+     * @param fallback  the fallback value.
+     * @return  the result or the fallback type.
+     */
+    public static <I1, I2, O, F extends O> O applyOrElse(BiFunction<? super I1, ? super I2, O> function, I1 input1, I2 input2, F fallback) {
+        if (function == null)
+            return fallback;
+        
+        return function.apply(input1, input2);
     }
     
 }

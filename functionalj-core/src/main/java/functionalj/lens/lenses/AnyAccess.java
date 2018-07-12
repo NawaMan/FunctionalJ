@@ -2,6 +2,8 @@ package functionalj.lens.lenses;
 
 import static functionalj.lens.core.AccessUtils.createNullableAccess;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -77,22 +79,48 @@ public interface AnyAccess<HOST, DATA>
     
     public default IntegerAccess<HOST> intAccess(int defaultValue, Function<DATA, Integer> function) {
         return host -> {
-            val intValue = __internal__.processValue(this, host, defaultValue, function);
-            return intValue;
+            val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
+        };
+    }
+    
+    public default LongAccess<HOST> longAccess(long defaultValue, Function<DATA, Long> function) {
+        return host -> {
+            val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
+        };
+    }
+    
+    public default DoubleAccess<HOST> doubleAccess(double defaultValue, Function<DATA, Double> function) {
+        return host -> {
+            val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
+        };
+    }
+    public default BigIntegerAccess<HOST> bigIntegerAccess(BigInteger defaultValue, Function<DATA, BigInteger> function) {
+        return host -> {
+            val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
+        };
+    }
+    public default BigDecimalAccess<HOST> bigDecimalAccess(BigDecimal defaultValue, Function<DATA, BigDecimal> function) {
+        return host -> {
+            val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
         };
     }
     
     public default StringAccess<HOST> stringAccess(String defaultValue, Function<DATA, String> function) {
         return host -> {
-            val stringValue = __internal__.processValue(this, host, defaultValue, function);
-            return stringValue;
+            val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
         };
     }
     
     public default BooleanAccess<HOST> booleanAccess(boolean defaultValue, Function<DATA, Boolean> function) {
         return host -> {
-            val booleanValue = __internal__.processValue(this, host, defaultValue, function);
-            return booleanValue;
+            val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
         };
     }
     

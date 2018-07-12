@@ -130,4 +130,22 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return this.apply(input);
         };
     }
+    
+    /**
+     * Apply the input value to the function that might be null.
+     * 
+     * @param <I>       the input type.
+     * @param <O>       the output type.
+     * @param <F>       the fallback data type
+     * @param function  the function.
+     * @param input     the input value.
+     * @param fallback  the fallback value.
+     * @return  the result or the fallback type.
+     */
+    public static <I, O, F extends O> O applyOrElse(Function<? super I, O> function, I input, F fallback) {
+        if (function == null)
+            return fallback;
+        
+        return function.apply(input);
+    }
 }

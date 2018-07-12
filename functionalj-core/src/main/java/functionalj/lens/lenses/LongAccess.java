@@ -1,12 +1,16 @@
 package functionalj.lens.lenses;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
+
+import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
 public interface LongAccess<HOST> 
         extends 
-            NumberAccess<HOST, Long>, 
+            NumberAccess<HOST, Long, LongAccess<HOST>>, 
             ToLongFunction<HOST>,
             ConcreteAccess<HOST, Long, LongAccess<HOST>> {
 
@@ -19,4 +23,68 @@ public interface LongAccess<HOST>
         return apply(host).longValue();
     }
     
+    
+    public default MathOperators<Long> __mathOperators() {
+        return __LongMathOperators;
+    }
+    
+    public static MathOperators<Long> __LongMathOperators = new MathOperators<Long>() {
+
+        @Override
+        public Long zero() {
+            return 0L;
+        }
+        @Override
+        public Integer toInt(Long number) {
+            return toLong(number).intValue();
+        }
+        @Override
+        public Long toLong(Long number) {
+            return Nullable.of(number).orElse(0L);
+        }
+        @Override
+        public Double toDouble(Long number) {
+            return (double)toLong(number);
+        }
+        @Override
+        public BigInteger toBigInteger(Long number) {
+            return BigInteger.valueOf(toLong(number));
+        }
+        @Override
+        public BigDecimal toBigDecimal(Long number) {
+            return new BigDecimal(toLong(number));
+        }
+        
+        @Override
+        public Long add(Long number1, Long number2) {
+            long v1 = (number1 == null) ? 0 : number1.longValue();
+            long v2 = (number2 == null) ? 0 : number2.longValue();
+            return v1 + v2;
+        }
+        @Override
+        public Long subtract(Long number1, Long number2) {
+            long v1 = (number1 == null) ? 0 : number1.longValue();
+            long v2 = (number2 == null) ? 0 : number2.longValue();
+            return v1 - v2;
+        }
+        @Override
+        public Long multiply(Long number1, Long number2) {
+            long v1 = (number1 == null) ? 0 : number1.longValue();
+            long v2 = (number2 == null) ? 0 : number2.longValue();
+            return v1 * v2;
+        }
+        @Override
+        public Long divide(Long number1, Long number2) {
+            long v1 = (number1 == null) ? 0 : number1.longValue();
+            long v2 = (number2 == null) ? 0 : number2.longValue();
+            return v1 / v2;
+        }
+        @Override
+        public Long remainder(Long number1, Long number2) {
+            long v1 = (number1 == null) ? 0 : number1.longValue();
+            long v2 = (number2 == null) ? 0 : number2.longValue();
+            return v1 % v2;
+        }
+        
+    };
 }
