@@ -349,6 +349,68 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>>
         }));
     }
     
+    // TODO - Find a better ways to do it
+    
+    public default Tuple2<SELF, SELF> split(
+            Predicate<? super DATA> predicate) {
+        return ImmutableTuple.of(
+                this.filter(predicate),
+                this.exclude(predicate)
+        );
+    }
+    
+    public default Tuple3<SELF, SELF, SELF> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2) {
+        return ImmutableTuple.of(
+                this.filter(predicate1),
+                this.exclude(predicate1).filter(predicate2),
+                this.exclude(predicate1).exclude(predicate2)
+        );
+    }
+
+    public default Tuple4<SELF, SELF, SELF, SELF> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3) {
+        return ImmutableTuple.of(
+                this.filter(predicate1),
+                this.exclude(predicate1).filter(predicate2),
+                this.exclude(predicate1).exclude(predicate2).filter(predicate3),
+                this.exclude(predicate1).exclude(predicate2).exclude(predicate3)
+        );
+    }
+
+    public default Tuple5<SELF, SELF, SELF, SELF, SELF> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3,
+            Predicate<? super DATA> predicate4) {
+        return ImmutableTuple.of(
+                this.filter(predicate1),
+                this.exclude(predicate1).filter(predicate2),
+                this.exclude(predicate1).exclude(predicate2).filter(predicate3),
+                this.exclude(predicate1).exclude(predicate2).exclude(predicate3).filter(predicate4),
+                this.exclude(predicate1).exclude(predicate2).exclude(predicate3).exclude(predicate4)
+        );
+    }
+    
+    public default Tuple6<SELF, SELF, SELF, SELF, SELF, SELF> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3,
+            Predicate<? super DATA> predicate4,
+            Predicate<? super DATA> predicate5) {
+        return ImmutableTuple.of(
+                this.filter(predicate1),
+                this.exclude(predicate1).filter(predicate2),
+                this.exclude(predicate1).exclude(predicate2).filter(predicate3),
+                this.exclude(predicate1).exclude(predicate2).exclude(predicate3).filter(predicate4),
+                this.exclude(predicate1).exclude(predicate2).exclude(predicate3).exclude(predicate4).filter(predicate5),
+                this.exclude(predicate1).exclude(predicate2).exclude(predicate3).exclude(predicate4).exclude(predicate5)                
+        );
+    }
+    
     public default SELF distinct() {
         return __stream(stream -> stream.distinct());
     }
