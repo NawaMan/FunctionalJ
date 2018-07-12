@@ -1,8 +1,15 @@
 package functionalj.types;
 
+import static functionalj.lens.Access.$S;
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 import org.junit.Test;
+
+import lombok.val;
 
 public class ImmutableListTest {
     
@@ -31,6 +38,19 @@ public class ImmutableListTest {
     public void testSorted() {
         assertEquals("[1, 2, One, Two]", "" + ImmutableList.of("1", "One", "2", "Two").sorted());
         assertEquals("[1, 2, One, Two]", "" + ImmutableList.of("2", "Two", "1", "One").sorted());
+    }
+    @Test
+    public void testSplit_ensurePredicateGotCalledOncePerItem() {
+        val processedStrings = new ArrayList<String>();
+        assertEquals("[[One, Two],[Four, Five],[Three]]", 
+                ImmutableList.of("One", "Two", "Three", "Four", "Five")
+                .split($S.length().thatEquals(3),
+                       it -> {
+                           processedStrings.add(it);
+                           return it.length() <= 4;
+                       })
+                .toString());
+        assertEquals("[Three, Four, Five]", "" + processedStrings);
     }
     
 }

@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -98,8 +99,8 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         } else if (data instanceof ImmutableList) {
             this.data = ((ImmutableList<DATA>)data).data;
         } else {
-            val list = new ArrayList<DATA>(data.size());
-            list.addAll(data);
+            val list = new ArrayList<DATA>();
+            data.forEach(list::add);
             this.data = unmodifiableList(list);
         }
     }
@@ -183,6 +184,124 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     @Override
     public ListIterator<DATA> listIterator(int index) {
         return data.listIterator();
+    }
+
+    // TODO - Put a garantee on this
+    // TODO - Extract these out ... but should still make it easy to call.
+    //        Like ... Split(list).to(predicate, ...)
+    
+    public Tuple2<FunctionalList<DATA>, FunctionalList<DATA>> split(
+            Predicate<? super DATA> predicate) {
+        val temp = this.map(
+                it -> predicate.test(it) ? 0 : 1,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
+        return ImmutableTuple.of(
+                list1,
+                list2
+        );
+    }
+    
+    public Tuple3<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2) {
+        val temp = this.map(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    :                       2,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
+        return ImmutableTuple.of(
+                list1,
+                list2,
+                list3
+        );
+    }
+
+    public Tuple4<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3) {
+        val temp = this.map(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    :                       3,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
+        return ImmutableTuple.of(
+                list1,
+                list2,
+                list3,
+                list4
+        );
+    }
+
+    public Tuple5<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3,
+            Predicate<? super DATA> predicate4) {
+        val temp = this.map(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    : predicate4.test(it) ? 3
+                    :                       4,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
+        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2()).toImmutableList();
+        return ImmutableTuple.of(
+                list1,
+                list2,
+                list3,
+                list4,
+                list5
+        );
+    }
+    
+    public Tuple6<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3,
+            Predicate<? super DATA> predicate4,
+            Predicate<? super DATA> predicate5) {
+        val temp = this.map(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    : predicate4.test(it) ? 3
+                    : predicate5.test(it) ? 4
+                    :                       5,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
+        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2()).toImmutableList();
+        val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2()).toImmutableList();
+        return ImmutableTuple.of(
+                list1,
+                list2,
+                list3,
+                list4,
+                list5,
+                list6
+        );
     }
     
     @Override
