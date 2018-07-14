@@ -1,21 +1,13 @@
 package functionalj.lens.lenses;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
-import functionalj.functions.Func1;
 import functionalj.lens.core.AccessParameterized2;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized2;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
 import functionalj.types.FunctionalMap;
-import functionalj.types.ImmutableTuple2;
 import lombok.val;
 
 public interface FunctionalMapLens<HOST, KEY, VALUE, 

@@ -1,18 +1,14 @@
 package functionalj.types;
 
-import static functionalj.FunctionalJ.it;
 import static functionalj.lens.Access.$S;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import functionalj.FunctionalJ;
-import functionalj.lens.Access;
 import lombok.val;
 
 public class StreamableTest {

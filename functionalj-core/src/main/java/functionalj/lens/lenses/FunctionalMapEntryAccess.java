@@ -1,6 +1,5 @@
 package functionalj.lens.lenses;
 
-import java.util.Map;
 import java.util.function.Function;
 
 import functionalj.lens.core.AccessParameterized2;
