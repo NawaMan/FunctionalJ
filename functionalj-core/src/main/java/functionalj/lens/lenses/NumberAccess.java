@@ -10,6 +10,7 @@ import functionalj.functions.Func0;
 import functionalj.functions.Func1;
 import functionalj.functions.Func2;
 import functionalj.lens.core.AccessCreator;
+import functionalj.types.Tuple2;
 import lombok.val;
 
 public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS extends NumberAccess<HOST, TYPE, ?>> 
@@ -54,6 +55,14 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         public NUMBER multiply(NUMBER number1, NUMBER number2);
         public NUMBER divide(NUMBER number1, NUMBER number2);
         public NUMBER remainder(NUMBER number1, NUMBER number2);
+        public Tuple2<NUMBER, NUMBER> divideAndRemainder(NUMBER number, NUMBER divisor);
+        
+        public NUMBER pow(NUMBER number, NUMBER n);
+        public NUMBER abs(NUMBER number);
+        public NUMBER negate(NUMBER number);
+        public NUMBER signum(NUMBER number);
+        public NUMBER min(NUMBER number1, NUMBER number2);
+        public NUMBER max(NUMBER number1, NUMBER number2);
         
     }
     
@@ -186,43 +195,118 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::multiply);
     }
     
-    
+
+    @SuppressWarnings("unchecked")
     public default NUMACCESS divide(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::divide);
     }
+    @SuppressWarnings("unchecked")
     public default NUMACCESS divide(Supplier<TYPE> valueSupplier) {
         return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::divide);
     }
+    @SuppressWarnings("unchecked")
     public default NUMACCESS divide(Function<TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::divide);
     }
+    @SuppressWarnings("unchecked")
     public default NUMACCESS divide(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::divide);
     }
     
-    
+    @SuppressWarnings("unchecked")
     public default NUMACCESS remainder(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
     }
+    @SuppressWarnings("unchecked")
     public default NUMACCESS remainder(Supplier<TYPE> valueSupplier) {
         return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
     }
+    @SuppressWarnings("unchecked")
     public default NUMACCESS remainder(Function<TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
     }
+    @SuppressWarnings("unchecked")
     public default NUMACCESS remainder(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
     }
     
     
 //  public BigDecimal[] divideAndRemainder(BigDecimal divisor); --  Tuple
-//  public BigDecimal pow(BigDecimal n);
-//  public BigDecimal abs();
-//  public BigDecimal negate();
-//  public BigDecimal plus();
-//  public BigDecimal signum();
-//  public BigDecimal min(BigDecimal val);
-//  public BigDecimal max(BigDecimal val);
-//  public BigDecimal toBigDecimal();
+
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS pow(TYPE value) {
+        return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::pow);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS pow(Supplier<TYPE> valueSupplier) {
+        return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::pow);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS pow(Function<TYPE, TYPE> valueFunction) {
+        return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::pow);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS pow(BiFunction<HOST, TYPE, TYPE> valueFunction) {
+        return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::pow);
+    }
     
+    public default NUMACCESS abs() {
+        return newAccess(host -> {
+            if (host == null)
+                return __mathOperators().zero();
+            val v = apply(host); 
+            return __mathOperators().abs(v);
+        });
+    }
+    public default NUMACCESS negate() {
+        return newAccess(host -> {
+            if (host == null)
+                return __mathOperators().zero();
+            val v = apply(host); 
+            return __mathOperators().negate(v);
+        });
+    }
+    public default NUMACCESS signum() {
+        return newAccess(host -> {
+            if (host == null)
+                return __mathOperators().zero();
+            val v = apply(host); 
+            return __mathOperators().signum(v);
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS min(TYPE value) {
+        return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::min);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS min(Supplier<TYPE> valueSupplier) {
+        return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::min);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS min(Function<TYPE, TYPE> valueFunction) {
+        return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::min);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS min(BiFunction<HOST, TYPE, TYPE> valueFunction) {
+        return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::min);
+    }
+
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS max(TYPE value) {
+        return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::max);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS max(Supplier<TYPE> valueSupplier) {
+        return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::max);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS max(Function<TYPE, TYPE> valueFunction) {
+        return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::max);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS max(BiFunction<HOST, TYPE, TYPE> valueFunction) {
+        return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::max);
+    }
+        
 }

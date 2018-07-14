@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
+import functionalj.types.ImmutableTuple;
+import functionalj.types.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
@@ -84,6 +86,49 @@ public interface LongAccess<HOST>
             long v1 = (number1 == null) ? 0 : number1.longValue();
             long v2 = (number2 == null) ? 0 : number2.longValue();
             return v1 % v2;
+        }
+
+        @Override
+        public Tuple2<Long, Long> divideAndRemainder(Long number1, Long number2) {
+            long v1 = (number1 == null) ? 0 : number1.longValue();
+            long v2 = (number2 == null) ? 0 : number2.longValue();
+            return ImmutableTuple.of(v1 / v2, v1 % v2);
+        }
+
+        @Override
+        public Long pow(Long number1, Long number2) {
+            long v1 = (number1 == null) ? 0 : number1.longValue();
+            long v2 = (number2 == null) ? 0 : number2.longValue();
+            return (long)Math.pow(v1, v2);
+        }
+
+        @Override
+        public Long abs(Long number) {
+            long v = (number == null) ? 0 : number.longValue();
+            return Math.abs(v);
+        }
+        @Override
+        public Long negate(Long number) {
+            long v = (number == null) ? 0 : number.longValue();
+            return -1 * v;
+        }
+        @Override
+        public Long signum(Long number) {
+            long v = (number == null) ? 0 : number.longValue();
+            return (long)Math.signum(v);
+        }
+
+        @Override
+        public Long min(Long number1, Long number2) {
+            long v1 = (number1 == null) ? 0 : number1.longValue();
+            long v2 = (number2 == null) ? 0 : number2.longValue();
+            return Math.min(v1, v2);
+        }
+        @Override
+        public Long max(Long number1, Long number2) {
+            long v1 = (number1 == null) ? 0 : number1.longValue();
+            long v2 = (number2 == null) ? 0 : number2.longValue();
+            return Math.max(v1, v2);
         }
         
     };

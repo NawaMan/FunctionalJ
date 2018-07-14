@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
 
+import functionalj.types.ImmutableTuple;
+import functionalj.types.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
@@ -78,6 +80,50 @@ public interface BigIntegerAccess<HOST>
             BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
             BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
             return v1.remainder(v2);
+        }
+
+        @Override
+        public Tuple2<BigInteger, BigInteger> divideAndRemainder(BigInteger number1, BigInteger number2) {
+            BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
+            BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
+            BigInteger[] rs = v1.divideAndRemainder(v2);
+            return ImmutableTuple.of(rs[0], rs[1]);
+        }
+
+        @Override
+        public BigInteger pow(BigInteger number1, BigInteger number2) {
+            BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
+            BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
+            return v1.pow(v2.intValue());
+        }
+
+        @Override
+        public BigInteger abs(BigInteger number) {
+            BigInteger v = (number == null) ? BigInteger.ZERO : number;
+            return v.abs();
+        }
+        @Override
+        public BigInteger negate(BigInteger number) {
+            BigInteger v = (number == null) ? BigInteger.ZERO : number;
+            return v.negate();
+        }
+        @Override
+        public BigInteger signum(BigInteger number) {
+            BigInteger v = (number == null) ? BigInteger.ZERO : number;
+            return BigInteger.valueOf(v.signum());
+        }
+
+        @Override
+        public BigInteger min(BigInteger number1, BigInteger number2) {
+            BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
+            BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
+            return v1.min(v2);
+        }
+        @Override
+        public BigInteger max(BigInteger number1, BigInteger number2) {
+            BigInteger v1 = (number1 == null) ? BigInteger.ZERO : number1;
+            BigInteger v2 = (number2 == null) ? BigInteger.ZERO : number2;
+            return v1.max(v2);
         }
         
     };

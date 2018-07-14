@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
 
+import functionalj.types.ImmutableTuple;
+import functionalj.types.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
 
 @FunctionalInterface
@@ -79,24 +81,51 @@ public interface BigDecimalAccess<HOST>
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             return v1.remainder(v2);
         }
+
+        @Override
+        public Tuple2<BigDecimal, BigDecimal> divideAndRemainder(BigDecimal number1, BigDecimal number2) {
+            BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
+            BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
+            BigDecimal[] rs = v1.divideAndRemainder(v2);
+            return ImmutableTuple.of(rs[0], rs[1]);
+        }
+
+        @Override
+        public BigDecimal pow(BigDecimal number1, BigDecimal number2) {
+            BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
+            BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
+            return v1.pow(v2.intValue());
+        }
+
+        @Override
+        public BigDecimal abs(BigDecimal number) {
+            BigDecimal v = (number == null) ? BigDecimal.ZERO : number;
+            return v.abs();
+        }
+        @Override
+        public BigDecimal negate(BigDecimal number) {
+            BigDecimal v = (number == null) ? BigDecimal.ZERO : number;
+            return v.negate();
+        }
+        @Override
+        public BigDecimal signum(BigDecimal number) {
+            BigDecimal v = (number == null) ? BigDecimal.ZERO : number;
+            return BigDecimal.valueOf(v.signum());
+        }
+
+        @Override
+        public BigDecimal min(BigDecimal number1, BigDecimal number2) {
+            BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
+            BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
+            return v1.min(v2);
+        }
+        @Override
+        public BigDecimal max(BigDecimal number1, BigDecimal number2) {
+            BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
+            BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
+            return v1.max(v2);
+        }
         
     };
-    
-    // TODO - add, subscript ...
-    
-//    public BigDecimal add(BigDecimal augend);
-//    public BigDecimal subtract(BigDecimal subtrahend);
-//    public BigDecimal multiply(BigDecimal multiplicand);
-//    public BigDecimal divide(BigDecimal divisor);
-//    public BigDecimal remainder(BigDecimal divisor);
-//    public BigDecimal[] divideAndRemainder(BigDecimal divisor); --  Tuple
-//    public BigDecimal pow(BigDecimal n);
-//    public BigDecimal abs();
-//    public BigDecimal negate();
-//    public BigDecimal plus();
-//    public BigDecimal signum();
-//    public BigDecimal min(BigDecimal val);
-//    public BigDecimal max(BigDecimal val);
-//    public BigDecimal toBigDecimal();
     
 }
