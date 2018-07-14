@@ -55,7 +55,7 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
     }
     
     @Override
-    public default List<TYPE> apply(HOST host) {
+    public default List<TYPE> applyUnsafe(HOST host) throws Exception {
         return lensSpec().getRead().apply(host);
     }
     

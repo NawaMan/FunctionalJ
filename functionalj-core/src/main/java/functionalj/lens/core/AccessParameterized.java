@@ -8,7 +8,7 @@ import lombok.val;
 public interface AccessParameterized<HOST, TYPE, PARAMETER, PARAMETERACCESS extends AnyAccess<HOST, PARAMETER>>
                 extends AnyAccess<HOST, TYPE> {
     
-    public TYPE apply(HOST host);
+    public TYPE applyUnsafe(HOST host) throws Exception;
     
     public PARAMETERACCESS createSubAccessFromHost(Function<HOST, PARAMETER> accessToParameter);
     

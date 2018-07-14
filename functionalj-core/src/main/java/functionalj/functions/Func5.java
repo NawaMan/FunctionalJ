@@ -15,7 +15,10 @@
 //  ========================================================================
 package functionalj.functions;
 
+import functionalj.types.ImmutableResult;
+import functionalj.types.Result;
 import functionalj.types.Tuple5;
+import lombok.val;
 
 /**
  * Function of five parameters.
@@ -32,25 +35,20 @@ import functionalj.types.Tuple5;
 @FunctionalInterface
 public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
     
-    /**
-     * Constructs a Func2 from function or lambda.
-     * 
-     * @param  function  the function or lambda.
-     * @param  <INPUT1>  the first input data type.
-     * @param  <INPUT2>  the second input data type.
-     * @param  <INPUT3>  the third input data type.
-     * @param  <INPUT4>  the forth input data type.
-     * @param  <INPUT5>  the fifth input data type.
-     * @param  <OUTPUT>  the output data type.
-     * @return           the result Func3.
-     **/
-    public static 
-            <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
-            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> 
-            of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
-        return function;
+    public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5) throws Exception;
+    
+    public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5) {
+        try {
+            val output = applyUnsafe(input1, input2, input3, input4, input5);
+            return ImmutableResult.of(output);
+        } catch (Exception exception) {
+            return ImmutableResult.of(null, exception);
+        }
     }
     
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Result<OUTPUT>> safely() {
+        return Func.from(this::applySafely);
+    }
     
     /**
      * Applies this function to the given input values.
@@ -62,8 +60,15 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
      * @param  input5  the fifth input.
      * @return         the function result.
      */
-    public OUTPUT apply(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5);
-    
+    public default OUTPUT apply(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5) {
+        try {
+            return applyUnsafe(input1, input2, input3, input4, input5);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception exception) {
+            throw new FailException(exception);
+        }
+    }
     
     /**
      * Applies this function to the given input values.

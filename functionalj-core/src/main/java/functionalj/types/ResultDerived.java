@@ -2,13 +2,13 @@ package functionalj.types;
 
 import java.util.Objects;
 
-import funtionalj.failable.FailableBiFunction;
+import functionalj.functions.Func2;
 import lombok.val;
 
 public final class ResultDerived<DATA, SOURCE> extends Result<DATA> {
     
-    private final Result<SOURCE>                              source;
-    private final FailableBiFunction<SOURCE, Exception, DATA> action;
+    private final Result<SOURCE>                 source;
+    private final Func2<SOURCE, Exception, DATA> action;
     
 //    public static <S, D> ResultDerived<D, S> of(Tuple2<S, Exception> source, Function<Tuple2<S, Exception>, Tuple2<D, Exception>> action) {
 //        return new ResultDerived<D, S>(source, action);
@@ -17,7 +17,7 @@ public final class ResultDerived<DATA, SOURCE> extends Result<DATA> {
 //        return new ResultDerived<D, D>(source, t -> t);
 //    }
 //    
-    public ResultDerived(Result<SOURCE> source, FailableBiFunction<SOURCE, Exception, DATA> action) {
+    public ResultDerived(Result<SOURCE> source, Func2<SOURCE, Exception, DATA> action) {
         this.source = Objects.requireNonNull(source);
         this.action = Objects.requireNonNull(action);
     }

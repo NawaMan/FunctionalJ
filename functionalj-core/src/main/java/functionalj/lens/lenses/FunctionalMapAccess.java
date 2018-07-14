@@ -21,7 +21,7 @@ public interface FunctionalMapAccess<HOST, KEY, VALUE,
     public AccessParameterized2<HOST, FunctionalMap<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2();
     
     @Override
-    public default FunctionalMap<KEY, VALUE> apply(HOST host) {
+    public default FunctionalMap<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
         return accessParameterized2().apply(host);
     }
 
@@ -148,7 +148,7 @@ public interface FunctionalMapAccess<HOST, KEY, VALUE,
                     Function<FunctionalMap<KEY, VALUE>, Collection<KEY>>                                      getKeys) {
             return new AccessParameterized<HOST, Collection<KEY>, KEY, KEYACCESS>() {
                 @Override
-                public Collection<KEY> apply(HOST host) {
+                public Collection<KEY> applyUnsafe(HOST host) throws Exception {
                     return getKeys.apply(spec.apply(host));
                 }
                 @Override
@@ -164,7 +164,7 @@ public interface FunctionalMapAccess<HOST, KEY, VALUE,
                     Function<FunctionalMap<KEY, VALUE>, Collection<VALUE>> getValues) {
             return new AccessParameterized<HOST, Collection<VALUE>, VALUE, VALUEACCESS>() {
                 @Override
-                public Collection<VALUE> apply(HOST host) {
+                public Collection<VALUE> applyUnsafe(HOST host) throws Exception {
                     return getValues.apply(spec.apply(host));
                 }
                 @Override
@@ -185,7 +185,7 @@ public interface FunctionalMapAccess<HOST, KEY, VALUE,
                                 FunctionalMapEntryAccess<HOST, Tuple2<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>>() {
                 
                             @Override
-                            public Collection<Tuple2<KEY, VALUE>> apply(HOST host) {
+                            public Collection<Tuple2<KEY, VALUE>> applyUnsafe(HOST host) throws Exception {
                                 return accessEntrySet.apply(spec.apply(host));
                             }
                             @Override
@@ -197,7 +197,7 @@ public interface FunctionalMapAccess<HOST, KEY, VALUE,
                                     public AccessParameterized2<HOST, Tuple2<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2() {
                                         AccessParameterized2<HOST, Tuple2<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2 = new AccessParameterized2<HOST, Tuple2<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>() {
                                             @Override
-                                            public Tuple2<KEY, VALUE> apply(HOST host) {
+                                            public Tuple2<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
                                                 val entry = accessToParameter.apply(host);
                                                 return entry;
                                             }
@@ -225,7 +225,7 @@ public interface FunctionalMapAccess<HOST, KEY, VALUE,
             AccessParameterized2<HOST, FunctionalMap.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> entrySpec
             = new AccessParameterized2<HOST, FunctionalMap.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>() {
                 @Override
-                public Entry<KEY, VALUE> apply(HOST host) {
+                public Entry<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
                     val map   = mapAccessSpec.apply(host);
                     val entry = accessEntry.apply(map);
                     return entry;

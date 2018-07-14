@@ -22,7 +22,7 @@ public class AccessUtils {
                     Function<HOST, List<TYPE>>                              read) {
         val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, TYPEACCESS>() {
             @Override
-            public List<TYPE> apply(HOST host) {
+            public List<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
             @Override
@@ -39,7 +39,7 @@ public class AccessUtils {
                     Function<HOST, FunctionalList<TYPE>>                              read) {
         val specWithSub = new AccessParameterized<HOST, FunctionalList<TYPE>, TYPE, TYPEACCESS>() {
             @Override
-            public FunctionalList<TYPE> apply(HOST host) {
+            public FunctionalList<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
             @Override
@@ -56,7 +56,7 @@ public class AccessUtils {
                         Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPELENS>() {
             @Override
-            public Nullable<TYPE> apply(HOST host) {
+            public Nullable<TYPE> applyUnsafe(HOST host) throws Exception {
                 return accessNullable.apply(host);
             }
             @Override

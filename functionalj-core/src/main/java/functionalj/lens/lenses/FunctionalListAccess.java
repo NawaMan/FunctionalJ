@@ -58,7 +58,7 @@ public interface FunctionalListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<H
     public default FunctionalListAccess<HOST, Integer, IntegerAccess<HOST>> indexesOf(Predicate<? super TYPE> check) {
         val access  = new AccessParameterized<HOST, FunctionalList<Integer>, Integer, IntegerAccess<HOST>>() {
             @Override
-            public FunctionalList<Integer> apply(HOST host) {
+            public FunctionalList<Integer> applyUnsafe(HOST host) throws Exception {
                 return FunctionalListAccess.this.apply(host).indexesOf(check);
             }
             @Override

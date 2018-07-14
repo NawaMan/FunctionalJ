@@ -11,7 +11,7 @@ public interface AccessParameterized2<HOST, TYPE, PARAMETER1, PARAMETER2,
                  extends AnyAccess<HOST, TYPE> {
 
     
-    public TYPE apply(HOST host);
+    public TYPE applyUnsafe(HOST host) throws Exception;
     
     
     public PARAMETERACCESS1 createSubAccessFromHost1(Function<HOST, PARAMETER1> accessToParameter);

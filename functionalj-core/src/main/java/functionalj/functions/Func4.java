@@ -15,7 +15,10 @@
 //  ========================================================================
 package functionalj.functions;
 
+import functionalj.types.ImmutableResult;
+import functionalj.types.Result;
 import functionalj.types.Tuple4;
+import lombok.val;
 
 /**
  * Function of four parameters.
@@ -31,25 +34,21 @@ import functionalj.types.Tuple4;
 @FunctionalInterface
 public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     
-    /**
-     * Constructs a Func2 from function or lambda.
-     * 
-     * @param  function  the function or lambda.
-     * @param  <INPUT1>  the first input data type.
-     * @param  <INPUT2>  the second input data type.
-     * @param  <INPUT3>  the third input data type.
-     * @param  <INPUT4>  the forth input data type.
-     * @param  <OUTPUT>  the output data type.
-     * @return           the result Func3.
-     **/
-    public static
-            <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
-            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT>
-            of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
-        return function;
+    public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) throws Exception;
+    
+    public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) {
+        try {
+            val output = applyUnsafe(input1, input2, input3, input4);
+            return ImmutableResult.of(output);
+        } catch (Exception exception) {
+            return ImmutableResult.of(null, exception);
+        }
     }
     
-    
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Result<OUTPUT>> safely() {
+        return Func.from(this::applySafely);
+    }
+
     /**
      * Applies this function to the given input values.
      *
@@ -59,7 +58,15 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @param  input4  the forth input.
      * @return         the function result.
      */
-    public OUTPUT apply(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4);
+    public default OUTPUT apply(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) {
+        try {
+            return applyUnsafe(input1, input2, input3, input4);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception exception) {
+            throw new FailException(exception);
+        }
+    }
     
     
     /**
@@ -174,4 +181,5 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func3<INPUT2, INPUT3, INPUT4, OUTPUT> apply(INPUT1 i1, Absent a2, Absent a3, Absent a4) {
         return (i2, i3, i4) -> this.apply(i1, i2, i3, i4);
     }
+    
 }

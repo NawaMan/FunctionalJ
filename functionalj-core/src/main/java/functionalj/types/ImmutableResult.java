@@ -2,7 +2,7 @@ package functionalj.types;
 
 import java.util.function.Supplier;
 
-import funtionalj.failable.FailableSupplier;
+import functionalj.functions.Func0;
 
 public final class ImmutableResult<DATA> extends Result<DATA> {
 
@@ -30,7 +30,7 @@ public final class ImmutableResult<DATA> extends Result<DATA> {
             return ImmutableResult.of(null, e);
         }
     }
-    public static <D> ImmutableResult<D> from(FailableSupplier<D> supplier) {
+    public static <D> ImmutableResult<D> from(Func0<D> supplier) {
         try {
             return ImmutableResult.of(supplier.get());
         } catch (Exception e) {

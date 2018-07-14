@@ -16,8 +16,8 @@ public interface MayBeAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>
     public AccessParameterized<HOST, MayBe<TYPE>, TYPE, SUBACCESS> accessWithSub();
     
     @Override
-    public default MayBe<TYPE> apply(HOST input) {
-        return accessWithSub().apply(input);
+    public default MayBe<TYPE> applyUnsafe(HOST host) throws Exception {
+        return accessWithSub().apply(host);
     }
 
     @Override
@@ -35,7 +35,7 @@ public interface MayBeAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>
     MayBeAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> map(Function<TYPE, TARGET> mapper) {
         val accessWithSub = new AccessParameterized<HOST, MayBe<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
-            public MayBe<TARGET> apply(HOST host) {
+            public MayBe<TARGET> applyUnsafe(HOST host) throws Exception {
                 return MayBeAccess.this.apply(host).map(mapper);
             }
             @Override
@@ -49,7 +49,7 @@ public interface MayBeAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>
     public default <TARGET> MayBeAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> flatMap(Function<TYPE, MayBe<TARGET>> mapper) {
         val accessWithSub = new AccessParameterized<HOST, MayBe<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
-            public MayBe<TARGET> apply(HOST host) {
+            public MayBe<TARGET> applyUnsafe(HOST host) throws Exception {
                 return (MayBe<TARGET>) MayBeAccess.this.apply(host)
                         .flatMap(value -> mapper.apply(value));
             }

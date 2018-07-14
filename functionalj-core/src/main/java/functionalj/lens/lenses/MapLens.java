@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import functionalj.functions.Func;
 import functionalj.functions.Func1;
 import functionalj.lens.core.AccessParameterized2;
 import functionalj.lens.core.LensSpec;
@@ -47,8 +48,8 @@ public interface MapLens<HOST, KEY, VALUE,
     }
 
     @Override
-    public default Map<KEY, VALUE> apply(HOST host) {
-        return ObjectLens.super.apply(host);
+    public default Map<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
+        return ObjectLens.super.applyUnsafe(host);
     }
     
     public default VALUELENS get(KEY key) {
@@ -65,7 +66,7 @@ public interface MapLens<HOST, KEY, VALUE,
     }
     
     public default Function<HOST, HOST> changeTo(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {
-        val mapEntry = Func1.of((Map.Entry<KEY, VALUE> each) ->{
+        val mapEntry = Func.of((Map.Entry<KEY, VALUE> each) ->{
             val key   = each.getKey();
             val value = each.getValue();
             if (!checker.test(key)) 
@@ -97,7 +98,7 @@ public interface MapLens<HOST, KEY, VALUE,
 
     
     public default Function<HOST, HOST> changeTo(BiPredicate<KEY, VALUE> checker, Function<VALUE, VALUE> mapper) {
-        val mapEntry = Func1.of((Map.Entry<KEY, VALUE> each) ->{
+        val mapEntry = Func.of((Map.Entry<KEY, VALUE> each) ->{
             val key   = each.getKey();
             val value = each.getValue();
             if (!checker.test(key, value)) 

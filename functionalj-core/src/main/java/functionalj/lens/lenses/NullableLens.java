@@ -47,7 +47,7 @@ public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     }
     
     @Override
-    public default Nullable<TYPE> apply(HOST host) {
+    public default Nullable<TYPE> applyUnsafe(HOST host) throws Exception {
         return lensSpec().getRead().apply(host);
     }
     

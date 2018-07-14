@@ -16,8 +16,11 @@
 package functionalj.functions;
 
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import functionalj.types.ImmutableResult;
+import functionalj.types.Result;
+import lombok.val;
 
 /**
  * Function of one parameter.
@@ -29,31 +32,21 @@ import java.util.function.Supplier;
  */
 @FunctionalInterface
 public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
+
+    public OUTPUT applyUnsafe(INPUT input) throws Exception;
     
-    /**
-     * Constructs a Func1 from function or lambda.
-     * 
-     * @param  function  the function or lambda.
-     * @param  <INPUT>   the input data type.
-     * @param  <OUTPUT>  the output data type.
-     * @return           the result Func1.
-     **/
-    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> of(Func1<INPUT, OUTPUT> function) {
-        return function;
+    public default Result<OUTPUT> applySafely(INPUT input) {
+        try {
+            val output = applyUnsafe(input);
+            return ImmutableResult.of(output);
+        } catch (Exception exception) {
+            return ImmutableResult.of(null, exception);
+        }
     }
     
-    /**
-     * Constructs a Func1 from function or lambda.
-     * 
-     * @param  function  the function or lambda.
-     * @param  <INPUT>   the input data type.
-     * @param  <OUTPUT>  the output data type.
-     * @return           the result Func1.
-     **/
-    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> from(Function<INPUT, OUTPUT> function) {
-        return input->function.apply(input);
+    public default Func1<INPUT, Result<OUTPUT>> safely() {
+        return Func.from(this::applySafely);
     }
-    
     
     /**
      * Applies this function to the given input value.
@@ -61,7 +54,15 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
      * @param input  the input function.
      * @return the function result.
      */
-    public OUTPUT apply(INPUT input);
+    public default OUTPUT apply(INPUT input) {
+        try {
+            return applyUnsafe(input);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception exception) {
+            throw new FailException(exception);
+        }
+    }
     
     /**
      * Applies this function to the given input value.
@@ -74,35 +75,6 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     /**
-     * Create a high-order function that will take another function that take the given input and return output.
-     * NOTE: Not sure if this a traverse.
-     * 
-     * @param <INPUT>   the input data type.
-     * @param <OUTPUT>  the output data type.
-     * @param input     the input.
-     * @return          the high-order function.
-     */
-    public static <INPUT,OUTPUT> Func1<Function<INPUT,OUTPUT>, OUTPUT> allApplyTo(INPUT input) {
-        return func -> {
-            return func.apply(input);
-        };
-    }
-    
-    /**
-     * Create a high-order function that will take another function that take the given input and return output.
-     * NOTE: Not sure if this a traverse.
-     * 
-     * @param <INPUT>   the input data type.
-     * @param input     the input.
-     * @return          the high-order function.
-     */
-    public static <INPUT> Predicate<Function<INPUT, Boolean>> allCheckWith(INPUT input) {
-        return func -> {
-            return func.apply(input);
-        };
-    }
-    
-    /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
      * 
@@ -110,14 +82,13 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
      * @param  after    the function to be run after this function.
      * @return          the composed function.
      */
-    public default <FINAL> Func1<INPUT, FINAL> then(Func1<? super OUTPUT, ? extends FINAL> after) {
+    public default <FINAL> Func1<INPUT, FINAL> then(Function<? super OUTPUT, ? extends FINAL> after) {
         return input -> {
             OUTPUT out1 = this.apply(input);
             FINAL  out2 = after.apply(out1);
             return out2;
         };
     }
-    
     
     /**
      * Create a curry function (a supplier) of the this function.
@@ -131,21 +102,4 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         };
     }
     
-    /**
-     * Apply the input value to the function that might be null.
-     * 
-     * @param <I>       the input type.
-     * @param <O>       the output type.
-     * @param <F>       the fallback data type
-     * @param function  the function.
-     * @param input     the input value.
-     * @param fallback  the fallback value.
-     * @return  the result or the fallback type.
-     */
-    public static <I, O, F extends O> O applyOrElse(Function<? super I, O> function, I input, F fallback) {
-        if (function == null)
-            return fallback;
-        
-        return function.apply(input);
-    }
 }

@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+import functionalj.functions.Func;
 import functionalj.functions.Func3;
 import lombok.Value;
 import lombok.val;
@@ -135,7 +136,7 @@ public class FunctionalJTest {
     
     @Test
     public void testF3() {
-        val add3  = Func3.of(FunctionalJTest::add3);
+        val add3  = Func.from(FunctionalJTest::add3);
         val add_5 = add3.apply(__, 5, __);
         assertEquals(8, add_5.apply(1, 2).intValue());
     }

@@ -23,7 +23,7 @@ public interface MapAccess<HOST, KEY, VALUE,
     public AccessParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2();
     
     @Override
-    public default Map<KEY, VALUE> apply(HOST host) {
+    public default Map<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
         return accessParameterized2().apply(host);
     }
 
@@ -147,7 +147,7 @@ public interface MapAccess<HOST, KEY, VALUE,
                     Function<Map<KEY, VALUE>, Collection<KEY>>                                      getKeys) {
             return new AccessParameterized<HOST, Collection<KEY>, KEY, KEYACCESS>() {
                 @Override
-                public Collection<KEY> apply(HOST host) {
+                public Collection<KEY> applyUnsafe(HOST host) throws Exception {
                     return getKeys.apply(spec.apply(host));
                 }
                 @Override
@@ -163,7 +163,7 @@ public interface MapAccess<HOST, KEY, VALUE,
                     Function<Map<KEY, VALUE>, Collection<VALUE>> getValues) {
             return new AccessParameterized<HOST, Collection<VALUE>, VALUE, VALUEACCESS>() {
                 @Override
-                public Collection<VALUE> apply(HOST host) {
+                public Collection<VALUE> applyUnsafe(HOST host) throws Exception {
                     return getValues.apply(spec.apply(host));
                 }
                 @Override
@@ -184,7 +184,7 @@ public interface MapAccess<HOST, KEY, VALUE,
                                 MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>>() {
                 
                             @Override
-                            public Collection<Map.Entry<KEY, VALUE>> apply(HOST host) {
+                            public Collection<Map.Entry<KEY, VALUE>> applyUnsafe(HOST host) throws Exception {
                                 return accessEntrySet.apply(spec.apply(host));
                             }
                             @Override
@@ -196,7 +196,7 @@ public interface MapAccess<HOST, KEY, VALUE,
                                     public AccessParameterized2<HOST, Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2() {
                                         AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2 = new AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>() {
                                             @Override
-                                            public Entry<KEY, VALUE> apply(HOST host) {
+                                            public Entry<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
                                                 val entry = accessToParameter.apply(host);
                                                 return entry;
                                             }
@@ -224,7 +224,7 @@ public interface MapAccess<HOST, KEY, VALUE,
             AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> entrySpec
             = new AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>() {
                 @Override
-                public Entry<KEY, VALUE> apply(HOST host) {
+                public Entry<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
                     val map   = mapAccessSpec.apply(host);
                     val entry = accessEntry.apply(map);
                     return entry;

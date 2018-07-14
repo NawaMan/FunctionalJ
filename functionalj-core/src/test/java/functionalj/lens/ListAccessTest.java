@@ -41,7 +41,7 @@ public class ListAccessTest {
     public void testListAccess() {
         val accSub = new AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>>() {
             @Override
-            public List<String> apply(WithNames input) {
+            public List<String> applyUnsafe(WithNames input) throws Exception {
                 return input.names();
             }
             @Override

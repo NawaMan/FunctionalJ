@@ -12,7 +12,7 @@ public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyLens<
     public SUBLENS              createSubLens(LensSpec<HOST, SUB> subSpec);
     
     @Override
-    public default TYPE apply(HOST host) {
+    public default TYPE applyUnsafe(HOST host) throws Exception {
         return getSpec().getRead().apply(host);
     }
     

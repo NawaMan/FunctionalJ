@@ -65,7 +65,7 @@ public class IntTuple2<T2> implements Tuple2<Integer, T2>, Map.Entry<Integer, T2
     
     
     // == Access == 
-    
+    // TODO - Move this
     /**
      * @author manusitn
      *
@@ -80,7 +80,7 @@ public class IntTuple2<T2> implements Tuple2<Integer, T2>, Map.Entry<Integer, T2
         public AccessParameterized<HOST, IntTuple2<T2>, T2, T2ACCESS> accessParameterized();
         
         @Override
-        public default IntTuple2<T2> apply(HOST host) {
+        public default IntTuple2<T2> applyUnsafe(HOST host) throws Exception {
             return accessParameterized().apply(host);
         }
         
@@ -144,7 +144,7 @@ public class IntTuple2<T2> implements Tuple2<Integer, T2>, Map.Entry<Integer, T2
         }
         
         @Override
-        default IntTuple2<T2> apply(HOST host) {
+        default IntTuple2<T2> applyUnsafe(HOST host) throws Exception {
             return IntTuple2Access.super.apply(host);
         }
         

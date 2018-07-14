@@ -16,8 +16,8 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     public AccessParameterized<HOST, Nullable<TYPE>, TYPE, SUBACCESS> accessWithSub();
     
     @Override
-    public default Nullable<TYPE> apply(HOST input) {
-        return accessWithSub().apply(input);
+    public default Nullable<TYPE> applyUnsafe(HOST host) throws Exception {
+        return accessWithSub().apply(host);
     }
     
     @Override
@@ -35,7 +35,7 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> map(Function<TYPE, TARGET> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
-            public Nullable<TARGET> apply(HOST host) {
+            public Nullable<TARGET> applyUnsafe(HOST host) throws Exception {
                 return NullableAccess.this.apply(host).map(mapper);
             }
             @Override
@@ -55,7 +55,7 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> flatMap(Function<TYPE, Nullable<TARGET>> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
-            public Nullable<TARGET> apply(HOST host) {
+            public Nullable<TARGET> applyUnsafe(HOST host) throws Exception {
                 return NullableAccess.this.apply(host).flatMap(mapper);
             }
             @Override

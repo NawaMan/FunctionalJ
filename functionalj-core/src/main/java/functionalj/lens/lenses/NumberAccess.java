@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import functionalj.functions.Func;
 import functionalj.functions.Func0;
 import functionalj.functions.Func1;
 import functionalj.functions.Func2;
@@ -104,10 +105,10 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
             BiFunction<TYPE, TYPE, TYPE>         operator) {
         return accessCreator.newAccess(host -> {
             if (host == null)
-                return Func0.getOrElse(valueSupplier, fallbackValue);
+                return Func.getOrElse(valueSupplier, fallbackValue);
             
             val v     = orgAccess.apply(host); 
-            val value = Func0.getOrElse(valueSupplier, fallbackValue);
+            val value = Func.getOrElse(valueSupplier, fallbackValue);
             return operator.apply(v, value);
         });
     }
@@ -119,10 +120,10 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
             BiFunction<TYPE, TYPE, TYPE>         operator) {
         return accessCreator.newAccess(host -> {
             if (host == null)
-                return Func1.applyOrElse(valueFunction, fallbackValue, fallbackValue);
+                return Func.applyOrElse(valueFunction, fallbackValue, fallbackValue);
             
             val v     = orgAccess.apply(host); 
-            val value = Func1.applyOrElse(valueFunction, v, fallbackValue);
+            val value = Func.applyOrElse(valueFunction, v, fallbackValue);
             return operator.apply(v, value);
         });
     }
@@ -134,10 +135,10 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
             BiFunction<TYPE, TYPE, TYPE>         operator) {
         return accessCreator.newAccess(host -> {
             if (host == null)
-                return Func2.applyOrElse(valueFunction, host, fallbackValue, fallbackValue);
+                return Func.applyOrElse(valueFunction, host, fallbackValue, fallbackValue);
             
             val v     = orgAccess.apply(host); 
-            val value = Func2.applyOrElse(valueFunction, host, v, fallbackValue);
+            val value = Func.applyOrElse(valueFunction, host, v, fallbackValue);
             return operator.apply(v, value);
         });
     }

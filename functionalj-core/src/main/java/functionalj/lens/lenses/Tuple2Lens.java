@@ -50,8 +50,8 @@ public interface Tuple2Lens<HOST, T1, T2, T1LENS extends AnyLens<HOST,T1>, T2LEN
     }
     
     @Override
-    default Tuple2<T1, T2> apply(HOST host) {
-        return Tuple2Access.super.apply(host);
+    default Tuple2<T1, T2> applyUnsafe(HOST host) throws Exception {
+        return Tuple2Access.super.applyUnsafe(host);
     }
     
     public default T1LENS _1() {

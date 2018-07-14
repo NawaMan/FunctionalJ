@@ -40,7 +40,7 @@ public interface FunctionalMapLens<HOST, KEY, VALUE,
     }
 
     @Override
-    public default FunctionalMap<KEY, VALUE> apply(HOST host) {
+    public default FunctionalMap<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
         return ObjectLens.super.apply(host);
     }
     

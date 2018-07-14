@@ -26,7 +26,7 @@ public class MapAccessTest {
             public AccessParameterized2<Map<String, Integer>, Map<String, Integer>, String, Integer, StringAccess<Map<String, Integer>>, IntegerAccess<Map<String, Integer>>> accessParameterized2() {
                 return new AccessParameterized2<Map<String,Integer>, Map<String,Integer>, String, Integer, StringAccess<Map<String,Integer>>, IntegerAccess<Map<String,Integer>>>() {
                     @Override
-                    public Map<String, Integer> apply(Map<String, Integer> host) {
+                    public Map<String, Integer> applyUnsafe(Map<String, Integer> host) throws Exception {
                         return host;
                     }
                     @Override

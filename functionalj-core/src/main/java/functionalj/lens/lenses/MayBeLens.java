@@ -45,7 +45,7 @@ public interface MayBeLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     }
     
     @Override
-    public default MayBe<TYPE> apply(HOST host) {
+    public default MayBe<TYPE> applyUnsafe(HOST host) throws Exception {
         return lensSpec().getRead().apply(host);
     }
     

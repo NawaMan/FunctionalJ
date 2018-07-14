@@ -2,6 +2,10 @@ package functionalj.functions;
 
 import java.util.function.Supplier;
 
+import functionalj.types.ImmutableResult;
+import functionalj.types.Result;
+import lombok.val;
+
 /**
  * Function of zeroth parameter - a supplier.
  * 
@@ -11,43 +15,37 @@ import java.util.function.Supplier;
  */
 @FunctionalInterface
 public interface Func0<OUTPUT> extends Supplier<OUTPUT> {
+
+    public OUTPUT applyUnsafe() throws Exception;
     
-    /**
-     * Constructs a Func0 from function or lambda.
-     * 
-     * @param  supplier  the supplier or lambda.
-     * @param  <OUTPUT>  the output data type.
-     * @return           the result Func0.
-     **/
-    public static <OUTPUT> Func0<OUTPUT> of(Func0<OUTPUT> supplier) {
-        return supplier;
+    public default OUTPUT apply() {
+        return get();
     }
     
-    /**
-     * Constructs a Func0 from supplier or lambda.
-     * 
-     * @param  supplier  the supplier or lambda.
-     * @param  <OUTPUT>  the output data type.
-     * @return           the result Func0.
-     **/
-    public static <OUTPUT> Func0<OUTPUT> from(Supplier<OUTPUT> supplier) {
-        return ()->supplier.get();
+    public default Result<OUTPUT> applySafely() {
+        return ImmutableResult.from(this);
     }
     
-    /**
-     * Get the value from the supplier that might be null.
-     * 
-     * @param <O>       the output type.
-     * @param <F>       the fallback data type
-     * @param supplier  the suppler.
-     * @param fallback  the fallback value.
-     * @return  the result or the fallback type.
-     */
-    public static <O, F extends O> O getOrElse(Supplier<O> supplier, F fallback) {
-        if (supplier == null)
-            return fallback;
-        
-        return supplier.get();
+    public default Func0<Result<OUTPUT>> safely() {
+        return Func.from(this::applySafely);
+    }
+    
+    public default OUTPUT getUnsafe() throws Exception {
+        return applyUnsafe();
+    }
+    
+    public default OUTPUT get() {
+        try {
+            return applyUnsafe();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new FailException(e);
+        }
+    }
+    
+    public default Result<OUTPUT> getSafely() {
+        return ImmutableResult.from(this);
     }
     
 }

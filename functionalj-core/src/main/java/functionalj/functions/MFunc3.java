@@ -33,24 +33,6 @@ import functionalj.kinds.Monad;
 public interface MFunc3<INPUT1, INPUT2, INPUT3, MONAD, OUTPUT> extends Func3<INPUT1, INPUT2, INPUT3, Monad<MONAD, OUTPUT>> {
     
     /**
-     * Constructs a MFunc3 from function or lambda.
-     * 
-     * @param  function  the function or lambda.
-     * @param  <INPUT1>  the first input data type.
-     * @param  <INPUT2>  the second input data type.
-     * @param  <INPUT3>  the third input data type.
-     * @param  <MONAD>   the monad type.
-     * @param  <OUTPUT>  the output data type.
-     * @return           the result Func1.
-     **/
-    public static <INPUT1, INPUT2, INPUT3, MONAD, OUTPUT> MFunc3<INPUT1, INPUT2, INPUT3, MONAD, OUTPUT> of(Func3<INPUT1, INPUT2, INPUT3, Monad<MONAD, OUTPUT>> function) {
-        return (input1, input2, input3) -> {
-            return function.apply(input1, input2, input3);
-        };
-    }
-    
-    
-    /**
      * Chain this function to the given function (compose in the Monatic way).
      * 
      * @param  <FINAL>  the final result value.

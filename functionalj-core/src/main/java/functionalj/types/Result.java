@@ -9,14 +9,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.functions.Func0;
 import functionalj.functions.Func3;
 import functionalj.kinds.Comonad;
 import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
-import funtionalj.failable.FailableBiFunction;
-import funtionalj.failable.FailableFunc0;
-import funtionalj.failable.FailableFunction;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -95,14 +93,6 @@ public abstract class Result<DATA>
         return new ResultDerived<>(this, (s, e) -> mapper.apply(s, e));
     }
     
-    public <TARGET> Result<TARGET> failableMap(FailableFunction<DATA, TARGET> mapper) {
-        return new ResultDerived<>(this, (s, e) -> mapper.apply(s));
-    }
-    
-    public <TARGET> Result<TARGET> failableMap(FailableBiFunction<DATA, Exception, TARGET> mapper) {
-        return new ResultDerived<>(this, (s, e) -> mapper.apply(s, e));
-    }
-
     @Override
     public <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
         return new ResultDerived<>(this, (s, e) -> {
@@ -118,24 +108,10 @@ public abstract class Result<DATA>
         });
     }
     
-    public <TARGET> Result<TARGET> failableFlatMap(FailableFunction<DATA, Monad<Result<?>, TARGET>> mapper) {
-        return new ResultDerived<>(this, (s, e) -> {
-            val monad = (Result<TARGET>)mapper.apply(s);
-            return monad.orThrow();
-        });
-    }
-    
     @Override
     public <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
         return new ResultDerived<>(this, (s, e) -> {
             val monad = (Nullable<TARGET>)mapper.apply(s);
-            return monad.orElse(null);
-        });
-    }
-    
-    public <TARGET> Result<TARGET> failableFlatMap(FailableBiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
-        return new ResultDerived<>(this, (s, e) -> {
-            val monad = (Nullable<TARGET>)mapper.apply(s, e);
             return monad.orElse(null);
         });
     }
@@ -324,13 +300,13 @@ public abstract class Result<DATA>
         });
     }
     
-    public Result<DATA> otherwiseGet(FailableFunc0<DATA> otherwiseSupplier) {
+    public Result<DATA> otherwiseGet(Func0<DATA> otherwiseSupplier) {
         DATA value = getValue();
         if (value != null)
             return this;
         
-        return ImmutableResult.from((FailableFunc0<DATA>)()->{
-            return otherwiseSupplier.get();
+        return ImmutableResult.from((Func0<DATA>)()->{
+            return otherwiseSupplier.getUnsafe();
         });
     }
     

@@ -19,7 +19,7 @@ public interface BooleanLens<HOST>
     }
     
     @Override
-    default Boolean apply(HOST host) {
+    default Boolean applyUnsafe(HOST host) throws Exception {
         return lensSpec().getRead().apply(host);
     }
     

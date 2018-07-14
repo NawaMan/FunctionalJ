@@ -10,7 +10,7 @@ import lombok.val;
 
 @FunctionalInterface
 public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HOST, DATA> {
-
+    
     public static <T> AnyLens<T, T> of(LensSpec<T, T> spec) {
         return () -> spec;
     }
@@ -19,7 +19,7 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
     public LensSpec<HOST, DATA> lensSpec();
     
     @Override
-    public default DATA apply(HOST host) {
+    public default DATA applyUnsafe(HOST host) throws Exception {
         val spec  = lensSpec();
         if (spec.isNullSafe() && (host == null))
             return null;

@@ -53,7 +53,7 @@ public interface FunctionalListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, T
     }
     
     @Override
-    public default FunctionalList<TYPE> apply(HOST host) {
+    public default FunctionalList<TYPE> applyUnsafe(HOST host) throws Exception {
         return lensSpec()
                 .getRead()
                 .apply(host);

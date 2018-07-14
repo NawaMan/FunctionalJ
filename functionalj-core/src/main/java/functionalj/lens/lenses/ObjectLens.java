@@ -15,7 +15,7 @@ public interface ObjectLens<HOST, DATA> extends AnyLens<HOST, DATA>, ObjectAcces
     public LensSpec<HOST, DATA> lensSpec();
     
     @Override
-    public default DATA apply(HOST host) {
+    public default DATA applyUnsafe(HOST host) throws Exception{
         return lensSpec().getRead().apply(host);
     }
     public default Func1<HOST, HOST> changeTo(DATA data) {

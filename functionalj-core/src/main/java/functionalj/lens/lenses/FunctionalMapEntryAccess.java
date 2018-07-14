@@ -16,7 +16,7 @@ public interface FunctionalMapEntryAccess<HOST, MAPENTRY extends Tuple2<KEY, VAL
     public AccessParameterized2<HOST, MAPENTRY, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2();
     
     @Override
-    public default MAPENTRY apply(HOST host) {
+    public default MAPENTRY applyUnsafe(HOST host) throws Exception {
         return accessParameterized2().apply(host);
     }
     

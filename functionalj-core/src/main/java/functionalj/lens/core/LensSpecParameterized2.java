@@ -15,7 +15,7 @@ public interface LensSpecParameterized2<HOST, TYPE, SUB1, SUB2,
     public SUBLENS2             createSubLens2(LensSpec<HOST, SUB2> subSpec);
     
     @Override
-    public default TYPE apply(HOST host) {
+    public default TYPE applyUnsafe(HOST host) throws Exception {
         return getSpec().getRead().apply(host);
     }
     

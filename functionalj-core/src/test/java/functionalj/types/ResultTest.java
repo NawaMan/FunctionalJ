@@ -58,7 +58,7 @@ public class ResultTest {
     
     @Test
     public void testImmutableResult_failableMap() {
-        val result = ImmutableResult.of("VALUE").failableMap(str -> new UnsupportedOperationException("Not support."));
+        val result = ImmutableResult.of("VALUE").map(str -> new UnsupportedOperationException("Not support."));
         assertEquals("Result:{ Value: java.lang.UnsupportedOperationException: Not support. }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());

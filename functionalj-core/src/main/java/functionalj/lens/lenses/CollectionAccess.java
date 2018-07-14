@@ -17,8 +17,8 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
     public AccessParameterized<HOST, COLLECTION, TYPE, SUBACCESS> accessParameterized();
     
     @Override
-    public default COLLECTION apply(HOST input) {
-        return accessParameterized().apply(input);
+    public default COLLECTION applyUnsafe(HOST host) throws Exception {
+        return accessParameterized().applyUnsafe(host);
     }
     
     @Override
@@ -51,7 +51,7 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
         val specWithSub = new AccessParameterized<HOST, COLLECTION, TYPE, SUBACCESS>() {
             @SuppressWarnings("unchecked")
             @Override
-            public COLLECTION apply(HOST host) {
+            public COLLECTION applyUnsafe(HOST host) throws Exception {
                 return (COLLECTION)spec.apply(host).stream().filter(checker).collect(Collectors.toList());
             }
             @Override
@@ -66,7 +66,7 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
         val spec        = accessParameterized();
         val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, SUBACCESS>() {
             @Override
-            public List<TYPE> apply(HOST host) {
+            public List<TYPE> applyUnsafe(HOST host) throws Exception{
                 val collection = spec.apply(host);
                 if (collection  instanceof List)
                     return (List<TYPE>)collection;
