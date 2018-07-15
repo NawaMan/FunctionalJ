@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 
 import functionalj.types.ImmutableResult;
 import functionalj.types.Result;
-import lombok.val;
 
 /**
  * Function of zeroth parameter - a supplier.
@@ -40,7 +39,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new FailException(e);
+            throw new FunctionInvocationException(e);
         }
     }
     

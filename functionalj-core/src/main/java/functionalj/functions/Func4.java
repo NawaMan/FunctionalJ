@@ -64,7 +64,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception exception) {
-            throw new FailException(exception);
+            throw new FunctionInvocationException(exception);
         }
     }
     

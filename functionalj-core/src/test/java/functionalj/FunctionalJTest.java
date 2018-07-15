@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import functionalj.functions.Func;
-import functionalj.functions.Func3;
 import lombok.Value;
 import lombok.val;
 

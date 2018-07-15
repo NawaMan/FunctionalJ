@@ -60,7 +60,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception exception) {
-            throw new FailException(exception);
+            throw new FunctionInvocationException(exception);
         }
     }
     

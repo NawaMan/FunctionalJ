@@ -62,7 +62,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception exception) {
-            throw new FailException(exception);
+            throw new FunctionInvocationException(exception);
         }
     }
     

@@ -9,7 +9,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import functionalj.functions.Func;
-import functionalj.functions.Func1;
 import functionalj.lens.core.AccessParameterized2;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized2;

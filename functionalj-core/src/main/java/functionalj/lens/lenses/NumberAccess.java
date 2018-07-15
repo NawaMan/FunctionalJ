@@ -7,9 +7,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.Func;
-import functionalj.functions.Func0;
-import functionalj.functions.Func1;
-import functionalj.functions.Func2;
 import functionalj.lens.core.AccessCreator;
 import functionalj.types.Tuple2;
 import lombok.val;
