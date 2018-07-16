@@ -8,8 +8,8 @@ import java.util.function.Supplier;
 
 import functionalj.functions.Func;
 import functionalj.lens.core.AccessCreator;
-import functionalj.types.Tuple2;
 import lombok.val;
+import tuple.Tuple2;
 
 public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS extends NumberAccess<HOST, TYPE, ?>> 
         extends ComparableAccess<HOST, TYPE> {

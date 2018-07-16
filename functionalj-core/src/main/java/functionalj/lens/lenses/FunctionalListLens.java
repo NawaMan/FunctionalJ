@@ -10,8 +10,8 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
-import functionalj.types.FunctionalList;
-import functionalj.types.ImmutableList;
+import functionalj.types.list.FunctionalList;
+import functionalj.types.list.ImmutableList;
 import lombok.val;
 
 public interface FunctionalListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>

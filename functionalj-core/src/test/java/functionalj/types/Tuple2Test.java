@@ -10,7 +10,10 @@ import org.junit.Test;
 
 import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
+import functionalj.types.list.ImmutableList;
 import lombok.val;
+import tuple.ImmutableTuple2;
+import tuple.Tuple2;
 
 public class Tuple2Test {
     

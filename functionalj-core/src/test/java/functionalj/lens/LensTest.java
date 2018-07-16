@@ -6,7 +6,7 @@ import static functionalj.lens.Access.theString;
 import static functionalj.lens.LensTest.Car.theCar;
 import static functionalj.lens.LensTest.Company.theCompany;
 import static functionalj.lens.LensTest.Driver.theDriver;
-import static functionalj.types.ImmutableList.listOf;
+import static functionalj.types.list.ImmutableList.listOf;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

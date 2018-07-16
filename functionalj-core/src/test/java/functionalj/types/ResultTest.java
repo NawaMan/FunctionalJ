@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
+import functionalj.types.result.ImmutableResult;
 import lombok.val;
 
 public class ResultTest {

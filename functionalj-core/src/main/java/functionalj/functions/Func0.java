@@ -2,8 +2,8 @@ package functionalj.functions;
 
 import java.util.function.Supplier;
 
-import functionalj.types.ImmutableResult;
-import functionalj.types.Result;
+import functionalj.types.result.ImmutableResult;
+import functionalj.types.result.Result;
 
 /**
  * Function of zeroth parameter - a supplier.

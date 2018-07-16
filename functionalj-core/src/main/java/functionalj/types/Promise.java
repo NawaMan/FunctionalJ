@@ -2,6 +2,8 @@ package functionalj.types;
 
 import java.util.function.Consumer;
 
+import functionalj.types.result.Result;
+
 public interface Promise<DATA> {
     
     public interface Key {}

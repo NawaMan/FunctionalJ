@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import functionalj.types.stream.StreamPlus;
 import lombok.val;
 
 public class StreamPlusTest {

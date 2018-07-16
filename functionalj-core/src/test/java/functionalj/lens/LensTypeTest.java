@@ -1,7 +1,7 @@
 package functionalj.lens;
 
 import static functionalj.lens.Access.theList;
-import static functionalj.types.ImmutableList.listOf;
+import static functionalj.types.list.ImmutableList.listOf;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;

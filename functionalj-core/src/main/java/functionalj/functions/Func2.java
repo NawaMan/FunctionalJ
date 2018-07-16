@@ -17,10 +17,10 @@ package functionalj.functions;
 
 import java.util.function.BiFunction;
 
-import functionalj.types.ImmutableResult;
-import functionalj.types.Result;
-import functionalj.types.Tuple2;
+import functionalj.types.result.ImmutableResult;
+import functionalj.types.result.Result;
 import lombok.val;
+import tuple.Tuple2;
 
 /**
  * Function of two parameters.

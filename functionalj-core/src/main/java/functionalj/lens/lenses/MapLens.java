@@ -14,8 +14,8 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized2;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
-import functionalj.types.ImmutableTuple2;
 import lombok.val;
+import tuple.ImmutableTuple2;
 
 public interface MapLens<HOST, KEY, VALUE, 
                             KEYLENS   extends AnyLens<HOST,KEY>, 

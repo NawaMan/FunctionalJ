@@ -1,6 +1,6 @@
 package functionalj.annotations;
 
-import functionalj.types.FunctionalList;
+import functionalj.types.list.FunctionalList;
 
 @SuppressWarnings("javadoc")
 public class WithFunctionalListTest {

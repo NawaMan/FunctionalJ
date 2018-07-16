@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.types.map.ImmutableMap;
+
 public class ImmutableMapTest {
 
     @Test

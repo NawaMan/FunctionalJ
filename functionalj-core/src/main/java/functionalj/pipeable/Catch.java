@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.FunctionInvocationException;
-import functionalj.types.Result;
+import functionalj.types.result.Result;
 
 @FunctionalInterface
 public interface Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {

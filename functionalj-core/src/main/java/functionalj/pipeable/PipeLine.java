@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 import functionalj.functions.Func1;
 import functionalj.pipeable.Pipeable.__internal;
-import functionalj.types.ImmutableList;
+import functionalj.types.list.ImmutableList;
 import lombok.val;
 
 public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {

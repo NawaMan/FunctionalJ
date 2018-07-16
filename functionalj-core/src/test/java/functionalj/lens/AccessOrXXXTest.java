@@ -7,8 +7,8 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import functionalj.types.Tuple;
 import lombok.val;
+import tuple.Tuple;
 
 public class AccessOrXXXTest {
     

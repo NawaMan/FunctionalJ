@@ -7,9 +7,9 @@ import java.util.function.Function;
 import functionalj.functions.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessParameterized2;
-import functionalj.types.FunctionalMap;
-import functionalj.types.Tuple2;
+import functionalj.types.map.FunctionalMap;
 import lombok.val;
+import tuple.Tuple2;
 
 
 @FunctionalInterface

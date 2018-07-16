@@ -5,9 +5,9 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 
-import functionalj.types.Tuple;
-import functionalj.types.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
+import tuple.Tuple;
+import tuple.Tuple2;
 
 @FunctionalInterface
 public interface DoubleAccess<HOST> 

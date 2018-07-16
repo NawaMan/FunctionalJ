@@ -6,14 +6,14 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import functionalj.types.ImmutableTuple2;
-import functionalj.types.Tuple;
-import functionalj.types.Tuple2;
-import functionalj.types.Tuple3;
-import functionalj.types.Tuple4;
-import functionalj.types.Tuple5;
-import functionalj.types.Tuple6;
 import lombok.val;
+import tuple.ImmutableTuple2;
+import tuple.Tuple;
+import tuple.Tuple2;
+import tuple.Tuple3;
+import tuple.Tuple4;
+import tuple.Tuple5;
+import tuple.Tuple6;
 
 public interface Func {
     

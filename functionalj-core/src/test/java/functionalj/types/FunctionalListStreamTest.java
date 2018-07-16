@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
 
+import functionalj.types.list.FunctionalListStream;
 import lombok.val;
 
 public class FunctionalListStreamTest {

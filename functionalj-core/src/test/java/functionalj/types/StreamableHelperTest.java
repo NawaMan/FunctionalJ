@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
+import functionalj.types.stream.Streamable;
 import lombok.val;
 
 public class StreamableHelperTest {

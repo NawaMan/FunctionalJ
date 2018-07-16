@@ -12,6 +12,7 @@ import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
 import functionalj.kinds.Peekable;
+import functionalj.types.result.ImmutableResult;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 

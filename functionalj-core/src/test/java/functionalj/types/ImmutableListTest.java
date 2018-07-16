@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import functionalj.types.list.ImmutableList;
 import lombok.val;
 
 public class ImmutableListTest {

@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import functionalj.lens.core.AccessParameterized;
-import functionalj.types.FunctionalList;
-import functionalj.types.Streamable;
+import functionalj.types.list.FunctionalList;
+import functionalj.types.stream.Streamable;
 import lombok.val;
 
 @FunctionalInterface

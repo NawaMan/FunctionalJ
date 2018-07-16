@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
+import functionalj.types.list.ImmutableList;
 import lombok.val;
 
 public class FunctionalListTest {

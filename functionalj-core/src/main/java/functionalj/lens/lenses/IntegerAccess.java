@@ -5,8 +5,8 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-import functionalj.types.Tuple;
-import functionalj.types.Tuple2;
+import tuple.Tuple;
+import tuple.Tuple2;
 
 /**
  * @author manusitn

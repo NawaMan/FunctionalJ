@@ -1,6 +1,6 @@
 package functionalj.lens.lenses;
 
-import static functionalj.StringFuncs.stringOf;
+import static functionalj.functions.StringFunctions.stringOf;
 
 import java.util.Locale;
 import java.util.function.Function;

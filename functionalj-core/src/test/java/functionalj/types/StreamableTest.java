@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import functionalj.types.list.FunctionalListStream;
+import functionalj.types.list.ImmutableList;
 import lombok.val;
 
 public class StreamableTest {

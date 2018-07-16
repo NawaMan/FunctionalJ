@@ -346,7 +346,7 @@ public class Type implements IRequireTypes {
      * @return {@code true} if this type is a functional list.
      */
     public boolean isFunctionalList() {
-        return this.fullName("").equals("functionalj.types.FunctionalList");
+        return this.fullName("").equals("functionalj.types.list.FunctionalList");
     }
     
     /**
@@ -355,7 +355,7 @@ public class Type implements IRequireTypes {
      * @return {@code true} if this type is a functional map.
      */
     public boolean isFunctionalMap() {
-        return this.fullName("").equals("functionalj.types.FunctionalMap");
+        return this.fullName("").equals("functionalj.types.map.FunctionalMap");
     }
     
     /**

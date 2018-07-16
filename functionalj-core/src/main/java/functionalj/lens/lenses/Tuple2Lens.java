@@ -10,9 +10,9 @@ import functionalj.lens.core.LensSpecParameterized2;
 import functionalj.lens.core.LensType;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
-import functionalj.types.ImmutableTuple2;
-import functionalj.types.Tuple2;
 import lombok.val;
+import tuple.ImmutableTuple2;
+import tuple.Tuple2;
 
 @FunctionalInterface
 public interface Tuple2Lens<HOST, T1, T2, T1LENS extends AnyLens<HOST,T1>, T2LENS extends AnyLens<HOST,T2>>

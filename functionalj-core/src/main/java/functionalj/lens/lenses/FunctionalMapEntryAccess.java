@@ -3,7 +3,7 @@ package functionalj.lens.lenses;
 import java.util.function.Function;
 
 import functionalj.lens.core.AccessParameterized2;
-import functionalj.types.Tuple2;
+import tuple.Tuple2;
 
 // TODO - See if this can be shared with Tuple2Lens.
 

@@ -3,8 +3,8 @@
 import java.util.function.Function;
 
 import functionalj.lens.core.AccessParameterized2;
-import functionalj.types.Tuple2;
 import lombok.val;
+import tuple.Tuple2;
 
 public interface Tuple2Access<HOST, T1, T2, 
                         T1ACCESS extends AnyAccess<HOST,T1>, 

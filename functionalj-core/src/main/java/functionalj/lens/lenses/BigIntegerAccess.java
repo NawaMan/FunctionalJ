@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
 
-import functionalj.types.Tuple;
-import functionalj.types.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
+import tuple.Tuple;
+import tuple.Tuple2;
 
 @FunctionalInterface
 public interface BigIntegerAccess<HOST> 

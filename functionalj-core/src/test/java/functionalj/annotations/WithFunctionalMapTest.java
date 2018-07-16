@@ -1,6 +1,6 @@
 package functionalj.annotations;
 
-import functionalj.types.FunctionalMap;
+import functionalj.types.map.FunctionalMap;
 
 @SuppressWarnings("javadoc")
 public class WithFunctionalMapTest {

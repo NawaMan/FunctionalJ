@@ -15,10 +15,10 @@
 //  ========================================================================
 package functionalj.functions;
 
-import functionalj.types.ImmutableResult;
-import functionalj.types.Result;
-import functionalj.types.Tuple4;
+import functionalj.types.result.ImmutableResult;
+import functionalj.types.result.Result;
 import lombok.val;
+import tuple.Tuple4;
 
 /**
  * Function of four parameters.

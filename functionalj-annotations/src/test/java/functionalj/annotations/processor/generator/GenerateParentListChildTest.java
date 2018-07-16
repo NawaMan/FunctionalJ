@@ -52,7 +52,7 @@ public class GenerateParentListChildTest {
                 "import functionalj.lens.lenses.ListLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
-                "import functionalj.types.ImmutableList;\n" + 
+                "import functionalj.types.list.ImmutableList;\n" + 
                 "import java.util.List;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
