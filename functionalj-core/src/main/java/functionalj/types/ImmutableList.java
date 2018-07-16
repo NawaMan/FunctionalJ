@@ -198,7 +198,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         ).toImmutableList();
         val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
         val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
-        return ImmutableTuple.of(
+        return Tuple.of(
                 list1,
                 list2
         );
@@ -216,7 +216,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
         val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
         val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
-        return ImmutableTuple.of(
+        return Tuple.of(
                 list1,
                 list2,
                 list3
@@ -238,7 +238,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
         val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
         val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
-        return ImmutableTuple.of(
+        return Tuple.of(
                 list1,
                 list2,
                 list3,
@@ -264,7 +264,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
         val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
         val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2()).toImmutableList();
-        return ImmutableTuple.of(
+        return Tuple.of(
                 list1,
                 list2,
                 list3,
@@ -294,7 +294,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
         val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2()).toImmutableList();
         val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2()).toImmutableList();
-        return ImmutableTuple.of(
+        return Tuple.of(
                 list1,
                 list2,
                 list3,

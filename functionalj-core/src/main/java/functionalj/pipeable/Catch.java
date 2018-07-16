@@ -7,10 +7,10 @@ import java.util.function.Supplier;
 import functionalj.functions.FunctionInvocationException;
 import functionalj.types.Result;
 
+@FunctionalInterface
 public interface Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
     
     public FINALOUTPUT doCatch(OUTPUT data, Exception exception) throws EXCEPTION;
-    
     
     public static <OUTPUT, EXCEPTION extends RuntimeException> 
             Catch<OUTPUT, Result<OUTPUT>, EXCEPTION> toResult() {

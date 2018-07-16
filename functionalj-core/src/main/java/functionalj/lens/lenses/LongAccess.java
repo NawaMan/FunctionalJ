@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
-import functionalj.types.ImmutableTuple;
+import functionalj.types.Tuple;
 import functionalj.types.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -92,7 +92,7 @@ public interface LongAccess<HOST>
         public Tuple2<Long, Long> divideAndRemainder(Long number1, Long number2) {
             long v1 = (number1 == null) ? 0 : number1.longValue();
             long v2 = (number2 == null) ? 0 : number2.longValue();
-            return ImmutableTuple.of(v1 / v2, v1 % v2);
+            return Tuple.of(v1 / v2, v1 % v2);
         }
 
         @Override

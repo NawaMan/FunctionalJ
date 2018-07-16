@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-import functionalj.types.ImmutableTuple;
+import functionalj.types.Tuple;
 import functionalj.types.Tuple2;
 
 /**
@@ -95,7 +95,7 @@ public interface IntegerAccess<HOST>
         public Tuple2<Integer, Integer> divideAndRemainder(Integer number1, Integer number2) {
             int v1 = (number1 == null) ? 0 : number1.intValue();
             int v2 = (number2 == null) ? 0 : number2.intValue();
-            return ImmutableTuple.of(v1 / v2, v1 % v2);
+            return Tuple.of(v1 / v2, v1 % v2);
         }
 
         @Override

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
 
-import functionalj.types.ImmutableTuple;
+import functionalj.types.Tuple;
 import functionalj.types.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -87,7 +87,7 @@ public interface BigDecimalAccess<HOST>
             BigDecimal v1 = (number1 == null) ? BigDecimal.ZERO : number1;
             BigDecimal v2 = (number2 == null) ? BigDecimal.ZERO : number2;
             BigDecimal[] rs = v1.divideAndRemainder(v2);
-            return ImmutableTuple.of(rs[0], rs[1]);
+            return Tuple.of(rs[0], rs[1]);
         }
 
         @Override

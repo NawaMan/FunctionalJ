@@ -55,7 +55,7 @@ import lombok.experimental.Wither;
 public class FunctionalJ {
     
     /**
-     * A shorter way to use Function.identity().
+     * A shorter way to use Function.identity() -- alias for itself() and themAll().
      * 
      * @param <TYPE> the type of it.
      * @return the function that take it and return it.
@@ -63,9 +63,18 @@ public class FunctionalJ {
     public static <TYPE> Func1<TYPE, TYPE> it() {
         return it -> it;
     }
+    /**
+     * A shorter way to use Function.identity() -- alias for it() and themAll().
+     * 
+     * @param <TYPE> the type of it.
+     * @return the function that take it and return it.
+     **/
+    public static <TYPE> Func1<TYPE, TYPE> itself() {
+        return it -> it;
+    }
     
     /**
-     * A shorter way to use Function.identity().
+     * A shorter way to use Function.identity() -- alias for it() and itself().
      * 
      * @param <TYPE> the type of it.
      * @return the function that take it and return it.
@@ -74,24 +83,10 @@ public class FunctionalJ {
         return it -> it;
     }
     
-    /**
-     * A shorter way to use Function.identity().
-     * 
-     * @param <IN>  the input type.
-     * @param <OUT> the output type.
-     * @return the function that take it and return it.
-     **/
     public static <IN extends List<? extends OUT>, OUT> Func1<? super IN, Stream<? extends OUT>> allLists() {
         return it -> it.stream();
     }
     
-    /**
-     * A shorter way to use Function.identity().
-     * 
-     * @param <IN>  the input type.
-     * @param <OUT> the output type.
-     * @return the function that take it and return it.
-     **/
     public static <IN, OUT> Func1<IN, Stream<OUT>> allList(Func1<IN, ? extends List<OUT>> mapper) {
         return it -> mapper.apply(it).stream();
     }

@@ -28,6 +28,7 @@ public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
     
     FunctionalMapStream(Boolean isKeyComparable, FunctionalList<IntTuple2<ImmutableTuple2<KEY, VALUE>>> entries) {
         // TODO - Thinking about sorting by hash to take advantage of binary search
+        // TODO - Ensure that the key is unique!!!
         this.entries         = entries;
         this.isKeyComparable = (isKeyComparable != null)
                 ? isKeyComparable.booleanValue()

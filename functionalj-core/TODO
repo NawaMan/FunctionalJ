@@ -13,6 +13,7 @@
 + Generator for Optional
 - Date, LocalDate, LocalTime
 + withList should have arvs
+- In/Pluk - Select input an object and accept a function (maybe only predicate)
 
 + Tuples
 + Tuples to function params

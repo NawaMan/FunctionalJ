@@ -1,15 +1,32 @@
 package functionalj.functions;
 
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.types.ImmutableTuple2;
+import functionalj.types.Tuple;
 import functionalj.types.Tuple2;
 import functionalj.types.Tuple3;
 import functionalj.types.Tuple4;
+import functionalj.types.Tuple5;
+import functionalj.types.Tuple6;
+import lombok.val;
 
 public interface Func {
+    
+    /**
+     * Refurns a function that simply return the value.
+     * 
+     * @param <OUTPUT>  the value type.
+     * @param value     the value.
+     * @return          the function that return the value.
+     */
+    public static <OUTPUT> Func0<OUTPUT> supply(OUTPUT value) {
+        return () -> value;
+    }
     
     /**
      * Constructs a Func0 from supplier or lambda.
@@ -368,6 +385,117 @@ public interface Func {
     public static <INPUT> Predicate<Function<INPUT, Boolean>> allCheckWith(INPUT input) {
         return func -> {
             return func.apply(input);
+        };
+    }
+    
+    //== condition ==
+    
+    public static <INPUT> Func1<INPUT, INPUT> ifThen(
+            Predicate<INPUT>    check, 
+            Func1<INPUT, INPUT> then) {
+        return input -> {
+            if (check.test(input))
+                 return then.apply(input);
+            else return input;
+        };
+    }
+    public static <INPUT> Func1<INPUT, INPUT> ifNotThen(
+            Predicate<INPUT>    check, 
+            Func1<INPUT, INPUT> then) {
+        return input -> {
+            if (!check.test(input))
+                 return then.apply(input);
+            else return input;
+        };
+    }
+    public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> ifElse(
+            Predicate<INPUT>     check, 
+            Func1<INPUT, OUTPUT> then, 
+            Func1<INPUT, OUTPUT> thenElse) {
+        return input -> {
+            if (check.test(input))
+                 return then    .apply(input);
+            else return thenElse.apply(input);
+        };
+    }
+    
+    //== from ==
+    
+    public static <I, T1, T2> Func1<I, Tuple2<T1, T2>> toTuple(
+            Function<I, T1> func1, 
+            Function<I, T2> func2) {
+        return input -> {
+            val _1 = func1.apply(input);
+            val _2 = func2.apply(input);
+            return Tuple.of(_1, _2);
+        };
+    }
+    
+    public static <I, T1, T2> Func1<I, Tuple2<T1, T2>> toTuple(
+            Function<I, Map.Entry<? extends T1, ? extends T2>> func) {
+        return input -> {
+            val entry = func.apply(input);
+            return new ImmutableTuple2<>(entry);
+        };
+    }
+    
+    public static <I, T1, T2, T3> Func1<I, Tuple3<T1, T2, T3>> toTuple(
+            Function<I, T1 > func1, 
+            Function<I, T2>  func2, 
+            Function<I, T3 > func3) {
+        return input -> {
+            val _1 = func1.apply(input);
+            val _2 = func2.apply(input);
+            val _3 = func3.apply(input);
+            return Tuple.of(_1, _2, _3);
+        };
+    }
+    
+    public static <I, T1, T2, T3, T4> Func1<I, Tuple4<T1, T2, T3, T4>> toTuple(
+            Function<I, T1 > func1, 
+            Function<I, T2>  func2, 
+            Function<I, T3 > func3,
+            Function<I, T4 > func4) {
+        return input -> {
+            val _1 = func1.apply(input);
+            val _2 = func2.apply(input);
+            val _3 = func3.apply(input);
+            val _4 = func4.apply(input);
+            return Tuple.of(_1, _2, _3, _4);
+        };
+    }
+    
+    public static <I, T1, T2, T3, T4, T5> Func1<I, Tuple5<T1, T2, T3, T4, T5>> toTuple(
+            Function<I, T1 > func1, 
+            Function<I, T2>  func2, 
+            Function<I, T3 > func3,
+            Function<I, T4 > func4,
+            Function<I, T5 > func5) {
+        return input -> {
+            val _1 = func1.apply(input);
+            val _2 = func2.apply(input);
+            val _3 = func3.apply(input);
+            val _4 = func4.apply(input);
+            val _5 = func5.apply(input);
+            return Tuple.of(_1, _2, _3, _4, _5);
+        };
+    }
+
+    public static <I, T1, T2, T3, T4, T5, T6> Func1<I, Tuple6<T1, T2, T3, T4, T5, T6>> toTuple(
+            Function<I, T1 > func1, 
+            Function<I, T2>  func2, 
+            Function<I, T3 > func3,
+            Function<I, T4 > func4,
+            Function<I, T5 > func5,
+            Function<I, T6 > func6) {
+        return input -> {
+            val _1 = func1.apply(input);
+            val _2 = func2.apply(input);
+            val _3 = func3.apply(input);
+            val _4 = func4.apply(input);
+            val _5 = func5.apply(input);
+            val _6 = func6.apply(input);
+            return Tuple.of(_1, _2, _3, _4, _5, _6);
         };
     }
     

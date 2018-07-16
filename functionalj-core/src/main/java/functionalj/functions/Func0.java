@@ -47,4 +47,23 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT> {
         return ImmutableResult.from(this);
     }
     
+    public default Func1<?, OUTPUT> toFunc1() {
+        return __ -> getUnsafe();
+    }
+    public default Func2<?, ?, OUTPUT> toFunc2() {
+        return (__1, __2) -> getUnsafe();
+    }
+    public default Func3<?, ?, ?, OUTPUT> toFunc3() {
+        return (__1, __2, __3) -> getUnsafe();
+    }
+    public default Func4<?, ?, ?, ?, OUTPUT> toFunc4() {
+        return (__1, __2, __3, __4) -> getUnsafe();
+    }
+    public default Func5<?, ?, ?, ?, ?, OUTPUT> toFunc5() {
+        return (__1, __2, __3, __4, __5) -> getUnsafe();
+    }
+    public default Func6<?, ?, ?, ?, ?, ?, OUTPUT> toFunc6() {
+        return (__1, __2, __3, __4, __5, __6) -> getUnsafe();
+    }
+    
 }

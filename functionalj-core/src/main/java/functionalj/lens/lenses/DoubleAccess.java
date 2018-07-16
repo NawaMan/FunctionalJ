@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 
-import functionalj.types.ImmutableTuple;
+import functionalj.types.Tuple;
 import functionalj.types.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -93,7 +93,7 @@ public interface DoubleAccess<HOST>
         public Tuple2<Double, Double> divideAndRemainder(Double number1, Double number2) {
             double v1 = (number1 == null) ? 0 : number1.doubleValue();
             double v2 = (number2 == null) ? 0 : number2.doubleValue();
-            return ImmutableTuple.of(v1 / v2, v1 % v2);
+            return Tuple.of(v1 / v2, v1 % v2);
         }
 
         @Override

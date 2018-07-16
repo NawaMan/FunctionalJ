@@ -79,9 +79,6 @@ public abstract class FunctionalList<DATA>
         return new FunctionalListStream<>(this, stream -> stream.flatMap(mapper));
     }
     
-    // TODO - Extends this to 10.
-    // Umm Why are they here ... and not in Streamable?
-    
     @Override
     public abstract Stream<DATA> stream();
     
@@ -114,6 +111,8 @@ public abstract class FunctionalList<DATA>
     public Spliterator<DATA> spliterator() {
         return stream().spliterator();
     }
+    
+    // TODO - toTupleList (list of tuple of index and value)
 
     @Override
     public int size() {
@@ -124,6 +123,7 @@ public abstract class FunctionalList<DATA>
     public abstract DATA get(int index);
     
     public FunctionalList<Integer> indexesOf(Predicate<? super DATA> check) {
+        // TODO - This might be wrong the second time.
         return this
                 .map(withIndex((data, index)-> check.test(data) ? index : -1))
                 .filter(theInteger.thatNotEqualsTo(-1));

@@ -107,6 +107,9 @@ public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>>
         return __stream(stream -> stream.flatMap(mapper));
     }
     
+    // TODO - Add map, peek, forEach with Index and make sure that the index does not got mixed up when 
+    //          reused (for child of this).
+    
     // TODO - Think about making this Tuple concern
     
     public default <T1, T2, TARGET_SELF extends StreamPlus<Tuple2<T1, T2>, ?>> 
