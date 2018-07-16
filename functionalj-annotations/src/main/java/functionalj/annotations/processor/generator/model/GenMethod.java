@@ -18,7 +18,6 @@ package functionalj.annotations.processor.generator.model;
 import static functionalj.annotations.processor.generator.ILines.indent;
 import static functionalj.annotations.processor.generator.ILines.line;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
