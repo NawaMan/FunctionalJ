@@ -50,6 +50,14 @@ public interface Func {
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> of(Function<INPUT, OUTPUT> function) {
         return function::apply;
     }
+    
+    public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT1, OUTPUT> of(BiFunction<INPUT1, INPUT2, OUTPUT> function, INPUT2 input2) {
+        return input1 -> function.apply(input1, input2);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func1<INPUT1, OUTPUT> of(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function, INPUT2 input2, INPUT3 input3) {
+        return input1 -> function.apply(input1, input2, input3);
+    }
 
     /**
      * Constructs a Func2 from function or lambda.
@@ -60,9 +68,10 @@ public interface Func {
      * @param  <OUTPUT>  the output data type.
      * @return           the result Func2.
      **/
-    public static <INPUT1, INPUT2,OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> of(BiFunction<INPUT1, INPUT2, OUTPUT> function) {
+    public static <INPUT1, INPUT2, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> of(BiFunction<INPUT1, INPUT2, OUTPUT> function) {
         return function::apply;
     }
+    
     /**
      * Constructs a Func0 from supplier or lambda.
      * 

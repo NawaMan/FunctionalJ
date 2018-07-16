@@ -48,4 +48,11 @@ public class FuncTest {
         // TODO - Test message
     }
     
+    @Test
+    public void testInstanceFunction() throws Exception {
+        assertEquals(true,             Func.of(String::contains,   "Hello"   ).apply("Hello World!"));
+        assertEquals("Hello World!!!", Func.of(String::concat,     "!!"      ).apply("Hello World!"));
+        assertEquals("Hello-World!",   Func.of(String::replaceAll, "[ ]", "-").apply("Hello World!"));
+    }
+    
 }

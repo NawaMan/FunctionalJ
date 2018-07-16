@@ -1,6 +1,5 @@
 package functionalj.functions;
 
-import static functionalj.StringFuncs.stringOf;
 import static functionalj.functions.Absent.__;
 
 import java.util.Map;
@@ -13,6 +12,10 @@ import lombok.experimental.UtilityClass;
 public class StringFunctions {
     
     private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
+    
+    public static String stringOf(Object obj) {
+        return (obj == null) ? null : String.valueOf(obj);
+    }
     
     public <I> Func1<I, String> toStr() {
         return (i) -> stringOf(i);
@@ -57,9 +60,12 @@ public class StringFunctions {
         return (template, i1, i2) -> String.format(template, i1, i2);
     }
     
+    // TODO Improve this with template() ...
+    
     // TODO - More format
     // Repeat
     // Indent
     // Padding
+    // match
     
 }
