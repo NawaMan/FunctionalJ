@@ -1,4 +1,4 @@
-package functionalj.types;
+package functionalj.types.stream;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +23,23 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.types.list.FunctionalList;
+import functionalj.types.list.IFunctionalList;
+import functionalj.types.list.ImmutableList;
+import functionalj.types.map.FunctionalMap;
+import functionalj.types.map.ImmutableMap;
 import lombok.val;
+import tuple.ImmutableTuple2;
+import tuple.ImmutableTuple3;
+import tuple.ImmutableTuple4;
+import tuple.ImmutableTuple5;
+import tuple.ImmutableTuple6;
+import tuple.Tuple;
+import tuple.Tuple2;
+import tuple.Tuple3;
+import tuple.Tuple4;
+import tuple.Tuple5;
+import tuple.Tuple6;
 
 // TODO - Double check if any of the methods can be removed as StreamPlus already have them.
 

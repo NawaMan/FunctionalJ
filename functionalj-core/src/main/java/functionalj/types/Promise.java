@@ -3,19 +3,43 @@ package functionalj.types;
 import java.util.function.Consumer;
 
 import functionalj.types.result.Result;
+import lombok.val;
 
 public interface Promise<DATA> {
     
-    public interface Key {}
+    public static interface Control {
+        
+        public void cancel();
+        
+    }
     
-    // onAvailable
-    // ifAvailable
-    // cancel onAvailable
+    public static interface Wait {
+        
+        public static interface Session {
+            public void onDone(Runnable onDone);
+        }
+        
+        public Session newSession();
+        
+    }
     
-    public Key onAvailable(Consumer<Result<DATA>> resultConsumer);
+    public void abort();
     
-    public void cancel(Key key);
+    public Control onAvailable(Consumer<Result<DATA>> resultConsumer);
     
-    public Result<DATA> ifAvailable();
+    public default Control onAvailable(Wait wait, Consumer<Result<DATA>> resultConsumer) {
+        val control = onAvailable(result -> {
+            resultConsumer.accept(result);
+        });
+        val session = wait.newSession();
+        session.onDone(() -> {
+            
+        });
+        return control;
+    }
+    
+    public Result<DATA> getResult();
+    
+    public Result<DATA> getResult(Wait wait);
     
 }

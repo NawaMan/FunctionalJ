@@ -48,6 +48,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return Func.from(this::applySafely);
     }
     
+    // TODO add memoize.
+    
     /**
      * Applies this function to the given input value.
      *

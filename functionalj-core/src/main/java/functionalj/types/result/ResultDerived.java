@@ -10,14 +10,7 @@ public final class ResultDerived<DATA, SOURCE> extends Result<DATA> {
     private final Result<SOURCE>                 source;
     private final Func2<SOURCE, Exception, DATA> action;
     
-//    public static <S, D> ResultDerived<D, S> of(Tuple2<S, Exception> source, Function<Tuple2<S, Exception>, Tuple2<D, Exception>> action) {
-//        return new ResultDerived<D, S>(source, action);
-//    }
-//    public static <D> ResultDerived<D, D> of(Tuple2<D, Exception> source) {
-//        return new ResultDerived<D, D>(source, t -> t);
-//    }
-//    
-    public ResultDerived(Result<SOURCE> source, Func2<SOURCE, Exception, DATA> action) {
+    ResultDerived(Result<SOURCE> source, Func2<SOURCE, Exception, DATA> action) {
         this.source = Objects.requireNonNull(source);
         this.action = Objects.requireNonNull(action);
     }

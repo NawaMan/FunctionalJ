@@ -1,6 +1,6 @@
 package functionalj.types.result;
 
-public final class ImmutableResult<DATA> extends Result<DATA> {
+public class ImmutableResult<DATA> extends Result<DATA> {
 
     @Override
     public <TARGET> ImmutableResult<TARGET> _of(TARGET target) {
@@ -17,10 +17,6 @@ public final class ImmutableResult<DATA> extends Result<DATA> {
     
     protected Object getData() {
         return data;
-    }
-    
-    public ImmutableResult<DATA> toImmutable() {
-        return this;
     }
     
 }

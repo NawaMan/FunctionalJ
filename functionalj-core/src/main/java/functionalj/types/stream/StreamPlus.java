@@ -52,6 +52,9 @@ import tuple.Tuple6;
 public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>> 
         extends Iterable<DATA>, Stream<DATA> {
     
+    // TODO takeUntil
+    // TODO takeWhile
+    
     public static <D> StreamPlus<D, ?> of(Stream<D> stream) {
         if (stream instanceof StreamPlus)
             return (StreamPlus)stream;
