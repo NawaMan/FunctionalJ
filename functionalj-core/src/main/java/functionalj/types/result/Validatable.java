@@ -2,12 +2,16 @@ package functionalj.types.result;
 
 import java.util.function.Predicate;
 
-public interface Validatable<DATA, CHECKER extends Predicate<? super DATA>> {
+public interface Validatable<DATA extends Validatable<DATA, CHECKER>, CHECKER extends Predicate<? super DATA>> {
     
     public Class<CHECKER> getCheckerClass();
     
+    public default Valid<DATA> toValidValue() {
+        return Valid.valueOf((DATA)this);
+    } 
     
-    public static abstract class With<D, C extends Predicate<? super D>> implements Validatable<D, C> {
+    
+    public static abstract class With<D extends Validatable<D, C>, C extends Predicate<? super D>> implements Validatable<D, C> {
         
         private Class<C> clzz;
         

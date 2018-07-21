@@ -651,7 +651,7 @@ public abstract class Result<DATA>
     }
     
     public final <P extends Predicate<? super DATA>, C extends Checked<DATA, P>> 
-            C toChecked(Func2<DATA, Exception, C> maker) {
+            C asCheckedValueOF(Func2<DATA, Exception, C> maker) {
         return processData(
                 e -> (C)Checked.valueOf((DATA)null, maker),
                 (isValue, value, exception)->{
@@ -662,7 +662,7 @@ public abstract class Result<DATA>
                 });
     }
     
-    public final <D extends Validatable<D, ?>> Valid<D> asValidOf(Function<DATA, D> mapper) {
+    public final <D extends Validatable<D, ?>> Valid<D> asValidValueOf(Function<DATA, D> mapper) {
         return processData(
                 e -> (Valid<D>)new Valid<D>((D)null, (e instanceof ValidationException) ? (ValidationException)e : e),
                 (isValue, value, exception)->{

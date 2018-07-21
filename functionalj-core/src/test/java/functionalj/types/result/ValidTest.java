@@ -1,6 +1,7 @@
 package functionalj.types.result;
 
 import static functionalj.FunctionalJ.it;
+import static functionalj.lens.Access.theString;
 import static org.junit.Assert.*;
 
 import java.util.function.Predicate;
@@ -9,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import functionalj.FunctionalJ;
+import functionalj.types.result.CheckedTest.NonNullNonEmptyString;
 import lombok.Value;
 
 public class ValidTest {
@@ -51,15 +53,36 @@ public class ValidTest {
     }
     @Test
     public void testToValidate() {
-        Valid<Person> validPerson = ImmutableResult.of("John").map(Person::new).asValidOf(it());
+        Valid<Person> validPerson = Result.of("John").map(Person::new).asValidValueOf(it());
         assertTrue(validPerson.isValid());
         assertTrue(validPerson.getValue().getName().equals("John"));
         assertEquals("Result:{ Value: ValidTest.Person(name=John) }", validPerson.toString());
         
-        Valid<Person> invalidPerson = ImmutableResult.of("John").filter(str -> false).asValidOf(Person::new);
+        Valid<Person> invalidPerson = Result.of("John").filter(str -> false).asValidValueOf(Person::new);
         assertFalse(invalidPerson.isValid());
         assertEquals("Result:{ Exception: functionalj.types.result.ValidationException: The value failed to check: ValidTest.Person(name=null) }", invalidPerson.toString());
         
+    }
+    
+    private Result<String> someWork(Valid<Person> person) {
+        return person.map(Person::getName).otherwise("<NoName>");
+    }
+    private Result<String> someWork(Person person) {
+        return someWork(Valid.valueOf(person));
+    }
+    
+    @Test
+    public void testParam() {
+        assertEquals("Result:{ Value: John }",     "" + someWork(Valid.valueOf(new Person("John"))));
+        assertEquals("Result:{ Value: <NoName> }", "" + someWork(Valid.valueOf(new Person(null))));
+        assertEquals("Result:{ Value: <NoName> }", "" + someWork(Valid.valueOf((Person)null)));
+        
+        assertEquals("Result:{ Value: John }",     "" + someWork(new Person("John")));
+        assertEquals("Result:{ Value: <NoName> }", "" + someWork(new Person(null)));
+        assertEquals("Result:{ Value: <NoName> }", "" + someWork((Person)null));
+        
+        assertEquals("Result:{ Value: John }",     "" + someWork(new Person("John").toValidValue()));
+        assertEquals("Result:{ Value: <NoName> }", "" + someWork(new Person(null).toValidValue()));
     }
     
 }

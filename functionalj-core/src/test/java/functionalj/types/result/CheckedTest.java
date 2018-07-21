@@ -1,11 +1,17 @@
 package functionalj.types.result;
 
+import static functionalj.lens.Access.theString;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.function.Predicate;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import functionalj.lens.Access;
+import lombok.val;
 
 public class CheckedTest {
     
@@ -57,10 +63,26 @@ public class CheckedTest {
     
     @Test
     public void testChecked() {
-        NonNullNonEmptyString str1 = ImmutableResult.of("Test").toChecked(NonNullNonEmptyString::new);
-        NonNullNonEmptyString str2 = ImmutableResult.of("Test").filter(s -> false).toChecked(NonNullNonEmptyString::new);
+        NonNullNonEmptyString str1 = Result.of("Test").asCheckedValueOF(NonNullNonEmptyString::new);
+        NonNullNonEmptyString str2 = Result.of("Test").filter(s -> false).asCheckedValueOF(NonNullNonEmptyString::new);
         assertTrue (str1.isValid());
         assertFalse(str2.isValid());
+    }
+    
+    private Result<Integer> someWork(NonNullNonEmptyString str) {
+        return str.map(theString.length());
+    }
+    private Result<Integer> someWork(String str) {
+        return someWork(NonNullNonEmptyString.valueOf(str));
+    }
+    
+    @Test
+    public void testParam() {
+        assertEquals("Result:{ Value: 5 }", "" + someWork(NonNullNonEmptyString.valueOf("Hello")));
+        assertEquals("Result:{ Value: 0 }", "" + someWork(NonNullNonEmptyString.valueOf(null)));
+        
+        assertEquals("Result:{ Value: 5 }", "" + someWork("Hello"));
+        assertEquals("Result:{ Value: 0 }", "" + someWork((String)null));
     }
     
 }
