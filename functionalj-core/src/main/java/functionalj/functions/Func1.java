@@ -18,7 +18,6 @@ package functionalj.functions;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.types.result.ImmutableResult;
 import functionalj.types.result.Result;
 import lombok.val;
 
@@ -38,9 +37,9 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Result<OUTPUT> applySafely(INPUT input) {
         try {
             val output = applyUnsafe(input);
-            return ImmutableResult.of(output);
+            return Result.of(output);
         } catch (Exception exception) {
-            return ImmutableResult.of(null, exception);
+            return Result.ofException(exception);
         }
     }
     

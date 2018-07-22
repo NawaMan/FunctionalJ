@@ -17,7 +17,6 @@ package functionalj.functions;
 
 import java.util.function.BiFunction;
 
-import functionalj.types.result.ImmutableResult;
 import functionalj.types.result.Result;
 import lombok.val;
 import tuple.Tuple2;
@@ -39,9 +38,9 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2) {
         try {
             val output = applyUnsafe(input1, input2);
-            return ImmutableResult.of(output);
+            return Result.of(output);
         } catch (Exception exception) {
-            return ImmutableResult.of(null, exception);
+            return Result.ofException(exception);
         }
     }
     

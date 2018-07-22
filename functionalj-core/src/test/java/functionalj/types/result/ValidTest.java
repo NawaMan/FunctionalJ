@@ -18,7 +18,7 @@ public class ValidTest {
         private final String name;
 
         public Person(String name) {
-            super(Person.Checker.class);
+            super(Person.Checker.class, "The value failed to check: %s.");
             this.name = name;
         }
         
@@ -39,7 +39,7 @@ public class ValidTest {
 
         Valid<Person> invalidPerson = Valid.valueOf(new Person(null));
         assertFalse(invalidPerson.isValid());
-        assertEquals("Result:{ Exception: functionalj.types.result.ValidationException: The value failed to check: ValidTest.Person(name=null) }", invalidPerson.toString());
+        assertEquals("Result:{ Exception: functionalj.types.result.ValidationException: The value failed to check: ValidTest.Person(name=null). }", invalidPerson.toString());
         
         Valid<Person> nullPerson = Valid.valueOf(null);
         assertFalse(nullPerson.isValid());
@@ -58,12 +58,12 @@ public class ValidTest {
         
         Valid<Person> invalidPerson = Result.of("John").filter(str -> false).toValidValue(Person::new);
         assertFalse(invalidPerson.isValid());
-        assertEquals("Result:{ Exception: functionalj.types.result.ValidationException: The value failed to check: ValidTest.Person(name=null) }", invalidPerson.toString());
+        assertEquals("Result:{ Exception: functionalj.types.result.ValidationException: The value failed to check: ValidTest.Person(name=null). }", invalidPerson.toString());
         
     }
     
     private Result<String> someWork(Valid<Person> person) {
-        return person.map(Person::getName).defaultTo("<NoName>");
+        return person.map(Person::getName).otherwise("<NoName>");
     }
     private Result<String> someWork(Person person) {
         return someWork(Valid.valueOf(person));
@@ -81,6 +81,18 @@ public class ValidTest {
         
         assertEquals("Result:{ Value: John }",     "" + someWork(new Person("John").toValidValue()));
         assertEquals("Result:{ Value: <NoName> }", "" + someWork(new Person(null).toValidValue()));
+    }
+    
+    private Result<String> someWorkOnly(Valid<Person> person) {
+        return person.map(Person::getName);
+    }
+    
+    @Test
+    public void testParamOnly() {
+        assertEquals(
+                "Result:{ Exception: functionalj.types.result.ValidationException: The value failed to check: ValidTest.Person(name=null). }",
+                "" + someWorkOnly(Valid.valueOf(new Person(null))));
+        
     }
     
 }

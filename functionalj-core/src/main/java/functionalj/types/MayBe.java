@@ -12,7 +12,7 @@ import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
 import functionalj.kinds.Peekable;
-import functionalj.types.result.ImmutableResult;
+import functionalj.types.result.Result;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -231,7 +231,7 @@ public abstract class MayBe<DATA>
      * 
      * @return the result representation of the value in the may OR a null.
      */
-    public abstract ImmutableResult<DATA> toResult();
+    public abstract Result<DATA> toResult();
     
     //-- Sub classes --
     
@@ -351,8 +351,8 @@ public abstract class MayBe<DATA>
         }
         
         @Override
-        public ImmutableResult<DATA> toResult() {
-            return ImmutableResult.of(this.get());
+        public Result<DATA> toResult() {
+            return Result.of(this.get());
         }
     }
     
@@ -453,8 +453,8 @@ public abstract class MayBe<DATA>
         }
         
         @Override
-        public ImmutableResult<DATA> toResult() {
-            return ImmutableResult.of(null, null);
+        public Result<DATA> toResult() {
+            return Result.of(null);
         }
         
     }

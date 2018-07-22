@@ -8,14 +8,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import functionalj.types.result.ImmutableResult;
+import functionalj.types.result.Result;
 import lombok.val;
 
 public class ResultTest {
     
     @Test
-    public void testImmutableResult_value() {
-        val result = ImmutableResult.of("VALUE");
+    public void testResult_value() {
+        val result = Result.of("VALUE");
         assertEquals("Result:{ Value: VALUE }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -25,8 +25,8 @@ public class ResultTest {
     }
     
     @Test
-    public void testImmutableResult_null() {
-        val result = ImmutableResult.of(null);
+    public void testResult_null() {
+        val result = Result.of(null);
         assertEquals("Result:{ Value: null }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -36,8 +36,8 @@ public class ResultTest {
     }
     
     @Test
-    public void testImmutableResult_exception() {
-        val result = ImmutableResult.of((String)null).ensureNotNull();
+    public void testResult_exception() {
+        val result = Result.of((String)null).ensureNotNull();
         assertEquals("Result:{ Exception: java.lang.NullPointerException }", "" + result);
         assertFalse(result.isValue());
         assertTrue (result.isException());
@@ -47,8 +47,8 @@ public class ResultTest {
     }
     
     @Test
-    public void testImmutableResult_map() {
-        val result = ImmutableResult.of("VALUE").map(str -> str.length());
+    public void testResult_map() {
+        val result = Result.of("VALUE").map(str -> str.length());
         assertEquals("Result:{ Value: 5 }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -58,8 +58,8 @@ public class ResultTest {
     }
     
     @Test
-    public void testImmutableResult_failableMap() {
-        val result = ImmutableResult.of("VALUE").map(str -> new UnsupportedOperationException("Not support."));
+    public void testResult_failableMap() {
+        val result = Result.of("VALUE").map(str -> new UnsupportedOperationException("Not support."));
         assertEquals("Result:{ Value: java.lang.UnsupportedOperationException: Not support. }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -69,27 +69,8 @@ public class ResultTest {
     }
     
     @Test
-    public void testImmutableResult_mapDerived() {
-        val count  = new AtomicInteger(0);
-        val result = ImmutableResult.of("VALUE").map(str -> "" + count.incrementAndGet());
-        assertEquals("Result:{ Value: 1 }", "" + result);
-        assertEquals("Result:{ Value: 2 }", "" + result);
-        
-        count.set(0);
-        assertEquals("Result:{ Value: 1 }", "" + result);
-        
-        val immutableResult = result.toImmutable();
-        assertEquals("Result:{ Value: 3 }", "" + result);
-        assertEquals("Result:{ Value: 2 }", "" + immutableResult);
-        
-        count.set(0);
-        val immutableResult2 = result.toImmutable();
-        assertEquals("Result:{ Value: 1 }", "" + immutableResult2);
-    }
-    
-    @Test
-    public void testImmutableResult_map_null() {
-        val result = ImmutableResult.of("VALUE").map(str -> null);
+    public void testResult_map_null() {
+        val result = Result.of("VALUE").map(str -> null);
         assertEquals("Result:{ Value: null }", "" + result);
     }
     

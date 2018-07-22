@@ -4,6 +4,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import functionalj.functions.Func4;
+import lombok.val;
 
 public class ValidationException extends RuntimeException {
 
@@ -19,6 +20,16 @@ public class ValidationException extends RuntimeException {
     
     ValidationException() {
     }
+    
+    @Override
+    public String toString() {
+        val msg      = this.getMessage();
+        val cause    = getCause();
+        val causeMsg = ((msg != null) || (cause == null)) ? "" : ": " + cause.toString();
+        return super.toString() + causeMsg;
+    }
+    
+    
     
     public static ValidationException of(Exception e) {
         if (e instanceof ValidationException)

@@ -15,7 +15,10 @@ public interface Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
     public static <OUTPUT, EXCEPTION extends RuntimeException> 
             Catch<OUTPUT, Result<OUTPUT>, EXCEPTION> toResult() {
         return (OUTPUT data, Exception exception) -> {
-            return Result.of(data, exception);
+            if (exception != null)
+                return Result.ofException(exception);
+            
+            return Result.of(data);
         };
     }
     public static <OUTPUT, EXCEPTION extends RuntimeException> 

@@ -15,7 +15,6 @@
 //  ========================================================================
 package functionalj.functions;
 
-import functionalj.types.result.ImmutableResult;
 import functionalj.types.result.Result;
 import lombok.val;
 import tuple.Tuple4;
@@ -39,9 +38,9 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) {
         try {
             val output = applyUnsafe(input1, input2, input3, input4);
-            return ImmutableResult.of(output);
+            return Result.of(output);
         } catch (Exception exception) {
-            return ImmutableResult.of(null, exception);
+            return Result.ofException(exception);
         }
     }
     

@@ -2,7 +2,6 @@ package functionalj.functions;
 
 import java.util.function.Supplier;
 
-import functionalj.types.result.ImmutableResult;
 import functionalj.types.result.Result;
 
 /**
@@ -22,7 +21,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT> {
     }
     
     public default Result<OUTPUT> applySafely() {
-        return ImmutableResult.from(this);
+        return Result.from(this);
     }
     
     public default Func0<Result<OUTPUT>> safely() {
@@ -44,7 +43,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT> {
     }
     
     public default Result<OUTPUT> getSafely() {
-        return ImmutableResult.from(this);
+        return Result.from(this);
     }
     
     public default Func1<?, OUTPUT> toFunc1() {

@@ -22,7 +22,7 @@ import nawaman.nullablej.nullable.Nullable;
 import tuple.Tuple2;
 
 
-public abstract class Result<DATA>
+public class Result<DATA>
                     implements
                         Functor<Result<?>, DATA>, 
                         Monad<Result<?>, DATA>, 
@@ -30,54 +30,85 @@ public abstract class Result<DATA>
                         Filterable<Result<?>, DATA>,
                         Nullable<DATA>{
 
-    private static final ImmutableResult NULL = new ImmutableResult<>(null, null);
+    private static final Result NULL         = new Result<>(null, null);
+    private static final Result NOTAVAILABLE = new Result<>(null, new ResultNotAvailableException());
+    private static final Result NOTREADY     = new Result<>(null, new ResultNotReadyException());
+    private static final Result CANCELLED    = new Result<>(null, new ResultCancelledException());
     
-    public static <D> ImmutableResult<D> of(D value) {
-        return new ImmutableResult<D>(value, null);
+    public static <D> Result<D> of(D value) {
+        return new Result<D>(value, null);
     }
-    public static <D> ImmutableResult<D> of(D value, Exception exception) {
-        return new ImmutableResult<D>(value, exception);
+    public static <D> Result<D> ofException(Exception exception) {
+        return new Result<D>(null, exception);
     }
-    public static <D> ImmutableResult<D> ofResult(Result<D> result) {
-        if (result instanceof ImmutableResult)
-            return (ImmutableResult<D>)result;
+    public static <D> Result<D> ofResult(Result<D> result) {
+        if (result instanceof Result)
+            return (Result<D>)result;
         
         if (result == null)
-            return ImmutableResult.ofNull();
+            return Result.ofNull();
         
         val data      = result.getData();
         val value     = (data instanceof ExceptionHolder) ? null                                   : (D)data;
         val exception = (data instanceof ExceptionHolder) ? ((ExceptionHolder)data).getException() : null;
-        return ImmutableResult.of(value, exception);
-    }
-    public static <D> ImmutableResult<D> ofTuple(Tuple2<D, Exception> tuple) {
-        if (tuple == null)
-            return ImmutableResult.ofNull();
+        if (exception != null)
+            return Result.ofException(exception);
             
-        return ImmutableResult.of(tuple._1(), tuple._2());
+        return Result.of(value);
     }
-    public static <D> ImmutableResult<D> from(Supplier<D> supplier) {
+    public static <D> Result<D> from(Supplier<D> supplier) {
         try {
-            return ImmutableResult.of(supplier.get());
+            return Result.of(supplier.get());
         } catch (RuntimeException e) {
-            return ImmutableResult.of(null, e);
+            return Result.ofException(e);
         }
     }
-    public static <D> ImmutableResult<D> from(Func0<D> supplier) {
+    public static <D> Result<D> from(Func0<D> supplier) {
         try {
-            return ImmutableResult.of(supplier.get());
+            return Result.of(supplier.get());
         } catch (Exception e) {
-            return ImmutableResult.of(null, e);
+            return Result.ofException(e);
         }
     }
-    public static <D> ImmutableResult<D> ofNull() {
-        return (ImmutableResult<D>)NULL;
+    
+    public static <D> Result<D> ofNull() {
+        return (Result<D>)NULL;
+    }
+    public static <D> Result<D> ofNotAvailable() {
+        return (Result<D>)NOTAVAILABLE;
+    }
+    public static <D> Result<D> ofNotReady() {
+        return (Result<D>)NOTREADY;
+    }
+    public static <D> Result<D> ofNotReady(String message) {
+        return Result.ofException(new ResultNotReadyException(message, null));
+    }
+    public static <D> Result<D> ofNotReady(String message, Throwable exception) {
+        return Result.ofException(new ResultNotReadyException(message, exception));
+    }
+    public static <D> Result<D> ofCancelled() {
+        return (Result<D>)CANCELLED;
+    }
+    public static <D> Result<D> ofCancelled(String message) {
+        return Result.ofException(new ResultCancelledException(message, null));
+    }
+    public static <D> Result<D> ofCancelled(String message, Throwable exception) {
+        return Result.ofException(new ResultCancelledException(message, exception));
     }
     
+
     
-    Result() {}
+    private final Object data;
     
-    protected abstract Object getData();
+    Result(DATA value, Exception exception) {
+        this.data = ((value == null) && (exception != null))
+                ? new ExceptionHolder(exception)
+                : value;
+    }
+    
+    protected Object getData() {
+        return data;
+    }
     
     
     protected final <T> T processData(Function<Exception, T> defaultGet, Func3<Boolean, DATA, Exception, T> processor) {
@@ -113,17 +144,13 @@ public abstract class Result<DATA>
         return getValue();
     }
     
-//    @Override
-//    public final DATA _1() {
-//        return getValue();
-//    }
-//    
-//    @Override
-//    public final Exception _2() {
-//        return getException();
-//    }
+    // TODO - AsPeek and asFilter -> put this to Functor and List too
     
-    public final Tuple2<DATA, Exception> asTuple() {
+    public final <T extends Result<DATA>> T castTo(Class<T> clzz) {
+        return clzz.cast(this);
+    }
+    
+    public final Tuple2<DATA, Exception> toTuple() {
         return new Tuple2<DATA, Exception>() {
             @Override public final DATA _1()      { return getValue();     }
             @Override public final Exception _2() { return getException(); }
@@ -132,19 +159,7 @@ public abstract class Result<DATA>
 
     @Override
     public <TARGET> Monad<Result<?>, TARGET> _of(TARGET target) {
-        return ImmutableResult.of(target);
-    }
-    
-    public final boolean isImmutable() {
-        return this instanceof ImmutableResult;
-    }
-    
-    public final boolean isNotImmutable() {
-        return !(this instanceof ImmutableResult);
-    }
-    
-    public final ImmutableResult<DATA> toImmutable() {
-        return ImmutableResult.ofResult(this);
+        return Result.of(target);
     }
     
     public final Optional<DATA> toOptional() {
@@ -178,9 +193,18 @@ public abstract class Result<DATA>
                 });
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public final <TARGET> Result<TARGET> _map(Function<? super DATA, TARGET> mapper) {
-        return new ResultDerived<>(this, (s, e) -> (s == null) ? null : mapper.apply(s));
+        return processData(
+                e -> Result.ofNull(),
+                (isValue, value, exception) -> {
+                    if (value == null)
+                        return (Result<TARGET>)this;
+                    
+                    val newValue = mapper.apply(value);
+                    return new Result<TARGET>(newValue, null);
+                });
     }
     
     @Override
@@ -193,45 +217,59 @@ public abstract class Result<DATA>
     }
     
     public final <TARGET> Result<TARGET> map(BiFunction<DATA, Exception, TARGET> mapper) {
-        return new ResultDerived<>(this, (s, e) -> mapper.apply(s, e));
+        return processData(
+                e -> Result.ofNull(),
+                (isValue, value, exception) -> {
+                    val newValue = mapper.apply(value, exception);
+                    return Result.of(newValue);
+                });
     }
 
-    public final <TARGET> Result<TARGET> mapException(Function<? super Exception, ? extends Exception> mapper) {
-        return new ResultDerived<>(this, (s, e) -> {
-            throw mapper.apply(e);
-        });
+    public final Result<DATA> mapException(Function<? super Exception, ? extends Exception> mapper) {
+        return processData(
+                e -> Result.ofNull(),
+                (isValue, value, exception) -> {
+                    if (isValue)
+                        return this;
+                    
+                    val newException = mapper.apply(exception);
+                    return Result.ofException(newException);
+                });
     }
     
     @Override
     public final <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
-        return new ResultDerived<>(this, (s, e) -> {
-            if (s == null)
-                return null;
-            
-            val monad = (Result<TARGET>)mapper.apply(s);
-            return monad.orThrow();
-        });
+        return processData(
+                e -> Result.ofNull(),
+                (isValue, value, exception) -> {
+                    if (!isValue)
+                        return (Result<TARGET>)this;
+
+                    val monad = mapper.apply(value);
+                    return (Result<TARGET>)monad;
+                });
     }
     
     public final <TARGET> Result<TARGET> flatMap(BiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
-        return new ResultDerived<>(this, (s, e) -> {
-            if (s == null)
-                return null;
-            
-            val monad = (Result<TARGET>)mapper.apply(s, e);
-            return monad.orThrow();
-        });
+        return processData(
+                e -> Result.ofNull(),
+                (isValue, value, exception) -> {
+                    val monad = mapper.apply(value, exception);
+                    return (Result<TARGET>)monad;
+                });
     }
     
     @Override
     public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
-        return new ResultDerived<>(this, (s, e) -> {
-            if (s == null)
-                return null;
-            
-            val monad = (Nullable<TARGET>)mapper.apply(s);
-            return monad.orElse(null);
-        });
+        return processData(
+                e -> Result.ofNull(),
+                (isValue, value, exception) -> {
+                    if (value == null)
+                        return (Result<TARGET>)this;
+                    
+                    val monad = (Nullable<TARGET>)mapper.apply(value);
+                    return Result.of(monad.orElse(null));
+                });
     }
     
     // TODO - filterIn, peekIn
@@ -247,7 +285,7 @@ public abstract class Result<DATA>
         
         val isPass = theCondition.test(value);
         if (!isPass)
-            return ImmutableResult.ofNull();
+            return Result.ofNull();
         
         return this;
     }
@@ -266,7 +304,7 @@ public abstract class Result<DATA>
         val target = clzz.cast(value);
         val isPass = theCondition.test(target);
         if (!isPass)
-            return ImmutableResult.ofNull();
+            return Result.ofNull();
         
         return this;
     }
@@ -278,7 +316,7 @@ public abstract class Result<DATA>
         val target = mapper.apply(value);
         val isPass = theCondition.test(target);
         if (!isPass)
-            return ImmutableResult.ofNull();
+            return Result.ofNull();
         
         return this;
     }
@@ -567,7 +605,7 @@ public abstract class Result<DATA>
                 e -> this,
                 (isValue, value, exception)->{
                     if (isValue && (value == null))
-                        return Result.of((DATA)null, new ValidationException(new NullPointerException()));
+                        return Result.ofException(new ValidationException(new NullPointerException()));
                     
                     return this;
                 });
@@ -577,7 +615,7 @@ public abstract class Result<DATA>
                 e -> this,
                 (isValue, value, exception)->{
                     if (value == null) 
-                        return Result.of((DATA)null, new ValidationException(message));
+                        return Result.ofException(new ValidationException(message));
                     
                     return this;
                 });
@@ -587,7 +625,7 @@ public abstract class Result<DATA>
                 e -> this,
                 (isValue, value, exception)->{
                 if (exception instanceof ResultNotAvailableException)
-                    return Result.of((DATA)null, new ValidationException(exception));
+                    return Result.ofException(new ValidationException(exception));
                 
                 return this;
             });
@@ -597,7 +635,7 @@ public abstract class Result<DATA>
                 e -> this,
                 (isValue, value, exception)->{
                     if (exception instanceof ResultNotAvailableException)
-                        return Result.of((DATA)null, new ValidationException(exception));
+                        return Result.ofException(new ValidationException(exception));
                     
                     return this;
                 });
@@ -607,7 +645,7 @@ public abstract class Result<DATA>
                 e -> this,
                 (isValue, value, exception)->{
                     if (exception instanceof ResultCancelledException)
-                        return Result.of((DATA)null, new ValidationException(exception));
+                        return Result.ofException(new ValidationException(exception));
                     
                     return this;
                 });
@@ -622,9 +660,9 @@ public abstract class Result<DATA>
                         if (checker.test(value))
                             return this;
                         
-                        return Result.of((DATA)null, new ValidationException(message));
+                        return Result.ofException(new ValidationException(message));
                     } catch (Exception e) {
-                        return Result.of((DATA)null, new ValidationException(message, e));
+                        return Result.ofException(new ValidationException(message, e));
                     }
                 });
     }
@@ -639,10 +677,10 @@ public abstract class Result<DATA>
                         if (checker.test(target))
                             return this;
                         
-                        return Result.of((DATA)null, new ValidationException(message));
+                        return Result.ofException(new ValidationException(message));
                         
                     } catch (Exception e) {
-                        return Result.of((DATA)null, new ValidationException(message, e));
+                        return Result.ofException(new ValidationException(message, e));
                     }
                 });
     }
@@ -662,21 +700,19 @@ public abstract class Result<DATA>
                         val newError         = validator.newError();
                         val genException     = newError.apply(value, target, mapper, checker);
                         val notNullException = requireNonNull(genException);
-                        return Result.of((DATA)null, notNullException);
+                        return Result.ofException(notNullException);
                         
                     } catch (Exception e) {
-                        return Result.of((DATA)null, new ValidationException(e));
+                        return Result.ofException(new ValidationException(e));
                     }
                 });
     }
     
-    public final <T extends Result<DATA>> T castTo(Class<T> clzz) {
-        return clzz.cast(this);
-    }
+    // TODO - Validate all -> go through and collect them all.
     
     public final <D extends Validatable<D, ?>> Valid<D> toValidValue(Function<DATA, D> mapper) {
         return processData(
-                e -> (Valid<D>)new Valid<D>((D)null, (e instanceof ValidationException) ? (ValidationException)e : e),
+                e -> (Valid<D>)new Valid<D>((D)null, e),
                 (isValue, value, exception)->{
                     if (isValue) {
                         val target = mapper.apply(value);
@@ -698,7 +734,7 @@ public abstract class Result<DATA>
                     if (!isValue)
                         return this;
                     
-                    return ImmutableResult.of(null, new NullPointerException());
+                    return Result.ofException(new NullPointerException());
                 });
     }
     
@@ -745,7 +781,7 @@ public abstract class Result<DATA>
         if (exception == null)
             return this;
         
-        return ImmutableResult.of(otherwiseValue, null);
+        return Result.of(otherwiseValue);
     }
     
     public final Result<DATA> otherwiseGet(Supplier<DATA> otherwiseSupplier) {
@@ -753,7 +789,7 @@ public abstract class Result<DATA>
         if (exception == null)
             return this;
         
-        return ImmutableResult.from((Supplier<DATA>)()->{
+        return Result.from((Supplier<DATA>)()->{
             return otherwiseSupplier.get();
         });
     }
@@ -763,7 +799,7 @@ public abstract class Result<DATA>
         if (exception == null)
             return this;
         
-        return ImmutableResult.from((Func0<DATA>)()->{
+        return Result.from((Func0<DATA>)()->{
             return otherwiseSupplier.getUnsafe();
         });
     }
@@ -775,7 +811,7 @@ public abstract class Result<DATA>
         if (exception instanceof ValidationException)
             return this;
         
-        return Result.of(null, new ValidationException(new NullPointerException()));
+        return Result.ofException(new ValidationException(new NullPointerException()));
     }
     
     public final DATA orElse(DATA elseValue) {
