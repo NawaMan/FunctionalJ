@@ -20,7 +20,6 @@ import static java.util.stream.Collectors.toSet;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.list.FunctionalListStream;
 import functionalj.types.stream.Streamable;
-import functionalj.types.stream.Streamable.Helper;
 import lombok.val;
 import tuple.ImmutableTuple2;
 import tuple.IntTuple2;

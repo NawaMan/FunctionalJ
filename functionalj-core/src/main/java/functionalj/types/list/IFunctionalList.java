@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 import functionalj.types.map.FunctionalMap;
 import functionalj.types.map.ImmutableMap;
 import functionalj.types.stream.Streamable;
-import functionalj.types.stream.Streamable.Helper;
 import lombok.val;
 import tuple.IntTuple2;
 

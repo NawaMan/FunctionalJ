@@ -1,16 +1,14 @@
 package functionalj.types.result;
 
 import static functionalj.FunctionalJ.it;
-import static functionalj.lens.Access.theString;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.function.Predicate;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import functionalj.FunctionalJ;
-import functionalj.types.result.CheckedTest.NonNullNonEmptyString;
 import lombok.Value;
 
 public class ValidTest {
@@ -53,19 +51,19 @@ public class ValidTest {
     }
     @Test
     public void testToValidate() {
-        Valid<Person> validPerson = Result.of("John").map(Person::new).asValidValueOf(it());
+        Valid<Person> validPerson = Result.of("John").map(Person::new).toValidValue(it());
         assertTrue(validPerson.isValid());
         assertTrue(validPerson.getValue().getName().equals("John"));
         assertEquals("Result:{ Value: ValidTest.Person(name=John) }", validPerson.toString());
         
-        Valid<Person> invalidPerson = Result.of("John").filter(str -> false).asValidValueOf(Person::new);
+        Valid<Person> invalidPerson = Result.of("John").filter(str -> false).toValidValue(Person::new);
         assertFalse(invalidPerson.isValid());
         assertEquals("Result:{ Exception: functionalj.types.result.ValidationException: The value failed to check: ValidTest.Person(name=null) }", invalidPerson.toString());
         
     }
     
     private Result<String> someWork(Valid<Person> person) {
-        return person.map(Person::getName).otherwise("<NoName>");
+        return person.map(Person::getName).defaultTo("<NoName>");
     }
     private Result<String> someWork(Person person) {
         return someWork(Valid.valueOf(person));

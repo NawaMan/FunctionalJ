@@ -11,20 +11,22 @@ import lombok.val;
 
 public interface Validator<DATA, TARGET> extends Predicate<DATA>, Func1<DATA, Boolean> {
     
+    // This act like a predicate but the method validate will add exception.
+    
     public Function<DATA, TARGET>    mapper();
     public Predicate<? super TARGET> checker();
     public Func4<? super DATA, ? super TARGET, ? super Function<? super DATA, TARGET>, ? super Predicate<? super TARGET>, ? extends ValidationException> newError();
 
     @Override
     public default boolean test(DATA data) {
-        return this.apply(data);
+        val mapper  = mapper();
+        val target  = mapper.apply(data);
+        val checker = checker();
+        return checker.test(target);
     }
     @Override
     public default Boolean applyUnsafe(DATA data) throws Exception {
-        return validate(data)
-        .mapException(ValidationException::of)
-        .map(__->true)
-        .orThrow();
+        return test(data);
     }
     
     public default Result<DATA> validate(DATA data) {

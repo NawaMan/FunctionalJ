@@ -21,7 +21,7 @@ public interface Pipeable<DATA> {
     
     
     public default <OUTPUT> 
-        OUTPUT pipe(Func1<DATA, OUTPUT> func1) {
+        OUTPUT pipe(Func1<? super DATA, OUTPUT> func1) {
         try {
             val input  = __data();
             val output = __internal.apply(func1, input);
@@ -35,7 +35,7 @@ public interface Pipeable<DATA> {
     
     public default <OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-            Func1<DATA,   OUTPUT> func1,
+            Func1<? super DATA, OUTPUT>           func1,
             Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
             throws EXCEPTION {
         try {
@@ -50,8 +50,8 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA, DATA1>   func1, 
-                Func1<DATA1, OUTPUT> func2) {
+                Func1<? super DATA,  DATA1>  func1, 
+                Func1<? super DATA1, OUTPUT> func2) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1, input);
@@ -66,8 +66,8 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA, DATA1>   func1, 
-                Func1<DATA1, OUTPUT> func2,
+                Func1<? super DATA,  DATA1>  func1, 
+                Func1<? super DATA1, OUTPUT> func2,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -83,9 +83,9 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,  DATA1>  func1, 
-                Func1<DATA1, DATA2>  func2, 
-                Func1<DATA2, OUTPUT> func3) {
+                Func1<? super DATA,  DATA1>  func1, 
+                Func1<? super DATA1, DATA2>  func2, 
+                Func1<? super DATA2, OUTPUT> func3) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1, input);
@@ -101,9 +101,9 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,  DATA1>  func1, 
-                Func1<DATA1, DATA2>  func2, 
-                Func1<DATA2, OUTPUT> func3,
+                Func1<? super DATA,  DATA1>  func1, 
+                Func1<? super DATA1, DATA2>  func2, 
+                Func1<? super DATA2, OUTPUT> func3,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -120,10 +120,10 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,  DATA1>  func1, 
-                Func1<DATA1, DATA2>  func2, 
-                Func1<DATA2, DATA3>  func3, 
-                Func1<DATA3, OUTPUT> func4) {
+                Func1<? super DATA,  DATA1>  func1, 
+                Func1<? super DATA1, DATA2>  func2, 
+                Func1<? super DATA2, DATA3>  func3, 
+                Func1<? super DATA3, OUTPUT> func4) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1, input);
@@ -140,10 +140,10 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,  DATA1>  func1, 
-                Func1<DATA1, DATA2>  func2, 
-                Func1<DATA2, DATA3>  func3, 
-                Func1<DATA3, OUTPUT> func4,
+                Func1<? super DATA,  DATA1>  func1, 
+                Func1<? super DATA1, DATA2>  func2, 
+                Func1<? super DATA2, DATA3>  func3, 
+                Func1<? super DATA3, OUTPUT> func4,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -161,11 +161,11 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, OUTPUT> func5) {
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, OUTPUT> func5) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1, input);
@@ -183,11 +183,11 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, OUTPUT> func5,
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, OUTPUT> func5,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -206,12 +206,12 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, DATA5>  func5,
-                Func1<DATA5, OUTPUT> func6) {
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, DATA5>  func5,
+                Func1<? super DATA5, OUTPUT> func6) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1, input);
@@ -230,12 +230,12 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, DATA5>  func5,
-                Func1<DATA5, OUTPUT> func6,
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, DATA5>  func5,
+                Func1<? super DATA5, OUTPUT> func6,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -255,13 +255,13 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, DATA5>  func5,
-                Func1<DATA5, DATA6>  func6,
-                Func1<DATA6, OUTPUT> func7) {
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, DATA5>  func5,
+                Func1<? super DATA5, DATA6>  func6,
+                Func1<? super DATA6, OUTPUT> func7) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1, input);
@@ -281,13 +281,13 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, DATA5>  func5,
-                Func1<DATA5, DATA6>  func6,
-                Func1<DATA6, OUTPUT> func7,
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, DATA5>  func5,
+                Func1<? super DATA5, DATA6>  func6,
+                Func1<? super DATA6, OUTPUT> func7,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -308,14 +308,14 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, DATA5>  func5,
-                Func1<DATA5, DATA6>  func6,
-                Func1<DATA6, DATA7>  func7,
-                Func1<DATA7, OUTPUT> func8) {
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, DATA5>  func5,
+                Func1<? super DATA5, DATA6>  func6,
+                Func1<? super DATA6, DATA7>  func7,
+                Func1<? super DATA7, OUTPUT> func8) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1, input);
@@ -336,14 +336,14 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, DATA5>  func5,
-                Func1<DATA5, DATA6>  func6,
-                Func1<DATA6, DATA7>  func7,
-                Func1<DATA7, OUTPUT> func8,
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, DATA5>  func5,
+                Func1<? super DATA5, DATA6>  func6,
+                Func1<? super DATA6, DATA7>  func7,
+                Func1<? super DATA7, OUTPUT> func8,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -365,15 +365,15 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, DATA5>  func5,
-                Func1<DATA5, DATA6>  func6,
-                Func1<DATA6, DATA7>  func7,
-                Func1<DATA7, DATA8>  func8,
-                Func1<DATA8, OUTPUT> func9) {
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, DATA5>  func5,
+                Func1<? super DATA5, DATA6>  func6,
+                Func1<? super DATA6, DATA7>  func7,
+                Func1<? super DATA7, DATA8>  func8,
+                Func1<? super DATA8, OUTPUT> func9) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1, input);
@@ -395,15 +395,15 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, DATA5>  func5,
-                Func1<DATA5, DATA6>  func6,
-                Func1<DATA6, DATA7>  func7,
-                Func1<DATA7, DATA8>  func8,
-                Func1<DATA8, OUTPUT> func9,
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, DATA5>  func5,
+                Func1<? super DATA5, DATA6>  func6,
+                Func1<? super DATA6, DATA7>  func7,
+                Func1<? super DATA7, DATA8>  func8,
+                Func1<? super DATA8, OUTPUT> func9,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -426,16 +426,16 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, DATA5>  func5,
-                Func1<DATA5, DATA6>  func6,
-                Func1<DATA6, DATA7>  func7,
-                Func1<DATA7, DATA8>  func8,
-                Func1<DATA8, DATA9>  func9,
-                Func1<DATA9, OUTPUT> func10) {
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, DATA5>  func5,
+                Func1<? super DATA5, DATA6>  func6,
+                Func1<? super DATA6, DATA7>  func7,
+                Func1<? super DATA7, DATA8>  func8,
+                Func1<? super DATA8, DATA9>  func9,
+                Func1<? super DATA9, OUTPUT> func10) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1,  input);
@@ -458,16 +458,16 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,  DATA1>  func1,
-                Func1<DATA1, DATA2>  func2,
-                Func1<DATA2, DATA3>  func3,
-                Func1<DATA3, DATA4>  func4,
-                Func1<DATA4, DATA5>  func5,
-                Func1<DATA5, DATA6>  func6,
-                Func1<DATA6, DATA7>  func7,
-                Func1<DATA7, DATA8>  func8,
-                Func1<DATA8, DATA9>  func9,
-                Func1<DATA9, OUTPUT> func10,
+                Func1<? super DATA,  DATA1>  func1,
+                Func1<? super DATA1, DATA2>  func2,
+                Func1<? super DATA2, DATA3>  func3,
+                Func1<? super DATA3, DATA4>  func4,
+                Func1<? super DATA4, DATA5>  func5,
+                Func1<? super DATA5, DATA6>  func6,
+                Func1<? super DATA6, DATA7>  func7,
+                Func1<? super DATA7, DATA8>  func8,
+                Func1<? super DATA8, DATA9>  func9,
+                Func1<? super DATA9, OUTPUT> func10,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -491,17 +491,17 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, OUTPUT> func11) {
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, OUTPUT> func11) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1,  input);
@@ -525,17 +525,17 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, OUTPUT> func11,
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, OUTPUT> func11,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -560,18 +560,18 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, DATA11> func11,
-                Func1<DATA11, OUTPUT> func12) {
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, DATA11> func11,
+                Func1<? super DATA11, OUTPUT> func12) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1,  input);
@@ -596,18 +596,18 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, DATA11> func11,
-                Func1<DATA11, OUTPUT> func12,
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, DATA11> func11,
+                Func1<? super DATA11, OUTPUT> func12,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -633,19 +633,19 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, DATA11> func11,
-                Func1<DATA11, DATA12> func12,
-                Func1<DATA12, OUTPUT> func13) {
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, DATA11> func11,
+                Func1<? super DATA11, DATA12> func12,
+                Func1<? super DATA12, OUTPUT> func13) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1,  input);
@@ -671,19 +671,19 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, DATA11> func11,
-                Func1<DATA11, DATA12> func12,
-                Func1<DATA12, OUTPUT> func13,
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, DATA11> func11,
+                Func1<? super DATA11, DATA12> func12,
+                Func1<? super DATA12, OUTPUT> func13,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -710,20 +710,20 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, DATA11> func11,
-                Func1<DATA11, DATA12> func12,
-                Func1<DATA12, DATA13> func13,
-                Func1<DATA13, OUTPUT> func14) {
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, DATA11> func11,
+                Func1<? super DATA11, DATA12> func12,
+                Func1<? super DATA12, DATA13> func13,
+                Func1<? super DATA13, OUTPUT> func14) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1,  input);
@@ -750,20 +750,20 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, DATA11> func11,
-                Func1<DATA11, DATA12> func12,
-                Func1<DATA12, DATA13> func13,
-                Func1<DATA13, OUTPUT> func14,
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, DATA11> func11,
+                Func1<? super DATA11, DATA12> func12,
+                Func1<? super DATA12, DATA13> func13,
+                Func1<? super DATA13, OUTPUT> func14,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -791,21 +791,21 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, DATA11> func11,
-                Func1<DATA11, DATA12> func12,
-                Func1<DATA12, DATA13> func13,
-                Func1<DATA13, DATA14> func14,
-                Func1<DATA14, OUTPUT> func15) {
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, DATA11> func11,
+                Func1<? super DATA11, DATA12> func12,
+                Func1<? super DATA12, DATA13> func13,
+                Func1<? super DATA13, DATA14> func14,
+                Func1<? super DATA14, OUTPUT> func15) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1,  input);
@@ -833,21 +833,21 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, DATA11> func11,
-                Func1<DATA11, DATA12> func12,
-                Func1<DATA12, DATA13> func13,
-                Func1<DATA13, DATA14> func14,
-                Func1<DATA14, OUTPUT> func15,
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, DATA11> func11,
+                Func1<? super DATA11, DATA12> func12,
+                Func1<? super DATA12, DATA13> func13,
+                Func1<? super DATA13, DATA14> func14,
+                Func1<? super DATA14, OUTPUT> func15,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
@@ -876,22 +876,22 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, DATA15, OUTPUT> 
         OUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, DATA11> func11,
-                Func1<DATA11, DATA12> func12,
-                Func1<DATA12, DATA13> func13,
-                Func1<DATA13, DATA14> func14,
-                Func1<DATA14, DATA15> func15,
-                Func1<DATA15, OUTPUT> func16) {
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, DATA11> func11,
+                Func1<? super DATA11, DATA12> func12,
+                Func1<? super DATA12, DATA13> func13,
+                Func1<? super DATA13, DATA14> func14,
+                Func1<? super DATA14, DATA15> func15,
+                Func1<? super DATA15, OUTPUT> func16) {
         try {
             val input  = __data();
             val data1  = __internal.apply(func1,  input);
@@ -920,22 +920,22 @@ public interface Pipeable<DATA> {
     
     public default <DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7, DATA8, DATA9, DATA10, DATA11, DATA12, DATA13, DATA14, DATA15, OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> 
         FINALOUTPUT pipe(
-                Func1<DATA,   DATA1>  func1,
-                Func1<DATA1,  DATA2>  func2,
-                Func1<DATA2,  DATA3>  func3,
-                Func1<DATA3,  DATA4>  func4,
-                Func1<DATA4,  DATA5>  func5,
-                Func1<DATA5,  DATA6>  func6,
-                Func1<DATA6,  DATA7>  func7,
-                Func1<DATA7,  DATA8>  func8,
-                Func1<DATA8,  DATA9>  func9,
-                Func1<DATA9,  DATA10> func10,
-                Func1<DATA10, DATA11> func11,
-                Func1<DATA11, DATA12> func12,
-                Func1<DATA12, DATA13> func13,
-                Func1<DATA13, DATA14> func14,
-                Func1<DATA14, DATA15> func15,
-                Func1<DATA15, OUTPUT> func16,
+                Func1<? super DATA,   DATA1>  func1,
+                Func1<? super DATA1,  DATA2>  func2,
+                Func1<? super DATA2,  DATA3>  func3,
+                Func1<? super DATA3,  DATA4>  func4,
+                Func1<? super DATA4,  DATA5>  func5,
+                Func1<? super DATA5,  DATA6>  func6,
+                Func1<? super DATA6,  DATA7>  func7,
+                Func1<? super DATA7,  DATA8>  func8,
+                Func1<? super DATA8,  DATA9>  func9,
+                Func1<? super DATA9,  DATA10> func10,
+                Func1<? super DATA10, DATA11> func11,
+                Func1<? super DATA11, DATA12> func12,
+                Func1<? super DATA12, DATA13> func13,
+                Func1<? super DATA13, DATA14> func14,
+                Func1<? super DATA14, DATA15> func15,
+                Func1<? super DATA15, OUTPUT> func16,
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {

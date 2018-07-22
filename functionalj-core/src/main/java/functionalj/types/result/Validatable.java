@@ -2,9 +2,9 @@ package functionalj.types.result;
 
 import java.util.function.Predicate;
 
-public interface Validatable<DATA extends Validatable<DATA, CHECKER>, CHECKER extends Predicate<? super DATA>> {
+public interface Validatable<DATA extends Validatable<DATA, VALIDATOR>, VALIDATOR extends Predicate<? super DATA>> {
     
-    public Class<CHECKER> getCheckerClass();
+    public Class<VALIDATOR> getValidatorClass();
     
     public default Valid<DATA> toValidValue() {
         return Valid.valueOf((DATA)this);
@@ -19,7 +19,7 @@ public interface Validatable<DATA extends Validatable<DATA, CHECKER>, CHECKER ex
             this.clzz = clzz;
         }
         
-        public final Class<C> getCheckerClass() {
+        public final Class<C> getValidatorClass() {
             return clzz;
         }
         

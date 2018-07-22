@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import lombok.val;
 
-public final class Valid<DATA extends Validatable<DATA, ?>> extends ImmutableResult<DATA> {
+public class Valid<DATA extends Validatable<DATA, ?>> extends ImmutableResult<DATA> {
     
     public static <D extends Validatable<D, ?>> Valid<D> valueOf(D value) {
         try {
@@ -19,11 +19,13 @@ public final class Valid<DATA extends Validatable<DATA, ?>> extends ImmutableRes
         }
     }
     
+    // TODO Find the way to make this extensible .... to represent multiple state of object.
+    
     Valid(DATA value, Exception exception) {
         super(null, exception);
     }
     
-    Valid(DATA value) {
+    protected Valid(DATA value) {
         super(((Supplier<DATA>)()->{
                     if (value == null)
                         return null;
@@ -51,10 +53,11 @@ public final class Valid<DATA extends Validatable<DATA, ?>> extends ImmutableRes
     private static <DATA extends Validatable<DATA, ?>> 
     Predicate<DATA> createChecker(Validatable<DATA, ?> checkable) {
         try {
-            return (Predicate<DATA>) checkable.getCheckerClass().newInstance();
+            // TODO - Use Annotation to specify what method to use.
+            return (Predicate<DATA>) checkable.getValidatorClass().newInstance();
             
         } catch (InstantiationException | IllegalAccessException e) {
-            val canonicalName = checkable.getCheckerClass().getCanonicalName();
+            val canonicalName = checkable.getValidatorClass().getCanonicalName();
             throw new ValidationException("Fail creating checker: " + canonicalName);
         }
     }

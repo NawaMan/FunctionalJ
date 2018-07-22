@@ -12,7 +12,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import functionalj.types.stream.Streamable;
-import functionalj.types.stream.Streamable.Helper;
 import lombok.val;
 
 public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>> 

@@ -11,7 +11,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.functions.Func0;
-import functionalj.functions.Func2;
 import functionalj.functions.Func3;
 import functionalj.kinds.Comonad;
 import functionalj.kinds.Filterable;
@@ -24,13 +23,12 @@ import tuple.Tuple2;
 
 
 public abstract class Result<DATA>
-                    implements 
+                    implements
                         Functor<Result<?>, DATA>, 
                         Monad<Result<?>, DATA>, 
                         Comonad<Result<?>, DATA>,
                         Filterable<Result<?>, DATA>,
-                        Tuple2<DATA, Exception>,
-                        Nullable<DATA> {
+                        Nullable<DATA>{
 
     private static final ImmutableResult NULL = new ImmutableResult<>(null, null);
     
@@ -40,14 +38,23 @@ public abstract class Result<DATA>
     public static <D> ImmutableResult<D> of(D value, Exception exception) {
         return new ImmutableResult<D>(value, exception);
     }
-    public static <D> ImmutableResult<D> of(Tuple2<D, Exception> tuple) {
-        if (tuple instanceof ImmutableResult)
-            return (ImmutableResult<D>)tuple;
+    public static <D> ImmutableResult<D> ofResult(Result<D> result) {
+        if (result instanceof ImmutableResult)
+            return (ImmutableResult<D>)result;
         
+        if (result == null)
+            return ImmutableResult.ofNull();
+        
+        val data      = result.getData();
+        val value     = (data instanceof ExceptionHolder) ? null                                   : (D)data;
+        val exception = (data instanceof ExceptionHolder) ? ((ExceptionHolder)data).getException() : null;
+        return ImmutableResult.of(value, exception);
+    }
+    public static <D> ImmutableResult<D> ofTuple(Tuple2<D, Exception> tuple) {
         if (tuple == null)
             return ImmutableResult.ofNull();
             
-        return ImmutableResult.of(tuple._1(), null);
+        return ImmutableResult.of(tuple._1(), tuple._2());
     }
     public static <D> ImmutableResult<D> from(Supplier<D> supplier) {
         try {
@@ -106,15 +113,15 @@ public abstract class Result<DATA>
         return getValue();
     }
     
-    @Override
-    public final DATA _1() {
-        return getValue();
-    }
-    
-    @Override
-    public final Exception _2() {
-        return getException();
-    }
+//    @Override
+//    public final DATA _1() {
+//        return getValue();
+//    }
+//    
+//    @Override
+//    public final Exception _2() {
+//        return getException();
+//    }
     
     public final Tuple2<DATA, Exception> asTuple() {
         return new Tuple2<DATA, Exception>() {
@@ -137,7 +144,7 @@ public abstract class Result<DATA>
     }
     
     public final ImmutableResult<DATA> toImmutable() {
-        return ImmutableResult.of(this);
+        return ImmutableResult.ofResult(this);
     }
     
     public final Optional<DATA> toOptional() {
@@ -173,7 +180,7 @@ public abstract class Result<DATA>
     
     @Override
     public final <TARGET> Result<TARGET> _map(Function<? super DATA, TARGET> mapper) {
-        return new ResultDerived<>(this, (s, e) -> mapper.apply(s));
+        return new ResultDerived<>(this, (s, e) -> (s == null) ? null : mapper.apply(s));
     }
     
     @Override
@@ -198,6 +205,9 @@ public abstract class Result<DATA>
     @Override
     public final <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
         return new ResultDerived<>(this, (s, e) -> {
+            if (s == null)
+                return null;
+            
             val monad = (Result<TARGET>)mapper.apply(s);
             return monad.orThrow();
         });
@@ -205,6 +215,9 @@ public abstract class Result<DATA>
     
     public final <TARGET> Result<TARGET> flatMap(BiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
         return new ResultDerived<>(this, (s, e) -> {
+            if (s == null)
+                return null;
+            
             val monad = (Result<TARGET>)mapper.apply(s, e);
             return monad.orThrow();
         });
@@ -213,12 +226,19 @@ public abstract class Result<DATA>
     @Override
     public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
         return new ResultDerived<>(this, (s, e) -> {
+            if (s == null)
+                return null;
+            
             val monad = (Nullable<TARGET>)mapper.apply(s);
             return monad.orElse(null);
         });
     }
     
     // TODO - filterIn, peekIn
+    
+    // asPeek, checkPeek
+    // asMap -- all with a way to show error
+    // case
     
     public final Result<DATA> filter(Predicate<? super DATA> theCondition) {
         DATA value = get();
@@ -650,19 +670,11 @@ public abstract class Result<DATA>
                 });
     }
     
-    public final <P extends Predicate<? super DATA>, C extends Checked<DATA, P>> 
-            C asCheckedValueOF(Func2<DATA, Exception, C> maker) {
-        return processData(
-                e -> (C)Checked.valueOf((DATA)null, maker),
-                (isValue, value, exception)->{
-                    if (isValue)
-                        return (C)Checked.valueOf(value, maker);
-                    
-                    return maker.apply((DATA)null, exception);
-                });
+    public final <T extends Result<DATA>> T castTo(Class<T> clzz) {
+        return clzz.cast(this);
     }
     
-    public final <D extends Validatable<D, ?>> Valid<D> asValidValueOf(Function<DATA, D> mapper) {
+    public final <D extends Validatable<D, ?>> Valid<D> toValidValue(Function<DATA, D> mapper) {
         return processData(
                 e -> (Valid<D>)new Valid<D>((D)null, (e instanceof ValidationException) ? (ValidationException)e : e),
                 (isValue, value, exception)->{
@@ -677,15 +689,13 @@ public abstract class Result<DATA>
                 });
     }
     
-    // TODO - toChecked and toValid
-    
     public final Result<DATA> ensureNotNull() {
         return processData(
                 e -> this,
                 (isValue, value, exception)->{
                     if (value != null)
                         return this;
-                    if (isValue)
+                    if (!isValue)
                         return this;
                     
                     return ImmutableResult.of(null, new NullPointerException());
