@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class AcceptableTest {
     
-    public static class ThreeDigitString extends AcceptableResult<String> {
+    public static class ThreeDigitString extends Acceptable<String> {
         public ThreeDigitString(String value) {
             super(value, str -> str.matches("^[0-9]+$"));
         }
@@ -42,7 +42,7 @@ public class AcceptableTest {
     }
     
     // Notice the null value is passed to the checker
-    public static class ThreeDigitStringOrNull extends AcceptableResult<String> {
+    public static class ThreeDigitStringOrNull extends Acceptable<String> {
         public ThreeDigitStringOrNull(String value) {
             super(value, NullSafePredicate.of(str -> (str == null) || str.matches("^[0-9]+$")));
         }

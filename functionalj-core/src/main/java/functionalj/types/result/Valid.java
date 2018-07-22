@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 import lombok.val;
 
-public final class Valid<DATA extends Validatable<DATA, ?>> extends AcceptableResult<DATA> {
+public final class Valid<DATA extends Validatable<DATA, ?>> extends Acceptable<DATA> {
 
     public static <D extends Validatable<D, ?>> Valid<D> valueOf(D data) {
         return new Valid<D>(data);

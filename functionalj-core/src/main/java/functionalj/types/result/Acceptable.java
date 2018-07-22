@@ -6,21 +6,21 @@ import java.util.function.Predicate;
 
 import lombok.val;
 
-public abstract class AcceptableResult<DATA> extends Result<DATA> {
+public abstract class Acceptable<DATA> extends Result<DATA> {
     
-    protected AcceptableResult(Exception exception) {
+    protected Acceptable(Exception exception) {
         super(null, (exception == null) ? new UnacceptableForUnknownReasonException() : exception);
     }
-    protected AcceptableResult(DATA value, Predicate<DATA> checker) {
+    protected Acceptable(DATA value, Predicate<DATA> checker) {
         this(value, checker, null, new AtomicReference<Exception>());
     }
-    protected AcceptableResult(
+    protected Acceptable(
             DATA                                                             value, 
             Predicate<DATA>                                                  checker, 
             BiFunction<? super DATA, ? super Exception, ? extends Exception> unacceptableException) {
         this(value, checker, unacceptableException, new AtomicReference<Exception>());
     }
-    private AcceptableResult(
+    private Acceptable(
             DATA                                                             value, 
             Predicate<DATA>                                                  checker, 
             BiFunction<? super DATA, ? super Exception, ? extends Exception> unacceptableExceptionSupplier, 
