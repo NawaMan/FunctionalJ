@@ -1,7 +1,11 @@
 package functionalj.types.result;
 
+import static functionalj.FunctionalJ.it;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -10,6 +14,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.FunctionalJ;
 import functionalj.functions.Func0;
 import functionalj.functions.Func3;
 import functionalj.kinds.Comonad;
@@ -17,6 +22,8 @@ import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
 import functionalj.types.MayBe;
+import functionalj.types.list.FunctionalList;
+import functionalj.types.result.validator.Validator;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 import tuple.ImmutableTuple2;
@@ -24,6 +31,7 @@ import tuple.ImmutableTuple3;
 import tuple.ImmutableTuple4;
 import tuple.ImmutableTuple5;
 import tuple.ImmutableTuple6;
+import tuple.Tuple;
 import tuple.Tuple2;
 import tuple.Tuple3;
 import tuple.Tuple4;
@@ -765,27 +773,14 @@ public class Result<DATA>
                     }
                 });
     }
-    public final <T> Result<DATA> validate(Validator<DATA, T> validator) {
+    public final Result<DATA> validate(Validator<DATA> validator) {
         return processData(
                 e -> this,
                 (isValue, value, exception)->{
                     if (value == null) 
                         return this;
-                    try {
-                        val mapper  = validator.mapper();
-                        val target  = mapper.apply(value);
-                        val checker = validator.checker();
-                        if (checker.test(target))
-                            return this;
-                        
-                        val newError         = validator.newError();
-                        val genException     = newError.apply(value, target, mapper, checker);
-                        val notNullException = requireNonNull(genException);
-                        return Result.ofException(notNullException);
-                        
-                    } catch (Exception e) {
-                        return Result.ofException(new ValidationException(e));
-                    }
+                    
+                    return validator.validate(value);
                 });
     }
     
@@ -803,6 +798,28 @@ public class Result<DATA>
                     
                     Valid<D> valueOf = new Valid<D>((D)null, exception);
                     return valueOf;
+                });
+    }
+    
+    @SafeVarargs
+    public final Result<Tuple2<DATA, FunctionalList<ValidationException>>> validate(Validator<? super DATA> ... validators) {
+        return validate(asList(validators));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public final Result<Tuple2<DATA, FunctionalList<ValidationException>>> validate(List<Validator<? super DATA>> validators) {
+        return (Result<Tuple2<DATA, FunctionalList<ValidationException>>>) processData(
+                e -> Result.ofException(new ResultNotAvailableException()),
+                (isValue, value, exception)->{
+                    if (!isValue)
+                        return (Result<Tuple2<DATA, FunctionalList<ValidationException>>>)this;
+                    
+                    val exceptions = FunctionalList.of(validators)
+                        .map   (validator -> validator.validate(value))
+                        .filter(result    -> result.isException())
+                        .map   (result    -> result.getException())
+                        .map   (error     -> ValidationException.of(error));
+                    return Result.of(Tuple.of(value, exceptions));
                 });
     }
     

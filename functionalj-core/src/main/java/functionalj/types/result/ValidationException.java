@@ -3,6 +3,7 @@ package functionalj.types.result;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import functionalj.functions.Func2;
 import functionalj.functions.Func4;
 import lombok.val;
 
@@ -36,24 +37,25 @@ public class ValidationException extends RuntimeException {
             return (ValidationException)e;
         return new ValidationException(e);
     }
+
     
-    public static <D, T> 
-            Func4<
-                ? super D, 
-                ? super T, 
-                ? super Function<? super D, T>, 
-                ? super Predicate<? super T>, 
-                ? extends ValidationException> forString(String message) {
-        return (d, t, m, p) -> new ValidationException(message);
-    }
-    public static <D, T> 
-            Func4<
-                ? super D, 
-                ? super T, 
-                ? super Function<? super D, T>, 
-                ? super Predicate<? super T>, 
-                ? extends ValidationException> forTemplate(String template) {
-        return (d, t, m, p) -> new ValidationException(String.format(template, d, t, m, p));
-    }
+//    public static <D, T> 
+//            Func4<
+//                ? super D, 
+//                ? super T, 
+//                ? super Function<? super D, T>, 
+//                ? super Predicate<? super T>, 
+//                ? extends ValidationException> forString(String message) {
+//        return (d, t, m, p) -> new ValidationException(message);
+//    }
+//    public static <D, T> 
+//            Func4<
+//                ? super D, 
+//                ? super T, 
+//                ? super Function<? super D, T>, 
+//                ? super Predicate<? super T>, 
+//                ? extends ValidationException> forTemplate(String template) {
+//        return (d, t, m, p) -> new ValidationException(String.format(template, d, t, m, p));
+//    }
     
 }

@@ -1,0 +1,62 @@
+package functionalj.types.result.validator;
+
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import functionalj.functions.Func2;
+import functionalj.functions.Func4;
+import functionalj.types.result.Result;
+import functionalj.types.result.ValidationException;
+import lombok.val;
+
+public interface SimpleValidator<DATA> extends Validator<DATA> {
+    
+    public static <D> 
+            Func2<
+                ? super D, 
+                ? super Predicate<? super D>, 
+                ? extends ValidationException> exceptionFor(String template) {
+        return (d, p) -> new ValidationException(String.format(template, d, p));
+    }
+    
+    
+    public Predicate<? super DATA> checker();
+    public ValidationException     createException(DATA data);
+
+    public default Result<DATA> validate(DATA data) {
+        return Result.from(()->{
+            val checker = checker();
+            if (checker.test(data))
+                return data;
+                
+            val exception = createException(data);
+            throw exception;
+        });
+    }
+    
+    
+    public static class Impl<D> implements SimpleValidator<D> {
+        
+        private final Predicate<? super D> checker;
+        private final Func2<? super D, ? super Predicate<? super D>, ? extends ValidationException> exceptionCreator;
+        
+        public Impl(
+                Predicate<? super D> checker,
+                Func2<? super D, ? super Predicate<? super D>, ? extends ValidationException> exceptionCreator) {
+            this.checker = checker;
+            this.exceptionCreator = exceptionCreator;
+        }
+        
+        @Override
+        public Predicate<? super D> checker() {
+            return checker;
+        }
+        
+        @Override
+        public ValidationException createException(D data) {
+            return exceptionCreator.apply(data, checker);
+        }
+        
+    }
+    
+}
