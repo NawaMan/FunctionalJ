@@ -19,7 +19,16 @@ import functionalj.kinds.Monad;
 import functionalj.types.MayBe;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
+import tuple.ImmutableTuple2;
+import tuple.ImmutableTuple3;
+import tuple.ImmutableTuple4;
+import tuple.ImmutableTuple5;
+import tuple.ImmutableTuple6;
 import tuple.Tuple2;
+import tuple.Tuple3;
+import tuple.Tuple4;
+import tuple.Tuple5;
+import tuple.Tuple6;
 
 
 public class Result<DATA>
@@ -64,6 +73,20 @@ public class Result<DATA>
         }
     }
     public static <D> Result<D> from(Func0<D> supplier) {
+        try {
+            return Result.of(supplier.get());
+        } catch (Exception e) {
+            return Result.ofException(e);
+        }
+    }
+    public static <D> Result<D> Try(Supplier<D> supplier) {
+        try {
+            return Result.of(supplier.get());
+        } catch (RuntimeException e) {
+            return Result.ofException(e);
+        }
+    }
+    public static <D> Result<D> Try(Func0<D> supplier) {
         try {
             return Result.of(supplier.get());
         } catch (Exception e) {
@@ -143,8 +166,6 @@ public class Result<DATA>
     public final DATA _extract() {
         return getValue();
     }
-    
-    // TODO - AsPeek and asFilter -> put this to Functor and List too
     
     public final <T extends Result<DATA>> T castTo(Class<T> clzz) {
         return clzz.cast(this);
@@ -237,6 +258,72 @@ public class Result<DATA>
                 });
     }
     
+
+    public final <T1, T2> 
+        Result<Tuple2<T1, T2>> map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2) {
+        return map(each -> new ImmutableTuple2<T1, T2>(
+                                    mapper1.apply(each), 
+                                    mapper2.apply(each)));
+    }
+    
+    public final <T1, T2, T3> 
+        Result<Tuple3<T1, T2, T3>> map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3) {
+        return map(each -> new ImmutableTuple3<T1, T2, T3>(
+                                    mapper1.apply(each), 
+                                    mapper2.apply(each), 
+                                    mapper3.apply(each)));
+    }
+    
+    public final <T1, T2, T3, T4> 
+        Result<Tuple4<T1, T2, T3, T4>> map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4) {
+        return map(each -> new ImmutableTuple4<T1, T2, T3, T4>(
+                                    mapper1.apply(each), 
+                                    mapper2.apply(each), 
+                                    mapper3.apply(each), 
+                                    mapper4.apply(each)));
+    }
+    
+    public final <T1, T2, T3, T4, T5> 
+        Result<Tuple5<T1, T2, T3, T4, T5>> map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Function<? super DATA, ? extends T5> mapper5) {
+        return map(each -> new ImmutableTuple5<T1, T2, T3, T4, T5>(
+                                    mapper1.apply(each), 
+                                    mapper2.apply(each), 
+                                    mapper3.apply(each), 
+                                    mapper4.apply(each), 
+                                    mapper5.apply(each)));
+    }
+    
+    public final <T1, T2, T3, T4, T5, T6> 
+        Result<Tuple6<T1, T2, T3, T4, T5, T6>> map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Function<? super DATA, ? extends T5> mapper5,
+                Function<? super DATA, ? extends T6> mapper6) {
+        return map(each -> new ImmutableTuple6<T1, T2, T3, T4, T5, T6>(
+                                    mapper1.apply(each), 
+                                    mapper2.apply(each), 
+                                    mapper3.apply(each), 
+                                    mapper4.apply(each), 
+                                    mapper5.apply(each), 
+                                    mapper6.apply(each)));
+    }
+    
     @Override
     public final <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
         return processData(
@@ -271,12 +358,6 @@ public class Result<DATA>
                     return Result.of(monad.orElse(null));
                 });
     }
-    
-    // TODO - filterIn, peekIn
-    
-    // asPeek, checkPeek
-    // asMap -- all with a way to show error
-    // case
     
     public final Result<DATA> filter(Predicate<? super DATA> theCondition) {
         DATA value = get();

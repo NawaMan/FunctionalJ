@@ -4,13 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import functionalj.types.result.Result;
 import lombok.val;
 
 public class ResultTest {
-    
+
+    @Test
+    public void testResultFom() {
+        assertEquals("Result:{ Value: VALUE }", "" + Result.from(()->"VALUE"));
+        assertEquals("Result:{ Exception: functionalj.functions.FunctionInvocationException: java.io.IOException }",
+                "" + Result.from(()->{ throw new IOException(); }));
+    }
     @Test
     public void testResult_value() {
         val result = Result.of("VALUE");
@@ -68,7 +76,7 @@ public class ResultTest {
     
     @Test
     public void testResult_map_null() {
-        val result = Result.of("VALUE").map(str -> null);
+        val result = Result.of("VALUE").map(str -> (String)null).map(String::length);
         assertEquals("Result:{ Value: null }", "" + result);
     }
     
