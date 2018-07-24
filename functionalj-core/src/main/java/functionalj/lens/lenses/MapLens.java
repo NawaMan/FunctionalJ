@@ -65,7 +65,7 @@ public interface MapLens<HOST, KEY, VALUE,
     }
     
     public default Function<HOST, HOST> changeTo(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {
-        val mapEntry = Func.of((Map.Entry<KEY, VALUE> each) ->{
+        val mapEntry = Func.from((Map.Entry<KEY, VALUE> each) ->{
             val key   = each.getKey();
             val value = each.getValue();
             if (!checker.test(key)) 
@@ -97,7 +97,7 @@ public interface MapLens<HOST, KEY, VALUE,
 
     
     public default Function<HOST, HOST> changeTo(BiPredicate<KEY, VALUE> checker, Function<VALUE, VALUE> mapper) {
-        val mapEntry = Func.of((Map.Entry<KEY, VALUE> each) ->{
+        val mapEntry = Func.from((Map.Entry<KEY, VALUE> each) ->{
             val key   = each.getKey();
             val value = each.getValue();
             if (!checker.test(key, value)) 

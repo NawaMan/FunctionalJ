@@ -25,7 +25,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT> {
     }
     
     public default Func0<Result<OUTPUT>> safely() {
-        return Func.from(this::applySafely);
+        return Func.of(this::applySafely);
     }
     
     public default OUTPUT getUnsafe() throws Exception {

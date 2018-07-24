@@ -46,7 +46,7 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
     }
     
     public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Result<OUTPUT>> safely() {
-        return Func.from(this::applySafely);
+        return Func.of(this::applySafely);
     }
     
     /**

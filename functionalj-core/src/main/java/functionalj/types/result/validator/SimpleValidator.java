@@ -1,10 +1,8 @@
 package functionalj.types.result.validator;
 
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import functionalj.functions.Func2;
-import functionalj.functions.Func4;
 import functionalj.types.result.Result;
 import functionalj.types.result.ValidationException;
 import lombok.val;

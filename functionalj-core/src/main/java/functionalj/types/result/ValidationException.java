@@ -1,10 +1,5 @@
 package functionalj.types.result;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import functionalj.functions.Func2;
-import functionalj.functions.Func4;
 import lombok.val;
 
 public class ValidationException extends RuntimeException {

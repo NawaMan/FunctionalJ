@@ -1,10 +1,8 @@
 package functionalj.types.result;
 
-import static functionalj.FunctionalJ.it;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -14,7 +12,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import functionalj.FunctionalJ;
 import functionalj.functions.Func0;
 import functionalj.functions.Func3;
 import functionalj.kinds.Comonad;
@@ -105,8 +102,15 @@ public class Result<DATA>
     public static <D> Result<D> ofNull() {
         return (Result<D>)NULL;
     }
+    
     public static <D> Result<D> ofNotAvailable() {
         return (Result<D>)NOTAVAILABLE;
+    }
+    public static <D> Result<D> ofNotAvailable(String message) {
+        return Result.ofException(new ResultNotAvailableException(message, null));
+    }
+    public static <D> Result<D> ofNotAvailable(String message, Throwable exception) {
+        return Result.ofException(new ResultNotAvailableException(message, exception));
     }
     public static <D> Result<D> ofNotReady() {
         return (Result<D>)NOTREADY;
@@ -126,8 +130,13 @@ public class Result<DATA>
     public static <D> Result<D> ofCancelled(String message, Throwable exception) {
         return Result.ofException(new ResultCancelledException(message, exception));
     }
+    public static <D> Result<D> ofInvalid(String message) {
+        return Result.ofException(new ValidationException(message, null));
+    }
+    public static <D> Result<D> ofInvalid(String message, Exception exception) {
+        return Result.ofException(new ValidationException(message, exception));
+    }
     
-
     
     private final Object data;
     

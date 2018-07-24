@@ -45,7 +45,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     
     public default Func2<INPUT1, INPUT2, Result<OUTPUT>> safely() {
-        return Func.from(this::applySafely);
+        return Func.of(this::applySafely);
     }
 
     /**

@@ -44,7 +44,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     
     public default Func1<INPUT, Result<OUTPUT>> safely() {
-        return Func.from(this::applySafely);
+        return Func.of(this::applySafely);
     }
     
     // TODO add memoize.
