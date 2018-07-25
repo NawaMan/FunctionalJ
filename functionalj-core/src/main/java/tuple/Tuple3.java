@@ -16,6 +16,7 @@ import functionalj.types.map.FunctionalMap;
 import functionalj.types.map.ImmutableMap;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
 
     public T1 _1();
@@ -46,7 +47,9 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         Array.set(array, 0, _1);
         Array.set(array, 1, _2);
         Array.set(array, 2, _3);
-        return (T[])array;
+        @SuppressWarnings("unchecked")
+		val toArray = (T[])array;
+		return toArray;
     }
     
     public default FunctionalList<Object> toList() {

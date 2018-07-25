@@ -3,6 +3,7 @@ package functionalj.lens.core;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
+@SuppressWarnings("javadoc")
 public class LensSpec<HOST, DATA> 
             implements Function<HOST, DATA> {
     

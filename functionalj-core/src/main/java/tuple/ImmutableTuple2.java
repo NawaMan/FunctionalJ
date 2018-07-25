@@ -2,6 +2,7 @@ package tuple;
 
 import java.util.Map;
 
+@SuppressWarnings("javadoc")
 public class ImmutableTuple2<T1, T2> implements Tuple2<T1, T2>, Map.Entry<T1, T2> {
     
     public final T1 _1;

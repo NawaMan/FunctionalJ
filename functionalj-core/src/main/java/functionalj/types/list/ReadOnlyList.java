@@ -25,7 +25,8 @@ public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>>
     public static <T> ReadOnlyList<T, ?> of(Collection<T> data) {
         return ImmutableList.of(data);
     }
-    public static <T> ReadOnlyList<T, ?> of(T ... data) {
+    @SafeVarargs
+	public static <T> ReadOnlyList<T, ?> of(T ... data) {
         return ImmutableList.of(data);
     }
     public static <T> ReadOnlyList<T, ?> of(Streamable<T, ?> streamable) {

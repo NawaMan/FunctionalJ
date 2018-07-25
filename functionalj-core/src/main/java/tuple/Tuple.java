@@ -2,6 +2,7 @@ package tuple;
 
 import java.util.Map;
 
+@SuppressWarnings("javadoc")
 public class Tuple {
     
     public static <T1, T2> Tuple2<T1, T2> of(T1 _1, T2 _2) {

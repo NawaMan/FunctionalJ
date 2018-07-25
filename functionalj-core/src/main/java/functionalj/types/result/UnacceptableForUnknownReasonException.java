@@ -3,7 +3,9 @@ package functionalj.types.result;
 @SuppressWarnings("javadoc")
 public class UnacceptableForUnknownReasonException extends Exception {
 
-    UnacceptableForUnknownReasonException() {
+	private static final long serialVersionUID = 1361955593036029932L;
+
+	public UnacceptableForUnknownReasonException() {
     }
     
 }

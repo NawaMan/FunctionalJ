@@ -66,19 +66,19 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     }
     
     
-    public default IntegerAccess toInt() {
+    public default IntegerAccess<HOST> toInt() {
         return intAccess(0, __mathOperators()::toInt);
     }
-    public default LongAccess toLong() {
+    public default LongAccess<HOST> toLong() {
         return longAccess(0L, __mathOperators()::toLong);
     }
-    public default DoubleAccess toDouble() {
+    public default DoubleAccess<HOST> toDouble() {
         return doubleAccess(0.0, __mathOperators()::toDouble);
     }
-    public default BigIntegerAccess toBigInteger() {
+    public default BigIntegerAccess<HOST> toBigInteger() {
         return bigIntegerAccess(BigInteger.ZERO, __mathOperators()::toBigInteger);
     }
-    public default BigDecimalAccess toBigDecimal() {
+    public default BigDecimalAccess<HOST> toBigDecimal() {
         return bigDecimalAccess(BigDecimal.ZERO, __mathOperators()::toBigDecimal);
     }
     

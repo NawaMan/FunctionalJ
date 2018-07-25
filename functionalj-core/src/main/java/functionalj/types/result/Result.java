@@ -14,10 +14,12 @@ import java.util.function.Supplier;
 
 import functionalj.functions.Func0;
 import functionalj.functions.Func3;
+import functionalj.functions.FunctionInvocationException;
 import functionalj.kinds.Comonad;
 import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
+import functionalj.kinds.Peekable;
 import functionalj.types.MayBe;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.result.validator.Validator;
@@ -26,7 +28,7 @@ import nawaman.nullablej.nullable.Nullable;
 import tuple.Tuple;
 import tuple.Tuple2;
 
-@SuppressWarnings("javadoc")
+@SuppressWarnings({"javadoc", "rawtypes"})
 public class Result<DATA>
                     implements
                         Functor<Result<?>, DATA>, 
@@ -36,20 +38,28 @@ public class Result<DATA>
                         Nullable<DATA>,
                         ResultMap<DATA>,
                         ResultFlatMap<DATA>,
-                        ResultFilter<DATA> {
+                        ResultFilter<DATA> ,
+                        Peekable<Result<DATA>, DATA> {
 
-    private static final Result NULL         = new Result<>(null, null);
+	private static final Result NULL         = new Result<>(null, null);
     private static final Result NOTAVAILABLE = new Result<>(null, new ResultNotAvailableException());
     private static final Result NOTREADY     = new Result<>(null, new ResultNotReadyException());
     private static final Result CANCELLED    = new Result<>(null, new ResultCancelledException());
     
     public static <D> Result<D> of(D value) {
+    	if (value == null)
+    		return Result.ofNull();
+    	
         return new Result<D>(value, null);
     }
-    public static <D> Result<D> ofException(Exception exception) {
-        return new Result<D>(null, exception);
+    public static <D> Result<D> ofException(String exceptionMsg) {
+        return new Result<D>(null, new Exception(exceptionMsg));
     }
-    public static <D> Result<D> ofResult(Result<D> result) {
+    public static <D> Result<D> ofException(Exception exception) {
+    	return new Result<D>(null, exception);
+    }
+    @SuppressWarnings("unchecked")
+	public static <D> Result<D> ofResult(Result<D> result) {
         if (result instanceof Result)
             return (Result<D>)result;
         
@@ -93,11 +103,13 @@ public class Result<DATA>
         }
     }
     
-    public static <D> Result<D> ofNull() {
+    @SuppressWarnings("unchecked")
+	public static <D> Result<D> ofNull() {
         return (Result<D>)NULL;
     }
     
-    public static <D> Result<D> ofNotAvailable() {
+    @SuppressWarnings("unchecked")
+	public static <D> Result<D> ofNotAvailable() {
         return (Result<D>)NOTAVAILABLE;
     }
     public static <D> Result<D> ofNotAvailable(String message) {
@@ -106,7 +118,8 @@ public class Result<DATA>
     public static <D> Result<D> ofNotAvailable(String message, Throwable exception) {
         return Result.ofException(new ResultNotAvailableException(message, exception));
     }
-    public static <D> Result<D> ofNotReady() {
+    @SuppressWarnings("unchecked")
+	public static <D> Result<D> ofNotReady() {
         return (Result<D>)NOTREADY;
     }
     public static <D> Result<D> ofNotReady(String message) {
@@ -115,7 +128,8 @@ public class Result<DATA>
     public static <D> Result<D> ofNotReady(String message, Throwable exception) {
         return Result.ofException(new ResultNotReadyException(message, exception));
     }
-    public static <D> Result<D> ofCancelled() {
+    @SuppressWarnings("unchecked")
+	public static <D> Result<D> ofCancelled() {
         return (Result<D>)CANCELLED;
     }
     public static <D> Result<D> ofCancelled(String message) {
@@ -144,8 +158,8 @@ public class Result<DATA>
         return data;
     }
     
-    
-    protected final <T> T processData(Function<Exception, T> defaultGet, Func3<Boolean, DATA, Exception, T> processor) {
+    @SuppressWarnings("unchecked")
+	protected final <T> T processData(Function<Exception, T> defaultGet, Func3<Boolean, DATA, Exception, T> processor) {
         try {
             val data      = getData();
             val isValue   = ((data == null) || !(data instanceof ExceptionHolder));
@@ -158,7 +172,8 @@ public class Result<DATA>
         }
     }
     
-    public final DATA getValue() {
+    @SuppressWarnings("unchecked")
+	public final DATA getValue() {
         val data = getData();
         return (data instanceof ExceptionHolder) ? null : (DATA)data;
     }
@@ -269,7 +284,8 @@ public class Result<DATA>
                 });
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public final <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
         return processData(
                 e -> Result.ofNull(),
@@ -290,7 +306,8 @@ public class Result<DATA>
                     return (Result<TARGET>)monad;
                 });
     }
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
         return processData(
                 e -> Result.ofNull(),
@@ -331,53 +348,6 @@ public class Result<DATA>
                 });
     }
     
-    public final <T extends DATA> Result<DATA> peek(Class<T> clzz, Consumer<? super T> theConsumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if ((value != null) && clzz.isInstance(value)) {
-                        val target = clzz.cast(value);
-                        theConsumer.accept(target);
-                    }
-                    return this;
-                });
-    }
-    public final Result<DATA> peek(Predicate<? super DATA> selector, Consumer<? super DATA> theConsumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if ((value != null) && selector.test(value)) {
-                        theConsumer.accept(value);
-                    }
-                    return this;
-                });
-    }
-    public final <T> Result<DATA> peek(Function<? super DATA, T> mapper, Consumer<? super T> theConsumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if (value != null) {
-                        val target = mapper.apply(value);
-                        theConsumer.accept(target);
-                    }
-                    return this;
-                });
-    }
-    public final <T> Result<DATA> peek(Function<? super DATA, T> mapper, Predicate<? super T> selector, Consumer<? super T> theConsumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if (value == null) 
-                        return this;
-                    
-                    val target = mapper.apply(value);
-                    if (selector.test(target))
-                        theConsumer.accept(target);
-                    
-                    return this;
-                });
-    }
-    
     public final Result<DATA> peek(BiConsumer<? super DATA, ? super Exception> theConsumer) {
         return processData(
                 e -> this,
@@ -387,6 +357,8 @@ public class Result<DATA>
                     return this;
                 });
     }
+    
+    //== Check and condition.
     
     public final boolean isValue() {
         return processData(
@@ -831,7 +803,7 @@ public class Result<DATA>
         return value;
     }
     
-    public final DATA orThrow() throws Exception {
+	public final DATA orThrow() throws Exception {
         val data = processData(
                 e -> new ExceptionHolder(e),
                 (isValue, value, exception) -> {
@@ -844,9 +816,11 @@ public class Result<DATA>
         if (data instanceof ExceptionHolder)
             throw ((ExceptionHolder)data).getException();
         
-        return (DATA)data;
+        @SuppressWarnings("unchecked")
+        val value = (DATA)data;
+		return value;
     }
-    public final DATA orThrowRuntimeException() {
+	public final DATA orThrowRuntimeException() {
         val data = processData(
                 e -> new ExceptionHolder(e),
                 (isValue, value, exception) -> {
@@ -862,8 +836,10 @@ public class Result<DATA>
         
         if (data instanceof ExceptionHolder)
             throw (RuntimeException)((ExceptionHolder)data).getException();
-        
-        return (DATA)data;
+
+        @SuppressWarnings("unchecked")
+        val value = (DATA)data;
+		return value;
     }
     public final <EXCEPTION extends Exception> DATA orThrow(Function<Exception, EXCEPTION> toException) 
             throws EXCEPTION {
@@ -876,10 +852,15 @@ public class Result<DATA>
                     return new ExceptionHolder(toException.apply(exception));
                 });
         
-        if (data instanceof ExceptionHolder)
-            throw (EXCEPTION)((ExceptionHolder)data).getException();
-        
-        return (DATA)data;
+        if (data instanceof ExceptionHolder) {
+            @SuppressWarnings("unchecked")
+			val exception = (EXCEPTION)((ExceptionHolder)data).getException();
+			throw exception;
+        }
+
+        @SuppressWarnings("unchecked")
+        val value = (DATA)data;
+		return value;
     }
     public final <RUNTIMEEXCEPTION extends RuntimeException> 
             DATA orThrowRuntimeException(Function<Exception, RUNTIMEEXCEPTION> toRuntimeException) {
@@ -891,12 +872,19 @@ public class Result<DATA>
                     
                     throw toRuntimeException.apply(exception);
                 });
-        
-        if (data instanceof ExceptionHolder)
-            throw (RUNTIMEEXCEPTION)((ExceptionHolder)data).getException();
-        
-        return (DATA)data;
+
+        if (data instanceof ExceptionHolder) {
+            @SuppressWarnings("unchecked")
+			val exception = (RUNTIMEEXCEPTION)((ExceptionHolder)data).getException();
+			throw exception;
+        }
+
+        @SuppressWarnings("unchecked")
+        val value = (DATA)data;
+		return value;
     }
+    
+    // TODO Equals, HashCode
     
     public String toString() {
         return processData(

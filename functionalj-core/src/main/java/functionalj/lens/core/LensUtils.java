@@ -21,6 +21,7 @@ import functionalj.types.map.FunctionalMap;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
+@SuppressWarnings("javadoc")
 public class LensUtils {
 
     public static <HOST, DATA, SUB, SUBLENS> SUBLENS createSubLens(

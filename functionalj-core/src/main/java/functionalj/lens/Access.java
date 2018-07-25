@@ -73,7 +73,8 @@ public interface Access {
             return listLens;
         }
         
-        @Override
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+		@Override
         public LensSpecParameterized<List<?>, List<Object>, Object, ObjectLens<List<?>, Object>> lensSpecParameterized() {
             return (LensSpecParameterized)common;
         }
@@ -112,7 +113,8 @@ public interface Access {
             return Tuple2Lens.of(selfRead(), selfWrite(), t1Type, t2Type);
         }
         
-        @Override
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+		@Override
         public LensSpecParameterized2<Tuple2<Object, Object>, Tuple2<Object, Object>, Object, Object, 
             ObjectLens<Tuple2<Object, Object>, Object>, ObjectLens<Tuple2<Object, Object>, Object>> lensSpecParameterized2() {
             return (LensSpecParameterized2)common;

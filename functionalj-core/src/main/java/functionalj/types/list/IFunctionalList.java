@@ -34,7 +34,8 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
     public static <T> IFunctionalList<T, ?> of(Collection<T> data) {
         return ImmutableList.of(data);
     }
-    public static <T> IFunctionalList<T, ?> of(T ... data) {
+    @SafeVarargs
+	public static <T> IFunctionalList<T, ?> of(T ... data) {
         return ImmutableList.of(data);
     }
     public static <T> IFunctionalList<T, ?> of(Streamable<T, ?> streamable) {
@@ -110,7 +111,8 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
     
     //== Modified methods ==
     
-    public default SELF append(DATA ... values) {
+    @SuppressWarnings("unchecked")
+    public default SELF append( DATA ... values) {
         return __stream(stream -> Stream.concat(stream, Stream.of(values)));
     }
 
@@ -148,7 +150,8 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
         return __stream(stream -> stream.map(each -> (i.getAndIncrement() == index) ? value : each));
     }
     
-    public default SELF insertAt(int index, DATA ... elements) {
+    @SuppressWarnings("unchecked")
+	public default SELF insertAt(int index, DATA ... elements) {
         if ((elements == null) || (elements.length == 0))
             return (SELF)this;
         
@@ -160,7 +163,8 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
         });
     }
     
-    public default SELF insertAllAt(int index, Collection<? extends DATA> collection) {
+    @SuppressWarnings("unchecked")
+	public default SELF insertAllAt(int index, Collection<? extends DATA> collection) {
         if ((collection == null)
           || collection.isEmpty())
             return (SELF)this;
@@ -173,7 +177,8 @@ public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>>
         });
     }
     
-    public default SELF insertAllAt(int index, Streamable<? extends DATA, ?> streamable) {
+    @SuppressWarnings("unchecked")
+	public default SELF insertAllAt(int index, Streamable<? extends DATA, ?> streamable) {
         if (streamable == null)
             return (SELF)this;
         

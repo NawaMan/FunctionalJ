@@ -3,6 +3,7 @@ package functionalj.lens.core;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.AnyLens;
 
+@SuppressWarnings("javadoc")
 public abstract class AbstractLensType<H, T, TA extends AnyAccess<H, T>, TL extends AnyLens<H, T>> 
         implements LensType<H, T, TA, TL> {
     
@@ -10,7 +11,8 @@ public abstract class AbstractLensType<H, T, TA extends AnyAccess<H, T>, TL exte
     private final Class<TA> accessClass;
     private final Class<TL> lensClass;
     
-    protected AbstractLensType(Class<T> dataClass, Class<? extends AnyAccess> accessClass, Class<? extends AnyLens> lensClass) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	protected AbstractLensType(Class<T> dataClass, Class<? extends AnyAccess> accessClass, Class<? extends AnyLens> lensClass) {
         this.dataClass   = dataClass;
         this.accessClass = (Class)accessClass;
         this.lensClass   = (Class)lensClass;

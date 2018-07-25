@@ -15,7 +15,8 @@ import functionalj.lens.lenses.StringLens;
 @SuppressWarnings("javadoc")
 public interface LensTypes {
     
-    public static <H, T, TA extends AnyAccess<H, T>, TL extends AnyLens<H, T>> 
+    @SuppressWarnings("rawtypes")
+	public static <H, T, TA extends AnyAccess<H, T>, TL extends AnyLens<H, T>> 
             LensType<H, T, TA, TL> of(
                     Class<T> dataClass, 
                     Class<? extends AnyAccess> accessClass, 

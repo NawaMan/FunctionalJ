@@ -2,6 +2,7 @@ package functionalj.lens.core;
 
 import java.util.function.BiFunction;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface WriteLens<HOST, DATA> {
     

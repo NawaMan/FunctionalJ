@@ -1,6 +1,7 @@
 package functionalj.lens.lenses;
 
 import static functionalj.functions.StringFunctions.stringOf;
+import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 
 import java.util.Locale;
@@ -71,11 +72,11 @@ public interface StringAccess<HOST>
         return booleanAccess(isSuffixEmpty, str->str.endsWith(suffix));
     }
     
-    public default StringAccess<HOST> format(String format, Object... args) {
+	public default StringAccess<HOST> format(String format, Object... args) {
         return stringAccess(null, str->{
             val eachToString = __internal__.stringFrom(str);
             val argStrs      = Stream.of(args).map(eachToString).toArray();
-            return str.format(format, (Object[])argStrs);
+            return String.format(format, (Object[])argStrs);
         });
     }
     

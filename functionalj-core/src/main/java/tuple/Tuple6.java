@@ -16,6 +16,7 @@ import functionalj.types.map.FunctionalMap;
 import functionalj.types.map.ImmutableMap;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, T3, T4, T5, T6>> {
 
     public T1 _1();
@@ -58,7 +59,9 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
         Array.set(array, 3, _4);
         Array.set(array, 4, _5);
         Array.set(array, 5, _6);
-        return (T[])array;
+        @SuppressWarnings("unchecked")
+		val toArray = (T[])array;
+		return toArray;
     }
     
     public default FunctionalList<Object> toList() {
@@ -78,7 +81,7 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
         val e4 = (k4 != null) ? ImmutableTuple.of(k4, (Object)_4()) : null;
         val e5 = (k5 != null) ? ImmutableTuple.of(k5, (Object)_5()) : null;
         val e6 = (k6 != null) ? ImmutableTuple.of(k6, (Object)_6()) : null;
-        return ImmutableMap.ofEntries(e1, e2, e3, e4, e5);
+        return ImmutableMap.ofEntries(e1, e2, e3, e4, e5, e6);
     }
     
     

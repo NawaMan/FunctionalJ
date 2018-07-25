@@ -10,7 +10,8 @@ import java.util.function.Supplier;
 @SuppressWarnings("javadoc")
 public class Functional {
 
-    public static <VALUE, TYPE> VALUE pluck(String name, TYPE object) {
+    @SuppressWarnings("unchecked")
+	public static <VALUE, TYPE> VALUE pluck(String name, TYPE object) {
         if (object == null)
             return null;
         

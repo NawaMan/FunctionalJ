@@ -11,6 +11,7 @@ import functionalj.types.list.FunctionalList;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
+@SuppressWarnings("javadoc")
 public class AccessUtils {
 
 

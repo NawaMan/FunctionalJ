@@ -298,7 +298,8 @@ public class FunctionalJ {
     }
     
     public static interface Data {
-        public default <D extends Data> D me() { return (D)this; }
+        @SuppressWarnings("unchecked")
+		public default <D extends Data> D me() { return (D)this; }
     }
     
     public static interface Person extends Data {

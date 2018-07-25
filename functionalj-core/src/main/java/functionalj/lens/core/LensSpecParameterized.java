@@ -5,6 +5,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyLens<HOST, SUB>>
             extends AccessParameterized<HOST, TYPE, SUB, SUBLENS> {
     

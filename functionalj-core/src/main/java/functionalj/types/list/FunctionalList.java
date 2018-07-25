@@ -22,7 +22,8 @@ public abstract class FunctionalList<DATA>
                         ReadOnlyList<DATA, FunctionalList<DATA>>, 
                         IFunctionalList<DATA, FunctionalList<DATA>> {
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> TARGET_SELF __of(Stream<TARGET> targetStream) {
         return (TARGET_SELF)FunctionalList.of(targetStream);
     }
@@ -33,7 +34,8 @@ public abstract class FunctionalList<DATA>
     public static <T> FunctionalList<T> of(Collection<T> data) {
         return ImmutableList.of(data);
     }
-    public static <T> FunctionalList<T> of(T ... data) {
+    @SafeVarargs
+	public static <T> FunctionalList<T> of(T ... data) {
         return ImmutableList.of(data);
     }
     public static <T> FunctionalList<T> of(Streamable<T, ?> streamable) {

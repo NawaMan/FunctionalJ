@@ -68,7 +68,6 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         return at(0);
     }
     
-    @SuppressWarnings("unchecked")
     public default TYPELENS last() {
         return createSubLens(
                 (list) -> {

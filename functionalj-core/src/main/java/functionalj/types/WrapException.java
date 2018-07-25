@@ -3,7 +3,9 @@ package functionalj.types;
 @SuppressWarnings("javadoc")
 public class WrapException extends RuntimeException {
     
-    private Exception exception;
+	private static final long serialVersionUID = -5814440055771538679L;
+	
+	private Exception exception;
     
     public static WrapException of(Exception exception) {
         if (exception instanceof WrapException)

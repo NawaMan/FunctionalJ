@@ -94,7 +94,8 @@ public interface FunctionalListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<H
         });
     }
     
-    public default FunctionalListAccess<HOST, TYPE, TYPEACCESS> append(TYPE ... data) {
+    @SuppressWarnings("unchecked")
+	public default FunctionalListAccess<HOST, TYPE, TYPEACCESS> append(TYPE ... data) {
         return subList(this, host -> {
             return apply(host)
                     .append(data);
@@ -129,7 +130,8 @@ public interface FunctionalListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<H
         });
     }
     
-    public default FunctionalListAccess<HOST, TYPE, TYPEACCESS> insertAt(int index, TYPE ... elements) {
+    @SuppressWarnings("unchecked")
+	public default FunctionalListAccess<HOST, TYPE, TYPEACCESS> insertAt(int index, TYPE ... elements) {
         return subList(this, host -> {
             return apply(host)
                     .insertAt(index, elements);

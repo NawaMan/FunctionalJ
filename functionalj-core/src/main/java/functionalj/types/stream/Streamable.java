@@ -323,14 +323,16 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>>
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
     
-    public default SELF filter(Predicate<? super DATA> predicate) {
+    @SuppressWarnings("unchecked")
+	public default SELF filter(Predicate<? super DATA> predicate) {
         if (predicate == null)
             return (SELF)this;
         
         return __stream(stream -> stream.filter(predicate));
     }
     
-    public default SELF exclude(Predicate<? super DATA> predicate) {
+    @SuppressWarnings("unchecked")
+	public default SELF exclude(Predicate<? super DATA> predicate) {
         if (predicate == null)
             return (SELF)this;
         
@@ -349,7 +351,8 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>>
         return __stream(stream -> stream.filter(each -> !Objects.equals(o, each)));
     }
     
-    public default SELF filter(Collection<? super DATA> collection) {
+    @SuppressWarnings("unchecked")
+	public default SELF filter(Collection<? super DATA> collection) {
         if (collection == null)
             return (SELF)this;
         
@@ -445,21 +448,24 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>>
         return __stream(stream -> stream.sorted(comparator));
     }
     
-    public default SELF peek(Consumer<? super DATA> action) {
+    @SuppressWarnings("unchecked")
+	public default SELF peek(Consumer<? super DATA> action) {
         if (action == null)
             return (SELF)this;
         
         return __stream(stream -> stream.peek(action));
     }
     
-    public default SELF limit(Long maxSize) {
+    @SuppressWarnings("unchecked")
+	public default SELF limit(Long maxSize) {
         if ((maxSize == null) || (maxSize.longValue() < 0))
             return (SELF)this;
         
         return __stream(stream -> stream.limit(maxSize));
     }
     
-    public default SELF skip(Long startAt){
+    @SuppressWarnings("unchecked")
+	public default SELF skip(Long startAt){
         if ((startAt == null) || (startAt.longValue() < 0))
             return (SELF)this;
         

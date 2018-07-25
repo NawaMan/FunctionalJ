@@ -14,7 +14,8 @@ public interface Validatable<DATA extends Validatable<DATA, VALIDATOR>, VALIDATO
     }
     
     public default Valid<DATA> toValidValue() {
-        val validResult = new Valid<DATA>((DATA)this);
+        @SuppressWarnings("unchecked")
+		val validResult = new Valid<DATA>((DATA)this);
         return validResult;
     } 
     

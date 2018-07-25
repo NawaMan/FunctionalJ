@@ -11,7 +11,8 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class StringFunctions {
     
-    private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
+    @SuppressWarnings("unused")
+	private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
     
     public static String stringOf(Object obj) {
         return (obj == null) ? null : String.valueOf(obj);

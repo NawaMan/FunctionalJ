@@ -9,11 +9,13 @@ import java.util.function.Predicate;
 
 import org.junit.Test;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 public class ValidTest {
     
     @Value
+    @EqualsAndHashCode(callSuper=false)
     public static class Person extends Validatable.With<Person, Person.Checker> {
         private final String name;
 

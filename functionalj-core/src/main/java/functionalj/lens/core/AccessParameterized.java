@@ -5,6 +5,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface AccessParameterized<HOST, TYPE, PARAMETER, PARAMETERACCESS extends AnyAccess<HOST, PARAMETER>>
                 extends AnyAccess<HOST, TYPE> {
     

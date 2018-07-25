@@ -5,7 +5,11 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public class ValidationException extends RuntimeException {
 
-    public ValidationException(String message) {
+	private static final long serialVersionUID = 2317758566674598943L;
+
+
+
+	public ValidationException(String message) {
         super(message);
     }
     public ValidationException(Exception cause) {

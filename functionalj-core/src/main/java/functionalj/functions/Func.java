@@ -518,7 +518,7 @@ public interface Func {
     @SuppressWarnings("javadoc")
     public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT1, OUTPUT> of(BiFunction<INPUT1, INPUT2, OUTPUT> func, Absent a1, INPUT2 i2) {
         if (func instanceof Func2)
-            return ((Func2)func).apply(a1, i2);
+            return ((Func2<INPUT1, INPUT2, OUTPUT>)func).apply(a1, i2);
         
         return Func.from(func).apply(a1, i2);
     }
@@ -526,7 +526,7 @@ public interface Func {
     @SuppressWarnings("javadoc")
     public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT2, OUTPUT> of(BiFunction<INPUT1, INPUT2, OUTPUT> func, INPUT1 i1, Absent a2) {
         if (func instanceof Func2)
-            return ((Func2)func).apply(i1, a2);
+            return ((Func2<INPUT1, INPUT2, OUTPUT>)func).apply(i1, a2);
         
         return Func.from(func).apply(i1, a2);
     }

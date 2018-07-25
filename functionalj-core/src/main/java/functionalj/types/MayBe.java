@@ -216,16 +216,6 @@ public abstract class MayBe<DATA>
         return this;
     }
     
-    @Override
-    public MayBe<DATA> _peek(Function<? super DATA, ? extends Object> theConsumer) {
-        val value = get();
-        if (value != null) {
-            theConsumer.apply(value);
-        }
-        
-        return this;
-    }
-    
     /**
      * Convert this maybe to a result.
      * 

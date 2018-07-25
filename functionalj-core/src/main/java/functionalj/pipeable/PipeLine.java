@@ -26,19 +26,25 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     private static final boolean NULL_SAFE   = true;
     private static final boolean NULL_UNSAFE = false;
     
-    private final ImmutableList<Func1> functions;
-    private final Catch                catchHandler;
+    @SuppressWarnings("rawtypes")
+	private final ImmutableList<Func1> functions;
+    
+    @SuppressWarnings("rawtypes")
+    private final Catch catchHandler;
+    
+    @SuppressWarnings("rawtypes")
     private PipeLine(List<Func1> functions, Catch catchHandler) {
         this.functions    = ImmutableList.of(functions);
         this.catchHandler = catchHandler;
     }
     
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public OUTPUT applyUnsafe(INPUT input) throws Exception {
         try {
             Object data = input;
             for (int i = 0; i < functions.size(); i++) {
-                Func1 func1 = functions.get(i);
+				val func1 = functions.get(i);
                 data = __internal.apply(func1, data);
             }
             if (catchHandler == null)
@@ -71,19 +77,24 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     
     
     static class NullSafe<INPUT, OUTPUT> extends PipeLine<INPUT, OUTPUT> implements NullSafeOperator<INPUT, OUTPUT> {
-        private NullSafe(List<Func1> functions, Catch catchHandler) {
+    	@SuppressWarnings("rawtypes")
+    	private NullSafe(List<Func1> functions, Catch catchHandler) {
             super(functions, catchHandler);
         }
     }
     
     public static class Builder<INPUT, OUTPUT> {
         
-        private final boolean     isNullSafe;
-        private final List<Func1> functions = new ArrayList<Func1>();
+        private final boolean isNullSafe;
+        
+        @SuppressWarnings("rawtypes")
+		private final List<Func1> functions = new ArrayList<Func1>();
         
         private Builder(boolean isNullSafe) {
             this.isNullSafe = isNullSafe;
         }
+        
+        @SuppressWarnings("rawtypes")
         private Builder(boolean isNullSafe, List<Func1> functions, Func1 func1) {
             this.isNullSafe = isNullSafe;
             this.functions.addAll(functions);

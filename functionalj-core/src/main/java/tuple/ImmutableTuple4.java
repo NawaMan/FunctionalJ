@@ -1,5 +1,6 @@
 package tuple;
 
+@SuppressWarnings("javadoc")
 public class ImmutableTuple4<T1, T2, T3, T4> implements Tuple4<T1, T2, T3, T4> {
     
     public final T1 _1;

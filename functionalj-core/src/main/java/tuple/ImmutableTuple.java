@@ -4,6 +4,7 @@ import java.util.Map;
 
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public class ImmutableTuple {
     
     private ImmutableTuple() {}
