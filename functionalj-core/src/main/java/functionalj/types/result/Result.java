@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -884,9 +885,23 @@ public class Result<DATA>
 		return value;
     }
     
-    // TODO Equals, HashCode
-    
-    public String toString() {
+    @Override
+    public final int hashCode() {
+        return processData(
+                e -> Objects.hash((Object)null),
+                (isValue, value, exception) -> {
+                	return Objects.hash(data);
+                });
+    }
+    @Override
+	public final boolean equals(Object obj) {
+    	if (!(obj instanceof Result))
+    		return false;
+    	
+		return Objects.equals(data, ((Result)obj).data);
+	}
+    @Override
+	public final String toString() {
         return processData(
                 e -> "Result:{ Exception: " + e  + " }",
                 (isValue, value, exception) -> {
@@ -905,6 +920,34 @@ public class Result<DATA>
         public final Exception getException() {
             return exception;
         }
+        
+		@Override
+		public String toString() {
+			return "ExceptionHolder [exception=" + exception + "]";
+		}
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((exception == null) ? 0 : exception.hashCode());
+			return result;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ExceptionHolder other = (ExceptionHolder) obj;
+			if (exception == null) {
+				if (other.exception != null)
+					return false;
+			} else if (!exception.equals(other.exception))
+				return false;
+			return true;
+		}
     }
     
 }
