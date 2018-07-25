@@ -24,12 +24,10 @@ import static functionalj.annotations.processor.generator.model.Scope.INSTANCE;
 import static functionalj.annotations.processor.generator.model.Scope.STATIC;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
-
-import java.util.stream.Stream;
-
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
-import static java.util.Collections.emptyList;
+import java.util.stream.Stream;
 
 import functionalj.annotations.processor.Core;
 import functionalj.annotations.processor.generator.model.GenClass;

@@ -14,6 +14,7 @@ import functionalj.types.list.FunctionalList;
 import functionalj.types.stream.Streamable;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface FunctionalListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> 
         extends CollectionAccess<HOST, FunctionalList<TYPE>, TYPE, TYPEACCESS> {

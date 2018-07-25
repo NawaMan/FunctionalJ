@@ -21,6 +21,7 @@ import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
 import tuple.Tuple2;
 
+@SuppressWarnings("javadoc")
 public interface Access {
     
     public static final AnyLens<Object, Object> theObject  = AnyLens    .of(LensSpec.of(Object.class));

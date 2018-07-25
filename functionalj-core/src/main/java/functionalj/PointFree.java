@@ -6,6 +6,7 @@ import functionalj.functions.Func1;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
 
+@SuppressWarnings("javadoc")
 public interface PointFree {
     
     

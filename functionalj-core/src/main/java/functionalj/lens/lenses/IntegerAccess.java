@@ -8,11 +8,7 @@ import java.util.function.ToIntFunction;
 import tuple.Tuple;
 import tuple.Tuple2;
 
-/**
- * @author manusitn
- *
- * @param <HOST>
- */
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface IntegerAccess<HOST> 
                     extends 

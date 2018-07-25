@@ -8,6 +8,7 @@ import static functionalj.lens.LensTest.Company.theCompany;
 import static functionalj.lens.LensTest.Driver.theDriver;
 import static functionalj.types.list.ImmutableList.listOf;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -19,8 +20,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.junit.Test;
-
-import static java.util.Collections.unmodifiableList;
 
 import functionalj.FunctionalJ;
 import functionalj.functions.Func1;

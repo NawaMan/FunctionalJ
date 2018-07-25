@@ -14,6 +14,7 @@ import functionalj.types.map.FunctionalMap;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
+@SuppressWarnings("javadoc")
 public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
     
     private LensSpec<HOST, DATA> spec;

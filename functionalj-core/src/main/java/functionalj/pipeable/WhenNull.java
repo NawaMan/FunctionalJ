@@ -2,6 +2,7 @@ package functionalj.pipeable;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface WhenNull<INPUT, OUTPUT> extends NullSafeOperator<INPUT, OUTPUT> {
 

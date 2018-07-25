@@ -7,6 +7,7 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.types.MayBe;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface MayBeAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
             extends

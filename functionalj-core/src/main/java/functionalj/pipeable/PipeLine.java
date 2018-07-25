@@ -20,6 +20,7 @@ import functionalj.pipeable.Pipeable.__internal;
 import functionalj.types.list.ImmutableList;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     
     private static final boolean NULL_SAFE   = true;

@@ -17,14 +17,13 @@ package functionalj.annotations.processor.generator.model;
 
 import static functionalj.annotations.processor.generator.ILines.indent;
 import static functionalj.annotations.processor.generator.ILines.line;
+import static java.util.stream.Collectors.joining;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.joining;
 
 import functionalj.annotations.processor.Core;
 import functionalj.annotations.processor.generator.IGenerateDefinition;

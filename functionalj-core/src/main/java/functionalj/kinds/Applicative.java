@@ -1,5 +1,6 @@
 package functionalj.kinds;
 
+@SuppressWarnings("javadoc")
 public interface Applicative<TYPE, DATA> extends Apply<TYPE, DATA> {
 
     /**

@@ -23,26 +23,20 @@ import functionalj.types.list.FunctionalList;
 import functionalj.types.result.validator.Validator;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
-import tuple.ImmutableTuple2;
-import tuple.ImmutableTuple3;
-import tuple.ImmutableTuple4;
-import tuple.ImmutableTuple5;
-import tuple.ImmutableTuple6;
 import tuple.Tuple;
 import tuple.Tuple2;
-import tuple.Tuple3;
-import tuple.Tuple4;
-import tuple.Tuple5;
-import tuple.Tuple6;
 
-
+@SuppressWarnings("javadoc")
 public class Result<DATA>
                     implements
                         Functor<Result<?>, DATA>, 
                         Monad<Result<?>, DATA>, 
                         Comonad<Result<?>, DATA>,
                         Filterable<Result<?>, DATA>,
-                        Nullable<DATA>{
+                        Nullable<DATA>,
+                        ResultMap<DATA>,
+                        ResultFlatMap<DATA>,
+                        ResultFilter<DATA> {
 
     private static final Result NULL         = new Result<>(null, null);
     private static final Result NOTAVAILABLE = new Result<>(null, new ResultNotAvailableException());
@@ -204,6 +198,10 @@ public class Result<DATA>
         return Optional.ofNullable(this.get());
     }
     
+    public final Result<DATA> asResult() {
+        return this;
+    }
+    
     public final MayBe<MayBe<DATA>> asMayBe() {
         return processData(
                 e -> MayBe.nothing(),
@@ -250,10 +248,6 @@ public class Result<DATA>
         return _map(mapper);
     }
     
-    public final Result<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
-        return _map(d -> checker.test(d) ? mapper.apply(d) : d);
-    }
-    
     public final <TARGET> Result<TARGET> map(BiFunction<DATA, Exception, TARGET> mapper) {
         return processData(
                 e -> Result.ofNull(),
@@ -273,72 +267,6 @@ public class Result<DATA>
                     val newException = mapper.apply(exception);
                     return Result.ofException(newException);
                 });
-    }
-    
-
-    public final <T1, T2> 
-        Result<Tuple2<T1, T2>> map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2) {
-        return map(each -> new ImmutableTuple2<T1, T2>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each)));
-    }
-    
-    public final <T1, T2, T3> 
-        Result<Tuple3<T1, T2, T3>> map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3) {
-        return map(each -> new ImmutableTuple3<T1, T2, T3>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each)));
-    }
-    
-    public final <T1, T2, T3, T4> 
-        Result<Tuple4<T1, T2, T3, T4>> map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4) {
-        return map(each -> new ImmutableTuple4<T1, T2, T3, T4>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each), 
-                                    mapper4.apply(each)));
-    }
-    
-    public final <T1, T2, T3, T4, T5> 
-        Result<Tuple5<T1, T2, T3, T4, T5>> map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Function<? super DATA, ? extends T5> mapper5) {
-        return map(each -> new ImmutableTuple5<T1, T2, T3, T4, T5>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each), 
-                                    mapper4.apply(each), 
-                                    mapper5.apply(each)));
-    }
-    
-    public final <T1, T2, T3, T4, T5, T6> 
-        Result<Tuple6<T1, T2, T3, T4, T5, T6>> map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Function<? super DATA, ? extends T5> mapper5,
-                Function<? super DATA, ? extends T6> mapper6) {
-        return map(each -> new ImmutableTuple6<T1, T2, T3, T4, T5, T6>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each), 
-                                    mapper4.apply(each), 
-                                    mapper5.apply(each), 
-                                    mapper6.apply(each)));
     }
     
     @Override
@@ -362,7 +290,6 @@ public class Result<DATA>
                     return (Result<TARGET>)monad;
                 });
     }
-    
     @Override
     public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
         return processData(
@@ -382,37 +309,6 @@ public class Result<DATA>
             return this;
         
         val isPass = theCondition.test(value);
-        if (!isPass)
-            return Result.ofNull();
-        
-        return this;
-    }
-    
-    public final <T extends DATA> Result<DATA> filter(Class<T> clzz) {
-        return filter(clzz::isInstance);
-    }
-    public final <T extends DATA> Result<DATA> filter(Class<T> clzz, Predicate<? super T> theCondition) {
-        DATA value = get();
-        if (value == null)
-            return this;
-        
-        if (clzz.isInstance(value))
-            return this;
-
-        val target = clzz.cast(value);
-        val isPass = theCondition.test(target);
-        if (!isPass)
-            return Result.ofNull();
-        
-        return this;
-    }
-    public final <T> Result<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        DATA value = get();
-        if (value == null)
-            return this;
-
-        val target = mapper.apply(value);
-        val isPass = theCondition.test(target);
         if (!isPass)
             return Result.ofNull();
         
@@ -792,8 +688,6 @@ public class Result<DATA>
                     return validator.validate(value);
                 });
     }
-    
-    // TODO - Validate all -> go through and collect them all.
     
     public final <D extends Validatable<D, ?>> Valid<D> toValidValue(Function<DATA, D> mapper) {
         return processData(

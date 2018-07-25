@@ -24,6 +24,7 @@ import functionalj.types.stream.Streamable;
 import lombok.val;
 import tuple.IntTuple2;
 
+@SuppressWarnings("javadoc")
 public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>> 
         extends Streamable<DATA, SELF> {
     

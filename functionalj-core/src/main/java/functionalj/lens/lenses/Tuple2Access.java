@@ -6,6 +6,7 @@ import functionalj.lens.core.AccessParameterized2;
 import lombok.val;
 import tuple.Tuple2;
 
+@SuppressWarnings("javadoc")
 public interface Tuple2Access<HOST, T1, T2, 
                         T1ACCESS extends AnyAccess<HOST,T1>, 
                         T2ACCESS extends AnyAccess<HOST,T2>>

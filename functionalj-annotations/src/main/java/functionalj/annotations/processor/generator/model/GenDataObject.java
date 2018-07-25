@@ -20,14 +20,13 @@ import static functionalj.annotations.processor.generator.ILines.linesOf;
 import static functionalj.annotations.processor.generator.model.utils.themAll;
 import static functionalj.annotations.processor.generator.model.utils.wrapWith;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 import functionalj.annotations.IPostReConstruct;
 import functionalj.annotations.processor.Core;

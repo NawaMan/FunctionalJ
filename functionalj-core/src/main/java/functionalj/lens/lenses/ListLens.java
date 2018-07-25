@@ -14,6 +14,7 @@ import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         extends

@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface Validatable<DATA extends Validatable<DATA, VALIDATOR>, VALIDATOR extends Predicate<? super DATA>> {
     
     public Class<VALIDATOR> getValidatorClass();

@@ -43,6 +43,7 @@ import tuple.Tuple6;
 
 // TODO - Double check if any of the methods can be removed as StreamPlus already have them.
 
+@SuppressWarnings("javadoc")
 public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> 
         extends StreamPlus<DATA, SELF> {
     

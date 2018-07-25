@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import functionalj.functions.Func1;
 
+@SuppressWarnings("javadoc")
 public interface Traversable<TYPE,DATA> extends Functor<TYPE, DATA>, Foldable<TYPE, DATA> {
     
     public <TARGET, ATYPE> Func1<Traversable<TYPE,DATA>, Applicative<ATYPE, TARGET>> 

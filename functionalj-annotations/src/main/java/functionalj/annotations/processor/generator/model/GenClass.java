@@ -24,12 +24,11 @@ import static functionalj.annotations.processor.generator.ILines.withSeparateInd
 import static functionalj.annotations.processor.generator.model.utils.allLists;
 import static functionalj.annotations.processor.generator.model.utils.themAll;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 import functionalj.annotations.processor.generator.IGenerateDefinition;
 import functionalj.annotations.processor.generator.ILines;

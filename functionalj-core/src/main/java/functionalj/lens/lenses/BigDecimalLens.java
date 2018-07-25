@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import functionalj.lens.core.LensSpec;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BigDecimalLens<HOST> 
         extends

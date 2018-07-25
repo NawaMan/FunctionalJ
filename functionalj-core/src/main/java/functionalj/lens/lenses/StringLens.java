@@ -3,6 +3,7 @@ package functionalj.lens.lenses;
 import functionalj.functions.Func1;
 import functionalj.lens.core.LensSpec;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface StringLens<HOST>
         extends

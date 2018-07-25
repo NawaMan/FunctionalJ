@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import functionalj.lens.core.AccessParameterized;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
         extends ObjectAccess<HOST, COLLECTION>, AccessParameterized<HOST, COLLECTION, TYPE, AnyAccess<HOST,TYPE>> {

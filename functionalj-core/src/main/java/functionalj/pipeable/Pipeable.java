@@ -6,6 +6,7 @@ import functionalj.functions.Func1;
 import functionalj.functions.FunctionInvocationException;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface Pipeable<DATA> {
     
     

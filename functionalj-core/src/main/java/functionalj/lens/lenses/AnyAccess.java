@@ -12,6 +12,7 @@ import functionalj.functions.Func1;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface AnyAccess<HOST, DATA> 
         extends Func1<HOST, DATA> {

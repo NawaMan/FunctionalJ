@@ -2,6 +2,7 @@ package functionalj.functions;
 
 import functionalj.kinds.Monad;
 
+@SuppressWarnings("javadoc")
 public interface MFunc {
 
     /**

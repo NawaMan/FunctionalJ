@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+@SuppressWarnings("javadoc")
 public interface ReadOnlyMap<KEY, VALUE> extends Map<KEY, VALUE> {
     
     @Override

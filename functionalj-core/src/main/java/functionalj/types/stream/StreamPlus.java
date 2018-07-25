@@ -49,6 +49,7 @@ import tuple.Tuple6;
 
 
 
+@SuppressWarnings("javadoc")
 public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>> 
         extends Iterable<DATA>, Stream<DATA> {
     

@@ -1,5 +1,6 @@
 package functionalj.types.result;
 
+@SuppressWarnings("javadoc")
 public class ResultCancelledException extends ResultNotAvailableException {
     
     ResultCancelledException() {

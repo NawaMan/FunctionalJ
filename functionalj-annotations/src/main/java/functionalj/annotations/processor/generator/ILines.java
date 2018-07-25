@@ -22,12 +22,11 @@ import static functionalj.annotations.processor.generator.utils.themAll;
 import static functionalj.annotations.processor.generator.utils.toStr;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  * Classes implementing this interface can turns itself into lines.

@@ -1,5 +1,6 @@
 package functionalj.types.result;
 
+@SuppressWarnings("javadoc")
 public class Invalid {
     
     public static <D extends Validatable<D, ?>> Valid<D> valueOf(String errorMsg) {

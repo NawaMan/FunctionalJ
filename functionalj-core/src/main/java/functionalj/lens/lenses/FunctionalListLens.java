@@ -14,6 +14,7 @@ import functionalj.types.list.FunctionalList;
 import functionalj.types.list.ImmutableList;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface FunctionalListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         extends
             ObjectLens<HOST, FunctionalList<TYPE>>,

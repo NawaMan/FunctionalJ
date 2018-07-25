@@ -7,6 +7,7 @@ import functionalj.types.result.Result;
 import functionalj.types.result.ValidationException;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface SimpleValidator<DATA> extends Validator<DATA> {
     
     public static <D> 

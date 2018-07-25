@@ -1,14 +1,13 @@
 package functionalj.lens;
 
 import static functionalj.lens.NullableLensTest.Driver.theDriver;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
 import org.junit.Test;
-
-import static java.util.stream.Collectors.toList;
 
 import functionalj.functions.Func1;
 import functionalj.lens.core.LensSpec;

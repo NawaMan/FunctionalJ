@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@SuppressWarnings("javadoc")
 public class Promise<TYPE> {
     
     private final CompletableFuture<TYPE> future;

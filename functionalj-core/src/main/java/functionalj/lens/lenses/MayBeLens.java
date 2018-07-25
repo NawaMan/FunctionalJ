@@ -10,6 +10,7 @@ import functionalj.lens.core.WriteLens;
 import functionalj.types.MayBe;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface MayBeLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
                     extends 

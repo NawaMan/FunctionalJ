@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 import functionalj.lens.core.LensSpec;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BooleanLens<HOST>
         extends

@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import functionalj.functions.FunctionInvocationException;
 import functionalj.types.result.Result;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
     

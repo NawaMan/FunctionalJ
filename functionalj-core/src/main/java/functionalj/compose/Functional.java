@@ -7,6 +7,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@SuppressWarnings("javadoc")
 public class Functional {
 
     public static <VALUE, TYPE> VALUE pluck(String name, TYPE object) {

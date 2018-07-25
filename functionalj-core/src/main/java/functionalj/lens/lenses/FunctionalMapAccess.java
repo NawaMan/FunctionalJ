@@ -12,6 +12,7 @@ import lombok.val;
 import tuple.Tuple2;
 
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface FunctionalMapAccess<HOST, KEY, VALUE, 
                             KEYACCESS extends AnyAccess<HOST,KEY>, 

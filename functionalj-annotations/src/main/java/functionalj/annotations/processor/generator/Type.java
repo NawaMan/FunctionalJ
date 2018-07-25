@@ -16,6 +16,8 @@
 package functionalj.annotations.processor.generator;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -25,9 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 import functionalj.annotations.processor.Core;
 import lombok.Builder;

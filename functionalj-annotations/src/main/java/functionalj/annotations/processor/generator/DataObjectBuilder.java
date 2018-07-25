@@ -25,6 +25,9 @@ import static functionalj.annotations.processor.generator.model.Scope.STATIC;
 import static functionalj.annotations.processor.generator.utils.listOf;
 import static functionalj.annotations.processor.generator.utils.themAll;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,11 +36,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-
-import static java.util.Collections.emptyList;
 
 import functionalj.annotations.IPostReConstruct;
 import functionalj.annotations.processor.generator.model.Accessibility;

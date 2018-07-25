@@ -11,6 +11,7 @@ import functionalj.lens.core.AccessCreator;
 import lombok.val;
 import tuple.Tuple2;
 
+@SuppressWarnings("javadoc")
 public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS extends NumberAccess<HOST, TYPE, ?>> 
         extends ComparableAccess<HOST, TYPE> {
     

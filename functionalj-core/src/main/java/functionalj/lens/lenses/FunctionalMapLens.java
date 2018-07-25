@@ -10,6 +10,7 @@ import functionalj.lens.core.WriteLens;
 import functionalj.types.map.FunctionalMap;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface FunctionalMapLens<HOST, KEY, VALUE, 
                             KEYLENS   extends AnyLens<HOST,KEY>, 
                             VALUELENS extends AnyLens<HOST,VALUE>>

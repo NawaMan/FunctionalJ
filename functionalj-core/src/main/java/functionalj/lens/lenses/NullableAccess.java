@@ -7,6 +7,7 @@ import functionalj.lens.core.AccessParameterized;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
             extends

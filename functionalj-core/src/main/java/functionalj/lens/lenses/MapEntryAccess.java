@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 import functionalj.lens.core.AccessParameterized2;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface MapEntryAccess<HOST, MAPENTRY extends Map.Entry<KEY, VALUE>, KEY, VALUE, 
                                 KEYACCESS extends AnyAccess<HOST,KEY>, 

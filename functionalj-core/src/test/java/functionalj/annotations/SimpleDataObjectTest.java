@@ -1,14 +1,13 @@
 package functionalj.annotations;
 
 import static functionalj.annotations.SimpleFromInteface.theSimpleFromInteface;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 
 import org.junit.Test;
-
-import static java.util.stream.Collectors.toList;
 
 import lombok.val;
 

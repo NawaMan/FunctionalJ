@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public abstract class Acceptable<DATA> extends Result<DATA> {
     
     protected Acceptable(Exception exception) {

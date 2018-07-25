@@ -17,6 +17,7 @@ import functionalj.lens.core.WriteLens;
 import lombok.val;
 import tuple.ImmutableTuple2;
 
+@SuppressWarnings("javadoc")
 public interface MapLens<HOST, KEY, VALUE, 
                             KEYLENS   extends AnyLens<HOST,KEY>, 
                             VALUELENS extends AnyLens<HOST,VALUE>>

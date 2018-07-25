@@ -11,6 +11,7 @@ import functionalj.lens.core.WriteLens;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
                     extends 

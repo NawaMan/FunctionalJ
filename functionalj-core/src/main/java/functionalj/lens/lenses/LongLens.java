@@ -2,6 +2,7 @@ package functionalj.lens.lenses;
 
 import functionalj.lens.core.LensSpec;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface LongLens<HOST> 
         extends

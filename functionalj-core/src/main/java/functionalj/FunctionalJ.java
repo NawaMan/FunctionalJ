@@ -15,6 +15,7 @@
 package functionalj;
 
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,8 +30,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toMap;
 
 import functionalj.functions.Absent;
 import functionalj.functions.Func1;
@@ -52,6 +51,7 @@ import tuple.ImmutableTuple2;
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
+@SuppressWarnings("javadoc")
 public class FunctionalJ {
     
     /**

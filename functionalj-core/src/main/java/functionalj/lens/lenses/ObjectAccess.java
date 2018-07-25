@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 // TODO - Not sure if we still need it.
 // NOTE - This might still be useful to have an ability to convert to Lens.
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface ObjectAccess<HOST, TYPE> 
         extends

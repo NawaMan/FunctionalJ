@@ -1,17 +1,17 @@
 package functionalj.lens.lenses;
 
 import static functionalj.functions.StringFunctions.stringOf;
+import static java.util.stream.Collectors.joining;
 
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.joining;
-
 import functionalj.functions.Func1;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface StringAccess<HOST> 
         extends 

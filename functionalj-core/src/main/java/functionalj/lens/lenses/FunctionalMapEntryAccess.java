@@ -7,6 +7,7 @@ import tuple.Tuple2;
 
 // TODO - See if this can be shared with Tuple2Lens.
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface FunctionalMapEntryAccess<HOST, MAPENTRY extends Tuple2<KEY, VALUE>, KEY, VALUE, 
                                 KEYACCESS extends AnyAccess<HOST,KEY>, 

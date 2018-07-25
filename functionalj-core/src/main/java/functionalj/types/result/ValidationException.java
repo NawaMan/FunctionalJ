@@ -2,6 +2,7 @@ package functionalj.types.result;
 
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public class ValidationException extends RuntimeException {
 
     public ValidationException(String message) {

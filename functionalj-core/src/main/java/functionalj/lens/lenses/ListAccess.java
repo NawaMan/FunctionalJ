@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import functionalj.lens.core.AccessUtils;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface ListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> 
         extends CollectionAccess<HOST, List<TYPE>, TYPE, TYPEACCESS> {

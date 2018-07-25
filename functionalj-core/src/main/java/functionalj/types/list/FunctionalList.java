@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import functionalj.types.stream.StreamPlus;
 import functionalj.types.stream.Streamable;
 
+@SuppressWarnings("javadoc")
 public abstract class FunctionalList<DATA> 
                     implements 
                         ReadOnlyList<DATA, FunctionalList<DATA>>, 

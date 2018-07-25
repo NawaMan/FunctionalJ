@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import functionalj.lens.core.AccessParameterized;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
             extends

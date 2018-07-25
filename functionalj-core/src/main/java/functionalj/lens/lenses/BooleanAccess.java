@@ -3,6 +3,7 @@ package functionalj.lens.lenses;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BooleanAccess<HOST> 
         extends 

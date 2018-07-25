@@ -9,6 +9,7 @@ import nawaman.nullablej.nullable.Nullable;
 import tuple.Tuple;
 import tuple.Tuple2;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface DoubleAccess<HOST> 
         extends 

@@ -4,6 +4,7 @@ import java.math.BigInteger;
 
 import functionalj.lens.core.LensSpec;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BigIntegerLens<HOST> 
         extends

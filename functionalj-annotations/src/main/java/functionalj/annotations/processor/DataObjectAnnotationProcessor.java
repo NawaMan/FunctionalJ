@@ -15,6 +15,9 @@
 //  ========================================================================
 package functionalj.annotations.processor;
 
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -38,9 +41,6 @@ import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
-
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 import functionalj.annotations.DataObject;
 import functionalj.annotations.processor.generator.DataObjectBuilder;

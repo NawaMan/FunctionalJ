@@ -9,6 +9,7 @@ import nawaman.nullablej.nullable.Nullable;
 import tuple.ImmutableTuple2;
 import tuple.IntTuple2;
 
+@SuppressWarnings("javadoc")
 public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VALUE> {
     
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(FunctionalMap<? extends KEY, ? extends VALUE> map) {

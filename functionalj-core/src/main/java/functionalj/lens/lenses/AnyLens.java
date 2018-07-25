@@ -8,6 +8,7 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.WriteLens;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HOST, DATA> {
     

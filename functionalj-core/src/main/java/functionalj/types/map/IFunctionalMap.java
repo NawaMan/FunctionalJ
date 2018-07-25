@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 import functionalj.types.list.FunctionalList;
 import tuple.ImmutableTuple2;
 
+@SuppressWarnings("javadoc")
 public interface IFunctionalMap<KEY, VALUE, SELF extends IFunctionalMap<KEY, VALUE, ?>> {
     
     public int size();

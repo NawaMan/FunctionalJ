@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import functionalj.types.stream.Streamable;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>> 
                     extends List<DATA>, Streamable<DATA, SELF> {
 

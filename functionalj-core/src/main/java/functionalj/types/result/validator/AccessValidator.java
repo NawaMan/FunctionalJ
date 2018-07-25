@@ -8,6 +8,7 @@ import functionalj.types.result.Result;
 import functionalj.types.result.ValidationException;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface AccessValidator<DATA, TARGET> extends Validator<DATA> {
 
     public Function<DATA, TARGET>    access();

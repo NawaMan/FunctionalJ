@@ -2,6 +2,7 @@ package functionalj.functions;
 
 import java.util.Objects;
 
+@SuppressWarnings("javadoc")
 public class ObjectFunctions {
     
     public static <I1, I2> Func2<I1, I2, Boolean> objEquals() {

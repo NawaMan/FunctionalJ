@@ -15,6 +15,7 @@ import tuple.Tuple4;
 import tuple.Tuple5;
 import tuple.Tuple6;
 
+@SuppressWarnings("javadoc")
 public interface Func {
     
     /**

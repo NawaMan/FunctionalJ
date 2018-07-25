@@ -2,6 +2,7 @@ package functionalj.compose;
 
 import java.util.function.Function;
 
+@SuppressWarnings("javadoc")
 public class Either<L, R> {
     
     private final L left;

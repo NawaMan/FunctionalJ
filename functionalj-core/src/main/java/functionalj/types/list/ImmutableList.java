@@ -15,6 +15,8 @@
 //  ========================================================================
 package functionalj.types.list;
 
+import static java.util.Collections.unmodifiableList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,8 +29,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
-
 import functionalj.types.stream.Streamable;
 import lombok.val;
 import tuple.Tuple;
@@ -38,6 +38,7 @@ import tuple.Tuple4;
 import tuple.Tuple5;
 import tuple.Tuple6;
 
+@SuppressWarnings("javadoc")
 public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     
     private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();

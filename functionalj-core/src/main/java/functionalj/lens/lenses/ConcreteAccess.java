@@ -12,6 +12,7 @@ All concrete access still have to implement this interface and the _of method.
  */
 
 
+@SuppressWarnings("javadoc")
 public interface ConcreteAccess<HOST, DATA, ACCESS extends AnyAccess<HOST, DATA>> 
         extends 
             AnyAccess<HOST, DATA>,

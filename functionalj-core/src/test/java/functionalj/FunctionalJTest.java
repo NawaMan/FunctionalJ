@@ -7,6 +7,9 @@ import static functionalj.FunctionalJ.only;
 import static functionalj.FunctionalJ.withIndex;
 import static functionalj.functions.Absent.__;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -17,10 +20,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import org.junit.Test;
-
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 import functionalj.functions.Func;
 import lombok.Value;

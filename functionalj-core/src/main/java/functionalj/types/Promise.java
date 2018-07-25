@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import functionalj.types.result.Result;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface Promise<DATA> {
     
     public static interface Control {

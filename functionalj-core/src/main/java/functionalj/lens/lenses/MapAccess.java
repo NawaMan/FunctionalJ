@@ -1,5 +1,7 @@
 package functionalj.lens.lenses;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -7,13 +9,12 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static java.util.stream.Collectors.toSet;
-
 import functionalj.functions.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessParameterized2;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface MapAccess<HOST, KEY, VALUE, 
                             KEYACCESS extends AnyAccess<HOST,KEY>, 

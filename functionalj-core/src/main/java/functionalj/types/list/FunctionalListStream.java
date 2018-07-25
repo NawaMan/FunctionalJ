@@ -1,5 +1,7 @@
 package functionalj.types.list;
 
+import static java.util.stream.Collectors.joining;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -10,13 +12,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.joining;
-
 import functionalj.types.stream.Streamable;
 import lombok.val;
 
 // TODO - create unit tests to make sure all ReadOnlyList, FunctionalList types behave consistently.
 // TODO - Add Integer length here to help with a few operations.
+@SuppressWarnings("javadoc")
 public class FunctionalListStream<SOURCE, DATA> 
                 extends FunctionalList<DATA> {
 

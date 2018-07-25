@@ -1,5 +1,7 @@
 package functionalj.types.map;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +17,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toSet;
-
 import functionalj.types.list.FunctionalList;
 import functionalj.types.list.FunctionalListStream;
 import functionalj.types.stream.Streamable;
@@ -24,6 +24,7 @@ import lombok.val;
 import tuple.ImmutableTuple2;
 import tuple.IntTuple2;
 
+@SuppressWarnings("javadoc")
 public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
     
     private static final Supplier<Stream<IntTuple2<ImmutableTuple2<?, ?>>>> EmptyStreamSupplier = ()->Stream.empty();
