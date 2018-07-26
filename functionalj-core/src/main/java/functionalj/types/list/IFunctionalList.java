@@ -21,8 +21,8 @@ import java.util.stream.Stream;
 import functionalj.types.map.FunctionalMap;
 import functionalj.types.map.ImmutableMap;
 import functionalj.types.stream.Streamable;
+import functionalj.types.tuple.IntTuple2;
 import lombok.val;
-import tuple.IntTuple2;
 
 @SuppressWarnings("javadoc")
 public interface IFunctionalList<DATA, SELF extends IFunctionalList<DATA, SELF>> 

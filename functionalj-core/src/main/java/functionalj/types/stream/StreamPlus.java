@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -30,22 +31,23 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import functionalj.functions.Func3;
+import functionalj.functions.Func4;
+import functionalj.functions.Func5;
+import functionalj.functions.Func6;
+import functionalj.functions.StringFunctions;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.list.IFunctionalList;
 import functionalj.types.list.ImmutableList;
 import functionalj.types.map.FunctionalMap;
 import functionalj.types.map.ImmutableMap;
+import functionalj.types.tuple.Tuple;
+import functionalj.types.tuple.Tuple2;
+import functionalj.types.tuple.Tuple3;
+import functionalj.types.tuple.Tuple4;
+import functionalj.types.tuple.Tuple5;
+import functionalj.types.tuple.Tuple6;
 import lombok.val;
-import tuple.ImmutableTuple2;
-import tuple.ImmutableTuple3;
-import tuple.ImmutableTuple4;
-import tuple.ImmutableTuple5;
-import tuple.ImmutableTuple6;
-import tuple.Tuple2;
-import tuple.Tuple3;
-import tuple.Tuple4;
-import tuple.Tuple5;
-import tuple.Tuple6;
 
 
 
@@ -131,15 +133,98 @@ public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>>
     // TODO - Add map, peek, forEach with Index and make sure that the index does not got mixed up when 
     //          reused (for child of this).
     
-    // TODO - Think about making this Tuple concern
+    public default <T, TARGET_SELF extends StreamPlus<T, ?>> 
+            TARGET_SELF map(
+                BiFunction<? super Integer, ? super DATA, T> mapper) {
+        val index = new AtomicInteger();
+        return __map(each -> mapper.apply(index.getAndIncrement(), each));
+    }
+    
+    public default <T, T1, TARGET_SELF extends StreamPlus<T, ?>> 
+        TARGET_SELF map(
+                Function<? super DATA, ? extends T1>       mapper1,
+                BiFunction<? super Integer, ? super T1, T> mapper) {
+        val index = new AtomicInteger();
+        return __map(each -> mapper.apply(
+                                index.getAndIncrement(),
+                                mapper1.apply(each)));
+    }
+    
+    public default <T, T1, T2, TARGET_SELF extends StreamPlus<T, ?>> 
+        TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Func3<? super Integer, ? super T1, ? super T2, T> mapper) {
+        val index = new AtomicInteger();
+        return __map(each -> mapper.apply(
+                                index.getAndIncrement(),
+                                mapper1.apply(each),
+                                mapper2.apply(each)));
+    }
+    
+    public default <T, T1, T2, T3, TARGET_SELF extends StreamPlus<T, ?>> 
+        TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Func4<? super Integer, ? super T1, ? super T2, ? super T3, T> mapper) {
+        val index = new AtomicInteger();
+        return __map(each -> mapper.apply(
+                                index.getAndIncrement(),
+                                mapper1.apply(each),
+                                mapper2.apply(each),
+                                mapper3.apply(each)));
+    }
+    
+    public default <T, T1, T2, T3, T4, TARGET_SELF extends StreamPlus<T, ?>> 
+        TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Func5<? super Integer, ? super T1, ? super T2, ? super T3, ? super T4, T> mapper) {
+        val index = new AtomicInteger();
+        return __map(each -> mapper.apply(
+                                index.getAndIncrement(),
+                                mapper1.apply(each),
+                                mapper2.apply(each),
+                                mapper3.apply(each),
+                                mapper4.apply(each)));
+    }
+    
+    public default <T, T1, T2, T3, T4, T5, TARGET_SELF extends StreamPlus<T, ?>> 
+        TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Function<? super DATA, ? extends T5> mapper5,
+                Func6<? super Integer, ? super T1, ? super T2, ? super T3, ? super T4, ? super T5, T> mapper) {
+        val index = new AtomicInteger();
+        return __map(each -> mapper.apply(
+                                index.getAndIncrement(),
+                                mapper1.apply(each),
+                                mapper2.apply(each),
+                                mapper3.apply(each),
+                                mapper4.apply(each),
+                                mapper5.apply(each)));
+    }
     
     public default <T1, T2, TARGET_SELF extends StreamPlus<Tuple2<T1, T2>, ?>> 
             TARGET_SELF map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2) {
-        return __map(each -> new ImmutableTuple2<T1, T2>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each)));
+        return map(mapper1, mapper2, (t1, t2) -> Tuple.of(t1, t2));
+    }
+    @SuppressWarnings("unchecked")
+    public default <T1, T2, T, TARGET_SELF extends StreamPlus<T, ?>> 
+            TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                BiFunction<? super T1, ? super T2, T> mapper) {
+        return (TARGET_SELF)__map(each -> mapper.apply(
+                                mapper1.apply(each), 
+                                mapper2.apply(each)));
     }
     
     public default <T1, T2, T3, TARGET_SELF extends StreamPlus<Tuple3<T1, T2, T3>, ?>> 
@@ -147,7 +232,16 @@ public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>>
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3) {
-        return __map(each -> new ImmutableTuple3<T1, T2, T3>(
+        return map(mapper1, mapper2, mapper3, (t1, t2 ,t3) -> Tuple.of(t1, t2, t3));
+    }
+    @SuppressWarnings("unchecked")
+    public default <T1, T2, T3, T, TARGET_SELF extends StreamPlus<T, ?>> 
+        TARGET_SELF map(
+            Function<? super DATA, ? extends T1> mapper1,
+            Function<? super DATA, ? extends T2> mapper2,
+            Function<? super DATA, ? extends T3> mapper3,
+            Func3<? super T1, ? super T2, ? super T3, T> mapper) {
+        return (TARGET_SELF)__map(each -> mapper.apply(
                                     mapper1.apply(each), 
                                     mapper2.apply(each), 
                                     mapper3.apply(each)));
@@ -159,11 +253,22 @@ public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>>
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
                 Function<? super DATA, ? extends T4> mapper4) {
-        return __map(each -> new ImmutableTuple4<T1, T2, T3, T4>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each), 
-                                    mapper4.apply(each)));
+        return map(mapper1, mapper2, mapper3, mapper4, (t1, t2 ,t3 ,t4) -> Tuple.of(t1, t2, t3, t4));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <T1, T2, T3, T4, T, TARGET_SELF extends StreamPlus<T, ?>> 
+            TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Func4<? super T1, ? super T2, ? super T3, ? super T4, T> mapper) {
+        return (TARGET_SELF)__map(each -> mapper.apply(
+                                mapper1.apply(each), 
+                                mapper2.apply(each), 
+                                mapper3.apply(each), 
+                                mapper4.apply(each)));
     }
     
     public default <T1, T2, T3, T4, T5, TARGET_SELF extends StreamPlus<Tuple5<T1, T2, T3, T4, T5>, ?>> 
@@ -173,7 +278,19 @@ public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>>
                 Function<? super DATA, ? extends T3> mapper3,
                 Function<? super DATA, ? extends T4> mapper4,
                 Function<? super DATA, ? extends T5> mapper5) {
-        return __map(each -> new ImmutableTuple5<T1, T2, T3, T4, T5>(
+        return map(mapper1, mapper2, mapper3, mapper4, mapper5, (t1, t2 ,t3 ,t4, t5) -> Tuple.of(t1, t2, t3, t4, t5));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <T1, T2, T3, T4, T5, T, TARGET_SELF extends StreamPlus<T, ?>> 
+            TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Function<? super DATA, ? extends T5> mapper5,
+                Func5<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, T> mapper) {
+        return (TARGET_SELF)__map(each -> mapper.apply(
                                     mapper1.apply(each), 
                                     mapper2.apply(each), 
                                     mapper3.apply(each), 
@@ -189,7 +306,19 @@ public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>>
                 Function<? super DATA, ? extends T4> mapper4,
                 Function<? super DATA, ? extends T5> mapper5,
                 Function<? super DATA, ? extends T6> mapper6) {
-        return __map(each -> new ImmutableTuple6<T1, T2, T3, T4, T5, T6>(
+        return map(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, (t1, t2 ,t3 ,t4, t5, t6) -> Tuple.of(t1, t2, t3, t4, t5, t6));
+    }
+    @SuppressWarnings("unchecked")
+    public default <T1, T2, T3, T4, T5, T6, T, TARGET_SELF extends StreamPlus<T, ?>> 
+            TARGET_SELF map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Function<? super DATA, ? extends T5> mapper5,
+                Function<? super DATA, ? extends T6> mapper6,
+                Func6<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, T> mapper) {
+        return (TARGET_SELF)__map(each -> mapper.apply(
                                     mapper1.apply(each), 
                                     mapper2.apply(each), 
                                     mapper3.apply(each), 
@@ -620,6 +749,12 @@ public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>>
     
     public default Optional<DATA> findAny() {
         return stream().findAny();
+    }
+    public default String joining() {
+        return stream().map(StringFunctions::stringOf).collect(Collectors.joining());
+    }
+    public default String joining(String delimiter) {
+        return stream().map(StringFunctions::stringOf).collect(Collectors.joining(delimiter));
     }
     
     // TODO segment

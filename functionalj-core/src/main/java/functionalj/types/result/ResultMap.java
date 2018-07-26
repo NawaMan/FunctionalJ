@@ -8,13 +8,13 @@ import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
+import functionalj.types.tuple.Tuple;
+import functionalj.types.tuple.Tuple2;
+import functionalj.types.tuple.Tuple3;
+import functionalj.types.tuple.Tuple4;
+import functionalj.types.tuple.Tuple5;
+import functionalj.types.tuple.Tuple6;
 import lombok.val;
-import tuple.Tuple;
-import tuple.Tuple2;
-import tuple.Tuple3;
-import tuple.Tuple4;
-import tuple.Tuple5;
-import tuple.Tuple6;
 
 @SuppressWarnings("javadoc")
 public interface ResultMap<DATA> {

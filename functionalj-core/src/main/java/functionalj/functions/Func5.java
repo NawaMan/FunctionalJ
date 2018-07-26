@@ -16,8 +16,8 @@
 package functionalj.functions;
 
 import functionalj.types.result.Result;
+import functionalj.types.tuple.Tuple5;
 import lombok.val;
-import tuple.Tuple5;
 
 /**
  * Function of five parameters.

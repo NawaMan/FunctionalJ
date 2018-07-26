@@ -11,9 +11,9 @@ import org.junit.Test;
 import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
 import functionalj.types.list.ImmutableList;
+import functionalj.types.tuple.ImmutableTuple2;
+import functionalj.types.tuple.Tuple2;
 import lombok.val;
-import tuple.ImmutableTuple2;
-import tuple.Tuple2;
 
 public class Tuple2Test {
     
@@ -39,7 +39,7 @@ public class Tuple2Test {
 
     @Test
     public void testLensChange() {
-        assertEquals("[[I: ,Integer], [S: ,String]]", 
+        assertEquals("[(I: ,Integer), (S: ,String)]", 
                 "" + tuples.map(theTuple._1().changeTo(appendWith(": "))));
     }
     

@@ -7,8 +7,8 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import functionalj.types.tuple.Tuple;
 import lombok.val;
-import tuple.Tuple;
 
 public class AccessOrXXXTest {
     
@@ -72,7 +72,7 @@ public class AccessOrXXXTest {
         val theTuple2 = theTupleStrStr.orDefaultTo(Tuple.of("A", "B"));
         
         assertEquals("null", "" + theTupleStrStr.apply(null));
-        assertEquals("[A,B]", "" +theTuple2.apply(null));
+        assertEquals("(A,B)", "" +theTuple2.apply(null));
     }
     
 }

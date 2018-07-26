@@ -5,9 +5,9 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
+import functionalj.types.tuple.Tuple;
+import functionalj.types.tuple.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
-import tuple.Tuple;
-import tuple.Tuple2;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface

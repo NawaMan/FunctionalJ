@@ -8,8 +8,8 @@ import functionalj.functions.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessParameterized2;
 import functionalj.types.map.FunctionalMap;
+import functionalj.types.tuple.Tuple2;
 import lombok.val;
-import tuple.Tuple2;
 
 
 @SuppressWarnings("javadoc")

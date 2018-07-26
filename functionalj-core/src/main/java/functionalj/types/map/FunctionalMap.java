@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.types.list.FunctionalList;
-import tuple.ImmutableTuple2;
+import functionalj.types.tuple.ImmutableTuple2;
 
 @SuppressWarnings("javadoc")
 public abstract class FunctionalMap<KEY, VALUE>

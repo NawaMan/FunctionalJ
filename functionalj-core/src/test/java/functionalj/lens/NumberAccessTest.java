@@ -17,7 +17,7 @@ public class NumberAccessTest {
         assertEquals(15,  (int)theInteger.add(5).apply(10));
         
         assertEquals(
-                "[[One,3,true,9.0], [Two,3,true,9.0], [Three,5,false,15.0], [Four,4,false,12.0]]",
+                "[(One,3,true,9.0), (Two,3,true,9.0), (Three,5,false,15.0), (Four,4,false,12.0)]",
                 "" + ImmutableList.of("One", "Two", "Three", "Four")
                     .map(theString, 
                          theString.length(),

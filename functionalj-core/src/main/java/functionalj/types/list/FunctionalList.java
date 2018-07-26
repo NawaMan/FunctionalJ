@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -15,6 +17,7 @@ import java.util.stream.Stream;
 
 import functionalj.types.stream.StreamPlus;
 import functionalj.types.stream.Streamable;
+import lombok.val;
 
 @SuppressWarnings("javadoc")
 public abstract class FunctionalList<DATA> 
@@ -25,7 +28,7 @@ public abstract class FunctionalList<DATA>
     @SuppressWarnings("unchecked")
 	@Override
     public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> TARGET_SELF __of(Stream<TARGET> targetStream) {
-        return (TARGET_SELF)FunctionalList.of(targetStream);
+        return (TARGET_SELF)FunctionalList.ofStream(targetStream);
     }
     
     public static <T> FunctionalList<T> empty() {
@@ -41,7 +44,7 @@ public abstract class FunctionalList<DATA>
     public static <T> FunctionalList<T> of(Streamable<T, ?> streamable) {
         return ImmutableList.of(streamable);
     }
-    public static <T> FunctionalList<T> of(Stream<T> stream) {
+    public static <T> FunctionalList<T> ofStream(Stream<T> stream) {
         return new ImmutableList<T>(stream.collect(Collectors.toList()));
     }
     public static <T> FunctionalList<T> of(ReadOnlyList<T, ?> readOnlyList) {

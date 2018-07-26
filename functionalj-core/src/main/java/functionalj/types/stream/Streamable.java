@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -28,20 +29,16 @@ import functionalj.types.list.IFunctionalList;
 import functionalj.types.list.ImmutableList;
 import functionalj.types.map.FunctionalMap;
 import functionalj.types.map.ImmutableMap;
+import functionalj.types.tuple.Tuple;
+import functionalj.types.tuple.Tuple2;
+import functionalj.types.tuple.Tuple3;
+import functionalj.types.tuple.Tuple4;
+import functionalj.types.tuple.Tuple5;
+import functionalj.types.tuple.Tuple6;
 import lombok.val;
-import tuple.ImmutableTuple2;
-import tuple.ImmutableTuple3;
-import tuple.ImmutableTuple4;
-import tuple.ImmutableTuple5;
-import tuple.ImmutableTuple6;
-import tuple.Tuple;
-import tuple.Tuple2;
-import tuple.Tuple3;
-import tuple.Tuple4;
-import tuple.Tuple5;
-import tuple.Tuple6;
 
 // TODO - Double check if any of the methods can be removed as StreamPlus already have them.
+// TODO - Lots of this can goes on StreamPlus
 
 @SuppressWarnings("javadoc")
 public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>> 
@@ -75,71 +72,6 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>>
     public default <TARGET, TARGET_SELF extends StreamPlus<TARGET, ?>> 
             TARGET_SELF __flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
         return __stream(stream -> stream.flatMap(mapper));
-    }
-    
-    public default <T1, T2, TARGET_SELF extends StreamPlus<Tuple2<T1, T2>, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2) {
-        return __map(each -> new ImmutableTuple2<T1, T2>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each)));
-    }
-    
-    public default <T1, T2, T3, TARGET_SELF extends StreamPlus<Tuple3<T1, T2, T3>, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3) {
-        return __map(each -> new ImmutableTuple3<T1, T2, T3>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each)));
-    }
-    
-    public default <T1, T2, T3, T4, TARGET_SELF extends StreamPlus<Tuple4<T1, T2, T3, T4>, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4) {
-        return __map(each -> new ImmutableTuple4<T1, T2, T3, T4>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each), 
-                                    mapper4.apply(each)));
-    }
-    
-    public default <T1, T2, T3, T4, T5, TARGET_SELF extends StreamPlus<Tuple5<T1, T2, T3, T4, T5>, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Function<? super DATA, ? extends T5> mapper5) {
-        return __map(each -> new ImmutableTuple5<T1, T2, T3, T4, T5>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each), 
-                                    mapper4.apply(each), 
-                                    mapper5.apply(each)));
-    }
-    
-    public default <T1, T2, T3, T4, T5, T6, TARGET_SELF extends StreamPlus<Tuple6<T1, T2, T3, T4, T5, T6>, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Function<? super DATA, ? extends T5> mapper5,
-                Function<? super DATA, ? extends T6> mapper6) {
-        return __map(each -> new ImmutableTuple6<T1, T2, T3, T4, T5, T6>(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each), 
-                                    mapper4.apply(each), 
-                                    mapper5.apply(each), 
-                                    mapper6.apply(each)));
     }
     
     public default List<DATA> toList() {
@@ -330,6 +262,15 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>>
         
         return __stream(stream -> stream.filter(predicate));
     }
+
+    @SuppressWarnings("unchecked")
+    public default SELF filter(BiFunction<? super Integer, ? super DATA, Boolean> predicate) {
+        if (predicate == null)
+            return (SELF)this;
+        
+        val index = new AtomicInteger();
+        return __stream(stream -> stream.filter(each -> predicate.apply(index.getAndIncrement(), each)));
+    }
     
     @SuppressWarnings("unchecked")
 	public default SELF exclude(Predicate<? super DATA> predicate) {
@@ -477,6 +418,12 @@ public interface Streamable<DATA, SELF extends Streamable<DATA, SELF>>
             return;
         
         stream().forEach(action);
+    }
+    public default void forEach(BiConsumer<? super Integer, ? super DATA> action) {
+        if (action == null)
+            return;
+        val index = new AtomicInteger();
+        stream().forEach(each -> action.accept(index.getAndIncrement(), each));
     }
     
     public default void forEachOrdered(Consumer<? super DATA> action) {

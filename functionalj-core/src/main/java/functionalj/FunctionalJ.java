@@ -35,6 +35,7 @@ import functionalj.functions.Absent;
 import functionalj.functions.Func1;
 import functionalj.functions.Func2;
 import functionalj.functions.Func3;
+import functionalj.types.tuple.ImmutableTuple2;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,7 +45,6 @@ import lombok.Value;
 import lombok.val;
 import lombok.experimental.Accessors;
 import lombok.experimental.Wither;
-import tuple.ImmutableTuple2;
 
 /**
  * Collection of useful methods for functional programming.

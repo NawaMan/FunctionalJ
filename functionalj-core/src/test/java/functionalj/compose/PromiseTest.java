@@ -101,11 +101,11 @@ public class PromiseTest {
     }
     
     private void shortSleep() {
-        sleep(100);
+        sleep(50);
     }
     
     private void sleep() {
-        sleep(2000);
+        sleep(300);
     }
     
     private void sleep(long time) {

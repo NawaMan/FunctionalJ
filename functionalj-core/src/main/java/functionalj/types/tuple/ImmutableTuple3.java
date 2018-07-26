@@ -1,4 +1,4 @@
-package tuple;
+package functionalj.types.tuple;
 
 @SuppressWarnings("javadoc")
 public class ImmutableTuple3<T1, T2, T3> implements Tuple3<T1, T2, T3> {
@@ -23,8 +23,17 @@ public class ImmutableTuple3<T1, T2, T3> implements Tuple3<T1, T2, T3> {
         return _3;
     }
     
+    @Override
     public String toString() {
-        return "[" + _1 + "," + _2 + "," + _3 + "]";
+        return Tuple.toString(this);
+    }
+    @Override
+    public int hashCode() {
+        return Tuple.hashCode(this);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        return Tuple.equals(this, obj);
     }
     
 }

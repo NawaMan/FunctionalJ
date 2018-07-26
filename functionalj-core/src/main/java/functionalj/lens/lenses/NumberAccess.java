@@ -8,8 +8,8 @@ import java.util.function.Supplier;
 
 import functionalj.functions.Func;
 import functionalj.lens.core.AccessCreator;
+import functionalj.types.tuple.Tuple2;
 import lombok.val;
-import tuple.Tuple2;
 
 @SuppressWarnings("javadoc")
 public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS extends NumberAccess<HOST, TYPE, ?>> 
@@ -226,6 +226,23 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     }
     @SuppressWarnings("unchecked")
     public default NUMACCESS remainder(BiFunction<HOST, TYPE, TYPE> valueFunction) {
+        return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS mod(TYPE value) {
+        return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS mod(Supplier<TYPE> valueSupplier) {
+        return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS mod(Function<TYPE, TYPE> valueFunction) {
+        return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
+    }
+    @SuppressWarnings("unchecked")
+    public default NUMACCESS mod(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::remainder);
     }
     

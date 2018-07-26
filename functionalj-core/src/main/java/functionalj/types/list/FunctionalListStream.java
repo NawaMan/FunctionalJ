@@ -215,7 +215,7 @@ public class FunctionalListStream<SOURCE, DATA>
     
     @Override
     public String toString() {
-        return "[" + stream().map(String::valueOf).collect(joining(", ")) + "]";
+        return "[" + stream().map(String::valueOf).collect(Collectors.joining(", ")) + "]";
     }
     
 }

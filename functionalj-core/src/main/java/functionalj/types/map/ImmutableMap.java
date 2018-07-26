@@ -5,9 +5,9 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import functionalj.types.list.ImmutableList;
+import functionalj.types.tuple.ImmutableTuple2;
+import functionalj.types.tuple.IntTuple2;
 import nawaman.nullablej.nullable.Nullable;
-import tuple.ImmutableTuple2;
-import tuple.IntTuple2;
 
 @SuppressWarnings("javadoc")
 public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VALUE> {

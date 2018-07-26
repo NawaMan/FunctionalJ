@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.types.list.FunctionalList;
-import tuple.ImmutableTuple2;
+import functionalj.types.tuple.ImmutableTuple2;
 
 @SuppressWarnings("javadoc")
 public interface IFunctionalMap<KEY, VALUE, SELF extends IFunctionalMap<KEY, VALUE, ?>> {

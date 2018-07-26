@@ -24,10 +24,10 @@ import functionalj.kinds.Peekable;
 import functionalj.types.MayBe;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.result.validator.Validator;
+import functionalj.types.tuple.Tuple;
+import functionalj.types.tuple.Tuple2;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
-import tuple.Tuple;
-import tuple.Tuple2;
 
 @SuppressWarnings({"javadoc", "rawtypes"})
 public class Result<DATA>

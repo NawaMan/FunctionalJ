@@ -5,8 +5,9 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-import tuple.Tuple;
-import tuple.Tuple2;
+import functionalj.types.tuple.Tuple;
+import functionalj.types.tuple.Tuple2;
+import lombok.val;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
@@ -27,6 +28,17 @@ public interface IntegerAccess<HOST>
     
     public default MathOperators<Integer> __mathOperators() {
         return __IntMathOperators;
+    }
+    
+    public default IntegerAccess<HOST> bitAnd(int value) {
+        return intAccess(0, i -> i & value);
+    }
+    public default IntegerAccess<HOST> bitOr(int value) {
+        return intAccess(0, i -> i | value);
+    }
+    public default BooleanAccess<HOST> bitAt(int bitIndex) {
+        val p = (int)Math.pow(2, bitIndex);
+        return booleanAccess(false, i -> (i & p) != 0);
     }
     
     public static MathOperators<Integer> __IntMathOperators = new MathOperators<Integer>() {

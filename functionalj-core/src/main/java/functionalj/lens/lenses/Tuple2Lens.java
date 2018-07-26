@@ -10,9 +10,9 @@ import functionalj.lens.core.LensSpecParameterized2;
 import functionalj.lens.core.LensType;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
+import functionalj.types.tuple.ImmutableTuple2;
+import functionalj.types.tuple.Tuple2;
 import lombok.val;
-import tuple.ImmutableTuple2;
-import tuple.Tuple2;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface

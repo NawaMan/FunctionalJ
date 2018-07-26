@@ -18,8 +18,8 @@ package functionalj.functions;
 import java.util.function.BiFunction;
 
 import functionalj.types.result.Result;
+import functionalj.types.tuple.Tuple2;
 import lombok.val;
-import tuple.Tuple2;
 
 /**
  * Function of two parameters.

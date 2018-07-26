@@ -1,4 +1,4 @@
-package tuple;
+package functionalj.types.tuple;
 
 import static functionalj.FunctionalJ.it;
 import static functionalj.functions.Absent.__;
@@ -69,18 +69,18 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     //== Map ==
 
     public default <NT1> Tuple3<NT1, T2, T3> map1(Function<? super T1, NT1> mapper) {
-        return mapEach(mapper, it(), it());
+        return map(mapper, it(), it());
     }
     
     public default <NT2> Tuple3<T1, NT2, T3> map2(Function<? super T2, NT2> mapper) {
-        return mapEach(it(), mapper, it());
+        return map(it(), mapper, it());
     }
 
     public default <NT3> Tuple3<T1, T2, NT3> map3(Function<? super T3, NT3> mapper) {
-        return mapEach(it(), it(), mapper);
+        return map(it(), it(), mapper);
     }
     
-    public default <NT1, NT2, NT3> Tuple3<NT1, NT2, NT3> mapEach(
+    public default <NT1, NT2, NT3> Tuple3<NT1, NT2, NT3> map(
             Func3<? super T1, ? super T2, ? super T3, Tuple3<NT1, NT2, NT3>> mapper) {
         val _1 = _1();
         val _2 = _2();
@@ -88,20 +88,28 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         return mapper.apply(_1, _2, _3);
     }
     
-    public default <NT1, NT2, NT3> Tuple3<NT1, NT2, NT3> mapEach(
+    public default <NT1, NT2, NT3> Tuple3<NT1, NT2, NT3> map(
             Function<? super T1, NT1> mapper1, 
             Function<? super T2, NT2> mapper2, 
             Function<? super T3, NT3> mapper3) {
+        return map(mapper1, mapper2, mapper3, Tuple::of);
+    }
+    
+    public default <NT1, NT2, NT3, T> T map(
+            Function<? super T1, NT1> mapper1, 
+            Function<? super T2, NT2> mapper2, 
+            Function<? super T3, NT3> mapper3,
+            Func3<? super NT1, ? super NT2, ? super NT3, T> mapper) {
         val _1 = _1();
         val _2 = _2();
         val _3 = _3();
         val n1 = mapper1.apply(_1);
         val n2 = mapper2.apply(_2);
         val n3 = mapper3.apply(_3);
-        return Tuple.of(n1, n2, n3);
+        return mapper.apply(n1, n2, n3);
     }
     
-    public default <NT2, NT3> Tuple3<T1, NT2, NT3> mapEach(
+    public default <NT2, NT3> Tuple3<T1, NT2, NT3> map(
             Absent                    absent1, 
             Function<? super T2, NT2> mapper2, 
             Function<? super T3, NT3> mapper3) {
@@ -114,7 +122,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         return Tuple.of(n1, n2, n3);
     }
     
-    public default <NT1, NT3> Tuple3<NT1, T2, NT3> mapEach(
+    public default <NT1, NT3> Tuple3<NT1, T2, NT3> map(
             Function<? super T1, NT1> mapper1, 
             Absent                    absent2, 
             Function<? super T3, NT3> mapper3) {
@@ -127,7 +135,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         return Tuple.of(n1, n2, n3);
     }
     
-    public default <NT1, NT2> Tuple3<NT1, NT2, T3> mapEach(
+    public default <NT1, NT2> Tuple3<NT1, NT2, T3> map(
             Function<? super T1, NT1> mapper1, 
             Function<? super T2, NT2> mapper2,
             Absent                    absent3) {
@@ -140,7 +148,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         return Tuple.of(n1, n2, n3);
     }
     
-    public default <NT3> Tuple3<T1, T2, NT3> mapEach(
+    public default <NT3> Tuple3<T1, T2, NT3> map(
             Absent                    absent1, 
             Absent                    absent2, 
             Function<? super T3, NT3> mapper3) {
@@ -153,7 +161,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         return Tuple.of(n1, n2, n3);
     }
     
-    public default <NT2> Tuple3<T1, NT2, T3> mapEach(
+    public default <NT2> Tuple3<T1, NT2, T3> map(
             Absent                    absent1, 
             Function<? super T2, NT2> mapper2, 
             Absent                    absent3) {
@@ -166,7 +174,7 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         return Tuple.of(n1, n2, n3);
     }
     
-    public default <NT1> Tuple3<NT1, T2, T3> mapEach(
+    public default <NT1> Tuple3<NT1, T2, T3> map(
             Function<? super T1, NT1> mapper1, 
             Absent                    absent2,
             Absent                    absent3) {

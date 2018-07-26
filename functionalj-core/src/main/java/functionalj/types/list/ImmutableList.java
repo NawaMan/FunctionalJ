@@ -30,13 +30,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.types.stream.Streamable;
+import functionalj.types.tuple.Tuple;
+import functionalj.types.tuple.Tuple2;
+import functionalj.types.tuple.Tuple3;
+import functionalj.types.tuple.Tuple4;
+import functionalj.types.tuple.Tuple5;
+import functionalj.types.tuple.Tuple6;
 import lombok.val;
-import tuple.Tuple;
-import tuple.Tuple2;
-import tuple.Tuple3;
-import tuple.Tuple4;
-import tuple.Tuple5;
-import tuple.Tuple6;
 
 @SuppressWarnings("javadoc")
 public final class ImmutableList<DATA> extends FunctionalList<DATA> {

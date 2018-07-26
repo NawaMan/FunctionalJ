@@ -20,9 +20,9 @@ import java.util.stream.Stream;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.list.FunctionalListStream;
 import functionalj.types.stream.Streamable;
+import functionalj.types.tuple.ImmutableTuple2;
+import functionalj.types.tuple.IntTuple2;
 import lombok.val;
-import tuple.ImmutableTuple2;
-import tuple.IntTuple2;
 
 @SuppressWarnings("javadoc")
 public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {

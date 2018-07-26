@@ -23,7 +23,7 @@ public class StreamableTest {
     
     @Test
     public void testSplit() {
-        assertEquals("[[One, Two],[Four, Five],[Three]]", 
+        assertEquals("([One, Two],[Four, Five],[Three])", 
                 FunctionalListStream.of((Supplier<Stream<String>>)()->Stream.of("One", "Two", "Three", "Four", "Five"))
                 .split($S.length().thatEquals(3),
                        $S.length().thatLessThanOrEqualsTo(4))
@@ -32,7 +32,7 @@ public class StreamableTest {
     @Test
     public void testSplit_noticePredicateCalledMoreThanOncePerItem() {
         val processedStrings = new ArrayList<String>();
-        assertEquals("[[One, Two],[Four, Five],[Three]]", 
+        assertEquals("([One, Two],[Four, Five],[Three])", 
                 FunctionalListStream.of((Supplier<Stream<String>>)()->Stream.of("One", "Two", "Three", "Four", "Five"))
                 .split($S.length().thatEquals(3),
                        it -> {

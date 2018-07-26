@@ -1,4 +1,4 @@
-package tuple;
+package functionalj.types.tuple;
 
 import java.util.Map;
 
@@ -25,23 +25,32 @@ public class ImmutableTuple2<T1, T2> implements Tuple2<T1, T2>, Map.Entry<T1, T2
         return _2;
     }
     
-    public String toString() {
-        return "[" + _1 + "," + _2 + "]";
-    }
-
     @Override
     public T1 getKey() {
         return _1();
     }
-
+    
     @Override
     public T2 getValue() {
         return _2();
     }
-
+    
     @Override
     public T2 setValue(T2 value) {
         throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public String toString() {
+        return Tuple.toString(this);
+    }
+    @Override
+    public int hashCode() {
+        return Tuple.hashCode(this);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        return Tuple.equals(this, obj);
     }
     
 }
