@@ -2,6 +2,8 @@ package functionalj.functions;
 
 import static functionalj.functions.Absent.__;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -59,6 +61,17 @@ public class StringFunctions {
     
     public <I1, I2> Func3<String, I1, I2, String> strFormat2() {
         return (template, i1, i2) -> String.format(template, i1, i2);
+    }
+    
+    public Func3<String, String, String, String> replaceAll() {
+        return (str, regex, replacement) -> str.replaceAll(regex, replacement);
+    }
+    public Func1<String, String> replaceAll(String regex, String replacement) {
+        return (str) -> str.replaceAll(regex, replacement);
+    }
+    
+    public Func1<String, Path> toPath() {
+        return str -> Paths.get(str);
     }
     
     // TODO Improve this with template() ...

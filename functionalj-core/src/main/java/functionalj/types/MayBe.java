@@ -154,10 +154,10 @@ public abstract class MayBe<DATA>
     }
     
     @Override
-    public abstract <TARGET> MayBe<TARGET> _map(Function<? super DATA, TARGET> mapper);
+    public abstract <TARGET> MayBe<TARGET> _map(Function<? super DATA, ? extends TARGET> mapper);
     
     @Override
-    public abstract <TARGET> MayBe<TARGET> map(Function<? super DATA, TARGET> mapper);
+    public abstract <TARGET> MayBe<TARGET> map(Function<? super DATA, ? extends TARGET> mapper);
     
     @Override
     public abstract <TARGET> MayBe<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper);
@@ -254,12 +254,12 @@ public abstract class MayBe<DATA>
         }
 
         @Override
-        public <TARGET> MayBe<TARGET> _map(Function<? super DATA, TARGET> mapper) {
+        public <TARGET> MayBe<TARGET> _map(Function<? super DATA, ? extends TARGET> mapper) {
             return MayBe.of(mapper.apply(data));
         }
         
         @Override
-        public <TARGET> MayBe<TARGET> map(Function<? super DATA, TARGET> mapper) {
+        public <TARGET> MayBe<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
             return MayBe.of(mapper.apply(data));
         }
         
@@ -376,12 +376,12 @@ public abstract class MayBe<DATA>
         }
 
         @Override
-        public <TARGET> MayBe<TARGET> _map(Function<? super DATA, TARGET> mapper) {
+        public <TARGET> MayBe<TARGET> _map(Function<? super DATA, ? extends TARGET> mapper) {
             return MayBe.empty();
         }
         
         @Override
-        public <TARGET> MayBe<TARGET> map(Function<? super DATA, TARGET> mapper) {
+        public <TARGET> MayBe<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
             return MayBe.empty();
         }
         

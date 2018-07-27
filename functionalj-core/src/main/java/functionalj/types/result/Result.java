@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 
 import functionalj.functions.Func0;
 import functionalj.functions.Func3;
+import functionalj.functions.FuncUnit;
 import functionalj.functions.FunctionInvocationException;
 import functionalj.kinds.Comonad;
 import functionalj.kinds.Filterable;
@@ -24,6 +25,8 @@ import functionalj.kinds.Peekable;
 import functionalj.types.MayBe;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.result.validator.Validator;
+import functionalj.types.stream.StreamPlus;
+import functionalj.types.stream.Streamable;
 import functionalj.types.tuple.Tuple;
 import functionalj.types.tuple.Tuple2;
 import lombok.val;
@@ -37,10 +40,10 @@ public class Result<DATA>
                         Comonad<Result<?>, DATA>,
                         Filterable<Result<?>, DATA>,
                         Nullable<DATA>,
-                        ResultMap<DATA>,
+                        ResultMapAddOn<DATA>,
                         ResultFlatMap<DATA>,
-                        ResultFilter<DATA> ,
-                        Peekable<Result<DATA>, DATA> {
+                        ResultFilterAddOn<DATA> ,
+                        ResultPeekAddOn<DATA> {
 
 	private static final Result NULL         = new Result<>(null, null);
     private static final Result NOTAVAILABLE = new Result<>(null, new ResultNotAvailableException());
@@ -218,6 +221,10 @@ public class Result<DATA>
         return this;
     }
     
+    public final FunctionalList<DATA> toList() {
+        return FunctionalList.of(this.get());
+    }
+    
     public final MayBe<MayBe<DATA>> asMayBe() {
         return processData(
                 e -> MayBe.nothing(),
@@ -247,7 +254,7 @@ public class Result<DATA>
     
     @SuppressWarnings("unchecked")
     @Override
-    public final <TARGET> Result<TARGET> _map(Function<? super DATA, TARGET> mapper) {
+    public final <TARGET> Result<TARGET> _map(Function<? super DATA, ? extends TARGET> mapper) {
         return processData(
                 e -> Result.ofNull(),
                 (isValue, value, exception) -> {
@@ -260,7 +267,7 @@ public class Result<DATA>
     }
     
     @Override
-    public final <TARGET> Result<TARGET> map(Function<? super DATA, TARGET> mapper) {
+    public final <TARGET> Result<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         return _map(mapper);
     }
     
@@ -293,7 +300,7 @@ public class Result<DATA>
                 (isValue, value, exception) -> {
                     if (!isValue)
                         return (Result<TARGET>)this;
-
+                    
                     val monad = mapper.apply(value);
                     return (Result<TARGET>)monad;
                 });
@@ -308,7 +315,7 @@ public class Result<DATA>
                 });
     }
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
         return processData(
                 e -> Result.ofNull(),
@@ -339,7 +346,7 @@ public class Result<DATA>
     }
     
     @Override
-    public final Result<DATA> peek(Consumer<? super DATA> theConsumer) {
+    public Result<DATA> peek(FuncUnit<? super DATA> theConsumer) {
         return processData(
                 e -> this,
                 (isValue, value, exception) -> {
@@ -355,6 +362,16 @@ public class Result<DATA>
                 (isValue, value, exception) -> {
                     if (value != null)
                         theConsumer.accept(value, exception);
+                    return this;
+                });
+    }
+    
+    public final void forEach(FuncUnit<? super DATA> theConsumer) {
+        processData(
+                e -> this,
+                (isValue, value, exception) -> {
+                    if (value != null)
+                        theConsumer.accept(value);
                     return this;
                 });
     }
@@ -381,25 +398,88 @@ public class Result<DATA>
                 });
     }
     
-    public final boolean isNotNull() {
-        return processData(
-                e -> true,
-                (isValue, value, exception) -> {
-                    return (value != null);
-                });
+    @Override
+    public final Result<DATA> ifPresent(Consumer<? super DATA> theConsumer) {
+        return (Result<DATA>)Nullable.super.ifPresent(theConsumer);
     }
     
-    // No exception -> non-null value (aka ifPresent)
-    public final Result<DATA> ifNotNull(Consumer<? super DATA> consumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if (value != null)
-                        consumer.accept(value);
-                    
-                    return this;
-                });
+    @Override
+    public final Result<DATA> ifPresent(Consumer<? super DATA> theConsumer, Runnable elseRunnable) {
+        return (Result<DATA>)Nullable.super.ifPresent(theConsumer, elseRunnable);
     }
+    
+    @Override
+    public final Result<DATA> ifPresentRun(Runnable theAction) {
+        return (Result<DATA>)Nullable.super.ifPresentRun(theAction);
+    }
+    
+    @Override
+    public final Result<DATA> ifPresentRun(Runnable theAction, Runnable elseRunnable) {
+        return (Result<DATA>)Nullable.super.ifPresentRun(theAction, elseRunnable);
+    }
+    
+    // TODO - Add this to make all returns Result.
+//    public default Nullable<TYPE> ifNotNull(Consumer<? super TYPE> theConsumer) {
+//        val value = get();
+//        if (value != null)
+//            theConsumer.accept(value);
+//        
+//        return this;
+//    }
+//    
+//    public default Nullable<TYPE> ifNotNull(Consumer<? super TYPE> theConsumer, Runnable elseRunnable) {
+//        val value = get();
+//        if (value != null)
+//            theConsumer.accept(value);
+//        
+//        elseRunnable.run();
+//        return this;
+//    }
+//    
+//    public default Nullable<TYPE> ifNotNullRun(Runnable theAction) {
+//        val value = get();
+//        if (value != null)
+//            theAction.run();
+//        
+//        return this;
+//    }
+//    
+//    public default Nullable<TYPE> ifNotNullRun(Runnable theAction, Runnable elseRunnable) {
+//        val value = get();
+//        if (value != null)
+//            theAction.run();
+//        
+//        elseRunnable.run();
+//        return this;
+//    }
+//    
+//    public default Nullable<TYPE> ifNullRun(Runnable theAction) {
+//        val value = get();
+//        if (value == null)
+//            theAction.run();
+//        
+//        return this;
+//    }
+//    
+//    public final boolean isNotNull() {
+//        return processData(
+//                e -> true,
+//                (isValue, value, exception) -> {
+//                    return (value != null);
+//                });
+//    }
+//    
+//    // No exception -> non-null value (aka ifPresent)
+//    public final Result<DATA> ifNotNull(Consumer<? super DATA> consumer) {
+//        return processData(
+//                e -> this,
+//                (isValue, value, exception) -> {
+//                    if (value != null)
+//                        consumer.accept(value);
+//                    
+//                    return this;
+//                });
+//    }
     
     public final boolean isNull() {
         return processData(
@@ -883,6 +963,16 @@ public class Result<DATA>
         @SuppressWarnings("unchecked")
         val value = (DATA)data;
 		return value;
+    }
+    
+    public final Result<DATA> printException() {
+        processData(null, (isValue, value, exception)->{
+            if (!isValue)
+                exception.printStackTrace();
+            
+            return null;
+        });
+        return this;
     }
     
     @Override

@@ -53,7 +53,7 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>> 
-        extends Iterable<DATA>, Stream<DATA> {
+        extends Iterable<DATA>, Stream<DATA>, StreamPlusMap<DATA> {
     
     // TODO takeUntil
     // TODO takeWhile

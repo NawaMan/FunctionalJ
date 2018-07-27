@@ -2,6 +2,7 @@ package functionalj.functions;
 
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -17,6 +18,7 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 public interface Func {
+    
     
     /**
      * Returns a function that simply return the value.
@@ -38,6 +40,10 @@ public interface Func {
      **/
     public static <OUTPUT> Func0<OUTPUT> from(Supplier<OUTPUT> supplier) {
         return supplier::get;
+    }
+    
+    public static <INPUT> FuncUnit<INPUT> from(Consumer<INPUT> consumer) {
+        return (value) -> consumer.accept(value);
     }
     
     /**
@@ -72,6 +78,11 @@ public interface Func {
     public static <INPUT1, INPUT2, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> from(BiFunction<INPUT1, INPUT2, OUTPUT> function) {
         return function::apply;
     }
+    
+    public static <INPUT> FuncUnit<INPUT> of(FuncUnit<INPUT> consumer) {
+        return (value) -> consumer.accept(value);
+    }
+    
     
     /**
      * Constructs a Func0 from supplier or lambda.
@@ -178,6 +189,118 @@ public interface Func {
     public static 
             <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
             Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
+        return function;
+    }
+    
+    public static <INPUT> FuncUnit<INPUT> F(FuncUnit<INPUT> consumer) {
+        return (value) -> consumer.accept(value);
+    }
+    
+    /**
+     * Constructs a Func0 from supplier or lambda.
+     * 
+     * @param  supplier  the supplier or lambda.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func0.
+     **/
+    public static <OUTPUT> 
+            Func0<OUTPUT> F(Func0<OUTPUT> supplier) {
+        return supplier;
+    }
+    
+    /**
+     * Constructs a Func1 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT>   the input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func1.
+     **/
+    public static <INPUT, OUTPUT> 
+            Func1<INPUT, OUTPUT> F(Func1<INPUT, OUTPUT> function) {
+        return function;
+    }
+
+    /**
+     * Constructs a Func2 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func2.
+     **/
+    public static <INPUT1, INPUT2,OUTPUT> 
+            Func2<INPUT1, INPUT2, OUTPUT> F(Func2<INPUT1, INPUT2, OUTPUT> function) {
+        return function;
+    }
+    
+    /**
+     * Constructs a Func3 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static <INPUT1,INPUT2,INPUT3,OUTPUT> 
+            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> F(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
+        return function;
+    }
+    
+    /**
+     * Constructs a Func4 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static
+            <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
+            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> F(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
+        return function;
+    }
+    
+    /**
+     * Constructs a Func5 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static 
+            <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
+            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> F(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
+        return function;
+    }
+    
+    /**
+     * Constructs a Func2 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static 
+            <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
+            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> F(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return function;
     }
     

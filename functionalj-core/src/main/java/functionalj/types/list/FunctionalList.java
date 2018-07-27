@@ -22,6 +22,7 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public abstract class FunctionalList<DATA> 
                     implements 
+                        FunctionalListMapAddOn<DATA>, 
                         ReadOnlyList<DATA, FunctionalList<DATA>>, 
                         IFunctionalList<DATA, FunctionalList<DATA>> {
 
@@ -35,6 +36,12 @@ public abstract class FunctionalList<DATA>
         return ImmutableList.empty();
     }
     public static <T> FunctionalList<T> of(Collection<T> data) {
+        return ImmutableList.of(data);
+    }
+    public static <T> FunctionalList<T> ofCollection(Collection<T> data) {
+        return ImmutableList.of(data);
+    }
+    public static <T> FunctionalList<T> ofList(List<T> data) {
         return ImmutableList.of(data);
     }
     @SafeVarargs

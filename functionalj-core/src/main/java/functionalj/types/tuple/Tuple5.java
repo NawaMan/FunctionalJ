@@ -18,7 +18,11 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, T4, T5>> {
-
+    
+    public static <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> of(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5) {
+        return new ImmutableTuple5<>(_1, _2, _3, _4, _5);
+    }
+    
     public T1 _1();
     public T2 _2();
     public T3 _3();

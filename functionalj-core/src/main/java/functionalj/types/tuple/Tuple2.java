@@ -3,6 +3,7 @@ package functionalj.types.tuple;
 import static functionalj.FunctionalJ.it;
 
 import java.lang.reflect.Array;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -15,7 +16,16 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
-
+    
+    public static <T1, T2> Tuple2<T1, T2> of(Map.Entry<? extends T1, ? extends T2> entry) {
+        return (entry == null)
+                ? new ImmutableTuple2<>(null, null)
+                : new ImmutableTuple2<>(entry);
+    }
+    public static <T1, T2> Tuple2<T1, T2> of(T1 t1, T2 t2) {
+        return new ImmutableTuple2<>(t1, t2);
+    }
+    
     public T1 _1();
     public T2 _2();
     
