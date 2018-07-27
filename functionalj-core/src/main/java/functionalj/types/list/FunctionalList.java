@@ -7,25 +7,26 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.functions.FuncUnit;
 import functionalj.types.stream.StreamPlus;
 import functionalj.types.stream.Streamable;
-import lombok.val;
 
 @SuppressWarnings("javadoc")
 public abstract class FunctionalList<DATA> 
                     implements 
-                        FunctionalListMapAddOn<DATA>, 
+                        FunctionalListMapAddOn<DATA>,
+                        FunctionalListPeekAddOn<DATA>,
+                        FunctionalListFlatMapAddOn<DATA>,
+                        FunctionalListFilterAddOn<DATA>,
                         ReadOnlyList<DATA, FunctionalList<DATA>>, 
                         IFunctionalList<DATA, FunctionalList<DATA>> {
-
+    
     @SuppressWarnings("unchecked")
 	@Override
     public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> TARGET_SELF __of(Stream<TARGET> targetStream) {
@@ -63,10 +64,14 @@ public abstract class FunctionalList<DATA>
     public static <T> FunctionalList<T> of(FunctionalList<T> functionalList) {
         return ImmutableList.of(functionalList);
     }
-
+    
+    public FunctionalList<DATA> asFunctionalList() {
+        return this;
+    }
+    
     @Override
     public abstract FunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier);
-
+    
     
     @SuppressWarnings("unchecked")
     @Override
@@ -90,9 +95,20 @@ public abstract class FunctionalList<DATA>
     public <TARGET> FunctionalList<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         return new FunctionalListStream<>(this, stream -> stream.map(mapper));
     }
+    
     @Override
+    public FunctionalList<DATA> peek(FuncUnit<? super DATA> consumer) {
+        return new FunctionalListStream<>(this, stream -> stream.peek(consumer));
+    }
+    
+    @Override
+
     public <TARGET> FunctionalList<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
         return new FunctionalListStream<>(this, stream -> stream.flatMap(mapper));
+    }
+    
+    public FunctionalList<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, FunctionalList<DATA>> mapper) {
+        return flatMap(d -> checker.test(d) ? mapper.apply(d) : Stream.of(d));
     }
     
     @Override
@@ -127,8 +143,6 @@ public abstract class FunctionalList<DATA>
     public Spliterator<DATA> spliterator() {
         return stream().spliterator();
     }
-    
-    // TODO - toTupleList (list of tuple of index and value)
 
     @Override
     public int size() {

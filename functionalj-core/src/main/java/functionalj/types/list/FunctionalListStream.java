@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.functions.FuncUnit;
 import functionalj.types.stream.Streamable;
 import lombok.val;
 

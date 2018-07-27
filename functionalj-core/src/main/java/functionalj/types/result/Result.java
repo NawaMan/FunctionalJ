@@ -41,7 +41,8 @@ public class Result<DATA>
                         Filterable<Result<?>, DATA>,
                         Nullable<DATA>,
                         ResultMapAddOn<DATA>,
-                        ResultFlatMap<DATA>,
+                        ResultFlatMapAddOn<DATA>,
+                        ResultFlatMapAddOn2<DATA>,
                         ResultFilterAddOn<DATA> ,
                         ResultPeekAddOn<DATA> {
 

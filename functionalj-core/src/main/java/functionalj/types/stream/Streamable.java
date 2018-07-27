@@ -24,6 +24,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.functions.FuncUnit;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.list.IFunctionalList;
 import functionalj.types.list.ImmutableList;
