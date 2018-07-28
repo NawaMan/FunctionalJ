@@ -29,11 +29,14 @@ public class FunctionalListStream<SOURCE, DATA>
     private final Function<Stream<SOURCE>, Stream<DATA>> action;
     private volatile List<DATA> target = null;
     
-    public static <DATA> FunctionalListStream<DATA, DATA> of(FunctionalList<DATA> abstractFunctionalList) {
-        return new FunctionalListStream<>(abstractFunctionalList);
+    public static <DATA> FunctionalListStream<DATA, DATA> of(FunctionalList<DATA> functionalList) {
+        return new FunctionalListStream<>(functionalList);
     }
-    public static <DATA> FunctionalListStream<DATA, DATA> of(Supplier<Stream<DATA>> abstractFunctionalList) {
-        return new FunctionalListStream<>(abstractFunctionalList, s->s);
+    public static <DATA> FunctionalListStream<DATA, DATA> of(Supplier<Stream<DATA>> supplier) {
+        return new FunctionalListStream<>(supplier, s->s);
+    }
+    public static <DATA> FunctionalListStream<DATA, DATA> of(Streamable<DATA> streamable) {
+        return new FunctionalListStream<>(streamable, s->s);
     }
     
     public FunctionalListStream(Collection<SOURCE> collection, Function<Stream<SOURCE>, Stream<DATA>> action) {
@@ -44,17 +47,13 @@ public class FunctionalListStream<SOURCE, DATA>
         this.action = Objects.requireNonNull(action);
         this.source = streamSupplier;
     }
-    public FunctionalListStream(Streamable<SOURCE, ?> streamable, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FunctionalListStream(Streamable<SOURCE> streamable, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streamable;
     }
-    public FunctionalListStream(ReadOnlyList<SOURCE, ?> readOnlyList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FunctionalListStream(ReadOnlyList<SOURCE> readOnlyList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = readOnlyList;
-    }
-    public FunctionalListStream(IFunctionalList<SOURCE, ?> abstractFunctionalList, Function<Stream<SOURCE>, Stream<DATA>> action) {
-        this.action = Objects.requireNonNull(action);
-        this.source = abstractFunctionalList;
     }
     public FunctionalListStream(FunctionalList<SOURCE> abstractFunctionalList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);

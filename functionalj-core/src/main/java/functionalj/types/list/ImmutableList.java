@@ -57,7 +57,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         return new ImmutableList<>(Arrays.asList(data));
     }
     @SuppressWarnings("unchecked")
-    public static <T> ImmutableList<T> of(Streamable<T, ?> streamable) {
+    public static <T> ImmutableList<T> of(Streamable<T> streamable) {
         if (streamable instanceof ImmutableList)
             return (ImmutableList<T>)streamable;
         if (streamable == null)
@@ -69,22 +69,13 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         return new ImmutableList<T>(stream.collect(Collectors.toList()));
     }
     @SuppressWarnings("unchecked")
-    public static <T> ImmutableList<T> of(ReadOnlyList<T, ?> readOnlyList) {
+    public static <T> ImmutableList<T> of(ReadOnlyList<T> readOnlyList) {
         if (readOnlyList instanceof ImmutableList)
             return (ImmutableList<T>)readOnlyList;
         if (readOnlyList == null)
             return ImmutableList.empty();
         
         return new ImmutableList<T>(readOnlyList.toList());
-    }
-    @SuppressWarnings("unchecked")
-    public static <T> ImmutableList<T> of(IFunctionalList<T, ?> functionalList) {
-        if (functionalList instanceof ImmutableList)
-            return (ImmutableList<T>)functionalList;
-        if (functionalList == null)
-            return ImmutableList.empty();
-        
-        return new ImmutableList<T>(functionalList.toList());
     }
     public static <T> ImmutableList<T> of(FunctionalList<T> functionalList) {
         if (functionalList instanceof ImmutableList)
@@ -198,119 +189,119 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     // TODO - Extract these out ... but should still make it easy to call.
     //        Like ... Split(list).to(predicate, ...)
     
-    public Tuple2<FunctionalList<DATA>, FunctionalList<DATA>> split(
-            Predicate<? super DATA> predicate) {
-        val temp = this.map(
-                it -> predicate.test(it) ? 0 : 1,
-                it -> it
-        ).toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
-        return Tuple.of(
-                list1,
-                list2
-        );
-    }
-    
-    public Tuple3<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2) {
-        val temp = this.map(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    :                       2,
-                it -> it
-        ).toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
-        return Tuple.of(
-                list1,
-                list2,
-                list3
-        );
-    }
-
-    public Tuple4<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2,
-            Predicate<? super DATA> predicate3) {
-        val temp = this.map(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    :                       3,
-                it -> it
-        ).toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4
-        );
-    }
-
-    public Tuple5<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2,
-            Predicate<? super DATA> predicate3,
-            Predicate<? super DATA> predicate4) {
-        val temp = this.map(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    :                       4,
-                it -> it
-        ).toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
-        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2()).toImmutableList();
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4,
-                list5
-        );
-    }
-    
-    public Tuple6<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2,
-            Predicate<? super DATA> predicate3,
-            Predicate<? super DATA> predicate4,
-            Predicate<? super DATA> predicate5) {
-        val temp = this.map(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    : predicate5.test(it) ? 4
-                    :                       5,
-                it -> it
-        ).toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
-        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2()).toImmutableList();
-        val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2()).toImmutableList();
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4,
-                list5,
-                list6
-        );
-    }
+//    public Tuple2<FunctionalList<DATA>, FunctionalList<DATA>> split(
+//            Predicate<? super DATA> predicate) {
+//        val temp = this.map(
+//                it -> predicate.test(it) ? 0 : 1,
+//                it -> it
+//        ).toImmutableList();
+//        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
+//        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
+//        return Tuple.of(
+//                list1,
+//                list2
+//        );
+//    }
+//    
+//    public Tuple3<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+//            Predicate<? super DATA> predicate1,
+//            Predicate<? super DATA> predicate2) {
+//        val temp = this.map(
+//                it -> predicate1.test(it) ? 0
+//                    : predicate2.test(it) ? 1
+//                    :                       2,
+//                it -> it
+//        ).toImmutableList();
+//        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
+//        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
+//        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
+//        return Tuple.of(
+//                list1,
+//                list2,
+//                list3
+//        );
+//    }
+//
+//    public Tuple4<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+//            Predicate<? super DATA> predicate1,
+//            Predicate<? super DATA> predicate2,
+//            Predicate<? super DATA> predicate3) {
+//        val temp = this.map(
+//                it -> predicate1.test(it) ? 0
+//                    : predicate2.test(it) ? 1
+//                    : predicate3.test(it) ? 2
+//                    :                       3,
+//                it -> it
+//        ).toImmutableList();
+//        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
+//        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
+//        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
+//        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
+//        return Tuple.of(
+//                list1,
+//                list2,
+//                list3,
+//                list4
+//        );
+//    }
+//
+//    public Tuple5<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+//            Predicate<? super DATA> predicate1,
+//            Predicate<? super DATA> predicate2,
+//            Predicate<? super DATA> predicate3,
+//            Predicate<? super DATA> predicate4) {
+//        val temp = this.map(
+//                it -> predicate1.test(it) ? 0
+//                    : predicate2.test(it) ? 1
+//                    : predicate3.test(it) ? 2
+//                    : predicate4.test(it) ? 3
+//                    :                       4,
+//                it -> it
+//        ).toImmutableList();
+//        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
+//        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
+//        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
+//        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
+//        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2()).toImmutableList();
+//        return Tuple.of(
+//                list1,
+//                list2,
+//                list3,
+//                list4,
+//                list5
+//        );
+//    }
+//    
+//    public Tuple6<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+//            Predicate<? super DATA> predicate1,
+//            Predicate<? super DATA> predicate2,
+//            Predicate<? super DATA> predicate3,
+//            Predicate<? super DATA> predicate4,
+//            Predicate<? super DATA> predicate5) {
+//        val temp = this.map(
+//                it -> predicate1.test(it) ? 0
+//                    : predicate2.test(it) ? 1
+//                    : predicate3.test(it) ? 2
+//                    : predicate4.test(it) ? 3
+//                    : predicate5.test(it) ? 4
+//                    :                       5,
+//                it -> it
+//        ).toImmutableList();
+//        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).toImmutableList();
+//        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).toImmutableList();
+//        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).toImmutableList();
+//        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).toImmutableList();
+//        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2()).toImmutableList();
+//        val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2()).toImmutableList();
+//        return Tuple.of(
+//                list1,
+//                list2,
+//                list3,
+//                list4,
+//                list5,
+//                list6
+//        );
+//    }
     
     @Override
     public String toString() {

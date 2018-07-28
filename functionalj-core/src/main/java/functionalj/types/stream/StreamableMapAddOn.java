@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.types.stream;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -18,15 +18,15 @@ import functionalj.types.tuple.Tuple6;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public interface ResultMapAddOn<DATA> {
+public interface StreamableMapAddOn<DATA> {
     
-    public <TARGET> Result<TARGET> map(Function<? super DATA, ? extends TARGET> mapper);
+    public <TARGET> Streamable<TARGET> map(Function<? super DATA, ? extends TARGET> mapper);
     
     
-    public default Result<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
+    public default Streamable<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
         return map(d -> checker.test(d) ? mapper.apply(d) : d);
     }
-    public default <T> Result<T> mapIf(
+    public default <T> Streamable<T> mapIf(
             Predicate<? super DATA>   checker, 
             Function<? super DATA, T> mapper, 
             Function<? super DATA, T> elseMapper) {
@@ -38,7 +38,7 @@ public interface ResultMapAddOn<DATA> {
     // ++ Generated with: GeneratorFunctorMapToTupleToObject ++
     
     public default <T1, T2> 
-        Result<Tuple2<T1, T2>> map(
+        Streamable<Tuple2<T1, T2>> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2) {
         return map(mapper1, mapper2,
@@ -46,7 +46,7 @@ public interface ResultMapAddOn<DATA> {
     }
     
     public default <T1, T2, T> 
-        Result<T> map(
+        Streamable<T> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 BiFunction<T1, T2, T> function) {
@@ -58,7 +58,7 @@ public interface ResultMapAddOn<DATA> {
         });
     }
     public default <T1, T2, T3> 
-        Result<Tuple3<T1, T2, T3>> map(
+        Streamable<Tuple3<T1, T2, T3>> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3) {
@@ -67,7 +67,7 @@ public interface ResultMapAddOn<DATA> {
     }
     
     public default <T1, T2, T3, T> 
-        Result<T> map(
+        Streamable<T> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -81,7 +81,7 @@ public interface ResultMapAddOn<DATA> {
         });
     }
     public default <T1, T2, T3, T4> 
-        Result<Tuple4<T1, T2, T3, T4>> map(
+        Streamable<Tuple4<T1, T2, T3, T4>> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -91,7 +91,7 @@ public interface ResultMapAddOn<DATA> {
     }
     
     public default <T1, T2, T3, T4, T> 
-        Result<T> map(
+        Streamable<T> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -107,7 +107,7 @@ public interface ResultMapAddOn<DATA> {
         });
     }
     public default <T1, T2, T3, T4, T5> 
-        Result<Tuple5<T1, T2, T3, T4, T5>> map(
+        Streamable<Tuple5<T1, T2, T3, T4, T5>> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -118,7 +118,7 @@ public interface ResultMapAddOn<DATA> {
     }
     
     public default <T1, T2, T3, T4, T5, T> 
-        Result<T> map(
+        Streamable<T> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -136,7 +136,7 @@ public interface ResultMapAddOn<DATA> {
         });
     }
     public default <T1, T2, T3, T4, T5, T6> 
-        Result<Tuple6<T1, T2, T3, T4, T5, T6>> map(
+        Streamable<Tuple6<T1, T2, T3, T4, T5, T6>> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -148,7 +148,7 @@ public interface ResultMapAddOn<DATA> {
     }
     
     public default <T1, T2, T3, T4, T5, T6, T> 
-        Result<T> map(
+        Streamable<T> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -169,15 +169,14 @@ public interface ResultMapAddOn<DATA> {
     }
     
     // -- Generated with: GeneratorFunctorMapToTupleToObject --
-
     
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> map(
+    public default <KEY, VALUE> Streamable<FunctionalMap<KEY, VALUE>> map(
             KEY key, Function<? super DATA, ? extends VALUE> mapper) {
         return map(data -> ImmutableMap.of(key, mapper.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> map(
+    public default <KEY, VALUE> Streamable<FunctionalMap<KEY, VALUE>> map(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2) {
         return map(data -> ImmutableMap.of(
@@ -185,7 +184,7 @@ public interface ResultMapAddOn<DATA> {
                 key2, mapper2.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> map(
+    public default <KEY, VALUE> Streamable<FunctionalMap<KEY, VALUE>> map(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3) {
@@ -195,7 +194,7 @@ public interface ResultMapAddOn<DATA> {
                 key3, mapper3.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> map(
+    public default <KEY, VALUE> Streamable<FunctionalMap<KEY, VALUE>> map(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -207,7 +206,7 @@ public interface ResultMapAddOn<DATA> {
                 key4, mapper4.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> map(
+    public default <KEY, VALUE> Streamable<FunctionalMap<KEY, VALUE>> map(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -221,7 +220,7 @@ public interface ResultMapAddOn<DATA> {
                 key5, mapper5.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> map(
+    public default <KEY, VALUE> Streamable<FunctionalMap<KEY, VALUE>> map(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -237,7 +236,7 @@ public interface ResultMapAddOn<DATA> {
                 key6, mapper6.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> map(
+    public default <KEY, VALUE> Streamable<FunctionalMap<KEY, VALUE>> map(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -255,7 +254,7 @@ public interface ResultMapAddOn<DATA> {
                 key7, mapper7.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> map(
+    public default <KEY, VALUE> Streamable<FunctionalMap<KEY, VALUE>> map(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -275,7 +274,7 @@ public interface ResultMapAddOn<DATA> {
                 key8, mapper8.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> map(
+    public default <KEY, VALUE> Streamable<FunctionalMap<KEY, VALUE>> map(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -297,7 +296,7 @@ public interface ResultMapAddOn<DATA> {
                 key9, mapper9.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> map(
+    public default <KEY, VALUE> Streamable<FunctionalMap<KEY, VALUE>> map(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -322,3 +321,4 @@ public interface ResultMapAddOn<DATA> {
     }
     
 }
+// Generated by: functionalj.kinds.functor.DuplicateResultMapToOtherTypeMain

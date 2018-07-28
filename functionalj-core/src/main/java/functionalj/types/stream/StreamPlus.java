@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -37,646 +38,96 @@ import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.StringFunctions;
 import functionalj.types.list.FunctionalList;
-import functionalj.types.list.IFunctionalList;
 import functionalj.types.list.ImmutableList;
-import functionalj.types.map.FunctionalMap;
-import functionalj.types.map.ImmutableMap;
-import functionalj.types.tuple.Tuple;
 import functionalj.types.tuple.Tuple2;
-import functionalj.types.tuple.Tuple3;
-import functionalj.types.tuple.Tuple4;
-import functionalj.types.tuple.Tuple5;
-import functionalj.types.tuple.Tuple6;
 import lombok.val;
 
 
-
 @SuppressWarnings("javadoc")
-public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>> 
-        extends Iterable<DATA>, Stream<DATA>, StreamPlusMap<DATA> {
+@FunctionalInterface
+public interface StreamPlus<DATA> 
+        extends Iterable<DATA>, Stream<DATA> {
     
     // TODO takeUntil
     // TODO takeWhile
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <D> StreamPlus<D, ?> of(Stream<D> stream) {
-        if (stream instanceof StreamPlus)
-            return (StreamPlus)stream;
-        
-        return new Impl<>(stream);
+    public static <D> StreamPlus<D> ofStream(Stream<D> stream) {
+        return (stream instanceof StreamPlus)
+                ? (StreamPlus)stream
+                : (StreamPlus)(()->stream);
     }
     
     @SafeVarargs
-	public static <D> StreamPlus<D, ?> of(D ... data) {
-        return StreamPlus.of(Stream.of(data));
+    public static <D> StreamPlus<D> of(D ... data) {
+        return StreamPlus.ofStream(Stream.of(data));
     }
-    
     
     public Stream<DATA> stream();
     
-    public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> 
-            TARGET_SELF __of(Stream<TARGET> targetStream);
+    //== Stream ==
     
-    
-    // Simple implementation.
-    
-    public static class Impl<DATA> implements StreamPlus<DATA, Impl<DATA>> {
-        private final Stream<DATA> sourceStream;
-        
-        public Impl(Stream<DATA> sourceStream) {
-            this.sourceStream = sourceStream;
-        }
-    
-        @Override
-        public Stream<DATA> stream() {
-            return sourceStream;
-        }
-    
-        @SuppressWarnings("unchecked")
-        @Override
-        public <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> TARGET_SELF __of(Stream<TARGET> targetStream) {
-            return (TARGET_SELF)new Impl<TARGET>(targetStream);
-        }
-    
+    public default <TARGET> StreamPlus<TARGET> stream(Function<Stream<DATA>, Stream<TARGET>> action) {
+        return StreamPlus.ofStream(
+                action.apply(
+                        this.stream()));
     }
     
-    // -- Service methods --
-    
-    public default <TARGET, TARGET_SELF extends Streamable<TARGET, ?>> 
-            TARGET_SELF __stream(Function<Stream<DATA>, Stream<TARGET>> action) {
-        return this.__of(action.apply(this.stream()));
+    public default <TARGET> StreamPlus<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+        return stream(stream -> {
+            return stream.map(mapper);
+        });
     }
     
-    
-    public default <TARGET> StreamPlus<TARGET, ?> stream(Function<Stream<DATA>, Stream<TARGET>> action) {
-        return new Impl<TARGET>(action.apply(this.stream()));
+    public default <TARGET> StreamPlus<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+        return stream(stream -> {
+            return stream.flatMap(mapper);
+        });
     }
     
-    public default <TARGET> StreamPlus<TARGET, ?> map(Function<? super DATA, ? extends TARGET> mapper) {
-        return new Impl<TARGET>(this.stream().map(mapper));
+    public default StreamPlus<DATA> filter(Predicate<? super DATA> predicate) {
+        return stream(stream -> {
+            return (predicate == null)
+                ? stream
+                : stream.filter(predicate);
+        });
     }
-    
-    public default <TARGET> StreamPlus<TARGET, ?> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
-        return stream(stream -> stream.flatMap(mapper));
-    }
-    
-    public default  <TARGET, TARGET_SELF extends StreamPlus<TARGET, ?>> 
-            TARGET_SELF __map(Function<? super DATA, ? extends TARGET> mapper) {
-        return __stream(stream -> stream.map(mapper));
-    }
-    
-    public default <TARGET, TARGET_SELF extends StreamPlus<TARGET, ?>> 
-            TARGET_SELF __flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
-        return __stream(stream -> stream.flatMap(mapper));
-    }
-    
-    // TODO - Add map, peek, forEach with Index and make sure that the index does not got mixed up when 
-    //          reused (for child of this).
-    
-    public default <T, TARGET_SELF extends StreamPlus<T, ?>> 
-            TARGET_SELF map(
-                BiFunction<? super Integer, ? super DATA, T> mapper) {
-        val index = new AtomicInteger();
-        return __map(each -> mapper.apply(index.getAndIncrement(), each));
-    }
-    
-    public default <T, T1, TARGET_SELF extends StreamPlus<T, ?>> 
-        TARGET_SELF map(
-                Function<? super DATA, ? extends T1>       mapper1,
-                BiFunction<? super Integer, ? super T1, T> mapper) {
-        val index = new AtomicInteger();
-        return __map(each -> mapper.apply(
-                                index.getAndIncrement(),
-                                mapper1.apply(each)));
-    }
-    
-    public default <T, T1, T2, TARGET_SELF extends StreamPlus<T, ?>> 
-        TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Func3<? super Integer, ? super T1, ? super T2, T> mapper) {
-        val index = new AtomicInteger();
-        return __map(each -> mapper.apply(
-                                index.getAndIncrement(),
-                                mapper1.apply(each),
-                                mapper2.apply(each)));
-    }
-    
-    public default <T, T1, T2, T3, TARGET_SELF extends StreamPlus<T, ?>> 
-        TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Func4<? super Integer, ? super T1, ? super T2, ? super T3, T> mapper) {
-        val index = new AtomicInteger();
-        return __map(each -> mapper.apply(
-                                index.getAndIncrement(),
-                                mapper1.apply(each),
-                                mapper2.apply(each),
-                                mapper3.apply(each)));
-    }
-    
-    public default <T, T1, T2, T3, T4, TARGET_SELF extends StreamPlus<T, ?>> 
-        TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Func5<? super Integer, ? super T1, ? super T2, ? super T3, ? super T4, T> mapper) {
-        val index = new AtomicInteger();
-        return __map(each -> mapper.apply(
-                                index.getAndIncrement(),
-                                mapper1.apply(each),
-                                mapper2.apply(each),
-                                mapper3.apply(each),
-                                mapper4.apply(each)));
-    }
-    
-    public default <T, T1, T2, T3, T4, T5, TARGET_SELF extends StreamPlus<T, ?>> 
-        TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Function<? super DATA, ? extends T5> mapper5,
-                Func6<? super Integer, ? super T1, ? super T2, ? super T3, ? super T4, ? super T5, T> mapper) {
-        val index = new AtomicInteger();
-        return __map(each -> mapper.apply(
-                                index.getAndIncrement(),
-                                mapper1.apply(each),
-                                mapper2.apply(each),
-                                mapper3.apply(each),
-                                mapper4.apply(each),
-                                mapper5.apply(each)));
-    }
-    
-    public default <T1, T2, TARGET_SELF extends StreamPlus<Tuple2<T1, T2>, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2) {
-        return map(mapper1, mapper2, (t1, t2) -> Tuple.of(t1, t2));
-    }
-    @SuppressWarnings("unchecked")
-    public default <T1, T2, T, TARGET_SELF extends StreamPlus<T, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                BiFunction<? super T1, ? super T2, T> mapper) {
-        return (TARGET_SELF)__map(each -> mapper.apply(
-                                mapper1.apply(each), 
-                                mapper2.apply(each)));
-    }
-    
-    public default <T1, T2, T3, TARGET_SELF extends StreamPlus<Tuple3<T1, T2, T3>, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3) {
-        return map(mapper1, mapper2, mapper3, (t1, t2 ,t3) -> Tuple.of(t1, t2, t3));
-    }
-    @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T, TARGET_SELF extends StreamPlus<T, ?>> 
-        TARGET_SELF map(
-            Function<? super DATA, ? extends T1> mapper1,
-            Function<? super DATA, ? extends T2> mapper2,
-            Function<? super DATA, ? extends T3> mapper3,
-            Func3<? super T1, ? super T2, ? super T3, T> mapper) {
-        return (TARGET_SELF)__map(each -> mapper.apply(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each)));
-    }
-    
-    public default <T1, T2, T3, T4, TARGET_SELF extends StreamPlus<Tuple4<T1, T2, T3, T4>, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4) {
-        return map(mapper1, mapper2, mapper3, mapper4, (t1, t2 ,t3 ,t4) -> Tuple.of(t1, t2, t3, t4));
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T, TARGET_SELF extends StreamPlus<T, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Func4<? super T1, ? super T2, ? super T3, ? super T4, T> mapper) {
-        return (TARGET_SELF)__map(each -> mapper.apply(
-                                mapper1.apply(each), 
-                                mapper2.apply(each), 
-                                mapper3.apply(each), 
-                                mapper4.apply(each)));
-    }
-    
-    public default <T1, T2, T3, T4, T5, TARGET_SELF extends StreamPlus<Tuple5<T1, T2, T3, T4, T5>, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Function<? super DATA, ? extends T5> mapper5) {
-        return map(mapper1, mapper2, mapper3, mapper4, mapper5, (t1, t2 ,t3 ,t4, t5) -> Tuple.of(t1, t2, t3, t4, t5));
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T, TARGET_SELF extends StreamPlus<T, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Function<? super DATA, ? extends T5> mapper5,
-                Func5<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, T> mapper) {
-        return (TARGET_SELF)__map(each -> mapper.apply(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each), 
-                                    mapper4.apply(each), 
-                                    mapper5.apply(each)));
-    }
-    
-    public default <T1, T2, T3, T4, T5, T6, TARGET_SELF extends StreamPlus<Tuple6<T1, T2, T3, T4, T5, T6>, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Function<? super DATA, ? extends T5> mapper5,
-                Function<? super DATA, ? extends T6> mapper6) {
-        return map(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, (t1, t2 ,t3 ,t4, t5, t6) -> Tuple.of(t1, t2, t3, t4, t5, t6));
-    }
-    @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6, T, TARGET_SELF extends StreamPlus<T, ?>> 
-            TARGET_SELF map(
-                Function<? super DATA, ? extends T1> mapper1,
-                Function<? super DATA, ? extends T2> mapper2,
-                Function<? super DATA, ? extends T3> mapper3,
-                Function<? super DATA, ? extends T4> mapper4,
-                Function<? super DATA, ? extends T5> mapper5,
-                Function<? super DATA, ? extends T6> mapper6,
-                Func6<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, T> mapper) {
-        return (TARGET_SELF)__map(each -> mapper.apply(
-                                    mapper1.apply(each), 
-                                    mapper2.apply(each), 
-                                    mapper3.apply(each), 
-                                    mapper4.apply(each), 
-                                    mapper5.apply(each), 
-                                    mapper6.apply(each)));
+    public default StreamPlus<DATA> peek(Consumer<? super DATA> action) {
+        return stream(stream -> {
+            return (action == null)
+                    ? stream
+                    : stream.peek(action);
+        });
     }
     
     @Override
     public default IntStream mapToInt(ToIntFunction<? super DATA> mapper) {
         return stream().mapToInt(mapper);
     }
-
+    
     @Override
     public default LongStream mapToLong(ToLongFunction<? super DATA> mapper) {
         return stream().mapToLong(mapper);
     }
-
+    
     @Override
     public default DoubleStream mapToDouble(ToDoubleFunction<? super DATA> mapper) {
         return stream().mapToDouble(mapper);
     }
-
+    
     @Override
     public default IntStream flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
         return stream().flatMapToInt(mapper);
     }
-
+    
     @Override
     public default LongStream flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
         return stream().flatMapToLong(mapper);
     }
-
+    
     @Override
     public default DoubleStream flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
         return stream().flatMapToDouble(mapper);
-    }
-
-    @Override
-    public default Stream<DATA> limit(long maxSize) {
-        return stream().limit(maxSize);
-    }
-
-    @Override
-    public default Stream<DATA> skip(long n) {
-        return stream().skip(n);
-    }
-
-    @Override
-    public default Object[] toArray() {
-        return stream().toArray();
-    }
-
-    @Override
-    public default <A> A[] toArray(IntFunction<A[]> generator) {
-        return stream().toArray(generator);
-    }
-
-    @Override
-    public default boolean isParallel() {
-        return stream().isParallel();
-    }
-
-    @Override
-    public default Stream<DATA> sequential() {
-        return stream().sequential();
-    }
-
-    @Override
-    public default Stream<DATA> parallel() {
-        return stream().parallel();
-    } 
-
-    @Override
-    public default Stream<DATA> unordered() {
-        return stream().unordered();
-    }
-    
-    @Override
-    public default Stream<DATA> onClose(Runnable closeHandler) {
-        return stream().onClose(closeHandler);
-    }
-
-    @Override
-    public default void close() {
-        stream().close();
-    }
-    
-    //== More functionality ==
-    
-    public default List<DATA> toList() {
-        return stream().collect(Collectors.toList());
-    }
-    
-    public default IFunctionalList<DATA, ?> toIFunctionalList() {
-        return toImmutableList();
-    }
-    
-    public default FunctionalList<DATA> toFunctionalList() {
-        return toImmutableList();
-    }
-    
-    public default ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.of(stream());
-    }
-
-    public default ArrayList<DATA> toMutableList() {
-        return new ArrayList<DATA>(toList());
-    }
-
-    public default Set<DATA> toSet() {
-        return new HashSet<DATA>(stream().collect(Collectors.toSet()));
-    }
-    
-    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
-            KEY key, Function<? super DATA, ? extends VALUE> mapper) {
-        return __map(data -> ImmutableMap.of(key, mapper.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
-            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
-            KEY key2, Function<? super DATA, ? extends VALUE> mapper2) {
-        return __map(data -> ImmutableMap.of(
-                key1, mapper1.apply(data),
-                key2, mapper2.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
-            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
-            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3) {
-        return __map(data -> ImmutableMap.of(
-                key1, mapper1.apply(data),
-                key2, mapper2.apply(data),
-                key3, mapper3.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
-            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
-            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
-            KEY key4, Function<? super DATA, ? extends VALUE> mapper4) {
-        return __map(data -> ImmutableMap.of(
-                key1, mapper1.apply(data),
-                key2, mapper2.apply(data),
-                key3, mapper3.apply(data),
-                key4, mapper4.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
-            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
-            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
-            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
-            KEY key5, Function<? super DATA, ? extends VALUE> mapper5) {
-        return __map(data -> ImmutableMap.of(
-                key1, mapper1.apply(data),
-                key2, mapper2.apply(data),
-                key3, mapper3.apply(data),
-                key4, mapper4.apply(data),
-                key5, mapper5.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
-            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
-            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
-            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
-            KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
-            KEY key6, Function<? super DATA, ? extends VALUE> mapper6) {
-        return __map(data -> ImmutableMap.of(
-                key1, mapper1.apply(data),
-                key2, mapper2.apply(data),
-                key3, mapper3.apply(data),
-                key4, mapper4.apply(data),
-                key5, mapper5.apply(data),
-                key6, mapper6.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
-            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
-            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
-            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
-            KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
-            KEY key6, Function<? super DATA, ? extends VALUE> mapper6,
-            KEY key7, Function<? super DATA, ? extends VALUE> mapper7) {
-        return __map(data -> ImmutableMap.of(
-                key1, mapper1.apply(data),
-                key2, mapper2.apply(data),
-                key3, mapper3.apply(data),
-                key4, mapper4.apply(data),
-                key5, mapper5.apply(data),
-                key6, mapper6.apply(data),
-                key7, mapper7.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
-            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
-            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
-            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
-            KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
-            KEY key6, Function<? super DATA, ? extends VALUE> mapper6,
-            KEY key7, Function<? super DATA, ? extends VALUE> mapper7,
-            KEY key8, Function<? super DATA, ? extends VALUE> mapper8) {
-        return __map(data -> ImmutableMap.of(
-                key1, mapper1.apply(data),
-                key2, mapper2.apply(data),
-                key3, mapper3.apply(data),
-                key4, mapper4.apply(data),
-                key5, mapper5.apply(data),
-                key6, mapper6.apply(data),
-                key7, mapper7.apply(data),
-                key8, mapper8.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
-            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
-            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
-            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
-            KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
-            KEY key6, Function<? super DATA, ? extends VALUE> mapper6,
-            KEY key7, Function<? super DATA, ? extends VALUE> mapper7,
-            KEY key8, Function<? super DATA, ? extends VALUE> mapper8,
-            KEY key9, Function<? super DATA, ? extends VALUE> mapper9) {
-        return __map(data -> ImmutableMap.of(
-                key1, mapper1.apply(data),
-                key2, mapper2.apply(data),
-                key3, mapper3.apply(data),
-                key4, mapper4.apply(data),
-                key5, mapper5.apply(data),
-                key6, mapper6.apply(data),
-                key7, mapper7.apply(data),
-                key8, mapper8.apply(data),
-                key9, mapper9.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FunctionalList<FunctionalMap<KEY, VALUE>> toMap(
-            KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
-            KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
-            KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
-            KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
-            KEY key6, Function<? super DATA, ? extends VALUE> mapper6,
-            KEY key7, Function<? super DATA, ? extends VALUE> mapper7,
-            KEY key8, Function<? super DATA, ? extends VALUE> mapper8,
-            KEY key9, Function<? super DATA, ? extends VALUE> mapper9,
-            KEY key10, Function<? super DATA, ? extends VALUE> mapper10) {
-        return __map(data -> ImmutableMap.of(
-                key1, mapper1.apply(data),
-                key2, mapper2.apply(data),
-                key3, mapper3.apply(data),
-                key4, mapper4.apply(data),
-                key5, mapper5.apply(data),
-                key6, mapper6.apply(data),
-                key7, mapper7.apply(data),
-                key8, mapper8.apply(data),
-                key9, mapper9.apply(data),
-                key10, mapper10.apply(data)));
-    }
-    
-    // TODO - toMapBuilder
-    
-    public default Iterator<DATA> iterator() {
-        return stream().iterator();
-    }
-    
-    public default Spliterator<DATA> spliterator() {
-        return Spliterators.spliteratorUnknownSize(iterator(), 0);
-    }
-    
-    @SuppressWarnings("unchecked")
-	public default SELF filter(Predicate<? super DATA> predicate) {
-        if (predicate == null)
-            return (SELF)this;
-        
-        return __stream(stream -> stream.filter(predicate));
-    }
-    
-    @SuppressWarnings("unchecked")
-	public default SELF exclude(Predicate<? super DATA> predicate) {
-        if (predicate == null)
-            return (SELF)this;
-        
-        return __stream(stream -> stream.filter(data -> !predicate.test(data)));
-    }
-    
-    public default SELF filter(DATA o) {
-        return __stream(stream -> stream.filter(each -> Objects.equals(o, each)));
-    }
-    
-    public default SELF onlyNonNull() {
-        return __stream(stream -> stream.filter(Objects::nonNull));
-    }
-    
-    public default SELF exclude(DATA o) {
-        return __stream(stream -> stream.filter(each -> !Objects.equals(o, each)));
-    }
-    
-    @SuppressWarnings("unchecked")
-	public default SELF filter(Collection<? super DATA> collection) {
-        if (collection == null)
-            return (SELF)this;
-        
-        return __stream(stream -> stream.filter(data -> !collection.contains(data)));
-    }
-    
-    public default SELF exclude(Collection<? super DATA> collection) {
-        return __stream(stream -> stream.filter(data -> !collection.contains(data)));
-    }
-    
-    public default SELF selectiveMap(Predicate<? super DATA> filter, Function<DATA, DATA> mapper) {
-        return __stream(stream -> stream.map(each -> {
-            return filter.test(each)
-                    ? mapper.apply(each)
-                    : each;
-        }));
-    }
-    
-    public default SELF distinct() {
-        return __stream(stream -> stream.distinct());
-    }
-    
-    public default SELF sorted() {
-        return __stream(stream -> stream.sorted());
-    }
-    
-    public default SELF sorted(Comparator<? super DATA> comparator) {
-        if (comparator == null)
-            return sorted();
-        
-        return __stream(stream -> stream.sorted(comparator));
-    }
-    
-    @SuppressWarnings("unchecked")
-	public default SELF peek(Consumer<? super DATA> action) {
-        if (action == null)
-            return (SELF)this;
-        
-        return __stream(stream -> stream.peek(action));
-    }
-    
-    @SuppressWarnings("unchecked")
-	public default SELF limit(Long maxSize) {
-        if ((maxSize == null) || (maxSize.longValue() < 0))
-            return (SELF)this;
-        
-        return __stream(stream -> stream.limit(maxSize));
-    }
-    
-    @SuppressWarnings("unchecked")
-	public default SELF skip(Long startAt){
-        if ((startAt == null) || (startAt.longValue() < 0))
-            return (SELF)this;
-        
-        return __stream(stream -> stream.skip(startAt));
     }
     
     public default void forEach(Consumer<? super DATA> action) {
@@ -750,23 +201,337 @@ public interface StreamPlus<DATA, SELF extends StreamPlus<DATA, SELF>>
     public default Optional<DATA> findAny() {
         return stream().findAny();
     }
+    
+    @Override
+    public default StreamPlus<DATA> limit(long maxSize) {
+        return stream(stream -> {
+            return stream.limit(maxSize);
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> skip(long n) {
+        return stream(stream -> {
+            return stream.skip(n);
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> distinct() {
+        return stream(stream -> {
+            return stream.distinct();
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> sorted() {
+        return stream(stream -> {
+            return stream.sorted();
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> sorted(Comparator<? super DATA> comparator) {
+        return stream(stream -> {
+            return (comparator == null)
+                    ? stream.sorted()
+                    : stream.sorted(comparator);
+        });
+    }
+    
+    @Override
+    public default boolean isParallel() {
+        return stream().isParallel();
+    }
+    
+    @Override
+    public default StreamPlus<DATA> sequential() {
+        return stream(stream -> { 
+            return stream.sequential();
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> parallel() {
+        return stream(stream -> { 
+            return stream.parallel();
+        });
+    } 
+    
+    @Override
+    public default StreamPlus<DATA> unordered() {
+        return stream(stream -> { 
+            return stream.unordered();
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> onClose(Runnable closeHandler) {
+        return stream(stream -> { 
+            return stream.onClose(closeHandler);
+        });
+    }
+    
+    @Override
+    public default void close() {
+        stream().close();
+    }
+    
+    //== toXXX ===
+    
+    @Override
+    public default Object[] toArray() {
+        return stream().toArray();
+    }
+    
+    @Override
+    public default <A> A[] toArray(IntFunction<A[]> generator) {
+        return stream().toArray(generator);
+    }
+    
+    public default List<DATA> toList() {
+        return stream().collect(Collectors.toList());
+    }
+    
+    public default FunctionalList<DATA> toFunctionalList() {
+        return toImmutableList();
+    }
+    
+    public default ImmutableList<DATA> toImmutableList() {
+        return ImmutableList.of(stream());
+    }
+    
+    public default List<DATA> toMutableList() {
+        return toArrayList();
+    }
+    
+    public default ArrayList<DATA> toArrayList() {
+        return new ArrayList<DATA>(toList());
+    }
+    
+    public default Set<DATA> toSet() {
+        return new HashSet<DATA>(stream().collect(Collectors.toSet()));
+    }
+    // TODO - toMapBuilder
+    
+    public default Iterator<DATA> iterator() {
+        return stream().iterator();
+    }
+    
+    public default Spliterator<DATA> spliterator() {
+        return Spliterators.spliteratorUnknownSize(iterator(), 0);
+    }
+    
+    //== Plus ==
+    
     public default String joining() {
-        return stream().map(StringFunctions::stringOf).collect(Collectors.joining());
+        return stream()
+                .map(StringFunctions::stringOf)
+                .collect(Collectors.joining());
     }
     public default String joining(String delimiter) {
-        return stream().map(StringFunctions::stringOf).collect(Collectors.joining(delimiter));
+        return stream()
+                .map(StringFunctions::stringOf)
+                .collect(Collectors.joining(delimiter));
     }
+    
+    //++ Plus w/ Self ++
+    
+    //-- Limit/Skip --
+    
+    public default StreamPlus<DATA> limit(Long maxSize) {
+        return stream(stream -> {
+            return ((maxSize == null) || (maxSize.longValue() < 0))
+                    ? stream
+                    : stream.limit(maxSize);
+        });
+    }
+    
+    public default StreamPlus<DATA> skip(Long startAt) {
+        return stream(stream -> {
+            return ((startAt == null) || (startAt.longValue() < 0))
+                    ? stream
+                    : stream.skip(startAt);
+        });
+    }
+    
+    //-- Sorted --
+    
+    public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper) {
+        return stream(stream -> {
+            return stream.sorted((a, b) -> {
+                        T vA = mapper.apply(a);
+                        T vB = mapper.apply(b);
+                        return vA.compareTo(vB);
+                    });
+        });
+    }
+    
+    public default <T> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper, Comparator<T> comparator) {
+        return stream(stream -> {
+            return stream.sorted((a, b) -> {
+                    T vA = mapper.apply(a);
+                    T vB = mapper.apply(b);
+                    return Objects.compare(vA,  vB, comparator);
+                });
+        });
+    }
+    
+    //-- mapWithIndex --
+    
+    public default <T> StreamPlus<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
+        val index = new AtomicInteger();
+        return map(each -> mapper.apply(index.getAndIncrement(), each));
+    }
+    
+    public default <T1, T> StreamPlus<T> mapWithIndex(
+                Function<? super DATA, ? extends T1>       mapper1,
+                BiFunction<? super Integer, ? super T1, T> mapper) {
+        val index = new AtomicInteger();
+        return map(each -> mapper.apply(
+                                index.getAndIncrement(),
+                                mapper1.apply(each)));
+    }
+    
+    public default <T1, T2, T> StreamPlus<T> mapWithIndex(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Func3<? super Integer, ? super T1, ? super T2, T> mapper) {
+        val index = new AtomicInteger();
+        return map(each -> mapper.apply(
+                                index.getAndIncrement(),
+                                mapper1.apply(each),
+                                mapper2.apply(each)));
+    }
+    
+    public default <T1, T2, T3, T> StreamPlus<T> mapWithIndex(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Func4<? super Integer, ? super T1, ? super T2, ? super T3, T> mapper) {
+        val index = new AtomicInteger();
+        return map(each -> mapper.apply(
+                                index.getAndIncrement(),
+                                mapper1.apply(each),
+                                mapper2.apply(each),
+                                mapper3.apply(each)));
+    }
+    
+    public default <T1, T2, T3, T4, T> StreamPlus<T> mapWithIndex(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Func5<? super Integer, ? super T1, ? super T2, ? super T3, ? super T4, T> mapper) {
+        val index = new AtomicInteger();
+        return map(each -> mapper.apply(
+                                index.getAndIncrement(),
+                                mapper1.apply(each),
+                                mapper2.apply(each),
+                                mapper3.apply(each),
+                                mapper4.apply(each)));
+    }
+    
+    public default <T1, T2, T3, T4, T5, T> StreamPlus<T> mapWithIndex(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Function<? super DATA, ? extends T5> mapper5,
+                Func6<? super Integer, ? super T1, ? super T2, ? super T3, ? super T4, ? super T5, T> mapper) {
+        val index = new AtomicInteger();
+        return map(each -> mapper.apply(
+                                index.getAndIncrement(),
+                                mapper1.apply(each),
+                                mapper2.apply(each),
+                                mapper3.apply(each),
+                                mapper4.apply(each),
+                                mapper5.apply(each)));
+    }
+    
+    //-- Plus w/ Self --
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public default <T1, T2> StreamPlus<Tuple2<T1, T2>> map(
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2) {
+//        return map(mapper1, mapper2, (t1, t2) -> Tuple.of(t1, t2));
+        return null;
+    }
+    
+    
+    //== More functionality ==
+    
+    
+    public default StreamPlus<DATA> exclude(Predicate<? super DATA> predicate) {
+        if (predicate == null)
+            return this;
+        
+        return stream(stream -> stream.filter(data -> !predicate.test(data)));
+    }
+    
+    public default StreamPlus<DATA> onlyNonNull() {
+        return stream(stream -> stream.filter(Objects::nonNull));
+    }
+    
+    public default StreamPlus<DATA> filter(Collection<? super DATA> collection) {
+        if (collection == null)
+            return this;
+        
+        return stream(stream -> stream.filter(data -> !collection.contains(data)));
+    }
+    
+    public default StreamPlus<DATA> exclude(Collection<? super DATA> collection) {
+        return stream(stream -> stream.filter(data -> !collection.contains(data)));
+    }
+    
+    public default StreamPlus<DATA> selectiveMap(Predicate<? super DATA> filter, Function<DATA, DATA> mapper) {
+        return stream(stream -> stream.map(each -> {
+            return filter.test(each)
+                    ? mapper.apply(each)
+                    : each;
+        }));
+    }
+    
     
     // TODO segment
     
     public static class Helper {
-
+        
         private static final Object dummy = new Object();
         
         public static <T> boolean hasAt(Stream<T> stream, long index) {
             return hasAt(stream, index, null);
         }
-    
+        
         public static <T> boolean hasAt(Stream<T> stream, long index, AtomicReference<T> resultValue) {
             // Note: It is done this way to avoid interpreting 'null' as no-value
             

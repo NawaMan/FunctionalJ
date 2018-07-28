@@ -109,7 +109,7 @@ public interface FunctionalListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<H
         });
     }
     
-    public default FunctionalListAccess<HOST, TYPE, TYPEACCESS> appendAll(Streamable<? extends TYPE, ?> streamable) {
+    public default FunctionalListAccess<HOST, TYPE, TYPEACCESS> appendAll(Streamable<? extends TYPE> streamable) {
         return subList(this, host -> {
             return apply(host)
                     .appendAll(streamable);
@@ -145,7 +145,7 @@ public interface FunctionalListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<H
         });
     }
     
-    public default FunctionalListAccess<HOST, TYPE, TYPEACCESS> insertAllAt(int index, Streamable<? extends TYPE, ?> streamable) {
+    public default FunctionalListAccess<HOST, TYPE, TYPEACCESS> insertAllAt(int index, Streamable<? extends TYPE> streamable) {
         return subList(this, host -> {
             return apply(host)
                     .insertAllAt(index, streamable);

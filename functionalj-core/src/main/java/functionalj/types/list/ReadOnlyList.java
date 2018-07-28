@@ -15,30 +15,27 @@ import functionalj.types.stream.Streamable;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>> 
-                    extends List<DATA>, Streamable<DATA, SELF> {
+public interface ReadOnlyList<DATA> 
+                    extends List<DATA>, Streamable<DATA> {
 
-    public static <T> ReadOnlyList<T, ?> empty() {
+    public static <T> ReadOnlyList<T> empty() {
         return ImmutableList.empty();
     }
     
-    public static <T> ReadOnlyList<T, ?> of(Collection<T> data) {
+    public static <T> ReadOnlyList<T> of(Collection<T> data) {
         return ImmutableList.of(data);
     }
     @SafeVarargs
-	public static <T> ReadOnlyList<T, ?> of(T ... data) {
+	public static <T> ReadOnlyList<T> of(T ... data) {
         return ImmutableList.of(data);
     }
-    public static <T> ReadOnlyList<T, ?> of(Streamable<T, ?> streamable) {
+    public static <T> ReadOnlyList<T> of(Streamable<T> streamable) {
         return ImmutableList.of(streamable);
     }
-    public static <T> ReadOnlyList<T, ?> of(ReadOnlyList<T, ?> readOnlyList) {
+    public static <T> ReadOnlyList<T> of(ReadOnlyList<T> readOnlyList) {
         return ImmutableList.of(readOnlyList);
     }
-    public static <T> ReadOnlyList<T, ?> of(IFunctionalList<T, ?> functionalList) {
-        return ImmutableList.of(functionalList);
-    }
-    public static <T> ReadOnlyList<T, ?> of(FunctionalList<T> functionalList) {
+    public static <T> ReadOnlyList<T> of(FunctionalList<T> functionalList) {
         return ImmutableList.of(functionalList);
     }
     
@@ -116,7 +113,7 @@ public interface ReadOnlyList<DATA, SELF extends ReadOnlyList<DATA, SELF>>
     public ListIterator<DATA> listIterator(int index);
 
     @Override
-    public SELF subList(int fromIndexInclusive, int toIndexExclusive);
+    public ReadOnlyList<DATA> subList(int fromIndexInclusive, int toIndexExclusive);
     
     @Override
     public default Spliterator<DATA> spliterator() {

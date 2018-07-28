@@ -62,7 +62,7 @@ public class FunctionalListTest {
                         + "{index:4, word:Five, length:4}, "
                         + "{index:5, word:Six, length:3}, "
                         + "{index:6, word:Seven, length:5}]",
-                "" + list.toMap(
+                "" + list.map(
                         "index",   __ -> index.getAndIncrement(), 
                         "word",   theString, 
                         "length", theString.length().asString()));

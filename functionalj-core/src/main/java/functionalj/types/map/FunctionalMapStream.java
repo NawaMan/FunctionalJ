@@ -145,15 +145,16 @@ public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
     @SuppressWarnings("unchecked")
     @Override
     public FunctionalMap<KEY, VALUE> with(KEY key, VALUE value) {
-        // Find the way to put in it in the same location.
-        int keyHash    = calculateHash(key);
-        val valueEntry = new ImmutableTuple2<KEY, VALUE>(key, value);
-        val mapEntry   = new IntTuple2<ImmutableTuple2<KEY, VALUE>>(keyHash, valueEntry);
-        val newEntries = entries
-                            .filter(entry -> !Objects.equals(key, entry._2._1))
-                            .append(mapEntry);
-        val newIsKeyComparable = isKeyComparable && ((key == null) || (key instanceof Comparable));
-        return new FunctionalMapStream<>(newIsKeyComparable, newEntries);
+//        // Find the way to put in it in the same location.
+//        int keyHash    = calculateHash(key);
+//        val valueEntry = new ImmutableTuple2<KEY, VALUE>(key, value);
+//        val mapEntry   = new IntTuple2<ImmutableTuple2<KEY, VALUE>>(keyHash, valueEntry);
+//        val newEntries = entries
+//                            .filter(entry -> !Objects.equals(key, entry._2._1))
+//                            .append(mapEntry);
+//        val newIsKeyComparable = isKeyComparable && ((key == null) || (key instanceof Comparable));
+//        return new FunctionalMapStream<>(newIsKeyComparable, newEntries);
+        return null;
     }
     
     @Override
@@ -276,31 +277,33 @@ public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public FunctionalMap<KEY, VALUE> sorted() {
-        if (isKeyComparable) {
-            return new FunctionalMapStream<>(isKeyComparable, 
-                    entries.sorted((t1,t2)-> {
-                        val k1 = t1._2._1;
-                        val k2 = t2._2._1;
-                        if (k1 == k2)
-                            return 0;
-                        if (k1 == null)
-                            return -1;
-                        if (k2 == null)
-                            return 1;
-                        return ((Comparable)k1).compareTo(k2);
-                    }));
-        }
-        
-        return new FunctionalMapStream<>(isKeyComparable, 
-                entries
-                .sorted((t1,t2)->t1._int() - t2._int()));
+//        if (isKeyComparable) {
+//            return new FunctionalMapStream<>(isKeyComparable, 
+//                    entries.sorted((t1,t2)-> {
+//                        val k1 = t1._2._1;
+//                        val k2 = t2._2._1;
+//                        if (k1 == k2)
+//                            return 0;
+//                        if (k1 == null)
+//                            return -1;
+//                        if (k2 == null)
+//                            return 1;
+//                        return ((Comparable)k1).compareTo(k2);
+//                    }));
+//        }
+//        
+//        return new FunctionalMapStream<>(isKeyComparable, 
+//                entries
+//                .sorted((t1,t2)->t1._int() - t2._int()));
+        return null;
     }
     
     @Override
     public FunctionalMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator) {
-        return new FunctionalMapStream<>(isKeyComparable, 
-                entries
-                .sorted((t1,t2)->comparator.compare(t1._2._1, t2._2._1)));
+//        return new FunctionalMapStream<>(isKeyComparable, 
+//                entries
+//                .sorted((t1,t2)->comparator.compare(t1._2._1, t2._2._1)));
+        return null;
     }
     
     @Override
