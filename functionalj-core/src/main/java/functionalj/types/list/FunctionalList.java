@@ -234,27 +234,27 @@ public abstract class FunctionalList<DATA>
         FunctionalList<Tuple2<T1, T2>> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2) {
-        return map(mapper1, mapper2,
+        return mapCombine(mapper1, mapper2,
                    (v1, v2) -> Tuple2.of(v1, v2));
     }
     
     @Override
-    public <T1, T2, T> FunctionalList<T> map(Function<? super DATA, ? extends T1> mapper1,
+    public <T1, T2, T> FunctionalList<T> mapCombine(Function<? super DATA, ? extends T1> mapper1,
             Function<? super DATA, ? extends T2> mapper2, BiFunction<T1, T2, T> function) {
         // TODO Auto-generated method stub
-        return FunctionalListMapAddOn.super.map(mapper1, mapper2, function);
+        return FunctionalListMapAddOn.super.mapCombine(mapper1, mapper2, function);
     }
     public <T1, T2, T3> 
         FunctionalList<Tuple3<T1, T2, T3>> map(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3) {
-        return map(mapper1, mapper2, mapper3,
+        return mapCombine(mapper1, mapper2, mapper3,
                    (v1, v2, v3) -> Tuple3.of(v1, v2, v3));
     }
     
     public <T1, T2, T3, T> 
-        FunctionalList<T> map(
+        FunctionalList<T> mapCombine(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -273,12 +273,12 @@ public abstract class FunctionalList<DATA>
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
                 Function<? super DATA, ? extends T4> mapper4) {
-        return map(mapper1, mapper2, mapper3, mapper4,
+        return mapCombine(mapper1, mapper2, mapper3, mapper4,
                    (v1, v2, v3, v4) -> Tuple4.of(v1, v2, v3, v4));
     }
     
     public <T1, T2, T3, T4, T> 
-        FunctionalList<T> map(
+        FunctionalList<T> mapCombine(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -300,12 +300,12 @@ public abstract class FunctionalList<DATA>
                 Function<? super DATA, ? extends T3> mapper3,
                 Function<? super DATA, ? extends T4> mapper4,
                 Function<? super DATA, ? extends T5> mapper5) {
-        return map(mapper1, mapper2, mapper3, mapper4, mapper5,
+        return mapCombine(mapper1, mapper2, mapper3, mapper4, mapper5,
                    (v1, v2, v3, v4, v5) -> Tuple5.of(v1, v2, v3, v4, v5));
     }
     
     public <T1, T2, T3, T4, T5, T> 
-        FunctionalList<T> map(
+        FunctionalList<T> mapCombine(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -330,12 +330,12 @@ public abstract class FunctionalList<DATA>
                 Function<? super DATA, ? extends T4> mapper4,
                 Function<? super DATA, ? extends T5> mapper5,
                 Function<? super DATA, ? extends T6> mapper6) {
-        return map(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6,
+        return mapCombine(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6,
                    (v1, v2, v3, v4, v5, v6) -> Tuple6.of(v1, v2, v3, v4, v5, v6));
     }
     
     public <T1, T2, T3, T4, T5, T6, T> 
-        FunctionalList<T> map(
+        FunctionalList<T> mapCombine(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,

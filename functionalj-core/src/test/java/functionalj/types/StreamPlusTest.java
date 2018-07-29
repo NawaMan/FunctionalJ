@@ -1,5 +1,6 @@
 package functionalj.types;
 
+import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theString;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
@@ -13,12 +14,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
+import functionalj.lens.Access;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.list.ImmutableList;
 import functionalj.types.stream.StreamPlus;
@@ -345,6 +348,56 @@ public class StreamPlusTest {
         assertStrings("[Three, Four, One, Two]", stream.sortedBy(String::length, (a,b)->b-a).toList());
     }
     
+    //--map with condition --
+    
+    @Test
+    public void testMapOnly() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertStrings("[ONE, TWO, Three]", 
+                stream
+                .mapOnly(
+                        $S.length().thatLessThan(4), 
+                        $S.toUpperCase()
+                ).toList());
+    }
+    
+    @Test
+    public void testMapIf() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertStrings("[ONE, TWO, three]", 
+                stream
+                .mapIf(
+                        $S.length().thatLessThan(4), $S.toUpperCase(),
+                        $S.toLowerCase()
+                ).toList());
+    }
+    
+    @Test
+    public void testMapIf2() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
+        assertStrings("[ONE, TWO, three, four, five, SIX, seven]", 
+                stream
+                .mapIf(
+                        $S.length().thatLessThan(4), $S.toUpperCase(),
+                        $S.length().thatLessThan(5), $S.toLowerCase(),
+                        $S.toLowerCase()
+                ).toList());
+    }
+    
+    @Test
+    public void testMapIf3() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
+        val index  = new AtomicInteger();
+        assertStrings("[1:one, 2:TWO, 3:THree, X:four, 1:five, 2:SIX, 3:SEven]", 
+                stream
+                .mapIf(
+                    s -> (index.get() % 4) == 0, s -> { index.incrementAndGet(); return "1:" + s.toLowerCase(); },
+                    s -> (index.get() % 4) == 1, s -> { index.incrementAndGet(); return "2:" + s.toUpperCase(); },
+                    s -> (index.get() % 4) == 2, s -> { index.incrementAndGet(); return "3:" + s.substring(0, 2).toUpperCase() + s.substring(2).toLowerCase(); },
+                    s -> { index.incrementAndGet(); return "X:" + s.toLowerCase(); }
+                ).toList());
+    }
+    
     //-- mapWithIndex --
     
     @Test
@@ -384,6 +437,109 @@ public class StreamPlusTest {
                         String::toLowerCase,
                         (i, s, s1, s2)-> i + ": " + s + "," + s1 + "," + s2
                     ).toList());
+    }
+    
+    @Test
+    public void testMapWithIndex5() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertStrings("[0: One,ONE,one,On-, 1: Two,TWO,two,Two, 2: Three,THREE,three,Thr--]",
+                stream.mapWithIndex(
+                        s -> s,
+                        String::toUpperCase,
+                        String::toLowerCase,
+                        s -> s.replaceAll("e", "-"),
+                        (i, s, s1, s2, s3)-> i + ": " + s + "," + s1 + "," + s2 + "," + s3
+                    ).toList());
+    }
+    
+    @Test
+    public void testMapWithIndex6() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertStrings("[0: One,ONE,one,On-,One, 1: Two,TWO,two,Two,Tw?, 2: Three,THREE,three,Thr--,Three]",
+                stream.mapWithIndex(
+                        s -> s,
+                        String::toUpperCase,
+                        String::toLowerCase,
+                        s -> s.replaceAll("e", "-"),
+                        s -> s.replaceAll("o", "?"),
+                        (i, s, s1, s2, s3, s4)-> i + ": " + s + "," + s1 + "," + s2 + "," + s3 + "," + s4
+                    ).toList());
+    }
+    
+    //== Map to tuple. ==
+    
+    @Test
+    public void testMapTuple2() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertStrings("[(ONE,one), (TWO,two), (THREE,three)]",
+                stream.mapTuple(
+                        String::toUpperCase,
+                        String::toLowerCase
+                    ).toList());
+    }
+    
+    @Test
+    public void testMapTuple3() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertStrings("[(ONE,one,(3)One), (TWO,two,(3)Two), (THREE,three,(3)Three)]",
+                stream.mapTuple(
+                        String::toUpperCase,
+                        String::toLowerCase,
+                        s -> "(3)" + s
+                    ).toList());
+    }
+    
+    @Test
+    public void testMapTuple4() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertStrings("[(ONE,one,(3)One,(4)One), (TWO,two,(3)Two,(4)Two), (THREE,three,(3)Three,(4)Three)]",
+                stream.mapTuple(
+                        String::toUpperCase,
+                        String::toLowerCase,
+                        s -> "(3)" + s,
+                        s -> "(4)" + s
+                    ).toList());
+    }
+    
+    @Test
+    public void testMapTuple5() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertStrings("[(ONE,one,(3)One,(4)One,(5)One), (TWO,two,(3)Two,(4)Two,(5)Two), (THREE,three,(3)Three,(4)Three,(5)Three)]",
+                stream.mapTuple(
+                        String::toUpperCase,
+                        String::toLowerCase,
+                        s -> "(3)" + s,
+                        s -> "(4)" + s,
+                        s -> "(5)" + s
+                    ).toList());
+    }
+    
+    @Test
+    public void testMapTuple6() {
+        val stream = StreamPlus.of("One", "Two", "Three");
+        assertStrings("[(ONE,one,(3)One,(4)One,(5)One,(6)One), (TWO,two,(3)Two,(4)Two,(5)Two,(6)Two), (THREE,three,(3)Three,(4)Three,(5)Three,(6)Three)]",
+                stream.mapTuple(
+                        String::toUpperCase,
+                        String::toLowerCase,
+                        s -> "(3)" + s,
+                        s -> "(4)" + s,
+                        s -> "(5)" + s,
+                        s -> "(6)" + s
+                    ).toList());
+    }
+    
+    //-- Filter --
+    
+    @Test
+    public void testFilterType() {
+        val stream = StreamPlus.of("One", "Two", 3, 4.0, 5L);
+        assertStrings("[4.0]", stream.filter(Double.class).toList());
+    }
+    
+    @Test
+    public void testFilterType2() {
+        val stream = StreamPlus.of("One", "Two", 3, 4.0, 5.0, 6L);
+        assertStrings("[5.0]", stream.filter(Double.class, d -> d > 4.5).toList());
     }
     
 }
