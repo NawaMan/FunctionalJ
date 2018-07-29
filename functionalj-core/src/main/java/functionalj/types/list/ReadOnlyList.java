@@ -93,7 +93,7 @@ public interface ReadOnlyList<DATA>
     @Override
     public default DATA get(int index) {
         val ref   = new AtomicReference<DATA>();
-        val found = Streamable.Helper.hasAt(this.stream(), index, ref);
+        val found = Helper.hasAt(this.stream(), index, ref);
         if (!found)
             throw new IndexOutOfBoundsException("" + index);
         
@@ -181,5 +181,6 @@ public interface ReadOnlyList<DATA>
     public default void sort(Comparator<? super DATA> c) {
         throw new UnsupportedOperationException();
     }
+    
     
 }

@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -54,6 +55,7 @@ public interface StreamPlus<DATA>
     
     // TODO takeUntil
     // TODO takeWhile
+    // TODO segment
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> StreamPlus<D> ofStream(Stream<D> stream) {
@@ -139,6 +141,15 @@ public interface StreamPlus<DATA>
             return;
         
         stream().forEach(action);
+    }
+    
+    public default void forEach(BiConsumer<? super Integer, ? super DATA> action) {
+        if (action == null)
+            return;
+        
+        val index = new AtomicInteger();
+        stream().forEach(each ->
+                    action.accept(index.getAndIncrement(), each));
     }
     
     public default void forEachOrdered(Consumer<? super DATA> action) {
@@ -944,6 +955,14 @@ public interface StreamPlus<DATA>
             return isPass;
         });
     }
+
+    public default StreamPlus<DATA> filterWithIndex(BiFunction<? super Integer, ? super DATA, Boolean> predicate) {
+        val index = new AtomicInteger();
+        return filter(each -> {
+                    return (predicate != null) 
+                            && predicate.apply(index.getAndIncrement(), each);
+        });
+    }
     
     //-- Peek --
     
@@ -983,15 +1002,15 @@ public interface StreamPlus<DATA>
     
     public default <T> StreamPlus<T> flatMapIf(
             Predicate<? super DATA> checker, 
-            Function<? super DATA, StreamPlus<T>> mapper, 
-            Function<? super DATA, StreamPlus<T>> elseMapper) {
+            Function<? super DATA, Stream<T>> mapper, 
+            Function<? super DATA, Stream<T>> elseMapper) {
         return flatMap(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
     }
     
     public default <T> StreamPlus<T> flatMapIf(
-            Predicate<? super DATA> checker1, Function<? super DATA, StreamPlus<T>> mapper1, 
-            Predicate<? super DATA> checker2, Function<? super DATA, StreamPlus<T>> mapper2,
-            Function<? super DATA, StreamPlus<T>> elseMapper) {
+            Predicate<? super DATA> checker1, Function<? super DATA, Stream<T>> mapper1, 
+            Predicate<? super DATA> checker2, Function<? super DATA, Stream<T>> mapper2,
+            Function<? super DATA, Stream<T>> elseMapper) {
         return flatMap(d -> {
             return checker1.test(d) ? mapper1.apply(d)
                  : checker2.test(d) ? mapper2.apply(d)
@@ -1000,10 +1019,10 @@ public interface StreamPlus<DATA>
     }
     
     public default <T> StreamPlus<T> flatMapIf(
-            Predicate<? super DATA> checker1, Function<? super DATA, StreamPlus<T>> mapper1, 
-            Predicate<? super DATA> checker2, Function<? super DATA, StreamPlus<T>> mapper2,
-            Predicate<? super DATA> checker3, Function<? super DATA, StreamPlus<T>> mapper3,
-            Function<? super DATA, StreamPlus<T>> elseMapper) {
+            Predicate<? super DATA> checker1, Function<? super DATA, Stream<T>> mapper1, 
+            Predicate<? super DATA> checker2, Function<? super DATA, Stream<T>> mapper2,
+            Predicate<? super DATA> checker3, Function<? super DATA, Stream<T>> mapper3,
+            Function<? super DATA, Stream<T>> elseMapper) {
         return flatMap(d -> {
             return checker1.test(d) ? mapper1.apply(d)
                  : checker2.test(d) ? mapper2.apply(d)
@@ -1013,11 +1032,11 @@ public interface StreamPlus<DATA>
     }
     
     public default <T> StreamPlus<T> flatMapIf(
-            Predicate<? super DATA> checker1, Function<? super DATA, StreamPlus<T>> mapper1, 
-            Predicate<? super DATA> checker2, Function<? super DATA, StreamPlus<T>> mapper2,
-            Predicate<? super DATA> checker3, Function<? super DATA, StreamPlus<T>> mapper3,
-            Predicate<? super DATA> checker4, Function<? super DATA, StreamPlus<T>> mapper4,
-            Function<? super DATA, StreamPlus<T>> elseMapper) {
+            Predicate<? super DATA> checker1, Function<? super DATA, Stream<T>> mapper1, 
+            Predicate<? super DATA> checker2, Function<? super DATA, Stream<T>> mapper2,
+            Predicate<? super DATA> checker3, Function<? super DATA, Stream<T>> mapper3,
+            Predicate<? super DATA> checker4, Function<? super DATA, Stream<T>> mapper4,
+            Function<? super DATA, Stream<T>> elseMapper) {
         return flatMap(d -> {
             return checker1.test(d) ? mapper1.apply(d)
                  : checker2.test(d) ? mapper2.apply(d)
@@ -1028,12 +1047,12 @@ public interface StreamPlus<DATA>
     }
     
     public default <T> StreamPlus<T> flatMapIf(
-            Predicate<? super DATA> checker1, Function<? super DATA, StreamPlus<T>> mapper1, 
-            Predicate<? super DATA> checker2, Function<? super DATA, StreamPlus<T>> mapper2,
-            Predicate<? super DATA> checker3, Function<? super DATA, StreamPlus<T>> mapper3,
-            Predicate<? super DATA> checker4, Function<? super DATA, StreamPlus<T>> mapper4,
-            Predicate<? super DATA> checker5, Function<? super DATA, StreamPlus<T>> mapper5,
-            Function<? super DATA, StreamPlus<T>> elseMapper) {
+            Predicate<? super DATA> checker1, Function<? super DATA, Stream<T>> mapper1, 
+            Predicate<? super DATA> checker2, Function<? super DATA, Stream<T>> mapper2,
+            Predicate<? super DATA> checker3, Function<? super DATA, Stream<T>> mapper3,
+            Predicate<? super DATA> checker4, Function<? super DATA, Stream<T>> mapper4,
+            Predicate<? super DATA> checker5, Function<? super DATA, Stream<T>> mapper5,
+            Function<? super DATA, Stream<T>> elseMapper) {
         return flatMap(d -> {
             return checker1.test(d) ? mapper1.apply(d)
                  : checker2.test(d) ? mapper2.apply(d)
@@ -1045,13 +1064,13 @@ public interface StreamPlus<DATA>
     }
     
     public default <T> StreamPlus<T> flatMapIf(
-            Predicate<? super DATA> checker1, Function<? super DATA, StreamPlus<T>> mapper1, 
-            Predicate<? super DATA> checker2, Function<? super DATA, StreamPlus<T>> mapper2,
-            Predicate<? super DATA> checker3, Function<? super DATA, StreamPlus<T>> mapper3,
-            Predicate<? super DATA> checker4, Function<? super DATA, StreamPlus<T>> mapper4,
-            Predicate<? super DATA> checker5, Function<? super DATA, StreamPlus<T>> mapper5,
-            Predicate<? super DATA> checker6, Function<? super DATA, StreamPlus<T>> mapper6,
-            Function<? super DATA, StreamPlus<T>> elseMapper) {
+            Predicate<? super DATA> checker1, Function<? super DATA, Stream<T>> mapper1, 
+            Predicate<? super DATA> checker2, Function<? super DATA, Stream<T>> mapper2,
+            Predicate<? super DATA> checker3, Function<? super DATA, Stream<T>> mapper3,
+            Predicate<? super DATA> checker4, Function<? super DATA, Stream<T>> mapper4,
+            Predicate<? super DATA> checker5, Function<? super DATA, Stream<T>> mapper5,
+            Predicate<? super DATA> checker6, Function<? super DATA, Stream<T>> mapper6,
+            Function<? super DATA, Stream<T>> elseMapper) {
         return flatMap(d -> {
             return checker1.test(d) ? mapper1.apply(d)
                  : checker2.test(d) ? mapper2.apply(d)
@@ -1064,37 +1083,35 @@ public interface StreamPlus<DATA>
     
     //-- Plus w/ Self --
     
-    // TODO segment
-//    
-//    public static class Helper {
-//        
-//        private static final Object dummy = new Object();
-//        
-//        public static <T> boolean hasAt(Stream<T> stream, long index) {
-//            return hasAt(stream, index, null);
-//        }
-//        
-//        public static <T> boolean hasAt(Stream<T> stream, long index, AtomicReference<T> StreamPlusValue) {
-//            // Note: It is done this way to avoid interpreting 'null' as no-value
-//            
-//            val ref = new AtomicReference<Object>(dummy);
-//            stream
-//                .skip(index)
-//                .peek(value -> ref.set(value))
-//                .findFirst()
-//                .orElse(null);
-//            
-//            @SuppressWarnings("unchecked")
-//            val value = (T)ref.get();
-//            val found = (dummy != value);
-//            
-//            if (StreamPlusValue != null) {
-//                StreamPlusValue.set(found ? value : null);
-//            }
-//            
-//            return found;
-//        }
-//        
-//    }
-//    
+    public static class Helper {
+        
+        private static final Object dummy = new Object();
+        
+        public static <T> boolean hasAt(Stream<T> stream, long index) {
+            return hasAt(stream, index, null);
+        }
+        
+        public static <T> boolean hasAt(Stream<T> stream, long index, AtomicReference<T> StreamPlusValue) {
+            // Note: It is done this way to avoid interpreting 'null' as no-value
+            
+            val ref = new AtomicReference<Object>(dummy);
+            stream
+                .skip(index)
+                .peek(value -> ref.set(value))
+                .findFirst()
+                .orElse(null);
+            
+            @SuppressWarnings("unchecked")
+            val value = (T)ref.get();
+            val found = (dummy != value);
+            
+            if (StreamPlusValue != null) {
+                StreamPlusValue.set(found ? value : null);
+            }
+            
+            return found;
+        }
+        
+    }
+    
 }

@@ -88,12 +88,10 @@ public abstract class FunctionalList<DATA>
     @Override
     public abstract FunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier);
     
-    @Override
     public <TARGET> FunctionalList<TARGET> __map(Function<? super DATA, ? extends TARGET> mapper) {
         return map(mapper);
     }
     
-    @Override
     public <TARGET> FunctionalList<TARGET> __flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
         return flatMap(mapper);
     }
@@ -555,4 +553,5 @@ public abstract class FunctionalList<DATA>
         val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
         return (FunctionalMap<KEY, VALUE>) ImmutableMap.of(theMap);
     }
+    
 }

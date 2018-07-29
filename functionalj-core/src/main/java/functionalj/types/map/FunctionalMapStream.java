@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 import functionalj.types.list.FunctionalList;
 import functionalj.types.list.FunctionalListStream;
-import functionalj.types.stream.Streamable;
+import functionalj.types.stream.StreamPlus;
 import functionalj.types.tuple.ImmutableTuple2;
 import functionalj.types.tuple.IntTuple2;
 import lombok.val;
@@ -79,7 +79,7 @@ public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
     @Override
     public boolean containsKey(Object key) {
         val keyHash = calculateHash(key);
-        return Streamable.Helper.hasAt(
+        return StreamPlus.Helper.hasAt(
                 entries
                     .filter(entry -> entry._int() == keyHash)
                     .filter(entry -> Objects.equals(key, entry._2._1))
@@ -89,7 +89,7 @@ public class FunctionalMapStream<KEY, VALUE> extends FunctionalMap<KEY, VALUE> {
     
     @Override
     public boolean containsValue(Object value) {
-        return Streamable.Helper.hasAt(
+        return StreamPlus.Helper.hasAt(
                 entries
                     .filter(entry -> Objects.equals(value, entry._2._2))
                     .stream(),
