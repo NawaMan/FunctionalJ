@@ -3,6 +3,7 @@ package functionalj.types.stream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -56,9 +57,11 @@ public interface StreamPlus<DATA>
     // TODO takeUntil
     // TODO takeWhile
     // TODO segment
+    // TODO - toMapBuilder
+    // TODO - zipWith
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <D> StreamPlus<D> ofStream(Stream<D> stream) {
+    public static <D> StreamPlus<D> from(Stream<D> stream) {
         return (stream instanceof StreamPlus)
                 ? (StreamPlus)stream
                 : (StreamPlus)(()->stream);
@@ -66,45 +69,20 @@ public interface StreamPlus<DATA>
     
     @SafeVarargs
     public static <D> StreamPlus<D> of(D ... data) {
-        return StreamPlus.ofStream(Stream.of(data));
+        return StreamPlus.from(Stream.of(data));
     }
-    
-    public Stream<DATA> stream();
     
     //== Stream ==
     
-    public default <TARGET> StreamPlus<TARGET> stream(Function<Stream<DATA>, Stream<TARGET>> action) {
-        return StreamPlus.ofStream(
+    public Stream<DATA> stream();
+    
+    public default <TARGET> StreamPlus<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action) {
+        return StreamPlus.from(
                 action.apply(
                         this.stream()));
     }
     
-    public default <TARGET> StreamPlus<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
-        return stream(stream -> {
-            return stream.map(mapper);
-        });
-    }
-    
-    public default <TARGET> StreamPlus<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
-        return stream(stream -> {
-            return stream.flatMap(mapper);
-        });
-    }
-    
-    public default StreamPlus<DATA> filter(Predicate<? super DATA> predicate) {
-        return stream(stream -> {
-            return (predicate == null)
-                ? stream
-                : stream.filter(predicate);
-        });
-    }
-    public default StreamPlus<DATA> peek(Consumer<? super DATA> action) {
-        return stream(stream -> {
-            return (action == null)
-                    ? stream
-                    : stream.peek(action);
-        });
-    }
+    //== Functionalities ==
     
     @Override
     public default IntStream mapToInt(ToIntFunction<? super DATA> mapper) {
@@ -223,34 +201,6 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default StreamPlus<DATA> sequential() {
-        return stream(stream -> { 
-            return stream.sequential();
-        });
-    }
-    
-    @Override
-    public default StreamPlus<DATA> parallel() {
-        return stream(stream -> { 
-            return stream.parallel();
-        });
-    } 
-    
-    @Override
-    public default StreamPlus<DATA> unordered() {
-        return stream(stream -> { 
-            return stream.unordered();
-        });
-    }
-    
-    @Override
-    public default StreamPlus<DATA> onClose(Runnable closeHandler) {
-        return stream(stream -> { 
-            return stream.onClose(closeHandler);
-        });
-    }
-    
-    @Override
     public default void close() {
         stream().close();
     }
@@ -276,7 +226,7 @@ public interface StreamPlus<DATA>
     }
     
     public default ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.of(stream());
+        return ImmutableList.from(stream());
     }
     
     public default List<DATA> toMutableList() {
@@ -290,7 +240,6 @@ public interface StreamPlus<DATA>
     public default Set<DATA> toSet() {
         return new HashSet<DATA>(stream().collect(Collectors.toSet()));
     }
-    // TODO - toMapBuilder
     
     public default Iterator<DATA> iterator() {
         return stream().iterator();
@@ -298,6 +247,37 @@ public interface StreamPlus<DATA>
     
     public default Spliterator<DATA> spliterator() {
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
+    }
+    
+    public default <KEY> FunctionalMap<KEY, FunctionalList<DATA>> groupingBy(Function<? super DATA, ? extends KEY> classifier) {
+        val theMap = new HashMap<KEY, FunctionalList<DATA>>();
+        stream()
+            .collect(Collectors.groupingBy(classifier))
+            .forEach((key,list)->theMap.put(key, ImmutableList.from(list)));
+        return ImmutableMap.of(theMap);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <KEY> FunctionalMap<KEY, DATA> toMap(Function<? super DATA, ? extends KEY> keyMapper) {
+        val theMap = stream().collect(Collectors.toMap(keyMapper, data -> data));
+        return (FunctionalMap<KEY, DATA>)ImmutableMap.of(theMap);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <KEY, VALUE> FunctionalMap<KEY, VALUE> toMap(
+                Function<? super DATA, ?  extends KEY>  keyMapper,
+                Function<? super DATA, ? extends VALUE> valueMapper) {
+        val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper));
+        return (FunctionalMap<KEY, VALUE>) ImmutableMap.of(theMap);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <KEY, VALUE> FunctionalMap<KEY, VALUE> toMap(
+                Function<? super DATA, ? extends KEY>   keyMapper,
+                Function<? super DATA, ? extends VALUE> valueMapper,
+                BinaryOperator<VALUE> mergeFunction) {
+        val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
+        return (FunctionalMap<KEY, VALUE>) ImmutableMap.of(theMap);
     }
     
     //== Plus ==
@@ -315,39 +295,94 @@ public interface StreamPlus<DATA>
     
     //++ Plus w/ Self ++
     
+    @Override
+    public default StreamPlus<DATA> sequential() {
+        return deriveWith(stream -> { 
+            return stream.sequential();
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> parallel() {
+        return deriveWith(stream -> { 
+            return stream.parallel();
+        });
+    } 
+    
+    @Override
+    public default StreamPlus<DATA> unordered() {
+        return deriveWith(stream -> { 
+            return stream.unordered();
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> onClose(Runnable closeHandler) {
+        return deriveWith(stream -> { 
+            return stream.onClose(closeHandler);
+        });
+    }
+    
+    public default <TARGET> StreamPlus<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+        return deriveWith(stream -> {
+            return stream.map(mapper);
+        });
+    }
+    
+    public default <TARGET> StreamPlus<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+        return deriveWith(stream -> {
+            return stream.flatMap(mapper);
+        });
+    }
+    
+    public default StreamPlus<DATA> filter(Predicate<? super DATA> predicate) {
+        return deriveWith(stream -> {
+            return (predicate == null)
+                ? stream
+                : stream.filter(predicate);
+        });
+    }
+    public default StreamPlus<DATA> peek(Consumer<? super DATA> action) {
+        return deriveWith(stream -> {
+            return (action == null)
+                    ? stream
+                    : stream.peek(action);
+        });
+    }
+    
     //-- Limit/Skip --
     
     @Override
     public default StreamPlus<DATA> limit(long maxSize) {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return stream.limit(maxSize);
         });
     }
     
     @Override
     public default StreamPlus<DATA> skip(long n) {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return stream.skip(n);
         });
     }
     
     @Override
     public default StreamPlus<DATA> distinct() {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return stream.distinct();
         });
     }
     
     @Override
     public default StreamPlus<DATA> sorted() {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return stream.sorted();
         });
     }
     
     @Override
     public default StreamPlus<DATA> sorted(Comparator<? super DATA> comparator) {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return (comparator == null)
                     ? stream.sorted()
                     : stream.sorted(comparator);
@@ -355,7 +390,7 @@ public interface StreamPlus<DATA>
     }
     
     public default StreamPlus<DATA> limit(Long maxSize) {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return ((maxSize == null) || (maxSize.longValue() < 0))
                     ? stream
                     : stream.limit(maxSize);
@@ -363,7 +398,7 @@ public interface StreamPlus<DATA>
     }
     
     public default StreamPlus<DATA> skip(Long startAt) {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return ((startAt == null) || (startAt.longValue() < 0))
                     ? stream
                     : stream.skip(startAt);
@@ -373,7 +408,7 @@ public interface StreamPlus<DATA>
     //-- Sorted --
     
     public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper) {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return stream.sorted((a, b) -> {
                         T vA = mapper.apply(a);
                         T vB = mapper.apply(b);
@@ -383,7 +418,7 @@ public interface StreamPlus<DATA>
     }
     
     public default <T> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper, Comparator<T> comparator) {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return stream.sorted((a, b) -> {
                     T vA = mapper.apply(a);
                     T vB = mapper.apply(b);
@@ -624,7 +659,7 @@ public interface StreamPlus<DATA>
         StreamPlus<Tuple2<T1, T2>> mapTuple(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2) {
-        return mapCombine(mapper1, mapper2,
+        return mapThan(mapper1, mapper2,
                    (v1, v2) -> Tuple2.of(v1, v2));
     }
     
@@ -633,7 +668,7 @@ public interface StreamPlus<DATA>
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3) {
-        return mapCombine(mapper1, mapper2, mapper3,
+        return mapThan(mapper1, mapper2, mapper3,
                    (v1, v2, v3) -> Tuple3.of(v1, v2, v3));
     }
     
@@ -643,7 +678,7 @@ public interface StreamPlus<DATA>
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
                 Function<? super DATA, ? extends T4> mapper4) {
-        return mapCombine(mapper1, mapper2, mapper3, mapper4,
+        return mapThan(mapper1, mapper2, mapper3, mapper4,
                    (v1, v2, v3, v4) -> Tuple4.of(v1, v2, v3, v4));
     }
     
@@ -654,7 +689,7 @@ public interface StreamPlus<DATA>
                 Function<? super DATA, ? extends T3> mapper3,
                 Function<? super DATA, ? extends T4> mapper4,
                 Function<? super DATA, ? extends T5> mapper5) {
-        return mapCombine(mapper1, mapper2, mapper3, mapper4, mapper5,
+        return mapThan(mapper1, mapper2, mapper3, mapper4, mapper5,
                    (v1, v2, v3, v4, v5) -> Tuple5.of(v1, v2, v3, v4, v5));
     }
     public default <T1, T2, T3, T4, T5, T6> 
@@ -665,14 +700,14 @@ public interface StreamPlus<DATA>
                 Function<? super DATA, ? extends T4> mapper4,
                 Function<? super DATA, ? extends T5> mapper5,
                 Function<? super DATA, ? extends T6> mapper6) {
-        return mapCombine(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6,
+        return mapThan(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6,
                    (v1, v2, v3, v4, v5, v6) -> Tuple6.of(v1, v2, v3, v4, v5, v6));
     }
     
     //-- Map and combine --
     
     public default <T1, T2, T> 
-        StreamPlus<T> mapCombine(
+        StreamPlus<T> mapThan(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 BiFunction<T1, T2, T> function) {
@@ -684,7 +719,7 @@ public interface StreamPlus<DATA>
         });
     }
     public default <T1, T2, T3, T> 
-        StreamPlus<T> mapCombine(
+        StreamPlus<T> mapThan(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -698,7 +733,7 @@ public interface StreamPlus<DATA>
         });
     }
     public default <T1, T2, T3, T4, T> 
-        StreamPlus<T> mapCombine(
+        StreamPlus<T> mapThan(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -714,7 +749,7 @@ public interface StreamPlus<DATA>
         });
     }
     public default <T1, T2, T3, T4, T5, T> 
-        StreamPlus<T> mapCombine(
+        StreamPlus<T> mapThan(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -732,7 +767,7 @@ public interface StreamPlus<DATA>
         });
     }
     public default <T1, T2, T3, T4, T5, T6, T> 
-        StreamPlus<T> mapCombine(
+        StreamPlus<T> mapThan(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -906,11 +941,11 @@ public interface StreamPlus<DATA>
     //-- Filter --
     
     public default StreamPlus<DATA> filterNonNull() {
-        return stream(stream -> stream.filter(Objects::nonNull));
+        return deriveWith(stream -> stream.filter(Objects::nonNull));
     }
     
     public default StreamPlus<DATA> filterIn(Collection<? super DATA> collection) {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return (collection == null)
                 ? Stream.empty()
                 : stream.filter(data -> collection.contains(data));
@@ -918,7 +953,7 @@ public interface StreamPlus<DATA>
     }
     
     public default StreamPlus<DATA> exclude(Predicate<? super DATA> predicate) {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return (predicate == null)
                 ? stream
                 : stream.filter(data -> !predicate.test(data));
@@ -926,7 +961,7 @@ public interface StreamPlus<DATA>
     }
     
     public default StreamPlus<DATA> exclude(Collection<? super DATA> collection) {
-        return stream(stream -> {
+        return deriveWith(stream -> {
             return (collection == null)
                 ? stream
                 : stream.filter(data -> !collection.contains(data));

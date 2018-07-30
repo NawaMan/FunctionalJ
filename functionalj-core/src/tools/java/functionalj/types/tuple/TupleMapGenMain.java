@@ -80,7 +80,7 @@ public class TupleMapGenMain {
         range(0, (int)Math.pow(2, tupleSize)).mapToObj(i -> (Integer)i)
         .filter ($I.thatIsNot(0))
         .map    (index -> range(0, tupleSize).mapToObj(i -> !$I.bitAt(i).applyTo(index)))
-        .map    (FunctionalList::ofStream)
+        .map    (FunctionalList::from)
         .forEach(flags -> {
             lines.add(generate(6, flags));
             lines.add("    ");

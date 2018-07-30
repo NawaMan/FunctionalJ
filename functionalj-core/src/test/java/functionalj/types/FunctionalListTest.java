@@ -30,7 +30,8 @@ public class FunctionalListTest {
     @Test
     public void testMapToTuple() {
         val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
-        assertEquals("[(One,3), (Two,3), (Three,5), (Four,4), (Five,4), (Six,3), (Seven,5)]", "" + list.map(theString, theString.length()));
+        assertEquals("[(One,3), (Two,3), (Three,5), (Four,4), (Five,4), (Six,3), (Seven,5)]",
+                "" + list.mapTuple(theString, theString.length()));
     }
     
     @Test
@@ -62,7 +63,7 @@ public class FunctionalListTest {
                         + "{index:4, word:Five, length:4}, "
                         + "{index:5, word:Six, length:3}, "
                         + "{index:6, word:Seven, length:5}]",
-                "" + list.map(
+                "" + list.mapToMap(
                         "index",   __ -> index.getAndIncrement(), 
                         "word",   theString, 
                         "length", theString.length().asString()));

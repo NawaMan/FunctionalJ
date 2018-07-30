@@ -9,49 +9,50 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.types.stream.StreamPlus;
 import functionalj.types.stream.Streamable;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
+@FunctionalInterface
 public interface ReadOnlyList<DATA> 
                     extends List<DATA>, Streamable<DATA> {
-
+    
     public static <T> ReadOnlyList<T> empty() {
         return ImmutableList.empty();
     }
     
     public static <T> ReadOnlyList<T> of(Collection<T> data) {
-        return ImmutableList.of(data);
+        return ImmutableList.from(data);
     }
     @SafeVarargs
 	public static <T> ReadOnlyList<T> of(T ... data) {
         return ImmutableList.of(data);
     }
     public static <T> ReadOnlyList<T> of(Streamable<T> streamable) {
-        return ImmutableList.of(streamable);
+        return ImmutableList.from(streamable);
     }
     public static <T> ReadOnlyList<T> of(ReadOnlyList<T> readOnlyList) {
-        return ImmutableList.of(readOnlyList);
+        return ImmutableList.from(readOnlyList);
     }
     public static <T> ReadOnlyList<T> of(FunctionalList<T> functionalList) {
-        return ImmutableList.of(functionalList);
+        return ImmutableList.from(functionalList);
     }
-    
     
     @Override
     public Stream<DATA> stream();
     
     @Override
     public default ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.of(this);
+        return ImmutableList.from(this);
     }
     @Override
     public default List<DATA> toList() {
         return this;
     }
-    
     
     @Override
     public default Iterator<DATA> iterator() {
@@ -59,7 +60,7 @@ public interface ReadOnlyList<DATA>
     }
     
     //== Access list ==
-
+    
     @Override
     public default int size() {
         return (int)stream().count();
@@ -88,7 +89,9 @@ public interface ReadOnlyList<DATA>
     }
     
     @Override
-    public <T> T[] toArray(T[] a);
+    public default <T> T[] toArray(T[] a) {
+        return StreamPlus.of(stream()).toList().toArray(a);
+    }
     
     @Override
     public default DATA get(int index) {
@@ -101,19 +104,33 @@ public interface ReadOnlyList<DATA>
     }
     
     @Override
-    public int indexOf(Object o) ;
+    public default int indexOf(Object o) {
+        return StreamPlus.from(stream()).toList().indexOf(o);
+    }
     
     @Override
-    public int lastIndexOf(Object o);
+    public default int lastIndexOf(Object o) {
+        return StreamPlus.from(stream()).toList().lastIndexOf(o);
+    }
     
     @Override
-    public ListIterator<DATA> listIterator();
+    public default ListIterator<DATA> listIterator() {
+        return StreamPlus.from(stream()).toList().listIterator();
+    }
     
     @Override
-    public ListIterator<DATA> listIterator(int index);
-
+    public default ListIterator<DATA> listIterator(int index) {
+        return StreamPlus.from(stream()).toList().listIterator(index);
+    }
+    
     @Override
-    public ReadOnlyList<DATA> subList(int fromIndexInclusive, int toIndexExclusive);
+    public default ReadOnlyList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
+        val length = toIndexExclusive - fromIndexInclusive;
+        val subList = stream()
+                .skip(fromIndexInclusive).limit(length)
+                .collect(Collectors.toList());
+        return (ReadOnlyList<DATA>)(()->subList.stream());
+    }
     
     @Override
     public default Spliterator<DATA> spliterator() {
@@ -121,52 +138,52 @@ public interface ReadOnlyList<DATA>
     }
     
     //== Mutable methods are not supported.
-
+    
     @Override
     public default DATA set(int index, DATA element) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default boolean add(DATA e) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default boolean remove(Object o) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default boolean addAll(Collection<? extends DATA> c) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default boolean addAll(int index, Collection<? extends DATA> c) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default boolean removeAll(Collection<?> c) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default boolean retainAll(Collection<?> c) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default void clear() {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default void add(int index, DATA element) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default DATA remove(int index) {
         throw new UnsupportedOperationException();
@@ -181,6 +198,5 @@ public interface ReadOnlyList<DATA>
     public default void sort(Comparator<? super DATA> c) {
         throw new UnsupportedOperationException();
     }
-    
     
 }

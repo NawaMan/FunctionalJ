@@ -39,7 +39,7 @@ import functionalj.types.tuple.Tuple6;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public final class ImmutableList<DATA> extends FunctionalList<DATA> {
+public final class ImmutableList<DATA> implements FunctionalList<DATA> {
     
     private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();
     
@@ -49,7 +49,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     public static final <T> ImmutableList<T> empty() {
         return (ImmutableList<T>)EMPTY;
     }
-    public static <T> ImmutableList<T> of(Collection<T> data) {
+    public static <T> ImmutableList<T> from(Collection<T> data) {
         return new ImmutableList<T>(data);
     }
     @SafeVarargs
@@ -57,7 +57,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         return new ImmutableList<>(Arrays.asList(data));
     }
     @SuppressWarnings("unchecked")
-    public static <T> ImmutableList<T> of(Streamable<T> streamable) {
+    public static <T> ImmutableList<T> from(Streamable<T> streamable) {
         if (streamable instanceof ImmutableList)
             return (ImmutableList<T>)streamable;
         if (streamable == null)
@@ -65,11 +65,11 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         
         return new ImmutableList<T>(streamable.toList());
     }
-    public static <T> ImmutableList<T> of(Stream<T> stream) {
+    public static <T> ImmutableList<T> from(Stream<T> stream) {
         return new ImmutableList<T>(stream.collect(Collectors.toList()));
     }
     @SuppressWarnings("unchecked")
-    public static <T> ImmutableList<T> of(ReadOnlyList<T> readOnlyList) {
+    public static <T> ImmutableList<T> from(ReadOnlyList<T> readOnlyList) {
         if (readOnlyList instanceof ImmutableList)
             return (ImmutableList<T>)readOnlyList;
         if (readOnlyList == null)
@@ -77,7 +77,7 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
         
         return new ImmutableList<T>(readOnlyList.toList());
     }
-    public static <T> ImmutableList<T> of(FunctionalList<T> functionalList) {
+    public static <T> ImmutableList<T> from(FunctionalList<T> functionalList) {
         if (functionalList instanceof ImmutableList)
             return (ImmutableList<T>)functionalList;
         if (functionalList == null)
@@ -105,86 +105,57 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     }
     
     @Override
-    public FunctionalList<DATA> streamFrom(Function<Supplier<Stream<DATA>>, Stream<DATA>> supplier) {
-        return new FunctionalListStream<DATA, DATA>((Supplier<Stream<DATA>>) ()->{
-                    return supplier.apply(()->{
-                        return (Stream<DATA>)ImmutableList.this.stream();
-                    });
-                },
-                noAction);
-    }
-    
-    @Override
     public Stream<DATA> stream() {
         return data.stream();
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public FunctionalList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
-        if (fromIndexInclusive < 0)
-            throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive);
-        if (toIndexExclusive < 0)
-            throw new IndexOutOfBoundsException("toIndexExclusive: " + toIndexExclusive);
-        if (fromIndexInclusive > toIndexExclusive)
-            throw new IndexOutOfBoundsException("fromIndexInclusive: " + fromIndexInclusive + ", toIndexExclusive: " + toIndexExclusive);
-        if (fromIndexInclusive == toIndexExclusive)
-            return (FunctionalList<DATA>)ImmutableList.empty();
-        if ((fromIndexInclusive == 0) && (toIndexExclusive == data.size()))
-            return this;
-        
-        return stream(stream -> stream.skip(fromIndexInclusive).limit(toIndexExclusive - fromIndexInclusive));
     }
     
     @Override
     public ImmutableList<DATA> toImmutableList() {
         return this;
     }
-    @Override
-    public List<DATA> toList() {
-        return this;
-    }
-
+    
     @Override
     public int size() {
         return data.size();
     }
-
+    
     @Override
     public boolean isEmpty() {
         return data.isEmpty();
     }
-
+    
     @Override
     public <TARGET> TARGET[] toArray(TARGET[] seed) {
         return data.toArray(seed);
     }
-
+    
     @Override
     public DATA get(int index) {
         return data.get(index);
     }
-
+    
     @Override
     public int indexOf(Object o) {
         return data.indexOf(o);
     }
-
+    
     @Override
     public int lastIndexOf(Object o) {
         return data.lastIndexOf(o);
     }
-
+    
     @Override
     public ListIterator<DATA> listIterator() {
         return data.listIterator();
     }
-
+    
     @Override
     public ListIterator<DATA> listIterator(int index) {
         return data.listIterator();
     }
-
+    
+    // TODO - Make sure all method from ReadOnlyList is copied here and goes directly to data.
+    
     // TODO - Put a garantee on this
     // TODO - Extract these out ... but should still make it easy to call.
     //        Like ... Split(list).to(predicate, ...)
@@ -317,7 +288,5 @@ public final class ImmutableList<DATA> extends FunctionalList<DATA> {
     public int hashCode() {
         return this.data.hashCode();
     }
-    
-    
     
 }

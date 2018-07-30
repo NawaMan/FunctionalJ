@@ -34,7 +34,7 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     
     @SuppressWarnings("rawtypes")
     private PipeLine(List<Func1> functions, Catch catchHandler) {
-        this.functions    = ImmutableList.of(functions);
+        this.functions    = ImmutableList.from(functions);
         this.catchHandler = catchHandler;
     }
     

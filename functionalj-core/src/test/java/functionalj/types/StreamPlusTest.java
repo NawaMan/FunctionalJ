@@ -36,7 +36,7 @@ public class StreamPlusTest {
     @Test
     public void testOf() {
         val stream1 = StreamPlus.of("One", "Two", "Three");
-        val stream2 = StreamPlus.ofStream(stream1);
+        val stream2 = StreamPlus.from(stream1);
         assertStrings("[One, Two, Three]", stream2.toList());
     }
     

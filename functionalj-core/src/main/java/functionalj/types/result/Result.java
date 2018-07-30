@@ -771,7 +771,7 @@ public class Result<DATA>
                     if (!isValue)
                         return (Result<Tuple2<DATA, FunctionalList<ValidationException>>>)this;
                     
-                    val exceptions = FunctionalList.of(validators)
+                    val exceptions = FunctionalList.from(validators)
                         .map   (validator -> validator.validate(value))
                         .filter(result    -> result.isException())
                         .map   (result    -> result.getException())
