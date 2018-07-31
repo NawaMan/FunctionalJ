@@ -219,6 +219,99 @@ public class PipeableTest {
                 String::length,
                 map::get
             ));
+        assertEquals("4", "" +str.pipe(
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length
+            ));
+        assertEquals("Four", "" +str.pipe(
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get
+            ));
+        assertEquals("4", "" +str.pipe(
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length
+            ));
+        assertEquals("Four", "" +str.pipe(
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get
+            ));
+        assertEquals("4", "" +str.pipe(
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length
+            ));
+        assertEquals("Four", "" +str.pipe(
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get,
+                String::length,
+                map::get
+            ));
     }
     
 }
