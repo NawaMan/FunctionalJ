@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.functions.Func0;
+import functionalj.functions.Func2;
 import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
@@ -60,7 +61,7 @@ public class Result<DATA>
     public static <D, T1, T2> Result<D> of(
             T1 value1,
             T2 value2,
-            BiFunction<T1, T2, D> merger) {
+            Func2<T1, T2, D> merger) {
         return Result.from(Func0.of(()->{
             val value = merger.apply(value1, value2);
             return value;
@@ -262,7 +263,7 @@ public class Result<DATA>
     public static <T1, T2, D> Result<D> Do(
             Func0<T1> supplier1,
             Func0<T2> supplier2,
-            BiFunction<T1, T2, D> merger) {
+            Func2<T1, T2, D> merger) {
         return Result.ofResult(
                     Try(supplier1),
                     Try(supplier2),
@@ -445,30 +446,30 @@ public class Result<DATA>
         return Result.of(target);
     }
     
-    public final Optional<DATA> toOptional() {
-        return Optional.ofNullable(this.get());
-    }
-    
     public final Result<DATA> asResult() {
         return this;
+    }
+    
+    public final Optional<DATA> toOptional() {
+        return Optional.ofNullable(this.get());
     }
     
     public final FunctionalList<DATA> toList() {
         return FunctionalList.of(this.get());
     }
     
-    public final MayBe<MayBe<DATA>> asMayBe() {
+    public final MayBe<DATA> toMayBe() {
         return processData(
                 e -> MayBe.nothing(),
                 (isValue, value, exception) -> {
                     if (exception != null)
                         return MayBe.nothing();
                     
-                    return MayBe.of(MayBe.of(value));
+                    return MayBe.of(value);
                 });
     }
     
-    public final MayBe<DATA> getMayBeValue() {
+    public final MayBe<DATA> valueMayBe() {
         return processData(
                 e -> MayBe.nothing(),
                 (isValue, value, exception) -> {
@@ -476,7 +477,7 @@ public class Result<DATA>
                 });
     }
     
-    public final MayBe<Exception> getMayBeException() {
+    public final MayBe<Exception> exceptionMayBe() {
         return processData(
                 e -> MayBe.nothing(),
                 (isValue, value, exception) -> {
@@ -650,7 +651,6 @@ public class Result<DATA>
         return (Result<DATA>)Nullable.super.ifPresentRun(theAction, elseRunnable);
     }
     
-    // TODO - Add this to make all returns Result.
     public final Result<DATA> ifNotNull(Consumer<? super DATA> theConsumer) {
         val value = get();
         if (value != null)
