@@ -9,8 +9,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import functionalj.functions.Absent;
-import functionalj.functions.Func;
 import functionalj.types.result.Result;
 import functionalj.types.result.validator.Validator;
 import lombok.val;
@@ -143,6 +141,16 @@ public class ResultTest {
     }
     
     @Test
+    public void testResultResult_withException() {
+        assertStrings("Result:{ Exception: functionalj.functions.FunctionInvocationException: java.lang.Exception: Test fail }",
+                Result.ofResult(
+                        Result.of("One"),
+                        Result.ofException("Test fail"),
+                        Result.of("Three"),
+                        (a, b, c)-> a + "," + b + "," + c));
+    }
+    
+    @Test
     public void testResultPeek() {
         assertStrings("Result:{ Value: 3 }", Result.of("One").pipe(r -> r.map(String::length), String::valueOf));
     }
@@ -157,6 +165,19 @@ public class ResultTest {
                 Do(
                   ()->"One",
                   ()->"Two",
+                  (a, b)-> a + "," + b));
+    }
+    
+    @Test
+    public void testResultDo_withException() {
+        assertStrings(
+                "Result:{ Exception: java.lang.RuntimeException: Test exception }",
+                Result.ofResult(Result.ofException(new RuntimeException("Test exception"))));
+        
+        assertStrings("Result:{ Exception: java.lang.RuntimeException: Test exception }",
+                Do(
+                  ()->"One",
+                  ()->{ throw new RuntimeException("Test exception"); },
                   (a, b)-> a + "," + b));
     }
     
