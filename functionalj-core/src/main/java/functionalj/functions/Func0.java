@@ -13,7 +13,15 @@ import functionalj.types.result.Result;
  */
 @FunctionalInterface
 public interface Func0<OUTPUT> extends Supplier<OUTPUT> {
-
+    
+    public static <T> Func0<T> of(Func0<T> func0) {
+        return func0;
+    }
+    
+    public static <T> Func0<T> from(Supplier<T> supplier) {
+        return supplier::get;
+    }
+    
     public OUTPUT applyUnsafe() throws Exception;
     
     public default OUTPUT apply() {
