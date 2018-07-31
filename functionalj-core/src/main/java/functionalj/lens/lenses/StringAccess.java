@@ -1,7 +1,6 @@
 package functionalj.lens.lenses;
 
 import static functionalj.functions.StringFunctions.stringOf;
-import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 
 import java.util.Locale;

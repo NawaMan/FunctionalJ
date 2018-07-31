@@ -16,17 +16,13 @@ import java.util.function.Supplier;
 import functionalj.functions.Func0;
 import functionalj.functions.Func3;
 import functionalj.functions.FuncUnit;
-import functionalj.functions.FunctionInvocationException;
 import functionalj.kinds.Comonad;
 import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
-import functionalj.kinds.Peekable;
 import functionalj.types.MayBe;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.result.validator.Validator;
-import functionalj.types.stream.StreamPlus;
-import functionalj.types.stream.Streamable;
 import functionalj.types.tuple.Tuple;
 import functionalj.types.tuple.Tuple2;
 import lombok.val;
@@ -45,26 +41,26 @@ public class Result<DATA>
                         ResultFlatMapAddOn2<DATA>,
                         ResultFilterAddOn<DATA> ,
                         ResultPeekAddOn<DATA> {
-
-	private static final Result NULL         = new Result<>(null, null);
+    
+    private static final Result NULL         = new Result<>(null, null);
     private static final Result NOTAVAILABLE = new Result<>(null, new ResultNotAvailableException());
     private static final Result NOTREADY     = new Result<>(null, new ResultNotReadyException());
     private static final Result CANCELLED    = new Result<>(null, new ResultCancelledException());
     
     public static <D> Result<D> of(D value) {
-    	if (value == null)
-    		return Result.ofNull();
-    	
+        if (value == null)
+            return Result.ofNull();
+        
         return new Result<D>(value, null);
     }
     public static <D> Result<D> ofException(String exceptionMsg) {
         return new Result<D>(null, new Exception(exceptionMsg));
     }
     public static <D> Result<D> ofException(Exception exception) {
-    	return new Result<D>(null, exception);
+        return new Result<D>(null, exception);
     }
     @SuppressWarnings("unchecked")
-	public static <D> Result<D> ofResult(Result<D> result) {
+    public static <D> Result<D> ofResult(Result<D> result) {
         if (result instanceof Result)
             return (Result<D>)result;
         
@@ -109,12 +105,12 @@ public class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-	public static <D> Result<D> ofNull() {
+    public static <D> Result<D> ofNull() {
         return (Result<D>)NULL;
     }
     
     @SuppressWarnings("unchecked")
-	public static <D> Result<D> ofNotAvailable() {
+    public static <D> Result<D> ofNotAvailable() {
         return (Result<D>)NOTAVAILABLE;
     }
     public static <D> Result<D> ofNotAvailable(String message) {
@@ -124,7 +120,7 @@ public class Result<DATA>
         return Result.ofException(new ResultNotAvailableException(message, exception));
     }
     @SuppressWarnings("unchecked")
-	public static <D> Result<D> ofNotReady() {
+    public static <D> Result<D> ofNotReady() {
         return (Result<D>)NOTREADY;
     }
     public static <D> Result<D> ofNotReady(String message) {
@@ -134,7 +130,7 @@ public class Result<DATA>
         return Result.ofException(new ResultNotReadyException(message, exception));
     }
     @SuppressWarnings("unchecked")
-	public static <D> Result<D> ofCancelled() {
+    public static <D> Result<D> ofCancelled() {
         return (Result<D>)CANCELLED;
     }
     public static <D> Result<D> ofCancelled(String message) {
@@ -164,7 +160,7 @@ public class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-	protected final <T> T processData(Function<Exception, T> defaultGet, Func3<Boolean, DATA, Exception, T> processor) {
+    protected final <T> T processData(Function<Exception, T> defaultGet, Func3<Boolean, DATA, Exception, T> processor) {
         try {
             val data      = getData();
             val isValue   = ((data == null) || !(data instanceof ExceptionHolder));
@@ -178,7 +174,7 @@ public class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-	public final DATA getValue() {
+    public final DATA getValue() {
         val data = getData();
         return (data instanceof ExceptionHolder) ? null : (DATA)data;
     }
@@ -208,7 +204,7 @@ public class Result<DATA>
             @Override public final Exception _2() { return getException(); }
         };
     }
-
+    
     @Override
     public <TARGET> Monad<Result<?>, TARGET> _of(TARGET target) {
         return Result.of(target);
@@ -280,7 +276,7 @@ public class Result<DATA>
                     return Result.of(newValue);
                 });
     }
-
+    
     public final Result<DATA> mapException(Function<? super Exception, ? extends Exception> mapper) {
         return processData(
                 e -> Result.ofNull(),
@@ -294,7 +290,7 @@ public class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public final <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
         return processData(
                 e -> Result.ofNull(),
@@ -420,67 +416,55 @@ public class Result<DATA>
     }
     
     // TODO - Add this to make all returns Result.
-//    public default Nullable<TYPE> ifNotNull(Consumer<? super TYPE> theConsumer) {
-//        val value = get();
-//        if (value != null)
-//            theConsumer.accept(value);
-//        
-//        return this;
-//    }
-//    
-//    public default Nullable<TYPE> ifNotNull(Consumer<? super TYPE> theConsumer, Runnable elseRunnable) {
-//        val value = get();
-//        if (value != null)
-//            theConsumer.accept(value);
-//        
-//        elseRunnable.run();
-//        return this;
-//    }
-//    
-//    public default Nullable<TYPE> ifNotNullRun(Runnable theAction) {
-//        val value = get();
-//        if (value != null)
-//            theAction.run();
-//        
-//        return this;
-//    }
-//    
-//    public default Nullable<TYPE> ifNotNullRun(Runnable theAction, Runnable elseRunnable) {
-//        val value = get();
-//        if (value != null)
-//            theAction.run();
-//        
-//        elseRunnable.run();
-//        return this;
-//    }
-//    
-//    public default Nullable<TYPE> ifNullRun(Runnable theAction) {
-//        val value = get();
-//        if (value == null)
-//            theAction.run();
-//        
-//        return this;
-//    }
-//    
-//    public final boolean isNotNull() {
-//        return processData(
-//                e -> true,
-//                (isValue, value, exception) -> {
-//                    return (value != null);
-//                });
-//    }
-//    
-//    // No exception -> non-null value (aka ifPresent)
-//    public final Result<DATA> ifNotNull(Consumer<? super DATA> consumer) {
-//        return processData(
-//                e -> this,
-//                (isValue, value, exception) -> {
-//                    if (value != null)
-//                        consumer.accept(value);
-//                    
-//                    return this;
-//                });
-//    }
+    public final Result<DATA> ifNotNull(Consumer<? super DATA> theConsumer) {
+        val value = get();
+        if (value != null)
+            theConsumer.accept(value);
+        
+        return this;
+    }
+    
+    public final Result<DATA> ifNotNull(Consumer<? super DATA> theConsumer, Runnable elseRunnable) {
+        val value = get();
+        if (value != null)
+            theConsumer.accept(value);
+        
+        elseRunnable.run();
+        return this;
+    }
+    
+    public final Result<DATA> ifNotNullRun(Runnable theAction) {
+        val value = get();
+        if (value != null)
+            theAction.run();
+        
+        return this;
+    }
+    
+    public final Result<DATA> ifNotNullRun(Runnable theAction, Runnable elseRunnable) {
+        val value = get();
+        if (value != null)
+            theAction.run();
+        
+        elseRunnable.run();
+        return this;
+    }
+    
+    public final Result<DATA> ifNullRun(Runnable theAction) {
+        val value = get();
+        if (value == null)
+            theAction.run();
+        
+        return this;
+    }
+    
+    public final boolean isNotNull() {
+        return processData(
+                e -> true,
+                (isValue, value, exception) -> {
+                    return (value != null);
+                });
+    }
     
     public final boolean isNull() {
         return processData(
@@ -822,7 +806,7 @@ public class Result<DATA>
                     }
                 });
     }
-
+    
     public final Result<DATA> otherwiseNull() {
         val exception = getException();
         if (exception == null)
@@ -885,7 +869,7 @@ public class Result<DATA>
         return value;
     }
     
-	public final DATA orThrow() throws Exception {
+    public final DATA orThrow() throws Exception {
         val data = processData(
                 e -> new ExceptionHolder(e),
                 (isValue, value, exception) -> {
@@ -900,9 +884,9 @@ public class Result<DATA>
         
         @SuppressWarnings("unchecked")
         val value = (DATA)data;
-		return value;
+        return value;
     }
-	public final DATA orThrowRuntimeException() {
+    public final DATA orThrowRuntimeException() {
         val data = processData(
                 e -> new ExceptionHolder(e),
                 (isValue, value, exception) -> {
@@ -918,10 +902,10 @@ public class Result<DATA>
         
         if (data instanceof ExceptionHolder)
             throw (RuntimeException)((ExceptionHolder)data).getException();
-
+        
         @SuppressWarnings("unchecked")
         val value = (DATA)data;
-		return value;
+        return value;
     }
     public final <EXCEPTION extends Exception> DATA orThrow(Function<Exception, EXCEPTION> toException) 
             throws EXCEPTION {
@@ -936,13 +920,13 @@ public class Result<DATA>
         
         if (data instanceof ExceptionHolder) {
             @SuppressWarnings("unchecked")
-			val exception = (EXCEPTION)((ExceptionHolder)data).getException();
-			throw exception;
+            val exception = (EXCEPTION)((ExceptionHolder)data).getException();
+            throw exception;
         }
-
+        
         @SuppressWarnings("unchecked")
         val value = (DATA)data;
-		return value;
+        return value;
     }
     public final <RUNTIMEEXCEPTION extends RuntimeException> 
             DATA orThrowRuntimeException(Function<Exception, RUNTIMEEXCEPTION> toRuntimeException) {
@@ -954,16 +938,16 @@ public class Result<DATA>
                     
                     throw toRuntimeException.apply(exception);
                 });
-
+        
         if (data instanceof ExceptionHolder) {
             @SuppressWarnings("unchecked")
-			val exception = (RUNTIMEEXCEPTION)((ExceptionHolder)data).getException();
-			throw exception;
+            val exception = (RUNTIMEEXCEPTION)((ExceptionHolder)data).getException();
+            throw exception;
         }
-
+        
         @SuppressWarnings("unchecked")
         val value = (DATA)data;
-		return value;
+        return value;
     }
     
     public final Result<DATA> printException() {
@@ -981,18 +965,18 @@ public class Result<DATA>
         return processData(
                 e -> Objects.hash((Object)null),
                 (isValue, value, exception) -> {
-                	return Objects.hash(data);
+                    return Objects.hash(data);
                 });
     }
     @Override
-	public final boolean equals(Object obj) {
-    	if (!(obj instanceof Result))
-    		return false;
-    	
-		return Objects.equals(data, ((Result)obj).data);
-	}
+    public final boolean equals(Object obj) {
+        if (!(obj instanceof Result))
+            return false;
+        
+        return Objects.equals(data, ((Result)obj).data);
+    }
     @Override
-	public final String toString() {
+    public final String toString() {
         return processData(
                 e -> "Result:{ Exception: " + e  + " }",
                 (isValue, value, exception) -> {
@@ -1012,33 +996,33 @@ public class Result<DATA>
             return exception;
         }
         
-		@Override
-		public String toString() {
-			return "ExceptionHolder [exception=" + exception + "]";
-		}
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((exception == null) ? 0 : exception.hashCode());
-			return result;
-		}
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			ExceptionHolder other = (ExceptionHolder) obj;
-			if (exception == null) {
-				if (other.exception != null)
-					return false;
-			} else if (!exception.equals(other.exception))
-				return false;
-			return true;
-		}
+        @Override
+        public String toString() {
+            return "ExceptionHolder [exception=" + exception + "]";
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((exception == null) ? 0 : exception.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ExceptionHolder other = (ExceptionHolder) obj;
+            if (exception == null) {
+                if (other.exception != null)
+                    return false;
+            } else if (!exception.equals(other.exception))
+                return false;
+            return true;
+        }
     }
     
 }

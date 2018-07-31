@@ -22,7 +22,6 @@ import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
-import functionalj.lens.Access;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.list.ImmutableList;
 import functionalj.types.stream.StreamPlus;

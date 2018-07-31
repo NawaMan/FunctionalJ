@@ -631,6 +631,8 @@ public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, 
         val _4 = _4();
         return Tuple.of(_1, _2, _3, _4);
     }
+    
+    // TODO - Implement this.
 //    
 //    public default Tuple2<T3, T4> drop(
 //            Absent drop1, 
