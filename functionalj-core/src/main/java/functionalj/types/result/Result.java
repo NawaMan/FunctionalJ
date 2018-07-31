@@ -249,6 +249,91 @@ public class Result<DATA>
         }
     }
     
+    // TODO - Might want to add Promise.
+    
+    public static <D> Result<D> Do(Func0<D> supplier) {
+        try {
+            return Result.of(supplier.get());
+        } catch (Exception e) {
+            return Result.ofException(e);
+        }
+    }
+    
+    public static <T1, T2, D> Result<D> Do(
+            Func0<T1> supplier1,
+            Func0<T2> supplier2,
+            BiFunction<T1, T2, D> merger) {
+        return Result.ofResult(
+                    Try(supplier1),
+                    Try(supplier2),
+                    merger
+                );
+    }
+    
+    public static <T1, T2, T3, D> Result<D> Do(
+            Func0<T1> supplier1,
+            Func0<T2> supplier2,
+            Func0<T3> supplier3,
+            Func3<T1, T2, T3, D> merger) {
+        return Result.ofResult(
+                    Try(supplier1),
+                    Try(supplier2),
+                    Try(supplier3),
+                    merger
+                );
+    }
+    
+    public static <T1, T2, T3, T4, D> Result<D> Do(
+            Func0<T1> supplier1,
+            Func0<T2> supplier2,
+            Func0<T3> supplier3,
+            Func0<T4> supplier4,
+            Func4<T1, T2, T3, T4, D> merger) {
+        return Result.ofResult(
+                    Try(supplier1),
+                    Try(supplier2),
+                    Try(supplier3),
+                    Try(supplier4),
+                    merger
+                );
+    }
+    
+    public static <T1, T2, T3, T4, T5, D> Result<D> Do(
+            Func0<T1> supplier1,
+            Func0<T2> supplier2,
+            Func0<T3> supplier3,
+            Func0<T4> supplier4,
+            Func0<T5> supplier5,
+            Func5<T1, T2, T3, T4, T5, D> merger) {
+        return Result.ofResult(
+                    Try(supplier1),
+                    Try(supplier2),
+                    Try(supplier3),
+                    Try(supplier4),
+                    Try(supplier5),
+                    merger
+                );
+    }
+    
+    public static <T1, T2, T3, T4, T5, T6, D> Result<D> Do(
+            Func0<T1> supplier1,
+            Func0<T2> supplier2,
+            Func0<T3> supplier3,
+            Func0<T4> supplier4,
+            Func0<T5> supplier5,
+            Func0<T6> supplier6,
+            Func6<T1, T2, T3, T4, T5, T6, D> merger) {
+        return Result.ofResult(
+                    Try(supplier1),
+                    Try(supplier2),
+                    Try(supplier3),
+                    Try(supplier4),
+                    Try(supplier5),
+                    Try(supplier6),
+                    merger
+                );
+    }
+    
     @SuppressWarnings("unchecked")
     public static <D> Result<D> ofNull() {
         return (Result<D>)NULL;
