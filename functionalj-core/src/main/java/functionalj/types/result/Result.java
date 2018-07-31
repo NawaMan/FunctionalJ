@@ -22,6 +22,7 @@ import functionalj.kinds.Comonad;
 import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
+import functionalj.pipeable.Pipeable;
 import functionalj.types.MayBe;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.result.validator.Validator;
@@ -41,7 +42,8 @@ public class Result<DATA>
                         ResultMapAddOn<DATA>,
                         ResultFlatMapAddOn<DATA>,
                         ResultFilterAddOn<DATA> ,
-                        ResultPeekAddOn<DATA> {
+                        ResultPeekAddOn<DATA>,
+                        Pipeable<Result<DATA>> {
     
     private static final Result NULL         = new Result<>(null, null);
     private static final Result NOTAVAILABLE = new Result<>(null, new ResultNotAvailableException());
@@ -296,6 +298,11 @@ public class Result<DATA>
         this.data = ((value == null) && (exception != null))
                 ? new ExceptionHolder(exception)
                 : value;
+    }
+    
+    @Override
+    public Result<DATA> __data() throws Exception {
+        return this;
     }
     
     protected Object getData() {

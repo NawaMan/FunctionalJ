@@ -21,6 +21,7 @@ import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
+import functionalj.pipeable.Pipeable;
 import functionalj.types.map.FunctionalMap;
 import functionalj.types.map.ImmutableMap;
 import functionalj.types.stream.Streamable;
@@ -36,7 +37,8 @@ import lombok.val;
 public interface FunctionalList<DATA> 
                     extends 
                         ReadOnlyList<DATA>, 
-                        Streamable<DATA> {
+                        Streamable<DATA>,
+                        Pipeable<FunctionalList<DATA>> {
     
     public static <T> FunctionalList<T> empty() {
         return ImmutableList.empty();
@@ -76,6 +78,11 @@ public interface FunctionalList<DATA>
         return FunctionalListStream.from((Supplier<Stream<TARGET>>)()->{
             return action.apply(FunctionalList.this);
         });
+    }
+    
+    @Override
+    public default FunctionalList<DATA> __data() throws Exception {
+        return this;
     }
     
     @Override

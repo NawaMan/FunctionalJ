@@ -12,6 +12,7 @@ import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
 import functionalj.kinds.Peekable;
+import functionalj.pipeable.Pipeable;
 import functionalj.types.result.Result;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
@@ -30,7 +31,8 @@ public abstract class MayBe<DATA>
                     Comonad<MayBe<?>, DATA>,
                     Filterable<MayBe<?>,DATA>,
                     Peekable<MayBe<?>, DATA>,
-                    Nullable<DATA> {
+                    Nullable<DATA>,
+                    Pipeable<MayBe<DATA>> {
 
     /**
      * Get instance with no value.
@@ -147,6 +149,11 @@ public abstract class MayBe<DATA>
      * @return  the value.
      */
     public abstract DATA get();
+
+    @Override
+    public MayBe<DATA> __data() throws Exception {
+        return this;
+    }
     
     @Override
     public DATA _extract() {
@@ -247,12 +254,12 @@ public abstract class MayBe<DATA>
         public DATA get() {
             return data;
         }
-
+        
         @Override
         public <TARGET> MayBe<TARGET> _of(TARGET target) {
             return MayBe.of(target);
         }
-
+        
         @Override
         public <TARGET> MayBe<TARGET> _map(Function<? super DATA, ? extends TARGET> mapper) {
             return MayBe.of(mapper.apply(data));
