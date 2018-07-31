@@ -27,12 +27,21 @@ public class ImmutableListTest {
     }
     
     @Test
+    public void testSubList() {
+        assertEquals("[Four, Five]", 
+                ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven")
+                        .subList(3, 5)
+                        .toString());
+    }
+    
+    @Test
     public void testSubList_same() {
         assertEquals("[]", 
                 ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven")
                         .subList(3, 3)
                         .toString());
     }
+    
     @Test
     public void testSorted() {
         assertEquals("[1, 2, One, Two]", "" + ImmutableList.of("1", "One", "2", "Two").sorted());

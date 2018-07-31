@@ -92,7 +92,8 @@ public interface FunctionalList<DATA>
     public default FunctionalList<Integer> indexesOf(Predicate<? super DATA> check) {
         return this
                 .mapWithIndex((index, data)-> check.test(data) ? index : -1)
-                .filter($I.thatNotEqualsTo(-1));
+                .filter($I.thatNotEqualsTo(-1))
+                .toImmutableList();
     }
     
     @Override
@@ -239,6 +240,12 @@ public interface FunctionalList<DATA>
                     stream().limit(fromIndexInclusive), 
                     stream().skip(toIndexExclusive + 1));
         }));
+    }
+    
+    @Override
+    public default FunctionalList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
+        val length = toIndexExclusive - fromIndexInclusive;
+        return new FunctionalListStream<>(this, stream -> stream.skip(fromIndexInclusive).limit(length));
     }
     
     //==================================================================================================================

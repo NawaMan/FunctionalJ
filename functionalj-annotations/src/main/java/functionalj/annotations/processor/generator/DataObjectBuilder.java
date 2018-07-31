@@ -172,16 +172,16 @@ public class DataObjectBuilder {
     private String initGetterField(Getter getter) {
         if (getter.getType().isList()) {
             val getterName = getter.getName();
-            return String.format("this.%1$s = ImmutableList.of(%1$s);", getterName);
+            return String.format("this.%1$s = ImmutableList.from(%1$s);", getterName);
         } else if (getter.getType().isMap()) {
             val getterName = getter.getName();
-            return String.format("this.%1$s = ImmutableMap.of(%1$s);", getterName);
+            return String.format("this.%1$s = ImmutableMap.from(%1$s);", getterName);
         } else if (getter.getType().isFunctionalList()) {
             val getterName = getter.getName();
-            return String.format("this.%1$s = ImmutableList.of(%1$s);", getterName);
+            return String.format("this.%1$s = ImmutableList.from(%1$s);", getterName);
         } else if (getter.getType().isFunctionalMap()) {
             val getterName = getter.getName();
-            return String.format("this.%1$s = ImmutableMap.of(%1$s);", getterName);
+            return String.format("this.%1$s = ImmutableMap.from(%1$s);", getterName);
         } else if (getter.getType().isNullable()) {
             val getterName = getter.getName();
             return String.format("this.%1$s = Nullable.of((%1$s == null) ? null : %1$s.get());", getterName);

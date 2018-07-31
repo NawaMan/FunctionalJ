@@ -70,8 +70,8 @@ public class GenerateParentFunctionListChildTest {
                 "        this(null, null);\n" + 
                 "    }\n" + 
                 "    public Parent(FunctionalList<String> names, FunctionalList<Child> children) {\n" + 
-                "        this.names = ImmutableList.of(names);\n" + 
-                "        this.children = ImmutableList.of(children);\n" + 
+                "        this.names = ImmutableList.from(names);\n" + 
+                "        this.children = ImmutableList.from(children);\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public FunctionalList<String> names() {\n" + 

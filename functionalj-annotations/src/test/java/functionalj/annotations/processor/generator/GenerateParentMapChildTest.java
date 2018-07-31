@@ -66,7 +66,7 @@ public class GenerateParentMapChildTest {
                 "        this(null);\n" + 
                 "    }\n" + 
                 "    public Parent(Map<String, Child> children) {\n" + 
-                "        this.children = ImmutableMap.of(children);\n" + 
+                "        this.children = ImmutableMap.from(children);\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public Map<String, Child> children() {\n" + 

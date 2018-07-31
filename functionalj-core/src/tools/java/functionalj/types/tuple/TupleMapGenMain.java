@@ -66,11 +66,11 @@ public class TupleMapGenMain {
     }
     
     private static String generate(int tupleSize, FunctionalList<Boolean> flags) {
-        val typeParamDefs  = flags.map(generateEach(typeParamDefTemplates)).filter(Objects::nonNull).joining(", ");
-        val tupleParamDefs = flags.map(generateEach(tupleParamDefTemplates)).filter(Objects::nonNull).joining(", ");
+        val typeParamDefs  = flags.mapWithIndex(generateEach(typeParamDefTemplates)).filter(Objects::nonNull).joining(", ");
+        val tupleParamDefs = flags.mapWithIndex(generateEach(tupleParamDefTemplates)).filter(Objects::nonNull).joining(", ");
         
-        val params = flags.map(generateEach(paramTemplates)).map(prependWith(paramIndent)).joining(",\n");
-        val calls  = flags.map(generateEach(callTemplates)) .map(prependWith(callIndent)) .joining(",\n");
+        val params = flags.mapWithIndex(generateEach(paramTemplates)).map(prependWith(paramIndent)).joining(",\n");
+        val calls  = flags.mapWithIndex(generateEach(callTemplates)) .map(prependWith(callIndent)) .joining(",\n");
         
         return String.format(template, typeParamDefs, tupleSize, tupleParamDefs, params, calls);
     }

@@ -41,6 +41,7 @@ import functionalj.types.list.FunctionalList;
 import functionalj.types.list.ImmutableList;
 import functionalj.types.map.FunctionalMap;
 import functionalj.types.map.ImmutableMap;
+import functionalj.types.tuple.Tuple;
 import functionalj.types.tuple.Tuple2;
 import functionalj.types.tuple.Tuple3;
 import functionalj.types.tuple.Tuple4;
@@ -291,6 +292,122 @@ public interface StreamPlus<DATA>
         return stream()
                 .map(StringFunctions::stringOf)
                 .collect(Collectors.joining(delimiter));
+    }
+    
+    //-- Split --
+    
+    public default Tuple2<FunctionalList<DATA>, FunctionalList<DATA>> split(
+            Predicate<? super DATA> predicate) {
+        val temp = this.mapTuple(
+                it -> predicate.test(it) ? 0 : 1,
+                it -> it
+        ).toFunctionalList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        return Tuple.of(
+                list1,
+                list2
+        );
+    }
+    
+    public default Tuple3<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    :                       2,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        return Tuple.of(
+                list1,
+                list2,
+                list3
+        );
+    }
+    
+    public default Tuple4<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    :                       3,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
+        return Tuple.of(
+                list1,
+                list2,
+                list3,
+                list4
+        );
+    }
+    
+    public default Tuple5<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3,
+            Predicate<? super DATA> predicate4) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    : predicate4.test(it) ? 3
+                    :                       4,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
+        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
+        return Tuple.of(
+                list1,
+                list2,
+                list3,
+                list4,
+                list5
+        );
+    }
+    
+    public default Tuple6<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3,
+            Predicate<? super DATA> predicate4,
+            Predicate<? super DATA> predicate5) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    : predicate4.test(it) ? 3
+                    : predicate5.test(it) ? 4
+                    :                       5,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
+        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
+        val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2());
+        return Tuple.of(
+                list1,
+                list2,
+                list3,
+                list4,
+                list5,
+                list6
+        );
     }
     
     //++ Plus w/ Self ++
@@ -1035,6 +1152,9 @@ public interface StreamPlus<DATA>
     
     //-- FlatMap --
     
+    public default StreamPlus<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, Stream<DATA>> mapper) {
+        return flatMap(d -> checker.test(d) ? mapper.apply(d) : StreamPlus.of(d));
+    }
     public default <T> StreamPlus<T> flatMapIf(
             Predicate<? super DATA> checker, 
             Function<? super DATA, Stream<T>> mapper, 

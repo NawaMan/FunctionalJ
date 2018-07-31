@@ -12,11 +12,20 @@ import nawaman.nullablej.nullable.Nullable;
 @SuppressWarnings("javadoc")
 public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VALUE> {
     
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(FunctionalMap<? extends KEY, ? extends VALUE> map) {
-        return new ImmutableMap<KEY, VALUE>(map.entries().stream());
+    @SuppressWarnings("unchecked")
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> from(Map<? extends KEY, ? extends VALUE> map) {
+        return (map instanceof ImmutableMap)
+                ? (ImmutableMap<KEY, VALUE>)map
+                : new ImmutableMap<KEY, VALUE>(map.entrySet().stream());
+    }
+    @SuppressWarnings("unchecked")
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> from(FunctionalMap<? extends KEY, ? extends VALUE> map) {
+        return (map instanceof ImmutableMap)
+                ? (ImmutableMap<KEY, VALUE>)map
+                : new ImmutableMap<KEY, VALUE>(map.entries().stream());
     }
     public ImmutableMap(Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>> stream) {
-        super(null, ImmutableList.of(stream.map(entry -> {
+        super(null, ImmutableList.from(stream.map(entry -> {
                     if (entry == null)
                         return null;
                     

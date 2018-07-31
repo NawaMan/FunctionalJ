@@ -66,7 +66,7 @@ public interface FunctionalListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, T
     
     public default TYPELENS first() {
         return createSubLens(
-                (list)           -> list.first(),
+                (list)           -> list.first().get(),
                 (list, newValue) -> list.with(0, newValue));
     }
     

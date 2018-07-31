@@ -114,7 +114,7 @@ public class DuplicateResultMapToOtherTypeMain {
     }
     
     private static Func1<Path, FunctionalList<String>> readLines() {
-        return (Path path) -> FunctionalList.ofList(Files.readAllLines(path));
+        return (Path path) -> FunctionalList.from(Files.readAllLines(path));
     }
     
     @SuppressWarnings("rawtypes")

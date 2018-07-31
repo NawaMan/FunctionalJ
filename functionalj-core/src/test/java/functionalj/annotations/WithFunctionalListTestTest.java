@@ -23,7 +23,7 @@ public class WithFunctionalListTestTest {
         
         assertEquals(
                 "[(One,3), (Two,3), (Three,5), (Four,4)]",
-                "" + parent.names().map(theString, theString.length()));
+                "" + parent.names().mapTuple(theString, theString.length()));
     }
     
 }

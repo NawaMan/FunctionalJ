@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -102,7 +103,7 @@ public class StreamPlusTest {
     public void testForEachNull() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val logs   = new ArrayList<String>();
-        stream.forEach(null);
+        stream.forEach((Consumer<String>)null);
         assertStrings("[]", logs);
     }
     
@@ -314,6 +315,17 @@ public class StreamPlusTest {
     public void testJoiningDelimiter() {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings("One, Two, Three", stream.joining(", "));
+    }
+    
+    @Test
+    public void testSplit() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
+        assertStrings("([One, Two, Six],"
+                     + "[Four, Five],"
+                     + "[Three])", 
+                stream.split(
+                        s -> s.length() == 3,
+                        s -> s.length() == 4));
     }
     
     //== Plus w/ Self ==

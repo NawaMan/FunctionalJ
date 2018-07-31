@@ -87,13 +87,6 @@ public interface FunctionalListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<H
         });
     }
     
-    public default FunctionalListAccess<HOST, TYPE, TYPEACCESS> filter(TYPE data) {
-        return subList(this, host -> {
-            return apply(host)
-                    .filter(data);
-        });
-    }
-    
     @SuppressWarnings("unchecked")
 	public default FunctionalListAccess<HOST, TYPE, TYPEACCESS> append(TYPE ... data) {
         return subList(this, host -> {
