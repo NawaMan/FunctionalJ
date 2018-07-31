@@ -15,7 +15,6 @@ import java.util.function.Supplier;
 
 import functionalj.functions.Func0;
 import functionalj.functions.Func3;
-import functionalj.functions.FuncUnit;
 import functionalj.kinds.Comonad;
 import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
@@ -343,7 +342,7 @@ public class Result<DATA>
     }
     
     @Override
-    public Result<DATA> peek(FuncUnit<? super DATA> theConsumer) {
+    public Result<DATA> peek(Consumer<? super DATA> theConsumer) {
         return processData(
                 e -> this,
                 (isValue, value, exception) -> {
@@ -363,7 +362,7 @@ public class Result<DATA>
                 });
     }
     
-    public final void forEach(FuncUnit<? super DATA> theConsumer) {
+    public final void forEach(Consumer<? super DATA> theConsumer) {
         processData(
                 e -> this,
                 (isValue, value, exception) -> {

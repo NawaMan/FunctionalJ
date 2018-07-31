@@ -4,12 +4,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.functions.FuncUnit;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public interface ResultPeekAddOn<DATA> {
     
-    public Result<DATA> peek(FuncUnit<? super DATA> consumer);
+    public Result<DATA> peek(Consumer<? super DATA> consumer);
     
     public default <T extends DATA> Result<DATA> peek(Class<T> clzz, Consumer<? super T> theConsumer) {
         return peek(value -> {
