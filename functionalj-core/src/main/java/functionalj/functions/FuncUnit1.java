@@ -2,12 +2,12 @@ package functionalj.functions;
 
 import java.util.function.Consumer;
 
-public interface FuncUnit<INPUT> extends Consumer<INPUT> {
+public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     
-    public static <INPUT> FuncUnit<INPUT> accept(FuncUnit<INPUT> consumer) {
+    public static <INPUT> FuncUnit1<INPUT> accept(FuncUnit1<INPUT> consumer) {
         return (value) -> consumer.accept(value);
     }
-    public static <INPUT> FuncUnit<INPUT> of(FuncUnit<INPUT> consumer) {
+    public static <INPUT> FuncUnit1<INPUT> of(FuncUnit1<INPUT> consumer) {
         return (value) -> consumer.accept(value);
     }
     

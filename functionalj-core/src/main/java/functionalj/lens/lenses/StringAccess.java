@@ -1,6 +1,6 @@
 package functionalj.lens.lenses;
 
-import static functionalj.functions.StringFunctions.stringOf;
+import static functionalj.functions.StrFuncs.toStr;
 import static java.util.stream.Collectors.joining;
 
 import java.util.Locale;
@@ -197,14 +197,14 @@ public interface StringAccess<HOST>
             if (each instanceof Supplier) {
                 Supplier supplier = (Supplier)each;
                 Object   newValue = supplier.get();
-                return stringOf(newValue);
+                return toStr(newValue);
             }
             if (each instanceof Function) {
                 Function function = (Function)each;
                 Object   newValue = function.apply(str);
-                return stringOf(newValue);
+                return toStr(newValue);
             }
-            return stringOf(each);
+            return toStr(each);
         }
     }
     

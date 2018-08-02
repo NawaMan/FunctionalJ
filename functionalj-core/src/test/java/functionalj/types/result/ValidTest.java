@@ -1,6 +1,6 @@
 package functionalj.types.result;
 
-import static functionalj.FunctionalJ.it;
+import static functionalj.functions.Func.it;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

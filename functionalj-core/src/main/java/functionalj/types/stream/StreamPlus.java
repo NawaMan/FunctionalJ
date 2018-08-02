@@ -36,7 +36,7 @@ import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
-import functionalj.functions.StringFunctions;
+import functionalj.functions.StrFuncs;
 import functionalj.types.list.FunctionalList;
 import functionalj.types.list.ImmutableList;
 import functionalj.types.map.FunctionalMap;
@@ -285,12 +285,12 @@ public interface StreamPlus<DATA>
     
     public default String joining() {
         return stream()
-                .map(StringFunctions::stringOf)
+                .map(StrFuncs::toStr)
                 .collect(Collectors.joining());
     }
     public default String joining(String delimiter) {
         return stream()
-                .map(StringFunctions::stringOf)
+                .map(StrFuncs::toStr)
                 .collect(Collectors.joining(delimiter));
     }
     

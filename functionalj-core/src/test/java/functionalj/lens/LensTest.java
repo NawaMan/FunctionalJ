@@ -1,5 +1,6 @@
 package functionalj.lens;
 
+import static functionalj.functions.Func.withIndex;
 import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theList;
 import static functionalj.lens.Access.theString;
@@ -21,7 +22,6 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 
-import functionalj.FunctionalJ;
 import functionalj.functions.Func1;
 import functionalj.lens.LensTest.Driver.DriverLens;
 import functionalj.lens.core.LensSpec;
@@ -69,7 +69,7 @@ public class LensTest {
         drivers.stream()
                 .map(theDriver.car)
                 .map(theCar.color.thatEquals("blue"))
-                .forEach(FunctionalJ.withIndex((actual, index)->{
+                .forEach(withIndex((actual, index)->{
                     assertThis(expected.get(index), actual);
                 }));
         

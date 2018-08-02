@@ -1,10 +1,10 @@
 package functionalj;
 
-import static functionalj.FunctionalJ.cacheFor;
-import static functionalj.FunctionalJ.delimitWith;
-import static functionalj.FunctionalJ.it;
-import static functionalj.FunctionalJ.only;
-import static functionalj.FunctionalJ.withIndex;
+import static functionalj.functions.Func.cacheFor;
+import static functionalj.functions.Func.delimitWith;
+import static functionalj.functions.Func.it;
+import static functionalj.functions.Func.only;
+import static functionalj.functions.Func.withIndex;
 import static functionalj.functions.Absent.__;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;

@@ -1,6 +1,6 @@
 package functionalj.types.tuple;
 
-import static functionalj.functions.StringFunctions.prependWith;
+import static functionalj.functions.StrFuncs.prependWith;
 import static functionalj.lens.Access.$I;
 import static java.util.stream.IntStream.range;
 import static org.junit.Assert.assertEquals;

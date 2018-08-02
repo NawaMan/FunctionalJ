@@ -1,6 +1,6 @@
 package functionalj.types.tuple;
 
-import static functionalj.FunctionalJ.it;
+import static functionalj.functions.Func.it;
 
 import java.lang.reflect.Array;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package functionalj.types;
 
-import static functionalj.functions.StringFunctions.appendWith;
+import static functionalj.functions.StrFuncs.appendWith;
 import static functionalj.lens.Access.theTuple2;
 import static functionalj.lens.Access.theTupleOf;
 import static functionalj.lens.LensTypes.STRING;
@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.functions.StrFuncs;
 import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
 import functionalj.types.list.ImmutableList;

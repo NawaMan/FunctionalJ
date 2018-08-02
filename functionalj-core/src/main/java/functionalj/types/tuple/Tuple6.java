@@ -1,6 +1,6 @@
 package functionalj.types.tuple;
 
-import static functionalj.FunctionalJ.it;
+import static functionalj.functions.Func.it;
 import static functionalj.functions.Absent.__;
 import static functionalj.functions.Keep.keep;
 
