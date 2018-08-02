@@ -152,7 +152,11 @@ public class ResultTest {
     
     @Test
     public void testResultPeek() {
-        assertStrings("Result:{ Value: 3 }", Result.of("One").pipe(r -> r.map(String::length), String::valueOf));
+        assertStrings("Result:{ Value: 3 }", 
+                Result.of("One")
+                .pipe(
+                    r -> r.map(String::length),
+                    String::valueOf));
     }
     
     @Test

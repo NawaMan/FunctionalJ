@@ -13,14 +13,14 @@ import org.junit.Test;
 
 import functionalj.functions.Func;
 import functionalj.functions.Func2;
-import functionalj.types.list.FunctionalList;
+import functionalj.types.list.FuncList;
 import functionalj.types.result.Result;
 import lombok.val;
 
 public class TupleMapGenMain {
     
     private static final String newLine = "\n";
-    private static final String template = FunctionalList.of(
+    private static final String template = FuncList.of(
             "    public default <%s> Tuple%d<%s> map(",
             "%s) {",
             "        return Tuple.of(",
@@ -58,14 +58,14 @@ public class TupleMapGenMain {
                 "                _5(),\n" + 
                 "                _6());\n" + 
                 "    }", 
-                generate(6, FunctionalList.of(true, false, true, true, true, true)));
+                generate(6, FuncList.of(true, false, true, true, true, true)));
     }
     
     public static void main(String[] args) {
         System.out.println(generate(6));
     }
     
-    private static String generate(int tupleSize, FunctionalList<Boolean> flags) {
+    private static String generate(int tupleSize, FuncList<Boolean> flags) {
         val typeParamDefs  = flags.mapWithIndex(generateEach(typeParamDefTemplates)).filter(Objects::nonNull).joining(", ");
         val tupleParamDefs = flags.mapWithIndex(generateEach(tupleParamDefTemplates)).filter(Objects::nonNull).joining(", ");
         
@@ -80,7 +80,7 @@ public class TupleMapGenMain {
         range(0, (int)Math.pow(2, tupleSize)).mapToObj(i -> (Integer)i)
         .filter ($I.thatIsNot(0))
         .map    (index -> range(0, tupleSize).mapToObj(i -> !$I.bitAt(i).applyTo(index)))
-        .map    (FunctionalList::from)
+        .map    (FuncList::from)
         .forEach(flags -> {
             lines.add(generate(6, flags));
             lines.add("    ");

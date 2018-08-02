@@ -1,7 +1,7 @@
 package functionalj.types.tuple;
 
-import static functionalj.functions.Func.it;
 import static functionalj.functions.Absent.__;
+import static functionalj.functions.Func.it;
 import static functionalj.functions.Keep.keep;
 
 import java.lang.reflect.Array;
@@ -11,8 +11,8 @@ import functionalj.functions.Absent;
 import functionalj.functions.Func5;
 import functionalj.functions.Keep;
 import functionalj.pipeable.Pipeable;
-import functionalj.types.list.FunctionalList;
-import functionalj.types.map.FunctionalMap;
+import functionalj.types.list.FuncList;
+import functionalj.types.map.FuncMap;
 import functionalj.types.map.ImmutableMap;
 import lombok.val;
 
@@ -64,16 +64,16 @@ public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, 
 		return toArray;
     }
     
-    public default FunctionalList<Object> toList() {
+    public default FuncList<Object> toList() {
         val _1 = _1();
         val _2 = _2();
         val _3 = _3();
         val _4 = _4();
         val _5 = _5();
-        return FunctionalList.of(_1, _2, _3, _4, _5);
+        return FuncList.of(_1, _2, _3, _4, _5);
     }
     
-    public default <K> FunctionalMap<K, Object> toMap(K k1, K k2, K k3, K k4, K k5) {
+    public default <K> FuncMap<K, Object> toMap(K k1, K k2, K k3, K k4, K k5) {
         val e1 = (k1 != null) ? ImmutableTuple.of(k1, (Object)_1()) : null;
         val e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object)_2()) : null;
         val e3 = (k3 != null) ? ImmutableTuple.of(k3, (Object)_3()) : null;

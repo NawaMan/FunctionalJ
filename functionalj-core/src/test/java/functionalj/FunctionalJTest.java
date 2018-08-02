@@ -1,11 +1,11 @@
 package functionalj;
 
+import static functionalj.functions.Absent.__;
 import static functionalj.functions.Func.cacheFor;
 import static functionalj.functions.Func.delimitWith;
 import static functionalj.functions.Func.it;
 import static functionalj.functions.Func.only;
 import static functionalj.functions.Func.withIndex;
-import static functionalj.functions.Absent.__;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;

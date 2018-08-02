@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import functionalj.types.list.FunctionalListStream;
+import functionalj.types.list.FuncListStream;
 import functionalj.types.list.ImmutableList;
 
 public class StreamableTest {
@@ -22,7 +22,7 @@ public class StreamableTest {
     @Test
     public void testSplit() {
         assertEquals("([One, Two],[Four, Five],[Three])", 
-                FunctionalListStream.from((Supplier<Stream<String>>)()->Stream.of("One", "Two", "Three", "Four", "Five"))
+                FuncListStream.from((Supplier<Stream<String>>)()->Stream.of("One", "Two", "Three", "Four", "Five"))
                 .split($S.length().thatEquals(3),
                        $S.length().thatLessThanOrEqualsTo(4))
                 .toString());

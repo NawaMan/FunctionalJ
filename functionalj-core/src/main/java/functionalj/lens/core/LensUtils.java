@@ -8,7 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyLens;
-import functionalj.lens.lenses.FunctionalListLens;
+import functionalj.lens.lenses.FuncListLens;
 import functionalj.lens.lenses.ListLens;
 import functionalj.lens.lenses.MapLens;
 import functionalj.lens.lenses.MayBeLens;
@@ -16,8 +16,8 @@ import functionalj.lens.lenses.NullableLens;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.OptionalLens;
 import functionalj.types.MayBe;
-import functionalj.types.list.FunctionalList;
-import functionalj.types.map.FunctionalMap;
+import functionalj.types.list.FuncList;
+import functionalj.types.map.FuncMap;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -220,26 +220,26 @@ public class LensUtils {
         };
     }
     
-    //== FunctionalList ==
+    //== FuncList ==
     
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> FunctionalListLens<HOST, TYPE, SUBLENS> 
-        createFunctionalListLens(
-            Function<HOST,  FunctionalList<TYPE>>   read,
-            WriteLens<HOST, FunctionalList<TYPE>>   write,
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> FuncListLens<HOST, TYPE, SUBLENS> 
+        createFuncListLens(
+            Function<HOST,  FuncList<TYPE>>   read,
+            WriteLens<HOST, FuncList<TYPE>>   write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val spec = createLensSpecParameterized(read, write, subCreator);
-        val listLens = FunctionalListLens.of(spec);
+        val listLens = FuncListLens.of(spec);
         return listLens;
     }
     
-    public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> FunctionalListLens<HOST, TYPE, TYPELENS>
-            createSubFunctionalListLens(
-                LensSpec<HOST, FunctionalList<TYPE>>                              spec,
-                LensSpecParameterized<HOST, FunctionalList<TYPE>, TYPE, TYPELENS> specParameterized,
-                Function<HOST, FunctionalList<TYPE>>                              read) {
-        val newSpec = new LensSpecParameterized<HOST, FunctionalList<TYPE>, TYPE, TYPELENS>() {
+    public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> FuncListLens<HOST, TYPE, TYPELENS>
+            createSubFuncListLens(
+                LensSpec<HOST, FuncList<TYPE>>                              spec,
+                LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS> specParameterized,
+                Function<HOST, FuncList<TYPE>>                              read) {
+        val newSpec = new LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS>() {
             @Override
-            public LensSpec<HOST, FunctionalList<TYPE>> getSpec() {
+            public LensSpec<HOST, FuncList<TYPE>> getSpec() {
                 return new LensSpec<>(read, spec.getWrite(), spec.getIsNullSafe());
             }
             @Override
@@ -250,27 +250,27 @@ public class LensUtils {
         return () -> newSpec;
     }
     
-    // == FunctionalMap ==
+    // == FuncMap ==
     
     public static <KEYLENS extends AnyLens<HOST, KEY>, HOST, VALUELENS extends AnyLens<HOST, VALUE>, KEY, VALUE>
-            LensSpecParameterized2<HOST, FunctionalMap<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> createFunctionalMapLensSpec(
-                    Function<HOST,  FunctionalMap<KEY, VALUE>>           read,
-                    WriteLens<HOST, FunctionalMap<KEY, VALUE>>           write,
+            LensSpecParameterized2<HOST, FuncMap<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> createFuncMapLensSpec(
+                    Function<HOST,  FuncMap<KEY, VALUE>>       read,
+                    WriteLens<HOST, FuncMap<KEY, VALUE>>       write,
                     Function<LensSpec<HOST, KEY>,   KEYLENS>   keyLensCreator,
                     Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
-        return new LensSpecParameterized2<HOST, FunctionalMap<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS>() {
-
+        return new LensSpecParameterized2<HOST, FuncMap<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS>() {
+            
             @Override
-            public LensSpec<HOST, FunctionalMap<KEY, VALUE>> getSpec() {
+            public LensSpec<HOST, FuncMap<KEY, VALUE>> getSpec() {
                 return LensSpec.of(read, write);
             }
-
+            
             @Override
             public KEYLENS createSubLens1(
                     LensSpec<HOST, KEY> subSpec) {
                 return keyLensCreator.apply(subSpec);
             }
-
+            
             @Override
             public VALUELENS createSubLens2(
                     LensSpec<HOST, VALUE> subSpec) {

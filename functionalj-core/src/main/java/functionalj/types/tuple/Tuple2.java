@@ -9,8 +9,8 @@ import java.util.function.Function;
 
 import functionalj.functions.Absent;
 import functionalj.pipeable.Pipeable;
-import functionalj.types.list.FunctionalList;
-import functionalj.types.map.FunctionalMap;
+import functionalj.types.list.FuncList;
+import functionalj.types.map.FuncMap;
 import functionalj.types.map.ImmutableMap;
 import lombok.val;
 
@@ -59,13 +59,13 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
 		return toArray;
     }
     
-    public default FunctionalList<Object> toList() {
+    public default FuncList<Object> toList() {
         val _1 = _1();
         val _2 = _2();
-        return FunctionalList.of(_1, _2);
+        return FuncList.of(_1, _2);
     }
     
-    public default <K> FunctionalMap<K, Object> toMap(K k1, K k2) {
+    public default <K> FuncMap<K, Object> toMap(K k1, K k2) {
         val e1 = (k1 != null) ? ImmutableTuple.of(k1, (Object)_1()) : null;
         val e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object)_2()) : null;
         return ImmutableMap.ofEntries(e1, e2);

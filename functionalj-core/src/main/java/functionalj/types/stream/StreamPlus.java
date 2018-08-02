@@ -37,9 +37,9 @@ import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.StrFuncs;
-import functionalj.types.list.FunctionalList;
+import functionalj.types.list.FuncList;
 import functionalj.types.list.ImmutableList;
-import functionalj.types.map.FunctionalMap;
+import functionalj.types.map.FuncMap;
 import functionalj.types.map.ImmutableMap;
 import functionalj.types.tuple.Tuple;
 import functionalj.types.tuple.Tuple2;
@@ -222,7 +222,7 @@ public interface StreamPlus<DATA>
         return stream().collect(Collectors.toList());
     }
     
-    public default FunctionalList<DATA> toFunctionalList() {
+    public default FuncList<DATA> toFuncList() {
         return toImmutableList();
     }
     
@@ -250,8 +250,8 @@ public interface StreamPlus<DATA>
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
     
-    public default <KEY> FunctionalMap<KEY, FunctionalList<DATA>> groupingBy(Function<? super DATA, ? extends KEY> classifier) {
-        val theMap = new HashMap<KEY, FunctionalList<DATA>>();
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(Function<? super DATA, ? extends KEY> classifier) {
+        val theMap = new HashMap<KEY, FuncList<DATA>>();
         stream()
             .collect(Collectors.groupingBy(classifier))
             .forEach((key,list)->theMap.put(key, ImmutableList.from(list)));
@@ -259,26 +259,26 @@ public interface StreamPlus<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    public default <KEY> FunctionalMap<KEY, DATA> toMap(Function<? super DATA, ? extends KEY> keyMapper) {
+    public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, ? extends KEY> keyMapper) {
         val theMap = stream().collect(Collectors.toMap(keyMapper, data -> data));
-        return (FunctionalMap<KEY, DATA>)ImmutableMap.of(theMap);
+        return (FuncMap<KEY, DATA>)ImmutableMap.of(theMap);
     }
     
     @SuppressWarnings("unchecked")
-    public default <KEY, VALUE> FunctionalMap<KEY, VALUE> toMap(
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
                 Function<? super DATA, ?  extends KEY>  keyMapper,
                 Function<? super DATA, ? extends VALUE> valueMapper) {
         val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper));
-        return (FunctionalMap<KEY, VALUE>) ImmutableMap.of(theMap);
+        return (FuncMap<KEY, VALUE>) ImmutableMap.of(theMap);
     }
     
     @SuppressWarnings("unchecked")
-    public default <KEY, VALUE> FunctionalMap<KEY, VALUE> toMap(
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
                 Function<? super DATA, ? extends KEY>   keyMapper,
                 Function<? super DATA, ? extends VALUE> valueMapper,
                 BinaryOperator<VALUE> mergeFunction) {
         val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
-        return (FunctionalMap<KEY, VALUE>) ImmutableMap.of(theMap);
+        return (FuncMap<KEY, VALUE>) ImmutableMap.of(theMap);
     }
     
     //== Plus ==
@@ -296,12 +296,12 @@ public interface StreamPlus<DATA>
     
     //-- Split --
     
-    public default Tuple2<FunctionalList<DATA>, FunctionalList<DATA>> split(
+    public default Tuple2<FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate) {
         val temp = this.mapTuple(
                 it -> predicate.test(it) ? 0 : 1,
                 it -> it
-        ).toFunctionalList();
+        ).toFuncList();
         val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
         val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
         return Tuple.of(
@@ -310,7 +310,7 @@ public interface StreamPlus<DATA>
         );
     }
     
-    public default Tuple3<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+    public default Tuple3<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2) {
         val temp = this.mapTuple(
@@ -329,7 +329,7 @@ public interface StreamPlus<DATA>
         );
     }
     
-    public default Tuple4<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+    public default Tuple4<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2,
             Predicate<? super DATA> predicate3) {
@@ -352,7 +352,7 @@ public interface StreamPlus<DATA>
         );
     }
     
-    public default Tuple5<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+    public default Tuple5<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2,
             Predicate<? super DATA> predicate3,
@@ -379,7 +379,7 @@ public interface StreamPlus<DATA>
         );
     }
     
-    public default Tuple6<FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>, FunctionalList<DATA>> split(
+    public default Tuple6<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2,
             Predicate<? super DATA> predicate3,
@@ -906,12 +906,12 @@ public interface StreamPlus<DATA>
     
     // -- Generated with: GeneratorFunctorMapToTupleToObject --
     
-    public default <KEY, VALUE> StreamPlus<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, Function<? super DATA, ? extends VALUE> mapper) {
         return map(data -> ImmutableMap.of(key, mapper.apply(data)));
     }
     
-    public default <KEY, VALUE> StreamPlus<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2) {
         return map(data -> ImmutableMap.of(
@@ -919,7 +919,7 @@ public interface StreamPlus<DATA>
                 key2, mapper2.apply(data)));
     }
     
-    public default <KEY, VALUE> StreamPlus<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3) {
@@ -929,7 +929,7 @@ public interface StreamPlus<DATA>
                 key3, mapper3.apply(data)));
     }
     
-    public default <KEY, VALUE> StreamPlus<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -941,7 +941,7 @@ public interface StreamPlus<DATA>
                 key4, mapper4.apply(data)));
     }
     
-    public default <KEY, VALUE> StreamPlus<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -955,7 +955,7 @@ public interface StreamPlus<DATA>
                 key5, mapper5.apply(data)));
     }
     
-    public default <KEY, VALUE> StreamPlus<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -971,7 +971,7 @@ public interface StreamPlus<DATA>
                 key6, mapper6.apply(data)));
     }
     
-    public default <KEY, VALUE> StreamPlus<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -989,7 +989,7 @@ public interface StreamPlus<DATA>
                 key7, mapper7.apply(data)));
     }
     
-    public default <KEY, VALUE> StreamPlus<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -1009,7 +1009,7 @@ public interface StreamPlus<DATA>
                 key8, mapper8.apply(data)));
     }
     
-    public default <KEY, VALUE> StreamPlus<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -1031,7 +1031,7 @@ public interface StreamPlus<DATA>
                 key9, mapper9.apply(data)));
     }
     
-    public default <KEY, VALUE> StreamPlus<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,

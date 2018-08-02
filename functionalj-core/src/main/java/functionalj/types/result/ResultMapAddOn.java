@@ -8,7 +8,7 @@ import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
-import functionalj.types.map.FunctionalMap;
+import functionalj.types.map.FuncMap;
 import functionalj.types.map.ImmutableMap;
 import functionalj.types.tuple.Tuple2;
 import functionalj.types.tuple.Tuple3;
@@ -309,12 +309,12 @@ public interface ResultMapAddOn<DATA> {
     
     // -- Generated with: GeneratorFunctorMapToTupleToObject --
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, Function<? super DATA, ? extends VALUE> mapper) {
         return map(data -> ImmutableMap.of(key, mapper.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2) {
         return map(data -> ImmutableMap.of(
@@ -322,7 +322,7 @@ public interface ResultMapAddOn<DATA> {
                 key2, mapper2.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3) {
@@ -332,7 +332,7 @@ public interface ResultMapAddOn<DATA> {
                 key3, mapper3.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -344,7 +344,7 @@ public interface ResultMapAddOn<DATA> {
                 key4, mapper4.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -358,7 +358,7 @@ public interface ResultMapAddOn<DATA> {
                 key5, mapper5.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -374,7 +374,7 @@ public interface ResultMapAddOn<DATA> {
                 key6, mapper6.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -392,7 +392,7 @@ public interface ResultMapAddOn<DATA> {
                 key7, mapper7.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -412,7 +412,7 @@ public interface ResultMapAddOn<DATA> {
                 key8, mapper8.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
@@ -434,7 +434,7 @@ public interface ResultMapAddOn<DATA> {
                 key9, mapper9.apply(data)));
     }
     
-    public default <KEY, VALUE> Result<FunctionalMap<KEY, VALUE>> mapToMap(
+    public default <KEY, VALUE> Result<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,

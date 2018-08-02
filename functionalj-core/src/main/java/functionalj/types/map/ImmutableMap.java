@@ -10,7 +10,7 @@ import functionalj.types.tuple.IntTuple2;
 import nawaman.nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
-public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VALUE> {
+public final class ImmutableMap<KEY, VALUE> extends FuncMapStream<KEY, VALUE> {
     
     @SuppressWarnings("unchecked")
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> from(Map<? extends KEY, ? extends VALUE> map) {
@@ -19,7 +19,7 @@ public final class ImmutableMap<KEY, VALUE> extends FunctionalMapStream<KEY, VAL
                 : new ImmutableMap<KEY, VALUE>(map.entrySet().stream());
     }
     @SuppressWarnings("unchecked")
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> from(FunctionalMap<? extends KEY, ? extends VALUE> map) {
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> from(FuncMap<? extends KEY, ? extends VALUE> map) {
         return (map instanceof ImmutableMap)
                 ? (ImmutableMap<KEY, VALUE>)map
                 : new ImmutableMap<KEY, VALUE>(map.entries().stream());

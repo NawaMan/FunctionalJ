@@ -25,7 +25,7 @@ import functionalj.kinds.Functor;
 import functionalj.kinds.Monad;
 import functionalj.pipeable.Pipeable;
 import functionalj.types.MayBe;
-import functionalj.types.list.FunctionalList;
+import functionalj.types.list.FuncList;
 import functionalj.types.result.validator.Validator;
 import functionalj.types.tuple.Tuple;
 import functionalj.types.tuple.Tuple2;
@@ -454,8 +454,8 @@ public class Result<DATA>
         return Optional.ofNullable(this.get());
     }
     
-    public final FunctionalList<DATA> toList() {
-        return FunctionalList.of(this.get());
+    public final FuncList<DATA> toList() {
+        return FuncList.of(this.get());
     }
     
     public final MayBe<DATA> toMayBe() {
@@ -978,19 +978,19 @@ public class Result<DATA>
     }
     
     @SafeVarargs
-    public final Result<Tuple2<DATA, FunctionalList<ValidationException>>> validate(Validator<? super DATA> ... validators) {
+    public final Result<Tuple2<DATA, FuncList<ValidationException>>> validate(Validator<? super DATA> ... validators) {
         return validate(asList(validators));
     }
     
     @SuppressWarnings("unchecked")
-    public final Result<Tuple2<DATA, FunctionalList<ValidationException>>> validate(List<Validator<? super DATA>> validators) {
-        return (Result<Tuple2<DATA, FunctionalList<ValidationException>>>) processData(
+    public final Result<Tuple2<DATA, FuncList<ValidationException>>> validate(List<Validator<? super DATA>> validators) {
+        return (Result<Tuple2<DATA, FuncList<ValidationException>>>) processData(
                 e -> Result.ofException(new ResultNotAvailableException()),
                 (isValue, value, exception)->{
                     if (!isValue)
-                        return (Result<Tuple2<DATA, FunctionalList<ValidationException>>>)this;
+                        return (Result<Tuple2<DATA, FuncList<ValidationException>>>)this;
                     
-                    val exceptions = FunctionalList.from(validators)
+                    val exceptions = FuncList.from(validators)
                         .map   (validator -> validator.validate(value))
                         .filter(result    -> result.isException())
                         .map   (result    -> result.getException())

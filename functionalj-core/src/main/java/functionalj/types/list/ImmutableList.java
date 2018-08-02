@@ -31,7 +31,7 @@ import functionalj.types.stream.Streamable;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public final class ImmutableList<DATA> implements FunctionalList<DATA> {
+public final class ImmutableList<DATA> implements FuncList<DATA> {
     
     private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();
     
@@ -69,13 +69,13 @@ public final class ImmutableList<DATA> implements FunctionalList<DATA> {
         
         return new ImmutableList<T>(readOnlyList.toList());
     }
-    public static <T> ImmutableList<T> from(FunctionalList<T> functionalList) {
-        if (functionalList instanceof ImmutableList)
-            return (ImmutableList<T>)functionalList;
-        if (functionalList == null)
+    public static <T> ImmutableList<T> from(FuncList<T> funcList) {
+        if (funcList instanceof ImmutableList)
+            return (ImmutableList<T>)funcList;
+        if (funcList == null)
             return ImmutableList.empty();
         
-        return new ImmutableList<T>(functionalList.toList());
+        return new ImmutableList<T>(funcList.toList());
     }
     @SafeVarargs
     public static <T> ImmutableList<T> listOf(T ... data) {

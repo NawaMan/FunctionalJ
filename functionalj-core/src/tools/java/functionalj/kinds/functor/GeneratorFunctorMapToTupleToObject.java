@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.types.list.FunctionalList;
+import functionalj.types.list.FuncList;
 import lombok.val;
 
 public class GeneratorFunctorMapToTupleToObject {
@@ -46,7 +46,7 @@ public class GeneratorFunctorMapToTupleToObject {
     
     private static String generate(String typeName, int tupleSize) {
         val newLine = "\n";
-        val template = FunctionalList.of(
+        val template = FuncList.of(
                 "    public default <%3$s> \n" + 
                 "        %1$s<Tuple%2$s<%3$s>> map(\n" + 
                 "%4$s) {\n" + 

@@ -36,10 +36,7 @@ public interface ReadOnlyList<DATA>
         return ImmutableList.from(streamable);
     }
     public static <T> ReadOnlyList<T> of(ReadOnlyList<T> readOnlyList) {
-        return ImmutableList.from(readOnlyList);
-    }
-    public static <T> ReadOnlyList<T> of(FunctionalList<T> functionalList) {
-        return ImmutableList.from(functionalList);
+        return readOnlyList;
     }
     
     @Override

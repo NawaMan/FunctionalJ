@@ -22,7 +22,7 @@ import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
-import functionalj.types.list.FunctionalList;
+import functionalj.types.list.FuncList;
 import functionalj.types.list.ImmutableList;
 import functionalj.types.stream.StreamPlus;
 import lombok.val;
@@ -245,11 +245,11 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testToFunctionalList() {
+    public void testToFuncList() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        val list   = stream.toFunctionalList();
+        val list   = stream.toFuncList();
         assertStrings("[One, Two, Three]", list.toList());
-        assertTrue(list instanceof FunctionalList);
+        assertTrue(list instanceof FuncList);
     }
     
     @Test

@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.FunctionalListAccess;
+import functionalj.lens.lenses.FuncListAccess;
 import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.NullableAccess;
-import functionalj.types.list.FunctionalList;
+import functionalj.types.list.FuncList;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -34,13 +34,13 @@ public class AccessUtils {
         return () -> specWithSub;
     }
     
-    public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> FunctionalListAccess<HOST, TYPE, TYPEACCESS>
-            createSubFunctionalListAccess(
-                    AccessParameterized<HOST, FunctionalList<TYPE>, TYPE, TYPEACCESS> accessParameterized,
-                    Function<HOST, FunctionalList<TYPE>>                              read) {
-        val specWithSub = new AccessParameterized<HOST, FunctionalList<TYPE>, TYPE, TYPEACCESS>() {
+    public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> FuncListAccess<HOST, TYPE, TYPEACCESS>
+            createSubFuncListAccess(
+                    AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPEACCESS> accessParameterized,
+                    Function<HOST, FuncList<TYPE>>                              read) {
+        val specWithSub = new AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPEACCESS>() {
             @Override
-            public FunctionalList<TYPE> applyUnsafe(HOST host) throws Exception {
+            public FuncList<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
             }
             @Override
