@@ -1,10 +1,13 @@
-package functionalj.annotations;
+package functionalj.annotations.dataobject;
 
 import static functionalj.lens.Access.theString;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.annotations.DataObject;
+import functionalj.annotations.dataobject.Child;
+import functionalj.annotations.dataobject.ParentWithFuncList;
 import functionalj.types.list.FuncList;
 import functionalj.types.list.ImmutableList;
 

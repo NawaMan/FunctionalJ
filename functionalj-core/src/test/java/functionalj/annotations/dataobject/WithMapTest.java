@@ -1,6 +1,9 @@
-package functionalj.annotations;
+package functionalj.annotations.dataobject;
 
 import java.util.Map;
+
+import functionalj.annotations.DataObject;
+import functionalj.annotations.dataobject.Child;
 
 @SuppressWarnings("javadoc")
 public class WithMapTest {

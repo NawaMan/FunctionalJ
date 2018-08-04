@@ -1,5 +1,5 @@
 //  ========================================================================
-//  Copyright (c) 2017 Nawapunth Manusitthipol (NawaMan).
+//  Copyright (c) 2017-2018 Nawapunth Manusitthipol (NawaMan).
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject;
+package functionalj.annotations.uniontype;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -21,6 +21,7 @@ import static java.util.stream.Collectors.toList;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,26 +43,25 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
-import functionalj.annotations.DataObject;
-import functionalj.annotations.dataobject.generator.DataObjectBuilder;
-import functionalj.annotations.dataobject.generator.Getter;
-import functionalj.annotations.dataobject.generator.SourceSpec;
-import functionalj.annotations.dataobject.generator.SourceSpec.Configurations;
-import functionalj.annotations.dataobject.generator.Type;
-import functionalj.annotations.dataobject.generator.model.GenDataObject;
+import functionalj.annotations.UnionType;
+import functionalj.annotations.uniontype.generator.Choice;
+import functionalj.annotations.uniontype.generator.ChoiceParam;
+import functionalj.annotations.uniontype.generator.Generator;
+import functionalj.annotations.uniontype.generator.Type;
 import lombok.val;
 
 /**
- * Annotation processor for DataObject.
+ * Annotation processor for UnionType.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
-public class DataObjectAnnotationProcessor extends AbstractProcessor {
+public class UnionTypeAnnotationProcessor extends AbstractProcessor {
 
     private Elements elementUtils;
     private Filer    filer;
     private Messager messager;
     private boolean  hasError;
+    private List<String> logs = new ArrayList<String>();
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -73,7 +73,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> annotations = new LinkedHashSet<String>();
-        annotations.add(DataObject.class.getCanonicalName());
+        annotations.add(UnionType.class.getCanonicalName());
         return annotations;
     }
     
@@ -90,103 +90,98 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
-        for (Element element : roundEnv.getElementsAnnotatedWith(DataObject.class)) {
+        for (Element element : roundEnv.getElementsAnnotatedWith(UnionType.class)) {
             val type        = (TypeElement)element;
             val simpleName  = type.getSimpleName().toString();
             val isInterface = ElementKind.INTERFACE.equals(element.getKind());
-            val isClass     = ElementKind.CLASS    .equals(element.getKind());
-            if (!isInterface && !isClass) {
-                error(element, "Only a class or interface can be annotated with " + DataObject.class.getSimpleName() + ": " + simpleName);
+            if (!isInterface) {
+                error(element, "Only an interface can be annotated with " + UnionType.class.getSimpleName() + ": " + simpleName);
                 continue;
             }
             
-            List<Getter> getters = type.getEnclosedElements().stream()
-                    .filter(elmt  ->elmt.getKind().equals(ElementKind.METHOD))
-                    .map   (elmt  ->((ExecutableElement)elmt))
-                    .filter(method->!method.isDefault())
-                    .filter(method->!isClass || isAbstract(method))
-                    .filter(method->!(method.getReturnType() instanceof NoType))
-                    .filter(method->method.getParameters().isEmpty())
-                    .map   (method->createGetterFromMethod(element, method))
+            List<Choice> choices = type.getEnclosedElements().stream()
+                    .filter(elmt->elmt.getKind().equals(ElementKind.METHOD))
+                    .map   (elmt->((ExecutableElement)elmt))
+                    .filter(mthd->!mthd.isDefault())
+                    .filter(mthd->mthd.getSimpleName().toString().matches("^[A-Z].*$"))
+                    .filter(mthd->mthd.getReturnType() instanceof NoType)
+                    .map   (mthd->createChoiceFromMethod(element, mthd, type.getEnclosedElements()))
                     .collect(toList());
             
             val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
             val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
-            val dataObject     = element.getAnnotation(DataObject.class);
-            val specTargetName = dataObject.name();
+            val unionType      = element.getAnnotation(UnionType.class);
+            val specTargetName = unionType.name();
             val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
-            
-            val configures = new Configurations();
-            configures.generateNoArgConstructor  = dataObject.generateNoArgConstructor();
-            configures.generateAllArgConstructor = dataObject.generateAllArgConstructor();
-            configures.generateLensClass         = dataObject.generateLensClass();
-            
-            if (!configures.generateNoArgConstructor
-             && !configures.generateAllArgConstructor) {
-                error(element, "generateNoArgConstructor and generateAllArgConstructor must be be false at the same time.");
-                continue;
-            }
+            val enclosedClass  = sourceName.substring(0, sourceName.length() - simpleName.length() - 1);
             
             try {
-                val sourceSpec
-                        = new SourceSpec(
-                            sourceName, packageName, targetName, packageName,
-                            isClass,
-                            configures, getters);
-                val dataObjSpec = new DataObjectBuilder(sourceSpec).build();
-                val className   = (String)dataObjSpec.type().fullName("");
-                val content     = new GenDataObject(dataObjSpec).lines().collect(joining("\n"));
-                generateCode(element, className, content);
+                val generator  = new Generator(targetName, new Type(packageName, enclosedClass, simpleName), choices);
+                val className  = packageName + "." + targetName;
+                val content    = generator.lines().stream().collect(joining("\n"));
+                generateCode(element, className, content + "\n" + logs.stream().map("// "::concat).collect(joining("\n")));
             } catch (Exception e) {
+                e.printStackTrace(System.err);
                 error(element, "Problem generating the class: "
                                 + packageName + "." + specTargetName
                                 + ": "  + e.getMessage()
                                 + ":"   + e.getClass()
-                                + " @ " + e.getStackTrace()[0]);
+                                + " @ " + e.getStackTrace()[0] + "\n" + e.getStackTrace()[1] + "\n" + e.getStackTrace()[2]);
             }
         }
         return hasError;
     }
     
-    private boolean isAbstract(ExecutableElement method) {
-        // Seriously ... no other way?
-        try (val writer = new StringWriter()) {
-            elementUtils.printElements(writer, method);
-            return writer.toString().contains(" abstract ");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    
-    private Getter createGetterFromMethod(Element element, ExecutableElement method) {
+    private Choice createChoiceFromMethod(Element element, ExecutableElement method, List<? extends Element> elements) {
         String methodName = method.getSimpleName().toString();
-        Type   returnType = getType(element, method.getReturnType());
-        Getter getter     = new Getter(methodName, returnType);
-        return getter;
+        List<ChoiceParam> params = method.getParameters().stream().map(p -> {
+            val name = p.getSimpleName().toString();
+            val type = getType(element, p.asType());
+            return new ChoiceParam(name, type);
+        }).collect(toList());
+        
+        val hasValidator = elements.stream()
+                .filter(elmt -> elmt.getKind().equals(ElementKind.METHOD))
+                .map   (elmt -> ((ExecutableElement)elmt))
+                .filter(mthd -> mthd.getSimpleName().toString().equals("validate" + methodName))
+                .filter(mthd -> mthd.getTypeParameters().size() == method.getTypeParameters().size())
+                .filter(mthd -> {
+                    for (int i = 0; i < mthd.getTypeParameters().size(); i++) {
+                        if (!mthd.getTypeParameters().get(i).equals(method.getTypeParameters().get(i)))
+                            return false;
+                    }
+                    return true;
+                })
+                .filter(mthd -> {
+//                    for (int i = 0; i < mthd.getParameters().size(); i++) {
+//                        if (!mthd.getParameters().get(i).getSimpleName().toString().equals(method.getTypeParameters().get(i).getSimpleName().toString()))
+//                            return false;
+//                    }
+                    return true;
+                })
+                .findFirst()
+                .isPresent();
+        
+        Choice choice = hasValidator ? new Choice(methodName, "validate" + methodName, params) : new Choice(methodName, params);
+        System.err.println("choice: " + choice);
+        return choice;
     }
     
     private Type getType(Element element, TypeMirror typeMirror) {
         val typeStr = typeMirror.toString();
-        if (typeMirror instanceof PrimitiveType) {
-            // This is not right ... but let goes with this.
-            if ("int".equals(typeStr))
-                return Type.INT;
-            if ("boolean".equals(typeStr))
-                return Type.BOOL;
-        }
+        if (typeMirror instanceof PrimitiveType)
+            return new Type(typeStr);
+        
         if (typeMirror instanceof DeclaredType) {
             val typeElement = ((TypeElement)((DeclaredType)typeMirror).asElement());
             val typeName = typeElement.getSimpleName().toString();
             if (typeName.equals("String"))
-                return Type.STRING;
+                return new Type("java.lang", "String");
             
-            val generics = ((DeclaredType)typeMirror).getTypeArguments().stream()
-                    .map(typeArg -> getType(element, (TypeMirror)typeArg))
-                    .collect(toList());
+            // TODO Generics not yet support
             
             val packageName = getPackageName(element, typeElement);
-            return new Type(null, typeName, packageName, generics);
+            return new Type(packageName, null, typeName);
         }
         return null;
     }

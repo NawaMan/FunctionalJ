@@ -1,7 +1,8 @@
-package functionalj.annotations;
+package functionalj.annotations.dataobject;
 
 import java.util.Optional;
 
+import functionalj.annotations.DataObject;
 import functionalj.types.MayBe;
 import nawaman.nullablej.nullable.Nullable;
 

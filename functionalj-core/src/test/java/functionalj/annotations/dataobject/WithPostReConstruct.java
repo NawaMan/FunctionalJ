@@ -1,4 +1,4 @@
-package functionalj.annotations;
+package functionalj.annotations.dataobject;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,6 +7,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import functionalj.annotations.DataObject;
+import functionalj.annotations.IPostReConstruct;
+import functionalj.annotations.dataobject.SimpleWithPostReConstruct;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

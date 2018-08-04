@@ -1,9 +1,10 @@
-package functionalj.annotations;
+package functionalj.annotations.dataobject;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.annotations.DataObject;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -18,7 +19,7 @@ public class DOWithSameClassName {
     
     @Test
     public void testSameName() {
-        val obj = new functionalj.annotations.DOSameName("Obj");
+        val obj = new functionalj.annotations.dataobject.DOSameName("Obj");
         assertEquals("Obj", obj.name());
     }
     
