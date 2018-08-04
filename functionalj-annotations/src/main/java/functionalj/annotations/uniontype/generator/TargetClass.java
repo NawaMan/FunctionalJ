@@ -29,7 +29,7 @@ public class TargetClass implements Lines {
         imports.add("java.util.function.Supplier");
         imports.add("functionalj.annotations.Absent");
         imports.add("functionalj.annotations.uniontype.UnionTypeSwitch");
-        imports.add("functionalj.annotations.uniontype.generator.IUnionType");
+        imports.add("functionalj.annotations.uniontype.IUnionType");
         
         spec.choices.stream()
             .map   (c -> c.validationMethod)
