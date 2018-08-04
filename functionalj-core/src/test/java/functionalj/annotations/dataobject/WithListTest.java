@@ -3,7 +3,6 @@ package functionalj.annotations.dataobject;
 import java.util.List;
 
 import functionalj.annotations.DataObject;
-import functionalj.annotations.dataobject.Child;
 
 @SuppressWarnings("javadoc")
 public class WithListTest {

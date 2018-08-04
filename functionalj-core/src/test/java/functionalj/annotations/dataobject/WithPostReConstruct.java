@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import functionalj.annotations.DataObject;
 import functionalj.annotations.IPostReConstruct;
-import functionalj.annotations.dataobject.SimpleWithPostReConstruct;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

@@ -1,7 +1,6 @@
 package functionalj.annotations.dataobject;
 
 import functionalj.annotations.DataObject;
-import functionalj.annotations.dataobject.Child;
 import functionalj.types.map.FuncMap;
 
 @SuppressWarnings("javadoc")

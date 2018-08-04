@@ -29,6 +29,7 @@ public class TargetClass implements Lines {
         imports.add("java.util.function.Supplier");
         imports.add("functionalj.annotations.Absent");
         imports.add("functionalj.annotations.uniontype.UnionTypeSwitch");
+        imports.add("functionalj.annotations.uniontype.generator.IUnionType");
         
         spec.choices.stream()
             .map   (c -> c.validationMethod)
@@ -60,7 +61,7 @@ public class TargetClass implements Lines {
         
         val switchClasses = range(0, spec.choices.size())
                 .mapToObj(index   -> spec.choices.stream().skip(index).collect(toList()))
-                .flatMap (choices -> new SwitchClass(this, choices).lines().stream())
+                .flatMap (choices -> new SwitchClass(this, (choices.size() == spec.choices.size()), choices).lines().stream())
                 .filter(Objects::nonNull)
                 .map("    "::concat)
                 .collect(toList())
@@ -74,7 +75,7 @@ public class TargetClass implements Lines {
                 importLines,
                 asList(format("")),
                 asList(format("@SuppressWarnings(\"javadoc\")")),
-                asList(format("public abstract class %s {", type.name)),
+                asList(format("public abstract class %1$s extends IUnionType<%1$s.%1$sFirstSwitch> {", type.name)),
                 asList(format("    ")),
                 subClassConstructors,
                 asList(format("    ")),

@@ -1,19 +1,20 @@
 package functionalj.annotations.uniontype.generator;
 
-import functionalj.annotations.Absent;
-import functionalj.annotations.uniontype.UnionTypeSwitch;
-import functionalj.annotations.uniontype.generator.UnionTypeExampleTest.Union1TypeSpec;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.annotations.Absent;
+import functionalj.annotations.uniontype.IUnionType;
+import functionalj.annotations.uniontype.UnionTypeSwitch;
+
 @SuppressWarnings("javadoc")
-public abstract class BasicColor {
+public abstract class BasicColor extends IUnionType<BasicColor.BasicColorFirstSwitch> {
     
     public static final BasicColor White() { return White.instance; }
     public static final BasicColor Black() { return Black.instance; }
     public static final BasicColor RGB(int r, int g, int b) {
-        Union1TypeSpec.validateRGB(r, g, b);
+        UnionTypeExampleTest.Union1TypeSpec.validateRGB(r, g, b);
         return new RGB(r, g, b);
     }
     
@@ -44,21 +45,8 @@ public abstract class BasicColor {
         public RGB withB(int b) { return new RGB(r, g, b); }
     }
     
-    public <T> BasicColorSwitchWhiteBlackRGB<T> switchMap() {
-        return switchMapTo(this, null);
-    }
-    
-    public <T> BasicColorSwitchWhiteBlackRGB<T> switchMapTo(Class<T> clzz) {
-        return new BasicColorSwitchWhiteBlackRGB<T>(this, null);
-    }
-    
-    public static <T> BasicColorSwitchWhiteBlackRGB<T> switchMap(BasicColor value) {
-        return switchMapTo(value, null);
-    }
-    
-    public static <T> BasicColorSwitchWhiteBlackRGB<T> switchMapTo(BasicColor value, Class<T> clzz) {
-        return new BasicColorSwitchWhiteBlackRGB<T>(value, null);
-    }
+    private final BasicColorFirstSwitch __theSwitch = new BasicColorFirstSwitch(this);
+    @Override public BasicColorFirstSwitch __switch() { return __theSwitch; }
     
     private volatile String toString = null;
     @Override
@@ -68,7 +56,7 @@ public abstract class BasicColor {
         synchronized(this) {
             if (toString != null)
                 return toString;
-            toString = this.switchMapTo(String.class)
+            toString = Switch(this)
                     .white("White")
                     .black("Black")
                     .rgb(rgb -> "RGB(" + String.format("%1$s,%2$s,%3$s", rgb.r,rgb.g,rgb.b) + ")")
@@ -77,7 +65,7 @@ public abstract class BasicColor {
         }
     }
     public String alternativeString() {
-        return this.switchMapTo(String.class)
+        return Switch(this)
                     .white("RGB(255,255,255)")
                     .black("RGB(0,0,0)")
                     .rgb(it -> it.toString())
@@ -106,6 +94,29 @@ public abstract class BasicColor {
     }
     
     
+    public static class BasicColorFirstSwitch {
+        private BasicColor value;
+        private BasicColorFirstSwitch(BasicColor value) { this.value = value; }
+        
+        public <T> BasicColorSwitchBlackRGB<T> white(T action) {
+            return white(d->action);
+        }
+        public <T> BasicColorSwitchBlackRGB<T> white(Supplier<T> action) {
+            return white(d->action.get());
+        }
+        public <T> BasicColorSwitchBlackRGB<T> white(Function<? super White, T> theAction) {
+            Function<BasicColor, T> action = null;
+            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)action;
+            Function<BasicColor, T> newAction =
+                (action != null)
+                ? oldAction : 
+                    (value instanceof White)
+                    ? (Function<BasicColor, T>)(d -> theAction.apply((White)d))
+                    : oldAction;
+            
+            return new BasicColorSwitchBlackRGB <T>(value, newAction);
+        }
+    }
     public static class BasicColorSwitchWhiteBlackRGB<T> extends UnionTypeSwitch<BasicColor, T> {
         private BasicColorSwitchWhiteBlackRGB(BasicColor value, Function<BasicColor, T> action) { super(value, action); }
         

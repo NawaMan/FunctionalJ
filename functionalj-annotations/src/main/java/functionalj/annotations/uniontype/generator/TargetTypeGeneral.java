@@ -1,6 +1,5 @@
 package functionalj.annotations.uniontype.generator;
 
-import static functionalj.annotations.uniontype.generator.Utils.switchClassName;
 import static functionalj.annotations.uniontype.generator.Utils.toCamelCase;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -51,23 +50,9 @@ public class TargetTypeGeneral implements Lines {
             .map("        "::concat)
             .collect(toList());
         
-        val switchClassName = switchClassName(targetName, choices);
         return asList(
-            asList(format("public <T> %s<T> switchMap() {", switchClassName)),
-            asList(format("    return switchMapTo(this, null);")),
-            asList(format("}")),
-            asList(format("")),
-            asList(format("public <T> %s<T> switchMapTo(Class<T> clzz) {", switchClassName)),
-            asList(format("    return new %s<T>(this, null);", switchClassName)),
-            asList(format("}")),
-            asList(format("")),
-            asList(format("public static <T> %s<T> switchMap(%s value) {", switchClassName, targetName)),
-            asList(format("    return switchMapTo(value, null);")),
-            asList(format("}")),
-            asList(format("")),
-            asList(format("public static <T> %s<T> switchMapTo(%s value, Class<T> clzz) {", switchClassName, targetName)),
-            asList(format("    return new %s<T>(value, null);", switchClassName)),
-            asList(format("}")),
+            asList(format("private final %sFirstSwitch __theSwitch = new %sFirstSwitch(this);", targetName, targetName)),
+            asList(format("@Override public %sFirstSwitch __switch() { return __theSwitch; }", targetName)),
             asList(format("")),
             asList(format("private volatile String toString = null;")),
             asList(format("@Override")),
@@ -77,14 +62,14 @@ public class TargetTypeGeneral implements Lines {
             asList(format("    synchronized(this) {")),
             asList(format("        if (toString != null)")),
             asList(format("            return toString;")),
-            asList(format("        toString = this.switchMapTo(String.class)")),
+            asList(format("        toString = Switch(this)")),
             choiceStrings,
             asList(format("        ;")),
             asList(format("        return toString;")),
             asList(format("    }")),
             asList(format("}")),
             asList(format("public String alternativeString() {")),
-            asList(format("    return this.switchMapTo(String.class)")),
+            asList(format("    return Switch(this)")),
             choiceAlternativeStrings,
             asList(format("    ;")),
             asList(format("}")),

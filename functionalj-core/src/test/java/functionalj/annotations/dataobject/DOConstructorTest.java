@@ -5,8 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.junit.Test;
 
 import functionalj.annotations.DataObject;
-import functionalj.annotations.dataobject.DONoAllArgsConstructor;
-import functionalj.annotations.dataobject.DONoNoArgsConstructor;
 
 @SuppressWarnings("javadoc")
 public class DOConstructorTest {

@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import functionalj.annotations.DataObject;
-import functionalj.annotations.dataobject.Child;
-import functionalj.annotations.dataobject.Parent;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

@@ -1,6 +1,7 @@
 package functionalj.annotations.uniontype.generator;
 
 import static functionalj.annotations.Absent.__;
+import static functionalj.annotations.uniontype.IUnionType.Switch;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,27 +26,27 @@ public class UnionTypeExampleTest {
     }
     
     private static Function<BasicColor, String> colorToString = (color->
-            color.switchMapTo(String.class)
+            Switch(color)
             .white("White")
             .black("Black")
             .rgb  (rgb-> "rgb#(" + rgb.r() + "," + rgb.g() + "," + rgb.b() + ")")
     );
     
     private static Function<BasicColor, Boolean> isWhite = (color->
-            color.switchMapTo(Boolean.class)
+            Switch(color)
             .white(true)
             .orElse(false)
     );
     
     private static Function<BasicColor, Boolean> isBlack = (color->
-            color.switchMapTo(Boolean.class)
+            Switch(color)
             .white(false)
             .black(true)
             .orElse(false)
     );
     
     private static Function<BasicColor, Boolean> isFull = (color->
-            color.switchMapTo(Boolean.class)
+            Switch(color)
             .white(true)
             .black(true)
             .rgb(__, 0, 0,       true)

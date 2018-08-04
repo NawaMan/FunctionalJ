@@ -63,13 +63,14 @@ public class GeneratorTest {
                 "\n" + 
                 "import functionalj.annotations.Absent;\n" + 
                 "import functionalj.annotations.uniontype.UnionTypeSwitch;\n" + 
+                "import functionalj.annotations.uniontype.generator.IUnionType;\n" + 
                 "import functionalj.annotations.uniontype.generator.UnionTypeExampleTest;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Predicate;\n" + 
                 "import java.util.function.Supplier;\n" + 
                 "\n" + 
                 "@SuppressWarnings(\"javadoc\")\n" + 
-                "public abstract class BasicColor {\n" + 
+                "public abstract class BasicColor extends IUnionType<BasicColor.BasicColorFirstSwitch> {\n" + 
                 "    \n" + 
                 "    public static final BasicColor White() { return White.instance; }\n" + 
                 "    public static final BasicColor Black() { return Black.instance; }\n" + 
@@ -105,21 +106,8 @@ public class GeneratorTest {
                 "        public RGB withB(int b) { return new RGB(r, g, b); }\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public <T> BasicColorSwitchWhiteBlackRGB<T> switchMap() {\n" + 
-                "        return switchMapTo(this, null);\n" + 
-                "    }\n" + 
-                "    \n" + 
-                "    public <T> BasicColorSwitchWhiteBlackRGB<T> switchMapTo(Class<T> clzz) {\n" + 
-                "        return new BasicColorSwitchWhiteBlackRGB<T>(this, null);\n" + 
-                "    }\n" + 
-                "    \n" + 
-                "    public static <T> BasicColorSwitchWhiteBlackRGB<T> switchMap(BasicColor value) {\n" + 
-                "        return switchMapTo(value, null);\n" + 
-                "    }\n" + 
-                "    \n" + 
-                "    public static <T> BasicColorSwitchWhiteBlackRGB<T> switchMapTo(BasicColor value, Class<T> clzz) {\n" + 
-                "        return new BasicColorSwitchWhiteBlackRGB<T>(value, null);\n" + 
-                "    }\n" + 
+                "    private final BasicColorFirstSwitch __theSwitch = new BasicColorFirstSwitch(this);\n" + 
+                "    @Override public BasicColorFirstSwitch __switch() { return __theSwitch; }\n" + 
                 "    \n" + 
                 "    private volatile String toString = null;\n" + 
                 "    @Override\n" + 
@@ -129,7 +117,7 @@ public class GeneratorTest {
                 "        synchronized(this) {\n" + 
                 "            if (toString != null)\n" + 
                 "                return toString;\n" + 
-                "            toString = this.switchMapTo(String.class)\n" + 
+                "            toString = Switch(this)\n" + 
                 "                    .white(\"White\")\n" + 
                 "                    .black(\"Black\")\n" + 
                 "                    .rgb(rgb -> \"RGB(\" + String.format(\"%1$s,%2$s,%3$s\", rgb.r,rgb.g,rgb.b) + \")\")\n" + 
@@ -138,7 +126,7 @@ public class GeneratorTest {
                 "        }\n" + 
                 "    }\n" + 
                 "    public String alternativeString() {\n" + 
-                "        return this.switchMapTo(String.class)\n" + 
+                "        return Switch(this)\n" + 
                 "                    .white(\"RGB(255,255,255)\")\n" + 
                 "                    .black(\"RGB(0,0,0)\")\n" + 
                 "                    .rgb(it -> it.toString())\n" + 
@@ -167,6 +155,29 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    \n" + 
                 "    \n" + 
+                "    public static class BasicColorFirstSwitch {\n" + 
+                "        private BasicColor value;\n" + 
+                "        private BasicColorFirstSwitch(BasicColor value) { this.value = value; }\n" + 
+                "        \n" + 
+                "        public <T> BasicColorSwitchBlackRGB<T> white(T action) {\n" + 
+                "            return white(d->action);\n" + 
+                "        }\n" + 
+                "        public <T> BasicColorSwitchBlackRGB<T> white(Supplier<T> action) {\n" + 
+                "            return white(d->action.get());\n" + 
+                "        }\n" + 
+                "        public <T> BasicColorSwitchBlackRGB<T> white(Function<? super White, T> theAction) {\n" + 
+                "            Function<BasicColor, T> action = null;\n" + 
+                "            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)action;\n" + 
+                "            Function<BasicColor, T> newAction =\n" + 
+                "                (action != null)\n" + 
+                "                ? oldAction : \n" + 
+                "                    (value instanceof White)\n" + 
+                "                    ? (Function<BasicColor, T>)(d -> theAction.apply((White)d))\n" + 
+                "                    : oldAction;\n" + 
+                "            \n" + 
+                "            return new BasicColorSwitchBlackRGB <T>(value, newAction);\n" + 
+                "        }\n" + 
+                "    }\n" + 
                 "    public static class BasicColorSwitchWhiteBlackRGB<T> extends UnionTypeSwitch<BasicColor, T> {\n" + 
                 "        private BasicColorSwitchWhiteBlackRGB(BasicColor value, Function<BasicColor, T> action) { super(value, action); }\n" + 
                 "        \n" + 
@@ -670,21 +681,8 @@ public class GeneratorTest {
                                 ))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
-                "public <T> ColorSwitchWhiteBlackRGB<T> switchMap() {\n" + 
-                "    return switchMapTo(this, null);\n" + 
-                "}\n" + 
-                "\n" + 
-                "public <T> ColorSwitchWhiteBlackRGB<T> switchMapTo(Class<T> clzz) {\n" + 
-                "    return new ColorSwitchWhiteBlackRGB<T>(this, null);\n" + 
-                "}\n" + 
-                "\n" + 
-                "public static <T> ColorSwitchWhiteBlackRGB<T> switchMap(Color value) {\n" + 
-                "    return switchMapTo(value, null);\n" + 
-                "}\n" + 
-                "\n" + 
-                "public static <T> ColorSwitchWhiteBlackRGB<T> switchMapTo(Color value, Class<T> clzz) {\n" + 
-                "    return new ColorSwitchWhiteBlackRGB<T>(value, null);\n" + 
-                "}\n" + 
+                "private final ColorFirstSwitch __theSwitch = new ColorFirstSwitch(this);\n" + 
+                "@Override public ColorFirstSwitch __switch() { return __theSwitch; }\n" + 
                 "\n" + 
                 "private volatile String toString = null;\n" + 
                 "@Override\n" + 
@@ -694,7 +692,7 @@ public class GeneratorTest {
                 "    synchronized(this) {\n" + 
                 "        if (toString != null)\n" + 
                 "            return toString;\n" + 
-                "        toString = this.switchMapTo(String.class)\n" + 
+                "        toString = Switch(this)\n" + 
                 "                .white(\"White\")\n" + 
                 "                .black(\"Black\")\n" + 
                 "                .rgb(rgb -> \"RGB(\" + String.format(\"%1$s,%2$s,%3$s\", rgb.r,rgb.g,rgb.b) + \")\")\n" + 
@@ -703,7 +701,7 @@ public class GeneratorTest {
                 "    }\n" + 
                 "}\n" + 
                 "public String alternativeString() {\n" + 
-                "    return this.switchMapTo(String.class)\n" + 
+                "    return Switch(this)\n" + 
                 "                .white(\"RGB(255,255,255)\")\n" + 
                 "                .black(\"RGB(0,0,0)\")\n" + 
                 "                .rgb(it -> it.toString())\n" + 
@@ -737,7 +735,7 @@ public class GeneratorTest {
     @Test
     public void testSwitchClass_expand() {
         val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
-        val sub    = new SwitchClass(target, asList(
+        val sub    = new SwitchClass(target, false, asList(
                         new Choice("RGB",   "validateRGB", asList(
                             new ChoiceParam("r", new Type("int")),
                             new ChoiceParam("g", new Type("int")),

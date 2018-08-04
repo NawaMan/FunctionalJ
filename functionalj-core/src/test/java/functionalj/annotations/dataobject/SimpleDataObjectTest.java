@@ -9,8 +9,6 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import functionalj.annotations.DataObject;
-import functionalj.annotations.dataobject.SimpleFromInteface;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
