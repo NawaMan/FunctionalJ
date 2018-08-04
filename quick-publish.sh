@@ -1,5 +1,5 @@
 #!/bin/bash
-gradle clean build publishToMavenLocal -x test
+./gradlew clean build publishToMavenLocal -x test
 
 PROJECTREPO=~/.m2/repository/functionalj
 PUBLISHREPO=../nawaman-maven-repository

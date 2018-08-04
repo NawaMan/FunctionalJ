@@ -62,8 +62,8 @@ public class GeneratorTest {
                 "package functionalj.annotations.uniontype.generator;\n" + 
                 "\n" + 
                 "import functionalj.annotations.Absent;\n" + 
+                "import functionalj.annotations.uniontype.IUnionType;\n" + 
                 "import functionalj.annotations.uniontype.UnionTypeSwitch;\n" + 
-                "import functionalj.annotations.uniontype.generator.IUnionType;\n" + 
                 "import functionalj.annotations.uniontype.generator.UnionTypeExampleTest;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Predicate;\n" + 

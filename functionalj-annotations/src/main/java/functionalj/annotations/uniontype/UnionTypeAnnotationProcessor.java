@@ -162,7 +162,6 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                 .isPresent();
         
         Choice choice = hasValidator ? new Choice(methodName, "validate" + methodName, params) : new Choice(methodName, params);
-        System.err.println("choice: " + choice);
         return choice;
     }
     
