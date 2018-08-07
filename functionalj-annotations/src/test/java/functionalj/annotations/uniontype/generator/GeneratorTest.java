@@ -65,6 +65,7 @@ public class GeneratorTest {
                 "import functionalj.annotations.uniontype.IUnionType;\n" + 
                 "import functionalj.annotations.uniontype.UnionTypeSwitch;\n" + 
                 "import functionalj.annotations.uniontype.generator.UnionTypeExampleTest;\n" + 
+                "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.types.result.Result;\n" + 
                 "import java.util.function.Consumer;\n" + 
                 "import java.util.function.Function;\n" + 
@@ -72,7 +73,7 @@ public class GeneratorTest {
                 "import java.util.function.Supplier;\n" + 
                 "\n" + 
                 "@SuppressWarnings(\"javadoc\")\n" + 
-                "public abstract class BasicColor extends IUnionType<BasicColor.BasicColorFirstSwitch> {\n" + 
+                "public abstract class BasicColor extends IUnionType<BasicColor.BasicColorFirstSwitch> implements Pipeable<BasicColor> {\n" + 
                 "    \n" + 
                 "    public static final BasicColor White() { return White.instance; }\n" + 
                 "    public static final BasicColor Black() { return Black.instance; }\n" + 
@@ -82,6 +83,7 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    \n" + 
                 "    private BasicColor() {}\n" + 
+                "    public BasicColor __data() throws Exception { return this; }\n" + 
                 "    \n" + 
                 "    public static final class White extends BasicColor {\n" + 
                 "        private static final White instance = new White();\n" + 
@@ -108,8 +110,8 @@ public class GeneratorTest {
                 "        public RGB withB(int b) { return new RGB(r, g, b); }\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    private final BasicColorFirstSwitch __theSwitch = new BasicColorFirstSwitch(this);\n" + 
-                "    @Override public BasicColorFirstSwitch __switch() { return __theSwitch; }\n" + 
+                "    public final BasicColorFirstSwitch mapSwitch = new BasicColorFirstSwitch(this);\n" + 
+                "    @Override public BasicColorFirstSwitch __switch() { return mapSwitch; }\n" + 
                 "    \n" + 
                 "    private volatile String toString = null;\n" + 
                 "    @Override\n" + 
@@ -723,8 +725,8 @@ public class GeneratorTest {
                                 ))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
-                "private final ColorFirstSwitch __theSwitch = new ColorFirstSwitch(this);\n" + 
-                "@Override public ColorFirstSwitch __switch() { return __theSwitch; }\n" + 
+                "public final ColorFirstSwitch mapSwitch = new ColorFirstSwitch(this);\n" + 
+                "@Override public ColorFirstSwitch __switch() { return mapSwitch; }\n" + 
                 "\n" + 
                 "private volatile String toString = null;\n" + 
                 "@Override\n" + 

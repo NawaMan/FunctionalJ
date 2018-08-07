@@ -51,8 +51,8 @@ public class TargetTypeGeneral implements Lines {
             .collect(toList());
         
         return asList(
-            asList(format("private final %sFirstSwitch __theSwitch = new %sFirstSwitch(this);", targetName, targetName)),
-            asList(format("@Override public %sFirstSwitch __switch() { return __theSwitch; }", targetName)),
+            asList(format("public final %sFirstSwitch mapSwitch = new %sFirstSwitch(this);", targetName, targetName)),
+            asList(format("@Override public %sFirstSwitch __switch() { return mapSwitch; }", targetName)),
             asList(format("")),
             asList(format("private volatile String toString = null;")),
             asList(format("@Override")),
