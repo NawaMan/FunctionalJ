@@ -20,7 +20,7 @@ public class UnionLinkedListTest {
     @UnionType(name="LinkedList")
     public static interface LinkedListSpec {
         void Nill();
-        void Node(Object nodeValue, LinkedList rest);
+        void Node(Object value, LinkedList rest);
         
     }
     
@@ -32,13 +32,13 @@ public class UnionLinkedListTest {
     String toStr(LinkedList list) {
         return Switch(list)
                 .nill(l -> "[]")
-                .node(l -> "[" + l.nodeValue() + "," + toStr(l.rest()) + "]");
+                .node(l -> "[" + l.value() + "," + toStr(l.rest()) + "]");
     }
     String toStr2(LinkedList list) {
         val noBracketToStr = recusive((f, l) -> {
             return Switch((LinkedList)l)
                      .nill(l2 -> "")
-                     .node(l2 -> l2.nodeValue() + 
+                     .node(l2 -> l2.value() + 
                                  Switch(l2.rest())
                                    .nill("")
                                    .node(lr -> "," + f.apply(lr)));
@@ -52,7 +52,7 @@ public class UnionLinkedListTest {
                      .node(l2 -> Switch(l2.rest())
                                    .nill("")
                                    .node(lr -> f.apply(lr) + ",")
-                                 + l2.nodeValue());
+                                 + l2.value());
         });
         return "[" + noBracketToStr.apply(list) + "]";
     }
@@ -62,17 +62,17 @@ public class UnionLinkedListTest {
     LinkedList map(LinkedList list, Function<Object, Object> mapper) {
         return Switch(list)
                 .nill(Nill())
-                .node(l -> Node(mapper.apply(l.nodeValue()), map(l.rest(), mapper)));
+                .node(l -> Node(mapper.apply(l.value()), map(l.rest(), mapper)));
     }
     LinkedList filter(LinkedList list, Predicate<Object> filter) {
         return Switch(list)
                 .nill(Nill())
-                .node(l -> (filter.test(l.nodeValue()) ? Node(l.nodeValue(), filter(l.rest(), filter)) : filter(l.rest(), filter)));
+                .node(l -> (filter.test(l.value()) ? Node(l.value(), filter(l.rest(), filter)) : filter(l.rest(), filter)));
     }
     Object reduce(LinkedList list, BinaryOperator<Object> operator) {
         return Switch(list)
                 .nill(()-> null)
-                .node(l -> l.rest().isNill() ? l.nodeValue() : operator.apply(l.nodeValue(), reduce(l.rest(), operator)));
+                .node(l -> l.rest().isNill() ? l.value() : operator.apply(l.value(), reduce(l.rest(), operator)));
     }
     
     @Test

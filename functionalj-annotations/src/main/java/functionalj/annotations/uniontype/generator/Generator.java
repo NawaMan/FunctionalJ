@@ -4,10 +4,8 @@ import java.util.List;
 
 
 // TODO 
-// - "value", "supplier" and "function" in method -- as people might want to use the name
 // - Generic support
 // - First sub type with parameter have problem
-// - Methods to check what sub type an instance is.
 
 @SuppressWarnings("javadoc")
 public class Generator implements Lines {

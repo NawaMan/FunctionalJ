@@ -81,11 +81,11 @@ public class SwitchClass implements Lines {
         val methodGeneric = isFirst ? "<T> " : "";
         val lineBF = isFirst ? "    Function<" + targetName + ", T> action = null;" : "    @SuppressWarnings(\"unchecked\")";
         return asList(
-            format("public %1$s%2$s %3$s(T action) {", methodGeneric, retType, camelName),
-            format("    return %1$s(d->action);" , camelName),
+            format("public %1$s%2$s %3$s(T theValue) {", methodGeneric, retType, camelName),
+            format("    return %1$s(d->theValue);" , camelName),
             format("}"),
-            format("public %1$s%2$s %3$s(Supplier<T> action) {", methodGeneric, retType, camelName),
-            format("    return %1$s(d->action.get());"         , camelName),
+            format("public %1$s%2$s %3$s(Supplier<T> theSupplier) {", methodGeneric, retType, camelName),
+            format("    return %1$s(d->theSupplier.get());"         , camelName),
             format("}"),
             format("public %1$s%2$s %3$s(Function<? super %4$s, T> theAction) {",      methodGeneric, retType, camelName, thisName),
             format(lineBF),
@@ -136,14 +136,14 @@ public class SwitchClass implements Lines {
             String paramCheckStr = paramCheck.stream().collect(joining(" && "));
             return asList(
                 format(""),
-                format("public %1$s<T> %2$s(%3$s, T value) {",  switchClassName, camelName, paramDefStr),
-                format("    return %1$s(%1$s -> %2$s, value);", camelName, paramCheckStr),
+                format("public %1$s<T> %2$s(%3$s, T theValue) {",  switchClassName, camelName, paramDefStr),
+                format("    return %1$s(%1$s -> %2$s, theValue);", camelName, paramCheckStr),
                 format("}"),
-                format("public %1$s<T> %2$s(%3$s, Supplier<T> supplier) {", switchClassName, camelName, paramDefStr),
-                format("    return %1$s(%1$s -> %2$s, supplier);",          camelName, paramCheckStr),
+                format("public %1$s<T> %2$s(%3$s, Supplier<T> theSupplier) {", switchClassName, camelName, paramDefStr),
+                format("    return %1$s(%1$s -> %2$s, theSupplier);",          camelName, paramCheckStr),
                 format("}"),
-                format("public %1$s<T> %2$s(%3$s, Function<%4$s, T> action) {", switchClassName, camelName, paramDefStr, thisName),
-                format("    return %1$s(%1$s -> %2$s, action);",                camelName, paramCheckStr),
+                format("public %1$s<T> %2$s(%3$s, Function<%4$s, T> theAction) {", switchClassName, camelName, paramDefStr, thisName),
+                format("    return %1$s(%1$s -> %2$s, theAction);",                camelName, paramCheckStr),
                 format("}")
             );
         });
@@ -163,11 +163,11 @@ public class SwitchClass implements Lines {
         return !thisChoice.isParameterized() ? new ArrayList<String>()
         : asList(
             format(""),
-            format("public %1$s%2$s<T> %3$s(Predicate<%4$s> check, T action) {", methodGeneric, switchClassName, camelName, thisName),
-            format("    return %1$s(check, d->action);",                         camelName),
+            format("public %1$s%2$s<T> %3$s(Predicate<%4$s> check, T theValue) {", methodGeneric, switchClassName, camelName, thisName),
+            format("    return %1$s(check, d->theValue);",                         camelName),
             format("}"),
-            format("public %1$s%2$s<T> %3$s(Predicate<%4$s> check, Supplier<T> action) {", methodGeneric, switchClassName, camelName, thisName),
-            format("    return %1$s(check, d->action.get());",                             camelName),
+            format("public %1$s%2$s<T> %3$s(Predicate<%4$s> check, Supplier<T> theSupplier) {", methodGeneric, switchClassName, camelName, thisName),
+            format("    return %1$s(check, d->theSupplier.get());",                             camelName),
             format("}"),
             format("public %1$s%2$s<T> %3$s(Predicate<%4$s> check, Function<? super %4$s, T> theAction) {", methodGeneric, switchClassName, camelName, thisName),
             format("    @SuppressWarnings(\"unchecked\")"),
