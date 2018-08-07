@@ -65,6 +65,8 @@ public class GeneratorTest {
                 "import functionalj.annotations.uniontype.IUnionType;\n" + 
                 "import functionalj.annotations.uniontype.UnionTypeSwitch;\n" + 
                 "import functionalj.annotations.uniontype.generator.UnionTypeExampleTest;\n" + 
+                "import functionalj.types.result.Result;\n" + 
+                "import java.util.function.Consumer;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Predicate;\n" + 
                 "import java.util.function.Supplier;\n" + 
@@ -155,16 +157,16 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    \n" + 
                 "    public boolean isWhite() { return this instanceof White; }\n" + 
-                "    public Result<White> asWhite() { return Result.of(this).filter(White.class); }\n" + 
-                "    public BasicColor ifWhite(Consumer<White> action) { if (isWhite()) action.accept(); return this; }\n" + 
+                "    public Result<White> asWhite() { return Result.of(this).filter(White.class).map(White.class::cast); }\n" + 
+                "    public BasicColor ifWhite(Consumer<White> action) { if (isWhite()) action.accept((White)this); return this; }\n" + 
                 "    public BasicColor ifWhite(Runnable action) { if (isWhite()) action.run(); return this; }\n" + 
                 "    public boolean isBlack() { return this instanceof Black; }\n" + 
-                "    public Result<Black> asBlack() { return Result.of(this).filter(Black.class); }\n" + 
-                "    public BasicColor ifBlack(Consumer<Black> action) { if (isBlack()) action.accept(); return this; }\n" + 
+                "    public Result<Black> asBlack() { return Result.of(this).filter(Black.class).map(Black.class::cast); }\n" + 
+                "    public BasicColor ifBlack(Consumer<Black> action) { if (isBlack()) action.accept((Black)this); return this; }\n" + 
                 "    public BasicColor ifBlack(Runnable action) { if (isBlack()) action.run(); return this; }\n" + 
                 "    public boolean isRGB() { return this instanceof RGB; }\n" + 
-                "    public Result<RGB> asRGB() { return Result.of(this).filter(RGB.class); }\n" + 
-                "    public BasicColor ifRGB(Consumer<RGB> action) { if (isRGB()) action.accept(); return this; }\n" + 
+                "    public Result<RGB> asRGB() { return Result.of(this).filter(RGB.class).map(RGB.class::cast); }\n" + 
+                "    public BasicColor ifRGB(Consumer<RGB> action) { if (isRGB()) action.accept((RGB)this); return this; }\n" + 
                 "    public BasicColor ifRGB(Runnable action) { if (isRGB()) action.run(); return this; }\n" + 
                 "    \n" + 
                 "    public static class BasicColorFirstSwitch {\n" + 
@@ -694,16 +696,16 @@ public class GeneratorTest {
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public boolean isWhite() { return this instanceof White; }\n" + 
-                "public Result<White> asWhite() { return Result.of(this).filter(White.class); }\n" + 
-                "public Color ifWhite(Consumer<White> action) { if (isWhite()) action.accept(); return this; }\n" + 
+                "public Result<White> asWhite() { return Result.of(this).filter(White.class).map(White.class::cast); }\n" + 
+                "public Color ifWhite(Consumer<White> action) { if (isWhite()) action.accept((White)this); return this; }\n" + 
                 "public Color ifWhite(Runnable action) { if (isWhite()) action.run(); return this; }\n" + 
                 "public boolean isBlack() { return this instanceof Black; }\n" + 
-                "public Result<Black> asBlack() { return Result.of(this).filter(Black.class); }\n" + 
-                "public Color ifBlack(Consumer<Black> action) { if (isBlack()) action.accept(); return this; }\n" + 
+                "public Result<Black> asBlack() { return Result.of(this).filter(Black.class).map(Black.class::cast); }\n" + 
+                "public Color ifBlack(Consumer<Black> action) { if (isBlack()) action.accept((Black)this); return this; }\n" + 
                 "public Color ifBlack(Runnable action) { if (isBlack()) action.run(); return this; }\n" + 
                 "public boolean isRGB() { return this instanceof RGB; }\n" + 
-                "public Result<RGB> asRGB() { return Result.of(this).filter(RGB.class); }\n" + 
-                "public Color ifRGB(Consumer<RGB> action) { if (isRGB()) action.accept(); return this; }\n" + 
+                "public Result<RGB> asRGB() { return Result.of(this).filter(RGB.class).map(RGB.class::cast); }\n" + 
+                "public Color ifRGB(Consumer<RGB> action) { if (isRGB()) action.accept((RGB)this); return this; }\n" + 
                 "public Color ifRGB(Runnable action) { if (isRGB()) action.run(); return this; }",
                 lines);
     }
