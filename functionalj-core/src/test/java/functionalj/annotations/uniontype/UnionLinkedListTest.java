@@ -147,4 +147,15 @@ public class UnionLinkedListTest {
         assertEquals("15",                   "" + reduce(l, (a,b)->((Integer)a)+((Integer)b)));
     }
     
+    @Test
+    public void testPipeable() {
+        LinkedList l = Nill();
+        l = append(l, "One");
+        l = append(l, "Two");
+        l = append(l, "Three");
+        l = append(l, "Four");
+        l = map(l, o -> ((String)o).length());
+        assertEquals("Node(4,Node(5,Node(3,Node(3,Nill))))", l.pipe(String::valueOf));
+    }
+    
 }

@@ -32,6 +32,7 @@ public class TargetClass implements Lines {
         imports.add("functionalj.annotations.uniontype.UnionTypeSwitch");
         imports.add("functionalj.annotations.uniontype.IUnionType");
         imports.add("functionalj.types.result.Result");
+        imports.add("functionalj.pipeable.Pipeable");
         
         spec.choices.stream()
             .map   (c -> c.validationMethod)
@@ -83,11 +84,12 @@ public class TargetClass implements Lines {
                 importLines,
                 asList(format("")),
                 asList(format("@SuppressWarnings(\"javadoc\")")),
-                asList(format("public abstract class %1$s extends IUnionType<%1$s.%1$sFirstSwitch> {", type.name)),
+                asList(format("public abstract class %1$s extends IUnionType<%1$s.%1$sFirstSwitch> implements Pipeable<%1$s> {", type.name)),
                 asList(format("    ")),
                 subClassConstructors,
                 asList(format("    ")),
                 asList(format("    private %s() {}", type.name)),
+                asList(format("    public %1$s __data() throws Exception { return this; }", type.name)),
                 asList(format("    ")),
                 subClassDefinitions,
                 asList(format("    ")),
