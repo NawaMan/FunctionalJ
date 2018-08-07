@@ -101,6 +101,10 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return i1 -> i2 -> this.apply(i1, i2);
     }
     
+    public default Func1<Tuple2<INPUT1, INPUT2>, OUTPUT> toTupleFunction() {
+        return t -> this.apply(t._1(), t._2());
+    }
+    
     
     /**
      * Flip the parameter order.

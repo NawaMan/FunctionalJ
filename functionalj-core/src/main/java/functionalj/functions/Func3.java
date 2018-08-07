@@ -16,6 +16,7 @@
 package functionalj.functions;
 
 import functionalj.types.result.Result;
+import functionalj.types.tuple.Tuple2;
 import functionalj.types.tuple.Tuple3;
 import lombok.val;
 
@@ -100,6 +101,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      */
     public default Func1<INPUT1, Func1<INPUT2, Func1<INPUT3, OUTPUT>>> curry() {
         return i1 -> i2 ->i3 -> this.apply(i1, i2, i3);
+    }
+    
+    public default Func1<Tuple3<INPUT1, INPUT2, INPUT3>, OUTPUT> toTupleFunction() {
+        return t -> this.apply(t._1(), t._2(), t._3());
     }
     
     //== Partially apply functions ==
