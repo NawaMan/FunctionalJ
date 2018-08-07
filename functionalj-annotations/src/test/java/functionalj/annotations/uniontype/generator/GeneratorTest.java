@@ -84,6 +84,7 @@ public class GeneratorTest {
                 "    \n" + 
                 "    private BasicColor() {}\n" + 
                 "    public BasicColor __data() throws Exception { return this; }\n" + 
+                "    public Result<BasicColor> toResult() { return Result.of(this); }\n" + 
                 "    \n" + 
                 "    public static final class White extends BasicColor {\n" + 
                 "        private static final White instance = new White();\n" + 
