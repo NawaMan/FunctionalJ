@@ -25,11 +25,13 @@ public class TargetClass implements Lines {
     public List<String> lines() {
         val imports     = new TreeSet<String>();
         imports.add("java.util.function.Function");
+        imports.add("java.util.function.Consumer");
         imports.add("java.util.function.Predicate");
         imports.add("java.util.function.Supplier");
         imports.add("functionalj.annotations.Absent");
         imports.add("functionalj.annotations.uniontype.UnionTypeSwitch");
         imports.add("functionalj.annotations.uniontype.IUnionType");
+        imports.add("functionalj.types.result.Result");
         
         spec.choices.stream()
             .map   (c -> c.validationMethod)
@@ -59,6 +61,12 @@ public class TargetClass implements Lines {
                 .map("    "::concat)
                 .collect(toList());
         
+        val targetCheckMethods
+                = new SubCheckMethod(this, spec.choices)
+                .lines().stream()
+                .map("    "::concat)
+                .collect(toList());
+        
         val switchClasses = range(0, spec.choices.size())
                 .mapToObj(index   -> spec.choices.stream().skip(index).collect(toList()))
                 .flatMap (choices -> new SwitchClass(this, (choices.size() == spec.choices.size()), choices).lines().stream())
@@ -84,6 +92,7 @@ public class TargetClass implements Lines {
                 subClassDefinitions,
                 asList(format("    ")),
                 targetGeneral,
+                targetCheckMethods,
                 asList(format("    ")),
                 switchClasses,
                 asList(format("    ")),

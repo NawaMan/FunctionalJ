@@ -154,6 +154,18 @@ public class GeneratorTest {
                 "        return thisAlternative.equals(objAlternative);\n" + 
                 "    }\n" + 
                 "    \n" + 
+                "    public boolean isWhite() { return this instanceof White; }\n" + 
+                "    public Result<White> asWhite() { return Result.of(this).filter(White.class); }\n" + 
+                "    public BasicColor ifWhite(Consumer<White> action) { if (isWhite()) action.accept(); return this; }\n" + 
+                "    public BasicColor ifWhite(Runnable action) { if (isWhite()) action.run(); return this; }\n" + 
+                "    public boolean isBlack() { return this instanceof Black; }\n" + 
+                "    public Result<Black> asBlack() { return Result.of(this).filter(Black.class); }\n" + 
+                "    public BasicColor ifBlack(Consumer<Black> action) { if (isBlack()) action.accept(); return this; }\n" + 
+                "    public BasicColor ifBlack(Runnable action) { if (isBlack()) action.run(); return this; }\n" + 
+                "    public boolean isRGB() { return this instanceof RGB; }\n" + 
+                "    public Result<RGB> asRGB() { return Result.of(this).filter(RGB.class); }\n" + 
+                "    public BasicColor ifRGB(Consumer<RGB> action) { if (isRGB()) action.accept(); return this; }\n" + 
+                "    public BasicColor ifRGB(Runnable action) { if (isRGB()) action.run(); return this; }\n" + 
                 "    \n" + 
                 "    public static class BasicColorFirstSwitch {\n" + 
                 "        private BasicColor value;\n" + 
@@ -666,6 +678,34 @@ public class GeneratorTest {
                 "        return newAction.apply(value);\n" + 
                 "    }\n" + 
                 "}", lines);
+    }
+    
+    @Test
+    public void testSubCheckMethod() {
+        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        val sub    = new SubCheckMethod(target, asList(
+                        new Choice("White", null, null, "RGB(255,255,255)", emptyList()),
+                        new Choice("Black", null, null, "RGB(0,0,0)",       emptyList()),
+                        new Choice("RGB",   "validateRGB", asList(
+                                new ChoiceParam("r", new Type("int")),
+                                new ChoiceParam("g", new Type("int")),
+                                new ChoiceParam("b", new Type("int"))
+                                ))));
+        val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        assertEquals(
+                "public boolean isWhite() { return this instanceof White; }\n" + 
+                "public Result<White> asWhite() { return Result.of(this).filter(White.class); }\n" + 
+                "public Color ifWhite(Consumer<White> action) { if (isWhite()) action.accept(); return this; }\n" + 
+                "public Color ifWhite(Runnable action) { if (isWhite()) action.run(); return this; }\n" + 
+                "public boolean isBlack() { return this instanceof Black; }\n" + 
+                "public Result<Black> asBlack() { return Result.of(this).filter(Black.class); }\n" + 
+                "public Color ifBlack(Consumer<Black> action) { if (isBlack()) action.accept(); return this; }\n" + 
+                "public Color ifBlack(Runnable action) { if (isBlack()) action.run(); return this; }\n" + 
+                "public boolean isRGB() { return this instanceof RGB; }\n" + 
+                "public Result<RGB> asRGB() { return Result.of(this).filter(RGB.class); }\n" + 
+                "public Color ifRGB(Consumer<RGB> action) { if (isRGB()) action.accept(); return this; }\n" + 
+                "public Color ifRGB(Runnable action) { if (isRGB()) action.run(); return this; }",
+                lines);
     }
     
     @Test
