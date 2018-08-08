@@ -16,7 +16,6 @@
 package functionalj.functions;
 
 import functionalj.types.result.Result;
-import functionalj.types.tuple.Tuple2;
 import functionalj.types.tuple.Tuple3;
 import lombok.val;
 

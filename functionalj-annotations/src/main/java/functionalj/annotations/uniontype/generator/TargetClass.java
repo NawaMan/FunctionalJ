@@ -30,7 +30,9 @@ public class TargetClass implements Lines {
         imports.add("java.util.function.Supplier");
         imports.add("functionalj.annotations.Absent");
         imports.add("functionalj.annotations.uniontype.UnionTypeSwitch");
-        imports.add("functionalj.annotations.uniontype.IUnionType");
+        imports.add("static functionalj.annotations.uniontype.UnionTypes.Switch");
+        imports.add("static functionalj.annotations.uniontype.CheckEquals.checkEquals");
+        imports.add("functionalj.annotations.uniontype.AbstractUnionType");
         imports.add("functionalj.types.result.Result");
         imports.add("functionalj.pipeable.Pipeable");
         
@@ -84,7 +86,7 @@ public class TargetClass implements Lines {
                 importLines,
                 asList(format("")),
                 asList(format("@SuppressWarnings(\"javadoc\")")),
-                asList(format("public abstract class %1$s extends IUnionType<%1$s.%1$sFirstSwitch> implements Pipeable<%1$s> {", type.name)),
+                asList(format("public abstract class %1$s extends AbstractUnionType<%1$s.%1$sFirstSwitch> implements Pipeable<%1$s> {", type.name)),
                 asList(format("    ")),
                 subClassConstructors,
                 asList(format("    ")),

@@ -1,15 +1,18 @@
 package functionalj.annotations.uniontype.generator;
 
+import static functionalj.annotations.uniontype.CheckEquals.checkEquals;
+import static functionalj.annotations.uniontype.UnionTypes.Switch;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.annotations.Absent;
-import functionalj.annotations.uniontype.IUnionType;
+import functionalj.annotations.uniontype.AbstractUnionType;
 import functionalj.annotations.uniontype.UnionTypeSwitch;
 
 @SuppressWarnings("javadoc")
-public abstract class BasicColor extends IUnionType<BasicColor.BasicColorFirstSwitch> {
+public abstract class BasicColor extends AbstractUnionType<BasicColor.BasicColorFirstSwitch> {
     
     public static final BasicColor White() { return White.instance; }
     public static final BasicColor Black() { return Black.instance; }

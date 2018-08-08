@@ -1,7 +1,7 @@
 package functionalj.annotations.uniontype.generator;
 
 import static functionalj.annotations.Absent.__;
-import static functionalj.annotations.uniontype.IUnionType.Switch;
+import static functionalj.annotations.uniontype.UnionTypes.Switch;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

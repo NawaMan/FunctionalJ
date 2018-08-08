@@ -36,7 +36,6 @@ public class SwitchClass implements Lines {
         val targetName      = targetClass.type.name;
         val switchClassName = switchClassName(targetName, choices);
         
-        
         val isLast    = choices.size() <= 1;
         val nextName  = switchClassName(targetName, choices, 1);
         val retType   = isLast? "T" : nextName + "<T>";
@@ -132,18 +131,19 @@ public class SwitchClass implements Lines {
                 }
             }
             
+            val methodGeneric = isFirst ? "<T> " : "";
             String paramDefStr   = paramDefs.stream().collect(joining(", "));
             String paramCheckStr = paramCheck.stream().collect(joining(" && "));
             return asList(
                 format(""),
-                format("public %1$s<T> %2$s(%3$s, T theValue) {",  switchClassName, camelName, paramDefStr),
-                format("    return %1$s(%1$s -> %2$s, theValue);", camelName, paramCheckStr),
+                format("public %1$s%2$s<T> %3$sOf(%4$s, T theValue) {",  methodGeneric, switchClassName, camelName, paramDefStr),
+                format("    return %1$s(%1$s -> %2$s, theValue);",     camelName, paramCheckStr),
                 format("}"),
-                format("public %1$s<T> %2$s(%3$s, Supplier<T> theSupplier) {", switchClassName, camelName, paramDefStr),
-                format("    return %1$s(%1$s -> %2$s, theSupplier);",          camelName, paramCheckStr),
+                format("public %1$s%2$s<T> %3$sOf(%4$s, Supplier<T> theSupplier) {", methodGeneric, switchClassName, camelName, paramDefStr),
+                format("    return %1$s(%1$s -> %2$s, theSupplier);",              camelName, paramCheckStr),
                 format("}"),
-                format("public %1$s<T> %2$s(%3$s, Function<%4$s, T> theAction) {", switchClassName, camelName, paramDefStr, thisName),
-                format("    return %1$s(%1$s -> %2$s, theAction);",                camelName, paramCheckStr),
+                format("public %1$s%2$s<T> %3$sOf(%4$s, Function<%5$s, T> theAction) {", methodGeneric, switchClassName, camelName, paramDefStr, thisName),
+                format("    return %1$s(%1$s -> %2$s, theAction);",                    camelName, paramCheckStr),
                 format("}")
             );
         });
@@ -160,6 +160,7 @@ public class SwitchClass implements Lines {
     private List<String> createCasesPartial(boolean isFirst, Choice thisChoice, String thisName,
             String camelName, String switchClassName, String targetName) {
         val methodGeneric = isFirst ? "<T> " : "";
+        val lineBF = isFirst ? "    Function<" + targetName + ", T> action = null;" : "    @SuppressWarnings(\"unchecked\")";
         return !thisChoice.isParameterized() ? new ArrayList<String>()
         : asList(
             format(""),
@@ -170,7 +171,7 @@ public class SwitchClass implements Lines {
             format("    return %1$s(check, d->theSupplier.get());",                             camelName),
             format("}"),
             format("public %1$s%2$s<T> %3$s(Predicate<%4$s> check, Function<? super %4$s, T> theAction) {", methodGeneric, switchClassName, camelName, thisName),
-            format("    @SuppressWarnings(\"unchecked\")"),
+            lineBF,
             format("    Function<%1$s, T> oldAction = (Function<%1$s, T>)action;", targetName),
             format("    Function<%1$s, T> newAction =",                            targetName),
             format("        (action != null)"),

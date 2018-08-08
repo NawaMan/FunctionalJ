@@ -1,6 +1,5 @@
 package functionalj.annotations.uniontype;
 
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -12,31 +11,6 @@ public abstract class UnionTypeSwitch<D, T> {
     protected UnionTypeSwitch(D value, Function<? super D, T> action) {
         this.value  = value;
         this.action = action;
-    }
-    
-    protected boolean checkEquals(byte a, byte b) {
-        return a == b;
-    }
-    protected boolean checkEquals(short a, short b) {
-        return a == b;
-    }
-    protected boolean checkEquals(int a, int b) {
-        return a == b;
-    }
-    protected boolean checkEquals(long a, long b) {
-        return a == b;
-    }
-    protected boolean checkEquals(float a, float b) {
-        return a == b;
-    }
-    protected boolean checkEquals(double a, double b) {
-        return a == b;
-    }
-    protected boolean checkEquals(boolean a, boolean b) {
-        return a == b;
-    }
-    protected boolean checkEquals(Object a, Object b) {
-        return ((a == null) && (b == null)) || Objects.equals(a, b);
     }
     
     public T orElse(T elseValue) {

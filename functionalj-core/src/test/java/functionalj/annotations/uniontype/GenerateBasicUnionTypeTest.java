@@ -1,6 +1,6 @@
 package functionalj.annotations.uniontype;
 
-import static functionalj.annotations.uniontype.IUnionType.Switch;
+import static functionalj.annotations.uniontype.UnionTypes.Switch;
 import static functionalj.annotations.uniontype.UpOrDown.Down;
 import static functionalj.annotations.uniontype.UpOrDown.Up;
 import static org.junit.Assert.assertEquals;
@@ -52,7 +52,7 @@ public class GenerateBasicUnionTypeTest {
     }
     
     private static Function<UpOrDown, String> upDownString = (upOrDown->
-        IUnionType.Switch(upOrDown)
+        Switch(upOrDown)
         .up  ("Go up")
         .down("Go down")
     );
