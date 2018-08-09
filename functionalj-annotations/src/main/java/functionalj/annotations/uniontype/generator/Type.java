@@ -5,8 +5,10 @@ import static java.util.stream.Collectors.joining;
 
 import java.util.Objects;
 
+import lombok.Value;
 import lombok.val;
 
+@Value
 public class Type {
     public final String pckg;
     public final String encloseClass;

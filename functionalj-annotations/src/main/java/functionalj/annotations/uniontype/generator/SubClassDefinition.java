@@ -22,7 +22,7 @@ public class SubClassDefinition implements Lines {
         val name     = choice.name;
         if (!choice.isParameterized()) {
             return asList(
-                    format("public static final class %2$s extends %1$s {",        clssName, name),
+                    format("public static final class %1$s%2$s extends %3$s {",    name, targetClass.genericDef(), targetClass.typeWithGenerics()),
                     format("    private static final %1$s instance = new %1$s();", name),
                     format("    private %1$s() {}",                                name),
                     format("}")
@@ -32,14 +32,14 @@ public class SubClassDefinition implements Lines {
         val paramDefs    = choice.mapJoinParams(p -> p.type.name + " " + p.name, ", ");
         val paramCalls   = choice.mapJoinParams(p ->                     p.name, ", ");
         return asList(
-                asList(               format("public static final class %1$s extends %2$s {", name, clssName)),
-                choice.mapParams(p -> format("    private %1$s %2$s;",                        p.type.name, p.name)),
-                asList(               format("    private %1$s(%2$s) {",                      name, paramDefs)),
-                choice.mapParams(p -> format("        this.%1$s = %1$s;",                     p.name)),
+                asList(               format("public static final class %1$s%2$s extends %3$s {", name, targetClass.genericDef(), targetClass.typeWithGenerics())),
+                choice.mapParams(p -> format("    private %1$s %2$s;",                            p.type.name, p.name)),
+                asList(               format("    private %1$s(%2$s) {",                          name, paramDefs)),
+                choice.mapParams(p -> format("        this.%1$s = %1$s;",                         p.name)),
                 asList(               format("    }")),
                 choice.mapParams(p -> format("    public %1$s %2$s() { return %2$s; }",       p.type.name, p.name)),
-                choice.mapParams(p -> format("    public %1$s with%2$s(%3$s %4$s) { return new %1$s(%5$s); }",
-                                                     name, toTitleCase(p.name), p.type.name, p.name, paramCalls)),
+                choice.mapParams(p -> format("    public %1$s with%2$s(%3$s %4$s) { return new %5$s(%6$s); }",
+                                                      name + targetClass.generics(), toTitleCase(p.name), p.type.name, p.name, name + targetClass.generics(), paramCalls)),
                 asList(               format("}"))
             ).stream()
             .flatMap(List::stream)

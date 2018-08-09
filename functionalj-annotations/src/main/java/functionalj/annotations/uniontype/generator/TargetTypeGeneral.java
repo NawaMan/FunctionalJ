@@ -30,9 +30,7 @@ public class TargetTypeGeneral implements Lines {
                 if (paramCount == 0) {
                     return format("            .%1$s(\"%2$s\")", camelName, choice.name);
                 } else {
-                    val template = (choice.stringTemplate != null)
-                                 ? choice.stringTemplate
-                                 : range(0, paramCount).mapToObj(i -> "%" + (i + 1) + "$s").collect(joining(","));
+                    val template = range(0, paramCount).mapToObj(i -> "%" + (i + 1) + "$s").collect(joining(","));
                     val templateParams = choice.params.stream().map(p -> camelName + "." + p.name).collect(joining(","));
                     return format("            .%1$s(%1$s -> \"%2$s(\" + String.format(\"%3$s\", %4$s) + \")\")", 
                                       camelName, choice.name, template, templateParams);
@@ -41,18 +39,9 @@ public class TargetTypeGeneral implements Lines {
             .map("    "::concat)
             .collect(toList());
         
-        val choiceAlternativeStrings = choices.stream()
-            .map(choice -> {
-                val camelName   = toCamelCase(choice.name);
-                val alternative = (choice.alternative != null) ? "\"" + choice.alternative + "\"": "it -> it.toString()";
-                return format("        .%1$s(%2$s)", camelName, alternative);
-            })
-            .map("        "::concat)
-            .collect(toList());
-        
         return asList(
-            asList(format("public final %sFirstSwitch mapSwitch = new %sFirstSwitch(this);", targetName, targetName)),
-            asList(format("@Override public %sFirstSwitch __switch() { return mapSwitch; }", targetName)),
+            asList(format("public final %1$sFirstSwitch%2$s mapSwitch = new %1$sFirstSwitch%2$s(this);", targetName, targetClass.generics())),
+            asList(format("@Override public %1$sFirstSwitch%2$s __switch() { return mapSwitch; }",         targetName, targetClass.generics())),
             asList(format("")),
             asList(format("private volatile String toString = null;")),
             asList(format("@Override")),
@@ -67,11 +56,6 @@ public class TargetTypeGeneral implements Lines {
             asList(format("        ;")),
             asList(format("        return toString;")),
             asList(format("    }")),
-            asList(format("}")),
-            asList(format("public String alternativeString() {")),
-            asList(format("    return Switch(this)")),
-            choiceAlternativeStrings,
-            asList(format("    ;")),
             asList(format("}")),
             asList(format("@Override")),
             asList(format("public int hashCode() {")),
@@ -90,7 +74,7 @@ public class TargetTypeGeneral implements Lines {
             asList(format("    if (thisToString.equals(objToString))")),
             asList(format("        return true;")),
             asList(format("    ")),
-            asList(format("    String objAlternative  = ((" + targetName + ")obj).alternativeString();")),
+            asList(format("    String objAlternative  = ((" + targetClass.typeWithGenerics() + ")obj).alternativeString();")),
             asList(format("    String thisAlternative = this.alternativeString();")),
             asList(format("    return thisAlternative.equals(objAlternative);")),
             asList(format("}")),

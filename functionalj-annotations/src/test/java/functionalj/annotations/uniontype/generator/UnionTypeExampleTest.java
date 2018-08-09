@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
+@SuppressWarnings("javadoc")
 public class UnionTypeExampleTest {
     
     public static interface Union1TypeSpec {

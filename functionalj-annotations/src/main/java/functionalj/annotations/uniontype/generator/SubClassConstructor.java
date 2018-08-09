@@ -18,10 +18,13 @@ public class SubClassConstructor implements Lines {
     public List<String> lines() {
         val sourceName     = targetClass.spec.sourceType.name;
         val sourceEncloser = targetClass.spec.sourceType.encloseClass;
-        val clssName       = targetClass.type.name;
         val name           = choice.name;
         if (!choice.isParameterized()) {
-            return asList(format("public static final %1$s %2$s() { return %2$s.instance; }", clssName, name));
+            return asList(
+                format("public static final %1$s%2$s %3$s() {", (targetClass.genericDef().isEmpty() ? "" : targetClass.genericDef() + " "), targetClass.typeWithGenerics(), name),
+                format("    return %3$s.instance;", targetClass.genericDef(), targetClass.typeWithGenerics(), name),
+                format("}")
+            );
         }
         
         val validateName = choice.validationMethod;
@@ -29,9 +32,9 @@ public class SubClassConstructor implements Lines {
         val paramDefs  = choice.mapJoinParams(p -> p.type.name + " " + p.name, ", ");
         val paramCalls = choice.mapJoinParams(p ->                     p.name, ", ");
         return asList(
-                format      ("public static final %1$s %2$s(%3$s) {", clssName, name, paramDefs),
-                isV ? format("    %1$s.%2$s(%3$s);",                  sourceEncloser + "." + sourceName, validateName, paramCalls) : null,
-                format      ("    return new %1$s(%2$s);",            name, paramCalls),
+                format      ("public static final %1$s%2$s %3$s(%4$s) {", (targetClass.genericDef().isEmpty() ? "" : targetClass.genericDef() + " "), targetClass.typeWithGenerics(), name, paramDefs),
+                isV ? format("    %1$s.%2$s(%3$s);",                       sourceEncloser + "." + sourceName, validateName, paramCalls) : null,
+                format      ("    return new %1$s%2$s(%3$s);",             name, targetClass.generics(), paramCalls),
                 format      ("}")
         );
     }

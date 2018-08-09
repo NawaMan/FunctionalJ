@@ -21,9 +21,11 @@ import static java.util.stream.Collectors.toList;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -35,10 +37,12 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
@@ -46,6 +50,7 @@ import functionalj.annotations.UnionType;
 import functionalj.annotations.uniontype.generator.Choice;
 import functionalj.annotations.uniontype.generator.ChoiceParam;
 import functionalj.annotations.uniontype.generator.Generator;
+import functionalj.annotations.uniontype.generator.Generic;
 import functionalj.annotations.uniontype.generator.Type;
 import lombok.val;
 
@@ -107,15 +112,28 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                     .map   (mthd->createChoiceFromMethod(element, mthd, type.getEnclosedElements()))
                     .collect(toList());
             
+            List<Generic> generics = new ArrayList<Generic>();
+            if (!type.getTypeParameters().isEmpty()) {
+                generics = type.getTypeParameters().stream()
+                .map(t -> (TypeParameterElement)t)
+                .map(t -> {
+                    val boundType = ((TypeParameterElement)t).getBounds().isEmpty()
+                            ? null
+                            : getType(element, ((TypeMirror)((TypeParameterElement)t).getBounds().get(0)));
+                    return new Generic(t.toString(), t.toString() + ((boundType == null) ? "" : " extends " + boundType.getName()), boundType);
+                })
+                .collect(toList());
+            }
+            
             val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
             val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
             val unionType      = element.getAnnotation(UnionType.class);
             val specTargetName = unionType.name();
             val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
             val enclosedClass  = sourceName.substring(0, sourceName.length() - simpleName.length() - 1);
+            val generator  = new Generator(targetName, new Type(packageName, enclosedClass, simpleName), choices, generics);
             
             try {
-                val generator  = new Generator(targetName, new Type(packageName, enclosedClass, simpleName), choices);
                 val className  = packageName + "." + targetName;
                 val content    = generator.lines().stream().collect(joining("\n"));
                 generateCode(element, className, content + "\n" + logs.stream().map("// "::concat).collect(joining("\n")));
@@ -125,7 +143,9 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                                 + packageName + "." + specTargetName
                                 + ": "  + e.getMessage()
                                 + ":"   + e.getClass()
-                                + " @ " + e.getStackTrace()[0] + "\n" + e.getStackTrace()[1] + "\n" + e.getStackTrace()[2]);
+                                + ":"   + Arrays.asList(type.getTypeParameters())
+                                + ":"   + generator
+                                + " @ " + Stream.of(e.getStackTrace()).map(String::valueOf).collect(toList()));
             }
         }
         return hasError;
@@ -181,6 +201,12 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
             val packageName = getPackageName(element, typeElement);
             return new Type(packageName, null, typeName);
         }
+        
+        if (typeMirror instanceof TypeVariable) {
+            val varType = (TypeVariable)typeMirror;
+            return new Type(null, null, varType.toString());
+        }
+        
         return null;
     }
     
