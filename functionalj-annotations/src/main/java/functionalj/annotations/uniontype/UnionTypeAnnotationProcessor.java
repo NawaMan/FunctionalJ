@@ -125,7 +125,7 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                             t.toString(), 
                             t.toString() 
                                 + ((boundTypes.isEmpty()) 
-                                        ? "" : " extends " + t.getBounds().stream().map(b -> ((TypeMirror)b).toString()).collect(joining(" & "))), boundTypes);
+                                        ? "" : " extends " + t.getBounds().stream().map(b -> getType(element, (TypeMirror)b).getName()).collect(joining(" & "))), boundTypes);
                 })
                 .collect(toList());
             }
@@ -174,13 +174,6 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                         if (!mthd.getTypeParameters().get(i).equals(method.getTypeParameters().get(i)))
                             return false;
                     }
-                    return true;
-                })
-                .filter(mthd -> {
-//                    for (int i = 0; i < mthd.getParameters().size(); i++) {
-//                        if (!mthd.getParameters().get(i).getSimpleName().toString().equals(method.getTypeParameters().get(i).getSimpleName().toString()))
-//                            return false;
-//                    }
                     return true;
                 })
                 .findFirst()

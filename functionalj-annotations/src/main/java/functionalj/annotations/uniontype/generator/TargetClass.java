@@ -70,6 +70,19 @@ public class TargetClass implements Lines {
                 imports.add(spec.sourceType.pckg + "." + spec.sourceType.encloseClass);
             });
         
+        spec.choices.stream()
+            .flatMap(c -> c.params.stream())
+            .map    (p -> p.type)
+            .filter (t -> t.pckg != null)
+            .filter (t -> !"java.lang".equals(t.pckg))
+            .forEach(t -> imports.add(t.toString()));
+        
+        spec.generics.stream()
+            .flatMap(g -> g.boundTypes.stream())
+            .filter (t -> t.pckg != null)
+            .filter (t -> !"java.lang".equals(t.pckg))
+            .forEach(t -> imports.add(t.toString()));
+        
         val subClassConstructors 
                 = spec.choices.stream()
                 .flatMap(choice -> new SubClassConstructor(this, choice).lines().stream())

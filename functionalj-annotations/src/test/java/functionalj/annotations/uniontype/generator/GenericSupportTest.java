@@ -23,7 +23,7 @@ public class GenericSupportTest {
                         new ChoiceParam("value", new Type("T"))
                     ))),
                 asList(
-                   new Generic("T", "T extends Number", asList(new Type("java.lang", "Number")))
+                   new Generic("T", "T extends Number", asList(new Type("java.lang", "Number"), new Type("java.io", "Serializable")))
                 ));
         
         val lines  = generator.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
@@ -37,6 +37,7 @@ public class GenericSupportTest {
             "import functionalj.annotations.uniontype.UnionTypeSwitch;\n" + 
             "import functionalj.pipeable.Pipeable;\n" + 
             "import functionalj.types.result.Result;\n" + 
+            "import java.io.Serializable;\n" + 
             "import java.util.function.Consumer;\n" + 
             "import java.util.function.Function;\n" + 
             "import java.util.function.Predicate;\n" + 
