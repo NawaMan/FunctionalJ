@@ -2,6 +2,8 @@ package functionalj.annotations.uniontype;
 
 import static functionalj.annotations.uniontype.Option.Some;
 
+import java.io.Serializable;
+
 import org.junit.Test;
 
 import functionalj.annotations.UnionType;
@@ -21,8 +23,13 @@ public class UnionTypeWithGeneric {
         Some(6L);
     }
     
+    /**
+     * @author manusitn
+     *
+     * @param <T>
+     */
     @UnionType(name="OptionNumber")
-    public interface OptionNumberSpec<T extends Number> {
+    public interface OptionNumberSpec<T extends Number & Serializable> {
         void None();
         void Some(T value);
     }

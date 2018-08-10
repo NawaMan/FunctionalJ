@@ -23,7 +23,7 @@ public class GenericSupportTest {
                         new ChoiceParam("value", new Type("T"))
                     ))),
                 asList(
-                   new Generic("T", "T extends Number", new Type("java.lang", "Number")) 
+                   new Generic("T", "T extends Number", asList(new Type("java.lang", "Number")))
                 ));
         
         val lines  = generator.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
@@ -103,12 +103,7 @@ public class GenericSupportTest {
             "        \n" + 
             "        String objToString  = obj.toString();\n" + 
             "        String thisToString = this.toString();\n" + 
-            "        if (thisToString.equals(objToString))\n" + 
-            "            return true;\n" + 
-            "        \n" + 
-            "        String objAlternative  = ((Option<T>)obj).alternativeString();\n" + 
-            "        String thisAlternative = this.alternativeString();\n" + 
-            "        return thisAlternative.equals(objAlternative);\n" + 
+            "        return thisToString.equals(objToString);\n" + 
             "    }\n" + 
             "    \n" + 
             "    public boolean isNone() { return this instanceof None; }\n" + 

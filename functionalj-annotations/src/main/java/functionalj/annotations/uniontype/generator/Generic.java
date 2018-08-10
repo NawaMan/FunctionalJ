@@ -1,19 +1,21 @@
 package functionalj.annotations.uniontype.generator;
 
+import java.util.List;
+
 import lombok.Value;
 
 @Value
 public class Generic {
     public final String name;
     public final String withBound;
-    public final Type boundType;
+    public final List<Type> boundTypes;
     public Generic(String name) {
         this(name, name, null);
     }
-    public Generic(String name, String withBound, Type boundType) {
+    public Generic(String name, String withBound, List<Type> boundTypes) {
         this.name = name;
         this.withBound = (withBound == null) ? name : withBound;
-        this.boundType = boundType;
+        this.boundTypes = boundTypes;
     }
     
 }

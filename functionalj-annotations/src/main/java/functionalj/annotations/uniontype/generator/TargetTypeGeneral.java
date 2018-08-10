@@ -71,12 +71,7 @@ public class TargetTypeGeneral implements Lines {
             asList(format("    ")),
             asList(format("    String objToString  = obj.toString();")),
             asList(format("    String thisToString = this.toString();")),
-            asList(format("    if (thisToString.equals(objToString))")),
-            asList(format("        return true;")),
-            asList(format("    ")),
-            asList(format("    String objAlternative  = ((" + targetClass.typeWithGenerics() + ")obj).alternativeString();")),
-            asList(format("    String thisAlternative = this.alternativeString();")),
-            asList(format("    return thisAlternative.equals(objAlternative);")),
+            asList(format("    return thisToString.equals(objToString);")),
             asList(format("}")),
             asList(format(""))
         ).stream()

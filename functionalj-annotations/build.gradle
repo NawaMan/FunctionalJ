@@ -1,4 +1,4 @@
-version="${theVersion}.4"
+version="${theVersion}.8"
 
 repositories {
     mavenLocal()

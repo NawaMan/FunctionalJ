@@ -117,10 +117,15 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                 generics = type.getTypeParameters().stream()
                 .map(t -> (TypeParameterElement)t)
                 .map(t -> {
-                    val boundType = ((TypeParameterElement)t).getBounds().isEmpty()
-                            ? null
-                            : getType(element, ((TypeMirror)((TypeParameterElement)t).getBounds().get(0)));
-                    return new Generic(t.toString(), t.toString() + ((boundType == null) ? "" : " extends " + boundType.getName()), boundType);
+                    val boundTypes = ((TypeParameterElement)t).getBounds().stream()
+                            .map(TypeMirror.class::cast)
+                            .map(tm -> this.getType(element, tm))
+                            .collect(toList());
+                    return new Generic(
+                            t.toString(), 
+                            t.toString() 
+                                + ((boundTypes.isEmpty()) 
+                                        ? "" : " extends " + t.getBounds().stream().map(b -> ((TypeMirror)b).toString()).collect(joining(" & "))), boundTypes);
                 })
                 .collect(toList());
             }

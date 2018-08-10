@@ -232,12 +232,7 @@ public class GeneratorTest {
                 "    \n" + 
                 "    String objToString  = obj.toString();\n" + 
                 "    String thisToString = this.toString();\n" + 
-                "    if (thisToString.equals(objToString))\n" + 
-                "        return true;\n" + 
-                "    \n" + 
-                "    String objAlternative  = ((Color)obj).alternativeString();\n" + 
-                "    String thisAlternative = this.alternativeString();\n" + 
-                "    return thisAlternative.equals(objAlternative);\n" + 
+                "    return thisToString.equals(objToString);\n" + 
                 "}\n" + 
                 "",
                 lines);
