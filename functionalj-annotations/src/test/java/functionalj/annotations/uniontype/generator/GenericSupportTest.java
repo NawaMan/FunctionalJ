@@ -49,7 +49,7 @@ public class GenericSupportTest {
             "public abstract class Option<T extends Number> extends AbstractUnionType<Option.OptionFirstSwitch<T>> implements Pipeable<Option<T>> {\n" + 
             "    \n" + 
             "    public static final <T extends Number> Option<T> None() {\n" + 
-            "        return None.instance;\n" +
+            "        return None.instance;\n" + 
             "    }\n" + 
             "    public static final <T extends Number> Option<T> Some(T value) {\n" + 
             "        return new Some<T>(value);\n" + 
@@ -73,7 +73,9 @@ public class GenericSupportTest {
             "    }\n" + 
             "    \n" + 
             "    public final OptionFirstSwitch<T> mapSwitch = new OptionFirstSwitch<T>(this);\n" + 
-            "    @Override public OptionFirstSwitch<T> __switch() { return mapSwitch; }\n" + 
+            "    @Override public OptionFirstSwitch<T> __switch() {\n" + 
+            "         return mapSwitch;\n" + 
+            "    }\n" + 
             "    \n" + 
             "    private volatile String toString = null;\n" + 
             "    @Override\n" + 
@@ -90,10 +92,12 @@ public class GenericSupportTest {
             "            return toString;\n" + 
             "        }\n" + 
             "    }\n" + 
+            "    \n" + 
             "    @Override\n" + 
             "    public int hashCode() {\n" + 
             "        return toString().hashCode();\n" + 
             "    }\n" + 
+            "    \n" + 
             "    @Override\n" + 
             "    public boolean equals(Object obj) {\n" + 
             "        if (!(obj instanceof Option))\n" + 

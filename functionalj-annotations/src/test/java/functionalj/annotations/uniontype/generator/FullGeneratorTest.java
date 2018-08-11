@@ -115,7 +115,9 @@ public class FullGeneratorTest {
               "    }\n" + 
               "    \n" + 
               "    public final BasicColorFirstSwitch mapSwitch = new BasicColorFirstSwitch(this);\n" + 
-              "    @Override public BasicColorFirstSwitch __switch() { return mapSwitch; }\n" + 
+              "    @Override public BasicColorFirstSwitch __switch() {\n" + 
+              "         return mapSwitch;\n" + 
+              "    }\n" + 
               "    \n" + 
               "    private volatile String toString = null;\n" + 
               "    @Override\n" + 
@@ -133,10 +135,12 @@ public class FullGeneratorTest {
               "            return toString;\n" + 
               "        }\n" + 
               "    }\n" + 
+              "    \n" + 
               "    @Override\n" + 
               "    public int hashCode() {\n" + 
               "        return toString().hashCode();\n" + 
               "    }\n" + 
+              "    \n" + 
               "    @Override\n" + 
               "    public boolean equals(Object obj) {\n" + 
               "        if (!(obj instanceof BasicColor))\n" + 

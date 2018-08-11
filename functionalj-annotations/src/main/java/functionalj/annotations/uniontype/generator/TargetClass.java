@@ -137,6 +137,7 @@ public class TargetClass implements Lines {
                 subClassDefinitions,
                 asList(format("    ")),
                 targetGeneral,
+                asList(format("    ")),
                 targetCheckMethods,
                 asList(format("    ")),
                 switchClasses,

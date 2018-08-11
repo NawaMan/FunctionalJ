@@ -200,7 +200,9 @@ public class GeneratorTest {
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public final ColorFirstSwitch mapSwitch = new ColorFirstSwitch(this);\n" + 
-                "@Override public ColorFirstSwitch __switch() { return mapSwitch; }\n" + 
+                "@Override public ColorFirstSwitch __switch() {\n" + 
+                "     return mapSwitch;\n" + 
+                "}\n" + 
                 "\n" + 
                 "private volatile String toString = null;\n" + 
                 "@Override\n" + 
@@ -218,10 +220,12 @@ public class GeneratorTest {
                 "        return toString;\n" + 
                 "    }\n" + 
                 "}\n" + 
+                "\n" + 
                 "@Override\n" + 
                 "public int hashCode() {\n" + 
                 "    return toString().hashCode();\n" + 
                 "}\n" + 
+                "\n" + 
                 "@Override\n" + 
                 "public boolean equals(Object obj) {\n" + 
                 "    if (!(obj instanceof Color))\n" + 
@@ -233,8 +237,7 @@ public class GeneratorTest {
                 "    String objToString  = obj.toString();\n" + 
                 "    String thisToString = this.toString();\n" + 
                 "    return thisToString.equals(objToString);\n" + 
-                "}\n" + 
-                "",
+                "}",
                 lines);
     }
     
