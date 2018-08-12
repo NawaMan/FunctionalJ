@@ -3,12 +3,15 @@ package functionalj.annotations.uniontype.generator;
 import static functionalj.annotations.uniontype.generator.model.Method.Kind.DEFAULT;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import functionalj.annotations.uniontype.generator.model.Method;
 import lombok.Value;
+import lombok.val;
 
 @Value
 public class SourceMethod implements Lines {
@@ -41,9 +44,13 @@ public class SourceMethod implements Lines {
             }
         } else {
             return asList(format(
-                    "public static %1$s {\n"
-                  + "    return %2$s.%3$s;\n"
-                  + "}", m.definition(), targetClass.spec.sourceType.name, m.call())
+                    "public static %1$s%2$s {\n"
+                  + "    return %3$s.%4$s;\n"
+                  + "}", 
+                  (m.generics.isEmpty() ? "" : "<" + m.generics.stream().map(g -> g.withBound.replaceAll(" extends Object$", "")).collect(joining(", ")) + "> "),
+                  m.definition(),
+                  targetClass.spec.sourceType.name,
+                  m.call())
                   .split("\n"));
         }
     }

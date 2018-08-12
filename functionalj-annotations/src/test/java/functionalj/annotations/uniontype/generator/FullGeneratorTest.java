@@ -175,6 +175,7 @@ public class FullGeneratorTest {
               "        return thisToString.equals(objToString);\n" + 
               "    }\n" + 
               "    \n" + 
+              "    \n" + 
               "    public boolean isWhite() { return this instanceof White; }\n" + 
               "    public Result<White> asWhite() { return Result.of(this).filter(White.class).map(White.class::cast); }\n" + 
               "    public BasicColor ifWhite(Consumer<White> action) { if (isWhite()) action.accept((White)this); return this; }\n" + 

@@ -2,6 +2,7 @@ package functionalj.annotations.uniontype.generator.model;
 
 import static java.util.stream.Collectors.joining;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,12 +26,17 @@ public class Method {
     public final String name;
     public final Type   returnType;
     public final List<MethodParam> params;
+    public final List<Generic>     generics;
     
     public Method(Kind kind, String name, Type returnType, List<MethodParam> params) {
+        this(kind, name, returnType, params, new ArrayList<>());
+    }
+    public Method(Kind kind, String name, Type returnType, List<MethodParam> params, List<Generic> generics) {
         this.kind       = kind;
         this.name       = name;
         this.returnType = returnType;
         this.params     = params;
+        this.generics   = generics;
         this.signature  = 
                 (Kind.STATIC.equals(kind) ? "static " : "")
                 + returnType.toString() + " " + toString(param -> param.type.toString());

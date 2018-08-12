@@ -88,9 +88,9 @@ public class TargetTypeGeneral implements Lines {
     
     private List<String> prepareToStringMethod() {
         if (hasMethod(format("String toString(%s)", targetClass.type.toString()), DEFAULT))
-            return targetClass.spec.methods.stream().map(m -> "// " + m.signature).collect(toList());
+            return null;
         if (hasMethod(format("java.lang.String toString(%s)", targetClass.type.toString()), DEFAULT))
-            return targetClass.spec.methods.stream().map(m -> "// " + m.signature).collect(toList());
+            return null;
         
         val choiceStrings = choices.stream()
             .map(choice -> {
@@ -134,43 +134,22 @@ public class TargetTypeGeneral implements Lines {
     }
     
     private List<String> prepareHashCode() {
-        val mthdSignature = format("// int hashCode(%s) -- mthdSignature", targetClass.type.toString());
+        val mthdSignature = format("int hashCode(%s)", targetClass.type.toString());
         if (hasMethod(mthdSignature, DEFAULT))
-            return Stream.concat(
-                        Stream.of(
-                            format("// int hashCode(%s) -- mthdSignature", targetClass.type.toString()),
-                            format("// int hashCode(%s) -- generics",      targetClass.type.generics())
-                        ),
-                        targetClass.spec.methods.stream().map(m -> "// " + m.signature)
-                    ).collect(toList());
-        return Stream.concat(
-                Stream.concat(
-                    Stream.of(
-                        format("// int hashCode(%s) -- mthdSignature", targetClass.type.toString()),
-                        format("// int hashCode(%s) -- generics",      targetClass.type.generics())
-                    ),
-                    targetClass.spec.methods.stream().map(m -> "// " + m.signature)
-                ),
-                asList(
-                    ("@Override\n"
-                   + "public int hashCode() {\n"
-                   + "    return toString().hashCode();\n"
-                   + "}"
-                   ).split("\n")).stream()
-            ).collect(toList());
-//        return asList(
-//               ("@Override\n"
-//              + "public int hashCode() {\n"
-//              + "    return toString().hashCode();\n"
-//              + "}"
-//              ).split("\n"));
+            return null;
+        return asList(
+               ("@Override\n"
+              + "public int hashCode() {\n"
+              + "    return toString().hashCode();\n"
+              + "}"
+              ).split("\n"));
     }
     
     private List<String> prepareEquals(String targetName) {
         if (hasMethod(format("boolean equals(%s, Object)", targetClass.type.toString()), DEFAULT))
-            return targetClass.spec.methods.stream().map(m -> "// " + m.signature).collect(toList());
+            return null;
         if (hasMethod(format("boolean equals(%s, java.lang.Object)", targetClass.type.toString()), DEFAULT))
-            return targetClass.spec.methods.stream().map(m -> "// " + m.signature).collect(toList());
+            return null;
         
         return asList(format(
                   "@Override\n"

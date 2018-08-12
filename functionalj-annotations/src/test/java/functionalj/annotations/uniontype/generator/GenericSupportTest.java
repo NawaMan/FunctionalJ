@@ -117,6 +117,7 @@ public class GenericSupportTest {
             "        return thisToString.equals(objToString);\n" + 
             "    }\n" + 
             "    \n" + 
+            "    \n" + 
             "    public boolean isNone() { return this instanceof None; }\n" + 
             "    public Result<None<T>> asNone() { return Result.of(this).filter(None.class).map(None.class::cast); }\n" + 
             "    public Option<T> ifNone(Consumer<None<T>> action) { if (isNone()) action.accept((None<T>)this); return this; }\n" + 

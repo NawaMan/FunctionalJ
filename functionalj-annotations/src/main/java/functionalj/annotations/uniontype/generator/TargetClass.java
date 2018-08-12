@@ -24,7 +24,7 @@ public class TargetClass implements Lines {
     
     public TargetClass(SourceSpec spec) {
         this.spec = spec;
-        this.type = new Type(spec.sourceType.pckg, spec.targetName);
+        this.type = new Type(spec.sourceType.pckg, null, spec.targetName, spec.generics);
     }
     
     // TODO - type can do these.
@@ -97,6 +97,11 @@ public class TargetClass implements Lines {
             .filter (t -> !"java.lang".equals(t.pckg))
             .forEach(t -> imports.add(t.toString()));
         
+        val sourceMethods = new SourceMethod(this).lines().stream()
+                .filter(Objects::nonNull)
+                .map("    "::concat)
+                .collect(toList());;
+        
         val subClassConstructors 
                 = spec.choices.stream()
                 .flatMap(choice -> new SubClassConstructor(this, choice).lines().stream())
@@ -153,6 +158,8 @@ public class TargetClass implements Lines {
                 subClassDefinitions,
                 asList(format("    ")),
                 targetGeneral,
+                asList(format("    ")),
+                sourceMethods,
                 asList(format("    ")),
                 targetCheckMethods,
                 asList(format("    ")),

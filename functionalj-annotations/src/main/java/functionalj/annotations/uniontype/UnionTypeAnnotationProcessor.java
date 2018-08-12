@@ -111,33 +111,17 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
             }
             
             val generics = extractTypeGenerics(element, typeElement);
-            error(element, "Type generics: " + generics);
+            val choices  = extractTypeChoices(element, typeElement);
+            val methods  = extractTypeMethods(element, typeElement);
             
-            val choices = typeElement.getEnclosedElements().stream()
-                    .filter(elmt->elmt.getKind().equals(ElementKind.METHOD))
-                    .map   (elmt->((ExecutableElement)elmt))
-                    .filter(mthd->!mthd.isDefault())
-                    .filter(mthd->mthd.getSimpleName().toString().matches("^[A-Z].*$"))
-                    .filter(mthd->mthd.getReturnType() instanceof NoType)
-                    .map   (mthd->createChoiceFromMethod(element, mthd, typeElement.getEnclosedElements()))
-                    .collect(toList());
-            
-            val methods = typeElement.getEnclosedElements().stream()
-                    .filter(elmt->elmt.getKind().equals(ElementKind.METHOD))
-                    .map   (elmt->((ExecutableElement)elmt))
-                    .filter(mthd->!mthd.getSimpleName().toString().startsWith("__"))
-                    .filter(mthd->isPublicOrPackage(mthd))
-                    .filter(mthd->isDefaultOrStatic(mthd))
-                    .map(mthd -> createMethodFromMethodElement(element, mthd))
-                    .collect(toList());
-            error(element, methods.toString());
             val packageName    = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
             val sourceName     = typeElement.getQualifiedName().toString().substring(packageName.length() + 1 );
             val unionType      = element.getAnnotation(UnionType.class);
             val specTargetName = unionType.name();
             val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
             val enclosedClass  = sourceName.substring(0, sourceName.length() - simpleName.length() - 1);
-            val generator      = new Generator(targetName, new Type(packageName, enclosedClass, simpleName), generics, choices, methods);
+            val sourceType     = new Type(packageName, enclosedClass, simpleName, generics);
+            val generator      = new Generator(targetName, sourceType, generics, choices, methods);
             
             try {
                 val className  = packageName + "." + targetName;
@@ -162,18 +146,20 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
     }
     
     private Method createMethodFromMethodElement(Element element, ExecutableElement mthd) {
-        val kind   = mthd.isDefault() ? Kind.DEFAULT : Kind.STATIC;
-        val name   = mthd.getSimpleName().toString();
-        val type   = typeOf(element, mthd.getReturnType());
-        List<MethodParam> params = mthd.getParameters().stream().map(p -> {
+        val kind     = mthd.isDefault() ? Kind.DEFAULT : Kind.STATIC;
+        val name     = mthd.getSimpleName().toString();
+        val type     = typeOf(element, mthd.getReturnType());
+        val params   = extractParameters(element, mthd);
+        val generics = extractGenerics(element, mthd.getTypeParameters());
+        return new Method(kind, name, type, params, generics);
+    }
+
+    private List<MethodParam> extractParameters(Element element, ExecutableElement mthd) {
+        return mthd.getParameters().stream().map(p -> {
             val paramName = p.getSimpleName().toString();
             val paramType = typeOf(element, p.asType());
             return new MethodParam(paramName, paramType);
         }).collect(toList());
-        
-        val method = new Method(kind, name, type, params);
-        error(element, method.toString());
-        return method;
     }
     
     private boolean isPublicOrPackage(ExecutableElement mthd) {
@@ -200,6 +186,28 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                                 + ((boundTypes.isEmpty()) 
                                         ? "" : " extends " + t.getBounds().stream().map(b -> typeOf(element, (TypeMirror)b).getName()).collect(joining(" & "))), boundTypes);
                 })
+                .collect(toList());
+    }
+    
+    private List<Method> extractTypeMethods(Element element, TypeElement typeElement) {
+        return typeElement.getEnclosedElements().stream()
+                .filter(elmt->elmt.getKind().equals(ElementKind.METHOD))
+                .map   (elmt->((ExecutableElement)elmt))
+                .filter(mthd->!mthd.getSimpleName().toString().startsWith("__"))
+                .filter(mthd->isPublicOrPackage(mthd))
+                .filter(mthd->isDefaultOrStatic(mthd))
+                .map(mthd -> createMethodFromMethodElement(element, mthd))
+                .collect(toList());
+    }
+    
+    private List<Choice> extractTypeChoices(Element element, TypeElement typeElement) {
+        return typeElement.getEnclosedElements().stream()
+                .filter(elmt->elmt.getKind().equals(ElementKind.METHOD))
+                .map   (elmt->((ExecutableElement)elmt))
+                .filter(mthd->!mthd.isDefault())
+                .filter(mthd->mthd.getSimpleName().toString().matches("^[A-Z].*$"))
+                .filter(mthd->mthd.getReturnType() instanceof NoType)
+                .map   (mthd->createChoiceFromMethod(element, mthd, typeElement.getEnclosedElements()))
                 .collect(toList());
     }
     
@@ -241,9 +249,7 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
             val typeName    = typeElement.getSimpleName().toString();
             val generics    = extractGenerics(element, typeElement.getTypeParameters());
             val packageName = getPackageName(element, typeElement);
-            val type        = new Type(packageName, null, typeName, generics);
-            error(element, typeElement.getTypeParameters().toString() + " -- " + type.toString());
-            return type;
+            return new Type(packageName, null, typeName, generics);
         }
         
         if (typeMirror instanceof TypeVariable) {
