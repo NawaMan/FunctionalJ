@@ -1,7 +1,10 @@
 package functionalj.annotations.uniontype.generator;
 
+import static functionalj.annotations.uniontype.generator.model.Method.Kind.DEFAULT;
+import static functionalj.annotations.uniontype.generator.model.Method.Kind.STATIC;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.joining;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Objects;
@@ -9,6 +12,13 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
+import functionalj.annotations.uniontype.generator.model.ChoiceParam;
+import functionalj.annotations.uniontype.generator.model.Method;
+import functionalj.annotations.uniontype.generator.model.Method.Kind;
+import functionalj.annotations.uniontype.generator.model.MethodParam;
+import functionalj.annotations.uniontype.generator.model.SourceSpec;
+import functionalj.annotations.uniontype.generator.model.Type;
 import lombok.val;
 import lombok.experimental.ExtensionMethod;
 
@@ -39,7 +49,7 @@ public class GeneratorTest {
     public void testSubClassConstructor_withParams() {
         val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "EncloserClass", "ColorSpec"), emptyList()));
         val sub    = new SubClassConstructor(target, 
-                new Choice("RGB",   "validateRGB", asList(
+                new Choice("RGB",   "__validateRGB", asList(
                     new ChoiceParam("r", new Type("int")),
                     new ChoiceParam("g", new Type("int")),
                     new ChoiceParam("b", new Type("int"))
@@ -47,7 +57,7 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final Color RGB(int r, int g, int b) {\n" + 
-                "    EncloserClass.ColorSpec.validateRGB(r, g, b);\n" + 
+                "    ColorSpec.__validateRGB(r, g, b);\n" + 
                 "    return new RGB(r, g, b);\n" + 
                 "}", lines);
     }
@@ -68,7 +78,7 @@ public class GeneratorTest {
     public void testSubClassDefinition_withParams() {
         val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
         val sub    = new SubClassDefinition(target, 
-                new Choice("RGB",   "validateRGB", asList(
+                new Choice("RGB",   "__validateRGB", asList(
                     new ChoiceParam("r", new Type("int")),
                     new ChoiceParam("g", new Type("int")),
                     new ChoiceParam("b", new Type("int"))
@@ -99,7 +109,7 @@ public class GeneratorTest {
         val sub    = new SwitchClass(target, false, asList(
                         new Choice("White"),
                         new Choice("Black"),
-                        new Choice("RGB",   "validateRGB", asList(
+                        new Choice("RGB",   "__validateRGB", asList(
                             new ChoiceParam("r", new Type("int")),
                             new ChoiceParam("g", new Type("int")),
                             new ChoiceParam("b", new Type("int"))
@@ -164,7 +174,7 @@ public class GeneratorTest {
         val sub    = new SubCheckMethod(target, asList(
                         new Choice("White", emptyList()),
                         new Choice("Black", emptyList()),
-                        new Choice("RGB",   "validateRGB", asList(
+                        new Choice("RGB",   "__validateRGB", asList(
                                 new ChoiceParam("r", new Type("int")),
                                 new ChoiceParam("g", new Type("int")),
                                 new ChoiceParam("b", new Type("int"))
@@ -187,12 +197,51 @@ public class GeneratorTest {
     }
     
     @Test
+    public void testSourceMethods() {
+        val target = new TargetClass(
+                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"),
+                    emptyList(),
+                    emptyList(),
+                    asList(
+                            new Method(Kind.DEFAULT, "equals", new Type("boolean"), 
+                                asList(
+                                    new MethodParam("c", new Type("p1.p2", "Color")),
+                                    new MethodParam("obj", Type.OBJECT)
+                                )
+                            ),
+                            new Method(DEFAULT, "thisName", Type.STRING, 
+                                asList(
+                                    new MethodParam("c",  new Type("p1.p2", null, "Color")),
+                                    new MethodParam("c2", new Type("p1.p2", null, "Color")),
+                                    new MethodParam("s",  Type.STRING)
+                                )
+                            ),
+                            new Method(Kind.STATIC, "toRGBString", new Type("boolean"), 
+                                    asList(new MethodParam("c", new Type("p1.p2", "Color")))
+                                )
+                        )));
+        val sub    = new SourceMethod(target);
+        val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        assertEquals(
+                "public boolean equals(Object obj) {\n" + 
+                "    return __spec.equals(this, obj);\n" + 
+                "}\n" + 
+                "public String thisName(p1.p2.Color c2, String s) {\n" + 
+                "    return __spec.thisName(this, c2, s);\n" + 
+                "}\n" + 
+                "public static boolean toRGBString(p1.p2.Color c) {\n" + 
+                "    return ColorSpec.toRGBString(c);\n" + 
+                "}",
+                lines);
+    }
+    
+    @Test
     public void testTargetTypeGeneral_expand() {
         val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
         val sub    = new TargetTypeGeneral(target, asList(
                         new Choice("White", emptyList()),
                         new Choice("Black", emptyList()),
-                        new Choice("RGB",   "validateRGB", asList(
+                        new Choice("RGB",   "__validateRGB", asList(
                                 new ChoiceParam("r", new Type("int")),
                                 new ChoiceParam("g", new Type("int")),
                                 new ChoiceParam("b", new Type("int"))
@@ -242,10 +291,93 @@ public class GeneratorTest {
     }
     
     @Test
+    public void testTargetTypeGeneral_withMethods() {
+        val colorType = new Type("p1.p2", "Color");
+        val target = new TargetClass(
+                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"),
+                    emptyList(),
+                    emptyList(),
+                    asList(
+                        new Method(DEFAULT, "equals", new Type("boolean"), 
+                            asList(new MethodParam("c", colorType), new MethodParam("obj", Type.OBJECT))
+                        ),
+                        new Method(DEFAULT, "toString", Type.STRING, 
+                            asList(new MethodParam("c", colorType))
+                        ),
+                        new Method(DEFAULT, "hashCode", new Type("int"), 
+                            asList(new MethodParam("c", colorType))
+                        ),
+                        new Method(DEFAULT, "thisMethod", Type.STRING, 
+                            asList(
+                                new MethodParam("c",  colorType),
+                                new MethodParam("c2", colorType),
+                                new MethodParam("s",  Type.STRING)
+                            )
+                        ),
+                        new Method(DEFAULT, "thisString", Type.STRING, asList(new MethodParam("s",  Type.STRING))),
+                        new Method(STATIC, "staticName", Type.STRING, 
+                            asList(
+                                new MethodParam("c",  colorType),
+                                new MethodParam("c2", colorType),
+                                new MethodParam("s",  Type.STRING)
+                            )
+                        )
+                    )));
+        val choices = asList(
+                        new Choice("White", emptyList()),
+                        new Choice("Black", emptyList()),
+                        new Choice("RGB", asList(
+                                new ChoiceParam("r", new Type("int")),
+                                new ChoiceParam("g", new Type("int")),
+                                new ChoiceParam("b", new Type("int"))
+                                )));
+        assertEquals(
+                "boolean equals(p1.p2.Color, Object)\n" + 
+                "String toString(p1.p2.Color)\n" + 
+                "int hashCode(p1.p2.Color)\n" + 
+                "String thisMethod(p1.p2.Color, p1.p2.Color, String)\n" + 
+                "String thisString(String)\n" + 
+                "static String staticName(p1.p2.Color, p1.p2.Color, String)",
+                target.spec.methods.stream().map(m -> m.signature).collect(joining("\n")));
+        
+        assertEquals(
+                "public final ColorFirstSwitch mapSwitch = new ColorFirstSwitch(this);\n" + 
+                "@Override public ColorFirstSwitch __switch() {\n" + 
+                "     return mapSwitch;\n" + 
+                "}\n" + 
+                "\n" +
+                "\n",
+                new TargetTypeGeneral(target, choices)
+                .lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n")));
+        
+        assertEquals(
+                "public boolean equals(Object obj) {\n" + 
+                "    return __spec.equals(this, obj);\n" + 
+                "}\n" + 
+                "public String toString() {\n" + 
+                "    return __spec.toString(this);\n" + 
+                "}\n" + 
+                "public int hashCode() {\n" + 
+                "    return __spec.hashCode(this);\n" + 
+                "}\n" + 
+                "public String thisMethod(p1.p2.Color c2, String s) {\n" + 
+                "    return __spec.thisMethod(this, c2, s);\n" + 
+                "}\n" + 
+                "public String thisString(String s) {\n" + 
+                "    return __spec.thisString(s);\n" + 
+                "}\n" + 
+                "public static String staticName(p1.p2.Color c, p1.p2.Color c2, String s) {\n" + 
+                "    return ColorSpec.staticName(c, c2, s);\n" + 
+                "}",
+                new SourceMethod(target)
+                .lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n")));
+    }
+    
+    @Test
     public void testSwitchClass_expand() {
         val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
         val sub    = new SwitchClass(target, false, asList(
-                        new Choice("RGB",   "validateRGB", asList(
+                        new Choice("RGB",   "__validateRGB", asList(
                             new ChoiceParam("r", new Type("int")),
                             new ChoiceParam("g", new Type("int")),
                             new ChoiceParam("b", new Type("int"))

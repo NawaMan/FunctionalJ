@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
+import functionalj.annotations.uniontype.generator.model.ChoiceParam;
+import functionalj.annotations.uniontype.generator.model.SourceSpec;
+import functionalj.annotations.uniontype.generator.model.Type;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -20,7 +24,7 @@ public class FirstSubWithOnlyParamTest {
                 "BasicColor",
                 new Type("functionalj.annotations.uniontype.generator", "UnionTypeExampleTest", "Union1TypeSpec"),
                 asList(
-                    new Choice("RGB", "validateRGB", asList(
+                    new Choice("RGB", "__validateRGB", asList(
                         new ChoiceParam("r", new Type("int"))
                     )),
                     new Choice("White", "RGB(255,255,255)", emptyList())));

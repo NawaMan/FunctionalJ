@@ -1,5 +1,7 @@
 package functionalj.annotations.uniontype.generator;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
+
 public class SubClass {
     public final SubClassConstructor constructor;
     public final SubClassDefinition  difinition;

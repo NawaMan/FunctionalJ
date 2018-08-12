@@ -17,6 +17,10 @@ package functionalj.annotations.uniontype;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static javax.lang.model.element.Modifier.PRIVATE;
+import static javax.lang.model.element.Modifier.PROTECTED;
+import static javax.lang.model.element.Modifier.PUBLIC;
+import static javax.lang.model.element.Modifier.STATIC;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -47,11 +51,14 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import functionalj.annotations.UnionType;
-import functionalj.annotations.uniontype.generator.Choice;
-import functionalj.annotations.uniontype.generator.ChoiceParam;
 import functionalj.annotations.uniontype.generator.Generator;
-import functionalj.annotations.uniontype.generator.Generic;
-import functionalj.annotations.uniontype.generator.Type;
+import functionalj.annotations.uniontype.generator.model.Choice;
+import functionalj.annotations.uniontype.generator.model.ChoiceParam;
+import functionalj.annotations.uniontype.generator.model.Generic;
+import functionalj.annotations.uniontype.generator.model.Method;
+import functionalj.annotations.uniontype.generator.model.Method.Kind;
+import functionalj.annotations.uniontype.generator.model.MethodParam;
+import functionalj.annotations.uniontype.generator.model.Type;
 import lombok.val;
 
 /**
@@ -95,48 +102,42 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(UnionType.class)) {
-            val type        = (TypeElement)element;
-            val simpleName  = type.getSimpleName().toString();
+            val typeElement = (TypeElement)element;
+            val simpleName  = typeElement.getSimpleName().toString();
             val isInterface = ElementKind.INTERFACE.equals(element.getKind());
             if (!isInterface) {
                 error(element, "Only an interface can be annotated with " + UnionType.class.getSimpleName() + ": " + simpleName);
                 continue;
             }
             
-            List<Choice> choices = type.getEnclosedElements().stream()
+            val generics = extractTypeGenerics(element, typeElement);
+            error(element, "Type generics: " + generics);
+            
+            val choices = typeElement.getEnclosedElements().stream()
                     .filter(elmt->elmt.getKind().equals(ElementKind.METHOD))
                     .map   (elmt->((ExecutableElement)elmt))
                     .filter(mthd->!mthd.isDefault())
                     .filter(mthd->mthd.getSimpleName().toString().matches("^[A-Z].*$"))
                     .filter(mthd->mthd.getReturnType() instanceof NoType)
-                    .map   (mthd->createChoiceFromMethod(element, mthd, type.getEnclosedElements()))
+                    .map   (mthd->createChoiceFromMethod(element, mthd, typeElement.getEnclosedElements()))
                     .collect(toList());
             
-            List<Generic> generics = new ArrayList<Generic>();
-            if (!type.getTypeParameters().isEmpty()) {
-                generics = type.getTypeParameters().stream()
-                .map(t -> (TypeParameterElement)t)
-                .map(t -> {
-                    val boundTypes = ((TypeParameterElement)t).getBounds().stream()
-                            .map(TypeMirror.class::cast)
-                            .map(tm -> this.getType(element, tm))
-                            .collect(toList());
-                    return new Generic(
-                            t.toString(), 
-                            t.toString() 
-                                + ((boundTypes.isEmpty()) 
-                                        ? "" : " extends " + t.getBounds().stream().map(b -> getType(element, (TypeMirror)b).getName()).collect(joining(" & "))), boundTypes);
-                })
-                .collect(toList());
-            }
-            
-            val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
-            val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
+            val methods = typeElement.getEnclosedElements().stream()
+                    .filter(elmt->elmt.getKind().equals(ElementKind.METHOD))
+                    .map   (elmt->((ExecutableElement)elmt))
+                    .filter(mthd->!mthd.getSimpleName().toString().startsWith("__"))
+                    .filter(mthd->isPublicOrPackage(mthd))
+                    .filter(mthd->isDefaultOrStatic(mthd))
+                    .map(mthd -> createMethodFromMethodElement(element, mthd))
+                    .collect(toList());
+            error(element, methods.toString());
+            val packageName    = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
+            val sourceName     = typeElement.getQualifiedName().toString().substring(packageName.length() + 1 );
             val unionType      = element.getAnnotation(UnionType.class);
             val specTargetName = unionType.name();
             val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
             val enclosedClass  = sourceName.substring(0, sourceName.length() - simpleName.length() - 1);
-            val generator  = new Generator(targetName, new Type(packageName, enclosedClass, simpleName), choices, generics);
+            val generator      = new Generator(targetName, new Type(packageName, enclosedClass, simpleName), generics, choices, methods);
             
             try {
                 val className  = packageName + "." + targetName;
@@ -148,7 +149,7 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                                 + packageName + "." + specTargetName
                                 + ": "  + e.getMessage()
                                 + ":"   + e.getClass()
-                                + ":"   + Arrays.asList(type.getTypeParameters())
+                                + ":"   + Arrays.asList(typeElement.getTypeParameters())
                                 + ":"   + generator
                                 + " @ " + Stream.of(e.getStackTrace()).map(String::valueOf).collect(toList()));
             }
@@ -156,18 +157,65 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
         return hasError;
     }
     
+    private boolean isDefaultOrStatic(ExecutableElement mthd) {
+        return mthd.isDefault() || mthd.getModifiers().contains(STATIC);
+    }
+    
+    private Method createMethodFromMethodElement(Element element, ExecutableElement mthd) {
+        val kind   = mthd.isDefault() ? Kind.DEFAULT : Kind.STATIC;
+        val name   = mthd.getSimpleName().toString();
+        val type   = typeOf(element, mthd.getReturnType());
+        List<MethodParam> params = mthd.getParameters().stream().map(p -> {
+            val paramName = p.getSimpleName().toString();
+            val paramType = typeOf(element, p.asType());
+            return new MethodParam(paramName, paramType);
+        }).collect(toList());
+        
+        val method = new Method(kind, name, type, params);
+        error(element, method.toString());
+        return method;
+    }
+    
+    private boolean isPublicOrPackage(ExecutableElement mthd) {
+        return mthd.getModifiers().contains(PUBLIC)
+                 || !(mthd.getModifiers().contains(PRIVATE) && mthd.getModifiers().contains(PROTECTED));
+    }
+    
+    private List<Generic> extractTypeGenerics(Element element, TypeElement type) {
+        List<? extends TypeParameterElement> typeParameters = type.getTypeParameters();
+        return extractGenerics(element, typeParameters);
+    }
+    
+    private List<Generic> extractGenerics(Element element, List<? extends TypeParameterElement> typeParameters) {
+        return typeParameters.stream()
+                .map(t -> (TypeParameterElement)t)
+                .map(t -> {
+                    val boundTypes = ((TypeParameterElement)t).getBounds().stream()
+                            .map(TypeMirror.class::cast)
+                            .map(tm -> this.typeOf(element, tm))
+                            .collect(toList());
+                    return new Generic(
+                            t.toString(), 
+                            t.toString() 
+                                + ((boundTypes.isEmpty()) 
+                                        ? "" : " extends " + t.getBounds().stream().map(b -> typeOf(element, (TypeMirror)b).getName()).collect(joining(" & "))), boundTypes);
+                })
+                .collect(toList());
+    }
+    
     private Choice createChoiceFromMethod(Element element, ExecutableElement method, List<? extends Element> elements) {
         String methodName = method.getSimpleName().toString();
         List<ChoiceParam> params = method.getParameters().stream().map(p -> {
             val name = p.getSimpleName().toString();
-            val type = getType(element, p.asType());
+            val type = typeOf(element, p.asType());
             return new ChoiceParam(name, type);
         }).collect(toList());
         
+        val validateMethodName = "__validate" + methodName;
         val hasValidator = elements.stream()
                 .filter(elmt -> elmt.getKind().equals(ElementKind.METHOD))
                 .map   (elmt -> ((ExecutableElement)elmt))
-                .filter(mthd -> mthd.getSimpleName().toString().equals("validate" + methodName))
+                .filter(mthd -> mthd.getSimpleName().toString().equals(validateMethodName))
                 .filter(mthd -> mthd.getTypeParameters().size() == method.getTypeParameters().size())
                 .filter(mthd -> {
                     for (int i = 0; i < mthd.getTypeParameters().size(); i++) {
@@ -179,25 +227,23 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                 .findFirst()
                 .isPresent();
         
-        Choice choice = hasValidator ? new Choice(methodName, "validate" + methodName, params) : new Choice(methodName, params);
+        Choice choice = hasValidator ? new Choice(methodName, validateMethodName, params) : new Choice(methodName, params);
         return choice;
     }
     
-    private Type getType(Element element, TypeMirror typeMirror) {
+    private Type typeOf(Element element, TypeMirror typeMirror) {
         val typeStr = typeMirror.toString();
         if (typeMirror instanceof PrimitiveType)
             return new Type(typeStr);
         
         if (typeMirror instanceof DeclaredType) {
             val typeElement = ((TypeElement)((DeclaredType)typeMirror).asElement());
-            val typeName = typeElement.getSimpleName().toString();
-            if (typeName.equals("String"))
-                return new Type("java.lang", "String");
-            
-            // TODO Generics not yet support
-            
+            val typeName    = typeElement.getSimpleName().toString();
+            val generics    = extractGenerics(element, typeElement.getTypeParameters());
             val packageName = getPackageName(element, typeElement);
-            return new Type(packageName, null, typeName);
+            val type        = new Type(packageName, null, typeName, generics);
+            error(element, typeElement.getTypeParameters().toString() + " -- " + type.toString());
+            return type;
         }
         
         if (typeMirror instanceof TypeVariable) {

@@ -7,6 +7,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
 import lombok.AllArgsConstructor;
 import lombok.val;
 
@@ -18,7 +19,6 @@ public class SubClassDefinition implements Lines {
     
     @Override
     public List<String> lines() {
-        val clssName = targetClass.type.name;
         val name     = choice.name;
         if (!choice.isParameterized()) {
             return asList(

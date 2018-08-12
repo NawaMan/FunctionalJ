@@ -8,7 +8,8 @@ import org.junit.Test;
 
 import functionalj.annotations.UnionType;
 
-public class UnionTypeWithGeneric {
+@SuppressWarnings("javadoc")
+public class UnionTypeWithGenericTest {
 
     
     @UnionType(name="Option")

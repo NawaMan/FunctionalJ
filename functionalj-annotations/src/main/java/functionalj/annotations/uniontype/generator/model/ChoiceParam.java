@@ -1,4 +1,4 @@
-package functionalj.annotations.uniontype.generator;
+package functionalj.annotations.uniontype.generator.model;
 
 import lombok.AllArgsConstructor;
 import lombok.ToString;

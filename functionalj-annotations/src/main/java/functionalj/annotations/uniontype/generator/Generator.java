@@ -3,6 +3,11 @@ package functionalj.annotations.uniontype.generator;
 import java.util.ArrayList;
 import java.util.List;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
+import functionalj.annotations.uniontype.generator.model.Generic;
+import functionalj.annotations.uniontype.generator.model.Method;
+import functionalj.annotations.uniontype.generator.model.SourceSpec;
+import functionalj.annotations.uniontype.generator.model.Type;
 import lombok.Value;
 
 
@@ -18,12 +23,12 @@ public class Generator implements Lines {
     public final SourceSpec  sourceSpec;
     public final TargetClass targetClass;
     
-    public Generator(String targetName, Type sourceType, List<Choice> choices, List<Generic> generics) {
-        this.sourceSpec  = new SourceSpec(targetName, sourceType, choices, generics);
+    public Generator(String targetName, Type sourceType, List<Generic> generics, List<Choice> choices, List<Method> methods) {
+        this.sourceSpec  = new SourceSpec(targetName, sourceType, generics, choices, methods);
         this.targetClass = new TargetClass(sourceSpec);
     }
     public Generator(String targetName, Type sourceType, List<Choice> choices) {
-        this(targetName, sourceType, choices, new ArrayList<Generic>());
+        this(targetName, sourceType, new ArrayList<Generic>(), choices, new ArrayList<Method>());
     }
     
     @Override

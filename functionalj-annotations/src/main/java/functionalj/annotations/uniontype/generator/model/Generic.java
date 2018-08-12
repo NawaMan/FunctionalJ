@@ -1,4 +1,4 @@
-package functionalj.annotations.uniontype.generator;
+package functionalj.annotations.uniontype.generator.model;
 
 import java.util.List;
 

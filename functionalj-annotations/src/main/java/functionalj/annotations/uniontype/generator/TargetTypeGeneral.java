@@ -15,15 +15,20 @@
 //  ========================================================================
 package functionalj.annotations.uniontype.generator;
 
+import static functionalj.annotations.uniontype.generator.Utils.templateRange;
 import static functionalj.annotations.uniontype.generator.Utils.toCamelCase;
+import static functionalj.annotations.uniontype.generator.model.Method.Kind.DEFAULT;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.IntStream.range;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
+import functionalj.annotations.uniontype.generator.model.Method;
 import lombok.val;
 
 
@@ -36,6 +41,8 @@ public class TargetTypeGeneral implements Lines {
     private final TargetClass  targetClass;
     private final List<Choice> choices;
     
+    private final String targetName;
+    
     /**
      * Constructor.
      * 
@@ -45,11 +52,11 @@ public class TargetTypeGeneral implements Lines {
     public TargetTypeGeneral(TargetClass targetClass, List<Choice> choices) {
         this.targetClass = targetClass;
         this.choices     = choices;
+        this.targetName  = targetClass.type.name;
     }
     
     @Override
     public List<String> lines() {
-        val targetName  = targetClass.type.name;
         val emptyLine = asList("");
         val firstSwitch = prepareFirstSwitch(targetName);
         val toString    = prepareToStringMethod();
@@ -61,6 +68,7 @@ public class TargetTypeGeneral implements Lines {
             hashCode,    emptyLine,
             equals
         ).stream()
+         .filter (Objects::nonNull)
          .flatMap(List::stream)
          .collect(toList());
     }
@@ -79,6 +87,11 @@ public class TargetTypeGeneral implements Lines {
     }
     
     private List<String> prepareToStringMethod() {
+        if (hasMethod(format("String toString(%s)", targetClass.type.toString()), DEFAULT))
+            return targetClass.spec.methods.stream().map(m -> "// " + m.signature).collect(toList());
+        if (hasMethod(format("java.lang.String toString(%s)", targetClass.type.toString()), DEFAULT))
+            return targetClass.spec.methods.stream().map(m -> "// " + m.signature).collect(toList());
+        
         val choiceStrings = choices.stream()
             .map(choice -> {
                 val camelName  = toCamelCase(choice.name);
@@ -86,7 +99,7 @@ public class TargetTypeGeneral implements Lines {
                 if (paramCount == 0) {
                     return format("            .%1$s(\"%2$s\")", camelName, choice.name);
                 } else {
-                    val template       = range(0, paramCount).mapToObj(i -> "%" + (i + 1) + "$s") .collect(joining(","));
+                    val template       = templateRange(1, paramCount + 1, ",");
                     val templateParams = choice.params.stream().map(p -> camelName + "." + p.name).collect(joining(","));
                     return format("            .%1$s(%1$s -> \"%2$s(\" + String.format(\"%3$s\", %4$s) + \")\")", 
                                       camelName, choice.name, template, templateParams);
@@ -121,15 +134,44 @@ public class TargetTypeGeneral implements Lines {
     }
     
     private List<String> prepareHashCode() {
-        return asList(
-               ("@Override\n"
-              + "public int hashCode() {\n"
-              + "    return toString().hashCode();\n"
-              + "}"
-              ).split("\n"));
+        val mthdSignature = format("// int hashCode(%s) -- mthdSignature", targetClass.type.toString());
+        if (hasMethod(mthdSignature, DEFAULT))
+            return Stream.concat(
+                        Stream.of(
+                            format("// int hashCode(%s) -- mthdSignature", targetClass.type.toString()),
+                            format("// int hashCode(%s) -- generics",      targetClass.type.generics())
+                        ),
+                        targetClass.spec.methods.stream().map(m -> "// " + m.signature)
+                    ).collect(toList());
+        return Stream.concat(
+                Stream.concat(
+                    Stream.of(
+                        format("// int hashCode(%s) -- mthdSignature", targetClass.type.toString()),
+                        format("// int hashCode(%s) -- generics",      targetClass.type.generics())
+                    ),
+                    targetClass.spec.methods.stream().map(m -> "// " + m.signature)
+                ),
+                asList(
+                    ("@Override\n"
+                   + "public int hashCode() {\n"
+                   + "    return toString().hashCode();\n"
+                   + "}"
+                   ).split("\n")).stream()
+            ).collect(toList());
+//        return asList(
+//               ("@Override\n"
+//              + "public int hashCode() {\n"
+//              + "    return toString().hashCode();\n"
+//              + "}"
+//              ).split("\n"));
     }
     
-    private List<String> prepareEquals(final java.lang.String targetName) {
+    private List<String> prepareEquals(String targetName) {
+        if (hasMethod(format("boolean equals(%s, Object)", targetClass.type.toString()), DEFAULT))
+            return targetClass.spec.methods.stream().map(m -> "// " + m.signature).collect(toList());
+        if (hasMethod(format("boolean equals(%s, java.lang.Object)", targetClass.type.toString()), DEFAULT))
+            return targetClass.spec.methods.stream().map(m -> "// " + m.signature).collect(toList());
+        
         return asList(format(
                   "@Override\n"
                 + "public boolean equals(Object obj) {\n"
@@ -144,5 +186,12 @@ public class TargetTypeGeneral implements Lines {
                 + "    return thisToString.equals(objToString);\n"
                 + "}", targetName)
                 .split("\n"));
+    }
+    
+    private boolean hasMethod(String mthdSignature, Method.Kind kind) {
+        return targetClass.spec.methods
+                .stream()
+                .filter  (m -> (kind == null) ? true : kind.equals(m.kind))
+                .anyMatch(m -> mthdSignature.equals(m.signature));
     }
 }

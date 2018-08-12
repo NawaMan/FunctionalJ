@@ -15,6 +15,7 @@ import org.junit.Test;
 import functionalj.annotations.UnionType;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public class UnionLinkedListTest {
     
     @UnionType(name="LinkedList")

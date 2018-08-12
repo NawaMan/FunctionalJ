@@ -8,6 +8,10 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
+import functionalj.annotations.uniontype.generator.model.ChoiceParam;
+import functionalj.annotations.uniontype.generator.model.Generic;
+import functionalj.annotations.uniontype.generator.model.Type;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -18,13 +22,14 @@ public class GenericSupportTest {
         val generator = new Generator("Option",
                 new Type("functionalj.annotations.uniontype", "GenericSupportTest", "OptionSpec"),
                 asList(
+                   new Generic("T", "T extends Number", asList(new Type("java.lang", "Number"), new Type("java.io", "Serializable")))
+                ),
+                asList(
                     new Choice("None"),
                     new Choice("Some", asList(
                         new ChoiceParam("value", new Type("T"))
                     ))),
-                asList(
-                   new Generic("T", "T extends Number", asList(new Type("java.lang", "Number"), new Type("java.io", "Serializable")))
-                ));
+                asList());
         
         val lines  = generator.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(expected, lines);
@@ -54,6 +59,7 @@ public class GenericSupportTest {
             "    public static final <T extends Number> Option<T> Some(T value) {\n" + 
             "        return new Some<T>(value);\n" + 
             "    }\n" + 
+            "    \n" + 
             "    \n" + 
             "    private Option() {}\n" + 
             "    public Option<T> __data() throws Exception { return this; }\n" + 

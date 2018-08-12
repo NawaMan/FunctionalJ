@@ -12,6 +12,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.16'
     
     compile 'nawaman:nullablej:3.3.0.0'
+    compile 'nawaman-utils:nawaman-utils-reflection:0.1.5'
     
     //== Test ==
     

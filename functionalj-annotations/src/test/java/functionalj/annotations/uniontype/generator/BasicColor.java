@@ -17,7 +17,7 @@ public abstract class BasicColor extends AbstractUnionType<BasicColor.BasicColor
     public static final BasicColor White() { return White.instance; }
     public static final BasicColor Black() { return Black.instance; }
     public static final BasicColor RGB(int r, int g, int b) {
-        UnionTypeExampleTest.Union1TypeSpec.validateRGB(r, g, b);
+        UnionTypeExampleTest.Union1TypeSpec.__validateRGB(r, g, b);
         return new RGB(r, g, b);
     }
     

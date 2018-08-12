@@ -9,6 +9,13 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
+import functionalj.annotations.uniontype.generator.model.ChoiceParam;
+import functionalj.annotations.uniontype.generator.model.Method;
+import functionalj.annotations.uniontype.generator.model.SourceSpec;
+import functionalj.annotations.uniontype.generator.model.Type;
+import functionalj.annotations.uniontype.generator.model.Method.Kind;
+import functionalj.annotations.uniontype.generator.model.MethodParam;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -19,7 +26,7 @@ public class FullGeneratorTest {
 //      void Black();
 //      void RGB(int r, int g, int b);
 //      
-//      static void validateRGB(int r, int g, int b) {
+//      static void __validateRGB(int r, int g, int b) {
 //          if ((r < 0) || (r > 255)) throw new IllegalArgumentException("r: " + r);
 //          if ((g < 0) || (g > 255)) throw new IllegalArgumentException("g: " + g);
 //          if ((b < 0) || (b > 255)) throw new IllegalArgumentException("b: " + b);
@@ -27,16 +34,29 @@ public class FullGeneratorTest {
 //  }
   
   public static void main(String[] args) {
-      val generator = new Generator("BasicColor",
+      val generator = new Generator(
+              "BasicColor",
               new Type("functionalj.annotations.uniontype.generator", "UnionTypeExampleTest", "Union1TypeSpec"),
+              asList(),
               asList(
                   new Choice("White", emptyList()),
                   new Choice("Black", emptyList()),
-                  new Choice("RGB", "validateRGB", asList(
+                  new Choice("RGB", "__validateRGB", asList(
                       new ChoiceParam("r", new Type("int")),
                       new ChoiceParam("g", new Type("int")),
                       new ChoiceParam("b", new Type("int"))
-                  ))));
+                  ))),
+              asList(
+                  new Method(Kind.DEFAULT, "equals", Type.BOOLEAN, 
+                      asList(
+                          new MethodParam("c", new Type("functionalj.annotations.uniontype.generator", "BasicColor")),
+                          new MethodParam("obj", Type.OBJECT)
+                      )
+                  ),
+                  new Method(Kind.STATIC, "toRGBString", Type.BOOLEAN, 
+                      asList(new MethodParam("c", new Type("functionalj.annotations.uniontype.generator", "BasicColor"))
+                  )
+              )));
       generator.lines().forEach(System.out::println);
   }
   
@@ -48,7 +68,7 @@ public class FullGeneratorTest {
               asList(
                   new Choice("White", emptyList()),
                   new Choice("Black", emptyList()),
-                  new Choice("RGB", "validateRGB", asList(
+                  new Choice("RGB", "__validateRGB", asList(
                       new ChoiceParam("r", new Type("int")),
                       new ChoiceParam("g", new Type("int")),
                       new ChoiceParam("b", new Type("int"))
@@ -61,7 +81,7 @@ public class FullGeneratorTest {
               "import functionalj.annotations.Absent;\n" + 
               "import functionalj.annotations.uniontype.AbstractUnionType;\n" + 
               "import functionalj.annotations.uniontype.UnionTypeSwitch;\n" + 
-              "import functionalj.annotations.uniontype.generator.UnionTypeExampleTest;\n" + 
+              "import functionalj.annotations.uniontype.generator.UnionTypeExampleTest.Union1TypeSpec;\n" + 
               "import functionalj.pipeable.Pipeable;\n" + 
               "import functionalj.types.result.Result;\n" + 
               "import java.util.function.Consumer;\n" + 
@@ -81,9 +101,10 @@ public class FullGeneratorTest {
               "        return Black.instance;\n" + 
               "    }\n" + 
               "    public static final BasicColor RGB(int r, int g, int b) {\n" + 
-              "        UnionTypeExampleTest.Union1TypeSpec.validateRGB(r, g, b);\n" + 
+              "        Union1TypeSpec.__validateRGB(r, g, b);\n" + 
               "        return new RGB(r, g, b);\n" + 
               "    }\n" + 
+              "    \n" + 
               "    \n" + 
               "    private BasicColor() {}\n" + 
               "    public BasicColor __data() throws Exception { return this; }\n" + 

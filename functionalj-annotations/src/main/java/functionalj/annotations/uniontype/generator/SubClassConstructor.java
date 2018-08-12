@@ -5,6 +5,7 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
 import lombok.AllArgsConstructor;
 import lombok.val;
 
@@ -33,7 +34,7 @@ public class SubClassConstructor implements Lines {
         val paramCalls = choice.mapJoinParams(p ->                     p.name, ", ");
         return asList(
                 format      ("public static final %1$s%2$s %3$s(%4$s) {", (targetClass.genericDef().isEmpty() ? "" : targetClass.genericDef() + " "), targetClass.typeWithGenerics(), name, paramDefs),
-                isV ? format("    %1$s.%2$s(%3$s);",                       sourceEncloser + "." + sourceName, validateName, paramCalls) : null,
+                isV ? format("    %1$s.%2$s(%3$s);",                       sourceName, validateName, paramCalls) : null,
                 format      ("    return new %1$s%2$s(%3$s);",             name, targetClass.generics(), paramCalls),
                 format      ("}")
         );

@@ -32,4 +32,7 @@ public @interface UnionType {
     /** @return the name of the target class. */
     public String name() default "";
     
+    /** @return the flag indicating that source spec is accessible. */
+    public boolean sourceSpec() default false;
+    
 }

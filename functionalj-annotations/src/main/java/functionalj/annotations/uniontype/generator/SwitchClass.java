@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
 import lombok.val;
 import lombok.experimental.ExtensionMethod;
 

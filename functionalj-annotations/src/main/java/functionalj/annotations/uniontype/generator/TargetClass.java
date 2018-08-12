@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
 
+import functionalj.annotations.uniontype.generator.model.Method.Kind;
+import functionalj.annotations.uniontype.generator.model.SourceSpec;
+import functionalj.annotations.uniontype.generator.model.Type;
 import lombok.Value;
 import lombok.val;
 
@@ -23,6 +26,8 @@ public class TargetClass implements Lines {
         this.spec = spec;
         this.type = new Type(spec.sourceType.pckg, spec.targetName);
     }
+    
+    // TODO - type can do these.
     
     public String genericParams() {
         return (spec.generics.isEmpty() ? "" : (spec.generics.stream().map(g -> g.name).collect(joining(","))));
@@ -62,12 +67,21 @@ public class TargetClass implements Lines {
             imports.add("functionalj.annotations.Absent");
         }
         
+        List<String> specObj = null;
+        if (spec.methods.stream().anyMatch(m -> Kind.DEFAULT.equals(m.kind))) {
+            imports.add("nawaman.utils.reflection.UProxy");
+            imports.add(spec.sourceType.pckg + "." + spec.sourceType.encloseClass + "." + spec.sourceType.name);
+            specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);", 
+                    spec.sourceType.name + spec.sourceType.generics(),
+                    spec.sourceType.name));
+        }
+        
         spec.choices.stream()
             .map   (c -> c.validationMethod)
             .filter(m -> m != null)
             .findAny()
             .ifPresent(s -> {
-                imports.add(spec.sourceType.pckg + "." + spec.sourceType.encloseClass);
+                imports.add(spec.sourceType.pckg + "." + spec.sourceType.encloseClass + "." + spec.sourceType.name);
             });
         
         spec.choices.stream()
@@ -130,6 +144,8 @@ public class TargetClass implements Lines {
                 asList(format("    ")),
                 subClassConstructors,
                 asList(format("    ")),
+                specObj,
+                asList(format("    ")),
                 asList(format("    private %s() {}", type.name)),
                 asList(format("    public %1$s __data() throws Exception { return this; }",     typeName)),
                 asList(format("    public Result<%1$s> toResult() { return Result.of(this); }", typeName)),
@@ -144,6 +160,7 @@ public class TargetClass implements Lines {
                 asList(format("    ")),
                 asList(format("}"))
             ).stream()
+            .filter (Objects::nonNull)
             .flatMap(List::stream)
             .collect(toList());
     }

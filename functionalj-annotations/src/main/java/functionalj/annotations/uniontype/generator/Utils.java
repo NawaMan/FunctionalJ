@@ -1,12 +1,18 @@
 package functionalj.annotations.uniontype.generator;
 
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.IntStream.range;
 
 import java.util.List;
 
+import functionalj.annotations.uniontype.generator.model.Choice;
 import lombok.val;
 
 public class Utils {
+
+    public static String templateRange(int fromInclusive, int toExclusive, String delimiter) {
+        return range(fromInclusive, toExclusive).mapToObj(i -> "%" + i + "$s") .collect(joining(delimiter));
+    }
     
     public static String toTitleCase(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
