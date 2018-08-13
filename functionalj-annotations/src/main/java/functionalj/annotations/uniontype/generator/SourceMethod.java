@@ -31,29 +31,37 @@ public class SourceMethod implements Lines {
                         "<" + m.generics.stream()
                                .map(g -> g.withBound.replaceAll(" extends Object$", ""))
                                .collect(joining(", ")) + "> ";
+        val returnSelf   = m.returnType.toString().equals(targetClass.type.toString());
+        val genericCount = targetClass.type.generics.size();
+        val returnPrefix = returnSelf ? "Self" + (genericCount == 0 ? "" : genericCount) + ".getAsMe(" : "";
+        val returnSuffix = returnSelf ? ")"                            : "";
         if (DEFAULT.equals(m.kind)) {
             if (isThisMethod(m)) {
                 return asList(format(
+//                        "// m = " + m.toString() + "\n" + 
                         "public %1$s%2$s {\n"
-                      + "    return __spec.%3$s;\n"
-                      + "}",genericsDef, m.definitionForThis(), m.callForThis())
+                      + "    return %3$s__spec.%4$s%5$s;\n"
+                      + "}", genericsDef, m.definitionForThis(), returnPrefix, m.callForThis(targetClass.type), returnSuffix)
                       .split("\n"));
             } else {
                 return asList(format(
+//                        "// m = " + m.toString() + "\n" + 
                         "public %1$s%2$s {\n"
-                      + "    return __spec.%3$s;\n"
-                      + "}", genericsDef, m.definition(), m.call())
+                      + "    return %3$s__spec.%4$s%5$s;\n"
+                      + "}", genericsDef, m.definition(), returnPrefix, m.call(), returnSuffix)
                       .split("\n"));
             }
         } else {
             return asList(format(
                     "public static %1$s%2$s {\n"
-                  + "    return %3$s.%4$s;\n"
+                  + "    return %3$s%4$s.%5$s%6$s;\n"
                   + "}", 
                   genericsDef,
                   m.definition(),
+                  returnPrefix,
                   targetClass.spec.sourceType.name,
-                  m.call())
+                  m.call(),
+                  returnSuffix)
                   .split("\n"));
         }
     }
