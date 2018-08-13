@@ -43,18 +43,11 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
-import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.ErrorType;
-import javax.lang.model.type.ExecutableType;
-import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.NoType;
-import javax.lang.model.type.NullType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
-import javax.lang.model.type.TypeVisitor;
-import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
@@ -156,12 +149,13 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
     }
     
     private Method createMethodFromMethodElement(Element element, Type targetType, ExecutableElement mthd) {
-        val kind     = mthd.isDefault() ? Kind.DEFAULT : Kind.STATIC;
-        val name     = mthd.getSimpleName().toString();
-        val type     = typeOf(element, targetType, mthd.getReturnType());
-        val params   = extractParameters(element, targetType, mthd);
-        val generics = extractGenerics(element, targetType, mthd.getTypeParameters());
-        val method = new Method(kind, name, type, params, generics);
+        val kind       = mthd.isDefault() ? Kind.DEFAULT : Kind.STATIC;
+        val name       = mthd.getSimpleName().toString();
+        val type       = typeOf(element, targetType, mthd.getReturnType());
+        val params     = extractParameters(element, targetType, mthd);
+        val generics   = extractGenerics(element, targetType, mthd.getTypeParameters());
+        val exceptions = mthd.getThrownTypes().stream().map(t -> typeOf(element, targetType, t)).collect(toList());
+        val method = new Method(kind, name, type, params, generics, exceptions);
         return method;
     }
     

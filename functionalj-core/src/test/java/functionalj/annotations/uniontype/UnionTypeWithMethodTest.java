@@ -8,6 +8,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.junit.Test;
@@ -64,20 +65,20 @@ public class UnionTypeWithMethodTest {
                     });
             return Self1.of(resultMayBe);
         }
-//        default <R> Self1<R> map(Self1<T> self, Function<? super T, ? extends R> mapper) {
-//            MayBe<T> mayBe = self.asMe();
-//            return MayBe.of(
-//                    Switch(mayBe)
-//                    .none((R)null)
-//                    .just((Just<T> just) -> mapper.apply(just.value())));
-//        }
-//        default <R> Self1<R> flatMap(Self1<T> self, Function<? super T, ? extends Self1<R>> mapper) {
-////            MayBe<T> mayBe = self.asMe();
-////            return Switch(mayBe)
-////                    .none((MayBe<R>)MayBe.None())
-////                    .just(just -> mapper.apply(just.value()));
-//            return null;
-//        }
+        default <R> Self1<R> map(Self1<T> self, Function<? super T, ? extends R> mapper) {
+            MayBe<T> mayBe = self.asMe();
+            return MayBe.of(
+                    Switch(mayBe)
+                    .none((R)null)
+                    .just((Just<T> just) -> mapper.apply(just.value())));
+        }
+        @SuppressWarnings("unchecked")
+        default <R> Self1<R> flatMap(Self1<T> self, Function<? super T, ? extends Self1<R>> mapper) {
+            MayBe<T> mayBe = self.asMe();
+            return Switch(mayBe)
+                    .none((MayBe<R>)MayBe.None())
+                    .just(just -> mapper.apply(just.value()).asMe());
+        }
         default T get(Self1<T> self) {
             MayBe<T> mayBe = self.asMe();
             return Switch(mayBe)
@@ -95,6 +96,13 @@ public class UnionTypeWithMethodTest {
             return Switch(mayBe)
                     .none(elseSupplier)
                     .just(just -> just.value());
+        }
+        default <E extends Exception> T orElseThrow(Self1<T> self, Supplier<E> exceptionSupplier) throws E {
+            MayBe<T> mayBe = self.asMe();
+            if (mayBe.isNone())
+                throw exceptionSupplier.get();
+            
+            return mayBe.get();
         }
     }
     
@@ -120,16 +128,16 @@ public class UnionTypeWithMethodTest {
         assertFalse(MayBe.of(null).isPresent());
         assertTrue (MayBe.of("Hey!").isPresent());
     }
-//    @Test
-//    public void testMap() {
-//        assertEquals("None",   "" + MayBe.of(null)  .map(String::valueOf).map(String::length));
-//        assertEquals("Just:4", "" + MayBe.of("Hey!").map(String::valueOf).map(String::length));
-//    }
-//    @Test
-//    public void testFlatMap() {
-//        assertEquals("None",   "" + MayBe.of(null)  .map(String::valueOf).flatMap(s -> MayBe.of(s.length())));
-//        assertEquals("Just:4", "" + MayBe.of("Hey!").map(String::valueOf).flatMap(s -> MayBe.of(s.length())));
-//    }
+    @Test
+    public void testMap() {
+        assertEquals("None",   "" + MayBe.of(null)  .map(String::valueOf).map(String::length));
+        assertEquals("Just:4", "" + MayBe.of("Hey!").map(String::valueOf).map(String::length));
+    }
+    @Test
+    public void testFlatMap() {
+        assertEquals("None",   "" + MayBe.of(null)  .map(String::valueOf).flatMap(s -> MayBe.of(s.length())));
+        assertEquals("Just:4", "" + MayBe.of("Hey!").map(String::valueOf).flatMap(s -> MayBe.of(s.length())));
+    }
     @Test
     public void testGet() {
         assertEquals("null", "" + MayBe.of(null)  .get());

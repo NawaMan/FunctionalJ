@@ -10,11 +10,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.annotations.uniontype.generator.model.Choice;
 import functionalj.annotations.uniontype.generator.model.ChoiceParam;
+import functionalj.annotations.uniontype.generator.model.Generic;
 import functionalj.annotations.uniontype.generator.model.Method;
 import functionalj.annotations.uniontype.generator.model.Method.Kind;
 import functionalj.annotations.uniontype.generator.model.MethodParam;
@@ -215,6 +215,12 @@ public class GeneratorTest {
                                     new MethodParam("c",  new Type("p1.p2", null, "Color")),
                                     new MethodParam("c2", new Type("p1.p2", null, "Color")),
                                     new MethodParam("s",  Type.STRING)
+                                ),
+                                asList(
+                                    new Generic("T", "T extends Exception", asList(new Type("Exception")))
+                                ),
+                                asList(
+                                    new Type("T")
                                 )
                             ),
                             new Method(DEFAULT, "thisSelf", new Type("p1.p2", null, "Color"), 
@@ -234,7 +240,7 @@ public class GeneratorTest {
                 "public boolean equals(Object obj) {\n" + 
                 "    return __spec.equals(Self.of(this), obj);\n" + 
                 "}\n" + 
-                "public String thisName(p1.p2.Color c2, String s) {\n" + 
+                "public <T extends Exception> String thisName(p1.p2.Color c2, String s) throws T {\n" + 
                 "    return __spec.thisName(Self.of(this), Self.of(c2), s);\n" + 
                 "}\n" + 
                 "public p1.p2.Color thisSelf(p1.p2.Color c2, String s) {\n" + 

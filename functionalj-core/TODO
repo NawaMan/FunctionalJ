@@ -52,6 +52,7 @@ Need to organize this and prioritize!!!
 - Transvable of DataObject
 - A way to add annotation to DataObject generated class or fields -- so that something like JSON conversion can be done
      easily.
+- UnionType - replacing of Self in generic (see MayBe.flatMap())
 
 - Combine validation
 

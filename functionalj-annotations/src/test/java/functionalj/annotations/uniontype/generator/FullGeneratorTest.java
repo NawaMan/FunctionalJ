@@ -12,10 +12,10 @@ import org.junit.Test;
 import functionalj.annotations.uniontype.generator.model.Choice;
 import functionalj.annotations.uniontype.generator.model.ChoiceParam;
 import functionalj.annotations.uniontype.generator.model.Method;
-import functionalj.annotations.uniontype.generator.model.SourceSpec;
-import functionalj.annotations.uniontype.generator.model.Type;
 import functionalj.annotations.uniontype.generator.model.Method.Kind;
 import functionalj.annotations.uniontype.generator.model.MethodParam;
+import functionalj.annotations.uniontype.generator.model.SourceSpec;
+import functionalj.annotations.uniontype.generator.model.Type;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

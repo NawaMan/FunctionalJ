@@ -25,7 +25,6 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import functionalj.annotations.uniontype.generator.model.Choice;
 import functionalj.annotations.uniontype.generator.model.Method;
