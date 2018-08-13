@@ -83,18 +83,12 @@ public class SwitchClass implements Lines {
         lines.addAll(switchLines);
         return lines;
     }
-
+    
     private List<String> createCasesComplete(boolean isFirst, String thisName, String camelName, String targetName, 
             String retType, String retStmt, String mapTargetType) {
         val methodGeneric = isFirst ? "<" + mapTargetType + "> " : "";
         val lineBF = isFirst ? "    Function<" + targetName + targetClass.generics() + ", " + mapTargetType + "> action = null;" : null;
         return asList(
-            format("public %1$s%2$s %3$s(%4$s theValue) {", methodGeneric, retType, camelName, mapTargetType),
-            format("    return %1$s(d->theValue);" , camelName),
-            format("}"),
-            format("public %1$s%2$s %3$s(Supplier<%4$s> theSupplier) {", methodGeneric, retType, camelName, mapTargetType),
-            format("    return %1$s(d->theSupplier.get());"         , camelName),
-            format("}"),
             format("public %1$s%2$s %3$s(Function<? super %4$s, %5$s> theAction) {", methodGeneric, retType, camelName, thisName + targetClass.generics(), mapTargetType),
             lineBF,
             format("    Function<%1$s, %2$s> oldAction = (Function<%1$s, %2$s>)action;", targetName + targetClass.generics(), mapTargetType),
@@ -106,6 +100,12 @@ public class SwitchClass implements Lines {
             format("            : oldAction;"),
             format("    "),
             format("    " + retStmt),
+            format("}"),
+            format("public %1$s%2$s %3$s(Supplier<%4$s> theSupplier) {", methodGeneric, retType, camelName, mapTargetType),
+            format("    return %1$s(d->theSupplier.get());"         , camelName),
+            format("}"),
+            format("public %1$s%2$s %3$s(%4$s theValue) {", methodGeneric, retType, camelName, mapTargetType),
+            format("    return %1$s(d->theValue);" , camelName),
             format("}")
         ).stream()
          .filter(Objects::nonNull)
@@ -145,14 +145,14 @@ public class SwitchClass implements Lines {
             String paramCheckStr = paramCheck.stream().collect(joining(" && "));
             return asList(
                 format(""),
-                format("public %1$s%2$s<%5$s> %3$sOf(%4$s, %6$s theValue) {",  methodGeneric, switchClassName, camelName, paramDefStr, mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
-                format("    return %1$s(%1$s -> %2$s, theValue);",             camelName, paramCheckStr),
+                format("public %1$s%2$s<%6$s> %3$sOf(%4$s, Function<%5$s, %7$s> theAction) {", methodGeneric, switchClassName, camelName, paramDefStr, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
+                format("    return %1$s(%1$s -> %2$s, theAction);",                            camelName, paramCheckStr),
                 format("}"),
                 format("public %1$s%2$s<%5$s> %3$sOf(%4$s, Supplier<%6$s> theSupplier) {", methodGeneric, switchClassName, camelName, paramDefStr, mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
                 format("    return %1$s(%1$s -> %2$s, theSupplier);",                      camelName, paramCheckStr),
                 format("}"),
-                format("public %1$s%2$s<%6$s> %3$sOf(%4$s, Function<%5$s, %7$s> theAction) {", methodGeneric, switchClassName, camelName, paramDefStr, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
-                format("    return %1$s(%1$s -> %2$s, theAction);",                            camelName, paramCheckStr),
+                format("public %1$s%2$s<%5$s> %3$sOf(%4$s, %6$s theValue) {",  methodGeneric, switchClassName, camelName, paramDefStr, mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
+                format("    return %1$s(%1$s -> %2$s, theValue);",             camelName, paramCheckStr),
                 format("}")
             );
         });
@@ -173,12 +173,6 @@ public class SwitchClass implements Lines {
         return !thisChoice.isParameterized() ? new ArrayList<String>()
         : asList(
             format(""),
-            format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, %6$s theValue) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
-            format("    return %1$s(check, d->theValue);",                               camelName),
-            format("}"),
-            format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, Supplier<%6$s> theSupplier) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
-            format("    return %1$s(check, d->theSupplier.get());",                                   camelName),
-            format("}"),
             format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, Function<? super %4$s, %6$s> theAction) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
             lineBF,
             format("    Function<%1$s, %2$s> oldAction = (Function<%1$s, %2$s>)action;", targetName + targetClass.generics(), mapTargetType),
@@ -190,6 +184,12 @@ public class SwitchClass implements Lines {
             format("            : oldAction;"),
             format("    "),
             format("    return new %1$s<%2$s>(value, newAction);", switchClassName, mapTargetType + (targetClass.genericParams().isEmpty() ? "" : ", " + targetClass.genericParams())),
+            format("}"),
+            format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, Supplier<%6$s> theSupplier) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
+            format("    return %1$s(check, d->theSupplier.get());",                                   camelName),
+            format("}"),
+            format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, %6$s theValue) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
+            format("    return %1$s(check, d->theValue);",                               camelName),
             format("}")
         ).stream()
          .filter(Objects::nonNull)

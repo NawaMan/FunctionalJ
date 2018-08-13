@@ -19,7 +19,7 @@
 + Tuples to function params
 
 + Failable
-- Pipe
++ Pipe
 + FunctionalList
 + FMap
 - Promise
@@ -50,15 +50,24 @@ Need to organize this and prioritize!!!
 - Reflection 
 - 
 - Transvable of DataObject
+- A way to add annotation to DataObject generated class or fields -- so that something like JSON conversion can be done
+     easily.
 
 - Combine validation
 
 - map -> then
 - flatMap -> chain
 
+Need code clean up!!!!! The code is so shitty :-(
+
+-- UnionType
+  -- Access to spec
+  -- xxxOf to access to each parameter directly. -- justOf(value -> value ...)
+
 
 
 
 
 -- Not an Expert ... just my journey.
--- Church encoding - Make illegal states unrepresentable
+-- Church encoding
+-- Make illegal states unrepresentable -- Yaron Minsky - https://blog.janestreet.com/effective-ml-revisited/

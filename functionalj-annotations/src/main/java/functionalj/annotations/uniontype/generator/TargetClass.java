@@ -67,6 +67,7 @@ public class TargetClass implements Lines {
             imports.add("functionalj.annotations.Absent");
         }
         
+        String selfDef = "";
         List<String> specObj = null;
         if (spec.methods.stream().anyMatch(m -> Kind.DEFAULT.equals(m.kind))) {
             imports.add("nawaman.utils.reflection.UProxy");
@@ -74,6 +75,14 @@ public class TargetClass implements Lines {
             specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);", 
                     spec.sourceType.name + spec.sourceType.generics(),
                     spec.sourceType.name));
+            
+            if (spec.sourceType.generics.isEmpty())
+                 selfDef = ", Self";
+            else selfDef = ", Self" + spec.sourceType.generics.size() + spec.sourceType.generics();
+            
+            if (spec.sourceType.generics.isEmpty())
+                 imports.add("functionalj.annotations.uniontype.Self");
+            else imports.add("functionalj.annotations.uniontype.Self" + spec.sourceType.generics.size());
         }
         
         spec.choices.stream()
@@ -145,7 +154,7 @@ public class TargetClass implements Lines {
                 importLines,
                 asList(format("")),
                 asList(format("@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})")),
-                asList(format("public abstract class %1$s extends AbstractUnionType<%2$s.%2$sFirstSwitch%3$s> implements Pipeable<%4$s> {", typeWithGenericDef(), type.name, generics(), typeWithGenerics())),
+                asList(format("public abstract class %1$s extends AbstractUnionType<%2$s.%2$sFirstSwitch%3$s> implements Pipeable<%4$s>%5$s {", typeWithGenericDef(), type.name, generics(), typeWithGenerics(), selfDef)),
                 asList(format("    ")),
                 subClassConstructors,
                 asList(format("    ")),

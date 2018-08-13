@@ -7,7 +7,6 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import functionalj.annotations.uniontype.generator.model.Method;
 import lombok.Value;
@@ -28,18 +27,22 @@ public class SourceMethod implements Lines {
     }
     
     private List<String> methodToCode(Method m) {
+        val genericsDef = m.generics.isEmpty() ? "" : 
+                        "<" + m.generics.stream()
+                               .map(g -> g.withBound.replaceAll(" extends Object$", ""))
+                               .collect(joining(", ")) + "> ";
         if (DEFAULT.equals(m.kind)) {
             if (isThisMethod(m)) {
                 return asList(format(
-                        "public %1$s {\n"
-                      + "    return __spec.%2$s;\n"
-                      + "}", m.definitionForThis(), m.callForThis())
+                        "public %1$s%2$s {\n"
+                      + "    return __spec.%3$s;\n"
+                      + "}",genericsDef, m.definitionForThis(), m.callForThis())
                       .split("\n"));
             } else {
                 return asList(format(
-                        "public %1$s {\n"
-                      + "    return __spec.%2$s;\n"
-                      + "}", m.definition(), m.call())
+                        "public %1$s%2$s {\n"
+                      + "    return __spec.%3$s;\n"
+                      + "}", genericsDef, m.definition(), m.call())
                       .split("\n"));
             }
         } else {
@@ -47,7 +50,7 @@ public class SourceMethod implements Lines {
                     "public static %1$s%2$s {\n"
                   + "    return %3$s.%4$s;\n"
                   + "}", 
-                  (m.generics.isEmpty() ? "" : "<" + m.generics.stream().map(g -> g.withBound.replaceAll(" extends Object$", "")).collect(joining(", ")) + "> "),
+                  genericsDef,
                   m.definition(),
                   targetClass.spec.sourceType.name,
                   m.call())
@@ -56,7 +59,7 @@ public class SourceMethod implements Lines {
     }
     
     private boolean isThisMethod(Method m) {
-        return !m.params.isEmpty() && m.params.get(0).type.equals(targetClass.type);
+        return !m.params.isEmpty() && m.params.get(0).type.toString().equals(targetClass.type.toString());
     }
     
 }

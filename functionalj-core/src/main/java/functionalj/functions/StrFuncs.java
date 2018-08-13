@@ -25,6 +25,7 @@ public class StrFuncs {
     /**
      * Returns a function that return the string representation of the given object or null if the object is null.
      * 
+     * @param <I>  the input data type.
      * @return the function.
      */
     public static <I> Func1<I, String> toStr() {
@@ -95,6 +96,7 @@ public class StrFuncs {
     /**
      * Returns a function that add prefix and suffix to the given input.
      * 
+     * @param <I>  the input data type.
      * @param prefix  the prefix.
      * @param suffix  the suffix.
      * @return  the function.
@@ -107,6 +109,7 @@ public class StrFuncs {
     /**
      * Returns a function that add prefix to the given input.
      * 
+     * @param <I>  the input data type.
      * @param prefix  the prefix.
      * @return  the function.
      */
@@ -118,6 +121,7 @@ public class StrFuncs {
     /**
      * Returns a function that add suffix to the given input.
      * 
+     * @param <I>  the input data type.
      * @param suffix  the suffix.
      * @return  the function.
      */

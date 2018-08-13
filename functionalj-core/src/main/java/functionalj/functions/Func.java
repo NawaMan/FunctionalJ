@@ -64,6 +64,8 @@ public interface Func {
     /**
      * A shorter way to do flatmap on list directly.
      * 
+     * @param <IN>   the input data type.
+     * @param <OUT>  the output data type.
      * @return the function that take list and change to stream.
      */
     public static <IN extends List<? extends OUT>, OUT> Func1<? super IN, Stream<? extends OUT>> allLists() {
@@ -73,6 +75,8 @@ public interface Func {
     /**
      * A shorter way to do flatmap on list directly from the result of the given mapper function.
      * 
+     * @param <IN>    the input data type.
+     * @param <OUT>   the output data type.
      * @param mapper  the mapper function.
      * @return the function that will apply the given mapper functio to the input and change the result list to stream.
      */

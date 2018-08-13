@@ -1,5 +1,6 @@
 package functionalj.annotations.uniontype.generator.model;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 
 import java.util.ArrayList;
@@ -56,12 +57,16 @@ public class Method {
     public String call() {
         return toString(param -> param.name);
     }
-    public String callForThis() {
-        val isFirst = new AtomicBoolean(true);
+    public String callForThis(Type type) {
+        val isFirst      = new AtomicBoolean(true);
+        val genericCount = type.generics.size();
+        val firstStr     = "this";
         return toString(param ->  {
             val isFirstCall = isFirst.get();
             isFirst.set(false);
-            return isFirstCall ? "this" : param.name;
+            val prefix = param.type.toString().equals(type.toString()) ? format("Self%1$s.of(", (genericCount != 0) ? "" + genericCount : "") : "";
+            val suffix = param.type.toString().equals(type.toString()) ? ")" : "";
+            return prefix + (isFirstCall ? firstStr : param.name) + suffix;
         });
     }
     
