@@ -24,6 +24,7 @@ import functionalj.functions.Func6;
 import functionalj.pipeable.Pipeable;
 import functionalj.types.map.FuncMap;
 import functionalj.types.map.ImmutableMap;
+import functionalj.types.stream.StreamPlus;
 import functionalj.types.stream.Streamable;
 import functionalj.types.tuple.IntTuple2;
 import functionalj.types.tuple.Tuple2;
@@ -329,6 +330,30 @@ public interface FuncList<DATA>
     public default FuncList<DATA> skip(long n) {
         return deriveWith(stream -> {
             return stream.skip(n);
+        });
+    }
+    
+    public default FuncList<DATA> skipWhile(Predicate<? super DATA> condition) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream).skipWhile(condition);
+        });
+    }
+    
+    public default FuncList<DATA> skipUntil(Predicate<? super DATA> condition) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream).skipUntil(condition);
+        });
+    }
+    
+    public default FuncList<DATA> takeWhile(Predicate<? super DATA> condition) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream).takeWhile(condition);
+        });
+    }
+    
+    public default FuncList<DATA> takeUntil(Predicate<? super DATA> condition) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream).takeUntil(condition);
         });
     }
     

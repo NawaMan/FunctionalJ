@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -31,6 +32,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import functionalj.functions.Func3;
 import functionalj.functions.Func4;
@@ -480,6 +482,81 @@ public interface StreamPlus<DATA>
     public default StreamPlus<DATA> skip(long n) {
         return deriveWith(stream -> {
             return stream.skip(n);
+        });
+    }
+    
+    public default StreamPlus<DATA> skipWhile(Predicate<? super DATA> condition) {
+        val isStillTrue = new AtomicBoolean(true);
+        return deriveWith(stream -> {
+            return stream.filter(e -> {
+                if (!isStillTrue.get())
+                    return true;
+                if (!condition.test(e))
+                    isStillTrue.set(false);
+                return !isStillTrue.get();
+            });
+        });
+    }
+    
+    public default StreamPlus<DATA> skipUntil(Predicate<? super DATA> condition) {
+        val isStillTrue = new AtomicBoolean(true);
+        return deriveWith(stream -> {
+            return stream.filter(e -> {
+                if (!isStillTrue.get())
+                    return true;
+                if (condition.test(e))
+                    isStillTrue.set(false);
+                return !isStillTrue.get();
+            });
+        });
+    }
+    
+    public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
+        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
+        return deriveWith(stream -> {
+            val splitr = stream.spliterator();
+            return StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                
+                @Override
+                public boolean tryAdvance(final Consumer<? super DATA> consumer) {
+                    if (stillGoing) {
+                        final boolean hadNext = splitr.tryAdvance(elem -> {
+                            if (condition.test(elem)) {
+                                consumer.accept(elem);
+                            } else {
+                                stillGoing = false;
+                            }
+                        });
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+        });
+    }
+    
+    public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
+        return deriveWith(stream -> {
+            val splitr = stream.spliterator();
+            return StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                
+                @Override
+                public boolean tryAdvance(final Consumer<? super DATA> consumer) {
+                    if (stillGoing) {
+                        final boolean hadNext = splitr.tryAdvance(elem -> {
+                            if (!condition.test(elem)) {
+                                consumer.accept(elem);
+                            } else {
+                                stillGoing = false;
+                            }
+                        });
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
         });
     }
     

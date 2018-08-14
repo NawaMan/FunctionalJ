@@ -5,15 +5,61 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
+import functionalj.types.list.FuncList;
 import functionalj.types.list.ImmutableList;
 import lombok.val;
 
 public class FuncListTest {
+    
+    private void assertStrings(String str, Object obj) {
+        assertEquals(str, "" + obj);
+    }
+    
+    @Test
+    public void testSkipWhile() {
+        assertStrings("[3, 4, 5, 4, 3, 2, 1]",       FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i < 3));
+        assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i > 3));
+    }
+    
+    @Test
+    public void testSkipUntil() {
+        assertStrings("[4, 5, 4, 3, 2, 1]",          FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipUntil(i -> i > 3));
+        assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipUntil(i -> i < 3));
+    }
+    
+    @Test
+    public void testTakeWhile() {
+        val list = new ArrayList<Integer>();
+        assertStrings("[1, 2, 3]", FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeWhile(i -> i < 4).peek(list::add));
+        assertStrings("[1, 2, 3]", list);
+        
+        list.clear();
+        assertStrings("[]", FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeWhile(i -> i > 4).peek(list::add));
+        assertStrings("[]", list);
+    }
+    
+    @Test
+    public void testTakeUtil() {
+        val list = new ArrayList<Integer>();
+        assertStrings("[1, 2, 3, 4]", FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeUntil(i -> i > 4).peek(list::add));
+        assertStrings("[1, 2, 3, 4]", list);
+        
+        list.clear();
+        assertStrings("[]", FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeUntil(i -> i < 4).peek(list::add));
+        assertStrings("[]", list);
+    }
+    @Test
+    public void testSkipTake() {
+        val list = new ArrayList<Integer>();
+        assertStrings("[3, 4, 5, 4, 3]", FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i < 3).takeUntil(i -> i < 3).peek(list::add));
+        assertStrings("[3, 4, 5, 4, 3]", list);
+    }
     
     @Test
     public void testIndexes() {

@@ -153,6 +153,30 @@ public interface Streamable<DATA>
         });
     }
     
+    public default StreamPlus<DATA> skipWhile(Predicate<? super DATA> condition) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream).skipWhile(condition);
+        });
+    }
+    
+    public default StreamPlus<DATA> skipUntil(Predicate<? super DATA> condition) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream).skipUntil(condition);
+        });
+    }
+    
+    public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream).takeWhile(condition);
+        });
+    }
+    
+    public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream).takeUntil(condition);
+        });
+    }
+    
     @Override
     public default Streamable<DATA> distinct() {
         return deriveWith(stream -> {

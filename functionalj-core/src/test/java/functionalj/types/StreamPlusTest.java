@@ -27,6 +27,7 @@ import functionalj.types.list.ImmutableList;
 import functionalj.types.stream.StreamPlus;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public class StreamPlusTest {
     
     private void assertStrings(String str, Object obj) {
@@ -194,7 +195,7 @@ public class StreamPlusTest {
     @Test
     public void testSortedComparatorNull() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, Three, Two]", stream.sorted((Comparator)null).toList());
+        assertStrings("[One, Three, Two]", stream.sorted((Comparator<String>)null).toList());
     }
     
     @Test
@@ -345,6 +346,46 @@ public class StreamPlusTest {
     public void testSkipLimitLongMinus() {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings("[One, Two, Three]", stream.skip(Long.valueOf(-1)).limit(Long.valueOf(-1)).toList());
+    }
+    
+    @Test
+    public void testSkipWhile() {
+        assertStrings("[3, 4, 5, 4, 3, 2, 1]",       StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i < 3).toList());
+        assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i > 3).toList());
+    }
+    
+    @Test
+    public void testSkipUntil() {
+        assertStrings("[4, 5, 4, 3, 2, 1]",          StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipUntil(i -> i > 3).toList());
+        assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipUntil(i -> i < 3).toList());
+    }
+    
+    @Test
+    public void testTakeWhile() {
+        val list = new ArrayList<Integer>();
+        assertStrings("[1, 2, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeWhile(i -> i < 4).peek(list::add).toList());
+        assertStrings("[1, 2, 3]", list);
+        
+        list.clear();
+        assertStrings("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeWhile(i -> i > 4).peek(list::add).toList());
+        assertStrings("[]", list);
+    }
+    
+    @Test
+    public void testTakeUtil() {
+        val list = new ArrayList<Integer>();
+        assertStrings("[1, 2, 3, 4]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeUntil(i -> i > 4).peek(list::add).toList());
+        assertStrings("[1, 2, 3, 4]", list);
+        
+        list.clear();
+        assertStrings("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeUntil(i -> i < 4).peek(list::add).toList());
+        assertStrings("[]", list);
+    }
+    @Test
+    public void testSkipTake() {
+        val list = new ArrayList<Integer>();
+        assertStrings("[3, 4, 5, 4, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i < 3).takeUntil(i -> i < 3).peek(list::add).toList());
+        assertStrings("[3, 4, 5, 4, 3]", list);
     }
     
     @Test
