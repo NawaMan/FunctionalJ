@@ -127,13 +127,13 @@ public class ResultTest {
                 Result.ofResult(Result.of("One")));
         
         assertStrings("Result:{ Value: One,Two }",
-                Result.ofResult(
+                Result.ofResults(
                         Result.of("One"),
                         Result.of("Two"),
                         (a, b)-> a + "," + b));
         
         assertStrings("Result:{ Value: One,Two,Three }",
-                Result.ofResult(
+                Result.ofResults(
                         Result.of("One"),
                         Result.of("Two"),
                         Result.of("Three"),
@@ -143,7 +143,7 @@ public class ResultTest {
     @Test
     public void testResultResult_withException() {
         assertStrings("Result:{ Exception: functionalj.functions.FunctionInvocationException: java.lang.Exception: Test fail }",
-                Result.ofResult(
+                Result.ofResults(
                         Result.of("One"),
                         Result.ofException("Test fail"),
                         Result.of("Three"),

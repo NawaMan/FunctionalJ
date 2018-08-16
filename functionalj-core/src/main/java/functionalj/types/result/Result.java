@@ -46,6 +46,10 @@ public class Result<DATA>
                         ResultPeekAddOn<DATA>,
                         Pipeable<Result<DATA>> {
     
+    public static enum Status {
+        UNAVAILABLE, CANCELLED, COMPLETED;
+    }
+    
     private static final Result NULL         = new Result<>(null, null);
     private static final Result NOTAVAILABLE = new Result<>(null, new ResultNotAvailableException());
     private static final Result NOTREADY     = new Result<>(null, new ResultNotReadyException());
@@ -141,7 +145,7 @@ public class Result<DATA>
         return Result.of(value);
     }
     
-    public static <D, T1, T2> Result<D> ofResult(
+    public static <D, T1, T2> Result<D> ofResults(
             Result<T1> result1,
             Result<T2> result2,
             BiFunction<T1, T2, D> merger) {
@@ -153,7 +157,7 @@ public class Result<DATA>
         }));
     }
     
-    public static <D, T1, T2, T3> Result<D> ofResult(
+    public static <D, T1, T2, T3> Result<D> ofResults(
             Result<T1> result1,
             Result<T2> result2,
             Result<T3> result3,
@@ -167,7 +171,7 @@ public class Result<DATA>
         }));
     }
     
-    public static <D, T1, T2, T3, T4> Result<D> ofResult(
+    public static <D, T1, T2, T3, T4> Result<D> ofResults(
             Result<T1> result1,
             Result<T2> result2,
             Result<T3> result3,
@@ -183,7 +187,7 @@ public class Result<DATA>
         }));
     }
     
-    public static <D, T1, T2, T3, T4, T5> Result<D> ofResult(
+    public static <D, T1, T2, T3, T4, T5> Result<D> ofResults(
             Result<T1> result1,
             Result<T2> result2,
             Result<T3> result3,
@@ -201,7 +205,7 @@ public class Result<DATA>
         }));
     }
     
-    public static <D, T1, T2, T3, T4, T5, T6> Result<D> ofResult(
+    public static <D, T1, T2, T3, T4, T5, T6> Result<D> ofResults(
             Result<T1> result1,
             Result<T2> result2,
             Result<T3> result3,
@@ -221,7 +225,7 @@ public class Result<DATA>
         }));
     }
     
-    public static <D> Result<D> from(Supplier<D> supplier) {
+    public static <D> Result<D> from(Supplier<? extends D> supplier) {
         try {
             return Result.of(supplier.get());
         } catch (RuntimeException e) {
@@ -264,7 +268,7 @@ public class Result<DATA>
             Func0<T1> supplier1,
             Func0<T2> supplier2,
             Func2<T1, T2, D> merger) {
-        return Result.ofResult(
+        return Result.ofResults(
                     Try(supplier1),
                     Try(supplier2),
                     merger
@@ -276,7 +280,7 @@ public class Result<DATA>
             Func0<T2> supplier2,
             Func0<T3> supplier3,
             Func3<T1, T2, T3, D> merger) {
-        return Result.ofResult(
+        return Result.ofResults(
                     Try(supplier1),
                     Try(supplier2),
                     Try(supplier3),
@@ -290,7 +294,7 @@ public class Result<DATA>
             Func0<T3> supplier3,
             Func0<T4> supplier4,
             Func4<T1, T2, T3, T4, D> merger) {
-        return Result.ofResult(
+        return Result.ofResults(
                     Try(supplier1),
                     Try(supplier2),
                     Try(supplier3),
@@ -306,7 +310,7 @@ public class Result<DATA>
             Func0<T4> supplier4,
             Func0<T5> supplier5,
             Func5<T1, T2, T3, T4, T5, D> merger) {
-        return Result.ofResult(
+        return Result.ofResults(
                     Try(supplier1),
                     Try(supplier2),
                     Try(supplier3),
@@ -324,7 +328,7 @@ public class Result<DATA>
             Func0<T5> supplier5,
             Func0<T6> supplier6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        return Result.ofResult(
+        return Result.ofResults(
                     Try(supplier1),
                     Try(supplier2),
                     Try(supplier3),
@@ -377,7 +381,6 @@ public class Result<DATA>
         return Result.ofException(new ValidationException(message, exception));
     }
     
-    
     private final Object data;
     
     Result(DATA value, Exception exception) {
@@ -393,6 +396,15 @@ public class Result<DATA>
     
     protected Object getData() {
         return data;
+    }
+    
+    public Status getStatus() {
+        if (isNotAvailable())
+            return Status.UNAVAILABLE;
+        if (isCancelled())
+            return Status.CANCELLED;
+        
+        return Status.COMPLETED;
     }
     
     @SuppressWarnings("unchecked")
@@ -631,6 +643,14 @@ public class Result<DATA>
                 });
     }
     
+    public final boolean isNotValue() {
+        return !this.isValue();
+    }
+    
+    public final boolean isNotPresent() {
+        return !this.isPresent();
+    }
+    
     @Override
     public final Result<DATA> ifPresent(Consumer<? super DATA> theConsumer) {
         return (Result<DATA>)Nullable.super.ifPresent(theConsumer);
@@ -649,6 +669,20 @@ public class Result<DATA>
     @Override
     public final Result<DATA> ifPresentRun(Runnable theAction, Runnable elseRunnable) {
         return (Result<DATA>)Nullable.super.ifPresentRun(theAction, elseRunnable);
+    }
+    
+    public Result<DATA> whenNotPresent(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isNotPresent())
+            return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    
+    public Result<DATA> whenNotValue(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isNotValue())
+            return Result.from(fallbackSupplier);
+        
+        return this;
     }
     
     public final Result<DATA> ifNotNull(Consumer<? super DATA> theConsumer) {
@@ -720,6 +754,13 @@ public class Result<DATA>
                 });
     }
     
+    public Result<DATA> whenNull(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isNull())
+            return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    
     public final boolean isException() {
         val exception = getException();
         return exception != null;
@@ -734,6 +775,13 @@ public class Result<DATA>
                     
                     return this;
                 });
+    }
+    
+    public Result<DATA> whenException(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isException())
+            return Result.from(fallbackSupplier);
+        
+        return this;
     }
     
     public final boolean isAvailable() {
@@ -771,6 +819,13 @@ public class Result<DATA>
                 });
     }
     
+    public Result<DATA> whenNotAvailable(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isNotAvailable())
+            return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    
     public final boolean isNotReady() {
         return processData(
                 e -> true,
@@ -790,6 +845,28 @@ public class Result<DATA>
                 });
     }
     
+    public final boolean isReady() {
+        return !isNotReady();
+    }
+    
+    public final Result<DATA> ifReady(Runnable action) {
+        return processData(
+                e -> this,
+                (isValue, value, exception)->{
+                    if (!(exception instanceof ResultNotReadyException))
+                        action.run();
+                    
+                    return this;
+                });
+    }
+    
+    public Result<DATA> whenNotReady(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isNotReady())
+            return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    
     public final boolean isCancelled() {
         return processData(
                 e -> true,
@@ -807,6 +884,13 @@ public class Result<DATA>
                     
                     return this;
                 });
+    }
+    
+    public Result<DATA> whenCancelled(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isCancelled())
+            return Result.from(fallbackSupplier);
+        
+        return this;
     }
     
     public final boolean isValid() {
@@ -865,6 +949,13 @@ public class Result<DATA>
                     
                     return this;
                 });
+    }
+    
+    public Result<DATA> whenInvalid(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isInvalid())
+            return Result.from(fallbackSupplier);
+        
+        return this;
     }
     
     public final Result<DATA> validateNotNull() {

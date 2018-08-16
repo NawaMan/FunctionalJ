@@ -57,8 +57,6 @@ import lombok.val;
 public interface StreamPlus<DATA> 
         extends Iterable<DATA>, Stream<DATA> {
     
-    // TODO takeUntil
-    // TODO takeWhile
     // TODO segment
     // TODO - toMapBuilder
     // TODO - zipWith
