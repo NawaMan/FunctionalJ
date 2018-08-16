@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -15,34 +16,44 @@ import lombok.val;
 // Need an ability to aborted if no one listening
 
 @SuppressWarnings("javadoc")
-public class Promise<DATA> {
+public class Promise<DATA> implements HasPromise<DATA> {
     
     public static <D> Promise<D> ofValue(D value) {
-        val promise = new Promise<D>();
-        val control = new PromiseControl<D>(promise);
-        control.start().complete(value);
-        return promise;
+        return DeferAction.of((Class<D>)null)
+                .start()
+                .complete(value)
+                .getPromise();
     }
     
     public static <D> Promise<D> ofException(Exception exception) {
-        val promise = new Promise<D>();
-        val control = new PromiseControl<D>(promise);
-        control.start().fail(exception);
-        return promise;
+        return DeferAction.of((Class<D>)null)
+                .start()
+                .fail(exception)
+                .getPromise();
     }
     
     public static <D> Promise<D> ofAborted() {
-        val promise = new Promise<D>();
-        val control = new PromiseControl<D>(promise);
-        control.start().abort();
-        return promise;
+        return DeferAction.of((Class<D>)null)
+                .start()
+                .abort()
+                .getPromise();
     }
     
-    public static <D> PromiseControl<D> of(Class<D> clzz) {
-        val promise = new Promise<D>();
-        val control = new PromiseControl<D>(promise);
-        return control;
+    public static <D, T1, T2> Promise<D> of(
+            Wait                                       wait,
+            Function<Object, ? extends HasPromise<T1>> promise1,
+            Function<Object, ? extends HasPromise<T2>> promise2,
+            BiFunction<T1, T2, D> merger) {
+        return Promises.of(wait, promise1, promise2, merger);
     }
+    
+    public static <D, T1, T2> Promise<D> of(
+            Function<Object, ? extends HasPromise<T1>> promise1,
+            Function<Object, ? extends HasPromise<T2>> promise2,
+            BiFunction<T1, T2, D> merger) {
+        return Promises.of(Wait.forever(), promise1, promise2, merger);
+    }
+    
     
     // DATA
     //    NOT_START -> NOT START
@@ -54,6 +65,11 @@ public class Promise<DATA> {
     private final AtomicReference<Object> dataRef = new AtomicReference<>(PromiseStatus.NOT_STARTED);
     
     public Promise() {}
+    
+    @Override
+    public Promise<DATA> getPromise() {
+        return this;
+    }
     
     public final PromiseStatus getStatus() {
         val data = dataRef.get();
@@ -73,7 +89,7 @@ public class Promise<DATA> {
         dataRef.set(Result.ofException(new IllegalStateException("Promise is in an unknown state!: " + data)));
         try {
             handleIllegalStatusException(data);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             // Do nothing
         }
         return PromiseStatus.COMPLETED;
@@ -81,28 +97,38 @@ public class Promise<DATA> {
     
     //== Internal working ==
     
-    void start() {
-        dataRef.compareAndSet(PromiseStatus.NOT_STARTED, consumers);
+    boolean start() {
+        return dataRef.compareAndSet(PromiseStatus.NOT_STARTED, consumers);
     }
     
-    void abort() {
-        makeDone(Result.ofCancelled());
+    boolean abort() {
+        return makeDone(Result.ofCancelled());
     }
     
-    void makeComplete(DATA data) {
+    boolean abort(String message) {
+        return makeDone(Result.ofCancelled(message));
+    }
+    boolean abort(Throwable cause) {
+        return makeDone(Result.ofCancelled(null, cause));
+    }
+    boolean abort(String message, Throwable cause) {
+        return makeDone(Result.ofCancelled(message, cause));
+    }
+    
+    boolean makeComplete(DATA data) { 
         val result = Result.of(data);
-        makeDone(result);
+        return makeDone(result);
     }
     
-    void makeFail(Exception exception) {
+    boolean makeFail(Exception exception) {
         @SuppressWarnings("unchecked")
         val result = (Result<DATA>)Result.ofException(exception);
-        makeDone(result);
+        return makeDone(result);
     }
     
-    private void makeDone(Result<DATA> result) {
+    private boolean makeDone(Result<DATA> result) {
         if (!dataRef.compareAndSet(consumers, result))
-            return;
+            return false;
         
         val subscribers = new HashMap<>(consumers);
         consumers.clear();
@@ -111,14 +137,15 @@ public class Promise<DATA> {
         .forEach((subscription, consumer) -> {
             try {
                 consumer.accept(result);
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 try {
                     handleResultConsumptionExcepion(subscription, consumer, result);
-                } catch (Throwable anotherException) {
+                } catch (Exception anotherException) {
                     // Do nothing this time.
                 }
             }
         });
+        return true;
     }
     
     //== Customizable ==
@@ -134,48 +161,6 @@ public class Promise<DATA> {
     
     protected <T> Promise<T> newPromise() {
         return new Promise<T>();
-    }
-    
-    @SuppressWarnings("unchecked")
-    public Promise<DATA> filter(Predicate<? super DATA> predicate) {
-        val targetPromise = (Promise<DATA>)newPromise();
-        targetPromise.start();
-        
-        subscribe(r -> {
-            val result = r.filter(predicate);
-            targetPromise.makeDone((Result<DATA>) result);
-        });
-        
-        return targetPromise;
-    }
-    
-    @SuppressWarnings("unchecked")
-    public <TARGET> Promise<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
-        val targetPromise = (Promise<TARGET>)newPromise();
-        targetPromise.start();
-        
-        subscribe(r -> {
-            val result = r.map(mapper);
-            targetPromise.makeDone((Result<TARGET>) result);
-        });
-        
-        return targetPromise;
-    }
-    
-    @SuppressWarnings("unchecked")
-    public <TARGET> Promise<TARGET> flatMap(Function<? super DATA, Promise<? extends TARGET>> mapper) {
-        val targetPromise = (Promise<TARGET>)newPromise();
-        targetPromise.start();
-        subscribe(r -> {
-            val targetResult = r.map(mapper);
-            targetResult.ifPresent(promise -> {
-                promise.subscribe(result -> {
-                    targetPromise.makeDone((Result<TARGET>) result);
-                });
-            });
-        });
-        
-        return targetPromise;
     }
     
     //== Basic functionality ==
@@ -222,6 +207,22 @@ public class Promise<DATA> {
         return Result.ofNotReady();
     }
     
+    public final SubscriptionHolder<DATA> subscribe() {
+        return new SubscriptionHolder<>(Wait.forever(), this);
+    }
+    
+    public final SubscriptionHolder<DATA> subscribe(WaitForever waitForever) {
+        return new SubscriptionHolder<>(waitForever, this);
+    }
+    
+    public final SubscriptionHolder<DATA> subscribe(WaitAwhile waitAwhile) {
+        return new SubscriptionHolder<>(waitAwhile, this);
+    }
+    
+    public final SubscriptionHolder<DATA> subscribe(WaitOrDefault<? extends DATA> waitOrDefault) {
+        return new SubscriptionHolder<>(waitOrDefault, this);
+    }
+    
     public final Subscription<DATA> subscribe(Consumer<Result<DATA>> resultConsumer) {
         return subscribe(Wait.forever(), resultConsumer);
     }
@@ -235,7 +236,7 @@ public class Promise<DATA> {
     public final Subscription<DATA> subscribe(
             WaitAwhile             waitAwhile, 
             Consumer<Result<DATA>> resultConsumer) {
-        return doSubscribe(waitAwhile.orDefaultCancellation(), resultConsumer);
+        return doSubscribe(waitAwhile.orCancel(), resultConsumer);
     }
     
     public final Subscription<DATA> subscribe(
@@ -244,7 +245,7 @@ public class Promise<DATA> {
         return doSubscribe(waitOrDefault, resultConsumer);
     }
     
-    private final Subscription<DATA> doSubscribe(
+    final Subscription<DATA> doSubscribe(
             Wait                   wait, 
             Consumer<Result<DATA>> resultConsumer) {
         val data = dataRef.get();
@@ -254,7 +255,7 @@ public class Promise<DATA> {
             val result = (Result<DATA>)data;
             try {
                 resultConsumer.accept(result);
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 handleResultConsumptionExcepion(subscription, resultConsumer, result);
             }
             return subscription;
@@ -269,6 +270,7 @@ public class Promise<DATA> {
         });
         waitSession.onExpired((message, throwable) -> {
             if (hasNotified.compareAndSet(false, true)) {
+                subscription.unsubscribe();
                 Result<DATA> result;
                 try {
                     @SuppressWarnings("unchecked")
@@ -278,13 +280,57 @@ public class Promise<DATA> {
                     if (supplier == null)
                          result = Result.ofCancelled(message, throwable);
                     else result = supplier.get();
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     result = Result.ofCancelled(null, e);
                 }
                 resultConsumer.accept(result);
             }
         });
         return subscription;
+    }
+    
+    //== Functional ==
+    
+    @SuppressWarnings("unchecked")
+    public final Promise<DATA> filter(Predicate<? super DATA> predicate) {
+        val targetPromise = (Promise<DATA>)newPromise();
+        targetPromise.start();
+        
+        subscribe(r -> {
+            val result = r.filter(predicate);
+            targetPromise.makeDone((Result<DATA>) result);
+        });
+        
+        return targetPromise;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public final <TARGET> Promise<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+        val targetPromise = (Promise<TARGET>)newPromise();
+        targetPromise.start();
+        
+        subscribe(r -> {
+            val result = r.map(mapper);
+            targetPromise.makeDone((Result<TARGET>) result);
+        });
+        
+        return targetPromise;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public final <TARGET> Promise<TARGET> flatMap(Function<? super DATA, Promise<? extends TARGET>> mapper) {
+        val targetPromise = (Promise<TARGET>)newPromise();
+        targetPromise.start();
+        subscribe(r -> {
+            val targetResult = r.map(mapper);
+            targetResult.ifPresent(promise -> {
+                promise.subscribe(result -> {
+                    targetPromise.makeDone((Result<TARGET>) result);
+                });
+            });
+        });
+        
+        return targetPromise;
     }
     
 }

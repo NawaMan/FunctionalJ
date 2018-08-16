@@ -7,4 +7,8 @@ public class FunctionInvocationException extends RuntimeException {
         super(exception);
     }
     
+    public FunctionInvocationException(String message) {
+        super(message);
+    }
+    
 }

@@ -19,6 +19,7 @@ import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
+import functionalj.functions.FunctionInvocationException;
 import functionalj.kinds.Comonad;
 import functionalj.kinds.Filterable;
 import functionalj.kinds.Functor;
@@ -126,7 +127,7 @@ public class Result<DATA>
         return new Result<D>(null, new Exception(exceptionMsg));
     }
     public static <D> Result<D> ofException(Exception exception) {
-        return new Result<D>(null, exception);
+        return new Result<D>(null, (exception != null) ? exception : new FunctionInvocationException("Unknown reason."));
     }
     @SuppressWarnings("unchecked")
     public static <D> Result<D> ofResult(Result<D> result) {
@@ -253,8 +254,6 @@ public class Result<DATA>
             return Result.ofException(e);
         }
     }
-    
-    // TODO - Might want to add Promise.
     
     public static <D> Result<D> Do(Func0<D> supplier) {
         try {
@@ -408,7 +407,7 @@ public class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    protected final <T> T processData(Function<Exception, T> defaultGet, Func3<Boolean, DATA, Exception, T> processor) {
+    public final <T> T processData(Function<Exception, T> defaultGet, Func3<Boolean, DATA, Exception, T> processor) {
         try {
             val data      = getData();
             val isValue   = ((data == null) || !(data instanceof ExceptionHolder));
@@ -671,16 +670,28 @@ public class Result<DATA>
         return (Result<DATA>)Nullable.super.ifPresentRun(theAction, elseRunnable);
     }
     
-    public Result<DATA> whenNotPresent(Supplier<? extends DATA> fallbackSupplier) {
+    public Result<DATA> whenNotPresentGet(Supplier<? extends DATA> fallbackSupplier) {
         if (this.isNotPresent())
             return Result.from(fallbackSupplier);
         
         return this;
     }
+    public Result<DATA> whenNotPresent(DATA fallbackValue) {
+        if (this.isNotPresent())
+            return Result.of(fallbackValue);
+        
+        return this;
+    }
     
-    public Result<DATA> whenNotValue(Supplier<? extends DATA> fallbackSupplier) {
+    public Result<DATA> whenNotValueGet(Supplier<? extends DATA> fallbackSupplier) {
         if (this.isNotValue())
             return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    public Result<DATA> whenNotValue(DATA fallbackValue) {
+        if (this.isNotValue())
+            return Result.of(fallbackValue);
         
         return this;
     }
@@ -754,9 +765,16 @@ public class Result<DATA>
                 });
     }
     
-    public Result<DATA> whenNull(Supplier<? extends DATA> fallbackSupplier) {
+    public Result<DATA> whenNullGet(Supplier<? extends DATA> fallbackSupplier) {
         if (this.isNull())
             return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    
+    public Result<DATA> whenNull(DATA fallbackValue) {
+        if (this.isNull())
+            return Result.of(fallbackValue);
         
         return this;
     }
@@ -777,9 +795,15 @@ public class Result<DATA>
                 });
     }
     
-    public Result<DATA> whenException(Supplier<? extends DATA> fallbackSupplier) {
+    public Result<DATA> whenExceptionGet(Supplier<? extends DATA> fallbackSupplier) {
         if (this.isException())
             return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    public Result<DATA> whenException(DATA fallbackValue) {
+        if (this.isException())
+            return Result.of(fallbackValue);
         
         return this;
     }
@@ -819,9 +843,15 @@ public class Result<DATA>
                 });
     }
     
-    public Result<DATA> whenNotAvailable(Supplier<? extends DATA> fallbackSupplier) {
+    public final Result<DATA> whenNotAvailableGet(Supplier<? extends DATA> fallbackSupplier) {
         if (this.isNotAvailable())
             return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    public Result<DATA> whenNotAvailable(DATA fallbackValue) {
+        if (this.isNotAvailable())
+            return Result.of(fallbackValue);
         
         return this;
     }
@@ -860,9 +890,15 @@ public class Result<DATA>
                 });
     }
     
-    public Result<DATA> whenNotReady(Supplier<? extends DATA> fallbackSupplier) {
+    public final Result<DATA> whenNotReadyGet(Supplier<? extends DATA> fallbackSupplier) {
         if (this.isNotReady())
             return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    public Result<DATA> whenNotReady(DATA fallbackValue) {
+        if (this.isNotReady())
+            return Result.of(fallbackValue);
         
         return this;
     }
@@ -886,9 +922,15 @@ public class Result<DATA>
                 });
     }
     
-    public Result<DATA> whenCancelled(Supplier<? extends DATA> fallbackSupplier) {
+    public final Result<DATA> whenCancelledGet(Supplier<? extends DATA> fallbackSupplier) {
         if (this.isCancelled())
             return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    public Result<DATA> whenCancelled(DATA fallbackValue) {
+        if (this.isCancelled())
+            return Result.of(fallbackValue);
         
         return this;
     }
@@ -951,9 +993,15 @@ public class Result<DATA>
                 });
     }
     
-    public Result<DATA> whenInvalid(Supplier<? extends DATA> fallbackSupplier) {
+    public final Result<DATA> whenInvalidGet(Supplier<? extends DATA> fallbackSupplier) {
         if (this.isInvalid())
             return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    public Result<DATA> whenInvalid(DATA fallbackValue) {
+        if (this.isInvalid())
+            return Result.of(fallbackValue);
         
         return this;
     }
@@ -1103,80 +1151,22 @@ public class Result<DATA>
                 });
     }
     
-    
-    public final Result<DATA> defaultTo(DATA defaultValue) {
-       return processData(
-               e -> this,
-               (isValue, value, exception)->{
-                   if (!isValue)
-                       return this;
-                   if (value != null)
-                       return this;
-                   
-                   return Result.of(defaultValue);
-               });
-    }
-    
-    public final Result<DATA> defaultFrom(Supplier<DATA> defaultSupplier) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (!isValue)
-                        return this;
-                    if (value != null)
-                        return this;
-                    try {
-                        return Result.of(defaultSupplier.get());
-                    } catch (Exception e) {
-                        return Result.ofNull();
-                    }
-                });
-    }
-    
-    public final Result<DATA> otherwiseNull() {
-        val exception = getException();
-        if (exception == null)
-            return this;
+    // Alias of whenNotPresent
+    public final Result<DATA> otherwise(DATA elseValue) {
+        val value = getValue();
+        if (value == null)
+            return Result.of(elseValue);
         
-        return Result.ofNull();
+        return this;
     }
     
-    public final Result<DATA> otherwise(DATA otherwiseValue) {
-        val exception = getException();
-        if (exception == null)
-            return this;
+    // Alias of whenNotPresentGet
+    public final Result<DATA> otherwiseGet(Supplier<? extends DATA> elseSupplier) {
+        val value = getValue();
+        if (value == null)
+            return Result.from(elseSupplier);
         
-        return Result.of(otherwiseValue);
-    }
-    
-    public final Result<DATA> otherwiseGet(Supplier<DATA> otherwiseSupplier) {
-        val exception = getException();
-        if (exception == null)
-            return this;
-        
-        return Result.from((Supplier<DATA>)()->{
-            return otherwiseSupplier.get();
-        });
-    }
-    
-    public final Result<DATA> otherwiseGet(Func0<DATA> otherwiseSupplier) {
-        val exception = getException();
-        if (exception == null)
-            return this;
-        
-        return Result.from((Func0<DATA>)()->{
-            return otherwiseSupplier.getUnsafe();
-        });
-    }
-    
-    public final Result<DATA> otherwiseInvalid() {
-        val exception = getException();
-        if (exception == null)
-            return this;
-        if (exception instanceof ValidationException)
-            return this;
-        
-        return Result.ofException(new ValidationException(new NullPointerException()));
+        return this;
     }
     
     public final DATA orElse(DATA elseValue) {

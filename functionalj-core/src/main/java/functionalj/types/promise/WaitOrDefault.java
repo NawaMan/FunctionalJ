@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import functionalj.types.result.Result;
 
 @SuppressWarnings("javadoc")
-public class WaitOrDefault<DATA> implements Wait {
+public class WaitOrDefault<DATA> extends Wait {
     
     private Wait                   wait;
     private Supplier<Result<DATA>> supplier;

@@ -122,7 +122,7 @@ public interface StreamPlus<DATA>
         stream().forEach(action);
     }
     
-    public default void forEach(BiConsumer<? super Integer, ? super DATA> action) {
+    public default void forEachWithIndex(BiConsumer<? super Integer, ? super DATA> action) {
         if (action == null)
             return;
         

@@ -16,7 +16,7 @@ public final class Valid<DATA extends Validatable<DATA, ?>> extends Acceptable<D
     @SuppressWarnings("rawtypes")
     private static final NullSafePredicate FALSE = v -> false;
     @SuppressWarnings("unchecked")
-	private static final <D> NullSafePredicate<D> alwaysFalse() { return (NullSafePredicate<D>)FALSE; }
+    private static final <D> NullSafePredicate<D> alwaysFalse() { return (NullSafePredicate<D>)FALSE; }
     
     
     Valid(DATA value, String exceptionMsg) {
@@ -56,7 +56,7 @@ public final class Valid<DATA extends Validatable<DATA, ?>> extends Acceptable<D
             try {
                 try {
                     val validatorClass = value.getValidatorClass();
-					val predicate      = (Predicate<D>)validatorClass.newInstance();
+                    val predicate      = (Predicate<D>)validatorClass.newInstance();
                     return predicate.test(value);
                     
                 } catch (InstantiationException | IllegalAccessException e) {

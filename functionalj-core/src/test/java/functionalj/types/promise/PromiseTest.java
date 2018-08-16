@@ -1,6 +1,7 @@
 package functionalj.types.promise;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class PromiseTest {
     public void testCreateNew_complete() {
         val list = new ArrayList<String>();
         
-        val promiseControl = Promise.of(String.class);
+        val promiseControl = DeferAction.of(String.class);
         val promise        = promiseControl.getPromise();
         assertEquals (PromiseStatus.NOT_STARTED, promise.getStatus());
         
@@ -78,7 +79,7 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_exception() {
-        val promiseControl = Promise.of(String.class);
+        val promiseControl = DeferAction.of(String.class);
         val promise        = promiseControl.getPromise();
         assertEquals (PromiseStatus.NOT_STARTED, promise.getStatus());
         
@@ -91,10 +92,10 @@ public class PromiseTest {
     }
     
     @Test
-    public void testLifeCycle_multipleLC_call_noEffect() {
+    public void testLifeCycle_multipleCall_noEffect() {
         val list = new ArrayList<String>();
         
-        val promiseControl = Promise.of(String.class);
+        val promiseControl = DeferAction.of(String.class);
         val promise        = promiseControl.getPromise();
         val pendingControl = promiseControl.start();
         
@@ -105,8 +106,20 @@ public class PromiseTest {
         assertStrings("Result:{ Value: Forty two }", promise.getResult());
         promise.subscribe(r -> list.add("2: " + r.toString()));
         
+        assertStrings(
+                "["
+                + "1: Result:{ Value: Forty two }, "
+                + "2: Result:{ Value: Forty two }"
+                + "]",
+              list);
         
+        promiseControl.start();
+        promiseControl.start();
+        promiseControl.start();
         pendingControl.complete("Forty three");
+        pendingControl.complete("Forty four");
+        pendingControl.complete("Forty five");
+        pendingControl.abort();
         
         assertStrings(
                 "["
@@ -120,7 +133,7 @@ public class PromiseTest {
     public void testCreateNew_unsubscribed() {
         val list = new ArrayList<String>();
         
-        val promiseControl = Promise.of(String.class);
+        val promiseControl = DeferAction.of(String.class);
         val promise        = promiseControl.getPromise();
         val pendingControl = promiseControl.start();
         
@@ -145,15 +158,14 @@ public class PromiseTest {
     public void testCreateNew_map_mapBeforeComplete() {
         val list = new ArrayList<String>();
         
-        val promiseControl = Promise.of(String.class);
-        val promise        = promiseControl.getPromise();
-        val pendingControl = promiseControl.start();
-        
-        promise
-        .map(String::length)
-        .subscribe(r -> list.add(r.toString()));
-        
-        pendingControl.complete("Done!");
+        DeferAction.of(String.class)
+        .use(promise -> {
+            promise
+            .map(String::length)
+            .subscribe(r -> list.add(r.toString()));
+        })
+        .start()
+        .complete("Done!");
         
         assertStrings("[Result:{ Value: 5 }]", list);
     }
@@ -162,15 +174,12 @@ public class PromiseTest {
     public void testCreateNew_map2_mapAfterComplete() {
         val list = new ArrayList<String>();
         
-        val promiseControl = Promise.of(String.class);
-        val promise        = promiseControl.getPromise();
-        val pendingControl = promiseControl.start();
-        
-        pendingControl.complete("Done!");
-        
-        promise
-        .map(String::length)
-        .subscribe(r -> list.add(r.toString()));
+        DeferAction.of(String.class)
+        .use(promise -> {
+            promise.map(String::length).subscribe(r -> list.add(r.toString()));
+        })
+        .start()
+        .complete("Done!");
         
         assertStrings("[Result:{ Value: 5 }]", list);
     }
@@ -179,15 +188,14 @@ public class PromiseTest {
     public void testCreateNew_flatMap() {
         val list = new ArrayList<String>();
         
-        val promiseControl = Promise.of(String.class);
-        val promise        = promiseControl.getPromise();
-        val pendingControl = promiseControl.start();
-        
-        promise
-        .flatMap(str -> Promise.ofValue(str.length()))
-        .subscribe(r -> list.add(r.toString()));
-        
-        pendingControl.complete("Done!!");
+        DeferAction.of(String.class)
+        .use(promise -> {
+            promise
+                .flatMap(str -> Promise.ofValue(str.length()))
+                .subscribe(r -> list.add(r.toString()));
+        })
+        .start()
+        .complete("Done!!");
         
         assertStrings("[Result:{ Value: 6 }]", list);
     }
@@ -196,34 +204,26 @@ public class PromiseTest {
     public void testCreateNew_filter() {
         val list = new ArrayList<String>();
         
-        val promiseControl = Promise.of(String.class);
-        val promise        = promiseControl.getPromise();
-        val pendingControl = promiseControl.start();
+        DeferAction.of(String.class)
+        .use(promise -> {
+            promise
+                .filter(str -> str.length() < 3)
+                .subscribe(r -> list.add(r.toString()));
+            
+            promise
+                .filter(str -> str.length() > 3)
+                .subscribe(r -> list.add(r.toString()));
+        })
+        .start()
+        .complete("Done!");
         
-        pendingControl.complete("Done!");
-        
-        promise
-            .filter(str -> str.length() < 3)
-            .subscribe(r -> list.add(r.toString()));
-        
-        promise
-            .filter(str -> str.length() > 3)
-            .subscribe(r -> list.add(r.toString()));
-        
-        assertStrings(
-                "["
-                + "Result:{ Value: null }, "
-                + "Result:{ Value: Done! }"
-                + "]",
-                list);
+        assertTrue(list.toString().contains("Result:{ Value: null }"));
+        assertTrue(list.toString().contains("Result:{ Value: Done! }"));
     }
     
     @Test
     public void testCreateNew_waitOrDefault() {
         val list = new ArrayList<String>();
-        
-        val promiseControl = Promise.of(String.class);
-        val promise        = promiseControl.getPromise();
         
         val onExpireds = new ArrayList<BiConsumer<String, Throwable>>();
         val session = new WaitSession() {
@@ -239,7 +239,10 @@ public class PromiseTest {
             }
         };
         
-        promise.subscribe(wait.orDefaultTo("Not done."), r -> list.add(r.get()));
+        DeferAction.of(String.class)
+        .use(promise -> promise.subscribe(wait.orDefaultTo("Not done."), r -> list.add(r.get())))
+        .start();
+        
         onExpireds.forEach(c -> {
             c.accept(null, null);
         });

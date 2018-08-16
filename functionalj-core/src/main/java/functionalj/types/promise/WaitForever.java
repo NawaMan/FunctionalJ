@@ -3,7 +3,7 @@ package functionalj.types.promise;
 import java.util.function.BiConsumer;
 
 @SuppressWarnings("javadoc")
-public class WaitForever implements Wait {
+public class WaitForever extends Wait {
     
     public static WaitForever instance = new WaitForever();
     

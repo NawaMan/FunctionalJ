@@ -462,8 +462,41 @@ public interface Func {
         return function;
     }
     
+    public static FuncUnit0 F(FuncUnit0 runnable) {
+        return runnable;
+    }
+    
+    public static void carelessly(FuncUnit0 action) {
+        if (action == null)
+            return;
+        
+        try {
+            action.run();
+        } catch (Exception e) {
+            // Do nothing
+        }
+    }
+    
+    public static void gracefully(FuncUnit0 action) {
+        if (action == null)
+            return;
+        
+        try {
+            action.run();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new FunctionInvocationException(e);
+        }
+    }
+    // TODO - Add the one with handler.
+    
     public static <INPUT> FuncUnit1<INPUT> F(FuncUnit1<INPUT> consumer) {
-        return (value) -> consumer.accept(value);
+        return consumer;
+    }
+    
+    public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> F(FuncUnit2<INPUT1, INPUT2> consumer) {
+        return consumer;
     }
     
     /**

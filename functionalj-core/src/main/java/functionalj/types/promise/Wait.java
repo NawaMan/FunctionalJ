@@ -1,12 +1,18 @@
 package functionalj.types.promise;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 @SuppressWarnings("javadoc")
-public interface Wait{
+public abstract class Wait {
     
     public static WaitForever forever() {
         return WaitForever.instance ;
     }
     
-    public WaitSession newSession();
+    
+    Wait() {}
+    
+    public abstract WaitSession newSession();
     
 }

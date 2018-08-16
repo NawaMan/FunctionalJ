@@ -5,7 +5,7 @@ import java.util.Objects;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class Subscription<DATA> {
+public class Subscription<DATA> implements HasPromise<DATA> {
     
     public static enum SubscriptionStatus {
         AWAITING, UNSUBSCRIBED, CANCELLED, COMPLETED;
