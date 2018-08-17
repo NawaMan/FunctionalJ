@@ -71,6 +71,9 @@ Need code clean up!!!!! The code is so shitty :-(
 -- abort when no subscription.
 -- easedrop
 -- Make Result or pipe take a story.
+-- Change Result to Value
+-- Result.zip
+-- Expand tuple to map List<Tuple2>.map(BiFunction<>)
 
 
 

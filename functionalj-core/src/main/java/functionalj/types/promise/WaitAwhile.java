@@ -2,7 +2,7 @@ package functionalj.types.promise;
 
 import static functionalj.functions.Func.getOrElse;
 
-import java.util.function.Function;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import functionalj.types.result.Result;
@@ -49,31 +49,30 @@ public abstract class WaitAwhile extends Wait {
     
     //==  Basic sub class ==
     
-    public static class WaitThread extends WaitAwhile {
+    public static class WaitAsync extends WaitAwhile {
         
         private final long time;
-        private final Function<Runnable, Thread> threadFacory;
+        private final Consumer<Runnable> asyncRunner;
         
-        public WaitThread(long time) {
+        public WaitAsync(long time) {
             this(time, null);
         }
-        public WaitThread(long time, Function<Runnable, Thread> threadFacory) {
-            this.time         = Math.max(0, time);
-            this.threadFacory = (threadFacory != null) ? threadFacory : runnable -> new Thread(runnable);
+        public WaitAsync(long time, Consumer<Runnable> asyncRunner) {
+            this.time        = Math.max(0, time);
+            this.asyncRunner = (asyncRunner != null) ? asyncRunner : asyncRunnerOnNewThread;
         }
         
         @Override
         public WaitSession newSession() {
             val session = new WaitSession();
-            threadFacory.apply(()->{
+            asyncRunner.accept(()->{
                 try {
                     Thread.sleep(time);
                 } catch (InterruptedException e) {
                     // Allow interruption.
                 }
                 session.expire(null, null);
-            })
-            .start();
+            });
             return session;
         }
         

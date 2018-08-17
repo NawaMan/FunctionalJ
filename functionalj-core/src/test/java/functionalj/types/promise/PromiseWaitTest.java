@@ -1,12 +1,16 @@
 package functionalj.types.promise;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
+import functionalj.types.list.FuncList;
+import functionalj.types.tuple.Tuple;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -14,6 +18,9 @@ public class PromiseWaitTest {
     
     private void assertStrings(String str, Object obj) {
         assertEquals(str, "" + obj);
+    }
+    private void assertStrings(String message, String str, Object obj) {
+        assertEquals(message, str, "" + obj);
     }
     
     @Test
@@ -43,6 +50,70 @@ public class PromiseWaitTest {
     }
     
     @Test
+    public void testWaitAWhile_differentRunners_complete() throws InterruptedException {
+        val runners = FuncList.of(
+                Tuple.of("asyncRunnerOnNewThread",        Wait.asyncRunnerOnNewThread),
+                Tuple.of("asyncRunnerThreadFactory",      Wait.asyncRunnerThreadFactory),
+                Tuple.of("asyncRunnerCompleteableFuture", Wait.asyncRunnerCompleteableFuture),
+                Tuple.of("asyncRunnerThreadFactory()",    Wait.asyncRunnerThreadFactory(new ThreadFactory() {
+                    @Override
+                    public Thread newThread(Runnable runnable) {
+                        return new Thread(runnable);
+                    }
+                })),
+                Tuple.of("asyncRunnerExecutorService", Wait.asyncRunnerExecutorService(Executors.newSingleThreadExecutor()))
+            );
+        runners
+        .forEach(tuple -> {
+            val list   = new ArrayList<String>();
+            val action = DeferAction.of(String.class)
+                    .use(promise -> promise.subscribe(Wait.forMilliseconds(100, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
+                    .start();
+            
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            action.complete("Complete!");
+            
+            assertStrings("Name: " + tuple._1(), "[Complete!]", list);
+        });
+    }
+    
+    @Test
+    public void testWaitAWhile_differentRunners_abort() throws InterruptedException {
+        val runners = FuncList.of(
+                Tuple.of("asyncRunnerOnNewThread",        Wait.asyncRunnerOnNewThread),
+                Tuple.of("asyncRunnerThreadFactory",      Wait.asyncRunnerThreadFactory),
+                Tuple.of("asyncRunnerCompleteableFuture", Wait.asyncRunnerCompleteableFuture),
+                Tuple.of("asyncRunnerThreadFactory()",    Wait.asyncRunnerThreadFactory(new ThreadFactory() {
+                    @Override
+                    public Thread newThread(Runnable runnable) {
+                        return new Thread(runnable);
+                    }
+                })),
+                Tuple.of("asyncRunnerExecutorService", Wait.asyncRunnerExecutorService(Executors.newSingleThreadExecutor()))
+            );
+        runners
+        .forEach(tuple -> {
+            val list   = new ArrayList<String>();
+            val action = DeferAction.of(String.class)
+                    .use(promise -> promise.subscribe(Wait.forMilliseconds(50, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
+                    .start();
+            
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            action.complete("Complete!");
+            
+            assertStrings("Name: " + tuple._1(), "[Not done.]", list);
+        });
+    }
+    
+    @Test
     public void testWaitAWhile_interrupt() throws InterruptedException {
         val threadRef = new AtomicReference<Thread>();
         val list      = new ArrayList<String>();
@@ -52,7 +123,7 @@ public class PromiseWaitTest {
                             .forMilliseconds(150, runnable-> {
                                 val thread = new Thread(runnable);
                                 threadRef.set(thread);
-                                return thread;
+                                thread.start();
                             })
                             .orDefaultTo("Not done.");
                         promise
@@ -80,7 +151,7 @@ public class PromiseWaitTest {
                             .forMilliseconds(150, runnable-> {
                                 val thread = new Thread(runnable);
                                 threadRef.set(thread);
-                                return thread;
+                                thread.start();;
                             })
                             .orDefaultTo("Not done.");
                         promise
