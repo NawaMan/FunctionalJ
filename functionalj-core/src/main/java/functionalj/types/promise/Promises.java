@@ -26,15 +26,15 @@ public class Promises {
             Function<Object, ? extends HasPromise<T2>> promise2,
             Wait                                       wait,
             BiFunction<T1, T2, D> merger) {
-        val promiseControl = processCombine(
+        return processCombine(
                 FuncList.of(promise1, promise2),
                 F((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
                     val result2 = (Result<T2>)results[1];
                     val mergedResult = Result.ofResults(result1, result2, merger);
                     return mergedResult;
-                }));
-        return promiseControl.getPromise();
+                }))
+                .getPromise();
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -44,7 +44,7 @@ public class Promises {
             Function<Object, ? extends HasPromise<T3>> promise3,
             Wait                                       wait,
             Func3<T1, T2, T3, D> merger) {
-        val promiseControl = processCombine(
+        return processCombine(
                 FuncList.of(promise1, promise2, promise3),
                 F((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
@@ -52,8 +52,8 @@ public class Promises {
                     val result3 = (Result<T3>)results[2];
                     val mergedResult = Result.ofResults(result1, result2, result3, merger);
                     return mergedResult;
-                }));
-        return promiseControl.getPromise();
+                }))
+                .getPromise();
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -64,7 +64,7 @@ public class Promises {
             Function<Object, ? extends HasPromise<T4>> promise4,
             Wait                                       wait,
             Func4<T1, T2, T3, T4, D> merger) {
-        val promiseControl = processCombine(
+        return processCombine(
                 FuncList.of(promise1, promise2, promise3, promise4),
                 F((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
@@ -73,8 +73,8 @@ public class Promises {
                     val result4 = (Result<T4>)results[3];
                     val mergedResult = Result.ofResults(result1, result2, result3, result4, merger);
                     return mergedResult;
-                }));
-        return promiseControl.getPromise();
+                }))
+                .getPromise();
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -86,7 +86,7 @@ public class Promises {
             Function<Object, ? extends HasPromise<T5>> promise5,
             Wait                                       wait,
             Func5<T1, T2, T3, T4, T5, D> merger) {
-        val promiseControl = processCombine(
+        return processCombine(
                 FuncList.of(promise1, promise2, promise3, promise4),
                 F((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
@@ -96,8 +96,8 @@ public class Promises {
                     val result5 = (Result<T5>)results[4];
                     val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, merger);
                     return mergedResult;
-                }));
-        return promiseControl.getPromise();
+                }))
+                .getPromise();
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -110,7 +110,7 @@ public class Promises {
             Function<Object, ? extends HasPromise<T6>> promise6,
             Wait                                       wait,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        val promiseControl = processCombine(
+        return processCombine(
                 FuncList.of(promise1, promise2, promise3, promise4, promise5, promise6),
                 F((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
@@ -121,8 +121,8 @@ public class Promises {
                     val result6 = (Result<T6>)results[5];
                     val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, merger);
                     return mergedResult;
-                }));
-        return promiseControl.getPromise();
+                }))
+                .getPromise();
     }
     
     @SuppressWarnings("rawtypes")

@@ -138,7 +138,6 @@ public class PromisesTest {
                 _4 -> control4,
                 _5 -> control5,
                 _6 -> control6,
-                Wait.forever(),
                 (_1, _2, _3, _4, _5, _6) -> {
                     return 42;
                 });
@@ -147,9 +146,21 @@ public class PromisesTest {
         control1.complete(1);
         assertEquals(PromiseStatus.PENDING, promise.getStatus());
         
-        control2.complete(5);
+        control2.complete(2);
+        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        
+        control3.complete(3);
+        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        
+        control4.complete(4);
+        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        
+        control5.complete(5);
+        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        
+        control6.complete(6);
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: 8 }",   promise.getResult());
+        assertStrings("Result:{ Value: 42 }",   promise.getResult());
     }
     
     // TODO - Add concurrecy tests.
