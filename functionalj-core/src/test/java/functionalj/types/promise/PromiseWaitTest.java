@@ -67,7 +67,7 @@ public class PromiseWaitTest {
         action.complete("Complete!");
         
         assertStrings("[Not done.]", list);
-        // The abort should be initiated at 300 but that was interrupted at 100.
+        // The abort should be initiated at 150 but that was interrupted at 50.
     }
     
     @Test
@@ -95,7 +95,6 @@ public class PromiseWaitTest {
         threadRef.get().interrupt();
         
         assertStrings("[Complete!]", list);
-        // The abort should be initiated at 300 but that was interrupted at 100.
     }
     
 }
