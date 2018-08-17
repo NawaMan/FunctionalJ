@@ -26,7 +26,7 @@ public class Promises {
             Function<Object, ? extends HasPromise<T2>> promise2,
             Wait                                       wait,
             BiFunction<T1, T2, D> merger) {
-        return processCombine(
+        return new Combiner(
                 FuncList.of(promise1, promise2),
                 F((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
@@ -44,7 +44,7 @@ public class Promises {
             Function<Object, ? extends HasPromise<T3>> promise3,
             Wait                                       wait,
             Func3<T1, T2, T3, D> merger) {
-        return processCombine(
+        return new Combiner(
                 FuncList.of(promise1, promise2, promise3),
                 F((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
@@ -64,7 +64,7 @@ public class Promises {
             Function<Object, ? extends HasPromise<T4>> promise4,
             Wait                                       wait,
             Func4<T1, T2, T3, T4, D> merger) {
-        return processCombine(
+        return new Combiner(
                 FuncList.of(promise1, promise2, promise3, promise4),
                 F((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
@@ -86,7 +86,7 @@ public class Promises {
             Function<Object, ? extends HasPromise<T5>> promise5,
             Wait                                       wait,
             Func5<T1, T2, T3, T4, T5, D> merger) {
-        return processCombine(
+        return new Combiner(
                 FuncList.of(promise1, promise2, promise3, promise4),
                 F((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
@@ -110,7 +110,7 @@ public class Promises {
             Function<Object, ? extends HasPromise<T6>> promise6,
             Wait                                       wait,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        return processCombine(
+        return new Combiner(
                 FuncList.of(promise1, promise2, promise3, promise4, promise5, promise6),
                 F((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
@@ -126,93 +126,92 @@ public class Promises {
     }
     
     @SuppressWarnings("rawtypes")
-    private static <D> PendingAction<D> processCombine(
-            FuncList<Function<Object, ? extends HasPromise<? extends Object>>> promises,
-            Func1<Result[], Result<D>>                                         mergeFunction) {
-        val promiseControl = DeferAction.of((Class<D>)null).start();
-        val count          = promises.size();
-        val results        = new Result[count];
-        val subscriptions  = new Subscription[count];
-        val isDone         = new AtomicBoolean(false);
+    private static class Combiner<D> {
         
-        @SuppressWarnings("unchecked")
-        val action  = F((Integer index, Result result)->{
+        private final Func1<Result[], Result<D>> mergeFunc;
+        
+        private final PendingAction<D> action;
+        private final int              count;
+        private final Result[]         results;
+        private final Subscription[]   subscriptions;
+        private final AtomicBoolean    isDone;
+        private final Promise<D>       promise;
+        
+        Combiner(FuncList<Function<Object, ? extends HasPromise<? extends Object>>> promises,
+                 Func1<Result[], Result<D>>                                         mergeFunc) {
+            this.mergeFunc     = mergeFunc;
+            this.action        = DeferAction.of((Class<D>)null).start();
+            this.count         = promises.size();
+            this.results       = new Result[count];
+            this.subscriptions = new Subscription[count];
+            this.isDone        = new AtomicBoolean(false);
+            
+            promises
+            .map             ( promise         -> promise.apply(null))
+            .map             ( promise         -> promise.getPromise())
+            .mapWithIndex    ((index, promise) -> promise.subscribe(result -> processResult(index, result)))
+            .forEachWithIndex((index, sub)     -> subscriptions[index] = sub);
+            
+            this.promise = action.getPromise();
+        }
+        
+        Promise<D> getPromise() {
+            return promise;
+        }
+        
+        private <T> void processResult(int index, Result<T> result) {
             result
             .filter     (__ -> !isDone.get())
-            .ifCancelled(() -> cancel         (isDone, promiseControl, subscriptions, index))
-            .ifNotReady (() -> handleNotReady (isDone, promiseControl, subscriptions, index, result))
-            .ifException(__ -> handleException(isDone, promiseControl, subscriptions, index, result, count))
+            .ifCancelled(() -> doneAsCancelled(index))
+            .ifNotReady (() -> doneAsNotReady (index, result))
+            .ifException(__ -> doneAsException(index, result))
             .peek       (__ -> results[index] = result)
             .filter     (__ -> count == Stream.of(results).filter(Objects::nonNull).count())
             .filter     (__ -> isDone.compareAndSet(false, true))
             .forValue   (__ -> {
-                val mergedResult = mergeFunction.apply(results);
-                promiseControl.completeWith(mergedResult);
+                val mergedResult = mergeFunc.apply(results);
+                action.completeWith(mergedResult);
             });
-        });
-        
-        promises
-        .map             ( promise              -> promise.apply(null))
-        .map             ( promise              -> promise.getPromise())
-        .mapWithIndex    ((index, promise)      -> promise.subscribe(result -> action.accept(index, result)))
-        .forEachWithIndex((index, subscription) -> subscriptions[index] = subscription);
-        return promiseControl;
-    }
-    
-    @SuppressWarnings("rawtypes")
-    private static void unsbscribeAll(Subscription[] subscriptions) {
-        for(val subscription : subscriptions) {
-            if (subscription != null)
-                subscription.unsubscribe();
         }
-    }
-    
-    // Organize the order.
-    
-    @SuppressWarnings("rawtypes")
-    private static <D> void cancel(
-            AtomicBoolean    isDone,
-            PendingAction<D> promiseControl,
-            Subscription[]   subscriptions,
-            Integer          index) {
-        if (!isDone.compareAndSet(false, true))
-            return;
         
-        promiseControl.abort("Promise#" + index);
-        unsbscribeAll(subscriptions);
-    }
-    
-    @SuppressWarnings("rawtypes")
-    private static <D> void handleNotReady(
-            AtomicBoolean    isDone,
-            PendingAction<D> promiseControl,
-            Subscription[]   subscriptions, 
-            Integer          index, 
-            Result           result) {
-        if (!isDone.compareAndSet(false, true))
-            return;
+        private void unsbscribeAll() {
+            for(val subscription : subscriptions) {
+                if (subscription != null)
+                    subscription.unsubscribe();
+            }
+        }
         
-        promiseControl.abort(
-                "Promise#" + index, 
-                new IllegalStateException(
-                        "Result cannot be in 'not ready' at this point: " + result.getStatus(),
-                        result.getException()));
-        unsbscribeAll(subscriptions);
-    }
-    
-    @SuppressWarnings("rawtypes")
-    private static <D> void handleException(
-            AtomicBoolean    isDone,
-            PendingAction<D> promiseControl,
-            Subscription[]   subscriptions,
-            Integer          index,
-            Result           result,
-            int              count) {
-        if (!isDone.compareAndSet(false, true))
-            return;
+        private void doneAsCancelled(int index) {
+            if (!isDone.compareAndSet(false, true))
+                return;
+            
+            action.abort("Promise#" + index);
+            unsbscribeAll();
+        }
         
-        promiseControl.fail(new PromisePartiallyFailException(index, count, result.getException()));
-        unsbscribeAll(subscriptions);
+        private void doneAsNotReady(
+                int    index, 
+                Result result) {
+            if (!isDone.compareAndSet(false, true))
+                return;
+            
+            action.abort(
+                    "Promise#" + index, 
+                    new IllegalStateException(
+                            "Result cannot be in 'not ready' at this point: " + result.getStatus(),
+                            result.getException()));
+            unsbscribeAll();
+        }
+        
+        private void doneAsException(
+                int index,
+                Result  result) {
+            if (!isDone.compareAndSet(false, true))
+                return;
+            
+            action.fail(new PromisePartiallyFailException(index, count, result.getException()));
+            unsbscribeAll();
+        }
     }
     
 }
