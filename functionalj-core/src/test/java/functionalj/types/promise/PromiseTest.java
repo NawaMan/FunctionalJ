@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public class PromiseTest {
     
     private void assertStrings(String str, Object obj) {
@@ -92,16 +93,29 @@ public class PromiseTest {
     }
     
     @Test
+    public void testAbort() {
+        val ref = new AtomicReference<String>(null);
+        val action = DeferAction.of(String.class)
+                .subscribe(r -> ref.set("" + r))
+                .start();
+        
+        assertStrings("Result:{ Exception: functionalj.types.result.ResultNotReadyException }", action.getResult());
+        
+        action.abort();
+        assertEquals("Result:{ Exception: functionalj.types.result.ResultCancelledException }", ref.get());
+    }
+    
+    @Test
     public void testLifeCycle_multipleCall_noEffect() {
         val list = new ArrayList<String>();
         
-        val promiseControl = DeferAction.of(String.class);
-        val promise        = promiseControl.getPromise();
-        val pendingControl = promiseControl.start();
+        val deferAction   = DeferAction.of(String.class);
+        val promise       = deferAction.getPromise();
+        val pendingAction = deferAction.start();
         
         promise.subscribe(r -> list.add("1: " + r.toString()));
         
-        pendingControl.complete("Forty two");
+        pendingAction.complete("Forty two");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings("Result:{ Value: Forty two }", promise.getResult());
         promise.subscribe(r -> list.add("2: " + r.toString()));
@@ -113,13 +127,14 @@ public class PromiseTest {
                 + "]",
               list);
         
-        promiseControl.start();
-        promiseControl.start();
-        promiseControl.start();
-        pendingControl.complete("Forty three");
-        pendingControl.complete("Forty four");
-        pendingControl.complete("Forty five");
-        pendingControl.abort();
+        // NOTE: I no liking this -- This method is no-skip but repeatable.
+        deferAction.start();
+        deferAction.start();
+        deferAction.start();
+        pendingAction.complete("Forty three");
+        pendingAction.complete("Forty four");
+        pendingAction.complete("Forty five");
+        pendingAction.abort();
         
         assertStrings(
                 "["
@@ -133,25 +148,140 @@ public class PromiseTest {
     public void testCreateNew_unsubscribed() {
         val list = new ArrayList<String>();
         
-        val promiseControl = DeferAction.of(String.class);
-        val promise        = promiseControl.getPromise();
-        val pendingControl = promiseControl.start();
+        val deferAction   = DeferAction.of(String.class);
+        val promise       = deferAction.getPromise();
+        val pendingAction = deferAction.start();
         
         val sub1 = promise.subscribe(r -> list.add("1: " + r.toString()));
+        val sub2 = promise.subscribe(r -> list.add("2: " + r.toString()));
+        
         sub1.unsubscribe();
         
-        pendingControl.complete("Forty two");
+        pendingAction.complete("Forty two");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings("Result:{ Value: Forty two }", promise.getResult());
         
+        sub2.unsubscribe();
+        
+        assertStrings("[2: Result:{ Value: Forty two }]", list);
+    }
+    
+    @Test
+    public void testCreateNew_lastUnsubscribed() {
+        val list = new ArrayList<String>();
+        
+        val deferAction   = DeferAction.of(String.class);
+        val promise       = deferAction.getPromise();
+        val pendingAction = deferAction.start();
+        
+        // Last subscription at this time.
+        val sub1 = promise.subscribe(r -> list.add("1: " + r.toString()));
+        sub1.unsubscribe();
+        
+        // Complete -- but this is too late.
+        pendingAction.complete("Forty two");
+        
+        assertEquals (PromiseStatus.ABORTED, promise.getStatus());
+        assertStrings(
+                "Result:{ Exception: functionalj.types.result.ResultCancelledException: No more listener. }",
+                promise.getResult());
+        
+        // This subscription will get cancelled as the result.
         val sub2 = promise.subscribe(r -> list.add("2: " + r.toString()));
         sub2.unsubscribe();
         
         assertStrings(
-                "["
-                + "2: Result:{ Value: Forty two }"
-                + "]",
+                "[2: Result:{ Exception: functionalj.types.result.ResultCancelledException: No more listener. }]",
               list);
+    }
+    
+    @Test
+    public void testCreateNew_unsubscribed_withEavesdrop() {
+        val list = new ArrayList<String>();
+        
+        val deferAction   = DeferAction.of(String.class);
+        val promise       = deferAction.getPromise();
+        val pendingAction = deferAction.start();
+        
+        // Add an eavesdrop
+        promise.eavesdrop(r -> list.add("e: " + r.toString()));
+        
+        // Last subscription at this time as an eavesdrop does not count.
+        val sub1 = promise.subscribe(r -> list.add("1: " + r.toString()));
+        sub1.unsubscribe();
+        
+        // Complete -- but this is too late.
+        pendingAction.complete("Forty two");
+        
+        assertEquals (PromiseStatus.ABORTED, promise.getStatus());
+        assertStrings(
+                "Result:{ Exception: functionalj.types.result.ResultCancelledException: No more listener. }",
+                promise.getResult());
+        
+        assertStrings("[e: Result:{ Exception: functionalj.types.result.ResultCancelledException: No more listener. }]", list);
+    }
+    
+    @Test
+    public void testCreateNew_abortNoSubsriptionAfter_withNoSubscription() {
+        val list = new ArrayList<String>();
+        
+        val onExpireds = new ArrayList<BiConsumer<String, Throwable>>();
+        val session = new WaitSession() {
+            @Override
+            public void onExpired(BiConsumer<String, Throwable> onDone) {
+                onExpireds.add(onDone);
+            }
+        };
+        val wait = new WaitAwhile() {
+            @Override
+            public WaitSession newSession() {
+                return session;
+            }
+        };
+        
+        val promise = DeferAction.of(String.class)
+                .abortNoSubsriptionAfter(wait)
+                .eavesdrop(r -> list.add("e: " + r.toString()))
+                .start()
+                .getPromise();
+        
+        assertEquals (PromiseStatus.PENDING, promise.getStatus());
+        
+        onExpireds.forEach(c -> c.accept(null, null));
+        assertEquals (PromiseStatus.ABORTED, promise.getStatus());
+        
+        assertStrings("[e: Result:{ Exception: functionalj.types.result.ResultCancelledException: No more listener. }]", list);
+    }
+    
+    @Test
+    public void testCreateNew_abortNoSubsriptionAfter_withSubscription() {
+        val list = new ArrayList<String>();
+        
+        val onExpireds = new ArrayList<BiConsumer<String, Throwable>>();
+        val session = new WaitSession() {
+            @Override
+            public void onExpired(BiConsumer<String, Throwable> onDone) {
+                onExpireds.add(onDone);
+            }
+        };
+        val wait = new WaitAwhile() {
+            @Override
+            public WaitSession newSession() {
+                return session;
+            }
+        };
+        
+        val promise = DeferAction.of(String.class)
+                .abortNoSubsriptionAfter(wait)
+                .eavesdrop(r -> list.add("e: " + r.toString()))
+                .subscribe(r -> list.add("s: " + r.toString()))
+                .start()
+                .getPromise();
+        
+        assertEquals (PromiseStatus.PENDING, promise.getStatus());
+        
+        onExpireds.forEach(c -> c.accept(null, null));
+        assertEquals (PromiseStatus.PENDING, promise.getStatus());
     }
     
     @Test
@@ -176,7 +306,9 @@ public class PromiseTest {
         
         DeferAction.of(String.class)
         .use(promise -> {
-            promise.map(String::length).subscribe(r -> list.add(r.toString()));
+            promise
+            .map(String::length)
+            .subscribe(r -> list.add(r.toString()));
         })
         .start()
         .complete("Done!");

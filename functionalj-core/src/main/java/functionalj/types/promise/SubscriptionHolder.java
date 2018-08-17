@@ -12,9 +12,9 @@ public class SubscriptionHolder<DATA> extends Subscription<DATA> {
     private final AtomicReference<Consumer<Result<DATA>>> consumer = new AtomicReference<Consumer<Result<DATA>>>(null);
     private final Subscription<DATA> subscription;
     
-    SubscriptionHolder(Wait wait, Promise<DATA> promise) {
+    SubscriptionHolder(boolean isEavesdropping, Wait wait, Promise<DATA> promise) {
         super(promise);
-        this.subscription = promise.doSubscribe(requireNonNull(wait), result -> {
+        this.subscription = promise.doSubscribe(isEavesdropping, requireNonNull(wait), result -> {
             Consumer<Result<DATA>> consumer = this.consumer.get();
             if (consumer != null)
                 consumer.accept(result);

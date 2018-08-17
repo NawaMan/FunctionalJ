@@ -1,6 +1,10 @@
 package functionalj.types.promise;
 
+import static functionalj.functions.Func.carelessly;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -140,7 +144,8 @@ public class Promise<DATA> implements HasPromise<DATA> {
     //    result    -> done.
     //      result.cancelled -> aborted
     //      result.completed -> completed
-    private final Map<Subscription<DATA>, Consumer<Result<DATA>>> consumers = new ConcurrentHashMap<>();
+    private final Map<Subscription<DATA>, Consumer<Result<DATA>>> consumers     = new ConcurrentHashMap<>();
+    private final List<Consumer<Result<DATA>>>                    eavesdroppers = new ArrayList<>();
     private final AtomicReference<Object> dataRef = new AtomicReference<>(PromiseStatus.NOT_STARTED);
     
     public Promise() {}
@@ -183,7 +188,6 @@ public class Promise<DATA> implements HasPromise<DATA> {
     boolean abort() {
         return makeDone(Result.ofCancelled());
     }
-    
     boolean abort(String message) {
         return makeDone(Result.ofCancelled(message));
     }
@@ -209,8 +213,17 @@ public class Promise<DATA> implements HasPromise<DATA> {
         if (!dataRef.compareAndSet(consumers, result))
             return false;
         
-        val subscribers = new HashMap<>(consumers);
+        val subscribers = new HashMap<Subscription<DATA>, Consumer<Result<DATA>>>(consumers);
         consumers.clear();
+        
+        val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(this.eavesdroppers);
+        this.eavesdroppers.clear();
+        
+        for (val eavesdropper : eavesdroppers) {
+            carelessly(()->{
+                eavesdropper.accept(result);
+            });
+        }
         
         subscribers
         .forEach((subscription, consumer) -> {
@@ -269,12 +282,19 @@ public class Promise<DATA> implements HasPromise<DATA> {
     }
     void unsubscribe(Subscription<DATA> subscription) {
         consumers.remove(subscription);
+        abortWhenNoSubscription();
     }
     
-    private Subscription<DATA> addSubscription(
-            Consumer<Result<DATA>> resultConsumer) {
+    private void abortWhenNoSubscription() {
+        if (consumers.isEmpty())
+            abort("No more listener.");
+    }
+    
+    private Subscription<DATA> listen(boolean isEavesdropping, Consumer<Result<DATA>> resultConsumer) {
         val subscription = new Subscription<DATA>(this);
-        consumers.put(subscription, resultConsumer);
+        if (isEavesdropping)
+             eavesdroppers.add(resultConsumer);
+        else consumers    .put(subscription, resultConsumer);
         return subscription;
     }
     
@@ -287,46 +307,44 @@ public class Promise<DATA> implements HasPromise<DATA> {
     }
     
     public final SubscriptionHolder<DATA> subscribe() {
-        return new SubscriptionHolder<>(Wait.forever(), this);
+        return new SubscriptionHolder<>(false, Wait.forever(), this);
     }
     
-    public final SubscriptionHolder<DATA> subscribe(WaitForever waitForever) {
-        return new SubscriptionHolder<>(waitForever, this);
-    }
-    
-    public final SubscriptionHolder<DATA> subscribe(WaitAwhile waitAwhile) {
-        return new SubscriptionHolder<>(waitAwhile, this);
-    }
-    
-    public final SubscriptionHolder<DATA> subscribe(WaitOrDefault<? extends DATA> waitOrDefault) {
-        return new SubscriptionHolder<>(waitOrDefault, this);
+    public final SubscriptionHolder<DATA> subscribe(Wait wait) {
+        return new SubscriptionHolder<>(false, wait, this);
     }
     
     public final Subscription<DATA> subscribe(Consumer<Result<DATA>> resultConsumer) {
         return subscribe(Wait.forever(), resultConsumer);
     }
     
-    public final Subscription<DATA> subscribe(
-            WaitForever            waitForever, 
-            Consumer<Result<DATA>> resultConsumer) {
-        return doSubscribe(waitForever, resultConsumer);
+    public final Subscription<DATA> subscribe(Wait wait, Consumer<Result<DATA>> resultConsumer) {
+        return doSubscribe(false, wait, resultConsumer);
     }
     
-    public final Subscription<DATA> subscribe(
-            WaitAwhile             waitAwhile, 
-            Consumer<Result<DATA>> resultConsumer) {
-        return doSubscribe(waitAwhile.orCancel(), resultConsumer);
+    public final SubscriptionHolder<DATA> eavesdrop() {
+        return new SubscriptionHolder<>(true, Wait.forever(), this);
     }
     
-    public final Subscription<DATA> subscribe(
-            WaitOrDefault<? extends DATA> waitOrDefault, 
-            Consumer<Result<DATA>>        resultConsumer) {
-        return doSubscribe(waitOrDefault, resultConsumer);
+    public final SubscriptionHolder<DATA> eavesdrop(Wait wait) {
+        return new SubscriptionHolder<>(true, wait, this);
     }
     
-    final Subscription<DATA> doSubscribe(
-            Wait                   wait, 
-            Consumer<Result<DATA>> resultConsumer) {
+    public final Subscription<DATA> eavesdrop(Consumer<Result<DATA>> resultConsumer) {
+        return doSubscribe(true, Wait.forever(), resultConsumer);
+    }
+    
+    public final Subscription<DATA> eavesdrop(Wait wait, Consumer<Result<DATA>> resultConsumer) {
+        return doSubscribe(true, wait, resultConsumer);
+    }
+    
+    public final Promise<DATA> abortNoSubsriptionAfter(Wait wait) {
+        val subscriptionHolder = subscribe(wait);
+        subscriptionHolder.assign(__ -> subscriptionHolder.unsubscribe());
+        return this;
+    }
+    
+    final Subscription<DATA> doSubscribe(boolean isEavesdropping, Wait wait, Consumer<Result<DATA>> resultConsumer) {
         val data = dataRef.get();
         if (data instanceof Result) {
             val subscription = new Subscription<DATA>(this);
@@ -341,29 +359,30 @@ public class Promise<DATA> implements HasPromise<DATA> {
         }
         
         val hasNotified  = new AtomicBoolean(false);
-        val waitSession  = wait.newSession();
-        val subscription = addSubscription(result -> {
+        val waitSession  = wait != null ? wait.newSession() : Wait.forever().newSession();
+        val subscription = listen(isEavesdropping, result -> {
             if (hasNotified.compareAndSet(false, true)) {
                 resultConsumer.accept(result);
             }
         });
         waitSession.onExpired((message, throwable) -> {
-            if (hasNotified.compareAndSet(false, true)) {
-                subscription.unsubscribe();
-                Result<DATA> result;
-                try {
-                    @SuppressWarnings("unchecked")
-                    val supplier = (wait instanceof WaitOrDefault)
-                            ? ((WaitOrDefault<DATA>)wait).getDefaultSupplier()
-                            : null;
-                    if (supplier == null)
-                         result = Result.ofCancelled(message, throwable);
-                    else result = supplier.get();
-                } catch (Exception e) {
-                    result = Result.ofCancelled(null, e);
-                }
-                resultConsumer.accept(result);
+            if (!hasNotified.compareAndSet(false, true))
+                return;
+            
+            subscription.unsubscribe();
+            Result<DATA> result;
+            try {
+                @SuppressWarnings("unchecked")
+                val supplier = (wait instanceof WaitOrDefault)
+                        ? ((WaitOrDefault<DATA>)wait).getDefaultSupplier()
+                        : null;
+                if (supplier == null)
+                     result = Result.ofCancelled(message, throwable);
+                else result = supplier.get();
+            } catch (Exception e) {
+                result = Result.ofCancelled(null, e);
             }
+            resultConsumer.accept(result);
         });
         return subscription;
     }

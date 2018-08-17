@@ -2,8 +2,6 @@ package functionalj.types.promise;
 
 import java.util.function.Consumer;
 
-import functionalj.types.result.Result;
-
 @SuppressWarnings("javadoc")
 public class CompletedAction<DATA> extends AbstractDeferAction<DATA> {
     
@@ -22,10 +20,6 @@ public class CompletedAction<DATA> extends AbstractDeferAction<DATA> {
             consumer.accept(promise);
         
         return this;
-    }
-    
-    public Result<DATA> getResult() {
-        return promise.getResult();
     }
     
 }

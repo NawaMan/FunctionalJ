@@ -1,8 +1,11 @@
 package functionalj.types.promise;
 
+import static functionalj.functions.Func.carelessly;
+
 import java.util.function.Consumer;
 
 import functionalj.types.result.Result;
+import lombok.val;
 
 @SuppressWarnings("javadoc")
 public class PendingAction<DATA> extends AbstractDeferAction<DATA> {
@@ -51,15 +54,55 @@ public class PendingAction<DATA> extends AbstractDeferAction<DATA> {
     // TODO - Add methods that the proceeding MUST be done or exception should be thrown.
     
     public PendingAction<DATA> peek(Consumer<Promise<DATA>> consumer) {
-        if (consumer != null)
+        return use(consumer);
+    }
+    public PendingAction<DATA> use(Consumer<Promise<DATA>> consumer) {
+        carelessly(()->{
             consumer.accept(promise);
+        });
         
         return this;
     }
-    public PendingAction<DATA> use(Consumer<Promise<DATA>> consumer) {
-        if (consumer != null)
-            consumer.accept(promise);
-        
+    
+    public PendingAction<DATA> abortNoSubsriptionAfter(Wait wait) {
+        promise.abortNoSubsriptionAfter(wait);
+        return this;
+    }
+    
+    public PendingAction<DATA> subscribe(Consumer<Result<DATA>> resultConsumer) {
+        promise.subscribe(Wait.forever(), resultConsumer);
+        return this;
+    }
+    
+    public PendingAction<DATA> subscribe(Wait wait, Consumer<Result<DATA>> resultConsumer) {
+        promise.subscribe(wait, resultConsumer);
+        return this;
+    }
+    
+    public PendingAction<DATA> subscribe(
+            Consumer<Result<DATA>>       resultConsumer,
+            Consumer<Subscription<DATA>> subscriptionConsumer) {
+        val subscription = promise.subscribe(Wait.forever(), resultConsumer);
+        carelessly(() -> subscriptionConsumer.accept(subscription));
+        return this;
+    }
+    
+    public PendingAction<DATA> subscribe(
+            Wait                         wait,
+            Consumer<Result<DATA>>       resultConsumer,
+            Consumer<Subscription<DATA>> subscriptionConsumer) {
+        val subscription = promise.subscribe(wait, resultConsumer);
+        carelessly(() -> subscriptionConsumer.accept(subscription));
+        return this;
+    }
+    
+    public PendingAction<DATA> eavesdrop(Consumer<Result<DATA>> resultConsumer) {
+        promise.eavesdrop(resultConsumer);
+        return this;
+    }
+    
+    public PendingAction<DATA> eavesdrop(Wait wait, Consumer<Result<DATA>> resultConsumer) {
+        promise.eavesdrop(wait, resultConsumer);
         return this;
     }
     
