@@ -610,7 +610,7 @@ public class Result<DATA>
                 });
     }
     
-    public final void forEach(Consumer<? super DATA> theConsumer) {
+    public final void forValue(Consumer<? super DATA> theConsumer) {
         processData(
                 e -> this,
                 (isValue, value, exception) -> {
@@ -917,6 +917,16 @@ public class Result<DATA>
                 (isValue, value, exception)->{
                     if (exception instanceof ResultCancelledException)
                         action.run();
+                    
+                    return this;
+                });
+    }
+    public final Result<DATA> ifCancelled(Consumer<ResultCancelledException> action) {
+        return processData(
+                e -> this,
+                (isValue, value, exception)->{
+                    if (exception instanceof ResultCancelledException)
+                        action.accept((ResultCancelledException)exception);
                     
                     return this;
                 });

@@ -19,9 +19,9 @@ public class PromisesTest {
         val control2 = DeferAction.of(Integer.class).start();
         
         val promise = Promise.of(
-                Wait.forever(),
                 str     -> control1,
                 padding -> control2,
+                Wait.forever(),
                 (str, padding) -> {
                     return padding + str.length();
                 });
@@ -41,9 +41,9 @@ public class PromisesTest {
         val control2 = DeferAction.of(Integer.class).start();
         
         val promise = Promises.of(
-                Wait.forever(),
                 str     -> control1.getPromise(),
                 padding -> control2.getPromise(),
+                Wait.forever(),
                 (str, padding) -> {
                     return padding + str.length();
                 });
@@ -63,9 +63,9 @@ public class PromisesTest {
         val control2 = DeferAction.of(Integer.class).start();
         
         val promise = Promises.of(
-                Wait.forever(),
                 str     -> control1.getPromise(),
                 padding -> control2.getPromise(),
+                Wait.forever(),
                 (str, padding) -> {
                     return padding + str.length();
                 });
@@ -84,9 +84,9 @@ public class PromisesTest {
         val control2 = DeferAction.of(Integer.class).start();
         
         val promise = Promises.of(
-                Wait.forever(),
                 str     -> control1.getPromise(),
                 padding -> control2.getPromise(),
+                Wait.forever(),
                 (str, padding) -> {
                     return padding + str.length();
                 });
@@ -105,9 +105,9 @@ public class PromisesTest {
         val control2 = DeferAction.of(Integer.class).start();
         
         val promise = Promises.of(
-                Wait.forever(),
                 str     -> control1.getPromise(),
                 padding -> control2.getPromise(),
+                Wait.forever(),
                 (str, padding) -> {
                     return padding + str.length();
                 });
@@ -121,6 +121,35 @@ public class PromisesTest {
         assertStrings(
                 "Result:{ Exception: functionalj.types.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }",
                 promise.getResult());
+    }
+    
+    @Test
+    public void testOf6_happy() {
+        val control1 = DeferAction.of(Integer.class).start();
+        val control2 = DeferAction.of(Integer.class).start();
+        val control3 = DeferAction.of(Integer.class).start();
+        val control4 = DeferAction.of(Integer.class).start();
+        val control5 = DeferAction.of(Integer.class).start();
+        val control6 = DeferAction.of(Integer.class).start();
+        val promise = Promise.of(
+                _1 -> control1,
+                _2 -> control2,
+                _3 -> control3,
+                _4 -> control4,
+                _5 -> control5,
+                _6 -> control6,
+                Wait.forever(),
+                (_1, _2, _3, _4, _5, _6) -> {
+                    return 42;
+                });
+        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        
+        control1.complete(1);
+        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        
+        control2.complete(5);
+        assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
+        assertStrings("Result:{ Value: 8 }",   promise.getResult());
     }
     
     // TODO - Add concurrecy tests.

@@ -69,6 +69,8 @@ Need code clean up!!!!! The code is so shitty :-(
 -- ReadyResult, Acceptable, ValidResult, NonNullResult
 -- Map Plus, FlatMap Plus, Filter Plus
 -- abort when no subscription.
+-- easedrop
+-- Make Result or pipe take a story.
 
 
 
