@@ -48,13 +48,13 @@ public class PromiseWaitTest {
         val list      = new ArrayList<String>();
         val action    = DeferAction.of(String.class)
                 .use(promise -> {
-                        val wait = Wait
-                                .forMilliseconds(150, runnable-> {
-                                    val thread = new Thread(runnable);
-                                    threadRef.set(thread);
-                                    return thread;
-                                })
-                                .orDefaultTo("Not done.");
+                        Wait wait = Wait
+                            .forMilliseconds(150, runnable-> {
+                                val thread = new Thread(runnable);
+                                threadRef.set(thread);
+                                return thread;
+                            })
+                            .orDefaultTo("Not done.");
                         promise
                         .subscribe(wait, r -> list.add(r.get()));
                 })
@@ -76,13 +76,13 @@ public class PromiseWaitTest {
         val list      = new ArrayList<String>();
         val action    = DeferAction.of(String.class)
                 .use(promise -> {
-                        val wait = Wait
-                                .forMilliseconds(150, runnable-> {
-                                    val thread = new Thread(runnable);
-                                    threadRef.set(thread);
-                                    return thread;
-                                })
-                                .orDefaultTo("Not done.");
+                        Wait wait = Wait
+                            .forMilliseconds(150, runnable-> {
+                                val thread = new Thread(runnable);
+                                threadRef.set(thread);
+                                return thread;
+                            })
+                            .orDefaultTo("Not done.");
                         promise
                         .subscribe(wait, r -> list.add(r.get()));
                 })
