@@ -18,7 +18,7 @@ public class PromisesTest {
         val control1 = DeferAction.of(String.class).start();
         val control2 = DeferAction.of(Integer.class).start();
         
-        val promise = Promise.of(
+        val promise = Promise.from(
                 str     -> control1,
                 padding -> control2,
                 Wait.forever(),
@@ -131,7 +131,7 @@ public class PromisesTest {
         val control4 = DeferAction.of(Integer.class).start();
         val control5 = DeferAction.of(Integer.class).start();
         val control6 = DeferAction.of(Integer.class).start();
-        val promise = Promise.of(
+        val promise = Promise.from(
                 _1 -> control1,
                 _2 -> control2,
                 _3 -> control3,

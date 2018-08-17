@@ -43,75 +43,75 @@ public class Promise<DATA> implements HasPromise<DATA> {
                 .getPromise();
     }
     
-    public static <D, T1, T2> Promise<D> of(
+    public static <D, T1, T2> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
             Wait                                       wait,
-            BiFunction<T1, T2, D> merger) {
+            BiFunction<T1, T2, D>                      merger) {
         return Promises.of(promise1, promise2, wait, merger);
     }
-    public static <D, T1, T2> Promise<D> of(
+    public static <D, T1, T2> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
-            BiFunction<T1, T2, D> merger) {
+            BiFunction<T1, T2, D>                      merger) {
         return Promises.of(promise1, promise2, Wait.forever(), merger);
     }
     
-    public static <D, T1, T2, T3> Promise<D> of(
+    public static <D, T1, T2, T3> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
             Function<Object, ? extends HasPromise<T3>> promise3,
             Wait                                       wait,
-            Func3<T1, T2, T3, D> merger) {
+            Func3<T1, T2, T3, D>                       merger) {
         return Promises.of(promise1, promise2, promise3, wait, merger);
     }
-    public static <D, T1, T2, T3> Promise<D> of(
+    public static <D, T1, T2, T3> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
             Function<Object, ? extends HasPromise<T3>> promise3,
-            Func3<T1, T2, T3, D> merger) {
+            Func3<T1, T2, T3, D>                       merger) {
         return Promises.of(promise1, promise2, promise3, Wait.forever(), merger);
     }
     
-    public static <D, T1, T2, T3, T4> Promise<D> of(
+    public static <D, T1, T2, T3, T4> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
             Function<Object, ? extends HasPromise<T3>> promise3,
             Function<Object, ? extends HasPromise<T4>> promise4,
             Wait                                       wait,
-            Func4<T1, T2, T3, T4, D> merger) {
+            Func4<T1, T2, T3, T4, D>                   merger) {
         return Promises.of(promise1, promise2, promise3, promise4, wait, merger);
     }
-    public static <D, T1, T2, T3, T4> Promise<D> of(
+    public static <D, T1, T2, T3, T4> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
             Function<Object, ? extends HasPromise<T3>> promise3,
             Function<Object, ? extends HasPromise<T4>> promise4,
-            Func4<T1, T2, T3, T4, D> merger) {
+            Func4<T1, T2, T3, T4, D>                   merger) {
         return Promises.of(promise1, promise2, promise3, promise4, Wait.forever(), merger);
     }
     
-    public static <D, T1, T2, T3, T4, T5> Promise<D> of(
+    public static <D, T1, T2, T3, T4, T5> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
             Function<Object, ? extends HasPromise<T3>> promise3,
             Function<Object, ? extends HasPromise<T4>> promise4,
             Function<Object, ? extends HasPromise<T5>> promise5,
             Wait                                       wait,
-            Func5<T1, T2, T3, T4, T5, D> merger) {
+            Func5<T1, T2, T3, T4, T5, D>               merger) {
         return Promises.of(promise1, promise2, promise3, promise4, promise5, wait, merger);
     }
-    public static <D, T1, T2, T3, T4, T5> Promise<D> of(
+    public static <D, T1, T2, T3, T4, T5> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
             Function<Object, ? extends HasPromise<T3>> promise3,
             Function<Object, ? extends HasPromise<T4>> promise4,
             Function<Object, ? extends HasPromise<T5>> promise5,
-            Func5<T1, T2, T3, T4, T5, D> merger) {
+            Func5<T1, T2, T3, T4, T5, D>               merger) {
         return Promises.of(promise1, promise2, promise3, promise4, promise5, Wait.forever(), merger);
     }
     
-    public static <D, T1, T2, T3, T4, T5, T6> Promise<D> of(
+    public static <D, T1, T2, T3, T4, T5, T6> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
             Function<Object, ? extends HasPromise<T3>> promise3,
@@ -119,17 +119,17 @@ public class Promise<DATA> implements HasPromise<DATA> {
             Function<Object, ? extends HasPromise<T5>> promise5,
             Function<Object, ? extends HasPromise<T6>> promise6,
             Wait                                       wait,
-            Func6<T1, T2, T3, T4, T5, T6, D> merger) {
+            Func6<T1, T2, T3, T4, T5, T6, D>           merger) {
         return Promises.of(promise1, promise2, promise3, promise4, promise5, promise6, wait, merger);
     }
-    public static <D, T1, T2, T3, T4, T5, T6> Promise<D> of(
+    public static <D, T1, T2, T3, T4, T5, T6> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
             Function<Object, ? extends HasPromise<T3>> promise3,
             Function<Object, ? extends HasPromise<T4>> promise4,
             Function<Object, ? extends HasPromise<T5>> promise5,
             Function<Object, ? extends HasPromise<T6>> promise6,
-            Func6<T1, T2, T3, T4, T5, T6, D> merger) {
+            Func6<T1, T2, T3, T4, T5, T6, D>           merger) {
         return Promises.of(promise1, promise2, promise3, promise4, promise5, promise6, Wait.forever(), merger);
     }
     
