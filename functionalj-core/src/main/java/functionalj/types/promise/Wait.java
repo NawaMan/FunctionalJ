@@ -1,9 +1,5 @@
 package functionalj.types.promise;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
 @SuppressWarnings("javadoc")

@@ -1,9 +1,12 @@
 package functionalj.types.promise;
 
+import static functionalj.types.promise.DeferAction.run;
+import static functionalj.types.result.Result.val;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.functions.Func0;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -18,10 +21,10 @@ public class PromisesTest {
         val control1 = DeferAction.of(String.class).start();
         val control2 = DeferAction.of(Integer.class).start();
         
-        val promise = Promise.from(
+        val promise 
+            = Promise.from(
                 str     -> control1,
                 padding -> control2,
-                Wait.forever(),
                 (str, padding) -> {
                     return padding + str.length();
                 });
@@ -40,10 +43,10 @@ public class PromisesTest {
         val control1 = DeferAction.of(String.class).start();
         val control2 = DeferAction.of(Integer.class).start();
         
-        val promise = Promises.of(
-                str     -> control1.getPromise(),
-                padding -> control2.getPromise(),
-                Wait.forever(),
+        val promise 
+            = Promise.from(
+                str     -> control1,
+                padding -> control2,
                 (str, padding) -> {
                     return padding + str.length();
                 });
@@ -62,10 +65,10 @@ public class PromisesTest {
         val control1 = DeferAction.of(String.class).start();
         val control2 = DeferAction.of(Integer.class).start();
         
-        val promise = Promises.of(
-                str     -> control1.getPromise(),
-                padding -> control2.getPromise(),
-                Wait.forever(),
+        val promise 
+            = Promise.from(
+                str     -> control1,
+                padding -> control2,
                 (str, padding) -> {
                     return padding + str.length();
                 });
@@ -83,10 +86,10 @@ public class PromisesTest {
         val control1 = DeferAction.of(String.class).start();
         val control2 = DeferAction.of(Integer.class).start();
         
-        val promise = Promises.of(
-                str     -> control1.getPromise(),
-                padding -> control2.getPromise(),
-                Wait.forever(),
+        val promise 
+            = Promise.from(
+                str     -> control1,
+                padding -> control2,
                 (str, padding) -> {
                     return padding + str.length();
                 });
@@ -104,10 +107,10 @@ public class PromisesTest {
         val control1 = DeferAction.of(String.class).start();
         val control2 = DeferAction.of(Integer.class).start();
         
-        val promise = Promises.of(
-                str     -> control1.getPromise(),
+        val promise 
+            = Promise.from(
+                str     -> control1,
                 padding -> control2.getPromise(),
-                Wait.forever(),
                 (str, padding) -> {
                     return padding + str.length();
                 });
@@ -131,7 +134,8 @@ public class PromisesTest {
         val control4 = DeferAction.of(Integer.class).start();
         val control5 = DeferAction.of(Integer.class).start();
         val control6 = DeferAction.of(Integer.class).start();
-        val promise = Promise.from(
+        val promise 
+            = Promise.from(
                 _1 -> control1,
                 _2 -> control2,
                 _3 -> control3,
@@ -163,6 +167,43 @@ public class PromisesTest {
         assertStrings("Result:{ Value: 42 }",   promise.getResult());
     }
     
-    // TODO - Add concurrecy tests.
+    @Test
+    public void testOf6_mix() throws InterruptedException {
+        val promise 
+            = Promise.from(
+                _1 -> run(Sleep(50).thenReturn(1)),
+                _2 -> val(2),
+                _3 -> run(Sleep(50).thenReturn(3)),
+                _4 -> val(4),
+                _5 -> run(Sleep(50).thenReturn(5)),
+                _6 -> val(6),
+                (_1, _2, _3, _4, _5, _6) -> {
+                    return 42;
+                });
+        Thread.sleep(60);
+        
+        assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
+        assertStrings("Result:{ Value: 42 }",   promise.getResult());
+    }
+    
+    public static class Sleep<D> implements Func0<D> {
+        private final long time;
+        public Sleep(long time) { this.time = time; }
+        
+        @Override
+        public D applyUnsafe() throws Exception {
+            Thread.sleep(time);
+            return null;
+        }
+        
+        public Func0<D> thenReturn(D value) {
+            return () -> value;
+        }
+        
+    }
+    
+    public static <D> Sleep<D> Sleep(long time) {
+        return new Sleep<D>(time);
+    }
     
 }
