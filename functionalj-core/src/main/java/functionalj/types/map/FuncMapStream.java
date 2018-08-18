@@ -127,7 +127,7 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
                 .findAny()
                 .orElse (orElse);
     }
-
+    
     @Override
     public FuncList<VALUE> select(Predicate<? super KEY> keyPredicate) {
         return entries

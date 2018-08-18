@@ -15,6 +15,7 @@ import functionalj.types.list.FuncList;
 import functionalj.types.list.ImmutableList;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public class FuncListTest {
     
     private void assertStrings(String str, Object obj) {

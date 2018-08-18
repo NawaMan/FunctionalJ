@@ -23,6 +23,7 @@ import functionalj.types.tuple.Tuple5;
 import functionalj.types.tuple.Tuple6;
 import lombok.val;
 
+// TODO - Reconsider if Streamable should be a StreamPlus
 @SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface Streamable<DATA> 

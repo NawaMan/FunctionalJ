@@ -12,6 +12,7 @@ import functionalj.types.list.FuncListStream;
 import functionalj.types.stream.Streamable;
 import lombok.val;
 
+@SuppressWarnings("javadoc")
 public class FuncListStreamTest {
     
     @Test

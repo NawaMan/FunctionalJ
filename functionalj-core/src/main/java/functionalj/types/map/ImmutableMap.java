@@ -1,5 +1,6 @@
 package functionalj.types.map;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.Stream;
 import functionalj.types.list.ImmutableList;
 import functionalj.types.tuple.ImmutableTuple2;
 import functionalj.types.tuple.IntTuple2;
+import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
@@ -27,20 +29,23 @@ public final class ImmutableMap<KEY, VALUE> extends FuncMapStream<KEY, VALUE> {
     }
     public ImmutableMap(Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>> stream) {
         // TODO - this shitty code have to be replaced .... :-(
-        super(null, ImmutableList.from(
+        super(null, createPairList(stream));
+    }
+    private static <KEY, VALUE> ImmutableList<IntTuple2<ImmutableTuple2<KEY, VALUE>>> createPairList(
+            Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>> stream) {
+        val list = new ArrayList<KEY>();
+        return ImmutableList.from(
                         stream
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (a, b)->b))
-                        .entrySet()
-                        .stream()
-                        .map(entry -> {
+                        .filter(entry -> !list.contains(entry.getKey()))
+                        .peek  (entry -> list.add(entry.getKey()))
+                        .map   (entry -> {
                             int keyHash = calculateHash(entry.getKey());
                             @SuppressWarnings("unchecked")
                             ImmutableTuple2<KEY, VALUE> tuple = (entry instanceof ImmutableTuple2)
                                     ? (ImmutableTuple2<KEY, VALUE>)entry
                                     : new ImmutableTuple2<KEY, VALUE>(entry);
                             return new IntTuple2<ImmutableTuple2<KEY, VALUE>>(keyHash, tuple);
-                        })));
+                        }));
     }
     
     private static Integer calculateHash(Object key) {

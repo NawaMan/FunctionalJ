@@ -83,10 +83,13 @@ public class FuncListStream<SOURCE, DATA>
     }
     
     // TODO - equals, hashCode
+    public int hashCode() {
+        return Helper.hashCode(this);
+    }
     
     @Override
     public String toString() {
-        return "[" + joining(", ") + "]";
+        return Helper.toString(this);
     }
     
 }

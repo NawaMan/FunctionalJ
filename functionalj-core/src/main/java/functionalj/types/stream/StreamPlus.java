@@ -1342,6 +1342,17 @@ public interface StreamPlus<DATA>
             return found;
         }
         
+        // TODO - equals, hashCode
+        public static <T> int hashCode(Stream<T> stream) {
+            return stream
+                    .mapToInt(e -> (e == null) ? 0 : e.hashCode())
+                    .reduce(1, (h, eh) -> 31*h + eh);
+        }
+        
+        public static <T> String toString(Stream<T> stream) {
+            return "[" + StreamPlus.from(stream).joining(", ") + "]";
+        }
+        
     }
     
 }
