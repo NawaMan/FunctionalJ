@@ -23,7 +23,7 @@ public class PromiseTest {
     public void testValue() {
         val promise = Promise.ofValue("Hello!");
         assertEquals (PromiseStatus.COMPLETED,    promise.getStatus());
-        assertStrings("Result:{ Value: Hello! }", promise.getResult());
+        assertStrings("Result:{ Value: Hello! }", promise.getCurrentResult());
         
         val ref = new AtomicReference<String>(null);
         promise.subscribe(r -> ref.set(r.get()));
@@ -34,7 +34,7 @@ public class PromiseTest {
     public void testException() {
         val promise = Promise.ofException(new IOException());
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
-        assertStrings("Result:{ Exception: java.io.IOException }", promise.getResult());
+        assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
         val ref = new AtomicReference<String>(null);
         promise.subscribe(r -> ref.set("" + r.get()));
@@ -45,7 +45,7 @@ public class PromiseTest {
     public void testCancel() {
         val promise = Promise.ofAborted();
         assertEquals (PromiseStatus.ABORTED,                                                     promise.getStatus());
-        assertStrings("Result:{ Exception: functionalj.types.result.ResultCancelledException }", promise.getResult());
+        assertStrings("Result:{ Exception: functionalj.types.result.ResultCancelledException }", promise.getCurrentResult());
         
         val ref = new AtomicReference<String>(null);
         promise.subscribe(r -> ref.set("" + r.get()));
@@ -67,7 +67,7 @@ public class PromiseTest {
         
         pendingControl.complete("Forty two");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: Forty two }", promise.getResult());
+        assertStrings("Result:{ Value: Forty two }", promise.getCurrentResult());
         promise.subscribe(r -> list.add("2: " + r.toString()));
         
         assertStrings(
@@ -89,7 +89,7 @@ public class PromiseTest {
         
         pendingControl.fail(new IOException());
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Exception: java.io.IOException }", promise.getResult());
+        assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
     }
     
     @Test
@@ -99,7 +99,7 @@ public class PromiseTest {
                 .subscribe(r -> ref.set("" + r))
                 .start();
         
-        assertStrings("Result:{ Exception: functionalj.types.result.ResultNotReadyException }", action.getResult());
+        assertStrings("Result:{ Exception: functionalj.types.result.ResultNotReadyException }", action.getCurentResult());
         
         action.abort();
         assertEquals("Result:{ Exception: functionalj.types.result.ResultCancelledException }", ref.get());
@@ -117,7 +117,7 @@ public class PromiseTest {
         
         pendingAction.complete("Forty two");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: Forty two }", promise.getResult());
+        assertStrings("Result:{ Value: Forty two }", promise.getCurrentResult());
         promise.subscribe(r -> list.add("2: " + r.toString()));
         
         assertStrings(
@@ -159,7 +159,7 @@ public class PromiseTest {
         
         pendingAction.complete("Forty two");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: Forty two }", promise.getResult());
+        assertStrings("Result:{ Value: Forty two }", promise.getCurrentResult());
         
         sub2.unsubscribe();
         
@@ -184,7 +184,7 @@ public class PromiseTest {
         assertEquals (PromiseStatus.ABORTED, promise.getStatus());
         assertStrings(
                 "Result:{ Exception: functionalj.types.result.ResultCancelledException: No more listener. }",
-                promise.getResult());
+                promise.getCurrentResult());
         
         // This subscription will get cancelled as the result.
         val sub2 = promise.subscribe(r -> list.add("2: " + r.toString()));
@@ -216,7 +216,7 @@ public class PromiseTest {
         assertEquals (PromiseStatus.ABORTED, promise.getStatus());
         assertStrings(
                 "Result:{ Exception: functionalj.types.result.ResultCancelledException: No more listener. }",
-                promise.getResult());
+                promise.getCurrentResult());
         
         assertStrings("[e: Result:{ Exception: functionalj.types.result.ResultCancelledException: No more listener. }]", list);
     }

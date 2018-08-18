@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
@@ -108,7 +110,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
             Function<Object, ? extends HasPromise<T3>> promise3,
             Function<Object, ? extends HasPromise<T4>> promise4,
             Func4<T1, T2, T3, T4, D> merger) {
-        return from(promise1, promise2, promise3, promise4, merger);
+        return from(promise1, promise2, promise3, promise4, Wait.forever(), merger);
     }
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2, T3, T4> Promise<D> from(
@@ -138,7 +140,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
             Function<Object, ? extends HasPromise<T4>> promise4,
             Function<Object, ? extends HasPromise<T5>> promise5,
             Func5<T1, T2, T3, T4, T5, D> merger) {
-        return from(promise1, promise2, promise3, promise4, promise5, merger);
+        return from(promise1, promise2, promise3, promise4, promise5, Wait.forever(), merger);
     }
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2, T3, T4, T5> Promise<D> from(
@@ -171,10 +173,10 @@ public class Promise<DATA> implements HasPromise<DATA> {
             Function<Object, ? extends HasPromise<T5>> promise5,
             Function<Object, ? extends HasPromise<T6>> promise6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        return from(promise1, promise2, promise3, promise4, promise5, promise6, merger);
+        return from(promise1, promise2, promise3, promise4, promise5, promise6, Wait.forever(), merger);
     }
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static <D, T1, T2, T3, T4, T5, T6> Promise<D> Do(
+    public static <D, T1, T2, T3, T4, T5, T6> Promise<D> from(
             Function<Object, ? extends HasPromise<T1>> promise1,
             Function<Object, ? extends HasPromise<T2>> promise2,
             Function<Object, ? extends HasPromise<T3>> promise3,
@@ -276,7 +278,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
             return false;
         
         val subscribers = new HashMap<Subscription<DATA>, Consumer<Result<DATA>>>(consumers);
-        consumers.clear();
+        this.consumers.clear();
         
         val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(this.eavesdroppers);
         this.eavesdroppers.clear();
@@ -360,8 +362,36 @@ public class Promise<DATA> implements HasPromise<DATA> {
         return subscription;
     }
     
-    @SuppressWarnings("unchecked")
     public final Result<DATA> getResult() {
+        return getResult(-1, null);
+    }
+    public final Result<DATA> getResult(long timeout, TimeUnit unit) {
+        if (!this.isDone()) {
+            synchronized (this) {
+                if (!this.isDone()) {
+                    val latch = new CountDownLatch(1);
+                    subscribe(result -> latch.countDown());
+                    
+                    try {
+                        if ((timeout < 0) || (unit == null))
+                             latch.await();
+                        else latch.await(timeout, unit);
+                        
+                    } catch (InterruptedException exception) {
+                        throw new UncheckedInterruptedException(exception);
+                    }
+                }
+            }
+        }
+        
+        if (!this.isDone())
+            throw new UncheckedInterruptedException(new InterruptedException());
+        
+        return getCurrentResult();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public final Result<DATA> getCurrentResult() {
         val data = dataRef.get();
         if (data instanceof Result)
             return (Result<DATA>)data;

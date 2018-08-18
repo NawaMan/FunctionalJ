@@ -26,7 +26,7 @@ public class SubscriptionHolder<DATA> extends Subscription<DATA> {
     }
     
     public SubscriptionHolder<DATA> assign(Consumer<Result<DATA>> consumer) {
-        Result<DATA> result = subscription.getPromise().getResult();
+        Result<DATA> result = subscription.getPromise().getCurrentResult();
         this.consumer.set(consumer);
         if (result.isReady()) {
             consumer.accept(result);

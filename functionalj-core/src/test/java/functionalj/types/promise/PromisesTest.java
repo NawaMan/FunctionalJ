@@ -35,7 +35,7 @@ public class PromisesTest {
         
         control2.complete(5);
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: 8 }",   promise.getResult());
+        assertStrings("Result:{ Value: 8 }",   promise.getCurrentResult());
     }
     
     @Test
@@ -57,7 +57,7 @@ public class PromisesTest {
         
         control1.complete("One");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: 8 }",   promise.getResult());
+        assertStrings("Result:{ Value: 8 }",   promise.getCurrentResult());
     }
     
     @Test
@@ -78,7 +78,7 @@ public class PromisesTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings(
                 "Result:{ Exception: functionalj.types.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }",
-                promise.getResult());
+                promise.getCurrentResult());
     }
     
     @Test
@@ -99,7 +99,7 @@ public class PromisesTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings(
                 "Result:{ Exception: functionalj.types.promise.PromisePartiallyFailException: Promise #1 out of 2 fail. }",
-                promise.getResult());
+                promise.getCurrentResult());
     }
     
     @Test
@@ -123,7 +123,7 @@ public class PromisesTest {
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings(
                 "Result:{ Exception: functionalj.types.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }",
-                promise.getResult());
+                promise.getCurrentResult());
     }
     
     @Test
@@ -164,7 +164,7 @@ public class PromisesTest {
         
         control6.complete(6);
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: 42 }",   promise.getResult());
+        assertStrings("Result:{ Value: 42 }",   promise.getCurrentResult());
     }
     
     @Test
@@ -183,7 +183,7 @@ public class PromisesTest {
         Thread.sleep(60);
         
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: 42 }",   promise.getResult());
+        assertStrings("Result:{ Value: 42 }",   promise.getCurrentResult());
     }
     
     public static class Sleep<D> implements Func0<D> {
