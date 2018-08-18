@@ -52,16 +52,16 @@ public class PromiseWaitTest {
     @Test
     public void testWaitAWhile_differentRunners_complete() throws InterruptedException {
         val runners = FuncList.of(
-                Tuple.of("asyncRunnerOnNewThread",        Wait.asyncRunnerOnNewThread),
-                Tuple.of("asyncRunnerThreadFactory",      Wait.asyncRunnerThreadFactory),
-                Tuple.of("asyncRunnerCompleteableFuture", Wait.asyncRunnerCompleteableFuture),
-                Tuple.of("asyncRunnerThreadFactory()",    Wait.asyncRunnerThreadFactory(new ThreadFactory() {
+                Tuple.of("asyncRunnerOnNewThread",        AsyncRunner.onNewThread),
+                Tuple.of("asyncRunnerThreadFactory",      AsyncRunner.threadFactory),
+                Tuple.of("asyncRunnerCompleteableFuture", AsyncRunner.completeableFuture),
+                Tuple.of("asyncRunnerExecutorService",    AsyncRunner.executorService(Executors.newSingleThreadExecutor())),
+                Tuple.of("asyncRunnerThreadFactory()",    AsyncRunner.threadFactory(new ThreadFactory() {
                     @Override
                     public Thread newThread(Runnable runnable) {
                         return new Thread(runnable);
                     }
-                })),
-                Tuple.of("asyncRunnerExecutorService", Wait.asyncRunnerExecutorService(Executors.newSingleThreadExecutor()))
+                }))
             );
         runners
         .forEach(tuple -> {
@@ -84,16 +84,16 @@ public class PromiseWaitTest {
     @Test
     public void testWaitAWhile_differentRunners_abort() throws InterruptedException {
         val runners = FuncList.of(
-                Tuple.of("asyncRunnerOnNewThread",        Wait.asyncRunnerOnNewThread),
-                Tuple.of("asyncRunnerThreadFactory",      Wait.asyncRunnerThreadFactory),
-                Tuple.of("asyncRunnerCompleteableFuture", Wait.asyncRunnerCompleteableFuture),
-                Tuple.of("asyncRunnerThreadFactory()",    Wait.asyncRunnerThreadFactory(new ThreadFactory() {
+                Tuple.of("asyncRunnerOnNewThread",        AsyncRunner.onNewThread),
+                Tuple.of("asyncRunnerThreadFactory",      AsyncRunner.threadFactory),
+                Tuple.of("asyncRunnerCompleteableFuture", AsyncRunner.completeableFuture),
+                Tuple.of("asyncRunnerExecutorService",    AsyncRunner.executorService(Executors.newSingleThreadExecutor())),
+                Tuple.of("asyncRunnerThreadFactory()",    AsyncRunner.threadFactory(new ThreadFactory() {
                     @Override
                     public Thread newThread(Runnable runnable) {
                         return new Thread(runnable);
                     }
-                })),
-                Tuple.of("asyncRunnerExecutorService", Wait.asyncRunnerExecutorService(Executors.newSingleThreadExecutor()))
+                }))
             );
         runners
         .forEach(tuple -> {

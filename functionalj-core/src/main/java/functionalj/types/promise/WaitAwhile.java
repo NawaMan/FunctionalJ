@@ -59,7 +59,7 @@ public abstract class WaitAwhile extends Wait {
         }
         public WaitAsync(long time, Consumer<Runnable> asyncRunner) {
             this.time        = Math.max(0, time);
-            this.asyncRunner = (asyncRunner != null) ? asyncRunner : asyncRunnerOnNewThread;
+            this.asyncRunner = (asyncRunner != null) ? asyncRunner : AsyncRunner.threadFactory;
         }
         
         @Override

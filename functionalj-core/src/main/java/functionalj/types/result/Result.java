@@ -27,6 +27,8 @@ import functionalj.kinds.Monad;
 import functionalj.pipeable.Pipeable;
 import functionalj.types.MayBe;
 import functionalj.types.list.FuncList;
+import functionalj.types.promise.HasPromise;
+import functionalj.types.promise.Promise;
 import functionalj.types.result.validator.Validator;
 import functionalj.types.tuple.Tuple;
 import functionalj.types.tuple.Tuple2;
@@ -45,7 +47,8 @@ public class Result<DATA>
                         ResultFlatMapAddOn<DATA>,
                         ResultFilterAddOn<DATA> ,
                         ResultPeekAddOn<DATA>,
-                        Pipeable<Result<DATA>> {
+                        Pipeable<Result<DATA>> ,
+                        HasPromise<DATA> {
     
     public static enum Status {
         UNAVAILABLE, CANCELLED, COMPLETED;
@@ -233,31 +236,31 @@ public class Result<DATA>
             return Result.ofException(e);
         }
     }
-    public static <D> Result<D> from(Func0<D> supplier) {
+    public static <D> Result<D> from(Func0<? extends D> supplier) {
         try {
-            return Result.of(supplier.get());
+            return Result.of((D)supplier.applyUnsafe());
         } catch (Exception e) {
             return Result.ofException(e);
         }
     }
-    public static <D> Result<D> Try(Supplier<D> supplier) {
+    public static <D> Result<D> Try(Supplier<? extends D> supplier) {
         try {
             return Result.of(supplier.get());
         } catch (RuntimeException e) {
             return Result.ofException(e);
         }
     }
-    public static <D> Result<D> Try(Func0<D> supplier) {
+    public static <D> Result<D> Try(Func0<? extends D> supplier) {
         try {
-            return Result.of(supplier.get());
+            return Result.of((D)supplier.applyUnsafe());
         } catch (Exception e) {
             return Result.ofException(e);
         }
     }
     
-    public static <D> Result<D> Do(Func0<D> supplier) {
+    public static <D> Result<D> Do(Func0<? extends D> supplier) {
         try {
-            return Result.of(supplier.get());
+            return Result.of((D)supplier.applyUnsafe());
         } catch (Exception e) {
             return Result.ofException(e);
         }
@@ -496,6 +499,14 @@ public class Result<DATA>
                 });
     }
     
+    @Override
+    public Promise<DATA> getPromise() {
+        return processData(Promise::ofException,
+                (isValue, value, exception) -> {
+                    return isValue ? Promise.ofValue(value) : Promise.ofException(exception);
+                });
+    }
+    
     @SuppressWarnings("unchecked")
     @Override
     public final <TARGET> Result<TARGET> _map(Function<? super DATA, ? extends TARGET> mapper) {
@@ -642,6 +653,19 @@ public class Result<DATA>
                 });
     }
     
+    public Result<DATA> whenValueGet(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isValue())
+            return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    public Result<DATA> whenValue(DATA fallbackValue) {
+        if (this.isValue())
+            return Result.of(fallbackValue);
+        
+        return this;
+    }
+    
     public final boolean isNotValue() {
         return !this.isValue();
     }
@@ -678,6 +702,19 @@ public class Result<DATA>
     }
     public Result<DATA> whenNotPresent(DATA fallbackValue) {
         if (this.isNotPresent())
+            return Result.of(fallbackValue);
+        
+        return this;
+    }
+    
+    public Result<DATA> whenPresentGet(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isValue())
+            return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    public Result<DATA> whenPresent(DATA fallbackValue) {
+        if (this.isValue())
             return Result.of(fallbackValue);
         
         return this;
@@ -774,6 +811,34 @@ public class Result<DATA>
     
     public Result<DATA> whenNull(DATA fallbackValue) {
         if (this.isNull())
+            return Result.of(fallbackValue);
+        
+        return this;
+    }
+    
+    public final boolean isFail() {
+        return isAvailable() && isException();
+    }
+    
+    public final Result<DATA> ifFail(Consumer<? super Exception> consumer) {
+        return processData(
+                e -> this,
+                (isValue, value, exception) -> {
+                    if ((exception != null) && !(exception instanceof ResultNotAvailableException))
+                        consumer.accept(exception);
+                    
+                    return this;
+                });
+    }
+    
+    public Result<DATA> whenFailGet(Supplier<? extends DATA> fallbackSupplier) {
+        if (this.isFail())
+            return Result.from(fallbackSupplier);
+        
+        return this;
+    }
+    public Result<DATA> whenFail(DATA fallbackValue) {
+        if (this.isFail())
             return Result.of(fallbackValue);
         
         return this;

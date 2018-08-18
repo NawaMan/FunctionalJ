@@ -2,8 +2,12 @@ package functionalj.types.promise;
 
 import static functionalj.functions.Func.carelessly;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import functionalj.functions.Func;
+import functionalj.functions.Func0;
 import functionalj.types.result.Result;
 import lombok.val;
 
@@ -17,16 +21,65 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
         return of(new Promise<D>());
     }
     public static <D> DeferAction<D> of(Promise<D> promise) {
-        val control = new DeferAction<D>(promise);
+        val control = new DeferAction<D>(promise, null);
         return control;
     }
     
-    DeferAction(Promise<DATA> promise) {
+    public static <D> DeferAction<D> from(Supplier<D> supplier) {
+        return from(Func.from(supplier), AsyncRunner.threadFactory);
+    }
+    public static <D> DeferAction<D> from(Func0<D> supplier) {
+        return from(supplier, AsyncRunner.threadFactory);
+    }
+    public static <D> DeferAction<D> from(Func0<D> supplier, Consumer<Runnable> runner){
+        return from(supplier, null, runner);
+    }
+    public static <D> DeferAction<D> from(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
+        val promise = new Promise<D>();
+        val actionRef = new AtomicReference<DeferAction<D>>();
+        DeferAction<D> deferAction = new DeferAction<D>(promise, () -> {
+            carelessly(onStart);
+            runner.accept(new Runnable() {
+                @Override
+                public void run() {
+                    if (promise.isNotDone()) {
+                        val action = actionRef.get().start();
+                        Result.from(supplier)
+                        .ifException(action::fail)
+                        .ifValue    (action::complete);
+                    }
+                }
+            });
+        });
+        actionRef.set(deferAction);
+        
+        return deferAction;
+    }
+    
+    public static <D> PendingAction<D> run(Func0<D> supplier) {
+        return run(supplier, AsyncRunner.threadFactory);
+    }
+    public static <D> PendingAction<D> run(Func0<D> supplier, Consumer<Runnable> runner){
+        return run(supplier, null, runner);
+    }
+    public static <D> PendingAction<D> run(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
+        return from(supplier, onStart, runner).start();
+    }
+    
+    private final Runnable onStart;
+    
+    protected DeferAction(Promise<DATA> promise, Runnable onStart) {
         super(promise);
+        this.onStart = onStart;
     }
     
     public PendingAction<DATA> start() {
+        val isStarted = promise.isStarted();
         promise.start();
+        
+        if (!isStarted && (onStart != null))
+            Func.carelessly(onStart);
+        
         return new PendingAction<>(promise);
     }
     

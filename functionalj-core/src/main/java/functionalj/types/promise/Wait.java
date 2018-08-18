@@ -9,16 +9,6 @@ import java.util.function.Consumer;
 @SuppressWarnings("javadoc")
 public abstract class Wait {
     
-    public static final Consumer<Runnable> asyncRunnerOnNewThread        = runnable -> new Thread(runnable).start();
-    public static final Consumer<Runnable> asyncRunnerThreadFactory      = runnable -> Executors.defaultThreadFactory().newThread(runnable).start();
-    public static final Consumer<Runnable> asyncRunnerCompleteableFuture = runnable -> CompletableFuture.runAsync(runnable);
-    public static final Consumer<Runnable> asyncRunnerThreadFactory(ThreadFactory threadFactory) {
-        return runnable -> threadFactory.newThread(runnable).start();
-    }
-    public static final Consumer<Runnable> asyncRunnerExecutorService(ExecutorService executorService) {
-        return runnable -> executorService.execute(runnable);
-    }
-    
     public static WaitForever forever() {
         return WaitForever.instance ;
     }

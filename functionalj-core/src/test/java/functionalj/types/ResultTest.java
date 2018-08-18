@@ -22,7 +22,7 @@ public class ResultTest {
     @Test
     public void testResultFom() {
         assertEquals("Result:{ Value: VALUE }", "" + Result.from(()->"VALUE"));
-        assertEquals("Result:{ Exception: functionalj.functions.FunctionInvocationException: java.io.IOException }",
+        assertEquals("Result:{ Exception: java.io.IOException }",
                 "" + Result.from(()->{ throw new IOException(); }));
     }
     @Test
@@ -142,7 +142,7 @@ public class ResultTest {
     
     @Test
     public void testResultResult_withException() {
-        assertStrings("Result:{ Exception: functionalj.functions.FunctionInvocationException: java.lang.Exception: Test fail }",
+        assertStrings("Result:{ Exception: java.lang.Exception: Test fail }",
                 Result.ofResults(
                         Result.of("One"),
                         Result.ofException("Test fail"),

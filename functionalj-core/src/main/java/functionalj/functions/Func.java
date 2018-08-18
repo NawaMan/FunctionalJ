@@ -466,6 +466,17 @@ public interface Func {
         return runnable;
     }
     
+    public static void carelessly(Runnable runnable) {
+        if (runnable == null)
+            return;
+        
+        try {
+            runnable.run();
+        } catch (Exception e) {
+            // Do nothing
+        }
+    }
+    
     public static void carelessly(FuncUnit0 action) {
         if (action == null)
             return;
@@ -474,6 +485,19 @@ public interface Func {
             action.run();
         } catch (Exception e) {
             // Do nothing
+        }
+    }
+    
+    public static void gracefully(Runnable runnable) {
+        if (runnable == null)
+            return;
+        
+        try {
+            runnable.run();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new FunctionInvocationException(e);
         }
     }
     
@@ -489,6 +513,7 @@ public interface Func {
             throw new FunctionInvocationException(e);
         }
     }
+    
     // TODO - Add the one with handler.
     
     public static <INPUT> FuncUnit1<INPUT> F(FuncUnit1<INPUT> consumer) {
