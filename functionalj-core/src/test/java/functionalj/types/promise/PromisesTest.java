@@ -1,7 +1,7 @@
 package functionalj.types.promise;
 
 import static functionalj.types.promise.DeferAction.run;
-import static functionalj.types.result.Result.val;
+import static functionalj.types.result.Result.value;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -18,8 +18,8 @@ public class PromisesTest {
     
     @Test
     public void testOf2_happy() {
-        val control1 = DeferAction.of(String.class).start();
-        val control2 = DeferAction.of(Integer.class).start();
+        val control1 = (PendingAction<String> )DeferAction.of(String.class).start();
+        val control2 = (PendingAction<Integer>)DeferAction.of(Integer.class).start();
         
         val promise 
             = Promise.from(
@@ -172,11 +172,11 @@ public class PromisesTest {
         val promise 
             = Promise.from(
                 _1 -> run(Sleep(50).thenReturn(1)),
-                _2 -> val(2),
+                _2 -> value(2),
                 _3 -> run(Sleep(50).thenReturn(3)),
-                _4 -> val(4),
+                _4 -> value(4),
                 _5 -> run(Sleep(50).thenReturn(5)),
-                _6 -> val(6),
+                _6 -> value(6),
                 (_1, _2, _3, _4, _5, _6) -> {
                     return 42;
                 });

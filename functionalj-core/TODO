@@ -22,7 +22,7 @@
 + Pipe
 + FunctionalList
 + FMap
-- Promise
++ Promise
 - Prism -> Multiple Promise combine to one. create an obj from supplier/function of each fields.
 - StoreRef, StoreList, StoreMap
 
@@ -34,8 +34,8 @@
 - Builder
 - ExhaughBuilder
 - MapBasedDataObject
-- Remove MayBe? -- let's keep it ... using _ prefix
-- Remove Kinds? -- let's keep it ... using _ prefix
++ Remove MayBe? -- let's keep it ... using _ prefix
++ Remove Kinds? -- let's keep it ... using _ prefix
 - List each
 - remove the compose package.
 

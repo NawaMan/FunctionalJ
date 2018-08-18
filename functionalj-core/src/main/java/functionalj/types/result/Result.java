@@ -59,12 +59,6 @@ public class Result<DATA>
     private static final Result NOTREADY     = new Result<>(null, new ResultNotReadyException());
     private static final Result CANCELLED    = new Result<>(null, new ResultCancelledException());
     
-    public static <D> Result<D> val(D value) {
-        if (value == null)
-            return Result.ofNull();
-        
-        return new Result<D>(value, null);
-    }
     public static <D> Result<D> value(D value) {
         if (value == null)
             return Result.ofNull();

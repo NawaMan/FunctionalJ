@@ -102,6 +102,7 @@ public class DeferActionTest {
         
         assertStrings("[Start: 0, End: 100, Result: Result:{ Value: Hello }]", log);
     }
+    
     @Test
     public void testGetResult_abort() {
         val log = new ArrayList<String>();
@@ -121,6 +122,7 @@ public class DeferActionTest {
             assertStrings("[Start: 0, End: 50, Result: Result:{ Exception: functionalj.types.result.ResultNotReadyException }]", log);
         }
     }
+    
     @Test
     public void testGetResult_interrupt() {
         val start     = System.currentTimeMillis();
