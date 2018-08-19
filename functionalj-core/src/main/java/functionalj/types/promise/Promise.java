@@ -509,7 +509,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Promise<TARGET> flatMap(Function<? super DATA, HasPromise<? extends TARGET>> mapper) {
+    public final <TARGET> Promise<TARGET> flatMap(Function<DATA, HasPromise<TARGET>> mapper) {
         val targetPromise = (Promise<TARGET>)newPromise();
         targetPromise.start();
         subscribe(r -> {

@@ -193,11 +193,7 @@ public class DeferActionTest {
             }, OnStart.run(()->{
                 log.add("Start #2 ...");
                 runningThread.set(Thread.currentThread().toString());
-            }))
-            .subscribe(result -> {
-                log.add("Done #2: " + result);
-                Thread.sleep(50);
-            });
+            }));
         })
         .subscribe(result -> {
             log.add("Done #1: " + result);
@@ -210,9 +206,35 @@ public class DeferActionTest {
                 + "Running #1..., "
                 +   "Start #2 ..., "
                 +   "Running #2..., "
-                +   "Done #2: Result:{ Value: 5 }, "
                 + "Done #1: Result:{ Value: 5 }"
                 + "]",
                 log);
+    }
+    
+    @Test
+    public void testDeferAction_moreChain() throws InterruptedException {
+        val log = new ArrayList<String>();
+        DeferAction.run(()->{
+            Thread.sleep(50);
+            return "Hello";
+        })
+        .chain(str->{
+            Thread.sleep(50);
+            return Promise.ofValue(str.length());
+        })
+        .chain(length->{
+            Thread.sleep(50);
+            return Promise.ofValue(length + 42);
+        })
+        .map(value->{
+            Thread.sleep(50);
+            return "Total=" + value;
+        })
+        .subscribe(result -> {
+            log.add("Done: " + result);
+        })
+        .getResult();
+        
+        assertStrings("[Done: Result:{ Value: Total=47 }]", log);
     }
 }

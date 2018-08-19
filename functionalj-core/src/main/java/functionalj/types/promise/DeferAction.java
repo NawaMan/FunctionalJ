@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import functionalj.functions.Func;
 import functionalj.functions.Func0;
+import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit1;
 import functionalj.types.result.Result;
 import lombok.val;
@@ -153,12 +154,16 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> DeferAction<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+    public final <TARGET> DeferAction<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         val newPromise = promise.map(mapper);
         return new DeferAction<TARGET>((Promise<TARGET>)newPromise);
     }
     
-    public final <TARGET> DeferAction<TARGET> flatMap(Function<? super DATA, HasPromise<? extends TARGET>> mapper) {
+    public final <TARGET> DeferAction<TARGET> flatMap(Func1<? super DATA, HasPromise<? extends TARGET>> mapper) {
+        return chain((Func1)mapper);
+    }
+    
+    public final <TARGET> DeferAction<TARGET> chain(Func1<DATA, HasPromise<TARGET>> mapper) {
         val newPromise = promise.flatMap(mapper);
         return new DeferAction<TARGET>((Promise<TARGET>)newPromise);
     }

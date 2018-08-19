@@ -5,6 +5,7 @@ import static functionalj.functions.Func.carelessly;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit1;
 import functionalj.types.result.Result;
 import lombok.val;
@@ -109,20 +110,24 @@ public class PendingAction<DATA> extends AbstractDeferAction<DATA> {
     
     //== Functional ==
     
-    public final DeferAction<DATA> filter(Predicate<? super DATA> predicate) {
+    public final PendingAction<DATA> filter(Predicate<? super DATA> predicate) {
         val newPromise = promise.filter(predicate);
-        return new DeferAction<DATA>(newPromise);
+        return new PendingAction<DATA>(newPromise);
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> DeferAction<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+    public final <TARGET> PendingAction<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         val newPromise = promise.map(mapper);
-        return new DeferAction<TARGET>((Promise<TARGET>)newPromise);
+        return new PendingAction<TARGET>((Promise<TARGET>)newPromise);
     }
     
-    public final <TARGET> DeferAction<TARGET> flatMap(Function<? super DATA, HasPromise<? extends TARGET>> mapper) {
+    public final <TARGET> PendingAction<TARGET> flatMap(Func1<? super DATA, HasPromise<? extends TARGET>> mapper) {
+        return chain((Func1)mapper);
+    }
+    
+    public final <TARGET> PendingAction<TARGET> chain(Func1<DATA, HasPromise<TARGET>> mapper) {
         val newPromise = promise.flatMap(mapper);
-        return new DeferAction<TARGET>((Promise<TARGET>)newPromise);
+        return new PendingAction<TARGET>((Promise<TARGET>)newPromise);
     }
     
     // TODO - Other F-M-FM methods.
