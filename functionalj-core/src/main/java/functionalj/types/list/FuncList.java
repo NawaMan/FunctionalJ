@@ -650,7 +650,7 @@ public interface FuncList<DATA>
         FuncList<Tuple2<T1, T2>> mapTuple(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2) {
-        return mapThan(mapper1, mapper2,
+        return mapThen(mapper1, mapper2,
                    (v1, v2) -> Tuple2.of(v1, v2));
     }
     
@@ -659,7 +659,7 @@ public interface FuncList<DATA>
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3) {
-        return mapThan(mapper1, mapper2, mapper3,
+        return mapThen(mapper1, mapper2, mapper3,
                    (v1, v2, v3) -> Tuple3.of(v1, v2, v3));
     }
     
@@ -669,7 +669,7 @@ public interface FuncList<DATA>
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
                 Function<? super DATA, ? extends T4> mapper4) {
-        return mapThan(mapper1, mapper2, mapper3, mapper4,
+        return mapThen(mapper1, mapper2, mapper3, mapper4,
                    (v1, v2, v3, v4) -> Tuple4.of(v1, v2, v3, v4));
     }
     
@@ -680,7 +680,7 @@ public interface FuncList<DATA>
                 Function<? super DATA, ? extends T3> mapper3,
                 Function<? super DATA, ? extends T4> mapper4,
                 Function<? super DATA, ? extends T5> mapper5) {
-        return mapThan(mapper1, mapper2, mapper3, mapper4, mapper5,
+        return mapThen(mapper1, mapper2, mapper3, mapper4, mapper5,
                    (v1, v2, v3, v4, v5) -> Tuple5.of(v1, v2, v3, v4, v5));
     }
     public default <T1, T2, T3, T4, T5, T6> 
@@ -691,14 +691,14 @@ public interface FuncList<DATA>
                 Function<? super DATA, ? extends T4> mapper4,
                 Function<? super DATA, ? extends T5> mapper5,
                 Function<? super DATA, ? extends T6> mapper6) {
-        return mapThan(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6,
+        return mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6,
                    (v1, v2, v3, v4, v5, v6) -> Tuple6.of(v1, v2, v3, v4, v5, v6));
     }
     
     //-- Map and combine --
     
     public default <T1, T2, T> 
-        FuncList<T> mapThan(
+        FuncList<T> mapThen(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 BiFunction<T1, T2, T> function) {
@@ -710,7 +710,7 @@ public interface FuncList<DATA>
         });
     }
     public default <T1, T2, T3, T> 
-        FuncList<T> mapThan(
+        FuncList<T> mapThen(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -724,7 +724,7 @@ public interface FuncList<DATA>
         });
     }
     public default <T1, T2, T3, T4, T> 
-        FuncList<T> mapThan(
+        FuncList<T> mapThen(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -740,7 +740,7 @@ public interface FuncList<DATA>
         });
     }
     public default <T1, T2, T3, T4, T5, T> 
-        FuncList<T> mapThan(
+        FuncList<T> mapThen(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -758,7 +758,7 @@ public interface FuncList<DATA>
         });
     }
     public default <T1, T2, T3, T4, T5, T6, T> 
-        FuncList<T> mapThan(
+        FuncList<T> mapThen(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
