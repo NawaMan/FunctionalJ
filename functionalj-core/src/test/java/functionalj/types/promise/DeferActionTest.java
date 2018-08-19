@@ -234,6 +234,7 @@ public class DeferActionTest {
             log.add("Done: " + result);
         })
         .getResult();
+        Thread.sleep(50);
         
         assertStrings("[Done: Result:{ Value: Total=47 }]", log);
     }
