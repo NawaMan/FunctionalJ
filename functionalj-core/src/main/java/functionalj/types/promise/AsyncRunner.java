@@ -6,17 +6,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
+@FunctionalInterface
 public interface AsyncRunner extends Consumer<Runnable> {
     
-    public static final Consumer<Runnable> onNewThread        = runnable -> new Thread(runnable).start();
-    public static final Consumer<Runnable> threadFactory      = runnable -> Executors.defaultThreadFactory().newThread(runnable).start();
-    public static final Consumer<Runnable> completeableFuture = runnable -> CompletableFuture.runAsync(runnable);
+    public static final AsyncRunner onNewThread = runnable -> {
+        new Thread(runnable).start();
+    };
     
-    public static Consumer<Runnable> threadFactory(ThreadFactory threadFactory) {
+    public static final AsyncRunner threadFactory = runnable -> {
+        Executors.defaultThreadFactory().newThread(runnable).start();
+    };
+    
+    public static final AsyncRunner completeableFuture = runnable -> {
+        CompletableFuture.runAsync(runnable);
+    };
+    
+    public static AsyncRunner threadFactory(ThreadFactory threadFactory) {
         return runnable -> threadFactory.newThread(runnable).start();
     }
     
-    public static Consumer<Runnable> executorService(ExecutorService executorService) {
+    public static AsyncRunner executorService(ExecutorService executorService) {
         return runnable -> executorService.execute(runnable);
     }
     

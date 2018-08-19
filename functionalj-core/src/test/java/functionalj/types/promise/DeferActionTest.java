@@ -4,6 +4,7 @@ import static functionalj.types.promise.DeferAction.run;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class DeferActionTest {
         })
         .subscribe(result -> {
             val end = System.currentTimeMillis();
-            log.add("End: " + (10*((end - start) / 10)));
+            log.add("End: " + (100*((end - start) / 100)));
             log.add("Result: " + result);
         });
         
@@ -139,4 +140,32 @@ public class DeferActionTest {
         assertStrings("Result:{ Exception: java.lang.InterruptedException: sleep interrupted }", action.getResult());
     }
     
+    @Test
+    public void testDeferAction_onStart() throws InterruptedException {
+        val log = new ArrayList<String>();
+        val initThread      = new AtomicReference<String>(Thread.currentThread().toString());
+        val onStartThread   = new AtomicReference<String>();
+        val onRunningThread = new AtomicReference<String>();
+        val onDoneThread    = new AtomicReference<String>();
+        log.add("Init ...");
+        DeferAction.run(()->{
+            Thread.sleep(100);
+            log.add("Running ...");
+            onRunningThread.set(Thread.currentThread().toString());
+            return "Hello";
+        }, ()->{
+            log.add("... onStart ...");
+            onStartThread.set(Thread.currentThread().toString());
+        })
+        .subscribe(result -> {
+            log.add("Done: " + result);
+            onDoneThread.set(Thread.currentThread().toString());
+        })
+        .getResult();
+        
+        assertStrings("[Init ..., ... onStart ..., Running ..., Done: Result:{ Value: Hello }]", log);
+        assertFalse(initThread.get().equals(onRunningThread.get()));
+        assertStrings(onStartThread.get(), onRunningThread.get());
+        assertStrings(onStartThread.get(), onDoneThread.get());
+    }
 }

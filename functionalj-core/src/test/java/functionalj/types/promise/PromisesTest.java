@@ -178,12 +178,12 @@ public class PromisesTest {
                 _5 -> run(Sleep(50).thenReturn(5)),
                 _6 -> value(6),
                 (_1, _2, _3, _4, _5, _6) -> {
-                    return 42;
+                    return _1 + _2 + _3 + _4 + _5 + 6;
                 });
         Thread.sleep(60);
         
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
-        assertStrings("Result:{ Value: 42 }",   promise.getCurrentResult());
+        assertStrings("Result:{ Value: 21 }",   promise.getCurrentResult());
     }
     
     public static class Sleep<D> implements Func0<D> {
@@ -196,7 +196,7 @@ public class PromisesTest {
             return null;
         }
         
-        public Func0<D> thenReturn(D value) {
+        public <T> Func0<T> thenReturn(T value) {
             return () -> value;
         }
         
