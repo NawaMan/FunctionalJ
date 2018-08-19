@@ -3,10 +3,13 @@ package functionalj.types.promise;
 import static functionalj.functions.Func.carelessly;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.functions.Func;
 import functionalj.functions.Func0;
+import functionalj.functions.FuncUnit1;
 import functionalj.types.result.Result;
 import lombok.val;
 
@@ -72,6 +75,9 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     
     private final Runnable task;
     
+    protected DeferAction(Promise<DATA> promise) {
+        this(promise, null);
+    }
     protected DeferAction(Promise<DATA> promise, Runnable task) {
         super(promise);
         this.task = task;
@@ -87,9 +93,8 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
         return new PendingAction<>(promise);
     }
     
-    public DeferAction<DATA> peek(Consumer<Promise<DATA>> consumer) {
-        return use(consumer);
-    }
+    //== Subscription ==
+    
     public DeferAction<DATA> use(Consumer<Promise<DATA>> consumer) {
         carelessly(()->{
             consumer.accept(promise);
@@ -103,41 +108,61 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
         return this;
     }
     
-    public DeferAction<DATA> subscribe(Consumer<Result<DATA>> resultConsumer) {
+    public DeferAction<DATA> subscribe(FuncUnit1<Result<DATA>> resultConsumer) {
         promise.subscribe(Wait.forever(), resultConsumer);
         return this;
     }
     
-    public DeferAction<DATA> subscribe(Wait wait, Consumer<Result<DATA>> resultConsumer) {
+    public DeferAction<DATA> subscribe(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         promise.subscribe(wait, resultConsumer);
         return this;
     }
     
     public DeferAction<DATA> subscribe(
-            Consumer<Result<DATA>>       resultConsumer,
-            Consumer<Subscription<DATA>> subscriptionConsumer) {
+            FuncUnit1<Result<DATA>>       resultConsumer,
+            FuncUnit1<Subscription<DATA>> subscriptionConsumer) {
         val subscription = promise.subscribe(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
     
     public DeferAction<DATA> subscribe(
-            Wait                         wait,
-            Consumer<Result<DATA>>       resultConsumer,
-            Consumer<Subscription<DATA>> subscriptionConsumer) {
+            Wait                          wait,
+            FuncUnit1<Result<DATA>>       resultConsumer,
+            FuncUnit1<Subscription<DATA>> subscriptionConsumer) {
         val subscription = promise.subscribe(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
     
-    public DeferAction<DATA> eavesdrop(Consumer<Result<DATA>> resultConsumer) {
+    public DeferAction<DATA> eavesdrop(FuncUnit1<Result<DATA>> resultConsumer) {
         promise.eavesdrop(resultConsumer);
         return this;
     }
     
-    public DeferAction<DATA> eavesdrop(Wait wait, Consumer<Result<DATA>> resultConsumer) {
+    public DeferAction<DATA> eavesdrop(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         promise.eavesdrop(wait, resultConsumer);
         return this;
     }
+    
+    //== Functional ==
+    
+    public final DeferAction<DATA> filter(Predicate<? super DATA> predicate) {
+        val newPromise = promise.filter(predicate);
+        return new DeferAction<DATA>(newPromise);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public final <TARGET> DeferAction<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+        val newPromise = promise.map(mapper);
+        return new DeferAction<TARGET>((Promise<TARGET>)newPromise);
+    }
+    
+    public final <TARGET> DeferAction<TARGET> flatMap(Function<? super DATA, HasPromise<? extends TARGET>> mapper) {
+        val newPromise = promise.flatMap(mapper);
+        return new DeferAction<TARGET>((Promise<TARGET>)newPromise);
+    }
+    
+    // TODO - Other F-M-FM methods.
     
 }

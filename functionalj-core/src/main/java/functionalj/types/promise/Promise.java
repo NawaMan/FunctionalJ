@@ -24,6 +24,7 @@ import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
+import functionalj.functions.FuncUnit1;
 import functionalj.types.list.FuncList;
 import functionalj.types.result.Result;
 import lombok.val;
@@ -208,8 +209,8 @@ public class Promise<DATA> implements HasPromise<DATA> {
     //    result    -> done.
     //      result.cancelled -> aborted
     //      result.completed -> completed
-    private final Map<Subscription<DATA>, Consumer<Result<DATA>>> consumers     = new ConcurrentHashMap<>();
-    private final List<Consumer<Result<DATA>>>                    eavesdroppers = new ArrayList<>();
+    private final Map<Subscription<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>();
+    private final List<FuncUnit1<Result<DATA>>>                    eavesdroppers = new ArrayList<>();
     private final AtomicReference<Object> dataRef = new AtomicReference<>(PromiseStatus.NOT_STARTED);
     
     public Promise() {}
@@ -277,7 +278,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
         if (!dataRef.compareAndSet(consumers, result))
             return false;
         
-        val subscribers = new HashMap<Subscription<DATA>, Consumer<Result<DATA>>>(consumers);
+        val subscribers = new HashMap<Subscription<DATA>, FuncUnit1<Result<DATA>>>(consumers);
         this.consumers.clear();
         
         val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(this.eavesdroppers);
@@ -310,9 +311,9 @@ public class Promise<DATA> implements HasPromise<DATA> {
     }
     
     protected void handleResultConsumptionExcepion(
-            Subscription<DATA>     subscription,
-            Consumer<Result<DATA>> consumer,
-            Result<DATA>           result) {
+            Subscription<DATA>      subscription,
+            FuncUnit1<Result<DATA>> consumer,
+            Result<DATA>            result) {
     }
     
     protected <T> Promise<T> newPromise() {
@@ -354,7 +355,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
             abort("No more listener.");
     }
     
-    private Subscription<DATA> listen(boolean isEavesdropping, Consumer<Result<DATA>> resultConsumer) {
+    private Subscription<DATA> listen(boolean isEavesdropping, FuncUnit1<Result<DATA>> resultConsumer) {
         val subscription = new Subscription<DATA>(this);
         if (isEavesdropping)
              eavesdroppers.add(resultConsumer);
@@ -406,11 +407,11 @@ public class Promise<DATA> implements HasPromise<DATA> {
         return new SubscriptionHolder<>(false, wait, this);
     }
     
-    public final Subscription<DATA> subscribe(Consumer<Result<DATA>> resultConsumer) {
+    public final Subscription<DATA> subscribe(FuncUnit1<Result<DATA>> resultConsumer) {
         return subscribe(Wait.forever(), resultConsumer);
     }
     
-    public final Subscription<DATA> subscribe(Wait wait, Consumer<Result<DATA>> resultConsumer) {
+    public final Subscription<DATA> subscribe(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         return doSubscribe(false, wait, resultConsumer);
     }
     
@@ -422,11 +423,11 @@ public class Promise<DATA> implements HasPromise<DATA> {
         return new SubscriptionHolder<>(true, wait, this);
     }
     
-    public final Subscription<DATA> eavesdrop(Consumer<Result<DATA>> resultConsumer) {
+    public final Subscription<DATA> eavesdrop(FuncUnit1<Result<DATA>> resultConsumer) {
         return doSubscribe(true, Wait.forever(), resultConsumer);
     }
     
-    public final Subscription<DATA> eavesdrop(Wait wait, Consumer<Result<DATA>> resultConsumer) {
+    public final Subscription<DATA> eavesdrop(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         return doSubscribe(true, wait, resultConsumer);
     }
     
@@ -436,7 +437,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
         return this;
     }
     
-    final Subscription<DATA> doSubscribe(boolean isEavesdropping, Wait wait, Consumer<Result<DATA>> resultConsumer) {
+    final Subscription<DATA> doSubscribe(boolean isEavesdropping, Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         val data = dataRef.get();
         if (data instanceof Result) {
             val subscription = new Subscription<DATA>(this);
@@ -508,13 +509,13 @@ public class Promise<DATA> implements HasPromise<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Promise<TARGET> flatMap(Function<? super DATA, Promise<? extends TARGET>> mapper) {
+    public final <TARGET> Promise<TARGET> flatMap(Function<? super DATA, HasPromise<? extends TARGET>> mapper) {
         val targetPromise = (Promise<TARGET>)newPromise();
         targetPromise.start();
         subscribe(r -> {
             val targetResult = r.map(mapper);
-            targetResult.ifPresent(promise -> {
-                promise.subscribe(result -> {
+            targetResult.ifPresent(hasPromise -> {
+                hasPromise.getPromise().subscribe(result -> {
                     targetPromise.makeDone((Result<TARGET>) result);
                 });
             });

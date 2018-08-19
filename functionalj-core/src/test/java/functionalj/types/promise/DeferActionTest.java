@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
+import functionalj.types.result.OnStart;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -142,6 +143,8 @@ public class DeferActionTest {
     
     @Test
     public void testDeferAction_onStart() throws InterruptedException {
+        // NOTE: This test demonstrates that it is possible to detect the phrase and thread that the task run on.
+        //       This ability is important to allow control over the async operations.
         val log = new ArrayList<String>();
         val initThread      = new AtomicReference<String>(Thread.currentThread().toString());
         val onStartThread   = new AtomicReference<String>();
@@ -153,10 +156,10 @@ public class DeferActionTest {
             log.add("Running ...");
             onRunningThread.set(Thread.currentThread().toString());
             return "Hello";
-        }, ()->{
+        }, OnStart.run(()->{
             log.add("... onStart ...");
             onStartThread.set(Thread.currentThread().toString());
-        })
+        }))
         .subscribe(result -> {
             log.add("Done: " + result);
             onDoneThread.set(Thread.currentThread().toString());
@@ -167,5 +170,49 @@ public class DeferActionTest {
         assertFalse(initThread.get().equals(onRunningThread.get()));
         assertStrings(onStartThread.get(), onRunningThread.get());
         assertStrings(onStartThread.get(), onDoneThread.get());
+    }
+    
+    @Test
+    public void testDeferAction_chain() throws InterruptedException {
+        val log = new ArrayList<String>();
+        val runningThread = new AtomicReference<String>();
+        log.add("Init #0...");
+        DeferAction.run(()->{
+            Thread.sleep(50);
+            log.add("Running #1...");
+            return "Hello";
+        }, OnStart.run(()->{
+            log.add("Start #1 ...");
+            runningThread.set(Thread.currentThread().toString());
+        }))
+        .flatMap(str -> {
+            return DeferAction.run(()->{
+                Thread.sleep(50);
+                log.add("Running #2...");
+                return str.length();
+            }, OnStart.run(()->{
+                log.add("Start #2 ...");
+                runningThread.set(Thread.currentThread().toString());
+            }))
+            .subscribe(result -> {
+                log.add("Done #2: " + result);
+                Thread.sleep(50);
+            });
+        })
+        .subscribe(result -> {
+            log.add("Done #1: " + result);
+        })
+        .getResult();
+        
+        assertStrings("["
+                + "Init #0..., "
+                + "Start #1 ..., "
+                + "Running #1..., "
+                +   "Start #2 ..., "
+                +   "Running #2..., "
+                +   "Done #2: Result:{ Value: 5 }, "
+                + "Done #1: Result:{ Value: 5 }"
+                + "]",
+                log);
     }
 }

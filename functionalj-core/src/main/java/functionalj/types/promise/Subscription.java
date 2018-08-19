@@ -1,7 +1,9 @@
 package functionalj.types.promise;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
+import functionalj.types.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -77,6 +79,13 @@ public class Subscription<DATA> implements HasPromise<DATA> {
     }
     public boolean isDone() {
         return getSubscriptionStatus().isDone();
+    }
+    
+    public final Result<DATA> getResult() {
+        return promise.getResult(-1, null);
+    }
+    public final Result<DATA> getResult(long timeout, TimeUnit unit) {
+        return promise.getResult(timeout, unit);
     }
     
 }
