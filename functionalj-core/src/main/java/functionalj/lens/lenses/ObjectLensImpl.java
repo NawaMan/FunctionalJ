@@ -8,7 +8,6 @@ import java.util.function.Function;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
-import functionalj.types.MayBe;
 import functionalj.types.list.FuncList;
 import functionalj.types.map.FuncMap;
 import lombok.val;
@@ -91,20 +90,6 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         return lens;
     }
     
-    protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
-            MayBeLens<HOST, SUB, SUBLENS> createSubMayBeLens(
-                Function<DATA,  MayBe<SUB>>            readSub,
-                WriteLens<DATA, MayBe<SUB>>            writeSub,
-                Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
-        val readThis   = this.lensSpec().getRead();
-        val writeThis  = this.lensSpec().getWrite();
-        val subRead    = (Function<HOST, MayBe<SUB>>) LensUtils.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
-        val subWrite   = (WriteLens<HOST, MayBe<SUB>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
-        val spec = LensUtils.createLensSpecParameterized(subRead, subWrite, subCreator);
-        val lens = (MayBeLens<HOST, SUB, SUBLENS>)()->spec;
-        return lens;
-    }
-        
     protected <KEY, VALUE, KEYLENS extends AnyLens<HOST,KEY>, VALUELENS extends AnyLens<HOST,VALUE>>
         MapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> createSubMapLens(
                 Function<DATA,  Map<KEY, VALUE>>           readSub,

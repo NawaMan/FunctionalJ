@@ -3,18 +3,16 @@ package functionalj.annotations.dataobject;
 import java.util.Optional;
 
 import functionalj.annotations.DataObject;
-import functionalj.types.MayBe;
 import nawaman.nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
-public class WithNullableOptionalMayBeTest {
+public class WithNullableOptionalTest {
 
-    @DataObject(name="ParentWithNullableOptionalMayBe")
+    @DataObject(name="ParentWithNullableOptional")
     public static interface IParent3 {
         
         public Nullable<String> nullableName();
         public Optional<String> optionalName();
-        public MayBe<String>    mayBeName();
         
     }
 }

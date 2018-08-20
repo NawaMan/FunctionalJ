@@ -11,11 +11,9 @@ import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.FuncListLens;
 import functionalj.lens.lenses.ListLens;
 import functionalj.lens.lenses.MapLens;
-import functionalj.lens.lenses.MayBeLens;
 import functionalj.lens.lenses.NullableLens;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.OptionalLens;
-import functionalj.types.MayBe;
 import functionalj.types.list.FuncList;
 import functionalj.types.map.FuncMap;
 import lombok.val;
@@ -129,26 +127,6 @@ public class LensUtils {
             LensSpec<HOST, Optional<TYPE>> spec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
         val lens = createOptionalLens(spec.getRead(), spec.getWrite(), subCreator);
-        return lens;
-    }
-    
-    //== MayBe ==
-    
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> MayBeLens<HOST, TYPE, SUBLENS> 
-        createMayBeLens(
-            Function<HOST, MayBe<TYPE>>          read,
-            WriteLens<HOST, MayBe<TYPE>>         write,
-            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        val spec = createLensSpecParameterized(read, write, subCreator);
-        val lens = (MayBeLens<HOST, TYPE, SUBLENS>)()->spec;
-        return lens;
-    }
-    
-    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> MayBeLens<HOST, TYPE, SUBLENS> 
-        createMayBeLens(
-            LensSpec<HOST, MayBe<TYPE>> spec,
-            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        val lens = createMayBeLens(spec.getRead(), spec.getWrite(), subCreator);
         return lens;
     }
     

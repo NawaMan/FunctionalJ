@@ -20,12 +20,7 @@ import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.FunctionInvocationException;
-import functionalj.kinds.Comonad;
-import functionalj.kinds.Filterable;
-import functionalj.kinds.Functor;
-import functionalj.kinds.Monad;
 import functionalj.pipeable.Pipeable;
-import functionalj.types.MayBe;
 import functionalj.types.list.FuncList;
 import functionalj.types.promise.HasPromise;
 import functionalj.types.promise.Promise;
@@ -38,10 +33,6 @@ import nawaman.nullablej.nullable.Nullable;
 @SuppressWarnings({"javadoc", "rawtypes"})
 public class Result<DATA>
                     implements
-                        Functor<Result<?>, DATA>, 
-                        Monad<Result<?>, DATA>, 
-                        Comonad<Result<?>, DATA>,
-                        Filterable<Result<?>, DATA>,
                         Nullable<DATA>,
                         ResultMapAddOn<DATA>,
                         ResultFlatMapAddOn<DATA>,
@@ -445,11 +436,6 @@ public class Result<DATA>
         return getValue();
     }
     
-    @Override
-    public final DATA _extract() {
-        return getValue();
-    }
-    
     public final <T extends Result<DATA>> T castTo(Class<T> clzz) {
         return clzz.cast(this);
     }
@@ -459,11 +445,6 @@ public class Result<DATA>
             @Override public final DATA _1()      { return getValue();     }
             @Override public final Exception _2() { return getException(); }
         };
-    }
-    
-    @Override
-    public <TARGET> Monad<Result<?>, TARGET> _of(TARGET target) {
-        return Result.of(target);
     }
     
     public final Result<DATA> asResult() {
@@ -478,33 +459,6 @@ public class Result<DATA>
         return FuncList.of(this.get());
     }
     
-    public final MayBe<DATA> toMayBe() {
-        return processData(
-                e -> MayBe.nothing(),
-                (isValue, value, exception) -> {
-                    if (exception != null)
-                        return MayBe.nothing();
-                    
-                    return MayBe.of(value);
-                });
-    }
-    
-    public final MayBe<DATA> valueMayBe() {
-        return processData(
-                e -> MayBe.nothing(),
-                (isValue, value, exception) -> {
-                    return MayBe.of(value);
-                });
-    }
-    
-    public final MayBe<Exception> exceptionMayBe() {
-        return processData(
-                e -> MayBe.nothing(),
-                (isValue, value, exception) -> {
-                    return MayBe.of(exception);
-                });
-    }
-    
     @Override
     public Promise<DATA> getPromise() {
         return processData(Promise::ofException,
@@ -513,9 +467,8 @@ public class Result<DATA>
                 });
     }
     
-    @SuppressWarnings("unchecked")
     @Override
-    public final <TARGET> Result<TARGET> _map(Function<? super DATA, ? extends TARGET> mapper) {
+    public final <TARGET> Result<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         return processData(
                 e -> Result.ofNull(),
                 (isValue, value, exception) -> {
@@ -525,11 +478,6 @@ public class Result<DATA>
                     val newValue = mapper.apply(value);
                     return new Result<TARGET>(newValue, null);
                 });
-    }
-    
-    @Override
-    public final <TARGET> Result<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
-        return _map(mapper);
     }
     
     public final <TARGET> Result<TARGET> map(BiFunction<DATA, Exception, TARGET> mapper) {
@@ -553,21 +501,7 @@ public class Result<DATA>
                 });
     }
     
-    @SuppressWarnings("unchecked")
-    @Override
-    public final <TARGET> Result<TARGET> _flatMap(Function<? super DATA, Monad<Result<?>, TARGET>> mapper) {
-        return processData(
-                e -> Result.ofNull(),
-                (isValue, value, exception) -> {
-                    if (!isValue)
-                        return (Result<TARGET>)this;
-                    
-                    val monad = mapper.apply(value);
-                    return (Result<TARGET>)monad;
-                });
-    }
-    
-    public final <TARGET> Result<TARGET> flatMap(BiFunction<DATA, Exception, Monad<Result<?>, TARGET>> mapper) {
+    public final <TARGET> Result<TARGET> flatMap(BiFunction<DATA, Exception, Result<TARGET>> mapper) {
         return processData(
                 e -> Result.ofNull(),
                 (isValue, value, exception) -> {
@@ -599,11 +533,6 @@ public class Result<DATA>
             return Result.ofNull();
         
         return this;
-    }
-    
-    @Override
-    public final Result<DATA> _filter(Function<? super DATA, Boolean> predicate) {
-        return filter(predicate::apply);
     }
     
     @Override
