@@ -31,7 +31,7 @@ public interface ResultChainAddOn<DATA> {
     public Result<DATA> asResult();
     
     
-    public <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper);
+    public <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Result<TARGET>> mapper);
     
     public default <TARGET> Result<TARGET> chain(Func1<? super DATA, ? extends Result<TARGET>> mapper) {
         return flatMap(mapper);

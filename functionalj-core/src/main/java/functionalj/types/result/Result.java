@@ -13,12 +13,15 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.functions.Func;
 import functionalj.functions.Func0;
 import functionalj.functions.Func2;
 import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
+import functionalj.functions.FuncUnit0;
+import functionalj.functions.FuncUnit1;
 import functionalj.functions.FunctionInvocationException;
 import functionalj.pipeable.Pipeable;
 import functionalj.types.list.FuncList;
@@ -33,7 +36,6 @@ import nawaman.nullablej.nullable.Nullable;
 @SuppressWarnings({"javadoc", "rawtypes"})
 public class Result<DATA>
                     implements
-                        Nullable<DATA>,
                         ResultMapAddOn<DATA>,
                         ResultChainAddOn<DATA>,
                         ResultFilterAddOn<DATA> ,
@@ -431,7 +433,6 @@ public class Result<DATA>
         return (data instanceof ExceptionHolder) ? ((ExceptionHolder)data).getException() : null;
     }
     
-    @Override
     public final DATA get() {
         return getValue();
     }
@@ -511,7 +512,7 @@ public class Result<DATA>
     }
     @SuppressWarnings("unchecked")
     @Override
-    public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Nullable<TARGET>> mapper) {
+    public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Result<TARGET>> mapper) {
         return processData(
                 e -> Result.ofNull(),
                 (isValue, value, exception) -> {
@@ -605,28 +606,64 @@ public class Result<DATA>
         return !this.isValue();
     }
     
+    public final boolean isPresent() {
+        return processData(
+                __->false,
+                (isValue, value, exception) -> {
+                    return isValue && (value != null);
+                });
+    }
+    
     public final boolean isNotPresent() {
         return !this.isPresent();
     }
     
-    @Override
-    public final Result<DATA> ifPresent(Consumer<? super DATA> theConsumer) {
-        return (Result<DATA>)Nullable.super.ifPresent(theConsumer);
+    public final Result<DATA> ifPresent(FuncUnit1<? super DATA> theConsumer) {
+        processData(
+                __->null,
+                (isValue, value, exception) -> {
+                    if (isValue && (value != null))
+                        theConsumer.accept(value);
+                    
+                    return null;
+                });
+        return this;
     }
     
-    @Override
-    public final Result<DATA> ifPresent(Consumer<? super DATA> theConsumer, Runnable elseRunnable) {
-        return (Result<DATA>)Nullable.super.ifPresent(theConsumer, elseRunnable);
+    public final Result<DATA> ifPresent(FuncUnit1<? super DATA> theConsumer, FuncUnit0 elseRunnable) {
+        processData(
+                __->null,
+                (isValue, value, exception) -> {
+                    if (isValue && (value != null))
+                         theConsumer.accept(value);
+                    else elseRunnable .run();
+                    return null;
+                });
+        return this;
     }
     
-    @Override
-    public final Result<DATA> ifPresentRun(Runnable theAction) {
-        return (Result<DATA>)Nullable.super.ifPresentRun(theAction);
+    public final Result<DATA> ifPresent(FuncUnit0 theAction) {
+        processData(
+                __->null,
+                (isValue, value, exception) -> {
+                    if (isValue && (value != null))
+                        theAction.run();
+                    
+                    return null;
+                });
+        return this;
     }
     
-    @Override
-    public final Result<DATA> ifPresentRun(Runnable theAction, Runnable elseRunnable) {
-        return (Result<DATA>)Nullable.super.ifPresentRun(theAction, elseRunnable);
+    public final Result<DATA> ifPresent(FuncUnit0 theAction, FuncUnit0 elseRunnable) {
+        processData(
+                __->null,
+                (isValue, value, exception) -> {
+                    if (isValue && (value != null))
+                         theAction.run();
+                    else elseRunnable.run();
+                    return null;
+                });
+        return this;
     }
     
     public Result<DATA> whenNotPresentGet(Supplier<? extends DATA> fallbackSupplier) {
