@@ -9,6 +9,4 @@ public interface OnStart extends FuncUnit0 {
         return runnable;
     }
     
-    
-    
 }

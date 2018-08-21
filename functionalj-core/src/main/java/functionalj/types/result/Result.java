@@ -35,7 +35,7 @@ public class Result<DATA>
                     implements
                         Nullable<DATA>,
                         ResultMapAddOn<DATA>,
-                        ResultFlatMapAddOn<DATA>,
+                        ResultChainAddOn<DATA>,
                         ResultFilterAddOn<DATA> ,
                         ResultPeekAddOn<DATA>,
                         Pipeable<Result<DATA>> ,
