@@ -9,15 +9,15 @@ import java.util.function.BiConsumer;
 @SuppressWarnings("javadoc")
 public class WaitSession {
     
-    private List<BiConsumer<String, Throwable>> listeners = new ArrayList<BiConsumer<String, Throwable>>();
+    private List<BiConsumer<String, Exception>> listeners = new ArrayList<BiConsumer<String, Exception>>();
     
     public WaitSession() {}
     
-    public void onExpired(BiConsumer<String, Throwable> onDone) {
+    public void onExpired(BiConsumer<String, Exception> onDone) {
         listeners.add(onDone);
     }
     
-    void expire(String message, Throwable throwable) {
+    void expire(String message, Exception throwable) {
         listeners.forEach(listener -> {
             carelessly(() -> {
                 listener.accept(message, throwable);

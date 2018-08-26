@@ -1,5 +1,6 @@
 package functionalj.types;
 
+import static functionalj.functions.Func.F;
 import static functionalj.types.result.Result.Do;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,6 +10,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import functionalj.functions.Func;
 import functionalj.types.result.Result;
 import functionalj.types.result.validator.Validator;
 import lombok.val;
@@ -23,7 +25,7 @@ public class ResultTest {
     public void testResultFom() {
         assertEquals("Result:{ Value: VALUE }", "" + Result.from(()->"VALUE"));
         assertEquals("Result:{ Exception: java.io.IOException }",
-                "" + Result.from(()->{ throw new IOException(); }));
+                "" + Result.from(F(()->{ throw new IOException(); })));
     }
     @Test
     public void testResult_value() {
@@ -125,7 +127,6 @@ public class ResultTest {
         assertStrings(
                 "Result:{ Value: One }",
                 Result.ofResult(Result.of("One")));
-        
         assertStrings("Result:{ Value: One,Two }",
                 Result.ofResults(
                         Result.of("One"),
@@ -142,7 +143,7 @@ public class ResultTest {
     
     @Test
     public void testResultResult_withException() {
-        assertStrings("Result:{ Exception: java.lang.Exception: Test fail }",
+        assertStrings("Result:{ Exception: functionalj.functions.FunctionInvocationException: Test fail }",
                 Result.ofResults(
                         Result.of("One"),
                         Result.ofException("Test fail"),

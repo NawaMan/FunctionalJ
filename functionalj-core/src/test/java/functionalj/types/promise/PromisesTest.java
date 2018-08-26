@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import functionalj.functions.Func0;
+import functionalj.types.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -172,7 +173,7 @@ public class PromisesTest {
         val promise 
             = Promise.from(
                 _1 -> run(Sleep(50).thenReturn(1)),
-                _2 -> value(2),
+                _2 -> Result.of(2),
                 _3 -> run(Sleep(50).thenReturn(3)),
                 _4 -> value(4),
                 _5 -> run(Sleep(50).thenReturn(5)),

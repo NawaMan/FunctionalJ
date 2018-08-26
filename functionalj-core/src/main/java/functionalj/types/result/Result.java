@@ -3,25 +3,24 @@ package functionalj.types.result;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import functionalj.functions.Func;
 import functionalj.functions.Func0;
+import functionalj.functions.Func1;
 import functionalj.functions.Func2;
 import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
-import functionalj.functions.FuncUnit0;
-import functionalj.functions.FuncUnit1;
 import functionalj.functions.FunctionInvocationException;
 import functionalj.pipeable.Pipeable;
 import functionalj.types.list.FuncList;
@@ -33,42 +32,253 @@ import functionalj.types.tuple.Tuple2;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
-@SuppressWarnings({"javadoc", "rawtypes"})
-public class Result<DATA>
-                    implements
-                        ResultMapAddOn<DATA>,
-                        ResultChainAddOn<DATA>,
-                        ResultFilterAddOn<DATA> ,
-                        ResultPeekAddOn<DATA>,
-                        Pipeable<Result<DATA>> ,
-                        HasPromise<DATA> {
+public abstract class Result<DATA>
+        implements
+            Pipeable<Result<DATA>>,
+            HasPromise<DATA>,
+            ResultMapAddOn<DATA>,
+            ResultChainAddOn<DATA>,
+            ResultFilterAddOn<DATA> ,
+            ResultPeekAddOn<DATA>,
+            ResultStatusAddOn<DATA> {
     
-    public static enum Status {
-        UNAVAILABLE, CANCELLED, COMPLETED;
+    protected static <T> Func1<Exception, T> throwException() {
+        return e -> { throw e; };
+    }
+    protected static <T> Func1<Exception, T> throwRuntimeException() {
+        return e -> {
+            if (e instanceof RuntimeException)
+                throw e;
+            throw new RuntimeException(e);
+        };
+    }
+    protected static <T> Func1<Exception, Exception> returnException() {
+        return e -> e;
+    }
+    protected <T> Func1<Exception, Result<T>> returnValueException() {
+        return e -> newException(e);
+    }
+    protected static <T> Func1<Exception, Result<T>> returnValueNull() {
+        return e -> Result.ofNull();
+    }
+    protected static <T> Func1<Exception, T> returnNull() {
+        return e -> null;
+    }
+    protected static <T> Func1<Exception, Boolean> returnFalse() {
+        return e -> false;
+    }
+    protected static <T> Func1<Exception, Boolean> returnTrue() {
+        return e -> false;
     }
     
-    private static final Result NULL         = new Result<>(null, null);
-    private static final Result NOTAVAILABLE = new Result<>(null, new ResultNotAvailableException());
-    private static final Result NOTREADY     = new Result<>(null, new ResultNotReadyException());
-    private static final Result CANCELLED    = new Result<>(null, new ResultCancelledException());
+    private static final Result NULL = new ImmutableResult<>(null, null);
+    
+    public static enum State {
+        NOTREADY, CANCELLED, COMPLETED;
+    }
+    public static enum Status {
+        NOTREADY, CANCELLED, PROBLEM, NOTEXIST, INVALID, NULL, PRESENT;
+    }
+    
+    /**
+     * Returns the Null result.
+     * 
+     * @return the Result containing null value.
+     */
+    public static <D> Result<D> ofNull() {
+        @SuppressWarnings("unchecked")
+        val nullResult = (Result<D>)NULL;
+        return nullResult;
+    }
+    
+    /**
+     * Returns the NotAvailable result.
+     * 
+     * @return the Result that is the result is not available.
+     */
+    public static <D> Result<D> ofNotAvailable() {
+        @SuppressWarnings("unchecked")
+        val notAvailableResult = (Result<D>)Result.ofException(new ResultNotAvailableException());
+        return notAvailableResult;
+    }
+    /**
+     * Returns the NotAvailable result with message.
+     * @param  message  the exception message.
+     * @return the Result that is the result is not available.
+     */
+    public static <D> Result<D> ofNotAvailable(String message) {
+        @SuppressWarnings("unchecked")
+        val exceptionResult = (Result<D>)Result.ofException(new ResultNotAvailableException(message, null));
+        return exceptionResult;
+    }
+    /**
+     * Returns the NotAvailable result with message and cause.
+     * @param  message  the exception message.
+     * @param  cause    the exception cause.
+     * @return the Result that is the result is not available.
+     */
+    public static <D> Result<D> ofNotAvailable(String message, Exception cause) {
+        @SuppressWarnings("unchecked")
+        val exceptionResult = (Result<D>)Result.ofException(new ResultNotAvailableException(message, cause));
+        return exceptionResult;
+    }
+    
+    /**
+     * Returns the NotReady result.
+     * 
+     * @return the Result that is the result is not ready.
+     */
+    public static <D> Result<D> ofNotReady() {
+        @SuppressWarnings("unchecked")
+        val notReady = (Result<D>)Result.ofException(new ResultNotReadyException());
+        return notReady;
+    }
+    /**
+     * Returns the NotReady result with message.
+     * @param  message  the exception message.
+     * @return the Result that is the result is not ready.
+     */
+    public static <D> Result<D> ofNotReady(String message) {
+        @SuppressWarnings("unchecked")
+        val exceptionResult = (Result<D>)Result.ofException(new ResultNotReadyException(message, null));
+        return exceptionResult;
+    }
+    /**
+     * Returns the NotReady result with message.
+     * @param  message  the exception message.
+     * @param  cause    the exception cause.
+     * @return the Result that is the result is not ready.
+     */
+    public static <D> Result<D> ofNotReady(String message, Exception cause) {
+        @SuppressWarnings("unchecked")
+        val exceptionResult = (Result<D>)Result.ofException(new ResultNotReadyException(message, cause));
+        return exceptionResult;
+    }
+    
+    /**
+     * Returns the Cancelled result.
+     * 
+     * @return the Result that is the result is cancelled.
+     */
+    public static <D> Result<D> ofCancelled() {
+        @SuppressWarnings("unchecked")
+        val cancelledResult = (Result<D>)Result.ofException(new ResultCancelledException());
+        return cancelledResult;
+    }
+    /**
+     * Returns the Cancelled result with message.
+     * @param  message  the exception message.
+     * @return the Result that is the result is cancelled.
+     */
+    public static <D> Result<D> ofCancelled(String message) {
+        @SuppressWarnings("unchecked")
+        val cancelledResult = (Result<D>)Result.ofException(new ResultCancelledException(message, null));
+        return cancelledResult;
+    }
+    /**
+     * Returns the Cancelled result with message.
+     * @param  message  the exception message.
+     * @param  cause    the exception cause.
+     * @return the Result that is the result is cancelled.
+     */
+    public static <D> Result<D> ofCancelled(String message, Exception cause) {
+        @SuppressWarnings("unchecked")
+        val cancelledResult = (Result<D>)Result.ofException(new ResultCancelledException(message, cause));
+        return cancelledResult;
+    }
+    
+    /**
+     * Returns the Invalid result with message.
+     * @param  message  the exception message.
+     * @return the Result that is the result is invalid.
+     */
+    public static <D> Result<D> ofInvalid(String message) {
+        @SuppressWarnings("unchecked")
+        val invalidResult = (Result<D>)Result.ofException(new ValidationException(message, null));
+        return invalidResult;
+    }
+    /**
+     * Returns the Invalid result with message.
+     * @param  message  the exception message.
+     * @param  cause    the exception cause.
+     * @return the Result that is the result is invalid.
+     */
+    public static <D> Result<D> ofInvalid(String message, Exception cause) {
+        @SuppressWarnings("unchecked")
+        val invalidResult = (Result<D>)Result.ofException(new ValidationException(message, cause));
+        return invalidResult;
+    }
     
     public static <D> Result<D> value(D value) {
         if (value == null)
             return Result.ofNull();
         
-        return new Result<D>(value, null);
+        return new ImmutableResult<D>(value, null);
     }
     public static <D> Result<D> of(D value) {
         if (value == null)
             return Result.ofNull();
         
-        return new Result<D>(value, null);
+        return new ImmutableResult<D>(value, null);
     }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <D> Result<D> from(Supplier<? extends D> supplier) {
+        try {
+            if (supplier instanceof Func0)
+                 return Result.of((D)((Func0)supplier).applyUnsafe());
+            else return Result.of(supplier.get());
+        } catch (FunctionInvocationException e) {
+            val cause = e.getCause();
+            if (cause instanceof Exception)
+                 return Result.ofException((Exception)cause);
+            else return Result.ofException(e);
+        } catch (Exception e) {
+            return Result.ofException(e);
+        }
+    }
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <D> Result<D> Try(Supplier<? extends D> supplier) {
+        try {
+            if (supplier instanceof Func0)
+                 return Result.of((D)((Func0)supplier).applyUnsafe());
+            else return Result.of(supplier.get());
+        } catch (Exception e) {
+            return Result.ofException(e);
+        }
+    }
+    
+    public static <D> Result<D> ofException(String exceptionMsg) {
+        return new ImmutableResult<D>((D)null, new FunctionInvocationException(exceptionMsg));
+    }
+    
+    public static <D> Result<D> ofException(Exception exception) {
+        return new ImmutableResult<D>(null, (exception != null) ? exception : new FunctionInvocationException("Unknown reason."));
+    }
+    
+    public static <D> Result<D> ofResult(Result<D> result) {
+        if (result instanceof Result)
+            return (Result<D>)result;
+        
+        if (result == null)
+            return Result.ofNull();
+        
+        val data = result.__valueData();
+        
+        @SuppressWarnings("unchecked")
+        val value     = (data instanceof ExceptionHolder) ? null                                   : (D)data;
+        val exception = (data instanceof ExceptionHolder) ? ((ExceptionHolder)data).getException() : null;
+        if (exception != null)
+            return Result.ofException(exception);
+            
+        return Result.of(value);
+    }
+    
     
     public static <D, T1, T2> Result<D> of(
             T1 value1,
             T2 value2,
-            Func2<T1, T2, D> merger) {
+            BiFunction<T1, T2, D> merger) {
         return Result.from(Func0.of(()->{
             val value = merger.apply(value1, value2);
             return value;
@@ -123,138 +333,6 @@ public class Result<DATA>
             val value = merger.apply(value1, value2, value3, value4, value5, value6);
             return value;
         }));
-    }
-    
-    public static <D> Result<D> ofException(String exceptionMsg) {
-        return new Result<D>(null, new Exception(exceptionMsg));
-    }
-    public static <D> Result<D> ofException(Exception exception) {
-        return new Result<D>(null, (exception != null) ? exception : new FunctionInvocationException("Unknown reason."));
-    }
-    @SuppressWarnings("unchecked")
-    public static <D> Result<D> ofResult(Result<D> result) {
-        if (result instanceof Result)
-            return (Result<D>)result;
-        
-        if (result == null)
-            return Result.ofNull();
-        
-        val data      = result.getData();
-        val value     = (data instanceof ExceptionHolder) ? null                                   : (D)data;
-        val exception = (data instanceof ExceptionHolder) ? ((ExceptionHolder)data).getException() : null;
-        if (exception != null)
-            return Result.ofException(exception);
-            
-        return Result.of(value);
-    }
-    
-    public static <D, T1, T2> Result<D> ofResults(
-            Result<T1> result1,
-            Result<T2> result2,
-            BiFunction<T1, T2, D> merger) {
-        return Result.from(Func0.of(()->{
-            val value1 = result1.orThrow();
-            val value2 = result2.orThrow();
-            val value = merger.apply(value1, value2);
-            return value;
-        }));
-    }
-    
-    public static <D, T1, T2, T3> Result<D> ofResults(
-            Result<T1> result1,
-            Result<T2> result2,
-            Result<T3> result3,
-            Func3<T1, T2, T3, D> merger) {
-        return Result.from(Func0.of(()->{
-            val value1 = result1.orThrow();
-            val value2 = result2.orThrow();
-            val value3 = result3.orThrow();
-            val value = merger.apply(value1, value2, value3);
-            return value;
-        }));
-    }
-    
-    public static <D, T1, T2, T3, T4> Result<D> ofResults(
-            Result<T1> result1,
-            Result<T2> result2,
-            Result<T3> result3,
-            Result<T4> result4,
-            Func4<T1, T2, T3, T4, D> merger) {
-        return Result.from(Func0.of(()->{
-            val value1 = result1.orThrow();
-            val value2 = result2.orThrow();
-            val value3 = result3.orThrow();
-            val value4 = result4.orThrow();
-            val value = merger.apply(value1, value2, value3, value4);
-            return value;
-        }));
-    }
-    
-    public static <D, T1, T2, T3, T4, T5> Result<D> ofResults(
-            Result<T1> result1,
-            Result<T2> result2,
-            Result<T3> result3,
-            Result<T4> result4,
-            Result<T5> result5,
-            Func5<T1, T2, T3, T4, T5, D> merger) {
-        return Result.from(Func0.of(()->{
-            val value1 = result1.orThrow();
-            val value2 = result2.orThrow();
-            val value3 = result3.orThrow();
-            val value4 = result4.orThrow();
-            val value5 = result5.orThrow();
-            val value = merger.apply(value1, value2, value3, value4, value5);
-            return value;
-        }));
-    }
-    
-    public static <D, T1, T2, T3, T4, T5, T6> Result<D> ofResults(
-            Result<T1> result1,
-            Result<T2> result2,
-            Result<T3> result3,
-            Result<T4> result4,
-            Result<T5> result5,
-            Result<T6> result6,
-            Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        return Result.from(Func0.of(()->{
-            val value1 = result1.orThrow();
-            val value2 = result2.orThrow();
-            val value3 = result3.orThrow();
-            val value4 = result4.orThrow();
-            val value5 = result5.orThrow();
-            val value6 = result6.orThrow();
-            val value = merger.apply(value1, value2, value3, value4, value5, value6);
-            return value;
-        }));
-    }
-    
-    public static <D> Result<D> from(Supplier<? extends D> supplier) {
-        try {
-            return Result.of(supplier.get());
-        } catch (RuntimeException e) {
-            return Result.ofException(e);
-        }
-    }
-    public static <D> Result<D> from(Func0<? extends D> supplier) {
-        try {
-            return Result.of((D)supplier.applyUnsafe());
-        } catch (Exception e) {
-            return Result.ofException(e);
-        }
-    }
-    public static <D> Result<D> Try(Supplier<? extends D> supplier) {
-        try {
-            return Result.of(supplier.get());
-        } catch (RuntimeException e) {
-            return Result.ofException(e);
-        }
-    }
-    public static <D> Result<D> Try(Func0<? extends D> supplier) {
-        try {
-            return Result.of((D)supplier.applyUnsafe());
-        } catch (Exception e) {
-            return Result.ofException(e);
-        }
     }
     
     public static <D> Result<D> Do(Func0<? extends D> supplier) {
@@ -340,101 +418,177 @@ public class Result<DATA>
                 );
     }
     
-    @SuppressWarnings("unchecked")
-    public static <D> Result<D> ofNull() {
-        return (Result<D>)NULL;
+    public static <D, T1, T2> Result<D> ofResults(
+            Result<T1> result1,
+            Result<T2> result2,
+            BiFunction<T1, T2, D> merger) {
+        return Result.from(Func0.of(()->{
+            val value1 = result1.orThrow();
+            val value2 = result2.orThrow();
+            val value = merger.apply(value1, value2);
+            return value;
+        }));
     }
+    
+    public static <D, T1, T2, T3> Result<D> ofResults(
+            Result<T1> result1,
+            Result<T2> result2,
+            Result<T3> result3,
+            Func3<T1, T2, T3, D> merger) {
+        return Result.from(Func0.of(()->{
+            val value1 = result1.orThrow();
+            val value2 = result2.orThrow();
+            val value3 = result3.orThrow();
+            val value = merger.apply(value1, value2, value3);
+            return value;
+        }));
+    }
+    
+    public static <D, T1, T2, T3, T4> Result<D> ofResults(
+            Result<T1> result1,
+            Result<T2> result2,
+            Result<T3> result3,
+            Result<T4> result4,
+            Func4<T1, T2, T3, T4, D> merger) {
+        return Result.from(Func0.of(()->{
+            val value1 = result1.orThrow();
+            val value2 = result2.orThrow();
+            val value3 = result3.orThrow();
+            val value4 = result4.orThrow();
+            val value = merger.apply(value1, value2, value3, value4);
+            return value;
+        }));
+    }
+    
+    public static <D, T1, T2, T3, T4, T5> Result<D> ofResults(
+            Result<T1> result1,
+            Result<T2> result2,
+            Result<T3> result3,
+            Result<T4> result4,
+            Result<T5> result5,
+            Func5<T1, T2, T3, T4, T5, D> merger) {
+        return Result.from(Func0.of(()->{
+            val value1 = result1.orThrow();
+            val value2 = result2.orThrow();
+            val value3 = result3.orThrow();
+            val value4 = result4.orThrow();
+            val value5 = result5.orThrow();
+            val value = merger.apply(value1, value2, value3, value4, value5);
+            return value;
+        }));
+    }
+    
+    public static <D, T1, T2, T3, T4, T5, T6> Result<D> ofResults(
+            Result<T1> result1,
+            Result<T2> result2,
+            Result<T3> result3,
+            Result<T4> result4,
+            Result<T5> result5,
+            Result<T6> result6,
+            Func6<T1, T2, T3, T4, T5, T6, D> merger) {
+        return Result.from(Func0.of(()->{
+            val value1 = result1.orThrow();
+            val value2 = result2.orThrow();
+            val value3 = result3.orThrow();
+            val value4 = result4.orThrow();
+            val value5 = result5.orThrow();
+            val value6 = result6.orThrow();
+            val value = merger.apply(value1, value2, value3, value4, value5, value6);
+            return value;
+        }));
+    }
+    
+    
+    
+    abstract Object __valueData();
+    
+    
+    protected <T> Result<T> newException(Exception exception) {
+        return (Result<T>)Result.ofException(exception);
+    }
+    
     
     @SuppressWarnings("unchecked")
-    public static <D> Result<D> ofNotAvailable() {
-        return (Result<D>)NOTAVAILABLE;
-    }
-    public static <D> Result<D> ofNotAvailable(String message) {
-        return Result.ofException(new ResultNotAvailableException(message, null));
-    }
-    public static <D> Result<D> ofNotAvailable(String message, Throwable exception) {
-        return Result.ofException(new ResultNotAvailableException(message, exception));
-    }
-    @SuppressWarnings("unchecked")
-    public static <D> Result<D> ofNotReady() {
-        return (Result<D>)NOTREADY;
-    }
-    public static <D> Result<D> ofNotReady(String message) {
-        return Result.ofException(new ResultNotReadyException(message, null));
-    }
-    public static <D> Result<D> ofNotReady(String message, Throwable exception) {
-        return Result.ofException(new ResultNotReadyException(message, exception));
-    }
-    @SuppressWarnings("unchecked")
-    public static <D> Result<D> ofCancelled() {
-        return (Result<D>)CANCELLED;
-    }
-    public static <D> Result<D> ofCancelled(String message) {
-        return Result.ofException(new ResultCancelledException(message, null));
-    }
-    public static <D> Result<D> ofCancelled(String message, Throwable exception) {
-        return Result.ofException(new ResultCancelledException(message, exception));
-    }
-    public static <D> Result<D> ofInvalid(String message) {
-        return Result.ofException(new ValidationException(message, null));
-    }
-    public static <D> Result<D> ofInvalid(String message, Exception exception) {
-        return Result.ofException(new ValidationException(message, exception));
-    }
-    
-    private final Object data;
-    
-    Result(DATA value, Exception exception) {
-        this.data = ((value == null) && (exception != null))
-                ? new ExceptionHolder(exception)
-                : value;
-    }
-    
-    @Override
-    public Result<DATA> __data() throws Exception {
-        return this;
-    }
-    
-    protected Object getData() {
-        return data;
-    }
-    
-    public Status getStatus() {
-        if (isNotAvailable())
-            return Status.UNAVAILABLE;
-        if (isCancelled())
-            return Status.CANCELLED;
-        
-        return Status.COMPLETED;
-    }
-    
-    @SuppressWarnings("unchecked")
-    public final <T> T processData(Function<Exception, T> defaultGet, Func3<Boolean, DATA, Exception, T> processor) {
+    public <T> T mapData(Func1<Exception, T> exceptionGet, Func2<DATA, Exception, T> processor) {
         try {
-            val data      = getData();
+            val data      = __valueData();
             val isValue   = ((data == null) || !(data instanceof ExceptionHolder));
             val value     = isValue ? (DATA)data : null;
-            val exception = isValue ? null         : ((ExceptionHolder)data).getException();
+            val exception = isValue ? null       : ((ExceptionHolder)data).getException();
+            assert !((value != null) && (exception != null));
             
-            return processor.apply(isValue, value, exception);
+            return processor.apply(value, exception);
         } catch (Exception cause) {
-            return defaultGet.apply(cause);
+            return exceptionGet.apply(cause);
         }
     }
     
     @SuppressWarnings("unchecked")
-    public final DATA getValue() {
-        val data = getData();
-        return (data instanceof ExceptionHolder) ? null : (DATA)data;
-    }
-    
-    public final Exception getException() {
-        val data = getData();
-        return (data instanceof ExceptionHolder) ? ((ExceptionHolder)data).getException() : null;
+    public <T> Result<T> mapValue(Func2<DATA, Exception, Result<T>> processor) {
+        return new DerivedValue<T>(this, org-> {
+            try {
+                val data      = org.__valueData();
+                val isValue   = ((data == null) || !(data instanceof ExceptionHolder));
+                val value     = isValue ? (DATA)data : null;
+                val exception = isValue ? null       : ((ExceptionHolder)data).getException();
+                assert !((value != null) && (exception != null));
+                
+                val newValue = processor.apply(value, exception);
+                return newValue;
+            } catch (Exception cause) {
+                return newException(cause);
+            }
+        });
+        
     }
     
     public final DATA get() {
         return getValue();
+    }
+    public final DATA getValue() {
+        return mapData(
+                throwException(),
+                (value, exception) -> {
+                    if (exception != null)
+                        throw exception;
+                    return value;
+                }
+        );
+    }
+    
+    public final Exception getException() {
+        return mapData(
+                returnNull(),
+                (value, exception) -> {
+                    if (exception != null)
+                        return exception;
+                    
+                    return null;
+                }
+        );
+    }
+    
+    @SuppressWarnings("unchecked")
+    public final Result<DATA> asResult() {
+        if (!(this instanceof Value))
+            return (Result<DATA>)this;
+        
+        val __valueData = __valueData();
+        if (__valueData instanceof ExceptionHolder)
+            return new ImmutableResult<DATA>((DATA)null, ((ExceptionHolder) __valueData).getException());
+        
+        return new ImmutableResult<DATA>((DATA)__valueData);
+    }
+    @SuppressWarnings("unchecked")
+    public final Value<DATA> asValue() {
+        if (this instanceof Value)
+            return (Value<DATA>)this;
+        
+        val __valueData = __valueData();
+        if (__valueData instanceof ExceptionHolder)
+            return new Value<DATA>((DATA)null, ((ExceptionHolder) __valueData).getException());
+        
+        return new Value<DATA>((DATA)__valueData);
     }
     
     public final <T extends Result<DATA>> T castTo(Class<T> clzz) {
@@ -448,12 +602,11 @@ public class Result<DATA>
         };
     }
     
-    public final Result<DATA> asResult() {
-        return this;
-    }
-    
     public final Optional<DATA> toOptional() {
         return Optional.ofNullable(this.get());
+    }
+    public final Nullable<DATA> toNullable() {
+        return Nullable.of(this.get());
     }
     
     public final FuncList<DATA> toList() {
@@ -462,667 +615,196 @@ public class Result<DATA>
     
     @Override
     public Promise<DATA> getPromise() {
-        return processData(Promise::ofException,
-                (isValue, value, exception) -> {
-                    return isValue ? Promise.ofValue(value) : Promise.ofException(exception);
-                });
+        return mapData(
+                Promise::ofException,
+                (value, exception) -> {
+                    return (exception == null)
+                            ? Promise.ofValue(value)
+                            : Promise.ofException(exception);
+                }
+        );
     }
     
     @Override
+    public final Result<DATA> __data() throws Exception {
+        return this;
+    }
+    
+    @SuppressWarnings("unchecked")
     public final <TARGET> Result<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
-        return processData(
-                e -> Result.ofNull(),
-                (isValue, value, exception) -> {
+        return mapValue(
+                (value, exception) -> {
                     if (value == null)
                         return (Result<TARGET>)this;
                     
                     val newValue = mapper.apply(value);
-                    return new Result<TARGET>(newValue, null);
-                });
-    }
-    
-    public final <TARGET> Result<TARGET> map(BiFunction<DATA, Exception, TARGET> mapper) {
-        return processData(
-                e -> Result.ofNull(),
-                (isValue, value, exception) -> {
-                    val newValue = mapper.apply(value, exception);
                     return Result.of(newValue);
-                });
+                }
+        );
     }
     
-    public final Result<DATA> mapException(Function<? super Exception, ? extends Exception> mapper) {
-        return processData(
-                e -> Result.ofNull(),
-                (isValue, value, exception) -> {
-                    if (isValue)
+    public final Result<DATA> mapException(Func1<? super Exception, ? extends Exception> mapper) {
+        return mapValue(
+                (value, exception) -> {
+                    if (exception == null)
                         return this;
                     
                     val newException = mapper.apply(exception);
-                    return Result.ofException(newException);
-                });
+                    return newException(newException);
+                }
+        );
     }
     
-    public final <TARGET> Result<TARGET> flatMap(BiFunction<DATA, Exception, Result<TARGET>> mapper) {
-        return processData(
-                e -> Result.ofNull(),
-                (isValue, value, exception) -> {
-                    val monad = mapper.apply(value, exception);
-                    return (Result<TARGET>)monad;
-                });
-    }
     @SuppressWarnings("unchecked")
-    @Override
     public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Result<TARGET>> mapper) {
-        return processData(
-                e -> Result.ofNull(),
-                (isValue, value, exception) -> {
+        return mapValue(
+                (value, exception) -> {
                     if (value == null)
                         return (Result<TARGET>)this;
                     
                     val monad = (Nullable<TARGET>)mapper.apply(value);
                     return Result.of(monad.orElse(null));
-                });
+                }
+        );
     }
     
     public final Result<DATA> filter(Predicate<? super DATA> theCondition) {
-        DATA value = get();
-        if (value == null)
+        return mapValue(
+                (value, exception) -> {
+                    if (value != null) {
+                        val isPass = theCondition.test(value);
+                        if (!isPass)
+                            return Result.ofNull();
+                    }
+                    return this;
+                }
+        );
+    }
+    
+    public final Result<DATA> peek(Consumer<? super DATA> theConsumer) {
+        return mapValue((value, exception) -> {
+            if (value != null)
+                theConsumer.accept(value);
+            
             return this;
+        });
+    }
+    
+    public final Result<DATA> forValue(Consumer<? super DATA> theConsumer) {
+        return peek(theConsumer);
+    }
+    
+    //== Status and check
+    
+    public State getState() {
+        if (isNotReady())
+            return State.NOTREADY;
+        if (isCancelled())
+            return State.CANCELLED;
         
-        val isPass = theCondition.test(value);
-        if (!isPass)
-            return Result.ofNull();
+        return State.COMPLETED;
+    }
+    
+    public Status getStatus() {
+        if (isNotReady())
+            return Status.NOTREADY;
+        if (isCancelled())
+            return Status.CANCELLED;
+        if (isProblem())
+            return Status.PROBLEM;
+        if (isNotExist())
+            return Status.NOTEXIST;
+        if (isInvalid())
+            return Status.INVALID;
+        if (isNull())
+            return Status.NULL;
         
-        return this;
+        return Status.PRESENT;
     }
     
-    @Override
-    public Result<DATA> peek(Consumer<? super DATA> theConsumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if (value != null)
-                        theConsumer.accept(value);
-                    return this;
-                });
-    }
+    //== Validation ==
     
-    public final Result<DATA> peek(BiConsumer<? super DATA, ? super Exception> theConsumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if (value != null)
-                        theConsumer.accept(value, exception);
-                    return this;
-                });
-    }
-    
-    public final void forValue(Consumer<? super DATA> theConsumer) {
-        processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if (value != null)
-                        theConsumer.accept(value);
-                    return this;
-                });
-    }
-    
-    //== Check and condition.
-    
-    public final boolean isValue() {
-        return processData(
-                e -> false,
-                (isValue, value, exception) -> {
-                    return isValue;
-                });
-    }
-    
-    // No exception -> can be null
-    public final Result<DATA> ifValue(Consumer<? super DATA> consumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if (isValue)
-                        consumer.accept(value);
-                    
-                    return this;
-                });
-    }
-    
-    public Result<DATA> whenValueGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isValue())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    public Result<DATA> whenValue(DATA fallbackValue) {
-        if (this.isValue())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
-    
-    public final boolean isNotValue() {
-        return !this.isValue();
-    }
-    
-    public final boolean isPresent() {
-        return processData(
-                __->false,
-                (isValue, value, exception) -> {
-                    return isValue && (value != null);
-                });
-    }
-    
-    public final boolean isNotPresent() {
-        return !this.isPresent();
-    }
-    
-    public final Result<DATA> ifPresent(FuncUnit1<? super DATA> theConsumer) {
-        processData(
-                __->null,
-                (isValue, value, exception) -> {
-                    if (isValue && (value != null))
-                        theConsumer.accept(value);
-                    
-                    return null;
-                });
-        return this;
-    }
-    
-    public final Result<DATA> ifPresent(FuncUnit1<? super DATA> theConsumer, FuncUnit0 elseRunnable) {
-        processData(
-                __->null,
-                (isValue, value, exception) -> {
-                    if (isValue && (value != null))
-                         theConsumer.accept(value);
-                    else elseRunnable .run();
-                    return null;
-                });
-        return this;
-    }
-    
-    public final Result<DATA> ifPresent(FuncUnit0 theAction) {
-        processData(
-                __->null,
-                (isValue, value, exception) -> {
-                    if (isValue && (value != null))
-                        theAction.run();
-                    
-                    return null;
-                });
-        return this;
-    }
-    
-    public final Result<DATA> ifPresent(FuncUnit0 theAction, FuncUnit0 elseRunnable) {
-        processData(
-                __->null,
-                (isValue, value, exception) -> {
-                    if (isValue && (value != null))
-                         theAction.run();
-                    else elseRunnable.run();
-                    return null;
-                });
-        return this;
-    }
-    
-    public Result<DATA> whenNotPresentGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isNotPresent())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    public Result<DATA> whenNotPresent(DATA fallbackValue) {
-        if (this.isNotPresent())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
-    
-    public Result<DATA> whenPresentGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isValue())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    public Result<DATA> whenPresent(DATA fallbackValue) {
-        if (this.isValue())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
-    
-    public Result<DATA> whenNotValueGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isNotValue())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    public Result<DATA> whenNotValue(DATA fallbackValue) {
-        if (this.isNotValue())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
-    
-    public final Result<DATA> ifNotNull(Consumer<? super DATA> theConsumer) {
-        val value = get();
-        if (value != null)
-            theConsumer.accept(value);
-        
-        return this;
-    }
-    
-    public final Result<DATA> ifNotNull(Consumer<? super DATA> theConsumer, Runnable elseRunnable) {
-        val value = get();
-        if (value != null)
-            theConsumer.accept(value);
-        
-        elseRunnable.run();
-        return this;
-    }
-    
-    public final Result<DATA> ifNotNullRun(Runnable theAction) {
-        val value = get();
-        if (value != null)
-            theAction.run();
-        
-        return this;
-    }
-    
-    public final Result<DATA> ifNotNullRun(Runnable theAction, Runnable elseRunnable) {
-        val value = get();
-        if (value != null)
-            theAction.run();
-        
-        elseRunnable.run();
-        return this;
-    }
-    
-    public final Result<DATA> ifNullRun(Runnable theAction) {
-        val value = get();
-        if (value == null)
-            theAction.run();
-        
-        return this;
-    }
-    
-    public final boolean isNotNull() {
-        return processData(
-                e -> true,
-                (isValue, value, exception) -> {
-                    return (value != null);
-                });
-    }
-    
-    public final boolean isNull() {
-        return processData(
-                e -> true,
-                (isValue, value, exception) -> {
-                    return (isValue && (value == null));
-                });
-    }
-    
-    public final Result<DATA> ifNull(Runnable action) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if (isValue && (value == null))
-                        action.run();
-                    
-                    return this;
-                });
-    }
-    
-    public Result<DATA> whenNullGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isNull())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    
-    public Result<DATA> whenNull(DATA fallbackValue) {
-        if (this.isNull())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
-    
-    public final boolean isFail() {
-        return isAvailable() && isException();
-    }
-    
-    public final Result<DATA> ifFail(Consumer<? super Exception> consumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if ((exception != null) && !(exception instanceof ResultNotAvailableException))
-                        consumer.accept(exception);
-                    
-                    return this;
-                });
-    }
-    
-    public Result<DATA> whenFailGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isFail())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    public Result<DATA> whenFail(DATA fallbackValue) {
-        if (this.isFail())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
-    
-    public final boolean isException() {
-        val exception = getException();
-        return exception != null;
-    }
-    
-    public final Result<DATA> ifException(Consumer<? super Exception> consumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception) -> {
-                    if (exception != null)
-                        consumer.accept(exception);
-                    
-                    return this;
-                });
-    }
-    
-    public Result<DATA> whenExceptionGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isException())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    public Result<DATA> whenException(DATA fallbackValue) {
-        if (this.isException())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
-    
-    public final boolean isAvailable() {
-        val exception = getException();
-        return !(exception instanceof ResultNotAvailableException);
-    }
-    
-    public final Result<DATA> ifAvailable(BiConsumer<? super DATA, ? super Exception> consumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (!(exception instanceof ResultNotAvailableException))
-                        consumer.accept(value, exception);
-                    
-                    return this;
-                });
-    }
-    
-    public final boolean isNotAvailable() {
-        return processData(
-                e -> true,
-                (isValue, value, exception)->{
-                    return (exception instanceof ResultNotAvailableException);
-                });
-    }
-    
-    public final Result<DATA> ifNotAvailable(Runnable action) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (exception instanceof ResultNotAvailableException)
-                        action.run();
-                    
-                    return this;
-                });
-    }
-    
-    public final Result<DATA> whenNotAvailableGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isNotAvailable())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    public Result<DATA> whenNotAvailable(DATA fallbackValue) {
-        if (this.isNotAvailable())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
-    
-    public final boolean isNotReady() {
-        return processData(
-                e -> true,
-                (isValue, value, exception)->{
-                    return (exception instanceof ResultNotReadyException);
-                });
-    }
-    
-    public final Result<DATA> ifNotReady(Runnable action) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (exception instanceof ResultNotReadyException)
-                        action.run();
-                    
-                    return this;
-                });
-    }
-    
-    public final boolean isReady() {
-        return !isNotReady();
-    }
-    
-    public final Result<DATA> ifReady(Runnable action) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (!(exception instanceof ResultNotReadyException))
-                        action.run();
-                    
-                    return this;
-                });
-    }
-    
-    public final Result<DATA> whenNotReadyGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isNotReady())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    public Result<DATA> whenNotReady(DATA fallbackValue) {
-        if (this.isNotReady())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
-    
-    public final boolean isCancelled() {
-        return processData(
-                e -> true,
-                (isValue, value, exception)->{
-                    return (exception instanceof ResultCancelledException);
-                });
-    }
-    
-    public final Result<DATA> ifCancelled(Runnable action) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (exception instanceof ResultCancelledException)
-                        action.run();
-                    
-                    return this;
-                });
-    }
-    public final Result<DATA> ifCancelled(Consumer<ResultCancelledException> action) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (exception instanceof ResultCancelledException)
-                        action.accept((ResultCancelledException)exception);
-                    
-                    return this;
-                });
-    }
-    
-    public final Result<DATA> whenCancelledGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isCancelled())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    public Result<DATA> whenCancelled(DATA fallbackValue) {
-        if (this.isCancelled())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
-    
-    public final boolean isValid() {
-        return processData(
-                e -> false,
-                (isValue, value, exception)->{
-                    return !(exception instanceof ValidationException);
-                });
-    }
-    public final Result<DATA> ifValid(Runnable action) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (exception instanceof ValidationException)
-                        action.run();
-                    
-                    return this;
-                });
-    }
-    public final Result<DATA> ifValid(Consumer<DATA> consumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (!isValue)
-                        return this;
-                    
-                    if (value != null)
-                        consumer.accept(value);
-                    
-                    return this;
-                });
-    }
-    public final boolean isInvalid() {
-        return processData(
-                e -> true,
-                (isValue, value, exception)->{
-                    return (exception instanceof ValidationException);
-                });
-    }
-    public final Result<DATA> ifInvalid(Runnable runnable) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (exception instanceof ValidationException) 
-                        runnable.run();
-                    
-                    return this;
-                });
-    }
-    public final Result<DATA> ifInvalid(Consumer<ValidationException> consumer) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (exception instanceof ValidationException) 
-                        consumer.accept((ValidationException)exception);
-                    
-                    return this;
-                });
-    }
-    
-    public final Result<DATA> whenInvalidGet(Supplier<? extends DATA> fallbackSupplier) {
-        if (this.isInvalid())
-            return Result.from(fallbackSupplier);
-        
-        return this;
-    }
-    public Result<DATA> whenInvalid(DATA fallbackValue) {
-        if (this.isInvalid())
-            return Result.of(fallbackValue);
-        
-        return this;
-    }
+    //== TODO - Validate and accumulate.
     
     public final Result<DATA> validateNotNull() {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (isValue && (value == null))
-                        return Result.ofException(new ValidationException(new NullPointerException()));
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
+                    if ((value == null) && (exception != null))
+                        return newException(
+                                new ValidationException(
+                                        new NullPointerException()));
                     
                     return this;
                 });
     }
     public final Result<DATA> validateNotNull(String message) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (value == null) 
-                        return Result.ofException(new ValidationException(message));
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
+                    if ((value == null) && (exception != null))
+                        return newException(
+                                new ValidationException(message));
                     
                     return this;
-                });
+                }
+        );
     }
     public final Result<DATA> validateUnavailable() {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                if (exception instanceof ResultNotAvailableException)
-                    return Result.ofException(new ValidationException(exception));
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
+                    if (exception instanceof ResultNotAvailableException)
+                        return newException(new ValidationException(exception));
                 
-                return this;
-            });
+                    return this;
+                }
+        );
     }
     public final Result<DATA> validateNotReady() {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
-                    if (exception instanceof ResultNotAvailableException)
-                        return Result.ofException(new ValidationException(exception));
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
+                    if ((exception instanceof ResultNotAvailableException)
+                     || (exception instanceof ResultNotReadyException))
+                        return newException(new ValidationException(exception));
                     
                     return this;
-                });
+                }
+        );
     }
     public final Result<DATA> validateResultCancelled() {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
                     if (exception instanceof ResultCancelledException)
-                        return Result.ofException(new ValidationException(exception));
+                        return newException(new ValidationException(exception));
                     
                     return this;
-                });
+                }
+        );
     }
     public final Result<DATA> validate(Predicate<? super DATA> checker, String message) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
                     if (value == null) 
                         return this;
                     try {
                         if (checker.test(value))
                             return this;
                         
-                        return Result.ofException(new ValidationException(message));
+                        return newException(new ValidationException(message));
                     } catch (Exception e) {
-                        return Result.ofException(new ValidationException(message, e));
+                        return newException(new ValidationException(message, e));
                     }
-                });
+                }
+        );
     }
     public final <T> Result<DATA> validate(Function<? super DATA, T> mapper, Predicate<? super T> checker, String message) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
                     if (value == null) 
                         return this;
                     try {
@@ -1130,17 +812,17 @@ public class Result<DATA>
                         if (checker.test(target))
                             return this;
                         
-                        return Result.ofException(new ValidationException(message));
+                        return newException(new ValidationException(message));
                         
                     } catch (Exception e) {
-                        return Result.ofException(new ValidationException(message, e));
+                        return newException(new ValidationException(message, e));
                     }
                 });
     }
     public final Result<DATA> validate(Validator<DATA> validator) {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
                     if (value == null) 
                         return this;
                     
@@ -1149,10 +831,10 @@ public class Result<DATA>
     }
     
     public final <D extends Validatable<D, ?>> Valid<D> toValidValue(Function<DATA, D> mapper) {
-        return processData(
-                e -> (Valid<D>)new Valid<D>((D)null, e),
-                (isValue, value, exception)->{
-                    if (isValue) {
+        return mapData(
+                e -> new Valid<D>((D)null, e),
+                (value, exception)->{
+                    if (exception == null) {
                         val target = mapper.apply(value);
                         Valid<D> valueOf = Valid.valueOf((D)target);
                         return valueOf;
@@ -1170,15 +852,15 @@ public class Result<DATA>
     
     @SuppressWarnings("unchecked")
     public final Result<Tuple2<DATA, FuncList<ValidationException>>> validate(List<Validator<? super DATA>> validators) {
-        return (Result<Tuple2<DATA, FuncList<ValidationException>>>) processData(
-                e -> Result.ofException(new ResultNotAvailableException()),
-                (isValue, value, exception)->{
-                    if (!isValue)
+        return (Result<Tuple2<DATA, FuncList<ValidationException>>>) mapData(
+                e -> newException(new ResultNotAvailableException()),
+                (value, exception)->{
+                    if (exception != null)
                         return (Result<Tuple2<DATA, FuncList<ValidationException>>>)this;
                     
                     val exceptions = FuncList.from(validators)
                         .map   (validator -> validator.validate(value))
-                        .filter(result    -> result.isException())
+                        .filter(result    -> !result.isValue())
                         .map   (result    -> result.getException())
                         .map   (error     -> ValidationException.of(error));
                     return Result.of(Tuple.of(value, exceptions));
@@ -1186,169 +868,153 @@ public class Result<DATA>
     }
     
     public final Result<DATA> ensureNotNull() {
-        return processData(
-                e -> this,
-                (isValue, value, exception)->{
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
                     if (value != null)
                         return this;
-                    if (!isValue)
+                    if (exception != null)
                         return this;
                     
-                    return Result.ofException(new NullPointerException());
-                });
+                    return newException(new NullPointerException());
+                }
+        );
     }
     
-    // Alias of whenNotPresent
+    // Alias of whenNotPresentUse
     public final Result<DATA> otherwise(DATA elseValue) {
-        val value = getValue();
-        if (value == null)
-            return Result.of(elseValue);
-        
-        return this;
+        return whenNotPresentUse(elseValue);
     }
     
     // Alias of whenNotPresentGet
     public final Result<DATA> otherwiseGet(Supplier<? extends DATA> elseSupplier) {
-        val value = getValue();
-        if (value == null)
-            return Result.from(elseSupplier);
-        
-        return this;
+        return whenNotPresentGet(elseSupplier);
     }
     
     public final DATA orElse(DATA elseValue) {
-        val value = getValue();
-        if (value == null)
-            return elseValue;
-        
-        return value;
+        return mapData(
+                __ -> elseValue,
+                (value, exception)->{
+                    if (value != null)
+                        return value;
+                    
+                    return elseValue;
+                }
+        );
     }
     
     public final DATA orElseGet(Supplier<? extends DATA> elseSupplier) {
-        val value = getValue();
-        if (value == null)
-            return elseSupplier.get();
-        
-        return value;
+        return mapData(
+                __ -> null,
+                (value, exception)->{
+                    if (value != null)
+                        return value;
+                    
+                    return elseSupplier.get();
+                }
+        );
     }
     
     public final DATA orThrow() throws Exception {
-        val data = processData(
-                e -> new ExceptionHolder(e),
-                (isValue, value, exception) -> {
-                    if (exception != null)
-                        return new ExceptionHolder(exception);
-                    
-                    return value;
-                });
-        
-        if (data instanceof ExceptionHolder)
-            throw ((ExceptionHolder)data).getException();
-        
-        @SuppressWarnings("unchecked")
-        val value = (DATA)data;
-        return value;
-    }
-    public final DATA orThrowRuntimeException() {
-        val data = processData(
-                e -> new ExceptionHolder(e),
-                (isValue, value, exception) -> {
-                    if (exception == null) {
-                        return value;
-                    }
-                    
-                    if (exception instanceof RuntimeException)
-                        return new ExceptionHolder((RuntimeException)exception);
-                    
-                    return new ExceptionHolder(new RuntimeException(exception));
-                });
-        
-        if (data instanceof ExceptionHolder)
-            throw (RuntimeException)((ExceptionHolder)data).getException();
-        
-        @SuppressWarnings("unchecked")
-        val value = (DATA)data;
-        return value;
-    }
-    public final <EXCEPTION extends Exception> DATA orThrow(Function<Exception, EXCEPTION> toException) 
-            throws EXCEPTION {
-        val data = processData(
-                e -> new ExceptionHolder(e),
-                (isValue, value, exception) -> {
-                    if (exception == null) {
-                        return value;
-                    }
-                    return new ExceptionHolder(toException.apply(exception));
-                });
-        
-        if (data instanceof ExceptionHolder) {
-            @SuppressWarnings("unchecked")
-            val exception = (EXCEPTION)((ExceptionHolder)data).getException();
-            throw exception;
-        }
-        
-        @SuppressWarnings("unchecked")
-        val value = (DATA)data;
-        return value;
-    }
-    public final <RUNTIMEEXCEPTION extends RuntimeException> 
-            DATA orThrowRuntimeException(Function<Exception, RUNTIMEEXCEPTION> toRuntimeException) {
-        val data = processData(
-                e -> new ExceptionHolder(e),
-                (isValue, value, exception) -> {
+        return mapData(
+                throwException(),
+                (value, exception)->{
                     if (exception == null)
                         return value;
                     
-                    throw toRuntimeException.apply(exception);
-                });
-        
-        if (data instanceof ExceptionHolder) {
-            @SuppressWarnings("unchecked")
-            val exception = (RUNTIMEEXCEPTION)((ExceptionHolder)data).getException();
-            throw exception;
-        }
-        
-        @SuppressWarnings("unchecked")
-        val value = (DATA)data;
-        return value;
+                    throw exception;
+                }
+        );
+    }
+    public final DATA orThrowRuntimeException() {
+        return mapData(
+                throwRuntimeException(),
+                (value, exception)->{
+                    if (exception == null)
+                        return value;
+                    
+                    throw exception;
+                }
+        );
+    }
+    public final <EXCEPTION extends Exception> DATA orThrow(Function<Exception, EXCEPTION> toException) 
+            throws EXCEPTION {
+        return mapData(
+                e -> { throw toException.apply(e); },
+                (value, exception)->{
+                    if (exception == null)
+                        return value;
+                    
+                    throw exception;
+                }
+        );
+    }
+    public final <RUNTIMEEXCEPTION extends RuntimeException> 
+            DATA orThrowRuntimeException(Function<Exception, RUNTIMEEXCEPTION> toRuntimeException) {
+        return mapData(
+                e -> {
+                    val exception = toRuntimeException.apply(e);
+                    if (exception instanceof RuntimeException)
+                        throw (RuntimeException)exception;
+                    throw new RuntimeException(exception);
+                },
+                (value, exception)->{
+                    if (exception == null)
+                        return value;
+                    
+                    throw exception;
+                }
+        );
     }
     
     public final Result<DATA> printException() {
-        processData(null, (isValue, value, exception)->{
-            if (!isValue)
-                exception.printStackTrace();
-            
-            return null;
-        });
-        return this;
+        return printException(System.err);
+    }
+    
+    public final Result<DATA> printException(PrintStream printStream) {
+        return mapValue(
+                (value, exception)->{
+                    exception.printStackTrace(printStream);
+                    
+                    return this;
+                }
+        );
+    }
+    
+    public final Result<DATA> printException(PrintWriter printWriter) {
+        return mapValue(
+                (value, exception)->{
+                    exception.printStackTrace(printWriter);
+                    
+                    return this;
+                }
+                );
     }
     
     @Override
     public final int hashCode() {
-        return processData(
-                e -> Objects.hash((Object)null),
-                (isValue, value, exception) -> {
-                    return Objects.hash(data);
-                });
+        return Objects.hash(__valueData());
     }
+    @SuppressWarnings("rawtypes")
     @Override
     public final boolean equals(Object obj) {
         if (!(obj instanceof Result))
             return false;
         
-        return Objects.equals(data, ((Result)obj).data);
+        return Objects.equals(__valueData(), ((Result)obj).__valueData());
     }
     @Override
     public final String toString() {
-        return processData(
+        return mapData(
                 e -> "Result:{ Exception: " + e  + " }",
-                (isValue, value, exception) -> {
+                (value, exception) -> {
                     if (exception == null)
                         return "Result:{ Value: "     + value      + " }";
                    else return "Result:{ Exception: " + exception  + " }";
                 });
     }
     
+    //== Internal ==
     
     public final static class ExceptionHolder {
         private final Exception exception;

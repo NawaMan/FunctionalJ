@@ -3,6 +3,7 @@ package functionalj.functions;
 import java.util.function.Supplier;
 
 import functionalj.types.result.Result;
+import functionalj.types.result.Result;
 
 /**
  * Function of zeroth parameter - a supplier.
@@ -29,6 +30,9 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT> {
     }
     
     public default Result<OUTPUT> applySafely() {
+        return Result.from(this);
+    }
+    public default Result<OUTPUT> applySafely2() {
         return Result.from(this);
     }
     

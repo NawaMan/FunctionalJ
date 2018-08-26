@@ -25,11 +25,11 @@ public class PendingAction<DATA> extends AbstractDeferAction<DATA> {
         promise.abort(message);
         return new CompletedAction<DATA>(promise);
     }
-    public CompletedAction<DATA> abort(Throwable cause) {
+    public CompletedAction<DATA> abort(Exception cause) {
         promise.abort(cause);
         return new CompletedAction<DATA>(promise);
     }
-    public CompletedAction<DATA> abort(String message, Throwable cause) {
+    public CompletedAction<DATA> abort(String message, Exception cause) {
         promise.abort(message, cause);
         return new CompletedAction<DATA>(promise);
     }

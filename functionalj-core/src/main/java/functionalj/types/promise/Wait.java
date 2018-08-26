@@ -30,7 +30,7 @@ public abstract class Wait {
     
     public abstract WaitSession newSession();
     
-    protected final void expire(WaitSession session, String message, Throwable throwable) {
+    protected final void expire(WaitSession session, String message, Exception throwable) {
         session.expire(message, throwable);
     }
     

@@ -31,20 +31,20 @@ public abstract class UnionTypeSwitch<D, T> {
     }
     
     
-    public static class Data<D, T> {
+    public static class UnionTypeSwitchData<D, T> {
         protected final D              value;
         protected final Function<D, T> action;
         
-        public Data(D value) {
+        public UnionTypeSwitchData(D value) {
             this(value, null);
         }
-        public Data(D value, Function<D, T> action) {
+        public UnionTypeSwitchData(D value, Function<D, T> action) {
             this.value  = value;
             this.action = action;
         }
         public D              value()  { return value; }
         public Function<D, T> action() { return action; }
-        public Data<D, T>     withValue(D value)                { return new Data<>(value, action); }
-        public Data<D, T>     withAction(Function<D, T> action) { return new Data<>(value, action); }
+        public UnionTypeSwitchData<D, T>     withValue(D value)                { return new UnionTypeSwitchData<>(value, action); }
+        public UnionTypeSwitchData<D, T>     withAction(Function<D, T> action) { return new UnionTypeSwitchData<>(value, action); }
     }
 }

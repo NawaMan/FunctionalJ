@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class ResultTest {
     
-    private static final Result<String> result = Result.value("Test");
+    private static final Result<String> result = Result.of("Test");
     
     private void assertStrings(String str, Object obj) {
         assertEquals(str, "" + obj);

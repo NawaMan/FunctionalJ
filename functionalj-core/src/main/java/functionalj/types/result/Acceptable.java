@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public abstract class Acceptable<DATA> extends Result<DATA> {
+public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
     
     protected Acceptable(Exception exception) {
         super(null, (exception == null) ? new UnacceptableForUnknownReasonException() : exception);

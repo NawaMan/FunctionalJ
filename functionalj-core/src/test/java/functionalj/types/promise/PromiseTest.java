@@ -225,10 +225,10 @@ public class PromiseTest {
     public void testCreateNew_abortNoSubsriptionAfter_withNoSubscription() {
         val list = new ArrayList<String>();
         
-        val onExpireds = new ArrayList<BiConsumer<String, Throwable>>();
+        val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
         val session = new WaitSession() {
             @Override
-            public void onExpired(BiConsumer<String, Throwable> onDone) {
+            public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
@@ -257,10 +257,10 @@ public class PromiseTest {
     public void testCreateNew_abortNoSubsriptionAfter_withSubscription() {
         val list = new ArrayList<String>();
         
-        val onExpireds = new ArrayList<BiConsumer<String, Throwable>>();
+        val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
         val session = new WaitSession() {
             @Override
-            public void onExpired(BiConsumer<String, Throwable> onDone) {
+            public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
@@ -357,10 +357,10 @@ public class PromiseTest {
     public void testCreateNew_waitOrDefault() {
         val list = new ArrayList<String>();
         
-        val onExpireds = new ArrayList<BiConsumer<String, Throwable>>();
+        val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
         val session = new WaitSession() {
             @Override
-            public void onExpired(BiConsumer<String, Throwable> onDone) {
+            public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };

@@ -13,7 +13,7 @@ public class WaitForever extends Wait {
     public WaitSession newSession() {
         return new WaitSession() {
             @Override
-            public void onExpired(BiConsumer<String, Throwable> onDone) {
+            public void onExpired(BiConsumer<String, Exception> onDone) {
             }
         };
     }

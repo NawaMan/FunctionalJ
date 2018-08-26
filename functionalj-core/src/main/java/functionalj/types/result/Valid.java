@@ -11,6 +11,12 @@ public final class Valid<DATA extends Validatable<DATA, ?>> extends Acceptable<D
     public static <D extends Validatable<D, ?>> Valid<D> valueOf(D data) {
         return new Valid<D>(data);
     }
+    public static <D extends Validatable<D, ?>> Valid<D> valid(D data) {
+        return new Valid<D>(data);
+    }
+    public static <D extends Validatable<D, ?>> Valid<D> valueOfException(Exception exception) {
+        return new Valid<D>((D)null, exception);
+    }
     
     
     @SuppressWarnings("rawtypes")

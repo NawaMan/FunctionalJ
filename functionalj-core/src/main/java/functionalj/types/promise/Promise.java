@@ -29,7 +29,7 @@ import functionalj.types.list.FuncList;
 import functionalj.types.result.Result;
 import lombok.val;
 
-// Need an ability to aborted if no one listening
+// TODO - See what we can do with retry.
 
 @SuppressWarnings("javadoc")
 public class Promise<DATA> implements HasPromise<DATA> {
@@ -256,10 +256,10 @@ public class Promise<DATA> implements HasPromise<DATA> {
     boolean abort(String message) {
         return makeDone(Result.ofCancelled(message));
     }
-    boolean abort(Throwable cause) {
+    boolean abort(Exception cause) {
         return makeDone(Result.ofCancelled(null, cause));
     }
-    boolean abort(String message, Throwable cause) {
+    boolean abort(String message, Exception cause) {
         return makeDone(Result.ofCancelled(message, cause));
     }
     
@@ -563,8 +563,8 @@ public class Promise<DATA> implements HasPromise<DATA> {
         private <T> void processResult(int index, Result<T> result) {
             result
             .filter     (__ -> !isDone.get())
-            .ifCancelled(() -> doneAsCancelled(index))
-            .ifNotReady (() -> doneAsNotReady (index, result))
+            .ifCancelled(__ -> doneAsCancelled(index))
+            .ifNotReady (__ -> doneAsNotReady (index, result))
             .ifException(__ -> doneAsException(index, result))
             .peek       (__ -> results[index] = result)
             .filter     (__ -> count == Stream.of(results).filter(Objects::nonNull).count())

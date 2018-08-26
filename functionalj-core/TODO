@@ -64,6 +64,7 @@ Need code clean up!!!!! The code is so shitty :-(
 -- UnionType
   -- Access to spec
   -- xxxOf to access to each parameter directly. -- justOf(value -> value ...)
+  -- Name collition when use Data and Exception as sub type names.
 
 -- Should we consolidate all exception to A FunctionalJException?
 -- ReadyResult, Acceptable, ValidResult, NonNullResult
