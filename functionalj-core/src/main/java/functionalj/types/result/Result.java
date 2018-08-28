@@ -71,7 +71,7 @@ public abstract class Result<DATA>
         return e -> false;
     }
     
-    private static final Result NULL = new ImmutableResult<>(null, null);
+    private static final Result NULL = new ImmutableResult<>(null);
     
     public static enum State {
         NOTREADY, CANCELLED, COMPLETED;
@@ -502,11 +502,9 @@ public abstract class Result<DATA>
     
     abstract Object __valueData();
     
-    
     protected <T> Result<T> newException(Exception exception) {
         return (Result<T>)Result.ofException(exception);
     }
-    
     
     @SuppressWarnings("unchecked")
     public <T> T mapData(Func1<Exception, T> exceptionGet, Func2<DATA, Exception, T> processor) {
@@ -539,7 +537,6 @@ public abstract class Result<DATA>
                 return newException(cause);
             }
         });
-        
     }
     
     public final DATA get() {
@@ -568,31 +565,13 @@ public abstract class Result<DATA>
         );
     }
     
-    @SuppressWarnings("unchecked")
-    public final Result<DATA> asResult() {
-        if (!(this instanceof Value))
-            return (Result<DATA>)this;
-        
-        val __valueData = __valueData();
-        if (__valueData instanceof ExceptionHolder)
-            return new ImmutableResult<DATA>((DATA)null, ((ExceptionHolder) __valueData).getException());
-        
-        return new ImmutableResult<DATA>((DATA)__valueData);
-    }
-    @SuppressWarnings("unchecked")
-    public final Value<DATA> asValue() {
-        if (this instanceof Value)
-            return (Value<DATA>)this;
-        
-        val __valueData = __valueData();
-        if (__valueData instanceof ExceptionHolder)
-            return new Value<DATA>((DATA)null, ((ExceptionHolder) __valueData).getException());
-        
-        return new Value<DATA>((DATA)__valueData);
-    }
-    
     public final <T extends Result<DATA>> T castTo(Class<T> clzz) {
         return clzz.cast(this);
+    }
+    
+    @Override
+    public Result<DATA> asResult() {
+        return this;
     }
     
     public final Tuple2<DATA, Exception> toTuple() {
@@ -691,7 +670,13 @@ public abstract class Result<DATA>
     }
     
     public final Result<DATA> forValue(Consumer<? super DATA> theConsumer) {
-        return peek(theConsumer);
+        mapData(throwException(),
+                (value, exception) -> {
+                    if (value != null)
+                        theConsumer.accept(value);
+                    return null;
+                });
+        return this;
     }
     
     //== Status and check

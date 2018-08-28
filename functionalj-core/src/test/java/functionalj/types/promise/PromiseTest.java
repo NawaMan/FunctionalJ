@@ -38,7 +38,7 @@ public class PromiseTest {
         
         val ref = new AtomicReference<String>(null);
         promise.subscribe(r -> ref.set("" + r.get()));
-        assertEquals("null", ref.get());
+        assertStrings("null", ref.get());
     }
     
     @Test
@@ -49,7 +49,7 @@ public class PromiseTest {
         
         val ref = new AtomicReference<String>(null);
         promise.subscribe(r -> ref.set("" + r.get()));
-        assertEquals("null", ref.get());
+        assertStrings("null", ref.get());
     }
     
     @Test

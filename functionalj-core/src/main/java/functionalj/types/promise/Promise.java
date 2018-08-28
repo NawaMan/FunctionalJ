@@ -561,18 +561,28 @@ public class Promise<DATA> implements HasPromise<DATA> {
         }
         
         private <T> void processResult(int index, Result<T> result) {
-            result
-            .filter     (__ -> !isDone.get())
-            .ifCancelled(__ -> doneAsCancelled(index))
-            .ifNotReady (__ -> doneAsNotReady (index, result))
-            .ifException(__ -> doneAsException(index, result))
-            .peek       (__ -> results[index] = result)
-            .filter     (__ -> count == Stream.of(results).filter(Objects::nonNull).count())
-            .filter     (__ -> isDone.compareAndSet(false, true))
-            .forValue   (__ -> {
-                val mergedResult = mergeFunc.apply(results);
-                action.completeWith(mergedResult);
-            });
+            if (isDone.get())
+                return;
+            
+            if (result.isCancelled())
+                doneAsCancelled(index);
+            
+            if (result.isNotReady())
+                doneAsNotReady(index, result);
+            
+            if (result.isException())
+                doneAsException(index, result);
+            
+            results[index] = result;
+            
+            if (!(count == Stream.of(results).filter(Objects::nonNull).count()))
+                return;
+            
+            if (!isDone.compareAndSet(false, true))
+                return;
+            
+            val mergedResult = mergeFunc.apply(results);
+            action.completeWith(mergedResult);
         }
         
         private void unsbscribeAll() {

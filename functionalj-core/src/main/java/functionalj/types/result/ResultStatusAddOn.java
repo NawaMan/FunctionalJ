@@ -19,12 +19,24 @@ public interface ResultStatusAddOn<DATA> {
     public static <T> Func1<Exception, Boolean> returnTrue() {
         return e -> false;
     }
+    public static <T> Func1<Exception, T> throwException() {
+        return e -> { throw e; };
+    }
     
     public <T> T mapData(Func1<Exception, T> exceptionGet, Func2<DATA, Exception, T> processor);
     
     public <T> Result<T> mapValue(Func2<DATA, Exception, Result<T>> processor);
     
-    public Result<DATA> asValue();
+    public Result<DATA> asResult();
+    
+    
+    public default Result<DATA> useData(FuncUnit2<DATA, Exception> processor) {
+        mapData(throwException(), (value, exception)->{
+            processor.accept(value, exception);
+            return null;
+        });
+        return asResult();
+    }
     
     //== Present ==
     
@@ -39,11 +51,11 @@ public interface ResultStatusAddOn<DATA> {
     
     // No exception -> can be null
     public default Result<DATA> ifPresent(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             if (value != null)
                 consumer.accept(value);
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenPresentGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -52,7 +64,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (value != null)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -63,7 +75,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (value != null)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -80,11 +92,11 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifNotPresent(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             if (value == null)
                 consumer.accept(value);
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenNotPresentGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -93,7 +105,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (value == null)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -104,7 +116,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (value == null)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -121,12 +133,11 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifNull(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             if ((value == null) && (exception == null))
                 consumer.accept(value);
-            
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenNullGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -135,7 +146,7 @@ public interface ResultStatusAddOn<DATA> {
                     if ((value == null) && (exception == null))
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -146,7 +157,7 @@ public interface ResultStatusAddOn<DATA> {
                     if ((value == null) && (exception == null))
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -181,12 +192,11 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifValue(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             if (exception == null)
                 consumer.accept(value);
-            
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenValueGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -195,7 +205,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception == null)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -206,7 +216,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception == null)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -223,12 +233,11 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifNotValue(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             if (exception != null)
                 consumer.accept(value);
-            
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenNotValueGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -237,7 +246,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception != null)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -248,7 +257,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception != null)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 });
     }
     
@@ -282,12 +291,11 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifInvalid(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             if (exception instanceof ValidationException)
                 consumer.accept(value);
-            
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenInvalidGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -296,7 +304,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception instanceof ValidationException)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -307,7 +315,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception instanceof ValidationException)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 });
     }
     
@@ -341,12 +349,11 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifNotExist(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             if (exception instanceof ResultNotExistException)
                 consumer.accept(value);
-            
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenNotExistGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -355,7 +362,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception instanceof ResultNotExistException)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -366,7 +373,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception instanceof ResultNotExistException)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 });
     }
     
@@ -382,12 +389,11 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifException(Consumer<? super Exception> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             if (exception != null)
                 consumer.accept(exception);
-            
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenExceptionGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -396,7 +402,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception != null)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -407,7 +413,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception != null)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -427,16 +433,15 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifProblem(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             val isProblem = (exception != null)
                     && !(exception instanceof ResultNotReadyException)
                     && !(exception instanceof ResultCancelledException)
                     && !(exception instanceof ResultNotExistException);
             if (isProblem)
                 consumer.accept(value);
-            
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenProblemGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -449,7 +454,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (isProblem)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -464,7 +469,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (isProblem)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -481,12 +486,11 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifCancelled(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             if (exception instanceof ResultCancelledException)
                 consumer.accept(value);
-            
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenCancelledGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -495,7 +499,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception instanceof ResultCancelledException)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -506,7 +510,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (exception instanceof ResultCancelledException)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 });
     }
     
@@ -523,14 +527,13 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifReady(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             val isReady = !(exception instanceof ResultNotReadyException)
                        && !(exception instanceof ResultNotAvailableException);
             if (isReady)
                 consumer.accept(value);
-            
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenReadyGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -541,7 +544,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (isReady)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -554,7 +557,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (isReady)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 });
     }
     
@@ -571,14 +574,13 @@ public interface ResultStatusAddOn<DATA> {
     }
     
     public default Result<DATA> ifNotReady(Consumer<? super DATA> consumer) {
-        return mapValue((value, exception) -> {
+        useData((value, exception) -> {
             val isNotReady = (exception instanceof ResultNotReadyException)
                           || (exception instanceof ResultNotAvailableException);
             if (isNotReady)
                 consumer.accept(value);
-            
-            return asValue();
         });
+        return asResult();
     }
     
     public default Result<DATA> whenNotReadyGet(Supplier<? extends DATA> fallbackSupplier) {
@@ -589,7 +591,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (isNotReady)
                         return Result.from(fallbackSupplier);
                     
-                    return asValue();
+                    return asResult();
                 }
         );
     }
@@ -602,7 +604,7 @@ public interface ResultStatusAddOn<DATA> {
                     if (isNotReady)
                         return Result.of(fallbackValue);
                     
-                    return asValue();
+                    return asResult();
                 });
     }
     
