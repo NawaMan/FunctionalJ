@@ -251,16 +251,20 @@ public class Promise<DATA> implements HasPromise<DATA> {
     }
     
     boolean abort() {
-        return makeDone(Result.ofCancelled());
+        Result<DATA> cancelResult = Result.ofCancelled();
+        return makeDone(cancelResult);
     }
     boolean abort(String message) {
-        return makeDone(Result.ofCancelled(message));
+        Result<DATA> cancelResult = Result.ofCancelled(message);
+        return makeDone(cancelResult);
     }
     boolean abort(Exception cause) {
-        return makeDone(Result.ofCancelled(null, cause));
+        Result<DATA> cancelResult = Result.ofCancelled(null, cause);
+        return makeDone(cancelResult);
     }
     boolean abort(String message, Exception cause) {
-        return makeDone(Result.ofCancelled(message, cause));
+        Result<DATA> cancelResult = Result.ofCancelled(message, cause);
+        return makeDone(cancelResult);
     }
     
     boolean makeComplete(DATA data) { 

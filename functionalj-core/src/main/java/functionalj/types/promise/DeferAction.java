@@ -42,6 +42,7 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     }
     public static <D> DeferAction<D> from(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
         val promise = new Promise<D>();
+        // TODO - Check what happen when pending Promise got run twice.
         return new DeferAction<D>(promise, () -> {
             val runnable = new Runnable() {
                 @Override

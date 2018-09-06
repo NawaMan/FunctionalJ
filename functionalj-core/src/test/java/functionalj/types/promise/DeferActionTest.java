@@ -185,7 +185,7 @@ public class DeferActionTest {
             log.add("Start #1 ...");
             runningThread.set(Thread.currentThread().toString());
         }))
-        .flatMap(str -> {
+        .chain(str -> {
             return DeferAction.run(()->{
                 Thread.sleep(50);
                 log.add("Running #2...");
@@ -214,9 +214,14 @@ public class DeferActionTest {
     @Test
     public void testDeferAction_moreChain() throws InterruptedException {
         val log = new ArrayList<String>();
-        DeferAction.run(()->{
+        DeferAction<String> action = DeferAction.from(()->{
             Thread.sleep(50);
+            System.out.println("Hello");
             return "Hello";
+        })
+        .eavesdrop(result -> {
+            log.add("" + result.isCancelled());
+            log.add(result.toString());
         })
         .chain(str->{
             Thread.sleep(50);
@@ -232,10 +237,51 @@ public class DeferActionTest {
         })
         .subscribe(result -> {
             log.add("Done: " + result);
-        })
+        });
+        action
+        .start()
         .getResult();
         Thread.sleep(50);
         
-        assertStrings("[Done: Result:{ Value: Total=47 }]", log);
+        assertStrings("[false, Result:{ Value: Hello }, Done: Result:{ Value: Total=47 }]", log);
+    }
+    
+    @Test
+    public void testDeferAction_moreChainAbort() throws InterruptedException {
+        val log = new ArrayList<String>();
+        DeferAction<String> p1 = DeferAction.from(()->{
+            Thread.sleep(50);
+            return "Hello";
+        });
+        DeferAction<String> p2 = p1
+        .eavesdrop(result -> {
+            // TODO - This is not good. This eavesdrop should be called.
+            log.add("" + result.isCancelled());
+            log.add(result.toString());
+        });
+        DeferAction<Integer> p3 = p2
+        .chain(str->{
+            Thread.sleep(50);
+            return Promise.ofValue(str.length());
+        });
+        DeferAction<Integer> beforeMap = p3
+        .chain(length->{
+            Thread.sleep(50);
+            return Promise.ofValue(length + 42);
+        });
+        DeferAction<String> afterMap = beforeMap
+        .map(value->{
+            Thread.sleep(50);
+            return "Total=" + value;
+        });
+        DeferAction<String> action = afterMap
+        .subscribe(result -> {
+            log.add("Done: " + result);
+        });
+        action
+        .start()
+        .abort();
+        
+        assertStrings("[Done: Result:{ Exception: functionalj.types.result.ResultCancelledException }]", log);
     }
 }
