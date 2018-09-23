@@ -9,7 +9,7 @@ repositories {
 dependencies {
     compile project(':functionalj-annotations')
     
-    compileOnly 'org.projectlombok:lombok:1.16.16'
+    compileOnly 'org.projectlombok:lombok:1.18.2'
     
     compile 'nawaman:nullablej:3.3.0.0'
     compile 'nawaman-utils:nawaman-utils-reflection:0.1.5'

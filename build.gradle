@@ -9,7 +9,7 @@ subprojects {
     apply plugin: 'maven-publish'
     
     sourceCompatibility = theSourceCompatibility
-    targetCompatibility = theSourceCompatibility
+    targetCompatibility = theTargetCompatibility
     
     repositories {
         mavenLocal()
