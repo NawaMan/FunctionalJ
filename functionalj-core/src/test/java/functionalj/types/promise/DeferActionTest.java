@@ -142,14 +142,76 @@ public class DeferActionTest {
     }
     
     @Test
-    public void testDeferAction_onStart() throws InterruptedException {
+    public void testDeferAction_lifeCycle() throws InterruptedException {
         // NOTE: This test demonstrates that it is possible to detect the phrase and thread that the task run on.
         //       This ability is important to allow control over the async operations.
+        val log = new ArrayList<String>();
+        log.add("Init ...");
+        DeferAction.run(()->{
+            Thread.sleep(100);
+            log.add("Running ...");
+            return "Hello";
+        }, OnStart.run(()->{
+            log.add("... onStart ...");
+        }))
+        .subscribe(result -> {
+            log.add("Done: " + result);
+        })
+        .eavesdrop(result -> {
+            log.add("Done2: " + result);
+        })
+        .getResult();
+        
+        assertStrings("["
+        		+ "Init ..., "
+        		+ "... onStart ..., "
+        		+ "Running ..., "
+        		+ "Done2: Result:{ Value: Hello }, "
+        		+ "Done: Result:{ Value: Hello }"
+        		+ "]", log);
+    }
+    
+    @Test
+    public void testDeferAction_lifeCycle_exceptionSafe() throws InterruptedException {
+        // NOTE: This test demonstrates that it is possible to detect the phrase and thread that the task run on.
+        //       This ability is important to allow control over the async operations.
+        val log = new ArrayList<String>();
+        log.add("Init ...");
+        DeferAction.run(()->{
+            Thread.sleep(100);
+            log.add("Running ...");
+            return "Hello";
+        }, OnStart.run(()->{
+            log.add("... onStart ...");
+        }))
+        .subscribe(result -> {
+            log.add("Done: " + result);
+            throw new Exception();
+        })
+        .eavesdrop(result -> {
+            log.add("Done2: " + result);
+            throw new Exception();
+        })
+        .getResult();
+        
+        assertStrings("["
+        		+ "Init ..., "
+        		+ "... onStart ..., "
+        		+ "Running ..., "
+        		+ "Done2: Result:{ Value: Hello }, "
+        		+ "Done: Result:{ Value: Hello }"
+        		+ "]", log);
+    }
+    
+    @Test
+    public void testDeferAction_sameThread() throws InterruptedException {
+        // NOTE: It also demonstrates that onStart, task and notification are run on the same thread.
         val log = new ArrayList<String>();
         val initThread      = new AtomicReference<String>(Thread.currentThread().toString());
         val onStartThread   = new AtomicReference<String>();
         val onRunningThread = new AtomicReference<String>();
         val onDoneThread    = new AtomicReference<String>();
+        val onDone2Thread   = new AtomicReference<String>();
         log.add("Init ...");
         DeferAction.run(()->{
             Thread.sleep(100);
@@ -164,12 +226,25 @@ public class DeferActionTest {
             log.add("Done: " + result);
             onDoneThread.set(Thread.currentThread().toString());
         })
+        .eavesdrop(result -> {
+            log.add("Done2: " + result);
+            onDone2Thread.set(Thread.currentThread().toString());
+        })
         .getResult();
         
-        assertStrings("[Init ..., ... onStart ..., Running ..., Done: Result:{ Value: Hello }]", log);
+        assertStrings("["
+        		+ "Init ..., "
+        		+ "... onStart ..., "
+        		+ "Running ..., "
+        		+ "Done2: Result:{ Value: Hello }, "
+        		+ "Done: Result:{ Value: Hello }"
+        		+ "]", log);
+        // Run on different thread.
         assertFalse(initThread.get().equals(onRunningThread.get()));
+        // The rest are on the same thread.
         assertStrings(onStartThread.get(), onRunningThread.get());
         assertStrings(onStartThread.get(), onDoneThread.get());
+        assertStrings(onStartThread.get(), onDone2Thread.get());
     }
     
     @Test
