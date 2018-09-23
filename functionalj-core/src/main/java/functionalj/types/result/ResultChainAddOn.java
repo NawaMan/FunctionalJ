@@ -1,6 +1,5 @@
 package functionalj.types.result;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -18,7 +17,6 @@ import functionalj.types.tuple.Tuple4;
 import functionalj.types.tuple.Tuple5;
 import functionalj.types.tuple.Tuple6;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
 
 public interface ResultChainAddOn<DATA> {
 

@@ -60,7 +60,8 @@ public class FunctionalJTest {
 
     public final List<String> logs = new ArrayList<>();
     
-    public final Map<String, City> citites = new HashMap<String, City>() {
+    @SuppressWarnings("serial")
+	public final Map<String, City> citites = new HashMap<String, City>() {
         @Override
         public City get(Object key) {
             logs.add("Cities: " + key);
@@ -77,6 +78,7 @@ public class FunctionalJTest {
     }
     
     
+    @SuppressWarnings("serial")
     public final Map<String, User> users = new HashMap<String, User>() {
         @Override
         public User get(Object key) {

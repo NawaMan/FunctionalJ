@@ -71,7 +71,8 @@ public abstract class Result<DATA>
         return e -> false;
     }
     
-    private static final Result NULL = new ImmutableResult<>(null);
+    @SuppressWarnings("rawtypes")
+	private static final Result NULL = new ImmutableResult<>(null);
     
     public static enum State {
         NOTREADY, CANCELLED, COMPLETED;
@@ -83,6 +84,7 @@ public abstract class Result<DATA>
     /**
      * Returns the Null result.
      * 
+     * @param  <D>  the data type of the result.
      * @return the Result containing null value.
      */
     public static <D> Result<D> ofNull() {
@@ -94,6 +96,7 @@ public abstract class Result<DATA>
     /**
      * Returns the NotAvailable result.
      * 
+     * @param  <D>  the data type of the result.
      * @return the Result that is the result is not available.
      */
     public static <D> Result<D> ofNotAvailable() {
@@ -103,7 +106,9 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotAvailable result with message.
+     * 
      * @param  message  the exception message.
+     * @param  <D>      the data type of the result.
      * @return the Result that is the result is not available.
      */
     public static <D> Result<D> ofNotAvailable(String message) {
@@ -113,8 +118,10 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotAvailable result with message and cause.
+     * 
      * @param  message  the exception message.
      * @param  cause    the exception cause.
+     * @param  <D>      the data type of the result.
      * @return the Result that is the result is not available.
      */
     public static <D> Result<D> ofNotAvailable(String message, Exception cause) {
@@ -126,6 +133,7 @@ public abstract class Result<DATA>
     /**
      * Returns the NotReady result.
      * 
+     * @param  <D>  the data type of the result.
      * @return the Result that is the result is not ready.
      */
     public static <D> Result<D> ofNotReady() {
@@ -135,7 +143,9 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotReady result with message.
+     * 
      * @param  message  the exception message.
+     * @param  <D>      the data type of the result.
      * @return the Result that is the result is not ready.
      */
     public static <D> Result<D> ofNotReady(String message) {
@@ -145,8 +155,10 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotReady result with message.
+     * 
      * @param  message  the exception message.
      * @param  cause    the exception cause.
+     * @param  <D>      the data type of the result.
      * @return the Result that is the result is not ready.
      */
     public static <D> Result<D> ofNotReady(String message, Exception cause) {
@@ -158,6 +170,7 @@ public abstract class Result<DATA>
     /**
      * Returns the Cancelled result.
      * 
+     * @param  <D>  the data type of the result.
      * @return the Result that is the result is cancelled.
      */
     public static <D> Result<D> ofCancelled() {
@@ -167,7 +180,9 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the Cancelled result with message.
+     * 
      * @param  message  the exception message.
+     * @param  <D>       the data type of the result.
      * @return the Result that is the result is cancelled.
      */
     public static <D> Result<D> ofCancelled(String message) {
@@ -177,8 +192,10 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the Cancelled result with message.
+     * 
      * @param  message  the exception message.
      * @param  cause    the exception cause.
+     * @param  <D>       the data type of the result.
      * @return the Result that is the result is cancelled.
      */
     public static <D> Result<D> ofCancelled(String message, Exception cause) {
@@ -189,7 +206,9 @@ public abstract class Result<DATA>
     
     /**
      * Returns the Invalid result with message.
+     * 
      * @param  message  the exception message.
+     * @param  <D>       the data type of the result.
      * @return the Result that is the result is invalid.
      */
     public static <D> Result<D> ofInvalid(String message) {
@@ -199,8 +218,10 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the Invalid result with message.
+     * 
      * @param  message  the exception message.
      * @param  cause    the exception cause.
+     * @param  <D>       the data type of the result.
      * @return the Result that is the result is invalid.
      */
     public static <D> Result<D> ofInvalid(String message, Exception cause) {
@@ -502,7 +523,8 @@ public abstract class Result<DATA>
     
     abstract Object __valueData();
     
-    protected <T> Result<T> newException(Exception exception) {
+    @SuppressWarnings("unchecked")
+	protected <T> Result<T> newException(Exception exception) {
         return (Result<T>)Result.ofException(exception);
     }
     

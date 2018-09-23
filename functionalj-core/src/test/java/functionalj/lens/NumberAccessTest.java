@@ -11,7 +11,6 @@ import functionalj.types.list.ImmutableList;
 
 public class NumberAccessTest {
     
-    @SuppressWarnings("unchecked")
     @Test
     public void testAdd() {
         assertEquals(15,  (int)theInteger.add(5).apply(10));

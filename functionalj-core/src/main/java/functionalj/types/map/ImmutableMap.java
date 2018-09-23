@@ -2,8 +2,6 @@ package functionalj.types.map;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.types.list.ImmutableList;

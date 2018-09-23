@@ -21,8 +21,7 @@ import lombok.experimental.ExtensionMethod;
 
 @ExtensionMethod(Utils.class)
 public class SwitchClass implements Lines {
-    private static final String DEFAULT_TARGET_TYPE_NAME = "T";
-    
+	
     public final TargetClass  targetClass;
     public final boolean      expandPartial;
     public final boolean      isFirst;

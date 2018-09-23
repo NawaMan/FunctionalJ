@@ -384,5 +384,48 @@ public class PromiseTest {
                 list);
     }
     
+    @Test
+    public void testParentStatus_complete() {
+    	val parentPromise = DeferAction.of(String.class)
+    			.getPromise();
+    	
+    	val childPromise = parentPromise.map(String::length);
+    	
+    	assertStrings("NOT_STARTED", parentPromise.getStatus());
+    	assertStrings("NOT_STARTED", childPromise.getStatus());
+    	
+    	childPromise.start();
+    	assertStrings("PENDING", parentPromise.getStatus());
+    	assertStrings("PENDING", childPromise.getStatus());
+    	
+    	parentPromise.makeComplete("HELLO");
+    	assertStrings("COMPLETED", parentPromise.getStatus());
+    	assertStrings("COMPLETED", childPromise.getStatus());
+    	
+    	assertStrings("Result:{ Value: HELLO }", parentPromise.getCurrentResult());
+    	assertStrings("Result:{ Value: 5 }",     childPromise.getCurrentResult());
+    }
+    
+    @Test
+    public void testParentStatus_exception() {
+    	val parentPromise = DeferAction.of(String.class)
+    			.getPromise();
+    	
+    	val childPromise = parentPromise.map(String::length);
+    	
+    	assertStrings("NOT_STARTED", parentPromise.getStatus());
+    	assertStrings("NOT_STARTED", childPromise.getStatus());
+    	
+    	childPromise.start();
+    	assertStrings("PENDING", parentPromise.getStatus());
+    	assertStrings("PENDING", childPromise.getStatus());
+    	
+    	parentPromise.makeFail(new NullPointerException());
+    	assertStrings("COMPLETED", parentPromise.getStatus());
+    	assertStrings("COMPLETED", childPromise.getStatus());
+    	
+    	assertStrings("Result:{ Exception: java.lang.NullPointerException }", parentPromise.getCurrentResult());
+    	assertStrings("Result:{ Exception: java.lang.NullPointerException }", childPromise.getCurrentResult());
+    }
     
 }

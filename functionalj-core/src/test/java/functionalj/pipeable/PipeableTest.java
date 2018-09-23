@@ -38,7 +38,8 @@ public class PipeableTest {
             ));
     }
     
-    @Test
+    @SuppressWarnings("null")
+	@Test
     public void testRuntimeException() {
         val src1 = (String)null;
         val str1 = (Pipeable<String>)()->src1.toUpperCase();

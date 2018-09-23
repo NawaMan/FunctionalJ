@@ -2,7 +2,6 @@ package functionalj.types.promise;
 
 import static functionalj.functions.Func.carelessly;
 
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import functionalj.functions.Func1;
@@ -121,7 +120,8 @@ public class PendingAction<DATA> extends AbstractDeferAction<DATA> {
         return new PendingAction<TARGET>((Promise<TARGET>)newPromise);
     }
     
-    public final <TARGET> PendingAction<TARGET> flatMap(Func1<? super DATA, HasPromise<? extends TARGET>> mapper) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public final <TARGET> PendingAction<TARGET> flatMap(Func1<? super DATA, HasPromise<? extends TARGET>> mapper) {
         return chain((Func1)mapper);
     }
     

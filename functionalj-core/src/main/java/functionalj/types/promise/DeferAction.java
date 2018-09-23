@@ -3,7 +3,6 @@ package functionalj.types.promise;
 import static functionalj.functions.Func.carelessly;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -77,21 +76,32 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     
     private final Runnable task;
     
+    private final DeferAction<?> parent;
+    
     protected DeferAction(Promise<DATA> promise) {
         this(promise, null);
     }
+    DeferAction(DeferAction<?> parent, Promise<DATA> promise) {
+        super(promise);
+        this.parent = parent;
+        this.task = null;
+    }
     protected DeferAction(Promise<DATA> promise, Runnable task) {
         super(promise);
+        this.parent = null;
         this.task = task;
     }
     
     public PendingAction<DATA> start() {
-        val isStarted = promise.isStarted();
-        promise.start();
-        
-        if (!isStarted && (task != null))
-            carelessly(task);
-        
+    	if (parent != null) {
+    		parent.start();
+    	} else {
+	        val isStarted = promise.isStarted();
+	        promise.start();
+	        
+	        if (!isStarted && (task != null))
+	            carelessly(task);
+    	}
         return new PendingAction<>(promise);
     }
     
@@ -151,22 +161,23 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     
     public final DeferAction<DATA> filter(Predicate<? super DATA> predicate) {
         val newPromise = promise.filter(predicate);
-        return new DeferAction<DATA>(newPromise);
+        return new DeferAction<DATA>(this, newPromise);
     }
     
     @SuppressWarnings("unchecked")
     public final <TARGET> DeferAction<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         val newPromise = promise.map(mapper);
-        return new DeferAction<TARGET>((Promise<TARGET>)newPromise);
+        return new DeferAction<TARGET>(this, (Promise<TARGET>)newPromise);
     }
     
-    public final <TARGET> DeferAction<TARGET> flatMap(Func1<? super DATA, HasPromise<? extends TARGET>> mapper) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public final <TARGET> DeferAction<TARGET> flatMap(Func1<? super DATA, HasPromise<? extends TARGET>> mapper) {
         return chain((Func1)mapper);
     }
     
     public final <TARGET> DeferAction<TARGET> chain(Func1<DATA, HasPromise<TARGET>> mapper) {
         val newPromise = promise.flatMap(mapper);
-        return new DeferAction<TARGET>((Promise<TARGET>)newPromise);
+        return new DeferAction<TARGET>(this, (Promise<TARGET>)newPromise);
     }
     
     // TODO - Other F-M-FM methods.

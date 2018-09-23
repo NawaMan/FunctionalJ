@@ -10,7 +10,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import functionalj.functions.Func;
 import functionalj.types.result.Result;
 import functionalj.types.result.validator.Validator;
 import lombok.val;

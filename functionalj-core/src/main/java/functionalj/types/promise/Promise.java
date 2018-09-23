@@ -211,17 +211,28 @@ public class Promise<DATA> implements HasPromise<DATA> {
     //      result.completed -> completed
     private final Map<Subscription<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>();
     private final List<FuncUnit1<Result<DATA>>>                    eavesdroppers = new ArrayList<>();
+    
     private final AtomicReference<Object> dataRef = new AtomicReference<>(PromiseStatus.NOT_STARTED);
     
     public Promise() {}
+    
+    Promise(@SuppressWarnings("rawtypes") Promise parent) {
+    	this.dataRef.set(parent);
+    }
     
     @Override
     public Promise<DATA> getPromise() {
         return this;
     }
     
-    public final PromiseStatus getStatus() {
+	public final PromiseStatus getStatus() {
         val data = dataRef.get();
+        if (data instanceof Promise) {
+        	@SuppressWarnings("unchecked")
+			Promise<DATA> promise = (Promise<DATA>)data;
+			return promise.getStatus();
+		}
+        
         if (PromiseStatus.NOT_STARTED.equals(data))
             return PromiseStatus.NOT_STARTED;
         if (consumers == data)
@@ -247,23 +258,34 @@ public class Promise<DATA> implements HasPromise<DATA> {
     //== Internal working ==
     
     boolean start() {
+    	val data = dataRef.get();
+    	if (data instanceof Promise) {
+    		@SuppressWarnings("unchecked")
+			val parent = (Promise<DATA>)data;
+    		return parent.start();
+    	}
+    	
         return dataRef.compareAndSet(PromiseStatus.NOT_STARTED, consumers);
     }
     
     boolean abort() {
-        Result<DATA> cancelResult = Result.ofCancelled();
+        @SuppressWarnings("unchecked")
+		val cancelResult = (Result<DATA>)Result.ofCancelled();
         return makeDone(cancelResult);
     }
     boolean abort(String message) {
-        Result<DATA> cancelResult = Result.ofCancelled(message);
+        @SuppressWarnings("unchecked")
+		val cancelResult = (Result<DATA>)Result.ofCancelled(message);
         return makeDone(cancelResult);
     }
     boolean abort(Exception cause) {
-        Result<DATA> cancelResult = Result.ofCancelled(null, cause);
+        @SuppressWarnings("unchecked")
+		val cancelResult = (Result<DATA>)Result.ofCancelled(null, cause);
         return makeDone(cancelResult);
     }
     boolean abort(String message, Exception cause) {
-        Result<DATA> cancelResult = Result.ofCancelled(message, cause);
+        @SuppressWarnings("unchecked")
+		val cancelResult = (Result<DATA>)Result.ofCancelled(message, cause);
         return makeDone(cancelResult);
     }
     
@@ -279,8 +301,20 @@ public class Promise<DATA> implements HasPromise<DATA> {
     }
     
     private boolean makeDone(Result<DATA> result) {
-        if (!dataRef.compareAndSet(consumers, result))
-            return false;
+    	val data = dataRef.get();
+    	if (data instanceof Promise) {
+    		@SuppressWarnings("unchecked")
+    		val parent = (Promise<DATA>)data;
+    		if (!result.isException()) {
+    	        if (!dataRef.compareAndSet(parent, result))
+    	            return false;
+    		} else {
+    			parent.makeDone(result);
+    		}
+    	} else {
+	        if (!dataRef.compareAndSet(consumers, result))
+	            return false;
+    	}
         
         val subscribers = new HashMap<Subscription<DATA>, FuncUnit1<Result<DATA>>>(consumers);
         this.consumers.clear();
@@ -321,7 +355,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
     }
     
     protected <T> Promise<T> newPromise() {
-        return new Promise<T>();
+        return new Promise<T>(this);
     }
     
     //== Basic functionality ==
@@ -395,11 +429,18 @@ public class Promise<DATA> implements HasPromise<DATA> {
         return getCurrentResult();
     }
     
-    @SuppressWarnings("unchecked")
     public final Result<DATA> getCurrentResult() {
         val data = dataRef.get();
-        if (data instanceof Result)
-            return (Result<DATA>)data;
+        if (data instanceof Result) {
+        	@SuppressWarnings("unchecked")
+        	val result = (Result<DATA>)data;
+            return result;
+        }
+        if (data instanceof Promise) {
+        	@SuppressWarnings("unchecked")
+			val parent = (Promise<DATA>)data;
+			return parent.getCurrentResult();
+		}
         return Result.ofNotReady();
     }
     
@@ -502,7 +543,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
     @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         val targetPromise = (Promise<TARGET>)newPromise();
-        targetPromise.start();
+//        targetPromise.start();
         
         subscribe(r -> {
             val result = r.map(mapper);
@@ -515,7 +556,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
     @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> flatMap(Function<DATA, HasPromise<TARGET>> mapper) {
         val targetPromise = (Promise<TARGET>)newPromise();
-        targetPromise.start();
+//        targetPromise.start();
         subscribe(r -> {
             val targetResult = r.map(mapper);
             targetResult.ifPresent(hasPromise -> {

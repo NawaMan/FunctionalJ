@@ -3,8 +3,8 @@ package functionalj.types.promise;
 import static functionalj.types.promise.DeferAction.run;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -214,14 +214,15 @@ public class DeferActionTest {
     @Test
     public void testDeferAction_moreChain() throws InterruptedException {
         val log = new ArrayList<String>();
-        DeferAction<String> action = DeferAction.from(()->{
+        DeferAction.from(()->{
             Thread.sleep(50);
-            System.out.println("Hello");
             return "Hello";
-        })
+        }, OnStart.run(()->{
+        	log.add("Acion 1 started.");
+        }))
         .eavesdrop(result -> {
-            log.add("" + result.isCancelled());
-            log.add(result.toString());
+            log.add("Eavesdrop: " + result.isCancelled());
+            log.add("Eavesdrop: " + result.toString());
         })
         .chain(str->{
             Thread.sleep(50);
@@ -237,51 +238,53 @@ public class DeferActionTest {
         })
         .subscribe(result -> {
             log.add("Done: " + result);
-        });
-        action
+        })
         .start()
         .getResult();
+        
         Thread.sleep(50);
         
-        assertStrings("[false, Result:{ Value: Hello }, Done: Result:{ Value: Total=47 }]", log);
+        assertStrings("["
+        		+ "Acion 1 started., "
+        		+ "Eavesdrop: false, "
+        		+ "Eavesdrop: Result:{ Value: Hello }, "
+        		+ "Done: Result:{ Value: Total=47 }"
+        		+ "]", log);
     }
     
     @Test
     public void testDeferAction_moreChainAbort() throws InterruptedException {
         val log = new ArrayList<String>();
-        DeferAction<String> p1 = DeferAction.from(()->{
+        DeferAction.from(()->{
             Thread.sleep(50);
             return "Hello";
-        });
-        DeferAction<String> p2 = p1
+        })
         .eavesdrop(result -> {
-            // TODO - This is not good. This eavesdrop should be called.
-            log.add("" + result.isCancelled());
-            log.add(result.toString());
-        });
-        DeferAction<Integer> p3 = p2
+            log.add("Eavesdrop: " + result.isCancelled());
+            log.add("Eavesdrop: " + result.toString());
+        })
         .chain(str->{
             Thread.sleep(50);
             return Promise.ofValue(str.length());
-        });
-        DeferAction<Integer> beforeMap = p3
+        })
         .chain(length->{
             Thread.sleep(50);
             return Promise.ofValue(length + 42);
-        });
-        DeferAction<String> afterMap = beforeMap
+        })
         .map(value->{
             Thread.sleep(50);
             return "Total=" + value;
-        });
-        DeferAction<String> action = afterMap
+        })
         .subscribe(result -> {
             log.add("Done: " + result);
-        });
-        action
+        })
         .start()
         .abort();
         
-        assertStrings("[Done: Result:{ Exception: functionalj.types.result.ResultCancelledException }]", log);
+        assertStrings("["
+        		+ "Eavesdrop: true, "
+        		+ "Eavesdrop: Result:{ Exception: functionalj.types.result.ResultCancelledException }, "
+        		+ "Done: Result:{ Exception: functionalj.types.result.ResultCancelledException }"
+        		+ "]", log);
     }
 }

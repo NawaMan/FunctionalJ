@@ -2,7 +2,9 @@ package functionalj.types.promise;
 
 public class PromisePartiallyFailException extends RuntimeException {
     
-    private final int index;
+	private static final long serialVersionUID = 1715068836323475893L;
+	
+	private final int index;
     private final int count;
     
     public PromisePartiallyFailException(int index, int count, Throwable cause) {

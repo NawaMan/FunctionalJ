@@ -4,8 +4,8 @@ import java.util.function.Predicate;
 
 import functionalj.functions.Func1;
 import functionalj.functions.Func2;
-import functionalj.types.result.ValidationException;
 import functionalj.types.result.Result;
+import functionalj.types.result.ValidationException;
 
 @SuppressWarnings("javadoc")
 public interface Validator<DATA> extends Predicate<DATA>, Func1<DATA, Boolean> {

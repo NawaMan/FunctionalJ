@@ -191,7 +191,6 @@ public class StreamPlusTest {
         assertStrings("[One, Two, Four, Three]", stream.sorted(comparingInt(String::length)).toList());
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void testSortedComparatorNull() {
         val stream = StreamPlus.of("One", "Two", "Three");

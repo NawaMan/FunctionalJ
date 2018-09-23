@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,8 +31,6 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 public final class ImmutableList<DATA> implements FuncList<DATA> {
-    
-    private final Function<Stream<DATA>, Stream<DATA>> noAction = Function.identity();
     
     private final static ImmutableList<?> EMPTY = new ImmutableList<>(Collections.emptyList());
     
@@ -48,7 +45,6 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     public static <T> ImmutableList<T> of(T ... data) {
         return new ImmutableList<>(Arrays.asList(data));
     }
-    @SuppressWarnings("unchecked")
     public static <T> ImmutableList<T> from(Streamable<T> streamable) {
         if (streamable instanceof ImmutableList)
             return (ImmutableList<T>)streamable;
@@ -60,7 +56,6 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     public static <T> ImmutableList<T> from(Stream<T> stream) {
         return new ImmutableList<T>(stream.collect(Collectors.toList()));
     }
-    @SuppressWarnings("unchecked")
     public static <T> ImmutableList<T> from(ReadOnlyList<T> readOnlyList) {
         if (readOnlyList instanceof ImmutableList)
             return (ImmutableList<T>)readOnlyList;

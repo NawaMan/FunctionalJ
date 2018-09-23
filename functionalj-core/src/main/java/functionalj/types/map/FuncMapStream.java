@@ -185,13 +185,15 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
                         return Stream.of(mapEntry);
                     });
                     val main = new AtomicReference<Supplier<Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>>>>(()->{
-                        return entries.filter(entry -> {
+                        Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>> stream = entries
+                        .filter(entry -> {
                             boolean found = (entry._1 == keyHash) && Objects.equals(key, entry._2._1);
                             if (found) {
                                 ref.set((Supplier<Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>>>)(Supplier)EmptyStreamSupplier);
                             }
                             return true;
                         }).stream();
+						return stream;
                     });
                     return (Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>>)Stream.of(main, ref).
                             flatMap(each -> each.get().get());

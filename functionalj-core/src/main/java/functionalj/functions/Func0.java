@@ -3,7 +3,6 @@ package functionalj.functions;
 import java.util.function.Supplier;
 
 import functionalj.types.result.Result;
-import functionalj.types.result.Result;
 
 /**
  * Function of zeroth parameter - a supplier.
