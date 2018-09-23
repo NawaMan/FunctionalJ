@@ -13,6 +13,9 @@ import functionalj.functions.FuncUnit1;
 import functionalj.types.result.Result;
 import lombok.val;
 
+// TODO : Make sure to allow an easy wrapping of all executions (onStart, task and notification) 
+//   so that we can implement tracing and ref.
+
 @SuppressWarnings("javadoc")
 public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     
