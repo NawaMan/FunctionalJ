@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -145,7 +146,8 @@ public class DeferActionTest {
     public void testDeferAction_lifeCycle() throws InterruptedException {
         // NOTE: This test demonstrates that it is possible to detect the phrase and thread that the task run on.
         //       This ability is important to allow control over the async operations.
-        val log = new ArrayList<String>();
+        val log   = new ArrayList<String>();
+        val latch = new CountDownLatch(2);
         log.add("Init ...");
         DeferAction.run(()->{
             Thread.sleep(100);
@@ -157,12 +159,17 @@ public class DeferActionTest {
         .subscribe(result -> {
             Thread.sleep(100);
             log.add("Done: " + result);
+            latch.countDown();
         })
         .eavesdrop(result -> {
             Thread.sleep(100);
             log.add("Done2: " + result);
+            latch.countDown();
         })
         .getResult();
+        // getResult is just a subscription so if it run before the above subscription,
+        //    the test will ends before the above subscription got to run.
+        latch.await();
         
         assertStrings("["
         		+ "Init ..., "
@@ -177,7 +184,8 @@ public class DeferActionTest {
     public void testDeferAction_lifeCycle_exceptionSafe() throws InterruptedException {
         // NOTE: This test demonstrates that it is possible to detect the phrase and thread that the task run on.
         //       This ability is important to allow control over the async operations.
-        val log = new ArrayList<String>();
+        val log   = new ArrayList<String>();
+        val latch = new CountDownLatch(2);
         log.add("Init ...");
         DeferAction.run(()->{
             Thread.sleep(100);
@@ -188,13 +196,16 @@ public class DeferActionTest {
         }))
         .subscribe(result -> {
             log.add("Done: " + result);
+            latch.countDown();
             throw new Exception();
         })
         .eavesdrop(result -> {
             log.add("Done2: " + result);
+            latch.countDown();
             throw new Exception();
         })
         .getResult();
+        latch.await();
         
         assertStrings("["
         		+ "Init ..., "
@@ -208,7 +219,8 @@ public class DeferActionTest {
     @Test
     public void testDeferAction_sameThread() throws InterruptedException {
         // NOTE: It also demonstrates that onStart, task and notification are run on the same thread.
-        val log = new ArrayList<String>();
+        val log   = new ArrayList<String>();
+        val latch = new CountDownLatch(4);
         val initThread      = new AtomicReference<String>(Thread.currentThread().toString());
         val onStartThread   = new AtomicReference<String>();
         val onRunningThread = new AtomicReference<String>();
@@ -219,23 +231,28 @@ public class DeferActionTest {
             Thread.sleep(100);
             log.add("Running ...");
             onRunningThread.set(Thread.currentThread().toString());
+            latch.countDown();
             return "Hello";
         }, OnStart.run(()->{
             Thread.sleep(100);
             log.add("... onStart ...");
             onStartThread.set(Thread.currentThread().toString());
+            latch.countDown();
         }))
         .subscribe(result -> {
             Thread.sleep(100);
             log.add("Done: " + result);
             onDoneThread.set(Thread.currentThread().toString());
+            latch.countDown();
         })
         .eavesdrop(result -> {
             Thread.sleep(100);
             log.add("Done2: " + result);
             onDone2Thread.set(Thread.currentThread().toString());
+            latch.countDown();
         })
         .getResult();
+        latch.await();
         
         assertStrings("["
         		+ "Init ..., "
