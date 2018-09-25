@@ -253,7 +253,7 @@ public class DeferActionTest {
         val runningThread = new AtomicReference<String>();
         log.add("Init #0...");
         DeferAction.run(()->{
-            Thread.sleep(50);
+            Thread.sleep(100);
             log.add("Running #1...");
             return "Hello";
         }, OnStart.run(()->{
@@ -262,7 +262,7 @@ public class DeferActionTest {
         }))
         .chain(str -> {
             return DeferAction.run(()->{
-                Thread.sleep(50);
+                Thread.sleep(100);
                 log.add("Running #2...");
                 return str.length();
             }, OnStart.run(()->{
@@ -275,7 +275,7 @@ public class DeferActionTest {
         })
         .getResult();
         
-        assertStrings("["
+        assertEquals("["
                 + "Init #0..., "
                 + "Start #1 ..., "
                 + "Running #1..., "
@@ -283,7 +283,7 @@ public class DeferActionTest {
                 +   "Running #2..., "
                 + "Done #1: Result:{ Value: 5 }"
                 + "]",
-                log);
+                log.toString());
     }
     
     @Test
