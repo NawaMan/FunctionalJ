@@ -93,7 +93,7 @@ public class DeferActionTest {
         log.add("Start: " + (start - start));
         val result
             = DeferAction.run(()->{
-                Thread.sleep(100);
+                Thread.sleep(200);
                 return "Hello";
             })
             .getResult();
@@ -102,7 +102,7 @@ public class DeferActionTest {
         log.add("End: " + (10*((end - start) / 10)));
         log.add("Result: " + result);
         
-        assertStrings("[Start: 0, End: 100, Result: Result:{ Value: Hello }]", log);
+        assertStrings("[Start: 0, End: 200, Result: Result:{ Value: Hello }]", log);
     }
     
     @Test
