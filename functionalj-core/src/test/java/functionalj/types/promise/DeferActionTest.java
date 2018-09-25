@@ -221,14 +221,17 @@ public class DeferActionTest {
             onRunningThread.set(Thread.currentThread().toString());
             return "Hello";
         }, OnStart.run(()->{
+            Thread.sleep(100);
             log.add("... onStart ...");
             onStartThread.set(Thread.currentThread().toString());
         }))
         .subscribe(result -> {
+            Thread.sleep(100);
             log.add("Done: " + result);
             onDoneThread.set(Thread.currentThread().toString());
         })
         .eavesdrop(result -> {
+            Thread.sleep(100);
             log.add("Done2: " + result);
             onDone2Thread.set(Thread.currentThread().toString());
         })
