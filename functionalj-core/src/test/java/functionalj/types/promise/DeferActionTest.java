@@ -155,9 +155,11 @@ public class DeferActionTest {
             log.add("... onStart ...");
         }))
         .subscribe(result -> {
+            Thread.sleep(100);
             log.add("Done: " + result);
         })
         .eavesdrop(result -> {
+            Thread.sleep(100);
             log.add("Done2: " + result);
         })
         .getResult();
