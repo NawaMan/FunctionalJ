@@ -103,10 +103,10 @@ public class DeferActionTest {
             .getResult();
         
         val end = System.currentTimeMillis();
-        log.add("End: " + (10*((end - start) / 10)));
+        log.add("End: " + (100*((end - start) / 100)));
         log.add("Result: " + result);
         
-        assertStrings("[Start: 0, End: 200, Result: Result:{ Value: Hello }]", log);
+        assertEquals("[Start: 0, End: 200, Result: Result:{ Value: Hello }]", log.toString());
     }
     
     @Test
