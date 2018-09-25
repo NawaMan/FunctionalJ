@@ -29,7 +29,7 @@ public interface ResultMapAddOn<DATA> {
     public default Result<DATA> mapIf(Predicate<? super DATA> checker, Func1<? super DATA, DATA> mapper) {
         return map(d -> checker.test(d) ? mapper.apply(d) : d);
     }
-    public default <T> Result<T> map(
+    public default <T> Result<T> mapIf(
             Predicate<? super DATA>   checker, 
             Function<? super DATA, T> mapper, 
             Function<? super DATA, T> elseMapper) {
