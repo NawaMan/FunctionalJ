@@ -69,20 +69,23 @@ public class DeferActionTest {
     
     @Test
     public void testDeferAction_exception() throws InterruptedException {
-        val log = new ArrayList<String>();
+        val log   = new ArrayList<String>();
+        val latch = new CountDownLatch(2);
         val start = System.currentTimeMillis();
         log.add("Start: " + (start - start));
         DeferAction.run(()->{
             Thread.sleep(100);
+            latch.countDown();
             throw new IOException("Fail hard!");
         })
         .subscribe(result -> {
             val end = System.currentTimeMillis();
             log.add("End: " + (10*((end - start) / 10)));
             log.add("Result: " + result);
+            latch.countDown();
         });
         
-        Thread.sleep(150);
+        latch.await();
         
         assertStrings("[Start: 0, End: 100, Result: Result:{ Exception: java.io.IOException: Fail hard! }]", log);
     }
@@ -272,30 +275,37 @@ public class DeferActionTest {
     @Test
     public void testDeferAction_chain() throws InterruptedException {
         val log = new ArrayList<String>();
+        val latch = new CountDownLatch(5);
         val runningThread = new AtomicReference<String>();
         log.add("Init #0...");
         DeferAction.run(()->{
             Thread.sleep(100);
             log.add("Running #1...");
+            latch.countDown();
             return "Hello";
         }, OnStart.run(()->{
             log.add("Start #1 ...");
             runningThread.set(Thread.currentThread().toString());
+            latch.countDown();
         }))
         .chain(str -> {
             return DeferAction.run(()->{
                 Thread.sleep(100);
                 log.add("Running #2...");
+                latch.countDown();
                 return str.length();
             }, OnStart.run(()->{
                 log.add("Start #2 ...");
                 runningThread.set(Thread.currentThread().toString());
+                latch.countDown();
             }));
         })
         .subscribe(result -> {
             log.add("Done #1: " + result);
+            latch.countDown();
         })
         .getResult();
+        latch.await();
         
         assertEquals("["
                 + "Init #0..., "
