@@ -8,9 +8,7 @@ import java.util.List;
 
 import functionalj.annotations.uniontype.generator.model.Choice;
 import lombok.AllArgsConstructor;
-import lombok.experimental.ExtensionMethod;
 
-@ExtensionMethod(Utils.class)
 @AllArgsConstructor
 public class SubCheckMethod implements Lines {
     public final TargetClass  targetClass;
