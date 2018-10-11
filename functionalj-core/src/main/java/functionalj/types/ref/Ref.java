@@ -50,7 +50,9 @@ public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA
     }
 	
 	public final DATA value() {
-		return get().value();
+		val result = get();
+		val value  = result.value();
+		return value;
 	}
 	public final DATA orElse(DATA elseValue) {
 		return get().orElse(elseValue);

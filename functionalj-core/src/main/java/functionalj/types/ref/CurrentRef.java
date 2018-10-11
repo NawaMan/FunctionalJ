@@ -1,7 +1,5 @@
 package functionalj.types.ref;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.List;
 
 import functionalj.functions.Func0;
@@ -17,7 +15,7 @@ public class CurrentRef<DATA> extends RefOf<DATA> {
 		
 		Entry(Entry parent, Substitution substitution) {
 			this.parent       = parent;
-			this.substitution = requireNonNull(substitution);
+			this.substitution = substitution;
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -25,8 +23,10 @@ public class CurrentRef<DATA> extends RefOf<DATA> {
 			if (ref == null)
 				return null;
 			
-			if (ref.equals(this.substitution.ref())) {
-				return substitution.supplier();
+			if (substitution != null) {
+				if (ref.equals(substitution.ref())) {
+					return substitution.supplier();
+				}
 			}
 			
 			if (parent == null)
@@ -42,7 +42,7 @@ public class CurrentRef<DATA> extends RefOf<DATA> {
 		
 	}
 	
-	private static final ThreadLocal<Entry> refEntry = new ThreadLocal<Entry>();
+	private static final ThreadLocal<Entry> refEntry = ThreadLocal.withInitial(()->new Entry(null, null));
 	
 	private final Ref<DATA> defaultRef;
 	
@@ -53,7 +53,8 @@ public class CurrentRef<DATA> extends RefOf<DATA> {
 	
 	@Override
 	public final functionalj.types.result.Result<DATA> get() {
-		val supplier = refEntry.get().findSupplier(this);
+		val entry    = refEntry.get();
+		val supplier = entry.findSupplier(this);
 		if (supplier != null) {
 			val result = functionalj.types.result.Result.from(supplier);
 			return result;
