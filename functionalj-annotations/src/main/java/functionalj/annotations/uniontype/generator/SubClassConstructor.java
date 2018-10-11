@@ -17,9 +17,8 @@ public class SubClassConstructor implements Lines {
     
     @Override
     public List<String> lines() {
-        val sourceName     = targetClass.spec.sourceType.name;
-        val sourceEncloser = targetClass.spec.sourceType.encloseClass;
-        val name           = choice.name;
+        val sourceName = targetClass.spec.sourceType.name;
+        val name       = choice.name;
         if (!choice.isParameterized()) {
             return asList(
                 format("public static final %1$s%2$s %3$s() {", (targetClass.genericDef().isEmpty() ? "" : targetClass.genericDef() + " "), targetClass.typeWithGenerics(), name),

@@ -8,7 +8,6 @@ import java.util.List;
 
 import functionalj.annotations.uniontype.generator.model.Choice;
 import lombok.AllArgsConstructor;
-import lombok.val;
 import lombok.experimental.ExtensionMethod;
 
 @ExtensionMethod(Utils.class)
@@ -19,7 +18,6 @@ public class SubCheckMethod implements Lines {
     
     @Override
     public List<String> lines() {
-        val targetName = targetClass.spec.targetName;
         return choices.stream()
             .map(choice -> (List<String>)Arrays.asList(
                 format("public boolean is%1$s() { return this instanceof %1$s; }",                                                    choice.name),

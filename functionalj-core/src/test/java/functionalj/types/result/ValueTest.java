@@ -21,8 +21,7 @@ public class ValueTest {
     @Test
     public void testGet() {
         // NOTE - Not exactly efficient ... but will do for now.
-        val logs = new ArrayList<String>();
-        val length =  value.map(str -> {
+        val length = value.map(str -> {
             return str.length();
         });
         
