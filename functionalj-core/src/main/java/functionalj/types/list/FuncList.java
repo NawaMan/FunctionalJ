@@ -54,6 +54,10 @@ public interface FuncList<DATA>
     public static <T> FuncList<T> of(T ... data) {
         return ImmutableList.of(data);
     }
+    @SafeVarargs
+    public static <T> FuncList<T> listOf(T ... data) {
+    	return ImmutableList.of(data);
+    }
     public static <T> FuncList<T> from(Streamable<T> streamable) {
         return ImmutableList.from(streamable);
     }

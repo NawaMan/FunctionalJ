@@ -9,7 +9,6 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public interface Pipeable<DATA> {
     
-    
     public static <D> Pipeable<D> of(D data) {
         return ()->data;
     }

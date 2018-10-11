@@ -26,6 +26,7 @@ import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.FuncUnit1;
 import functionalj.types.list.FuncList;
+import functionalj.types.result.AsResult;
 import functionalj.types.result.Result;
 import lombok.val;
 
@@ -34,6 +35,15 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public class Promise<DATA> implements HasPromise<DATA> {
     
+	public static <D> Promise<D> ofResult(AsResult<D> asResult) {
+		if (asResult instanceof HasPromise)
+			return ((HasPromise<D>)asResult).getPromise();
+		
+		return DeferAction
+				.from(()->asResult.asResult().value())
+				.getPromise();
+		
+	}
     public static <D> Promise<D> ofValue(D value) {
         return DeferAction.of((Class<D>)null)
                 .start()
@@ -543,8 +553,6 @@ public class Promise<DATA> implements HasPromise<DATA> {
     @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         val targetPromise = (Promise<TARGET>)newPromise();
-//        targetPromise.start();
-        
         subscribe(r -> {
             val result = r.map(mapper);
             targetPromise.makeDone((Result<TARGET>) result);
@@ -553,10 +561,12 @@ public class Promise<DATA> implements HasPromise<DATA> {
         return targetPromise;
     }
     
-    @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> flatMap(Function<DATA, HasPromise<TARGET>> mapper) {
+    	return chain(mapper);
+    }
+    @SuppressWarnings("unchecked")
+    public final <TARGET> Promise<TARGET> chain(Function<DATA, HasPromise<TARGET>> mapper) {
         val targetPromise = (Promise<TARGET>)newPromise();
-//        targetPromise.start();
         subscribe(r -> {
             val targetResult = r.map(mapper);
             targetResult.ifPresent(hasPromise -> {
