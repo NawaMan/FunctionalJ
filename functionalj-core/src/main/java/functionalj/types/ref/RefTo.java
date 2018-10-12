@@ -15,11 +15,11 @@ public class RefTo<DATA> extends Ref<DATA> {
 	
 	@Override
 	public Result<DATA> get() {
-		val result   = Result.from(()->{
+		val result = Result.from(()->{
 			val provider = IProvideDefault.defaultProvider().get();
 			val dataType = getDataType();
 			val value    = provider.get(dataType);
-			return value;
+			return (DATA)value;
 		});
 		return result;
 	}
