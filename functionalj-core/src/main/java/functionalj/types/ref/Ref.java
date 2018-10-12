@@ -11,11 +11,15 @@ import lombok.val;
 
 public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA> {
 	
+	public static <D> Ref<D> to(Class<D> dataClass) {
+		return new RefTo<D>(dataClass);
+	}
+	
 	public static <D> RefBuilder<D> of(Class<D> dataClass) {
 		return new RefBuilder<D>(dataClass);
 	}
 	
-	public static <D> RefOf<D> ofValue(D value) {
+	public static <D> Ref<D> ofValue(D value) {
 		@SuppressWarnings("unchecked")
 		val dataClass = (Class<D>)value.getClass();
 		val result    = Result.of(value);
@@ -67,6 +71,10 @@ public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA
     
     public final Substitution<DATA> butFrom(Func0<DATA> supplier) {
     	return new Substitution.Supplier<DATA>(this, supplier);
+    }
+    
+    public OverridableRef<DATA> overridable() {
+    	return new OverridableRef<DATA>(this);
     }
 	
 }

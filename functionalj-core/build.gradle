@@ -12,10 +12,12 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.2'
     
     compile 'nawaman:nullablej:3.3.0.0'
+    compile 'defaultj:defaultj-api:1.1.3.0'
     compile 'nawaman-utils:nawaman-utils-reflection:0.1.5'
     
     //== Test ==
     
     testCompile 'junit:junit:4.12'
+    testCompile 'defaultj:defaultj-core:1.1.3.0'
     
 }

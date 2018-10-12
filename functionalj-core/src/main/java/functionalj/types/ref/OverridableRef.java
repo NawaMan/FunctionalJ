@@ -5,7 +5,7 @@ import java.util.List;
 import functionalj.functions.Func0;
 import lombok.val;
 
-public class CurrentRef<DATA> extends RefOf<DATA> {
+public class OverridableRef<DATA> extends RefOf<DATA> {
 	
 	@SuppressWarnings("rawtypes")
 	private static class Entry {
@@ -46,7 +46,7 @@ public class CurrentRef<DATA> extends RefOf<DATA> {
 	
 	private final Ref<DATA> defaultRef;
 	
-	public CurrentRef(Ref<DATA> defaultRef) {
+	public OverridableRef(Ref<DATA> defaultRef) {
 		super(defaultRef.getDataType());
 		this.defaultRef = defaultRef;
 	}

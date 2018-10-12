@@ -24,8 +24,13 @@ public class RefBuilder<DATA> {
 		return ref;
 	}
 	public RefOf<DATA> defaultFrom(Func0<DATA> supplier) {
-		val result = Result.from(supplier);
-		val ref    = new RefOf.Result<>(dataClass, result);
+		val ref = new RefOf.Supplier<DATA>(dataClass, supplier);
+		return ref;
+	}
+	@SuppressWarnings("unchecked")
+	public RefOf<DATA> defaultToResult(Result<DATA> result) {
+		val res = (result != null) ? result : (Result<DATA>)Result.ofNotAvailable();
+		val ref = new RefOf.Result<DATA>(dataClass, res);
 		return ref;
 	}
 	
