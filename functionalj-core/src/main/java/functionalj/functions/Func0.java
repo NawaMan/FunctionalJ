@@ -2,7 +2,7 @@ package functionalj.functions;
 
 import java.util.function.Supplier;
 
-import functionalj.types.ref.RunBody;
+import functionalj.types.ref.ComputeBody;
 import functionalj.types.result.Result;
 
 /**
@@ -13,7 +13,7 @@ import functionalj.types.result.Result;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface Func0<OUTPUT> extends Supplier<OUTPUT>, RunBody<OUTPUT, RuntimeException> {
+public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, RuntimeException> {
     
     public static <T> Func0<T> of(Func0<T> func0) {
         return func0;

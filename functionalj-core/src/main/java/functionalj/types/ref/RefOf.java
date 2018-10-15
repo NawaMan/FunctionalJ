@@ -3,6 +3,7 @@ package functionalj.types.ref;
 import java.util.Random;
 
 import functionalj.functions.Func0;
+import functionalj.types.result.Result;
 import lombok.val;
 
 public abstract class RefOf<DATA> extends Ref<DATA> {
@@ -37,33 +38,33 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
 	
 	//== Sub classes ==
 
-	public static class Result<DATA> extends RefOf<DATA> {
+	public static class FromResult<DATA> extends RefOf<DATA> {
 	
-		private final functionalj.types.result.Result<DATA> result;
+		private final Result<DATA> result;
 	
-		public Result(Class<DATA> dataClass, functionalj.types.result.Result<DATA> result) {
+		public FromResult(Class<DATA> dataClass, Result<DATA> result) {
 			super(dataClass);
 			this.result = (result != null)
 					? result
-					: functionalj.types.result.Result.ofNull();
+					: Result.ofNull();
 		}
 	
 		@Override
-		public functionalj.types.result.Result<DATA> get() {
+		public Result<DATA> get() {
 			return result;
 		}
 	
 	}
 	
-	public static class Supplier<DATA> extends RefOf<DATA> {
+	public static class FromSupplier<DATA> extends RefOf<DATA> {
 		
 		@SuppressWarnings("rawtypes")
-		private static final Func0 notAvailable = ()->functionalj.types.result.Result.ofNotAvailable();
+		private static final Func0 notAvailable = ()->Result.ofNotAvailable();
 		
 		private final Func0<DATA> supplier;
 	
 		@SuppressWarnings("unchecked")
-		public Supplier(Class<DATA> dataClass, Func0<DATA> supplier) {
+		public FromSupplier(Class<DATA> dataClass, Func0<DATA> supplier) {
 			super(dataClass);
 			this.supplier = (supplier != null)
 					? supplier
@@ -71,8 +72,8 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
 		}
 	
 		@Override
-		public functionalj.types.result.Result<DATA> get() {
-			val result = functionalj.types.result.Result.from(supplier);
+		public Result<DATA> get() {
+			val result = Result.from(supplier);
 			return result;
 		}
 	

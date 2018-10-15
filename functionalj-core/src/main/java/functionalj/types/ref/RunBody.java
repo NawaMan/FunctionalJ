@@ -1,8 +1,8 @@
 package functionalj.types.ref;
 
 @FunctionalInterface
-public interface RunBody<DATA, EXCEPTION extends Exception> {
+public interface RunBody<EXCEPTION extends Exception> {
 	
-	public DATA run() throws EXCEPTION;
+	public void run() throws EXCEPTION;
 	
 }

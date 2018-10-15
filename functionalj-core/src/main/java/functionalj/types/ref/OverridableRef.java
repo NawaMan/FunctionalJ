@@ -3,6 +3,7 @@ package functionalj.types.ref;
 import java.util.List;
 
 import functionalj.functions.Func0;
+import functionalj.types.result.Result;
 import lombok.val;
 
 public class OverridableRef<DATA> extends RefOf<DATA> {
@@ -52,11 +53,11 @@ public class OverridableRef<DATA> extends RefOf<DATA> {
 	}
 	
 	@Override
-	public final functionalj.types.result.Result<DATA> get() {
+	public final Result<DATA> get() {
 		val entry    = refEntry.get();
 		val supplier = entry.findSupplier(this);
 		if (supplier != null) {
-			val result = functionalj.types.result.Result.from(supplier);
+			val result = Result.from(supplier);
 			return result;
 		}
 		if (defaultRef != null) {
@@ -64,11 +65,11 @@ public class OverridableRef<DATA> extends RefOf<DATA> {
 			return result;
 		}
 		
-		return functionalj.types.result.Result.ofNotAvailable();
+		return Result.ofNotAvailable();
 	}
 	
 	static final <V, E extends Exception> 
-			V runWith(List<Substitution<?>> substitutions, RunBody<V, E> action) throws E {
+			V runWith(List<Substitution<?>> substitutions, ComputeBody<V, E> action) throws E {
 		val map = refEntry.get();
 		try {
 			if (substitutions != null) {
@@ -82,6 +83,26 @@ public class OverridableRef<DATA> extends RefOf<DATA> {
 			}
 			
 			return action.run();
+		} finally {
+			refEntry.set(map);
+		}
+	}
+	
+	static final <V, E extends Exception> 
+			void runWith(List<Substitution<?>> substitutions, RunBody<E> action) throws E {
+		val map = refEntry.get();
+		try {
+			if (substitutions != null) {
+				for (val substitution : substitutions) {
+					if (substitution == null)
+						continue;
+					
+					val newEntry = new Entry(map, substitution);
+					refEntry.set(newEntry);
+				}
+			}
+			
+			action.run();
 		} finally {
 			refEntry.set(map);
 		}

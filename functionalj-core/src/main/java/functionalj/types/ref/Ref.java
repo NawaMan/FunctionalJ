@@ -23,7 +23,7 @@ public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA
 		@SuppressWarnings("unchecked")
 		val dataClass = (Class<D>)value.getClass();
 		val result    = Result.of(value);
-		val ref       = new RefOf.Result<D>(dataClass, result);
+		val ref       = new RefOf.FromResult<D>(dataClass, result);
 		return ref;
 	}
 	
@@ -53,6 +53,13 @@ public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA
     	return get();
     }
 	
+	public final Supplier<DATA> valueSupplier() {
+		return ()->{
+			val value = value();
+			return value;
+		};
+	}
+	
 	public final DATA value() {
 		val result = get();
 		val value  = result.value();
@@ -75,6 +82,10 @@ public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA
     
     public OverridableRef<DATA> overridable() {
     	return new OverridableRef<DATA>(this);
+    }
+    
+    public RetainedRef.Builder<DATA> retained() {
+    	return new RetainedRef.Builder<DATA>(this);
     }
 	
 }

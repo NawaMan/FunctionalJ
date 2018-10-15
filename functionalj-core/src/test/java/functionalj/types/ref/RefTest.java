@@ -53,7 +53,6 @@ public class RefTest {
 				listOf(ref2.butWith("NewValue")),
 				()->{
 					assertEquals("NewValue", ref2.value());
-					return null;
 				});
 		
 		assertEquals("OrgValue", ref2.value());
@@ -82,7 +81,6 @@ public class RefTest {
 				()->{
 					assertEquals("Answer [number=42]", "" + ref1.value());
 					assertEquals("Answer [number=123]", "" + ref2.value());
-					return null;
 				});
 		
 		assertEquals("Answer [number=42]", "" + ref1.value());
@@ -93,6 +91,25 @@ public class RefTest {
 	public void testRefFunction() {
 		Ref<Supplier<String>> ref = Ref.ofValue(()->"Hello world!");
 		assertEquals("Hello world!", ref.value().get());
+	}
+	
+	@Test
+	public void testBasicRetain() {
+		val counter0 = new AtomicInteger();
+		val counter1 = new AtomicInteger();
+		val counter2 = new AtomicInteger();
+		val ref0     = Ref.of(Integer.class).defaultFrom(counter0::getAndIncrement);
+		val ref1     = Ref.of(Integer.class).defaultFrom(counter1::getAndIncrement).retained().forever();
+		val ref2     = Ref.of(Integer.class).defaultFrom(counter2::getAndIncrement).retained().never();
+		assertEquals(0, ref0.value().intValue());
+		assertEquals(1, ref0.value().intValue());
+		assertEquals(2, ref0.value().intValue());
+		assertEquals(0, ref1.value().intValue());
+		assertEquals(0, ref1.value().intValue());
+		assertEquals(0, ref1.value().intValue());
+		assertEquals(0, ref2.value().intValue());
+		assertEquals(1, ref2.value().intValue());
+		assertEquals(2, ref2.value().intValue());
 	}
 
 }
