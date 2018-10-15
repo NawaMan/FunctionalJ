@@ -61,14 +61,13 @@ public enum Core {
     
     LensSpec ("LensSpec", "functionalj.lens.core"),
     
-    FuncList     ("FuncList",      "functionalj.types.list"),
-    FuncMap      ("FuncMap",       "functionalj.types.map"),
-    ImmutableList("ImmutableList", "functionalj.types.list"),
-    ImmutableMap ("ImmutableMap",  "functionalj.types.map"),
+    FuncList     ("FuncList",      "functionalj.list"),
+    FuncMap      ("FuncMap",       "functionalj.map"),
+    ImmutableList("ImmutableList", "functionalj.list"),
+    ImmutableMap ("ImmutableMap",  "functionalj.map"),
     
     Nullable      ("Nullable",      "nawaman.nullablej.nullable"),
     Optional      ("Optional",      "java.util"),
-    MayBe         ("MayBe",         "functionalj.types"),
     ;
     
     private static final String LENSES_PACKAGE = "functionalj.lens.lenses";

@@ -19,7 +19,7 @@ import functionalj.lens.lenses.ListLens;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
-import functionalj.types.tuple.Tuple2;
+import functionalj.tuple.Tuple2;
 
 @SuppressWarnings("javadoc")
 public interface Access {

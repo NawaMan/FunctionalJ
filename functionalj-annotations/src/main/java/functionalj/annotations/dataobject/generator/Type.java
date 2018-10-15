@@ -78,8 +78,6 @@ public class Type implements IRequireTypes {
     public static final Type NULLABLE = Core.Nullable.type();
     /** Optional type */
     public static final Type OPTIONAL = Core.Optional.type();
-    /** MayBe type */
-    public static final Type MAYBE = Core.MayBe.type();
     /** FuncList type */
     public static final Type FUNC_LIST = Core.FuncList.type();
     /** FuncMap type */
@@ -104,7 +102,6 @@ public class Type implements IRequireTypes {
         lensTypes.put(MAP,        Core.MapLens       .type());
         lensTypes.put(NULLABLE,   Core.NullableLens  .type());
         lensTypes.put(OPTIONAL,   Core.OptionalLens  .type());
-        lensTypes.put(MAYBE,      Core.MayBeLens     .type());
         
         lensTypes.put(FUNC_LIST, Core.FuncListLens.type());
         lensTypes.put(FUNC_MAP,  Core.FuncMapLens.type());
@@ -345,7 +342,7 @@ public class Type implements IRequireTypes {
      * @return {@code true} if this type is a functional list.
      */
     public boolean isFuncList() {
-        return this.fullName("").equals("functionalj.types.list.FuncList");
+        return this.fullName("").equals("functionalj.list.FuncList");
     }
     
     /**
@@ -354,7 +351,7 @@ public class Type implements IRequireTypes {
      * @return {@code true} if this type is a functional map.
      */
     public boolean isFuncMap() {
-        return this.fullName("").equals("functionalj.types.map.FuncMap");
+        return this.fullName("").equals("functionalj.map.FuncMap");
     }
     
     /**
@@ -373,15 +370,6 @@ public class Type implements IRequireTypes {
      */
     public boolean isOptional() {
         return this.fullName("").equals("java.util.Optional");
-    }
-    
-    /**
-     * Check if this type is a MayBe type.
-     * 
-     * @return {@code true} if this type is a MayBe.
-     */
-    public boolean isMayBe() {
-        return this.fullName("").equals("functionalj.types.MayBe");
     }
     
     @Override

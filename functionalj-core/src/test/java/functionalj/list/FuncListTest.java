@@ -1,4 +1,4 @@
-package functionalj.types;
+package functionalj.list;
 
 import static functionalj.lens.Access.theString;
 import static org.junit.Assert.assertEquals;
@@ -11,8 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import functionalj.types.list.FuncList;
-import functionalj.types.list.ImmutableList;
+import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

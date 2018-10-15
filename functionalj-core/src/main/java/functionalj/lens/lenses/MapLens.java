@@ -14,7 +14,7 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized2;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
-import functionalj.types.tuple.ImmutableTuple2;
+import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

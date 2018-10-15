@@ -2,8 +2,8 @@ package functionalj.functions;
 
 import java.util.function.Supplier;
 
-import functionalj.types.ref.ComputeBody;
-import functionalj.types.result.Result;
+import functionalj.ref.ComputeBody;
+import functionalj.result.Result;
 
 /**
  * Function of zeroth parameter - a supplier.

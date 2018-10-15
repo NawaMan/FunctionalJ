@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.types.list.ImmutableList;
+import functionalj.list.ImmutableList;
 
 public class NumberAccessTest {
     

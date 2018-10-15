@@ -1,6 +1,6 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
-import static functionalj.types.promise.DeferAction.run;
+import static functionalj.promise.DeferAction.run;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,7 +16,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
-import functionalj.types.result.OnStart;
+import functionalj.promise.DeferAction;
+import functionalj.promise.Promise;
+import functionalj.promise.UncheckedInterruptedException;
+import functionalj.result.OnStart;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

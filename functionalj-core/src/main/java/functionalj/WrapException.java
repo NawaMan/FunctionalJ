@@ -1,4 +1,4 @@
-package functionalj.types;
+package functionalj;
 
 @SuppressWarnings("javadoc")
 public class WrapException extends RuntimeException {

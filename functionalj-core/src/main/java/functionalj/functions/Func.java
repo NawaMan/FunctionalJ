@@ -17,13 +17,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import functionalj.types.tuple.ImmutableTuple2;
-import functionalj.types.tuple.Tuple;
-import functionalj.types.tuple.Tuple2;
-import functionalj.types.tuple.Tuple3;
-import functionalj.types.tuple.Tuple4;
-import functionalj.types.tuple.Tuple5;
-import functionalj.types.tuple.Tuple6;
+import functionalj.tuple.ImmutableTuple2;
+import functionalj.tuple.Tuple;
+import functionalj.tuple.Tuple2;
+import functionalj.tuple.Tuple3;
+import functionalj.tuple.Tuple4;
+import functionalj.tuple.Tuple5;
+import functionalj.tuple.Tuple6;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

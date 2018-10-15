@@ -7,7 +7,7 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized2;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
-import functionalj.types.map.FuncMap;
+import functionalj.map.FuncMap;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

@@ -8,8 +8,8 @@ import java.util.function.Function;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
-import functionalj.types.list.FuncList;
-import functionalj.types.map.FuncMap;
+import functionalj.list.FuncList;
+import functionalj.map.FuncMap;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 

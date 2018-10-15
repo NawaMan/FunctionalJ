@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import functionalj.functions.Func;
 import functionalj.lens.core.AccessCreator;
-import functionalj.types.tuple.Tuple2;
+import functionalj.tuple.Tuple2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

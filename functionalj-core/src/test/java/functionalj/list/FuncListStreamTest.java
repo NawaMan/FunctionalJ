@@ -1,4 +1,4 @@
-package functionalj.types;
+package functionalj.list;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.types.list.FuncListStream;
-import functionalj.types.stream.Streamable;
+import functionalj.list.FuncListStream;
+import functionalj.stream.Streamable;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

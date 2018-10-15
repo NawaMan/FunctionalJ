@@ -1,4 +1,4 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -10,6 +10,11 @@ import java.util.function.BiConsumer;
 
 import org.junit.Test;
 
+import functionalj.promise.DeferAction;
+import functionalj.promise.Promise;
+import functionalj.promise.PromiseStatus;
+import functionalj.promise.WaitAwhile;
+import functionalj.promise.WaitSession;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

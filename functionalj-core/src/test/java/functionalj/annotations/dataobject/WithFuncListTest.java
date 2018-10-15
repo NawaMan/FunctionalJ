@@ -6,8 +6,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import functionalj.annotations.DataObject;
-import functionalj.types.list.FuncList;
-import functionalj.types.list.ImmutableList;
+import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
 
 @SuppressWarnings("javadoc")
 public class WithFuncListTest {

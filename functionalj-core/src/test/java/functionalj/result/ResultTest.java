@@ -1,7 +1,7 @@
-package functionalj.types;
+package functionalj.result;
 
 import static functionalj.functions.Func.F;
-import static functionalj.types.result.Result.Do;
+import static functionalj.result.Result.Do;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -10,14 +10,22 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import functionalj.types.result.Result;
-import functionalj.types.result.validator.Validator;
+import functionalj.result.Result;
+import functionalj.validator.Validator;
 import lombok.val;
 
 public class ResultTest {
     
+    private static final Result<String> result = Result.of("Test");
+    
     private void assertStrings(String str, Object obj) {
         assertEquals(str, "" + obj);
+    }
+    
+    @Test
+    public void testMap() {
+        assertStrings("Result:{ Value: Test }", result);
+        assertStrings("Result:{ Value: 4 }",    result.map(str -> str.length()));
     }
     
     @Test

@@ -10,8 +10,8 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
-import functionalj.types.list.FuncList;
-import functionalj.types.list.ImmutableList;
+import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

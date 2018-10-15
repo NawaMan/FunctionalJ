@@ -1,4 +1,4 @@
-package functionalj.types;
+package functionalj.tuple;
 
 import static functionalj.functions.StrFuncs.appendWith;
 import static functionalj.lens.Access.theTuple2;
@@ -10,9 +10,9 @@ import org.junit.Test;
 
 import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
-import functionalj.types.list.ImmutableList;
-import functionalj.types.tuple.ImmutableTuple2;
-import functionalj.types.tuple.Tuple2;
+import functionalj.list.ImmutableList;
+import functionalj.tuple.ImmutableTuple2;
+import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public class Tuple2Test {

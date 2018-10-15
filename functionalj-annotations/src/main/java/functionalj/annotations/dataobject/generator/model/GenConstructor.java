@@ -74,8 +74,6 @@ public class GenConstructor implements IGenerateDefinition {
                 types.add(Core.Nullable.type());
             if (paramType.isOptional())
                 types.add(Core.Optional.type());
-            if (paramType.isMayBe())
-                types.add(Core.MayBe.type());
         }
         return types.stream();
     }

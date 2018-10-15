@@ -1,4 +1,4 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,8 +9,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
-import functionalj.types.list.FuncList;
-import functionalj.types.tuple.Tuple;
+import functionalj.list.FuncList;
+import functionalj.promise.AsyncRunner;
+import functionalj.promise.DeferAction;
+import functionalj.promise.Wait;
+import functionalj.tuple.Tuple;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

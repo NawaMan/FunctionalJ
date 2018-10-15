@@ -1,10 +1,10 @@
-package functionalj.types;
+package functionalj.map;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.types.map.FuncMap;
+import functionalj.map.FuncMap;
 
 public class ImmutableMapTest {
 

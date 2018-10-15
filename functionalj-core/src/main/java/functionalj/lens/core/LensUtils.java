@@ -14,8 +14,8 @@ import functionalj.lens.lenses.MapLens;
 import functionalj.lens.lenses.NullableLens;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.OptionalLens;
-import functionalj.types.list.FuncList;
-import functionalj.types.map.FuncMap;
+import functionalj.list.FuncList;
+import functionalj.map.FuncMap;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 

@@ -17,8 +17,8 @@ package functionalj.functions;
 
 import java.util.function.BiFunction;
 
-import functionalj.types.result.Result;
-import functionalj.types.tuple.Tuple2;
+import functionalj.result.Result;
+import functionalj.tuple.Tuple2;
 import lombok.val;
 
 /**

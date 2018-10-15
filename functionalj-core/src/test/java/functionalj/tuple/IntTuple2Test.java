@@ -1,6 +1,6 @@
-package functionalj.types;
+package functionalj.tuple;
 
-import static functionalj.types.tuple.Tuple.createTheTuple;
+import static functionalj.tuple.Tuple.createTheTuple;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.lens.lenses.StringLens;
-import functionalj.types.tuple.IntTuple2;
-import functionalj.types.tuple.IntTuple2Lens;
+import functionalj.tuple.IntTuple2;
+import functionalj.tuple.IntTuple2Lens;
 import lombok.val;
 
 public class IntTuple2Test {

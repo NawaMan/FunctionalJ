@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.result;
 
 import static functionalj.lens.Access.theString;
 import static org.junit.Assert.assertEquals;
@@ -6,6 +6,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import functionalj.result.Acceptable;
+import functionalj.result.NullSafePredicate;
+import functionalj.result.Result;
 
 public class AcceptableTest {
     

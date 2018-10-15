@@ -1,7 +1,7 @@
 package functionalj.annotations.dataobject;
 
 import functionalj.annotations.DataObject;
-import functionalj.types.map.FuncMap;
+import functionalj.map.FuncMap;
 
 @SuppressWarnings("javadoc")
 public class WithFuncMapTest {

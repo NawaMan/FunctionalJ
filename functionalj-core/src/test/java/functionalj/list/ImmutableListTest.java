@@ -1,4 +1,4 @@
-package functionalj.types;
+package functionalj.list;
 
 import static functionalj.lens.Access.$S;
 import static org.junit.Assert.assertEquals;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import functionalj.types.list.ImmutableList;
+import functionalj.list.ImmutableList;
 import lombok.val;
 
 public class ImmutableListTest {

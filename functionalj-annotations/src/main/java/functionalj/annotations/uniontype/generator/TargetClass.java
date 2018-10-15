@@ -59,7 +59,7 @@ public class TargetClass implements Lines {
         imports.add("static functionalj.annotations.uniontype.UnionTypes.Switch");
         imports.add("static functionalj.annotations.uniontype.CheckEquals.checkEquals");
         imports.add("functionalj.annotations.uniontype.AbstractUnionType");
-        imports.add("functionalj.types.result.Result");
+        imports.add("functionalj.result.Result");
         imports.add("functionalj.pipeable.Pipeable");
         
         val hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);

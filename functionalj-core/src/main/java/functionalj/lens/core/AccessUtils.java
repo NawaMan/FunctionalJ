@@ -7,7 +7,7 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.FuncListAccess;
 import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.NullableAccess;
-import functionalj.types.list.FuncList;
+import functionalj.list.FuncList;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 

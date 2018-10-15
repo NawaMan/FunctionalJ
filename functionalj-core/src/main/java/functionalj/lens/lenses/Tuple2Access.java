@@ -3,7 +3,7 @@
 import java.util.function.Function;
 
 import functionalj.lens.core.AccessParameterized2;
-import functionalj.types.tuple.Tuple2;
+import functionalj.tuple.Tuple2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

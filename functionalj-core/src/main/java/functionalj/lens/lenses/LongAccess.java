@@ -5,8 +5,8 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
-import functionalj.types.tuple.Tuple;
-import functionalj.types.tuple.Tuple2;
+import functionalj.tuple.Tuple;
+import functionalj.tuple.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")

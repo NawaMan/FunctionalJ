@@ -18,7 +18,7 @@ package functionalj.functions;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 import lombok.val;
 
 /**

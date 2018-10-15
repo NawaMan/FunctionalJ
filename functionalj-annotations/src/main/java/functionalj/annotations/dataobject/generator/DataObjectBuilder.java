@@ -234,7 +234,7 @@ public class DataObjectBuilder {
         val type = sourceSpec.getTargetType();
         val params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0)));
         val isFList = getter.getType().isFuncList();
-        val newArray = isFList ? "functionalj.types.list.ImmutableList.of" : "java.util.Arrays.asList";
+        val newArray = isFList ? "functionalj.list.ImmutableList.of" : "java.util.Arrays.asList";
         val paramCall 
                 = sourceSpec
                 .getGetters()

@@ -1,4 +1,4 @@
-package functionalj.types;
+package functionalj.stream;
 
 import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theString;
@@ -22,9 +22,9 @@ import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
-import functionalj.types.list.FuncList;
-import functionalj.types.list.ImmutableList;
-import functionalj.types.stream.StreamPlus;
+import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
+import functionalj.stream.StreamPlus;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

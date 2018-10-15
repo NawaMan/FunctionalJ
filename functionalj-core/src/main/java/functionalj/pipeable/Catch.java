@@ -20,7 +20,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.FunctionInvocationException;
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 
 /**
  * Classes extending this class handle the last step in the processing of the Pipeable.

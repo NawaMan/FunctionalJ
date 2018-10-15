@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import functionalj.lens.core.AccessParameterized;
-import functionalj.types.list.FuncList;
-import functionalj.types.stream.Streamable;
+import functionalj.list.FuncList;
+import functionalj.stream.Streamable;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

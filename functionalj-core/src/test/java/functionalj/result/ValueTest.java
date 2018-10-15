@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.result;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import functionalj.result.Result;
 import lombok.val;
 
 public class ValueTest {

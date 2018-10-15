@@ -1,6 +1,6 @@
-package functionalj.types.ref;
+package functionalj.ref;
 
-import static functionalj.types.list.FuncList.listOf;
+import static functionalj.list.FuncList.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -9,6 +9,8 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 
+import functionalj.ref.OverridableRef;
+import functionalj.ref.Ref;
 import lombok.val;
 
 public class RefTest {

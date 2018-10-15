@@ -16,8 +16,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.Func1;
+import functionalj.list.ImmutableList;
 import functionalj.pipeable.Pipeable.__internal;
-import functionalj.types.list.ImmutableList;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

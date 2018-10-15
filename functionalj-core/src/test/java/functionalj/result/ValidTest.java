@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.result;
 
 import static functionalj.functions.Func.it;
 import static org.junit.Assert.assertEquals;
@@ -9,6 +9,10 @@ import java.util.function.Predicate;
 
 import org.junit.Test;
 
+import functionalj.result.Invalid;
+import functionalj.result.Result;
+import functionalj.result.Valid;
+import functionalj.result.Validatable;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
