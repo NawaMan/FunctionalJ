@@ -1,4 +1,4 @@
-package functionalj.types.tuple;
+package functionalj.tuple;
 
 import java.util.Map;
 import java.util.Objects;

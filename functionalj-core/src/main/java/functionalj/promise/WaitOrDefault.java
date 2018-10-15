@@ -1,8 +1,8 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import java.util.function.Supplier;
 
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 
 @SuppressWarnings("javadoc")
 public class WaitOrDefault<DATA> extends Wait {

@@ -1,11 +1,11 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import static functionalj.functions.Func.getOrElse;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

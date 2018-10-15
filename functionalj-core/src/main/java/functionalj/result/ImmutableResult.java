@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.result;
 
 public class ImmutableResult<DATA> extends Result<DATA> {
     

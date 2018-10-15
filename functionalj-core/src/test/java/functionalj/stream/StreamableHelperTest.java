@@ -1,4 +1,4 @@
-package functionalj.types;
+package functionalj.stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
-import functionalj.types.stream.Streamable;
+import functionalj.stream.Streamable;
 import lombok.val;
 
 public class StreamableHelperTest {

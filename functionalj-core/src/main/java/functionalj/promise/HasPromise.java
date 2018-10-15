@@ -1,6 +1,6 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
-import functionalj.types.result.AsResult;
+import functionalj.result.AsResult;
 
 @FunctionalInterface
 public interface HasPromise<DATA> {

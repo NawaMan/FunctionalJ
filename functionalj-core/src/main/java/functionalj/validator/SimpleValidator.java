@@ -1,10 +1,10 @@
-package functionalj.types.result.validator;
+package functionalj.validator;
 
 import java.util.function.Predicate;
 
 import functionalj.functions.Func2;
-import functionalj.types.result.Result;
-import functionalj.types.result.ValidationException;
+import functionalj.result.Result;
+import functionalj.result.ValidationException;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

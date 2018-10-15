@@ -1,4 +1,4 @@
-package functionalj.types.stream;
+package functionalj.stream;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -14,13 +14,13 @@ import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
-import functionalj.types.map.FuncMap;
-import functionalj.types.map.ImmutableMap;
-import functionalj.types.tuple.Tuple2;
-import functionalj.types.tuple.Tuple3;
-import functionalj.types.tuple.Tuple4;
-import functionalj.types.tuple.Tuple5;
-import functionalj.types.tuple.Tuple6;
+import functionalj.map.FuncMap;
+import functionalj.map.ImmutableMap;
+import functionalj.tuple.Tuple2;
+import functionalj.tuple.Tuple3;
+import functionalj.tuple.Tuple4;
+import functionalj.tuple.Tuple5;
+import functionalj.tuple.Tuple6;
 import lombok.val;
 
 // TODO - Reconsider if Streamable should be a StreamPlus

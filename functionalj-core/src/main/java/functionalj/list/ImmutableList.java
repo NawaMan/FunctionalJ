@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.types.list;
+package functionalj.list;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -26,7 +26,7 @@ import java.util.ListIterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import functionalj.types.stream.Streamable;
+import functionalj.stream.Streamable;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

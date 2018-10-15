@@ -1,4 +1,4 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import static functionalj.functions.Func.carelessly;
 
@@ -10,7 +10,7 @@ import functionalj.functions.Func;
 import functionalj.functions.Func0;
 import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit1;
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 import lombok.val;
 
 // TODO : Make sure to allow an easy wrapping of all executions (onStart, task and notification) 

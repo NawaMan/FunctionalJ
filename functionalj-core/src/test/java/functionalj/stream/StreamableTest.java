@@ -1,4 +1,4 @@
-package functionalj.types;
+package functionalj.stream;
 
 import static functionalj.lens.Access.$S;
 import static org.junit.Assert.assertEquals;
@@ -8,8 +8,8 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import functionalj.types.list.FuncListStream;
-import functionalj.types.list.ImmutableList;
+import functionalj.list.FuncListStream;
+import functionalj.list.ImmutableList;
 
 public class StreamableTest {
     

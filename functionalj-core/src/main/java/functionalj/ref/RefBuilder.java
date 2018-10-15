@@ -1,7 +1,7 @@
-package functionalj.types.ref;
+package functionalj.ref;
 
 import functionalj.functions.Func0;
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 import lombok.val;
 
 public class RefBuilder<DATA> {

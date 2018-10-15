@@ -1,9 +1,9 @@
-package functionalj.types.ref;
+package functionalj.ref;
 
 import java.util.List;
 
 import functionalj.functions.Func0;
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 import lombok.val;
 
 public class OverridableRef<DATA> extends RefOf<DATA> {
@@ -67,6 +67,13 @@ public class OverridableRef<DATA> extends RefOf<DATA> {
 		
 		return Result.ofNotAvailable();
 	}
+	
+	// TODO - This is need to easily implement cross thread override.
+//	public FuncList<Substitution<?>> extractAsSubstitutions(
+//			List<Ref<?>> refs) {
+//		
+//	}
+	// TODO - Add priority.
 	
 	static final <V, E extends Exception> 
 			V runWith(List<Substitution<?>> substitutions, ComputeBody<V, E> action) throws E {

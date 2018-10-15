@@ -1,9 +1,9 @@
-package functionalj.types.ref;
+package functionalj.ref;
 
 import java.util.Random;
 
 import functionalj.functions.Func0;
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 import lombok.val;
 
 public abstract class RefOf<DATA> extends Ref<DATA> {

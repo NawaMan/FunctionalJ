@@ -1,4 +1,4 @@
-package functionalj.types.ref;
+package functionalj.ref;
 
 import static java.util.Objects.requireNonNull;
 

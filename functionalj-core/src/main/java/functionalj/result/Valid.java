@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.result;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;

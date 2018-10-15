@@ -1,6 +1,6 @@
-package functionalj.types.ref;
+package functionalj.ref;
 
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 import lombok.val;
 import nawaman.defaultj.api.IProvideDefault;
 

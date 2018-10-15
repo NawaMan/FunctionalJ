@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.result;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -10,12 +10,12 @@ import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
-import functionalj.types.tuple.Tuple;
-import functionalj.types.tuple.Tuple2;
-import functionalj.types.tuple.Tuple3;
-import functionalj.types.tuple.Tuple4;
-import functionalj.types.tuple.Tuple5;
-import functionalj.types.tuple.Tuple6;
+import functionalj.tuple.Tuple;
+import functionalj.tuple.Tuple2;
+import functionalj.tuple.Tuple3;
+import functionalj.tuple.Tuple4;
+import functionalj.tuple.Tuple5;
+import functionalj.tuple.Tuple6;
 import lombok.val;
 
 public interface ResultChainAddOn<DATA> {

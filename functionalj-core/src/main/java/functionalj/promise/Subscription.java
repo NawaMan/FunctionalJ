@@ -1,9 +1,9 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

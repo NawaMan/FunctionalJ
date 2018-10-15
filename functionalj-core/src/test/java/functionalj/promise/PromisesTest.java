@@ -1,13 +1,17 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
-import static functionalj.types.promise.DeferAction.run;
-import static functionalj.types.result.Result.value;
+import static functionalj.promise.DeferAction.run;
+import static functionalj.result.Result.value;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import functionalj.functions.Func0;
-import functionalj.types.result.Result;
+import functionalj.promise.DeferAction;
+import functionalj.promise.PendingAction;
+import functionalj.promise.Promise;
+import functionalj.promise.PromiseStatus;
+import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

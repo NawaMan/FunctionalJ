@@ -1,4 +1,4 @@
-package functionalj.types.map;
+package functionalj.map;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -17,12 +17,12 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import functionalj.types.list.FuncList;
-import functionalj.types.list.FuncListStream;
-import functionalj.types.stream.StreamPlus;
-import functionalj.types.stream.Streamable;
-import functionalj.types.tuple.ImmutableTuple2;
-import functionalj.types.tuple.IntTuple2;
+import functionalj.list.FuncList;
+import functionalj.list.FuncListStream;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.Streamable;
+import functionalj.tuple.ImmutableTuple2;
+import functionalj.tuple.IntTuple2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

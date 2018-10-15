@@ -1,11 +1,11 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 
 public class SubscriptionHolder<DATA> extends Subscription<DATA> {
     

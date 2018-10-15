@@ -1,4 +1,4 @@
-package functionalj.types.list;
+package functionalj.list;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -12,8 +12,8 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import functionalj.types.stream.StreamPlus;
-import functionalj.types.stream.Streamable;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.Streamable;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

@@ -1,4 +1,4 @@
-package functionalj.types.ref;
+package functionalj.ref;
 
 @FunctionalInterface
 public interface RunBody<EXCEPTION extends Exception> {

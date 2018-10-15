@@ -1,4 +1,4 @@
-package functionalj.types.map;
+package functionalj.map;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -12,8 +12,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import functionalj.types.list.FuncList;
-import functionalj.types.tuple.ImmutableTuple2;
+import functionalj.list.FuncList;
+import functionalj.tuple.ImmutableTuple2;
 
 @SuppressWarnings("javadoc")
 public interface IFuncMap<KEY, VALUE, SELF extends IFuncMap<KEY, VALUE, ?>> {

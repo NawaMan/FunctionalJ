@@ -1,4 +1,4 @@
-package functionalj.types.stream;
+package functionalj.stream;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,16 +39,16 @@ import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.StrFuncs;
-import functionalj.types.list.FuncList;
-import functionalj.types.list.ImmutableList;
-import functionalj.types.map.FuncMap;
-import functionalj.types.map.ImmutableMap;
-import functionalj.types.tuple.Tuple;
-import functionalj.types.tuple.Tuple2;
-import functionalj.types.tuple.Tuple3;
-import functionalj.types.tuple.Tuple4;
-import functionalj.types.tuple.Tuple5;
-import functionalj.types.tuple.Tuple6;
+import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
+import functionalj.map.FuncMap;
+import functionalj.map.ImmutableMap;
+import functionalj.tuple.Tuple;
+import functionalj.tuple.Tuple2;
+import functionalj.tuple.Tuple3;
+import functionalj.tuple.Tuple4;
+import functionalj.tuple.Tuple5;
+import functionalj.tuple.Tuple6;
 import lombok.val;
 
 

@@ -1,4 +1,4 @@
-package functionalj.types.list;
+package functionalj.list;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import functionalj.types.stream.Streamable;
+import functionalj.stream.Streamable;
 
 // TODO - Add Integer length here to help with a few operations.
 @SuppressWarnings("javadoc")

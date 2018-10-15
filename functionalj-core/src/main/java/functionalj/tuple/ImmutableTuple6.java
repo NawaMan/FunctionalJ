@@ -1,4 +1,4 @@
-package functionalj.types.tuple;
+package functionalj.tuple;
 
 @SuppressWarnings("javadoc")
 public class ImmutableTuple6<T1, T2, T3, T4, T5, T6> implements Tuple6<T1, T2, T3, T4, T5, T6> {

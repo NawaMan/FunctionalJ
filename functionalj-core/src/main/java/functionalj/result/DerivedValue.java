@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.result;
 
 import functionalj.functions.Func0;
 import functionalj.functions.Func1;

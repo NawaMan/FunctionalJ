@@ -1,4 +1,4 @@
-package functionalj.types.map;
+package functionalj.map;
 
 import java.util.Collection;
 import java.util.Map;

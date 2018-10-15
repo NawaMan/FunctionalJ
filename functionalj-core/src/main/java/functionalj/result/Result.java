@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.result;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -22,13 +22,13 @@ import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.FunctionInvocationException;
+import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
-import functionalj.types.list.FuncList;
-import functionalj.types.promise.HasPromise;
-import functionalj.types.promise.Promise;
-import functionalj.types.result.validator.Validator;
-import functionalj.types.tuple.Tuple;
-import functionalj.types.tuple.Tuple2;
+import functionalj.promise.HasPromise;
+import functionalj.promise.Promise;
+import functionalj.tuple.Tuple;
+import functionalj.tuple.Tuple2;
+import functionalj.validator.Validator;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 

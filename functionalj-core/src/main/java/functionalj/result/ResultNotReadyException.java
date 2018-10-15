@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.result;
 
 @SuppressWarnings("javadoc")
 public class ResultNotReadyException extends ResultNotAvailableException {

@@ -1,4 +1,4 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;

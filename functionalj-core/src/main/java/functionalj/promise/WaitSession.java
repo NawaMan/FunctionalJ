@@ -1,4 +1,4 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import static functionalj.functions.Func.carelessly;
 

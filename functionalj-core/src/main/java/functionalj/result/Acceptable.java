@@ -1,4 +1,4 @@
-package functionalj.types.result;
+package functionalj.result;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;

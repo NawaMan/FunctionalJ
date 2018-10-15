@@ -1,10 +1,10 @@
-package functionalj.types.ref;
+package functionalj.ref;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 import lombok.val;
 
 public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {

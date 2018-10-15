@@ -1,12 +1,12 @@
-package functionalj.types.ref;
+package functionalj.ref;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.function.Supplier;
 
 import functionalj.functions.Func0;
-import functionalj.types.result.AsResult;
-import functionalj.types.result.Result;
+import functionalj.result.AsResult;
+import functionalj.result.Result;
 import lombok.val;
 
 public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA> {

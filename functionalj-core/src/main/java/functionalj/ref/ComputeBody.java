@@ -1,4 +1,4 @@
-package functionalj.types.ref;
+package functionalj.ref;
 
 public interface ComputeBody<DATA, EXCEPTION extends Exception> {
 	

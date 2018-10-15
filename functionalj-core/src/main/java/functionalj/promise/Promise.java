@@ -1,4 +1,4 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import static functionalj.functions.Func.F;
 import static functionalj.functions.Func.carelessly;
@@ -25,9 +25,9 @@ import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.FuncUnit1;
-import functionalj.types.list.FuncList;
-import functionalj.types.result.AsResult;
-import functionalj.types.result.Result;
+import functionalj.list.FuncList;
+import functionalj.result.AsResult;
+import functionalj.result.Result;
 import lombok.val;
 
 // TODO - See what we can do with retry.

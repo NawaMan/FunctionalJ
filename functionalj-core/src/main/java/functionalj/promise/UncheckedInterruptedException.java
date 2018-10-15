@@ -1,4 +1,4 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 public class UncheckedInterruptedException extends RuntimeException {
 

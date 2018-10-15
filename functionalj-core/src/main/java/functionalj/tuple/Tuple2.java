@@ -1,4 +1,4 @@
-package functionalj.types.tuple;
+package functionalj.tuple;
 
 import static functionalj.functions.Func.it;
 
@@ -8,10 +8,10 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import functionalj.functions.Absent;
+import functionalj.list.FuncList;
+import functionalj.map.FuncMap;
+import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
-import functionalj.types.list.FuncList;
-import functionalj.types.map.FuncMap;
-import functionalj.types.map.ImmutableMap;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

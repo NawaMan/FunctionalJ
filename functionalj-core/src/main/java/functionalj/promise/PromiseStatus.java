@@ -1,4 +1,4 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 @SuppressWarnings("javadoc")
 public enum PromiseStatus {

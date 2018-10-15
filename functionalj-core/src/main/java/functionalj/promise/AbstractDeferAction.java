@@ -1,10 +1,10 @@
-package functionalj.types.promise;
+package functionalj.promise;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.concurrent.TimeUnit;
 
-import functionalj.types.result.Result;
+import functionalj.result.Result;
 
 @SuppressWarnings("javadoc")
 public abstract class AbstractDeferAction<DATA> implements HasPromise<DATA> {
