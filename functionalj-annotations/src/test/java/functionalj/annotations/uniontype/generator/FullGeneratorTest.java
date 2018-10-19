@@ -83,7 +83,7 @@ public class FullGeneratorTest {
               "import functionalj.annotations.uniontype.UnionTypeSwitch;\n" + 
               "import functionalj.annotations.uniontype.generator.UnionTypeExampleTest.Union1TypeSpec;\n" + 
               "import functionalj.pipeable.Pipeable;\n" + 
-              "import functionalj.types.result.Result;\n" + 
+              "import functionalj.result.Result;\n" + 
               "import java.util.function.Consumer;\n" + 
               "import java.util.function.Function;\n" + 
               "import java.util.function.Predicate;\n" + 
@@ -190,20 +190,20 @@ public class FullGeneratorTest {
               "    public BasicColor ifRGB(Runnable action) { if (isRGB()) action.run(); return this; }\n" + 
               "    \n" + 
               "    public static class BasicColorFirstSwitch {\n" + 
-              "        private BasicColor value;\n" + 
-              "        private BasicColorFirstSwitch(BasicColor value) { this.value = value; }\n" + 
+              "        private BasicColor $value;\n" + 
+              "        private BasicColorFirstSwitch(BasicColor theValue) { this.$value = theValue; }\n" + 
               "        \n" + 
               "        public <TARGET> BasicColorSwitchBlackRGB<TARGET> white(Function<? super White, TARGET> theAction) {\n" + 
-              "            Function<BasicColor, TARGET> action = null;\n" + 
-              "            Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)action;\n" + 
+              "            Function<BasicColor, TARGET> $action = null;\n" + 
+              "            Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)$action;\n" + 
               "            Function<BasicColor, TARGET> newAction =\n" + 
-              "                (action != null)\n" + 
+              "                ($action != null)\n" + 
               "                ? oldAction : \n" + 
-              "                    (value instanceof White)\n" + 
+              "                    ($value instanceof White)\n" + 
               "                    ? (Function<BasicColor, TARGET>)(d -> theAction.apply((White)d))\n" + 
               "                    : oldAction;\n" + 
               "            \n" + 
-              "            return new BasicColorSwitchBlackRGB<TARGET>(value, newAction);\n" + 
+              "            return new BasicColorSwitchBlackRGB<TARGET>($value, newAction);\n" + 
               "        }\n" + 
               "        public <TARGET> BasicColorSwitchBlackRGB<TARGET> white(Supplier<TARGET> theSupplier) {\n" + 
               "            return white(d->theSupplier.get());\n" + 
@@ -213,18 +213,18 @@ public class FullGeneratorTest {
               "        }\n" + 
               "    }\n" + 
               "    public static class BasicColorSwitchWhiteBlackRGB<TARGET> extends UnionTypeSwitch<BasicColor, TARGET> {\n" + 
-              "        private BasicColorSwitchWhiteBlackRGB(BasicColor value, Function<BasicColor, TARGET> action) { super(value, action); }\n" + 
+              "        private BasicColorSwitchWhiteBlackRGB(BasicColor theValue, Function<BasicColor, TARGET> theAction) { super(theValue, theAction); }\n" + 
               "        \n" + 
               "        public BasicColorSwitchBlackRGB<TARGET> white(Function<? super White, TARGET> theAction) {\n" + 
-              "            Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)action;\n" + 
+              "            Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)$action;\n" + 
               "            Function<BasicColor, TARGET> newAction =\n" + 
-              "                (action != null)\n" + 
+              "                ($action != null)\n" + 
               "                ? oldAction : \n" + 
-              "                    (value instanceof White)\n" + 
+              "                    ($value instanceof White)\n" + 
               "                    ? (Function<BasicColor, TARGET>)(d -> theAction.apply((White)d))\n" + 
               "                    : oldAction;\n" + 
               "            \n" + 
-              "            return new BasicColorSwitchBlackRGB<TARGET>(value, newAction);\n" + 
+              "            return new BasicColorSwitchBlackRGB<TARGET>($value, newAction);\n" + 
               "        }\n" + 
               "        public BasicColorSwitchBlackRGB<TARGET> white(Supplier<TARGET> theSupplier) {\n" + 
               "            return white(d->theSupplier.get());\n" + 
@@ -234,18 +234,18 @@ public class FullGeneratorTest {
               "        }\n" + 
               "    }\n" + 
               "    public static class BasicColorSwitchBlackRGB<TARGET> extends UnionTypeSwitch<BasicColor, TARGET> {\n" + 
-              "        private BasicColorSwitchBlackRGB(BasicColor value, Function<BasicColor, TARGET> action) { super(value, action); }\n" + 
+              "        private BasicColorSwitchBlackRGB(BasicColor theValue, Function<BasicColor, TARGET> theAction) { super(theValue, theAction); }\n" + 
               "        \n" + 
               "        public BasicColorSwitchRGB<TARGET> black(Function<? super Black, TARGET> theAction) {\n" + 
-              "            Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)action;\n" + 
+              "            Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)$action;\n" + 
               "            Function<BasicColor, TARGET> newAction =\n" + 
-              "                (action != null)\n" + 
+              "                ($action != null)\n" + 
               "                ? oldAction : \n" + 
-              "                    (value instanceof Black)\n" + 
+              "                    ($value instanceof Black)\n" + 
               "                    ? (Function<BasicColor, TARGET>)(d -> theAction.apply((Black)d))\n" + 
               "                    : oldAction;\n" + 
               "            \n" + 
-              "            return new BasicColorSwitchRGB<TARGET>(value, newAction);\n" + 
+              "            return new BasicColorSwitchRGB<TARGET>($value, newAction);\n" + 
               "        }\n" + 
               "        public BasicColorSwitchRGB<TARGET> black(Supplier<TARGET> theSupplier) {\n" + 
               "            return black(d->theSupplier.get());\n" + 
@@ -255,18 +255,18 @@ public class FullGeneratorTest {
               "        }\n" + 
               "    }\n" + 
               "    public static class BasicColorSwitchRGB<TARGET> extends UnionTypeSwitch<BasicColor, TARGET> {\n" + 
-              "        private BasicColorSwitchRGB(BasicColor value, Function<BasicColor, TARGET> action) { super(value, action); }\n" + 
+              "        private BasicColorSwitchRGB(BasicColor theValue, Function<BasicColor, TARGET> theAction) { super(theValue, theAction); }\n" + 
               "        \n" + 
               "        public TARGET rgb(Function<? super RGB, TARGET> theAction) {\n" + 
-              "            Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)action;\n" + 
+              "            Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)$action;\n" + 
               "            Function<BasicColor, TARGET> newAction =\n" + 
-              "                (action != null)\n" + 
+              "                ($action != null)\n" + 
               "                ? oldAction : \n" + 
-              "                    (value instanceof RGB)\n" + 
+              "                    ($value instanceof RGB)\n" + 
               "                    ? (Function<BasicColor, TARGET>)(d -> theAction.apply((RGB)d))\n" + 
               "                    : oldAction;\n" + 
               "            \n" + 
-              "            return newAction.apply(value);\n" + 
+              "            return newAction.apply($value);\n" + 
               "        }\n" + 
               "        public TARGET rgb(Supplier<TARGET> theSupplier) {\n" + 
               "            return rgb(d->theSupplier.get());\n" + 
@@ -276,15 +276,15 @@ public class FullGeneratorTest {
               "        }\n" + 
               "        \n" + 
               "        public BasicColorSwitchRGB<TARGET> rgb(Predicate<RGB> check, Function<? super RGB, TARGET> theAction) {\n" + 
-              "            Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)action;\n" + 
+              "            Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)$action;\n" + 
               "            Function<BasicColor, TARGET> newAction =\n" + 
-              "                (action != null)\n" + 
+              "                ($action != null)\n" + 
               "                ? oldAction : \n" + 
-              "                    ((value instanceof RGB) && check.test((RGB)value))\n" + 
+              "                    (($value instanceof RGB) && check.test((RGB)$value))\n" + 
               "                    ? (Function<BasicColor, TARGET>)(d -> theAction.apply((RGB)d))\n" + 
               "                    : oldAction;\n" + 
               "            \n" + 
-              "            return new BasicColorSwitchRGB<TARGET>(value, newAction);\n" + 
+              "            return new BasicColorSwitchRGB<TARGET>($value, newAction);\n" + 
               "        }\n" + 
               "        public BasicColorSwitchRGB<TARGET> rgb(Predicate<RGB> check, Supplier<TARGET> theSupplier) {\n" + 
               "            return rgb(check, d->theSupplier.get());\n" + 
@@ -293,14 +293,14 @@ public class FullGeneratorTest {
               "            return rgb(check, d->theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Absent g, Absent b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Absent g, Absent b, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Absent g, Absent b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Absent g, Absent b, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Absent g, Absent b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Absent g, Absent b, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
               "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Absent g, Absent b, Function<RGB, TARGET> theAction) {\n" + 
@@ -313,34 +313,34 @@ public class FullGeneratorTest {
               "            return rgb(rgb -> rCheck.test(rgb.r), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int g, Absent b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(g, rgb.g), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int aG, Absent b, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aG, rgb.g), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int g, Absent b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(g, rgb.g), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int aG, Absent b, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aG, rgb.g), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int g, Absent b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(g, rgb.g), theValue);\n" + 
-              "        }\n" + 
-              "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, int g, Absent b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(g, rgb.g), theAction);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, int g, Absent b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(g, rgb.g), theSupplier);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, int g, Absent b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(g, rgb.g), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int aG, Absent b, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aG, rgb.g), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int g, Absent b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(g, rgb.g), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, int aG, Absent b, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aG, rgb.g), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int g, Absent b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(g, rgb.g), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, int aG, Absent b, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aG, rgb.g), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int g, Absent b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(g, rgb.g), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, int aG, Absent b, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aG, rgb.g), theValue);\n" + 
+              "        }\n" + 
+              "        \n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int aG, Absent b, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aG, rgb.g), theAction);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int aG, Absent b, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aG, rgb.g), theSupplier);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int aG, Absent b, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aG, rgb.g), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
               "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Predicate<Integer> gCheck, Absent b, Function<RGB, TARGET> theAction) {\n" + 
@@ -353,14 +353,14 @@ public class FullGeneratorTest {
               "            return rgb(rgb -> gCheck.test(rgb.g), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Predicate<Integer> gCheck, Absent b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && gCheck.test(rgb.g), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Predicate<Integer> gCheck, Absent b, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && gCheck.test(rgb.g), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Predicate<Integer> gCheck, Absent b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && gCheck.test(rgb.g), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Predicate<Integer> gCheck, Absent b, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && gCheck.test(rgb.g), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Predicate<Integer> gCheck, Absent b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && gCheck.test(rgb.g), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Predicate<Integer> gCheck, Absent b, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && gCheck.test(rgb.g), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
               "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Predicate<Integer> gCheck, Absent b, Function<RGB, TARGET> theAction) {\n" + 
@@ -373,94 +373,94 @@ public class FullGeneratorTest {
               "            return rgb(rgb -> rCheck.test(rgb.r) && gCheck.test(rgb.g), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Absent g, int b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(b, rgb.b), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Absent g, int aB, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aB, rgb.b), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Absent g, int b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(b, rgb.b), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Absent g, int aB, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aB, rgb.b), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Absent g, int b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(b, rgb.b), theValue);\n" + 
-              "        }\n" + 
-              "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Absent g, int b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(b, rgb.b), theAction);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Absent g, int b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(b, rgb.b), theSupplier);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Absent g, int b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(b, rgb.b), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Absent g, int aB, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aB, rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Absent g, int b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(b, rgb.b), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Absent g, int aB, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aB, rgb.b), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Absent g, int b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(b, rgb.b), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Absent g, int aB, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aB, rgb.b), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Absent g, int b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(b, rgb.b), theValue);\n" + 
-              "        }\n" + 
-              "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int g, int b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(g, rgb.g) && checkEquals(b, rgb.b), theAction);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int g, int b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(g, rgb.g) && checkEquals(b, rgb.b), theSupplier);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int g, int b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(g, rgb.g) && checkEquals(b, rgb.b), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Absent g, int aB, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aB, rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, int g, int b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(g, rgb.g) && checkEquals(b, rgb.b), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Absent g, int aB, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aB, rgb.b), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, int g, int b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(g, rgb.g) && checkEquals(b, rgb.b), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Absent g, int aB, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aB, rgb.b), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, int g, int b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(g, rgb.g) && checkEquals(b, rgb.b), theValue);\n" + 
-              "        }\n" + 
-              "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int g, int b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(g, rgb.g) && checkEquals(b, rgb.b), theAction);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int g, int b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(g, rgb.g) && checkEquals(b, rgb.b), theSupplier);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int g, int b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(g, rgb.g) && checkEquals(b, rgb.b), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Absent g, int aB, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aB, rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Predicate<Integer> gCheck, int b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> gCheck.test(rgb.g) && checkEquals(b, rgb.b), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int aG, int aB, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aG, rgb.g) && checkEquals(aB, rgb.b), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Predicate<Integer> gCheck, int b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> gCheck.test(rgb.g) && checkEquals(b, rgb.b), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int aG, int aB, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aG, rgb.g) && checkEquals(aB, rgb.b), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Predicate<Integer> gCheck, int b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> gCheck.test(rgb.g) && checkEquals(b, rgb.b), theValue);\n" + 
-              "        }\n" + 
-              "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Predicate<Integer> gCheck, int b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && gCheck.test(rgb.g) && checkEquals(b, rgb.b), theAction);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Predicate<Integer> gCheck, int b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && gCheck.test(rgb.g) && checkEquals(b, rgb.b), theSupplier);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Predicate<Integer> gCheck, int b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && gCheck.test(rgb.g) && checkEquals(b, rgb.b), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int aG, int aB, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aG, rgb.g) && checkEquals(aB, rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Predicate<Integer> gCheck, int b, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && gCheck.test(rgb.g) && checkEquals(b, rgb.b), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, int aG, int aB, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aG, rgb.g) && checkEquals(aB, rgb.b), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Predicate<Integer> gCheck, int b, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && gCheck.test(rgb.g) && checkEquals(b, rgb.b), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, int aG, int aB, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aG, rgb.g) && checkEquals(aB, rgb.b), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Predicate<Integer> gCheck, int b, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && gCheck.test(rgb.g) && checkEquals(b, rgb.b), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, int aG, int aB, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aG, rgb.g) && checkEquals(aB, rgb.b), theValue);\n" + 
+              "        }\n" + 
+              "        \n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int aG, int aB, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aG, rgb.g) && checkEquals(aB, rgb.b), theAction);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int aG, int aB, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aG, rgb.g) && checkEquals(aB, rgb.b), theSupplier);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int aG, int aB, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aG, rgb.g) && checkEquals(aB, rgb.b), theValue);\n" + 
+              "        }\n" + 
+              "        \n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Predicate<Integer> gCheck, int aB, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> gCheck.test(rgb.g) && checkEquals(aB, rgb.b), theAction);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Predicate<Integer> gCheck, int aB, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> gCheck.test(rgb.g) && checkEquals(aB, rgb.b), theSupplier);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Predicate<Integer> gCheck, int aB, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> gCheck.test(rgb.g) && checkEquals(aB, rgb.b), theValue);\n" + 
+              "        }\n" + 
+              "        \n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Predicate<Integer> gCheck, int aB, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && gCheck.test(rgb.g) && checkEquals(aB, rgb.b), theAction);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Predicate<Integer> gCheck, int aB, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && gCheck.test(rgb.g) && checkEquals(aB, rgb.b), theSupplier);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Predicate<Integer> gCheck, int aB, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && gCheck.test(rgb.g) && checkEquals(aB, rgb.b), theValue);\n" + 
+              "        }\n" + 
+              "        \n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Predicate<Integer> gCheck, int aB, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && gCheck.test(rgb.g) && checkEquals(aB, rgb.b), theAction);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Predicate<Integer> gCheck, int aB, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && gCheck.test(rgb.g) && checkEquals(aB, rgb.b), theSupplier);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Predicate<Integer> gCheck, int aB, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && gCheck.test(rgb.g) && checkEquals(aB, rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
               "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Absent g, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
@@ -473,14 +473,14 @@ public class FullGeneratorTest {
               "            return rgb(rgb -> bCheck.test(rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Absent g, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && bCheck.test(rgb.b), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Absent g, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && bCheck.test(rgb.b), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Absent g, Predicate<Integer> bCheck, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && bCheck.test(rgb.b), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Absent g, Predicate<Integer> bCheck, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && bCheck.test(rgb.b), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Absent g, Predicate<Integer> bCheck, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && bCheck.test(rgb.b), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Absent g, Predicate<Integer> bCheck, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && bCheck.test(rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
               "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Absent g, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
@@ -493,34 +493,34 @@ public class FullGeneratorTest {
               "            return rgb(rgb -> rCheck.test(rgb.r) && bCheck.test(rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int g, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(g, rgb.g) && bCheck.test(rgb.b), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int aG, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aG, rgb.g) && bCheck.test(rgb.b), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int g, Predicate<Integer> bCheck, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(g, rgb.g) && bCheck.test(rgb.b), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int aG, Predicate<Integer> bCheck, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aG, rgb.g) && bCheck.test(rgb.b), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int g, Predicate<Integer> bCheck, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(g, rgb.g) && bCheck.test(rgb.b), theValue);\n" + 
-              "        }\n" + 
-              "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, int g, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(g, rgb.g) && bCheck.test(rgb.b), theAction);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, int g, Predicate<Integer> bCheck, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(g, rgb.g) && bCheck.test(rgb.b), theSupplier);\n" + 
-              "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, int g, Predicate<Integer> bCheck, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && checkEquals(g, rgb.g) && bCheck.test(rgb.b), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, int aG, Predicate<Integer> bCheck, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aG, rgb.g) && bCheck.test(rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int g, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(g, rgb.g) && bCheck.test(rgb.b), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, int aG, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aG, rgb.g) && bCheck.test(rgb.b), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int g, Predicate<Integer> bCheck, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(g, rgb.g) && bCheck.test(rgb.b), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, int aG, Predicate<Integer> bCheck, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aG, rgb.g) && bCheck.test(rgb.b), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int g, Predicate<Integer> bCheck, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(g, rgb.g) && bCheck.test(rgb.b), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, int aG, Predicate<Integer> bCheck, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && checkEquals(aG, rgb.g) && bCheck.test(rgb.b), theValue);\n" + 
+              "        }\n" + 
+              "        \n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int aG, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aG, rgb.g) && bCheck.test(rgb.b), theAction);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int aG, Predicate<Integer> bCheck, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aG, rgb.g) && bCheck.test(rgb.b), theSupplier);\n" + 
+              "        }\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, int aG, Predicate<Integer> bCheck, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> rCheck.test(rgb.r) && checkEquals(aG, rgb.g) && bCheck.test(rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
               "        public BasicColorSwitchRGB<TARGET> rgbOf(Absent r, Predicate<Integer> gCheck, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
@@ -533,14 +533,14 @@ public class FullGeneratorTest {
               "            return rgb(rgb -> gCheck.test(rgb.g) && bCheck.test(rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Predicate<Integer> gCheck, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && gCheck.test(rgb.g) && bCheck.test(rgb.b), theAction);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Predicate<Integer> gCheck, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && gCheck.test(rgb.g) && bCheck.test(rgb.b), theAction);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Predicate<Integer> gCheck, Predicate<Integer> bCheck, Supplier<TARGET> theSupplier) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && gCheck.test(rgb.g) && bCheck.test(rgb.b), theSupplier);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Predicate<Integer> gCheck, Predicate<Integer> bCheck, Supplier<TARGET> theSupplier) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && gCheck.test(rgb.g) && bCheck.test(rgb.b), theSupplier);\n" + 
               "        }\n" + 
-              "        public BasicColorSwitchRGB<TARGET> rgbOf(int r, Predicate<Integer> gCheck, Predicate<Integer> bCheck, TARGET theValue) {\n" + 
-              "            return rgb(rgb -> checkEquals(r, rgb.r) && gCheck.test(rgb.g) && bCheck.test(rgb.b), theValue);\n" + 
+              "        public BasicColorSwitchRGB<TARGET> rgbOf(int aR, Predicate<Integer> gCheck, Predicate<Integer> bCheck, TARGET theValue) {\n" + 
+              "            return rgb(rgb -> checkEquals(aR, rgb.r) && gCheck.test(rgb.g) && bCheck.test(rgb.b), theValue);\n" + 
               "        }\n" + 
               "        \n" + 
               "        public BasicColorSwitchRGB<TARGET> rgbOf(Predicate<Integer> rCheck, Predicate<Integer> gCheck, Predicate<Integer> bCheck, Function<RGB, TARGET> theAction) {\n" + 

@@ -101,19 +101,19 @@ public class ResultTest {
         val validator3 = Validator.of((String s) -> !s.isEmpty(),              "Empty");
         assertEquals("Result:{ Value: (VALUE,[]) }", "" + Result.of("VALUE").validate(validator1, validator2));
         assertEquals("Result:{ Value: (value,["
-                +   "functionalj.types.result.ValidationException: Not upper case, "
-                +   "functionalj.types.result.ValidationException: No upper case"
+                +   "functionalj.result.ValidationException: Not upper case, "
+                +   "functionalj.result.ValidationException: No upper case"
                 + "]) }",
                 "" + Result.of("value").validate(validator1, validator2, validator3));
         assertEquals("Result:{ Value: (,["
-                +   "functionalj.types.result.ValidationException: No upper case, "
-                +   "functionalj.types.result.ValidationException: Empty]) }",
+                +   "functionalj.result.ValidationException: No upper case, "
+                +   "functionalj.result.ValidationException: Empty]) }",
                 "" + Result.of("").validate(validator1, validator2, validator3));
         
         assertEquals("Result:{ Value: (null,["
-                +   "functionalj.types.result.ValidationException: java.lang.NullPointerException, "
-                +   "functionalj.types.result.ValidationException: java.lang.NullPointerException, "
-                +   "functionalj.types.result.ValidationException: java.lang.NullPointerException"
+                +   "functionalj.result.ValidationException: java.lang.NullPointerException, "
+                +   "functionalj.result.ValidationException: java.lang.NullPointerException, "
+                +   "functionalj.result.ValidationException: java.lang.NullPointerException"
                 + "]) }",
                 "" + Result.of((String)null).validate(validator1, validator2, validator3));
     }

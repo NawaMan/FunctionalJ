@@ -6,28 +6,28 @@ import java.util.function.Supplier;
 import lombok.val;
 
 public abstract class UnionTypeSwitch<D, T> {
-    protected final D                      value;
-    protected final Function<? super D, T> action;
-    protected UnionTypeSwitch(D value, Function<? super D, T> action) {
-        this.value  = value;
-        this.action = action;
+    protected final D                      $value;
+    protected final Function<? super D, T> $action;
+    protected UnionTypeSwitch(D theValue, Function<? super D, T> theAction) {
+        this.$value  = theValue;
+        this.$action = theAction;
     }
     
     public T orElse(T elseValue) {
-        return (action != null)
-                ? action.apply(value)
+        return ($action != null)
+                ? $action.apply($value)
                 : elseValue;
     }
     
     public T orElseGet(Supplier<T> valueSupplier) {
-        return (action != null)
-                ? action.apply(value)
+        return ($action != null)
+                ? $action.apply($value)
                 : valueSupplier.get();
     }
     public T orElseGet(Function<? super D, T> valueMapper) {
         @SuppressWarnings("unchecked")
-        val newAction = (Function<? super D, T>)((action != null) ? action : valueMapper);
-        return newAction.apply(value);
+        val newAction = (Function<? super D, T>)(($action != null) ? $action : valueMapper);
+        return newAction.apply($value);
     }
     
     

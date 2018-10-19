@@ -33,20 +33,20 @@ public class FirstSubWithOnlyParamTest {
         val lines  = switchClass.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static class BasicColorFirstSwitch {\n" + 
-                "    private BasicColor value;\n" + 
-                "    private BasicColorFirstSwitch(BasicColor value) { this.value = value; }\n" + 
+                "    private BasicColor $value;\n" + 
+                "    private BasicColorFirstSwitch(BasicColor theValue) { this.$value = theValue; }\n" + 
                 "    \n" + 
                 "    public <TARGET> BasicColorSwitchWhite<TARGET> rgb(Function<? super RGB, TARGET> theAction) {\n" + 
-                "        Function<BasicColor, TARGET> action = null;\n" + 
-                "        Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)action;\n" + 
+                "        Function<BasicColor, TARGET> $action = null;\n" + 
+                "        Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)$action;\n" + 
                 "        Function<BasicColor, TARGET> newAction =\n" + 
-                "            (action != null)\n" + 
+                "            ($action != null)\n" + 
                 "            ? oldAction : \n" + 
-                "                (value instanceof RGB)\n" + 
+                "                ($value instanceof RGB)\n" + 
                 "                ? (Function<BasicColor, TARGET>)(d -> theAction.apply((RGB)d))\n" + 
                 "                : oldAction;\n" + 
                 "        \n" + 
-                "        return new BasicColorSwitchWhite<TARGET>(value, newAction);\n" + 
+                "        return new BasicColorSwitchWhite<TARGET>($value, newAction);\n" + 
                 "    }\n" + 
                 "    public <TARGET> BasicColorSwitchWhite<TARGET> rgb(Supplier<TARGET> theSupplier) {\n" + 
                 "        return rgb(d->theSupplier.get());\n" + 
@@ -56,16 +56,16 @@ public class FirstSubWithOnlyParamTest {
                 "    }\n" + 
                 "    \n" + 
                 "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgb(Predicate<RGB> check, Function<? super RGB, TARGET> theAction) {\n" + 
-                "        Function<BasicColor, TARGET> action = null;\n" + 
-                "        Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)action;\n" + 
+                "        Function<BasicColor, TARGET> $action = null;\n" + 
+                "        Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)$action;\n" + 
                 "        Function<BasicColor, TARGET> newAction =\n" + 
-                "            (action != null)\n" + 
+                "            ($action != null)\n" + 
                 "            ? oldAction : \n" + 
-                "                ((value instanceof RGB) && check.test((RGB)value))\n" + 
+                "                (($value instanceof RGB) && check.test((RGB)$value))\n" + 
                 "                ? (Function<BasicColor, TARGET>)(d -> theAction.apply((RGB)d))\n" + 
                 "                : oldAction;\n" + 
                 "        \n" + 
-                "        return new BasicColorSwitchRGBWhite<TARGET>(value, newAction);\n" + 
+                "        return new BasicColorSwitchRGBWhite<TARGET>($value, newAction);\n" + 
                 "    }\n" + 
                 "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgb(Predicate<RGB> check, Supplier<TARGET> theSupplier) {\n" + 
                 "        return rgb(check, d->theSupplier.get());\n" + 
@@ -74,14 +74,14 @@ public class FirstSubWithOnlyParamTest {
                 "        return rgb(check, d->theValue);\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(int r, Function<RGB, TARGET> theAction) {\n" + 
-                "        return rgb(rgb -> checkEquals(r, rgb.r), theAction);\n" + 
+                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, Function<RGB, TARGET> theAction) {\n" + 
+                "        return rgb(rgb -> checkEquals(aR, rgb.r), theAction);\n" + 
                 "    }\n" + 
-                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(int r, Supplier<TARGET> theSupplier) {\n" + 
-                "        return rgb(rgb -> checkEquals(r, rgb.r), theSupplier);\n" + 
+                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, Supplier<TARGET> theSupplier) {\n" + 
+                "        return rgb(rgb -> checkEquals(aR, rgb.r), theSupplier);\n" + 
                 "    }\n" + 
-                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(int r, TARGET theValue) {\n" + 
-                "        return rgb(rgb -> checkEquals(r, rgb.r), theValue);\n" + 
+                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, TARGET theValue) {\n" + 
+                "        return rgb(rgb -> checkEquals(aR, rgb.r), theValue);\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, Function<RGB, TARGET> theAction) {\n" + 
@@ -95,18 +95,18 @@ public class FirstSubWithOnlyParamTest {
                 "    }\n" + 
                 "}\n" + 
                 "public static class BasicColorSwitchRGBWhite<TARGET> extends UnionTypeSwitch<BasicColor, TARGET> {\n" + 
-                "    private BasicColorSwitchRGBWhite(BasicColor value, Function<BasicColor, TARGET> action) { super(value, action); }\n" + 
+                "    private BasicColorSwitchRGBWhite(BasicColor theValue, Function<BasicColor, TARGET> theAction) { super(theValue, theAction); }\n" + 
                 "    \n" + 
                 "    public BasicColorSwitchWhite<TARGET> rgb(Function<? super RGB, TARGET> theAction) {\n" + 
-                "        Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)action;\n" + 
+                "        Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)$action;\n" + 
                 "        Function<BasicColor, TARGET> newAction =\n" + 
-                "            (action != null)\n" + 
+                "            ($action != null)\n" + 
                 "            ? oldAction : \n" + 
-                "                (value instanceof RGB)\n" + 
+                "                ($value instanceof RGB)\n" + 
                 "                ? (Function<BasicColor, TARGET>)(d -> theAction.apply((RGB)d))\n" + 
                 "                : oldAction;\n" + 
                 "        \n" + 
-                "        return new BasicColorSwitchWhite<TARGET>(value, newAction);\n" + 
+                "        return new BasicColorSwitchWhite<TARGET>($value, newAction);\n" + 
                 "    }\n" + 
                 "    public BasicColorSwitchWhite<TARGET> rgb(Supplier<TARGET> theSupplier) {\n" + 
                 "        return rgb(d->theSupplier.get());\n" + 
@@ -116,15 +116,15 @@ public class FirstSubWithOnlyParamTest {
                 "    }\n" + 
                 "    \n" + 
                 "    public BasicColorSwitchRGBWhite<TARGET> rgb(Predicate<RGB> check, Function<? super RGB, TARGET> theAction) {\n" + 
-                "        Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)action;\n" + 
+                "        Function<BasicColor, TARGET> oldAction = (Function<BasicColor, TARGET>)$action;\n" + 
                 "        Function<BasicColor, TARGET> newAction =\n" + 
-                "            (action != null)\n" + 
+                "            ($action != null)\n" + 
                 "            ? oldAction : \n" + 
-                "                ((value instanceof RGB) && check.test((RGB)value))\n" + 
+                "                (($value instanceof RGB) && check.test((RGB)$value))\n" + 
                 "                ? (Function<BasicColor, TARGET>)(d -> theAction.apply((RGB)d))\n" + 
                 "                : oldAction;\n" + 
                 "        \n" + 
-                "        return new BasicColorSwitchRGBWhite<TARGET>(value, newAction);\n" + 
+                "        return new BasicColorSwitchRGBWhite<TARGET>($value, newAction);\n" + 
                 "    }\n" + 
                 "    public BasicColorSwitchRGBWhite<TARGET> rgb(Predicate<RGB> check, Supplier<TARGET> theSupplier) {\n" + 
                 "        return rgb(check, d->theSupplier.get());\n" + 
@@ -133,14 +133,14 @@ public class FirstSubWithOnlyParamTest {
                 "        return rgb(check, d->theValue);\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int r, Function<RGB, TARGET> theAction) {\n" + 
-                "        return rgb(rgb -> checkEquals(r, rgb.r), theAction);\n" + 
+                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, Function<RGB, TARGET> theAction) {\n" + 
+                "        return rgb(rgb -> checkEquals(aR, rgb.r), theAction);\n" + 
                 "    }\n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int r, Supplier<TARGET> theSupplier) {\n" + 
-                "        return rgb(rgb -> checkEquals(r, rgb.r), theSupplier);\n" + 
+                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, Supplier<TARGET> theSupplier) {\n" + 
+                "        return rgb(rgb -> checkEquals(aR, rgb.r), theSupplier);\n" + 
                 "    }\n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int r, TARGET theValue) {\n" + 
-                "        return rgb(rgb -> checkEquals(r, rgb.r), theValue);\n" + 
+                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, TARGET theValue) {\n" + 
+                "        return rgb(rgb -> checkEquals(aR, rgb.r), theValue);\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, Function<RGB, TARGET> theAction) {\n" + 

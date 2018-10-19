@@ -131,15 +131,15 @@ public abstract class BasicColor extends AbstractUnionType<BasicColor.BasicColor
         }
         public BasicColorSwitchBlackRGB<T> white(Function<? super White, T> theAction) {
             @SuppressWarnings("unchecked")
-            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)action;
+            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)$action;
             Function<BasicColor, T> newAction =
-                (action != null)
+                ($action != null)
                 ? oldAction : 
-                    (value instanceof White)
+                    ($value instanceof White)
                     ? (Function<BasicColor, T>)(d -> theAction.apply((White)d))
                     : oldAction;
             
-            return new BasicColorSwitchBlackRGB <T>(value, newAction);
+            return new BasicColorSwitchBlackRGB <T>($value, newAction);
         }
     }
     public static class BasicColorSwitchBlackRGB<T> extends UnionTypeSwitch<BasicColor, T> {
@@ -153,19 +153,19 @@ public abstract class BasicColor extends AbstractUnionType<BasicColor.BasicColor
         }
         public BasicColorSwitchRGB<T> black(Function<? super Black, T> theAction) {
             @SuppressWarnings("unchecked")
-            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)action;
+            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)$action;
             Function<BasicColor, T> newAction =
-                (action != null)
+                ($action != null)
                 ? oldAction : 
-                    (value instanceof Black)
+                    ($value instanceof Black)
                     ? (Function<BasicColor, T>)(d -> theAction.apply((Black)d))
                     : oldAction;
             
-            return new BasicColorSwitchRGB <T>(value, newAction);
+            return new BasicColorSwitchRGB <T>($value, newAction);
         }
     }
     public static class BasicColorSwitchRGB<T> extends UnionTypeSwitch<BasicColor, T> {
-        private BasicColorSwitchRGB(BasicColor value, Function<BasicColor, T> action) { super(value, action); }
+        private BasicColorSwitchRGB(BasicColor theValue, Function<BasicColor, T> theAction) { super(theValue, theAction); }
         
         public T rgb(T action) {
             return rgb(d->action);
@@ -175,15 +175,15 @@ public abstract class BasicColor extends AbstractUnionType<BasicColor.BasicColor
         }
         public T rgb(Function<? super RGB, T> theAction) {
             @SuppressWarnings("unchecked")
-            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)action;
+            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)$action;
             Function<BasicColor, T> newAction =
-                (action != null)
+                ($action != null)
                 ? oldAction : 
-                    (value instanceof RGB)
+                    ($value instanceof RGB)
                     ? (Function<BasicColor, T>)(d -> theAction.apply((RGB)d))
                     : oldAction;
             
-            return newAction.apply(value);
+            return newAction.apply($value);
         }
         
         public BasicColorSwitchRGB<T> rgb(Predicate<RGB> check, T action) {
@@ -194,15 +194,15 @@ public abstract class BasicColor extends AbstractUnionType<BasicColor.BasicColor
         }
         public BasicColorSwitchRGB<T> rgb(Predicate<RGB> check, Function<? super RGB, T> theAction) {
             @SuppressWarnings("unchecked")
-            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)action;
+            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)$action;
             Function<BasicColor, T> newAction =
-                (action != null)
+                ($action != null)
                 ? oldAction : 
-                    ((value instanceof RGB) && check.test((RGB)value))
+                    (($value instanceof RGB) && check.test((RGB)$value))
                     ? (Function<BasicColor, T>)(d -> theAction.apply((RGB)d))
                     : oldAction;
             
-            return new BasicColorSwitchRGB<T>(value, newAction);
+            return new BasicColorSwitchRGB<T>($value, newAction);
         }
         
         public BasicColorSwitchRGB<T> rgb(int r, Absent g, Absent b, T value) {

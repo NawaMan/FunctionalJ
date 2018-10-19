@@ -67,7 +67,7 @@ public class DeferActionTest {
         action.abort();
         
         assertTrue(endRef.get() < 100);
-        assertStrings("Result:{ Exception: functionalj.types.result.ResultCancelledException }", action.getResult());
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException }", action.getResult());
     }
     
     @Test
@@ -128,7 +128,7 @@ public class DeferActionTest {
             val end = System.currentTimeMillis();
             log.add("End: " + (10*((end - start) / 10)));
             log.add("Result: " + action.getCurentResult());
-            assertStrings("[Start: 0, End: 50, Result: Result:{ Exception: functionalj.types.result.ResultNotReadyException }]", log);
+            assertStrings("[Start: 0, End: 50, Result: Result:{ Exception: functionalj.result.ResultNotReadyException }]", log);
         }
     }
     
@@ -393,8 +393,8 @@ public class DeferActionTest {
         
         assertStrings("["
         		+ "Eavesdrop: true, "
-        		+ "Eavesdrop: Result:{ Exception: functionalj.types.result.ResultCancelledException }, "
-        		+ "Done: Result:{ Exception: functionalj.types.result.ResultCancelledException }"
+        		+ "Eavesdrop: Result:{ Exception: functionalj.result.ResultCancelledException }, "
+        		+ "Done: Result:{ Exception: functionalj.result.ResultCancelledException }"
         		+ "]", log);
     }
 }

@@ -82,7 +82,7 @@ public class PromisesTest {
         control1.fail(new Exception());
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings(
-                "Result:{ Exception: functionalj.types.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }",
+                "Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }",
                 promise.getCurrentResult());
     }
     
@@ -103,7 +103,7 @@ public class PromisesTest {
         control2.fail(new Exception());
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings(
-                "Result:{ Exception: functionalj.types.promise.PromisePartiallyFailException: Promise #1 out of 2 fail. }",
+                "Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #1 out of 2 fail. }",
                 promise.getCurrentResult());
     }
     
@@ -127,7 +127,7 @@ public class PromisesTest {
         control1.fail(new Exception());
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings(
-                "Result:{ Exception: functionalj.types.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }",
+                "Result:{ Exception: functionalj.promise.PromisePartiallyFailException: Promise #0 out of 2 fail. }",
                 promise.getCurrentResult());
     }
     
@@ -185,7 +185,7 @@ public class PromisesTest {
                 (_1, _2, _3, _4, _5, _6) -> {
                     return _1 + _2 + _3 + _4 + _5 + 6;
                 });
-        Thread.sleep(60);
+        Thread.sleep(100);
         
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings("Result:{ Value: 21 }",   promise.getCurrentResult());

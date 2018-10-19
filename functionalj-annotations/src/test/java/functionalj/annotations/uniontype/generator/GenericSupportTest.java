@@ -41,7 +41,7 @@ public class GenericSupportTest {
             "import functionalj.annotations.uniontype.AbstractUnionType;\n" + 
             "import functionalj.annotations.uniontype.UnionTypeSwitch;\n" + 
             "import functionalj.pipeable.Pipeable;\n" + 
-            "import functionalj.types.result.Result;\n" + 
+            "import functionalj.result.Result;\n" + 
             "import java.io.Serializable;\n" + 
             "import java.util.function.Consumer;\n" + 
             "import java.util.function.Function;\n" + 
@@ -128,20 +128,20 @@ public class GenericSupportTest {
             "    public Option<T> ifSome(Runnable action) { if (isSome()) action.run(); return this; }\n" + 
             "    \n" + 
             "    public static class OptionFirstSwitch<T extends Number> {\n" + 
-            "        private Option<T> value;\n" + 
-            "        private OptionFirstSwitch(Option<T> value) { this.value = value; }\n" + 
+            "        private Option<T> $value;\n" + 
+            "        private OptionFirstSwitch(Option<T> theValue) { this.$value = theValue; }\n" + 
             "        \n" + 
             "        public <TARGET> OptionSwitchSome<TARGET, T> none(Function<? super None<T>, TARGET> theAction) {\n" + 
-            "            Function<Option<T>, TARGET> action = null;\n" + 
-            "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)action;\n" + 
+            "            Function<Option<T>, TARGET> $action = null;\n" + 
+            "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)$action;\n" + 
             "            Function<Option<T>, TARGET> newAction =\n" + 
-            "                (action != null)\n" + 
+            "                ($action != null)\n" + 
             "                ? oldAction : \n" + 
-            "                    (value instanceof None)\n" + 
+            "                    ($value instanceof None)\n" + 
             "                    ? (Function<Option<T>, TARGET>)(d -> theAction.apply((None<T>)d))\n" + 
             "                    : oldAction;\n" + 
             "            \n" + 
-            "            return new OptionSwitchSome<TARGET, T>(value, newAction);\n" + 
+            "            return new OptionSwitchSome<TARGET, T>($value, newAction);\n" + 
             "        }\n" + 
             "        public <TARGET> OptionSwitchSome<TARGET, T> none(Supplier<TARGET> theSupplier) {\n" + 
             "            return none(d->theSupplier.get());\n" + 
@@ -151,18 +151,18 @@ public class GenericSupportTest {
             "        }\n" + 
             "    }\n" + 
             "    public static class OptionSwitchNoneSome<TARGET, T extends Number> extends UnionTypeSwitch<Option<T>, TARGET> {\n" + 
-            "        private OptionSwitchNoneSome(Option<T> value, Function<Option<T>, TARGET> action) { super(value, action); }\n" + 
+            "        private OptionSwitchNoneSome(Option<T> theValue, Function<Option<T>, TARGET> theAction) { super(theValue, theAction); }\n" + 
             "        \n" + 
             "        public OptionSwitchSome<TARGET, T> none(Function<? super None<T>, TARGET> theAction) {\n" + 
-            "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)action;\n" + 
+            "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)$action;\n" + 
             "            Function<Option<T>, TARGET> newAction =\n" + 
-            "                (action != null)\n" + 
+            "                ($action != null)\n" + 
             "                ? oldAction : \n" + 
-            "                    (value instanceof None)\n" + 
+            "                    ($value instanceof None)\n" + 
             "                    ? (Function<Option<T>, TARGET>)(d -> theAction.apply((None<T>)d))\n" + 
             "                    : oldAction;\n" + 
             "            \n" + 
-            "            return new OptionSwitchSome<TARGET, T>(value, newAction);\n" + 
+            "            return new OptionSwitchSome<TARGET, T>($value, newAction);\n" + 
             "        }\n" + 
             "        public OptionSwitchSome<TARGET, T> none(Supplier<TARGET> theSupplier) {\n" + 
             "            return none(d->theSupplier.get());\n" + 
@@ -172,18 +172,18 @@ public class GenericSupportTest {
             "        }\n" + 
             "    }\n" + 
             "    public static class OptionSwitchSome<TARGET, T extends Number> extends UnionTypeSwitch<Option<T>, TARGET> {\n" + 
-            "        private OptionSwitchSome(Option<T> value, Function<Option<T>, TARGET> action) { super(value, action); }\n" + 
+            "        private OptionSwitchSome(Option<T> theValue, Function<Option<T>, TARGET> theAction) { super(theValue, theAction); }\n" + 
             "        \n" + 
             "        public TARGET some(Function<? super Some<T>, TARGET> theAction) {\n" + 
-            "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)action;\n" + 
+            "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)$action;\n" + 
             "            Function<Option<T>, TARGET> newAction =\n" + 
-            "                (action != null)\n" + 
+            "                ($action != null)\n" + 
             "                ? oldAction : \n" + 
-            "                    (value instanceof Some)\n" + 
+            "                    ($value instanceof Some)\n" + 
             "                    ? (Function<Option<T>, TARGET>)(d -> theAction.apply((Some<T>)d))\n" + 
             "                    : oldAction;\n" + 
             "            \n" + 
-            "            return newAction.apply(value);\n" + 
+            "            return newAction.apply($value);\n" + 
             "        }\n" + 
             "        public TARGET some(Supplier<TARGET> theSupplier) {\n" + 
             "            return some(d->theSupplier.get());\n" + 
@@ -193,15 +193,15 @@ public class GenericSupportTest {
             "        }\n" + 
             "        \n" + 
             "        public OptionSwitchSome<TARGET, T> some(Predicate<Some<T>> check, Function<? super Some<T>, TARGET> theAction) {\n" + 
-            "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)action;\n" + 
+            "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)$action;\n" + 
             "            Function<Option<T>, TARGET> newAction =\n" + 
-            "                (action != null)\n" + 
+            "                ($action != null)\n" + 
             "                ? oldAction : \n" + 
-            "                    ((value instanceof Some) && check.test((Some<T>)value))\n" + 
+            "                    (($value instanceof Some) && check.test((Some<T>)$value))\n" + 
             "                    ? (Function<Option<T>, TARGET>)(d -> theAction.apply((Some<T>)d))\n" + 
             "                    : oldAction;\n" + 
             "            \n" + 
-            "            return new OptionSwitchSome<TARGET, T>(value, newAction);\n" + 
+            "            return new OptionSwitchSome<TARGET, T>($value, newAction);\n" + 
             "        }\n" + 
             "        public OptionSwitchSome<TARGET, T> some(Predicate<Some<T>> check, Supplier<TARGET> theSupplier) {\n" + 
             "            return some(check, d->theSupplier.get());\n" + 
@@ -210,14 +210,14 @@ public class GenericSupportTest {
             "            return some(check, d->theValue);\n" + 
             "        }\n" + 
             "        \n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(T value, Function<Some<T>, TARGET> theAction) {\n" + 
-            "            return some(some -> checkEquals(value, some.value), theAction);\n" + 
+            "        public OptionSwitchSome<TARGET, T> someOf(T aValue, Function<Some<T>, TARGET> theAction) {\n" + 
+            "            return some(some -> checkEquals(aValue, some.value), theAction);\n" + 
             "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(T value, Supplier<TARGET> theSupplier) {\n" + 
-            "            return some(some -> checkEquals(value, some.value), theSupplier);\n" + 
+            "        public OptionSwitchSome<TARGET, T> someOf(T aValue, Supplier<TARGET> theSupplier) {\n" + 
+            "            return some(some -> checkEquals(aValue, some.value), theSupplier);\n" + 
             "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(T value, TARGET theValue) {\n" + 
-            "            return some(some -> checkEquals(value, some.value), theValue);\n" + 
+            "        public OptionSwitchSome<TARGET, T> someOf(T aValue, TARGET theValue) {\n" + 
+            "            return some(some -> checkEquals(aValue, some.value), theValue);\n" + 
             "        }\n" + 
             "        \n" + 
             "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, Function<Some<T>, TARGET> theAction) {\n" + 

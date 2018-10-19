@@ -49,7 +49,7 @@ public class GenerateParentMapChildTest {
                 "import functionalj.lens.lenses.MapLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
-                "import functionalj.types.map.ImmutableMap;\n" + 
+                "import functionalj.map.ImmutableMap;\n" + 
                 "import java.util.Map;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
