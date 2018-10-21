@@ -10,7 +10,7 @@ public class DerivedValue<DATA> extends Result<DATA>{
     public DerivedValue(Func0<DATA> dataSupplier) {
         this.valueSupplier = ()->{
             try {
-                return dataSupplier.applySafely2();
+                return dataSupplier.applySafely();
             } catch (Exception e) {
                 return Result.ofException(e);
             }

@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import functionalj.ref.ComputeBody;
 import functionalj.result.Result;
+import lombok.val;
 
 /**
  * Function of zeroth parameter - a supplier.
@@ -36,9 +37,6 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Result<OUTPUT> applySafely() {
         return Result.from(this);
     }
-    public default Result<OUTPUT> applySafely2() {
-        return Result.from(this);
-    }
     
     public default Func0<Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
@@ -56,6 +54,21 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         } catch (Exception e) {
             throw new FunctionInvocationException(e);
         }
+    }
+    
+    public default Func0<OUTPUT> orElse(OUTPUT defaultValue) {
+    	return ()->{
+    		val result = applySafely();
+			val value  = result.orElse(defaultValue);
+			return value;
+    	};
+    }
+    public default Func0<OUTPUT> orElseGet(Supplier<OUTPUT> defaultSupplier) {
+    	return ()->{
+    		val result = applySafely();
+    		val value  = result.orElseGet(defaultSupplier);
+    		return value;
+    	};
     }
     
     public default Result<OUTPUT> getSafely() {
