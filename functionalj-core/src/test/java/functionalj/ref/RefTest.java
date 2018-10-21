@@ -217,7 +217,7 @@ public class RefTest {
 		val counter = new AtomicInteger(0);
 		val ref     = Ref.of(Integer.class)
 				.defaultFrom(counter::getAndIncrement)
-				.retained().by(100).milliSeconds();
+				.retained().withIn(100).milliSeconds();
 		
 		assertEquals(0, ref.value().intValue());
 		assertEquals(0, ref.value().intValue());

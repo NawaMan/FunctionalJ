@@ -76,7 +76,7 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
 			val ref = new RetainedRef<>(sourceRef, checker);
 			return ref;
 		}
-		public ForPeriodBuilder<DATA> by(long period) {
+		public ForPeriodBuilder<DATA> withIn(long period) {
 			return new ForPeriodBuilder<DATA>(sourceRef, period);
 		}
 	}
