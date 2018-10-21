@@ -113,5 +113,120 @@ public class RefTest {
 		assertEquals(1, ref2.value().intValue());
 		assertEquals(2, ref2.value().intValue());
 	}
+	
+	@Test
+	public void testRetainSame() {
+		val state    = new AtomicInteger(42);
+		val counter  = new AtomicInteger(0);
+		val refState = Ref.of(Integer.class).defaultFrom(state::get);
+		val ref      = Ref.of(Integer.class).defaultFrom(counter::getAndIncrement).retained().when(refState).same();
+		
+		assertEquals(42, state.get());
+		assertEquals( 0, ref.value().intValue());
+		assertEquals( 0, ref.value().intValue());
+		
+		state.incrementAndGet();
+		assertEquals(43, state.get());
+		assertEquals(1, ref.value().intValue());
+		assertEquals(1, ref.value().intValue());
+
+		state.incrementAndGet();
+		assertEquals(44, state.get());
+		assertEquals(2, ref.value().intValue());
+		assertEquals(2, ref.value().intValue());
+		
+		state.decrementAndGet();
+		assertEquals(43, state.get());
+		assertEquals(3, ref.value().intValue());
+		assertEquals(3, ref.value().intValue());
+		
+		// NOTE: Since Integer caches from -128 to 128, 1024 will always be different objects,
+		//       thus, it appears to always be different objects when state is check.
+		state.set(1024);
+		assertEquals(1024, state.get());
+		assertEquals(4, ref.value().intValue());
+		assertEquals(5, ref.value().intValue());
+		assertEquals(6, ref.value().intValue());
+	}
+	
+	@Test
+	public void testRetainEquals() {
+		val state    = new AtomicInteger(42);
+		val counter  = new AtomicInteger(0);
+		val refState = Ref.of(Integer.class).defaultFrom(state::get);
+		val ref      = Ref.of(Integer.class).defaultFrom(counter::getAndIncrement).retained().when(refState).equals();
+		
+		assertEquals(42, state.get());
+		assertEquals( 0, ref.value().intValue());
+		assertEquals( 0, ref.value().intValue());
+		
+		state.incrementAndGet();
+		assertEquals(43, state.get());
+		assertEquals(1, ref.value().intValue());
+		assertEquals(1, ref.value().intValue());
+
+		state.incrementAndGet();
+		assertEquals(44, state.get());
+		assertEquals(2, ref.value().intValue());
+		assertEquals(2, ref.value().intValue());
+		
+		state.decrementAndGet();
+		assertEquals(43, state.get());
+		assertEquals(3, ref.value().intValue());
+		assertEquals(3, ref.value().intValue());
+		
+		// NOTE: Since Integer caches from -128 to 128, 1024 will always be different objects,
+		//       but they are considered equals, thus, it appears to always be different objects 
+		//       but equals to each other so appears to be unchanged when state is check.
+		state.set(1024);
+		assertEquals(1024, state.get());
+		assertEquals(4, ref.value().intValue());
+		assertEquals(4, ref.value().intValue());
+		assertEquals(4, ref.value().intValue());
+	}
+	
+	@Test
+	public void testRetainMatch() {
+		val state    = new AtomicInteger(42);
+		val counter  = new AtomicInteger(0);
+		val refState = Ref.of(Integer.class).defaultFrom(state::get);
+		val ref      = Ref.of(Integer.class)
+				.defaultFrom(counter::getAndIncrement)
+				.retained().when(refState).match((Integer s) -> s.intValue() == 42);
+		
+		assertEquals(42, state.get());
+		assertEquals( 0, ref.value().intValue());
+		assertEquals( 0, ref.value().intValue());
+		assertEquals( 0, ref.value().intValue());
+		
+		state.set(43);
+		assertEquals(43, state.get());
+		assertEquals( 1, ref.value().intValue());
+		assertEquals( 2, ref.value().intValue());
+		assertEquals( 3, ref.value().intValue());
+		
+		state.set(42);
+		assertEquals(42, state.get());
+		assertEquals( 3, ref.value().intValue());
+		assertEquals( 3, ref.value().intValue());
+		assertEquals( 3, ref.value().intValue());
+	}
+	
+	@Test
+	public void testRetainPeriod() throws InterruptedException {
+		val counter = new AtomicInteger(0);
+		val ref     = Ref.of(Integer.class)
+				.defaultFrom(counter::getAndIncrement)
+				.retained().by(100).milliSeconds();
+		
+		assertEquals(0, ref.value().intValue());
+		assertEquals(0, ref.value().intValue());
+		assertEquals(0, ref.value().intValue());
+		
+		Thread.sleep(100);
+		assertEquals(1, ref.value().intValue());
+		assertEquals(1, ref.value().intValue());
+		assertEquals(1, ref.value().intValue());
+	}
 
 }

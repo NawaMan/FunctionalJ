@@ -112,66 +112,66 @@ public interface RetainChecker {
 					+ "]";
 		}
 		
-		//== Aux classes ==
-		
-		public static class WhenNotSame<S> implements BiPredicate<S, S> {
-			@Override
-			public boolean test(S oldState, S newState) {
-				return oldState != newState;
-			}
-			@Override
-			public String toString() {
-				return "WHEN_NOT_SAME";
-			}
+	}
+	
+	//== Aux classes ==
+	
+	public static class WhenNotSame<S> implements BiPredicate<S, S> {
+		@Override
+		public boolean test(S oldState, S newState) {
+			return oldState != newState;
 		}
-		
-		public static class WhenNotEqual<S> implements BiPredicate<S, S> {
-			@Override
-			public boolean test(S oldState, S newState) {
-				return !Objects.equals(oldState, newState);
-			}
-			@Override
-			public String toString() {
-				return "WHEN_NOT_EQUAL";
-			}
+		@Override
+		public String toString() {
+			return "WHEN_NOT_SAME";
 		}
-		
-		@FunctionalInterface
-		public static interface StateUpdater<S> {
-			public S getNewState(boolean isChanged, S oldState, S newValue);
+	}
+	
+	public static class WhenNotEqual<S> implements BiPredicate<S, S> {
+		@Override
+		public boolean test(S oldState, S newState) {
+			return !Objects.equals(oldState, newState);
 		}
-		
-		public static class UpdateOnChanged<S> implements StateUpdater<S> {
-			@Override
-			public S getNewState(boolean isChanged, S oldState, S newValue) {
-				return isChanged ? newValue : oldState;
-			}
-			@Override
-			public String toString() {
-				return "WHEN_CHANGE";
-			}
+		@Override
+		public String toString() {
+			return "WHEN_NOT_EQUAL";
 		}
-		public static class UpdateAlways<S> implements StateUpdater<S> {
-			@Override
-			public S getNewState(boolean isChanged, S oldState, S newValue) {
-				return newValue;
-			}
-			@Override
-			public String toString() {
-				return "ALWAYS";
-			}
+	}
+	
+	@FunctionalInterface
+	public static interface StateUpdater<S> {
+		public S getNewState(boolean isChanged, S oldState, S newValue);
+	}
+	
+	public static class UpdateOnChanged<S> implements StateUpdater<S> {
+		@Override
+		public S getNewState(boolean isChanged, S oldState, S newValue) {
+			return isChanged ? newValue : oldState;
 		}
-		public static class UpdateNever<S> implements StateUpdater<S> {
-			@Override
-			public S getNewState(boolean isChanged, S oldState, S newValue) {
-				return oldState;
-			}
-			@Override
-			public String toString() {
-				return "NEVER";
-			}
+		@Override
+		public String toString() {
+			return "WHEN_CHANGE";
 		}
-		
+	}
+	public static class UpdateAlways<S> implements StateUpdater<S> {
+		@Override
+		public S getNewState(boolean isChanged, S oldState, S newValue) {
+			return newValue;
+		}
+		@Override
+		public String toString() {
+			return "ALWAYS";
+		}
+	}
+	public static class UpdateNever<S> implements StateUpdater<S> {
+		@Override
+		public S getNewState(boolean isChanged, S oldState, S newValue) {
+			return oldState;
+		}
+		@Override
+		public String toString() {
+			return "NEVER";
+		}
 	}
 	
 }
