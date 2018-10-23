@@ -87,7 +87,9 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
         return mapper.apply(_1, _2);
     }
     
-    public default <NT1, NT2> Tuple2<NT1, NT2> map(Function<? super T1, NT1> mapper1, Function<? super T2, NT2> mapper2) {
+    public default <NT1, NT2> Tuple2<NT1, NT2> map(
+    		Function<? super T1, NT1> mapper1,
+    		Function<? super T2, NT2> mapper2) {
         return map(mapper1, mapper2, Tuple::of);
     }
     public default <NT1, NT2, T> T map(
@@ -115,6 +117,13 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
         val n1 = mapper1.apply(_1);
         val n2 = _2;
         return Tuple.of(n1, n2);
+    }
+    
+    //== drop ==
+    
+    public default T1 drop() {
+        val _1 = _1();
+        return _1;
     }
     
 }

@@ -193,6 +193,12 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
     
     //== drop ==
     
+    public default Tuple2<T1, T2> drop() {
+        val _1 = _1();
+        val _2 = _2();
+        return Tuple.of(_1, _2);
+    }
+    
     public default Tuple2<T2, T3> drop1() {
         return drop(__, keep, keep);
     }

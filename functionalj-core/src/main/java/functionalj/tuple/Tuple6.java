@@ -1159,6 +1159,15 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
     
     //== drop ==
     
+    public default Tuple5<T1, T2, T3, T4, T5> drop() {
+        val _1 = _1();
+        val _2 = _2();
+        val _3 = _3();
+        val _4 = _4();
+        val _5 = _5();
+        return Tuple.of(_1, _2, _3, _4, _5);
+    }
+    
     public default Tuple5<T2, T3, T4, T5, T6> drop1() {
         return drop(__, keep, keep, keep, keep, keep);
     }
@@ -1179,7 +1188,7 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
     }
     
     public default Tuple5<T2, T3, T4, T5, T6> drop(
-            Absent drop1, 
+            Absent drop1,
             Keep   keep2,
             Keep   keep3,
             Keep   keep4,
@@ -1194,7 +1203,7 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
     }
     
     public default Tuple5<T1, T3, T4, T5, T6> drop(
-            Keep   keep1, 
+            Keep   keep1,
             Absent drop2,
             Keep   keep3,
             Keep   keep4,
@@ -1208,12 +1217,26 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
         return Tuple.of(_1, _3, _4, _5, _6);
     }
     
+    public default Tuple4<T3, T4, T5, T6> drop(
+            Absent drop1,
+            Absent drop2,
+            Keep   keep3,
+            Keep   keep4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _3 = _3();
+        val _4 = _4();
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_3, _4, _5, _6);
+    }
+    
     public default Tuple5<T1, T2, T4, T5, T6> drop(
-            Keep   keep1, 
+            Keep   keep1,
             Keep   keep2,
             Absent drop3,
-            Keep   keep4, 
-            Keep   keep5, 
+            Keep   keep4,
+            Keep   keep5,
             Keep   keep6) {
         val _1 = _1();
         val _2 = _2();
@@ -1223,12 +1246,53 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
         return Tuple.of(_1, _2, _4, _5, _6);
     }
     
+    public default Tuple4<T2, T4, T5, T6> drop(
+            Absent drop1,
+            Keep   keep2,
+            Absent drop3,
+            Keep   keep4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _2 = _2();
+        val _4 = _4();
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_2, _4, _5, _6);
+    }
+    
+    public default Tuple4<T1, T4, T5, T6> drop(
+            Keep   keep1,
+            Absent drop2,
+            Absent drop3,
+            Keep   keep4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _4 = _4();
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_1, _4, _5, _6);
+    }
+    
+    public default Tuple3<T4, T5, T6> drop(
+            Absent drop1,
+            Absent drop2,
+            Absent drop3,
+            Keep   keep4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _4 = _4();
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_4, _5, _6);
+    }
+    
     public default Tuple5<T1, T2, T3, T5, T6> drop(
-            Keep   keep1, 
-            Keep   keep2, 
+            Keep   keep1,
+            Keep   keep2,
             Keep   keep3,
-            Absent drop4, 
-            Keep   keep5, 
+            Absent drop4,
+            Keep   keep5,
             Keep   keep6) {
         val _1 = _1();
         val _2 = _2();
@@ -1238,9 +1302,102 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
         return Tuple.of(_1, _2, _3, _5, _6);
     }
     
+    public default Tuple4<T2, T3, T5, T6> drop(
+            Absent drop1,
+            Keep   keep2,
+            Keep   keep3,
+            Absent drop4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _2 = _2();
+        val _3 = _3();
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_2, _3, _5, _6);
+    }
+    
+    public default Tuple4<T1, T3, T5, T6> drop(
+            Keep   keep1,
+            Absent drop2,
+            Keep   keep3,
+            Absent drop4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _3 = _3();
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_1, _3, _5, _6);
+    }
+    
+    public default Tuple3<T3, T5, T6> drop(
+            Absent drop1,
+            Absent drop2,
+            Keep   keep3,
+            Absent drop4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _3 = _3();
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_3, _5, _6);
+    }
+    
+    public default Tuple4<T1, T2, T5, T6> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Absent drop3,
+            Absent drop4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _2 = _2();
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_1, _2, _5, _6);
+    }
+    
+    public default Tuple3<T2, T5, T6> drop(
+            Absent drop1,
+            Keep   keep2,
+            Absent drop3,
+            Absent drop4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _2 = _2();
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_2, _5, _6);
+    }
+    
+    public default Tuple3<T1, T5, T6> drop(
+            Keep   keep1,
+            Absent drop2,
+            Absent drop3,
+            Absent drop4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_1, _5, _6);
+    }
+    
+    public default Tuple2<T5, T6> drop(
+            Absent drop1,
+            Absent drop2,
+            Absent drop3,
+            Absent drop4,
+            Keep   keep5,
+            Keep   keep6) {
+        val _5 = _5();
+        val _6 = _6();
+        return Tuple.of(_5, _6);
+    }
+    
     public default Tuple5<T1, T2, T3, T4, T6> drop(
-            Keep   keep1, 
-            Keep   keep2, 
+            Keep   keep1,
+            Keep   keep2,
             Keep   keep3,
             Keep   keep4,
             Absent drop5,
@@ -1253,9 +1410,191 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
         return Tuple.of(_1, _2, _3, _4, _6);
     }
     
+    public default Tuple4<T2, T3, T4, T6> drop(
+            Absent drop1,
+            Keep   keep2,
+            Keep   keep3,
+            Keep   keep4,
+            Absent drop5,
+            Keep   keep6) {
+        val _2 = _2();
+        val _3 = _3();
+        val _4 = _4();
+        val _6 = _6();
+        return Tuple.of(_2, _3, _4, _6);
+    }
+    
+    public default Tuple4<T1, T3, T4, T6> drop(
+            Keep   keep1,
+            Absent drop2,
+            Keep   keep3,
+            Keep   keep4,
+            Absent drop5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _3 = _3();
+        val _4 = _4();
+        val _6 = _6();
+        return Tuple.of(_1, _3, _4, _6);
+    }
+    
+    public default Tuple3<T3, T4, T6> drop(
+            Absent drop1,
+            Absent drop2,
+            Keep   keep3,
+            Keep   keep4,
+            Absent drop5,
+            Keep   keep6) {
+        val _3 = _3();
+        val _4 = _4();
+        val _6 = _6();
+        return Tuple.of(_3, _4, _6);
+    }
+    
+    public default Tuple4<T1, T2, T4, T6> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Absent drop3,
+            Keep   keep4,
+            Absent drop5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _2 = _2();
+        val _4 = _4();
+        val _6 = _6();
+        return Tuple.of(_1, _2, _4, _6);
+    }
+    
+    public default Tuple3<T2, T4, T6> drop(
+            Absent drop1,
+            Keep   keep2,
+            Absent drop3,
+            Keep   keep4,
+            Absent drop5,
+            Keep   keep6) {
+        val _2 = _2();
+        val _4 = _4();
+        val _6 = _6();
+        return Tuple.of(_2, _4, _6);
+    }
+    
+    public default Tuple3<T1, T4, T6> drop(
+            Keep   keep1,
+            Absent drop2,
+            Absent drop3,
+            Keep   keep4,
+            Absent drop5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _4 = _4();
+        val _6 = _6();
+        return Tuple.of(_1, _4, _6);
+    }
+    
+    public default Tuple2<T4, T6> drop(
+            Absent drop1,
+            Absent drop2,
+            Absent drop3,
+            Keep   keep4,
+            Absent drop5,
+            Keep   keep6) {
+        val _4 = _4();
+        val _6 = _6();
+        return Tuple.of(_4, _6);
+    }
+    
+    public default Tuple4<T1, T2, T3, T6> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Keep   keep3,
+            Absent drop4,
+            Absent drop5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _2 = _2();
+        val _3 = _3();
+        val _6 = _6();
+        return Tuple.of(_1, _2, _3, _6);
+    }
+    
+    public default Tuple3<T2, T3, T6> drop(
+            Absent drop1,
+            Keep   keep2,
+            Keep   keep3,
+            Absent drop4,
+            Absent drop5,
+            Keep   keep6) {
+        val _2 = _2();
+        val _3 = _3();
+        val _6 = _6();
+        return Tuple.of(_2, _3, _6);
+    }
+    
+    public default Tuple3<T1, T3, T6> drop(
+            Keep   keep1,
+            Absent drop2,
+            Keep   keep3,
+            Absent drop4,
+            Absent drop5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _3 = _3();
+        val _6 = _6();
+        return Tuple.of(_1, _3, _6);
+    }
+    
+    public default Tuple2<T3, T6> drop(
+            Absent drop1,
+            Absent drop2,
+            Keep   keep3,
+            Absent drop4,
+            Absent drop5,
+            Keep   keep6) {
+        val _3 = _3();
+        val _6 = _6();
+        return Tuple.of(_3, _6);
+    }
+    
+    public default Tuple3<T1, T2, T6> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Absent drop3,
+            Absent drop4,
+            Absent drop5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _2 = _2();
+        val _6 = _6();
+        return Tuple.of(_1, _2, _6);
+    }
+    
+    public default Tuple2<T2, T6> drop(
+            Absent drop1,
+            Keep   keep2,
+            Absent drop3,
+            Absent drop4,
+            Absent drop5,
+            Keep   keep6) {
+        val _2 = _2();
+        val _6 = _6();
+        return Tuple.of(_2, _6);
+    }
+    
+    public default Tuple2<T1, T6> drop(
+            Keep   keep1,
+            Absent drop2,
+            Absent drop3,
+            Absent drop4,
+            Absent drop5,
+            Keep   keep6) {
+        val _1 = _1();
+        val _6 = _6();
+        return Tuple.of(_1, _6);
+    }
+    
     public default Tuple5<T1, T2, T3, T4, T5> drop(
-            Keep   keep1, 
-            Keep   keep2, 
+            Keep   keep1,
+            Keep   keep2,
             Keep   keep3,
             Keep   keep4,
             Keep   keep5,
@@ -1268,56 +1607,387 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
         return Tuple.of(_1, _2, _3, _4, _5);
     }
     
-    // TODO - Implement this.
+    public default Tuple4<T2, T3, T4, T5> drop(
+            Absent drop1,
+            Keep   keep2,
+            Keep   keep3,
+            Keep   keep4,
+            Keep   keep5,
+            Absent drop6) {
+        val _2 = _2();
+        val _3 = _3();
+        val _4 = _4();
+        val _5 = _5();
+        return Tuple.of(_2, _3, _4, _5);
+    }
+    
+    public default Tuple4<T1, T3, T4, T5> drop(
+            Keep   keep1,
+            Absent drop2,
+            Keep   keep3,
+            Keep   keep4,
+            Keep   keep5,
+            Absent drop6) {
+        val _1 = _1();
+        val _3 = _3();
+        val _4 = _4();
+        val _5 = _5();
+        return Tuple.of(_1, _3, _4, _5);
+    }
+    
+    public default Tuple3<T3, T4, T5> drop(
+            Absent drop1,
+            Absent drop2,
+            Keep   keep3,
+            Keep   keep4,
+            Keep   keep5,
+            Absent drop6) {
+        val _3 = _3();
+        val _4 = _4();
+        val _5 = _5();
+        return Tuple.of(_3, _4, _5);
+    }
+    
+    public default Tuple4<T1, T2, T4, T5> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Absent drop3,
+            Keep   keep4,
+            Keep   keep5,
+            Absent drop6) {
+        val _1 = _1();
+        val _2 = _2();
+        val _4 = _4();
+        val _5 = _5();
+        return Tuple.of(_1, _2, _4, _5);
+    }
+    
+    public default Tuple3<T2, T4, T5> drop(
+            Absent drop1,
+            Keep   keep2,
+            Absent drop3,
+            Keep   keep4,
+            Keep   keep5,
+            Absent drop6) {
+        val _2 = _2();
+        val _4 = _4();
+        val _5 = _5();
+        return Tuple.of(_2, _4, _5);
+    }
+    
+    public default Tuple3<T1, T4, T5> drop(
+            Keep   keep1,
+            Absent drop2,
+            Absent drop3,
+            Keep   keep4,
+            Keep   keep5,
+            Absent drop6) {
+        val _1 = _1();
+        val _4 = _4();
+        val _5 = _5();
+        return Tuple.of(_1, _4, _5);
+    }
+    
+    public default Tuple2<T4, T5> drop(
+            Absent drop1,
+            Absent drop2,
+            Absent drop3,
+            Keep   keep4,
+            Keep   keep5,
+            Absent drop6) {
+        val _4 = _4();
+        val _5 = _5();
+        return Tuple.of(_4, _5);
+    }
+    
+    public default Tuple4<T1, T2, T3, T5> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Keep   keep3,
+            Absent drop4,
+            Keep   keep5,
+            Absent drop6) {
+        val _1 = _1();
+        val _2 = _2();
+        val _3 = _3();
+        val _5 = _5();
+        return Tuple.of(_1, _2, _3, _5);
+    }
+    
+    public default Tuple3<T2, T3, T5> drop(
+            Absent drop1,
+            Keep   keep2,
+            Keep   keep3,
+            Absent drop4,
+            Keep   keep5,
+            Absent drop6) {
+        val _2 = _2();
+        val _3 = _3();
+        val _5 = _5();
+        return Tuple.of(_2, _3, _5);
+    }
+    
+    public default Tuple3<T1, T3, T5> drop(
+            Keep   keep1,
+            Absent drop2,
+            Keep   keep3,
+            Absent drop4,
+            Keep   keep5,
+            Absent drop6) {
+        val _1 = _1();
+        val _3 = _3();
+        val _5 = _5();
+        return Tuple.of(_1, _3, _5);
+    }
+    
+    public default Tuple2<T3, T5> drop(
+            Absent drop1,
+            Absent drop2,
+            Keep   keep3,
+            Absent drop4,
+            Keep   keep5,
+            Absent drop6) {
+        val _3 = _3();
+        val _5 = _5();
+        return Tuple.of(_3, _5);
+    }
+    
+    public default Tuple3<T1, T2, T5> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Absent drop3,
+            Absent drop4,
+            Keep   keep5,
+            Absent drop6) {
+        val _1 = _1();
+        val _2 = _2();
+        val _5 = _5();
+        return Tuple.of(_1, _2, _5);
+    }
+    
+    public default Tuple2<T2, T5> drop(
+            Absent drop1,
+            Keep   keep2,
+            Absent drop3,
+            Absent drop4,
+            Keep   keep5,
+            Absent drop6) {
+        val _2 = _2();
+        val _5 = _5();
+        return Tuple.of(_2, _5);
+    }
+    
+    public default Tuple2<T1, T5> drop(
+            Keep   keep1,
+            Absent drop2,
+            Absent drop3,
+            Absent drop4,
+            Keep   keep5,
+            Absent drop6) {
+        val _1 = _1();
+        val _5 = _5();
+        return Tuple.of(_1, _5);
+    }
+    
+    public default Tuple4<T1, T2, T3, T4> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Keep   keep3,
+            Keep   keep4,
+            Absent drop5,
+            Absent drop6) {
+        val _1 = _1();
+        val _2 = _2();
+        val _3 = _3();
+        val _4 = _4();
+        return Tuple.of(_1, _2, _3, _4);
+    }
+    
+    public default Tuple3<T2, T3, T4> drop(
+            Absent drop1,
+            Keep   keep2,
+            Keep   keep3,
+            Keep   keep4,
+            Absent drop5,
+            Absent drop6) {
+        val _2 = _2();
+        val _3 = _3();
+        val _4 = _4();
+        return Tuple.of(_2, _3, _4);
+    }
+    
+    public default Tuple3<T1, T3, T4> drop(
+            Keep   keep1,
+            Absent drop2,
+            Keep   keep3,
+            Keep   keep4,
+            Absent drop5,
+            Absent drop6) {
+        val _1 = _1();
+        val _3 = _3();
+        val _4 = _4();
+        return Tuple.of(_1, _3, _4);
+    }
+    
+    public default Tuple2<T3, T4> drop(
+            Absent drop1,
+            Absent drop2,
+            Keep   keep3,
+            Keep   keep4,
+            Absent drop5,
+            Absent drop6) {
+        val _3 = _3();
+        val _4 = _4();
+        return Tuple.of(_3, _4);
+    }
+    
+    public default Tuple3<T1, T2, T4> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Absent drop3,
+            Keep   keep4,
+            Absent drop5,
+            Absent drop6) {
+        val _1 = _1();
+        val _2 = _2();
+        val _4 = _4();
+        return Tuple.of(_1, _2, _4);
+    }
+    
+    public default Tuple2<T2, T4> drop(
+            Absent drop1,
+            Keep   keep2,
+            Absent drop3,
+            Keep   keep4,
+            Absent drop5,
+            Absent drop6) {
+        val _2 = _2();
+        val _4 = _4();
+        return Tuple.of(_2, _4);
+    }
+    
+    public default Tuple2<T1, T4> drop(
+            Keep   keep1,
+            Absent drop2,
+            Absent drop3,
+            Keep   keep4,
+            Absent drop5,
+            Absent drop6) {
+        val _1 = _1();
+        val _4 = _4();
+        return Tuple.of(_1, _4);
+    }
+    
+    public default Tuple3<T1, T2, T3> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Keep   keep3,
+            Absent drop4,
+            Absent drop5,
+            Absent drop6) {
+        val _1 = _1();
+        val _2 = _2();
+        val _3 = _3();
+        return Tuple.of(_1, _2, _3);
+    }
+    
+    public default Tuple2<T2, T3> drop(
+            Absent drop1,
+            Keep   keep2,
+            Keep   keep3,
+            Absent drop4,
+            Absent drop5,
+            Absent drop6) {
+        val _2 = _2();
+        val _3 = _3();
+        return Tuple.of(_2, _3);
+    }
+    
+    public default Tuple2<T1, T3> drop(
+            Keep   keep1,
+            Absent drop2,
+            Keep   keep3,
+            Absent drop4,
+            Absent drop5,
+            Absent drop6) {
+        val _1 = _1();
+        val _3 = _3();
+        return Tuple.of(_1, _3);
+    }
+    
+    public default Tuple2<T1, T2> drop(
+            Keep   keep1,
+            Keep   keep2,
+            Absent drop3,
+            Absent drop4,
+            Absent drop5,
+            Absent drop6) {
+        val _1 = _1();
+        val _2 = _2();
+        return Tuple.of(_1, _2);
+    }
 //    
-//    public default Tuple2<T3, T4> drop(
-//            Absent drop1, 
-//            Absent drop2,
-//            Keep   keep3,
-//            Keep   keep4) {
-//        val _3 = _3();
-//        val _4 = _4();
-//        return Tuple.of(_3, _4);
-//    }
 //    
-//    public default Tuple2<T2, T4> drop(
-//            Absent drop1, 
-//            Keep   keep2,
-//            Absent drop3,
-//            Keep   keep4) {
-//        val _2 = _2();
-//        val _4 = _4();
-//        return Tuple.of(_2, _4);
-//    }
-//    
-//    public default Tuple2<T2, T3> drop(
-//            Absent drop1, 
-//            Keep   keep2,
-//            Keep   keep3,
-//            Absent drop4) {
-//        val _2 = _2();
-//        val _3 = _3();
-//        return Tuple.of(_2, _3);
-//    }
-//    
-//    public default Tuple2<T1, T4> drop(
-//            Keep   keep1, 
-//            Absent drop2, 
-//            Absent drop3,
-//            Keep   keep4) {
-//        val _1 = _1();
-//        val _4 = _4();
-//        return Tuple.of(_1, _4);
-//    }
-//    
-//    public default Tuple2<T1, T2> drop(
-//            Keep   keep1,
-//            Keep   keep2, 
-//            Absent drop3, 
-//            Absent drop4) {
-//        val _1 = _1();
-//        val _2 = _2();
-//        return Tuple.of(_1, _2);
+//    public static void main(String[] args) {
+//        for (int i = 0; i < 2*2*2*2*2*2; i++) {
+//            val b0 = (0 != (i & 1));
+//            val b1 = (0 != (i & 2));
+//            val b2 = (0 != (i & 2*2));
+//            val b3 = (0 != (i & 2*2*2));
+//            val b4 = (0 != (i & 2*2*2*2));
+//            val b5 = (0 != (i & 2*2*2*2*2));
+//            val d0 = (b0 ? "Absent drop" : "Keep   keep") + 1 + ",";
+//            val d1 = (b1 ? "Absent drop" : "Keep   keep") + 2 + ",";
+//            val d2 = (b2 ? "Absent drop" : "Keep   keep") + 3 + ",";
+//            val d3 = (b3 ? "Absent drop" : "Keep   keep") + 4 + ",";
+//            val d4 = (b4 ? "Absent drop" : "Keep   keep") + 5 + ",";
+//            val d5 = (b5 ? "Absent drop" : "Keep   keep") + 6 + ") {";
+//            val count = (b0 ? 1 : 0)
+//                      + (b1 ? 1 : 0)
+//                      + (b2 ? 1 : 0)
+//                      + (b3 ? 1 : 0)
+//                      + (b4 ? 1 : 0)
+//                      + (b5 ? 1 : 0);
+//            if (count == 6)
+//                continue;
+//            if (count == 0)
+//                continue;
+//            if (count == 5)
+//                continue;
+//            
+//            val includes = new ArrayList<String>();
+//            val excludes = new ArrayList<String>();
+//            if (b0) includes.add("" + 1);
+//            if (b1) includes.add("" + 2);
+//            if (b2) includes.add("" + 3);
+//            if (b3) includes.add("" + 4);
+//            if (b4) includes.add("" + 5);
+//            if (b5) includes.add("" + 6);
+//            if (!b0) excludes.add("" + 1);
+//            if (!b1) excludes.add("" + 2);
+//            if (!b2) excludes.add("" + 3);
+//            if (!b3) excludes.add("" + 4);
+//            if (!b4) excludes.add("" + 5);
+//            if (!b5) excludes.add("" + 6);
+//            
+//            System.out.println("    public default Tuple" + (6 - count) + "<" + excludes.stream().map("T"::concat).collect(joining(", ")) + "> drop(");
+//            System.out.println("            " + d0);
+//            System.out.println("            " + d1);
+//            System.out.println("            " + d2);
+//            System.out.println("            " + d3);
+//            System.out.println("            " + d4);
+//            System.out.println("            " + d5);
+//            
+//            excludes.stream()
+//            .map("_"::concat)
+//            .map(each -> "        val " + each + " = " + each + "();")
+//            .forEach(System.out::println);
+//            
+//            System.out.println("        return Tuple.of(" + excludes.stream().map("_"::concat).collect(joining(", ")) + ");");
+//            System.out.println("    }");
+//            
+//            System.out.println("    ");
+//        }
 //    }
     
 }
