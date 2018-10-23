@@ -8,6 +8,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import functionalj.functions.Absent;
+import functionalj.functions.Func2;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
@@ -117,6 +118,15 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
         val n1 = mapper1.apply(_1);
         val n2 = _2;
         return Tuple.of(n1, n2);
+    }
+    
+    //== Reduce ==
+    
+    public default <TARGET> TARGET reduce(Func2<T1, T2, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val target = reducer.apply(_1, _2);
+        return target;
     }
     
     //== drop ==

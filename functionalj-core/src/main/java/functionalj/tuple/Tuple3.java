@@ -8,6 +8,7 @@ import java.lang.reflect.Array;
 import java.util.function.Function;
 
 import functionalj.functions.Absent;
+import functionalj.functions.Func2;
 import functionalj.functions.Func3;
 import functionalj.functions.Keep;
 import functionalj.list.FuncList;
@@ -189,6 +190,23 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         val n2 = _2;
         val n3 = _3;
         return Tuple.of(n1, n2, n3);
+    }
+    
+    //== Reduce ==
+    
+    public default <TARGET> TARGET reduce(Func2<T1, T2, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val target = reducer.apply(_1, _2);
+        return target;
+    }
+    
+    public default <TARGET> TARGET reduce(Func3<T1, T2, T3, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val _3     = _3();
+        val target = reducer.apply(_1, _2, _3);
+        return target;
     }
     
     //== drop ==

@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.function.Function;
 
 import functionalj.functions.Absent;
+import functionalj.functions.Func2;
+import functionalj.functions.Func3;
+import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Keep;
 import functionalj.list.FuncList;
@@ -549,6 +552,42 @@ public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, 
                 mapper3.apply(_3()),
                 mapper4.apply(_4()),
                 mapper5.apply(_5()));
+    }
+    
+    //== Reduce ==
+    
+    public default <TARGET> TARGET reduce(Func2<T1, T2, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val target = reducer.apply(_1, _2);
+        return target;
+    }
+    
+    public default <TARGET> TARGET reduce(Func3<T1, T2, T3, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val _3     = _3();
+        val target = reducer.apply(_1, _2, _3);
+        return target;
+    }
+    
+    public default <TARGET> TARGET reduce(Func4<T1, T2, T3, T4, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val _3     = _3();
+        val _4     = _4();
+        val target = reducer.apply(_1, _2, _3, _4);
+        return target;
+    }
+    
+    public default <TARGET> TARGET reduce(Func5<T1, T2, T3, T4, T5, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val _3     = _3();
+        val _4     = _4();
+        val _5     = _5();
+        val target = reducer.apply(_1, _2, _3, _4, _5);
+        return target;
     }
     
     //== drop ==

@@ -8,6 +8,10 @@ import java.lang.reflect.Array;
 import java.util.function.Function;
 
 import functionalj.functions.Absent;
+import functionalj.functions.Func2;
+import functionalj.functions.Func3;
+import functionalj.functions.Func4;
+import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.Keep;
 import functionalj.list.FuncList;
@@ -91,7 +95,7 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
     
     
     //== Map ==
-
+    
     public default <NT1> Tuple6<NT1, T2, T3, T4, T5, T6> map1(Function<? super T1, NT1> mapper) {
         return map(mapper, it(), it(), it(), it(), it());
     }
@@ -99,11 +103,11 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
     public default <NT2> Tuple6<T1, NT2, T3, T4, T5, T6> map2(Function<? super T2, NT2> mapper) {
         return map(it(), mapper, it(), it(), it(), it());
     }
-
+    
     public default <NT3> Tuple6<T1, T2, NT3, T4, T5, T6> map3(Function<? super T3, NT3> mapper) {
         return map(it(), it(), mapper, it(), it(), it());
     }
-
+    
     public default <NT4> Tuple6<T1, T2, T3, NT4, T5, T6> map4(Function<? super T4, NT4> mapper) {
         return map(it(), it(), it(), mapper, it(), it());
     }
@@ -1155,6 +1159,53 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
                 mapper4.apply(_4()),
                 mapper5.apply(_5()),
                 mapper6.apply(_6()));
+    }
+    
+    //== Reduce ==
+    
+    public default <TARGET> TARGET reduce(Func2<T1, T2, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val target = reducer.apply(_1, _2);
+        return target;
+    }
+    
+    public default <TARGET> TARGET reduce(Func3<T1, T2, T3, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val _3     = _3();
+        val target = reducer.apply(_1, _2, _3);
+        return target;
+    }
+    
+    public default <TARGET> TARGET reduce(Func4<T1, T2, T3, T4, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val _3     = _3();
+        val _4     = _4();
+        val target = reducer.apply(_1, _2, _3, _4);
+        return target;
+    }
+    
+    public default <TARGET> TARGET reduce(Func5<T1, T2, T3, T4, T5, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val _3     = _3();
+        val _4     = _4();
+        val _5     = _5();
+        val target = reducer.apply(_1, _2, _3, _4, _5);
+        return target;
+    }
+    
+    public default <TARGET> TARGET reduce(Func6<T1, T2, T3, T4, T5, T6, TARGET> reducer) {
+        val _1     = _1();
+        val _2     = _2();
+        val _3     = _3();
+        val _4     = _4();
+        val _5     = _5();
+        val _6     = _6();
+        val target = reducer.apply(_1, _2, _3, _4, _5, _6);
+        return target;
     }
     
     //== drop ==
