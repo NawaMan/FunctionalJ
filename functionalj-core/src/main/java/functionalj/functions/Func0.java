@@ -26,9 +26,9 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     
     public OUTPUT applyUnsafe() throws Exception;
     
-	public default OUTPUT run() throws RuntimeException {
-		return apply();
-	}
+    public default OUTPUT run() throws RuntimeException {
+        return apply();
+    }
     
     public default OUTPUT apply() {
         return get();
@@ -57,18 +57,26 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     }
     
     public default Func0<OUTPUT> orElse(OUTPUT defaultValue) {
-    	return ()->{
-    		val result = applySafely();
-			val value  = result.orElse(defaultValue);
-			return value;
-    	};
+        return ()->{
+            val result = applySafely();
+            val value  = result.orElse(defaultValue);
+            return value;
+        };
     }
     public default Func0<OUTPUT> orElseGet(Supplier<OUTPUT> defaultSupplier) {
-    	return ()->{
-    		val result = applySafely();
-    		val value  = result.orElseGet(defaultSupplier);
-    		return value;
-    	};
+        return ()->{
+            val result = applySafely();
+            val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
+    
+    public default <TARGET> Func0<TARGET> map(Func1<OUTPUT, TARGET> mapper) {
+        return ()->{
+            val output = this.applyUnsafe();
+            val target = mapper.apply(output);
+            return target;
+        };
     }
     
     public default Result<OUTPUT> getSafely() {
