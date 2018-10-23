@@ -185,7 +185,7 @@ public class PromisesTest {
                 (_1, _2, _3, _4, _5, _6) -> {
                     return _1 + _2 + _3 + _4 + _5 + 6;
                 });
-        Thread.sleep(100);
+        Thread.sleep(150);
         
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings("Result:{ Value: 21 }",   promise.getCurrentResult());

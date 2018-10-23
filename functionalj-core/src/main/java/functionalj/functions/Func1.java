@@ -97,22 +97,6 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
      * @param  after    the function to be run after this function.
      * @return          the composed function.
      */
-    public default <FINAL> Func1<INPUT, FINAL> map(Function<? super OUTPUT, ? extends FINAL> after) {
-        return input -> {
-            OUTPUT out1 = this.applyUnsafe(input);
-            FINAL  out2 = after.apply(out1);
-            return out2;
-        };
-    }
-    
-    /**
-     * Compose this function to the given function.
-     * NOTE: Too bad the name 'compose' is already been taken :-(
-     * 
-     * @param  <FINAL>  the final result value.
-     * @param  after    the function to be run after this function.
-     * @return          the composed function.
-     */
     public default <FINAL> Func1<INPUT, FINAL> then(Function<? super OUTPUT, ? extends FINAL> after) {
         return input -> {
             OUTPUT out1 = this.applyUnsafe(input);
