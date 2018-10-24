@@ -39,6 +39,9 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return (ImmutableList<T>)EMPTY;
     }
     public static <T> ImmutableList<T> from(Collection<T> data) {
+        if (data instanceof ImmutableList)
+            return (ImmutableList<T>)data;
+        
         return new ImmutableList<T>(data);
     }
     @SafeVarargs
