@@ -122,6 +122,9 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
                     : new PipeLine<>         (functions, orElse(elseValue));
         }
         public PipeLine<INPUT, OUTPUT> thenReturnOrElseGet(Supplier<OUTPUT> elseSupplier) {
+            return thenReturnOrGet(elseSupplier);
+        }
+        public PipeLine<INPUT, OUTPUT> thenReturnOrGet(Supplier<OUTPUT> elseSupplier) {
             return isNullSafe
                     ? new PipeLine.NullSafe<>(functions, orElseGet(elseSupplier))
                     : new PipeLine<>         (functions, orElseGet(elseSupplier));

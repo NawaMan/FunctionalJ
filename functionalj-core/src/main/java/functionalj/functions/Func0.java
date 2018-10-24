@@ -56,14 +56,14 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         }
     }
     
-    public default Func0<OUTPUT> orElse(OUTPUT defaultValue) {
+    public default Func0<OUTPUT> elseUse(OUTPUT defaultValue) {
         return ()->{
             val result = applySafely();
             val value  = result.orElse(defaultValue);
             return value;
         };
     }
-    public default Func0<OUTPUT> orElseGet(Supplier<OUTPUT> defaultSupplier) {
+    public default Func0<OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
         return ()->{
             val result = applySafely();
             val value  = result.orElseGet(defaultSupplier);
@@ -71,7 +71,19 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         };
     }
     
-    public default <TARGET> Func0<TARGET> map(Func1<OUTPUT, TARGET> mapper) {
+    public default OUTPUT orElse(OUTPUT defaultValue) {
+        return getSafely().orElse(defaultValue);
+    }
+    
+    public default OUTPUT orGet(Supplier<OUTPUT> defaultSupplier) {
+        return getSafely().orGet(defaultSupplier);
+    }
+    
+    public default OUTPUT orElseGet(Supplier<OUTPUT> defaultSupplier) {
+        return orGet(defaultSupplier);
+    }
+    
+    public default <TARGET> Func0<TARGET> mapTo(Func1<OUTPUT, TARGET> mapper) {
         return ()->{
             val output = this.applyUnsafe();
             val target = mapper.apply(output);

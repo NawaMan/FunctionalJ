@@ -53,7 +53,7 @@ public class OverridableRef<DATA> extends RefOf<DATA> {
 	}
 	
 	@Override
-	public final Result<DATA> get() {
+	protected final Result<DATA> findResult() {
 		val entry    = refEntry.get();
 		val supplier = entry.findSupplier(this);
 		if (supplier != null) {
@@ -61,7 +61,7 @@ public class OverridableRef<DATA> extends RefOf<DATA> {
 			return result;
 		}
 		if (defaultRef != null) {
-			val result = defaultRef.get();
+			val result = defaultRef.getResult();
 			return result;
 		}
 		

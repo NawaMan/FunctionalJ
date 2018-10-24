@@ -89,6 +89,21 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return apply(input);
     }
     
+    public default Func1<INPUT, OUTPUT> elseUse(OUTPUT defaultValue) {
+        return (input)->{
+            val result = applySafely(input);
+            val value  = result.orElse(defaultValue);
+            return value;
+        };
+    }
+    public default Func1<INPUT, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+        return (input)->{
+            val result = applySafely(input);
+            val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
+    
     /**
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(

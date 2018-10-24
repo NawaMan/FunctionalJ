@@ -85,6 +85,9 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     }
     
     public default SUBACCESS orElseGet(Supplier<TYPE> fallbackValueSupplier) {
+        return orGet(fallbackValueSupplier);
+    }
+    public default SUBACCESS orGet(Supplier<TYPE> fallbackValueSupplier) {
         return OptionalAccess.this.accessWithSub().createSubAccess((Optional<TYPE> optional) -> { 
             return optional.orElseGet(fallbackValueSupplier);
         });

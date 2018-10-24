@@ -95,6 +95,18 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      */
     public static <OUTPUT> 
             Catch<OUTPUT, OUTPUT, RuntimeException> orElseGet(Supplier<OUTPUT> elseSupplier) {
+        return orGet(elseSupplier);
+    }
+    
+    /**
+     * Returns the catch that will returns the output or the value from the given elseSupplier if the value is null.
+     * 
+     * @param  <OUTPUT>      the output data type.
+     * @param  elseSupplier  the elseSupplier.
+     * @return the output value or the value from the elseSupplier.
+     */
+    public static <OUTPUT> 
+            Catch<OUTPUT, OUTPUT, RuntimeException> orGet(Supplier<OUTPUT> elseSupplier) {
         return new Catch<OUTPUT, OUTPUT, RuntimeException>() {
             public OUTPUT doCatch(OUTPUT data, Exception exception) {
                 if (exception != null)

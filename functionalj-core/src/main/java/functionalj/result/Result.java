@@ -918,6 +918,9 @@ public abstract class Result<DATA>
     }
     
     public final DATA orElseGet(Supplier<? extends DATA> elseSupplier) {
+        return orGet(elseSupplier);
+    }
+    public final DATA orGet(Supplier<? extends DATA> elseSupplier) {
         return mapData(
                 __ -> null,
                 (value, exception)->{

@@ -2,15 +2,13 @@ package functionalj.ref;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.function.Supplier;
-
 import functionalj.functions.Func0;
 import functionalj.functions.Func1;
 import functionalj.result.AsResult;
 import functionalj.result.Result;
 import lombok.val;
 
-public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA> {
+public abstract class Ref<DATA> implements Func0<DATA>, AsResult<DATA> {
     
     public static <D> Ref<D> to(Class<D> dataClass) {
         return new RefTo<D>(dataClass);
@@ -34,15 +32,24 @@ public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA
         this.dataClass = requireNonNull(dataClass);
     }
     
+    protected abstract Result<DATA> findResult();
+    
     @Override
-    public abstract Result<DATA> get();
+    public final DATA applyUnsafe() throws Exception {
+        return getResult().get();
+    }
+    
+    @Override
+    public DATA get() {
+        return getResult().get();
+    }
     
     public final Class<DATA> getDataType() {
         return dataClass;
     }
     
     public final Result<DATA> getResult() {
-        val result = get();
+        val result = findResult();
         if (result == null)
             return Result.ofNotAvailable();
         
@@ -51,7 +58,7 @@ public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA
     
     @Override
     public final Result<DATA> asResult() {
-        return get();
+        return getResult();
     }
     
     public final Func0<DATA> valueSupplier() {
@@ -62,15 +69,17 @@ public abstract class Ref<DATA> implements Supplier<Result<DATA>>, AsResult<DATA
     }
     
     public final DATA value() {
-        val result = get();
+        val result = getResult();
         val value  = result.value();
         return value;
     }
     public final DATA orElse(DATA elseValue) {
-        return get().orElse(elseValue);
+        return getResult().orElse(elseValue);
     }
-    public final DATA orElseGet(Supplier<? extends DATA> elseSupplier) {
-        return get().orElseGet(elseSupplier);
+    public final <TARGET> Func0<TARGET> mapTo(Func1<DATA, TARGET> mapper) {
+        return this
+                .valueSupplier()
+                .mapTo(mapper);
     }
     
     public final <TARGET> Ref<TARGET> map(Class<TARGET> targetClass, Func1<DATA, TARGET> mapper) {

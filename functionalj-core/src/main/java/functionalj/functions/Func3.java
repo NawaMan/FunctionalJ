@@ -15,6 +15,8 @@
 //  ========================================================================
 package functionalj.functions;
 
+import java.util.function.Supplier;
+
 import functionalj.result.Result;
 import functionalj.tuple.Tuple3;
 import lombok.val;
@@ -76,6 +78,20 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return apply(input._1(), input._2(), input._3());
     }
     
+    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> elseUse(OUTPUT defaultValue) {
+        return (input1, input2, input3)->{
+            val result = applySafely(input1, input2, input3);
+            val value  = result.orElse(defaultValue);
+            return value;
+        };
+    }
+    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+        return (input1, input2, input3)->{
+            val result = applySafely(input1, input2, input3);
+            val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
     
     /**
      * Compose this function to the given function.

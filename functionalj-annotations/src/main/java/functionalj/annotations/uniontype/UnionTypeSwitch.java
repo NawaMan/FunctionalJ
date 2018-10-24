@@ -19,17 +19,22 @@ public abstract class UnionTypeSwitch<D, T> {
                 : elseValue;
     }
     
-    public T orElseGet(Supplier<T> valueSupplier) {
+    public T orGet(Supplier<T> valueSupplier) {
         return ($action != null)
                 ? $action.apply($value)
                 : valueSupplier.get();
     }
-    public T orElseGet(Function<? super D, T> valueMapper) {
+    public T orGet(Function<? super D, T> valueMapper) {
         @SuppressWarnings("unchecked")
         val newAction = (Function<? super D, T>)(($action != null) ? $action : valueMapper);
         return newAction.apply($value);
     }
-    
+    public T orElseGet(Supplier<T> valueSupplier) {
+        return orGet(valueSupplier);
+    }
+    public T orElseGet(Function<? super D, T> valueMapper) {
+        return orGet(valueMapper);
+    }
     
     public static class UnionTypeSwitchData<D, T> {
         protected final D              value;

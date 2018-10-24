@@ -15,6 +15,8 @@
 //  ========================================================================
 package functionalj.functions;
 
+import java.util.function.Supplier;
+
 import functionalj.result.Result;
 import functionalj.tuple.Tuple6;
 import lombok.val;
@@ -35,7 +37,7 @@ import lombok.val;
 @FunctionalInterface
 public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
     
-
+    
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6) throws Exception;
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6) {
@@ -82,6 +84,20 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
         return apply(input._1(), input._2(), input._3(), input._4(), input._5(), input._6());
     }
     
+    public default Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> elseUse(OUTPUT defaultValue) {
+        return (input1, input2, input3, input4, input5, input6)->{
+            val result = applySafely(input1, input2, input3, input4, input5, input6);
+            val value  = result.orElse(defaultValue);
+            return value;
+        };
+    }
+    public default Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+        return (input1, input2, input3, input4, input5, input6)->{
+            val result = applySafely(input1, input2, input3, input4, input5, input6);
+            val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
     
     /**
      * Compose this function to the given function.

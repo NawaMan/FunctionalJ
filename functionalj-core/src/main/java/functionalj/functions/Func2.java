@@ -16,6 +16,7 @@
 package functionalj.functions;
 
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import functionalj.result.Result;
 import functionalj.tuple.Tuple2;
@@ -75,6 +76,20 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return apply(input._1(), input._2());
     }
     
+    public default Func2<INPUT1, INPUT2, OUTPUT> elseUse(OUTPUT defaultValue) {
+        return (input1, input2)->{
+            val result = applySafely(input1, input2);
+            val value  = result.orElse(defaultValue);
+            return value;
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+        return (input1, input2)->{
+            val result = applySafely(input1, input2);
+            val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
     
     /**
      * Compose this function to the given function.

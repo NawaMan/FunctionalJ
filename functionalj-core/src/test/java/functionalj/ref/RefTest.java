@@ -9,8 +9,6 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 
-import functionalj.ref.OverridableRef;
-import functionalj.ref.Ref;
 import lombok.val;
 
 public class RefTest {
@@ -217,13 +215,13 @@ public class RefTest {
         val counter = new AtomicInteger(0);
         val ref     = Ref.of(Integer.class)
                 .defaultFrom(counter::getAndIncrement)
-                .retained().withIn(100).milliSeconds();
+                .retained().withIn(50).milliSeconds();
         
         assertEquals(0, ref.value().intValue());
         assertEquals(0, ref.value().intValue());
         assertEquals(0, ref.value().intValue());
         
-        Thread.sleep(100);
+        Thread.sleep(50);
         assertEquals(1, ref.value().intValue());
         assertEquals(1, ref.value().intValue());
         assertEquals(1, ref.value().intValue());
@@ -231,10 +229,22 @@ public class RefTest {
     
     @Test
     public void testMap() {
-//        val counter = new AtomicInteger(0);
-//        val ref     = Ref.of(Integer.class)
-//                .defaultFrom(counter::getAndIncrement)
-//                .valueSupplier().ma
+        val counter = new AtomicInteger(0);
+        val ref     = Ref.of(Integer.class)
+                .defaultFrom(counter::getAndIncrement)
+                .map(String.class, String::valueOf);
+        
+        val supplier = Ref.of(Integer.class)
+                .defaultFrom(counter::getAndIncrement)
+                .mapTo(String::valueOf);
+        
+        assertEquals("0", ref.value());
+        assertEquals("1", ref.value());
+        assertEquals("2", ref.value());
+        
+        assertEquals("3", supplier.get());
+        assertEquals("4", supplier.get());
+        assertEquals("5", supplier.get());
     }
     
 }
