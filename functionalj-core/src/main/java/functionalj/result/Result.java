@@ -34,7 +34,7 @@ import nawaman.nullablej.nullable.Nullable;
 
 public abstract class Result<DATA>
         implements
-        	AsResult<DATA>,
+            AsResult<DATA>,
             Pipeable<Result<DATA>>,
             HasPromise<DATA>,
             ResultMapAddOn<DATA>,
@@ -441,80 +441,80 @@ public abstract class Result<DATA>
     }
     
     public static <D, T1, T2> Result<D> ofResults(
-    		AsResult<T1> result1,
-    		AsResult<T2> result2,
+            HasResult<T1> result1,
+            HasResult<T2> result2,
             BiFunction<T1, T2, D> merger) {
         return Result.from(Func0.of(()->{
-            val value1 = result1.asResult().orThrow();
-            val value2 = result2.asResult().orThrow();
+            val value1 = result1.getResult().orThrow();
+            val value2 = result2.getResult().orThrow();
             val value = merger.apply(value1, value2);
             return value;
         }));
     }
     
     public static <D, T1, T2, T3> Result<D> ofResults(
-    		AsResult<T1> result1,
-    		AsResult<T2> result2,
-    		AsResult<T3> result3,
+            HasResult<T1> result1,
+            HasResult<T2> result2,
+            HasResult<T3> result3,
             Func3<T1, T2, T3, D> merger) {
         return Result.from(Func0.of(()->{
-            val value1 = result1.asResult().orThrow();
-            val value2 = result2.asResult().orThrow();
-            val value3 = result3.asResult().orThrow();
+            val value1 = result1.getResult().orThrow();
+            val value2 = result2.getResult().orThrow();
+            val value3 = result3.getResult().orThrow();
             val value = merger.apply(value1, value2, value3);
             return value;
         }));
     }
     
     public static <D, T1, T2, T3, T4> Result<D> ofResults(
-    		AsResult<T1> result1,
-    		AsResult<T2> result2,
-    		AsResult<T3> result3,
-    		AsResult<T4> result4,
+            HasResult<T1> result1,
+            HasResult<T2> result2,
+            HasResult<T3> result3,
+            HasResult<T4> result4,
             Func4<T1, T2, T3, T4, D> merger) {
         return Result.from(Func0.of(()->{
-            val value1 = result1.asResult().orThrow();
-            val value2 = result2.asResult().orThrow();
-            val value3 = result3.asResult().orThrow();
-            val value4 = result4.asResult().orThrow();
+            val value1 = result1.getResult().orThrow();
+            val value2 = result2.getResult().orThrow();
+            val value3 = result3.getResult().orThrow();
+            val value4 = result4.getResult().orThrow();
             val value = merger.apply(value1, value2, value3, value4);
             return value;
         }));
     }
     
     public static <D, T1, T2, T3, T4, T5> Result<D> ofResults(
-    		AsResult<T1> result1,
-    		AsResult<T2> result2,
-    		AsResult<T3> result3,
-    		AsResult<T4> result4,
-    		AsResult<T5> result5,
+            HasResult<T1> result1,
+            HasResult<T2> result2,
+            HasResult<T3> result3,
+            HasResult<T4> result4,
+            HasResult<T5> result5,
             Func5<T1, T2, T3, T4, T5, D> merger) {
         return Result.from(Func0.of(()->{
-            val value1 = result1.asResult().orThrow();
-            val value2 = result2.asResult().orThrow();
-            val value3 = result3.asResult().orThrow();
-            val value4 = result4.asResult().orThrow();
-            val value5 = result5.asResult().orThrow();
+            val value1 = result1.getResult().orThrow();
+            val value2 = result2.getResult().orThrow();
+            val value3 = result3.getResult().orThrow();
+            val value4 = result4.getResult().orThrow();
+            val value5 = result5.getResult().orThrow();
             val value = merger.apply(value1, value2, value3, value4, value5);
             return value;
         }));
     }
     
     public static <D, T1, T2, T3, T4, T5, T6> Result<D> ofResults(
-    		AsResult<T1> result1,
-    		AsResult<T2> result2,
-    		AsResult<T3> result3,
-    		AsResult<T4> result4,
-    		AsResult<T5> result5,
-    		AsResult<T6> result6,
+            HasResult<T1> result1,
+            HasResult<T2> result2,
+            HasResult<T3> result3,
+            HasResult<T4> result4,
+            HasResult<T5> result5,
+            HasResult<T6> result6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
         return Result.from(Func0.of(()->{
-            val value1 = result1.asResult().orThrow();
-            val value2 = result2.asResult().orThrow();
-            val value3 = result3.asResult().orThrow();
-            val value4 = result4.asResult().orThrow();
-            val value5 = result5.asResult().orThrow();
-            val value6 = result6.asResult().orThrow();
+            val value1 = result1.getResult().orThrow();
+            val value2 = result2.getResult().orThrow();
+            val value3 = result3.getResult().orThrow();
+            val value4 = result4.getResult().orThrow();
+            val value5 = result5.getResult().orThrow();
+            val value6 = result6.getResult().orThrow();
             val value = merger.apply(value1, value2, value3, value4, value5, value6);
             return value;
         }));

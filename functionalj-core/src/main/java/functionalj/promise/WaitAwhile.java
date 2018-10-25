@@ -5,6 +5,7 @@ import static functionalj.functions.Func.getOrElse;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import functionalj.environments.Env;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -58,8 +59,12 @@ public abstract class WaitAwhile extends Wait {
             this(time, null);
         }
         public WaitAsync(long time, Consumer<Runnable> asyncRunner) {
-            this.time        = Math.max(0, time);
-            this.asyncRunner = (asyncRunner != null) ? asyncRunner : AsyncRunner.threadFactory;
+            this.time = Math.max(0, time);
+            this.asyncRunner
+                    = (asyncRunner != null)
+                    ? asyncRunner
+                    : Env.asyncRunner();
+            
         }
         
         @Override

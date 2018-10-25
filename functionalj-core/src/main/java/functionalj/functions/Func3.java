@@ -32,9 +32,8 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
+public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> extends FuncUnit3<INPUT1, INPUT2, INPUT3> {
     
-
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3) throws Exception;
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
@@ -66,6 +65,10 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         } catch (Exception exception) {
             throw new FunctionInvocationException(exception);
         }
+    }
+    
+    public default void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3) throws Exception {
+        applyUnsafe(input1, input2, input3);
     }
     
     /**

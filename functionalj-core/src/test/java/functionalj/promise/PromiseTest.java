@@ -391,46 +391,80 @@ public class PromiseTest {
     
     @Test
     public void testParentStatus_complete() {
-    	val parentPromise = DeferAction.of(String.class)
-    			.getPromise();
-    	
-    	val childPromise = parentPromise.map(String::length);
-    	
-    	assertStrings("NOT_STARTED", parentPromise.getStatus());
-    	assertStrings("NOT_STARTED", childPromise.getStatus());
-    	
-    	childPromise.start();
-    	assertStrings("PENDING", parentPromise.getStatus());
-    	assertStrings("PENDING", childPromise.getStatus());
-    	
-    	parentPromise.makeComplete("HELLO");
-    	assertStrings("COMPLETED", parentPromise.getStatus());
-    	assertStrings("COMPLETED", childPromise.getStatus());
-    	
-    	assertStrings("Result:{ Value: HELLO }", parentPromise.getCurrentResult());
-    	assertStrings("Result:{ Value: 5 }",     childPromise.getCurrentResult());
+        val parentPromise = DeferAction.of(String.class)
+                .getPromise();
+        
+        val childPromise = parentPromise.map(String::length);
+        
+        assertStrings("NOT_STARTED", parentPromise.getStatus());
+        assertStrings("NOT_STARTED", childPromise.getStatus());
+        
+        childPromise.start();
+        assertStrings("PENDING", parentPromise.getStatus());
+        assertStrings("PENDING", childPromise.getStatus());
+        
+        parentPromise.makeComplete("HELLO");
+        assertStrings("COMPLETED", parentPromise.getStatus());
+        assertStrings("COMPLETED", childPromise.getStatus());
+        
+        assertStrings("Result:{ Value: HELLO }", parentPromise.getCurrentResult());
+        assertStrings("Result:{ Value: 5 }",     childPromise.getCurrentResult());
     }
     
     @Test
     public void testParentStatus_exception() {
-    	val parentPromise = DeferAction.of(String.class)
-    			.getPromise();
-    	
-    	val childPromise = parentPromise.map(String::length);
-    	
-    	assertStrings("NOT_STARTED", parentPromise.getStatus());
-    	assertStrings("NOT_STARTED", childPromise.getStatus());
-    	
-    	childPromise.start();
-    	assertStrings("PENDING", parentPromise.getStatus());
-    	assertStrings("PENDING", childPromise.getStatus());
-    	
-    	parentPromise.makeFail(new NullPointerException());
-    	assertStrings("COMPLETED", parentPromise.getStatus());
-    	assertStrings("COMPLETED", childPromise.getStatus());
-    	
-    	assertStrings("Result:{ Exception: java.lang.NullPointerException }", parentPromise.getCurrentResult());
-    	assertStrings("Result:{ Exception: java.lang.NullPointerException }", childPromise.getCurrentResult());
+        val parentPromise = DeferAction.of(String.class)
+                .getPromise();
+        
+        val childPromise = parentPromise.map(String::length);
+        
+        assertStrings("NOT_STARTED", parentPromise.getStatus());
+        assertStrings("NOT_STARTED", childPromise.getStatus());
+        
+        childPromise.start();
+        assertStrings("PENDING", parentPromise.getStatus());
+        assertStrings("PENDING", childPromise.getStatus());
+        
+        parentPromise.makeFail(new NullPointerException());
+        assertStrings("COMPLETED", parentPromise.getStatus());
+        assertStrings("COMPLETED", childPromise.getStatus());
+        
+        assertStrings("Result:{ Exception: java.lang.NullPointerException }", parentPromise.getCurrentResult());
+        assertStrings("Result:{ Exception: java.lang.NullPointerException }", childPromise.getCurrentResult());
+    }
+    
+    @Test
+    public void testElseUse() {
+        val promise = Promise.ofException(new IOException());
+        assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
+        assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
+        
+        val promise2 = promise.elseUse("Else");
+        assertStrings("Result:{ Value: Else }", promise2.getResult());
+    }
+    
+    @Test
+    public void testElseGet() {
+        val promise = Promise.ofException(new IOException());
+        assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
+        assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
+        
+        val promise2 = promise.elseGet(()->"Else");
+        assertStrings("Result:{ Value: Else }", promise2.getResult());
+    }
+    
+    @Test
+    public void testMapResult() {
+        val promise = Promise.ofException(new IOException());
+        assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
+        assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
+        
+        val promise2 = promise.mapResult(result -> result.whenExceptionApply(e -> e.getClass().getName()));
+        assertStrings("Result:{ Value: java.io.IOException }", promise2.getResult());
+        
+        val ref = new AtomicReference<String>();
+        promise.mapResult(result -> result.ifException(e -> ref.set(e.getClass().getName())));
+        assertStrings("java.io.IOException", ref.get());
     }
     
 }

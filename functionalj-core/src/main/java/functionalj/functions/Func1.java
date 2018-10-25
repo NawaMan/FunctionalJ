@@ -30,7 +30,7 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
+public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT>, FuncUnit1<INPUT> {
     
     /**
      * Constructs a Func1 from function or lambda.
@@ -59,6 +59,10 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     
     public default Func1<INPUT, Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
+    }
+    
+    public default void acceptUnsafe(INPUT input) throws Exception {
+        applyUnsafe(input);
     }
     
     // TODO add memoize.

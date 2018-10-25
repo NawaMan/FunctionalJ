@@ -1,15 +1,15 @@
 package functionalj.result;
 
-import functionalj.promise.HasPromise;
-import functionalj.promise.Promise;
-
 @FunctionalInterface
-public interface AsResult<DATA> extends HasPromise<DATA> {
+public interface AsResult<DATA> extends HasResult<DATA> {
 
     public Result<DATA> asResult();
     
-    public default Promise<DATA> getPromise() {
-    	return Promise.ofResult(this);
+    public default Result<DATA> getResult() {
+        return asResult();
     }
+    
+    // TODO - Add Result methods here. - so that class that implement this class automatically go those method.
+    // For example, get, orElse, orGet
     
 }

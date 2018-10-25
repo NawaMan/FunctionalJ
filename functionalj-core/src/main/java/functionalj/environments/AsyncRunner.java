@@ -1,13 +1,14 @@
-package functionalj.promise;
+package functionalj.environments;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.function.Consumer;
+
+import functionalj.functions.FuncUnit1;
 
 @FunctionalInterface
-public interface AsyncRunner extends Consumer<Runnable> {
+public interface AsyncRunner extends FuncUnit1<Runnable> {
     
     public static final AsyncRunner onNewThread = runnable -> {
         new Thread(runnable).start();

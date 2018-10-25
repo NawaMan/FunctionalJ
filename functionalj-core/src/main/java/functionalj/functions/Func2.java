@@ -32,7 +32,7 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2, OUTPUT> {
+public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2, OUTPUT>, FuncUnit2<INPUT1, INPUT2> {
 
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2) throws Exception;
     
@@ -64,6 +64,10 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         } catch (Exception exception) {
             throw new FunctionInvocationException(exception);
         }
+    }
+    
+    public default void acceptUnsafe(INPUT1 input1, INPUT2 input2) throws Exception {
+        applyUnsafe(input1, input2);
     }
     
     /**

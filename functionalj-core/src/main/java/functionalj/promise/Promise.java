@@ -2,6 +2,7 @@ package functionalj.promise;
 
 import static functionalj.functions.Func.F;
 import static functionalj.functions.Func.carelessly;
+import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,8 +18,10 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import functionalj.functions.Func0;
 import functionalj.functions.Func1;
 import functionalj.functions.Func3;
 import functionalj.functions.Func4;
@@ -26,24 +29,24 @@ import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.FuncUnit1;
 import functionalj.list.FuncList;
-import functionalj.result.AsResult;
+import functionalj.result.HasResult;
 import functionalj.result.Result;
 import lombok.val;
 
 // TODO - See what we can do with retry.
 
 @SuppressWarnings("javadoc")
-public class Promise<DATA> implements HasPromise<DATA> {
+public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     
-	public static <D> Promise<D> ofResult(AsResult<D> asResult) {
-		if (asResult instanceof HasPromise)
-			return ((HasPromise<D>)asResult).getPromise();
-		
-		return DeferAction
-				.from(()->asResult.asResult().value())
-				.getPromise();
-		
-	}
+    public static <D> Promise<D> ofResult(HasResult<D> asResult) {
+        if (asResult instanceof HasPromise)
+            return ((HasPromise<D>)asResult).getPromise();
+        
+        return DeferAction
+                .from(()->asResult.getResult().value())
+                .getPromise();
+        
+    }
     public static <D> Promise<D> ofValue(D value) {
         return DeferAction.of((Class<D>)null)
                 .start()
@@ -227,7 +230,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
     public Promise() {}
     
     Promise(@SuppressWarnings("rawtypes") Promise parent) {
-    	this.dataRef.set(parent);
+        this.dataRef.set(parent);
     }
     
     @Override
@@ -235,13 +238,13 @@ public class Promise<DATA> implements HasPromise<DATA> {
         return this;
     }
     
-	public final PromiseStatus getStatus() {
+    public final PromiseStatus getStatus() {
         val data = dataRef.get();
         if (data instanceof Promise) {
-        	@SuppressWarnings("unchecked")
-			Promise<DATA> promise = (Promise<DATA>)data;
-			return promise.getStatus();
-		}
+            @SuppressWarnings("unchecked")
+            Promise<DATA> promise = (Promise<DATA>)data;
+            return promise.getStatus();
+        }
         
         if (PromiseStatus.NOT_STARTED.equals(data))
             return PromiseStatus.NOT_STARTED;
@@ -268,34 +271,34 @@ public class Promise<DATA> implements HasPromise<DATA> {
     //== Internal working ==
     
     boolean start() {
-    	val data = dataRef.get();
-    	if (data instanceof Promise) {
-    		@SuppressWarnings("unchecked")
-			val parent = (Promise<DATA>)data;
-    		return parent.start();
-    	}
-    	
+        val data = dataRef.get();
+        if (data instanceof Promise) {
+            @SuppressWarnings("unchecked")
+            val parent = (Promise<DATA>)data;
+            return parent.start();
+        }
+        
         return dataRef.compareAndSet(PromiseStatus.NOT_STARTED, consumers);
     }
     
     boolean abort() {
         @SuppressWarnings("unchecked")
-		val cancelResult = (Result<DATA>)Result.ofCancelled();
+        val cancelResult = (Result<DATA>)Result.ofCancelled();
         return makeDone(cancelResult);
     }
     boolean abort(String message) {
         @SuppressWarnings("unchecked")
-		val cancelResult = (Result<DATA>)Result.ofCancelled(message);
+        val cancelResult = (Result<DATA>)Result.ofCancelled(message);
         return makeDone(cancelResult);
     }
     boolean abort(Exception cause) {
         @SuppressWarnings("unchecked")
-		val cancelResult = (Result<DATA>)Result.ofCancelled(null, cause);
+        val cancelResult = (Result<DATA>)Result.ofCancelled(null, cause);
         return makeDone(cancelResult);
     }
     boolean abort(String message, Exception cause) {
         @SuppressWarnings("unchecked")
-		val cancelResult = (Result<DATA>)Result.ofCancelled(message, cause);
+        val cancelResult = (Result<DATA>)Result.ofCancelled(message, cause);
         return makeDone(cancelResult);
     }
     
@@ -310,22 +313,34 @@ public class Promise<DATA> implements HasPromise<DATA> {
         return makeDone(result);
     }
     
+    private <T> T synchronouseOperation(Func0<T> operation) {
+        synchronized (dataRef) {
+            return operation.get();
+        }
+    }
+    
     private boolean makeDone(Result<DATA> result) {
-    	val data = dataRef.get();
-    	if (data instanceof Promise) {
-    		@SuppressWarnings("unchecked")
-    		val parent = (Promise<DATA>)data;
-    		if (!result.isException()) {
-    	        if (!dataRef.compareAndSet(parent, result))
-    	            return false;
-    		} else {
-    			parent.makeDone(result);
-    		}
-    	} else {
-	        if (!dataRef.compareAndSet(consumers, result))
-	            return false;
-    	}
+        val isDone = synchronouseOperation(()->{
+            val data = dataRef.get();
+            if (data instanceof Promise) {
+                @SuppressWarnings("unchecked")
+                val parent = (Promise<DATA>)data;
+                if (!result.isException()) {
+                    if (!dataRef.compareAndSet(parent, result))
+                        return false;
+                } else {
+                    parent.makeDone(result);
+                }
+            } else {
+                if (!dataRef.compareAndSet(consumers, result))
+                    return false;
+            }
+            return null;
+        });
         
+        if (isDone != null)
+            return isDone.booleanValue();
+            
         val subscribers = new HashMap<Subscription<DATA>, FuncUnit1<Result<DATA>>>(consumers);
         this.consumers.clear();
         
@@ -408,6 +423,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
         if (isEavesdropping)
              eavesdroppers.add(resultConsumer);
         else consumers    .put(subscription, resultConsumer);
+        
         return subscription;
     }
     
@@ -419,7 +435,9 @@ public class Promise<DATA> implements HasPromise<DATA> {
             synchronized (this) {
                 if (!this.isDone()) {
                     val latch = new CountDownLatch(1);
-                    subscribe(result -> latch.countDown());
+                    subscribe(result -> {
+                        latch.countDown();
+                    });
                     
                     try {
                         if ((timeout < 0) || (unit == null))
@@ -442,15 +460,15 @@ public class Promise<DATA> implements HasPromise<DATA> {
     public final Result<DATA> getCurrentResult() {
         val data = dataRef.get();
         if (data instanceof Result) {
-        	@SuppressWarnings("unchecked")
-        	val result = (Result<DATA>)data;
+            @SuppressWarnings("unchecked")
+            val result = (Result<DATA>)data;
             return result;
         }
         if (data instanceof Promise) {
-        	@SuppressWarnings("unchecked")
-			val parent = (Promise<DATA>)data;
-			return parent.getCurrentResult();
-		}
+            @SuppressWarnings("unchecked")
+            val parent = (Promise<DATA>)data;
+            return parent.getCurrentResult();
+        }
         return Result.ofNotReady();
     }
     
@@ -493,46 +511,69 @@ public class Promise<DATA> implements HasPromise<DATA> {
     }
     
     final Subscription<DATA> doSubscribe(boolean isEavesdropping, Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
-        val data = dataRef.get();
-        if (data instanceof Result) {
-            val subscription = new Subscription<DATA>(this);
+        val toRunNow           = new AtomicBoolean(false);
+        val returnSubscription = synchronouseOperation(()->{
+            val data = dataRef.get();
+            if (data instanceof Result) {
+                val subscription = new Subscription<DATA>(this);
+                toRunNow.set(true);
+                return subscription;
+            }
+            
+            val hasNotified  = new AtomicBoolean(false);
+            val waitSession  = wait != null ? wait.newSession() : Wait.forever().newSession();
+            val subscription = listen(isEavesdropping, result -> {
+                if (hasNotified.compareAndSet(false, true)) {
+                    try {
+                        resultConsumer.accept(result);
+                    } catch (Throwable e) {
+                        // TODO - Use null here because don't know what to do.
+                        // FIXME
+                        handleResultConsumptionExcepion(null, resultConsumer, result);
+                    }
+                }
+            });
+            waitSession.onExpired((message, throwable) -> {
+                if (!hasNotified.compareAndSet(false, true))
+                    return;
+                
+                subscription.unsubscribe();
+                Result<DATA> result;
+                try {
+                    @SuppressWarnings("unchecked")
+                    val supplier = (wait instanceof WaitOrDefault)
+                            ? ((WaitOrDefault<DATA>)wait).getDefaultSupplier()
+                            : null;
+                    if (supplier == null)
+                         result = Result.ofCancelled(message, throwable);
+                    else result = supplier.get();
+                } catch (Exception e) {
+                    result = Result.ofCancelled(null, e);
+                }
+                try {
+                    resultConsumer.accept(result);
+                } catch (Throwable e) {
+                    // TODO - Use null here because don't know what to do.
+                    // FIXME
+                    handleResultConsumptionExcepion(null, resultConsumer, result);
+                }
+            });
+            return subscription;
+        });
+        
+        if (toRunNow.get()) {
+            // The consumer can be heavy so we remove it out of the locked operation.
+            val data = dataRef.get();
             @SuppressWarnings("unchecked")
             val result = (Result<DATA>)data;
             try {
                 resultConsumer.accept(result);
-            } catch (Exception e) {
-                handleResultConsumptionExcepion(subscription, resultConsumer, result);
+            } catch (Throwable e) {
+                handleResultConsumptionExcepion(returnSubscription, resultConsumer, result);
             }
-            return subscription;
         }
         
-        val hasNotified  = new AtomicBoolean(false);
-        val waitSession  = wait != null ? wait.newSession() : Wait.forever().newSession();
-        val subscription = listen(isEavesdropping, result -> {
-            if (hasNotified.compareAndSet(false, true)) {
-                resultConsumer.accept(result);
-            }
-        });
-        waitSession.onExpired((message, throwable) -> {
-            if (!hasNotified.compareAndSet(false, true))
-                return;
-            
-            subscription.unsubscribe();
-            Result<DATA> result;
-            try {
-                @SuppressWarnings("unchecked")
-                val supplier = (wait instanceof WaitOrDefault)
-                        ? ((WaitOrDefault<DATA>)wait).getDefaultSupplier()
-                        : null;
-                if (supplier == null)
-                     result = Result.ofCancelled(message, throwable);
-                else result = supplier.get();
-            } catch (Exception e) {
-                result = Result.ofCancelled(null, e);
-            }
-            resultConsumer.accept(result);
-        });
-        return subscription;
+        return returnSubscription;
     }
     
     //== Functional ==
@@ -552,6 +593,7 @@ public class Promise<DATA> implements HasPromise<DATA> {
     
     @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+        requireNonNull(mapper);
         val targetPromise = (Promise<TARGET>)newPromise();
         subscribe(r -> {
             val result = r.map(mapper);
@@ -561,8 +603,20 @@ public class Promise<DATA> implements HasPromise<DATA> {
         return targetPromise;
     }
     
+    @SuppressWarnings("unchecked")
+    public final <TARGET> Promise<TARGET> mapResult(Function<Result<? super DATA>, Result<? extends TARGET>> mapper) {
+        requireNonNull(mapper);
+        val targetPromise = (Promise<TARGET>)newPromise();
+        subscribe(r -> {
+            val result = mapper.apply(r);
+            targetPromise.makeDone((Result<TARGET>) result);
+        });
+        
+        return targetPromise;
+    }
+    
     public final <TARGET> Promise<TARGET> flatMap(Function<DATA, HasPromise<TARGET>> mapper) {
-    	return chain(mapper);
+        return chain(mapper);
     }
     @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> chain(Function<DATA, HasPromise<TARGET>> mapper) {
@@ -578,6 +632,41 @@ public class Promise<DATA> implements HasPromise<DATA> {
         
         return targetPromise;
     }
+    
+    @SuppressWarnings("unchecked")
+    public final <TARGET> Promise<TARGET> elseUse(TARGET elseValue) {
+        val targetPromise = (Promise<TARGET>)newPromise();
+        subscribe(result -> {
+            result
+            .ifPresent(value -> {
+                targetPromise.makeDone((Result<TARGET>)result);
+            })
+            .ifNotPresent(value -> {
+                targetPromise.makeDone(Result.of(elseValue));
+            });
+        });
+        
+        return targetPromise;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public final <TARGET> Promise<TARGET> elseGet(Supplier<TARGET> elseSupplier) {
+        val targetPromise = (Promise<TARGET>)newPromise();
+        subscribe(result -> {
+            result
+            .ifPresent(value -> {
+                targetPromise.makeDone((Result<TARGET>)result);
+            })
+            .ifNotPresent(value -> {
+                targetPromise.makeDone(Result.from(elseSupplier));
+            });
+        });
+        
+        return targetPromise;
+    }
+    
+    // TODO - Consider if adding whenPresent, whenNull, whenException  add any value.
+    // TODO - Consider if adding ifException, ifCancel .... is any useful ... or just subscribe is good enough.
     
     //== Internal ==
     
@@ -679,4 +768,5 @@ public class Promise<DATA> implements HasPromise<DATA> {
             unsbscribeAll();
         }
     }
+    
 }

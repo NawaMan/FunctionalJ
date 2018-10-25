@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.environments.Env;
 import functionalj.functions.Func;
 import functionalj.functions.Func0;
 import functionalj.functions.Func1;
@@ -31,46 +32,48 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     }
     
     public static <D> DeferAction<D> from(Supplier<D> supplier) {
-        return from(Func.from(supplier), AsyncRunner.threadFactory);
+        val runner = Env.asyncRunner.get();
+        return from(Func.from(supplier), runner);
     }
     public static <D> DeferAction<D> from(Func0<D> supplier) {
-        return from(supplier, AsyncRunner.threadFactory);
+        val runner = Env.asyncRunner.get();
+        return from(supplier, runner);
     }
     public static <D> DeferAction<D> from(Func0<D> supplier, Consumer<Runnable> runner){
         return from(supplier, null, runner);
     }
     public static <D> DeferAction<D> from(Func0<D> supplier, Runnable onStart){
-        return from(supplier, onStart, AsyncRunner.threadFactory);
+        val runner = Env.asyncRunner.get();
+        return from(supplier, onStart, runner);
     }
     public static <D> DeferAction<D> from(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
         val promise = new Promise<D>();
         return new DeferAction<D>(promise, () -> {
-            val runnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (!promise.isNotDone()) 
-                        return;
-                    
-                    carelessly(onStart);
-                    
-                    val action = new PendingAction<D>(promise);
-                    Result.from(supplier)
-                    .ifException(action::fail)
-                    .ifValue    (action::complete);
-                }
+            val runnable = (Runnable)() -> {
+                if (!promise.isNotDone()) 
+                    return;
+                
+                carelessly(onStart);
+                
+                val action = new PendingAction<D>(promise);
+                Result.from(supplier)
+                .ifException(action::fail)
+                .ifValue    (action::complete);
             };
             runner.accept(runnable);
         });
     }
     
     public static <D> PendingAction<D> run(Func0<D> supplier) {
-        return run(supplier, AsyncRunner.threadFactory);
+        val runner = Env.asyncRunner();
+        return run(supplier, runner);
     }
     public static <D> PendingAction<D> run(Func0<D> supplier, Consumer<Runnable> runner){
         return run(supplier, null, runner);
     }
     public static <D> PendingAction<D> run(Func0<D> supplier, Runnable onStart){
-        return run(supplier, onStart, AsyncRunner.threadFactory);
+        val runner = Env.asyncRunner();
+        return run(supplier, onStart, runner);
     }
     public static <D> PendingAction<D> run(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
         return from(supplier, onStart, runner).start();

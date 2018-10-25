@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
+import functionalj.environments.AsyncRunner;
 import functionalj.list.FuncList;
-import functionalj.promise.AsyncRunner;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Wait;
 import functionalj.tuple.Tuple;

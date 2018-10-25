@@ -399,12 +399,27 @@ public interface ResultStatusAddOn<DATA> {
     public default Result<DATA> whenExceptionGet(Supplier<? extends DATA> fallbackSupplier) {
         return mapValue(
                 (value, exception) -> {
-                    if (exception != null)
-                        return Result.from(fallbackSupplier);
+                    if (exception != null) {
+                        Result<DATA> newValue = Result.from(fallbackSupplier);
+                        return newValue;
+                    }
                     
                     return asResult();
                 }
         );
+    }
+    public default Result<DATA> whenExceptionApply(Func1<Exception,? extends DATA> fallbackMapper) {
+        return mapValue(
+                (value, exception) -> {
+                    if (exception != null)
+                        return Result.from(()->{
+                            val newValue = fallbackMapper.apply(exception);
+                            return newValue;
+                        });
+                    
+                    return asResult();
+                }
+                );
     }
     
     public default Result<DATA> whenExceptionUse(DATA fallbackValue) {

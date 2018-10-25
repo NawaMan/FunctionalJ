@@ -1,7 +1,12 @@
 package functionalj.ref;
 
-public interface ComputeBody<DATA, EXCEPTION extends Exception> {
-	
-	public DATA run() throws EXCEPTION;
-	
+@FunctionalInterface
+public interface ComputeBody<DATA, EXCEPTION extends Exception> extends RunBody<EXCEPTION> {
+    
+    public DATA compute() throws EXCEPTION;
+    
+    public default void run() throws EXCEPTION {
+        compute();
+    }
+    
 }

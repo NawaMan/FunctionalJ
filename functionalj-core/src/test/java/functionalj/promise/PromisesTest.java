@@ -6,11 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.functions.Func0;
-import functionalj.promise.DeferAction;
-import functionalj.promise.PendingAction;
-import functionalj.promise.Promise;
-import functionalj.promise.PromiseStatus;
+import functionalj.functions.FuncUnit0;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -191,24 +187,9 @@ public class PromisesTest {
         assertStrings("Result:{ Value: 21 }",   promise.getCurrentResult());
     }
     
-    public static class Sleep<D> implements Func0<D> {
-        private final long time;
-        public Sleep(long time) { this.time = time; }
-        
-        @Override
-        public D applyUnsafe() throws Exception {
-            Thread.sleep(time);
-            return null;
-        }
-        
-        public <T> Func0<T> thenReturn(T value) {
-            return () -> value;
-        }
-        
-    }
     
-    public static <D> Sleep<D> Sleep(long time) {
-        return new Sleep<D>(time);
+    public static FuncUnit0 Sleep(long time) {
+        return ()->Thread.sleep(time);
     }
     
 }

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-import functionalj.Env;
+import functionalj.environments.Env;
 import functionalj.functions.Func0;
 import functionalj.result.Result;
 import lombok.val;
