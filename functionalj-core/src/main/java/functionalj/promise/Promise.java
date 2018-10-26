@@ -29,6 +29,7 @@ import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.FuncUnit1;
 import functionalj.list.FuncList;
+import functionalj.ref.Ref;
 import functionalj.result.HasResult;
 import functionalj.result.Result;
 import lombok.val;
@@ -37,6 +38,8 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
+    
+    public static final Ref<Long> timeout = Ref.ofValue(-1L).overridable();
     
     public static <D> Promise<D> ofResult(HasResult<D> asResult) {
         if (asResult instanceof HasPromise)
@@ -428,7 +431,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     }
     
     public final Result<DATA> getResult() {
-        return getResult(-1, null);
+        val timeout = timeout.get();
+        return getResult(timeout, null);
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         if (!this.isDone()) {
@@ -510,6 +514,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
         return this;
     }
     
+    @SuppressWarnings("unchecked")
     final Subscription<DATA> doSubscribe(boolean isEavesdropping, Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         val toRunNow           = new AtomicBoolean(false);
         val returnSubscription = (Subscription<DATA>)synchronouseOperation(()->{
@@ -540,13 +545,14 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
                 subscription.unsubscribe();
                 Result<DATA> result;
                 try {
-                    @SuppressWarnings("unchecked")
-                    val supplier = (wait instanceof WaitOrDefault)
-                            ? ((WaitOrDefault<DATA>)wait).getDefaultSupplier()
-                            : null;
-                    if (supplier == null)
-                         result = Result.ofCancelled(message, throwable);
-                    else result = supplier.get();
+                    if (wait instanceof WaitOrDefault) {
+                        val supplier = ((WaitOrDefault<DATA>)wait).getDefaultSupplier();
+                        if (supplier == null)
+                             result = Result.ofCancelled(message, throwable);
+                        else result = supplier.get();
+                    } else {
+                        result = Result.ofCancelled(message, throwable);
+                    }
                 } catch (Exception e) {
                     result = Result.ofCancelled(null, e);
                 }
@@ -564,7 +570,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
         if (toRunNow.get()) {
             // The consumer can be heavy so we remove it out of the locked operation.
             val data = dataRef.get();
-            @SuppressWarnings("unchecked")
             val result = (Result<DATA>)data;
             try {
                 resultConsumer.accept(result);

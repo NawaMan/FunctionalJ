@@ -11,6 +11,7 @@ import functionalj.functions.Func;
 import functionalj.functions.Func0;
 import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit1;
+import functionalj.ref.Ref;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -19,6 +20,16 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
+    
+    public static final Ref<Creator> defaultCreator = Ref.ofValue(DeferAction::doFrom);
+    public static final Ref<Creator> creator        = Ref.of(Creator.class).defaultFrom(defaultCreator).overridable();
+    
+    @FunctionalInterface
+    public static interface Creator {
+        
+        public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner);
+        
+    }
     
     public static <D> DeferAction<D> createNew() {
         return of((Class<D>)null);
@@ -46,7 +57,11 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
         val runner = Env.asyncRunner.get();
         return from(supplier, onStart, runner);
     }
+    
     public static <D> DeferAction<D> from(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
+        return creator.orGet(defaultCreator).create(supplier, onStart, runner);
+    }
+    private static <D> DeferAction<D> doFrom(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
         val promise = new Promise<D>();
         return new DeferAction<D>(promise, () -> {
             val runnable = (Runnable)() -> {

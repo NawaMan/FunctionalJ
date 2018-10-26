@@ -11,14 +11,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
+import functionalj.functions.Func0;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
 import functionalj.promise.UncheckedInterruptedException;
+import functionalj.ref.Run;
 import functionalj.result.OnStart;
 import lombok.val;
 
@@ -178,12 +182,12 @@ public class DeferActionTest {
         latch.await();
         
         assertStrings("["
-        		+ "Init ..., "
-        		+ "... onStart ..., "
-        		+ "Running ..., "
-        		+ "Done2: Result:{ Value: Hello }, "
-        		+ "Done: Result:{ Value: Hello }"
-        		+ "]", log);
+                + "Init ..., "
+                + "... onStart ..., "
+                + "Running ..., "
+                + "Done2: Result:{ Value: Hello }, "
+                + "Done: Result:{ Value: Hello }"
+                + "]", log);
     }
     
     @Test
@@ -214,12 +218,12 @@ public class DeferActionTest {
         latch.await();
         
         assertStrings("["
-        		+ "Init ..., "
-        		+ "... onStart ..., "
-        		+ "Running ..., "
-        		+ "Done2: Result:{ Value: Hello }, "
-        		+ "Done: Result:{ Value: Hello }"
-        		+ "]", log);
+                + "Init ..., "
+                + "... onStart ..., "
+                + "Running ..., "
+                + "Done2: Result:{ Value: Hello }, "
+                + "Done: Result:{ Value: Hello }"
+                + "]", log);
     }
     
     @Test
@@ -261,12 +265,12 @@ public class DeferActionTest {
         latch.await();
         
         assertStrings("["
-        		+ "Init ..., "
-        		+ "... onStart ..., "
-        		+ "Running ..., "
-        		+ "Done2: Result:{ Value: Hello }, "
-        		+ "Done: Result:{ Value: Hello }"
-        		+ "]", log);
+                + "Init ..., "
+                + "... onStart ..., "
+                + "Running ..., "
+                + "Done2: Result:{ Value: Hello }, "
+                + "Done: Result:{ Value: Hello }"
+                + "]", log);
         // Run on different thread.
         assertFalse(initThread.get().equals(onRunningThread.get()));
         // The rest are on the same thread.
@@ -328,7 +332,7 @@ public class DeferActionTest {
             Thread.sleep(50);
             return "Hello";
         }, OnStart.run(()->{
-        	log.add("Acion 1 started.");
+            log.add("Acion 1 started.");
         }))
         .eavesdrop(result -> {
             log.add("Eavesdrop: " + result.isCancelled());
@@ -355,11 +359,11 @@ public class DeferActionTest {
         Thread.sleep(50);
         
         assertStrings("["
-        		+ "Acion 1 started., "
-        		+ "Eavesdrop: false, "
-        		+ "Eavesdrop: Result:{ Value: Hello }, "
-        		+ "Done: Result:{ Value: Total=47 }"
-        		+ "]", log);
+                + "Acion 1 started., "
+                + "Eavesdrop: false, "
+                + "Eavesdrop: Result:{ Value: Hello }, "
+                + "Done: Result:{ Value: Total=47 }"
+                + "]", log);
     }
     
     @Test
@@ -392,9 +396,47 @@ public class DeferActionTest {
         .abort();
         
         assertStrings("["
-        		+ "Eavesdrop: true, "
-        		+ "Eavesdrop: Result:{ Exception: functionalj.result.ResultCancelledException }, "
-        		+ "Done: Result:{ Exception: functionalj.result.ResultCancelledException }"
-        		+ "]", log);
+                + "Eavesdrop: true, "
+                + "Eavesdrop: Result:{ Exception: functionalj.result.ResultCancelledException }, "
+                + "Done: Result:{ Exception: functionalj.result.ResultCancelledException }"
+                + "]", log);
+    }
+    
+    @Test
+    public void testCreator() throws InterruptedException {
+        val logs    = new ArrayList<>();
+        val daCount = new AtomicInteger(0);
+        class LoggedCreator implements DeferAction.Creator {
+            @Override
+            public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
+                val id = daCount.getAndIncrement();
+                logs.add("New defer action: " + id);
+                val wrappedSupplier = (Func0<D>)()->{
+                    logs.add("Start #" + id + ": ");
+                    
+                    D result = null;
+                    try {
+                        result = supplier.get();
+                        return result;
+                    } finally {
+                        logs.add("End #" + id + ": " + result);
+                    }
+                };
+                return DeferAction.defaultCreator.get().create(wrappedSupplier, onStart, runner);
+            }
+        }
+        
+        Run.with(DeferAction.creator.butWith(new LoggedCreator()))
+        .run(()->{
+            DeferAction.run(()->null).getResult();
+            DeferAction.run(()->null).getResult();
+            DeferAction.run(()->null).getResult();
+        });
+        
+        assertStrings("["
+                + "New defer action: 0, Start #0: , End #0: null, "
+                + "New defer action: 1, Start #1: , End #1: null, "
+                + "New defer action: 2, Start #2: , End #2: null"
+                + "]", logs);
     }
 }
