@@ -109,22 +109,6 @@ public interface Func {
         };
     }
     
-    /**
-     * My crazy obsession of making the code read sometimes make me do this kind of thing.
-     * This useless class will make 
-     * 
-     **/
-    public static class ByThat<THING> {
-        public final THING that;
-        public ByThat(THING that) {
-            this.that = that;
-        }
-    }
-    
-    public static <FIELD> ByThat<FIELD> by(FIELD field) {
-        return new ByThat<FIELD>(field);
-    }
-    
     public static <INPUT> Predicate<INPUT> only(Function<INPUT, Boolean> check) {
         return input -> check.apply(input);
     }

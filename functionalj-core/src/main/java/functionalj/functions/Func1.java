@@ -65,8 +65,6 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT>, FuncUnit1
         applyUnsafe(input);
     }
     
-    // TODO add memoize.
-    
     /**
      * Applies this function to the given input value.
      *
@@ -91,6 +89,11 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT>, FuncUnit1
      */
     public default OUTPUT applyTo(INPUT input) {
         return apply(input);
+    }
+    
+    // TODO add memoize strategies.
+    public default Func1<INPUT, OUTPUT> memoize() {
+        return Func.cacheFor(this);
     }
     
     public default Func1<INPUT, OUTPUT> elseUse(OUTPUT defaultValue) {

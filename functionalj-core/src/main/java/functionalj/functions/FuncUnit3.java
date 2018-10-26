@@ -10,7 +10,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> of(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
         return (value1, value2, value3) -> consumer.accept(value1, value2, value3);
     }
-    
+    public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> from(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
+        return consumer::accept;
+    }
     
     public default void accept(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
         try {
@@ -22,7 +24,18 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
         }
     }
     
+    public default void acceptCarelessly(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
+        try {
+            acceptUnsafe(input1, input2, input3);
+        } catch (Exception e) {
+        }
+    }
+    
     public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3) throws Exception;
+    
+    public default FuncUnit3<INPUT1, INPUT2, INPUT3> carelessly() {
+        return this::acceptCarelessly;
+    }
     
     
     public default FuncUnit3<INPUT1, INPUT2, INPUT3> then(FuncUnit0 after) {

@@ -55,6 +55,9 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         FuncUnit0.super.run();
     }
     
+    public default OUTPUT value() {
+        return get();
+    }
     public default OUTPUT get() {
         try {
             return applyUnsafe();
@@ -102,6 +105,10 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     
     public default Result<OUTPUT> getSafely() {
         return Result.from(this);
+    }
+    
+    public default Supplier<OUTPUT> memoize() {
+        return Func0.from(Func.lazy(this));
     }
     
     public default Func1<?, OUTPUT> toFunc1() {

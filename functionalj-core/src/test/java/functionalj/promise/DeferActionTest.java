@@ -570,6 +570,8 @@ public class DeferActionTest {
                 .map(promise -> promise.getResult())
                 .map(result  -> result.orElse(null))
                 .toImmutableList();
+            
+            actions.forEach(action -> action.abort());
             return (List<Integer>)results;
         });
         assertStrings("[0, 1, 2, 3, 4]", list);

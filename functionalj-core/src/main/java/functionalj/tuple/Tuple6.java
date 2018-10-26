@@ -2,7 +2,7 @@ package functionalj.tuple;
 
 import static functionalj.functions.Absent.__;
 import static functionalj.functions.Func.it;
-import static functionalj.functions.Keep.keep;
+import static functionalj.tuple.Keep.keep;
 
 import java.lang.reflect.Array;
 import java.util.function.Function;
@@ -13,7 +13,6 @@ import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
-import functionalj.functions.Keep;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;

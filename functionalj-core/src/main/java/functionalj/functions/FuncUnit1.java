@@ -11,7 +11,9 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     public static <INPUT> FuncUnit1<INPUT> of(FuncUnit1<INPUT> consumer) {
         return (value) -> consumer.accept(value);
     }
-    
+    public static <INPUT> FuncUnit1<INPUT> from(Consumer<INPUT> consumer) {
+        return consumer::accept;
+    }
     
     public default void accept(INPUT input) {
         try {
@@ -23,8 +25,18 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         }
     }
     
+    public default void acceptCarelessly(INPUT input) {
+        try {
+            acceptUnsafe(input);
+        } catch (Exception e) {
+        }
+    }
+    
     public void acceptUnsafe(INPUT input) throws Exception;
     
+    public default FuncUnit1<INPUT> carelessly() {
+        return this::acceptCarelessly;
+    }
     
     public default FuncUnit1<INPUT> then(FuncUnit0 after) {
         requireNonNull(after);

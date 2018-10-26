@@ -125,6 +125,10 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
         return i1 -> i2 -> i3 -> i4 -> i5 -> this.apply(i1, i2, i3, i4, i5);
     }
     
+    public default Func1<INPUT1, OUTPUT> lift(INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
+        return (i1) -> this.apply(i1, i2, i3, i4, i5);
+    }
+    
     @SuppressWarnings("javadoc")
     public default Func4<INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> apply1(INPUT1 i1) {
         return (i2,i3,i4,i5) -> this.apply(i1, i2, i3,i4, i5);

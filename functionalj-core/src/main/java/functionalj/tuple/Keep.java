@@ -1,4 +1,4 @@
-package functionalj.functions;
+package functionalj.tuple;
 
 @SuppressWarnings("javadoc")
 public final class Keep {

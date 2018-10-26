@@ -128,6 +128,10 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
         return i1 -> i2 -> i3 -> i4 -> i5 -> i6 -> this.apply(i1, i2, i3, i4, i5, i6);
     }
     
+    public default Func1<INPUT1, OUTPUT> lift(INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
+        return (i1) -> this.apply(i1, i2, i3, i4, i5, i6);
+    }
+    
     @SuppressWarnings("javadoc")
     public default Func5<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> apply1(INPUT1 i1) {
         return (i2, i3, i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);

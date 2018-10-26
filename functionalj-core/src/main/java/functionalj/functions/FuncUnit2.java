@@ -12,7 +12,9 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> of(FuncUnit2<INPUT1, INPUT2> consumer) {
         return (value1, value2) -> consumer.accept(value1, value2);
     }
-    
+    public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> from(BiConsumer<INPUT1, INPUT2> consumer) {
+        return consumer::accept;
+    }
     
     public default void accept(INPUT1 input1, INPUT2 input2) {
         try {
@@ -24,7 +26,18 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
         }
     }
     
+    public default void acceptCarelessly(INPUT1 input1, INPUT2 input2) {
+        try {
+            acceptUnsafe(input1, input2);
+        } catch (Exception e) {
+        }
+    }
+    
     public void acceptUnsafe(INPUT1 input1, INPUT2 input2) throws Exception;
+    
+    public default FuncUnit2<INPUT1, INPUT2> carelessly() {
+        return this::acceptCarelessly;
+    }
     
     
     public default FuncUnit2<INPUT1, INPUT2> then(FuncUnit0 after) {

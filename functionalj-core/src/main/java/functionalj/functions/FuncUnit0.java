@@ -10,6 +10,12 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     public static FuncUnit0 of(FuncUnit0 runnable) {
         return runnable;
     }
+    public static FuncUnit0 from(Runnable runnable) {
+        return runnable::run;
+    }
+    public static <EXCEPTION extends Exception> FuncUnit0 from(RunBody<EXCEPTION> runnable) {
+        return runnable::run;
+    }
     
     public default void run() {
         try {
@@ -21,8 +27,19 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         }
     }
     
+    public default void runCarelessly() {
+        try {
+            runUnsafe();
+        } catch (Exception e) {
+        }
+    }
+    
     void runUnsafe() throws Exception;
     
+    
+    public default FuncUnit0 carelessly() {
+        return this::runCarelessly;
+    }
     
     public default FuncUnit0 then(FuncUnit0 after) {
         requireNonNull(after);
