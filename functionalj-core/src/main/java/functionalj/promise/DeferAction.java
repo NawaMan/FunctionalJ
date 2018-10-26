@@ -21,8 +21,8 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     
-    public static final Ref<Creator> defaultCreator = Ref.ofValue(DeferAction::doFrom);
-    public static final Ref<Creator> creator        = Ref.of(Creator.class).defaultFrom(defaultCreator).overridable();
+    public static final Ref<Creator> defaultCreator = Ref.dictactedTo(DeferAction::doFrom);
+    public static final Ref<Creator> creator        = Ref.of(Creator.class).defaultFrom(defaultCreator);
     
     @FunctionalInterface
     public static interface Creator {

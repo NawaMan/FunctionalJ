@@ -55,11 +55,11 @@ public class Run {
     }
     
     public static final FuncList<Ref<?>> getCurrentRefs() {
-        return OverridableRef.getRefs();
+        return Ref.getRefs();
     }
     
     public static final FuncList<Substitution<?>> getCurrentSubstitutions() {
-        return OverridableRef.getSubstitutions();
+        return Ref.getSubstitutions();
     }
     
     public static final FuncList<Substitution<?>> getCurrentSubstitutions(Ref<?> ... refs) {
@@ -68,7 +68,7 @@ public class Run {
     }
     
     public static FuncList<Substitution<?>> getCurrentSubstitutions(List<Ref<?>> refs) {
-        return OverridableRef
+        return Ref
                 .getSubstitutions()
                 .filter(Substitution::ref, refs::contains);
     }
@@ -156,11 +156,11 @@ public class Run {
         
         public <E extends Exception> void run(RunBody<E> action) throws E {
             val substitutions = substitutions();
-            OverridableRef.runWith(substitutions, action);
+            Ref.runWith(substitutions, action);
         }
         public <V, E extends Exception> V run(ComputeBody<V, E> action) throws E {
             val substitutions = substitutions();
-            return OverridableRef.runWith(substitutions, action);
+            return Ref.runWith(substitutions, action);
         }
     }
     public static class AsyncRunInstance extends RunInstance<AsyncRunInstance> {
@@ -197,7 +197,7 @@ public class Run {
         public <E extends Exception> Promise<Object> run(RunBody<E> action) {
             val substitutions = getCurrentSubstitutions();
             return DeferAction.run(()->{
-                OverridableRef.runWith(substitutions, action);
+                Ref.runWith(substitutions, action);
                 return null;
             })
             .getPromise();
@@ -205,7 +205,7 @@ public class Run {
         public <V, E extends Exception> Promise<V> run(ComputeBody<V, E> action) {
             val substitutions = substitutions();
             return DeferAction.run(()->{
-                V value = OverridableRef.runWith(substitutions, action);
+                V value = Ref.runWith(substitutions, action);
                 return value;
             })
             .getPromise();

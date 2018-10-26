@@ -4,8 +4,8 @@ import functionalj.ref.Ref;
 
 public final class Env {
     
-    public static final Ref<TimeKeeper>  timerKeeper = Ref.ofValue(TimeKeeper.instance).overridable();
-    public static final Ref<AsyncRunner> asyncRunner = Ref.ofValue(AsyncRunner.threadFactory).overridable();
+    public static final Ref<TimeKeeper>  timerKeeper = Ref.ofValue(TimeKeeper.instance);
+    public static final Ref<AsyncRunner> asyncRunner = Ref.ofValue(AsyncRunner.threadFactory);
     // TODO - AsyncComputer? (that returnsPromise)
     
     public static long currentMilliSecond() {

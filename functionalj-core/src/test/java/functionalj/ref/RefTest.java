@@ -1,6 +1,7 @@
 package functionalj.ref;
 
 import static functionalj.list.FuncList.listOf;
+import static functionalj.ref.Run.With;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -46,10 +47,10 @@ public class RefTest {
     @Test
     public void testCurrentRef() {
         val ref1 = Ref.of(String.class).defaultFrom(()->"OrgValue");
-        val ref2 = ref1.overridable();
+        val ref2 = ref1;
         assertEquals("OrgValue", ref2.value());
         
-        OverridableRef.runWith(
+        Ref.runWith(
                 listOf(ref2.butWith("NewValue")),
                 ()->{
                     assertEquals("NewValue", ref2.value());
@@ -69,22 +70,36 @@ public class RefTest {
     @Test
     public void testRefTo() {
         val ref1 = Ref.to(Answer.class);
-        val ref2 = ref1.overridable();
+        val ref2 = ref1;
         assertEquals("Answer [number=42]", "" + ref1.value());
         assertEquals("Answer [number=42]", "" + ref2.value());
         
-        OverridableRef.runWith(
+        Ref.runWith(
                 listOf(
                     ref1.butWith(new Answer(123)),
                     ref2.butWith(new Answer(123))
                 ),
                 ()->{
-                    assertEquals("Answer [number=42]", "" + ref1.value());
+                    assertEquals("Answer [number=123]", "" + ref1.value());
                     assertEquals("Answer [number=123]", "" + ref2.value());
                 });
         
         assertEquals("Answer [number=42]", "" + ref1.value());
         assertEquals("Answer [number=42]", "" + ref2.value());
+    }
+    
+    @Test
+    public void testDictate() {
+        val ref1 = Ref.ofValue("DICTATE!").dictate();
+        val ref2 = Ref.of(String.class).dictateTo("DICTATE!!");
+        
+        assertEquals("DICTATE! DICTATE!!",  ref1.value() + " " + ref2.value());
+        
+        val value 
+              = With(ref1.butWith("Weak!"))
+                .and(ref2.butWith("Weak!!"))
+                .run(()->ref1.value() + " " + ref2.value());
+        assertEquals("DICTATE! DICTATE!!", value);
     }
     
     @Test

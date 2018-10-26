@@ -5,7 +5,11 @@ import lombok.val;
 import nawaman.defaultj.api.IProvideDefault;
 
 public class RefTo<DATA> extends Ref<DATA> {
-
+    
+    public static final Ref<IProvideDefault> defaultProvider
+            = Ref.of(IProvideDefault.class)
+            .defaultFrom(IProvideDefault.defaultProvider()::get);
+    
     private final int hashCode;
     
     RefTo(Class<DATA> dataClass) {
@@ -16,7 +20,7 @@ public class RefTo<DATA> extends Ref<DATA> {
     @Override
     protected Result<DATA> findResult() {
         val result = Result.from(()->{
-            val provider = IProvideDefault.defaultProvider().get();
+            val provider = defaultProvider.elseGet(IProvideDefault.defaultProvider()::get).get();
             val dataType = getDataType();
             val value    = provider.get(dataType);
             return (DATA)value;

@@ -12,7 +12,7 @@ public class RunTest {
 
     @Test
     public void testWith() {
-        val ref = Ref.ofValue(42).overridable();
+        val ref = Ref.ofValue(42);
         val orgValue = ref.value();
         val newValue = With(ref.butWith(45)).run(()->ref.value());
         assertEquals(42, orgValue.intValue());
@@ -21,9 +21,9 @@ public class RunTest {
     
     @Test
     public void testSubstitutions() {
-        val refA = Ref.ofValue("A").overridable();
-        val refB = Ref.ofValue("B").overridable();
-        val refC = Ref.ofValue("C").overridable();
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
         
         assertEquals("ABC", refA.get() + refB.get() + refC.get());
         
@@ -39,9 +39,9 @@ public class RunTest {
     
     @Test
     public void testSelectiveWith() {
-        val refA = Ref.ofValue("A").overridable();
-        val refB = Ref.ofValue("B").overridable();
-        val refC = Ref.ofValue("C").overridable();
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
         
         val subs =
                 With(refB.butWith("b"))
@@ -66,9 +66,9 @@ public class RunTest {
     
     @Test
     public void testAsyncWithSubstitution() {
-        val refA = Ref.ofValue("A").overridable();
-        val refB = Ref.ofValue("B").overridable();
-        val refC = Ref.ofValue("C").overridable();
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
         With(refB.butWith("b"))
         .run(()->{
             assertEquals("AbC", refA.get() + refB.get() + refC.get());
