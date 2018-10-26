@@ -523,21 +523,38 @@ public class DeferActionTest {
                 + "Start #4: , End #4: 4"
             + "]", creator.logs().toString());
         
-        boolean zeroOneDone = creator.logs().toString().startsWith("["
+        boolean zeroOneDone01 = creator.logs().toString().startsWith("["
                 + "New defer action: 0, "
                 + "New defer action: 1, "
                 + "New defer action: 2, "
                 + "New defer action: 3, "
                 + "New defer action: 4, "
             + "Start #0: , Start #1: , End #0: 0, End #1: 1, ");
-        boolean oneZeroDone = creator.logs().toString().startsWith("["
+        boolean oneZeroDone01 = creator.logs().toString().startsWith("["
                 + "New defer action: 0, "
                 + "New defer action: 1, "
                 + "New defer action: 2, "
                 + "New defer action: 3, "
                 + "New defer action: 4, "
                 + "Start #1: , Start #0: , End #1: 1, End #0: 0, ");
-        assertTrue(zeroOneDone || oneZeroDone);
+        boolean zeroOneDone10 = creator.logs().toString().startsWith("["
+                + "New defer action: 0, "
+                + "New defer action: 1, "
+                + "New defer action: 2, "
+                + "New defer action: 3, "
+                + "New defer action: 4, "
+            + "Start #0: , Start #1: , End #1: 1, End #0: 0, ");
+        boolean oneZeroDone10 = creator.logs().toString().startsWith("["
+                + "New defer action: 0, "
+                + "New defer action: 1, "
+                + "New defer action: 2, "
+                + "New defer action: 3, "
+                + "New defer action: 4, "
+                + "Start #1: , Start #0: , End #0: 0, End #1: 1, ");
+        if (!(zeroOneDone01 || oneZeroDone01 || zeroOneDone10 || oneZeroDone10)) {
+            System.err.println(creator.logs);
+        }
+        assertTrue(zeroOneDone01 || oneZeroDone01 || zeroOneDone10 || oneZeroDone10);
     }
     
     private void runActions(final functionalj.promise.DeferActionTest.LoggedCreator creator) {
