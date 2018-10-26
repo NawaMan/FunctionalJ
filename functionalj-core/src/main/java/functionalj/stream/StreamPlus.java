@@ -57,9 +57,10 @@ import lombok.val;
 public interface StreamPlus<DATA> 
         extends Iterable<DATA>, Stream<DATA> {
     
-    // TODO segment
+    // TODO segment -> count, start/end, on/off
     // TODO - toMapBuilder
     // TODO - zipWith
+    // TODO - limitThen -> limit to some number but then act on the rest (Good for canceling DeferAction)
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> StreamPlus<D> from(Stream<D> stream) {
