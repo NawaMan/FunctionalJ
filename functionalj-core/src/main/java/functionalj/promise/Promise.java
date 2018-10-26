@@ -431,7 +431,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     }
     
     public final Result<DATA> getResult() {
-        val timeout = timeout.get();
+        val timeout = timeout.elseUse(-1L).get().longValue();
         return getResult(timeout, null);
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
