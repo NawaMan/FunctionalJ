@@ -39,7 +39,7 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     
-    public static final Ref<Long> timeout = Ref.ofValue(-1L).overridable();
+    public static final Ref<Long> waitTimeout = Ref.ofValue(-1L).overridable();
     
     public static <D> Promise<D> ofResult(HasResult<D> asResult) {
         if (asResult instanceof HasPromise)
@@ -431,7 +431,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     }
     
     public final Result<DATA> getResult() {
-        val timeout = timeout.elseUse(-1L).get().longValue();
+        long timeout = waitTimeout.elseUse(-1L).get().longValue();
         return getResult(timeout, null);
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
