@@ -512,7 +512,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     
     final Subscription<DATA> doSubscribe(boolean isEavesdropping, Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         val toRunNow           = new AtomicBoolean(false);
-        val returnSubscription = synchronouseOperation(()->{
+        val returnSubscription = (Subscription<DATA>)synchronouseOperation(()->{
             val data = dataRef.get();
             if (data instanceof Result) {
                 val subscription = new Subscription<DATA>(this);
