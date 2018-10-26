@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
@@ -27,9 +26,6 @@ import org.junit.Test;
 import functionalj.functions.Func0;
 import functionalj.functions.FuncUnit0;
 import functionalj.list.FuncList;
-import functionalj.promise.DeferAction;
-import functionalj.promise.Promise;
-import functionalj.promise.UncheckedInterruptedException;
 import functionalj.ref.Run;
 import functionalj.result.OnStart;
 import lombok.val;
