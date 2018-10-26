@@ -4,21 +4,29 @@ import static functionalj.promise.DeferAction.run;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 
 import functionalj.functions.Func0;
+import functionalj.functions.FuncUnit0;
+import functionalj.list.FuncList;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
 import functionalj.promise.UncheckedInterruptedException;
@@ -402,41 +410,159 @@ public class DeferActionTest {
                 + "]", log);
     }
     
+    static class LoggedCreator implements DeferAction.Creator {
+        private final List<String>       logs    = Collections.synchronizedList(new ArrayList<String>());
+        private final AtomicInteger      daCount = new AtomicInteger(0);
+        private final Consumer<Runnable> runner;
+        public LoggedCreator() {
+            this(null);
+        }
+        public LoggedCreator(Consumer<Runnable> runner) {
+            this.runner = runner;
+        }
+        @Override
+        public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
+            val id = daCount.getAndIncrement();
+            logs.add("New defer action: " + id);
+            val wrappedSupplier = (Func0<D>)()->{
+                Thread.sleep(50);
+                logs.add("Start #" + id + ": ");
+                
+                D result = null;
+                try {
+                    result = supplier.get();
+                    return result;
+                } finally {
+                    logs.add("End #" + id + ": " + result);
+                }
+            };
+            val theRunner = (this.runner != null) ? this.runner : runner;
+            return DeferAction.defaultCreator.get().create(wrappedSupplier, onStart, theRunner);
+        }
+        public List<String> logs() {
+            return FuncList.from(logs);
+        }
+    }
+    
     @Test
     public void testCreator() throws InterruptedException {
-        val logs    = new ArrayList<>();
-        val daCount = new AtomicInteger(0);
-        class LoggedCreator implements DeferAction.Creator {
-            @Override
-            public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
-                val id = daCount.getAndIncrement();
-                logs.add("New defer action: " + id);
-                val wrappedSupplier = (Func0<D>)()->{
-                    logs.add("Start #" + id + ": ");
-                    
-                    D result = null;
-                    try {
-                        result = supplier.get();
-                        return result;
-                    } finally {
-                        logs.add("End #" + id + ": " + result);
-                    }
-                };
-                return DeferAction.defaultCreator.get().create(wrappedSupplier, onStart, runner);
-            }
-        }
-        
-        Run.with(DeferAction.creator.butWith(new LoggedCreator()))
+        val creator = new LoggedCreator();
+        Run.with(DeferAction.creator.butWith(creator))
         .run(()->{
-            DeferAction.run(()->null).getResult();
-            DeferAction.run(()->null).getResult();
-            DeferAction.run(()->null).getResult();
+            DeferAction.run(Sleep(100).thenReturn(null)).getResult();
+            DeferAction.run(Sleep(100).thenReturn(null)).getResult();
+            DeferAction.run(Sleep(100).thenReturn(null)).getResult();
         });
         
         assertStrings("["
                 + "New defer action: 0, Start #0: , End #0: null, "
                 + "New defer action: 1, Start #1: , End #1: null, "
                 + "New defer action: 2, Start #2: , End #2: null"
-                + "]", logs);
+                + "]", creator.logs);
+    }
+    
+    @Test
+    public void testStreamAction() {
+        val creator = new LoggedCreator();
+        runActions(creator);
+        assertNotEquals("["
+                + "New defer action: 0, Start #0: , End #0: 0, "
+                + "New defer action: 1, Start #1: , End #1: 1, "
+                + "New defer action: 2, Start #2: , End #2: 2, "
+                + "New defer action: 3, Start #3: , End #3: 3, "
+                + "New defer action: 4, Start #4: , End #4: 4"
+            + "]", creator.logs().toString());
+        assertNotEquals("["
+                + "New defer action: 0, "
+                + "New defer action: 1, "
+                + "New defer action: 2, "
+                + "New defer action: 3, "
+                + "New defer action: 4, "
+                + "Start #0: , End #0: 0, "
+                + "Start #1: , End #1: 1, "
+                + "Start #2: , End #2: 2, "
+                + "Start #3: , End #3: 3, "
+                + "Start #4: , End #4: 4"
+            + "]", creator.logs().toString());
+    }
+    
+    @Test
+    public void testStreamAction_SingleThread() {
+        val executor = Executors.newSingleThreadExecutor();
+        val creator  = new LoggedCreator(runnable -> {
+            executor.execute(runnable);
+        });
+        runActions(creator);
+        assertEquals("["
+                + "New defer action: 0, "
+                + "New defer action: 1, "
+                + "New defer action: 2, "
+                + "New defer action: 3, "
+                + "New defer action: 4, "
+                + "Start #0: , End #0: 0, "
+                + "Start #1: , End #1: 1, "
+                + "Start #2: , End #2: 2, "
+                + "Start #3: , End #3: 3, "
+                + "Start #4: , End #4: 4"
+            + "]", creator.logs().toString());
+    }
+    
+    @Test
+    public void testStreamAction_TwoThreads() {
+        val executor = Executors.newFixedThreadPool(2);
+        val creator  = new LoggedCreator(runnable -> {
+            executor.execute(runnable);
+        });
+        runActions(creator);
+        assertNotEquals("["
+                + "New defer action: 0, "
+                + "New defer action: 1, "
+                + "New defer action: 2, "
+                + "New defer action: 3, "
+                + "New defer action: 4, "
+                + "Start #0: , End #0: 0, "
+                + "Start #1: , End #1: 1, "
+                + "Start #2: , End #2: 2, "
+                + "Start #3: , End #3: 3, "
+                + "Start #4: , End #4: 4"
+            + "]", creator.logs().toString());
+        
+        boolean zeroOneDone = creator.logs().toString().startsWith("["
+                + "New defer action: 0, "
+                + "New defer action: 1, "
+                + "New defer action: 2, "
+                + "New defer action: 3, "
+                + "New defer action: 4, "
+            + "Start #0: , Start #1: , End #0: 0, End #1: 1, ");
+        boolean oneZeroDone = creator.logs().toString().startsWith("["
+                + "New defer action: 0, "
+                + "New defer action: 1, "
+                + "New defer action: 2, "
+                + "New defer action: 3, "
+                + "New defer action: 4, "
+                + "Start #1: , Start #0: , End #1: 1, End #0: 0, ");
+        assertTrue(zeroOneDone || oneZeroDone);
+    }
+    
+    private void runActions(final functionalj.promise.DeferActionTest.LoggedCreator creator) {
+        val list = Run.with(DeferAction.creator.butWith(creator))
+        .run(()->{
+            val actions = FuncList
+                .from(IntStream.range(0, 5).mapToObj(Integer::valueOf))
+                .map (i -> DeferAction.run(Sleep(100).thenReturn(i)))
+                .toImmutableList();
+            
+            val results = actions
+                .map(action  -> action.getPromise())
+                .map(promise -> promise.getResult())
+                .map(result  -> result.orElse(null))
+                .toImmutableList();
+            return results;
+        });
+        assertStrings("[0, 1, 2, 3, 4]", list);
+    }
+    
+    public static FuncUnit0 Sleep(long time) {
+        return ()->Thread.sleep(time);
     }
 }
