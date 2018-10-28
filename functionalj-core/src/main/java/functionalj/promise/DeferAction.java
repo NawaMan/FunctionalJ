@@ -16,6 +16,9 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     
+    public static final Ref<Boolean> interruptOnCancel
+            = Ref.ofValue(true);
+    
     public static final Ref<DeferActionCreator> creator
             = Ref.of(DeferActionCreator.class)
             .defaultTo(DeferActionCreator.instance);
