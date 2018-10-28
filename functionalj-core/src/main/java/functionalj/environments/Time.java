@@ -3,15 +3,15 @@ package functionalj.environments;
 import functionalj.InterruptedRuntimeException;
 import nawaman.defaultj.annotations.Default;
 
-public interface TimeKeeper {
+public interface Time {
     
     @Default
-    public static final TimeKeeper instance = new TimeKeeperSystem();
+    public static final Time instance = new TimeSystem();
     
     public long currentMilliSecond();
     public void sleep(long millisecond);
     
-    public static class TimeKeeperSystem implements TimeKeeper {
+    public static class TimeSystem implements Time {
         
 //        private final ScheduledExecutorService scheduler =
 //                Executors.newScheduledThreadPool(1);
