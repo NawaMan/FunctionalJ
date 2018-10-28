@@ -3,7 +3,7 @@ package functionalj.promise;
 import java.util.function.Consumer;
 
 import functionalj.functions.Func0;
-import nawaman.defaultj.annotations.Default;
+import functionalj.ref.RefTo.Default;
 
 @FunctionalInterface
 public interface DeferActionCreator {

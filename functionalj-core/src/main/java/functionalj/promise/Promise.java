@@ -47,6 +47,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
         
         return DeferAction
                 .from(()->asResult.getResult().value())
+                .build()
                 .getPromise();
     }
     public static <D> Promise<D> ofValue(D value) {

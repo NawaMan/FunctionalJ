@@ -1,7 +1,7 @@
 package functionalj.environments;
 
 import functionalj.InterruptedRuntimeException;
-import nawaman.defaultj.annotations.Default;
+import functionalj.ref.RefTo.Default;
 
 public interface Time {
     

@@ -1,10 +1,18 @@
 package functionalj.ref;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import functionalj.result.Result;
 import lombok.val;
 import nawaman.defaultj.api.IProvideDefault;
 
 public class RefTo<DATA> extends Ref<DATA> {
+    
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Default {
+        
+    }
     
     public static final Ref<IProvideDefault> defaultProvider
             = Ref.of(IProvideDefault.class)
