@@ -29,30 +29,15 @@ public class Run {
         return With(allSubstitutions);
     }
     
-    public static SyncRunInstance Synchronously() {
-        return new SyncRunInstance();
-    }
-    public static SyncRunInstance synchronously() {
-        return Synchronously();
-    }
-    public static SyncRunInstance OnSameThread() {
-        return Synchronously();
-    }
-    public static SyncRunInstance onSameThread() {
-        return Synchronously();
-    }
-    public static AsyncRunInstance Asynchronously() {
-        return new AsyncRunInstance(FuncList.empty());
-    }
-    public static AsyncRunInstance asynchronously() {
-        return Asynchronously();
-    }
-    public static AsyncRunInstance OnAnotherThread() {
-        return Asynchronously();
-    }
-    public static AsyncRunInstance onAnotherThread() {
-        return Asynchronously();
-    }
+    public static final SyncRunInstance Synchronously = new SyncRunInstance();
+    public static final SyncRunInstance synchronously = Synchronously;
+    public static final SyncRunInstance OnSameThread  = Synchronously;
+    public static final SyncRunInstance onSameThread  = Synchronously;
+    
+    public static final AsyncRunInstance Asynchronously  = new AsyncRunInstance();
+    public static final AsyncRunInstance asynchronously  = Asynchronously;
+    public static final AsyncRunInstance OnAnotherThread = Asynchronously;
+    public static final AsyncRunInstance onAnotherThread = Asynchronously;
     
     public static final FuncList<Ref<?>> getCurrentRefs() {
         return Ref.getRefs();
@@ -198,7 +183,6 @@ public class Run {
             val substitutions = getCurrentSubstitutions();
             return DeferAction.run(()->{
                 Ref.runWith(substitutions, action);
-                return null;
             })
             .getPromise();
         }

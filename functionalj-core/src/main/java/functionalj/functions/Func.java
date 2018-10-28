@@ -283,6 +283,12 @@ public interface Func {
         return () -> value;
     }
     
+    public static FuncUnit0 from(Runnable runnable) {
+        if (runnable instanceof FuncUnit0)
+            return (FuncUnit0)runnable;
+        return runnable::run;
+    }
+    
     /**
      * Constructs a Func0 from supplier or lambda.
      * 

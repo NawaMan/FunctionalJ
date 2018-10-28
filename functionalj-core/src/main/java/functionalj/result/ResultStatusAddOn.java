@@ -500,10 +500,10 @@ public interface ResultStatusAddOn<DATA> {
         );
     }
     
-    public default Result<DATA> ifCancelled(Consumer<? super DATA> consumer) {
+    public default Result<DATA> ifCancelled(Runnable runnable) {
         useData((value, exception) -> {
             if (exception instanceof ResultCancelledException)
-                consumer.accept(value);
+                runnable.run();
         });
         return asResult();
     }

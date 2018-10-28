@@ -61,7 +61,7 @@ public class RunTest {
         string.set("NewValue");
         assertEquals("NewValue", string.get());
         
-        assertEquals("OriginalValue", Asynchronously().run(()->string.get()).getResult().get());
+        assertEquals("OriginalValue", Asynchronously.run(()->string.get()).getResult().get());
     }
     
     @Test

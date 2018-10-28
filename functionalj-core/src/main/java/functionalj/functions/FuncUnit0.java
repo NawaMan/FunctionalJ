@@ -49,6 +49,9 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         };
     }
     
+    public default <T> Func0<T> thenReturnNull() {
+        return thenReturn(null);
+    }
     public default <T> Func0<T> thenReturn(T value) {
         return () -> {
             runUnsafe();
