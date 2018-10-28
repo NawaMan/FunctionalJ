@@ -10,6 +10,7 @@ import functionalj.environments.Env;
 import functionalj.functions.Func;
 import functionalj.functions.Func0;
 import functionalj.functions.Func1;
+import functionalj.functions.FuncUnit0;
 import functionalj.functions.FuncUnit1;
 import functionalj.ref.Ref;
 import functionalj.result.Result;
@@ -79,6 +80,10 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
         });
     }
     
+    public static PendingAction<Object> run(FuncUnit0 runnable) {
+        val runner = Env.asyncRunner();
+        return run(Func.from(runnable).thenReturnNull(), runner);
+    }
     public static <D> PendingAction<D> run(Func0<D> supplier) {
         val runner = Env.asyncRunner();
         return run(supplier, runner);
