@@ -3,7 +3,7 @@ package functionalj.promise;
 import java.util.function.Consumer;
 
 @SuppressWarnings("javadoc")
-public class CompletedAction<DATA> extends AbstractDeferAction<DATA> {
+public class CompletedAction<DATA> extends UncompleteAction<DATA> {
     
     CompletedAction(Promise<DATA> promise) {
         super(promise);

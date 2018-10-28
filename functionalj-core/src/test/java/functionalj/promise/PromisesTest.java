@@ -1,12 +1,12 @@
 package functionalj.promise;
 
+import static functionalj.environments.TimeKeeperFuncs.Sleep;
 import static functionalj.promise.DeferAction.run;
 import static functionalj.result.Result.value;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.functions.FuncUnit0;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -185,11 +185,6 @@ public class PromisesTest {
         
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings("Result:{ Value: 21 }",   promise.getCurrentResult());
-    }
-    
-    
-    public static FuncUnit0 Sleep(long time) {
-        return ()->Thread.sleep(time);
     }
     
 }

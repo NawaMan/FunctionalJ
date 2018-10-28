@@ -16,11 +16,8 @@ public final class Env {
     // TODO - Log
     // TODO - Error handling
     
-    public static long currentMilliSecond() {
-        return timerKeeper
-                .elseUse(TimeKeeper.instance)
-                .mapTo  (TimeKeeper::currentMilliSecond)
-                .orGet  (System    ::currentTimeMillis);
+    public static TimeKeeper timerKeeper() {
+        return timerKeeper.value();
     }
     
     public static AsyncRunner asyncRunner() {

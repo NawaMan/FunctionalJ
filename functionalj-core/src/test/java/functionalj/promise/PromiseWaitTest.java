@@ -11,8 +11,6 @@ import org.junit.Test;
 
 import functionalj.environments.AsyncRunner;
 import functionalj.list.FuncList;
-import functionalj.promise.DeferAction;
-import functionalj.promise.Wait;
 import functionalj.tuple.Tuple;
 import lombok.val;
 
@@ -49,6 +47,16 @@ public class PromiseWaitTest {
         Thread.sleep(100);
         action.complete("Complete!");
         
+        assertStrings("[Not done.]", list);
+    }
+    
+    @Test
+    public void testWaitAWhile_neverStart() throws InterruptedException {
+        val list   = new ArrayList<String>();
+        DeferAction.of(String.class)
+                .subscribe(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get()));
+        
+        Thread.sleep(100);
         assertStrings("[Not done.]", list);
     }
     

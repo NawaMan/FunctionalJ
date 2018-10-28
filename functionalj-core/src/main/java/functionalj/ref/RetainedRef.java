@@ -162,7 +162,7 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
                 return oldTime + milliSeconds <= newTime;
             });
             val updateOnChange = new RetainChecker.UpdateOnChanged<Long>();
-            val valueSupplier  = (Func0<Long>)Env::currentMilliSecond;
+            val valueSupplier  = (Func0<Long>)Env.timerKeeper()::currentMilliSecond;
             val checker        = new SuppliedValueCheck<Long>(
                                         valueSupplier,
                                         valueSupplier,

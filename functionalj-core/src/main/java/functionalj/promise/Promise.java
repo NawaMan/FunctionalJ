@@ -48,7 +48,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
         return DeferAction
                 .from(()->asResult.getResult().value())
                 .getPromise();
-        
     }
     public static <D> Promise<D> ofValue(D value) {
         return DeferAction.of((Class<D>)null)
@@ -273,7 +272,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     
     //== Internal working ==
     
-    boolean start() {
+    final boolean start() {
         val data = dataRef.get();
         if (data instanceof Promise) {
             @SuppressWarnings("unchecked")

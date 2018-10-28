@@ -10,46 +10,10 @@ import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class PendingAction<DATA> extends AbstractDeferAction<DATA> {
+public class PendingAction<DATA> extends UncompleteAction<DATA> {
     
     PendingAction(Promise<DATA> promise) {
         super(promise);
-    }
-    
-    public CompletedAction<DATA> abort() {
-        promise.abort();
-        return new CompletedAction<DATA>(promise);
-    }
-    public CompletedAction<DATA> abort(String message) {
-        promise.abort(message);
-        return new CompletedAction<DATA>(promise);
-    }
-    public CompletedAction<DATA> abort(Exception cause) {
-        promise.abort(cause);
-        return new CompletedAction<DATA>(promise);
-    }
-    public CompletedAction<DATA> abort(String message, Exception cause) {
-        promise.abort(message, cause);
-        return new CompletedAction<DATA>(promise);
-    }
-    
-    // For internal use only -- This will be wrong if the result is not ready.
-    CompletedAction<DATA> completeWith(Result<DATA> result) {
-        if (result.isException())
-             promise.makeFail    (result.getException());
-        else promise.makeComplete(result.get());
-        
-        return new CompletedAction<DATA>(promise);
-    }
-    
-    public CompletedAction<DATA> complete(DATA value) {
-        promise.makeComplete(value);
-        return new CompletedAction<DATA>(promise);
-    }
-    
-    public CompletedAction<DATA> fail(Exception exception) {
-        promise.makeFail(exception);
-        return new CompletedAction<DATA>(promise);
     }
     
     // TODO - Add methods that allow the caller to know if the proceeding success or fail.

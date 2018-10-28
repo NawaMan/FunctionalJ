@@ -1599,9 +1599,4 @@ public interface Func {
         return func.apply(i1, a2, a3, a4, a5, a6);
     }
     
-    
-    public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT2, OUTPUT> apply1(BiFunction<INPUT1, INPUT2, OUTPUT> function, INPUT1 input1) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

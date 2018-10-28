@@ -14,7 +14,7 @@ import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
+public class DeferAction<DATA> extends UncompleteAction<DATA> {
     
     public static final Ref<Boolean> interruptOnCancel
             = Ref.ofValue(true);

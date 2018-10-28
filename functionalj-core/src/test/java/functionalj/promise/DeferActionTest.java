@@ -1,5 +1,6 @@
 package functionalj.promise;
 
+import static functionalj.environments.TimeKeeperFuncs.Sleep;
 import static functionalj.promise.DeferAction.run;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
@@ -23,8 +24,9 @@ import java.util.stream.IntStream;
 
 import org.junit.Test;
 
+import functionalj.environments.Env;
+import functionalj.environments.TimeKeeperFuncs;
 import functionalj.functions.Func0;
-import functionalj.functions.FuncUnit0;
 import functionalj.list.FuncList;
 import functionalj.ref.Run;
 import lombok.val;
@@ -125,7 +127,7 @@ public class DeferActionTest {
         val start = System.currentTimeMillis();
         log.add("Start: " + (start - start));
         
-        val action = run(()->{ sleep(100); return "Hello"; });
+        val action = run(Sleep(100).thenReturn("Hello"));
         
         try {
             action.getResult(50, TimeUnit.MILLISECONDS);
@@ -146,7 +148,7 @@ public class DeferActionTest {
         val action    = run(()->{ threadRef.set(Thread.currentThread()); sleep(200); return "Hello"; });
         
         new Thread(()-> {
-            try { sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
+            try { Thread.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
             threadRef.get().interrupt();
         }).start();
         
@@ -576,10 +578,6 @@ public class DeferActionTest {
             return (List<Integer>)results;
         });
         assertStrings("[0, 1, 2, 3, 4]", list);
-    }
-    
-    public static FuncUnit0 Sleep(long time) {
-        return ()->Thread.sleep(time);
     }
     
     @Test
