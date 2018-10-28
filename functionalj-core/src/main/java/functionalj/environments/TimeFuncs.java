@@ -2,7 +2,7 @@ package functionalj.environments;
 
 import functionalj.functions.FuncUnit0;
 
-public class TimeKeeperFuncs {
+public class TimeFuncs {
     
     public static FuncUnit0 Sleep(long millisecond) {
         return ()-> {

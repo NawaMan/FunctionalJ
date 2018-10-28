@@ -1,6 +1,6 @@
 package functionalj.promise;
 
-import static functionalj.environments.TimeKeeperFuncs.Sleep;
+import static functionalj.environments.TimeFuncs.Sleep;
 import static functionalj.promise.DeferAction.run;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 import org.junit.Test;
 
 import functionalj.environments.Env;
-import functionalj.environments.TimeKeeperFuncs;
+import functionalj.environments.TimeFuncs;
 import functionalj.functions.Func0;
 import functionalj.list.FuncList;
 import functionalj.ref.Run;
