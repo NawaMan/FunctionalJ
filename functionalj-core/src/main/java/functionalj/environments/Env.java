@@ -1,8 +1,5 @@
 package functionalj.environments;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 import functionalj.ref.Ref;
 
 public final class Env {
