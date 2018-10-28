@@ -1,5 +1,7 @@
 package functionalj.environments;
 
+import functionalj.InterruptedRuntimeException;
+
 public interface TimeKeeper {
     
     public static final TimeKeeper instance = new TimeKeeperSystem();

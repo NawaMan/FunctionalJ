@@ -1,4 +1,4 @@
-package functionalj.environments;
+package functionalj;
 
 import static java.util.Objects.requireNonNull;
 

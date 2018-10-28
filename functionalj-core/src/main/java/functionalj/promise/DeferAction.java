@@ -4,10 +4,7 @@ import static functionalj.functions.Func.carelessly;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
-import functionalj.environments.Env;
-import functionalj.functions.Func;
 import functionalj.functions.Func0;
 import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit0;
@@ -16,94 +13,50 @@ import functionalj.ref.Ref;
 import functionalj.result.Result;
 import lombok.val;
 
-// TODO : Make sure to allow an easy wrapping of all executions (onStart, task and notification) 
-//   so that we can implement tracing and ref.
-
 @SuppressWarnings("javadoc")
 public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     
-    public static final Ref<Creator> defaultCreator = Ref.dictactedTo(DeferAction::doFrom);
-    public static final Ref<Creator> creator        = Ref.of(Creator.class).defaultFrom(defaultCreator);
-    
-    @FunctionalInterface
-    public static interface Creator {
-        
-        public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner);
-        
-    }
+    public static final Ref<DeferActionCreator> creator
+            = Ref.of(DeferActionCreator.class)
+            .defaultTo(DeferActionCreator.instance);
     
     public static <D> DeferAction<D> createNew() {
         return of((Class<D>)null);
     }
     public static <D> DeferAction<D> of(Class<D> clzz) {
-        return of(new Promise<D>());
-    }
-    public static <D> DeferAction<D> of(Promise<D> promise) {
-        val control = new DeferAction<D>(promise, null);
-        return control;
+        return new DeferAction<D>(new Promise<D>());
     }
     
-    public static <D> DeferAction<D> from(Supplier<D> supplier) {
-        val runner = Env.asyncRunner.get();
-        return from(Func.from(supplier), runner);
+    public static DeferActionBuilder<Object> from(FuncUnit0 runnable) {
+        return new DeferActionBuilder<Object>(runnable);
     }
-    public static <D> DeferAction<D> from(Func0<D> supplier) {
-        val runner = Env.asyncRunner.get();
-        return from(supplier, runner);
-    }
-    public static <D> DeferAction<D> from(Func0<D> supplier, Consumer<Runnable> runner){
-        return from(supplier, null, runner);
-    }
-    public static <D> DeferAction<D> from(Func0<D> supplier, Runnable onStart){
-        val runner = Env.asyncRunner.get();
-        return from(supplier, onStart, runner);
-    }
-    
-    public static <D> DeferAction<D> from(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
-        return creator.orGet(defaultCreator).create(supplier, onStart, runner);
-    }
-    private static <D> DeferAction<D> doFrom(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
-        val promise = new Promise<D>();
-        return new DeferAction<D>(promise, () -> {
-            val runnable = (Runnable)() -> {
-                if (!promise.isNotDone()) 
-                    return;
-                
-                carelessly(onStart);
-                
-                val action = new PendingAction<D>(promise);
-                Result.from(supplier)
-                .ifException(action::fail)
-                .ifValue    (action::complete);
-            };
-            runner.accept(runnable);
-        });
+    public static <D> DeferActionBuilder<D> from(Func0<D> supplier) {
+        return new DeferActionBuilder<D>(supplier);
     }
     
     public static PendingAction<Object> run(FuncUnit0 runnable) {
-        val runner = Env.asyncRunner();
-        return run(Func.from(runnable).thenReturnNull(), runner);
+        return from(runnable)
+                .start();
     }
     public static <D> PendingAction<D> run(Func0<D> supplier) {
-        val runner = Env.asyncRunner();
-        return run(supplier, runner);
+        return from(supplier)
+                .start();
     }
-    public static <D> PendingAction<D> run(Func0<D> supplier, Consumer<Runnable> runner){
-        return run(supplier, null, runner);
-    }
-    public static <D> PendingAction<D> run(Func0<D> supplier, Runnable onStart){
-        val runner = Env.asyncRunner();
-        return run(supplier, onStart, runner);
-    }
-    public static <D> PendingAction<D> run(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
-        return from(supplier, onStart, runner).start();
+    
+    public static <D> DeferAction<D> create(
+            boolean            interruptOnCancel,
+            Func0<D>           supplier,
+            Runnable           onStart,
+            Consumer<Runnable> runner) {
+        return creator.value()
+                .create(interruptOnCancel, supplier, onStart, runner);
     }
     
     private final Runnable task;
     
     private final DeferAction<?> parent;
     
-    protected DeferAction(Promise<DATA> promise) {
+    DeferAction(Promise<DATA> promise) {
         this(promise, null);
     }
     DeferAction(DeferAction<?> parent, Promise<DATA> promise) {
@@ -111,22 +64,22 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
         this.parent = parent;
         this.task = null;
     }
-    protected DeferAction(Promise<DATA> promise, Runnable task) {
+    DeferAction(Promise<DATA> promise, Runnable task) {
         super(promise);
         this.parent = null;
         this.task = task;
     }
     
     public PendingAction<DATA> start() {
-    	if (parent != null) {
-    		parent.start();
-    	} else {
-	        val isStarted = promise.isStarted();
-	        promise.start();
-	        
-	        if (!isStarted && (task != null))
-	            carelessly(task);
-    	}
+        if (parent != null) {
+            parent.start();
+        } else {
+            val isStarted = promise.isStarted();
+            promise.start();
+            
+            if (!isStarted && (task != null))
+                carelessly(task);
+        }
         return new PendingAction<>(promise);
     }
     
@@ -196,7 +149,7 @@ public class DeferAction<DATA> extends AbstractDeferAction<DATA> {
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	public final <TARGET> DeferAction<TARGET> flatMap(Func1<? super DATA, HasPromise<? extends TARGET>> mapper) {
+    public final <TARGET> DeferAction<TARGET> flatMap(Func1<? super DATA, HasPromise<? extends TARGET>> mapper) {
         return chain((Func1)mapper);
     }
     

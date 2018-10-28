@@ -14,6 +14,7 @@ public final class Env {
     // TODO - Console
     // TODO - User
     // TODO - Log
+    // TODO - Error handling
     
     public static long currentMilliSecond() {
         return timerKeeper

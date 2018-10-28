@@ -22,6 +22,9 @@ public abstract class AbstractDeferAction<DATA> implements HasPromise<DATA> {
         return promise.getCurrentResult();
     }
     public final Result<DATA> getResult() {
+        if (!promise.isStarted() && this instanceof DeferAction) {
+            ((DeferAction<DATA>)this).start();
+        }
         return promise.getResult();
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {

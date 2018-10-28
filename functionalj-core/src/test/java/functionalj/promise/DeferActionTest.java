@@ -27,7 +27,6 @@ import functionalj.functions.Func0;
 import functionalj.functions.FuncUnit0;
 import functionalj.list.FuncList;
 import functionalj.ref.Run;
-import functionalj.result.OnStart;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -163,13 +162,13 @@ public class DeferActionTest {
         val log   = new ArrayList<String>();
         val latch = new CountDownLatch(2);
         log.add("Init ...");
-        DeferAction.run(()->{
+        DeferAction.from(()->{
             Thread.sleep(100);
             log.add("Running ...");
             return "Hello";
-        }, OnStart.run(()->{
+        }).onStart(()->{
             log.add("... onStart ...");
-        }))
+        })
         .subscribe(result -> {
             Thread.sleep(100);
             log.add("Done: " + result);
@@ -201,13 +200,13 @@ public class DeferActionTest {
         val log   = new ArrayList<String>();
         val latch = new CountDownLatch(2);
         log.add("Init ...");
-        DeferAction.run(()->{
+        DeferAction.from(()->{
             Thread.sleep(100);
             log.add("Running ...");
             return "Hello";
-        }, OnStart.run(()->{
+        }).onStart(()->{
             log.add("... onStart ...");
-        }))
+        })
         .subscribe(result -> {
             log.add("Done: " + result);
             latch.countDown();
@@ -241,18 +240,18 @@ public class DeferActionTest {
         val onDoneThread    = new AtomicReference<String>();
         val onDone2Thread   = new AtomicReference<String>();
         log.add("Init ...");
-        DeferAction.run(()->{
+        DeferAction.from(()->{
             Thread.sleep(100);
             log.add("Running ...");
             onRunningThread.set(Thread.currentThread().toString());
             latch.countDown();
             return "Hello";
-        }, OnStart.run(()->{
+        }).onStart(()->{
             Thread.sleep(100);
             log.add("... onStart ...");
             onStartThread.set(Thread.currentThread().toString());
             latch.countDown();
-        }))
+        })
         .subscribe(result -> {
             Thread.sleep(100);
             log.add("Done: " + result);
@@ -289,27 +288,28 @@ public class DeferActionTest {
         val latch = new CountDownLatch(5);
         val runningThread = new AtomicReference<String>();
         log.add("Init #0...");
-        DeferAction.run(()->{
+        DeferAction.from(()->{
             Thread.sleep(100);
             log.add("Running #1...");
             latch.countDown();
             return "Hello";
-        }, OnStart.run(()->{
+        }).onStart(()->{
             log.add("Start #1 ...");
             runningThread.set(Thread.currentThread().toString());
             latch.countDown();
-        }))
+        })
         .chain(str -> {
-            return DeferAction.run(()->{
+            return DeferAction.from(()->{
                 Thread.sleep(100);
                 log.add("Running #2...");
                 latch.countDown();
                 return str.length();
-            }, OnStart.run(()->{
+            }).onStart(()->{
                 log.add("Start #2 ...");
                 runningThread.set(Thread.currentThread().toString());
                 latch.countDown();
-            }));
+            })
+            .start();
         })
         .subscribe(result -> {
             log.add("Done #1: " + result);
@@ -335,9 +335,10 @@ public class DeferActionTest {
         DeferAction.from(()->{
             Thread.sleep(50);
             return "Hello";
-        }, OnStart.run(()->{
+        })
+        .onStart(()->{
             log.add("Acion 1 started.");
-        }))
+        })
         .eavesdrop(result -> {
             log.add("Eavesdrop: " + result.isCancelled());
             log.add("Eavesdrop: " + result.toString());
@@ -406,7 +407,7 @@ public class DeferActionTest {
                 + "]", log);
     }
     
-    static class LoggedCreator implements DeferAction.Creator {
+    static class LoggedCreator implements DeferActionCreator {
         private final List<String>       logs    = Collections.synchronizedList(new ArrayList<String>());
         private final AtomicInteger      daCount = new AtomicInteger(0);
         private final Consumer<Runnable> runner;
@@ -417,7 +418,7 @@ public class DeferActionTest {
             this.runner = runner;
         }
         @Override
-        public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
+        public <D> DeferAction<D> create(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
             val id = daCount.getAndIncrement();
             logs.add("New defer action: " + id);
             val wrappedSupplier = (Func0<D>)()->{
@@ -433,7 +434,7 @@ public class DeferActionTest {
                 }
             };
             val theRunner = (this.runner != null) ? this.runner : runner;
-            return DeferAction.defaultCreator.get().create(wrappedSupplier, onStart, theRunner);
+            return DeferActionCreator.instance.create(interruptOnCancel, wrappedSupplier, onStart, theRunner);
         }
         public List<String> logs() {
             return FuncList.from(logs);
@@ -580,4 +581,66 @@ public class DeferActionTest {
     public static FuncUnit0 Sleep(long time) {
         return ()->Thread.sleep(time);
     }
+    
+    @Test
+    public void testCancelableStream() throws InterruptedException {
+        val executor = Executors.newFixedThreadPool(2);
+        val creator  = new LoggedCreator(runnable -> {
+            executor.execute(runnable);
+        });
+        val startTime = System.currentTimeMillis();
+        val list = Run.with(DeferAction.creator.butWith(creator))
+        .run(()->{
+            val actions = FuncList
+                .from(IntStream.range(0, 5).mapToObj(Integer::valueOf))
+                .map (i -> DeferAction.run(Sleep(i < 3 ? 100 : 10000).thenReturn(i)))
+                .toImmutableList();
+            
+            val results = actions
+                .map(action  -> action.getPromise())
+                .map(promise -> promise.getResult())
+                .map(result  -> result.orElse(null))
+                .takeUntil(i -> i >= 2)
+                .toImmutableList();
+            
+            actions.forEach(action -> action.abort());
+            return (List<Integer>)results;
+        });
+        
+        Thread.sleep(100);
+        val diffTime = System.currentTimeMillis() - startTime;
+        
+        assertStrings("[0, 1]", list);
+        assertTrue ("Taking too long ... 3 and 4 is running.", diffTime < 5000);
+        assertTrue (creator.logs.contains("End #0: 0"));
+        assertTrue (creator.logs.contains("End #1: 1"));
+        assertFalse(creator.logs.contains("End #3: 3"));
+        assertFalse(creator.logs.contains("End #4: 4"));
+    }
+    
+    @Test
+    public void testInterrupt() throws InterruptedException {
+        val latch = new CountDownLatch(1);
+        
+        val startTime     = System.currentTimeMillis();
+        val pendingAction = DeferAction.run(()->{
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            latch.countDown();
+        }).subscribe(result -> {
+            System.out.println(result);
+        });
+        
+        Thread.sleep(50);
+        pendingAction.abort();
+        
+        latch.await();
+        val diffTime = System.currentTimeMillis() - startTime;
+        
+        assertTrue("Taking too long", diffTime < 1000);
+    }
+    
 }
