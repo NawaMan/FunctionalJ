@@ -107,7 +107,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return Result.from(this);
     }
     
-    public default Supplier<OUTPUT> memoize() {
+    public default Func0<OUTPUT> memoize() {
         return Func0.from(Func.lazy(this));
     }
     
