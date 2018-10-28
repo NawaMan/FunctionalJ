@@ -6,7 +6,7 @@ public class TimeKeeperFuncs {
     
     public static FuncUnit0 Sleep(long millisecond) {
         return ()-> {
-            Env.timer.value().currentMilliSecond();
+            Env.time.value().currentMilliSecond();
             Thread.sleep(millisecond);
         };
     }
