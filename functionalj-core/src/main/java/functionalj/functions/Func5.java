@@ -17,6 +17,8 @@ package functionalj.functions;
 
 import java.util.function.Supplier;
 
+import functionalj.promise.DeferAction;
+import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple5;
 import lombok.val;
@@ -114,6 +116,16 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
     
     public default Func1<Tuple5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5>, OUTPUT> toTupleFunction() {
         return t -> this.apply(t._1(), t._2(), t._3(), t._4(), t._5());
+    }
+    
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Promise<OUTPUT>> defer() {
+        return (input1, input2, input3, input4, input5) -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.apply(input1, input2, input3, input4, input5);
+            };
+            return DeferAction.from(supplier)
+                    .start().getPromise();
+        };
     }
     
     /**

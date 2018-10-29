@@ -2,6 +2,8 @@ package functionalj.functions;
 
 import java.util.function.Supplier;
 
+import functionalj.promise.DeferAction;
+import functionalj.promise.Promise;
 import functionalj.ref.ComputeBody;
 import functionalj.result.Result;
 import lombok.val;
@@ -14,7 +16,7 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, RuntimeException>, FuncUnit0 {
+public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, RuntimeException> {
     
     public static <T> Func0<T> of(Func0<T> func0) {
         return func0;
@@ -44,15 +46,6 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     
     public default OUTPUT getUnsafe() throws Exception {
         return applyUnsafe();
-    }
-    
-    public default void runUnsafe() throws Exception {
-        getUnsafe();
-    }
-    
-    @Override
-    public default void run() throws RuntimeException {
-        FuncUnit0.super.run();
     }
     
     public default OUTPUT value() {
@@ -109,6 +102,10 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     
     public default Func0<OUTPUT> memoize() {
         return Func0.from(Func.lazy(this));
+    }
+    
+    public default Func0<Promise<OUTPUT>> defer() {
+        return () -> DeferAction.from(this).start().getPromise();
     }
     
     public default Func1<?, OUTPUT> toFunc1() {

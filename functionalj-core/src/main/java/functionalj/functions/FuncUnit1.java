@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.Consumer;
 
+import functionalj.promise.Promise;
 import lombok.val;
 
 public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
@@ -53,6 +54,9 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         };
     }
     
+    public default <T> Func1<INPUT, T> thenReturnNull() {
+        return thenReturn(null);
+    }
     public default <T> Func1<INPUT, T> thenReturn(T value) {
         return input -> {
             acceptUnsafe(input);
@@ -67,6 +71,10 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
             val value = supplier.applyUnsafe();
             return value;
         };
+    }
+    
+    public default Func1<INPUT, Promise<Object>> defer() {
+        return this.thenReturnNull().defer();
     }
     
 }

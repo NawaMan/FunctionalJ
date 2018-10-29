@@ -620,11 +620,11 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
         return targetPromise;
     }
     
-    public final <TARGET> Promise<TARGET> flatMap(Function<DATA, HasPromise<TARGET>> mapper) {
+    public final <TARGET> Promise<TARGET> flatMap(Function<DATA, ? extends HasPromise<TARGET>> mapper) {
         return chain(mapper);
     }
     @SuppressWarnings("unchecked")
-    public final <TARGET> Promise<TARGET> chain(Function<DATA, HasPromise<TARGET>> mapper) {
+    public final <TARGET> Promise<TARGET> chain(Function<DATA, ? extends HasPromise<TARGET>> mapper) {
         val targetPromise = (Promise<TARGET>)newPromise();
         subscribe(r -> {
             val targetResult = r.map(mapper);

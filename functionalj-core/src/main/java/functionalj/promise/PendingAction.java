@@ -85,11 +85,11 @@ public class PendingAction<DATA> extends UncompleteAction<DATA> {
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	public final <TARGET> PendingAction<TARGET> flatMap(Func1<? super DATA, HasPromise<? extends TARGET>> mapper) {
+	public final <TARGET> PendingAction<TARGET> flatMap(Func1<? super DATA, ? extends HasPromise<? extends TARGET>> mapper) {
         return chain((Func1)mapper);
     }
     
-    public final <TARGET> PendingAction<TARGET> chain(Func1<DATA, HasPromise<TARGET>> mapper) {
+    public final <TARGET> PendingAction<TARGET> chain(Func1<DATA, ? extends HasPromise<TARGET>> mapper) {
         val newPromise = promise.flatMap(mapper);
         return new PendingAction<TARGET>((Promise<TARGET>)newPromise);
     }

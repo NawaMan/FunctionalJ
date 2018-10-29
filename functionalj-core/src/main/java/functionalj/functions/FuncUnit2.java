@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.BiConsumer;
 
+import functionalj.promise.Promise;
 import lombok.val;
 
 @FunctionalInterface
@@ -55,6 +56,9 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
         };
     }
     
+    public default <T> Func2<INPUT1, INPUT2, T> thenReturnNull() {
+        return thenReturn(null);
+    }
     public default <T> Func2<INPUT1, INPUT2, T> thenReturn(T value) {
         return (input1, input2) -> {
             acceptUnsafe(input1, input2);
@@ -69,6 +73,10 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
             val value = supplier.applyUnsafe();
             return value;
         };
+    }
+    
+    public default Func2<INPUT1, INPUT2, Promise<Object>> defer() {
+        return this.thenReturnNull().defer();
     }
     
 }

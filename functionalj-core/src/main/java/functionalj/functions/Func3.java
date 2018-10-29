@@ -17,6 +17,8 @@ package functionalj.functions;
 
 import java.util.function.Supplier;
 
+import functionalj.promise.DeferAction;
+import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple3;
 import lombok.val;
@@ -32,7 +34,7 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> extends FuncUnit3<INPUT1, INPUT2, INPUT3> {
+public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3) throws Exception;
     
@@ -65,10 +67,6 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> extends FuncUnit3<INPUT1,
         } catch (Exception exception) {
             throw new FunctionInvocationException(exception);
         }
-    }
-    
-    public default void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3) throws Exception {
-        applyUnsafe(input1, input2, input3);
     }
     
     /**
@@ -127,6 +125,16 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> extends FuncUnit3<INPUT1,
     
     public default Func1<Tuple3<INPUT1, INPUT2, INPUT3>, OUTPUT> toTupleFunction() {
         return t -> this.apply(t._1(), t._2(), t._3());
+    }
+    
+    public default Func3<INPUT1, INPUT2, INPUT3, Promise<OUTPUT>> defer() {
+        return (input1, input2, input3) -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.apply(input1, input2, input3);
+            };
+            return DeferAction.from(supplier)
+                    .start().getPromise();
+        };
     }
     
     //== Partially apply functions ==

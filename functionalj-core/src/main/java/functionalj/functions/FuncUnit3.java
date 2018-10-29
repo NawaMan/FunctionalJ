@@ -2,6 +2,7 @@ package functionalj.functions;
 
 import static java.util.Objects.requireNonNull;
 
+import functionalj.promise.Promise;
 import lombok.val;
 
 @FunctionalInterface
@@ -53,6 +54,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
         };
     }
     
+    public default <T> Func3<INPUT1, INPUT2, INPUT3, T> thenReturnNull() {
+        return thenReturn(null);
+    }
     public default <T> Func3<INPUT1, INPUT2, INPUT3, T> thenReturn(T value) {
         return (input1, input2, input3) -> {
             acceptUnsafe(input1, input2, input3);
@@ -67,5 +71,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
             val value = supplier.applyUnsafe();
             return value;
         };
+    }
+    
+    public default Func3<INPUT1, INPUT2, INPUT3, Promise<Object>> defer() {
+        return this.thenReturnNull().defer();
     }
 }

@@ -2,6 +2,7 @@ package functionalj.functions;
 
 import static java.util.Objects.requireNonNull;
 
+import functionalj.promise.Promise;
 import functionalj.ref.RunBody;
 import lombok.val;
 
@@ -65,6 +66,26 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
             val value = supplier.applyUnsafe();
             return value;
         };
+    }
+    
+    public default <I, T> Func1<I, T> then(Func1<I, T> function) {
+        return input -> {
+            runUnsafe();
+            val value = function.applyUnsafe(input);
+            return value;
+        };
+    }
+    
+    public default <I1, I2, T> Func2<I1, I2, T> then(Func2<I1, I2, T> function) {
+        return (input1, input2) -> {
+            runUnsafe();
+            val value = function.applyUnsafe(input1, input2);
+            return value;
+        };
+    }
+    
+    public default Func0<Promise<Object>> defer() {
+        return this.thenReturnNull().defer();
     }
     
 }

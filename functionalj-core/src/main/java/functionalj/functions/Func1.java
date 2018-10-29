@@ -18,6 +18,8 @@ package functionalj.functions;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import functionalj.promise.DeferAction;
+import functionalj.promise.Promise;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -30,7 +32,7 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT>, FuncUnit1<INPUT> {
+public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     
     /**
      * Constructs a Func1 from function or lambda.
@@ -59,10 +61,6 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT>, FuncUnit1
     
     public default Func1<INPUT, Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
-    }
-    
-    public default void acceptUnsafe(INPUT input) throws Exception {
-        applyUnsafe(input);
     }
     
     /**
@@ -94,6 +92,16 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT>, FuncUnit1
     // TODO add memoize strategies.
     public default Func1<INPUT, OUTPUT> memoize() {
         return Func.cacheFor(this);
+    }
+    
+    public default Func1<INPUT, Promise<OUTPUT>> defer() {
+        return input -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.apply(input);
+            };
+            return DeferAction.from(supplier)
+                    .start().getPromise();
+        };
     }
     
     public default Func1<INPUT, OUTPUT> elseUse(OUTPUT defaultValue) {

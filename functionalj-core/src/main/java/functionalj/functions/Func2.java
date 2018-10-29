@@ -18,6 +18,8 @@ package functionalj.functions;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import functionalj.promise.DeferAction;
+import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple2;
 import lombok.val;
@@ -32,7 +34,7 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2, OUTPUT>, FuncUnit2<INPUT1, INPUT2> {
+public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2, OUTPUT> {
 
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2) throws Exception;
     
@@ -64,10 +66,6 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         } catch (Exception exception) {
             throw new FunctionInvocationException(exception);
         }
-    }
-    
-    public default void acceptUnsafe(INPUT1 input1, INPUT2 input2) throws Exception {
-        applyUnsafe(input1, input2);
     }
     
     /**
@@ -128,6 +126,16 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return t -> this.apply(t._1(), t._2());
     }
     
+    public default Func2<INPUT1, INPUT2, Promise<OUTPUT>> defer() {
+        return (input1, input2) -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.apply(input1, input2);
+            };
+            return DeferAction.from(supplier)
+                    .start().getPromise();
+        };
+    }
+    
     
     /**
      * Flip the parameter order.
@@ -137,7 +145,6 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT2, INPUT1, OUTPUT> flip() {
         return (i2, i1) -> this.apply(i1, i2);
     }
-    
     //== Partially apply functions ==
     
     @SuppressWarnings("javadoc")
