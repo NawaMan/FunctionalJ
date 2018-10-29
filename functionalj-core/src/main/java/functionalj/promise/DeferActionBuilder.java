@@ -14,15 +14,15 @@ public class DeferActionBuilder<DATA> {
     private static final Runnable DO_NOTHING = ()->{};
     
     private final Func0<DATA>  supplier;
-    private boolean            interruptOnCancel = DeferAction.interruptOnCancel.value();
+    private boolean            interruptOnCancel = true;
     private Runnable           onStart           = DO_NOTHING;
     private Consumer<Runnable> runner            = Env.asyncRunner();
     
-    public DeferActionBuilder(FuncUnit0 supplier) {
+    DeferActionBuilder(FuncUnit0 supplier) {
         this(supplier.thenReturnNull());
     }
     
-    public DeferActionBuilder(Func0<DATA> supplier) {
+    DeferActionBuilder(Func0<DATA> supplier) {
         this.supplier = requireNonNull(supplier);
     }
     

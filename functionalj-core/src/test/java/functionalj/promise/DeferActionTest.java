@@ -24,8 +24,6 @@ import java.util.stream.IntStream;
 
 import org.junit.Test;
 
-import functionalj.environments.Env;
-import functionalj.environments.TimeFuncs;
 import functionalj.functions.Func0;
 import functionalj.list.FuncList;
 import functionalj.ref.Run;
@@ -409,7 +407,7 @@ public class DeferActionTest {
                 + "]", log);
     }
     
-    static class LoggedCreator implements DeferActionCreator {
+    static class LoggedCreator extends DeferActionCreator {
         private final List<String>       logs    = Collections.synchronizedList(new ArrayList<String>());
         private final AtomicInteger      daCount = new AtomicInteger(0);
         private final Consumer<Runnable> runner;
@@ -446,7 +444,7 @@ public class DeferActionTest {
     @Test
     public void testCreator() throws InterruptedException {
         val creator = new LoggedCreator();
-        Run.with(DeferAction.creator.butWith(creator))
+        Run.with(DeferActionCreator.current.butWith(creator))
         .run(()->{
             DeferAction.run(Sleep(100).thenReturn(null)).getResult();
             DeferAction.run(Sleep(100).thenReturn(null)).getResult();
@@ -561,7 +559,7 @@ public class DeferActionTest {
     }
     
     private void runActions(final functionalj.promise.DeferActionTest.LoggedCreator creator) {
-        val list = Run.with(DeferAction.creator.butWith(creator))
+        val list = Run.with(DeferActionCreator.current.butWith(creator))
         .run(()->{
             val actions = FuncList
                 .from(IntStream.range(0, 5).mapToObj(Integer::valueOf))
@@ -587,7 +585,7 @@ public class DeferActionTest {
             executor.execute(runnable);
         });
         val startTime = System.currentTimeMillis();
-        val list = Run.with(DeferAction.creator.butWith(creator))
+        val list = Run.with(DeferActionCreator.current.butWith(creator))
         .run(()->{
             val actions = FuncList
                 .from(IntStream.range(0, 5).mapToObj(Integer::valueOf))

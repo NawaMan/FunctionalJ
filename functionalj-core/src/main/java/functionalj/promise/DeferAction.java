@@ -9,19 +9,11 @@ import functionalj.functions.Func0;
 import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit0;
 import functionalj.functions.FuncUnit1;
-import functionalj.ref.Ref;
 import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
 public class DeferAction<DATA> extends UncompleteAction<DATA> {
-    
-    public static final Ref<Boolean> interruptOnCancel
-            = Ref.ofValue(true);
-    
-    public static final Ref<DeferActionCreator> creator
-            = Ref.of(DeferActionCreator.class)
-            .defaultTo(DeferActionCreator.instance);
     
     public static <D> DeferAction<D> createNew() {
         return of((Class<D>)null);
@@ -31,10 +23,10 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> {
     }
     
     public static DeferActionBuilder<Object> from(FuncUnit0 runnable) {
-        return new DeferActionBuilder<Object>(runnable);
+        return DeferActionConfig.current.value().createBuilder(runnable);
     }
     public static <D> DeferActionBuilder<D> from(Func0<D> supplier) {
-        return new DeferActionBuilder<D>(supplier);
+        return DeferActionConfig.current.value().createBuilder(supplier);
     }
     
     public static PendingAction<Object> run(FuncUnit0 runnable) {
@@ -51,7 +43,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> {
             Func0<D>           supplier,
             Runnable           onStart,
             Consumer<Runnable> runner) {
-        return creator.value()
+        return DeferActionCreator.current.value()
                 .create(interruptOnCancel, supplier, onStart, runner);
     }
     
