@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import functionalj.result.Result;
 
 @SuppressWarnings("javadoc")
-public abstract class UncompleteAction<DATA> implements HasPromise<DATA> {
+public abstract class UncompleteAction<DATA> extends StartableAction<DATA> implements HasPromise<DATA> {
     
     protected final Promise<DATA> promise;
     

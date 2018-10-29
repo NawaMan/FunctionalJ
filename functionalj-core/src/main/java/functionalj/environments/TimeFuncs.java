@@ -6,8 +6,7 @@ public class TimeFuncs {
     
     public static FuncUnit0 Sleep(long millisecond) {
         return ()-> {
-            Env.time.value().currentMilliSecond();
-            Thread.sleep(millisecond);
+            Env.time.value().sleep(millisecond);
         };
     }
     

@@ -16,8 +16,9 @@ public class PendingAction<DATA> extends UncompleteAction<DATA> {
         super(promise);
     }
     
-    // TODO - Add methods that allow the caller to know if the proceeding success or fail.
-    // TODO - Add methods that the proceeding MUST be done or exception should be thrown.
+    public PendingAction<DATA> start() {
+        return this;
+    }
     
     //== Subscription ==
     

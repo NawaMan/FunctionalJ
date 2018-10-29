@@ -1,7 +1,9 @@
 package functionalj.promise;
 
 import static functionalj.functions.Func.carelessly;
+import static functionalj.promise.RaceResult.Race;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -9,6 +11,7 @@ import functionalj.functions.Func0;
 import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit0;
 import functionalj.functions.FuncUnit1;
+import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -36,6 +39,15 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> {
     public static <D> PendingAction<D> run(Func0<D> supplier) {
         return from(supplier)
                 .start();
+    }
+    
+    @SafeVarargs
+    public static <D> RaceResult<D> race(StartableAction<D> ... actions) {
+        return Race(FuncList.of(actions));
+    }
+    
+    public static <D> RaceResult<D> race(List<StartableAction<D>> actions) {
+        return Race(actions);
     }
     
     public static <D> DeferAction<D> create(

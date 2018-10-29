@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.util.stream.IntStream;
 
 import org.junit.Test;
 
+import functionalj.environments.TimeFuncs;
 import functionalj.functions.Func0;
 import functionalj.list.FuncList;
 import functionalj.ref.Run;
@@ -637,6 +639,56 @@ public class DeferActionTest {
         val diffTime = System.currentTimeMillis() - startTime;
         
         assertTrue("Taking too long", diffTime < 1000);
+    }
+    
+    @Test
+    public void testRace() {
+        val startTime = System.currentTimeMillis();
+        val action1 = DeferAction.from(TimeFuncs.Sleep(60000).thenReturn("60000"));
+        val action2 = DeferAction.from(TimeFuncs.Sleep(10   ).thenReturn("10"));
+        assertEquals("10", DeferAction.race(action1, action2).getResult().get());
+        val diffTime = System.currentTimeMillis() - startTime;
+        assertTrue ("Taking too long ... interrupt not working.", diffTime < 500);
+    }
+    
+    @Test
+    public void testRace_confirmCancel() {
+        val action1 = DeferAction.run(TimeFuncs.Sleep(60000).thenReturn("60000"));
+        val action2 = DeferAction.run(TimeFuncs.Sleep(10   ).thenReturn("10"));
+        assertEquals("10", DeferAction.race(action1, action2).getResult().get());
+        assertEquals("Result:{ Exception: functionalj.result.ResultCancelledException }", action1.getResult().toString());
+    }
+    
+    @Test
+    public void testRace_cancelFirst() {
+        val action1 = DeferAction.run(TimeFuncs.Sleep(200).thenReturn("200"));
+        val action2 = DeferAction.run(TimeFuncs.Sleep(100).thenReturn("100"));
+        val action  = DeferAction.race(action1, action2);
+        action2.abort();
+        val result  = action.getResult();
+        assertEquals("200", result.get());
+    }
+    
+    @Test
+    public void testRace_cancelAll() {
+        val action1 = DeferAction.run(TimeFuncs.Sleep(200).thenReturn("200"));
+        val action2 = DeferAction.run(TimeFuncs.Sleep(100).thenReturn("100"));
+        val action  = DeferAction.race(action1, action2);
+        action1.abort();
+        action2.abort();
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException }", action1.getResult());
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException }", action2.getResult());
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: Finish without non-null result. }", action.getResult());
+    }
+    
+    @Test
+    public void testRace_null() {
+        val action1 = DeferAction.run(TimeFuncs.Sleep(100).thenReturn((String)null));
+        val action2 = DeferAction.run(TimeFuncs.Sleep(100).thenReturn("100"));
+        val action  = DeferAction.race(action1, action2);
+        action2.abort();
+        val result  = action.getResult();
+        assertNull(result.get());
     }
     
 }

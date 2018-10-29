@@ -9,7 +9,7 @@ import functionalj.functions.Func0;
 import functionalj.functions.FuncUnit0;
 import lombok.experimental.Delegate;
 
-public class DeferActionBuilder<DATA> {
+public class DeferActionBuilder<DATA> extends StartableAction<DATA> {
     
     private static final Runnable DO_NOTHING = ()->{};
     

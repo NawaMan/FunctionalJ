@@ -132,6 +132,13 @@ public interface ResultStatusAddOn<DATA> {
         );
     }
     
+    public default Result<DATA> ifNull(Runnable runnable) {
+        useData((value, exception) -> {
+            if ((value == null) && (exception == null))
+                runnable.run();
+        });
+        return asResult();
+    }
     public default Result<DATA> ifNull(Consumer<? super DATA> consumer) {
         useData((value, exception) -> {
             if ((value == null) && (exception == null))
