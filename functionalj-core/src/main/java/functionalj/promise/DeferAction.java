@@ -25,6 +25,12 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> {
         return new DeferAction<D>(new Promise<D>());
     }
     
+    public static <D> DeferAction<D> ofValue(D value) {
+        val promise = new Promise<D>();
+        promise.makeComplete(value);
+        return new DeferAction<D>(promise);
+    }
+    
     public static DeferActionBuilder<Object> from(FuncUnit0 runnable) {
         return DeferActionConfig.current.value().createBuilder(runnable);
     }
@@ -161,7 +167,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> {
     }
     
     public final <TARGET> DeferAction<TARGET> chain(Func1<DATA, ? extends HasPromise<TARGET>> mapper) {
-        val newPromise = promise.flatMap(mapper);
+        val newPromise = promise.chain(mapper);
         return new DeferAction<TARGET>(this, (Promise<TARGET>)newPromise);
     }
     

@@ -91,10 +91,10 @@ public interface ResultStatusAddOn<DATA> {
         );
     }
     
-    public default Result<DATA> ifNotPresent(Consumer<? super DATA> consumer) {
+    public default Result<DATA> ifNotPresent(Runnable runnable) {
         useData((value, exception) -> {
             if (value == null)
-                consumer.accept(value);
+                runnable.run();
         });
         return asResult();
     }
@@ -175,7 +175,7 @@ public interface ResultStatusAddOn<DATA> {
         return isPresent();
     }
     
-    public default Result<DATA> ifNotNull(Consumer<? super DATA> consumer) {
+    public default Result<DATA> ifNotNull(Runnable consumer) {
         return ifNotPresent(consumer);
     }
     

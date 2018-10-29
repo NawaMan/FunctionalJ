@@ -691,4 +691,58 @@ public class DeferActionTest {
         assertNull(result.get());
     }
     
+    @Test
+    public void testRetry_allFail() {
+        val counter = new AtomicInteger(0);
+        val action = DeferAction.from(()->{ counter.incrementAndGet(); return null; })
+                .retry(5).times().waitFor(50L).milliseconds().start();
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: Retry exceed: 5 }", action.getResult());
+        assertEquals(5, counter.get());
+    }
+    
+    @Test
+    public void testRetry_finallySuccess() {
+        val counter = new AtomicInteger(0);
+        val action = DeferAction.from(()->{ counter.incrementAndGet(); return counter.get() == 3 ? "Three" : null; })
+                // I like fluence, but this is rediculous.
+                // Let fix this later.
+                .retry(5).times().waitFor(50).milliseconds().start();
+        assertStrings("Result:{ Value: Three }", action.getResult());
+        assertEquals(3, counter.get());
+    }
+    
+    @Test
+    public void testRetry_waitTime() {
+        val counter = new AtomicInteger(0);
+        val builder = DeferAction.from(()->{ counter.incrementAndGet(); return null; })
+                .retry(5).times().waitFor(0L).milliseconds();
+        
+        val time1 = System.currentTimeMillis();
+        builder.start().getResult();
+        
+        val time2 = System.currentTimeMillis();
+        builder.retry(5).times().waitFor(50L).milliseconds().start().getResult();
+        
+        val time3 = System.currentTimeMillis();
+        
+        val diff1 = (time2 - time1)/50;
+        val diff2 = (time3 - time2)/50;
+        assertTrue(diff1 < 2);
+        assertTrue(diff2 > 2);
+    }
+    
+    @Test
+    public void testRetry_abort() throws InterruptedException {
+        val counter = new AtomicInteger(0);
+        val builder = DeferAction.from(()->{ counter.incrementAndGet(); return counter.get() == 3 ? "Three" : null; })
+                .retry(5).times().waitFor(50).milliseconds();
+        
+        val action = builder.start();
+        
+        Thread.sleep(70);
+        action.abort("Can't wait.");
+        
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: Can't wait. }", action.getResult());
+    }
+    
 }

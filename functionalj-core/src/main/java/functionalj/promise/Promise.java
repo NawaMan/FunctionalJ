@@ -646,7 +646,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             .ifPresent(value -> {
                 targetPromise.makeDone((Result<TARGET>)result);
             })
-            .ifNotPresent(value -> {
+            .ifNotPresent(() -> {
                 targetPromise.makeDone(Result.of(elseValue));
             });
         });
@@ -662,7 +662,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             .ifPresent(value -> {
                 targetPromise.makeDone((Result<TARGET>)result);
             })
-            .ifNotPresent(value -> {
+            .ifNotPresent(() -> {
                 targetPromise.makeDone(Result.from(elseSupplier));
             });
         });
