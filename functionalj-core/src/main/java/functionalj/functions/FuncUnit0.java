@@ -76,14 +76,6 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         };
     }
     
-    public default <I1, I2, T> Func2<I1, I2, T> then(Func2<I1, I2, T> function) {
-        return (input1, input2) -> {
-            runUnsafe();
-            val value = function.applyUnsafe(input1, input2);
-            return value;
-        };
-    }
-    
     public default Func0<Promise<Object>> defer() {
         return this.thenReturnNull().defer();
     }
