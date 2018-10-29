@@ -1,7 +1,7 @@
 package functionalj.promise;
 
-import static functionalj.functions.Func.F;
 import static functionalj.functions.Func.carelessly;
+import static functionalj.functions.Func.f;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             BiFunction<T1, T2, D> merger) {
         return new Combiner(
                 FuncList.of(promise1, promise2),
-                F((Result[] results)-> {
+                f((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
                     val result2 = (Result<T2>)results[1];
                     val mergedResult = Result.ofResults(result1, result2, merger);
@@ -111,7 +111,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             Func3<T1, T2, T3, D> merger) {
         return new Combiner(
                 FuncList.of(promise1, promise2, promise3),
-                F((Result[] results)-> {
+                f((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
                     val result2 = (Result<T2>)results[1];
                     val result3 = (Result<T3>)results[2];
@@ -139,7 +139,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             Func4<T1, T2, T3, T4, D> merger) {
         return new Combiner(
                 FuncList.of(promise1, promise2, promise3, promise4),
-                F((Result[] results)-> {
+                f((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
                     val result2 = (Result<T2>)results[1];
                     val result3 = (Result<T3>)results[2];
@@ -170,7 +170,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             Func5<T1, T2, T3, T4, T5, D> merger) {
         return new Combiner(
                 FuncList.of(promise1, promise2, promise3, promise4),
-                F((Result[] results)-> {
+                f((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
                     val result2 = (Result<T2>)results[1];
                     val result3 = (Result<T3>)results[2];
@@ -204,7 +204,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
         return new Combiner(
                 FuncList.of(promise1, promise2, promise3, promise4, promise5, promise6),
-                F((Result[] results)-> {
+                f((Result[] results)-> {
                     val result1 = (Result<T1>)results[0];
                     val result2 = (Result<T2>)results[1];
                     val result3 = (Result<T3>)results[2];

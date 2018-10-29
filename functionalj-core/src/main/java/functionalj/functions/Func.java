@@ -502,13 +502,11 @@ public interface Func {
         }
     }
     
-    // TODO - Add the one with handler.
-    
-    public static <INPUT> FuncUnit1<INPUT> F(FuncUnit1<INPUT> consumer) {
+    public static <INPUT> FuncUnit1<INPUT> f(FuncUnit1<INPUT> consumer) {
         return consumer;
     }
     
-    public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> F(FuncUnit2<INPUT1, INPUT2> consumer) {
+    public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> f(FuncUnit2<INPUT1, INPUT2> consumer) {
         return consumer;
     }
     
@@ -520,7 +518,7 @@ public interface Func {
      * @return           the result Func0.
      **/
     public static <OUTPUT> 
-            Func0<OUTPUT> F(Func0<OUTPUT> supplier) {
+            Func0<OUTPUT> f(Func0<OUTPUT> supplier) {
         return supplier;
     }
     
@@ -533,7 +531,7 @@ public interface Func {
      * @return           the result Func1.
      **/
     public static <INPUT, OUTPUT> 
-            Func1<INPUT, OUTPUT> F(Func1<INPUT, OUTPUT> function) {
+            Func1<INPUT, OUTPUT> f(Func1<INPUT, OUTPUT> function) {
         return function;
     }
 
@@ -547,7 +545,7 @@ public interface Func {
      * @return           the result Func2.
      **/
     public static <INPUT1, INPUT2,OUTPUT> 
-            Func2<INPUT1, INPUT2, OUTPUT> F(Func2<INPUT1, INPUT2, OUTPUT> function) {
+            Func2<INPUT1, INPUT2, OUTPUT> f(Func2<INPUT1, INPUT2, OUTPUT> function) {
         return function;
     }
     
@@ -562,7 +560,7 @@ public interface Func {
      * @return           the result Func3.
      **/
     public static <INPUT1,INPUT2,INPUT3,OUTPUT> 
-            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> F(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
+            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> f(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
         return function;
     }
     
@@ -579,7 +577,7 @@ public interface Func {
      **/
     public static
             <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
-            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> F(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
+            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> f(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
         return function;
     }
     
@@ -597,7 +595,7 @@ public interface Func {
      **/
     public static 
             <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
-            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> F(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
+            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> f(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
         return function;
     }
     
@@ -616,7 +614,7 @@ public interface Func {
      **/
     public static 
             <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
-            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> F(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
+            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> f(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return function;
     }
     
@@ -806,18 +804,6 @@ public interface Func {
         return function.apply(input);
     }
     
-    public static <INPUT, VALUE> VALUE apply(Function<INPUT, VALUE> f, INPUT i) {
-        return f.apply(i);
-    }
-    
-    public static <I1, I2, VALUE> VALUE apply(BiFunction<I1, I2, VALUE> f, I1 i1, I2 i2) {
-        return f.apply(i1, i2);
-    }
-    
-    public static <I1, I2, I3, VALUE> VALUE apply(Func3<I1, I2, I3, VALUE> f, I1 i1, I2 i2, I3 i3) {
-        return f.apply(i1, i2, i3);
-    }
-    
     //== All ==
     
     /**
@@ -960,7 +946,50 @@ public interface Func {
         };
     }
     
-
+    //== Lift ==
+    
+    public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT1, OUTPUT> lift(
+            Func2<INPUT1, INPUT2, OUTPUT> func, 
+            INPUT2 i2) {
+        return (i1) -> func.apply(i1, i2);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func1<INPUT1, OUTPUT> lift(
+            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func, 
+            INPUT2 i2, 
+            INPUT3 i3) {
+        return (i1) -> func.apply(i1, i2, i3);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func1<INPUT1, OUTPUT> lift(
+            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, 
+            INPUT2 i2, 
+            INPUT3 i3, 
+            INPUT4 i4) {
+        return (i1) -> func.apply(i1, i2, i3, i4);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func1<INPUT1, OUTPUT> lift(
+            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, 
+            INPUT2 i2, 
+            INPUT3 i3, 
+            INPUT4 i4, 
+            INPUT5 i5) {
+        return (i1) -> func.apply(i1, i2, i3, i4, i5);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func1<INPUT1, OUTPUT> lift(
+            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, 
+            INPUT2 i2, 
+            INPUT3 i3, 
+            INPUT4 i4, 
+            INPUT5 i5, 
+            INPUT6 i6) {
+        return (i1) -> func.apply(i1, i2, i3, i4, i5, i6);
+    }
+    
+    //== Compose ==
+    
     public static <INPUT1, INPUT2, OUTPUT> 
             Func1<INPUT1, OUTPUT> 
             compose(
@@ -1095,508 +1124,6 @@ public interface Func {
                  .then(f8)
                  .then(f9)
                  .then(f10);
-    }
-    
-    
-    //== Partial apply ==
-    
-    public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT1, Func1<INPUT2, OUTPUT>> curry(BiFunction<INPUT1, INPUT2, OUTPUT> func) {
-        return i1 -> i2 -> func.apply(i1, i2);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT1, OUTPUT> of(BiFunction<INPUT1, INPUT2, OUTPUT> func, Absent a1, INPUT2 i2) {
-        if (func instanceof Func2)
-            return ((Func2<INPUT1, INPUT2, OUTPUT>)func).apply(a1, i2);
-        
-        return Func.from(func).apply(a1, i2);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT2, OUTPUT> of(BiFunction<INPUT1, INPUT2, OUTPUT> func, INPUT1 i1, Absent a2) {
-        if (func instanceof Func2)
-            return ((Func2<INPUT1, INPUT2, OUTPUT>)func).apply(i1, a2);
-        
-        return Func.from(func).apply(i1, a2);
-    }
-    
-    //-- Func3 --
-    
-    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func1<INPUT1, Func1<INPUT2, Func1<INPUT3, OUTPUT>>> curry(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func) {
-        return i1 -> i2 ->i3 -> func.apply(i1, i2, i3);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func1<INPUT1, OUTPUT> of(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3) {
-        return func.apply(a1, i2, i3);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func1<INPUT2, OUTPUT> of(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3) {
-        return func.apply(i1, a2, i3);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func1<INPUT3, OUTPUT> of(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3) {
-        return func.apply(i1, i2, a3);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> of(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3) {
-        return func.apply(a1, a2, i3);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func2<INPUT1, INPUT3, OUTPUT> of(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3) {
-        return func.apply(a1, i2, a3);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func2<INPUT2, INPUT3, OUTPUT> of(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3) {
-        return func.apply(i1, a2, a3);
-    }
-    
-    //-- Func4 --
-    
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func1<INPUT1, Func1<INPUT2, Func1<INPUT3, Func1<INPUT4, OUTPUT>>>> curry(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func) {
-        return i1 -> i2 -> i3 -> i4 -> func.apply(i1, i2, i3, i4);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func1<INPUT1, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4) {
-        return func.apply(a1, i2, i3, i4);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func1<INPUT2, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4) {
-        return func.apply(i1, a2, i3, i4);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func1<INPUT3, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4) {
-        return func.apply(i1, i2, a3, i4);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func1<INPUT4, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4) {
-        return func.apply(i1, i2, i3, a4);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, INPUT4 i4) {
-        return func.apply(a1, a2, i3, i4);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func2<INPUT1, INPUT3, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, INPUT4 i4) {
-        return func.apply(a1, i2, a3, i4);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func2<INPUT1, INPUT4, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, Absent a4) {
-        return func.apply(a1, i2, i3, a4);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func2<INPUT2, INPUT3, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, INPUT4 i4) {
-        return func.apply(i1, a2, a3, i4);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func2<INPUT2, INPUT4, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, Absent a4) {
-        return func.apply(i1, a2, i3, a4);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func2<INPUT3, INPUT4, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, Absent a4) {
-        return func.apply(i1, i2, a3, a4);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func3<INPUT1, INPUT2, INPUT3, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, Absent a1, Absent a2, Absent a3, INPUT4 i4) {
-        return func.apply(a1, a2, a3, i4);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func3<INPUT1, INPUT2, INPUT4, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, Absent a4) {
-        return func.apply(a1, a2, i3, a4);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func3<INPUT1, INPUT3, INPUT4, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, Absent a4) {
-        return func.apply(a1, i2, a3, a4);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func3<INPUT2, INPUT3, INPUT4, OUTPUT> of(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, Absent a4) {
-        return func.apply(i1, a2, a3, a4);
-    }
-    
-    //-- Func5 --
-    
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func1<INPUT1, Func1<INPUT2, Func1<INPUT3, Func1<INPUT4, Func1<INPUT5, OUTPUT>>>>> curry(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func) {
-        return i1 -> i2 -> i3 -> i4 -> i5 -> func.apply(i1, i2, i3, i4, i5);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func1<INPUT1, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
-        return func.apply(a1, i2, i3, i4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func1<INPUT2, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
-        return func.apply(i1, a2, i3, i4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func1<INPUT3, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5) {
-        return func.apply(i1, i2, a3, i4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func1<INPUT4, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5) {
-        return func.apply(i1, i2, i3, a4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func1<INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5) {
-        return func.apply(i1, i2, i3, i4, a5);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
-        return func.apply(a1, a2, i3, i4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func2<INPUT1, INPUT3, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5) {
-        return func.apply(a1, i2, a3, i4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func2<INPUT1, INPUT4, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5) {
-        return func.apply(a1, i2, i3, a4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func2<INPUT1, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5) {
-        return func.apply(a1, i2, i3, i4, a5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func2<INPUT2, INPUT3, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5) {
-        return func.apply(i1, a2, a3, i4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func2<INPUT2, INPUT4, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5) {
-        return func.apply(i1, a2, i3, a4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func2<INPUT2, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5) {
-        return func.apply(i1, a2, i3, i4, a5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func2<INPUT3, INPUT4, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5) {
-        return func.apply(i1, i2, a3, a4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func2<INPUT3, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5) {
-        return func.apply(i1, i2, a3, i4, a5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func2<INPUT4, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5) {
-        return func.apply(i1, i2, i3, a4, a5);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func3<INPUT1, INPUT2, INPUT3, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5) {
-        return func.apply(a1, a2, a3, i4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func3<INPUT1, INPUT2, INPUT4, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5) {
-        return func.apply(a1, a2, i3, a4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func3<INPUT1, INPUT2, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5) {
-        return func.apply(a1, a2, i3, i4, a5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func3<INPUT1, INPUT3, INPUT4, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5) {
-        return func.apply(a1, i2, a3, a4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func3<INPUT1, INPUT3, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5) {
-        return func.apply(a1, i2, a3, i4, a5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func3<INPUT2, INPUT3, INPUT4, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, Absent a4, INPUT5 i5) {
-        return func.apply(i1, a2, a3, a4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func3<INPUT2, INPUT3, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, Absent a5) {
-        return func.apply(i1, a2, a3, i4, a5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func3<INPUT3, INPUT4, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, Absent I4, Absent a5) {
-        return func.apply(i1, i2, a3, I4, a5);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, Absent a2, Absent a3, Absent a4, INPUT5 i5) {
-        return func.apply(a1, a2, a3, a4, i5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func4<INPUT1, INPUT2, INPUT3, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, Absent a2, Absent a3, INPUT4 i4, Absent a5) {
-        return func.apply(a1, a2, a3, i4, a5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func4<INPUT1, INPUT2, INPUT4, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, Absent a4, Absent a5) {
-        return func.apply(a1, a2, i3, a4, a5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func4<INPUT1, INPUT3, INPUT4, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, Absent a4, Absent a5) {
-        return func.apply(a1, i2, a3, a4, a5);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func4<INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> of(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, Absent a4, Absent a5) {
-        return func.apply(i1, a2, a3, a4, a5);
-    }
-    
-    //-- Func6 --
-    
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func1<INPUT1, Func1<INPUT2, Func1<INPUT3, Func1<INPUT4, Func1<INPUT5, Func1<INPUT6, OUTPUT>>>>>> curry(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func) {
-        return i1 -> i2 -> i3 -> i4 -> i5 -> i6 -> func.apply(i1, i2, i3, i4, i5, i6);
-    }
-
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func1<INPUT1, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(a1, i2, i3, i4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func1<INPUT2, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(i1, a2, i3, i4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func1<INPUT3, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(i1, i2, a3, i4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func1<INPUT4, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(i1, i2, i3, a4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func1<INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return func.apply(i1, i2, i3, i4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func1<INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return func.apply(i1, i2, i3, i4, i5, a6);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT1, INPUT2, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(a1, a2, i3, i4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT1, INPUT3, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(a1, i2, a3, i4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT1, INPUT4, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(a1, i2, i3, a4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT1, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return func.apply(a1, i2, i3, i4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT1, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return func.apply(a1, i2, i3, i4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT2, INPUT3, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(i1, a2, a3, i4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT2, INPUT4, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(i1, a2, i3, a4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT2, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return func.apply(i1, a2, i3, i4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT2, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return func.apply(i1, a2, i3, i4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT3, INPUT4, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(i1, i2, a3, a4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT3, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return func.apply(i1, i2, a3, i4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT3, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return func.apply(i1, i2, a3, i4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT4, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5, INPUT6 i6) {
-        return func.apply(i1, i2, i3, a4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT4, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5, Absent a6) {
-        return func.apply(i1, i2, i3, a4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func2<INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5, Absent a6) {
-        return func.apply(i1, i2, i3, i4, a5, a6);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT1, INPUT2, INPUT3, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(a1, a2, a3, i4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT1, INPUT2, INPUT4, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(a1, a2, i3, a4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT1, INPUT2, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return func.apply(a1, a2, i3, i4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT1, INPUT2, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return func.apply(a1, a2, i3, i4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT1, INPUT3, INPUT4, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(a1, i2, a3, a4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT1, INPUT3, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return func.apply(a1, i2, a3, i4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT1, INPUT3, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return func.apply(a1, i2, a3, i4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT1, INPUT4, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5, INPUT6 i6) {
-        return func.apply(a1, i2, i3, a4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT1, INPUT4, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5, Absent a6) {
-        return func.apply(a1, i2, i3, a4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT1, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5, Absent a6) {
-        return func.apply(a1, i2, i3, i4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT2, INPUT3, INPUT4, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(i1, a2, a3, a4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT2, INPUT3, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return func.apply(i1, a2, a3, i4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT2, INPUT3, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return func.apply(i1, a2, a3, i4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT2, INPUT4, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, Absent a5, INPUT6 i6) {
-        return func.apply(i1, a2, i3, a4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT2, INPUT4, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5, Absent a6) {
-        return func.apply(i1, a2, i3, a4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT2, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5, Absent a6) {
-        return func.apply(i1, a2, i3, i4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT3, INPUT4, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, Absent a5, INPUT6 i6) {
-        return func.apply(i1, i2, a3, a4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT3, INPUT4, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5, Absent a6) {
-        return func.apply(i1, i2, a3, a4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT3, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5, Absent a6) {
-        return func.apply(i1, i2, a3, i4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func3<INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5, Absent a6) {
-        return func.apply(i1, i2, i3, a4, a5, a6);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, Absent a3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return func.apply(a1, a2, a3, a4, i5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT1, INPUT2, INPUT3, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, Absent a3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return func.apply(a1, a2, a3, i4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT1, INPUT2, INPUT3, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return func.apply(a1, a2, a3, i4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT1, INPUT2, INPUT4, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, Absent a4, Absent a5, INPUT6 i6) {
-        return func.apply(a1, a2, i3, a4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT1, INPUT2, INPUT4, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5, Absent a6) {
-        return func.apply(a1, a2, i3, a4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT1, INPUT2, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5, Absent a6) {
-        return func.apply(a1, a2, i3, i4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT1, INPUT3, INPUT4, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, Absent a4, Absent a5, INPUT6 i6) {
-        return func.apply(a1, i2, a3, a4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT1, INPUT3, INPUT4, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5, Absent a6) {
-        return func.apply(a1, i2, a3, a4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT1, INPUT3, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5, Absent a6) {
-        return func.apply(a1, i2, a3, i4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT1, INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5, Absent a6) {
-        return func.apply(a1, i2, i3, a4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, Absent a4, Absent a5, INPUT6 i6) {
-        return func.apply(i1, a2, a3, a4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT2, INPUT3, INPUT4, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, Absent a4, INPUT5 i5, Absent a6) {
-        return func.apply(i1, a2, a3, a4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT2, INPUT3, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, Absent a5, Absent a6) {
-        return func.apply(i1, a2, a3, i4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT2, INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, Absent a5, Absent a6) {
-        return func.apply(i1, a2, i3, a4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func4<INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, Absent a5, Absent a6) {
-        return func.apply(i1, i2, a3, a4, a5, a6);
-    }
-    
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, Absent a3, Absent a4, Absent a5, INPUT6 i6) {
-        return func.apply(a1, a2, a3, a4, a5, i6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, Absent a3, Absent a4, INPUT5 i5, Absent a6) {
-        return func.apply(a1, a2, a3, a4, i5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func5<INPUT1, INPUT2, INPUT3, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, Absent a3, INPUT4 i4, Absent a5, Absent a6) {
-        return func.apply(a1, a2, a3, i4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func5<INPUT1, INPUT2, INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, Absent a2, INPUT3 i3, Absent a4, Absent a5, Absent a6) {
-        return func.apply(a1, a2, i3, a4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func5<INPUT1, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, Absent a1, INPUT2 i2, Absent a3, Absent a4, Absent a5, Absent a6) {
-        return func.apply(a1, i2, a3, a4, a5, a6);
-    }
-    @SuppressWarnings("javadoc")
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func5<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> of(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, INPUT1 i1, Absent a2, Absent a3, Absent a4, Absent a5, Absent a6) {
-        return func.apply(i1, a2, a3, a4, a5, a6);
     }
     
 }

@@ -15,6 +15,12 @@ public interface Pipeable<DATA> {
     public static <D> Pipeable<D> from(Supplier<D> supplier) {
         return supplier::get;
     }
+    public static <D> Pipeable<D> StartWtih(D data) {
+        return ()->data;
+    }
+    public static <D> Pipeable<D> StartBy(Supplier<D> supplier) {
+        return supplier::get;
+    }
     
     
     public DATA __data() throws Exception;

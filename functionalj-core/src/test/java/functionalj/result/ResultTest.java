@@ -1,6 +1,6 @@
 package functionalj.result;
 
-import static functionalj.functions.Func.F;
+import static functionalj.functions.Func.f;
 import static functionalj.result.Result.Do;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,7 +32,7 @@ public class ResultTest {
     public void testResultFom() {
         assertEquals("Result:{ Value: VALUE }", "" + Result.from(()->"VALUE"));
         assertEquals("Result:{ Exception: java.io.IOException }",
-                "" + Result.from(F(()->{ throw new IOException(); })));
+                "" + Result.from(f(()->{ throw new IOException(); })));
     }
     @Test
     public void testResult_value() {
