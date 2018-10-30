@@ -63,7 +63,7 @@ public abstract class WaitAwhile extends Wait {
             this.asyncRunner
                     = (asyncRunner != null)
                     ? asyncRunner
-                    : Env.asyncRunner();
+                    : Env.async();
             
         }
         

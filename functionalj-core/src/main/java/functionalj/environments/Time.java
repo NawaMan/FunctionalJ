@@ -1,23 +1,37 @@
 package functionalj.environments;
 
 import functionalj.InterruptedRuntimeException;
-import functionalj.ref.RefTo.Default;
 
-public interface Time {
+public final class Time {
     
-    @Default
-    public static final Time instance = new TimeSystem();
+    private Time() {
+    }
     
-    public long currentMilliSecond();
-    public void sleep(long millisecond);
+    public static long currentMilliSecond() {
+        return Env.time().currentMilliSecond();
+    }
     
-    public static class TimeSystem implements Time {
+    public static void sleep(long millisecond) {
+        Env.time().sleep(millisecond);
+    }
+    
+    
+    public static interface Instance {
+        
+        public long currentMilliSecond();
+        public void sleep(long millisecond);
+        
+    }
+    
+    public static class System implements Instance {
+        
+        public static final Time.Instance instance = new Time.System();
         
 //        private final ScheduledExecutorService scheduler =
 //                Executors.newScheduledThreadPool(1);
         
         public long currentMilliSecond() {
-            return System.currentTimeMillis();
+            return java.lang.System.currentTimeMillis();
         }
         
         public void sleep(long millisecond) {

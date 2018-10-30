@@ -2,15 +2,11 @@ package functionalj.promise;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import functionalj.environments.Env;
 import functionalj.functions.Func0;
 import functionalj.functions.FuncUnit0;
-import functionalj.functions.FuncUnit1;
-import functionalj.result.Result;
 import lombok.val;
 import lombok.experimental.Delegate;
 
@@ -21,7 +17,7 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> {
     private final Func0<DATA>  supplier;
     private boolean            interruptOnCancel = true;
     private FuncUnit0          onStart           = DO_NOTHING;
-    private Consumer<Runnable> runner            = Env.asyncRunner();
+    private Consumer<Runnable> runner            = Env.async();
     private Retry              retry             = Retry.noRetry;
     
     DeferActionBuilder(FuncUnit0 supplier) {
@@ -43,7 +39,7 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> {
     }
     
     public DeferActionBuilder<DATA> runner(Consumer<Runnable> runner) {
-        this.runner = (runner != null) ? runner : Env.asyncRunner();
+        this.runner = (runner != null) ? runner : Env.async();
         return this;
     }
     public DeferActionBuilder<DATA> retry(int times, long periodMillisecond) {
@@ -73,44 +69,8 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> {
         if (retry.times() == Retry.NO_RETRY)
             return DeferAction.create(interruptOnCancel, supplier, onStart, runner);
         
-        DeferAction<DATA> finalAction = DeferAction.createNew();
-        
-        val config = new DeferActionConfig()
-                .interruptOnCancel(interruptOnCancel)
-                .onStart(onStart)
-                .runner(runner);
-        
-        val couter  = new AtomicInteger(retry.times());
-        val builder = config.createBuilder(supplier);
-        
-        val onCompleteRef = new AtomicReference<FuncUnit1<Result<DATA>>>();
-        val onComplete    = (FuncUnit1<Result<DATA>>)(result -> {
-            if (result.isPresent()) {
-                val value = result.value();
-                finalAction.complete(value);
-            } else {
-                val count = couter.decrementAndGet();
-                if (count != 0) {
-                    val period = retry.waitTimeMilliSecond();
-                    Env.time().sleep(period);
-                    builder
-                    .build()
-                    .subscribe(onCompleteRef.get())
-                    .start();
-                }
-                if (count == 0) {
-                    finalAction.abort("Retry exceed: " + retry.times());
-                }
-            }
-        });
-        onCompleteRef.set(onComplete);
-        
-        builder
-        .build()
-        .subscribe(onComplete)
-        .start();
-        
-        return finalAction;
+        return RetryDeferActionCreator.current.value()
+                .createRetryDeferAction(interruptOnCancel, onStart, runner, retry, supplier);
     }
     
     //== Aux classes ==

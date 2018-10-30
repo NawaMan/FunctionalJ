@@ -6,12 +6,10 @@ import functionalj.environments.Env;
 import functionalj.functions.Func0;
 import functionalj.functions.FuncUnit0;
 import functionalj.ref.Ref;
-import functionalj.ref.RefTo.Default;
 
 public class DeferActionConfig {
     
-    @Default
-    public static final DeferActionConfig instance = new DeferActionConfig();
+    private static final DeferActionConfig instance = new DeferActionConfig();
     
     public static final Ref<DeferActionConfig> current
             = Ref.of(DeferActionConfig.class)
@@ -21,7 +19,7 @@ public class DeferActionConfig {
     
     private boolean            interruptOnCancel = true;
     private FuncUnit0          onStart           = DO_NOTHING;
-    private Consumer<Runnable> runner            = Env.asyncRunner();
+    private Consumer<Runnable> runner            = Env.async();
     
     public boolean interruptOnCancel() {
         return interruptOnCancel;
