@@ -137,7 +137,7 @@ public class FunctionalJTest {
     @Test
     public void testF3() {
         val add3  = Func.of(FunctionalJTest::add3);
-        val add_5 = add3.apply(__, 5, __);
+        val add_5 = add3.bind(__, 5, __);
         assertEquals(8, add_5.apply(1, 2).intValue());
     }
     

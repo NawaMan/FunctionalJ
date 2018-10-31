@@ -142,139 +142,139 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
     }
     
     @SuppressWarnings("javadoc")
-    public default Func4<INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> apply1(INPUT1 i1) {
+    public default Func4<INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> bind1(INPUT1 i1) {
         return (i2,i3,i4,i5) -> this.apply(i1, i2, i3,i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func4<INPUT1, INPUT3, INPUT4, INPUT5, OUTPUT> apply2(INPUT2 i2) {
+    public default Func4<INPUT1, INPUT3, INPUT4, INPUT5, OUTPUT> bind2(INPUT2 i2) {
         return (i1,i3,i4,i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func4<INPUT1, INPUT2, INPUT4, INPUT5, OUTPUT> apply3(INPUT3 i3) {
+    public default Func4<INPUT1, INPUT2, INPUT4, INPUT5, OUTPUT> bind3(INPUT3 i3) {
         return (i1,i2,i4,i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT5, OUTPUT> apply4(INPUT4 i4) {
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT5, OUTPUT> bind4(INPUT4 i4) {
         return (i1,i2,i3,i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> apply5(INPUT5 i5) {
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> bind5(INPUT5 i5) {
         return (i1,i2,i3,i4) -> this.apply(i1, i2, i3, i4, i5);
     }
     
     @SuppressWarnings("javadoc")
-    public default Func1<INPUT1, OUTPUT> apply(Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
+    public default Func1<INPUT1, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
         return i1 -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func1<INPUT2, OUTPUT> apply(INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
+    public default Func1<INPUT2, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
         return i2 -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func1<INPUT3, OUTPUT> apply(INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5) {
+    public default Func1<INPUT3, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5) {
         return i3 -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func1<INPUT4, OUTPUT> apply(INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5) {
+    public default Func1<INPUT4, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5) {
         return i4 -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func1<INPUT5, OUTPUT> apply(INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5) {
+    public default Func1<INPUT5, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5) {
         return i5 -> this.apply(i1, i2, i3, i4, i5);
     }
     
     @SuppressWarnings("javadoc")
-    public default Func2<INPUT1, INPUT2, OUTPUT> apply(Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
+    public default Func2<INPUT1, INPUT2, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
         return (i1, i2) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func2<INPUT1, INPUT3, OUTPUT> apply(Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5) {
+    public default Func2<INPUT1, INPUT3, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5) {
         return (i1, i3) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func2<INPUT1, INPUT4, OUTPUT> apply(Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5) {
+    public default Func2<INPUT1, INPUT4, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5) {
         return (i1, i4) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func2<INPUT1, INPUT5, OUTPUT> apply(Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5) {
+    public default Func2<INPUT1, INPUT5, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5) {
         return (i1, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func2<INPUT2, INPUT3, OUTPUT> apply(INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5) {
+    public default Func2<INPUT2, INPUT3, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5) {
         return (i2, i3) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func2<INPUT2, INPUT4, OUTPUT> apply(INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5) {
+    public default Func2<INPUT2, INPUT4, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5) {
         return (i2, i4) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func2<INPUT2, INPUT5, OUTPUT> apply(INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5) {
+    public default Func2<INPUT2, INPUT5, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5) {
         return (i2, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func2<INPUT3, INPUT4, OUTPUT> apply(INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5) {
+    public default Func2<INPUT3, INPUT4, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5) {
         return (i3, i4) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func2<INPUT3, INPUT5, OUTPUT> apply(INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5) {
+    public default Func2<INPUT3, INPUT5, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5) {
         return (i3, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func2<INPUT4, INPUT5, OUTPUT> apply(INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5) {
+    public default Func2<INPUT4, INPUT5, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5) {
         return (i4, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     
     @SuppressWarnings("javadoc")
-    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> apply(Absent a1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5) {
+    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> bind(Absent a1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5) {
         return (i1, i2, i3) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func3<INPUT1, INPUT2, INPUT4, OUTPUT> apply(Absent a1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5) {
+    public default Func3<INPUT1, INPUT2, INPUT4, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5) {
         return (i1, i2, i4) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func3<INPUT1, INPUT2, INPUT5, OUTPUT> apply(Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5) {
+    public default Func3<INPUT1, INPUT2, INPUT5, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5) {
         return (i1, i2, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func3<INPUT1, INPUT3, INPUT4, OUTPUT> apply(Absent a1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5) {
+    public default Func3<INPUT1, INPUT3, INPUT4, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5) {
         return (i1, i3, i4) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func3<INPUT1, INPUT3, INPUT5, OUTPUT> apply(Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5) {
+    public default Func3<INPUT1, INPUT3, INPUT5, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5) {
         return (i1, i3, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func3<INPUT2, INPUT3, INPUT4, OUTPUT> apply(INPUT1 i1, Absent a2, Absent a3, Absent a4, INPUT5 i5) {
+    public default Func3<INPUT2, INPUT3, INPUT4, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, Absent a4, INPUT5 i5) {
         return (i2, i3, i4) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func3<INPUT2, INPUT3, INPUT5, OUTPUT> apply(INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, Absent a5) {
+    public default Func3<INPUT2, INPUT3, INPUT5, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, Absent a5) {
         return (i2, i3, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func3<INPUT3, INPUT4, INPUT5, OUTPUT> apply(INPUT1 i1, INPUT2 i2, Absent a3, Absent I4, Absent a5) {
+    public default Func3<INPUT3, INPUT4, INPUT5, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, Absent I4, Absent a5) {
         return (i3, i4, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     
     @SuppressWarnings("javadoc")
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> apply(Absent a1, Absent a2, Absent a3, Absent a4, INPUT5 i5) {
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> bind(Absent a1, Absent a2, Absent a3, Absent a4, INPUT5 i5) {
         return (i1, i2, i3, i4) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT5, OUTPUT> apply(Absent a1, Absent a2, Absent a3, INPUT4 i4, Absent a5) {
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT5, OUTPUT> bind(Absent a1, Absent a2, Absent a3, INPUT4 i4, Absent a5) {
         return (i1, i2, i3, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func4<INPUT1, INPUT2, INPUT4, INPUT5, OUTPUT> apply(Absent a1, Absent a2, INPUT3 i3, Absent a4, Absent a5) {
+    public default Func4<INPUT1, INPUT2, INPUT4, INPUT5, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, Absent a4, Absent a5) {
         return (i1, i2, i4, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func4<INPUT1, INPUT3, INPUT4, INPUT5, OUTPUT> apply(Absent a1, INPUT2 i2, Absent a3, Absent a4, Absent a5) {
+    public default Func4<INPUT1, INPUT3, INPUT4, INPUT5, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, Absent a4, Absent a5) {
         return (i1, i3, i4, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
     @SuppressWarnings("javadoc")
-    public default Func4<INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> apply(INPUT1 i1, Absent a2, Absent a3, Absent a4, Absent a5) {
+    public default Func4<INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, Absent a4, Absent a5) {
         return (i2, i3, i4, i5) -> this.apply(i1, i2, i3, i4, i5);
     }
 }
