@@ -127,17 +127,17 @@ public class DeferActionTest {
         val start = System.currentTimeMillis();
         log.add("Start: " + (start - start));
         
-        val action = run(Sleep(100).thenReturn("Hello"));
+        val action = run(Sleep(1000).thenReturn("Hello"));
         
         try {
-            action.getResult(50, TimeUnit.MILLISECONDS);
+            action.getResult(500, TimeUnit.MILLISECONDS);
             fail("Expect an interruption.");
             
         } catch (UncheckedInterruptedException e) {
             val end = System.currentTimeMillis();
-            log.add("End: " + (10*((end - start) / 10)));
+            log.add("End: " + (100*((end - start) / 100)));
             log.add("Result: " + action.getCurentResult());
-            assertStrings("[Start: 0, End: 50, Result: Result:{ Exception: functionalj.result.ResultNotReadyException }]", log);
+            assertStrings("[Start: 0, End: 500, Result: Result:{ Exception: functionalj.result.ResultNotReadyException }]", log);
         }
     }
     

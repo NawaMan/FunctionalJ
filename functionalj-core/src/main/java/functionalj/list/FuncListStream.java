@@ -31,7 +31,12 @@ public class FuncListStream<SOURCE, DATA>
         return new FuncListStream<>(streamable, noAction);
     }
     
-    public FuncListStream(Collection<SOURCE> collection, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    @SuppressWarnings("unchecked")
+    public static <DATA> FuncListStream<DATA, DATA> from(Collection<DATA> streamable) {
+        return new FuncListStream<>(streamable, noAction);
+    }
+    
+    public FuncListStream(Iterable<SOURCE> collection, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = collection;
     }

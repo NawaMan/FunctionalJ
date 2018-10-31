@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import functionalj.result.Result;
 
 @SuppressWarnings("javadoc")
-public class CompletedAction<DATA> {
+public class CompletedAction<DATA> implements HasPromise<DATA> {
     
     protected final Promise<DATA> promise;
     

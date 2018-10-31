@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.BiConsumer;
 
+import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import lombok.val;
 
@@ -75,8 +76,17 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
         };
     }
     
-    public default Func2<INPUT1, INPUT2, Promise<Object>> defer() {
-        return this.thenReturnNull().defer();
+    public default Func2<INPUT1, INPUT2, Promise<Object>> async() {
+        return this.thenReturnNull().async();
+    }
+    public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<Object>> defer() {
+        return (promise1, promise2) -> {
+            val func0 = this.thenReturnNull();
+            return Promise.from(
+                    input1 -> promise1,
+                    input2 -> promise2,
+                    func0);
+        };
     }
     
 }

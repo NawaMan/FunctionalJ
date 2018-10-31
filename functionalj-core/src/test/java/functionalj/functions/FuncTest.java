@@ -7,6 +7,9 @@ import java.io.FileNotFoundException;
 
 import org.junit.Test;
 
+import functionalj.promise.Promise;
+import lombok.val;
+
 public class FuncTest {
     
     @Test
@@ -53,6 +56,15 @@ public class FuncTest {
         assertEquals(true,             Func.from(String::contains,   "Hello"   ).apply("Hello World!"));
         assertEquals("Hello World!!!", Func.from(String::concat,     "!!"      ).apply("Hello World!"));
         assertEquals("Hello-World!",   Func.from(String::replaceAll, "[ ]", "-").apply("Hello World!"));
+    }
+    
+    @Test
+    public void testDefer() {
+        val func = ((Func2<Integer, Integer, Integer>)(a, b) -> a+b).defer();
+        val a    = Promise.ofValue(5);
+        val b    = Promise.ofValue(7);
+        val c    = func.apply(a, b);
+        assertEquals(12, c.getResult().value().intValue());
     }
     
 }

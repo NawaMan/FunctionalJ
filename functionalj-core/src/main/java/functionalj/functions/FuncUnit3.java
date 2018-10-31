@@ -2,6 +2,7 @@ package functionalj.functions;
 
 import static java.util.Objects.requireNonNull;
 
+import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import lombok.val;
 
@@ -73,7 +74,17 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
         };
     }
     
-    public default Func3<INPUT1, INPUT2, INPUT3, Promise<Object>> defer() {
-        return this.thenReturnNull().defer();
+    public default Func3<INPUT1, INPUT2, INPUT3, Promise<Object>> async() {
+        return this.thenReturnNull().async();
+    }
+    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<Object>> defer() {
+        return (promise1, promise2, promise3) -> {
+            val func0 = this.thenReturnNull();
+            return Promise.from(
+                    input1 -> promise1,
+                    input2 -> promise2,
+                    input3 -> promise3,
+                    func0);
+        };
     }
 }

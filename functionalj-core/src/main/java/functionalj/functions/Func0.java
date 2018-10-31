@@ -104,6 +104,9 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return Func0.from(Func.lazy(this));
     }
     
+    public default Func0<Promise<OUTPUT>> async() {
+        return defer();
+    }
     public default Func0<Promise<OUTPUT>> defer() {
         return () -> DeferAction.from(this).start().getPromise();
     }

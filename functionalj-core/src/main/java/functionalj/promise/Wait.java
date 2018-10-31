@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 public abstract class Wait {
     
     public static WaitForever forever() {
-        return WaitForever.instance ;
+        return WaitForever.instance;
     }
     
     public static WaitAwhile forMilliseconds(long milliseconds) {

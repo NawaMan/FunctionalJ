@@ -650,6 +650,10 @@ public abstract class Result<DATA>
                 }
         );
     }
+    public final <T extends DATA> Result<T> as(Class<T> onlyClass) {
+        return filter(onlyClass::isInstance)
+                .map (onlyClass::cast);
+    }
     
     public final Result<DATA> mapException(Func1<? super Exception, ? extends Exception> mapper) {
         return mapValue(

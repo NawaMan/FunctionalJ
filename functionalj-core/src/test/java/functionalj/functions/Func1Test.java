@@ -31,8 +31,8 @@ public class Func1Test {
     public void testDefer() {
         val startTime = System.currentTimeMillis();
         
-        val length =   Sleep(50).then(String::valueOf).defer().apply("Hello!")
-                .chain(Sleep(50).then(String::length ).defer())
+        val length =   Sleep(50).then(String::valueOf).async().apply("Hello!")
+                .chain(Sleep(50).then(String::length ).async())
                 .getResult();
         
         val duration = System.currentTimeMillis() - startTime;

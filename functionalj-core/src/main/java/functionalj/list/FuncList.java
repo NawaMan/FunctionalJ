@@ -44,15 +44,19 @@ public interface FuncList<DATA>
     public static <T> FuncList<T> empty() {
         return ImmutableList.empty();
     }
+    @SafeVarargs
+    public static <T> FuncList<T> of(T ... data) {
+        return ImmutableList.of(data);
+    }
+    @SafeVarargs
+    public static <T> FuncList<T> AllOf(T ... data) {
+        return ImmutableList.of(data);
+    }
     public static <T> FuncList<T> from(Collection<T> data) {
         return ImmutableList.from(data);
     }
     public static <T> FuncList<T> from(List<T> data) {
         return ImmutableList.from(data);
-    }
-    @SafeVarargs
-    public static <T> FuncList<T> of(T ... data) {
-        return ImmutableList.of(data);
     }
     @SafeVarargs
     public static <T> FuncList<T> listOf(T ... data) {

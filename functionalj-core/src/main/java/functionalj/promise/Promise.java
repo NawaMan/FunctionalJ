@@ -14,7 +14,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -23,11 +22,13 @@ import java.util.stream.Stream;
 
 import functionalj.functions.Func0;
 import functionalj.functions.Func1;
+import functionalj.functions.Func2;
 import functionalj.functions.Func3;
 import functionalj.functions.Func4;
 import functionalj.functions.Func5;
 import functionalj.functions.Func6;
 import functionalj.functions.FuncUnit1;
+import functionalj.functions.NamedExpression;
 import functionalj.list.FuncList;
 import functionalj.ref.Ref;
 import functionalj.result.HasResult;
@@ -38,6 +39,8 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
+    
+    private static final int INITIAL_CAPACITY = 2;
     
     public static final Ref<Long> waitTimeout = Ref.ofValue(-1L);
     
@@ -72,18 +75,11 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     }
     
     
-    public static <D, T1, T2> Promise<D> from(
-            Function<Object, ? extends HasPromise<T1>> promise1,
-            Function<Object, ? extends HasPromise<T2>> promise2,
-            BiFunction<T1, T2, D> merger) {
-        return from(promise1, promise2, Wait.forever(), merger);
-    }
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2> Promise<D> from(
-            Function<Object, ? extends HasPromise<T1>> promise1,
-            Function<Object, ? extends HasPromise<T2>> promise2,
-            Wait                                       wait,
-            BiFunction<T1, T2, D> merger) {
+            NamedExpression<HasPromise<T1>> promise1,
+            NamedExpression<HasPromise<T2>> promise2,
+            Func2<T1, T2, D>                merger) {
         return new Combiner(
                 FuncList.of(promise1, promise2),
                 f((Result[] results)-> {
@@ -95,20 +91,12 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
                 .getPromise();
     }
     
-    public static <D, T1, T2, T3> Promise<D> from(
-            Function<Object, ? extends HasPromise<T1>> promise1,
-            Function<Object, ? extends HasPromise<T2>> promise2,
-            Function<Object, ? extends HasPromise<T3>> promise3,
-            Func3<T1, T2, T3, D> merger) {
-        return from(promise1, promise2, promise3, Wait.forever(), merger);
-    }
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2, T3> Promise<D> from(
-            Function<Object, ? extends HasPromise<T1>> promise1,
-            Function<Object, ? extends HasPromise<T2>> promise2,
-            Function<Object, ? extends HasPromise<T3>> promise3,
-            Wait                                       wait,
-            Func3<T1, T2, T3, D> merger) {
+            NamedExpression<HasPromise<T1>> promise1,
+            NamedExpression<HasPromise<T2>> promise2,
+            NamedExpression<HasPromise<T3>> promise3,
+            Func3<T1, T2, T3, D>            merger) {
         return new Combiner(
                 FuncList.of(promise1, promise2, promise3),
                 f((Result[] results)-> {
@@ -121,22 +109,13 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
                 .getPromise();
     }
     
-    public static <D, T1, T2, T3, T4> Promise<D> from(
-            Function<Object, ? extends HasPromise<T1>> promise1,
-            Function<Object, ? extends HasPromise<T2>> promise2,
-            Function<Object, ? extends HasPromise<T3>> promise3,
-            Function<Object, ? extends HasPromise<T4>> promise4,
-            Func4<T1, T2, T3, T4, D> merger) {
-        return from(promise1, promise2, promise3, promise4, Wait.forever(), merger);
-    }
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2, T3, T4> Promise<D> from(
-            Function<Object, ? extends HasPromise<T1>> promise1,
-            Function<Object, ? extends HasPromise<T2>> promise2,
-            Function<Object, ? extends HasPromise<T3>> promise3,
-            Function<Object, ? extends HasPromise<T4>> promise4,
-            Wait                                       wait,
-            Func4<T1, T2, T3, T4, D> merger) {
+            NamedExpression<HasPromise<T1>> promise1,
+            NamedExpression<HasPromise<T2>> promise2,
+            NamedExpression<HasPromise<T3>> promise3,
+            NamedExpression<HasPromise<T4>> promise4,
+            Func4<T1, T2, T3, T4, D>        merger) {
         return new Combiner(
                 FuncList.of(promise1, promise2, promise3, promise4),
                 f((Result[] results)-> {
@@ -150,24 +129,14 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
                 .getPromise();
     }
     
-    public static <D, T1, T2, T3, T4, T5> Promise<D> from(
-            Function<Object, ? extends HasPromise<T1>> promise1,
-            Function<Object, ? extends HasPromise<T2>> promise2,
-            Function<Object, ? extends HasPromise<T3>> promise3,
-            Function<Object, ? extends HasPromise<T4>> promise4,
-            Function<Object, ? extends HasPromise<T5>> promise5,
-            Func5<T1, T2, T3, T4, T5, D> merger) {
-        return from(promise1, promise2, promise3, promise4, promise5, Wait.forever(), merger);
-    }
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2, T3, T4, T5> Promise<D> from(
-            Function<Object, ? extends HasPromise<T1>> promise1,
-            Function<Object, ? extends HasPromise<T2>> promise2,
-            Function<Object, ? extends HasPromise<T3>> promise3,
-            Function<Object, ? extends HasPromise<T4>> promise4,
-            Function<Object, ? extends HasPromise<T5>> promise5,
-            Wait                                       wait,
-            Func5<T1, T2, T3, T4, T5, D> merger) {
+            NamedExpression<HasPromise<T1>> promise1,
+            NamedExpression<HasPromise<T2>> promise2,
+            NamedExpression<HasPromise<T3>> promise3,
+            NamedExpression<HasPromise<T4>> promise4,
+            NamedExpression<HasPromise<T5>> promise5,
+            Func5<T1, T2, T3, T4, T5, D>    merger) {
         return new Combiner(
                 FuncList.of(promise1, promise2, promise3, promise4),
                 f((Result[] results)-> {
@@ -182,25 +151,14 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
                 .getPromise();
     }
     
-    public static <D, T1, T2, T3, T4, T5, T6> Promise<D> from(
-            Function<Object, ? extends HasPromise<T1>> promise1,
-            Function<Object, ? extends HasPromise<T2>> promise2,
-            Function<Object, ? extends HasPromise<T3>> promise3,
-            Function<Object, ? extends HasPromise<T4>> promise4,
-            Function<Object, ? extends HasPromise<T5>> promise5,
-            Function<Object, ? extends HasPromise<T6>> promise6,
-            Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        return from(promise1, promise2, promise3, promise4, promise5, promise6, Wait.forever(), merger);
-    }
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <D, T1, T2, T3, T4, T5, T6> Promise<D> from(
-            Function<Object, ? extends HasPromise<T1>> promise1,
-            Function<Object, ? extends HasPromise<T2>> promise2,
-            Function<Object, ? extends HasPromise<T3>> promise3,
-            Function<Object, ? extends HasPromise<T4>> promise4,
-            Function<Object, ? extends HasPromise<T5>> promise5,
-            Function<Object, ? extends HasPromise<T6>> promise6,
-            Wait                                       wait,
+            NamedExpression<HasPromise<T1>>  promise1,
+            NamedExpression<HasPromise<T2>>  promise2,
+            NamedExpression<HasPromise<T3>>  promise3,
+            NamedExpression<HasPromise<T4>>  promise4,
+            NamedExpression<HasPromise<T5>>  promise5,
+            NamedExpression<HasPromise<T5>>  promise6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
         return new Combiner(
                 FuncList.of(promise1, promise2, promise3, promise4, promise5, promise6),
@@ -218,7 +176,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     }
     
     
-    
     // DATA
     //    NOT_START -> NOT START
     //    consumer  -> Pending
@@ -226,7 +183,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     //      result.cancelled -> aborted
     //      result.completed -> completed
     private final Map<Subscription<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>();
-    private final List<FuncUnit1<Result<DATA>>>                    eavesdroppers = new ArrayList<>();
+    private final List<FuncUnit1<Result<DATA>>>                    eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
     
     private final AtomicReference<Object> dataRef = new AtomicReference<>(PromiseStatus.NOT_STARTED);
     
@@ -334,6 +291,9 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
                 } else {
                     parent.makeDone(result);
                 }
+            } else if (dataRef.get().equals(PromiseStatus.NOT_STARTED)) {
+                if (!dataRef.compareAndSet(PromiseStatus.NOT_STARTED, result))
+                    return false;
             } else {
                 if (!dataRef.compareAndSet(consumers, result))
                     return false;
@@ -687,8 +647,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
         private final AtomicBoolean    isDone;
         private final Promise<D>       promise;
         
-        Combiner(FuncList<Function<Object, ? extends HasPromise<? extends Object>>> promises,
-                 Func1<Result[], Result<D>>                                         mergeFunc) {
+        Combiner(FuncList<NamedExpression<HasPromise<?>>> promises,
+                 Func1<Result[], Result<D>>                mergeFunc) {
             this.mergeFunc     = mergeFunc;
             this.action        = DeferAction.of((Class<D>)null).start();
             this.count         = promises.size();
@@ -703,6 +663,11 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             .forEachWithIndex((index, sub)     -> subscriptions[index] = sub);
             
             this.promise = action.getPromise();
+            this.promise.eavesdrop(result->{
+                if (result.isCancelled()) {
+                    unsbscribeAll();
+                }
+            });
         }
         
         Promise<D> getPromise() {

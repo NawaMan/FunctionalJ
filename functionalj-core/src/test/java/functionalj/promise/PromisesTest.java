@@ -187,4 +187,37 @@ public class PromisesTest {
         assertStrings("Result:{ Value: 21 }",   promise.getCurrentResult());
     }
     
+    @Test
+    public void testOf2_cancel_propagation() throws InterruptedException {
+        val promise1 = DeferAction.of(Integer.class);
+        val promise2 = DeferAction.of(Integer.class);
+        val promise3 = DeferAction.of(Integer.class).complete(5);
+        val promise4 = DeferAction.of(Integer.class);
+        val promise5 = DeferAction.of(Integer.class);
+        val promise6 = DeferAction.of(Integer.class);
+        val promise 
+            = Promise.from(
+                _1 -> promise1,
+                _2 -> promise2,
+                _3 -> promise3,
+                _4 -> promise4,
+                _5 -> promise5,
+                _6 -> promise6,
+                (_1, _2, _3, _4, _5, _6) -> {
+                    return _1 + _2 + _3 + _4 + _5 + 6;
+                });
+        promise.start();
+        
+        val subscription = promise.subscribe();
+        subscription.unsubscribe();
+        
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise .getResult());
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise1.getResult());
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise2.getResult());
+        assertStrings("Result:{ Value: 5 }",                                                                  promise3.getResult());
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise4.getResult());
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise5.getResult());
+        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise6.getResult());
+    }
+    
 }

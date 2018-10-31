@@ -18,6 +18,7 @@ package functionalj.functions;
 import java.util.function.Supplier;
 
 import functionalj.promise.DeferAction;
+import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple3;
@@ -127,7 +128,16 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return t -> this.apply(t._1(), t._2(), t._3());
     }
     
-    public default Func3<INPUT1, INPUT2, INPUT3, Promise<OUTPUT>> defer() {
+    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<OUTPUT>> defer() {
+        return (promise1, promise2, promise3) -> {
+            return Promise.from(
+                    input1 -> promise1,
+                    input2 -> promise2,
+                    input3 -> promise3,
+                    this);
+        };
+    }
+    public default Func3<INPUT1, INPUT2, INPUT3, Promise<OUTPUT>> async() {
         return (input1, input2, input3) -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input1, input2, input3);

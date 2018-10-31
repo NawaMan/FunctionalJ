@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.Consumer;
 
+import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import lombok.val;
 
@@ -73,8 +74,15 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         };
     }
     
-    public default Func1<INPUT, Promise<Object>> defer() {
-        return this.thenReturnNull().defer();
+    public default Func1<INPUT, Promise<Object>> async() {
+        return this.thenReturnNull().async();
+    }
+    public default Func1<HasPromise<INPUT>, Promise<Object>> defer() {
+        return input -> {
+            val func0 = this.thenReturnNull();
+            return input.getPromise()
+                    .map(func0);
+        };
     }
     
 }

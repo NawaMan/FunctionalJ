@@ -79,5 +79,8 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     public default Func0<Promise<Object>> defer() {
         return this.thenReturnNull().defer();
     }
+    public default Func0<Promise<Object>> async() {
+        return this.thenReturnNull().defer();
+    }
     
 }

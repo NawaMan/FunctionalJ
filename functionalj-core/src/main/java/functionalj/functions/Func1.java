@@ -19,6 +19,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.promise.DeferAction;
+import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import lombok.val;
@@ -94,7 +95,10 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return Func.cacheFor(this);
     }
     
-    public default Func1<INPUT, Promise<OUTPUT>> defer() {
+    public default Func1<HasPromise<INPUT>, Promise<OUTPUT>> defer() {
+        return input -> input.getPromise().map(this);
+    }
+    public default Func1<INPUT, Promise<OUTPUT>> async() {
         return input -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input);
