@@ -14,7 +14,8 @@ public class LogTest {
     // TODO - Break this.
     @Test
     public void testLog() {
-        With(Env.refs.console.butWith(Console.Stub.instance))
+        val stub = new Console.Stub();
+        With(Env.refs.console.butWith(stub))
         .run(()->{
             Log.log("One");
             Log.log("2: ", "Two", " --");
@@ -22,17 +23,18 @@ public class LogTest {
             Log.logEach("-->", FuncList.listOf("Three", "Four"), "<--");
             Log.logBy(()-> "42");
             
-            val outLines = StreamPlus.from(Console.Stub.instance.outLines()).toList();
+            val outLines = StreamPlus.from(stub.outLines()).toList();
             assertEquals(
                     "[One, 2: Two --, Three, Four, -->Three<--, -->Four<--, 42]",
                     outLines.toString());
             
-            Console.Stub.instance.clearOutLines();
+            stub.clearOutLines();
         });
     }
     @Test
     public void testLogErr() {
-        With(Env.refs.console.butWith(Console.Stub.instance))
+        val stub = new Console.Stub();
+        With(Env.refs.console.butWith(stub))
         .run(()->{
             try {
                 throw new NullPointerException("NULL!!!");
@@ -42,7 +44,7 @@ public class LogTest {
             val expected =
                     "Error!\n" + 
                     "java.lang.NullPointerException: NULL!!!";
-            assertEquals(expected, Console.Stub.instance.errLines().limit(2).joining("\n"));
+            assertEquals(expected, stub.errLines().limit(2).joining("\n"));
         });
     }
     

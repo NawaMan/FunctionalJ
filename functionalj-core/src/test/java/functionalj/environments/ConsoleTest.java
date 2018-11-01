@@ -48,60 +48,73 @@ public class ConsoleTest {
     }
     
     @Test
-    public void testStub() {
-        With(Env.refs.console.butWith(Console.Stub.instance))
+    public void testStub_out() {
+        val stub = new Console.Stub();
+        With(Env.refs.console.butWith(stub))
         .run(()->{
             Console
             .println("One")
             .println("Two");
             
-            val outLines = StreamPlus.from(Console.Stub.instance.outLines()).toList();
+            val outLines = StreamPlus.from(stub.outLines()).toList();
             assertEquals(
                     "[One, Two]",
                     outLines.toString());
             
-            Console.Stub.instance.clearOutLines();
+            stub.clearOutLines();
         });
-        
-        With(Env.refs.console.butWith(Console.Stub.instance))
+    }
+    
+    @Test
+    public void testStub_out2() {
+        val stub = new Console.Stub();
+        With(Env.refs.console.butWith(stub))
         .run(()->{
             Console
             .outPrintln("Three")
             .outPrintln("Four");
             
-            val outLines = StreamPlus.from(Console.Stub.instance.outLines()).toList();
+            val outLines = StreamPlus.from(stub.outLines()).toList();
             assertEquals(
                     "[Three, Four]",
                     outLines.toString());
             
-            Console.Stub.instance.clearOutLines();
+            stub.clearOutLines();
         });
-        
-        With(Env.refs.console.butWith(Console.Stub.instance))
+    }
+    
+    @Test
+    public void testStub_err() {
+        val stub = new Console.Stub();
+        With(Env.refs.console.butWith(stub))
         .run(()->{
-            Console.Stub.instance.clear();
+            stub.clear();
             
             Console
             .errPrintln("Five")
             .errPrintln("Six");
             
-            val outLines = StreamPlus.from(Console.Stub.instance.errLines()).toList();
+            val outLines = StreamPlus.from(stub.errLines()).toList();
             assertEquals(
                     "[Five, Six]",
                     outLines.toString());
             
-            Console.Stub.instance.clear();
+            stub.clear();
         });
-        
-        With(Env.refs.console.butWith(Console.Stub.instance))
+    }
+    
+    @Test
+    public void testStub_in() {
+        val stub = new Console.Stub();
+        With(Env.refs.console.butWith(stub))
         .run(()->{
-            Console.Stub.instance.addInLines("One", "Two");
+            stub.addInLines("One", "Two");
             
             assertEquals("One", Console.readln());
             assertEquals("Two", Console.readln());
-            assertEquals(0L,    Console.Stub.instance.inLines().count());
+            assertEquals(0L,    stub.inLines().count());
             
-            Console.Stub.instance.clearInLines();
+            stub.clearInLines();
         });
     }
     

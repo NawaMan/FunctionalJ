@@ -161,8 +161,6 @@ public final class Console {
     
     public static class Stub extends Instance {
         
-        public static Stub instance = new Stub();
-        
         private final AtomicReference<ConcurrentLinkedQueue<String>> outTexts = new AtomicReference<>(new ConcurrentLinkedQueue<String>());
         private final AtomicReference<ConcurrentLinkedQueue<String>> errTexts = new AtomicReference<>(new ConcurrentLinkedQueue<String>());
         private final ConcurrentLinkedQueue<String> outLines = new ConcurrentLinkedQueue<String>();

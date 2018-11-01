@@ -6,8 +6,8 @@ import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -26,6 +26,7 @@ import java.util.stream.IntStream;
 import org.junit.Test;
 
 import functionalj.environments.TimeFuncs;
+import functionalj.functions.Func;
 import functionalj.functions.Func0;
 import functionalj.list.FuncList;
 import functionalj.ref.Run;
@@ -743,6 +744,31 @@ public class DeferActionTest {
         action.abort("Can't wait.");
         
         assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: Can't wait. }", action.getResult());
+    }
+    
+    @Test
+    public void testDeferMethod() throws InterruptedException {
+        val addDefer = Func.f((Integer a, Integer b)->(a + b)).defer();
+        val mulDefer = Func.f((Integer a, Integer b)->(a * b)).defer();
+        
+        val a = Sleep(50).thenReturn(20).defer();
+        val b = Sleep(50).thenReturn( 1).defer();
+        val c = Sleep(50).thenReturn( 2).defer();
+        
+        val r1 = addDefer.apply(a, b);
+        val r2 = mulDefer.apply(addDefer.apply(a, b), c);
+        val r3 = addDefer
+                .andThen(mulDefer.lift(c))
+                .apply(a, b);
+        val r4 = a.pipe(
+                addDefer.lift(b),
+                mulDefer.lift(c)
+            );
+        
+        assertStrings("Result:{ Value: 21 }", r1.getResult());
+        assertStrings("Result:{ Value: 42 }", r2.getResult());
+        assertStrings("Result:{ Value: 42 }", r3.getResult());
+        assertStrings("Result:{ Value: 42 }", r4.getResult());
     }
     
 }

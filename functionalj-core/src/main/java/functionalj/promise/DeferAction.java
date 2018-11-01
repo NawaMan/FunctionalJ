@@ -1,16 +1,27 @@
 package functionalj.promise;
 
 import static functionalj.functions.Func.carelessly;
+import static functionalj.functions.Func.f;
+import static functionalj.list.FuncList.listOf;
 import static functionalj.promise.RaceResult.Race;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import functionalj.functions.Func0;
 import functionalj.functions.Func1;
+import functionalj.functions.Func2;
+import functionalj.functions.Func3;
+import functionalj.functions.Func4;
+import functionalj.functions.Func5;
+import functionalj.functions.Func6;
 import functionalj.functions.FuncUnit0;
 import functionalj.functions.FuncUnit1;
+import functionalj.functions.NamedExpression;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.OnStart;
@@ -71,6 +82,113 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     public static <D> RaceResult<D> race(List<StartableAction<D>> actions) {
         return Race(actions);
     }
+    
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static <D, T1, T2> DeferAction<D> from(
+            NamedExpression<HasPromise<T1>> promise1,
+            NamedExpression<HasPromise<T2>> promise2,
+            Func2<T1, T2, D>                merger) {
+        val merge = f((Result[] results)-> {
+            val result1 = (Result<T1>)results[0];
+            val result2 = (Result<T2>)results[1];
+            val mergedResult = Result.ofResults(result1, result2, merger);
+            return mergedResult;
+        });
+        val promises = listOf(promise1, promise2);
+        val combiner = new Combiner(promises, merge);
+        val action   = combiner.getDeferAction();
+        return action;
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static <D, T1, T2, T3> DeferAction<D> from(
+            NamedExpression<HasPromise<T1>> promise1,
+            NamedExpression<HasPromise<T2>> promise2,
+            NamedExpression<HasPromise<T3>> promise3,
+            Func3<T1, T2, T3, D>            merger) {
+        val merge = f((Result[] results)-> {
+            val result1 = (Result<T1>)results[0];
+            val result2 = (Result<T2>)results[1];
+            val result3 = (Result<T3>)results[2];
+            val mergedResult = Result.ofResults(result1, result2, result3, merger);
+            return mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3);
+        val combiner = new Combiner(promises, merge);
+        val action   = combiner.getDeferAction();
+        return action;
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static <D, T1, T2, T3, T4> DeferAction<D> from(
+            NamedExpression<HasPromise<T1>> promise1,
+            NamedExpression<HasPromise<T2>> promise2,
+            NamedExpression<HasPromise<T3>> promise3,
+            NamedExpression<HasPromise<T4>> promise4,
+            Func4<T1, T2, T3, T4, D>        merger) {
+        val merge = f((Result[] results)-> {
+            val result1 = (Result<T1>)results[0];
+            val result2 = (Result<T2>)results[1];
+            val result3 = (Result<T3>)results[2];
+            val result4 = (Result<T4>)results[3];
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, merger);
+            return mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3, promise4);
+        val combiner = new Combiner(promises, merge);
+        val action   = combiner.getDeferAction();
+        return action;
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static <D, T1, T2, T3, T4, T5> DeferAction<D> from(
+            NamedExpression<HasPromise<T1>> promise1,
+            NamedExpression<HasPromise<T2>> promise2,
+            NamedExpression<HasPromise<T3>> promise3,
+            NamedExpression<HasPromise<T4>> promise4,
+            NamedExpression<HasPromise<T5>> promise5,
+            Func5<T1, T2, T3, T4, T5, D>    merger) {
+        val merge = f((Result[] results)-> {
+            val result1 = (Result<T1>)results[0];
+            val result2 = (Result<T2>)results[1];
+            val result3 = (Result<T3>)results[2];
+            val result4 = (Result<T4>)results[3];
+            val result5 = (Result<T5>)results[4];
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, merger);
+            return mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5);
+        val combiner = new Combiner(promises, merge);
+        val action   = combiner.getDeferAction();
+        return action;
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static <D, T1, T2, T3, T4, T5, T6> DeferAction<D> from(
+            NamedExpression<HasPromise<T1>>  promise1,
+            NamedExpression<HasPromise<T2>>  promise2,
+            NamedExpression<HasPromise<T3>>  promise3,
+            NamedExpression<HasPromise<T4>>  promise4,
+            NamedExpression<HasPromise<T5>>  promise5,
+            NamedExpression<HasPromise<T6>>  promise6,
+            Func6<T1, T2, T3, T4, T5, T6, D> merger) {
+        val merge = f((Result[] results)-> {
+            val result1 = (Result<T1>)results[0];
+            val result2 = (Result<T2>)results[1];
+            val result3 = (Result<T3>)results[2];
+            val result4 = (Result<T4>)results[3];
+            val result5 = (Result<T5>)results[4];
+            val result6 = (Result<T6>)results[5];
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, merger);
+            return mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6);
+        val combiner = new Combiner(promises, merge);
+        val action   = combiner.getDeferAction();
+        return action;
+    }
+    
     
     public static <D> DeferAction<D> create(
             boolean            interruptOnCancel,
@@ -191,5 +309,119 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     }
     
     // TODO - Other F-M-FM methods.
+    
+    
+    
+    
+    //== Internal ==
+    
+    @SuppressWarnings("rawtypes")
+    private static class Combiner<D> {
+        
+        private final Func1<Result[], Result<D>> mergeFunc;
+        
+        private final DeferAction<D> action;
+        private final int            count;
+        private final Result[]       results;
+        private final Subscription[] subscriptions;
+        private final AtomicBoolean  isDone;
+        private final Promise<D>     promise;
+        
+        Combiner(FuncList<NamedExpression<HasPromise<Object>>> hasPromises,
+                 Func1<Result[], Result<D>>                    mergeFunc) {
+            this.mergeFunc     = mergeFunc;
+            this.count         = hasPromises.size();
+            this.results       = new Result[count];
+            this.subscriptions = new Subscription[count];
+            this.isDone        = new AtomicBoolean(false);
+            
+            val promises = hasPromises
+            .map(promise -> promise.apply(null))
+            .map(promise -> promise.getPromise());
+            
+            this.action = DeferAction.of((Class<D>)null, OnStart.run(()->{
+                promises.forEach(promise -> promise.start());
+            }));
+            
+            promises
+            .mapWithIndex    ((index, promise) -> promise.subscribe(result -> processResult(index, result)))
+            .forEachWithIndex((index, sub)     -> subscriptions[index] = sub);
+            
+            this.promise = action.getPromise();
+            this.promise.eavesdrop(result->{
+                if (result.isCancelled()) {
+                    unsbscribeAll();
+                }
+            });
+        }
+        
+        DeferAction<D> getDeferAction() {
+            return action;
+        }
+        
+        private <T> void processResult(int index, Result<T> result) {
+            if (isDone.get())
+                return;
+            
+            if (result.isCancelled())
+                doneAsCancelled(index);
+            
+            if (result.isNotReady())
+                doneAsNotReady(index, result);
+            
+            if (result.isException())
+                doneAsException(index, result);
+            
+            results[index] = result;
+            
+            if (!(count == Stream.of(results).filter(Objects::nonNull).count()))
+                return;
+            
+            if (!isDone.compareAndSet(false, true))
+                return;
+            
+            val mergedResult = mergeFunc.apply(results);
+            action.completeWith(mergedResult);
+        }
+        
+        private void unsbscribeAll() {
+            for(val subscription : subscriptions) {
+                if (subscription != null)
+                    subscription.unsubscribe();
+            }
+        }
+        
+        private void doneAsCancelled(int index) {
+            if (!isDone.compareAndSet(false, true))
+                return;
+            
+            action.abort("Promise#" + index);
+            unsbscribeAll();
+        }
+        
+        private void doneAsNotReady(
+                int    index, 
+                Result result) {
+            if (!isDone.compareAndSet(false, true))
+                return;
+            
+            action.abort(
+                    "Promise#" + index, 
+                    new IllegalStateException(
+                            "Result cannot be in 'not ready' at this point: " + result.getStatus(),
+                            result.getException()));
+            unsbscribeAll();
+        }
+        
+        private void doneAsException(
+                int index,
+                Result  result) {
+            if (!isDone.compareAndSet(false, true))
+                return;
+            
+            action.fail(new PromisePartiallyFailException(index, count, result.getException()));
+            unsbscribeAll();
+        }
+    }
     
 }
