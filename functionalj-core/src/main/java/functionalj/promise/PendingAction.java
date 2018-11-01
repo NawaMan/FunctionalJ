@@ -6,17 +6,22 @@ import java.util.function.Predicate;
 
 import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit1;
+import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class PendingAction<DATA> extends UncompleteAction<DATA> {
+public class PendingAction<DATA> extends UncompleteAction<DATA> implements Pipeable<HasPromise<DATA>> {
     
     PendingAction(Promise<DATA> promise) {
         super(promise);
     }
     
     public PendingAction<DATA> start() {
+        return this;
+    }
+    
+    public HasPromise<DATA> __data() throws Exception {
         return this;
     }
     

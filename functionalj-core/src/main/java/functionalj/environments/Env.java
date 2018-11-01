@@ -6,10 +6,10 @@ public final class Env {
     
     public static final class refs {
         
-        public static final Ref<Time.Instance>    time    = Ref.ofValue(Time.System.instance);
+        public static final Ref<AsyncRunner>      async   = Ref.ofValue(AsyncRunner.threadFactory);
         public static final Ref<Console.Instance> console = Ref.ofValue(Console.System.instance);
         public static final Ref<Log.Instance>     log     = Ref.ofValue(Log.Instance.instance);
-        public static final Ref<AsyncRunner>      async   = Ref.ofValue(AsyncRunner.threadFactory);
+        public static final Ref<Time.Instance>    time    = Ref.ofValue(Time.System.instance);
         
     }
     
@@ -18,9 +18,7 @@ public final class Env {
     // TODO - Network
     // TODO - TimeFormatter
     // TODO - ObjectPrinter
-    // TODO - Console
     // TODO - User
-    // TODO - Log
     // TODO - Error handling
     // TODO - Random
     // TODO - Runtime

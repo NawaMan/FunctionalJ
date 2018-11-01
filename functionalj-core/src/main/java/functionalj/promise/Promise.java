@@ -30,6 +30,7 @@ import functionalj.functions.Func6;
 import functionalj.functions.FuncUnit1;
 import functionalj.functions.NamedExpression;
 import functionalj.list.FuncList;
+import functionalj.pipeable.Pipeable;
 import functionalj.ref.Ref;
 import functionalj.result.HasResult;
 import functionalj.result.Result;
@@ -38,7 +39,7 @@ import lombok.val;
 // TODO - See what we can do with retry.
 
 @SuppressWarnings("javadoc")
-public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
+public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeable<HasPromise<DATA>> {
     
     private static final int INITIAL_CAPACITY = 2;
     
@@ -197,6 +198,10 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     
     @Override
     public Promise<DATA> getPromise() {
+        return this;
+    }
+    
+    public HasPromise<DATA> __data() throws Exception {
         return this;
     }
     

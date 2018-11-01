@@ -12,11 +12,12 @@ import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit0;
 import functionalj.functions.FuncUnit1;
 import functionalj.list.FuncList;
+import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class DeferAction<DATA> extends UncompleteAction<DATA> {
+public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeable<HasPromise<DATA>> {
     
     public static <D> DeferAction<D> createNew() {
         return of((Class<D>)null);
@@ -93,6 +94,10 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> {
                 carelessly(task);
         }
         return new PendingAction<>(promise);
+    }
+    
+    public HasPromise<DATA> __data() throws Exception {
+        return this;
     }
     
     //== Subscription ==

@@ -7,10 +7,11 @@ import java.util.function.Consumer;
 import functionalj.environments.Env;
 import functionalj.functions.Func0;
 import functionalj.functions.FuncUnit0;
+import functionalj.pipeable.Pipeable;
 import lombok.val;
 import lombok.experimental.Delegate;
 
-public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements HasPromise<DATA> {
+public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements HasPromise<DATA>, Pipeable<HasPromise<DATA>> {
     
     private static final FuncUnit0 DO_NOTHING = ()->{};
     

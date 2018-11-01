@@ -3,10 +3,11 @@ package functionalj.promise;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 
 @SuppressWarnings("javadoc")
-public class CompletedAction<DATA> implements HasPromise<DATA> {
+public class CompletedAction<DATA> implements HasPromise<DATA>, Pipeable<HasPromise<DATA>> {
     
     protected final Promise<DATA> promise;
     
@@ -38,6 +39,10 @@ public class CompletedAction<DATA> implements HasPromise<DATA> {
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         return promise.getResult(timeout, unit);
+    }
+    
+    public HasPromise<DATA> __data() throws Exception {
+        return this;
     }
     
 }

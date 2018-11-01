@@ -469,15 +469,24 @@ public class PromiseTest {
         val addDefer = Func.f((Integer a, Integer b)->(a + b)).defer();
         val mulDefer = Func.f((Integer a, Integer b)->(a * b)).defer();
         
-        val a = DeferAction.from(Sleep(50).thenReturn(20));
-        val b = DeferAction.from(Sleep(50).thenReturn(1));
-        val c = DeferAction.from(Sleep(50).thenReturn(2));
+        val a = Sleep(50).thenReturn(20).defer();
+        val b = Sleep(50).thenReturn( 1).defer();
+        val c = Sleep(50).thenReturn( 2).defer();
         
         val r1 = addDefer.apply(a, b);
         val r2 = mulDefer.apply(addDefer.apply(a, b), c);
+        val r3 = addDefer
+                .andThen(mulDefer.lift(c))
+                .apply(a, b);
+        val r4 = a.pipe(
+                addDefer.lift(b),
+                mulDefer.lift(c)
+            );
         
         assertStrings("Result:{ Value: 21 }", r1.getResult());
         assertStrings("Result:{ Value: 42 }", r2.getResult());
+        assertStrings("Result:{ Value: 42 }", r3.getResult());
+        assertStrings("Result:{ Value: 42 }", r4.getResult());
     }
     
 }
