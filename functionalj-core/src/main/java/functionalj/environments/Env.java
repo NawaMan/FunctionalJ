@@ -13,12 +13,9 @@ public final class Env {
         
     }
     
-    // TODO - AsyncComputer? (that returnsPromise)
     // TODO - File lister, reader - bytes,string,line. -> no-idea about seekable
     // TODO - Network
     // TODO - TimeFormatter
-    // TODO - ObjectPrinter
-    // TODO - User
     // TODO - Error handling
     // TODO - Random
     // TODO - Runtime
