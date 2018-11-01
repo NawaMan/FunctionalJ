@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.InterruptedRuntimeException;
+import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public final class Console {
@@ -169,15 +170,15 @@ public final class Console {
         
         private final ConcurrentLinkedQueue<String> lines = new ConcurrentLinkedQueue<String>();
         
-        public Stream<String> outLines() {
-            return outLines.stream();
+        public StreamPlus<String> outLines() {
+            return StreamPlus.from(outLines.stream());
         }
         public void clearOutLines() {
             outLines.clear();
         }
         
-        public Stream<String> errLines() {
-            return errLines.stream();
+        public StreamPlus<String> errLines() {
+            return StreamPlus.from(errLines.stream());
         }
         public void clearErrLines() {
             errLines.clear();
@@ -231,12 +232,16 @@ public final class Console {
             texts.getAndUpdate(oldQuery -> {
                 if (oldQuery.isEmpty()) {
                     val fullLine = String.valueOf(line);
-                    lines.add(fullLine);
+                    val lineArray = fullLine.split("(\n|\r\n?)");
+                    Arrays.stream(lineArray)
+                          .forEach(lines::add);
                     return oldQuery;
                 }
                 
                 val fullLine = oldQuery.stream().collect(Collectors.joining()) + String.valueOf(line);
-                lines.add(fullLine);
+                val lineArray = fullLine.split("(\n|\r\n?)");
+                Arrays.stream(lineArray)
+                      .forEach(lines::add);
                 return new ConcurrentLinkedQueue<String>();
             });
         }
@@ -261,8 +266,8 @@ public final class Console {
             return this;
         }
         
-        public Stream<String> inLines() {
-            return lines.stream();
+        public StreamPlus<String> inLines() {
+            return StreamPlus.from(lines.stream());
         }
         public void clearInLines() {
             lines.clear();

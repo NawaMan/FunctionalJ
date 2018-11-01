@@ -10,7 +10,7 @@ import functionalj.functions.FuncUnit0;
 import lombok.val;
 import lombok.experimental.Delegate;
 
-public class DeferActionBuilder<DATA> extends StartableAction<DATA> {
+public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements HasPromise<DATA> {
     
     private static final FuncUnit0 DO_NOTHING = ()->{};
     

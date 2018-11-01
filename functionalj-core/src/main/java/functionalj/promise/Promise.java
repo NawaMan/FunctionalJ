@@ -230,13 +230,17 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     
     //== Internal working ==
     
-    final boolean start() {
+    final boolean markStart() {
         val data = dataRef.get();
         if (data instanceof Promise) {
             @SuppressWarnings("unchecked")
             val parent = (Promise<DATA>)data;
-            return parent.start();
+            return parent.markStart();
         }
+        
+        if (PromiseStatus.NOT_STARTED != data)
+            return false;
+        
         
         return dataRef.compareAndSet(PromiseStatus.NOT_STARTED, consumers);
     }
@@ -395,6 +399,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
         return getResult(timeout, null);
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
+        markStart();
         if (!this.isDone()) {
             synchronized (this) {
                 if (!this.isDone()) {
@@ -546,7 +551,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     @SuppressWarnings("unchecked")
     public final Promise<DATA> filter(Predicate<? super DATA> predicate) {
         val targetPromise = (Promise<DATA>)newPromise();
-        targetPromise.start();
+        targetPromise.markStart();
         
         subscribe(r -> {
             val result = r.filter(predicate);
@@ -658,7 +663,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             
             promises
             .map             ( promise         -> promise.apply(null))
-            .map             ( promise         -> promise.getPromise())
+            .map             ( promise         -> ensureStartPromise(promise))
             .mapWithIndex    ((index, promise) -> promise.subscribe(result -> processResult(index, result)))
             .forEachWithIndex((index, sub)     -> subscriptions[index] = sub);
             
@@ -668,6 +673,12 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
                     unsbscribeAll();
                 }
             });
+        }
+        
+        private Promise<? extends Object> ensureStartPromise(HasPromise<?> promise) {
+            if (promise instanceof StartableAction)
+                return (Promise<?>)((StartableAction)promise).start().getPromise();
+            return (Promise<?>)promise.getPromise();
         }
         
         Promise<D> getPromise() {

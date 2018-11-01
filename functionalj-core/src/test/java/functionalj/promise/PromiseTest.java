@@ -1,5 +1,6 @@
 package functionalj.promise;
 
+import static functionalj.environments.TimeFuncs.Sleep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -10,11 +11,7 @@ import java.util.function.BiConsumer;
 
 import org.junit.Test;
 
-import functionalj.promise.DeferAction;
-import functionalj.promise.Promise;
-import functionalj.promise.PromiseStatus;
-import functionalj.promise.WaitAwhile;
-import functionalj.promise.WaitSession;
+import functionalj.functions.Func;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -399,7 +396,7 @@ public class PromiseTest {
         assertStrings("NOT_STARTED", parentPromise.getStatus());
         assertStrings("NOT_STARTED", childPromise.getStatus());
         
-        childPromise.start();
+        childPromise.markStart();
         assertStrings("PENDING", parentPromise.getStatus());
         assertStrings("PENDING", childPromise.getStatus());
         
@@ -421,7 +418,7 @@ public class PromiseTest {
         assertStrings("NOT_STARTED", parentPromise.getStatus());
         assertStrings("NOT_STARTED", childPromise.getStatus());
         
-        childPromise.start();
+        childPromise.markStart();
         assertStrings("PENDING", parentPromise.getStatus());
         assertStrings("PENDING", childPromise.getStatus());
         
@@ -465,6 +462,22 @@ public class PromiseTest {
         val ref = new AtomicReference<String>();
         promise.mapResult(result -> result.ifException(e -> ref.set(e.getClass().getName())));
         assertStrings("java.io.IOException", ref.get());
+    }
+    
+    @Test
+    public void testDeferMethod() throws InterruptedException {
+        val addDefer = Func.f((Integer a, Integer b)->(a + b)).defer();
+        val mulDefer = Func.f((Integer a, Integer b)->(a * b)).defer();
+        
+        val a = DeferAction.from(Sleep(50).thenReturn(20));
+        val b = DeferAction.from(Sleep(50).thenReturn(1));
+        val c = DeferAction.from(Sleep(50).thenReturn(2));
+        
+        val r1 = addDefer.apply(a, b);
+        val r2 = mulDefer.apply(addDefer.apply(a, b), c);
+        
+        assertStrings("Result:{ Value: 21 }", r1.getResult());
+        assertStrings("Result:{ Value: 42 }", r2.getResult());
     }
     
 }

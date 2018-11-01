@@ -1,5 +1,7 @@
 package functionalj.environments;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.function.Supplier;
 
@@ -41,6 +43,15 @@ public final class Log {
     public static <T> T logBy(Supplier<T> supplier) {
         return Env.log().logBy(supplier);
     }
+    public static <T extends Throwable> T logErr(T throwable) {
+        return Env.log().logErr(throwable);
+    }
+    public static <T extends Throwable> T logErr(Object prefix, T throwable) {
+        return Env.log().logErr(prefix, throwable);
+    }
+    public static <T extends Throwable> T logErr(Object prefix, T throwable, Object suffix) {
+        return Env.log().logErr(prefix, throwable, suffix);
+    }
     
     
     public static class Instance {
@@ -59,7 +70,7 @@ public final class Log {
             val prefixStr = (prefix != null) ? String.valueOf(prefix) : "";
             val suffixStr = (suffix != null) ? String.valueOf(suffix) : "";
             val line      = prefixStr + value + suffixStr;
-            Env.console().println(line);
+            log(line);
             return value;
         }
         
@@ -83,6 +94,22 @@ public final class Log {
         public <T> T logBy(Supplier<T> supplier) {
             val value = Func.getOrElse(supplier, null);
             return log(value);
+        }
+        
+        public <T extends Throwable> T logErr(T throwable) {
+            return logErr(null, throwable, null);
+        }
+        public <T extends Throwable> T logErr(Object prefix, T throwable) {
+            return logErr(prefix, throwable, null);
+        }
+        public <T extends Throwable> T logErr(Object prefix, T throwable, Object suffix) {
+            val prefixStr = (prefix != null) ? String.valueOf(prefix) + "\n" : "";
+            val suffixStr = (suffix != null) ? String.valueOf(suffix) : "";
+            val buffer = new ByteArrayOutputStream();
+            throwable.printStackTrace(new PrintStream(buffer));
+            val toPrint = prefixStr + buffer.toString() + suffixStr;
+            Env.console().errPrintln(toPrint);
+            return throwable;
         }
         
     }

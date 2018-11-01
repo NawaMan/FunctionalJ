@@ -11,8 +11,9 @@ import lombok.val;
 
 public class LogTest {
     
+    // TODO - Break this.
     @Test
-    public void testlog() {
+    public void testLog() {
         With(Env.refs.console.butWith(Console.Stub.instance))
         .run(()->{
             Log.log("One");
@@ -27,6 +28,21 @@ public class LogTest {
                     outLines.toString());
             
             Console.Stub.instance.clearOutLines();
+        });
+    }
+    @Test
+    public void testLogErr() {
+        With(Env.refs.console.butWith(Console.Stub.instance))
+        .run(()->{
+            try {
+                throw new NullPointerException("NULL!!!");
+            } catch (Exception e) {
+                Log.logErr("Error!", e);
+            }
+            val expected =
+                    "Error!\n" + 
+                    "java.lang.NullPointerException: NULL!!!";
+            assertEquals(expected, Console.Stub.instance.errLines().limit(2).joining("\n"));
         });
     }
     

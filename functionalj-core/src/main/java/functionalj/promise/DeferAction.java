@@ -88,7 +88,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> {
             parent.start();
         } else {
             val isStarted = promise.isStarted();
-            promise.start();
+            promise.markStart();
             
             if (!isStarted && (task != null))
                 carelessly(task);
