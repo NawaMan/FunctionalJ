@@ -319,6 +319,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     private static class Combiner<D> {
         
         private final Func1<Result[], Result<D>> mergeFunc;
+        // TODO - Add Else ... which will be called with the current value when unsuccessfull.
         
         private final DeferAction<D> action;
         private final int            count;
