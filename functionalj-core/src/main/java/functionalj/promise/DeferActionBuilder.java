@@ -6,8 +6,10 @@ import java.util.function.Consumer;
 
 import functionalj.environments.Env;
 import functionalj.functions.Func0;
+import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit0;
 import functionalj.pipeable.Pipeable;
+import functionalj.result.Result;
 import lombok.val;
 import lombok.experimental.Delegate;
 
@@ -19,7 +21,9 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements H
     private boolean            interruptOnCancel = true;
     private FuncUnit0          onStart           = DO_NOTHING;
     private Consumer<Runnable> runner            = Env.async();
-    private Retry              retry             = Retry.noRetry;
+    
+    @SuppressWarnings("unchecked")
+    private Retry<DATA> retry = (Retry<DATA>)Retry.noRetry;
     
     DeferActionBuilder(FuncUnit0 supplier) {
         this(supplier.thenReturnNull());
@@ -29,9 +33,21 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements H
         this.supplier = requireNonNull(supplier);
     }
     
+    Func0<DATA> supplier() {
+        return this.supplier;
+    }
+    
+    boolean interruptOnCancel() {
+        return this.interruptOnCancel;
+    }
+    
     public DeferActionBuilder<DATA> interruptOnCancel(boolean interruptOnCancel) {
         this.interruptOnCancel = interruptOnCancel;
         return this;
+    }
+    
+    FuncUnit0 onStart() {
+        return this.onStart;
     }
     
     public DeferActionBuilder<DATA> onStart(FuncUnit0 onStart) {
@@ -39,19 +55,34 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements H
         return this;
     }
     
+    Consumer<Runnable> runner() {
+        return this.runner;
+    }
+    
     public DeferActionBuilder<DATA> runner(Consumer<Runnable> runner) {
         this.runner = (runner != null) ? runner : Env.async();
         return this;
     }
-    public DeferActionBuilder<DATA> retry(int times, long periodMillisecond) {
-        this.retry = new Retry(times, periodMillisecond);
+    
+    public DeferActionBuilder<DATA> loopTimes(int times) {
+        this.retry = new Loop<DATA>(times);
         return this;
     }
-    public DeferActionBuilder<DATA> retry(Retry retry) {
-        this.retry = (retry != null) ? retry : Retry.current.orElse(Retry.noRetry);
+    public DeferActionBuilder<DATA> loopUntil(Func1<Result<DATA>, Boolean> stopPredicate) {
+        this.retry = new Loop<DATA>(stopPredicate);
         return this;
     }
     
+    public DeferActionBuilder<DATA> retry(int times, long periodMillisecond) {
+        this.retry = new Retry<DATA>(times, periodMillisecond);
+        return this;
+    }
+    public DeferActionBuilder<DATA> retry(Retry<DATA> retry) {
+        this.retry = (retry != null) ? retry : Retry.defaultRetry();
+        return this;
+    }
+    
+    @SuppressWarnings("unchecked")
     public DeferActionBuilder<DATA> noRetry() {
         this.retry = Retry.noRetry;
         return this;
@@ -67,11 +98,7 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements H
     
     @Delegate
     public DeferAction<DATA> build() {
-        if (retry.times() == Retry.NO_RETRY)
-            return DeferAction.create(interruptOnCancel, supplier, onStart, runner);
-        
-        return RetryDeferActionCreator.current.value()
-                .createRetryDeferAction(interruptOnCancel, onStart, runner, retry, supplier);
+        return retry.create(this);
     }
     
     //== Aux classes ==
@@ -101,7 +128,7 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements H
         }
         
         public DeferActionBuilder<DATA> noWaitInBetween() {
-            actionBuilder.retry = new Retry(times, Retry.NO_WAIT);
+            actionBuilder.retry = new Retry<DATA>(times, Retry.NO_WAIT);
             return actionBuilder;
         }
         
@@ -123,37 +150,37 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements H
         }
         
         public DeferActionBuilder<DATA> milliseconds() {
-            val retry = new Retry(times, period);
+            val retry = new Retry<DATA>(times, period);
             actionBuilder.retry = retry;
             return actionBuilder;
         }
         
         public DeferActionBuilder<DATA> seconds() {
-            val retry = new Retry(times, period * 1000);
+            val retry = new Retry<DATA>(times, period * 1000);
             actionBuilder.retry = retry;
             return actionBuilder;
         }
         
         public DeferActionBuilder<DATA> minutes() {
-            val retry = new Retry(times, period * 1000 * 60);
+            val retry = new Retry<DATA>(times, period * 1000 * 60);
             actionBuilder.retry = retry;
             return actionBuilder;
         }
         
         public DeferActionBuilder<DATA> hours() {
-            val retry = new Retry(times, period * 1000 * 60 * 60);
+            val retry = new Retry<DATA>(times, period * 1000 * 60 * 60);
             actionBuilder.retry = retry;
             return actionBuilder;
         }
         
         public DeferActionBuilder<DATA> days() {
-            val retry = new Retry(times, period * 1000 * 60 * 60 * 24);
+            val retry = new Retry<DATA>(times, period * 1000 * 60 * 60 * 24);
             actionBuilder.retry = retry;
             return actionBuilder;
         }
         
         public DeferActionBuilder<DATA> weeks() {
-            val retry = new Retry(times, period * 1000 * 60 * 60 * 24);
+            val retry = new Retry<DATA>(times, period * 1000 * 60 * 60 * 24);
             actionBuilder.retry = retry;
             return actionBuilder;
         }

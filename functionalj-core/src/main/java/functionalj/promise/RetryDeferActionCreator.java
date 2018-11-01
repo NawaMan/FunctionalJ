@@ -25,7 +25,7 @@ public class RetryDeferActionCreator {
             boolean            interruptOnCancel,
             FuncUnit0          onStart,
             Consumer<Runnable> runner,
-            Retry              retry,
+            Retry<DATA>        retry,
             Func0<DATA>        supplier) {
         DeferAction<DATA> finalAction = DeferAction.createNew();
         

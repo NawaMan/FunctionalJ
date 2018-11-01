@@ -771,4 +771,24 @@ public class DeferActionTest {
         assertStrings("Result:{ Value: 42 }", r4.getResult());
     }
     
+    @Test
+    public void testDeferLoopTimes() throws InterruptedException {
+        val counter = new AtomicInteger(0);
+        val action  = DeferAction
+                .from(()->counter.incrementAndGet())
+                .loopTimes(5);
+        assertStrings("Result:{ Value: 5 }", action.getResult());
+        assertStrings("5", counter.get());
+    }
+    
+    @Test
+    public void testDeferLoopCondition() throws InterruptedException {
+        val counter = new AtomicInteger(0);
+        val action  = DeferAction
+                .from(()->counter.incrementAndGet())
+                .loopUntil(result -> result.get() >= 5);
+        assertStrings("Result:{ Value: 5 }", action.getResult());
+        assertStrings("5", counter.get());
+    }
+    
 }
