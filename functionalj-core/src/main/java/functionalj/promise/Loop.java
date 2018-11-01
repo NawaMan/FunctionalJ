@@ -5,7 +5,6 @@ import static java.util.Objects.requireNonNull;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import functionalj.environments.Console;
 import functionalj.functions.Func1;
 import functionalj.functions.FuncUnit1;
 import functionalj.result.Result;
@@ -13,18 +12,17 @@ import lombok.val;
 
 public class Loop<DATA> extends Retry<DATA> {
     
+    private final Integer                      count;
     private final Func1<Result<DATA>, Boolean> breakCondition;
     
-    public Loop(Integer count) {
+    public Loop(int count) {
         super(Retry.RETRY_FOREVER, Retry.NO_WAIT);
-        val counter = new AtomicInteger(count.intValue());
-        val stopPredicate = (Func1<Result<DATA>, Boolean>)(result)->{
-            return counter.decrementAndGet() <= 0;
-        };
-        this.breakCondition = stopPredicate;
+        this.count          = count;
+        this.breakCondition = null;
     }
     public Loop(Func1<Result<DATA>, Boolean> breakCondition) {
         super(Retry.RETRY_FOREVER, Retry.NO_WAIT);
+        this.count          = null;
         this.breakCondition = requireNonNull(breakCondition);
     }
     
@@ -42,11 +40,12 @@ public class Loop<DATA> extends Retry<DATA> {
                 .onStart(onStart)
                 .runner(runner);
         
-        val actionBuilder = config.createBuilder(supplier);
+        val shouldStop      = shouldStop();
+        val actionBuilder   = config.createBuilder(supplier);
         val onCompleteRef   = new AtomicReference<FuncUnit1<Result<DATA>>>();
         val subscriptionRef = new AtomicReference<Subscription<DATA>>();
-        val onComplete    = (FuncUnit1<Result<DATA>>)(result -> {
-            val shouldBreak = breakCondition.apply(result);
+        val onComplete      = (FuncUnit1<Result<DATA>>)(result -> {
+            val shouldBreak = shouldStop.apply(result);
             if (shouldBreak) {
                 val value = result.value();
                 finalAction.complete(value);
@@ -68,6 +67,16 @@ public class Loop<DATA> extends Retry<DATA> {
         subscriptionRef.set(subscription);
         
         return finalAction;
+    }
+    private Func1<Result<DATA>, Boolean> shouldStop() {
+        if (breakCondition != null)
+            return breakCondition;
+        
+        val counter = new AtomicInteger(count.intValue());
+        val stopPredicate = (Func1<Result<DATA>, Boolean>)(result)->{
+            return counter.decrementAndGet() <= 0;
+        };
+        return stopPredicate;
     }
     
 }

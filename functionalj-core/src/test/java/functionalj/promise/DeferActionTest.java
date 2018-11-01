@@ -777,8 +777,10 @@ public class DeferActionTest {
         val action  = DeferAction
                 .from(()->counter.incrementAndGet())
                 .loopTimes(5);
-        assertStrings("Result:{ Value: 5 }", action.getResult());
+        assertStrings("Result:{ Value: 5 }", action.build().getResult());
         assertStrings("5", counter.get());
+        
+        assertStrings("Result:{ Value: 10 }", action.build().getResult());
     }
     
     @Test
@@ -787,7 +789,7 @@ public class DeferActionTest {
         val action  = DeferAction
                 .from(()->counter.incrementAndGet())
                 .loopUntil(result -> result.get() >= 5);
-        assertStrings("Result:{ Value: 5 }", action.getResult());
+        assertStrings("Result:{ Value: 5 }", action.build().getResult());
         assertStrings("5", counter.get());
     }
     

@@ -93,7 +93,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             val result1 = (Result<T1>)results[0];
             val result2 = (Result<T2>)results[1];
             val mergedResult = Result.ofResults(result1, result2, merger);
-            return mergedResult;
+            return (Result<D>)mergedResult;
         });
         val promises = listOf(promise1, promise2);
         val combiner = new Combiner(promises, merge);
@@ -112,7 +112,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             val result2 = (Result<T2>)results[1];
             val result3 = (Result<T3>)results[2];
             val mergedResult = Result.ofResults(result1, result2, result3, merger);
-            return mergedResult;
+            return (Result<D>)mergedResult;
         });
         val promises = listOf(promise1, promise2, promise3);
         val combiner = new Combiner(promises, merge);
@@ -133,7 +133,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             val result3 = (Result<T3>)results[2];
             val result4 = (Result<T4>)results[3];
             val mergedResult = Result.ofResults(result1, result2, result3, result4, merger);
-            return mergedResult;
+            return (Result<D>)mergedResult;
         });
         val promises = listOf(promise1, promise2, promise3, promise4);
         val combiner = new Combiner(promises, merge);
@@ -156,7 +156,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             val result4 = (Result<T4>)results[3];
             val result5 = (Result<T5>)results[4];
             val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, merger);
-            return mergedResult;
+            return (Result<D>)mergedResult;
         });
         val promises = listOf(promise1, promise2, promise3, promise4, promise5);
         val combiner = new Combiner(promises, merge);
@@ -181,7 +181,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             val result5 = (Result<T5>)results[4];
             val result6 = (Result<T6>)results[5];
             val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, merger);
-            return mergedResult;
+            return (Result<D>)mergedResult;
         });
         val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6);
         val combiner = new Combiner(promises, merge);

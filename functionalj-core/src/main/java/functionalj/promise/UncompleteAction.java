@@ -57,7 +57,7 @@ public abstract class UncompleteAction<DATA> extends StartableAction<DATA> imple
         return new CompletedAction<DATA>(promise);
     }
     
-    public final Promise<DATA> getPromise() {
+    public Promise<DATA> getPromise() {
         return promise;
     }
     public final Result<DATA> getCurentResult() {

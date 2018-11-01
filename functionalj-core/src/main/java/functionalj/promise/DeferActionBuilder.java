@@ -13,7 +13,7 @@ import functionalj.result.Result;
 import lombok.val;
 import lombok.experimental.Delegate;
 
-public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements HasPromise<DATA>, Pipeable<HasPromise<DATA>> {
+public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements Pipeable<HasPromise<DATA>> {
     
     private static final FuncUnit0 DO_NOTHING = ()->{};
     

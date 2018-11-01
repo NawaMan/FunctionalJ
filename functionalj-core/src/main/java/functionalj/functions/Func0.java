@@ -108,7 +108,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return defer();
     }
     public default Promise<OUTPUT> defer() {
-        return DeferAction.from(this).getPromise();
+        return DeferAction.from(this).build().getPromise();
     }
     
     public default Func1<?, OUTPUT> toFunc1() {
