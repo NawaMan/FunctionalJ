@@ -65,7 +65,7 @@ public class DeferActionCreator {
         val task = (Runnable)(() -> {
             runner.accept(body);
         });
-        val action = new DeferAction<D>(task);
+        val action = new DeferAction<D>(task, null);
         promiseRef.set(action.getPromise());
         return action;
     }

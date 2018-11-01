@@ -92,7 +92,7 @@ public class DeferActionTest {
         })
         .subscribe(result -> {
             val end = System.currentTimeMillis();
-            log.add("End: " + (10*((end - start) / 10)));
+            log.add("End: " + (20*((end - start) / 20)));
             log.add("Result: " + result);
             latch.countDown();
         });

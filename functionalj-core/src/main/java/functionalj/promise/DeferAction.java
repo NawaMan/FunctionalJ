@@ -13,6 +13,7 @@ import functionalj.functions.FuncUnit0;
 import functionalj.functions.FuncUnit1;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
+import functionalj.result.OnStart;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -22,8 +23,14 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     public static <D> DeferAction<D> createNew() {
         return of((Class<D>)null);
     }
+    public static <D> DeferAction<D> createNew(OnStart onStart) {
+        return of((Class<D>)null, onStart);
+    }
     public static <D> DeferAction<D> of(Class<D> clzz) {
         return new DeferAction<D>();
+    }
+    public static <D> DeferAction<D> of(Class<D> clzz, OnStart onStart) {
+        return new DeferAction<D>(null, onStart);
     }
     
     public static <D> DeferAction<D> ofValue(D value) {
@@ -49,6 +56,14 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     }
     
     @SafeVarargs
+    public static <D> RaceResult<D> AnyOf(StartableAction<D> ... actions) {
+        return Race(FuncList.of(actions));
+    }
+    
+    public static <D> RaceResult<D> AnyOf(List<StartableAction<D>> actions) {
+        return Race(actions);
+    }
+    @SafeVarargs
     public static <D> RaceResult<D> race(StartableAction<D> ... actions) {
         return Race(FuncList.of(actions));
     }
@@ -71,15 +86,15 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     private final DeferAction<?> parent;
     
     DeferAction() {
-        this.parent = null;
-        this.task   = null;
+        this(null, (OnStart)null);
     }
     DeferAction(DeferAction<?> parent, Promise<DATA> promise) {
         super(promise);
         this.parent = parent;
         this.task   = null;
     }
-    DeferAction(Runnable task) {
+    DeferAction(Runnable task, OnStart onStart) {
+        super(onStart);
         this.parent = null;
         this.task   = task;
     }

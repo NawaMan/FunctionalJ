@@ -2,6 +2,7 @@ package functionalj.promise;
 
 import static functionalj.functions.Func.carelessly;
 import static functionalj.functions.Func.f;
+import static functionalj.list.FuncList.listOf;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.ref.Ref;
 import functionalj.result.HasResult;
+import functionalj.result.OnStart;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -81,15 +83,18 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T1>> promise1,
             NamedExpression<HasPromise<T2>> promise2,
             Func2<T1, T2, D>                merger) {
-        return new Combiner(
-                FuncList.of(promise1, promise2),
-                f((Result[] results)-> {
-                    val result1 = (Result<T1>)results[0];
-                    val result2 = (Result<T2>)results[1];
-                    val mergedResult = Result.ofResults(result1, result2, merger);
-                    return mergedResult;
-                }))
-                .getPromise();
+        val merge = f((Result[] results)-> {
+            val result1 = (Result<T1>)results[0];
+            val result2 = (Result<T2>)results[1];
+            val mergedResult = Result.ofResults(result1, result2, merger);
+            return mergedResult;
+        });
+        val promises = listOf(promise1, promise2);
+        val combiner = new Combiner(promises, merge);
+        val promise  = combiner.getPromise();
+        
+        promise.start();
+        return promise;
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -98,16 +103,19 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T2>> promise2,
             NamedExpression<HasPromise<T3>> promise3,
             Func3<T1, T2, T3, D>            merger) {
-        return new Combiner(
-                FuncList.of(promise1, promise2, promise3),
-                f((Result[] results)-> {
-                    val result1 = (Result<T1>)results[0];
-                    val result2 = (Result<T2>)results[1];
-                    val result3 = (Result<T3>)results[2];
-                    val mergedResult = Result.ofResults(result1, result2, result3, merger);
-                    return mergedResult;
-                }))
-                .getPromise();
+        val merge = f((Result[] results)-> {
+            val result1 = (Result<T1>)results[0];
+            val result2 = (Result<T2>)results[1];
+            val result3 = (Result<T3>)results[2];
+            val mergedResult = Result.ofResults(result1, result2, result3, merger);
+            return mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3);
+        val combiner = new Combiner(promises, merge);
+        val promise  = combiner.getPromise();
+        
+        promise.start();
+        return promise;
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -117,17 +125,20 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T3>> promise3,
             NamedExpression<HasPromise<T4>> promise4,
             Func4<T1, T2, T3, T4, D>        merger) {
-        return new Combiner(
-                FuncList.of(promise1, promise2, promise3, promise4),
-                f((Result[] results)-> {
-                    val result1 = (Result<T1>)results[0];
-                    val result2 = (Result<T2>)results[1];
-                    val result3 = (Result<T3>)results[2];
-                    val result4 = (Result<T4>)results[3];
-                    val mergedResult = Result.ofResults(result1, result2, result3, result4, merger);
-                    return mergedResult;
-                }))
-                .getPromise();
+        val merge = f((Result[] results)-> {
+            val result1 = (Result<T1>)results[0];
+            val result2 = (Result<T2>)results[1];
+            val result3 = (Result<T3>)results[2];
+            val result4 = (Result<T4>)results[3];
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, merger);
+            return mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3, promise4);
+        val combiner = new Combiner(promises, merge);
+        val promise  = combiner.getPromise();
+        
+        promise.start();
+        return promise;
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -138,18 +149,21 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T4>> promise4,
             NamedExpression<HasPromise<T5>> promise5,
             Func5<T1, T2, T3, T4, T5, D>    merger) {
-        return new Combiner(
-                FuncList.of(promise1, promise2, promise3, promise4),
-                f((Result[] results)-> {
-                    val result1 = (Result<T1>)results[0];
-                    val result2 = (Result<T2>)results[1];
-                    val result3 = (Result<T3>)results[2];
-                    val result4 = (Result<T4>)results[3];
-                    val result5 = (Result<T5>)results[4];
-                    val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, merger);
-                    return mergedResult;
-                }))
-                .getPromise();
+        val merge = f((Result[] results)-> {
+            val result1 = (Result<T1>)results[0];
+            val result2 = (Result<T2>)results[1];
+            val result3 = (Result<T3>)results[2];
+            val result4 = (Result<T4>)results[3];
+            val result5 = (Result<T5>)results[4];
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, merger);
+            return mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5);
+        val combiner = new Combiner(promises, merge);
+        val promise  = combiner.getPromise();
+        
+        promise.start();
+        return promise;
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -161,19 +175,22 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T5>>  promise5,
             NamedExpression<HasPromise<T5>>  promise6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        return new Combiner(
-                FuncList.of(promise1, promise2, promise3, promise4, promise5, promise6),
-                f((Result[] results)-> {
-                    val result1 = (Result<T1>)results[0];
-                    val result2 = (Result<T2>)results[1];
-                    val result3 = (Result<T3>)results[2];
-                    val result4 = (Result<T4>)results[3];
-                    val result5 = (Result<T5>)results[4];
-                    val result6 = (Result<T6>)results[5];
-                    val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, merger);
-                    return mergedResult;
-                }))
-                .getPromise();
+        val merge = f((Result[] results)-> {
+            val result1 = (Result<T1>)results[0];
+            val result2 = (Result<T2>)results[1];
+            val result3 = (Result<T3>)results[2];
+            val result4 = (Result<T4>)results[3];
+            val result5 = (Result<T5>)results[4];
+            val result6 = (Result<T6>)results[5];
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, merger);
+            return mergedResult;
+        });
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6);
+        val combiner = new Combiner(promises, merge);
+        val promise  = combiner.getPromise();
+        
+        promise.start();
+        return promise;
     }
     
     
@@ -188,6 +205,9 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     private final AtomicReference<Object> dataRef = new AtomicReference<>();
     
+    Promise(OnStart onStart) {
+        dataRef.set(onStart);
+    }
     Promise(StartableAction<DATA> action) {
         dataRef.set(action);
     }
@@ -213,7 +233,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             return promise.getStatus();
         }
         
-        if (data instanceof StartableAction)
+        if ((data instanceof StartableAction) || (data instanceof OnStart))
             return PromiseStatus.NOT_STARTED;
         if (consumers == data)
             return PromiseStatus.PENDING;
@@ -245,14 +265,22 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             return parent.start();
         }
         
-        if (!(data instanceof StartableAction))
+        val isStartAction = (data instanceof StartableAction);
+        val isOnStart     = (data instanceof OnStart);
+        if (!isStartAction && !isOnStart)
             return false;
         
         val isJustStarted = dataRef.compareAndSet(data, consumers);
         if (isJustStarted) {
-            ((StartableAction<DATA>)data).start();
+            if (isStartAction)  ((StartableAction<DATA>)data).start();
+            else if (isOnStart) ((OnStart)data).run();
         }
         return isJustStarted;
+    }
+    
+    OnStart getOnStart() {
+        val data = dataRef.get();
+        return (data instanceof OnStart) ? (OnStart)data : OnStart.DoNothing;
     }
     
     boolean abort() {
@@ -305,7 +333,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 } else {
                     parent.makeDone(result);
                 }
-            } else if (data instanceof StartableAction) {
+            } else if ((data instanceof StartableAction) || (data instanceof OnStart)) {
                 if (!dataRef.compareAndSet(data, result))
                     return false;
             } else {
@@ -655,26 +683,30 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         
         private final Func1<Result[], Result<D>> mergeFunc;
         
-        private final PendingAction<D> action;
-        private final int              count;
-        private final Result[]         results;
-        private final Subscription[]   subscriptions;
-        private final AtomicBoolean    isDone;
-        private final Promise<D>       promise;
+        private final DeferAction<D> action;
+        private final int            count;
+        private final Result[]       results;
+        private final Subscription[] subscriptions;
+        private final AtomicBoolean  isDone;
+        private final Promise<D>     promise;
         
-        Combiner(FuncList<NamedExpression<HasPromise<?>>> promises,
-                 Func1<Result[], Result<D>>               mergeFunc) {
+        Combiner(FuncList<NamedExpression<HasPromise<Object>>> hasPromises,
+                 Func1<Result[], Result<D>>                    mergeFunc) {
             this.mergeFunc     = mergeFunc;
-            this.action        = DeferAction.of((Class<D>)null).start();
-            this.count         = promises.size();
+            this.count         = hasPromises.size();
             this.results       = new Result[count];
             this.subscriptions = new Subscription[count];
             this.isDone        = new AtomicBoolean(false);
             
+            val promises = hasPromises
+            .map(promise -> promise.apply(null))
+            .map(promise -> promise.getPromise());
+            
+            this.action = DeferAction.of((Class<D>)null, OnStart.run(()->{
+                promises.forEach(promise -> promise.start());
+            }));
+            
             promises
-            .map             ( promise         -> promise.apply(null))
-            .map             ( promise         -> promise.getPromise())
-            .peek            ( promise         -> promise.start())
             .mapWithIndex    ((index, promise) -> promise.subscribe(result -> processResult(index, result)))
             .forEachWithIndex((index, sub)     -> subscriptions[index] = sub);
             

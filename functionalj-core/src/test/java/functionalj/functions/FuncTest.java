@@ -22,7 +22,7 @@ public class FuncTest {
         } catch (NullPointerException e) {
             // Expected
         }
-
+        
         try {
             Func.of(()->{ throw new FileNotFoundException(); }).get();
             fail();
@@ -33,7 +33,7 @@ public class FuncTest {
         
         assertEquals("Result:{ Value: Test }",                               Func.of(()->"Test").getSafely() + "");
         assertEquals("Result:{ Exception: java.lang.NullPointerException }", Func.of(()->{ throw new NullPointerException(); }).getSafely() + "");
-
+        
         assertEquals("Test", Func.of(()->"Test").getUnsafe() + "");
         try {
             Func.of(()->{ throw new NullPointerException(); }).getUnsafe();

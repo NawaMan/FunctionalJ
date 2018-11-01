@@ -29,7 +29,8 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public interface Func {
     
-
+    // TODO - Add defer here.
+    
     /**
      * A shorter way to use Function.identity() -- alias for itself() and themAll().
      * 

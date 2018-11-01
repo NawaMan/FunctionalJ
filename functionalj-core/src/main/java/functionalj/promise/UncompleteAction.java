@@ -2,6 +2,7 @@ package functionalj.promise;
 
 import java.util.concurrent.TimeUnit;
 
+import functionalj.result.OnStart;
 import functionalj.result.Result;
 
 @SuppressWarnings("javadoc")
@@ -9,8 +10,12 @@ public abstract class UncompleteAction<DATA> extends StartableAction<DATA> imple
     
     protected final Promise<DATA> promise;
     
-    UncompleteAction() {
-        this.promise = new Promise<DATA>(this);
+    UncompleteAction(OnStart onStart) {
+        if (onStart != null) {
+            this.promise = new Promise<DATA>(onStart);
+        } else {
+            this.promise = new Promise<DATA>(this);
+        }
     }
     UncompleteAction(Promise<DATA> promise) {
         this.promise = promise;

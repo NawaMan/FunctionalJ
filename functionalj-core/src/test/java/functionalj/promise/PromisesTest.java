@@ -146,6 +146,8 @@ public class PromisesTest {
                 (_1, _2, _3, _4, _5, _6) -> {
                     return 42;
                 });
+        promise.start();
+        
         assertEquals(PromiseStatus.PENDING, promise.getStatus());
         
         control1.complete(1);
