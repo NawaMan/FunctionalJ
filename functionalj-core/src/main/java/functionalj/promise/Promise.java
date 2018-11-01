@@ -177,17 +177,19 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     
     
     // DATA
-    //    NOT_START -> NOT START
-    //    consumer  -> Pending
-    //    result    -> done.
+    //    StartableAction -> NOT START
+    //    consumer        -> Pending
+    //    result          -> done.
     //      result.cancelled -> aborted
     //      result.completed -> completed
     private final Map<Subscription<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>();
     private final List<FuncUnit1<Result<DATA>>>                    eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
     
-    private final AtomicReference<Object> dataRef = new AtomicReference<>(PromiseStatus.NOT_STARTED);
+    private final AtomicReference<Object> dataRef = new AtomicReference<>();
     
-    public Promise() {}
+    Promise(StartableAction<DATA> action) {
+        dataRef.set(action);
+    }
     
     Promise(@SuppressWarnings("rawtypes") Promise parent) {
         this.dataRef.set(parent);
@@ -206,7 +208,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             return promise.getStatus();
         }
         
-        if (PromiseStatus.NOT_STARTED.equals(data))
+        if (data instanceof StartableAction)
             return PromiseStatus.NOT_STARTED;
         if (consumers == data)
             return PromiseStatus.PENDING;
@@ -230,19 +232,22 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     
     //== Internal working ==
     
-    final boolean markStart() {
+    @SuppressWarnings("unchecked")
+    public final boolean start() {
         val data = dataRef.get();
         if (data instanceof Promise) {
-            @SuppressWarnings("unchecked")
             val parent = (Promise<DATA>)data;
-            return parent.markStart();
+            return parent.start();
         }
         
-        if (PromiseStatus.NOT_STARTED != data)
+        if (!(data instanceof StartableAction))
             return false;
         
-        
-        return dataRef.compareAndSet(PromiseStatus.NOT_STARTED, consumers);
+        val isJustStarted = dataRef.compareAndSet(data, consumers);
+        if (isJustStarted) {
+            ((StartableAction<DATA>)data).start();
+        }
+        return isJustStarted;
     }
     
     boolean abort() {
@@ -295,8 +300,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
                 } else {
                     parent.makeDone(result);
                 }
-            } else if (dataRef.get().equals(PromiseStatus.NOT_STARTED)) {
-                if (!dataRef.compareAndSet(PromiseStatus.NOT_STARTED, result))
+            } else if (data instanceof StartableAction) {
+                if (!dataRef.compareAndSet(data, result))
                     return false;
             } else {
                 if (!dataRef.compareAndSet(consumers, result))
@@ -399,7 +404,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
         return getResult(timeout, null);
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
-        markStart();
+        start();
         if (!this.isDone()) {
             synchronized (this) {
                 if (!this.isDone()) {
@@ -551,7 +556,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
     @SuppressWarnings("unchecked")
     public final Promise<DATA> filter(Predicate<? super DATA> predicate) {
         val targetPromise = (Promise<DATA>)newPromise();
-        targetPromise.markStart();
+        targetPromise.start();
         
         subscribe(r -> {
             val result = r.filter(predicate);
@@ -653,7 +658,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
         private final Promise<D>       promise;
         
         Combiner(FuncList<NamedExpression<HasPromise<?>>> promises,
-                 Func1<Result[], Result<D>>                mergeFunc) {
+                 Func1<Result[], Result<D>>               mergeFunc) {
             this.mergeFunc     = mergeFunc;
             this.action        = DeferAction.of((Class<D>)null).start();
             this.count         = promises.size();
@@ -663,7 +668,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
             
             promises
             .map             ( promise         -> promise.apply(null))
-            .map             ( promise         -> ensureStartPromise(promise))
+            .map             ( promise         -> promise.getPromise())
+            .peek            ( promise         -> promise.start())
             .mapWithIndex    ((index, promise) -> promise.subscribe(result -> processResult(index, result)))
             .forEachWithIndex((index, sub)     -> subscriptions[index] = sub);
             
@@ -673,12 +679,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA> {
                     unsbscribeAll();
                 }
             });
-        }
-        
-        private Promise<? extends Object> ensureStartPromise(HasPromise<?> promise) {
-            if (promise instanceof StartableAction)
-                return (Promise<?>)((StartableAction)promise).start().getPromise();
-            return (Promise<?>)promise.getPromise();
         }
         
         Promise<D> getPromise() {

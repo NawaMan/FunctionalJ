@@ -173,6 +173,11 @@ public final class Console {
         public StreamPlus<String> outLines() {
             return StreamPlus.from(outLines.stream());
         }
+        public void clear() {
+            clearOutLines();
+            clearErrLines();
+            clearInLines();
+        }
         public void clearOutLines() {
             outLines.clear();
         }

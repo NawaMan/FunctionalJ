@@ -1,7 +1,5 @@
 package functionalj.promise;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.concurrent.TimeUnit;
 
 import functionalj.result.Result;
@@ -11,8 +9,11 @@ public abstract class UncompleteAction<DATA> extends StartableAction<DATA> imple
     
     protected final Promise<DATA> promise;
     
+    UncompleteAction() {
+        this.promise = new Promise<DATA>(this);
+    }
     UncompleteAction(Promise<DATA> promise) {
-        this.promise = requireNonNull(promise);
+        this.promise = promise;
     }
     
     public final CompletedAction<DATA> abort() {

@@ -25,9 +25,11 @@ public class DeferActionCreator {
             Func0<D>           supplier,
             Runnable           onStart,
             Consumer<Runnable> runner) {
-        val promise   = new Promise<D>();
-        val threadRef = new AtomicReference<Thread>();
-        val body      = (Runnable)() -> {
+        val promiseRef = new AtomicReference<Promise<D>>();
+        val threadRef  = new AtomicReference<Thread>();
+        
+        val body = (Runnable)() -> {
+            val promise = promiseRef.get();
             if (!promise.isNotDone()) 
                 return;
             
@@ -63,7 +65,9 @@ public class DeferActionCreator {
         val task = (Runnable)(() -> {
             runner.accept(body);
         });
-        return new DeferAction<D>(promise, task);
+        val action = new DeferAction<D>(task);
+        promiseRef.set(action.getPromise());
+        return action;
     }
 
 }

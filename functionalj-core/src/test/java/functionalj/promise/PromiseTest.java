@@ -396,7 +396,7 @@ public class PromiseTest {
         assertStrings("NOT_STARTED", parentPromise.getStatus());
         assertStrings("NOT_STARTED", childPromise.getStatus());
         
-        childPromise.markStart();
+        childPromise.start();
         assertStrings("PENDING", parentPromise.getStatus());
         assertStrings("PENDING", childPromise.getStatus());
         
@@ -418,7 +418,7 @@ public class PromiseTest {
         assertStrings("NOT_STARTED", parentPromise.getStatus());
         assertStrings("NOT_STARTED", childPromise.getStatus());
         
-        childPromise.markStart();
+        childPromise.start();
         assertStrings("PENDING", parentPromise.getStatus());
         assertStrings("PENDING", childPromise.getStatus());
         

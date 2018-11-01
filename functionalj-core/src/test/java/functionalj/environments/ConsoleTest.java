@@ -79,6 +79,8 @@ public class ConsoleTest {
         
         With(Env.refs.console.butWith(Console.Stub.instance))
         .run(()->{
+            Console.Stub.instance.clear();
+            
             Console
             .errPrintln("Five")
             .errPrintln("Six");
@@ -88,7 +90,7 @@ public class ConsoleTest {
                     "[Five, Six]",
                     outLines.toString());
             
-            Console.Stub.instance.clearErrLines();
+            Console.Stub.instance.clear();
         });
         
         With(Env.refs.console.butWith(Console.Stub.instance))

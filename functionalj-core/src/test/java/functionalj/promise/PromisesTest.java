@@ -206,7 +206,7 @@ public class PromisesTest {
                 (_1, _2, _3, _4, _5, _6) -> {
                     return _1 + _2 + _3 + _4 + _5 + 6;
                 });
-        promise.markStart();
+        promise.start();
         
         val subscription = promise.subscribe();
         subscription.unsubscribe();

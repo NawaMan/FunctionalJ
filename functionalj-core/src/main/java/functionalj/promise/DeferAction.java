@@ -22,13 +22,13 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> {
         return of((Class<D>)null);
     }
     public static <D> DeferAction<D> of(Class<D> clzz) {
-        return new DeferAction<D>(new Promise<D>());
+        return new DeferAction<D>();
     }
     
     public static <D> DeferAction<D> ofValue(D value) {
-        val promise = new Promise<D>();
-        promise.makeComplete(value);
-        return new DeferAction<D>(promise);
+        val action = new DeferAction<D>();
+        action.getPromise().makeComplete(value);
+        return action;
     }
     
     public static DeferActionBuilder<Object> from(FuncUnit0 runnable) {
@@ -69,26 +69,25 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> {
     
     private final DeferAction<?> parent;
     
-    DeferAction(Promise<DATA> promise) {
-        this(promise, null);
+    DeferAction() {
+        this.parent = null;
+        this.task   = null;
     }
     DeferAction(DeferAction<?> parent, Promise<DATA> promise) {
         super(promise);
         this.parent = parent;
-        this.task = null;
+        this.task   = null;
     }
-    DeferAction(Promise<DATA> promise, Runnable task) {
-        super(promise);
+    DeferAction(Runnable task) {
         this.parent = null;
-        this.task = task;
+        this.task   = task;
     }
     
     public PendingAction<DATA> start() {
         if (parent != null) {
             parent.start();
         } else {
-            val isStarted = promise.isStarted();
-            promise.markStart();
+            val isStarted = promise.start();
             
             if (!isStarted && (task != null))
                 carelessly(task);
