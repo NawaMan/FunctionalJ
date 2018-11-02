@@ -1,6 +1,6 @@
 package functionalj.result;
 
-import static functionalj.functions.Func.f;
+import static functionalj.function.Func.f;
 import static functionalj.result.Result.Do;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -150,7 +150,7 @@ public class ResultTest {
     
     @Test
     public void testResultResult_withException() {
-        assertStrings("Result:{ Exception: functionalj.functions.FunctionInvocationException: Test fail }",
+        assertStrings("Result:{ Exception: functionalj.function.FunctionInvocationException: Test fail }",
                 Result.ofResults(
                         Result.of("One"),
                         Result.ofException("Test fail"),

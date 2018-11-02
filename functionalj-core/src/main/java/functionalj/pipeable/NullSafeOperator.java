@@ -1,6 +1,6 @@
 package functionalj.pipeable;
 
-import functionalj.functions.Func1;
+import functionalj.function.Func1;
 
 @SuppressWarnings("javadoc")
 public interface NullSafeOperator<INPUT, OUTPUT> extends Func1<INPUT, OUTPUT> {

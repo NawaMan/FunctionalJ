@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
-import functionalj.functions.Func1;
+import functionalj.function.Func1;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.lenses.NullableLens;

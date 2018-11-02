@@ -1,4 +1,4 @@
-package functionalj.functions;
+package functionalj.function;
 
 @FunctionalInterface
 public interface NamedExpression<DATA> {

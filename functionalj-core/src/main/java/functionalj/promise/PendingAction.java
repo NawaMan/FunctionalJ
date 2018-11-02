@@ -1,11 +1,11 @@
 package functionalj.promise;
 
-import static functionalj.functions.Func.carelessly;
+import static functionalj.function.Func.carelessly;
 
 import java.util.function.Predicate;
 
-import functionalj.functions.Func1;
-import functionalj.functions.FuncUnit1;
+import functionalj.function.Func1;
+import functionalj.function.FuncUnit1;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 import lombok.val;

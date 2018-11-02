@@ -6,7 +6,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.functions.Func;
+import functionalj.function.Func;
 import functionalj.lens.core.AccessCreator;
 import functionalj.tuple.Tuple2;
 import lombok.val;

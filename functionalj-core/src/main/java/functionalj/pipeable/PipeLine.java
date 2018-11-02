@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.functions.Func1;
+import functionalj.function.Func1;
 import functionalj.list.ImmutableList;
 import functionalj.pipeable.Pipeable.__internal;
 import lombok.val;

@@ -1,6 +1,6 @@
 package functionalj.result;
 
-import functionalj.functions.FuncUnit0;
+import functionalj.function.FuncUnit0;
 
 // This interface is used to document the second parameter on DeferAction.run and DeferAction.from.
 public interface OnStart extends FuncUnit0 {

@@ -1,10 +1,17 @@
 package functionalj.functions;
 
-import static functionalj.functions.Absent.__;
+import static functionalj.function.Absent.__;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+
+import functionalj.function.Func1;
+import functionalj.function.Func2;
+import functionalj.function.Func3;
+import functionalj.function.Func4;
+import functionalj.function.Func5;
+import functionalj.function.Func6;
 
 @SuppressWarnings("javadoc")
 public class StrFuncs {
@@ -172,6 +179,8 @@ public class StrFuncs {
     public static <I1, I2, I3, I4, I5> Func6<String, I1, I2, I3, I4, I5, String> strFormat5() {
         return (template, i1, i2, i3, i4, i5) -> String.format(template, i1, i2, i3, i4, i5);
     }
+    
+    // TODO Rethink this at some point ..... should this be constance when no generic?
     
     public static Func3<String, String, String, String> replaceAll() {
         return (str, regex, replacement) -> str.replaceAll(regex, replacement);

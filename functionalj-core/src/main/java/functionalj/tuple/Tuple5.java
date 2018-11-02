@@ -1,7 +1,7 @@
 package functionalj.tuple;
 
-import static functionalj.functions.Absent.__;
-import static functionalj.functions.Func.it;
+import static functionalj.function.Absent.__;
+import static functionalj.function.Func.it;
 import static functionalj.tuple.Keep.keep;
 import static java.util.stream.Collectors.joining;
 
@@ -9,11 +9,11 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.function.Function;
 
-import functionalj.functions.Absent;
-import functionalj.functions.Func2;
-import functionalj.functions.Func3;
-import functionalj.functions.Func4;
-import functionalj.functions.Func5;
+import functionalj.function.Absent;
+import functionalj.function.Func2;
+import functionalj.function.Func3;
+import functionalj.function.Func4;
+import functionalj.function.Func5;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;

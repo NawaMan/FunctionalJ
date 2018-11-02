@@ -1,6 +1,6 @@
 package functionalj.ref;
 
-import functionalj.functions.Func0;
+import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 

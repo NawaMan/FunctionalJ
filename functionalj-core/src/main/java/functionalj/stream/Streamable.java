@@ -10,10 +10,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import functionalj.functions.Func3;
-import functionalj.functions.Func4;
-import functionalj.functions.Func5;
-import functionalj.functions.Func6;
+import functionalj.function.Func3;
+import functionalj.function.Func4;
+import functionalj.function.Func5;
+import functionalj.function.Func6;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.tuple.Tuple2;

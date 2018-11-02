@@ -3,9 +3,9 @@ package functionalj.result;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import functionalj.functions.Func1;
-import functionalj.functions.Func2;
-import functionalj.functions.FuncUnit2;
+import functionalj.function.Func1;
+import functionalj.function.Func2;
+import functionalj.function.FuncUnit2;
 import lombok.val;
 
 public interface ResultStatusAddOn<DATA> {

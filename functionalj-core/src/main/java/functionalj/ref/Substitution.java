@@ -2,7 +2,7 @@ package functionalj.ref;
 
 import static java.util.Objects.requireNonNull;
 
-import functionalj.functions.Func0;
+import functionalj.function.Func0;
 
 public abstract class Substitution<DATA> {
 	

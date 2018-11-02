@@ -1,14 +1,15 @@
 package functionalj.functions;
 
-import static functionalj.environments.TimeFuncs.Sleep;
-import static functionalj.functions.Absent.__;
-import static functionalj.functions.Func.lift;
+import static functionalj.function.Absent.__;
+import static functionalj.function.Func.lift;
+import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.pipeable.Pipeable.StartWtih;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import functionalj.function.Func;
 import lombok.val;
 
 public class Func1Test {

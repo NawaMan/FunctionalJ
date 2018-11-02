@@ -11,7 +11,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import functionalj.functions.FunctionInvocationException;
+import functionalj.function.FunctionInvocationException;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 

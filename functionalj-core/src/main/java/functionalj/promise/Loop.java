@@ -5,8 +5,8 @@ import static java.util.Objects.requireNonNull;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import functionalj.functions.Func1;
-import functionalj.functions.FuncUnit1;
+import functionalj.function.Func1;
+import functionalj.function.FuncUnit1;
 import functionalj.result.Result;
 import lombok.val;
 

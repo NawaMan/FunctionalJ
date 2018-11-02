@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-import functionalj.functions.Func1;
+import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessParameterized2;
 import functionalj.map.FuncMap;

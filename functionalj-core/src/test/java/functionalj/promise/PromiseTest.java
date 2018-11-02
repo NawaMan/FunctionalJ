@@ -1,6 +1,6 @@
 package functionalj.promise;
 
-import static functionalj.environments.TimeFuncs.Sleep;
+import static functionalj.functions.TimeFuncs.Sleep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 
 import org.junit.Test;
 
-import functionalj.functions.Func;
+import functionalj.function.Func;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

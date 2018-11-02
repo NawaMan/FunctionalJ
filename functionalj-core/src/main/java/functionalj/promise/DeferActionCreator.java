@@ -1,11 +1,11 @@
 package functionalj.promise;
 
-import static functionalj.functions.Func.carelessly;
+import static functionalj.function.Func.carelessly;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import functionalj.functions.Func0;
+import functionalj.function.Func0;
 import functionalj.ref.Ref;
 import functionalj.ref.RefTo.Default;
 import functionalj.result.Result;

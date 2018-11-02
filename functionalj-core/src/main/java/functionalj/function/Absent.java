@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.functions;
+package functionalj.function;
 
 /**
  * Intance of this class represent an absent of a parameter in functions.

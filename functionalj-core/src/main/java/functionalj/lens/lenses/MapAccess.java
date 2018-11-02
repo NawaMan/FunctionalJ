@@ -9,7 +9,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.functions.Func1;
+import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessParameterized2;
 import lombok.val;

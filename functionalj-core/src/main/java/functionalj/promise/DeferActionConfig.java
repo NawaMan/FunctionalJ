@@ -3,8 +3,8 @@ package functionalj.promise;
 import java.util.function.Consumer;
 
 import functionalj.environments.Env;
-import functionalj.functions.Func0;
-import functionalj.functions.FuncUnit0;
+import functionalj.function.Func0;
+import functionalj.function.FuncUnit0;
 import functionalj.ref.Ref;
 
 public class DeferActionConfig {

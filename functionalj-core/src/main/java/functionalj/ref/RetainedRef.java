@@ -7,7 +7,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import functionalj.environments.Env;
-import functionalj.functions.Func0;
+import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 

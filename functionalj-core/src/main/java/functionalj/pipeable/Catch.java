@@ -19,7 +19,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.functions.FunctionInvocationException;
+import functionalj.function.FunctionInvocationException;
 import functionalj.result.Result;
 
 /**

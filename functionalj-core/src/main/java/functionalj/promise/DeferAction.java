@@ -1,7 +1,7 @@
 package functionalj.promise;
 
-import static functionalj.functions.Func.carelessly;
-import static functionalj.functions.Func.f;
+import static functionalj.function.Func.carelessly;
+import static functionalj.function.Func.f;
 import static functionalj.list.FuncList.listOf;
 import static functionalj.promise.RaceResult.Race;
 
@@ -12,16 +12,16 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import functionalj.functions.Func0;
-import functionalj.functions.Func1;
-import functionalj.functions.Func2;
-import functionalj.functions.Func3;
-import functionalj.functions.Func4;
-import functionalj.functions.Func5;
-import functionalj.functions.Func6;
-import functionalj.functions.FuncUnit0;
-import functionalj.functions.FuncUnit1;
-import functionalj.functions.NamedExpression;
+import functionalj.function.Func0;
+import functionalj.function.Func1;
+import functionalj.function.Func2;
+import functionalj.function.Func3;
+import functionalj.function.Func4;
+import functionalj.function.Func5;
+import functionalj.function.Func6;
+import functionalj.function.FuncUnit0;
+import functionalj.function.FuncUnit1;
+import functionalj.function.NamedExpression;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.OnStart;

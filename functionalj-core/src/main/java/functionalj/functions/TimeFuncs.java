@@ -1,6 +1,7 @@
-package functionalj.environments;
+package functionalj.functions;
 
-import functionalj.functions.FuncUnit0;
+import functionalj.environments.Env;
+import functionalj.function.FuncUnit0;
 
 public class TimeFuncs {
     

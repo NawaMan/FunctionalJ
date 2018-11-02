@@ -7,6 +7,9 @@ import java.io.FileNotFoundException;
 
 import org.junit.Test;
 
+import functionalj.function.Func;
+import functionalj.function.Func2;
+import functionalj.function.FunctionInvocationException;
 import functionalj.promise.Promise;
 import lombok.val;
 

@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import functionalj.functions.FuncUnit1;
+import functionalj.function.FuncUnit1;
 
 @FunctionalInterface
 public interface AsyncRunner extends FuncUnit1<Runnable> {

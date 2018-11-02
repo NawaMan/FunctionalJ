@@ -1,4 +1,4 @@
-package functionalj.functions;
+package functionalj.function;
 
 import java.util.function.Supplier;
 

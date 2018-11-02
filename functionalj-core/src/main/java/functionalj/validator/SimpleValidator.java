@@ -2,7 +2,7 @@ package functionalj.validator;
 
 import java.util.function.Predicate;
 
-import functionalj.functions.Func2;
+import functionalj.function.Func2;
 import functionalj.result.Result;
 import functionalj.result.ValidationException;
 import lombok.val;

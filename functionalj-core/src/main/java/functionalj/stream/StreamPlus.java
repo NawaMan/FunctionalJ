@@ -34,10 +34,10 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import functionalj.functions.Func3;
-import functionalj.functions.Func4;
-import functionalj.functions.Func5;
-import functionalj.functions.Func6;
+import functionalj.function.Func3;
+import functionalj.function.Func4;
+import functionalj.function.Func5;
+import functionalj.function.Func6;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;

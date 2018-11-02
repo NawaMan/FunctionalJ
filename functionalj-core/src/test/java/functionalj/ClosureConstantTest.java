@@ -1,8 +1,8 @@
 package functionalj;
 
-import static functionalj.functions.Func.cacheFor;
-import static functionalj.functions.Func.lazy;
-import static functionalj.functions.Func.withIndex;
+import static functionalj.function.Func.cacheFor;
+import static functionalj.function.Func.lazy;
+import static functionalj.function.Func.withIndex;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static org.junit.Assert.assertEquals;

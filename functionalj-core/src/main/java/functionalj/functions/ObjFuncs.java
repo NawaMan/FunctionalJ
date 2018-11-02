@@ -2,6 +2,9 @@ package functionalj.functions;
 
 import java.util.Objects;
 
+import functionalj.function.Func1;
+import functionalj.function.Func2;
+
 @SuppressWarnings("javadoc")
 public class ObjFuncs {
     

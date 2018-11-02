@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.functions;
+package functionalj.function;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;

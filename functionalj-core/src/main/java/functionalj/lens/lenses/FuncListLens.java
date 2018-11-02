@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.functions.Func1;
+import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;

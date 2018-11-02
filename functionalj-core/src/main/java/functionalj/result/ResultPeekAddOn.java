@@ -3,8 +3,8 @@ package functionalj.result;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import functionalj.functions.Func1;
-import functionalj.functions.FuncUnit1;
+import functionalj.function.Func1;
+import functionalj.function.FuncUnit1;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

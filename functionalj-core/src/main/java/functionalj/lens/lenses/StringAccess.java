@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import functionalj.functions.Func1;
+import functionalj.function.Func1;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

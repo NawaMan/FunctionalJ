@@ -1,7 +1,7 @@
 package functionalj.result;
 
-import functionalj.functions.Func0;
-import functionalj.functions.Func1;
+import functionalj.function.Func0;
+import functionalj.function.Func1;
 
 public class DerivedValue<DATA> extends Result<DATA>{
 

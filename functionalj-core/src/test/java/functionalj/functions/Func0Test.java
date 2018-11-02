@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import functionalj.function.Func0;
 import lombok.val;
 
 public class Func0Test {

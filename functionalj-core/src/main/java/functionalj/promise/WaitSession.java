@@ -1,6 +1,6 @@
 package functionalj.promise;
 
-import static functionalj.functions.Func.carelessly;
+import static functionalj.function.Func.carelessly;
 
 import java.util.ArrayList;
 import java.util.List;

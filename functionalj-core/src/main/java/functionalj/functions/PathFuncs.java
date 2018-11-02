@@ -3,6 +3,8 @@ package functionalj.functions;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import functionalj.function.Func1;
+
 public class PathFuncs {
     
     public static Func1<String, Path> strToPath() {

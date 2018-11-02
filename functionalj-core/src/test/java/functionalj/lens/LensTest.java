@@ -1,6 +1,6 @@
 package functionalj.lens;
 
-import static functionalj.functions.Func.withIndex;
+import static functionalj.function.Func.withIndex;
 import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theList;
 import static functionalj.lens.Access.theString;
@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 
-import functionalj.functions.Func1;
+import functionalj.function.Func1;
 import functionalj.lens.LensTest.Driver.DriverLens;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.lenses.ConcreteAccess;

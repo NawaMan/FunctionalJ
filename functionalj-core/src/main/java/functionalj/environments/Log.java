@@ -5,7 +5,7 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import functionalj.functions.Func;
+import functionalj.function.Func;
 import functionalj.list.FuncList;
 import functionalj.list.FuncListStream;
 import functionalj.stream.Streamable;

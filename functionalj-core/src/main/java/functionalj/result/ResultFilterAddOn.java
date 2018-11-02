@@ -2,7 +2,7 @@ package functionalj.result;
 
 import java.util.function.Predicate;
 
-import functionalj.functions.Func1;
+import functionalj.function.Func1;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

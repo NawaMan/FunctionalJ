@@ -3,12 +3,12 @@ package functionalj.result;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.functions.Func1;
-import functionalj.functions.Func2;
-import functionalj.functions.Func3;
-import functionalj.functions.Func4;
-import functionalj.functions.Func5;
-import functionalj.functions.Func6;
+import functionalj.function.Func1;
+import functionalj.function.Func2;
+import functionalj.function.Func3;
+import functionalj.function.Func4;
+import functionalj.function.Func5;
+import functionalj.function.Func6;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.tuple.Tuple2;

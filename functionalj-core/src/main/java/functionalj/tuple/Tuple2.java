@@ -1,14 +1,14 @@
 package functionalj.tuple;
 
-import static functionalj.functions.Func.it;
+import static functionalj.function.Func.it;
 
 import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import functionalj.functions.Absent;
-import functionalj.functions.Func2;
+import functionalj.function.Absent;
+import functionalj.function.Func2;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;

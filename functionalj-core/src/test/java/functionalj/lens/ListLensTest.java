@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.functions.Func1;
+import functionalj.function.Func1;
 import functionalj.lens.LensTest.Car;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.lenses.ListLens;

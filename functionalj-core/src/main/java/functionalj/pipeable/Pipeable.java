@@ -2,8 +2,8 @@ package functionalj.pipeable;
 
 import java.util.function.Supplier;
 
-import functionalj.functions.Func1;
-import functionalj.functions.FunctionInvocationException;
+import functionalj.function.Func1;
+import functionalj.function.FunctionInvocationException;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

@@ -2,8 +2,8 @@ package functionalj.validator;
 
 import java.util.function.Predicate;
 
-import functionalj.functions.Func1;
-import functionalj.functions.Func2;
+import functionalj.function.Func1;
+import functionalj.function.Func2;
 import functionalj.result.Result;
 import functionalj.result.ValidationException;
 

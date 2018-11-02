@@ -1,4 +1,4 @@
-package functionalj.functions;
+package functionalj.function;
 
 import static java.util.Arrays.stream;
 
@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import functionalj.supportive.CallerId;
 import functionalj.tuple.ImmutableTuple2;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -451,10 +452,6 @@ public interface Func {
         return function;
     }
     
-    public static FuncUnit0 F(FuncUnit0 runnable) {
-        return runnable;
-    }
-    
     public static void carelessly(Runnable runnable) {
         if (runnable == null)
             return;
@@ -501,6 +498,10 @@ public interface Func {
         } catch (Exception e) {
             throw new FunctionInvocationException(e);
         }
+    }
+    
+    public static FuncUnit0 f(FuncUnit0 runnable) {
+        return runnable;
     }
     
     public static <INPUT> FuncUnit1<INPUT> f(FuncUnit1<INPUT> consumer) {
@@ -601,7 +602,7 @@ public interface Func {
     }
     
     /**
-     * Constructs a Func2 from function or lambda.
+     * Constructs a Func6 from function or lambda.
      * 
      * @param  function  the function or lambda.
      * @param  <INPUT1>  the first input data type.
@@ -617,6 +618,376 @@ public interface Func {
             <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
             Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> f(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
         return function;
+    }
+    
+    
+
+    
+    public static FuncUnit0 F(FuncUnit0 function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit0(function));
+    }
+    
+    public static <INPUT> FuncUnit1<INPUT> F(FuncUnit1<INPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit1(function));
+    }
+    
+    public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> F(FuncUnit2<INPUT1, INPUT2> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit2(function));
+    }
+    
+    /**
+     * Constructs a Func0 from supplier or lambda.
+     * 
+     * @param  func      the func or lambda.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func0.
+     **/
+    public static <OUTPUT> 
+            Func0<OUTPUT> F(Func0<OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func0(function));
+    }
+    
+    /**
+     * Constructs a Func1 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT>   the input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func1.
+     **/
+    public static <INPUT, OUTPUT> 
+            Func1<INPUT, OUTPUT> F(Func1<INPUT, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func1(function));
+    }
+
+    /**
+     * Constructs a Func2 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func2.
+     **/
+    public static <INPUT1, INPUT2,OUTPUT> 
+            Func2<INPUT1, INPUT2, OUTPUT> F(Func2<INPUT1, INPUT2, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func2(function));
+    }
+    
+    /**
+     * Constructs a Func3 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static <INPUT1,INPUT2,INPUT3,OUTPUT> 
+            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> F(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func3(function));
+    }
+    
+    /**
+     * Constructs a Func4 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static
+            <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
+            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> F(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func4(function));
+    }
+    
+    /**
+     * Constructs a Func5 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static 
+            <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
+            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> F(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func5(function));
+    }
+    
+    /**
+     * Constructs a Func6 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static 
+            <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
+            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> F(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func6(function));
+    }
+    
+    
+    
+    public static FuncUnit0 f(String name, FuncUnit0 function) {
+        return Named.funcUnit0(name, function);
+    }
+    
+    public static <INPUT> FuncUnit1<INPUT> f(String name, FuncUnit1<INPUT> function) {
+        return Named.funcUnit1(name, function);
+    }
+    
+    public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> f(String name, FuncUnit2<INPUT1, INPUT2> function) {
+        return Named.funcUnit2(name, function);
+    }
+    
+    public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> f(String name, FuncUnit3<INPUT1, INPUT2, INPUT3> function) {
+        return Named.funcUnit3(name, function);
+    }
+    
+    /**
+     * Constructs a Func0 from supplier or lambda.
+     * 
+     * @param  supplier  the supplier or lambda.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func0.
+     **/
+    public static <OUTPUT> 
+            Func0<OUTPUT> f(String name, Func0<OUTPUT> function) {
+        return Named.func0(name, function);
+    }
+    
+    /**
+     * Constructs a Func1 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT>   the input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func1.
+     **/
+    public static <INPUT, OUTPUT> 
+            Func1<INPUT, OUTPUT> f(String name, Func1<INPUT, OUTPUT> function) {
+        return Named.func1(name, function);
+    }
+
+    /**
+     * Constructs a Func2 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func2.
+     **/
+    public static <INPUT1, INPUT2,OUTPUT> 
+            Func2<INPUT1, INPUT2, OUTPUT> f(String name, Func2<INPUT1, INPUT2, OUTPUT> function) {
+        return Named.func2(name, function);
+    }
+    
+    /**
+     * Constructs a Func3 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static <INPUT1,INPUT2,INPUT3,OUTPUT> 
+            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> f(String name, Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
+        return Named.func3(name, function);
+    }
+    
+    /**
+     * Constructs a Func4 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static
+            <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
+            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> f(String name, Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
+        return Named.func4(name, function);
+    }
+    
+    /**
+     * Constructs a Func5 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static 
+            <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
+            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> f(String name, Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
+        return Named.func5(name, function);
+    }
+    
+    /**
+     * Constructs a Func6 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static 
+            <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
+            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> f(String name, Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
+        return Named.func6(name, function);
+    }
+    
+    
+    public static FuncUnit0 F(String name, FuncUnit0 function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit0(name, function));
+    }
+    
+    public static <INPUT> FuncUnit1<INPUT> F(String name, FuncUnit1<INPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit1(name, function));
+    }
+    
+    public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> F(String name, FuncUnit2<INPUT1, INPUT2> function) {
+        return CallerId.instance.trace(caller -> Traced.FuncUnit2(name, function));
+    }
+    
+    /**
+     * Constructs a Func0 from supplier or lambda.
+     * 
+     * @param  func      the func or lambda.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func0.
+     **/
+    public static <OUTPUT> 
+            Func0<OUTPUT> F(String name, Func0<OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func0(name, function));
+    }
+    
+    /**
+     * Constructs a Func1 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT>   the input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func1.
+     **/
+    public static <INPUT, OUTPUT> 
+            Func1<INPUT, OUTPUT> F(String name, Func1<INPUT, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func1(name, function));
+    }
+
+    /**
+     * Constructs a Func2 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func2.
+     **/
+    public static <INPUT1, INPUT2,OUTPUT> 
+            Func2<INPUT1, INPUT2, OUTPUT> F(String name, Func2<INPUT1, INPUT2, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func2(name, function));
+    }
+    
+    /**
+     * Constructs a Func3 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static <INPUT1,INPUT2,INPUT3,OUTPUT> 
+            Func3<INPUT1, INPUT2, INPUT3, OUTPUT> F(String name, Func3<INPUT1, INPUT2, INPUT3, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func3(name, function));
+    }
+    
+    /**
+     * Constructs a Func4 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static
+            <INPUT1,INPUT2,INPUT3,INPUT4,OUTPUT> 
+            Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> F(String name, Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func4(name, function));
+    }
+    
+    /**
+     * Constructs a Func5 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static 
+            <INPUT1,INPUT2,INPUT3,INPUT4,INPUT5,OUTPUT> 
+            Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> F(String name, Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func5(name, function));
+    }
+    
+    /**
+     * Constructs a Func6 from function or lambda.
+     * 
+     * @param  function  the function or lambda.
+     * @param  <INPUT1>  the first input data type.
+     * @param  <INPUT2>  the second input data type.
+     * @param  <INPUT3>  the third input data type.
+     * @param  <INPUT4>  the forth input data type.
+     * @param  <INPUT5>  the fifth input data type.
+     * @param  <INPUT6>  the sixth input data type.
+     * @param  <OUTPUT>  the output data type.
+     * @return           the result Func3.
+     **/
+    public static 
+            <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
+            Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> F(String name, Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> function) {
+        return CallerId.instance.trace(caller -> Traced.Func6(name, function));
     }
     
     

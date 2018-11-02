@@ -5,9 +5,9 @@ import static java.util.Objects.requireNonNull;
 import java.util.function.Consumer;
 
 import functionalj.environments.Env;
-import functionalj.functions.Func0;
-import functionalj.functions.Func1;
-import functionalj.functions.FuncUnit0;
+import functionalj.function.Func0;
+import functionalj.function.Func1;
+import functionalj.function.FuncUnit0;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 import lombok.val;

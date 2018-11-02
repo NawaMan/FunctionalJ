@@ -1,6 +1,6 @@
 package functionalj.promise;
 
-import functionalj.functions.NamedExpression;
+import functionalj.function.NamedExpression;
 import functionalj.result.AsResult;
 
 @FunctionalInterface

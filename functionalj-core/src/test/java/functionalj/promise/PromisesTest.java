@@ -1,6 +1,6 @@
 package functionalj.promise;
 
-import static functionalj.environments.TimeFuncs.Sleep;
+import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.promise.DeferAction.run;
 import static functionalj.result.Result.value;
 import static org.junit.Assert.assertEquals;

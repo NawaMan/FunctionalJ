@@ -3,7 +3,7 @@ package functionalj.annotations.uniontype;
 import static functionalj.annotations.uniontype.LinkedList.Nill;
 import static functionalj.annotations.uniontype.LinkedList.Node;
 import static functionalj.annotations.uniontype.UnionTypes.Switch;
-import static functionalj.functions.Func.recusive;
+import static functionalj.function.Func.recusive;
 import static org.junit.Assert.assertEquals;
 
 import java.util.function.BinaryOperator;

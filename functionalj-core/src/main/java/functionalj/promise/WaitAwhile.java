@@ -1,6 +1,6 @@
 package functionalj.promise;
 
-import static functionalj.functions.Func.getOrElse;
+import static functionalj.function.Func.getOrElse;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
