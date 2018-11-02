@@ -1,4 +1,4 @@
-package functionalj.functions;
+package functionalj.function;
 
 @SuppressWarnings("javadoc")
 public class FunctionInvocationException extends RuntimeException {

@@ -120,7 +120,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return i1 -> i2 ->i3 -> this.apply(i1, i2, i3);
     }
     
-    public default Func1<INPUT1, OUTPUT> lift(INPUT2 i2, INPUT3 i3) {
+    public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3) {
         return (i1) -> this.apply(i1, i2, i3);
     }
     

@@ -136,7 +136,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
         return i1 -> i2 -> i3 -> i4 -> this.apply(i1, i2, i3, i4);
     }
     
-    public default Func1<INPUT1, OUTPUT> lift(INPUT2 i2, INPUT3 i3, INPUT4 i4) {
+    public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3, INPUT4 i4) {
         return (i1) -> this.apply(i1, i2, i3, i4);
     }
     

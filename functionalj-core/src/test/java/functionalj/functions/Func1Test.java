@@ -1,7 +1,7 @@
 package functionalj.functions;
 
 import static functionalj.function.Absent.__;
-import static functionalj.function.Func.lift;
+import static functionalj.function.Func.elevateWith;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.pipeable.Pipeable.StartWtih;
 import static org.junit.Assert.assertEquals;
@@ -15,10 +15,10 @@ import lombok.val;
 public class Func1Test {
     
     @Test
-    public void testLift() {
+    public void testElevate() {
         val concat = Func.of(String::concat);
-        val appendSpace       = concat.lift(" ");
-        val appendWorld       = lift(concat, "World");
+        val appendSpace       = concat.elevateWith(" ");
+        val appendWorld       = elevateWith(concat, "World");
         val appendExclamation = concat.bind(__, "!");
         val str = StartWtih("Hello").pipe(
                     appendSpace,

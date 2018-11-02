@@ -12,6 +12,7 @@ import java.util.function.BiConsumer;
 import org.junit.Test;
 
 import functionalj.function.Func;
+import functionalj.pipeable.PipeLine;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -476,17 +477,27 @@ public class PromiseTest {
         val r1 = addDefer.apply(a, b);
         val r2 = mulDefer.apply(addDefer.apply(a, b), c);
         val r3 = addDefer
-                .andThen(mulDefer.lift(c))
+                .andThen(mulDefer.elevateWith(c))
                 .apply(a, b);
         val r4 = a.pipe(
-                addDefer.lift(b),
-                mulDefer.lift(c)
+                addDefer.elevateWith(b),
+                mulDefer.elevateWith(c)
             );
+        val f5 = addDefer.elevateWith(b).andThen(mulDefer.elevateWith(c));
+        val r5 = f5.apply(a);
+        
+        val f6 = PipeLine
+                .from(addDefer.elevateWith(b))
+                .then(mulDefer.elevateWith(c))
+                .thenReturn();
+        val r6 = f6.apply(a);
         
         assertStrings("Result:{ Value: 21 }", r1.getResult());
         assertStrings("Result:{ Value: 42 }", r2.getResult());
         assertStrings("Result:{ Value: 42 }", r3.getResult());
         assertStrings("Result:{ Value: 42 }", r4.getResult());
+        assertStrings("Result:{ Value: 42 }", r5.getResult());
+        assertStrings("Result:{ Value: 42 }", r6.getResult());
     }
     
 }

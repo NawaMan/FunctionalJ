@@ -758,11 +758,11 @@ public class DeferActionTest {
         val r1 = addDefer.apply(a, b);
         val r2 = mulDefer.apply(addDefer.apply(a, b), c);
         val r3 = addDefer
-                .andThen(mulDefer.lift(c))
+                .andThen(mulDefer.elevateWith(c))
                 .apply(a, b);
         val r4 = a.pipe(
-                addDefer.lift(b),
-                mulDefer.lift(c)
+                addDefer.elevateWith(b),
+                mulDefer.elevateWith(c)
             );
         
         assertStrings("Result:{ Value: 21 }", r1.getResult());

@@ -1320,20 +1320,20 @@ public interface Func {
     
     //== Lift ==
     
-    public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT1, OUTPUT> lift(
+    public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT1, OUTPUT> elevateWith(
             Func2<INPUT1, INPUT2, OUTPUT> func, 
             INPUT2 i2) {
         return (i1) -> func.apply(i1, i2);
     }
     
-    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func1<INPUT1, OUTPUT> lift(
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> Func1<INPUT1, OUTPUT> elevateWith(
             Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func, 
             INPUT2 i2, 
             INPUT3 i3) {
         return (i1) -> func.apply(i1, i2, i3);
     }
     
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func1<INPUT1, OUTPUT> lift(
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> Func1<INPUT1, OUTPUT> elevateWith(
             Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func, 
             INPUT2 i2, 
             INPUT3 i3, 
@@ -1341,7 +1341,7 @@ public interface Func {
         return (i1) -> func.apply(i1, i2, i3, i4);
     }
     
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func1<INPUT1, OUTPUT> lift(
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> Func1<INPUT1, OUTPUT> elevateWith(
             Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func, 
             INPUT2 i2, 
             INPUT3 i3, 
@@ -1350,7 +1350,7 @@ public interface Func {
         return (i1) -> func.apply(i1, i2, i3, i4, i5);
     }
     
-    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func1<INPUT1, OUTPUT> lift(
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> Func1<INPUT1, OUTPUT> elevateWith(
             Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func, 
             INPUT2 i2, 
             INPUT3 i3, 
