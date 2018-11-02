@@ -15,9 +15,11 @@
 //  ========================================================================
 package functionalj.function;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import functionalj.promise.DeferAction;
+import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple6;
@@ -53,6 +55,16 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
     
     public default Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
+    }
+    
+    public default Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, Optional<OUTPUT>> optionally() {
+        return (input1, input2, input3, input4, input5, input6) -> {
+            try {
+                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3, input4, input5, input6));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        };
     }
     
     /**
@@ -121,7 +133,12 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
         return t -> this.apply(t._1(), t._2(), t._3(), t._4(), t._5(), t._6());
     }
     
-    public default Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, Promise<OUTPUT>> defer() {
+    public default Func6<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, HasPromise<INPUT6>, HasPromise<OUTPUT>> defer() {
+        return (promise1, promise2, promise3, promise4, promise5, promise6) -> {
+            return Promise.from(promise1, promise2, promise3, promise4, promise5, promise6, this);
+        };
+    }
+    public default Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, HasPromise<OUTPUT>> async() {
         return (input1, input2, input3, input4, input5, input6) -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input1, input2, input3, input4, input5, input6);

@@ -15,9 +15,11 @@
 //  ========================================================================
 package functionalj.function;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import functionalj.promise.DeferAction;
+import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple5;
@@ -51,6 +53,16 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
     
     public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
+    }
+    
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Optional<OUTPUT>> optionally() {
+        return (input1, input2, input3, input4, input5) -> {
+            try {
+                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3, input4, input5));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        };
     }
     
     /**
@@ -118,7 +130,12 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
         return t -> this.apply(t._1(), t._2(), t._3(), t._4(), t._5());
     }
     
-    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Promise<OUTPUT>> defer() {
+    public default Func5<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, HasPromise<OUTPUT>> defer() {
+        return (promise1, promise2, promise3, promise4, promise5) -> {
+            return Promise.from(promise1, promise2, promise3, promise4, promise5, this);
+        };
+    }
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, HasPromise<OUTPUT>> async() {
         return (input1, input2, input3, input4, input5) -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input1, input2, input3, input4, input5);

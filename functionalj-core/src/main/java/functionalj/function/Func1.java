@@ -98,7 +98,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<HasPromise<INPUT>, Promise<OUTPUT>> defer() {
         return input -> input.getPromise().map(this);
     }
-    public default Func1<INPUT, Promise<OUTPUT>> async() {
+    public default Func1<INPUT, HasPromise<OUTPUT>> async() {
         return input -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input);

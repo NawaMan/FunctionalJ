@@ -15,6 +15,7 @@
 //  ========================================================================
 package functionalj.function;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -51,7 +52,17 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
     }
-
+    
+    public default Func2<INPUT1, INPUT2, Optional<OUTPUT>> optionally() {
+        return (input1, input2) -> {
+            try {
+                return Optional.ofNullable(this.applyUnsafe(input1, input2));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        };
+    }
+    
     /**
      * Applies this function to the given input values.
      *
@@ -129,13 +140,10 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     
     public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<OUTPUT>> defer() {
         return (promise1, promise2) -> {
-            return Promise.from(
-                    input1 -> promise1,
-                    input2 -> promise2,
-                    this);
+            return Promise.from(promise1, promise2, this);
         };
     }
-    public default Func2<INPUT1, INPUT2, Promise<OUTPUT>> async() {
+    public default Func2<INPUT1, INPUT2, HasPromise<OUTPUT>> async() {
         return (input1, input2) -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input1, input2);

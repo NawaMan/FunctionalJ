@@ -15,9 +15,11 @@
 //  ========================================================================
 package functionalj.function;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import functionalj.promise.DeferAction;
+import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple4;
@@ -51,7 +53,17 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
     }
-
+    
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Optional<OUTPUT>> optionally() {
+        return (input1, input2, input3, input4) -> {
+            try {
+                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3, input4));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        };
+    }
+    
     /**
      * Applies this function to the given input values.
      *
@@ -117,7 +129,12 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
         return t -> this.apply(t._1(), t._2(), t._3(), t._4());
     }
     
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Promise<OUTPUT>> defer() {
+    public default Func4<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<OUTPUT>> defer() {
+        return (promise1, promise2, promise3, promise4) -> {
+            return Promise.from(promise1, promise2, promise3, promise4, this);
+        };
+    }
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, HasPromise<OUTPUT>> async() {
         return (input1, input2, input3, input4) -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input1, input2, input3, input4);

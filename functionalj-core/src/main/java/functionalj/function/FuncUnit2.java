@@ -76,10 +76,10 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
         };
     }
     
-    public default Func2<INPUT1, INPUT2, Promise<Object>> async() {
+    public default Func2<INPUT1, INPUT2, HasPromise<Object>> async() {
         return this.thenReturnNull().async();
     }
-    public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<Object>> defer() {
+    public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<Object>> defer() {
         return (promise1, promise2) -> {
             val func0 = this.thenReturnNull();
             return Promise.from(

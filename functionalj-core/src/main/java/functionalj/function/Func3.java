@@ -15,6 +15,7 @@
 //  ========================================================================
 package functionalj.function;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import functionalj.promise.DeferAction;
@@ -50,6 +51,16 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     
     public default Func3<INPUT1, INPUT2, INPUT3, Result<OUTPUT>> safely() {
         return Func.of(this::applySafely);
+    }
+    
+    public default Func3<INPUT1, INPUT2, INPUT3, Optional<OUTPUT>> optionally() {
+        return (input1, input2, input3) -> {
+            try {
+                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        };
     }
     
     /**
@@ -128,16 +139,12 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return t -> this.apply(t._1(), t._2(), t._3());
     }
     
-    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<OUTPUT>> defer() {
+    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<OUTPUT>> defer() {
         return (promise1, promise2, promise3) -> {
-            return Promise.from(
-                    input1 -> promise1,
-                    input2 -> promise2,
-                    input3 -> promise3,
-                    this);
+            return Promise.from(promise1, promise2, promise3, this);
         };
     }
-    public default Func3<INPUT1, INPUT2, INPUT3, Promise<OUTPUT>> async() {
+    public default Func3<INPUT1, INPUT2, INPUT3, HasPromise<OUTPUT>> async() {
         return (input1, input2, input3) -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input1, input2, input3);

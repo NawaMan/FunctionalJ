@@ -5,6 +5,7 @@ import static java.util.Arrays.stream;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,6 +18,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import functionalj.promise.HasPromise;
+import functionalj.result.Result;
 import functionalj.supportive.CallerId;
 import functionalj.tuple.ImmutableTuple2;
 import functionalj.tuple.Tuple;
@@ -29,8 +32,6 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 public interface Func {
-    
-    // TODO - Add defer here.
     
     /**
      * A shorter way to use Function.identity() -- alias for itself() and themAll().
@@ -1299,7 +1300,7 @@ public interface Func {
             return Tuple.of(_1, _2, _3, _4, _5);
         };
     }
-
+    
     public static <I, T1, T2, T3, T4, T5, T6> Func1<I, Tuple6<T1, T2, T3, T4, T5, T6>> toTuple(
             Function<I, T1 > func1, 
             Function<I, T2>  func2, 
@@ -1318,7 +1319,53 @@ public interface Func {
         };
     }
     
-    //== Lift ==
+    //== Safely ==
+    
+    public static <INPUT1, INPUT2, OUTPUT> 
+        Func2<INPUT1, INPUT2, Result<OUTPUT>> safely(Func2<INPUT1, INPUT2, OUTPUT> func) {
+        return func.safely();
+    }
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> 
+        Func3<INPUT1, INPUT2, INPUT3, Result<OUTPUT>> safely(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func) {
+        return func.safely();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> 
+        Func4<INPUT1, INPUT2, INPUT3, INPUT4, Result<OUTPUT>> safely(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func) {
+        return func.safely();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> 
+        Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Result<OUTPUT>> safely(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func) {
+        return func.safely();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
+        Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, Result<OUTPUT>> safely(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func) {
+        return func.safely();
+    }
+    
+    //== Optionally ==
+    
+    public static <INPUT1, INPUT2, OUTPUT> 
+        Func2<INPUT1, INPUT2, Optional<OUTPUT>> optionally(Func2<INPUT1, INPUT2, OUTPUT> func) {
+        return func.optionally();
+    }
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> 
+        Func3<INPUT1, INPUT2, INPUT3, Optional<OUTPUT>> optionally(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func) {
+        return func.optionally();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> 
+        Func4<INPUT1, INPUT2, INPUT3, INPUT4, Optional<OUTPUT>> optionally(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func) {
+        return func.optionally();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> 
+        Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Optional<OUTPUT>> optionally(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func) {
+        return func.optionally();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
+        Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, Optional<OUTPUT>> optionally(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func) {
+        return func.optionally();
+    }
+    
+    //== ElevateWith ==
     
     public static <INPUT1, INPUT2, OUTPUT> Func1<INPUT1, OUTPUT> elevateWith(
             Func2<INPUT1, INPUT2, OUTPUT> func, 
@@ -1358,6 +1405,52 @@ public interface Func {
             INPUT5 i5, 
             INPUT6 i6) {
         return (i1) -> func.apply(i1, i2, i3, i4, i5, i6);
+    }
+    
+    //== Async ==
+    
+    public static <INPUT1, INPUT2, OUTPUT> 
+        Func2<INPUT1, INPUT2, HasPromise<OUTPUT>> async(Func2<INPUT1, INPUT2, OUTPUT> func) {
+        return func.async();
+    }
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> 
+        Func3<INPUT1, INPUT2, INPUT3, HasPromise<OUTPUT>> async(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func) {
+        return func.async();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> 
+        Func4<INPUT1, INPUT2, INPUT3, INPUT4, HasPromise<OUTPUT>> async(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func) {
+        return func.async();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> 
+        Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, HasPromise<OUTPUT>> async(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func) {
+        return func.async();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
+        Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, HasPromise<OUTPUT>> async(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func) {
+        return func.async();
+    }
+    
+    //== Defer ==
+    
+    public static <INPUT1, INPUT2, OUTPUT> 
+        Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<OUTPUT>> defer(Func2<INPUT1, INPUT2, OUTPUT> func) {
+        return func.defer();
+    }
+    public static <INPUT1, INPUT2, INPUT3, OUTPUT> 
+        Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<OUTPUT>> defer(Func3<INPUT1, INPUT2, INPUT3, OUTPUT> func) {
+        return func.defer();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> 
+        Func4<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<OUTPUT>> defer(Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> func) {
+        return func.defer();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> 
+        Func5<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, HasPromise<OUTPUT>> defer(Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> func) {
+        return func.defer();
+    }
+    public static <INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> 
+        Func6<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, HasPromise<INPUT6>, HasPromise<OUTPUT>> defer(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> func) {
+        return func.defer();
     }
     
     //== Compose ==

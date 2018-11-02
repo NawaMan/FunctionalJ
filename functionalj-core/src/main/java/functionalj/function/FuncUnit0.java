@@ -2,7 +2,7 @@ package functionalj.function;
 
 import static java.util.Objects.requireNonNull;
 
-import functionalj.promise.Promise;
+import functionalj.promise.HasPromise;
 import functionalj.ref.RunBody;
 import lombok.val;
 
@@ -76,10 +76,10 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         };
     }
     
-    public default Promise<Object> defer() {
+    public default HasPromise<Object> defer() {
         return this.thenReturnNull().defer();
     }
-    public default Promise<Object> async() {
+    public default HasPromise<Object> async() {
         return this.thenReturnNull().defer();
     }
     
