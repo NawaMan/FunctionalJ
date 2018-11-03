@@ -101,7 +101,7 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
             this.functions.add(func1);
         }
         
-        public <O> Builder<INPUT, O> then(Func1<OUTPUT, O> func) {
+        public <O> Builder<INPUT, O> then(Func1<? super OUTPUT, O> func) {
             return new Builder<INPUT, O>(isNullSafe, functions, func);
         }
         

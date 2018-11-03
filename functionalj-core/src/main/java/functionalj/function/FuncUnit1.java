@@ -74,7 +74,7 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         };
     }
     
-    public default Func1<INPUT, HasPromise<Object>> async() {
+    public default Func1<INPUT, Promise<Object>> async() {
         return this.thenReturnNull().async();
     }
     public default Func1<HasPromise<INPUT>, Promise<Object>> defer() {

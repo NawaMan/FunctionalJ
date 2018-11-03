@@ -138,12 +138,12 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return t -> this.apply(t._1(), t._2());
     }
     
-    public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<OUTPUT>> defer() {
+    public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<OUTPUT>> defer() {
         return (promise1, promise2) -> {
             return Promise.from(promise1, promise2, this);
         };
     }
-    public default Func2<INPUT1, INPUT2, HasPromise<OUTPUT>> async() {
+    public default Func2<INPUT1, INPUT2, Promise<OUTPUT>> async() {
         return (input1, input2) -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input1, input2);

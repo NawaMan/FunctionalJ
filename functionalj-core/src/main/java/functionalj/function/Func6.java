@@ -133,12 +133,12 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
         return t -> this.apply(t._1(), t._2(), t._3(), t._4(), t._5(), t._6());
     }
     
-    public default Func6<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, HasPromise<INPUT6>, HasPromise<OUTPUT>> defer() {
+    public default Func6<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, HasPromise<INPUT6>, Promise<OUTPUT>> defer() {
         return (promise1, promise2, promise3, promise4, promise5, promise6) -> {
             return Promise.from(promise1, promise2, promise3, promise4, promise5, promise6, this);
         };
     }
-    public default Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, HasPromise<OUTPUT>> async() {
+    public default Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, Promise<OUTPUT>> async() {
         return (input1, input2, input3, input4, input5, input6) -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input1, input2, input3, input4, input5, input6);

@@ -130,12 +130,12 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
         return t -> this.apply(t._1(), t._2(), t._3(), t._4(), t._5());
     }
     
-    public default Func5<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, HasPromise<OUTPUT>> defer() {
+    public default Func5<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, Promise<OUTPUT>> defer() {
         return (promise1, promise2, promise3, promise4, promise5) -> {
             return Promise.from(promise1, promise2, promise3, promise4, promise5, this);
         };
     }
-    public default <P extends HasPromise<OUTPUT>> Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, HasPromise<OUTPUT>> async() {
+    public default <P extends HasPromise<OUTPUT>> Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Promise<OUTPUT>> async() {
         return (input1, input2, input3, input4, input5) -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input1, input2, input3, input4, input5);

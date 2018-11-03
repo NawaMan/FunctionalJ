@@ -139,12 +139,12 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         return t -> this.apply(t._1(), t._2(), t._3());
     }
     
-    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<OUTPUT>> defer() {
+    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<OUTPUT>> defer() {
         return (promise1, promise2, promise3) -> {
             return Promise.from(promise1, promise2, promise3, this);
         };
     }
-    public default Func3<INPUT1, INPUT2, INPUT3, HasPromise<OUTPUT>> async() {
+    public default Func3<INPUT1, INPUT2, INPUT3, Promise<OUTPUT>> async() {
         return (input1, input2, input3) -> {
             val supplier = (Func0<OUTPUT>)()->{
                 return this.apply(input1, input2, input3);

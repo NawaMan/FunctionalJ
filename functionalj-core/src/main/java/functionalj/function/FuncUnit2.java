@@ -76,7 +76,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
         };
     }
     
-    public default Func2<INPUT1, INPUT2, HasPromise<Object>> async() {
+    public default Func2<INPUT1, INPUT2, Promise<Object>> async() {
         return this.thenReturnNull().async();
     }
     public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<Object>> defer() {

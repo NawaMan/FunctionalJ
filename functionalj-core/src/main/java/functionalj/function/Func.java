@@ -272,17 +272,6 @@ public interface Func {
         };
     }
     
-    /**
-     * Returns a function that simply return the value.
-     * 
-     * @param <OUTPUT>  the value type.
-     * @param value     the value.
-     * @return          the function that return the value.
-     */
-    public static <OUTPUT> Func0<OUTPUT> supply(OUTPUT value) {
-        return () -> value;
-    }
-    
     public static FuncUnit0 from(Runnable runnable) {
         if (runnable instanceof FuncUnit0)
             return (FuncUnit0)runnable;
