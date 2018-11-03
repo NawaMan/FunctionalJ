@@ -1,7 +1,6 @@
 package functionalj.functions;
 
 import static functionalj.function.Absent.__;
-import static functionalj.function.Func.elevateWith;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.pipeable.Pipeable.StartWtih;
 import static org.junit.Assert.assertEquals;
@@ -18,7 +17,7 @@ public class Func1Test {
     public void testElevate() {
         val concat = Func.of(String::concat);
         val appendSpace       = concat.elevateWith(" ");
-        val appendWorld       = elevateWith(concat, "World");
+        val appendWorld       = concat.elevateWith("World");
         val appendExclamation = concat.bind(__, "!");
         val str = StartWtih("Hello").pipe(
                     appendSpace,
@@ -32,7 +31,7 @@ public class Func1Test {
     public void testDefer() {
         val startTime = System.currentTimeMillis();
         
-        val length =   Sleep(50).then(String::valueOf).async().apply("Hello!")
+        val length =   Sleep(50).then(String::valueOf).async().apply("Hello!").getPromise()
                 .chain(Sleep(50).then(String::length ).async())
                 .getResult();
         

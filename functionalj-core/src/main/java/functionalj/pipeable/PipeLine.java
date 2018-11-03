@@ -88,7 +88,7 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
         private final boolean isNullSafe;
         
         @SuppressWarnings("rawtypes")
-		private final List<Func1> functions = new ArrayList<Func1>();
+        private final List<Func1> functions = new ArrayList<Func1>();
         
         private Builder(boolean isNullSafe) {
             this.isNullSafe = isNullSafe;
@@ -110,7 +110,7 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
                 ? new PipeLine.NullSafe<>(functions, null)
                 : new PipeLine<>         (functions, null);
         }
-
+        
         public PipeLine<INPUT, OUTPUT> thenReturnAsResult() {
             return isNullSafe
                     ? new PipeLine.NullSafe<>(functions, toResult())
