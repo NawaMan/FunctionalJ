@@ -62,9 +62,9 @@ public class DeferActionCreator {
             .ifException(action::fail)
             .ifValue    (action::complete);
         };
-        val task = (Runnable)(() -> {
-            runner.accept(body);
-        });
+        val task = StartableAction.runSynchromously.value()
+                ? body
+                : (Runnable)(() -> runner.accept(body));
         val action = new DeferAction<D>(task, null);
         promiseRef.set(action.getPromise());
         return action;

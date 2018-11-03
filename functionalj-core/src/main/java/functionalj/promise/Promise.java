@@ -24,9 +24,11 @@ import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.function.FuncUnit1;
+import functionalj.function.FuncUnit2;
 import functionalj.function.NamedExpression;
 import functionalj.pipeable.Pipeable;
 import functionalj.ref.Ref;
+import functionalj.ref.Run;
 import functionalj.result.HasResult;
 import functionalj.result.OnStart;
 import functionalj.result.Result;
@@ -214,8 +216,16 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         
         val isJustStarted = dataRef.compareAndSet(data, consumers);
         if (isJustStarted) {
-            if (isStartAction)  ((StartableAction<DATA>)data).start();
-            else if (isOnStart) ((OnStart)data).run();
+            int listenerCount = consumers.size() + eavesdroppers.size();
+            if (listenerCount <= 1) {
+                Run.with(StartableAction.runSynchromously.butWith(true)).run(()->{
+                    if (isStartAction)  ((StartableAction<DATA>)data).start();
+                    else if (isOnStart) ((OnStart)data).run();
+                });
+            } else {
+                if (isStartAction)  ((StartableAction<DATA>)data).start();
+                else if (isOnStart) ((OnStart)data).run();
+            }
         }
         return isJustStarted;
     }
@@ -326,8 +336,10 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             Result<DATA>            result) {
     }
     
-    protected <T> Promise<T> newPromise() {
-        return new Promise<T>(this);
+    private <T> Promise<T> newSubPromise(FuncUnit2<Result<DATA>, Promise<T>> resultConsumer) {
+        val promise = new Promise<T>(this);
+        subscribe(resultConsumer.elevateWith(promise));
+        return promise;
     }
     
     //== Basic functionality ==
@@ -528,50 +540,37 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     //== Functional ==
     
-    @SuppressWarnings("unchecked")
     public final Promise<DATA> filter(Predicate<? super DATA> predicate) {
-        val targetPromise = (Promise<DATA>)newPromise();
-        targetPromise.start();
-        
-        subscribe(r -> {
+        requireNonNull(predicate);
+        return (Promise<DATA>)newSubPromise((Result<DATA> r, Promise<DATA> targetPromise) -> {
             val result = r.filter(predicate);
             targetPromise.makeDone((Result<DATA>) result);
         });
-        
-        return targetPromise;
     }
     
     @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         requireNonNull(mapper);
-        val targetPromise = (Promise<TARGET>)newPromise();
-        subscribe(r -> {
+        return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val result = r.map(mapper);
             targetPromise.makeDone((Result<TARGET>) result);
         });
-        
-        return targetPromise;
     }
     
     @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> mapResult(Function<Result<? super DATA>, Result<? extends TARGET>> mapper) {
         requireNonNull(mapper);
-        val targetPromise = (Promise<TARGET>)newPromise();
-        subscribe(r -> {
+        return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val result = mapper.apply(r);
             targetPromise.makeDone((Result<TARGET>) result);
         });
-        
-        return targetPromise;
     }
     
     public final <TARGET> Promise<TARGET> flatMap(Function<DATA, ? extends HasPromise<TARGET>> mapper) {
         return chain(mapper);
     }
-    @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> chain(Function<DATA, ? extends HasPromise<TARGET>> mapper) {
-        val targetPromise = (Promise<TARGET>)newPromise();
-        subscribe(r -> {
+        return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val targetResult = r.map(mapper);
             targetResult.ifPresent(hasPromise -> {
                 hasPromise.getPromise().subscribe(result -> {
@@ -579,14 +578,11 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 });
             });
         });
-        
-        return targetPromise;
     }
     
     @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> elseUse(TARGET elseValue) {
-        val targetPromise = (Promise<TARGET>)newPromise();
-        subscribe(result -> {
+        return (Promise<TARGET>)newSubPromise((Result<DATA> result, Promise<TARGET> targetPromise) -> {
             result
             .ifPresent(value -> {
                 targetPromise.makeDone((Result<TARGET>)result);
@@ -595,14 +591,11 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 targetPromise.makeDone(Result.of(elseValue));
             });
         });
-        
-        return targetPromise;
     }
     
     @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> elseGet(Supplier<TARGET> elseSupplier) {
-        val targetPromise = (Promise<TARGET>)newPromise();
-        subscribe(result -> {
+        return (Promise<TARGET>)newSubPromise((Result<DATA> result, Promise<TARGET> targetPromise) -> {
             result
             .ifPresent(value -> {
                 targetPromise.makeDone((Result<TARGET>)result);
@@ -611,8 +604,6 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 targetPromise.makeDone(Result.from(elseSupplier));
             });
         });
-        
-        return targetPromise;
     }
     
     // TODO - Consider if adding whenPresent, whenNull, whenException  add any value.

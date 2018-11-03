@@ -88,5 +88,8 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
                     func0);
         };
     }
+    public default FuncUnit1<INPUT1> elevateWith(INPUT2 input2) {
+        return (input1) -> acceptUnsafe(input1, input2);
+    }
     
 }
