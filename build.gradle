@@ -75,4 +75,6 @@ subprojects {
             options.incremental = true
         }
     }
+    
+    tasks.withType(Javadoc).all { enabled = false }
 }
