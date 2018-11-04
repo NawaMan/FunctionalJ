@@ -959,7 +959,7 @@ public interface FuncList<DATA>
         });
     }
     
-    public default FuncList<DATA> exclude(Collection<? super DATA> collection) {
+    public default FuncList<DATA> excludeIn(Collection<? super DATA> collection) {
         return deriveWith(stream -> {
             return (collection == null)
                 ? stream

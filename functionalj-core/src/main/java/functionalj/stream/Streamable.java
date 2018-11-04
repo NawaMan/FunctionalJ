@@ -772,7 +772,7 @@ public interface Streamable<DATA>
         });
     }
     
-    public default Streamable<DATA> exclude(Collection<? super DATA> collection) {
+    public default Streamable<DATA> excludeIn(Collection<? super DATA> collection) {
         return deriveWith(stream -> {
             return (collection == null)
                 ? stream

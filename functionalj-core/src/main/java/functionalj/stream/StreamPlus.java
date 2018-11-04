@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -73,6 +74,23 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(Stream.of(data));
     }
     
+    @SafeVarargs
+    public static <D> StreamPlus<D> cycle(D ... data) {
+        return StreamPlus.from(IntStream.iterate(0, i -> i + 1).mapToObj(i -> data[i % data.length]));
+    }
+    
+    public static <D> StreamPlus<D> empty() {
+        return StreamPlus.from(Stream.empty());
+    }
+    
+    public static <D> StreamPlus<D> generate(Supplier<D> s) {
+        return StreamPlus.from(Stream.generate(s));
+    }
+    
+    public static <D> StreamPlus<D> iterate(D seed, UnaryOperator<D> f) {
+        return StreamPlus.from(Stream.iterate(seed, f));
+    }
+    
     //== Stream ==
     
     public Stream<DATA> stream();
@@ -86,8 +104,8 @@ public interface StreamPlus<DATA>
     //== Functionalities ==
     
     @Override
-    public default IntStream mapToInt(ToIntFunction<? super DATA> mapper) {
-        return stream().mapToInt(mapper);
+    public default IntStreamPlus mapToInt(ToIntFunction<? super DATA> mapper) {
+        return IntStreamPlus.from(stream().mapToInt(mapper));
     }
     
     @Override
@@ -102,7 +120,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default IntStream flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
-        return stream().flatMapToInt(mapper);
+        return IntStreamPlus.from(stream().flatMapToInt(mapper));
     }
     
     @Override
@@ -1152,7 +1170,7 @@ public interface StreamPlus<DATA>
         });
     }
     
-    public default StreamPlus<DATA> exclude(Collection<? super DATA> collection) {
+    public default StreamPlus<DATA> excludeIn(Collection<? super DATA> collection) {
         return deriveWith(stream -> {
             return (collection == null)
                 ? stream

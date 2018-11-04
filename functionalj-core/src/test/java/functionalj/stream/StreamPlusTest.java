@@ -593,4 +593,12 @@ public class StreamPlusTest {
         assertStrings("[5.0]", stream.filter(Double.class, d -> d > 4.5).toList());
     }
     
+    //-- Cycle -- 
+    
+    @Test
+    public void testCycle() {
+        val stream = StreamPlus.cycle("One", "Two", "Three");
+        assertStrings("Two, Three, One, Two, Three", stream.skip(1).limit(5).joining(", "));
+    }
+    
 }
