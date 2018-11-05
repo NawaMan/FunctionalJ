@@ -298,7 +298,7 @@ public interface IntStreamPlus extends IntStream {
         val list = new AtomicReference<>(new ArrayList<Integer>());
         val adding = new AtomicBoolean(false);
         
-        val mainStream = StreamPlus.from(
+        StreamPlus<IntStreamPlus> mainStream = StreamPlus.from(
                 mapToObj(i ->{
                     if (startCondition.test(i)) {
                         adding.set(true);
@@ -339,7 +339,7 @@ public interface IntStreamPlus extends IntStream {
         val list = new AtomicReference<>(new ArrayList<Integer>());
         val adding = new AtomicBoolean(false);
         
-        val stream = StreamPlus.from(
+        StreamPlus<IntStreamPlus> stream = StreamPlus.from(
                 mapToObj(i ->{
                     if (startCondition.test(i)) {
                         adding.set(true);
