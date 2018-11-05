@@ -1,81 +1,31 @@
-+ Create ObjectLensWithSub
-+ Create an interface for each custom Object that has Lens in its type
-+ MapAccess
-+ MapLens
-+ NullableLens
-+ OptionalAccess and OptionalLens
-+ Make Nullable and Optional lens transparents (don't see it as object)
-/ Annotate the getter to be null sensitive (Null unsafe) -- no-need.
-+ Generator for list
-+ Generator for map
-+ Generator for MayBe
-+ Generator for Nullable
-+ Generator for Optional
-- Date, LocalDate, LocalTime
-+ withList should have arvs
-- In/Pluk - Select input an object and accept a function (maybe only predicate)
 
-+ Tuples
-+ Tuples to function params
-
-+ Failable
-+ Pipe
-+ FunctionalList
-+ FMap
-+ Promise
+- Access Date, LocalDate, LocalTime
 - Prism -> Multiple Promise combine to one. create an obj from supplier/function of each fields.
 - StoreRef, StoreList, StoreMap
 
-- Clean up TYPE,VALUE,DATA
-
-+ TupleLens
 - List lens should has similar interface as FunctionalListLens
-+ StreamPlus
 - Builder
 - ExhaughBuilder
 - MapBasedDataObject
-+ Remove MayBe? -- let's keep it ... using _ prefix
-+ Remove Kinds? -- let's keep it ... using _ prefix
 - List each
 - remove the compose package.
-
-+ Spead (duplicate) or,orGet join to every corner of the Access world.
 
 Need to organize this and prioritize!!!
 
 - Find a way to specify what lens for a type.
-- Origin of functions and lambda
 - Serialization
 - Organize predefine functions
 - Reflection 
-- 
+
 - Transvable of DataObject
 - A way to add annotation to DataObject generated class or fields -- so that something like JSON conversion can be done
      easily.
-- UnionType - replacing of Self in generic (see MayBe.flatMap())
-
-- Combine validation
-
-- map -> then
-- flatMap -> chain
 
 Need code clean up!!!!! The code is so shitty :-(
 
 -- UnionType
   -- Access to spec
   -- xxxOf to access to each parameter directly. -- justOf(value -> value ...)
-  -- Name collition when use Data and Exception as sub type names.
-
--- Should we consolidate all exception to A FunctionalJException?
--- ReadyResult, Acceptable, ValidResult, NonNullResult
--- Map Plus, FlatMap Plus, Filter Plus
--- abort when no subscription.
--- easedrop
--- Make Result or pipe take a story.
--- Change Result to Value
--- Result.zip
--- Expand tuple to map List<Tuple2>.map(BiFunction<>)
-
 
 
 -- Not an Expert ... just my journey.
