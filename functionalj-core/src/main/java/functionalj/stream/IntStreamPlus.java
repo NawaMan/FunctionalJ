@@ -8,6 +8,8 @@ import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
 import java.util.Set;
 import java.util.Spliterator;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
@@ -27,6 +29,8 @@ import java.util.stream.Stream;
 
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
+import functionalj.pipeable.Pipeable;
+import lombok.val;
 
 @FunctionalInterface
 public interface IntStreamPlus extends IntStream {
@@ -77,6 +81,14 @@ public interface IntStreamPlus extends IntStream {
         return IntStreamPlus.from(stream().map(mapper));
     }
     
+    public default <T> Pipeable<IntStreamPlus> pipable() {
+        return Pipeable.of(this);
+    }
+    
+    public default <T> T pipe(Function<? super IntStreamPlus, T> piper) {
+        return piper.apply(this);
+    }
+    
     public default <U> StreamPlus<U> mapBy(IntFunction<? extends U> mapper) {
         return StreamPlus.from(stream().mapToObj(mapper));
     }
@@ -124,17 +136,17 @@ public interface IntStreamPlus extends IntStream {
     }
     
     @Override
-    public default IntStream peek(IntConsumer action) {
+    public default IntStreamPlus peek(IntConsumer action) {
         return IntStreamPlus.from(stream().peek(action));
     }
     
     @Override
-    public default IntStream limit(long maxSize) {
+    public default IntStreamPlus limit(long maxSize) {
         return IntStreamPlus.from(stream().limit(maxSize));
     }
     
     @Override
-    public default IntStream skip(long n) {
+    public default IntStreamPlus skip(long n) {
         return IntStreamPlus.from(stream().skip(n));
     }
     
@@ -241,13 +253,13 @@ public interface IntStreamPlus extends IntStream {
     }
     
     @Override
-    public default IntStream sequential() {
-        return stream().sequential();
+    public default IntStreamPlus sequential() {
+        return IntStreamPlus.from(stream().sequential());
     }
     
     @Override
-    public default IntStream parallel() {
-        return stream().sequential();
+    public default IntStreamPlus parallel() {
+        return IntStreamPlus.from(stream().sequential());
     }
     
     @Override
@@ -266,13 +278,13 @@ public interface IntStreamPlus extends IntStream {
     }
     
     @Override
-    public default IntStream unordered() {
-        return stream().unordered();
+    public default IntStreamPlus unordered() {
+        return IntStreamPlus.from(stream().unordered());
     }
     
     @Override
-    public default IntStream onClose(Runnable closeHandler) {
-        return stream().onClose(closeHandler);
+    public default IntStreamPlus onClose(Runnable closeHandler) {
+        return IntStreamPlus.from(stream().onClose(closeHandler));
     }
     
     @Override
@@ -280,7 +292,71 @@ public interface IntStreamPlus extends IntStream {
         stream().close();
     }
     
-    //== Additional functionality
+    //== Additional functionalities
+    
+    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition) {
+        val list = new AtomicReference<>(new ArrayList<Integer>());
+        val adding = new AtomicBoolean(false);
+        
+        val mainStream = StreamPlus.from(
+                mapToObj(i ->{
+                    if (startCondition.test(i)) {
+                        adding.set(true);
+                        val retList = list.getAndUpdate(l -> new ArrayList<Integer>());
+                        list.get().add(i);
+                        
+                        if (retList.isEmpty())
+                            return null;
+                        
+                        return IntStreamPlus.from(retList.stream().mapToInt(Integer::intValue));
+                    }
+                    if (adding.get()) list.get().add(i);
+                    return null;
+                }))
+                .filterNonNull();
+        ;
+        val mainSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->mainStream;
+        val tailSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->{
+            return StreamPlus.of(
+                    IntStreamPlus.from(
+                            list.get()
+                            .stream()
+                            .mapToInt(Integer::intValue)));
+        };
+        val resultStream = StreamPlus.of(
+            mainSupplier,
+            tailSupplier
+        )
+        .flatMap(Supplier::get);
+        return resultStream;
+    }
+    
+    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition, IntPredicate endCondition) {
+        return segment(startCondition, endCondition, true);
+    }
+    
+    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition, IntPredicate endCondition, boolean includeLast) {
+        val list = new AtomicReference<>(new ArrayList<Integer>());
+        val adding = new AtomicBoolean(false);
+        
+        val stream = StreamPlus.from(
+                mapToObj(i ->{
+                    if (startCondition.test(i)) {
+                        adding.set(true);
+                    }
+                    if (includeLast && adding.get()) list.get().add(i);
+                    if (endCondition.test(i)) {
+                        adding.set(false);
+                        val retList = list.getAndUpdate(l -> new ArrayList<Integer>());
+                        return IntStreamPlus.from(retList.stream().mapToInt(Integer::intValue));
+                    }
+                    
+                    if (!includeLast && adding.get()) list.get().add(i);
+                    return null;
+                }))
+            .filterNonNull();
+        return stream;
+    }
     
     public default List<Integer> toList() {
         return asStream().toList();

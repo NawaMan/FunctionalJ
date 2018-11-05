@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
-import functionalj.stream.StreamPlus;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -599,6 +598,56 @@ public class StreamPlusTest {
     public void testCycle() {
         val stream = StreamPlus.cycle("One", "Two", "Three");
         assertStrings("Two, Three, One, Two, Three", stream.skip(1).limit(5).joining(", "));
+    }
+    
+    //-- Segmentation --
+
+    
+    @Test
+    public void testSegment() {
+        Predicate<Integer> startCondition = i ->(i % 10) == 3;
+        Predicate<Integer>  endCondition   = i ->(i % 10) == 6;
+        
+        assertEquals("53, 54, 55, 56\n" + 
+                     "63, 64, 65, 66\n" + 
+                     "73, 74, 75, 76",
+                IntStreamPlus.infinite().asStream()
+                .segment(startCondition, endCondition)
+                .skip(5)
+                .limit(3)
+                .map(s -> s.joining(", "))
+                .joining("\n"));
+        
+        assertEquals("53, 54, 55, 56\n" + 
+                     "63, 64, 65, 66\n" + 
+                     "73, 74, 75, 76",
+                IntStreamPlus.infinite().asStream()
+                .segment(startCondition, endCondition, true)
+                .skip(5)
+                .limit(3)
+                .map(s -> s.joining(", "))
+                .joining("\n"));
+        
+        assertEquals("53, 54, 55\n" + 
+                     "63, 64, 65\n" + 
+                     "73, 74, 75",
+                IntStreamPlus.infinite().asStream()
+                .segment(startCondition, endCondition, false)
+                .skip(5)
+                .limit(3)
+                .map(s -> s.joining(", "))
+                .joining("\n"));
+        
+        assertEquals("53, 54, 55, 56, 57, 58, 59, 60, 61, 62\n" + 
+                     "63, 64, 65, 66, 67, 68, 69, 70, 71, 72\n" + 
+                     "73, 74, 75, 76, 77, 78, 79, 80, 81, 82\n" + 
+                     "83, 84, 85",
+                IntStreamPlus.infinite().asStream()
+                .skip(50)
+                .limit(36)
+                .segment(startCondition)
+                .map(s -> s.joining(", "))
+                .joining("\n"));
     }
     
 }

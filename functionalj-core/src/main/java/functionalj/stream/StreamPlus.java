@@ -44,6 +44,7 @@ import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
+import functionalj.pipeable.Pipeable;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -58,8 +59,6 @@ import lombok.val;
 public interface StreamPlus<DATA> 
         extends Iterable<DATA>, Stream<DATA> {
     
-    // TODO segment -> count, start/end, on/off
-    // TODO - toMapBuilder
     // TODO - zipWith
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -456,6 +455,14 @@ public interface StreamPlus<DATA>
         return deriveWith(stream -> { 
             return stream.onClose(closeHandler);
         });
+    }
+    
+    public default <T> Pipeable<StreamPlus<DATA>> pipable() {
+        return Pipeable.of(this);
+    }
+    
+    public default <T> T pipe(Function<? super StreamPlus<DATA>, T> piper) {
+        return piper.apply(this);
     }
     
     public default <TARGET> StreamPlus<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
@@ -1327,6 +1334,62 @@ public interface StreamPlus<DATA>
                  : checker6.test(d) ? mapper6.apply(d)
                  : elseMapper.apply(d);
         });
+    }
+    
+    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition) {
+        val list = new AtomicReference<>(new ArrayList<DATA>());
+        val adding = new AtomicBoolean(false);
+        
+        val streamOrNull = (Function<DATA, StreamPlus<DATA>>)((DATA data) ->{
+            if (startCondition.test(data)) {
+                adding.set(true);
+                val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
+                list.get().add(data);
+                return retList.isEmpty()
+                        ? null
+                        : StreamPlus.from(retList.stream());
+            }
+            if (adding.get()) list.get().add(data);
+            return null;
+        });
+        val mainStream   = StreamPlus.from(map(streamOrNull)).filterNonNull();
+        val mainSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->mainStream;
+        val tailSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->{
+            return StreamPlus.of(
+                    StreamPlus.from(
+                            list.get()
+                            .stream()));
+        };
+        val resultStream
+                = StreamPlus.of(mainSupplier, tailSupplier)
+                .flatMap(Supplier::get);
+        return resultStream;
+    }
+    
+    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition) {
+        return segment(startCondition, endCondition, true);
+    }
+    
+    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition, boolean includeLast) {
+        val list = new AtomicReference<>(new ArrayList<DATA>());
+        val adding = new AtomicBoolean(false);
+        
+        return StreamPlus.from(
+                map(i ->{
+                    if (startCondition.test(i)) {
+                        adding.set(true);
+                    }
+                    if (includeLast && adding.get()) list.get().add(i);
+                    if (endCondition.test(i)) {
+                        adding.set(false);
+                        val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
+                        return StreamPlus.from(retList.stream());
+                    }
+                    
+                    if (!includeLast && adding.get()) list.get().add(i);
+                    return null;
+                }))
+            .filterNonNull();
     }
     
     //-- Plus w/ Self --
