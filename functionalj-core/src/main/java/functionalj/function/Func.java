@@ -60,6 +60,17 @@ public interface Func {
     }
     
     /**
+     * Change the input function to a preficate.
+     * 
+     * @param <INPUT> the input type.
+     * @param func    the function that takes input and returns boolean.
+     * @return the predicate of the same functionality.
+     **/
+    public static <INPUT> Predicate<INPUT> toPredicate(Func1<INPUT, Boolean> func) {
+        return input -> func.apply(input);
+    }
+    
+    /**
      * A shorter way to do flatmap on list directly.
      * 
      * @param <IN>   the input data type.
