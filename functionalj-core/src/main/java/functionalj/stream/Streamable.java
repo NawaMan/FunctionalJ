@@ -10,12 +10,14 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
+import functionalj.pipeable.Pipeable;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
@@ -109,6 +111,10 @@ public interface Streamable<DATA>
         return deriveWith(stream -> { 
             return stream.onClose(closeHandler);
         });
+    }
+    
+    public default <T> Pipeable<Streamable<DATA>> pipable() {
+        return Pipeable.of(this);
     }
     
     public default <TARGET> Streamable<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
@@ -925,6 +931,76 @@ public interface Streamable<DATA>
                  : checker4.test(d) ? mapper4.apply(d)
                  : checker6.test(d) ? mapper6.apply(d)
                  : elseMapper.apply(d);
+        });
+    }
+    
+    //-- segment --
+    
+    public default StreamPlus<StreamPlus<DATA>> segment(int count) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).segment(count);
+        });
+    }
+    public default StreamPlus<StreamPlus<DATA>> segment(int count, boolean includeTail) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).segment(count, includeTail);
+        });
+    }
+    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).segment(startCondition);
+        });
+    }
+    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, boolean includeTail) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).segment(startCondition, includeTail);
+        });
+    }
+    
+    public default Streamable<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).segment(startCondition, endCondition);
+        });
+    }
+    
+    public default Streamable<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition, boolean includeLast) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).segment(startCondition, endCondition, includeLast);
+        });
+    }
+    
+    //-- Zip --
+    
+    public default <B, TARGET> Streamable<TARGET> zipWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).zipWith(anotherStream, combinator);
+        });
+    }
+    public default <B, TARGET> Streamable<TARGET> zipWith(Stream<B> anotherStream, boolean requireBoth, Func2<DATA, B, TARGET> combinator) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).zipWith(anotherStream, requireBoth, combinator);
+        });
+    }
+    
+    public default <B> Streamable<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).zipWith(anotherStream);
+        });
+    }
+    public default <B> Streamable<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, boolean requireBoth) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).zipWith(anotherStream, requireBoth);
+        });
+    }
+    
+    public default Streamable<DATA> choose(Stream<DATA> anotherStream, Func2<DATA, DATA, Boolean> selectThisNotAnother) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).choose(anotherStream, selectThisNotAnother);
+        });
+    }
+    public default Streamable<DATA> merge(Stream<DATA> anotherStream) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream).merge(anotherStream);
         });
     }
     

@@ -35,6 +35,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
@@ -58,8 +59,6 @@ import lombok.val;
 @FunctionalInterface
 public interface StreamPlus<DATA> 
         extends Iterable<DATA>, Stream<DATA> {
-    
-    // TODO - zipWith
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> StreamPlus<D> from(Stream<D> stream) {
@@ -457,7 +456,7 @@ public interface StreamPlus<DATA>
         });
     }
     
-    public default <T> Pipeable<StreamPlus<DATA>> pipable() {
+    public default <T> Pipeable<? extends StreamPlus<DATA>> pipable() {
         return Pipeable.of(this);
     }
     
@@ -1336,7 +1335,22 @@ public interface StreamPlus<DATA>
         });
     }
     
+    //-- segment --
+    
+    public default StreamPlus<StreamPlus<DATA>> segment(int count) {
+        return segment(count, true);
+    }
+    public default StreamPlus<StreamPlus<DATA>> segment(int count, boolean includeTail) {
+//        if (count <= 1)
+//            return this;
+        
+        val index = new AtomicInteger(0);
+        return segment(data -> (index.getAndIncrement() % count) == 0, includeTail);
+    }
     public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition) {
+        return segment(startCondition, true);
+    }
+    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, boolean includeTail) {
         val list = new AtomicReference<>(new ArrayList<DATA>());
         val adding = new AtomicBoolean(false);
         
@@ -1352,7 +1366,10 @@ public interface StreamPlus<DATA>
             if (adding.get()) list.get().add(data);
             return null;
         });
-        val mainStream   = StreamPlus.from(map(streamOrNull)).filterNonNull();
+        val mainStream = StreamPlus.from(map(streamOrNull)).filterNonNull();
+        if (!includeTail)
+            return mainStream;
+        
         val mainSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->mainStream;
         val tailSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->{
             return StreamPlus.of(
@@ -1370,7 +1387,7 @@ public interface StreamPlus<DATA>
         return segment(startCondition, endCondition, true);
     }
     
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition, boolean includeLast) {
+    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition, boolean includeTail) {
         val list = new AtomicReference<>(new ArrayList<DATA>());
         val adding = new AtomicBoolean(false);
         
@@ -1379,17 +1396,111 @@ public interface StreamPlus<DATA>
                     if (startCondition.test(i)) {
                         adding.set(true);
                     }
-                    if (includeLast && adding.get()) list.get().add(i);
+                    if (includeTail && adding.get()) list.get().add(i);
                     if (endCondition.test(i)) {
                         adding.set(false);
                         val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
                         return StreamPlus.from(retList.stream());
                     }
                     
-                    if (!includeLast && adding.get()) list.get().add(i);
+                    if (!includeTail && adding.get()) list.get().add(i);
                     return null;
                 }))
             .filterNonNull();
+    }
+    
+    //-- Zip --
+    
+    public default <B, TARGET> StreamPlus<TARGET> zipWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
+        return zipWith(anotherStream, true)
+                .map(combinator::applyTo);
+    }
+    public default <B, TARGET> StreamPlus<TARGET> zipWith(Stream<B> anotherStream, boolean requireBoth, Func2<DATA, B, TARGET> combinator) {
+        return zipWith(anotherStream, requireBoth)
+                .map(combinator::applyTo);
+    }
+    
+    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream) {
+        return zipWith(anotherStream, true);
+    }
+    // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
+    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, boolean requireBoth) {
+        val iteratorA = this.iterator();
+        val iteratorB = anotherStream.iterator();
+        val iterable = new Iterable<Tuple2<DATA,B>>() {
+            @Override
+            public Iterator<Tuple2<DATA, B>> iterator() {
+                return new Iterator<Tuple2<DATA,B>>() {
+                    private boolean hasNextA;
+                    private boolean hasNextB;
+                    
+                    public boolean hasNext() {
+                        hasNextA = iteratorA.hasNext();
+                        hasNextB = iteratorB.hasNext();
+                        return requireBoth
+                                ? (hasNextA && hasNextB)
+                                : (hasNextA || hasNextB);
+                    }
+                    public Tuple2<DATA,B> next() {
+                        val nextA = hasNextA ? iteratorA.next() : null;
+                        val nextB = hasNextB ? iteratorB.next() : null;
+                        return Tuple2.of(nextA, nextB);
+                    }
+                };
+            }
+            
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+    }
+    
+    public default StreamPlus<DATA> choose(Stream<DATA> anotherStream, Func2<DATA, DATA, Boolean> selectThisNotAnother) {
+        return zipWith(anotherStream, false)
+                .map(t -> {
+                    val _1 = t._1();
+                    val _2 = t._2();
+                    if ((_1 != null) && _2 == null)
+                        return _1;
+                    if ((_1 == null) && _2 != null)
+                        return _2;
+                    if ((_1 == null) && _2 == null)
+                        return null;
+                    val which = selectThisNotAnother.applyTo(t);
+                    return which ? _1 : _2;
+                })
+                .filterNonNull();
+    }
+    public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
+        val iteratorA = this.iterator();
+        val iteratorB = anotherStream.iterator();
+        val iterable = new Iterable<DATA>() {
+            @Override
+            public Iterator<DATA> iterator() {
+                return new Iterator<DATA>() {
+                    private boolean isA = true;
+                    
+                    public boolean hasNext() {
+                        if (isA) {
+                            if (iteratorA.hasNext()) return true;
+                            isA = false;
+                            if (iteratorB.hasNext()) return true;
+                            return false;
+                        }
+                        
+                        if (iteratorB.hasNext()) return true;
+                        isA = true;
+                        if (iteratorA.hasNext()) return true;
+                        return false;
+                    }
+                    public DATA next() {
+                        val next = isA ? iteratorA.next() : iteratorB.next();
+                        isA = !isA;
+                        return next;
+                    }
+                };
+            }
+            
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
     //-- Plus w/ Self --

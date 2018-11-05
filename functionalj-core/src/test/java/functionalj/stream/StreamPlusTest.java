@@ -1,6 +1,7 @@
 package functionalj.stream;
 
 import static functionalj.lens.Access.$S;
+import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
@@ -601,7 +602,6 @@ public class StreamPlusTest {
     }
     
     //-- Segmentation --
-
     
     @Test
     public void testSegment() {
@@ -648,6 +648,48 @@ public class StreamPlusTest {
                 .segment(startCondition)
                 .map(s -> s.joining(", "))
                 .joining("\n"));
+    }
+    @Test
+    public void testSegment2() {
+        assertEquals("[A, B], [C]",  StreamPlus.of("A", "B", "C").segment(2       ).map(s -> s.toList().toString()).joining(", "));
+        assertEquals("[A, B]",       StreamPlus.of("A", "B", "C").segment(2, false).map(s -> s.toList().toString()).joining(", "));
+    }
+    
+    @Test
+    public void testZipWith() {
+        {
+            val streamA = StreamPlus.of("A", "B", "C");
+            val streamB = IntStreamPlus.infinite().asStream();
+            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB).limit(5).joining(", "));
+        }
+        {
+            val streamA = StreamPlus.of("A", "B", "C");
+            val streamB = IntStreamPlus.infinite().asStream();
+            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB,  true).limit(5).joining(", "));
+        }
+        {
+            val streamA = StreamPlus.of("A", "B", "C");
+            val streamB = IntStreamPlus.infinite().asStream();
+            assertEquals("(A,0), (B,1), (C,2), (null,3), (null,4)", streamA.zipWith(streamB, false).limit(5).joining(", "));
+        }
+    }
+    
+    @Test
+    public void testChoose() {
+        val streamA = StreamPlus.of("A", "B", "C");
+        val streamB = IntStreamPlus.infinite().asStream().map(theInteger.asString());
+        val bool    = new AtomicBoolean(true);
+        assertEquals("A, 1, C, 3, 4", streamA.choose(streamB, (a, b) -> {
+            boolean curValue = bool.get();
+            return bool.getAndSet(!curValue);
+        }).limit(5).joining(", "));
+    }
+    
+    @Test
+    public void testMerge() {
+        val streamA = StreamPlus.of("A", "B", "C");
+        val streamB = IntStreamPlus.infinite().asStream().map(theInteger.asString());
+        assertEquals("A, 0, B, 1, C, 2, 3, 4, 5, 6", streamA.merge(streamB).limit(10).joining(", "));
     }
     
 }

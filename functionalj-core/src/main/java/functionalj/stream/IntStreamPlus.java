@@ -9,6 +9,7 @@ import java.util.PrimitiveIterator;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -294,7 +295,20 @@ public interface IntStreamPlus extends IntStream {
     
     //== Additional functionalities
     
+    public default StreamPlus<IntStreamPlus> segment(int count) {
+        return segment(count, true);
+    }
+    public default StreamPlus<IntStreamPlus> segment(int count, boolean includeTail) {
+//        if (count <= 1)
+//            return this;
+        
+        val index = new AtomicInteger(0);
+        return segment(data -> (index.getAndIncrement() % count) == 0, includeTail);
+    }
     public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition) {
+        return segment(startCondition, true);
+    }
+    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition, boolean includeTail) {
         val list = new AtomicReference<>(new ArrayList<Integer>());
         val adding = new AtomicBoolean(false);
         
@@ -316,6 +330,9 @@ public interface IntStreamPlus extends IntStream {
                 .filterNonNull();
         ;
         val mainSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->mainStream;
+        if (!includeTail)
+            return mainStream;
+        
         val tailSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->{
             return StreamPlus.of(
                     IntStreamPlus.from(
@@ -335,7 +352,7 @@ public interface IntStreamPlus extends IntStream {
         return segment(startCondition, endCondition, true);
     }
     
-    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition, IntPredicate endCondition, boolean includeLast) {
+    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition, IntPredicate endCondition, boolean includeTail) {
         val list = new AtomicReference<>(new ArrayList<Integer>());
         val adding = new AtomicBoolean(false);
         
@@ -344,19 +361,21 @@ public interface IntStreamPlus extends IntStream {
                     if (startCondition.test(i)) {
                         adding.set(true);
                     }
-                    if (includeLast && adding.get()) list.get().add(i);
+                    if (includeTail && adding.get()) list.get().add(i);
                     if (endCondition.test(i)) {
                         adding.set(false);
                         val retList = list.getAndUpdate(l -> new ArrayList<Integer>());
                         return IntStreamPlus.from(retList.stream().mapToInt(Integer::intValue));
                     }
                     
-                    if (!includeLast && adding.get()) list.get().add(i);
+                    if (!includeTail && adding.get()) list.get().add(i);
                     return null;
                 }))
             .filterNonNull();
         return stream;
     }
+    
+    // No Zip - as it seems to give no additional benefit than just changing it to Stream and zip it there.
     
     public default List<Integer> toList() {
         return asStream().toList();
