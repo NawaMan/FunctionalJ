@@ -41,6 +41,10 @@ public class RegExFlag {
         this.flags = flags;
     }
     
+    public int getIntValue() {
+        return flags;
+    }
+    
     public RegExFlag unixLines() {
         return unixLines(true);
     }

@@ -15,6 +15,7 @@ public class StrFuncsTest {
     @Test
     public void testLines() {
         assertEquals("AA, AAA, AAAA, AAAAA", StrFuncs.lines("AA\nAAA\rAAAA\r\nAAAAA").joining(", "));
+        assertEquals("AA, AAA",              StrFuncs.lines("AA\nAAA\rAAAA\r\nAAAAA").limit(2).joining(", "));
     }
     
     @Test

@@ -6,9 +6,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Func;
@@ -221,15 +221,69 @@ public class StrFuncs {
             buffer.append(str);
         return buffer.toString();
     }
-    
+
     public static StreamPlus<String> split(String str, String regexDelimiter) {
-        if (str == null || str.isEmpty())
+        return split((CharSequence)str, regexDelimiter, -1);
+    }
+    public static StreamPlus<String> split(CharSequence str, String regexDelimiter) {
+        return split((CharSequence)str, regexDelimiter, -1);
+    }
+    public static StreamPlus<String> split(String str, String regexDelimiter, RegExFlag flags) {
+        return split((CharSequence)str, regexDelimiter, (flags != null) ? flags.getIntValue() : -1);
+    }
+    public static StreamPlus<String> split(CharSequence str, String regexDelimiter, RegExFlag flags) {
+        return split((CharSequence)str, regexDelimiter, (flags != null) ? flags.getIntValue() : -1);
+    }
+    public static StreamPlus<String> split(String str, String regexDelimiter, int flags) {
+        return split((CharSequence)str, regexDelimiter, flags);
+    }
+    public static StreamPlus<String> split(CharSequence str, String regexDelimiter, int flags) {
+        if (str == null || (str.length() == 0))
             return StreamPlus.empty();
-        // TODO - Make it lazy.
-        return  StreamPlus.from(Stream.of(str.split(regexDelimiter)));
+        
+        val pattern = (flags < 0) ? Pattern.compile(regexDelimiter) : Pattern.compile(regexDelimiter, flags);
+        val matcher = pattern.matcher(str);
+        val offset  = new AtomicInteger(0);
+        val isLast  = new AtomicReference<Boolean>(null);
+        Iterable<String> iterable = new Iterable<String>() {
+            @Override
+            public Iterator<String> iterator() {
+                return new Iterator<String>() {
+                    @Override
+                    public boolean hasNext() {
+                        val find = matcher.find();
+                        if (!find) {
+                            if (isLast.get() == null) {
+                                isLast.set(true);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                        return find;
+                    }
+                    @Override
+                    public String next() {
+                        val isLastBoolean = isLast.get();
+                        if (isLastBoolean == null) {
+                            val start = matcher.start();
+                            val end   = matcher.end();
+                            val next  = str.subSequence(offset.get(), start);
+                            offset.set(end);
+                            return next.toString();
+                        }
+                        if (isLastBoolean == true) {
+                            val next  = str.subSequence(offset.get(), str.length());
+                            return next.toString();
+                        }
+                        return null;
+                    }
+                };
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     public static StreamPlus<String> lines(String str) {
-        // TODO - Make it lazy.
         return split(str, "(\n|\r\n?)");
     }
     
