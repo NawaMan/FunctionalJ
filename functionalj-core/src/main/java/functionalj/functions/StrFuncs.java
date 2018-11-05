@@ -2,16 +2,24 @@ package functionalj.functions;
 
 import static functionalj.function.Absent.__;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import functionalj.function.Func;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.stream.StreamPlus;
+import lombok.val;
 
 @SuppressWarnings("javadoc")
 public class StrFuncs {
@@ -27,6 +35,14 @@ public class StrFuncs {
      */
     public static String toStr(Object inputObject) {
         return (inputObject == null) ? null : String.valueOf(inputObject);
+    }
+    
+    public static boolean isEmpty(String str) {
+        return (str == null) || str.isEmpty();
+    }
+    
+    public static boolean isBlank(String str) {
+        return (str == null) || str.isEmpty() || str.trim().isEmpty();
     }
     
     /**
@@ -189,11 +205,106 @@ public class StrFuncs {
         return (str) -> str.replaceAll(regex, replacement);
     }
     
-    // TODO Improve this with template() ...
+    public static String repeat(char chr, int count) {
+        if (count <= 0)
+            return "";
+        val buffer = new StringBuffer();
+        for (int i = 0; i < count; i++)
+            buffer.append(chr);
+        return buffer.toString();
+    }
+    public static String repeat(String str, int count) {
+        if (count <= 0)
+            return "";
+        val buffer = new StringBuffer();
+        for (int i = 0; i < count; i++)
+            buffer.append(str);
+        return buffer.toString();
+    }
     
-    // Repeat
-    // Indent
-    // Padding
-    // match
+    public static StreamPlus<String> split(String str, String regexDelimiter) {
+        if (str == null || str.isEmpty())
+            return StreamPlus.empty();
+        // TODO - Make it lazy.
+        return  StreamPlus.from(Stream.of(str.split(regexDelimiter)));
+    }
+    public static StreamPlus<String> lines(String str) {
+        // TODO - Make it lazy.
+        return split(str, "(\n|\r\n?)");
+    }
+    
+    public static String indent(String str) {
+        if (str == null || str.isEmpty())
+            return "";
+        return "\t" + str.replaceAll("(\n|\r\n?)", "$1\t");
+    }
+    
+    public static String leftPadding(String str, char prefix, int width) {
+        if (str == null || str.isEmpty())
+            return repeat(prefix, width);
+        
+        if (str.length() >= prefix)
+            return str;
+        
+        return repeat(prefix, width - str.length()) + str;
+    }
+    
+    public static StreamPlus<RegExMatchResult> matches(String str, String regex) {
+        return matches(str, regex, -1);
+    }
+    public static StreamPlus<RegExMatchResult> matches(CharSequence str, String regex) {
+        return matches(str, regex, -1);
+    }
+    public static StreamPlus<RegExMatchResult> matches(String str, String regex, RegExFlag flags) {
+        return matches(str, regex, flags);
+    }
+    public static StreamPlus<RegExMatchResult> matches(CharSequence str, String regex, int flags) {
+        if (str == null || (str.length() == 0))
+            return StreamPlus.empty();
+        
+        val pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
+        val matcher = pattern.matcher(str);
+        val source  = Func.lazy(()->str.toString());
+        val index   = new AtomicInteger();
+        
+        Iterable<RegExMatchResult> iterable = new Iterable<RegExMatchResult>() {
+            @Override
+            public Iterator<RegExMatchResult> iterator() {
+                return new Iterator<RegExMatchResult>() {
+                    @Override
+                    public boolean hasNext() {
+                        return matcher.find();
+                    }
+                    @Override
+                    public RegExMatchResult next() {
+                        return new RegExMatchResult(source, pattern, index.get(), matcher.toMatchResult());
+                    }
+                };
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+    }
+    public static String template(String str, Func1<String, String> replacer) {
+        return template((CharSequence)str, replacer);
+    }
+    public static String template(CharSequence str, Func1<String, String> replacer) {
+        if (str == null)
+            return null;
+        if (str == null || (str.length() == 0))
+            return "";
+        
+        StringBuffer buffer = new StringBuffer();
+        val flags   = 0;
+        val pattern = Pattern.compile("\\$\\{[a-zA-Z0-9$_]+\\}", flags);
+        val matcher = pattern.matcher(str);
+        while (matcher.find()) {
+            val group       = matcher.group();
+            val name        = group.substring(2, group.length() - 1);
+            val replacement = replacer.apply(name);
+            matcher.appendReplacement(buffer, replacement);
+        }
+        matcher.appendTail(buffer);
+        return buffer.toString();
+    }
     
 }
