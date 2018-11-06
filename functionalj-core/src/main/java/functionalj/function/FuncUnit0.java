@@ -23,8 +23,8 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
             runUnsafe();
         } catch (RuntimeException e) {
             throw e;
-        } catch (Exception e) {
-            throw new FunctionInvocationException(e);
+        } catch (Exception exception) {
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     

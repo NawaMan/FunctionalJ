@@ -40,6 +40,10 @@ import lombok.val;
  */
 @FunctionalInterface
 public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
+
+    public static <I1, I2, I3, I4, I5, I6, O> Func6<I1, I2, I3, I4, I5, I6, O> of(Func6<I1, I2, I3, I4, I5, I6, O> func) {
+        return func;
+    }
     
     
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6) throws Exception;
@@ -83,8 +87,8 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
             return applyUnsafe(input1, input2, input3, input4, input5, input6);
         } catch (RuntimeException e) {
             throw e;
-        } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+        } catch (Exception e) {
+            throw Func.exceptionHandler.value().apply(e);
         }
     }
     
@@ -123,14 +127,14 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
      */
     public default <FINAL> Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, FINAL> then(Func1<? super OUTPUT, ? extends FINAL> after) {
         return (input1, input2, input3, input4, input5, input6) -> {
-            OUTPUT out1 = this.apply(input1, input2, input3, input4, input5, input6);
-            FINAL  out2 = after.apply(out1);
+            OUTPUT out1 = this.applyUnsafe(input1, input2, input3, input4, input5, input6);
+            FINAL  out2 = Func.applyUnsafe(after, out1);
             return out2;
         };
     }
     
     public default Func1<Tuple6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6>, OUTPUT> toTupleFunction() {
-        return t -> this.apply(t._1(), t._2(), t._3(), t._4(), t._5(), t._6());
+        return t -> this.applyUnsafe(t._1(), t._2(), t._3(), t._4(), t._5(), t._6());
     }
     
     public default Func6<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, HasPromise<INPUT6>, Promise<OUTPUT>> defer() {
@@ -141,7 +145,7 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
     public default Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, Promise<OUTPUT>> async() {
         return (input1, input2, input3, input4, input5, input6) -> {
             val supplier = (Func0<OUTPUT>)()->{
-                return this.apply(input1, input2, input3, input4, input5, input6);
+                return this.applyUnsafe(input1, input2, input3, input4, input5, input6);
             };
             return DeferAction.from(supplier)
                     .start().getPromise();
@@ -154,289 +158,302 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
      * @return  the curried function.
      */
     public default Func1<INPUT1, Func1<INPUT2, Func1<INPUT3, Func1<INPUT4, Func1<INPUT5, Func1<INPUT6, OUTPUT>>>>>> curry() {
-        return i1 -> i2 -> i3 -> i4 -> i5 -> i6 -> this.apply(i1, i2, i3, i4, i5, i6);
+        return i1 -> i2 -> i3 -> i4 -> i5 -> i6 -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
+    }
+    
+    /**
+     * Flip the parameter order.
+     * 
+     * @return  the Func6 with parameter in a flipped order.
+     */
+    public default Func6<INPUT6, INPUT5, INPUT4, INPUT3, INPUT2, INPUT1, OUTPUT> flip() {
+        return (i6, i5, i4, i3, i2, i1) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return (i1) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
     @SuppressWarnings("javadoc")
+    public default Func0<OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
+        return () -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
+    }
+    @SuppressWarnings("javadoc")
     public default Func5<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> bind1(INPUT1 i1) {
-        return (i2, i3, i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i3, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func5<INPUT1, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> bind2(INPUT2 i2) {
-        return (i1, i3, i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i3, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func5<INPUT1, INPUT2, INPUT4, INPUT5, INPUT6, OUTPUT> bind3(INPUT3 i3) {
-        return (i1, i2, i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func5<INPUT1, INPUT2, INPUT3, INPUT5, INPUT6, OUTPUT> bind4(INPUT4 i4) {
-        return (i1, i2, i3, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i3, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT6, OUTPUT> bind5(INPUT5 i5) {
-        return (i1, i2, i3, i4, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i3, i4, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> bind6(INPUT6 i6) {
-        return (i1, i2, i3, i4, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i3, i4, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
     @SuppressWarnings("javadoc")
     public default Func1<INPUT1, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return (i1) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func1<INPUT2, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return (i2) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func1<INPUT3, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return (i3) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i3) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func1<INPUT4, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return (i4) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i4) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func1<INPUT5, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return (i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func1<INPUT6, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return (i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
     @SuppressWarnings("javadoc")
     public default Func2<INPUT1, INPUT2, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return (i1, i2) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT1, INPUT3, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return (i1, i3) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i3) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT1, INPUT4, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return (i1, i4) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i4) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT1, INPUT5, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return (i1, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT1, INPUT6, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return (i1, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT2, INPUT3, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return (i2, i3) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i3) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT2, INPUT4, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return (i2, i4) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i4) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT2, INPUT5, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return (i2, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT2, INPUT6, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return (i2, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT3, INPUT4, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return (i3, i4) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i3, i4) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT3, INPUT5, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return (i3, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i3, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT3, INPUT6, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return (i3, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i3, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT4, INPUT5, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5, INPUT6 i6) {
-        return (i4, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i4, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT4, INPUT6, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5, Absent a6) {
-        return (i4, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i4, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func2<INPUT5, INPUT6, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5, Absent a6) {
-        return (i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
     @SuppressWarnings("javadoc")
     public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> bind(Absent a1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
-        return (i1, i2, i3) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i3) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT1, INPUT2, INPUT4, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return (i1, i2, i4) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i4) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT1, INPUT2, INPUT5, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return (i1, i2, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT1, INPUT2, INPUT6, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return (i1, i2, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT1, INPUT3, INPUT4, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return (i1, i3, i4) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT1, INPUT3, INPUT5, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return (i1, i3, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i3, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT1, INPUT3, INPUT6, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return (i1, i3, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i3, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT1, INPUT4, INPUT5, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5, INPUT6 i6) {
-        return (i1, i4, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i4, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT1, INPUT4, INPUT6, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, INPUT5 i5, Absent a6) {
-        return (i1, i4, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i4, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT1, INPUT5, INPUT6, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, INPUT4 i4, Absent a5, Absent a6) {
-        return (i1, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT2, INPUT3, INPUT4, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return (i2, i3, i4) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT2, INPUT3, INPUT5, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return (i2, i3, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i3, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT2, INPUT3, INPUT6, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return (i2, i3, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i3, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT2, INPUT4, INPUT5, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, Absent a5, INPUT6 i6) {
-        return (i2, i4, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i4, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT2, INPUT4, INPUT6, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5, Absent a6) {
-        return (i2, i4, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i4, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT2, INPUT5, INPUT6, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5, Absent a6) {
-        return (i2, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT3, INPUT4, INPUT5, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, Absent a5, INPUT6 i6) {
-        return (i3, i4, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i3, i4, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT3, INPUT4, INPUT6, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5, Absent a6) {
-        return (i3, i4, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i3, i4, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT3, INPUT5, INPUT6, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5, Absent a6) {
-        return (i3, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i3, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func3<INPUT4, INPUT5, INPUT6, OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5, Absent a6) {
-        return (i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
     @SuppressWarnings("javadoc")
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> bind(Absent a1, Absent a2, Absent a3, Absent a4, INPUT5 i5, INPUT6 i6) {
-        return (i1, i2, i3, i4) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT5, OUTPUT> bind(Absent a1, Absent a2, Absent a3, INPUT4 i4, Absent a5, INPUT6 i6) {
-        return (i1, i2, i3, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i3, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT6, OUTPUT> bind(Absent a1, Absent a2, Absent a3, INPUT4 i4, INPUT5 i5, Absent a6) {
-        return (i1, i2, i3, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i3, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT1, INPUT2, INPUT4, INPUT5, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, Absent a4, Absent a5, INPUT6 i6) {
-        return (i1, i2, i4, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i4, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT1, INPUT2, INPUT4, INPUT6, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, Absent a4, INPUT5 i5, Absent a6) {
-        return (i1, i2, i4, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i4, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT1, INPUT2, INPUT5, INPUT6, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, INPUT4 i4, Absent a5, Absent a6) {
-        return (i1, i2, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT1, INPUT3, INPUT4, INPUT5, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, Absent a4, Absent a5, INPUT6 i6) {
-        return (i1, i3, i4, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i3, i4, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT1, INPUT3, INPUT4, INPUT6, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, Absent a4, INPUT5 i5, Absent a6) {
-        return (i1, i3, i4, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i3, i4, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT1, INPUT3, INPUT5, INPUT6, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, INPUT4 i4, Absent a5, Absent a6) {
-        return (i1, i3, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i3, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT1, INPUT4, INPUT5, INPUT6, OUTPUT> bind(Absent a1, INPUT2 i2, INPUT3 i3, Absent a4, Absent a5, Absent a6) {
-        return (i1, i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, Absent a4, Absent a5, INPUT6 i6) {
-        return (i2, i3, i4, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i3, i4, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT2, INPUT3, INPUT4, INPUT6, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, Absent a4, INPUT5 i5, Absent a6) {
-        return (i2, i3, i4, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i3, i4, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT2, INPUT3, INPUT5, INPUT6, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, INPUT4 i4, Absent a5, Absent a6) {
-        return (i2, i3, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i3, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT2, INPUT4, INPUT5, INPUT6, OUTPUT> bind(INPUT1 i1, Absent a2, INPUT3 i3, Absent a4, Absent a5, Absent a6) {
-        return (i2, i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func4<INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> bind(INPUT1 i1, INPUT2 i2, Absent a3, Absent a4, Absent a5, Absent a6) {
-        return (i3, i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i3, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
     @SuppressWarnings("javadoc")
     public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> bind(Absent a1, Absent a2, Absent a3, Absent a4, Absent a5, INPUT6 i6) {
-        return (i1, i2, i3, i4, i5) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i3, i4, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT6, OUTPUT> bind(Absent a1, Absent a2, Absent a3, Absent a4, INPUT5 i5, Absent a6) {
-        return (i1, i2, i3, i4, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i3, i4, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func5<INPUT1, INPUT2, INPUT3, INPUT5, INPUT6, OUTPUT> bind(Absent a1, Absent a2, Absent a3, INPUT4 i4, Absent a5, Absent a6) {
-        return (i1, i2, i3, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i3, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func5<INPUT1, INPUT2, INPUT4, INPUT5, INPUT6, OUTPUT> bind(Absent a1, Absent a2, INPUT3 i3, Absent a4, Absent a5, Absent a6) {
-        return (i1, i2, i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i2, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func5<INPUT1, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> bind(Absent a1, INPUT2 i2, Absent a3, Absent a4, Absent a5, Absent a6) {
-        return (i1, i3, i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i1, i3, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     @SuppressWarnings("javadoc")
     public default Func5<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> bind(INPUT1 i1, Absent a2, Absent a3, Absent a4, Absent a5, Absent a6) {
-        return (i2, i3, i4, i5, i6) -> this.apply(i1, i2, i3, i4, i5, i6);
+        return (i2, i3, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
 }

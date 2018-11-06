@@ -57,7 +57,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new FunctionInvocationException(e);
+            throw Func.exceptionHandler.value().apply(e);
         }
     }
     
@@ -88,10 +88,10 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return orGet(defaultSupplier);
     }
     
-    public default <TARGET> Func0<TARGET> mapTo(Func1<OUTPUT, TARGET> mapper) {
+    public default <TARGET> Func0<TARGET> then(Func1<OUTPUT, TARGET> mapper) {
         return ()->{
             val output = this.applyUnsafe();
-            val target = mapper.apply(output);
+            val target = Func.applyUnsafe(mapper, output);
             return target;
         };
     }
@@ -109,6 +109,10 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     }
     public default Promise<OUTPUT> defer() {
         return DeferAction.from(this).build().getPromise();
+    }
+    
+    public default FuncUnit0 ignoreResult() {
+        return FuncUnit0.of(()->applyUnsafe());
     }
     
     public default Func1<?, OUTPUT> toFunc1() {

@@ -21,7 +21,7 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public interface ResultMapAddOn<DATA> {
     
-    public <TARGET> Result<TARGET> map(Function<? super DATA, ? extends TARGET> mapper);
+    public <TARGET> Result<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper);
     
     public default <TARGET> Result<TARGET> mapTo(Func1<? super DATA, TARGET> mapper) {
         return map(mapper);

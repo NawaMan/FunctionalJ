@@ -10,7 +10,7 @@ import lombok.val;
 public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> of(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
-        return (value1, value2, value3) -> consumer.accept(value1, value2, value3);
+        return consumer;
     }
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> from(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
         return consumer::accept;
@@ -22,7 +22,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new FunctionInvocationException(e);
+            throw Func.exceptionHandler.value().apply(e);
         }
     }
     
@@ -87,4 +87,50 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
                     func0);
         };
     }
+    
+    //== Partially apply functions ==
+    
+    @SuppressWarnings("javadoc")
+    public default FuncUnit0 bind(INPUT1 i1, INPUT2 i2, INPUT3 i3) {
+        return () -> this.acceptUnsafe(i1, i2, i3);
+    }
+    @SuppressWarnings("javadoc")
+    public default FuncUnit2<INPUT2, INPUT3> bind1(INPUT1 i1) {
+        return (i2,i3) -> this.acceptUnsafe(i1, i2, i3);
+    }
+    @SuppressWarnings("javadoc")
+    public default FuncUnit2<INPUT1, INPUT3> bind2(INPUT2 i2) {
+        return (i1,i3) -> this.acceptUnsafe(i1, i2, i3);
+    }
+    @SuppressWarnings("javadoc")
+    public default FuncUnit2<INPUT1, INPUT2> bind3(INPUT3 i3) {
+        return (i1,i2) -> this.acceptUnsafe(i1, i2, i3);
+    }
+    
+    @SuppressWarnings("javadoc")
+    public default FuncUnit1<INPUT1> bind(Absent a1, INPUT2 i2, INPUT3 i3) {
+        return i1 -> this.acceptUnsafe(i1, i2, i3);
+    }
+    @SuppressWarnings("javadoc")
+    public default FuncUnit1<INPUT2> bind(INPUT1 i1, Absent a2, INPUT3 i3) {
+        return i2 -> this.acceptUnsafe(i1, i2, i3);
+    }
+    @SuppressWarnings("javadoc")
+    public default FuncUnit1<INPUT3> bind(INPUT1 i1, INPUT2 i2, Absent a3) {
+        return i3 -> this.acceptUnsafe(i1, i2, i3);
+    }
+    
+    @SuppressWarnings("javadoc")
+    public default FuncUnit2<INPUT1, INPUT2> bind(Absent a1, Absent a2, INPUT3 i3) {
+        return (i1, i2) -> this.acceptUnsafe(i1, i2, i3);
+    }
+    @SuppressWarnings("javadoc")
+    public default FuncUnit2<INPUT1, INPUT3> bind(Absent a1, INPUT2 i2, Absent a3) {
+        return (i1, i3) -> this.acceptUnsafe(i1, i2, i3);
+    }
+    @SuppressWarnings("javadoc")
+    public default FuncUnit2<INPUT2, INPUT3> bind(INPUT1 i1, Absent a2, Absent a3) {
+        return (i2, i3) -> this.acceptUnsafe(i1, i2, i3);
+    }
+    
 }

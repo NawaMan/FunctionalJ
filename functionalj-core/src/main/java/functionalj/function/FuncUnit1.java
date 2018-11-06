@@ -11,7 +11,7 @@ import lombok.val;
 public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     
     public static <INPUT> FuncUnit1<INPUT> of(FuncUnit1<INPUT> consumer) {
-        return (value) -> consumer.accept(value);
+        return consumer;
     }
     public static <INPUT> FuncUnit1<INPUT> from(Consumer<INPUT> consumer) {
         return consumer::accept;
@@ -23,7 +23,7 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new FunctionInvocationException(e);
+            throw Func.exceptionHandler.value().apply(e);
         }
     }
     
@@ -85,4 +85,8 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         };
     }
     
+    @SuppressWarnings("javadoc")
+    public default FuncUnit0 bind(INPUT i) {
+        return () -> this.acceptUnsafe(i);
+    }
 }

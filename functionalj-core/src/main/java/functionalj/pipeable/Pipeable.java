@@ -2,8 +2,8 @@ package functionalj.pipeable;
 
 import java.util.function.Supplier;
 
+import functionalj.function.Func;
 import functionalj.function.Func1;
-import functionalj.function.FunctionInvocationException;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -35,7 +35,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -66,7 +66,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -101,7 +101,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -140,7 +140,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -183,7 +183,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -230,7 +230,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -281,7 +281,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -336,7 +336,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -395,7 +395,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -458,7 +458,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -525,7 +525,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -596,7 +596,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -671,7 +671,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -750,7 +750,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -833,7 +833,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -920,7 +920,7 @@ public interface Pipeable<DATA> {
         } catch (RuntimeException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+            throw Func.exceptionHandler.value().apply(exception);
         }
     }
     
@@ -979,7 +979,7 @@ public interface Pipeable<DATA> {
                 if (!(func instanceof NullSafeOperator))
                     return null;
             }
-            return func.applyUnsafe(input);
+            return Func.applyUnsafe(func, input);
         }
         
     }

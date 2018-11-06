@@ -1,5 +1,6 @@
 package functionalj.functions;
 
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import functionalj.function.Func;
@@ -10,7 +11,7 @@ public class RegExFlag {
     
     private int flags = 0;
     
-    private static final Func1<Integer, RegExFlag> newFlag = Func.cacheFor(RegExFlag::new);
+    private static final Function<Integer, RegExFlag> newFlag = Func.cacheFor(RegExFlag::new);
     
     public static RegExFlag of(RegExFlag ... flags) {
         if (flags == null)

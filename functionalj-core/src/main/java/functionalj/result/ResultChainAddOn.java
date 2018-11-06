@@ -1,6 +1,5 @@
 package functionalj.result;
 
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import functionalj.function.Func0;
@@ -29,7 +28,7 @@ public interface ResultChainAddOn<DATA> {
     public Result<DATA> asResult();
     
     
-    public <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Result<TARGET>> mapper);
+    public <TARGET> Result<TARGET> flatMap(Func1<? super DATA, ? extends Result<TARGET>> mapper);
     
     public default <TARGET> Result<TARGET> chain(Func1<? super DATA, ? extends Result<TARGET>> mapper) {
         return flatMap(mapper);

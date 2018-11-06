@@ -337,7 +337,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             this.isDone        = new AtomicBoolean(false);
             
             val promises = hasPromises
-            .map(promise -> promise.apply(null))
+            .map(promise -> promise.getExpression())
             .map(promise -> promise.getPromise());
             
             this.action = DeferAction.of((Class<D>)null, OnStart.run(()->{

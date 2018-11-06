@@ -27,7 +27,7 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     private static final boolean NULL_UNSAFE = false;
     
     @SuppressWarnings("rawtypes")
-	private final ImmutableList<Func1> functions;
+    private final ImmutableList<Func1> functions;
     
     @SuppressWarnings("rawtypes")
     private final Catch catchHandler;
@@ -44,7 +44,7 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
         try {
             Object data = input;
             for (int i = 0; i < functions.size(); i++) {
-				val func1 = functions.get(i);
+                val func1 = functions.get(i);
                 data = __internal.apply(func1, data);
             }
             if (catchHandler == null)
@@ -77,8 +77,8 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     
     
     static class NullSafe<INPUT, OUTPUT> extends PipeLine<INPUT, OUTPUT> implements NullSafeOperator<INPUT, OUTPUT> {
-    	@SuppressWarnings("rawtypes")
-    	private NullSafe(List<Func1> functions, Catch catchHandler) {
+        @SuppressWarnings("rawtypes")
+        private NullSafe(List<Func1> functions, Catch catchHandler) {
             super(functions, catchHandler);
         }
     }

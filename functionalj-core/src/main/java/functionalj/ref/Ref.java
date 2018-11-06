@@ -13,7 +13,7 @@ import functionalj.result.AsResult;
 import functionalj.result.Result;
 import lombok.val;
 
-public abstract class Ref<DATA> implements Func0<DATA>, AsResult<DATA> {
+public abstract class Ref<DATA> implements Func0<DATA> {
     
     private static final ThreadLocal<Entry> refEntry = ThreadLocal.withInitial(()->new Entry(null, null));
     
@@ -83,8 +83,7 @@ public abstract class Ref<DATA> implements Func0<DATA>, AsResult<DATA> {
         return result;
     }
     
-    @Override
-    public final Result<DATA> asResult() {
+    public final AsResult<DATA> asResult() {
         return getResult();
     }
     
@@ -103,15 +102,15 @@ public abstract class Ref<DATA> implements Func0<DATA>, AsResult<DATA> {
     public final DATA orElse(DATA elseValue) {
         return getResult().orElse(elseValue);
     }
-    public final <TARGET> Func0<TARGET> mapTo(Func1<DATA, TARGET> mapper) {
+    public final <TARGET> Func0<TARGET> then(Func1<DATA, TARGET> mapper) {
         return this
                 .valueSupplier()
-                .mapTo(mapper);
+                .then(mapper);
     }
     
     public final <TARGET> Ref<TARGET> map(Class<TARGET> targetClass, Func1<DATA, TARGET> mapper) {
         return Ref.of(targetClass).defaultFrom(()->{
-            val result = asResult();
+            val result = getResult();
             val target = result.map(mapper);
             return target.get();
         });

@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.function.Func0;
+import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
@@ -549,7 +550,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Promise<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+    public final <TARGET> Promise<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         requireNonNull(mapper);
         return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val result = r.map(mapper);
@@ -566,10 +567,10 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         });
     }
     
-    public final <TARGET> Promise<TARGET> flatMap(Function<DATA, ? extends HasPromise<TARGET>> mapper) {
+    public final <TARGET> Promise<TARGET> flatMap(Func1<DATA, ? extends HasPromise<TARGET>> mapper) {
         return chain(mapper);
     }
-    public final <TARGET> Promise<TARGET> chain(Function<DATA, ? extends HasPromise<TARGET>> mapper) {
+    public final <TARGET> Promise<TARGET> chain(Func1<DATA, ? extends HasPromise<TARGET>> mapper) {
         return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
             val targetResult = r.map(mapper);
             targetResult.ifPresent(hasPromise -> {

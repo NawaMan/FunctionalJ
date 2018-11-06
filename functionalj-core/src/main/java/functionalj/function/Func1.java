@@ -48,6 +48,10 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return function;
     }
     
+    public static <I1, O> Func1<I1, O> from(Function<I1, O> func) {
+        return func::apply;
+    }
+    
     
     public OUTPUT applyUnsafe(INPUT input) throws Exception;
     
@@ -75,8 +79,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             return applyUnsafe(input);
         } catch (RuntimeException e) {
             throw e;
-        } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+        } catch (Exception e) {
+            throw Func.exceptionHandler.value().apply(e);
         }
     }
     
@@ -101,7 +105,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, Promise<OUTPUT>> async() {
         return input -> {
             val supplier = (Func0<OUTPUT>)()->{
-                return this.apply(input);
+                return this.applyUnsafe(input);
             };
             return DeferAction.from(supplier)
                     .start().getPromise();
@@ -134,20 +138,24 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default <FINAL> Func1<INPUT, FINAL> then(Function<? super OUTPUT, ? extends FINAL> after) {
         return input -> {
             OUTPUT out1 = this.applyUnsafe(input);
-            FINAL  out2 = after.apply(out1);
+            FINAL  out2 = Func.applyUnsafe(after, out1);
             return out2;
         };
     }
     
+    public default FuncUnit1<INPUT> ignoreResult() {
+        return FuncUnit1.of((input1)->applyUnsafe(input1));
+    }
+    
     /**
-     * Create a curry function (a supplier) of the this function.
+     * Create a bind function (a supplier) of the this function.
      * 
      * @param   input  the input value.
      * @return         the Supplier.
      */
-    public default Supplier<OUTPUT> curry(INPUT input) {
+    public default Func0<OUTPUT> bind(INPUT input) {
         return () -> {
-            return this.apply(input);
+            return this.applyUnsafe(input);
         };
     }
     

@@ -19,7 +19,7 @@ public class DerivedValue<DATA> extends Result<DATA>{
     public <ORG> DerivedValue(Result<ORG> orgValue, Func1<Result<ORG>, Result<DATA>> mapper) {
         this.valueSupplier = ()->{
             try {
-                return mapper.apply(orgValue);
+                return mapper.applyUnsafe(orgValue);
             } catch (Exception e) {
                 return Result.ofException(e);
             }

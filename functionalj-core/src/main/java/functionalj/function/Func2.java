@@ -17,6 +17,7 @@ package functionalj.function;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.promise.DeferAction;
@@ -37,7 +38,15 @@ import lombok.val;
  */
 @FunctionalInterface
 public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2, OUTPUT> {
-
+    
+    public static <I1, I2, O> Func2<I1, I2, O> of(Func2<I1, I2, O> func) {
+        return func;
+    }
+    
+    public static <I1, I2, O> Func2<I1, I2, O> from(BiFunction<I1, I2, O> func) {
+        return func::apply;
+    }
+    
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2) throws Exception;
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2) {
@@ -75,8 +84,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
             return applyUnsafe(input1, input2);
         } catch (RuntimeException e) {
             throw e;
-        } catch (Exception exception) {
-            throw new FunctionInvocationException(exception);
+        } catch (Exception e) {
+            throw Func.exceptionHandler.value().apply(e);
         }
     }
     
@@ -113,10 +122,10 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @param  after    the function to be run after this function.
      * @return          the composed function.
      */
-    public default <FINAL> Func2<INPUT1, INPUT2, FINAL> then(Func1<? super OUTPUT, ? extends FINAL> after) {
+    public default <FINAL> Func2<INPUT1, INPUT2, FINAL> then(Function<? super OUTPUT, ? extends FINAL> after) {
         return (input1, input2) -> {
-            OUTPUT out1 = this.apply(input1, input2);
-            FINAL  out2 = after.apply(out1);
+            OUTPUT out1 = this.applyUnsafe(input1, input2);
+            FINAL  out2 = Func.applyUnsafe(after, out1);
             return out2;
         };
     }
@@ -127,15 +136,15 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @return  the curried function.
      */
     public default Func1<INPUT1, Func1<INPUT2, OUTPUT>> curry() {
-        return i1 -> i2 -> this.apply(i1, i2);
+        return i1 -> i2 -> this.applyUnsafe(i1, i2);
     }
     
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2) {
-        return (i1) -> this.apply(i1, i2);
+        return (i1) -> this.applyUnsafe(i1, i2);
     }
     
     public default Func1<Tuple2<INPUT1, INPUT2>, OUTPUT> toTupleFunction() {
-        return t -> this.apply(t._1(), t._2());
+        return t -> this.applyUnsafe(t._1(), t._2());
     }
     
     public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<OUTPUT>> defer() {
@@ -146,7 +155,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, Promise<OUTPUT>> async() {
         return (input1, input2) -> {
             val supplier = (Func0<OUTPUT>)()->{
-                return this.apply(input1, input2);
+                return this.applyUnsafe(input1, input2);
             };
             return DeferAction.from(supplier)
                     .start().getPromise();
@@ -160,27 +169,36 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * @return  the Func2 with parameter in a flipped order.
      */
     public default Func2<INPUT2, INPUT1, OUTPUT> flip() {
-        return (i2, i1) -> this.apply(i1, i2);
+        return (i2, i1) -> this.applyUnsafe(i1, i2);
     }
+    
+    public default FuncUnit2<INPUT1, INPUT2> ignoreResult() {
+        return FuncUnit2.of((input1, input2)->applyUnsafe(input1, input2));
+    }
+    
     //== Partially apply functions ==
     
     @SuppressWarnings("javadoc")
+    public default Func0<OUTPUT> bind(INPUT1 i1, INPUT2 i2) {
+        return () -> this.applyUnsafe(i1, i2);
+    }
+    @SuppressWarnings("javadoc")
     public default Func1<INPUT2, OUTPUT> bind1(INPUT1 i1) {
-        return i2 -> this.apply(i1, i2);
+        return i2 -> this.applyUnsafe(i1, i2);
     }
     
     @SuppressWarnings("javadoc")
     public default Func1<INPUT1, OUTPUT> bind2(INPUT2 i2) {
-        return i1 -> this.apply(i1, i2);
+        return i1 -> this.applyUnsafe(i1, i2);
     }
     
     @SuppressWarnings("javadoc")
     public default Func1<INPUT1, OUTPUT> bind(Absent a1, INPUT2 i2) {
-        return i1 -> this.apply(i1, i2);
+        return i1 -> this.applyUnsafe(i1, i2);
     }
     @SuppressWarnings("javadoc")
     public default Func1<INPUT2, OUTPUT> bind(INPUT1 i1, Absent a2) {
-        return i2 -> this.apply(i1, i2);
+        return i2 -> this.applyUnsafe(i1, i2);
     }
     
 }

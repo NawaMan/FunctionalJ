@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.function.Func;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
@@ -302,7 +303,7 @@ public abstract class Result<DATA>
             T2 value2,
             BiFunction<T1, T2, D> merger) {
         return Result.from(Func0.of(()->{
-            val value = merger.apply(value1, value2);
+            val value = Func.applyUnsafe(merger, value1, value2);
             return value;
         }));
     }
@@ -313,7 +314,7 @@ public abstract class Result<DATA>
             T3 value3,
             Func3<T1, T2, T3, D> merger) {
         return Result.from(Func0.of(()->{
-            val value = merger.apply(value1, value2, value3);
+            val value = merger.applyUnsafe(value1, value2, value3);
             return value;
         }));
     }
@@ -325,7 +326,7 @@ public abstract class Result<DATA>
             T4 value4,
             Func4<T1, T2, T3, T4, D> merger) {
         return Result.from(Func0.of(()->{
-            val value = merger.apply(value1, value2, value3, value4);
+            val value = merger.applyUnsafe(value1, value2, value3, value4);
             return value;
         }));
     }
@@ -338,7 +339,7 @@ public abstract class Result<DATA>
             T5 value5,
             Func5<T1, T2, T3, T4, T5, D> merger) {
         return Result.from(Func0.of(()->{
-            val value = merger.apply(value1, value2, value3, value4, value5);
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5);
             return value;
         }));
     }
@@ -352,7 +353,7 @@ public abstract class Result<DATA>
             T6 value6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
         return Result.from(Func0.of(()->{
-            val value = merger.apply(value1, value2, value3, value4, value5, value6);
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6);
             return value;
         }));
     }
@@ -447,7 +448,7 @@ public abstract class Result<DATA>
         return Result.from(Func0.of(()->{
             val value1 = result1.getResult().orThrow();
             val value2 = result2.getResult().orThrow();
-            val value = merger.apply(value1, value2);
+            val value = Func.applyUnsafe(merger, value1, value2);
             return value;
         }));
     }
@@ -461,7 +462,7 @@ public abstract class Result<DATA>
             val value1 = result1.getResult().orThrow();
             val value2 = result2.getResult().orThrow();
             val value3 = result3.getResult().orThrow();
-            val value = merger.apply(value1, value2, value3);
+            val value = merger.applyUnsafe(value1, value2, value3);
             return value;
         }));
     }
@@ -477,7 +478,7 @@ public abstract class Result<DATA>
             val value2 = result2.getResult().orThrow();
             val value3 = result3.getResult().orThrow();
             val value4 = result4.getResult().orThrow();
-            val value = merger.apply(value1, value2, value3, value4);
+            val value = merger.applyUnsafe(value1, value2, value3, value4);
             return value;
         }));
     }
@@ -495,7 +496,7 @@ public abstract class Result<DATA>
             val value3 = result3.getResult().orThrow();
             val value4 = result4.getResult().orThrow();
             val value5 = result5.getResult().orThrow();
-            val value = merger.apply(value1, value2, value3, value4, value5);
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5);
             return value;
         }));
     }
@@ -515,7 +516,7 @@ public abstract class Result<DATA>
             val value4 = result4.getResult().orThrow();
             val value5 = result5.getResult().orThrow();
             val value6 = result6.getResult().orThrow();
-            val value = merger.apply(value1, value2, value3, value4, value5, value6);
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6);
             return value;
         }));
     }
@@ -538,7 +539,7 @@ public abstract class Result<DATA>
             val exception = isValue ? null       : ((ExceptionHolder)data).getException();
             assert !((value != null) && (exception != null));
             
-            return processor.apply(value, exception);
+            return processor.applyUnsafe(value, exception);
         } catch (Exception cause) {
             return exceptionGet.apply(cause);
         }
@@ -554,7 +555,7 @@ public abstract class Result<DATA>
                 val exception = isValue ? null       : ((ExceptionHolder)data).getException();
                 assert !((value != null) && (exception != null));
                 
-                val newValue = processor.apply(value, exception);
+                val newValue = processor.applyUnsafe(value, exception);
                 return newValue;
             } catch (Exception cause) {
                 return newException(cause);
@@ -639,13 +640,13 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Result<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+    public final <TARGET> Result<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         return mapValue(
                 (value, exception) -> {
                     if (value == null)
                         return (Result<TARGET>)this;
                     
-                    val newValue = mapper.apply(value);
+                    val newValue = mapper.applyUnsafe(value);
                     return Result.of(newValue);
                 }
         );
@@ -661,20 +662,20 @@ public abstract class Result<DATA>
                     if (exception == null)
                         return this;
                     
-                    val newException = mapper.apply(exception);
+                    val newException = mapper.applyUnsafe(exception);
                     return newException(newException);
                 }
         );
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Result<TARGET> flatMap(Function<? super DATA, ? extends Result<TARGET>> mapper) {
+    public final <TARGET> Result<TARGET> flatMap(Func1<? super DATA, ? extends Result<TARGET>> mapper) {
         return mapValue(
                 (value, exception) -> {
                     if (value == null)
                         return (Result<TARGET>)this;
                     
-                    val monad = (Nullable<TARGET>)mapper.apply(value);
+                    val monad = (Nullable<TARGET>)mapper.applyUnsafe(value);
                     return Result.of(monad.orElse(null));
                 }
         );
@@ -742,7 +743,7 @@ public abstract class Result<DATA>
     
     //== Validation ==
     
-    //== TODO - Validate and accumulate.
+    //== TODO - Validate then accumulate.
     
     public final Result<DATA> validateNotNull() {
         return mapData(
@@ -819,14 +820,14 @@ public abstract class Result<DATA>
                 }
         );
     }
-    public final <T> Result<DATA> validate(Function<? super DATA, T> mapper, Predicate<? super T> checker, String message) {
+    public final <T> Result<DATA> validate(Func1<? super DATA, T> mapper, Predicate<? super T> checker, String message) {
         return mapData(
                 returnValueException(),
                 (value, exception)->{
                     if (value == null) 
                         return this;
                     try {
-                        val target = mapper.apply(value);
+                        val target = mapper.applyUnsafe(value);
                         if (checker.test(target))
                             return this;
                         
@@ -848,12 +849,12 @@ public abstract class Result<DATA>
                 });
     }
     
-    public final <D extends Validatable<D, ?>> Valid<D> toValidValue(Function<DATA, D> mapper) {
+    public final <D extends Validatable<D, ?>> Valid<D> toValidValue(Func1<DATA, D> mapper) {
         return mapData(
                 e -> new Valid<D>((D)null, e),
                 (value, exception)->{
                     if (exception == null) {
-                        val target = mapper.apply(value);
+                        val target = mapper.applyUnsafe(value);
                         Valid<D> valueOf = Valid.valueOf((D)target);
                         return valueOf;
                     }
@@ -958,10 +959,10 @@ public abstract class Result<DATA>
                 }
         );
     }
-    public final <EXCEPTION extends Exception> DATA orThrow(Function<Exception, EXCEPTION> toException) 
+    public final <EXCEPTION extends Exception> DATA orThrow(Func1<Exception, EXCEPTION> toException) 
             throws EXCEPTION {
         return mapData(
-                e -> { throw toException.apply(e); },
+                e -> { throw toException.applyUnsafe(e); },
                 (value, exception)->{
                     if (exception == null)
                         return value;

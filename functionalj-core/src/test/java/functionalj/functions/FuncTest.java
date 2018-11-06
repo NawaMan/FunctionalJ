@@ -55,10 +55,10 @@ public class FuncTest {
     }
     
     @Test
-    public void testInstanceFunction() throws Exception {
-        assertEquals(true,             Func.from(String::contains,   "Hello"   ).apply("Hello World!"));
-        assertEquals("Hello World!!!", Func.from(String::concat,     "!!"      ).apply("Hello World!"));
-        assertEquals("Hello-World!",   Func.from(String::replaceAll, "[ ]", "-").apply("Hello World!"));
+    public void testElevate() throws Exception {
+        assertEquals(true,             Func.elevate(String::contains, "Hello"     ).apply("Hello World!"));
+        assertEquals("Hello World!!!", Func.elevate(String::concat,   "!!"        ).apply("Hello World!"));
+        assertEquals("Hello-World!",   Func.elevate(String::replaceAll, "[ ]", "-").apply("Hello World!"));
     }
     
     @Test

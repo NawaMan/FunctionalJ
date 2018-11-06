@@ -251,7 +251,7 @@ public class RefTest {
         
         val supplier = Ref.of(Integer.class)
                 .defaultFrom(counter::getAndIncrement)
-                .mapTo(String::valueOf);
+                .then(String::valueOf);
         
         assertEquals("0", ref.value());
         assertEquals("1", ref.value());
