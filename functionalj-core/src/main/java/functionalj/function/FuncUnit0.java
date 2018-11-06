@@ -18,6 +18,8 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         return runnable::run;
     }
     
+    void runUnsafe() throws Exception;
+    
     public default void run() {
         try {
             runUnsafe();
@@ -35,18 +37,19 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         }
     }
     
-    void runUnsafe() throws Exception;
-    
-    
-    public default FuncUnit0 carelessly() {
-        return this::runCarelessly;
-    }
-    
     public default FuncUnit0 then(FuncUnit0 after) {
         requireNonNull(after);
         return () -> {
             runUnsafe();
             after.runUnsafe();
+        };
+    }
+    
+    public default <I, T> Func1<I, T> then(Func1<I, T> function) {
+        return input -> {
+            runUnsafe();
+            val value = function.applyUnsafe(input);
+            return value;
         };
     }
     
@@ -68,18 +71,16 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         };
     }
     
-    public default <I, T> Func1<I, T> then(Func1<I, T> function) {
-        return input -> {
-            runUnsafe();
-            val value = function.applyUnsafe(input);
-            return value;
-        };
+    
+    public default FuncUnit0 carelessly() {
+        return this::runCarelessly;
+    }
+    
+    public default Promise<Object> async() {
+        return this.thenReturnNull().defer();
     }
     
     public default Promise<Object> defer() {
-        return this.thenReturnNull().defer();
-    }
-    public default Promise<Object> async() {
         return this.thenReturnNull().defer();
     }
     

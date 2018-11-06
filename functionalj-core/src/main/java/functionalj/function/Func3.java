@@ -45,29 +45,6 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3) throws Exception;
     
-    public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
-        try {
-            val output = applyUnsafe(input1, input2, input3);
-            return Result.of(output);
-        } catch (Exception exception) {
-            return Result.ofException(exception);
-        }
-    }
-    
-    public default Func3<INPUT1, INPUT2, INPUT3, Result<OUTPUT>> safely() {
-        return Func.of(this::applySafely);
-    }
-    
-    public default Func3<INPUT1, INPUT2, INPUT3, Optional<OUTPUT>> optionally() {
-        return (input1, input2, input3) -> {
-            try {
-                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3));
-            } catch (Exception e) {
-                return Optional.empty();
-            }
-        };
-    }
-    
     /**
      * Applies this function to the given input values.
      *
@@ -92,8 +69,33 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
      * @param  input the tuple input.
      * @return       the function result.
      */
-    public default OUTPUT apply(Tuple3<INPUT1, INPUT2, INPUT3> input) {
+    public default OUTPUT applyTo(Tuple3<INPUT1, INPUT2, INPUT3> input) {
         return apply(input._1(), input._2(), input._3());
+    }
+    
+    public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
+        try {
+            val output = applyUnsafe(input1, input2, input3);
+            return Result.of(output);
+        } catch (Exception exception) {
+            return Result.ofException(exception);
+        }
+    }
+    
+    /**
+     * Compose this function to the given function.
+     * NOTE: Too bad the name 'compose' is already been taken :-(
+     * 
+     * @param  <FINAL>  the final result value.
+     * @param  after    the function to be run after this function.
+     * @return          the composed function.
+     */
+    public default <FINAL> Func3<INPUT1, INPUT2, INPUT3, FINAL> then(Function<? super OUTPUT, ? extends FINAL> after) {
+        return (input1, input2, input3) -> {
+            OUTPUT out1 = this.applyUnsafe(input1, input2, input3);
+            FINAL  out2 = Func.applyUnsafe(after, out1);
+            return out2;
+        };
     }
     
     public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> elseUse(OUTPUT defaultValue) {
@@ -111,20 +113,49 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         };
     }
     
-    /**
-     * Compose this function to the given function.
-     * NOTE: Too bad the name 'compose' is already been taken :-(
-     * 
-     * @param  <FINAL>  the final result value.
-     * @param  after    the function to be run after this function.
-     * @return          the composed function.
-     */
-    public default <FINAL> Func3<INPUT1, INPUT2, INPUT3, FINAL> then(Function<? super OUTPUT, ? extends FINAL> after) {
+    public default OUTPUT orElse(INPUT1 input1, INPUT2 input2, INPUT3 input3, OUTPUT defaultValue) {
+        return applySafely(input1, input2, input3).orElse(defaultValue);
+    }
+    
+    public default OUTPUT orGet(INPUT1 input1, INPUT2 input2, INPUT3 input3, Supplier<OUTPUT> defaultSupplier) {
+        return applySafely(input1, input2, input3).orGet(defaultSupplier);
+    }
+    
+    public default Func3<INPUT1, INPUT2, INPUT3, Result<OUTPUT>> safely() {
+        return Func.of(this::applySafely);
+    }
+    
+    public default Func3<INPUT1, INPUT2, INPUT3, Optional<OUTPUT>> optionally() {
         return (input1, input2, input3) -> {
-            OUTPUT out1 = this.applyUnsafe(input1, input2, input3);
-            FINAL  out2 = Func.applyUnsafe(after, out1);
-            return out2;
+            try {
+                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
         };
+    }
+    
+    public default Func3<INPUT1, INPUT2, INPUT3, Promise<OUTPUT>> async() {
+        return (input1, input2, input3) -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.applyUnsafe(input1, input2, input3);
+            };
+            return DeferAction.from(supplier)
+                    .start().getPromise();
+        };
+    }
+    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<OUTPUT>> defer() {
+        return (promise1, promise2, promise3) -> {
+            return Promise.from(promise1, promise2, promise3, this);
+        };
+    }
+    
+    public default FuncUnit3<INPUT1, INPUT2, INPUT3> ignoreResult() {
+        return FuncUnit3.of((input1, input2, input3)->applyUnsafe(input1, input2, input3));
+    }
+    
+    public default Func1<Tuple3<INPUT1, INPUT2, INPUT3>, OUTPUT> wholly() {
+        return t -> this.applyUnsafe(t._1(), t._2(), t._3());
     }
     
     /**
@@ -147,29 +178,6 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3) {
         return (i1) -> this.applyUnsafe(i1, i2, i3);
-    }
-    
-    public default Func1<Tuple3<INPUT1, INPUT2, INPUT3>, OUTPUT> toTupleFunction() {
-        return t -> this.applyUnsafe(t._1(), t._2(), t._3());
-    }
-    
-    public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<OUTPUT>> defer() {
-        return (promise1, promise2, promise3) -> {
-            return Promise.from(promise1, promise2, promise3, this);
-        };
-    }
-    public default Func3<INPUT1, INPUT2, INPUT3, Promise<OUTPUT>> async() {
-        return (input1, input2, input3) -> {
-            val supplier = (Func0<OUTPUT>)()->{
-                return this.applyUnsafe(input1, input2, input3);
-            };
-            return DeferAction.from(supplier)
-                    .start().getPromise();
-        };
-    }
-    
-    public default FuncUnit3<INPUT1, INPUT2, INPUT3> ignoreResult() {
-        return FuncUnit3.of((input1, input2, input3)->applyUnsafe(input1, input2, input3));
     }
     
     //== Partially apply functions ==

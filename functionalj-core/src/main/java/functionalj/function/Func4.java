@@ -46,29 +46,6 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) throws Exception;
     
-    public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) {
-        try {
-            val output = applyUnsafe(input1, input2, input3, input4);
-            return Result.of(output);
-        } catch (Exception exception) {
-            return Result.ofException(exception);
-        }
-    }
-    
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Result<OUTPUT>> safely() {
-        return Func.of(this::applySafely);
-    }
-    
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Optional<OUTPUT>> optionally() {
-        return (input1, input2, input3, input4) -> {
-            try {
-                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3, input4));
-            } catch (Exception e) {
-                return Optional.empty();
-            }
-        };
-    }
-    
     /**
      * Applies this function to the given input values.
      *
@@ -95,23 +72,17 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
      * @param  input the tuple input.
      * @return       the function result.
      */
-    public default OUTPUT apply(Tuple4<INPUT1, INPUT2, INPUT3, INPUT4> input) {
+    public default OUTPUT applyTo(Tuple4<INPUT1, INPUT2, INPUT3, INPUT4> input) {
         return apply(input._1(), input._2(), input._3(), input._4());
     }
     
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> elseUse(OUTPUT defaultValue) {
-        return (input1, input2, input3, input4)->{
-            val result = applySafely(input1, input2, input3, input4);
-            val value  = result.orElse(defaultValue);
-            return value;
-        };
-    }
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
-        return (input1, input2, input3, input4)->{
-            val result = applySafely(input1, input2, input3, input4);
-            val value  = result.orElseGet(defaultSupplier);
-            return value;
-        };
+    public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) {
+        try {
+            val output = applyUnsafe(input1, input2, input3, input4);
+            return Result.of(output);
+        } catch (Exception exception) {
+            return Result.ofException(exception);
+        }
     }
     
     /**
@@ -130,15 +101,43 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
         };
     }
     
-    public default Func1<Tuple4<INPUT1, INPUT2, INPUT3, INPUT4>, OUTPUT> toTupleFunction() {
-        return t -> this.applyUnsafe(t._1(), t._2(), t._3(), t._4());
-    }
-    
-    public default Func4<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, Promise<OUTPUT>> defer() {
-        return (promise1, promise2, promise3, promise4) -> {
-            return Promise.from(promise1, promise2, promise3, promise4, this);
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> elseUse(OUTPUT defaultValue) {
+        return (input1, input2, input3, input4)->{
+            val result = applySafely(input1, input2, input3, input4);
+            val value  = result.orElse(defaultValue);
+            return value;
         };
     }
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+        return (input1, input2, input3, input4)->{
+            val result = applySafely(input1, input2, input3, input4);
+            val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
+    
+    public default OUTPUT orElse(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, OUTPUT defaultValue) {
+        return applySafely(input1, input2, input3, input4).orElse(defaultValue);
+    }
+    
+    public default OUTPUT orGet(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, Supplier<OUTPUT> defaultSupplier) {
+        return applySafely(input1, input2, input3, input4).orGet(defaultSupplier);
+    }
+    
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Result<OUTPUT>> safely() {
+        return Func.of(this::applySafely);
+    }
+    
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Optional<OUTPUT>> optionally() {
+        return (input1, input2, input3, input4) -> {
+            try {
+                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3, input4));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        };
+    }
+    
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, HasPromise<OUTPUT>> async() {
         return (input1, input2, input3, input4) -> {
             val supplier = (Func0<OUTPUT>)()->{
@@ -147,6 +146,16 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
             return DeferAction.from(supplier)
                     .start().getPromise();
         };
+    }
+    
+    public default Func4<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, Promise<OUTPUT>> defer() {
+        return (promise1, promise2, promise3, promise4) -> {
+            return Promise.from(promise1, promise2, promise3, promise4, this);
+        };
+    }
+    
+    public default Func1<Tuple4<INPUT1, INPUT2, INPUT3, INPUT4>, OUTPUT> wholly() {
+        return t -> this.applyUnsafe(t._1(), t._2(), t._3(), t._4());
     }
     
     /**
@@ -170,6 +179,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3, INPUT4 i4) {
         return (i1) -> this.applyUnsafe(i1, i2, i3, i4);
     }
+    
+    //== Partially apply functions ==
     
     @SuppressWarnings("javadoc")
     public default Func0<OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4) {

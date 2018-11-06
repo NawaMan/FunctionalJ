@@ -15,6 +15,7 @@
 //  ========================================================================
 package functionalj.function;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -55,19 +56,6 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     
     public OUTPUT applyUnsafe(INPUT input) throws Exception;
     
-    public default Result<OUTPUT> applySafely(INPUT input) {
-        try {
-            val output = applyUnsafe(input);
-            return Result.of(output);
-        } catch (Exception exception) {
-            return Result.ofException(exception);
-        }
-    }
-    
-    public default Func1<INPUT, Result<OUTPUT>> safely() {
-        return Func.of(this::applySafely);
-    }
-    
     /**
      * Applies this function to the given input value.
      *
@@ -83,15 +71,17 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             throw Func.exceptionHandler.value().apply(e);
         }
     }
-    
-    /**
-     * Applies this function to the given input value.
-     *
-     * @param input  the input function.
-     * @return the function result.
-     */
     public default OUTPUT applyTo(INPUT input) {
         return apply(input);
+    }
+    
+    public default Result<OUTPUT> applySafely(INPUT input) {
+        try {
+            val output = applyUnsafe(input);
+            return Result.of(output);
+        } catch (Exception exception) {
+            return Result.ofException(exception);
+        }
     }
     
     // TODO add memoize strategies.
@@ -99,16 +89,19 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return Func.cacheFor(this);
     }
     
-    public default Func1<HasPromise<INPUT>, Promise<OUTPUT>> defer() {
-        return input -> input.getPromise().map(this);
-    }
-    public default Func1<INPUT, Promise<OUTPUT>> async() {
+    /**
+     * Compose this function to the given function.
+     * NOTE: Too bad the name 'compose' is already been taken :-(
+     * 
+     * @param  <FINAL>  the final result value.
+     * @param  after    the function to be run after this function.
+     * @return          the composed function.
+     */
+    public default <FINAL> Func1<INPUT, FINAL> then(Function<? super OUTPUT, ? extends FINAL> after) {
         return input -> {
-            val supplier = (Func0<OUTPUT>)()->{
-                return this.applyUnsafe(input);
-            };
-            return DeferAction.from(supplier)
-                    .start().getPromise();
+            OUTPUT out1 = this.applyUnsafe(input);
+            FINAL  out2 = Func.applyUnsafe(after, out1);
+            return out2;
         };
     }
     
@@ -127,20 +120,39 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         };
     }
     
-    /**
-     * Compose this function to the given function.
-     * NOTE: Too bad the name 'compose' is already been taken :-(
-     * 
-     * @param  <FINAL>  the final result value.
-     * @param  after    the function to be run after this function.
-     * @return          the composed function.
-     */
-    public default <FINAL> Func1<INPUT, FINAL> then(Function<? super OUTPUT, ? extends FINAL> after) {
-        return input -> {
-            OUTPUT out1 = this.applyUnsafe(input);
-            FINAL  out2 = Func.applyUnsafe(after, out1);
-            return out2;
+    public default OUTPUT orElse(INPUT input, OUTPUT defaultValue) {
+        return applySafely(input).orElse(defaultValue);
+    }
+    
+    public default OUTPUT orGet(INPUT input, Supplier<OUTPUT> defaultSupplier) {
+        return applySafely(input).orGet(defaultSupplier);
+    }
+    
+    public default Func1<INPUT, Result<OUTPUT>> safely() {
+        return Func.of(this::applySafely);
+    }
+    
+    public default Func1<INPUT, Optional<OUTPUT>> optionally() {
+        return (input) -> {
+            try {
+                return Optional.ofNullable(this.applyUnsafe(input));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
         };
+    }
+    
+    public default Func1<INPUT, Promise<OUTPUT>> async() {
+        return input -> {
+            val supplier = (Func0<OUTPUT>)()->{
+                return this.applyUnsafe(input);
+            };
+            return DeferAction.from(supplier)
+                    .start().getPromise();
+        };
+    }
+    public default Func1<HasPromise<INPUT>, Promise<OUTPUT>> defer() {
+        return input -> input.getPromise().map(this);
     }
     
     public default FuncUnit1<INPUT> ignoreResult() {

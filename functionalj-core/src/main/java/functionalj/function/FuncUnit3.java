@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
+import functionalj.tuple.Tuple3;
 import lombok.val;
 
 @FunctionalInterface
@@ -15,6 +16,8 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> from(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
         return consumer::accept;
     }
+    
+    public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3) throws Exception;
     
     public default void accept(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
         try {
@@ -32,13 +35,6 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
         } catch (Exception e) {
         }
     }
-    
-    public void acceptUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3) throws Exception;
-    
-    public default FuncUnit3<INPUT1, INPUT2, INPUT3> carelessly() {
-        return this::acceptCarelessly;
-    }
-    
     
     public default FuncUnit3<INPUT1, INPUT2, INPUT3> then(FuncUnit0 after) {
         requireNonNull(after);
@@ -72,6 +68,19 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
             val value = supplier.applyUnsafe();
             return value;
         };
+    }
+    
+    public default FuncUnit1<Tuple3<INPUT1, INPUT2, INPUT3>> wholly() {
+        return tuple -> {
+            val _1 = tuple._1();
+            val _2 = tuple._2();
+            val _3 = tuple._3();
+            acceptUnsafe(_1, _2, _3);
+        };
+    }
+    
+    public default FuncUnit3<INPUT1, INPUT2, INPUT3> carelessly() {
+        return this::acceptCarelessly;
     }
     
     public default Func3<INPUT1, INPUT2, INPUT3, Promise<Object>> async() {

@@ -1,12 +1,5 @@
 package functionalj.pipeable;
 
-import static functionalj.pipeable.Catch.handle;
-import static functionalj.pipeable.Catch.handleException;
-import static functionalj.pipeable.Catch.handleValue;
-import static functionalj.pipeable.Catch.orElse;
-import static functionalj.pipeable.Catch.orElseGet;
-import static functionalj.pipeable.Catch.orThrow;
-import static functionalj.pipeable.Catch.orThrowRuntimeException;
 import static functionalj.pipeable.Catch.toResult;
 
 import java.util.ArrayList;
@@ -118,41 +111,41 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
         }
         public PipeLine<INPUT, OUTPUT> thenReturnOrElse(OUTPUT elseValue) {
             return isNullSafe
-                    ? new PipeLine.NullSafe<>(functions, orElse(elseValue))
-                    : new PipeLine<>         (functions, orElse(elseValue));
+                    ? new PipeLine.NullSafe<>(functions, Catch.thenReturn(elseValue))
+                    : new PipeLine<>         (functions, Catch.thenReturn(elseValue));
         }
         public PipeLine<INPUT, OUTPUT> thenReturnOrElseGet(Supplier<OUTPUT> elseSupplier) {
             return thenReturnOrGet(elseSupplier);
         }
         public PipeLine<INPUT, OUTPUT> thenReturnOrGet(Supplier<OUTPUT> elseSupplier) {
             return isNullSafe
-                    ? new PipeLine.NullSafe<>(functions, orElseGet(elseSupplier))
-                    : new PipeLine<>         (functions, orElseGet(elseSupplier));
+                    ? new PipeLine.NullSafe<>(functions, Catch.thenGet(elseSupplier))
+                    : new PipeLine<>         (functions, Catch.thenGet(elseSupplier));
         }
         public PipeLine<INPUT, OUTPUT> thenReturnOrThrow() {
             return isNullSafe
-                    ? new PipeLine.NullSafe<>(functions, orThrow())
-                    : new PipeLine<>         (functions, orThrow());
+                    ? new PipeLine.NullSafe<>(functions, Catch.thenThrow())
+                    : new PipeLine<>         (functions, Catch.thenThrow());
         }
         public PipeLine<INPUT, OUTPUT> thenReturnOrThrowRuntimeException() {
             return isNullSafe
-                    ? new PipeLine.NullSafe<>(functions, orThrowRuntimeException())
-                    : new PipeLine<>         (functions, orThrowRuntimeException());
+                    ? new PipeLine.NullSafe<>(functions, Catch.thenThrowRuntimeException())
+                    : new PipeLine<>         (functions, Catch.thenThrowRuntimeException());
         }
         public <FINALOUTPUT> PipeLine<INPUT, FINALOUTPUT> thenHandleValue(Function<OUTPUT, FINALOUTPUT> mapper) {
             return isNullSafe
-                    ? new PipeLine.NullSafe<>(functions, handleValue(mapper))
-                    : new PipeLine<>         (functions, handleValue(mapper));
+                    ? new PipeLine.NullSafe<>(functions, Catch.thenHandleValue(mapper))
+                    : new PipeLine<>         (functions, Catch.thenHandleValue(mapper));
         }
         public <FINALOUTPUT> PipeLine<INPUT, FINALOUTPUT> thenHandleException(Function<Exception, FINALOUTPUT> mapper) {
             return isNullSafe
-                    ? new PipeLine.NullSafe<>(functions, handleException(mapper))
-                    : new PipeLine<>         (functions, handleException(mapper));
+                    ? new PipeLine.NullSafe<>(functions, Catch.thenHandleException(mapper))
+                    : new PipeLine<>         (functions, Catch.thenHandleException(mapper));
         }
         public <FINALOUTPUT> PipeLine<INPUT, FINALOUTPUT> thenHandle(BiFunction<OUTPUT, Exception, FINALOUTPUT> mapper) {
             return isNullSafe
-                    ? new PipeLine.NullSafe<>(functions, handle(mapper))
-                    : new PipeLine<>         (functions, handle(mapper));
+                    ? new PipeLine.NullSafe<>(functions, Catch.thenHandle(mapper))
+                    : new PipeLine<>         (functions, Catch.thenHandle(mapper));
         }
         
         public <FINALOUTPUT> PipeLine<INPUT, FINALOUTPUT> thenCatch(Catch<OUTPUT, FINALOUTPUT, ? extends Exception> handler) {

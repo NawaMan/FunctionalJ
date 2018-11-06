@@ -1,7 +1,5 @@
 package functionalj.pipeable;
 
-import static functionalj.pipeable.Catch.orElse;
-import static functionalj.pipeable.Catch.orElseGet;
 import static functionalj.pipeable.Catch.toResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -39,7 +37,7 @@ public class PipeableTest {
     }
     
     @SuppressWarnings("null")
-	@Test
+    @Test
     public void testRuntimeException() {
         val src1 = (String)null;
         val str1 = (Pipeable<String>)()->src1.toUpperCase();
@@ -78,7 +76,7 @@ public class PipeableTest {
                     String::length, 
                     toResult()
                 ) + "");
-
+        
         val str3 = (Pipeable<String>)(()-> { throw new IOException(); });
         assertEquals("Result:{ Exception: java.io.IOException }", 
                 str3
@@ -95,7 +93,7 @@ public class PipeableTest {
                 str1
                 .pipe(
                     String::length, 
-                    orElse(0)
+                    Catch.thenReturn(0)
                 ) + "");
         
         val str2 = (Pipeable<String>)(()-> null);
@@ -103,15 +101,15 @@ public class PipeableTest {
                 str2
                 .pipe(
                     String::length, 
-                    orElse(0)
+                    Catch.thenReturn(0)
                 ) + "");
-
+        
         val str3 = (Pipeable<String>)(()-> { throw new IOException(); });
         assertEquals("0", 
                 str3
                 .pipe(
                     String::length, 
-                    orElse(0)
+                    Catch.thenReturn(0)
                 ) + "");
     }
     
@@ -122,7 +120,7 @@ public class PipeableTest {
                 str1
                 .pipe(
                     String::length, 
-                    orElseGet(()->0)
+                    Catch.thenGet(()->0)
                 ) + "");
         
         val str2 = (Pipeable<String>)(()-> null);
@@ -130,15 +128,15 @@ public class PipeableTest {
                 str2
                 .pipe(
                     String::length, 
-                    orElseGet(()->0)
+                    Catch.thenGet(()->0)
                 ) + "");
-
+        
         val str3 = (Pipeable<String>)(()-> { throw new IOException(); });
         assertEquals("0", 
                 str3
                 .pipe(
                     String::length, 
-                    orElseGet(()->0)
+                    Catch.thenGet(()->0)
                 ) + "");
     }
     @Test

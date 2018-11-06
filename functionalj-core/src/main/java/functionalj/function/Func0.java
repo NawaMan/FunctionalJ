@@ -1,5 +1,6 @@
 package functionalj.function;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import functionalj.promise.DeferAction;
@@ -28,6 +29,20 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     
     public OUTPUT applyUnsafe() throws Exception;
     
+    public default OUTPUT getUnsafe() throws Exception {
+        return applyUnsafe();
+    }
+    
+    public default OUTPUT get() {
+        try {
+            return applyUnsafe();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw Func.exceptionHandler.value().apply(e);
+        }
+    }
+    
     public default OUTPUT compute() throws RuntimeException {
         return apply();
     }
@@ -40,25 +55,20 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return Result.from(this);
     }
     
-    public default Func0<Result<OUTPUT>> safely() {
-        return Func.of(this::applySafely);
+    public default Result<OUTPUT> getSafely() {
+        return Result.from(this);
     }
     
-    public default OUTPUT getUnsafe() throws Exception {
-        return applyUnsafe();
+    public default Func0<OUTPUT> memoize() {
+        return Func0.from(Func.lazy(this));
     }
     
-    public default OUTPUT value() {
-        return get();
-    }
-    public default OUTPUT get() {
-        try {
-            return applyUnsafe();
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw Func.exceptionHandler.value().apply(e);
-        }
+    public default <TARGET> Func0<TARGET> then(Func1<OUTPUT, TARGET> mapper) {
+        return ()->{
+            val output = this.applyUnsafe();
+            val target = Func.applyUnsafe(mapper, output);
+            return target;
+        };
     }
     
     public default Func0<OUTPUT> elseUse(OUTPUT defaultValue) {
@@ -84,24 +94,18 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return getSafely().orGet(defaultSupplier);
     }
     
-    public default OUTPUT orElseGet(Supplier<OUTPUT> defaultSupplier) {
-        return orGet(defaultSupplier);
+    public default Func0<Result<OUTPUT>> safely() {
+        return Func.of(this::applySafely);
     }
     
-    public default <TARGET> Func0<TARGET> then(Func1<OUTPUT, TARGET> mapper) {
-        return ()->{
-            val output = this.applyUnsafe();
-            val target = Func.applyUnsafe(mapper, output);
-            return target;
+    public default Func0<Optional<OUTPUT>> optionally() {
+        return () -> {
+            try {
+                return Optional.ofNullable(this.applyUnsafe());
+            } catch (Exception e) {
+                return Optional.empty();
+            }
         };
-    }
-    
-    public default Result<OUTPUT> getSafely() {
-        return Result.from(this);
-    }
-    
-    public default Func0<OUTPUT> memoize() {
-        return Func0.from(Func.lazy(this));
     }
     
     public default Promise<OUTPUT> async() {
@@ -113,25 +117,6 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     
     public default FuncUnit0 ignoreResult() {
         return FuncUnit0.of(()->applyUnsafe());
-    }
-    
-    public default Func1<?, OUTPUT> toFunc1() {
-        return __ -> getUnsafe();
-    }
-    public default Func2<?, ?, OUTPUT> toFunc2() {
-        return (__1, __2) -> getUnsafe();
-    }
-    public default Func3<?, ?, ?, OUTPUT> toFunc3() {
-        return (__1, __2, __3) -> getUnsafe();
-    }
-    public default Func4<?, ?, ?, ?, OUTPUT> toFunc4() {
-        return (__1, __2, __3, __4) -> getUnsafe();
-    }
-    public default Func5<?, ?, ?, ?, ?, OUTPUT> toFunc5() {
-        return (__1, __2, __3, __4, __5) -> getUnsafe();
-    }
-    public default Func6<?, ?, ?, ?, ?, ?, OUTPUT> toFunc6() {
-        return (__1, __2, __3, __4, __5, __6) -> getUnsafe();
     }
     
 }

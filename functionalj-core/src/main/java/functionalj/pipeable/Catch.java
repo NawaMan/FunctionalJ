@@ -74,7 +74,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      * @return the output value or the elseValue.
      */
     public static <OUTPUT> 
-            Catch<OUTPUT, OUTPUT, RuntimeException> orElse(OUTPUT elseValue) {
+            Catch<OUTPUT, OUTPUT, RuntimeException> thenReturn(OUTPUT elseValue) {
         return new Catch<OUTPUT, OUTPUT, RuntimeException>() {
             public OUTPUT doCatch(OUTPUT data, Exception exception) {
                 if (exception != null)
@@ -94,19 +94,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      * @return the output value or the value from the elseSupplier.
      */
     public static <OUTPUT> 
-            Catch<OUTPUT, OUTPUT, RuntimeException> orElseGet(Supplier<OUTPUT> elseSupplier) {
-        return orGet(elseSupplier);
-    }
-    
-    /**
-     * Returns the catch that will returns the output or the value from the given elseSupplier if the value is null.
-     * 
-     * @param  <OUTPUT>      the output data type.
-     * @param  elseSupplier  the elseSupplier.
-     * @return the output value or the value from the elseSupplier.
-     */
-    public static <OUTPUT> 
-            Catch<OUTPUT, OUTPUT, RuntimeException> orGet(Supplier<OUTPUT> elseSupplier) {
+            Catch<OUTPUT, OUTPUT, RuntimeException> thenGet(Supplier<OUTPUT> elseSupplier) {
         return new Catch<OUTPUT, OUTPUT, RuntimeException>() {
             public OUTPUT doCatch(OUTPUT data, Exception exception) {
                 if (exception != null)
@@ -125,7 +113,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      * @return the catch.
      */
     public static <OUTPUT> 
-            Catch<OUTPUT, OUTPUT, Exception> orThrow() {
+            Catch<OUTPUT, OUTPUT, Exception> thenThrow() {
         return new Catch<OUTPUT, OUTPUT, Exception>() {
             public OUTPUT doCatch(OUTPUT data, Exception exception) throws Exception {
                 if (exception != null)
@@ -143,7 +131,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      * @return the catch.
      */
     public static <OUTPUT> 
-            Catch<OUTPUT, OUTPUT, RuntimeException> orThrowRuntimeException() {
+            Catch<OUTPUT, OUTPUT, RuntimeException> thenThrowRuntimeException() {
         return new Catch<OUTPUT, OUTPUT, RuntimeException>() {
             public OUTPUT doCatch(OUTPUT data, Exception exception) {
                 if (exception instanceof RuntimeException)
@@ -165,7 +153,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      * @return the catch.
      */
     public static <OUTPUT, FINALOUTPUT> 
-            Catch<OUTPUT, FINALOUTPUT, RuntimeException> handleValue(Function<OUTPUT, FINALOUTPUT> mapper) {
+            Catch<OUTPUT, FINALOUTPUT, RuntimeException> thenHandleValue(Function<OUTPUT, FINALOUTPUT> mapper) {
         return new Catch<OUTPUT, FINALOUTPUT, RuntimeException>() {
             public FINALOUTPUT doCatch(OUTPUT data, Exception exception) {
                 return mapper.apply(data);
@@ -182,7 +170,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      * @return the catch.
      */
     public static <OUTPUT, FINALOUTPUT> 
-            Catch<OUTPUT, FINALOUTPUT, RuntimeException> handleException(Function<Exception, FINALOUTPUT> mapper) {
+            Catch<OUTPUT, FINALOUTPUT, RuntimeException> thenHandleException(Function<Exception, FINALOUTPUT> mapper) {
         return new Catch<OUTPUT, FINALOUTPUT, RuntimeException>() {
             public FINALOUTPUT doCatch(OUTPUT data, Exception exception) {
                 return mapper.apply(exception);
@@ -199,7 +187,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
      * @return the catch.
      */
     public static <OUTPUT, FINALOUTPUT> 
-            Catch<OUTPUT, FINALOUTPUT, RuntimeException> handle(BiFunction<OUTPUT, Exception, FINALOUTPUT> mapper) {
+            Catch<OUTPUT, FINALOUTPUT, RuntimeException> thenHandle(BiFunction<OUTPUT, Exception, FINALOUTPUT> mapper) {
         return new Catch<OUTPUT, FINALOUTPUT, RuntimeException>() {
             public FINALOUTPUT doCatch(OUTPUT data, Exception exception) {
                 return mapper.apply(data, exception);

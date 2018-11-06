@@ -17,6 +17,8 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         return consumer::accept;
     }
     
+    public void acceptUnsafe(INPUT input) throws Exception;
+    
     public default void accept(INPUT input) {
         try {
             acceptUnsafe(input);
@@ -32,12 +34,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
             acceptUnsafe(input);
         } catch (Exception e) {
         }
-    }
-    
-    public void acceptUnsafe(INPUT input) throws Exception;
-    
-    public default FuncUnit1<INPUT> carelessly() {
-        return this::acceptCarelessly;
     }
     
     public default FuncUnit1<INPUT> then(FuncUnit0 after) {
@@ -72,6 +68,10 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
             val value = supplier.applyUnsafe();
             return value;
         };
+    }
+    
+    public default FuncUnit1<INPUT> carelessly() {
+        return this::acceptCarelessly;
     }
     
     public default Func1<INPUT, Promise<Object>> async() {

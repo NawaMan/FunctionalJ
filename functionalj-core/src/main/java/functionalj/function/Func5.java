@@ -47,29 +47,6 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
     
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5) throws Exception;
     
-    public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5) {
-        try {
-            val output = applyUnsafe(input1, input2, input3, input4, input5);
-            return Result.of(output);
-        } catch (Exception exception) {
-            return Result.ofException(exception);
-        }
-    }
-    
-    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Result<OUTPUT>> safely() {
-        return Func.of(this::applySafely);
-    }
-    
-    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Optional<OUTPUT>> optionally() {
-        return (input1, input2, input3, input4, input5) -> {
-            try {
-                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3, input4, input5));
-            } catch (Exception e) {
-                return Optional.empty();
-            }
-        };
-    }
-    
     /**
      * Applies this function to the given input values.
      *
@@ -96,23 +73,17 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
      * @param  input the tuple input.
      * @return       the function result.
      */
-    public default OUTPUT apply(Tuple5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> input) {
+    public default OUTPUT applyTo(Tuple5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5> input) {
         return apply(input._1(), input._2(), input._3(), input._4(), input._5());
     }
     
-    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> elseUse(OUTPUT defaultValue) {
-        return (input1, input2, input3, input4, input5)->{
-            val result = applySafely(input1, input2, input3, input4, input5);
-            val value  = result.orElse(defaultValue);
-            return value;
-        };
-    }
-    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
-        return (input1, input2, input3, input4, input5)->{
-            val result = applySafely(input1, input2, input3, input4, input5);
-            val value  = result.orElseGet(defaultSupplier);
-            return value;
-        };
+    public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5) {
+        try {
+            val output = applyUnsafe(input1, input2, input3, input4, input5);
+            return Result.of(output);
+        } catch (Exception exception) {
+            return Result.ofException(exception);
+        }
     }
     
     /**
@@ -131,15 +102,43 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
         };
     }
     
-    public default Func1<Tuple5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5>, OUTPUT> toTupleFunction() {
-        return t -> this.applyUnsafe(t._1(), t._2(), t._3(), t._4(), t._5());
-    }
-    
-    public default Func5<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, Promise<OUTPUT>> defer() {
-        return (promise1, promise2, promise3, promise4, promise5) -> {
-            return Promise.from(promise1, promise2, promise3, promise4, promise5, this);
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> elseUse(OUTPUT defaultValue) {
+        return (input1, input2, input3, input4, input5)->{
+            val result = applySafely(input1, input2, input3, input4, input5);
+            val value  = result.orElse(defaultValue);
+            return value;
         };
     }
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+        return (input1, input2, input3, input4, input5)->{
+            val result = applySafely(input1, input2, input3, input4, input5);
+            val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
+    
+    public default OUTPUT orElse(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, OUTPUT defaultValue) {
+        return applySafely(input1, input2, input3, input4, input5).orElse(defaultValue);
+    }
+    
+    public default OUTPUT orGet(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, Supplier<OUTPUT> defaultSupplier) {
+        return applySafely(input1, input2, input3, input4, input5).orGet(defaultSupplier);
+    }
+    
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Result<OUTPUT>> safely() {
+        return Func.of(this::applySafely);
+    }
+    
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Optional<OUTPUT>> optionally() {
+        return (input1, input2, input3, input4, input5) -> {
+            try {
+                return Optional.ofNullable(this.applyUnsafe(input1, input2, input3, input4, input5));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        };
+    }
+    
     public default <P extends HasPromise<OUTPUT>> Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Promise<OUTPUT>> async() {
         return (input1, input2, input3, input4, input5) -> {
             val supplier = (Func0<OUTPUT>)()->{
@@ -149,6 +148,16 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
                     .start().getPromise();
         };
     }
+    public default Func5<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, HasPromise<INPUT4>, HasPromise<INPUT5>, Promise<OUTPUT>> defer() {
+        return (promise1, promise2, promise3, promise4, promise5) -> {
+            return Promise.from(promise1, promise2, promise3, promise4, promise5, this);
+        };
+    }
+    
+    public default Func1<Tuple5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5>, OUTPUT> wholly() {
+        return t -> this.applyUnsafe(t._1(), t._2(), t._3(), t._4(), t._5());
+    }
+    
     
     /**
      * Create a curry function of the this function.
@@ -171,6 +180,8 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {
         return (i1) -> this.applyUnsafe(i1, i2, i3, i4, i5);
     }
+    
+    //== Partially apply functions ==
     
     @SuppressWarnings("javadoc")
     public default Func0<OUTPUT> bind(INPUT1 i1, INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5) {

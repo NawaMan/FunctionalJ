@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
+import functionalj.tuple.Tuple2;
 import lombok.val;
 
 @FunctionalInterface
@@ -17,6 +18,8 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> from(BiConsumer<INPUT1, INPUT2> consumer) {
         return consumer::accept;
     }
+    
+    public void acceptUnsafe(INPUT1 input1, INPUT2 input2) throws Exception;
     
     public default void accept(INPUT1 input1, INPUT2 input2) {
         try {
@@ -34,13 +37,6 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
         } catch (Exception e) {
         }
     }
-    
-    public void acceptUnsafe(INPUT1 input1, INPUT2 input2) throws Exception;
-    
-    public default FuncUnit2<INPUT1, INPUT2> carelessly() {
-        return this::acceptCarelessly;
-    }
-    
     
     public default FuncUnit2<INPUT1, INPUT2> then(FuncUnit0 after) {
         requireNonNull(after);
@@ -74,6 +70,18 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
             val value = supplier.applyUnsafe();
             return value;
         };
+    }
+    
+    public default FuncUnit1<Tuple2<INPUT1, INPUT2>> wholly() {
+        return tuple -> {
+            val _1 = tuple._1();
+            val _2 = tuple._2();
+            acceptUnsafe(_1, _2);
+        };
+    }
+    
+    public default FuncUnit2<INPUT1, INPUT2> carelessly() {
+        return this::acceptCarelessly;
     }
     
     public default Func2<INPUT1, INPUT2, Promise<Object>> async() {
