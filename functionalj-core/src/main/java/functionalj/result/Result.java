@@ -936,12 +936,12 @@ public abstract class Result<DATA>
     
     // Alias of whenNotPresentUse
     public final Result<DATA> otherwise(DATA elseValue) {
-        return whenNotPresentUse(elseValue);
+        return whenAbsentUse(elseValue);
     }
     
     // Alias of whenNotPresentGet
     public final Result<DATA> otherwiseGet(Supplier<? extends DATA> elseSupplier) {
-        return whenNotPresentGet(elseSupplier);
+        return whenAbsentGet(elseSupplier);
     }
     
     public final DATA orElse(DATA elseValue) {

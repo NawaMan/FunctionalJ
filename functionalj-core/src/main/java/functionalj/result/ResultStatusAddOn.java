@@ -54,30 +54,35 @@ public interface ResultStatusAddOn<DATA> {
         return asResult();
     }
     
-    //== NotPresent ==
+    //== Absent ==
     
-    public default boolean isNotPresent() {
-        return mapData(returnTrue(), helper.processIs(ResultStatus::isNotPresent));
+    public default boolean isAbsent() {
+        return mapData(returnFalse(), helper.processIs(ResultStatus::isAbsent));
     }
     
-    public default Result<DATA> ifNotPresent(Runnable runnable) {
-        useData(helper.processIf(ResultStatus::isNotPresent, runnable));
+    public default Result<DATA> ifAbsent(Runnable runnable) {
+        useData(helper.processIf(ResultStatus::isAbsent, runnable));
         return asResult();
     }
     
-    public default Result<DATA> ifNotPresent(Consumer<? super Exception> consumer) {
-        useData(helper.processIfException(ResultStatus::isNotPresent, consumer));
+    public default Result<DATA> ifAbsent(Consumer<? super DATA> consumer) {
+        useData(helper.processIf(ResultStatus::isAbsent, consumer));
         return asResult();
     }
     
-    public default Result<DATA> whenNotPresentUse(DATA fallbackValue) {
-        return mapValue(helper.processWhenUse(ResultStatus::isNotPresent, asResult(), fallbackValue));
+    public default Result<DATA> ifAbsent(BiConsumer<? super DATA, ? super Exception> consumer) {
+        useData(helper.processIf(ResultStatus::isAbsent, consumer));
+        return asResult();
     }
-    public default Result<DATA> whenNotPresentGet(Supplier<? extends DATA> fallbackSupplier) {
-        return mapValue(helper.processWhenGet(ResultStatus::isNotPresent, asResult(), fallbackSupplier));
+    
+    public default Result<DATA> whenAbsentUse(DATA fallbackValue) {
+        return mapValue(helper.processWhenUse(ResultStatus::isAbsent, asResult(), fallbackValue));
     }
-    public default Result<DATA> whenNotPresentGet(Func2<DATA, ? super Exception, DATA> recoverFunction) {
-        return mapValue(helper.processWhenApply(ResultStatus::isNotPresent, asResult(), recoverFunction));
+    public default Result<DATA> whenAbsentGet(Supplier<? extends DATA> fallbackSupplier) {
+        return mapValue(helper.processWhenGet(ResultStatus::isAbsent, asResult(), fallbackSupplier));
+    }
+    public default Result<DATA> whenAbsentApply(Func2<DATA, ? super Exception,? extends DATA> recoverFunction) {
+        return mapValue(helper.processWhenApply(ResultStatus::isAbsent, asResult(), recoverFunction));
     }
     
     //== Null ==

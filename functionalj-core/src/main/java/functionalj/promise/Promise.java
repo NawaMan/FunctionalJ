@@ -587,7 +587,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             .ifPresent(value -> {
                 targetPromise.makeDone((Result<TARGET>)result);
             })
-            .ifNotPresent(() -> {
+            .ifAbsent(() -> {
                 targetPromise.makeDone(Result.of(elseValue));
             });
         });
@@ -600,7 +600,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             .ifPresent(value -> {
                 targetPromise.makeDone((Result<TARGET>)result);
             })
-            .ifNotPresent(() -> {
+            .ifAbsent(() -> {
                 targetPromise.makeDone(Result.from(elseSupplier));
             });
         });
