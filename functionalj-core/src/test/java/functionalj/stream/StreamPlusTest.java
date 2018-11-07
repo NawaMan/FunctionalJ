@@ -472,7 +472,7 @@ public class StreamPlusTest {
     public void testGenerate() {
         val counter = new AtomicInteger();
         val stream  = StreamPlus.generateBy(()->{
-            val count = counter.getAndIncrement();
+            int count = counter.getAndIncrement();
             if (count < 5)
                 return count;
             throw new NoMoreResultException();

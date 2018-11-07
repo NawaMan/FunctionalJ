@@ -65,7 +65,7 @@ public interface StreamPlus<DATA>
         extends Iterable<DATA>, Stream<DATA> {
     
     public static <D> D noMoreElement() throws NoMoreResultException {
-        ThrowFuncs.doThrow(()->new NoMoreResultException());
+        ThrowFuncs.doThrowFrom(()->new NoMoreResultException());
         return (D)null;
     }
     
@@ -128,6 +128,8 @@ public interface StreamPlus<DATA>
     public static <D> StreamPlus<D> iterate(D seed, UnaryOperator<D> f) {
         return StreamPlus.from(Stream.iterate(seed, f));
     }
+    
+    // TODO - Take from Iterator, Enumeration
     
     //== Stream ==
     

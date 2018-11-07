@@ -14,7 +14,7 @@ public interface ThrowFuncs {
         throw throwable;
     }
     
-    public static <T extends Throwable> T doThrow(Supplier<T> supplier) throws T {
+    public static <T extends Throwable> T doThrowFrom(Supplier<T> supplier) throws T {
         throw supplier.get();
     }
     
