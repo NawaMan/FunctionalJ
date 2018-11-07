@@ -2,6 +2,8 @@ package functionalj.ref;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Supplier;
+
 import functionalj.result.Result;
 import lombok.val;
 
@@ -9,8 +11,8 @@ public class DictatedRef<DATA> extends Ref<DATA> {
     
     private final Ref<DATA> ref;
     
-    public DictatedRef(Ref<DATA> ref) {
-        super(ref.getDataType());
+    DictatedRef(Ref<DATA> ref) {
+        super(ref.getDataType(), ref.getElseSupplier());
         this.ref = requireNonNull(ref);
     }
     
@@ -21,6 +23,19 @@ public class DictatedRef<DATA> extends Ref<DATA> {
     
     Result<DATA> findOverrideResult() {
         return null;
+    }
+    
+    public Ref<DATA> whenAbsentUse(DATA defaultValue) {
+        // No effect
+        return this;
+    }
+    public Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier) {
+        // No effect
+        return this;
+    }
+    public Ref<DATA> whenAbsentUseDefault() {
+        // No effect
+        return this;
     }
     
     @Override

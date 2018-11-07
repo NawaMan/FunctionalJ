@@ -387,7 +387,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     public final Result<DATA> getResult() {
-        long timeout = waitTimeout.elseUse(-1L).get().longValue();
+        long timeout = waitTimeout.whenwhenUse(-1L).get().longValue();
         return getResult(timeout, null);
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {

@@ -2,6 +2,7 @@ package functionalj.ref;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.function.Supplier;
 
 import functionalj.result.Result;
 import lombok.val;
@@ -15,25 +16,39 @@ public class RefTo<DATA> extends Ref<DATA> {
     }
     
     public static final Ref<IProvideDefault> defaultProvider
-            = Ref.of(IProvideDefault.class)
-            .defaultFrom(IProvideDefault.defaultProvider()::get);
+            = Ref.of      (IProvideDefault.class)
+            .whenAbsentGet(IProvideDefault.defaultProvider()::get)
+            .defaultFrom  (IProvideDefault.defaultProvider()::get);
     
     private final int hashCode;
     
     RefTo(Class<DATA> dataClass) {
-        super(dataClass);
+        super(dataClass, null);
         hashCode = dataClass.hashCode();
     }
     
     @Override
     protected Result<DATA> findResult() {
         val result = Result.from(()->{
-            val provider = defaultProvider.elseGet(IProvideDefault.defaultProvider()::get).get();
+            val provider = defaultProvider.value();
             val dataType = getDataType();
             val value    = provider.get(dataType);
             return (DATA)value;
         });
         return result;
+    }
+    
+    public Ref<DATA> whenAbsentUse(DATA defaultValue) {
+        // No effect
+        return this;
+    }
+    public Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier) {
+        // No effect
+        return this;
+    }
+    public Ref<DATA> whenAbsentUseDefault() {
+        // No effect
+        return this;
     }
     
     public final int hashCode() {

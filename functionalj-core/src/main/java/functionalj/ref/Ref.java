@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Supplier;
 
 import functionalj.function.Func0;
 import functionalj.function.Func1;
@@ -29,7 +30,7 @@ public abstract class Ref<DATA> implements Func0<DATA> {
         @SuppressWarnings("unchecked")
         val dataClass = (Class<D>)value.getClass();
         val result    = Result.of(value);
-        val ref       = new RefOf.FromResult<D>(dataClass, result);
+        val ref       = new RefOf.FromResult<D>(dataClass, result, null);
         return ref;
     }
     
@@ -38,10 +39,12 @@ public abstract class Ref<DATA> implements Func0<DATA> {
         return ref.dictate();
     }
     
-    private final Class<DATA> dataClass;
+    private final Class<DATA>    dataClass;
+    private final Supplier<DATA> whenAbsentSupplier;
     
-    Ref(Class<DATA> dataClass) {
-        this.dataClass = requireNonNull(dataClass);
+    Ref(Class<DATA> dataClass, Supplier<DATA> whenAbsentSupplier) {
+        this.dataClass          = requireNonNull(dataClass);
+        this.whenAbsentSupplier = whenAbsentSupplier;
     }
     
     abstract Result<DATA> findResult();
@@ -70,17 +73,43 @@ public abstract class Ref<DATA> implements Func0<DATA> {
     public final Class<DATA> getDataType() {
         return dataClass;
     }
+    final Supplier<DATA> getElseSupplier() {
+        return whenAbsentSupplier;
+    }
     
     public final Result<DATA> getResult() {
         val override = findOverrideResult();
-        if (override != null)
-            return override;
+        if (override != null) {
+            if (override.isPresent() || (whenAbsentSupplier == null))
+                return override;
+            if (!override.isPresent() && (whenAbsentSupplier != null)) {
+                val elseValue = whenAbsentSupplier.get();
+                if (elseValue != null)
+                     return Result.of(elseValue);
+                else return Result.ofNotExist();
+            }
+        }
         
         val result = findResult();
-        if (result == null)
+        if (result != null) {
+            if (result.isPresent() || (whenAbsentSupplier == null))
+                return result;
+            if (!result.isPresent() && (whenAbsentSupplier != null)) {
+                val elseValue = whenAbsentSupplier.get();
+                if (elseValue != null)
+                    return Result.of(elseValue);
+               else return Result.ofNotExist();
+            }
+        }
+        
+        if (whenAbsentSupplier == null)
             return Result.ofNotExist();
         
-        return result;
+        val elseValue = whenAbsentSupplier.get();
+        if (elseValue == null)
+            return Result.ofNotExist();
+        
+        return Result.of(elseValue);
     }
     
     public final AsResult<DATA> asResult() {
@@ -123,6 +152,12 @@ public abstract class Ref<DATA> implements Func0<DATA> {
     public final Substitution<DATA> butFrom(Func0<DATA> supplier) {
         return new Substitution.Supplier<DATA>(this, supplier);
     }
+    
+    // These else method has no effect once the Ref become DictatedRef
+    // They also has no effect for RefTo.
+    public abstract Ref<DATA> whenAbsentUse(DATA defaultValue);
+    public abstract Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier);
+    public abstract Ref<DATA> whenAbsentUseDefault();
     
     public DictatedRef<DATA> dictate() {
         return new DictatedRef<DATA>(this);
