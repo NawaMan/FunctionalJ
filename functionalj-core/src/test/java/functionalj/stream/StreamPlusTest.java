@@ -95,6 +95,12 @@ public class StreamPlusTest {
     }
     
     @Test
+    public void testMapWithPrev() {
+        val stream = StreamPlus.of("One", "Two", "Three").mapWithPrev((prev, element) -> prev.orElse("").length() + element.length());
+        assertStrings("3, 6, 8", stream.joining(", "));
+    }
+    
+    @Test
     public void testForEach() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val logs   = new ArrayList<String>();

@@ -16,13 +16,13 @@ import lombok.val;
 public class FuncListStreamTest {
     
     @SuppressWarnings("resource")
-	@Test
+    @Test
     public void testStream() {
         val rawList = (List<String>)asList("One", "Two", "Three");
         val newList = new FuncListStream<String, Integer>((Streamable<String>)(()->rawList.stream()), stream -> stream.map(String::length));
         assertEquals("[3, 3, 5]", newList.stream().collect(toList()).toString());
     }
-
+    
     @SuppressWarnings("resource")
     @Test
     public void testAppend() {
@@ -30,7 +30,7 @@ public class FuncListStreamTest {
         val newList = new FuncListStream<String, Integer>((Streamable<String>)()->rawList.stream(), stream -> stream.map(String::length));
         assertEquals("[3, 3, 5, 6]", newList.append(6).toString());
     }
-
+    
     @SuppressWarnings("resource")
     @Test
     public void testSet() {

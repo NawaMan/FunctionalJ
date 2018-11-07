@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import functionalj.list.FuncListStream;
 import functionalj.list.ImmutableList;
+import lombok.val;
 
 public class StreamableTest {
     
@@ -26,6 +27,13 @@ public class StreamableTest {
                 .split($S.length().thatEquals(3),
                        $S.length().thatLessThanOrEqualsTo(4))
                 .toString());
+    }
+    
+    @Test
+    public void testMapWithPrev() {
+        val stream = Streamable.of("One", "Two", "Three").mapWithPrev((prev, element) -> prev.orElse("").length() + element.length());
+        assertEquals("3, 6, 8", stream.joining(", "));
+        assertEquals("3, 6, 8", stream.joining(", "));
     }
     
 }

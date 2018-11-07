@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -18,6 +19,7 @@ import functionalj.function.Func6;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
+import functionalj.result.Result;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
@@ -262,17 +264,34 @@ public interface Streamable<DATA>
     //-- mapWithIndex --
     
     public default <T> Streamable<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
-        val index = new AtomicInteger();
-        return map(each -> mapper.apply(index.getAndIncrement(), each));
+        return deriveWith(stream -> {
+            val index = new AtomicInteger();
+            return stream.map(each -> mapper.apply(index.getAndIncrement(), each));
+        });
     }
     
     public default <T1, T> Streamable<T> mapWithIndex(
                 Function<? super DATA, ? extends T1>       mapper1,
                 BiFunction<? super Integer, ? super T1, T> mapper) {
-        val index = new AtomicInteger();
-        return map(each -> mapper.apply(
-                                index.getAndIncrement(),
-                                mapper1.apply(each)));
+        return deriveWith(stream -> {
+            val index = new AtomicInteger();
+            return stream.map(each -> mapper.apply(
+                                    index.getAndIncrement(),
+                                    mapper1.apply(each)));
+        });
+    }
+    
+    //-- mapWithPrev --
+    
+    public default <TARGET> Streamable<TARGET> mapWithPrev(BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> mapper) {
+        return deriveWith(stream -> {
+            val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
+            return map(element -> {
+                val newValue = mapper.apply(prev.get(), element);
+                prev.set(Result.of(element));
+                return newValue;
+            });
+        });
     }
     
     //== Map to tuple. ==

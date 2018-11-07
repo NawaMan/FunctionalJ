@@ -81,8 +81,13 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     }
     
     private final List<DATA> data;
+    private final boolean    isLazy;
     
     public ImmutableList(Collection<DATA> data) {
+        this(data, true);
+    }
+    public ImmutableList(Collection<DATA> data, boolean isLazy) {
+        this.isLazy = isLazy;
         if (data == null) {
             this.data = Collections.emptyList();
         } else if (data instanceof ImmutableList) {
@@ -97,6 +102,23 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     @Override
     public Stream<DATA> stream() {
         return data.stream();
+    }
+    
+    public boolean isLazy() {
+        return isLazy;
+    }
+    
+    public FuncList<DATA> lazy() {
+        if (isLazy)
+            return this;
+        
+        return new ImmutableList<DATA>(data, true);
+    }
+    public FuncList<DATA> eager() {
+        if (!isLazy)
+            return this;
+        
+        return new ImmutableList<DATA>(data, false);
     }
     
     @Override

@@ -25,6 +25,7 @@ import functionalj.function.Func6;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
+import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import functionalj.tuple.IntTuple2;
@@ -80,7 +81,9 @@ public interface FuncList<DATA>
     
     @Override
     public default <TARGET> FuncList<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action) {
-        return new FuncListStream<DATA, TARGET>(this, action);
+        val list   = new FuncListStream<DATA, TARGET>(this, action);
+        val isLazy = isLazy();
+        return isLazy ? list : new ImmutableList<>(list, false);
     }
     
     @Override
@@ -94,6 +97,13 @@ public interface FuncList<DATA>
     public default FuncList<DATA> __data() throws Exception {
         return this;
     }
+    
+    public default boolean isLazy() {
+        return true;
+    }
+    
+    public FuncList<DATA> lazy();
+    public FuncList<DATA> eager();
     
     @Override
     public default List<DATA> toList() {
@@ -451,17 +461,34 @@ public interface FuncList<DATA>
     //-- mapWithIndex --
     
     public default <T> FuncList<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
-        val index = new AtomicInteger();
-        return map(each -> mapper.apply(index.getAndIncrement(), each));
+        return deriveWith(stream -> {
+            val index = new AtomicInteger();
+            return map(each -> mapper.apply(index.getAndIncrement(), each));
+        });
     }
     
     public default <T1, T> FuncList<T> mapWithIndex(
                 Function<? super DATA, ? extends T1>       mapper1,
                 BiFunction<? super Integer, ? super T1, T> mapper) {
-        val index = new AtomicInteger();
-        return map(each -> mapper.apply(
-                                index.getAndIncrement(),
-                                mapper1.apply(each)));
+        return deriveWith(stream -> {
+            val index = new AtomicInteger();
+            return stream.map(each -> mapper.apply(
+                                    index.getAndIncrement(),
+                                    mapper1.apply(each)));
+        });
+    }
+    
+    //-- mapWithPrev --
+    
+    public default <TARGET> FuncList<TARGET> mapWithPrev(BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> mapper) {
+        return deriveWith(stream -> {
+            val prev = new AtomicReference<Result<DATA>>(Result.ofNotReady());
+            return map(element -> {
+                val newValue = mapper.apply(prev.get(), element);
+                prev.set(Result.of(element));
+                return newValue;
+            });
+        });
     }
     
     //== Map to tuple. ==

@@ -49,6 +49,7 @@ import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.NoMoreResultException;
+import functionalj.result.Result;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -710,6 +711,17 @@ public interface StreamPlus<DATA>
         return map(each -> mapper.apply(
                                 index.getAndIncrement(),
                                 mapper1.apply(each)));
+    }
+    
+    //-- mapWithPrev --
+    
+    public default <TARGET> StreamPlus<TARGET> mapWithPrev(BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> mapper) {
+        val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
+        return map(element -> {
+            val newValue = mapper.apply(prev.get(), element);
+            prev.set(Result.of(element));
+            return newValue;
+        });
     }
     
     //== Map to tuple. ==

@@ -82,6 +82,17 @@ public class FuncListStream<SOURCE, DATA>
         return newStream;
     }
     
+    public boolean isLazy() {
+        return true;
+    }
+    
+    public FuncList<DATA> lazy() {
+        return this;
+    }
+    public FuncList<DATA> eager() {
+        return new ImmutableList<DATA>(this, false);
+    }
+    
     @Override
     public ImmutableList<DATA> toImmutableList() {
         return new ImmutableList<DATA>(this);

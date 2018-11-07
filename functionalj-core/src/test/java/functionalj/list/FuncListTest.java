@@ -11,8 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
+import functionalj.stream.IntStreamPlus;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -20,6 +19,40 @@ public class FuncListTest {
     
     private void assertStrings(String str, Object obj) {
         assertEquals(str, "" + obj);
+    }
+    
+    @Test
+    public void testLazy() {
+        val counter = new AtomicInteger(0);
+        val value   = IntStreamPlus.range(0, 10).toFuncList().map(i -> counter.getAndIncrement()).limit(4).joining(", ");
+        assertStrings("0, 1, 2, 3", value);
+        assertStrings("4",          counter.get());
+    }
+    
+    @Test
+    public void testEager() {
+        val counter = new AtomicInteger(0);
+        val value   = IntStreamPlus.range(0, 10)
+                .toFuncList()
+                .eager()
+                .map(i -> counter.getAndIncrement())
+                .limit(4)
+                .joining(", ");
+        assertStrings("0, 1, 2, 3", value);
+        assertStrings("10",          counter.get());
+    }
+    
+    @Test
+    public void testEager2() {
+        val counter = new AtomicInteger(0);
+        val value   = IntStreamPlus.range(0, 10)
+                .toFuncList()
+                .eager()
+                .limit(4)
+                .map(i -> counter.getAndIncrement())
+                .joining(", ");
+        assertStrings("0, 1, 2, 3", value);
+        assertStrings("4",          counter.get());
     }
     
     @Test
