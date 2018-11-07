@@ -35,17 +35,20 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import functionalj.function.Func;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.functions.StrFuncs;
+import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
+import functionalj.result.NoMoreResultException;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
@@ -59,6 +62,11 @@ import lombok.val;
 @FunctionalInterface
 public interface StreamPlus<DATA> 
         extends Iterable<DATA>, Stream<DATA> {
+    
+    public static <D> D noMoreElement() throws NoMoreResultException {
+        ThrowFuncs.doThrow(()->new NoMoreResultException());
+        return (D)null;
+    }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> StreamPlus<D> from(Stream<D> stream) {
@@ -81,8 +89,39 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(Stream.empty());
     }
     
-    public static <D> StreamPlus<D> generate(Supplier<D> s) {
-        return StreamPlus.from(Stream.generate(s));
+    @SafeVarargs
+    public static <D> StreamPlus<D> concat(Stream<D> ... streams) {
+        return StreamPlus.of(streams).flatMap(Func.themAll());
+    }
+    @SafeVarargs
+    public static <D> StreamPlus<D> concat(Supplier<Stream<D>> ... streams) {
+        return StreamPlus.of(streams).map(Supplier::get).flatMap(Func.themAll());
+    }
+    public static <D> StreamPlus<D> generate(Supplier<D> supplier) {
+        return StreamPlus.from(Stream.generate(supplier));
+    }
+    public static <D> StreamPlus<D> generateBy(Supplier<D> supplier) {
+        Iterable<D> iterable = new Iterable<D>() {
+            public Iterator<D> iterator() {
+                return new Iterator<D>() {
+                    private D next;
+                    @Override
+                    public boolean hasNext() {
+                        try {
+                            next = supplier.get();
+                            return true;
+                        } catch (NoMoreResultException e) {
+                            return false;
+                        }
+                    }
+                    @Override
+                    public D next() {
+                        return next;
+                    }
+                };
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
     public static <D> StreamPlus<D> iterate(D seed, UnaryOperator<D> f) {

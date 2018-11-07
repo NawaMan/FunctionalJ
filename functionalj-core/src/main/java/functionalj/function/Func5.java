@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
@@ -63,7 +64,7 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw Func.exceptionHandler.value().apply(e);
+            throw ThrowFuncs.exceptionHandler.value().apply(e);
         }
     }
     

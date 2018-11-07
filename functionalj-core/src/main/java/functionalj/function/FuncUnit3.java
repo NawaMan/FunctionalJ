@@ -2,6 +2,7 @@ package functionalj.function;
 
 import static java.util.Objects.requireNonNull;
 
+import functionalj.functions.ThrowFuncs;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.tuple.Tuple3;
@@ -25,7 +26,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw Func.exceptionHandler.value().apply(e);
+            throw ThrowFuncs.exceptionHandler.value().apply(e);
         }
     }
     

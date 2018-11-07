@@ -127,6 +127,13 @@ public interface FuncList<DATA>
         
         return Optional.ofNullable(valueRef.get());
     }
+    public default Optional<DATA> last() {
+        val size = this.size();
+        if (size <= 0)
+            return Optional.empty();
+        
+        return Optional.ofNullable(get(size - 1));
+    }
     
     public default FuncList<DATA> rest() {
         return deriveWith(stream -> stream.skip(1));

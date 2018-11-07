@@ -1,8 +1,11 @@
 package functionalj.function;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
+import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
 import functionalj.ref.ComputeBody;
@@ -26,6 +29,13 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public static <T> Func0<T> from(Supplier<T> supplier) {
         return supplier::get;
     }
+    public static <T> Func0<T> from(IntFunction<T> generatorFunction) {
+        return from(0, generatorFunction);
+    }
+    public static <T> Func0<T> from(int start, IntFunction<T> generatorFunction) {
+        val counter = new AtomicInteger(start);
+        return ()-> generatorFunction.apply(counter.getAndIncrement());
+    }
     
     public OUTPUT applyUnsafe() throws Exception;
     
@@ -39,7 +49,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw Func.exceptionHandler.value().apply(e);
+            throw ThrowFuncs.exceptionHandler.value().apply(e);
         }
     }
     

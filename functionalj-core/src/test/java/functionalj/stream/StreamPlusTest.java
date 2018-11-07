@@ -3,6 +3,7 @@ package functionalj.stream;
 import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
+import static functionalj.stream.StreamPlus.noMoreElement;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -22,8 +24,10 @@ import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
+import functionalj.function.Func0;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
+import functionalj.result.NoMoreResultException;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -454,6 +458,23 @@ public class StreamPlusTest {
     public void testCycle() {
         val stream = StreamPlus.cycle("One", "Two", "Three");
         assertStrings("Two, Three, One, Two, Three", stream.skip(1).limit(5).joining(", "));
+    }
+    
+    //-- Generate -- 
+    
+    @Test
+    public void testGenerate() {
+        val counter = new AtomicInteger();
+        val stream  = StreamPlus.generateBy(()->{
+            val count = counter.getAndIncrement();
+            if (count < 5)
+                return count;
+            throw new NoMoreResultException();
+        });
+        assertStrings("0, 1, 2, 3, 4", stream.joining(", "));
+        
+        val stream2 = StreamPlus.generateBy(Func0.from(i -> i < 5 ? i : noMoreElement()));
+        assertStrings("0, 1, 2, 3, 4", stream2.joining(", "));
     }
     
     //-- Segmentation --

@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.Consumer;
 
+import functionalj.functions.ThrowFuncs;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import lombok.val;
@@ -25,7 +26,7 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw Func.exceptionHandler.value().apply(e);
+            throw ThrowFuncs.exceptionHandler.value().apply(e);
         }
     }
     

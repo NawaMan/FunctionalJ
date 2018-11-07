@@ -18,16 +18,13 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import functionalj.environments.Env;
-import functionalj.ref.Ref;
+import functionalj.functions.ThrowFuncs;
 import functionalj.supportive.CallerId;
 import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
 public interface Func {
-    
-    public static final Ref<Func1<Exception, RuntimeException>> exceptionHandler = Ref.ofValue(e -> new FunctionInvocationException(e));
-    
     
     //== Provide differnt name for more readability ==
     
@@ -1021,7 +1018,7 @@ public interface Func {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw exceptionHandler.get().apply(e);
+            throw ThrowFuncs.exceptionHandler.get().apply(e);
         }
     }
     
@@ -1034,7 +1031,7 @@ public interface Func {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw exceptionHandler.get().apply(e);
+            throw ThrowFuncs.exceptionHandler.get().apply(e);
         }
     }
     

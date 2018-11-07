@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.BiConsumer;
 
+import functionalj.functions.ThrowFuncs;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.tuple.Tuple2;
@@ -27,7 +28,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw Func.exceptionHandler.value().apply(e);
+            throw ThrowFuncs.exceptionHandler.value().apply(e);
         }
     }
     

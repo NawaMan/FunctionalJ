@@ -2,6 +2,7 @@ package functionalj.function;
 
 import static java.util.Objects.requireNonNull;
 
+import functionalj.functions.ThrowFuncs;
 import functionalj.promise.Promise;
 import functionalj.ref.RunBody;
 import lombok.val;
@@ -26,7 +27,7 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception exception) {
-            throw Func.exceptionHandler.value().apply(exception);
+            throw ThrowFuncs.exceptionHandler.value().apply(exception);
         }
     }
     

@@ -19,7 +19,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.function.Func;
+import functionalj.functions.ThrowFuncs;
 import functionalj.result.Result;
 
 /**
@@ -137,7 +137,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
                 if (exception instanceof RuntimeException)
                     throw (RuntimeException)exception;
                 if (exception != null)
-                    throw Func.exceptionHandler.value().apply(exception);
+                    throw ThrowFuncs.exceptionHandler.value().apply(exception);
                 
                 return data;
             }
