@@ -70,4 +70,39 @@ public class FuncTest {
         assertEquals(12, c.getResult().value().intValue());
     }
     
+    @Test
+    public void testWhenAbsent() {
+        val divide     = Func.F((Integer a, Integer b) -> a/b);
+        val safeDivide1 = divide.whenAbsentUse(Integer.MAX_VALUE);
+        val safeDivide2 = divide.whenAbsentGet(()->Integer.MAX_VALUE);
+        val safeDivide3 = divide.whenAbsentApply(exception ->{
+            if (exception instanceof ArithmeticException)
+                return Integer.MAX_VALUE;
+            throw exception;
+        });
+        val safeDivide4 = divide.whenAbsentApply((a, b, exception) ->{
+            if (b == 0) {
+                if (a > 0) return Integer.MAX_VALUE;
+                if (a < 0) return Integer.MIN_VALUE;
+                throw exception;
+            }
+            throw exception;
+        });
+        val safeDivide5 = divide.whenAbsentApply((t, exception) ->{
+            if (t._2() == 0) {
+                if (t._1() > 0) return Integer.MAX_VALUE;
+                if (t._1() < 0) return Integer.MIN_VALUE;
+                throw exception;
+            }
+            throw exception;
+        });
+        assertEquals(Integer.MAX_VALUE, safeDivide1.apply( 1, 0).intValue());
+        assertEquals(Integer.MAX_VALUE, safeDivide2.apply( 1, 0).intValue());
+        assertEquals(Integer.MAX_VALUE, safeDivide3.apply( 1, 0).intValue());
+        assertEquals(Integer.MAX_VALUE, safeDivide4.apply( 1, 0).intValue());
+        assertEquals(Integer.MIN_VALUE, safeDivide4.apply(-1, 0).intValue());
+        assertEquals(Integer.MAX_VALUE, safeDivide5.apply( 1, 0).intValue());
+        assertEquals(Integer.MIN_VALUE, safeDivide5.apply(-1, 0).intValue());
+    }
+    
 }

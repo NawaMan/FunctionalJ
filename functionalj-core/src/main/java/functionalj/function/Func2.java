@@ -101,17 +101,38 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         };
     }
     
-    public default Func2<INPUT1, INPUT2, OUTPUT> elseUse(OUTPUT defaultValue) {
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input1, input2)->{
             val result = applySafely(input1, input2);
             val value  = result.orElse(defaultValue);
             return value;
         };
     }
-    public default Func2<INPUT1, INPUT2, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2)->{
             val result = applySafely(input1, input2);
             val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2)->{
+            val result = applySafely(input1, input2);
+            val value  = result.orApply(exceptionMapper);
+            return value;
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func3<INPUT1, INPUT2, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2)->{
+            val result = applySafely(input1, input2);
+            val value  = result.orApply(exception -> exceptionMapper.apply(input1, input2, exception));
+            return value;
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func2<Tuple2<INPUT1, INPUT2>, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2)->{
+            val result = applySafely(input1, input2);
+            val value  = result.orApply(exception -> exceptionMapper.apply(Tuple2.of(input1, input2), exception));
             return value;
         };
     }

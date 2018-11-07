@@ -387,7 +387,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     public final Result<DATA> getResult() {
-        long timeout = waitTimeout.whenwhenUse(-1L).get().longValue();
+        long timeout = waitTimeout.whenAbsentUse(-1L).get().longValue();
         return getResult(timeout, null);
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
@@ -581,7 +581,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Promise<TARGET> elseUse(TARGET elseValue) {
+    public final <TARGET> Promise<TARGET> whenAbsentUse(TARGET elseValue) {
         return (Promise<TARGET>)newSubPromise((Result<DATA> result, Promise<TARGET> targetPromise) -> {
             result
             .ifPresent(value -> {
@@ -594,7 +594,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     @SuppressWarnings("unchecked")
-    public final <TARGET> Promise<TARGET> elseGet(Supplier<TARGET> elseSupplier) {
+    public final <TARGET> Promise<TARGET> whenAbsentGet(Supplier<TARGET> elseSupplier) {
         return (Promise<TARGET>)newSubPromise((Result<DATA> result, Promise<TARGET> targetPromise) -> {
             result
             .ifPresent(value -> {

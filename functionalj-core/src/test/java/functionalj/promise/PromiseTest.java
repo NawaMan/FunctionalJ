@@ -437,7 +437,7 @@ public class PromiseTest {
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
         assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
-        val promise2 = promise.elseUse("Else");
+        val promise2 = promise.whenAbsentUse("Else");
         assertStrings("Result:{ Value: Else }", promise2.getResult());
     }
     
@@ -447,7 +447,7 @@ public class PromiseTest {
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
         assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
-        val promise2 = promise.elseGet(()->"Else");
+        val promise2 = promise.whenAbsentGet(()->"Else");
         assertStrings("Result:{ Value: Else }", promise2.getResult());
     }
     

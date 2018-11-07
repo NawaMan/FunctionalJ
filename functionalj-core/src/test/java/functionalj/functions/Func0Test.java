@@ -18,7 +18,7 @@ public class Func0Test {
             return str.length();
         });
         assertTrue  (func.getSafely().isException());
-        assertEquals(0, func.whenwhenUse(0).get().intValue());
+        assertEquals(0, func.whenAbsentUse(0).get().intValue());
     }
     
 }

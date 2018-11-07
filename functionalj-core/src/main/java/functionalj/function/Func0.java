@@ -71,7 +71,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         };
     }
     
-    public default Func0<OUTPUT> whenwhenUse(OUTPUT defaultValue) {
+    public default Func0<OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return ()->{
             val result = applySafely();
             val value  = result.orElse(defaultValue);
@@ -82,6 +82,13 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return ()->{
             val result = applySafely();
             val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
+    public default Func0<OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
+        return ()->{
+            val result = applySafely();
+            val value  = result.orApply(exceptionMapper);
             return value;
         };
     }

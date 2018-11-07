@@ -970,6 +970,17 @@ public abstract class Result<DATA>
                 }
         );
     }
+    public final DATA orApply(Func1<Exception, ? extends DATA> elseMapper) {
+        return mapData(
+                __ -> null,
+                (value, exception)->{
+                    if (value != null)
+                        return value;
+                    
+                    return elseMapper.apply(exception);
+                }
+        );
+    }
     
     public final DATA orThrow() throws Exception {
         return mapData(

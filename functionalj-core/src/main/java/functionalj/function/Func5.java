@@ -102,17 +102,38 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
         };
     }
     
-    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> elseUse(OUTPUT defaultValue) {
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input1, input2, input3, input4, input5)->{
             val result = applySafely(input1, input2, input3, input4, input5);
             val value  = result.orElse(defaultValue);
             return value;
         };
     }
-    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2, input3, input4, input5)->{
             val result = applySafely(input1, input2, input3, input4, input5);
             val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2, input3, input4, input5)->{
+            val result = applySafely(input1, input2, input3, input4, input5);
+            val value  = result.orApply(exceptionMapper);
+            return value;
+        };
+    }
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> whenAbsentApply(Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2, input3, input4, input5)->{
+            val result = applySafely(input1, input2, input3, input4, input5);
+            val value  = result.orApply(exception -> exceptionMapper.apply(input1, input2, input3, input4, input5, exception));
+            return value;
+        };
+    }
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> whenAbsentApply(Func2<Tuple5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5>, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2, input3, input4, input5)->{
+            val result = applySafely(input1, input2, input3, input4, input5);
+            val value  = result.orApply(exception -> exceptionMapper.apply(Tuple5.of(input1, input2, input3, input4, input5), exception));
             return value;
         };
     }

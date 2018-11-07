@@ -72,7 +72,7 @@ public class RefToTest {
     }
     
     @Test
-    public void testElseDefault() {
+    public void testWhenAbsent() {
         val r = Ref.of(Person.class)
                 .whenAbsentUseDefault()
                 .defaultTo(new Person(new SuperCar()));

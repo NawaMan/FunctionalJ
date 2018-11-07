@@ -98,17 +98,38 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         };
     }
     
-    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> elseUse(OUTPUT defaultValue) {
+    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input1, input2, input3)->{
             val result = applySafely(input1, input2, input3);
             val value  = result.orElse(defaultValue);
             return value;
         };
     }
-    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2, input3)->{
             val result = applySafely(input1, input2, input3);
             val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
+    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2, input3)->{
+            val result = applySafely(input1, input2, input3);
+            val value  = result.orApply(exceptionMapper);
+            return value;
+        };
+    }
+    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> whenAbsentApply(Func4<INPUT1, INPUT2, INPUT3, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2, input3)->{
+            val result = applySafely(input1, input2, input3);
+            val value  = result.orApply(exception -> exceptionMapper.apply(input1, input2, input3, exception));
+            return value;
+        };
+    }
+    public default Func3<INPUT1, INPUT2, INPUT3, OUTPUT> whenAbsentApply(Func2<Tuple3<INPUT1, INPUT2, INPUT3>, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2, input3)->{
+            val result = applySafely(input1, input2, input3);
+            val value  = result.orApply(exception -> exceptionMapper.apply(Tuple3.of(input1, input2, input3), exception));
             return value;
         };
     }

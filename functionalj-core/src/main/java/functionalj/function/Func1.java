@@ -105,17 +105,31 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         };
     }
     
-    public default Func1<INPUT, OUTPUT> elseUse(OUTPUT defaultValue) {
+    public default Func1<INPUT, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input)->{
             val result = applySafely(input);
             val value  = result.orElse(defaultValue);
             return value;
         };
     }
-    public default Func1<INPUT, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+    public default Func1<INPUT, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return (input)->{
             val result = applySafely(input);
             val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
+    public default Func1<INPUT, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
+        return (input)->{
+            val result = applySafely(input);
+            val value  = result.orApply(exceptionMapper);
+            return value;
+        };
+    }
+    public default Func1<INPUT, OUTPUT> whenAbsentApply(Func2<INPUT, Exception, OUTPUT> exceptionMapper) {
+        return (input)->{
+            val result = applySafely(input);
+            val value  = result.orApply(exception -> exceptionMapper.apply(input, exception));
             return value;
         };
     }

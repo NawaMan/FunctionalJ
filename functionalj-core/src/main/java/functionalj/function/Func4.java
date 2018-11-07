@@ -101,17 +101,38 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
         };
     }
     
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> elseUse(OUTPUT defaultValue) {
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input1, input2, input3, input4)->{
             val result = applySafely(input1, input2, input3, input4);
             val value  = result.orElse(defaultValue);
             return value;
         };
     }
-    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> elseGet(Supplier<OUTPUT> defaultSupplier) {
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2, input3, input4)->{
             val result = applySafely(input1, input2, input3, input4);
             val value  = result.orElseGet(defaultSupplier);
+            return value;
+        };
+    }
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2, input3, input4)->{
+            val result = applySafely(input1, input2, input3, input4);
+            val value  = result.orApply(exceptionMapper);
+            return value;
+        };
+    }
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Func5<INPUT1, INPUT2, INPUT3, INPUT4, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2, input3, input4)->{
+            val result = applySafely(input1, input2, input3, input4);
+            val value  = result.orApply(exception -> exceptionMapper.apply(input1, input2, input3, input4, exception));
+            return value;
+        };
+    }
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Func2<Tuple4<INPUT1, INPUT2, INPUT3, INPUT4>, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2, input3, input4)->{
+            val result = applySafely(input1, input2, input3, input4);
+            val value  = result.orApply(exception -> exceptionMapper.apply(Tuple4.of(input1, input2, input3, input4), exception));
             return value;
         };
     }
