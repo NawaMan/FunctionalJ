@@ -200,7 +200,7 @@ public abstract class FuncMap<KEY, VALUE>
     }
     
     // TODO Map builder.
-
+    
     @Override
     public abstract int size();
     

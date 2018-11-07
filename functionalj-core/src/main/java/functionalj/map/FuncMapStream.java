@@ -193,7 +193,7 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
                             }
                             return true;
                         }).stream();
-						return stream;
+                        return stream;
                     });
                     return (Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>>)Stream.of(main, ref).
                             flatMap(each -> each.get().get());
@@ -205,21 +205,21 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
     public FuncMap<KEY, VALUE> defaultTo(Map<? extends KEY, ? extends VALUE> entries) {
         return null;
     }
-
+    
     @Override
     public FuncMap<KEY, VALUE> exclude(KEY key) {
         return new FuncMapStream<>(isKeyComparable,
                 entries
                     .filter(entry -> !Objects.equals(key, entry._2._1)));
     }
-
+    
     @Override
     public FuncMap<KEY, VALUE> filter(Predicate<? super KEY> keyCheck) {
         return new FuncMapStream<>(isKeyComparable, 
                 entries
                     .filter(entry -> keyCheck.test(entry._2._1)));
     }
-
+    
     @Override
     public FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck) {
         return new FuncMapStream<>(isKeyComparable, 
@@ -233,27 +233,26 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
                 entries
                     .filter(entry -> entryCheck.test(entry._2)));
     }
-
-
+    
     @Override
     public FuncList<KEY> keys() {
         return new FuncListStream<>(
                 entries.map(each -> each._2._1));
     }
-
+    
     @Override
     public FuncList<VALUE> values() {
         return new FuncListStream<>(
                 entries.map(each -> each._2._2));
     }
-
+    
     @Override
     public Set<KEY> keySet() {
         return entries
                 .map(each -> each._2._1)
                 .collect(toSet());
     }
-
+    
     @Override
     public Set<Entry<KEY, VALUE>> entrySet() {
         return entries

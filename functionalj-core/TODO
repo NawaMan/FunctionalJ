@@ -27,6 +27,10 @@ Need code clean up!!!!! The code is so shitty :-(
   -- Access to spec
   -- xxxOf to access to each parameter directly. -- justOf(value -> value ...)
 
+- Defer Loop, Fork Join ... so that there is no need to have DefaultAction in a pure function.
+- Env.
+
+
 
 -- Not an Expert ... just my journey.
 -- Church encoding
