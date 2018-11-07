@@ -4,7 +4,6 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import functionalj.function.Func;
-import functionalj.function.Func1;
 import lombok.val;
 
 public class RegExFlag {

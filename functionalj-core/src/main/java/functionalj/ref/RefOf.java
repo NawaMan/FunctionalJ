@@ -59,7 +59,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
     public static class FromSupplier<DATA> extends RefOf<DATA> {
         
         @SuppressWarnings("rawtypes")
-        private static final Func0 notAvailable = ()->Result.ofNotAvailable();
+        private static final Func0 notAvailable = ()->Result.ofNotExist();
         
         private final Func0<DATA> supplier;
         

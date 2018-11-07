@@ -24,7 +24,6 @@ import functionalj.function.FuncUnit1;
 import functionalj.function.NamedExpression;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
-import functionalj.result.OnStart;
 import functionalj.result.Result;
 import lombok.val;
 

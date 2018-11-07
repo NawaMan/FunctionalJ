@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func;

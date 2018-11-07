@@ -31,7 +31,6 @@ import functionalj.pipeable.Pipeable;
 import functionalj.ref.Ref;
 import functionalj.ref.Run;
 import functionalj.result.HasResult;
-import functionalj.result.OnStart;
 import functionalj.result.Result;
 import lombok.val;
 

@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import functionalj.environments.Env;
 import functionalj.ref.Ref;
 import functionalj.supportive.CallerId;
 import functionalj.tuple.ImmutableTuple2;
@@ -892,11 +893,11 @@ public interface Func {
         val expiredTime = new ConcurrentHashMap<INPUT, Long>();
         return in -> {
             if (expiredTime.contains(in)
-             && expiredTime.get(in) > System.currentTimeMillis()) {
+             && expiredTime.get(in) > Env.time().currentMilliSecond()) {
                 cache.remove(in);
             }
             return cache.computeIfAbsent(in, key->{
-                expiredTime.put(key, System.currentTimeMillis() + time);
+                expiredTime.put(key, Env.time().currentMilliSecond() + time);
                 return inFunction.apply(key);
             });
         };

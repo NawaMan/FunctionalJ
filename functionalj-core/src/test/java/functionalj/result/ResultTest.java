@@ -41,7 +41,6 @@ public class ResultTest {
         assertTrue (result.isValue());
         assertFalse(result.isException());
         assertTrue (result.isPresent());
-        assertTrue (result.isNotNull());
         assertFalse(result.isNull());
     }
     
@@ -52,7 +51,6 @@ public class ResultTest {
         assertTrue (result.isValue());
         assertFalse(result.isException());
         assertFalse(result.isPresent());
-        assertFalse(result.isNotNull());
         assertTrue (result.isNull());
     }
     
@@ -63,7 +61,6 @@ public class ResultTest {
         assertFalse(result.isValue());
         assertTrue (result.isException());
         assertFalse(result.isPresent());
-        assertFalse(result.isNotNull());
         assertFalse(result.isNull());
     }
     
@@ -74,7 +71,6 @@ public class ResultTest {
         assertTrue (result.isValue());
         assertFalse(result.isException());
         assertTrue (result.isPresent());
-        assertTrue (result.isNotNull());
         assertFalse(result.isNull());
     }
     
@@ -85,7 +81,6 @@ public class ResultTest {
         assertTrue (result.isValue());
         assertFalse(result.isException());
         assertTrue (result.isPresent());
-        assertTrue (result.isNotNull());
         assertFalse(result.isNull());
     }
     

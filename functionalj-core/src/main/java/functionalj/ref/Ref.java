@@ -78,7 +78,7 @@ public abstract class Ref<DATA> implements Func0<DATA> {
         
         val result = findResult();
         if (result == null)
-            return Result.ofNotAvailable();
+            return Result.ofNotExist();
         
         return result;
     }

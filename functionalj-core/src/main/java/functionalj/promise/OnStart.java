@@ -1,4 +1,4 @@
-package functionalj.result;
+package functionalj.promise;
 
 import functionalj.function.FuncUnit0;
 

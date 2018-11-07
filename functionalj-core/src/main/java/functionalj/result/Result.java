@@ -76,13 +76,6 @@ public abstract class Result<DATA>
     @SuppressWarnings("rawtypes")
 	private static final Result NULL = new ImmutableResult<>(null);
     
-    public static enum State {
-        NOTREADY, CANCELLED, COMPLETED;
-    }
-    public static enum Status {
-        NOTREADY, CANCELLED, PROBLEM, NOTEXIST, INVALID, NULL, PRESENT;
-    }
-    
     /**
      * Returns the Null result.
      * 
@@ -96,39 +89,76 @@ public abstract class Result<DATA>
     }
     
     /**
-     * Returns the NotAvailable result.
+     * Returns the NotExist result.
      * 
      * @param  <D>  the data type of the result.
-     * @return the Result that is the result is not available.
+     * @return the Result that is the result does not exist.
      */
-    public static <D> Result<D> ofNotAvailable() {
+    public static <D> Result<D> ofNotExist() {
         @SuppressWarnings("unchecked")
-        val notAvailableResult = (Result<D>)Result.ofException(new ResultNotAvailableException());
+        val notAvailableResult = (Result<D>)Result.ofException(new ResultNotExistException());
         return notAvailableResult;
     }
     /**
-     * Returns the NotAvailable result with message.
+     * Returns the NotExist result with message.
      * 
      * @param  message  the exception message.
      * @param  <D>      the data type of the result.
      * @return the Result that is the result is not available.
      */
-    public static <D> Result<D> ofNotAvailable(String message) {
+    public static <D> Result<D> ofNotExist(String message) {
         @SuppressWarnings("unchecked")
-        val exceptionResult = (Result<D>)Result.ofException(new ResultNotAvailableException(message, null));
+        val exceptionResult = (Result<D>)Result.ofException(new ResultNotExistException(message, null));
         return exceptionResult;
     }
     /**
-     * Returns the NotAvailable result with message and cause.
+     * Returns the NotExist result with message and cause.
      * 
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>      the data type of the result.
      * @return the Result that is the result is not available.
      */
-    public static <D> Result<D> ofNotAvailable(String message, Exception cause) {
+    public static <D> Result<D> ofNotExist(String message, Exception cause) {
         @SuppressWarnings("unchecked")
-        val exceptionResult = (Result<D>)Result.ofException(new ResultNotAvailableException(message, cause));
+        val exceptionResult = (Result<D>)Result.ofException(new ResultNotExistException(message, cause));
+        return exceptionResult;
+    }
+    
+    /**
+     * Returns the NoMore result.
+     * 
+     * @param  <D>  the data type of the result.
+     * @return the Result that is the result does not exist.
+     */
+    public static <D> Result<D> ofNoMore() {
+        @SuppressWarnings("unchecked")
+        val notAvailableResult = (Result<D>)Result.ofException(new NoMoreResultException());
+        return notAvailableResult;
+    }
+    /**
+     * Returns the NoMore result with message.
+     * 
+     * @param  message  the exception message.
+     * @param  <D>      the data type of the result.
+     * @return the Result that is the result is not available.
+     */
+    public static <D> Result<D> ofNoMore(String message) {
+        @SuppressWarnings("unchecked")
+        val exceptionResult = (Result<D>)Result.ofException(new NoMoreResultException(message, null));
+        return exceptionResult;
+    }
+    /**
+     * Returns the NoMore result with message and cause.
+     * 
+     * @param  message  the exception message.
+     * @param  cause    the exception cause.
+     * @param  <D>      the data type of the result.
+     * @return the Result that is the result is not available.
+     */
+    public static <D> Result<D> ofNoMore(String message, Exception cause) {
+        @SuppressWarnings("unchecked")
+        val exceptionResult = (Result<D>)Result.ofException(new NoMoreResultException(message, cause));
         return exceptionResult;
     }
     
@@ -296,7 +326,6 @@ public abstract class Result<DATA>
             
         return Result.of(value);
     }
-    
     
     public static <D, T1, T2> Result<D> of(
             T1 value1,
@@ -526,7 +555,7 @@ public abstract class Result<DATA>
     abstract Object __valueData();
     
     @SuppressWarnings("unchecked")
-	protected <T> Result<T> newException(Exception exception) {
+    protected <T> Result<T> newException(Exception exception) {
         return (Result<T>)Result.ofException(exception);
     }
     
@@ -715,30 +744,12 @@ public abstract class Result<DATA>
     
     //== Status and check
     
-    public State getState() {
-        if (isNotReady())
-            return State.NOTREADY;
-        if (isCancelled())
-            return State.CANCELLED;
-        
-        return State.COMPLETED;
-    }
-    
-    public Status getStatus() {
-        if (isNotReady())
-            return Status.NOTREADY;
-        if (isCancelled())
-            return Status.CANCELLED;
-        if (isProblem())
-            return Status.PROBLEM;
-        if (isNotExist())
-            return Status.NOTEXIST;
-        if (isInvalid())
-            return Status.INVALID;
-        if (isNull())
-            return Status.NULL;
-        
-        return Status.PRESENT;
+    public ResultStatus getStatus() {
+        return mapData(
+                returnNull(),
+                (value, exception) -> {
+                    return ResultStatus.getStatus(value, exception);
+                });
     }
     
     //== Validation ==
@@ -803,6 +814,29 @@ public abstract class Result<DATA>
                 }
         );
     }
+    public final Result<DATA> validateResultNotExist() {
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
+                    if (exception instanceof ResultNotExistException)
+                        return newException(new ValidationException(exception));
+                    
+                    return this;
+                }
+        );
+    }
+    public final Result<DATA> validateNoMoreResult() {
+        return mapData(
+                returnValueException(),
+                (value, exception)->{
+                    if (exception instanceof NoMoreResultException)
+                        return newException(new ValidationException(exception));
+                    
+                    return this;
+                }
+        );
+    }
+    
     public final Result<DATA> validate(Predicate<? super DATA> checker, String message) {
         return mapData(
                 returnValueException(),

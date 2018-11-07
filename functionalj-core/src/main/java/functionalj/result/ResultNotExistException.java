@@ -1,7 +1,7 @@
 package functionalj.result;
 
 @SuppressWarnings("javadoc")
-public class ResultNotExistException extends RuntimeException {
+public class ResultNotExistException extends ResultNotAvailableException {
     
     private static final long serialVersionUID = -1710800832797536830L;
 

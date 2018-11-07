@@ -29,7 +29,7 @@ public class RefBuilder<DATA> {
     }
     @SuppressWarnings("unchecked")
     public Ref<DATA> defaultToResult(Result<DATA> result) {
-        val res = (result != null) ? result : (Result<DATA>)Result.ofNotAvailable();
+        val res = (result != null) ? result : (Result<DATA>)Result.ofNotExist();
         val ref = new RefOf.FromResult<DATA>(dataClass, res);
         return ref;
     }

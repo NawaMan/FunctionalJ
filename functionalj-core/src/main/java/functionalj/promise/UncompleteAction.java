@@ -2,7 +2,6 @@ package functionalj.promise;
 
 import java.util.concurrent.TimeUnit;
 
-import functionalj.result.OnStart;
 import functionalj.result.Result;
 
 @SuppressWarnings("javadoc")
