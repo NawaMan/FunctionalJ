@@ -144,7 +144,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     //    result          -> done.
     //      result.cancelled -> aborted
     //      result.completed -> completed
-    private final Map<Subscription<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>();
+    private final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>();
     private final List<FuncUnit1<Result<DATA>>>                    eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
     
     private final AtomicReference<Object> dataRef = new AtomicReference<>();
@@ -298,7 +298,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (isDone != null)
             return isDone.booleanValue();
             
-        val subscribers = new HashMap<Subscription<DATA>, FuncUnit1<Result<DATA>>>(consumers);
+        val subscribers = new HashMap<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>>(consumers);
         this.consumers.clear();
         
         val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(this.eavesdroppers);
@@ -331,7 +331,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     protected void handleResultConsumptionExcepion(
-            Subscription<DATA>      subscription,
+            SubscriptionRecord<DATA>      subscription,
             FuncUnit1<Result<DATA>> consumer,
             Result<DATA>            result) {
     }
@@ -364,10 +364,10 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return !isDone();
     }
     
-    boolean isSubscribed(Subscription<DATA> subscription) {
+    boolean isSubscribed(SubscriptionRecord<DATA> subscription) {
         return consumers.containsKey(subscription);
     }
-    void unsubscribe(Subscription<DATA> subscription) {
+    void unsubscribe(SubscriptionRecord<DATA> subscription) {
         consumers.remove(subscription);
         abortWhenNoSubscription();
     }
@@ -377,8 +377,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             abort("No more listener.");
     }
     
-    private Subscription<DATA> listen(boolean isEavesdropping, FuncUnit1<Result<DATA>> resultConsumer) {
-        val subscription = new Subscription<DATA>(this);
+    private SubscriptionRecord<DATA> listen(boolean isEavesdropping, FuncUnit1<Result<DATA>> resultConsumer) {
+        val subscription = new SubscriptionRecord<DATA>(this);
         if (isEavesdropping)
              eavesdroppers.add(resultConsumer);
         else consumers    .put(subscription, resultConsumer);
@@ -441,11 +441,11 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return new SubscriptionHolder<>(false, wait, this);
     }
     
-    public final Subscription<DATA> subscribe(FuncUnit1<Result<DATA>> resultConsumer) {
+    public final SubscriptionRecord<DATA> subscribe(FuncUnit1<Result<DATA>> resultConsumer) {
         return subscribe(Wait.forever(), resultConsumer);
     }
     
-    public final Subscription<DATA> subscribe(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
+    public final SubscriptionRecord<DATA> subscribe(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         return doSubscribe(false, wait, resultConsumer);
     }
     
@@ -457,11 +457,11 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return new SubscriptionHolder<>(true, wait, this);
     }
     
-    public final Subscription<DATA> eavesdrop(FuncUnit1<Result<DATA>> resultConsumer) {
+    public final SubscriptionRecord<DATA> eavesdrop(FuncUnit1<Result<DATA>> resultConsumer) {
         return doSubscribe(true, Wait.forever(), resultConsumer);
     }
     
-    public final Subscription<DATA> eavesdrop(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
+    public final SubscriptionRecord<DATA> eavesdrop(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         return doSubscribe(true, wait, resultConsumer);
     }
     
@@ -472,12 +472,12 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     @SuppressWarnings("unchecked")
-    final Subscription<DATA> doSubscribe(boolean isEavesdropping, Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
+    final SubscriptionRecord<DATA> doSubscribe(boolean isEavesdropping, Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         val toRunNow           = new AtomicBoolean(false);
-        val returnSubscription = (Subscription<DATA>)synchronouseOperation(()->{
+        val returnSubscription = (SubscriptionRecord<DATA>)synchronouseOperation(()->{
             val data = dataRef.get();
             if (data instanceof Result) {
-                val subscription = new Subscription<DATA>(this);
+                val subscription = new SubscriptionRecord<DATA>(this);
                 toRunNow.set(true);
                 return subscription;
             }

@@ -259,7 +259,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     
     public DeferAction<DATA> subscribe(
             FuncUnit1<Result<DATA>>       resultConsumer,
-            FuncUnit1<Subscription<DATA>> subscriptionConsumer) {
+            FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
         val subscription = promise.subscribe(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
@@ -268,7 +268,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     public DeferAction<DATA> subscribe(
             Wait                          wait,
             FuncUnit1<Result<DATA>>       resultConsumer,
-            FuncUnit1<Subscription<DATA>> subscriptionConsumer) {
+            FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
         val subscription = promise.subscribe(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
@@ -323,7 +323,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
         private final DeferAction<D> action;
         private final int            count;
         private final Result[]       results;
-        private final Subscription[] subscriptions;
+        private final SubscriptionRecord[] subscriptions;
         private final AtomicBoolean  isDone;
         private final Promise<D>     promise;
         
@@ -332,7 +332,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             this.mergeFunc     = mergeFunc;
             this.count         = hasPromises.size();
             this.results       = new Result[count];
-            this.subscriptions = new Subscription[count];
+            this.subscriptions = new SubscriptionRecord[count];
             this.isDone        = new AtomicBoolean(false);
             
             val promises = hasPromises

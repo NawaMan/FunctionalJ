@@ -7,7 +7,7 @@ import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class Subscription<DATA> implements HasPromise<DATA> {
+public class SubscriptionRecord<DATA> implements HasPromise<DATA> {
     
     public static enum SubscriptionStatus {
         AWAITING, UNSUBSCRIBED, CANCELLED, COMPLETED;
@@ -34,7 +34,7 @@ public class Subscription<DATA> implements HasPromise<DATA> {
     
     private final Promise<DATA> promise;
     
-    Subscription(Promise<DATA> promise) {
+    SubscriptionRecord(Promise<DATA> promise) {
         this.promise = Objects.requireNonNull(promise);
     }
     
@@ -57,7 +57,7 @@ public class Subscription<DATA> implements HasPromise<DATA> {
         
         return SubscriptionStatus.AWAITING;
     }
-    public Subscription<DATA> unsubscribe() {
+    public SubscriptionRecord<DATA> unsubscribe() {
         promise.unsubscribe(this);
         return this;
     }

@@ -43,7 +43,7 @@ public class Loop<DATA> extends Retry<DATA> {
         val shouldStop      = shouldStop();
         val actionBuilder   = config.createBuilder(supplier);
         val onCompleteRef   = new AtomicReference<FuncUnit1<Result<DATA>>>();
-        val subscriptionRef = new AtomicReference<Subscription<DATA>>();
+        val subscriptionRef = new AtomicReference<SubscriptionRecord<DATA>>();
         val onComplete      = (FuncUnit1<Result<DATA>>)(result -> {
             val shouldBreak = shouldStop.apply(result);
             if (shouldBreak) {

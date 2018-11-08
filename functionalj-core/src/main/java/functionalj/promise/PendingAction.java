@@ -52,7 +52,7 @@ public class PendingAction<DATA> extends UncompleteAction<DATA> implements Pipea
     
     public PendingAction<DATA> subscribe(
             FuncUnit1<Result<DATA>>       resultConsumer,
-            FuncUnit1<Subscription<DATA>> subscriptionConsumer) {
+            FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
         val subscription = promise.subscribe(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
@@ -61,7 +61,7 @@ public class PendingAction<DATA> extends UncompleteAction<DATA> implements Pipea
     public PendingAction<DATA> subscribe(
             Wait                          wait,
             FuncUnit1<Result<DATA>>       resultConsumer,
-            FuncUnit1<Subscription<DATA>> subscriptionConsumer) {
+            FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
         val subscription = promise.subscribe(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;

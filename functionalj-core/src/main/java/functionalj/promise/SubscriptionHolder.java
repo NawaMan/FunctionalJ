@@ -7,10 +7,10 @@ import java.util.function.Consumer;
 
 import functionalj.result.Result;
 
-public class SubscriptionHolder<DATA> extends Subscription<DATA> {
+public class SubscriptionHolder<DATA> extends SubscriptionRecord<DATA> {
     
     private final AtomicReference<Consumer<Result<DATA>>> consumer = new AtomicReference<Consumer<Result<DATA>>>(null);
-    private final Subscription<DATA> subscription;
+    private final SubscriptionRecord<DATA> subscription;
     
     SubscriptionHolder(boolean isEavesdropping, Wait wait, Promise<DATA> promise) {
         super(promise);
