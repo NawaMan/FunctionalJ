@@ -60,7 +60,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionHandler.value().apply(e);
+            throw ThrowFuncs.exceptionTranformer.value().apply(e);
         }
     }
     

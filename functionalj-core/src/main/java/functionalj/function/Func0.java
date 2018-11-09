@@ -49,7 +49,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionHandler.value().apply(e);
+            throw ThrowFuncs.exceptionTranformer.value().apply(e);
         }
     }
     

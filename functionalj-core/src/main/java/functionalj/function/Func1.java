@@ -70,7 +70,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionHandler.value().apply(e);
+            throw ThrowFuncs.exceptionTranformer.value().apply(e);
         }
     }
     public default OUTPUT applyTo(INPUT input) {

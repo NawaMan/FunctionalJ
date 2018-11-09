@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 
 // TODO - Add Integer length here to help with a few operations.
@@ -76,10 +77,10 @@ public class FuncListStream<SOURCE, DATA>
     }
     
     @Override
-    public Stream<DATA> stream() {
+    public StreamPlus<DATA> stream() {
         Stream<SOURCE> theStream = getSourceStream();
         Stream<DATA>   newStream = action.apply(theStream);
-        return newStream;
+        return StreamPlus.from(newStream);
     }
     
     public boolean isLazy() {

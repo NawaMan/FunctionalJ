@@ -1,16 +1,27 @@
 package functionalj.environments;
 
+import static functionalj.function.Func.f;
+import static functionalj.ref.Run.With;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.InterruptedRuntimeException;
+import functionalj.function.FuncUnit1;
+import functionalj.functions.ThrowFuncs;
+import functionalj.list.FuncList;
+import functionalj.ref.ComputeBody;
+import functionalj.ref.RunBody;
+import functionalj.stream.BlockingQueueIteratorPlus;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
@@ -95,6 +106,95 @@ public final class Console {
         
     }
     
+    public static class StubRecord<DATA> {
+        
+        private final DATA             data;
+        private final FuncList<String> outLines;
+        private final FuncList<String> errLines;
+        private final FuncList<String> inLines;
+        
+        public StubRecord(DATA data, FuncList<String> outLines, FuncList<String> errLines, FuncList<String> inLines) {
+            this.data     = data;
+            this.outLines = outLines;
+            this.errLines = errLines;
+            this.inLines  = inLines;
+        }
+        
+        public DATA getData() {
+            return data;
+        }
+        
+        public StreamPlus<String> outLines() {
+            return outLines.stream();
+        }
+        public StreamPlus<String> errLines() {
+            return errLines.stream();
+        }
+        public StreamPlus<String> inLines() {
+            return inLines.stream();
+        }
+        
+        public String toString() {
+            return "++++++++++++++++++++\n" +
+                   "Data: " + data + "\n" + 
+                   "outLines(" + outLines.size() + "): \n    " + outLines.joining("\n    ") + "\n" +
+                   "errLines(" + errLines.size() + "): \n    " + errLines.joining("\n    ") + "\n" +
+                   "inLines("  + inLines.size()  + "): \n    "  + inLines.joining("\n    ")  + "\n" +
+                   "--------------------"
+                   ;
+        }
+        
+    }
+    
+    public static <E extends Exception> StubRecord<Object> useStub(RunBody<E> body) throws E {
+        return useStub(new ConsoleInQueue(), ()->{ body.run(); return null; });
+    }
+    
+    public static <D, E extends Exception> StubRecord<D> useStub(ComputeBody<D, E> body) throws E {
+        return useStub(new ConsoleInQueue(), ()->{ body.run(); return null; });
+    }
+    
+    public static <E extends Exception> StubRecord<Object> useStub(FuncUnit1<ConsoleInQueue> holder, RunBody<E> body) throws E {
+        val inQueue = new ConsoleInQueue();
+        if (holder != null)
+            holder.accept(inQueue);
+        return useStub(inQueue, ()->{ body.run(); return null; });
+    }
+    
+    public static <D, E extends Exception> StubRecord<D> useStub(FuncUnit1<ConsoleInQueue> holder, ComputeBody<D, E> body) throws E {
+        val inQueue = new ConsoleInQueue();
+        if (holder != null)
+            holder.accept(inQueue);
+        return useStub(inQueue, ()->{ body.run(); return null; });
+    }
+    
+    public static <E extends Exception> StubRecord<Object> useStub(Stream<String> inLines, RunBody<E> body) throws E {
+        return useStub(inLines, ()->{ body.run(); return null; });
+    }
+    
+    public static <E extends Exception> StubRecord<Object> useStub(ConsoleInQueue inQueue, RunBody<E> body) throws E {
+        return useStub(inQueue, ()->{ body.run(); return null; });
+    }
+    
+    public static <D, E extends Exception> StubRecord<D> useStub(Stream<String> inLines, ComputeBody<D, E> body) throws E {
+        val inQueue = new ConsoleInQueue(StreamPlus.from(inLines).toList());
+        return useStub(true, inQueue, body);
+    }
+    
+    public static <D, E extends Exception> StubRecord<D> useStub(ConsoleInQueue inQueue, ComputeBody<D, E> body) throws E {
+        return useStub(false, inQueue, body);
+    }
+    private static <D, E extends Exception> StubRecord<D> useStub(boolean isInStreamDone, ConsoleInQueue inQueue, ComputeBody<D, E> body) throws E {
+        val stub = new Console.Stub(isInStreamDone, inQueue);
+        val data = With(Env.refs.console.butWith(stub)).run(body);
+        stub.flush();
+        val outLines = stub.outLines().toImmutableList();
+        val errLines = stub.errLines().toImmutableList();
+        val inLines  = stub.recordedInLines().toImmutableList();
+        val result   = new StubRecord<D>(data, outLines, errLines, inLines);
+        return result;
+    }
+    
     public static class System extends Instance {
         
         public static Instance instance = new System();
@@ -161,12 +261,37 @@ public final class Console {
     
     public static class Stub extends Instance {
         
+        public static String newEndValue() {
+            return UUID.randomUUID().toString();
+        }
+        
         private final AtomicReference<ConcurrentLinkedQueue<String>> outTexts = new AtomicReference<>(new ConcurrentLinkedQueue<String>());
         private final AtomicReference<ConcurrentLinkedQueue<String>> errTexts = new AtomicReference<>(new ConcurrentLinkedQueue<String>());
         private final ConcurrentLinkedQueue<String> outLines = new ConcurrentLinkedQueue<String>();
         private final ConcurrentLinkedQueue<String> errLines = new ConcurrentLinkedQueue<String>();
         
-        private final ConcurrentLinkedQueue<String> lines = new ConcurrentLinkedQueue<String>();
+        private final ConcurrentLinkedQueue<String>     inLines  = new ConcurrentLinkedQueue<String>();
+        private final ConsoleInQueue                    inQueue;
+        private final BlockingQueueIteratorPlus<String> lines;
+        private final FuncUnit1<String>                 putInLine;
+        
+        public Stub() {
+            this(false, new ConsoleInQueue());
+        }
+        public Stub(Collection<String> inQueue) {
+            this(true, new ConsoleInQueue(inQueue));
+        }
+        public Stub(ConsoleInQueue inQueue) {
+            this(false, inQueue);
+        }
+        public Stub(boolean inStreamEnded, ConsoleInQueue inQueue) {
+            this.inQueue   = (inQueue != null) ? inQueue : new ConsoleInQueue();
+            this.lines     = new BlockingQueueIteratorPlus<String>(this.inQueue.getEndValue(), this.inQueue);
+            this.putInLine = f((String line) -> this.inQueue.put(line)).carelessly();
+            
+            if (inStreamEnded)
+                this.inQueue.end();
+        }
         
         public StreamPlus<String> outLines() {
             return StreamPlus.from(outLines.stream());
@@ -229,6 +354,18 @@ public final class Console {
             return errPrintln("");
         }
         
+        public void flush() {
+            val outs = outTexts.get();
+            if ((outs != null) && !outs.isEmpty()) {
+                outPrintln();
+            }
+            
+            val errs = errTexts.get();
+            if ((errs != null) && !errs.isEmpty()) {
+                errPrintln();
+            }
+        }
+        
         private void println(Object line, 
                 AtomicReference<ConcurrentLinkedQueue<String>> texts,
                 ConcurrentLinkedQueue<String>                  lines) {
@@ -250,44 +387,52 @@ public final class Console {
         }
         
         public Stub addInLines(String ... lines) {
-            Arrays.stream(lines).forEach(line -> this.lines.add(line));
+            Arrays.stream(lines).forEach(putInLine);
             return this;
         }
         public Stub addInLines(Iterable<String> lines) {
-            lines.forEach(line -> this.lines.add(line));
+            lines.forEach(putInLine);
             return this;
         }
         public Stub addInLines(Iterator<String> lines) {
             while (lines.hasNext()) {
                 val line = lines.next();
-                this.lines.add(line);
+                putInLine.accept(line);
             }
             return this;
         }
         public Stub addInLines(Stream<String> lines) {
-            lines.forEach(line -> this.lines.add(line));
+            lines.forEach(putInLine);
             return this;
         }
         
-        public StreamPlus<String> inLines() {
-            return StreamPlus.from(lines.stream());
+        public Stub endInStream() {
+            inQueue.end();
+            return this;
+        }
+        
+        public StreamPlus<String> remainingInLines() {
+            return StreamPlus.from(lines.remainingValues());
+        }
+        public StreamPlus<String> recordedInLines() {
+            return StreamPlus.from(inLines.stream());
         }
         public void clearInLines() {
-            lines.clear();
+            inQueue.clear();
         }
         
         @Override
         public String readln() {
-            String currentLine = null;
-            while ((currentLine = lines.poll()) == null) {
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(java.lang.System.in))) {
-                    br.lines().forEach(lines::add);
-                } catch (IOException e) {
-                    throw new InterruptedRuntimeException(e);
-                }
+            String currentLine;
+            try {
+                currentLine = inQueue.take();
+                inLines.add("" + currentLine);
+                return currentLine;
+            } catch (InterruptedException e) {
+                throw ThrowFuncs.exceptionTranformer.get().apply(e);
             }
-            return currentLine;
         }
+        
     }
     
 }

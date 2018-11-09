@@ -42,7 +42,13 @@ public class Topic<DATA> {
         subscriptions
             .get()
             .filter (Subscription::isActive)
-            .forEach(sub -> sub.notifyNext(result));
+            .forEach(sub -> {
+                try {
+                    sub.notifyNext(result);
+                } catch (Throwable e) {
+                    // TODO: handle exception
+                }
+            });
     }
     
     public Subscription<DATA> subscribe(FuncUnit1<DATA> subscribe) {

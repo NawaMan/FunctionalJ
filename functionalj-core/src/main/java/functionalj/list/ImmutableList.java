@@ -26,6 +26,7 @@ import java.util.ListIterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import lombok.val;
 
@@ -103,8 +104,8 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     }
     
     @Override
-    public Stream<DATA> stream() {
-        return data.stream();
+    public StreamPlus<DATA> stream() {
+        return StreamPlus.from(data.stream());
     }
     
     public boolean isLazy() {

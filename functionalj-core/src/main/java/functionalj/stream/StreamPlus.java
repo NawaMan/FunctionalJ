@@ -71,6 +71,9 @@ public interface StreamPlus<DATA>
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> StreamPlus<D> from(Stream<D> stream) {
+        if (stream == null)
+            return StreamPlus.empty();
+        
         return (stream instanceof StreamPlus)
                 ? (StreamPlus)stream
                 : (StreamPlus)(()->stream);
@@ -90,12 +93,22 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(Stream.empty());
     }
     
+    // Because people know this.
     @SafeVarargs
     public static <D> StreamPlus<D> concat(Stream<D> ... streams) {
         return StreamPlus.of(streams).flatMap(Func.themAll());
     }
     @SafeVarargs
     public static <D> StreamPlus<D> concat(Supplier<Stream<D>> ... streams) {
+        return StreamPlus.of(streams).map(Supplier::get).flatMap(Func.themAll());
+    }
+    // To avoid name conflict with String.concat
+    @SafeVarargs
+    public static <D> StreamPlus<D> combine(Stream<D> ... streams) {
+        return StreamPlus.of(streams).flatMap(Func.themAll());
+    }
+    @SafeVarargs
+    public static <D> StreamPlus<D> combine(Supplier<Stream<D>> ... streams) {
         return StreamPlus.of(streams).map(Supplier::get).flatMap(Func.themAll());
     }
     public static <D> StreamPlus<D> generate(Supplier<D> supplier) {

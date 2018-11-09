@@ -9,7 +9,6 @@ import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
@@ -40,7 +39,7 @@ public interface ReadOnlyList<DATA>
     }
     
     @Override
-    public Stream<DATA> stream();
+    public StreamPlus<DATA> stream();
     
     @Override
     public default ImmutableList<DATA> toImmutableList() {
@@ -126,7 +125,7 @@ public interface ReadOnlyList<DATA>
         val subList = stream()
                 .skip(fromIndexInclusive).limit(length)
                 .collect(Collectors.toList());
-        return (ReadOnlyList<DATA>)(()->subList.stream());
+        return (ReadOnlyList<DATA>)(()->StreamPlus.from(subList.stream()));
     }
     
     @Override

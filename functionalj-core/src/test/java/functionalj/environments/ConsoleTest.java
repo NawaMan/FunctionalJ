@@ -6,9 +6,11 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
+import functionalj.promise.DeferAction;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
@@ -109,13 +111,175 @@ public class ConsoleTest {
         With(Env.refs.console.butWith(stub))
         .run(()->{
             stub.addInLines("One", "Two");
+            stub.endInStream();
             
             assertEquals("One", Console.readln());
             assertEquals("Two", Console.readln());
-            assertEquals(0L,    stub.inLines().count());
+            assertEquals(0L,    stub.remainingInLines().count());
             
             stub.clearInLines();
         });
+    }
+    
+    @Test
+    public void testUseStub_Done() {
+        val records = Console.useStub(StreamPlus.of("One", "Two", "Three", "Four"), ()->{
+            Console.outPrint(Console.readln());
+            Console.errPrint(Console.readln());
+            Console.outPrintln(Console.readln());
+            Console.errPrintln(Console.readln());
+        });
+        assertEquals(
+                "++++++++++++++++++++\n" + 
+                "Data: null\n" + 
+                "outLines(1): \n" + 
+                "    OneThree\n" + 
+                "errLines(1): \n" + 
+                "    TwoFour\n" + 
+                "inLines(4): \n" + 
+                "    One\n" + 
+                "    Two\n" + 
+                "    Three\n" + 
+                "    Four\n" + 
+                "--------------------",
+                records.toString());
+    }
+    
+    @Test
+    public void testUseStub_Delay() {
+        val queue = new ConsoleInQueue();
+        queue.add("One");
+        queue.add("Two");
+        
+        new Thread(()->{
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+            }
+            queue.add("Three");
+            queue.add("Four");
+            queue.end();
+        }).start();
+        
+        val records = Console.useStub(queue, ()->{
+            Console.outPrint(Console.readln());
+            Console.errPrint(Console.readln());
+            Console.outPrintln(Console.readln());
+            Console.errPrintln(Console.readln());
+        });
+        assertEquals(
+                "++++++++++++++++++++\n" + 
+                "Data: null\n" + 
+                "outLines(1): \n" + 
+                "    OneThree\n" + 
+                "errLines(1): \n" + 
+                "    TwoFour\n" + 
+                "inLines(4): \n" + 
+                "    One\n" + 
+                "    Two\n" + 
+                "    Three\n" + 
+                "    Four\n" + 
+                "--------------------",
+                records.toString());
+    }
+    
+    @Test
+    public void testUseStub_NoIn() {
+        val records = Console.useStub(()->{
+            Console.outPrintln("out.");
+            Console.errPrintln("ERR!");
+        });
+        assertEquals(
+                "++++++++++++++++++++\n" + 
+                "Data: null\n" + 
+                "outLines(1): \n" + 
+                "    out.\n" + 
+                "errLines(1): \n" + 
+                "    ERR!\n" + 
+                "inLines(0): \n" + 
+                "    \n" + 
+                "--------------------",
+                records.toString());
+    }
+    
+    @Test
+    public void testUseStub_Holder() {
+        // Umm - Not as easy to use as first thought. -- We have to wait until the queue is set.
+        val inQueue = new AtomicReference<ConsoleInQueue>();
+        new Thread(()->{
+            try {
+                Thread.sleep(50);
+                while (inQueue.get() == null) {
+                    Thread.sleep(1);
+                }
+            } catch (InterruptedException e) {
+            }
+            val queue = inQueue.get();
+            queue.add("Three");
+            queue.add("Four");
+            queue.end();
+        }).start();
+        
+        val records = Console.useStub(inQueue::set, ()->{
+            Console.outPrintln("out.");
+            Console.errPrintln("ERR!");
+            Console.outPrintln(Console.readln());
+            Console.errPrintln(Console.readln());
+        });
+        assertEquals(
+                "++++++++++++++++++++\n" + 
+                "Data: null\n" + 
+                "outLines(2): \n" + 
+                "    out.\n" + 
+                "    Three\n" + 
+                "errLines(2): \n" + 
+                "    ERR!\n" + 
+                "    Four\n" + 
+                "inLines(2): \n" + 
+                "    Three\n" + 
+                "    Four\n" + 
+                "--------------------",
+                records.toString());
+    }
+    
+    @Test
+    public void testUseStub_Holder_Promise() {
+        // This might be a bit more useful as we can have UI interact with this.
+        val action = DeferAction.of(ConsoleInQueue.class).subscribe(inQueueResult -> {
+            inQueueResult.ifPresent(inQueue -> {
+                new Thread(()->{
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                    }
+                    inQueue.add("Three");
+                    inQueue.add("Four");
+                    inQueue.end();
+                }).start();
+            });
+        })
+        .start();
+        
+        val records = Console.useStub(action::complete, ()->{
+            Console.outPrintln("out.");
+            Console.errPrintln("ERR!");
+            Console.outPrintln(Console.readln());
+            Console.errPrintln(Console.readln());
+        });
+        assertEquals(
+                "++++++++++++++++++++\n" + 
+                "Data: null\n" + 
+                "outLines(2): \n" + 
+                "    out.\n" + 
+                "    Three\n" + 
+                "errLines(2): \n" + 
+                "    ERR!\n" + 
+                "    Four\n" + 
+                "inLines(2): \n" + 
+                "    Three\n" + 
+                "    Four\n" + 
+                "--------------------",
+                records.toString());
     }
     
 }

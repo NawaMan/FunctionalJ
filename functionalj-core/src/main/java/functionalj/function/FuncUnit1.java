@@ -26,7 +26,7 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionHandler.value().apply(e);
+            throw ThrowFuncs.exceptionTranformer.value().apply(e);
         }
     }
     

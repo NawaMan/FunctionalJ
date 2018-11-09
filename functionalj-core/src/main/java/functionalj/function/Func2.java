@@ -63,7 +63,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionHandler.value().apply(e);
+            throw ThrowFuncs.exceptionTranformer.value().apply(e);
         }
     }
     
