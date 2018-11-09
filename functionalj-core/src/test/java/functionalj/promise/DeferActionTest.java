@@ -1,7 +1,9 @@
 package functionalj.promise;
 
 import static functionalj.functions.TimeFuncs.Sleep;
+import static functionalj.lens.Access.theInteger;
 import static functionalj.promise.DeferAction.run;
+import static functionalj.ref.Run.With;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,7 +12,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +29,8 @@ import java.util.stream.IntStream;
 
 import org.junit.Test;
 
-import functionalj.function.Func;
+import functionalj.environments.Console;
+import functionalj.environments.Env;
 import functionalj.function.Func0;
 import functionalj.functions.TimeFuncs;
 import functionalj.list.FuncList;
@@ -37,6 +42,28 @@ public class DeferActionTest {
     
     private void assertStrings(String str, Object obj) {
         assertEquals(str, "" + obj);
+    }
+    
+    @Test
+    public void testLazyStart() throws InterruptedException {
+        val action = DeferAction.from(()->40)
+                .map(i -> i + 1);
+        
+        val promise = action.getPromise();
+        assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", action .getCurrentResult().toString());
+        assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", promise.getCurrentResult().toString());
+        
+        val add1 = theInteger.add(1).defer();
+        val answer = add1.apply(promise);
+        assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", action .getCurrentResult().toString());
+        assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", promise.getCurrentResult().toString());
+        
+        answer.start();
+        Thread.sleep(100);
+        assertEquals("Result:{ Value: 41 }", action .getCurrentResult().toString());
+        assertEquals("Result:{ Value: 41 }", promise.getCurrentResult().toString());
+        
+        assertEquals("Result:{ Value: 42 }", answer.getResult().toString());
     }
     
     @Test
@@ -76,7 +103,7 @@ public class DeferActionTest {
         Thread.sleep(50);
         action.abort();
         
-        assertTrue(endRef.get() < 100);
+        assertTrue(endRef.get() < 150);
         assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException }", action.getResult());
     }
     
@@ -137,7 +164,7 @@ public class DeferActionTest {
         } catch (UncheckedInterruptedException e) {
             val end = System.currentTimeMillis();
             log.add("End: " + (100*((end - start) / 100)));
-            log.add("Result: " + action.getCurentResult());
+            log.add("Result: " + action.getCurrentResult());
             assertStrings("[Start: 0, End: 500, Result: Result:{ Exception: functionalj.result.ResultNotReadyException }]", log);
         }
     }
@@ -619,27 +646,36 @@ public class DeferActionTest {
     
     @Test
     public void testInterrupt() throws InterruptedException {
-        val latch = new CountDownLatch(1);
-        
-        val startTime     = System.currentTimeMillis();
-        val pendingAction = DeferAction.run(()->{
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            latch.countDown();
-        }).subscribe(result -> {
-            System.out.println(result);
+        val stub = new Console.Stub();
+        With(Env.refs.console.butWith(stub))
+        .run(()->{
+            val latch = new CountDownLatch(1);
+            val subs  = Run.getCurrentSubstitutions();
+            val startTime     = System.currentTimeMillis();
+            val pendingAction = DeferAction.run(()->{
+                Run.with(subs).run(()->{
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        val buffer = new ByteArrayOutputStream();
+                        e.printStackTrace(new PrintStream(buffer));
+                        Console.errPrintln(buffer.toString());
+                    }
+                    latch.countDown();
+                });
+            }).subscribe(result -> {
+                Console.outPrintln(result);
+            });
+            
+            Thread.sleep(50);
+            pendingAction.abort();
+            
+            latch.await();
+            val diffTime = System.currentTimeMillis() - startTime;
+            
+            assertTrue("Taking too long", diffTime < 1000);
         });
-        
-        Thread.sleep(50);
-        pendingAction.abort();
-        
-        latch.await();
-        val diffTime = System.currentTimeMillis() - startTime;
-        
-        assertTrue("Taking too long", diffTime < 1000);
+        assertEquals("java.lang.InterruptedException: sleep interrupted", stub.errLines().limit(1).joining(", "));
     }
     
     @Test
@@ -744,31 +780,6 @@ public class DeferActionTest {
         action.abort("Can't wait.");
         
         assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: Can't wait. }", action.getResult());
-    }
-    
-    @Test
-    public void testDeferMethod() throws InterruptedException {
-        val addDefer = Func.f((Integer a, Integer b)->(a + b)).defer();
-        val mulDefer = Func.f((Integer a, Integer b)->(a * b)).defer();
-        
-        val a = Sleep(50).thenReturn(20).defer();
-        val b = Sleep(50).thenReturn( 1).defer();
-        val c = Sleep(50).thenReturn( 2).defer();
-        
-        val r1 = addDefer.apply(a, b);
-        val r2 = mulDefer.apply(addDefer.apply(a, b), c);
-        val r3 = addDefer
-                .andThen(mulDefer.elevateWith(c))
-                .apply(a, b);
-        val r4 = a.pipe(
-                addDefer.elevateWith(b),
-                mulDefer.elevateWith(c)
-            );
-        
-        assertStrings("Result:{ Value: 21 }", r1.getResult());
-        assertStrings("Result:{ Value: 42 }", r2.getResult());
-        assertStrings("Result:{ Value: 42 }", r3.getResult());
-        assertStrings("Result:{ Value: 42 }", r4.getResult());
     }
     
     @Test

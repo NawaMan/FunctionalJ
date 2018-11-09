@@ -102,7 +102,7 @@ public class PromiseTest {
                 .subscribe(r -> ref.set("" + r))
                 .start();
         
-        assertStrings("Result:{ Exception: functionalj.result.ResultNotReadyException }", action.getCurentResult());
+        assertStrings("Result:{ Exception: functionalj.result.ResultNotReadyException }", action.getCurrentResult());
         
         action.abort();
         assertEquals("Result:{ Exception: functionalj.result.ResultCancelledException }", ref.get());
