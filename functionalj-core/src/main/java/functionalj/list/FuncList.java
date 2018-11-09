@@ -54,6 +54,9 @@ public interface FuncList<DATA>
     public static <T> FuncList<T> AllOf(T ... data) {
         return ImmutableList.of(data);
     }
+    public static <T> FuncList<T> from(T[] datas) {
+        return ImmutableList.from(datas);
+    }
     public static <T> FuncList<T> from(Collection<T> data) {
         return ImmutableList.from(data);
     }
@@ -162,12 +165,16 @@ public interface FuncList<DATA>
         return toList().toArray(a);
     }
     
-    @SuppressWarnings("unchecked")
-    public default FuncList<DATA> append(DATA ... values) {
+    
+    public default FuncList<DATA> append(DATA value) {
         return deriveWith(stream -> 
-                Stream.concat(stream, Stream.of(values)));
+                Stream.concat(stream, Stream.of(value)));
     }
     
+    public default FuncList<DATA> appendAll(DATA[] values) {
+        return deriveWith(stream -> 
+        Stream.concat(stream, Stream.of(values)));
+    }
     public default FuncList<DATA> appendAll(Collection<? extends DATA> collection) {
         return ((collection == null) || collection.isEmpty())
                 ? this
@@ -804,6 +811,20 @@ public interface FuncList<DATA>
             return (collection == null)
                 ? stream
                 : stream.filter(data -> !collection.contains(data));
+        });
+    }
+    
+    public default FuncList<DATA> exclude(DATA value) {
+        return deriveWith(stream -> {
+            return stream.filter(data -> !Objects.equals(value, data));
+        });
+    }
+    public default FuncList<DATA> excludeAll(DATA[] datas) {
+        val dataList = FuncList.of(datas);
+        return deriveWith(stream -> {
+            return (datas == null)
+                ? stream
+                : stream.filter(data -> !dataList.contains(data));
         });
     }
     

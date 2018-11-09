@@ -2,7 +2,6 @@ package functionalj.list;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -12,6 +11,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import lombok.val;
@@ -52,8 +52,8 @@ public interface ReadOnlyList<DATA>
     }
     
     @Override
-    public default Iterator<DATA> iterator() {
-        return stream().iterator();
+    public default IteratorPlus<DATA> iterator() {
+        return IteratorPlus.from(stream());
     }
     
     //== Access list ==

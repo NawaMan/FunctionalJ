@@ -15,7 +15,7 @@ public class ImmutableListTest {
     @Test
     public void testAppend() {
         assertEquals("[One, Two, Three, Four, Five, Six, Seven]", 
-                ImmutableList.of("One", "Two", "Three", "Four", "Five").append("Six", "Seven").toString());
+                ImmutableList.of("One", "Two", "Three", "Four", "Five").append("Six").append("Seven").toString());
     }
     
     @Test

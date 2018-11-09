@@ -17,6 +17,7 @@ package functionalj.function;
 
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
@@ -172,6 +173,14 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     
     public default FuncUnit1<INPUT> ignoreResult() {
         return FuncUnit1.of((input1)->applyUnsafe(input1));
+    }
+    
+    public default Predicate<INPUT> toPredicate() {
+        return toPredicate(Boolean.TRUE::equals);
+    }
+    public default Predicate<INPUT> toPredicate(Func1<OUTPUT, Boolean> converter) {
+        val converted = this.then(converter);
+        return Func.toPredicate(converted);
     }
     
     /**

@@ -87,11 +87,10 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         });
     }
     
-    @SuppressWarnings("unchecked")
-	public default FuncListAccess<HOST, TYPE, TYPEACCESS> append(TYPE ... data) {
+	public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(TYPE[] data) {
         return subList(this, host -> {
             return apply(host)
-                    .append(data);
+                    .appendAll(data);
         });
     }
     

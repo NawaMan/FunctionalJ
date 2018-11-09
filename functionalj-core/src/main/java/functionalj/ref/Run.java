@@ -14,7 +14,7 @@ public class Run {
     
     @SafeVarargs
     public static SyncRunInstance With(Substitution<?> ... allSubstitutions) {
-        val substitutions = new SyncRunInstance().substitutions().append(allSubstitutions);
+        val substitutions = new SyncRunInstance().substitutions().appendAll(allSubstitutions);
         return new SyncRunInstance(substitutions);
     }
     @SafeVarargs
@@ -27,6 +27,14 @@ public class Run {
     }
     public static SyncRunInstance with(List<Substitution<?>> allSubstitutions) {
         return With(allSubstitutions);
+    }
+    public static SyncRunInstance withAllExcept(Substitution<?> ... excludedSubstitutions) {
+        val currentSubstitutions = Run.getCurrentSubstitutions().excludeIn(FuncList.of(excludedSubstitutions));
+        return With(currentSubstitutions);
+    }
+    public static SyncRunInstance WithAll() {
+        val currentSubstitutions = Run.getCurrentSubstitutions();
+        return With(currentSubstitutions);
     }
     
     public static final SyncRunInstance Synchronously = new SyncRunInstance();
@@ -118,7 +126,7 @@ public class Run {
         }
         
         public SyncRunInstance with(Substitution<?> ... newSubstitutions) {
-            val substitutions = this.substitutions().append(newSubstitutions);
+            val substitutions = this.substitutions().appendAll(newSubstitutions);
             return new SyncRunInstance(substitutions);
         }
         public SyncRunInstance with(List<Substitution<?>> newSubstitutions) {
@@ -158,7 +166,7 @@ public class Run {
         }
         
         public AsyncRunInstance with(Substitution<?> ... newSubstitutions) {
-            val substitutions = this.substitutions().append(newSubstitutions);
+            val substitutions = this.substitutions().appendAll(newSubstitutions);
             return new AsyncRunInstance(substitutions);
         }
         public AsyncRunInstance with(List<Substitution<?>> newSubstitutions) {

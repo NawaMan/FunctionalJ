@@ -78,7 +78,7 @@ public interface StreamPlus<DATA>
     
     @SafeVarargs
     public static <D> StreamPlus<D> of(D ... data) {
-        return StreamPlus.from(Stream.of(data));
+        return ArrayBackedStream.from(data);
     }
     
     @SafeVarargs
@@ -300,8 +300,8 @@ public interface StreamPlus<DATA>
         return new HashSet<DATA>(stream().collect(Collectors.toSet()));
     }
     
-    public default Iterator<DATA> iterator() {
-        return stream().iterator();
+    public default IteratorPlus<DATA> iterator() {
+        return IteratorPlus.from(stream());
     }
     
     public default Spliterator<DATA> spliterator() {

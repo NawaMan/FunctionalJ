@@ -48,6 +48,9 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     public static <T> ImmutableList<T> of(T ... data) {
         return new ImmutableList<>(Arrays.asList(data));
     }
+    public static <T> ImmutableList<T> from(T[] datas) {
+        return new ImmutableList<>(Arrays.asList(datas));
+    }
     public static <T> ImmutableList<T> from(Streamable<T> streamable) {
         if (streamable instanceof ImmutableList)
             return (ImmutableList<T>)streamable;
