@@ -14,7 +14,7 @@ import functionalj.result.AsResult;
 import functionalj.result.Result;
 import lombok.val;
 
-public abstract class Ref<DATA> implements Func0<DATA> {
+public abstract class Ref<DATA> {
     
     private static final ThreadLocal<Entry> refEntry = ThreadLocal.withInitial(()->new Entry(null, null));
     
@@ -60,12 +60,6 @@ public abstract class Ref<DATA> implements Func0<DATA> {
         return null;
     }
     
-    @Override
-    public final DATA applyUnsafe() throws Exception {
-        return getResult().get();
-    }
-    
-    @Override
     public DATA get() {
         return getResult().get();
     }
