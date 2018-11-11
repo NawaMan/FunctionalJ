@@ -11,6 +11,7 @@ import functionalj.list.FuncListStream;
 import functionalj.stream.Streamable;
 import lombok.val;
 
+// TODO - Change this to Peek or Tab
 public final class Log {
     
     private Log() {

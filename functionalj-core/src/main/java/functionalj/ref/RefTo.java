@@ -1,24 +1,16 @@
 package functionalj.ref;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.function.Supplier;
-
+import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 import nawaman.defaultj.api.IProvideDefault;
 
 public class RefTo<DATA> extends Ref<DATA> {
     
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Default {
-        
-    }
-    
     public static final Ref<IProvideDefault> defaultProvider
-            = Ref.of      (IProvideDefault.class)
-            .whenAbsentGet(IProvideDefault.defaultProvider()::get)
-            .defaultFrom  (IProvideDefault.defaultProvider()::get);
+            = Ref.of(IProvideDefault.class)
+            .defaultFrom  (IProvideDefault.defaultProvider()::get)
+            .whenAbsentGet(IProvideDefault.defaultProvider()::get);
     
     private final int hashCode;
     
@@ -38,15 +30,7 @@ public class RefTo<DATA> extends Ref<DATA> {
         return result;
     }
     
-    public Ref<DATA> whenAbsentUse(DATA defaultValue) {
-        // No effect
-        return this;
-    }
-    public Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier) {
-        // No effect
-        return this;
-    }
-    public Ref<DATA> whenAbsentUseDefault() {
+    final Ref<DATA> whenAbsent(Func0<DATA> defaultSupplier) {
         // No effect
         return this;
     }

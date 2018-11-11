@@ -2,24 +2,26 @@ package functionalj.promise;
 
 import java.util.function.Consumer;
 
-import functionalj.environments.Env;
+import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.FuncUnit0;
 import functionalj.ref.Ref;
+import functionalj.supportive.Default;
 
 public class DeferActionConfig {
     
-    private static final DeferActionConfig instance = new DeferActionConfig();
+    @Default
+    public static DeferActionConfig newInstance() {
+        return new DeferActionConfig();
+    }
     
-    public static final Ref<DeferActionConfig> current
-            = Ref.of(DeferActionConfig.class)
-            .defaultTo(DeferActionConfig.instance);
+    public static final Ref<DeferActionConfig> current = Ref.of(DeferActionConfig.class).orTypeDefault();
     
     private static final FuncUnit0 DO_NOTHING = ()->{};
     
-    private boolean            interruptOnCancel = true;
-    private FuncUnit0          onStart           = DO_NOTHING;
-    private Consumer<Runnable> runner            = Env.async();
+    private boolean     interruptOnCancel = true;
+    private FuncUnit0   onStart           = DO_NOTHING;
+    private AsyncRunner runner            = null;
     
     public boolean interruptOnCancel() {
         return interruptOnCancel;
@@ -38,7 +40,7 @@ public class DeferActionConfig {
     public Consumer<Runnable> runner() {
         return runner;
     }
-    public DeferActionConfig runner(Consumer<Runnable> runner) {
+    public DeferActionConfig runner(AsyncRunner runner) {
         this.runner = runner;
         return this;
     }

@@ -2,10 +2,9 @@ package functionalj.promise;
 
 import static functionalj.function.Func.getOrElse;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import functionalj.environments.Env;
+import functionalj.environments.AsyncRunner;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -52,25 +51,23 @@ public abstract class WaitAwhile extends Wait {
     
     public static class WaitAsync extends WaitAwhile {
         
-        private final long time;
-        private final Consumer<Runnable> asyncRunner;
+        private final long        time;
+        private final AsyncRunner asyncRunner;
         
         public WaitAsync(long time) {
             this(time, null);
         }
-        public WaitAsync(long time, Consumer<Runnable> asyncRunner) {
+        public WaitAsync(long time, AsyncRunner asyncRunner) {
             this.time = Math.max(0, time);
-            this.asyncRunner
-                    = (asyncRunner != null)
-                    ? asyncRunner
-                    : Env.async();
+            this.asyncRunner = asyncRunner;
             
         }
         
         @Override
         public WaitSession newSession() {
             val session = new WaitSession();
-            asyncRunner.accept(()->{
+            AsyncRunner.run(asyncRunner, ()->{
+                // TODO - Once scheduling is available, use it.
                 try {
                     Thread.sleep(time);
                 } catch (InterruptedException e) {

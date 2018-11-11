@@ -84,6 +84,8 @@ public interface StreamPlus<DATA>
         return ArrayBackedStream.from(data);
     }
     
+    // TODO - cycleFrom - from supplier.
+    
     @SafeVarargs
     public static <D> StreamPlus<D> cycle(D ... data) {
         return StreamPlus.from(IntStream.iterate(0, i -> i + 1).mapToObj(i -> data[i % data.length]));

@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
@@ -42,28 +43,12 @@ public class Loop<DATA> extends Retry<DATA> {
         
         val shouldStop      = shouldStop();
         val actionBuilder   = config.createBuilder(supplier);
-        val onCompleteRef   = new AtomicReference<FuncUnit1<Result<DATA>>>();
         val subscriptionRef = new AtomicReference<SubscriptionRecord<DATA>>();
-        val onComplete      = (FuncUnit1<Result<DATA>>)(result -> {
-            val shouldBreak = shouldStop.apply(result);
-            if (shouldBreak) {
-                val value = result.value();
-                finalAction.complete(value);
-            } else {
-                subscriptionRef.get().unsubscribe();
-                
-                actionBuilder
-                .build()
-                .subscribe(onCompleteRef.get())
-                .start();
-            }
-        });
-        onCompleteRef.set(onComplete);
+        val onComplete      = new OnComplete<>(actionBuilder, shouldStop, finalAction, subscriptionRef::get);
         
-        val action = actionBuilder.build();
+        val action       = actionBuilder.build();
+        val subscription = action.getPromise().subscribe(onComplete);
         action.start();
-        val promise = action.getPromise();
-        val subscription = promise.subscribe(onComplete);
         subscriptionRef.set(subscription);
         
         return finalAction;
@@ -77,6 +62,42 @@ public class Loop<DATA> extends Retry<DATA> {
             return counter.decrementAndGet() <= 0;
         };
         return stopPredicate;
+    }
+    
+    static class OnComplete<DATA> implements FuncUnit1<Result<DATA>> {
+        
+        private final DeferActionBuilder<DATA>           actionBuilder;
+        private final Func1<Result<DATA>, Boolean>       shouldStop;
+        private final DeferAction<DATA>                  finalAction;
+        private final Supplier<SubscriptionRecord<DATA>> subscriptionRef;
+        
+        public OnComplete(
+                DeferActionBuilder<DATA>           actionBuilder,
+                Func1<Result<DATA>, Boolean>       shouldStop,
+                DeferAction<DATA>                  finalAction,
+                Supplier<SubscriptionRecord<DATA>> subscriptionRef) {
+            this.actionBuilder = actionBuilder;
+            this.shouldStop = shouldStop;
+            this.finalAction = finalAction;
+            this.subscriptionRef = subscriptionRef;
+        }
+        
+        @Override
+        public void acceptUnsafe(Result<DATA> result) throws Exception {
+            val shouldBreak = shouldStop.apply(result);
+            if (shouldBreak) {
+                val value = result.value();
+                finalAction.complete(value);
+            } else {
+                subscriptionRef.get().unsubscribe();
+                
+                actionBuilder
+                .build()
+                .subscribe(this)
+                .start();
+            }
+        }
+        
     }
     
 }

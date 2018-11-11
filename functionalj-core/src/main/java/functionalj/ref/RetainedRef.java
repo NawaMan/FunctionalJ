@@ -5,7 +5,6 @@ import static java.util.Objects.requireNonNull;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import functionalj.environments.Env;
 import functionalj.function.Func0;
@@ -47,22 +46,8 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
         return currentData;
     }
     
-    public Ref<DATA> whenAbsentUse(DATA defaultValue) {
-        val newSourceRef = sourceRef.whenAbsentUse(defaultValue);
-        if (newSourceRef == sourceRef)
-            return this;
-        
-        return new RetainedRef<>(newSourceRef, checker);
-    }
-    public Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier) {
+    final Ref<DATA> whenAbsent(Func0<DATA> defaultSupplier) {
         val newSourceRef = sourceRef.whenAbsentGet(defaultSupplier);
-        if (newSourceRef == sourceRef)
-            return this;
-        
-        return new RetainedRef<>(newSourceRef, checker);
-    }
-    public Ref<DATA> whenAbsentUseDefault() {
-        val newSourceRef = sourceRef.whenAbsentUseDefault();
         if (newSourceRef == sourceRef)
             return this;
         

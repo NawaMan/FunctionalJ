@@ -24,11 +24,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
 
+import functionalj.environments.AsyncRunner;
 import functionalj.environments.Console;
 import functionalj.environments.Env;
 import functionalj.function.Func0;
@@ -438,18 +438,18 @@ public class DeferActionTest {
     }
     
     static class LoggedCreator extends DeferActionCreator {
-        private final List<String>       logs    = Collections.synchronizedList(new ArrayList<String>());
-        private final AtomicInteger      daCount = new AtomicInteger(0);
-        private final Consumer<Runnable> runner;
+        private final List<String>  logs             = Collections.synchronizedList(new ArrayList<String>());
+        private final AtomicInteger deferActionCount = new AtomicInteger(0);
+        private final AsyncRunner   runner;
         public LoggedCreator() {
             this(null);
         }
-        public LoggedCreator(Consumer<Runnable> runner) {
+        public LoggedCreator(AsyncRunner runner) {
             this.runner = runner;
         }
         @Override
-        public <D> DeferAction<D> create(boolean interruptOnCancel, Func0<D> supplier, Runnable onStart, Consumer<Runnable> runner) {
-            val id = daCount.getAndIncrement();
+        public <D> DeferAction<D> create(Func0<D> supplier, Runnable onStart, boolean interruptOnCancel, AsyncRunner runner) {
+            val id = deferActionCount.getAndIncrement();
             logs.add("New defer action: " + id);
             val wrappedSupplier = (Func0<D>)()->{
                 Thread.sleep(50);
@@ -464,7 +464,7 @@ public class DeferActionTest {
                 }
             };
             val theRunner = (this.runner != null) ? this.runner : runner;
-            return DeferActionCreator.instance.create(interruptOnCancel, wrappedSupplier, onStart, theRunner);
+            return DeferActionCreator.instance.create(wrappedSupplier, onStart, interruptOnCancel, theRunner);
         }
         public List<String> logs() {
             return FuncList.from(logs);

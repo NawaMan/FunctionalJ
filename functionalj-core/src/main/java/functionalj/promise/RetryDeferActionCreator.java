@@ -2,8 +2,8 @@ package functionalj.promise;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
+import functionalj.environments.AsyncRunner;
 import functionalj.environments.Env;
 import functionalj.function.Func0;
 import functionalj.function.FuncUnit0;
@@ -22,11 +22,11 @@ public class RetryDeferActionCreator {
             .defaultTo(RetryDeferActionCreator.instance);
     
     public <DATA> DeferAction<DATA> createRetryDeferAction(
-            boolean            interruptOnCancel,
-            FuncUnit0          onStart,
-            Consumer<Runnable> runner,
-            Retry<DATA>        retry,
-            Func0<DATA>        supplier) {
+            boolean     interruptOnCancel,
+            FuncUnit0   onStart,
+            AsyncRunner runner,
+            Retry<DATA> retry,
+            Func0<DATA> supplier) {
         DeferAction<DATA> finalAction = DeferAction.createNew();
         
         val config = new DeferActionConfig()

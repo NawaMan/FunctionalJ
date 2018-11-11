@@ -2,9 +2,7 @@ package functionalj.promise;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.function.Consumer;
-
-import functionalj.environments.Env;
+import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit0;
@@ -17,10 +15,10 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements P
     
     private static final FuncUnit0 DO_NOTHING = ()->{};
     
-    private final Func0<DATA>  supplier;
-    private boolean            interruptOnCancel = true;
-    private FuncUnit0          onStart           = DO_NOTHING;
-    private Consumer<Runnable> runner            = Env.async();
+    private final Func0<DATA> supplier;
+    private boolean           interruptOnCancel = true;
+    private FuncUnit0         onStart           = DO_NOTHING;
+    private AsyncRunner       runner            = null;
     
     @SuppressWarnings("unchecked")
     private Retry<DATA> retry = (Retry<DATA>)Retry.noRetry;
@@ -55,12 +53,12 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements P
         return this;
     }
     
-    Consumer<Runnable> runner() {
+    AsyncRunner runner() {
         return this.runner;
     }
     
-    public DeferActionBuilder<DATA> runner(Consumer<Runnable> runner) {
-        this.runner = (runner != null) ? runner : Env.async();
+    public DeferActionBuilder<DATA> runner(AsyncRunner runner) {
+        this.runner = runner;
         return this;
     }
     

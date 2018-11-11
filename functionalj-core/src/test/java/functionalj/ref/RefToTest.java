@@ -67,14 +67,14 @@ public class RefToTest {
     @Test
     public void testDefaultToDefault() {
         val r = Ref.of(Person.class)
-                .defaultToDefault();
+                .defaultToTypeDefault();
         assertEquals("FLASH!", r.value().zoom().toString());
     }
     
     @Test
     public void testWhenAbsent() {
         val r = Ref.of(Person.class)
-                .whenAbsentUseDefault()
+                .whenAbsentUseTypeDefault()
                 .defaultTo(new Person(new SuperCar()));
         assertEquals("SUPER FLASH!!!!", 
                 r.value()

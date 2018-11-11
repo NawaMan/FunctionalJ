@@ -1,9 +1,5 @@
 package functionalj.ref;
 
-import static functionalj.ref.Else.ElseDefault;
-import static functionalj.ref.Else.ElseGet;
-import static functionalj.ref.Else.ElseUse;
-
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -62,14 +58,8 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
             return result;
         }
         
-        public Ref<DATA> whenAbsentUse(DATA defaultValue) {
-            return new RefOf.FromResult<>(getDataType(), result, ElseUse(defaultValue));
-        }
-        public Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier) {
-            return new RefOf.FromResult<>(getDataType(), result, ElseGet(defaultSupplier));
-        }
-        public Ref<DATA> whenAbsentUseDefault() {
-            return new RefOf.FromResult<>(getDataType(), result, ElseDefault(getDataType()));
+        protected Ref<DATA> whenAbsent(Func0<DATA> whenAbsent) {
+            return new RefOf.FromResult<>(getDataType(), result, whenAbsent);
         }
     }
     
@@ -94,16 +84,30 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
             return result;
         }
         
-        public Ref<DATA> whenAbsentUse(DATA defaultValue) {
-            return new RefOf.FromSupplier<>(getDataType(), supplier, ElseUse(defaultValue));
-        }
-        public Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier) {
-            return new RefOf.FromSupplier<>(getDataType(), supplier, ElseGet(defaultSupplier));
-        }
-        public Ref<DATA> whenAbsentUseDefault() {
-            return new RefOf.FromSupplier<>(getDataType(), supplier, ElseDefault(getDataType()));
+        protected Ref<DATA> whenAbsent(Func0<DATA> whenAbsent) {
+            return new RefOf.FromSupplier<>(getDataType(), supplier, whenAbsent);
         }
         
+    }
+    
+    public static class FromRef<DATA> extends RefOf<DATA> {
+        
+        private final Ref<DATA> anotherRef;
+        
+        FromRef(Class<DATA> dataClass, Ref<DATA> anotherRef, Supplier<DATA> elseSupplier) {
+            super(dataClass, elseSupplier);
+            this.anotherRef = anotherRef;
+        }
+        
+        @Override
+        protected final Result<DATA> findResult() {
+            val result = Result.from(anotherRef.valueSupplier()).whenAbsentGet(whenAbsentSupplier);
+            return result;
+        }
+        
+        protected Ref<DATA> whenAbsent(Func0<DATA> whenAbsent) {
+            return new RefOf.FromRef<>(getDataType(), anotherRef, whenAbsent);
+        }
     }
     
 }

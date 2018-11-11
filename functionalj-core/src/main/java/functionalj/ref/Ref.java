@@ -39,8 +39,8 @@ public abstract class Ref<DATA> {
         return ref.dictate();
     }
     
-    private final Class<DATA>    dataClass;
-    private final Supplier<DATA> whenAbsentSupplier;
+    final Class<DATA>    dataClass;
+    final Supplier<DATA> whenAbsentSupplier;
     
     Ref(Class<DATA> dataClass, Supplier<DATA> whenAbsentSupplier) {
         this.dataClass          = requireNonNull(dataClass);
@@ -139,20 +139,28 @@ public abstract class Ref<DATA> {
         });
     }
     
+    //-- Overriding --
+    
     // TODO - These methods should not be for DictatedRef ... but I don't know how to gracefully takecare of this.
     public final Substitution<DATA> butWith(DATA value) {
-        return new Substitution.Value<DATA>(this, value);
+        return new Substitution.Value<DATA>(this, false, value);
     }
     public final Substitution<DATA> butFrom(Func0<DATA> supplier) {
-        return new Substitution.Supplier<DATA>(this, supplier);
+        return new Substitution.Supplier<DATA>(this, false, supplier);
     }
     
+    abstract Ref<DATA> whenAbsent(Func0<DATA> whenAbsent);
     // These else method has no effect once the Ref become DictatedRef
     // They also has no effect for RefTo.
-    public abstract Ref<DATA> whenAbsentUse(DATA defaultValue);
-    public abstract Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier);
-    public abstract Ref<DATA> whenAbsentUseDefault();
-    
+    public Ref<DATA> whenAbsentUse(DATA defaultValue) {
+        return whenAbsent(WhenAbsent.Use(defaultValue));
+    }
+    public Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier) {
+        return whenAbsent(WhenAbsent.Get(defaultSupplier));
+    }
+    public Ref<DATA> whenAbsentUseDefault() {
+        return whenAbsent(WhenAbsent.UseDefault(getDataType()));
+    }
     public DictatedRef<DATA> dictate() {
         return new DictatedRef<DATA>(this);
     }
@@ -223,7 +231,7 @@ public abstract class Ref<DATA> {
     
     static final <V, E extends Exception> 
             void runWith(List<Substitution<?>> substitutions, RunBody<E> action) throws E {
-        val map = refEntry.get();
+        Entry map = refEntry.get();
         try {
             if (substitutions != null) {
                 for (val substitution : substitutions) {
@@ -234,6 +242,7 @@ public abstract class Ref<DATA> {
                     
                     val newEntry = new Entry(map, substitution);
                     refEntry.set(newEntry);
+                    map = newEntry;
                 }
             }
             

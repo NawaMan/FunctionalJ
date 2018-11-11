@@ -29,7 +29,6 @@ import functionalj.function.FuncUnit2;
 import functionalj.function.NamedExpression;
 import functionalj.pipeable.Pipeable;
 import functionalj.ref.Ref;
-import functionalj.ref.Run;
 import functionalj.result.HasResult;
 import functionalj.result.Result;
 import lombok.val;
@@ -216,16 +215,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         
         val isJustStarted = dataRef.compareAndSet(data, consumers);
         if (isJustStarted) {
-            int listenerCount = consumers.size() + eavesdroppers.size();
-            if (listenerCount <= 1) {
-                Run.with(StartableAction.runSynchromously.butWith(true)).run(()->{
-                    if (isStartAction)  ((StartableAction<DATA>)data).start();
-                    else if (isOnStart) ((OnStart)data).run();
-                });
-            } else {
-                if (isStartAction)  ((StartableAction<DATA>)data).start();
-                else if (isOnStart) ((OnStart)data).run();
-            }
+            if (isStartAction)  ((StartableAction<DATA>)data).start();
+            else if (isOnStart) ((OnStart)data).run();
         }
         return isJustStarted;
     }

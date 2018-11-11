@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
@@ -190,12 +191,12 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     
     
     public static <D> DeferAction<D> create(
-            boolean            interruptOnCancel,
-            Func0<D>           supplier,
-            Runnable           onStart,
-            Consumer<Runnable> runner) {
+            boolean     interruptOnCancel,
+            Func0<D>    supplier,
+            Runnable    onStart,
+            AsyncRunner runner) {
         return DeferActionCreator.current.value()
-                .create(interruptOnCancel, supplier, onStart, runner);
+                .create(supplier, onStart, interruptOnCancel, runner);
     }
     
     private final Runnable task;

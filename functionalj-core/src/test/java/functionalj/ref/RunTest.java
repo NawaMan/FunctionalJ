@@ -1,6 +1,5 @@
 package functionalj.ref;
 
-import static functionalj.ref.Run.Asynchronously;
 import static functionalj.ref.Run.With;
 import static org.junit.Assert.assertEquals;
 
@@ -52,32 +51,36 @@ public class RunTest {
                 .run(()->refA.get() + refB.get() + refC.get()));
     }
     
-    private static final ThreadLocal<String> string = ThreadLocal.withInitial(()->"OriginalValue");
-    
-    @Test
-    public void testAsync() {
-        assertEquals("OriginalValue", string.get());
-        
-        string.set("NewValue");
-        assertEquals("NewValue", string.get());
-        
-        assertEquals("OriginalValue", Asynchronously.run(()->string.get()).getResult().get());
-    }
-    
     @Test
     public void testAsyncWithSubstitution() {
         val refA = Ref.ofValue("A");
         val refB = Ref.ofValue("B");
         val refC = Ref.ofValue("C");
-        With(refB.butWith("b"))
+        With(refB.butWith("b").withinThisThread(true))
         .run(()->{
             assertEquals("AbC", refA.get() + refB.get() + refC.get());
             
             assertEquals("aBc",
+                With(refA.butWith("a"))
+                .and(refC.butWith("c"))
+                .runAsync(()-> refA.get() + refB.get() + refC.get())
+                .getResult().get());
+        });
+    }
+    
+    @Test
+    public void testAsyncWithSubstitution_crossThread() {
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
+        With(refB.butWith("b").withinThisThread(false))
+        .run(()->{
+            assertEquals("AbC", refA.get() + refB.get() + refC.get());
+            
+            assertEquals("abc",
                     With(refA.butWith("a"))
                     .and(refC.butWith("c"))
-                    .asynchronously()
-                    .run(()->refA.get() + refB.get() + refC.get())
+                    .runAsync(()-> refA.get() + refB.get() + refC.get())
                     .getResult().get());
         });
     }

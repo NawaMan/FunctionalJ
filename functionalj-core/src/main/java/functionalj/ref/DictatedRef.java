@@ -2,8 +2,7 @@ package functionalj.ref;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.function.Supplier;
-
+import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -21,19 +20,11 @@ public class DictatedRef<DATA> extends Ref<DATA> {
         return ref.findResult();
     }
     
-    Result<DATA> findOverrideResult() {
+    final Result<DATA> findOverrideResult() {
         return null;
     }
     
-    public Ref<DATA> whenAbsentUse(DATA defaultValue) {
-        // No effect
-        return this;
-    }
-    public Ref<DATA> whenAbsentGet(Supplier<DATA> defaultSupplier) {
-        // No effect
-        return this;
-    }
-    public Ref<DATA> whenAbsentUseDefault() {
+    final Ref<DATA> whenAbsent(Func0<DATA> defaultValue) {
         // No effect
         return this;
     }

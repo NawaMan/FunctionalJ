@@ -142,7 +142,6 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
                 .map   (entry -> entry._2);
     }
     
-    @SuppressWarnings("unchecked")
     @Override
     public FuncMap<KEY, VALUE> with(KEY key, VALUE value) {
         // Find the way to put in it in the same location.

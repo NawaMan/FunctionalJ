@@ -1,6 +1,6 @@
 package functionalj.promise;
 
-import java.util.function.Consumer;
+import functionalj.environments.AsyncRunner;
 
 @SuppressWarnings("javadoc")
 public abstract class Wait {
@@ -17,12 +17,12 @@ public abstract class Wait {
         return new WaitAwhile.WaitAsync(seconds * 1000);
     }
     
-    public static WaitAwhile forMilliseconds(long milliseconds, Consumer<Runnable> threadFacory) {
-        return new WaitAwhile.WaitAsync(milliseconds, threadFacory);
+    public static WaitAwhile forMilliseconds(long milliseconds, AsyncRunner asyncRunner) {
+        return new WaitAwhile.WaitAsync(milliseconds, asyncRunner);
     }
     
-    public static WaitAwhile forSeconds(long seconds, Consumer<Runnable> threadFacory) {
-        return new WaitAwhile.WaitAsync(seconds * 1000, threadFacory);
+    public static WaitAwhile forSeconds(long seconds, AsyncRunner asyncRunner) {
+        return new WaitAwhile.WaitAsync(seconds * 1000, asyncRunner);
     }
     
     
