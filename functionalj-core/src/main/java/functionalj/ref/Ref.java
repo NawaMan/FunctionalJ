@@ -231,18 +231,19 @@ public abstract class Ref<DATA> {
     
     static final <V, E extends Exception> 
             void runWith(List<Substitution<?>> substitutions, RunBody<E> action) throws E {
-        Entry map = refEntry.get();
+        val map = refEntry.get();
         try {
             if (substitutions != null) {
+                Entry currentEntry = map;
                 for (val substitution : substitutions) {
                     if (substitution == null)
                         continue;
                     if (substitution.ref() instanceof DictatedRef)
                         continue;
                     
-                    val newEntry = new Entry(map, substitution);
+                    val newEntry = new Entry(currentEntry, substitution);
                     refEntry.set(newEntry);
-                    map = newEntry;
+                    currentEntry = newEntry;
                 }
             }
             
