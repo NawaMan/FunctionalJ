@@ -12,12 +12,18 @@ public interface SimpleValidator<DATA> extends Validator<DATA> {
     
     public static <D> 
             Func2<
-                ? super D, 
-                ? super Predicate<? super D>, 
-                ? extends ValidationException> exceptionFor(String template) {
+                D, 
+                Predicate<? super D>, 
+                ValidationException> exceptionFor(String template) {
         return (d, p) -> new ValidationException(String.format(template, d, p));
     }
-    
+    public static <D> 
+            Func2<
+                D, 
+                Predicate<? super D>, 
+                ValidationException> exceptionFor(String template, Exception cause) {
+        return (d, p) -> new ValidationException(String.format(template, d, p), cause);
+    }
     
     public Predicate<? super DATA> checker();
     public ValidationException     createException(DATA data);

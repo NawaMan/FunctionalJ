@@ -29,6 +29,7 @@ import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
+import functionalj.validator.SimpleValidator;
 import functionalj.validator.Validator;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
@@ -837,7 +838,8 @@ public abstract class Result<DATA>
         );
     }
     
-    public final Result<DATA> validate(Predicate<? super DATA> checker, String message) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public final Result<DATA> validate(String stringFormat, Predicate<? super DATA> checker) {
         return mapData(
                 returnValueException(),
                 (value, exception)->{
@@ -847,14 +849,18 @@ public abstract class Result<DATA>
                         if (checker.test(value))
                             return this;
                         
-                        return newException(new ValidationException(message));
-                    } catch (Exception e) {
-                        return newException(new ValidationException(message, e));
+                        val validationException = SimpleValidator.exceptionFor(stringFormat).apply(value, (Predicate)checker);
+                        return (Result<DATA>)newException(validationException);
+                    } catch (Exception cause) {
+                        val validationException = SimpleValidator.exceptionFor(stringFormat, cause).apply(value, (Predicate)checker);
+                        return (Result<DATA>)newException(validationException);
                     }
                 }
         );
     }
-    public final <T> Result<DATA> validate(Func1<? super DATA, T> mapper, Predicate<? super T> checker, String message) {
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public final <T> Result<DATA> validate(String stringFormat, Func1<? super DATA, T> mapper, Predicate<? super T> checker) {
         return mapData(
                 returnValueException(),
                 (value, exception)->{
@@ -865,10 +871,12 @@ public abstract class Result<DATA>
                         if (checker.test(target))
                             return this;
                         
-                        return newException(new ValidationException(message));
+                        val validationException = SimpleValidator.exceptionFor(stringFormat).apply(value, (Predicate)checker);
+                        return (Result<DATA>)newException(validationException);
                         
-                    } catch (Exception e) {
-                        return newException(new ValidationException(message, e));
+                    } catch (Exception cause) {
+                        val validationException = SimpleValidator.exceptionFor(stringFormat, cause).apply(value, (Predicate)checker);
+                        return (Result<DATA>)newException(validationException);
                     }
                 });
     }
