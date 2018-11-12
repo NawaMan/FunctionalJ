@@ -23,11 +23,13 @@ import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.pipeable.Pipeable;
@@ -100,7 +102,7 @@ public interface IntStreamPlus extends IntStream {
     }
     
     @Override
-    public default <U> Stream<U> mapToObj(IntFunction<? extends U> mapper) {
+    public default <U> StreamPlus<U> mapToObj(IntFunction<? extends U> mapper) {
         return StreamPlus.from(stream().mapToObj(mapper));
     }
     
@@ -399,6 +401,19 @@ public interface IntStreamPlus extends IntStream {
     
     public default Set<Integer> toSet() {
         return asStream().toSet();
+    }
+    
+    //== Plus ==
+    
+    public default String joining() {
+        return stream()
+                .mapToObj(StrFuncs::toStr)
+                .collect(Collectors.joining());
+    }
+    public default String joining(String delimiter) {
+        return stream()
+                .mapToObj(StrFuncs::toStr)
+                .collect(Collectors.joining(delimiter));
     }
     
 }

@@ -166,7 +166,7 @@ public abstract class Ref<DATA> {
     }
     
     public RetainedRef.Builder<DATA> retained() {
-        return new RetainedRef.Builder<DATA>(this);
+        return new RetainedRef.Builder<DATA>(this, true);
     }
     
     //== Overriability ==
@@ -253,7 +253,7 @@ public abstract class Ref<DATA> {
         }
     }
     
-    static final FuncList<Ref<?>> getRefs() {
+    public static final FuncList<Ref<?>> getCurrentRefs() {
         val set = new HashSet<Ref<?>>();
         Entry entry = refEntry.get();
         while ((entry != null) && (entry.substitution != null)) {

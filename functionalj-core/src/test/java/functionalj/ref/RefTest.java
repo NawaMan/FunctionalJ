@@ -6,10 +6,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.junit.Test;
 
+import functionalj.environments.Time;
+import functionalj.result.Result;
+import functionalj.stream.IntStreamPlus;
 import lombok.val;
 
 public class RefTest {
@@ -240,6 +244,89 @@ public class RefTest {
         assertEquals(1, ref.value().intValue());
         assertEquals(1, ref.value().intValue());
         assertEquals(1, ref.value().intValue());
+    }
+    
+    @Test
+    public void testRetain_crossThread() throws InterruptedException {
+        val state    = new AtomicInteger(42);
+        val counter  = new AtomicInteger(0);
+        val refState = Ref.of(Integer.class).defaultFrom(state::get);
+        val ref      = Ref.of(Integer.class)
+                .defaultFrom(counter::getAndIncrement)
+                .retained()
+                .locally()
+                .when(refState).equals();
+        
+        assertEquals(42, state.get());
+        assertEquals( 0, ref.value().intValue());
+        assertEquals( 0, ref.value().intValue());
+        
+        state.incrementAndGet();
+        assertEquals(43, state.get());
+        assertEquals(1, ref.value().intValue());
+        assertEquals(1, ref.value().intValue());
+        
+        Run.async(()->{
+            Time.sleep(10);
+            val value1 = ref.value();
+            Time.sleep(20);
+            val value2 = ref.value();
+            Time.sleep(100);
+            val value3 = ref.value();
+            assertEquals("1 - 1 - 2", value1 + " - " + value2 + " - " + value3);
+        });
+        
+        Time.sleep(50);
+        state.incrementAndGet();
+        assertEquals(44, state.get());
+        assertEquals(3, ref.value().intValue());
+    }
+    
+    @Test
+    public void testRetain_localThread() throws InterruptedException {
+        val state    = new ThreadLocal<Integer>();
+        val counter  = new AtomicInteger(0);
+        val refState = Ref.of(Integer.class).defaultFrom(state::get);
+        val ref      = Ref.of(Integer.class)
+                .defaultFrom(counter::getAndIncrement)
+                .retained()
+                .locally()
+                .when(refState).equals();
+        
+        state.set(42);
+        
+        assertEquals(42, state.get().intValue());
+        assertEquals( 0, ref.value().intValue());
+        assertEquals( 0, ref.value().intValue());
+        
+        state.set(state.get() + 1);
+        assertEquals(43, state.get().intValue());
+        assertEquals(1, ref.value().intValue());
+        assertEquals(1, ref.value().intValue());
+        
+        
+        val resultRef = new AtomicReference<Result<String>>();
+        Run.async(()->{
+            state.set(42);
+            return IntStreamPlus.infinite()
+            .limit(5)
+            .peek (i -> Time.sleep(20))
+            .map  (i -> ref.value())
+            .joining(" - ");
+        })
+        .subscribe(r -> resultRef.set(r));
+        
+        Time.sleep(50);
+        
+        for (int i = 0; i < 5; i++) {
+            Time.sleep(5);
+            state.set(state.get() + 1);
+            assertEquals(44 + i, state.get().intValue());
+            assertEquals(3 + i, ref.value().intValue());
+        }
+        Time.sleep(200);
+        
+        assertEquals("2 - 2 - 2 - 2 - 2", resultRef.get().value());
     }
     
     @Test

@@ -30,7 +30,7 @@ public class RunTest {
                 With(refA.butWith("a"))
                 .and (refB.butWith("b"))
                 .and (refC.butWith("c"))
-                .run(()->Run.getCurrentSubstitutions());
+                .run(()->Substitution.getCurrentSubstitutions());
         assertEquals("abc", 
                 Run.with(subs)
                 .run(()->refA.get() + refB.get() + refC.get()));
@@ -45,7 +45,7 @@ public class RunTest {
         val subs =
                 With(refB.butWith("b"))
                 .and(refC.butWith("c"))
-                .run(()->Run.getCurrentSubstitutions());
+                .run(()->Substitution.getCurrentSubstitutions());
         assertEquals("Abc", 
                 Run.with(subs)
                 .run(()->refA.get() + refB.get() + refC.get()));
@@ -56,15 +56,52 @@ public class RunTest {
         val refA = Ref.ofValue("A");
         val refB = Ref.ofValue("B");
         val refC = Ref.ofValue("C");
+        With(refB.butWith("b").withinThisThread())
+        .run(()->{
+            assertEquals("AbC", refA.get() + refB.get() + refC.get());
+            
+            assertEquals("a and c should be in effect but B should go back to the original one", "aBc", 
+                With(refA.butWith("a"))
+                .and(refC.butWith("c"))
+                .asynchronously()
+                .run(()-> refA.get() + refB.get() + refC.get())
+                .getResult().get());
+        });
+    }
+    
+    @Test
+    public void testAsyncWithSubstitution_localThread() {
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
         With(refB.butWith("b").withinThisThread(true))
         .run(()->{
             assertEquals("AbC", refA.get() + refB.get() + refC.get());
             
-            assertEquals("aBc",
+            assertEquals("a and c should be in effect but B should go back to the original one", "aBc",
                 With(refA.butWith("a"))
                 .and(refC.butWith("c"))
-                .runAsync(()-> refA.get() + refB.get() + refC.get())
+                .asynchronously()
+                .run(()-> refA.get() + refB.get() + refC.get())
                 .getResult().get());
+        });
+    }
+    
+    @Test
+    public void testAsyncWithSubstitution_default_crossThread() {
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
+        With(refB.butWith("b"))
+        .run(()->{
+            assertEquals("AbC", refA.get() + refB.get() + refC.get());
+            
+            assertEquals("a, and c should be in effect", "abc",
+                    With(refA.butWith("a"))
+                    .and(refC.butWith("c"))
+                    .asynchronously()
+                    .run(()-> refA.get() + refB.get() + refC.get())
+                    .getResult().get());
         });
     }
     
@@ -77,10 +114,11 @@ public class RunTest {
         .run(()->{
             assertEquals("AbC", refA.get() + refB.get() + refC.get());
             
-            assertEquals("abc",
+            assertEquals("a, and c should be in effect", "abc",
                     With(refA.butWith("a"))
                     .and(refC.butWith("c"))
-                    .runAsync(()-> refA.get() + refB.get() + refC.get())
+                    .asynchronously()
+                    .run(()-> refA.get() + refB.get() + refC.get())
                     .getResult().get());
         });
     }

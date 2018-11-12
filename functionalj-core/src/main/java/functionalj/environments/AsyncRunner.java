@@ -34,7 +34,7 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
         val action = DeferAction.of((Class<D>)null).start();
         
         val theRunner     = (runner != null) ? runner : Env.async();
-        val substitutions = Run.getCurrentSubstitutions().exclude(Substitution::isThreadLocal);
+        val substitutions = Substitution.getCurrentSubstitutions().exclude(Substitution::isThreadLocal);
         theRunner.accept(()->{
             try {
                 Run.with(substitutions)

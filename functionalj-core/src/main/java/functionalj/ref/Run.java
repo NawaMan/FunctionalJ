@@ -1,9 +1,9 @@
 package functionalj.ref;
 
-import java.util.Collection;
 import java.util.List;
 
 import functionalj.environments.AsyncRunner;
+import functionalj.function.Func;
 import functionalj.list.FuncList;
 import functionalj.promise.Promise;
 import lombok.val;
@@ -13,9 +13,8 @@ public class Run {
     // TODO - Don't like this duplicate but let's fix that later.
     
     @SafeVarargs
-    public static SyncRunInstance With(Substitution<?> ... allSubstitutions) {
-        val substitutions = new SyncRunInstance().substitutions().appendAll(allSubstitutions);
-        return new SyncRunInstance(substitutions);
+    public static SyncRunInstance With(Substitution<?> ... substitutions) {
+        return new SyncRunInstance(FuncList.of(substitutions));
     }
     @SafeVarargs
     public static SyncRunInstance with(Substitution<?> ... substitutions) {
@@ -28,31 +27,34 @@ public class Run {
         return With(substitutions);
     }
     public static SyncRunInstance withAllExcept(Substitution<?> ... excludedSubstitutions) {
-        val currentSubstitutions = Run.getCurrentSubstitutions().excludeIn(FuncList.of(excludedSubstitutions));
+        val currentSubstitutions = Substitution.getCurrentSubstitutions().excludeIn(FuncList.of(excludedSubstitutions));
         return With(currentSubstitutions);
     }
     public static SyncRunInstance WithAll() {
-        val currentSubstitutions = Run.getCurrentSubstitutions();
+        val currentSubstitutions = Substitution.getCurrentSubstitutions();
         return With(currentSubstitutions);
     }
     
-    public static final FuncList<Ref<?>> getCurrentRefs() {
-        return Ref.getRefs();
-    }
+    public static final SyncRunInstance Synchronously = new SyncRunInstance();
+    public static final SyncRunInstance synchronously = Synchronously;
+    public static final SyncRunInstance OnSameThread  = Synchronously;
+    public static final SyncRunInstance onSameThread  = Synchronously;
     
-    public static final FuncList<Substitution<?>> getCurrentSubstitutions() {
-        return Ref.getSubstitutions();
-    }
+    public static final AsyncRunInstance Asynchronously  = new AsyncRunInstance();
+    public static final AsyncRunInstance asynchronously  = Asynchronously;
+    public static final AsyncRunInstance OnAnotherThread = Asynchronously;
+    public static final AsyncRunInstance onAnotherThread = Asynchronously;
     
-    public static final FuncList<Substitution<?>> getCurrentSubstitutions(Ref<?> ... refs) {
-        val refList = FuncList.of((Ref<?>[])refs);
-        return getCurrentSubstitutions((List<Ref<?>>)refList);
-    }
     
-    public static FuncList<Substitution<?>> getCurrentSubstitutions(List<Ref<?>> refs) {
-        return Ref
-                .getSubstitutions()
-                .filter(Substitution::ref, refs::contains);
+    public static <E extends Exception> Promise<Object> async(RunBody<E> action) throws E {
+        return AsyncRunner.run(()->{
+            Ref.runWith(FuncList.empty(), action);
+        });
+    }
+    public static <V, E extends Exception> Promise<V> async(ComputeBody<V, E> action) throws E {
+        return AsyncRunner.run(()->{
+            return Ref.runWith(FuncList.empty(), action);
+        });
     }
     
     public static abstract class RunInstance<R extends RunInstance<?>> {
@@ -80,18 +82,28 @@ public class Run {
             return synchronously();
         }
         
-        public abstract R with(Substitution<?> ... newSubstitutions);
+        public AsyncRunInstance asynchronously() {
+            if (this instanceof AsyncRunInstance)
+                return (AsyncRunInstance)this;
+            
+            return new AsyncRunInstance(substitutions);
+        }
+        public AsyncRunInstance onAnotherThread() {
+            return asynchronously();
+        }
+        
+        public R with(Substitution<?> ... newSubstitutions) {
+            val substitutions = Func.listOf(newSubstitutions);
+            return with(substitutions);
+        }
         public abstract R with(List<Substitution<?>> newSubstitutions);
         
         public R and(Substitution<?> ... newSubstitutions) {
-            return with(newSubstitutions);
+            return and(FuncList.of(newSubstitutions));
         }
         public R and(List<Substitution<?>> newSubstitutions) {
             return with(newSubstitutions);
         }
-        
-        public abstract R from(Ref<?> ... newRefs);
-        public abstract R from(List<Ref<?>> newRefs);
         
     }
     
@@ -104,25 +116,8 @@ public class Run {
             super(substitutions);
         }
         
-        public SyncRunInstance with(Substitution<?> ... newSubstitutions) {
-            val substitutions = this.substitutions().appendAll(newSubstitutions);
-            return new SyncRunInstance(substitutions);
-        }
         public SyncRunInstance with(List<Substitution<?>> newSubstitutions) {
             val substitutions = this.substitutions().appendAll(newSubstitutions);
-            return new SyncRunInstance(substitutions);
-        }
-        
-        public SyncRunInstance from(Ref<?> ... newRefs) {
-            // TODO - Find out why this is ambiguous.
-            val newSubstitutions = (Collection<Substitution<?>>)Run.getCurrentSubstitutions(newRefs);
-            val substitutions    = this.substitutions().appendAll(newSubstitutions);
-            return new SyncRunInstance(substitutions);
-        }
-        public SyncRunInstance from(List<Ref<?>> newRefs) {
-            // TODO - Find out why this is ambiguous.
-            val newSubstitutions = (Collection<Substitution<?>>)Run.getCurrentSubstitutions(newRefs);
-            val substitutions    = this.substitutions().appendAll(newSubstitutions);
             return new SyncRunInstance(substitutions);
         }
         
@@ -134,17 +129,31 @@ public class Run {
             val substitutions = substitutions();
             return Ref.runWith(substitutions, action);
         }
+    }
+    public static class AsyncRunInstance extends RunInstance<AsyncRunInstance> {
         
-        public <E extends Exception> Promise<Object> runAsync(RunBody<E> action) throws E {
+        AsyncRunInstance() {
+            super();
+        }
+        AsyncRunInstance(List<Substitution<?>> substitutions) {
+            super(substitutions);
+        }
+        
+        public AsyncRunInstance with(List<Substitution<?>> newSubstitutions) {
+            val substitutions = this.substitutions().appendAll(newSubstitutions);
+            return new AsyncRunInstance(substitutions);
+        }
+        
+        public <E extends Exception> Promise<Object> run(RunBody<E> action) throws E {
             val substitutions = substitutions();
             return AsyncRunner.run(()->{
-                Run.with(substitutions).run(action);
+                Ref.runWith(substitutions, action);
             });
         }
-        public <V, E extends Exception> Promise<V> runAsync(ComputeBody<V, E> action) throws E {
+        public <V, E extends Exception> Promise<V> run(ComputeBody<V, E> action) throws E {
             val substitutions = substitutions();
             return AsyncRunner.run(()->{
-                return Run.with(substitutions).run(action);
+                return Ref.runWith(substitutions, action);
             });
         }
     }

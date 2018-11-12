@@ -2,7 +2,11 @@ package functionalj.ref;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.List;
+
 import functionalj.function.Func0;
+import functionalj.list.FuncList;
+import lombok.val;
 
 public abstract class Substitution<DATA> {
     
@@ -12,6 +16,22 @@ public abstract class Substitution<DATA> {
     public static <D> Substitution<D> from(Ref<D> ref, Func0<D> supplier) {
         return new Substitution.Supplier<D>(ref, false, supplier);
     }
+    
+    public static final FuncList<Substitution<?>> getCurrentSubstitutions() {
+        return Ref.getSubstitutions();
+    }
+    
+    public static final FuncList<Substitution<?>> getCurrentSubstitutionOf(Ref<?> ... refs) {
+        val refList = FuncList.of((Ref<?>[])refs);
+        return getCurrentSubstitutionOf((List<Ref<?>>)refList);
+    }
+    
+    public static FuncList<Substitution<?>> getCurrentSubstitutionOf(List<Ref<?>> refs) {
+        return Ref
+                .getSubstitutions()
+                .filter(Substitution::ref, refs::contains);
+    }
+    
     
     private final Ref<DATA> ref;
     private final boolean   isThreadLocal;

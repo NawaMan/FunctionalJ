@@ -428,12 +428,12 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return new SubscriptionHolder<>(false, Wait.forever(), this);
     }
     
-    public final SubscriptionHolder<DATA> subscribe(Wait wait) {
-        return new SubscriptionHolder<>(false, wait, this);
-    }
-    
     public final SubscriptionRecord<DATA> subscribe(FuncUnit1<Result<DATA>> resultConsumer) {
         return subscribe(Wait.forever(), resultConsumer);
+    }
+    
+    public final SubscriptionHolder<DATA> subscribe(Wait wait) {
+        return new SubscriptionHolder<>(false, wait, this);
     }
     
     public final SubscriptionRecord<DATA> subscribe(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {

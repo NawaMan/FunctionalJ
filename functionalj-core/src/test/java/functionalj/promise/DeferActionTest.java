@@ -35,6 +35,7 @@ import functionalj.function.Func0;
 import functionalj.functions.TimeFuncs;
 import functionalj.list.FuncList;
 import functionalj.ref.Run;
+import functionalj.ref.Substitution;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -650,7 +651,7 @@ public class DeferActionTest {
         With(Env.refs.console.butWith(stub))
         .run(()->{
             val latch = new CountDownLatch(1);
-            val subs  = Run.getCurrentSubstitutions();
+            val subs  = Substitution.getCurrentSubstitutions();
             val startTime     = System.currentTimeMillis();
             val pendingAction = DeferAction.run(()->{
                 Run.with(subs).run(()->{

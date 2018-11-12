@@ -19,6 +19,8 @@ import java.util.stream.Stream;
 
 import functionalj.environments.Env;
 import functionalj.functions.ThrowFuncs;
+import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
 import functionalj.supportive.CallerId;
 import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
@@ -26,7 +28,7 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public interface Func {
     
-    //== Provide differnt name for more readability ==
+    //== Provide different name for more readability ==
     
     /**
      * A shorter way to use Function.identity() -- alias for itself() and themAll().
@@ -89,6 +91,13 @@ public interface Func {
             BiPredicate<O1, I2> checker,
             I2                  tailInput) {
         return i->checker.test(mapper.apply(i), tailInput);
+    }
+    
+    //== List ==
+    
+    @SafeVarargs
+    public static <T> FuncList<T> listOf(T ... data) {
+        return ImmutableList.of(data);
     }
     
     //== Of ==

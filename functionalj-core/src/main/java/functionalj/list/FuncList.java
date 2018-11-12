@@ -46,6 +46,9 @@ public interface FuncList<DATA>
     public static <T> FuncList<T> empty() {
         return ImmutableList.empty();
     }
+    public static <T> FuncList<T> empty(Class<T> elementClass) {
+        return ImmutableList.empty();
+    }
     @SafeVarargs
     public static <T> FuncList<T> of(T ... data) {
         return ImmutableList.of(data);
