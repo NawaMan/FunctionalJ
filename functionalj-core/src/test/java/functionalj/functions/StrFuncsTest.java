@@ -40,7 +40,7 @@ public class StrFuncsTest {
     
     @Test
     public void testTemplate() {
-        assertEquals("--hello--there-$ss-", StrFuncs.template("--${Hello}--${There}-$ss-", str -> str.toLowerCase()));
+        assertEquals("--hello--there-$ss-", StrFuncs.template("--$Hello--$There-$$ss-", str -> str.toLowerCase()));
     }
     
 }

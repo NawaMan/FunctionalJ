@@ -349,11 +349,11 @@ public class StrFuncs {
         
         StringBuffer buffer = new StringBuffer();
         val flags   = 0;
-        val pattern = Pattern.compile("\\$\\{[a-zA-Z0-9$_]+\\}", flags);
+        val pattern = Pattern.compile("\\$[a-zA-Z0-9_]++", flags);
         val matcher = pattern.matcher(str);
         while (matcher.find()) {
             val group       = matcher.group();
-            val name        = group.substring(2, group.length() - 1);
+            val name        = group.substring(1, group.length());
             val replacement = replacer.apply(name);
             matcher.appendReplacement(buffer, replacement);
         }
