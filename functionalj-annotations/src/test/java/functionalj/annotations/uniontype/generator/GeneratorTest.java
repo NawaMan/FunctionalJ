@@ -62,6 +62,25 @@ public class GeneratorTest {
                 "    return new RGB(r, g, b);\n" + 
                 "}", lines);
     }
+    @Test
+    public void testSubClassConstructor_withParams_withGeneric() {
+        val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, asList(new Generic("D")), emptyList(), emptyList()));
+        val sub    = new SubClassDefinition(target, 
+                new Choice("Next", asList(
+                    new ChoiceParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))))
+                )));
+        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        assertEquals(
+                "public static final class Next<D> extends Coroutine<D> {\n" + 
+                "    private Func1<D,Coroutine<D>> next;\n" + 
+                "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
+                "        this.next = next;\n" + 
+                "    }\n" + 
+                "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
+                "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
+                "}", lines);
+    }
     
     @Test
     public void testSubClassDefinition_noParams() {
@@ -101,6 +120,26 @@ public class GeneratorTest {
                 "    public RGB withR(int r) { return new RGB(r, g, b); }\n" + 
                 "    public RGB withG(int g) { return new RGB(r, g, b); }\n" + 
                 "    public RGB withB(int b) { return new RGB(r, g, b); }\n" + 
+                "}", lines);
+    }
+    
+    @Test
+    public void testSubClassDefinition_withParams_withGeneric() {
+        val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, asList(new Generic("D")), emptyList(), emptyList()));
+        val sub    = new SubClassDefinition(target, 
+                new Choice("Next", asList(
+                    new ChoiceParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))))
+                )));
+        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        assertEquals(
+                "public static final class Next<D> extends Coroutine<D> {\n" + 
+                "    private Func1<D,Coroutine<D>> next;\n" + 
+                "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
+                "        this.next = next;\n" + 
+                "    }\n" + 
+                "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
+                "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
                 "}", lines);
     }
     

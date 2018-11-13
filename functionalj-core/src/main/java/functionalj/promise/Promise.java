@@ -144,7 +144,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     //      result.cancelled -> aborted
     //      result.completed -> completed
     private final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>();
-    private final List<FuncUnit1<Result<DATA>>>                    eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
+    private final List<FuncUnit1<Result<DATA>>>                          eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
     
     private final AtomicReference<Object> dataRef = new AtomicReference<>();
     

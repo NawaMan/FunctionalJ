@@ -577,7 +577,7 @@ public abstract class Result<DATA>
     
     @SuppressWarnings("unchecked")
     public <T> Result<T> mapValue(Func2<DATA, Exception, Result<T>> processor) {
-        return new DerivedValue<T>(this, org-> {
+        return new DerivedResult<T>(this, org-> {
             try {
                 val data      = org.__valueData();
                 val isValue   = ((data == null) || !(data instanceof ExceptionHolder));

@@ -29,8 +29,8 @@ public class SubClassConstructor implements Lines {
         
         val validateName = choice.validationMethod;
         val isV = (validateName != null);
-        val paramDefs  = choice.mapJoinParams(p -> p.type.name + " " + p.name, ", ");
-        val paramCalls = choice.mapJoinParams(p ->                     p.name, ", ");
+        val paramDefs  = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
+        val paramCalls = choice.mapJoinParams(p ->                                   p.name, ", ");
         return asList(
                 format      ("public static final %1$s%2$s %3$s(%4$s) {", (targetClass.genericDef().isEmpty() ? "" : targetClass.genericDef() + " "), targetClass.typeWithGenerics(), name, paramDefs),
                 isV ? format("    %1$s.%2$s(%3$s);",                       sourceName, validateName, paramCalls) : null,

@@ -3,6 +3,7 @@ package functionalj.list;
 import static functionalj.lens.Access.$I;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -108,6 +109,10 @@ public interface FuncList<DATA>
         return true;
     }
     
+    public default boolean isEager() {
+        return false;
+    }
+    
     public FuncList<DATA> lazy();
     public FuncList<DATA> eager();
     
@@ -153,6 +158,24 @@ public interface FuncList<DATA>
     
     public default FuncList<DATA> rest() {
         return deriveWith(stream -> stream.skip(1));
+    }
+    
+    // Note - Eager
+    public default FuncList<DATA> reverse() {
+        val temp = this.toMutableList();
+        Collections.reverse(temp);
+        
+        val list = FuncList.from(temp);
+        return isLazy() ? list.lazy() : list.eager();
+    }
+    
+    // Note - Eager
+    public default FuncList<DATA> shuffle() {
+        val temp = this.toMutableList();
+        Collections.shuffle(temp);
+        
+        val list = FuncList.from(temp);
+        return isLazy() ? list.lazy() : list.eager();
     }
     
     public default FuncList<IntTuple2<DATA>> select(Predicate<? super DATA> check) {

@@ -33,6 +33,14 @@ public class Type {
         this.encloseClass = encloseClass;
         this.generics     = unmodifiableList(generics);
     }
+    
+    public String fullName() {
+        return asList(pckg, encloseClass, name)
+                .stream()
+                .filter(Objects::nonNull)
+                .collect(joining("."));
+    }
+    
     public String toString() {
         val generics = ofNullable(this.generics)
                 .filter(l -> !l.isEmpty())

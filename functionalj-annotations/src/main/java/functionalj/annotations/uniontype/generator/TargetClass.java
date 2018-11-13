@@ -98,13 +98,13 @@ public class TargetClass implements Lines {
             .map    (p -> p.type)
             .filter (t -> t.pckg != null)
             .filter (t -> !"java.lang".equals(t.pckg))
-            .forEach(t -> imports.add(t.toString()));
+            .forEach(t -> imports.add(t.fullName()));
         
         spec.generics.stream()
             .flatMap(g -> g.boundTypes.stream())
             .filter (t -> t.pckg != null)
             .filter (t -> !"java.lang".equals(t.pckg))
-            .forEach(t -> imports.add(t.toString()));
+            .forEach(t -> imports.add(t.fullName()));
         
         val sourceMethods = new SourceMethod(this).lines().stream()
                 .filter(Objects::nonNull)

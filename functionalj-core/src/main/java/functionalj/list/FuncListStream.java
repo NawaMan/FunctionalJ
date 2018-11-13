@@ -87,6 +87,10 @@ public class FuncListStream<SOURCE, DATA>
         return true;
     }
     
+    public boolean isEager() {
+        return false;
+    }
+    
     public FuncList<DATA> lazy() {
         return this;
     }

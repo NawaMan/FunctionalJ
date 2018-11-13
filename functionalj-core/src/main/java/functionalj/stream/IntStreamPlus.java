@@ -106,6 +106,10 @@ public interface IntStreamPlus extends IntStream {
         return StreamPlus.from(stream().mapToObj(mapper));
     }
     
+    public default <TARGET> StreamPlus<TARGET> mapToObj(Supplier<? extends TARGET> supplier) {
+        return StreamPlus.from(stream().mapToObj(e -> supplier.get()));
+    }
+    
     @Override
     public default LongStream mapToLong(IntToLongFunction mapper) {
         return stream().mapToLong(mapper);

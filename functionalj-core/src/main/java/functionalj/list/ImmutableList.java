@@ -112,6 +112,10 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return isLazy;
     }
     
+    public boolean isEager() {
+        return !isLazy;
+    }
+    
     public FuncList<DATA> lazy() {
         if (isLazy)
             return this;

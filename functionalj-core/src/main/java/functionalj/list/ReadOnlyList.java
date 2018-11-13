@@ -64,7 +64,7 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default boolean isEmpty() {
-        return Helper.hasAt(stream(), 0);
+        return !Helper.hasAt(stream(), 0);
     }
     
     @Override

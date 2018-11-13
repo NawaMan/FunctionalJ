@@ -91,6 +91,10 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(IntStream.iterate(0, i -> i + 1).mapToObj(i -> data[i % data.length]));
     }
     
+    public static StreamPlus<Integer> infiniteInt() {
+        return IntStreamPlus.from(IntStream.iterate(0, i -> i + 1)).mapToObj(i -> i);
+    }
+    
     public static <D> StreamPlus<D> empty() {
         return StreamPlus.from(Stream.empty());
     }
@@ -519,6 +523,12 @@ public interface StreamPlus<DATA>
     
     public default <T> T pipe(Function<? super StreamPlus<DATA>, T> piper) {
         return piper.apply(this);
+    }
+    
+    public default <TARGET> StreamPlus<TARGET> map(Supplier<? extends TARGET> supplier) {
+        return deriveWith(stream -> {
+            return stream.map(e -> supplier.get());
+        });
     }
     
     public default <TARGET> StreamPlus<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
