@@ -266,6 +266,7 @@ public class RefTest {
         assertEquals(1, ref.value().intValue());
         assertEquals(1, ref.value().intValue());
         
+        val resultRef = new AtomicReference<String>();
         Run.async(()->{
             Time.sleep(10);
             val value1 = ref.value();
@@ -273,13 +274,16 @@ public class RefTest {
             val value2 = ref.value();
             Time.sleep(100);
             val value3 = ref.value();
-            assertEquals("1 - 1 - 2", value1 + " - " + value2 + " - " + value3);
+            resultRef.set(value1 + " - " + value2 + " - " + value3);
         });
         
         Time.sleep(50);
         state.incrementAndGet();
         assertEquals(44, state.get());
         assertEquals(3, ref.value().intValue());
+        
+        Time.sleep(200);
+        assertEquals("2 - 2 - 4", resultRef.toString());
     }
     
     @Test
