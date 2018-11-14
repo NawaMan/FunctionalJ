@@ -244,7 +244,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     }
     
     public DeferAction<DATA> abortNoSubsriptionAfter(Wait wait) {
-        promise.abortNoSubsriptionAfter(wait);
+        promise.abortNoSubscriptionAfter(wait);
         return this;
     }
     

@@ -91,7 +91,7 @@ public class DeferActionCreator {
             promise.eavesdrop(r -> {
                 r.ifCancelled(() -> {
                     val thread = threadRef.get();
-                    if (thread != null)
+                    if ((thread != null) && !thread.equals(Thread.currentThread()))
                         thread.interrupt();
                 });
             });

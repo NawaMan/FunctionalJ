@@ -143,7 +143,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     //    result          -> done.
     //      result.cancelled -> aborted
     //      result.completed -> completed
-    private final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>();
+    private final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>(INITIAL_CAPACITY);
     private final List<FuncUnit1<Result<DATA>>>                          eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
     
     private final AtomicReference<Object> dataRef = new AtomicReference<>();
@@ -456,7 +456,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return doSubscribe(true, wait, resultConsumer);
     }
     
-    public final Promise<DATA> abortNoSubsriptionAfter(Wait wait) {
+    public final Promise<DATA> abortNoSubscriptionAfter(Wait wait) {
         val subscriptionHolder = subscribe(wait);
         subscriptionHolder.assign(__ -> subscriptionHolder.unsubscribe());
         return this;

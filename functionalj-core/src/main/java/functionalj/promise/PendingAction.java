@@ -36,7 +36,7 @@ public class PendingAction<DATA> extends UncompleteAction<DATA> implements Pipea
     }
     
     public PendingAction<DATA> abortNoSubsriptionAfter(Wait wait) {
-        promise.abortNoSubsriptionAfter(wait);
+        promise.abortNoSubscriptionAfter(wait);
         return this;
     }
     

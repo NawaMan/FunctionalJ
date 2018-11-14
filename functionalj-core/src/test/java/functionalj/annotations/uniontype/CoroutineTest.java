@@ -91,7 +91,7 @@ public class CoroutineTest {
                  -> c(()-> two.map(f2)          , three
                  -> c(()-> three.map(f1)))));
         
-        System.out.println(((Promise<String>)c3.get()).getResult());
+        System.out.println(((Promise<Integer>)c3.get()).getResult());
         
         val c4 =    c(()-> Promise.ofValue("One"), (Promise<String>    one)
                  -> c(()-> f1d.apply(one)        , (Promise<Integer>   two)
