@@ -15,9 +15,15 @@
 //  ========================================================================
 package functionalj.annotations.dataobject.generator;
 
+import static functionalj.annotations.uniontype.generator.Utils.toListCode;
+import static functionalj.annotations.uniontype.generator.Utils.toStringLiteral;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
+
 import java.util.List;
 
 import lombok.Value;
+import lombok.val;
 import lombok.experimental.Wither;
 
 /**
@@ -29,13 +35,14 @@ import lombok.experimental.Wither;
 @Wither
 public class SourceSpec {
     
-    private String specClassName;
-    private String packageName;
-    private String targetClassName;
-    private String targetPackageName;
-    private boolean isClass;
+    private String         specClassName;
+    private String         packageName;
+    private String         targetClassName;
+    private String         targetPackageName;
+    private Boolean        isClass;
+    private String         specObjName;
     private Configurations configures;
-    private List<Getter> getters;
+    private List<Getter>   getters;
     
     /** Configurations */
     public static class Configurations {
@@ -43,11 +50,44 @@ public class SourceSpec {
         /** Should extends/implements with the definition class/interface */
         public boolean coupleWithDefinition = true;
         /** Should the no-arguments constructor be created. */
-        public boolean generateNoArgConstructor  = true;
+        public boolean generateNoArgConstructor  = false;
         /** Should the all-arguments constructor be created. */
         public boolean generateAllArgConstructor  = true;
         /** Should the lens class be generated. */
         public boolean generateLensClass = true;
+        
+        public Configurations() {}
+        public Configurations(
+                boolean coupleWithDefinition,
+                boolean generateNoArgConstructor,
+                boolean generateAllArgConstructor,
+                boolean generateLensClass) {
+            this.coupleWithDefinition      = coupleWithDefinition;
+            this.generateNoArgConstructor  = generateNoArgConstructor;
+            this.generateAllArgConstructor = generateAllArgConstructor;
+            this.generateLensClass         = generateLensClass;
+        }
+        
+        @Override
+        public String toString() {
+            return "Configurations ["
+                    + "coupleWithDefinition="      + coupleWithDefinition + ", "
+                    + "generateNoArgConstructor="  + generateNoArgConstructor + ", "
+                    + "generateAllArgConstructor=" + generateAllArgConstructor + ", "
+                    + "generateLensClass="         + generateLensClass
+                    + "]";
+        }
+        public String toCode() {
+            val params = asList(
+                    coupleWithDefinition,
+                    generateNoArgConstructor,
+                    generateAllArgConstructor,
+                    generateLensClass
+            );
+            return "new functionalj.annotations.dataobject.generator.SourceSpec.Configurations("
+                    + params.stream().map(String::valueOf).collect(joining(", "))
+                    + ")";
+        }
     }
     
     /** @return the target type. */
@@ -57,5 +97,24 @@ public class SourceSpec {
     /** @return the type of this source. */
     public Type toType() {
         return new Type(specClassName, packageName);
+    }
+    public Boolean isClass() {
+        return isClass;
+    }
+    
+    public String toCode() {
+        val params = asList(
+                toStringLiteral(specClassName),
+                toStringLiteral(packageName),
+                toStringLiteral(targetClassName),
+                toStringLiteral(targetPackageName),
+                isClass,
+                toStringLiteral(specObjName),
+                configures.toCode(),
+                toListCode(getters, Getter::toCode)
+        );
+        return "new functionalj.annotations.dataobject.generator.SourceSpec("
+                + params.stream().map(String::valueOf).collect(joining(", "))
+                + ")";
     }
 }

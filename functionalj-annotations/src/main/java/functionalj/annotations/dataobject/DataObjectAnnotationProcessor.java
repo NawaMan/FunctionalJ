@@ -35,11 +35,13 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+//import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import functionalj.annotations.DataObject;
@@ -59,6 +61,7 @@ import lombok.val;
 public class DataObjectAnnotationProcessor extends AbstractProcessor {
 
     private Elements elementUtils;
+//    private Types    typeUtils;
     private Filer    filer;
     private Messager messager;
     private boolean  hasError;
@@ -91,48 +94,13 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(DataObject.class)) {
-            val type        = (TypeElement)element;
-            val simpleName  = type.getSimpleName().toString();
-            val isInterface = ElementKind.INTERFACE.equals(element.getKind());
-            val isClass     = ElementKind.CLASS    .equals(element.getKind());
-            if (!isInterface && !isClass) {
-                error(element, "Only a class or interface can be annotated with " + DataObject.class.getSimpleName() + ": " + simpleName);
-                continue;
-            }
-            
-            List<Getter> getters = type.getEnclosedElements().stream()
-                    .filter(elmt  ->elmt.getKind().equals(ElementKind.METHOD))
-                    .map   (elmt  ->((ExecutableElement)elmt))
-                    .filter(method->!method.isDefault())
-                    .filter(method->!isClass || isAbstract(method))
-                    .filter(method->!(method.getReturnType() instanceof NoType))
-                    .filter(method->method.getParameters().isEmpty())
-                    .map   (method->createGetterFromMethod(element, method))
-                    .collect(toList());
-            
-            val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
-            val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
-            val dataObject     = element.getAnnotation(DataObject.class);
-            val specTargetName = dataObject.name();
-            val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
-            
-            val configures = new Configurations();
-            configures.generateNoArgConstructor  = dataObject.generateNoArgConstructor();
-            configures.generateAllArgConstructor = dataObject.generateAllArgConstructor();
-            configures.generateLensClass         = dataObject.generateLensClass();
-            
-            if (!configures.generateNoArgConstructor
-             && !configures.generateAllArgConstructor) {
-                error(element, "generateNoArgConstructor and generateAllArgConstructor must be be false at the same time.");
-                continue;
-            }
-            
+            val packageName    = extractPackageName(element);
+            val specTargetName = extractTargetTypeName(element);
             try {
-                val sourceSpec
-                        = new SourceSpec(
-                            sourceName, packageName, targetName, packageName,
-                            isClass,
-                            configures, getters);
+                val sourceSpec = extractSourceSpec(element);
+                if (sourceSpec == null)
+                    continue;
+                
                 val dataObjSpec = new DataObjectBuilder(sourceSpec).build();
                 val className   = (String)dataObjSpec.type().fullName("");
                 val content     = new GenDataObject(dataObjSpec).lines().collect(joining("\n"));
@@ -146,6 +114,141 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             }
         }
         return hasError;
+    }
+    
+    private String extractPackageName(Element element) {
+        if (element instanceof TypeElement)
+            return extractPackageNameType(element);
+        if (element instanceof ExecutableElement)
+            return extractPackageNameMethod(element);
+        throw new IllegalArgumentException("DataObject annotation is only support class or method.");
+    }
+    private String extractPackageNameType(Element element) {
+        val type        = (TypeElement)element;
+        val packageName = elementUtils.getPackageOf(type).getQualifiedName().toString();
+        return packageName;
+    }
+    private String extractPackageNameMethod(Element element) {
+        val method      = (ExecutableElement)element;
+        val type        = (TypeElement)(method.getEnclosingElement());
+        val packageName = elementUtils.getPackageOf(type).getQualifiedName().toString();
+        return packageName;
+    }
+    
+    private String extractTargetTypeName(Element element) {
+        val dataObject     = element.getAnnotation(DataObject.class);
+        val specTargetName = dataObject.name();
+        return specTargetName;
+    }
+    
+    private SourceSpec extractSourceSpec(Element element) {
+        if (element instanceof TypeElement)
+            return extractSourceSpecType(element);
+        if (element instanceof ExecutableElement)
+            return extractSourceSpecMethod(element);
+        throw new IllegalArgumentException("DataObject annotation is only support class or method.");
+    }
+    private SourceSpec extractSourceSpecType(Element element) {
+        val type        = (TypeElement)element;
+        val simpleName  = type.getSimpleName().toString();
+        val isInterface = ElementKind.INTERFACE.equals(element.getKind());
+        val isClass     = ElementKind.CLASS    .equals(element.getKind());
+        if (!isInterface && !isClass) {
+            error(element, "Only a class or interface can be annotated with " + DataObject.class.getSimpleName() + ": " + simpleName);
+            return null;
+        }
+        
+        List<Getter> getters = type.getEnclosedElements().stream()
+                .filter(elmt  ->elmt.getKind().equals(ElementKind.METHOD))
+                .map   (elmt  ->((ExecutableElement)elmt))
+                .filter(method->!method.isDefault())
+                .filter(method->!isClass || isAbstract(method))
+                .filter(method->!(method.getReturnType() instanceof NoType))
+                .filter(method->method.getParameters().isEmpty())
+                .map   (method->createGetterFromMethod(element, method))
+                .collect(toList());
+        
+        val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
+        val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
+        val dataObject     = element.getAnnotation(DataObject.class);
+        val specTargetName = dataObject.name();
+        val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
+        val specField      = dataObject.specField();
+        
+        val configures = extractConfigurations(element, dataObject);
+        if (configures == null)
+            return null;
+        
+        try {
+            return new SourceSpec(sourceName, packageName, targetName, packageName, isClass, specField, configures, getters);
+        } catch (Exception e) {
+            error(element, "Problem generating the class: "
+                            + packageName + "." + specTargetName
+                            + ": "  + e.getMessage()
+                            + ":"   + e.getClass()
+                            + " @ " + e.getStackTrace()[0]);
+            return null;
+        }
+    }
+    private SourceSpec extractSourceSpecMethod(Element element) {
+//        error(element, elementUtils.getDocComment(element));
+        
+        val method         = (ExecutableElement)element;
+        val packageName    = extractPackageName(element);
+        val simpleName     = ((TypeElement)method.getEnclosingElement()).getSimpleName().toString();
+        val dataObject     = element.getAnnotation(DataObject.class);
+        val specTargetName = dataObject.name().isEmpty() ? method.getSimpleName().toString() : dataObject.name();
+        val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
+        val specField      = dataObject.specField();
+        
+        // TODO - Make the generated class extends or implements the return type.
+        //        The challenge are:
+        //          - check if it is class or interface.
+        //          - deal with generic.
+//        val hasReturnType  = !method.getReturnType().toString().equals("void");
+//        error(element, typeUtils.asElement(method.getReturnType()).getKind().toString());
+//        val isClass        = hasReturnType ? false : (Boolean)null;//method.getReturnType().toString().equals("void") ? null : typeUtils.asElement(method.getReturnType()).getKind() == ElementKind.CLASS;
+//        val superName      = (String)null;
+//        val superPackage   = (String)null;
+        val isClass      = (Boolean)null;
+        val superName    = (String)null;
+        val superPackage = packageName;
+        
+        val configures = extractConfigurations(element, dataObject);
+        if (configures == null)
+            return null;
+        
+        val getters = method.getParameters().stream().map(p -> createGetterFromParameter(element, p)).collect(toList());
+        try {
+            return new SourceSpec(superName, superPackage, targetName, packageName, isClass, specField, configures, getters);
+        } catch (Exception e) {
+            error(element, "Problem generating the class: "
+                            + packageName + "." + specTargetName
+                            + ": "  + e.getMessage()
+                            + ":"   + e.getClass()
+                            + " @ " + e.getStackTrace()[0]);
+            return null;
+        }
+    }
+    
+    private Getter createGetterFromParameter(Element element, VariableElement p){
+        val name = p.getSimpleName().toString();
+        val type = getType(element, p.asType());
+        val getter = new Getter(name, type);return getter;
+    }
+    
+    private Configurations extractConfigurations(Element element, DataObject dataObject) {
+        val configures = new Configurations();
+        configures.generateNoArgConstructor  = dataObject.generateNoArgConstructor();
+        configures.generateAllArgConstructor = dataObject.generateAllArgConstructor();
+        configures.generateLensClass         = dataObject.generateLensClass();
+        
+        if (!configures.generateNoArgConstructor
+         && !configures.generateAllArgConstructor) {
+            error(element, "generateNoArgConstructor and generateAllArgConstructor must be be false at the same time.");
+            return null;
+        }
+        return configures;
     }
     
     private boolean isAbstract(ExecutableElement method) {
@@ -168,13 +271,9 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     
     private Type getType(Element element, TypeMirror typeMirror) {
         val typeStr = typeMirror.toString();
-        if (typeMirror instanceof PrimitiveType) {
-            // This is not right ... but let goes with this.
-            if ("int".equals(typeStr))
-                return Type.INT;
-            if ("boolean".equals(typeStr))
-                return Type.BOOL;
-        }
+        if (typeMirror instanceof PrimitiveType)
+            return Type.primitiveTypes.get(typeStr);
+            
         if (typeMirror instanceof DeclaredType) {
             val typeElement = ((TypeElement)((DeclaredType)typeMirror).asElement());
             val typeName = typeElement.getSimpleName().toString();

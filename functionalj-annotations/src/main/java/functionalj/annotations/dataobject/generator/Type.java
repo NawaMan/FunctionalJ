@@ -15,6 +15,8 @@
 //  ========================================================================
 package functionalj.annotations.dataobject.generator;
 
+import static functionalj.annotations.uniontype.generator.Utils.toListCode;
+import static functionalj.annotations.uniontype.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -46,28 +48,46 @@ import lombok.experimental.Wither;
 @Builder
 public class Type implements IRequireTypes {
     
+    /** char type */
+    public static final Type CHR = new Type("char", "");
+    /** byte type */
+    public static final Type BYT = new Type("byte", "");
+    /** short type */
+    public static final Type SHRT = new Type("short", "");
     /** int type */
     public static final Type INT = new Type("int", "");
     /** long type */
     public static final Type LNG = new Type("long", "");
+    /** float type */
+    public static final Type FLT = new Type("float", "");
     /** double type */
     public static final Type DBL = new Type("double", "");
     /** boolean type */
     public static final Type BOOL = new Type("boolean", "");
-    /** string type */
-    public static final Type STR = new Type("String", "");
+    
+    /** Character type */
+    public static final Type CHARACTER = Type.of(Character.class);
+    /** Byte type */
+    public static final Type BYTE = Type.of(Byte.class);
+    /** Short type */
+    public static final Type SHORT = Type.of(Short.class);
     /** Integer type */
     public static final Type INTEGER = Type.of(Integer.class);
     /** Long type */
     public static final Type LONG = Type.of(Long.class);
+    /** Float type */
+    public static final Type FLOAT = Type.of(Float.class);
     /** Double type */
     public static final Type DOUBLE = Type.of(Double.class);
+    /** Boolean type */
+    public static final Type BOOLEAN = Type.of(Boolean.class);
+    
     /** BigInteger type */
     public static final Type BIGINTEGER = Type.of(BigInteger.class);
     /** BigDecimal type */
     public static final Type BIGDECIMAL = Type.of(BigDecimal.class);
-    /** Boolean type */
-    public static final Type BOOLEAN = Type.of(Boolean.class);
+    /** string type */
+    public static final Type STR = new Type("String", "");
     /** String type */
     public static final Type STRING = Type.of(String .class);
     /** List type */
@@ -105,6 +125,32 @@ public class Type implements IRequireTypes {
         
         lensTypes.put(FUNC_LIST, Core.FuncListLens.type());
         lensTypes.put(FUNC_MAP,  Core.FuncMapLens.type());
+    }
+    public static final Map<String, Type> primitiveTypes;
+    static {
+        val map = new HashMap<String, Type>();
+        map.put("char",    CHR);
+        map.put("byte",    BYT);
+        map.put("short",   SHRT);
+        map.put("int",     INT);
+        map.put("long",    LNG);
+        map.put("float",   FLT);
+        map.put("double",  DBL);
+        map.put("boolean", BOOL);
+        primitiveTypes = map;
+    }
+    public static final Map<Type, Type> declaredTypes;
+    static {
+        val map = new HashMap<Type, Type>();
+        map.put(CHR,  CHARACTER);
+        map.put(BYT,  BYTE);
+        map.put(SHRT, SHORT);
+        map.put(INT,  INTEGER);
+        map.put(LNG,  LONG);
+        map.put(FLT,  FLOAT);
+        map.put(DBL,  DOUBLE);
+        map.put(BOOL, BOOLEAN);
+        declaredTypes = map;
     }
     
     /**
@@ -264,11 +310,7 @@ public class Type implements IRequireTypes {
      * @return  the declared type.
      */
     public Type declaredType() {
-        if (INT.equals(this))
-            return INTEGER;
-        if (BOOL.equals(this))
-            return BOOLEAN;
-        return this;
+        return declaredTypes.getOrDefault(this, this);
     }
     
     /**
@@ -401,6 +443,18 @@ public class Type implements IRequireTypes {
         result = prime * result + ((packageName == null) ? 0 : packageName.hashCode());
         result = prime * result + ((simpleName == null) ? 0 : simpleName.hashCode());
         return result;
+    }
+    
+    public String toCode() {
+        val params = asList(
+                toStringLiteral(encloseName),
+                toStringLiteral(simpleName),
+                toStringLiteral(packageName),
+                toListCode     (generics, Type::toCode)
+        );
+        return "new functionalj.annotations.dataobject.generator.Type("
+                + params.stream().collect(joining(", "))
+                + ")";
     }
     
 }

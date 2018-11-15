@@ -52,6 +52,7 @@ public class GenerateParentNullableChildTest {
                 "import functionalj.lens.lenses.NullableLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
+                "import java.lang.Object;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
@@ -108,6 +109,15 @@ public class GenerateParentNullableChildTest {
                 "            ((IPostReConstruct)object).postReConstruct();\n" + 
                 "        return object;\n" + 
                 "    }\n" + 
+                "    public String toString() {\n" + 
+                "        return \"Parent[\" + \"nullableName: \" + nullableName() + \", \" + \"nullableChild: \" + nullableChild() + \"]\";\n" + 
+                "    }\n" + 
+                "    public int hashCode() {\n" + 
+                "        return toString().hashCode();\n" + 
+                "    }\n" + 
+                "    public boolean equals(Object another) {\n" + 
+                "        return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));\n" + 
+                "    }\n" + 
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
@@ -138,6 +148,7 @@ public class GenerateParentNullableChildTest {
                     targetClassName,     // targetClassName
                     packageName,         // targetPackageName
                     isClass,             // isClass
+                    null,
                     configures,          // Configurations
                     getters);
         val dataObjSpec = new DataObjectBuilder(sourceSpec).build();

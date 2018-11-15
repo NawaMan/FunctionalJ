@@ -31,6 +31,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -44,6 +45,8 @@ import functionalj.annotations.dataobject.generator.model.GenConstructor;
 import functionalj.annotations.dataobject.generator.model.GenField;
 import functionalj.annotations.dataobject.generator.model.GenMethod;
 import functionalj.annotations.dataobject.generator.model.GenParam;
+import functionalj.annotations.dataobject.generator.model.Modifiability;
+import functionalj.annotations.dataobject.generator.model.Scope;
 import lombok.val;
 
 /**
@@ -77,9 +80,11 @@ public class DataObjectBuilder {
         val implementeds = new ArrayList<Type>();
         
         if (sourceSpec.getConfigures().coupleWithDefinition) {
-            if (sourceSpec.isClass())
-                 extendeds   .add(sourceSpec.toType());
-            else implementeds.add(sourceSpec.toType());
+            if (sourceSpec.getIsClass() != null) {
+                if (sourceSpec.isClass())
+                     extendeds   .add(sourceSpec.toType());
+                else implementeds.add(sourceSpec.toType());
+            }
         }
         
         val withMethodName   = (Function<Getter, String>)(utils::withMethodName);
@@ -107,14 +112,57 @@ public class DataObjectBuilder {
             theField             = lensClassBuilder.generateTheLensField();
         }
         
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        val specField = ((sourceSpec.getSpecObjName() == null) || sourceSpec.getSpecObjName().isEmpty())
+                ? (Stream<GenField>)(Stream)Stream.empty()
+                : Stream.of(new GenField(
+                        Accessibility.PUBLIC,
+                        Modifiability.FINAL,
+                        Scope.STATIC,
+                        sourceSpec.getSpecObjName(),
+                        Type.of(SourceSpec.class),
+                        sourceSpec.toCode()));
+        
+        val toString = new GenMethod(
+                Accessibility.PUBLIC,
+                Scope.INSTANCE,
+                Modifiability.MODIFIABLE,
+                Type.STRING,
+                "toString",
+                Collections.emptyList(),
+                line("return \"" + sourceSpec.getTargetClassName() + "[\" + " +
+                        getters.stream()
+                        .map(g -> "\""+ g.getName() + ": \" + " + g.getName() + "()")
+                        .collect(joining(" + \", \" + ")) +
+                        " + \"]\";"));
+        
+        val hashCode = new GenMethod(
+                Accessibility.PUBLIC,
+                Scope.INSTANCE,
+                Modifiability.MODIFIABLE,
+                Type.INT,
+                "hashCode",
+                Collections.emptyList(),
+                line("return toString().hashCode();"));
+        val equals = new GenMethod(
+                Accessibility.PUBLIC,
+                Scope.INSTANCE,
+                Modifiability.MODIFIABLE,
+                Type.BOOL,
+                "equals",
+                asList(new GenParam("another", Type.of(Object.class))),
+                line("return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));"));
+                
         val fields = listOf(
                     Stream.of(theField),
-                    getterFields
+                    getterFields,
+                    specField
                  );
         val flatMap = Arrays.<Stream<GenMethod>>asList(
                     getterMethods,
                     witherMethods,
-                    Stream.of(postReConstructMethod)
+                    Stream.of(postReConstructMethod),
+                    Stream.of(toString, hashCode, equals)
                  );
         val methods = flatMap.stream().flatMap(themAll()).collect(toList());
         
@@ -261,7 +309,7 @@ public class DataObjectBuilder {
         val name       = withMethodName.apply(getter);
         val type       = sourceSpec.getTargetType();
         val getterName = getter.getName();
-        val getterType = getter.getType();
+        val getterType = getter.getType().declaredType();
         val params     = asList(new GenParam(getter.getName(), Type.of(Supplier.class, getterType)));
         val paramCall  = sourceSpec.getGetters().stream()
                             .map    (Getter::getName)
@@ -275,7 +323,7 @@ public class DataObjectBuilder {
         val name       = withMethodName.apply(getter);
         val type       = sourceSpec.getTargetType();
         val getterName = getter.getName();
-        val getterType = getter.getType();
+        val getterType = getter.getType().declaredType();
         val params     = asList(new GenParam(getterName, Type.of(Function.class, getterType, getterType)));
         val paramCall  = sourceSpec.getGetters().stream()
                         .map    (Getter::getName)
@@ -289,7 +337,7 @@ public class DataObjectBuilder {
         val name       = withMethodName.apply(getter);
         val type       = sourceSpec.getTargetType();
         val getterName = getter.getName();
-        val getterType = getter.getType();
+        val getterType = getter.getType().declaredType();
         val params     = asList(new GenParam(getterName, Type.of(BiFunction.class, type, getterType, getterType)));
         val paramCall  = sourceSpec.getGetters().stream()
                 .map    (Getter::getName)

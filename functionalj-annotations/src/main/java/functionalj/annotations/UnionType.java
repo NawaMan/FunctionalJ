@@ -33,6 +33,6 @@ public @interface UnionType {
     public String name() default "";
     
     /** @return the name of the static final field for the source spec. */
-    public String sourceSpec() default "";
+    public String specField() default "";
     
 }

@@ -53,6 +53,7 @@ public class GenerateParentListChildTest {
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
                 "import functionalj.list.ImmutableList;\n" + 
+                "import java.lang.Object;\n" + 
                 "import java.util.List;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
@@ -115,6 +116,15 @@ public class GenerateParentListChildTest {
                 "            ((IPostReConstruct)object).postReConstruct();\n" + 
                 "        return object;\n" + 
                 "    }\n" + 
+                "    public String toString() {\n" + 
+                "        return \"Parent[\" + \"names: \" + names() + \", \" + \"children: \" + children() + \"]\";\n" + 
+                "    }\n" + 
+                "    public int hashCode() {\n" + 
+                "        return toString().hashCode();\n" + 
+                "    }\n" + 
+                "    public boolean equals(Object another) {\n" + 
+                "        return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));\n" + 
+                "    }\n" + 
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
@@ -145,6 +155,7 @@ public class GenerateParentListChildTest {
                     targetClassName,     // targetClassName
                     packageName,         // targetPackageName
                     isClass,             // isClass
+                    null,
                     configures,          // Configurations
                     getters);
         val dataObjSpec = new DataObjectBuilder(sourceSpec).build();

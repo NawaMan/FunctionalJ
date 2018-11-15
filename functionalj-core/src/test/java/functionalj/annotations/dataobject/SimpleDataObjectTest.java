@@ -14,7 +14,7 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public class SimpleDataObjectTest {
     
-    @functionalj.annotations.DataObject(name="SimpleFromInteface")
+    @functionalj.annotations.DataObject(name="SimpleFromInteface", generateNoArgConstructor=true)
     public static interface SimpleDOInterface {
         
         public String name();

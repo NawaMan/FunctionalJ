@@ -20,7 +20,7 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public class GenerateBasicUnionTypeTest {
 
-    @UnionType(sourceSpec="spec")
+    @UnionType(specField="spec")
     public static interface ColorSpec {
         void White();
         void Black();

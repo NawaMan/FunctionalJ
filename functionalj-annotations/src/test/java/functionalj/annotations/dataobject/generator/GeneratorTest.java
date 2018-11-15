@@ -62,6 +62,7 @@ public class GeneratorTest {
                 "import functionalj.lens.lenses.IntegerLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
+                "import java.lang.Object;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
@@ -94,25 +95,25 @@ public class GeneratorTest {
                 "    public Car withAnint(int anint) {\n" + 
                 "        return postReConstruct(new Car(anint, anbool, anstring));\n" + 
                 "    }\n" + 
-                "    public Car withAnint(Supplier<int> anint) {\n" + 
+                "    public Car withAnint(Supplier<Integer> anint) {\n" + 
                 "        return postReConstruct(new Car(anint.get(), anbool, anstring));\n" + 
                 "    }\n" + 
-                "    public Car withAnint(Function<int, int> anint) {\n" + 
+                "    public Car withAnint(Function<Integer, Integer> anint) {\n" + 
                 "        return postReConstruct(new Car(anint.apply(this.anint), anbool, anstring));\n" + 
                 "    }\n" + 
-                "    public Car withAnint(BiFunction<Car, int, int> anint) {\n" + 
+                "    public Car withAnint(BiFunction<Car, Integer, Integer> anint) {\n" + 
                 "        return postReConstruct(new Car(anint.apply(this, this.anint), anbool, anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnbool(boolean anbool) {\n" + 
                 "        return postReConstruct(new Car(anint, anbool, anstring));\n" + 
                 "    }\n" + 
-                "    public Car withAnbool(Supplier<boolean> anbool) {\n" + 
+                "    public Car withAnbool(Supplier<Boolean> anbool) {\n" + 
                 "        return postReConstruct(new Car(anint, anbool.get(), anstring));\n" + 
                 "    }\n" + 
-                "    public Car withAnbool(Function<boolean, boolean> anbool) {\n" + 
+                "    public Car withAnbool(Function<Boolean, Boolean> anbool) {\n" + 
                 "        return postReConstruct(new Car(anint, anbool.apply(this.anbool), anstring));\n" + 
                 "    }\n" + 
-                "    public Car withAnbool(BiFunction<Car, boolean, boolean> anbool) {\n" + 
+                "    public Car withAnbool(BiFunction<Car, Boolean, Boolean> anbool) {\n" + 
                 "        return postReConstruct(new Car(anint, anbool.apply(this, this.anbool), anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnstring(String anstring) {\n" + 
@@ -131,6 +132,15 @@ public class GeneratorTest {
                 "        if (object instanceof IPostReConstruct)\n" + 
                 "            ((IPostReConstruct)object).postReConstruct();\n" + 
                 "        return object;\n" + 
+                "    }\n" + 
+                "    public String toString() {\n" + 
+                "        return \"Car[\" + \"anint: \" + anint() + \", \" + \"anbool: \" + anbool() + \", \" + \"anstring: \" + anstring() + \"]\";\n" + 
+                "    }\n" + 
+                "    public int hashCode() {\n" + 
+                "        return toString().hashCode();\n" + 
+                "    }\n" + 
+                "    public boolean equals(Object another) {\n" + 
+                "        return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {\n" + 
@@ -229,6 +239,7 @@ public class GeneratorTest {
                     targetClassName,     // targetClassName
                     packageName,         // targetPackageName
                     isClass,             // isClass
+                    null,
                     configures,          // Configurations
                     getters);
         val dataObjSpec = new DataObjectBuilder(sourceSpec).build();

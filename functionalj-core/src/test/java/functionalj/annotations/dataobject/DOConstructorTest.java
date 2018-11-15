@@ -25,6 +25,7 @@ public class DOConstructorTest {
     
     @DataObject(
             name = "DONoAllArgsConstructor",
+            generateNoArgConstructor  = true,
             generateAllArgConstructor = false
         )
     public static interface DONoAllArgsConstructorDef {

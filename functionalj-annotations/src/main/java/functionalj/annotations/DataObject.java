@@ -25,12 +25,15 @@ import java.lang.annotation.Target;
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
-@Target({ ElementType.TYPE })
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DataObject {
     
     /** @return the name of the target class. */
     public String name() default "";
+    
+    /** @return the name of the static final field for the source spec. */
+    public String specField() default "";
     
     /**
      * @return the flag indicating that the generated class should extends or implements the definition
@@ -39,7 +42,7 @@ public @interface DataObject {
     public boolean coupleWithDefinition() default true;
     
     /** @return the flag indicating that the no-arguments constructor should be created - default to true. */
-    public boolean generateNoArgConstructor() default true;
+    public boolean generateNoArgConstructor() default false;
     
     /** @return the flag indicating that the no-arguments constructor should be created - default to true. */
     public boolean generateAllArgConstructor() default true;

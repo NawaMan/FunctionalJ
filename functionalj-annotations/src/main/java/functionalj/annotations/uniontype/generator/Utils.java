@@ -61,7 +61,7 @@ public class Utils {
         if (str == null)
             return "null";
         if (str.isEmpty())
-            return "str";
+            return "\"\"";
         
         val matcher = pattern.matcher(str);
         val buffer  = new StringBuffer();

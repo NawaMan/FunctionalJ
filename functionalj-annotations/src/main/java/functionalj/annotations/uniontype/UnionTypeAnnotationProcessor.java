@@ -122,9 +122,9 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
             val targetName     = extractTargetName(simpleName, specTargetName);
             val targetType     = new Type(packageName, null, targetName, generics);
             
-            val specField = emptyToNull(unionType.sourceSpec());
+            val specField = emptyToNull(unionType.specField());
             if ((specField != null) && !specField.matches("^[A-Za-z_$][A-Za-z_$0-9]*$")) {
-                error(element, "Source spec field name is not a valid identifier: " + unionType.sourceSpec());
+                error(element, "Source spec field name is not a valid identifier: " + unionType.specField());
                 continue;
             }
             
