@@ -1,6 +1,9 @@
 package functionalj.annotations.uniontype.generator.model;
 
+import static functionalj.annotations.uniontype.generator.Utils.toListCode;
+import static functionalj.annotations.uniontype.generator.Utils.toStringLiteral;
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import java.util.ArrayList;
@@ -18,7 +21,11 @@ import lombok.experimental.Accessors;
 public class Method {
     
     public static enum Kind {
-        DEFAULT, STATIC
+        DEFAULT, STATIC;
+        
+        public String toCode() {
+            return "functionalj.annotations.uniontype.generator.model.Method.Kind." + this.toString();
+        }
     }
     
     public final String signature;
@@ -83,5 +90,19 @@ public class Method {
                 .filter (Objects::nonNull)
                 .collect(joining(", "));
         return name + "(" + paramsStr + ")";
+    }
+    
+    public String toCode() {
+        val parameters = asList(
+                kind.toCode(),
+                toStringLiteral(name),
+                returnType.toCode(),
+                toListCode     (params,     MethodParam::toCode),
+                toListCode     (generics,   Generic::toCode),
+                toListCode     (exceptions, Type::toCode)
+        );
+        return "new functionalj.annotations.uniontype.generator.model.Method(" 
+                + parameters.stream().collect(joining(", "))
+                + ")";
     }
 }

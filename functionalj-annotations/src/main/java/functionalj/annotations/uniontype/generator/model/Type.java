@@ -1,5 +1,7 @@
 package functionalj.annotations.uniontype.generator.model;
 
+import static functionalj.annotations.uniontype.generator.Utils.toListCode;
+import static functionalj.annotations.uniontype.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Optional.ofNullable;
@@ -97,5 +99,16 @@ public class Type {
         if ("short"  .equals(toString)) return SHORT;
         if ("float"  .equals(toString)) return FLOAT;
         return this;
+    }
+    public String toCode() {
+        val params = asList(
+                toStringLiteral(pckg),
+                toStringLiteral(encloseClass),
+                toStringLiteral(name),
+                toListCode     (generics, Generic::toCode)
+        );
+        return "new functionalj.annotations.uniontype.generator.model.Type("
+                + params.stream().collect(joining(", "))
+                + ")";
     }
 }

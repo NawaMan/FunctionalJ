@@ -42,13 +42,13 @@ public class UnionTypeWithGenericMethodTest {
         default int hashCode(Self1<T> self) {
             Option<T> option = self.asMe();
             return Switch(option)
-                    .none(0)
+                    .none(__   -> 0)
                     .some(some -> some.value().hashCode());
         }
         default String toString(Self1<T> self) {
             Option<T> option = self.asMe();
             return Switch(option)
-                    .none("None")
+                    .none(__ -> "None")
                     .some(m -> "Some:" + m.value());
         }
         default boolean isPresent(Self1<T> self) {
@@ -58,7 +58,7 @@ public class UnionTypeWithGenericMethodTest {
         default Self1<T> ifPresent(Self1<T> self, Consumer<T> action) {
             Option<T> option       = self.asMe();
             Option<T> resultOption = Switch(option)
-                    .none(option)
+                    .none(__ -> option)
                     .some(some -> {
                         action.accept(some.value());
                         return option;
@@ -69,26 +69,26 @@ public class UnionTypeWithGenericMethodTest {
             Option<T> option = self.asMe();
             return Option.of(
                     Switch(option)
-                    .none((R)null)
+                    .none(__ -> (R)null)
                     .some((Option.Some<T> some) -> mapper.apply(some.value())));
         }
         @SuppressWarnings("unchecked")
         default <R> Self1<R> flatMap(Self1<T> self, Function<? super T, ? extends Self1<R>> mapper) {
             Option<T> option = self.asMe();
             return Switch(option)
-                    .none((Option<R>)Option.None())
+                    .none(__   -> (Option<R>)Option.None())
                     .some(some -> mapper.apply(some.value()).asMe());
         }
         default T get(Self1<T> self) {
             Option<T> option = self.asMe();
             return Switch(option)
-                    .none((T)null)
+                    .none(__ -> (T)null)
                     .some(some -> some.value());
         }
         default T orElse(Self1<T> self, T elseValue) {
             Option<T> option = self.asMe();
             return Switch(option)
-                    .none((T)elseValue)
+                    .none(__ -> (T)elseValue)
                     .some(some -> some.value());
         }
         default T orElseGet(Self1<T> self, Supplier<T> elseSupplier) {

@@ -1,5 +1,8 @@
 package functionalj.annotations.uniontype.generator.model;
 
+import static functionalj.annotations.uniontype.generator.Utils.toListCode;
+import static functionalj.annotations.uniontype.generator.Utils.toStringLiteral;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -9,6 +12,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import lombok.ToString;
+import lombok.val;
 
 @ToString
 public class Choice {
@@ -46,5 +50,16 @@ public class Choice {
                 .map(mapper)
                 .filter(Objects::nonNull)
                 .collect(toList());
+    }
+    
+    public String toCode() {
+        val parameters = asList(
+                toStringLiteral(name),
+                toStringLiteral(validationMethod),
+                toListCode     (params, ChoiceParam::toCode)
+        );
+        return "new functionalj.annotations.uniontype.generator.model.Choice("
+                + parameters.stream().collect(joining(", "))
+                + ")";
     }
 }

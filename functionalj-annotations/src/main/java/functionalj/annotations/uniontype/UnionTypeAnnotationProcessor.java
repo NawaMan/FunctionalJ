@@ -119,17 +119,24 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
             val sourceType     = new Type(packageName, enclosedClass, simpleName, generics);
             val unionType      = element.getAnnotation(UnionType.class);
             val specTargetName = unionType.name();
-            val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
+            val targetName     = extractTargetName(simpleName, specTargetName);
             val targetType     = new Type(packageName, null, targetName, generics);
             
-            val choices  = extractTypeChoices(element, targetType, typeElement);
+            val specField = emptyToNull(unionType.sourceSpec());
+            if ((specField != null) && !specField.matches("^[A-Za-z_$][A-Za-z_$0-9]*$")) {
+                error(element, "Source spec field name is not a valid identifier: " + unionType.sourceSpec());
+                continue;
+            }
+            
+            val choices   = extractTypeChoices(element, targetType, typeElement);
             val methods   = extractTypeMethods(element, targetType, typeElement);
-            val generator = new Generator(targetName, sourceType, generics, choices, methods);
+            val generator = new Generator(targetName, sourceType, specField, generics, choices, methods);
             
             try {
                 val className  = packageName + "." + targetName;
                 val content    = generator.lines().stream().collect(joining("\n"));
-                generateCode(element, className, content + "\n" + logs.stream().map("// "::concat).collect(joining("\n")));
+                val logString  = "\n" + logs.stream().map("// "::concat).collect(joining("\n"));
+                generateCode(element, className, content + logString);
             } catch (Exception e) {
                 e.printStackTrace(System.err);
                 error(element, "Problem generating the class: "
@@ -144,8 +151,27 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
         return hasError;
     }
     
+    private String emptyToNull(String sourceSpec) {
+        if (sourceSpec == null)
+            return null;
+        return sourceSpec.isEmpty() ? null : sourceSpec;
+    }
+    
+    private String extractTargetName(String simpleName, String specTargetName) {
+        if ((specTargetName != null) && !specTargetName.isEmpty())
+            return specTargetName;
+        
+        if (simpleName.matches("^.*Spec$"))
+            return simpleName.replaceAll("Spec$", "");
+        if (simpleName.matches("^.*Model$"))
+            return simpleName.replaceAll("Model$", "");
+        
+        return simpleName;
+    }
+    
     private boolean isDefaultOrStatic(ExecutableElement mthd) {
-        return mthd.isDefault() || mthd.getModifiers().contains(STATIC);
+        return mthd.isDefault()
+            || mthd.getModifiers().contains(STATIC);
     }
     
     private Method createMethodFromMethodElement(Element element, Type targetType, ExecutableElement mthd) {
@@ -169,7 +195,8 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
     
     private boolean isPublicOrPackage(ExecutableElement mthd) {
         return mthd.getModifiers().contains(PUBLIC)
-                 || !(mthd.getModifiers().contains(PRIVATE) && mthd.getModifiers().contains(PROTECTED));
+          || !(mthd.getModifiers().contains(PRIVATE)
+            && mthd.getModifiers().contains(PROTECTED));
     }
     
     private List<Generic> extractTypeGenerics(Element element, Type targetType, TypeElement type) {
@@ -180,28 +207,34 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
     private List<Generic> extractGenerics(Element element, Type targetType, List<? extends TypeParameterElement> typeParameters) {
         return typeParameters.stream()
                 .map(t -> (TypeParameterElement)t)
-                .map(t -> {
-                    val boundTypes = ((TypeParameterElement)t).getBounds().stream()
-                            .map(TypeMirror.class::cast)
-                            .map(tm -> this.typeOf(element, targetType, tm))
-                            .collect(toList());
-                    return new Generic(
-                            t.toString(), 
-                            t.toString() 
-                                + ((boundTypes.isEmpty()) 
-                                        ? "" : " extends " + t.getBounds().stream().map(b -> typeOf(element, targetType, (TypeMirror)b).getName()).collect(joining(" & "))), boundTypes);
-                })
+                .map(t -> parameterGeneric(element, targetType, t))
                 .collect(toList());
+    }
+    
+    private Generic parameterGeneric(Element element, Type targetType, TypeParameterElement t) {
+        val boundTypes = ((TypeParameterElement)t).getBounds().stream()
+                .map(TypeMirror.class::cast)
+                .map(tm -> this.typeOf(element, targetType, tm))
+                .collect(toList());
+        val paramName = t.toString();
+        val boundAsString = (boundTypes.isEmpty()) ? ""
+                : " extends " + t.getBounds().stream().map(b -> typeOf(element, targetType, (TypeMirror)b).getName()).collect(joining(" & "));
+        return new Generic(
+                paramName, 
+                paramName 
+                    + boundAsString,
+                boundTypes);
     }
     
     private List<Generic> extractGenericsFromTypeArguments(Element element, Type targetType, List<? extends TypeMirror> typeParameters) {
         return typeParameters.stream()
                 .map(p -> {
+                    val paramName = p.toString();
                     if (p instanceof TypeVariable) {
                         val param = (TypeVariable)p;
                         return new Generic(
-                            p.toString(),
-                            p.toString()
+                            paramName,
+                            paramName
                                 + ((param.getLowerBound() == null) ? "" : " super " + param.getLowerBound())
                                 + (param.getUpperBound().toString().equals("java.lang.Object") ? "" : " extends " + param.getUpperBound()),
                             Stream.of(
@@ -212,7 +245,7 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                             .collect(toList())
                         );
                     } else {
-                        return new Generic(p.toString());
+                        return new Generic(paramName);
                     }
                 })
                 .collect(toList());

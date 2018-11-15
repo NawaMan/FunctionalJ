@@ -13,14 +13,14 @@ public class SubDOTest {
     @DataObject(name="Child")
     public static interface IChild {
         
-        public String name();
+        String name();
         
     }
     @DataObject(name="Parent")
     public static interface IParent {
         
-        public String name();
-        public Child  child();
+        String name();
+        Child  child();
         
     }
     

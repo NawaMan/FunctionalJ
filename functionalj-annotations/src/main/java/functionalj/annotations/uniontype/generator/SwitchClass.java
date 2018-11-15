@@ -102,9 +102,6 @@ public class SwitchClass implements Lines {
             format("}"),
             format("public %1$s%2$s %3$s(Supplier<%4$s> theSupplier) {", methodGeneric, retType, camelName, mapTargetType),
             format("    return %1$s(d->theSupplier.get());"         , camelName),
-            format("}"),
-            format("public %1$s%2$s %3$s(%4$s theValue) {", methodGeneric, retType, camelName, mapTargetType),
-            format("    return %1$s(d->theValue);" , camelName),
             format("}")
         ).stream()
          .filter(Objects::nonNull)
@@ -150,9 +147,6 @@ public class SwitchClass implements Lines {
                 format("}"),
                 format("public %1$s%2$s<%5$s> %3$sOf(%4$s, Supplier<%6$s> theSupplier) {", methodGeneric, switchClassName, camelName, paramDefStr, mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
                 format("    return %1$s(%1$s -> %2$s, theSupplier);",                      camelName, paramCheckStr),
-                format("}"),
-                format("public %1$s%2$s<%5$s> %3$sOf(%4$s, %6$s theValue) {",  methodGeneric, switchClassName, camelName, paramDefStr, mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
-                format("    return %1$s(%1$s -> %2$s, theValue);",             camelName, paramCheckStr),
                 format("}")
             );
         });
@@ -187,9 +181,6 @@ public class SwitchClass implements Lines {
             format("}"),
             format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, Supplier<%6$s> theSupplier) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
             format("    return %1$s(check, d->theSupplier.get());",                                   camelName),
-            format("}"),
-            format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, %6$s theValue) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
-            format("    return %1$s(check, d->theValue);",                               camelName),
             format("}")
         ).stream()
          .filter(Objects::nonNull)

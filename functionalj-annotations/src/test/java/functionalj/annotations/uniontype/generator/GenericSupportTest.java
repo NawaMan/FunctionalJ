@@ -21,6 +21,7 @@ public class GenericSupportTest {
     public void test() {
         val generator = new Generator("Option",
                 new Type("functionalj.annotations.uniontype", "GenericSupportTest", "OptionSpec"),
+                "spec",
                 asList(
                    new Generic("T", "T extends Number", asList(new Type("java.lang", "Number"), new Type("java.io", "Serializable")))
                 ),
@@ -92,7 +93,7 @@ public class GenericSupportTest {
             "            if (toString != null)\n" + 
             "                return toString;\n" + 
             "            toString = Switch(this)\n" + 
-            "                    .none(\"None\")\n" + 
+            "                    .none(__ -> \"None\")\n" + 
             "                    .some(some -> \"Some(\" + String.format(\"%1$s\", some.value) + \")\")\n" + 
             "            ;\n" + 
             "            return toString;\n" + 
@@ -146,9 +147,6 @@ public class GenericSupportTest {
             "        public <TARGET> OptionSwitchSome<TARGET, T> none(Supplier<TARGET> theSupplier) {\n" + 
             "            return none(d->theSupplier.get());\n" + 
             "        }\n" + 
-            "        public <TARGET> OptionSwitchSome<TARGET, T> none(TARGET theValue) {\n" + 
-            "            return none(d->theValue);\n" + 
-            "        }\n" + 
             "    }\n" + 
             "    public static class OptionSwitchNoneSome<TARGET, T extends Number> extends UnionTypeSwitch<Option<T>, TARGET> {\n" + 
             "        private OptionSwitchNoneSome(Option<T> theValue, Function<Option<T>, TARGET> theAction) { super(theValue, theAction); }\n" + 
@@ -166,9 +164,6 @@ public class GenericSupportTest {
             "        }\n" + 
             "        public OptionSwitchSome<TARGET, T> none(Supplier<TARGET> theSupplier) {\n" + 
             "            return none(d->theSupplier.get());\n" + 
-            "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> none(TARGET theValue) {\n" + 
-            "            return none(d->theValue);\n" + 
             "        }\n" + 
             "    }\n" + 
             "    public static class OptionSwitchSome<TARGET, T extends Number> extends UnionTypeSwitch<Option<T>, TARGET> {\n" + 
@@ -188,9 +183,6 @@ public class GenericSupportTest {
             "        public TARGET some(Supplier<TARGET> theSupplier) {\n" + 
             "            return some(d->theSupplier.get());\n" + 
             "        }\n" + 
-            "        public TARGET some(TARGET theValue) {\n" + 
-            "            return some(d->theValue);\n" + 
-            "        }\n" + 
             "        \n" + 
             "        public OptionSwitchSome<TARGET, T> some(Predicate<Some<T>> check, Function<? super Some<T>, TARGET> theAction) {\n" + 
             "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)$action;\n" + 
@@ -206,18 +198,12 @@ public class GenericSupportTest {
             "        public OptionSwitchSome<TARGET, T> some(Predicate<Some<T>> check, Supplier<TARGET> theSupplier) {\n" + 
             "            return some(check, d->theSupplier.get());\n" + 
             "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> some(Predicate<Some<T>> check, TARGET theValue) {\n" + 
-            "            return some(check, d->theValue);\n" + 
-            "        }\n" + 
             "        \n" + 
             "        public OptionSwitchSome<TARGET, T> someOf(T aValue, Function<Some<T>, TARGET> theAction) {\n" + 
             "            return some(some -> checkEquals(aValue, some.value), theAction);\n" + 
             "        }\n" + 
             "        public OptionSwitchSome<TARGET, T> someOf(T aValue, Supplier<TARGET> theSupplier) {\n" + 
             "            return some(some -> checkEquals(aValue, some.value), theSupplier);\n" + 
-            "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(T aValue, TARGET theValue) {\n" + 
-            "            return some(some -> checkEquals(aValue, some.value), theValue);\n" + 
             "        }\n" + 
             "        \n" + 
             "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, Function<Some<T>, TARGET> theAction) {\n" + 
@@ -226,10 +212,9 @@ public class GenericSupportTest {
             "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, Supplier<TARGET> theSupplier) {\n" + 
             "            return some(some -> valueCheck.test(some.value), theSupplier);\n" + 
             "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, TARGET theValue) {\n" + 
-            "            return some(some -> valueCheck.test(some.value), theValue);\n" + 
-            "        }\n" + 
             "    }\n" + 
+            "    \n" + 
+            "    public static final functionalj.annotations.uniontype.generator.model.SourceSpec spec = new functionalj.annotations.uniontype.generator.model.SourceSpec(\"Option\", new functionalj.annotations.uniontype.generator.model.Type(\"functionalj.annotations.uniontype\", \"GenericSupportTest\", \"OptionSpec\", Collections.emptyList()), \"spec\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Generic(\"T\", \"T extends Number\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Type(\"java.lang\", null, \"Number\", Collections.emptyList()), new functionalj.annotations.uniontype.generator.model.Type(\"java.io\", null, \"Serializable\", Collections.emptyList())))), java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Choice(\"None\", null, Collections.emptyList()), new functionalj.annotations.uniontype.generator.model.Choice(\"Some\", null, java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.ChoiceParam(\"value\", new functionalj.annotations.uniontype.generator.model.Type(null, null, \"T\", Collections.emptyList()))))), Collections.emptyList());\n" + 
             "    \n" + 
             "}";
     

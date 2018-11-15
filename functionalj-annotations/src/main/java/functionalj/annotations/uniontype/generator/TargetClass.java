@@ -145,9 +145,10 @@ public class TargetClass implements Lines {
                 .collect(toList())
                 ;
         
-        val typeName    = typeWithGenerics();
-        val pckgName    = spec.sourceType.pckg;
-        val importLines = imports.stream().map(i -> "import " + i + ";").collect(toList());
+        val typeName     = typeWithGenerics();
+        val pckgName     = spec.sourceType.pckg;
+        val importLines  = imports.stream().map(i -> "import " + i + ";").collect(toList());
+        val specConstant = (spec.specObjName == null) ? "    " : "    public static final functionalj.annotations.uniontype.generator.model.SourceSpec " + spec.specObjName + " = " + spec.toCode() + ";";
         return asList(
                 asList(format("package %s;", pckgName)),
                 asList(format("")),
@@ -173,6 +174,8 @@ public class TargetClass implements Lines {
                 targetCheckMethods,
                 asList(format("    ")),
                 switchClasses,
+                asList(format("    ")),
+                asList(specConstant),
                 asList(format("    ")),
                 asList(format("}"))
             ).stream()

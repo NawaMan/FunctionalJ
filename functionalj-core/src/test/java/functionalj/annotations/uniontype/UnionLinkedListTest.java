@@ -40,7 +40,7 @@ public class UnionLinkedListTest {
                      .nill(l2 -> "")
                      .node(l2 -> l2.value() + 
                                  Switch(l2.rest())
-                                   .nill("")
+                                   .nill(__ -> "")
                                    .node(lr -> "," + f.apply(lr)));
         });
         return "[" + noBracketToStr.apply(list) + "]";
@@ -50,7 +50,7 @@ public class UnionLinkedListTest {
             return Switch((LinkedList)l)
                      .nill(l2 -> "")
                      .node(l2 -> Switch(l2.rest())
-                                   .nill("")
+                                   .nill(__ -> "")
                                    .node(lr -> f.apply(lr) + ",")
                                  + l2.value());
         });
@@ -61,12 +61,12 @@ public class UnionLinkedListTest {
     }
     LinkedList map(LinkedList list, Function<Object, Object> mapper) {
         return Switch(list)
-                .nill(Nill())
+                .nill(__ -> Nill())
                 .node(l -> Node(mapper.apply(l.value()), map(l.rest(), mapper)));
     }
     LinkedList filter(LinkedList list, Predicate<Object> filter) {
         return Switch(list)
-                .nill(Nill())
+                .nill(__ -> Nill())
                 .node(l -> (filter.test(l.value()) ? Node(l.value(), filter(l.rest(), filter)) : filter(l.rest(), filter)));
     }
     Object reduce(LinkedList list, BinaryOperator<Object> operator) {

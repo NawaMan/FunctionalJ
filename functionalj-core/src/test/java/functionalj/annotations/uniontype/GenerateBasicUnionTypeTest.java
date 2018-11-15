@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public class GenerateBasicUnionTypeTest {
 
-    @UnionType(name="Color")
+    @UnionType(sourceSpec="spec")
     public static interface ColorSpec {
         void White();
         void Black();
@@ -40,8 +41,8 @@ public class GenerateBasicUnionTypeTest {
     
     private static Function<Color, Boolean> isWhite = (color->
             Switch(color)
-            .white(true)
-            .orElse(false)
+            .white (__ -> true)
+            .orElse(      false)
     );
     
     @Test
@@ -53,8 +54,8 @@ public class GenerateBasicUnionTypeTest {
     
     private static Function<UpOrDown, String> upDownString = (upOrDown->
         Switch(upOrDown)
-        .up  ("Go up")
-        .down("Go down")
+        .up  (__ -> "Go up")
+        .down(__ -> "Go down")
     );
     
     @Test
@@ -88,6 +89,11 @@ public class GenerateBasicUnionTypeTest {
         count.set(counting.apply(count.get(), Down()));
         assertEquals(0, count.get());
         
+    }
+    
+    @Test
+    public void testSpecCode() {
+        assertEquals("[White, Black, RGB]", Color.spec.choices.stream().map(c -> c.name).collect(Collectors.toList()).toString());
     }
     
 }

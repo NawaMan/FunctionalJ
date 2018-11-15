@@ -96,7 +96,7 @@ public class TargetTypeGeneral implements Lines {
                 val camelName  = toCamelCase(choice.name);
                 val paramCount = choice.params.size();
                 if (paramCount == 0) {
-                    return format("            .%1$s(\"%2$s\")", camelName, choice.name);
+                    return format("            .%1$s(__ -> \"%2$s\")", camelName, choice.name);
                 } else {
                     val template       = templateRange(1, paramCount + 1, ",");
                     val templateParams = choice.params.stream().map(p -> camelName + "." + p.name).collect(joining(","));
