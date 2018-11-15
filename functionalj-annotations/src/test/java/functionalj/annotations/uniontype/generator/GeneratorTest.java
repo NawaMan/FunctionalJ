@@ -52,11 +52,11 @@ public class GeneratorTest {
                         + "\"p1.p2\", "
                         + "null, "
                         + "\"ColorSpec\", "
-                        + "Collections.emptyList()), "
+                        + "java.util.Collections.emptyList()), "
                     + "null, "
-                    + "Collections.emptyList(), "
-                    + "Collections.emptyList(), "
-                    + "Collections.emptyList())", sourceSpec.toCode());
+                    + "java.util.Collections.emptyList(), "
+                    + "java.util.Collections.emptyList(), "
+                    + "java.util.Collections.emptyList())", sourceSpec.toCode());
     }
     
     @Test
@@ -82,11 +82,11 @@ public class GeneratorTest {
                     + "\"p1.p2\", "
                     + "\"EncloserClass\", "
                     + "\"ColorSpec\", "
-                    + "Collections.emptyList()), "
+                    + "java.util.Collections.emptyList()), "
                 + "null, "
-                + "Collections.emptyList(), "
-                + "Collections.emptyList(), "
-                + "Collections.emptyList()"
+                + "java.util.Collections.emptyList(), "
+                + "java.util.Collections.emptyList(), "
+                + "java.util.Collections.emptyList()"
                 + ")", sourceSpec.toCode());
     }
     @Test
@@ -109,16 +109,7 @@ public class GeneratorTest {
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
                 "}", lines);
         assertEquals(
-                "new functionalj.annotations.uniontype.generator.model.SourceSpec("
-                + "\"Coroutine\", "
-                + "new functionalj.annotations.uniontype.generator.model.Type("
-                + "\"p1.p2\", "
-                + "null, "
-                + "\"Next\", "
-                + "java.util.Arrays.asList("
-                + "new functionalj.annotations.uniontype.generator.model.Generic("
-                + "\"D\", "
-                + "\"D\", null))), \"spec\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Generic(\"D\", \"D\", null)), Collections.emptyList(), Collections.emptyList())", sourceSpec.toCode());
+                "new functionalj.annotations.uniontype.generator.model.SourceSpec(\"Coroutine\", new functionalj.annotations.uniontype.generator.model.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Generic(\"D\", \"D\", null))), \"spec\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Generic(\"D\", \"D\", null)), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
     }
     
     @Test

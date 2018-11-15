@@ -18,7 +18,7 @@ import functionalj.annotations.UnionType;
 @SuppressWarnings("javadoc")
 public class UnionTypeWithGenericMethodTest {
     
-    @UnionType(name="Option")
+    @UnionType
     public interface OptionSpec<T> {
         void None();
         void Some(T value);

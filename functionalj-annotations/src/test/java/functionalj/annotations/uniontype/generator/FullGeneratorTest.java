@@ -463,6 +463,7 @@ public class FullGeneratorTest {
               "    }\n" + 
               "    \n" + 
               "    \n" + 
+              "    \n" + 
               "}",
               lines);
   }
