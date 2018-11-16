@@ -34,6 +34,7 @@ public class Getter {
     
     private String name;
     private Type type;
+    private boolean isRequired;
     
     /**
      * Create a getter for the name and type.
@@ -42,14 +43,26 @@ public class Getter {
      * @param type  the getter type.
      */
     public Getter(String name, Type type) {
+        this(name, type, true);
+    }
+    
+    /**
+     * Create a getter for the name and type.
+     * 
+     * @param name  the getter name.
+     * @param type  the getter type.
+     */
+    public Getter(String name, Type type, boolean isRequired) {
         this.name = name;
         this.type = type;
+        this.isRequired = isRequired;
     }
     
     public String toCode() {
         val params = asList(
                 toStringLiteral(name),
-                type.toCode()
+                type.toCode(),
+                "" + isRequired
         );
         return "new functionalj.annotations.dataobject.generator.Getter("
                 + params.stream().collect(joining(", "))

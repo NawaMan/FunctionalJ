@@ -136,6 +136,60 @@ public class GenerateParentFuncListChildTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
+                "    public static class Builder {\n" + 
+                "        \n" + 
+                "        public Builder_names names(FuncList<String> names) {\n" + 
+                "            return new Builder_names(names);\n" + 
+                "        }\n" + 
+                "        \n" + 
+                "        public static class Builder_names {\n" + 
+                "            \n" + 
+                "            private final FuncList<String> names;\n" + 
+                "            \n" + 
+                "            private Builder_names(FuncList<String> names) {\n" + 
+                "                this.names = names;\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "            public FuncList<String> names() {\n" + 
+                "                return names;\n" + 
+                "            }\n" + 
+                "            public Builder_names names(FuncList<String> names) {\n" + 
+                "                return new Builder_names(names);\n" + 
+                "            }\n" + 
+                "            public Builder_names_children children(FuncList<Child> children) {\n" + 
+                "                return new Builder_names_children(this, children);\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
+                "        public static class Builder_names_children {\n" + 
+                "            \n" + 
+                "            private final Builder_names parent;\n" + 
+                "            private final FuncList<Child> children;\n" + 
+                "            \n" + 
+                "            private Builder_names_children(Builder_names parent, FuncList<Child> children) {\n" + 
+                "                this.parent = parent;\n" + 
+                "                this.children = children;\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "            public FuncList<String> names() {\n" + 
+                "                return parent.names();\n" + 
+                "            }\n" + 
+                "            public FuncList<Child> children() {\n" + 
+                "                return children;\n" + 
+                "            }\n" + 
+                "            public Builder_names_children names(FuncList<String> names) {\n" + 
+                "                return parent.names(names).children(children);\n" + 
+                "            }\n" + 
+                "            public Builder_names_children children(FuncList<Child> children) {\n" + 
+                "                return parent.children(children);\n" + 
+                "            }\n" + 
+                "            public Parent build() {\n" + 
+                "                return new Parent(names(), children());\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
+                "        \n" + 
+                "    }\n" + 
                 "    \n" + 
                 "}", code);
         /* */

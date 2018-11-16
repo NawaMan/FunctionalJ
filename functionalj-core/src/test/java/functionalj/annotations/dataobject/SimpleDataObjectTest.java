@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import functionalj.annotations.Require;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -17,6 +18,7 @@ public class SimpleDataObjectTest {
     @functionalj.annotations.DataObject(name="SimpleFromInteface", generateNoArgConstructor=true)
     public static interface SimpleDOInterface {
         
+        @Require(false)
         public String name();
         
         public default String nameUpperCase() {

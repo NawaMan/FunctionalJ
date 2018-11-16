@@ -45,6 +45,7 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import functionalj.annotations.DataObject;
+import functionalj.annotations.Require;
 import functionalj.annotations.dataobject.generator.DataObjectBuilder;
 import functionalj.annotations.dataobject.generator.Getter;
 import functionalj.annotations.dataobject.generator.SourceSpec;
@@ -179,6 +180,9 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         if (configures == null)
             return null;
         
+        if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, specTargetName, configures))
+            return null;
+        
         try {
             return new SourceSpec(sourceName, packageName, targetName, packageName, isClass, specField, configures, getters);
         } catch (Exception e) {
@@ -190,6 +194,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             return null;
         }
     }
+    
     private SourceSpec extractSourceSpecMethod(Element element) {
 //        error(element, elementUtils.getDocComment(element));
         
@@ -219,6 +224,10 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             return null;
         
         val getters = method.getParameters().stream().map(p -> createGetterFromParameter(element, p)).collect(toList());
+        
+        if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, specTargetName, configures))
+            return null;
+        
         try {
             return new SourceSpec(superName, superPackage, targetName, packageName, isClass, specField, configures, getters);
         } catch (Exception e) {
@@ -230,11 +239,26 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             return null;
         }
     }
+
+    private boolean ensureNoArgConstructorWhenRequireFieldExists(Element element, List<Getter> getters,
+            final java.lang.String packageName, final java.lang.String specTargetName,
+            final functionalj.annotations.dataobject.generator.SourceSpec.Configurations configures) {
+        if (!configures.generateNoArgConstructor)
+            return true;
+        if (getters.stream().noneMatch(g->g.isRequired()))
+            return true;
+        val field = getters.stream().filter(g->g.isRequired()).findFirst().get().getName();
+        error(element, "No arg constructor cannot be generate when at least one field is require: "
+                        + packageName + "." + specTargetName + " -> field: " + field);
+        return false;
+    }
     
     private Getter createGetterFromParameter(Element element, VariableElement p){
         val name = p.getSimpleName().toString();
         val type = getType(element, p.asType());
-        val getter = new Getter(name, type);return getter;
+        val req  = (p.getAnnotation(Require.class) == null) || p.getAnnotation(Require.class).value();
+        val getter = new Getter(name, type, req);
+        return getter;
     }
     
     private Configurations extractConfigurations(Element element, DataObject dataObject) {
@@ -263,9 +287,10 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     }
     
     private Getter createGetterFromMethod(Element element, ExecutableElement method) {
-        String methodName = method.getSimpleName().toString();
-        Type   returnType = getType(element, method.getReturnType());
-        Getter getter     = new Getter(methodName, returnType);
+        val methodName = method.getSimpleName().toString();
+        val returnType = getType(element, method.getReturnType());
+        val req        = (method.getAnnotation(Require.class) == null) || method.getAnnotation(Require.class).value();
+        val getter     = new Getter(methodName, returnType, req);
         return getter;
     }
     

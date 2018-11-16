@@ -51,38 +51,50 @@ public class SourceSpec {
         public boolean coupleWithDefinition = true;
         /** Should the no-arguments constructor be created. */
         public boolean generateNoArgConstructor  = false;
+        /** Should the required-field-only constructor be created. */
+        public boolean generateRequiredOnlyConstructor = true;
         /** Should the all-arguments constructor be created. */
         public boolean generateAllArgConstructor  = true;
         /** Should the lens class be generated. */
         public boolean generateLensClass = true;
+        /** Should the builder class be generated. */
+        public boolean generateBuilderClass = true;
         
         public Configurations() {}
         public Configurations(
                 boolean coupleWithDefinition,
                 boolean generateNoArgConstructor,
+                boolean generateRequiredOnlyConstructor,
                 boolean generateAllArgConstructor,
-                boolean generateLensClass) {
-            this.coupleWithDefinition      = coupleWithDefinition;
-            this.generateNoArgConstructor  = generateNoArgConstructor;
-            this.generateAllArgConstructor = generateAllArgConstructor;
-            this.generateLensClass         = generateLensClass;
+                boolean generateLensClass,
+                boolean generateBuilderClass) {
+            this.coupleWithDefinition            = coupleWithDefinition;
+            this.generateNoArgConstructor        = generateNoArgConstructor;
+            this.generateRequiredOnlyConstructor = generateRequiredOnlyConstructor;
+            this.generateAllArgConstructor       = generateAllArgConstructor;
+            this.generateLensClass               = generateLensClass;
+            this.generateBuilderClass            = generateBuilderClass;
         }
         
         @Override
         public String toString() {
             return "Configurations ["
-                    + "coupleWithDefinition="      + coupleWithDefinition + ", "
-                    + "generateNoArgConstructor="  + generateNoArgConstructor + ", "
-                    + "generateAllArgConstructor=" + generateAllArgConstructor + ", "
-                    + "generateLensClass="         + generateLensClass
+                    + "coupleWithDefinition="            + coupleWithDefinition + ", "
+                    + "generateNoArgConstructor="        + generateNoArgConstructor + ", "
+                    + "generateRequiredOnlyConstructor=" + generateRequiredOnlyConstructor + ", "
+                    + "generateAllArgConstructor="       + generateAllArgConstructor + ", "
+                    + "generateLensClass="               + generateLensClass + ", "
+                    + "generateBuilderClass="            + generateBuilderClass
                     + "]";
         }
         public String toCode() {
             val params = asList(
                     coupleWithDefinition,
                     generateNoArgConstructor,
+                    generateRequiredOnlyConstructor,
                     generateAllArgConstructor,
-                    generateLensClass
+                    generateLensClass,
+                    generateBuilderClass
             );
             return "new functionalj.annotations.dataobject.generator.SourceSpec.Configurations("
                     + params.stream().map(String::valueOf).collect(joining(", "))
@@ -101,6 +113,8 @@ public class SourceSpec {
     public Boolean isClass() {
         return isClass;
     }
+    
+    // TODO - Optimize spec by importing them.
     
     public String toCode() {
         val params = asList(

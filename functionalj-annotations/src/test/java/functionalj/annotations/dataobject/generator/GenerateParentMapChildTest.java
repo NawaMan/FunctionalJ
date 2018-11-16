@@ -109,6 +109,33 @@ public class GenerateParentMapChildTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
+                "    public static class Builder {\n" + 
+                "        \n" + 
+                "        public Builder_children children(Map<String, Child> children) {\n" + 
+                "            return new Builder_children(children);\n" + 
+                "        }\n" + 
+                "        \n" + 
+                "        public static class Builder_children {\n" + 
+                "            \n" + 
+                "            private final Map<String, Child> children;\n" + 
+                "            \n" + 
+                "            private Builder_children(Map<String, Child> children) {\n" + 
+                "                this.children = children;\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "            public Map<String, Child> children() {\n" + 
+                "                return children;\n" + 
+                "            }\n" + 
+                "            public Builder_children children(Map<String, Child> children) {\n" + 
+                "                return new Builder_children(children);\n" + 
+                "            }\n" + 
+                "            public Parent build() {\n" + 
+                "                return new Parent(children());\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
+                "        \n" + 
+                "    }\n" + 
                 "    \n" + 
                 "}", code);
         /* */

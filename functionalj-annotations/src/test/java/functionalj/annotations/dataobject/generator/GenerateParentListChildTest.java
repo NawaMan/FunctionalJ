@@ -136,6 +136,60 @@ public class GenerateParentListChildTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
+                "    public static class Builder {\n" + 
+                "        \n" + 
+                "        public Builder_names names(List<String> names) {\n" + 
+                "            return new Builder_names(names);\n" + 
+                "        }\n" + 
+                "        \n" + 
+                "        public static class Builder_names {\n" + 
+                "            \n" + 
+                "            private final List<String> names;\n" + 
+                "            \n" + 
+                "            private Builder_names(List<String> names) {\n" + 
+                "                this.names = names;\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "            public List<String> names() {\n" + 
+                "                return names;\n" + 
+                "            }\n" + 
+                "            public Builder_names names(List<String> names) {\n" + 
+                "                return new Builder_names(names);\n" + 
+                "            }\n" + 
+                "            public Builder_names_children children(List<Child> children) {\n" + 
+                "                return new Builder_names_children(this, children);\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
+                "        public static class Builder_names_children {\n" + 
+                "            \n" + 
+                "            private final Builder_names parent;\n" + 
+                "            private final List<Child> children;\n" + 
+                "            \n" + 
+                "            private Builder_names_children(Builder_names parent, List<Child> children) {\n" + 
+                "                this.parent = parent;\n" + 
+                "                this.children = children;\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "            public List<String> names() {\n" + 
+                "                return parent.names();\n" + 
+                "            }\n" + 
+                "            public List<Child> children() {\n" + 
+                "                return children;\n" + 
+                "            }\n" + 
+                "            public Builder_names_children names(List<String> names) {\n" + 
+                "                return parent.names(names).children(children);\n" + 
+                "            }\n" + 
+                "            public Builder_names_children children(List<Child> children) {\n" + 
+                "                return parent.children(children);\n" + 
+                "            }\n" + 
+                "            public Parent build() {\n" + 
+                "                return new Parent(names(), children());\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
+                "        \n" + 
+                "    }\n" + 
                 "    \n" + 
                 "}", code);
         /* */

@@ -111,6 +111,11 @@ public class DataObjectBuilder {
             lensClass            = lensClassBuilder.build();
             theField             = lensClassBuilder.generateTheLensField();
         }
+        GenClass builderClass = null;
+        if (sourceSpec.getConfigures().generateBuilderClass) {
+            val builderClassBuilder = new BuilderClassBuilder(sourceSpec);
+            builderClass            = builderClassBuilder.build();
+        }
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
         val specField = ((sourceSpec.getSpecObjName() == null) || sourceSpec.getSpecObjName().isEmpty())
@@ -168,11 +173,13 @@ public class DataObjectBuilder {
         
         val constructors = listOf(
                     noArgConstructor(),
+                    requiredOnlyConstructor(),
                     allArgConstructor()
                 );
         
         val innerClasses = listOf(
-                    lensClass
+                    lensClass,
+                    builderClass
                 );
         
         val dataObjSpec = new DataObjectSpec(
@@ -189,18 +196,35 @@ public class DataObjectBuilder {
         if (!sourceSpec.getConfigures().generateNoArgConstructor)
             return null;
         
-        val noArgsConstructor = (Function<SourceSpec, GenConstructor>)((SourceSpec spec) ->{
-            val name        = spec.getTargetClassName();
-            val paramString = spec.getGetters().stream()
-                    .map    (getter -> getter.getType().defaultValue())
-                    .map    (String::valueOf)
-                    .collect(joining(", "));
-            val body = "this(" + paramString + ");";
-            return new GenConstructor(PUBLIC, name, emptyList(), line(body));
-        });
-        return noArgsConstructor.apply(sourceSpec);
+        val name        = sourceSpec.getTargetClassName();
+        val paramString = sourceSpec.getGetters().stream()
+                .map    (getter -> getter.getType().defaultValue())
+                .map    (String::valueOf)
+                .collect(joining(", "));
+        val body = "this(" + paramString + ");";
+        return new GenConstructor(PUBLIC, name, emptyList(), line(body));
     }
     
+    private GenConstructor requiredOnlyConstructor() {
+        if (!sourceSpec.getConfigures().generateRequiredOnlyConstructor)
+            return null;
+        
+        if (sourceSpec.getGetters().stream().allMatch(Getter::isRequired))
+            return null;
+        if (sourceSpec.getConfigures().generateNoArgConstructor
+         && sourceSpec.getGetters().stream().noneMatch(Getter::isRequired))
+            return null;
+        
+        val name   = sourceSpec.getTargetClassName();
+        val params = sourceSpec.getGetters().stream()
+                        .filter(getter -> getter.isRequired())
+                        .map   (this::getterToGenParam)
+                        .collect(toList());
+        val assignments = sourceSpec.getGetters().stream()
+                        .map    (getter -> "this." + getter.getName() + "=" + (getter.isRequired() ? getter.getName() : getter.getType().defaultValue()) + ";")
+                        .collect(toList());
+        return new GenConstructor(PUBLIC, name, params, ILines.line(assignments));
+    }
     private GenConstructor allArgConstructor() {
         val allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>)((spec, acc) ->{
             val name = spec.getTargetClassName();

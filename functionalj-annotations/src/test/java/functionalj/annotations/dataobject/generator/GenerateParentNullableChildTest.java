@@ -129,6 +129,60 @@ public class GenerateParentNullableChildTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
+                "    public static class Builder {\n" + 
+                "        \n" + 
+                "        public Builder_nullableName nullableName(Nullable<String> nullableName) {\n" + 
+                "            return new Builder_nullableName(nullableName);\n" + 
+                "        }\n" + 
+                "        \n" + 
+                "        public static class Builder_nullableName {\n" + 
+                "            \n" + 
+                "            private final Nullable<String> nullableName;\n" + 
+                "            \n" + 
+                "            private Builder_nullableName(Nullable<String> nullableName) {\n" + 
+                "                this.nullableName = nullableName;\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "            public Nullable<String> nullableName() {\n" + 
+                "                return nullableName;\n" + 
+                "            }\n" + 
+                "            public Builder_nullableName nullableName(Nullable<String> nullableName) {\n" + 
+                "                return new Builder_nullableName(nullableName);\n" + 
+                "            }\n" + 
+                "            public Builder_nullableName_nullableChild nullableChild(Nullable<Child> nullableChild) {\n" + 
+                "                return new Builder_nullableName_nullableChild(this, nullableChild);\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
+                "        public static class Builder_nullableName_nullableChild {\n" + 
+                "            \n" + 
+                "            private final Builder_nullableName parent;\n" + 
+                "            private final Nullable<Child> nullableChild;\n" + 
+                "            \n" + 
+                "            private Builder_nullableName_nullableChild(Builder_nullableName parent, Nullable<Child> nullableChild) {\n" + 
+                "                this.parent = parent;\n" + 
+                "                this.nullableChild = nullableChild;\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "            public Nullable<String> nullableName() {\n" + 
+                "                return parent.nullableName();\n" + 
+                "            }\n" + 
+                "            public Nullable<Child> nullableChild() {\n" + 
+                "                return nullableChild;\n" + 
+                "            }\n" + 
+                "            public Builder_nullableName_nullableChild nullableName(Nullable<String> nullableName) {\n" + 
+                "                return parent.nullableName(nullableName).nullableChild(nullableChild);\n" + 
+                "            }\n" + 
+                "            public Builder_nullableName_nullableChild nullableChild(Nullable<Child> nullableChild) {\n" + 
+                "                return parent.nullableChild(nullableChild);\n" + 
+                "            }\n" + 
+                "            public Parent build() {\n" + 
+                "                return new Parent(nullableName(), nullableChild());\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
+                "        \n" + 
+                "    }\n" + 
                 "    \n" + 
                 "}", code);
         /* */
