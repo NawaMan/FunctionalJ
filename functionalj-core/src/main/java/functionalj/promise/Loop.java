@@ -47,7 +47,7 @@ public class Loop<DATA> extends Retry<DATA> {
         val onComplete      = new OnComplete<>(actionBuilder, shouldStop, finalAction, subscriptionRef::get);
         
         val action       = actionBuilder.build();
-        val subscription = action.getPromise().subscribe(onComplete);
+        val subscription = action.getPromise().onComplete(onComplete);
         action.start();
         subscriptionRef.set(subscription);
         

@@ -210,7 +210,7 @@ public class PromisesTest {
                 });
         promise.start();
         
-        val subscription = promise.subscribe();
+        val subscription = promise.onComplete();
         subscription.unsubscribe();
         
         assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise .getResult());

@@ -29,7 +29,7 @@ public class PromiseTest {
         assertStrings("Result:{ Value: Hello! }", promise.getCurrentResult());
         
         val ref = new AtomicReference<String>(null);
-        promise.subscribe(r -> ref.set(r.get()));
+        promise.onComplete(r -> ref.set(r.get()));
         assertStrings("Hello!", ref);
     }
     
@@ -40,7 +40,7 @@ public class PromiseTest {
         assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
         val ref = new AtomicReference<String>(null);
-        promise.subscribe(r -> ref.set("" + r.get()));
+        promise.onComplete(r -> ref.set("" + r.get()));
         assertStrings("null", ref.get());
     }
     
@@ -51,7 +51,7 @@ public class PromiseTest {
         assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException }", promise.getCurrentResult());
         
         val ref = new AtomicReference<String>(null);
-        promise.subscribe(r -> ref.set("" + r.get()));
+        promise.onComplete(r -> ref.set("" + r.get()));
         assertStrings("null", ref.get());
     }
     
@@ -66,12 +66,12 @@ public class PromiseTest {
         val pendingControl = promiseControl.start();
         assertEquals (PromiseStatus.PENDING, promise.getStatus());
         
-        promise.subscribe(r -> list.add("1: " + r.toString()));
+        promise.onComplete(r -> list.add("1: " + r.toString()));
         
         pendingControl.complete("Forty two");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings("Result:{ Value: Forty two }", promise.getCurrentResult());
-        promise.subscribe(r -> list.add("2: " + r.toString()));
+        promise.onComplete(r -> list.add("2: " + r.toString()));
         
         assertStrings(
                 "["
@@ -116,12 +116,12 @@ public class PromiseTest {
         val promise       = deferAction.getPromise();
         val pendingAction = deferAction.start();
         
-        promise.subscribe(r -> list.add("1: " + r.toString()));
+        promise.onComplete(r -> list.add("1: " + r.toString()));
         
         pendingAction.complete("Forty two");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
         assertStrings("Result:{ Value: Forty two }", promise.getCurrentResult());
-        promise.subscribe(r -> list.add("2: " + r.toString()));
+        promise.onComplete(r -> list.add("2: " + r.toString()));
         
         assertStrings(
                 "["
@@ -155,8 +155,8 @@ public class PromiseTest {
         val promise       = deferAction.getPromise();
         val pendingAction = deferAction.start();
         
-        val sub1 = promise.subscribe(r -> list.add("1: " + r.toString()));
-        val sub2 = promise.subscribe(r -> list.add("2: " + r.toString()));
+        val sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
+        val sub2 = promise.onComplete(r -> list.add("2: " + r.toString()));
         
         sub1.unsubscribe();
         
@@ -178,7 +178,7 @@ public class PromiseTest {
         val pendingAction = deferAction.start();
         
         // Last subscription at this time.
-        val sub1 = promise.subscribe(r -> list.add("1: " + r.toString()));
+        val sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
         sub1.unsubscribe();
         
         // Complete -- but this is too late.
@@ -190,7 +190,7 @@ public class PromiseTest {
                 promise.getCurrentResult());
         
         // This subscription will get cancelled as the result.
-        val sub2 = promise.subscribe(r -> list.add("2: " + r.toString()));
+        val sub2 = promise.onComplete(r -> list.add("2: " + r.toString()));
         sub2.unsubscribe();
         
         assertStrings(
@@ -210,7 +210,7 @@ public class PromiseTest {
         promise.eavesdrop(r -> list.add("e: " + r.toString()));
         
         // Last subscription at this time as an eavesdrop does not count.
-        val sub1 = promise.subscribe(r -> list.add("1: " + r.toString()));
+        val sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
         sub1.unsubscribe();
         
         // Complete -- but this is too late.
@@ -295,7 +295,7 @@ public class PromiseTest {
         .use(promise -> {
             promise
             .map(String::length)
-            .subscribe(r -> list.add(r.toString()));
+            .onComplete(r -> list.add(r.toString()));
         })
         .start()
         .complete("Done!");
@@ -311,7 +311,7 @@ public class PromiseTest {
         .use(promise -> {
             promise
             .map(String::length)
-            .subscribe(r -> list.add(r.toString()));
+            .onComplete(r -> list.add(r.toString()));
         })
         .start()
         .complete("Done!");
@@ -327,7 +327,7 @@ public class PromiseTest {
         .use(promise -> {
             promise
                 .flatMap(str -> Promise.ofValue(str.length()))
-                .subscribe(r -> list.add(r.toString()));
+                .onComplete(r -> list.add(r.toString()));
         })
         .start()
         .complete("Done!!");
@@ -343,11 +343,11 @@ public class PromiseTest {
         .use(promise -> {
             promise
                 .filter(str -> str.length() < 3)
-                .subscribe(r -> list.add(r.toString()));
+                .onComplete(r -> list.add(r.toString()));
             
             promise
                 .filter(str -> str.length() > 3)
-                .subscribe(r -> list.add(r.toString()));
+                .onComplete(r -> list.add(r.toString()));
         })
         .start()
         .complete("Done!");
@@ -375,7 +375,7 @@ public class PromiseTest {
         };
         
         DeferAction.of(String.class)
-        .use(promise -> promise.subscribe(wait.orDefaultTo("Not done."), r -> list.add(r.get())))
+        .use(promise -> promise.onComplete(wait.orDefaultTo("Not done."), r -> list.add(r.get())))
         .start();
         
         onExpireds.forEach(c -> {

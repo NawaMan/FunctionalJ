@@ -28,7 +28,7 @@ public class PromiseWaitTest {
     public void testWaitAWhile_complete() throws InterruptedException {
         val list   = new ArrayList<String>();
         val action = DeferAction.of(String.class)
-                .use(promise -> promise.subscribe(Wait.forMilliseconds(100).orDefaultTo("Not done."), r -> list.add(r.get())))
+                .use(promise -> promise.onComplete(Wait.forMilliseconds(100).orDefaultTo("Not done."), r -> list.add(r.get())))
                 .start();
         
         Thread.sleep(50);
@@ -41,7 +41,7 @@ public class PromiseWaitTest {
     public void testWaitAWhile_abort() throws InterruptedException {
         val list   = new ArrayList<String>();
         val action = DeferAction.of(String.class)
-                .use(promise -> promise.subscribe(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get())))
+                .use(promise -> promise.onComplete(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get())))
                 .start();
         
         Thread.sleep(100);
@@ -78,7 +78,7 @@ public class PromiseWaitTest {
         .forEach(tuple -> {
             val list   = new ArrayList<String>();
             val action = DeferAction.of(String.class)
-                    .use(promise -> promise.subscribe(Wait.forMilliseconds(100, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
+                    .use(promise -> promise.onComplete(Wait.forMilliseconds(100, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
                     .start();
             
             try {
@@ -110,7 +110,7 @@ public class PromiseWaitTest {
         .forEach(tuple -> {
             val list   = new ArrayList<String>();
             val action = DeferAction.of(String.class)
-                    .use(promise -> promise.subscribe(Wait.forMilliseconds(50, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
+                    .use(promise -> promise.onComplete(Wait.forMilliseconds(50, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
                     .start();
             
             try {
@@ -138,7 +138,7 @@ public class PromiseWaitTest {
                             })
                             .orDefaultTo("Not done.");
                         promise
-                        .subscribe(wait, r -> list.add(r.get()));
+                        .onComplete(wait, r -> list.add(r.get()));
                 })
                 .start();
         
@@ -166,7 +166,7 @@ public class PromiseWaitTest {
                             })
                             .orDefaultTo("Not done.");
                         promise
-                        .subscribe(wait, r -> list.add(r.get()));
+                        .onComplete(wait, r -> list.add(r.get()));
                 })
                 .start();
         

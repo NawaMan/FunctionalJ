@@ -249,19 +249,19 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     }
     
     public DeferAction<DATA> subscribe(FuncUnit1<Result<DATA>> resultConsumer) {
-        promise.subscribe(Wait.forever(), resultConsumer);
+        promise.onComplete(Wait.forever(), resultConsumer);
         return this;
     }
     
     public DeferAction<DATA> subscribe(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
-        promise.subscribe(wait, resultConsumer);
+        promise.onComplete(wait, resultConsumer);
         return this;
     }
     
     public DeferAction<DATA> subscribe(
             FuncUnit1<Result<DATA>>       resultConsumer,
             FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        val subscription = promise.subscribe(Wait.forever(), resultConsumer);
+        val subscription = promise.onComplete(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
@@ -270,7 +270,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             Wait                          wait,
             FuncUnit1<Result<DATA>>       resultConsumer,
             FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        val subscription = promise.subscribe(wait, resultConsumer);
+        val subscription = promise.onComplete(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
@@ -345,7 +345,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             }));
             
             promises
-            .mapWithIndex    ((index, promise) -> promise.subscribe(result -> processResult(index, result)))
+            .mapWithIndex    ((index, promise) -> promise.onComplete(result -> processResult(index, result)))
             .forEachWithIndex((index, sub)     -> subscriptions[index] = sub);
             
             this.promise = action.getPromise();

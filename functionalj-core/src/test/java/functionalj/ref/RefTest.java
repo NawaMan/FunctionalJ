@@ -318,7 +318,7 @@ public class RefTest {
             .map  (i -> ref.value())
             .joining(" - ");
         })
-        .subscribe(r -> resultRef.set(r));
+        .onComplete(r -> resultRef.set(r));
         
         Time.sleep(50);
         
