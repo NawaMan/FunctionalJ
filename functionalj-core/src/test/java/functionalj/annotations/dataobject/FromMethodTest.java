@@ -17,8 +17,8 @@ public class FromMethodTest {
     @Test
     public void test() {
         val car = new Car("Toyota", 2008, "White");
-        assertEquals("Car[make: Toyota, year: 2008, price: 0, color: White]", car.toString());
-        assertEquals("[make:String, year:int, price:BigDecimal, color:String]",
+        assertEquals("Car[make: Toyota, year: 2008, color: White]", car.toString());
+        assertEquals("[make:String, year:int, color:String]",
                 Car.spec.getGetters()
                 .stream()
                 .map(g -> g.getName() + ":" + g.getType().simpleName())
@@ -26,20 +26,20 @@ public class FromMethodTest {
                 .toString());
         
         val car2 = new Car("Toyota", 2008);
-        assertEquals("Car[make: Toyota, year: 2008, price: 0, color: White]", car2.toString());
+        assertEquals("Car[make: Toyota, year: 2008, color: null]", car2.toString());
         
         val car3 = new Car.Builder()
                 .make("BMW")
                 .year(2010)
                 .build();
-        assertEquals("Car[make: BMW, year: 2010, price: null, color: Black]", car3.toString());
+        assertEquals("Car[make: BMW, year: 2010, color: null]", car3.toString());
         
         val car4 = new Car.Builder()
                 .make("BMW")
                 .year(2010)
                 .color("Black")
                 .build();
-        assertEquals("Car[make: BMW, year: 2010, price: null, color: Black]", car4.toString());
+        assertEquals("Car[make: BMW, year: 2010, color: Black]", car4.toString());
     }
     
 }
