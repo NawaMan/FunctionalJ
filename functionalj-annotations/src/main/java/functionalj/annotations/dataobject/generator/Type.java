@@ -319,10 +319,37 @@ public class Type implements IRequireTypes {
      * @return  the default value.
      */
     public Object defaultValue() {
+        if (BYT.equals(this))
+            return (byte)0;
+        if (SHRT.equals(this))
+            return (short)0;
         if (INT.equals(this))
             return 0;
+        if (LNG.equals(this))
+            return 0L;
+        if (FLT.equals(this))
+            return 0.0f;
+        if (DBL.equals(this))
+            return 0.0;
+        if (CHR.equals(this))
+            return (char)0;
         if (BOOL.equals(this))
             return false;
+        
+        if (this.packageName().equals(Core.Nullable.packageName())
+         && this.simpleName() .equals(Core.Nullable.simpleName()))
+            return this.fullName() + ".empty()";
+        
+        if (this.packageName().equals(Core.Optional.packageName())
+         && this.simpleName() .equals(Core.Optional.simpleName()))
+            return this.fullName() + ".empty()";
+        if (this.packageName().equals(Core.FuncList.packageName())
+         && this.simpleName() .equals(Core.FuncList.simpleName()))
+            return this.fullName() + ".empty()";
+        if (this.packageName().equals(Core.FuncMap.packageName())
+         && this.simpleName() .equals(Core.FuncMap.simpleName()))
+            return this.fullName() + ".empty()";
+        
         return null;
     }
     

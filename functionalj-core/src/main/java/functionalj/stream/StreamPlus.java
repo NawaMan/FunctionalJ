@@ -9,6 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -247,6 +250,54 @@ public interface StreamPlus<DATA>
     
     public default Optional<DATA> max(Comparator<? super DATA> comparator) {
         return stream().max(comparator);
+    }
+    
+    public default int sum(ToIntFunction<? super DATA> toInt) {
+        return mapToInt(toInt).sum();
+    }
+    
+    public default OptionalInt min(ToIntFunction<? super DATA> toInt) {
+        return mapToInt(toInt).min();
+    }
+    
+    public default OptionalInt max(ToIntFunction<? super DATA> toInt) {
+        return mapToInt(toInt).max();
+    }
+    
+    public default OptionalDouble average(ToIntFunction<? super DATA> toInt) {
+        return mapToInt(toInt).average();
+    }
+    
+    public default long sum(ToLongFunction<? super DATA> toLong) {
+        return mapToLong(toLong).sum();
+    }
+    
+    public default OptionalLong min(ToLongFunction<? super DATA> toLong) {
+        return mapToLong(toLong).min();
+    }
+    
+    public default OptionalLong max(ToLongFunction<? super DATA> toLong) {
+        return mapToLong(toLong).max();
+    }
+    
+    public default OptionalDouble average(ToLongFunction<? super DATA> toLong) {
+        return mapToLong(toLong).average();
+    }
+    
+    public default double sum(ToDoubleFunction<? super DATA> toDouble) {
+        return mapToDouble(toDouble).sum();
+    }
+    
+    public default OptionalDouble min(ToDoubleFunction<? super DATA> toDouble) {
+        return mapToDouble(toDouble).min();
+    }
+    
+    public default OptionalDouble max(ToDoubleFunction<? super DATA> toDouble) {
+        return mapToDouble(toDouble).max();
+    }
+    
+    public default OptionalDouble average(ToDoubleFunction<? super DATA> toDouble) {
+        return mapToDouble(toDouble).average();
     }
     
     public default long count() {

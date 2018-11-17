@@ -67,7 +67,7 @@ public class GenerateParentNullableChildTest {
                 "    private final Nullable<Child> nullableChild;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
-                "        this(null, null);\n" + 
+                "        this(nawaman.nullablej.nullable.Nullable.empty(), nawaman.nullablej.nullable.Nullable.empty());\n" + 
                 "    }\n" + 
                 "    public Parent(Nullable<String> nullableName, Nullable<Child> nullableChild) {\n" + 
                 "        this.nullableName = Nullable.of((nullableName == null) ? null : nullableName.get());\n" + 

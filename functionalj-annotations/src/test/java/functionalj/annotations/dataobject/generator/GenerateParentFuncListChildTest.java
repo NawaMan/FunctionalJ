@@ -68,7 +68,7 @@ public class GenerateParentFuncListChildTest {
                 "    private final FuncList<Child> children;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
-                "        this(null, null);\n" + 
+                "        this(functionalj.list.FuncList.empty(), functionalj.list.FuncList.empty());\n" + 
                 "    }\n" + 
                 "    public Parent(FuncList<String> names, FuncList<Child> children) {\n" + 
                 "        this.names = ImmutableList.from(names);\n" + 

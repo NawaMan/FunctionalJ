@@ -67,7 +67,7 @@ public class GenerateParentOptionalChildTest {
                 "    private final Optional<Child> optionalChild;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
-                "        this(null, null);\n" + 
+                "        this(java.util.Optional.empty(), java.util.Optional.empty());\n" + 
                 "    }\n" + 
                 "    public Parent(Optional<String> optionalName, Optional<Child> optionalChild) {\n" + 
                 "        this.optionalName = optionalName;\n" + 

@@ -1,5 +1,9 @@
 package functionalj.lens.lenses;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import functionalj.function.Func1;
 import functionalj.lens.core.LensSpec;
 
@@ -30,6 +34,15 @@ public interface StringLens<HOST>
     }
     default Func1<HOST, HOST> changeTo(String data) {
         return host -> lensSpec().getWrite().apply(host, data);
+    }
+    default Func1<HOST, HOST> changeTo(Supplier<String> supplier) {
+        return host -> lensSpec().getWrite().apply(host, supplier.get());
+    }
+    default Func1<HOST, HOST> changeTo(Function<String, String> function) {
+        return host -> lensSpec().getWrite().apply(host, function.apply(read(host)));
+    }
+    default Func1<HOST, HOST> changeTo(BiFunction<HOST, String, String> function) {
+        return host -> lensSpec().getWrite().apply(host, function.apply(host, read(host)));
     }
     // Add the chagne to that is supplier and function1
     
