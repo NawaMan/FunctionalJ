@@ -219,6 +219,33 @@ public interface FuncList<DATA>
                 : deriveWith(stream -> Stream.concat(stream, supplier.get()));
     }
     
+    public default FuncList<DATA> prepend(DATA value) {
+        return deriveWith(stream -> 
+                Stream.concat(Stream.of(value), stream));
+    }
+    
+    public default FuncList<DATA> prependAll(DATA[] values) {
+        return deriveWith(stream -> 
+        Stream.concat(Stream.of(values), stream));
+    }
+    public default FuncList<DATA> prependAll(Collection<? extends DATA> collection) {
+        return ((collection == null) || collection.isEmpty())
+                ? this
+                : deriveWith(stream -> Stream.concat(collection.stream(), stream));
+    }
+    
+    public default FuncList<DATA> prependAll(Streamable<? extends DATA> streamable) {
+        return (streamable == null)
+                ? this
+                : deriveWith(stream -> Stream.concat(streamable.stream(), stream));
+    }
+    
+    public default FuncList<DATA> prependAll(Supplier<Stream<? extends DATA>> supplier) {
+        return (supplier == null)
+                ? this
+                : deriveWith(stream -> Stream.concat(supplier.get(), stream));
+    }
+    
     public default FuncList<DATA> with(int index, DATA value) {
         if (index < 0)
             throw new IndexOutOfBoundsException(index + "");
