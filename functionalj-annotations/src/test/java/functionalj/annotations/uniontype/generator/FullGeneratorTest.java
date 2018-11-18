@@ -38,6 +38,7 @@ public class FullGeneratorTest {
               "BasicColor",
               new Type("functionalj.annotations.uniontype.generator", "UnionTypeExampleTest", "Union1TypeSpec"),
               "spec",
+              true,
               asList(),
               asList(
                   new Choice("White", emptyList()),

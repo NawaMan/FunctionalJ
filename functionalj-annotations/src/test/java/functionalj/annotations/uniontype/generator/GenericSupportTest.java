@@ -21,7 +21,7 @@ public class GenericSupportTest {
     public void test() {
         val generator = new Generator("Option",
                 new Type("functionalj.annotations.uniontype", "GenericSupportTest", "OptionSpec"),
-                "spec",
+                "spec", false,
                 asList(
                    new Generic("T", "T extends Number", asList(new Type("java.lang", "Number"), new Type("java.io", "Serializable")))
                 ),
@@ -214,7 +214,7 @@ public class GenericSupportTest {
             "        }\n" + 
             "    }\n" + 
             "    \n" + 
-            "    public static final functionalj.annotations.uniontype.generator.model.SourceSpec spec = new functionalj.annotations.uniontype.generator.model.SourceSpec(\"Option\", new functionalj.annotations.uniontype.generator.model.Type(\"functionalj.annotations.uniontype\", \"GenericSupportTest\", \"OptionSpec\", java.util.Collections.emptyList()), \"spec\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Generic(\"T\", \"T extends Number\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Type(\"java.lang\", null, \"Number\", java.util.Collections.emptyList()), new functionalj.annotations.uniontype.generator.model.Type(\"java.io\", null, \"Serializable\", java.util.Collections.emptyList())))), java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Choice(\"None\", null, java.util.Collections.emptyList()), new functionalj.annotations.uniontype.generator.model.Choice(\"Some\", null, java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.ChoiceParam(\"value\", new functionalj.annotations.uniontype.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()))))), java.util.Collections.emptyList());\n" + 
+            "    public static final functionalj.annotations.uniontype.generator.model.SourceSpec spec = new functionalj.annotations.uniontype.generator.model.SourceSpec(\"Option\", new functionalj.annotations.uniontype.generator.model.Type(\"functionalj.annotations.uniontype\", \"GenericSupportTest\", \"OptionSpec\", java.util.Collections.emptyList()), \"spec\", false, java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Generic(\"T\", \"T extends Number\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Type(\"java.lang\", null, \"Number\", java.util.Collections.emptyList()), new functionalj.annotations.uniontype.generator.model.Type(\"java.io\", null, \"Serializable\", java.util.Collections.emptyList())))), java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Choice(\"None\", null, java.util.Collections.emptyList()), new functionalj.annotations.uniontype.generator.model.Choice(\"Some\", null, java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.ChoiceParam(\"value\", new functionalj.annotations.uniontype.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()))))), java.util.Collections.emptyList());\n" + 
             "    \n" + 
             "}";
     

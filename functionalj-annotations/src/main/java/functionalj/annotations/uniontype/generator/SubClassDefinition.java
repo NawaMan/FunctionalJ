@@ -29,11 +29,12 @@ public class SubClassDefinition implements Lines {
             );
         }
         
-        val paramDefs    = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
-        val paramCalls   = choice.mapJoinParams(p ->                                   p.name, ", ");
+        val paramDefs  = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
+        val paramCalls = choice.mapJoinParams(p ->                                   p.name, ", ");
+        val fieldAccss = targetClass.spec.publicFields ? "public" : "private";
         return asList(
                 asList(               format("public static final class %1$s%2$s extends %3$s {", name, targetClass.genericDef(), targetClass.typeWithGenerics())),
-                choice.mapParams(p -> format("    private %1$s %2$s;",                            p.type.typeWithGenerics(), p.name)),
+                choice.mapParams(p -> format("    %1$s %2$s %3$s;",                               fieldAccss, p.type.typeWithGenerics(), p.name)),
                 asList(               format("    private %1$s(%2$s) {",                          name, paramDefs)),
                 choice.mapParams(p -> format("        this.%1$s = %1$s;",                         p.name)),
                 asList(               format("    }")),

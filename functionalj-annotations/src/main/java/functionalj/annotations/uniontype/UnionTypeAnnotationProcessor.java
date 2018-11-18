@@ -128,9 +128,10 @@ public class UnionTypeAnnotationProcessor extends AbstractProcessor {
                 continue;
             }
             
-            val choices   = extractTypeChoices(element, targetType, typeElement);
-            val methods   = extractTypeMethods(element, targetType, typeElement);
-            val generator = new Generator(targetName, sourceType, specField, generics, choices, methods);
+            val choices      = extractTypeChoices(element, targetType, typeElement);
+            val methods      = extractTypeMethods(element, targetType, typeElement);
+            val publicFields = unionType.publicFields();
+            val generator    = new Generator(targetName, sourceType, specField, publicFields, generics, choices, methods);
             
             try {
                 val className  = packageName + "." + targetName;

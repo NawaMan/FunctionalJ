@@ -59,6 +59,8 @@ public class SourceSpec {
         public boolean generateLensClass = true;
         /** Should the builder class be generated. */
         public boolean generateBuilderClass = true;
+        /** Should the fields be made public */
+        public boolean publicFields = false;
         
         public Configurations() {}
         public Configurations(
@@ -67,13 +69,15 @@ public class SourceSpec {
                 boolean generateRequiredOnlyConstructor,
                 boolean generateAllArgConstructor,
                 boolean generateLensClass,
-                boolean generateBuilderClass) {
+                boolean generateBuilderClass,
+                boolean publicFields) {
             this.coupleWithDefinition            = coupleWithDefinition;
             this.generateNoArgConstructor        = generateNoArgConstructor;
             this.generateRequiredOnlyConstructor = generateRequiredOnlyConstructor;
             this.generateAllArgConstructor       = generateAllArgConstructor;
             this.generateLensClass               = generateLensClass;
             this.generateBuilderClass            = generateBuilderClass;
+            this.publicFields                    = publicFields;
         }
         
         @Override
@@ -84,7 +88,8 @@ public class SourceSpec {
                     + "generateRequiredOnlyConstructor=" + generateRequiredOnlyConstructor + ", "
                     + "generateAllArgConstructor="       + generateAllArgConstructor + ", "
                     + "generateLensClass="               + generateLensClass + ", "
-                    + "generateBuilderClass="            + generateBuilderClass
+                    + "generateBuilderClass="            + generateBuilderClass + ","
+                    + "publicFields="                     + publicFields
                     + "]";
         }
         public String toCode() {
@@ -94,7 +99,8 @@ public class SourceSpec {
                     generateRequiredOnlyConstructor,
                     generateAllArgConstructor,
                     generateLensClass,
-                    generateBuilderClass
+                    generateBuilderClass,
+                    publicFields
             );
             return "new functionalj.annotations.dataobject.generator.SourceSpec.Configurations("
                     + params.stream().map(String::valueOf).collect(joining(", "))

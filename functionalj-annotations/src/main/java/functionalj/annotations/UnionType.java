@@ -35,4 +35,7 @@ public @interface UnionType {
     /** @return the name of the static final field for the source spec. */
     public String specField() default "";
     
+    /** @return the flag indicating that the fields should be made public - default to true. */
+    public boolean publicFields() default false;
+    
 }

@@ -54,6 +54,7 @@ public class GeneratorTest {
                         + "\"ColorSpec\", "
                         + "java.util.Collections.emptyList()), "
                     + "null, "
+                    + "false, "
                     + "java.util.Collections.emptyList(), "
                     + "java.util.Collections.emptyList(), "
                     + "java.util.Collections.emptyList())", sourceSpec.toCode());
@@ -84,6 +85,7 @@ public class GeneratorTest {
                     + "\"ColorSpec\", "
                     + "java.util.Collections.emptyList()), "
                 + "null, "
+                + "false, "
                 + "java.util.Collections.emptyList(), "
                 + "java.util.Collections.emptyList(), "
                 + "java.util.Collections.emptyList()"
@@ -92,7 +94,7 @@ public class GeneratorTest {
     @Test
     public void testSubClassConstructor_withParams_withGeneric() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", asList(new Generic("D")), emptyList(), emptyList());
+        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, asList(new Generic("D")), emptyList(), emptyList());
         val target = new TargetClass(sourceSpec);
         val sub    = new SubClassDefinition(target, 
                 new Choice("Next", asList(
@@ -109,7 +111,7 @@ public class GeneratorTest {
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
                 "}", lines);
         assertEquals(
-                "new functionalj.annotations.uniontype.generator.model.SourceSpec(\"Coroutine\", new functionalj.annotations.uniontype.generator.model.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Generic(\"D\", \"D\", null))), \"spec\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Generic(\"D\", \"D\", null)), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
+                "new functionalj.annotations.uniontype.generator.model.SourceSpec(\"Coroutine\", new functionalj.annotations.uniontype.generator.model.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Generic(\"D\", \"D\", null))), \"spec\", false, java.util.Arrays.asList(new functionalj.annotations.uniontype.generator.model.Generic(\"D\", \"D\", null)), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
     }
     
     @Test
@@ -156,7 +158,7 @@ public class GeneratorTest {
     @Test
     public void testSubClassDefinition_withParams_withGeneric() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", asList(new Generic("D")), emptyList(), emptyList()));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, asList(new Generic("D")), emptyList(), emptyList()));
         val sub    = new SubClassDefinition(target, 
                 new Choice("Next", asList(
                     new ChoiceParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))))
@@ -263,7 +265,7 @@ public class GeneratorTest {
     @Test
     public void testSourceMethods() {
         val target = new TargetClass(
-                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec",
+                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true,
                     emptyList(),
                     emptyList(),
                     asList(
@@ -374,7 +376,7 @@ public class GeneratorTest {
     public void testTargetTypeGeneral_withMethods() {
         val colorType = new Type("p1.p2", "Color");
         val target = new TargetClass(
-                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec",
+                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true,
                     emptyList(),
                     emptyList(),
                     asList(
@@ -452,6 +454,26 @@ public class GeneratorTest {
                 "}",
                 new SourceMethod(target)
                 .lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n")));
+    }
+    
+    @Test
+    public void testSubClassDefinition_withPublicField() {
+        val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, asList(new Generic("D")), emptyList(), emptyList()));
+        val sub    = new SubClassDefinition(target, 
+                new Choice("Next", asList(
+                    new ChoiceParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))))
+                )));
+        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        assertEquals(
+                "public static final class Next<D> extends Coroutine<D> {\n" + 
+                "    public Func1<D,Coroutine<D>> next;\n" + 
+                "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
+                "        this.next = next;\n" + 
+                "    }\n" + 
+                "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
+                "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
+                "}", lines);
     }
     
     @Test

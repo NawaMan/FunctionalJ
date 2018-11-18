@@ -100,7 +100,7 @@ public class DataObjectBuilder {
                 ));
         
         val getters = sourceSpec.getGetters();
-        val getterFields  = getters.stream().map    (getter -> getterToField(getter));
+        val getterFields  = getters.stream().map    (getter -> getterToField(sourceSpec, getter));
         val getterMethods = getters.stream().map    (getter -> getterToGetterMethod(getter));
         val witherMethods = getters.stream().flatMap(getter -> getterToWitherMethods(sourceSpec, withMethodName, getter));
         
@@ -263,11 +263,12 @@ public class DataObjectBuilder {
         }
     }
     
-    private GenField getterToField(Getter getter) {
+    private GenField getterToField(SourceSpec sourceSpec, Getter getter) {
         // It should be good to convert this to tuple2 and apply to the method.
         val name  = getter.getName();
         val type  = getter.getType();
-        val field = new GenField(PRIVATE, FINAL, INSTANCE, name, type, null);
+        val accss = sourceSpec.getConfigures().publicFields ? PUBLIC : PRIVATE;
+        val field = new GenField(accss, FINAL, INSTANCE, name, type, null);
         return field;
     }
     

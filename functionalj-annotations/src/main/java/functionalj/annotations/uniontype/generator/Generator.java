@@ -12,8 +12,6 @@ import lombok.Value;
 
 
 // TODO 
-// - Allow methods to be declared in the spec class.
-// - Automatically remove "Spec" or whatever the suffix. - Also allows the override of this behavior.
 // - Proper import - when params requires extra type.
 
 @Value
@@ -23,12 +21,12 @@ public class Generator implements Lines {
     public final SourceSpec  sourceSpec;
     public final TargetClass targetClass;
     
-    public Generator(String targetName, Type sourceType, String specObjName, List<Generic> generics, List<Choice> choices, List<Method> methods) {
-        this.sourceSpec  = new SourceSpec(targetName, sourceType, specObjName, generics, choices, methods);
+    public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, List<Generic> generics, List<Choice> choices, List<Method> methods) {
+        this.sourceSpec  = new SourceSpec(targetName, sourceType, specObjName, publicFields, generics, choices, methods);
         this.targetClass = new TargetClass(sourceSpec);
     }
     public Generator(String targetName, Type sourceType, List<Choice> choices) {
-        this(targetName, sourceType, null, new ArrayList<Generic>(), choices, new ArrayList<Method>());
+        this(targetName, sourceType, null, true, new ArrayList<Generic>(), choices, new ArrayList<Method>());
     }
     
     @Override

@@ -18,11 +18,12 @@ public class SourceSpec {
     public final String        targetName;
     public final Type          sourceType;
     public final String        specObjName;
+    public final boolean       publicFields;
     public final List<Generic> generics;
     public final List<Choice>  choices;
     public final List<Method>  methods;
     public SourceSpec(String targetName, Type sourceType, List<Choice> choices) {
-        this(targetName, sourceType, null, new ArrayList<Generic>(), choices, new ArrayList<>());
+        this(targetName, sourceType, null, false, new ArrayList<Generic>(), choices, new ArrayList<>());
     }
     
     public String toCode() {
@@ -30,6 +31,7 @@ public class SourceSpec {
                 toStringLiteral(targetName),
                 sourceType.toCode(),
                 toStringLiteral(specObjName),
+                "" + publicFields,
                 toListCode     (generics, Generic::toCode),
                 toListCode     (choices,  Choice::toCode),
                 toListCode     (methods,  Method::toCode)

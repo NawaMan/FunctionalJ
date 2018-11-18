@@ -263,10 +263,14 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     
     private Configurations extractConfigurations(Element element, DataObject dataObject) {
         val configures = new Configurations();
-        configures.generateNoArgConstructor  = dataObject.generateNoArgConstructor();
-        configures.generateAllArgConstructor = dataObject.generateAllArgConstructor();
-        configures.generateLensClass         = dataObject.generateLensClass();
-        
+        configures.coupleWithDefinition            = dataObject.coupleWithDefinition();
+        configures.generateNoArgConstructor        = dataObject.generateNoArgConstructor();
+        configures.generateRequiredOnlyConstructor = dataObject.generateRequiredOnlyConstructor();
+        configures.generateAllArgConstructor       = dataObject.generateAllArgConstructor();
+        configures.generateLensClass               = dataObject.generateLensClass();
+        configures.generateBuilderClass            = dataObject.generateBuilderClass();
+        configures.publicFields                    = dataObject.publicFields();
+
         if (!configures.generateNoArgConstructor
          && !configures.generateAllArgConstructor) {
             error(element, "generateNoArgConstructor and generateAllArgConstructor must be be false at the same time.");

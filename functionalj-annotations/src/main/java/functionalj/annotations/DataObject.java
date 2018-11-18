@@ -50,5 +50,13 @@ public @interface DataObject {
     /** @return the flag indicating that the lens class should be created - default to true. */
     public boolean generateLensClass() default true;
     
+    /** @return the flag indicating that constructor with only required field should be created - default to true. */
+    public boolean generateRequiredOnlyConstructor() default true;
+    
+    /** @return the flag indicating that the builder class should be created - default to true. */
+    public boolean generateBuilderClass() default true;
+    
+    /** @return the flag indicating that the fields should be made public - default to true. */
+    public boolean publicFields() default false;
     
 }
