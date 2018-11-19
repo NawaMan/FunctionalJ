@@ -44,6 +44,8 @@ public class GenerateParentChildTest {
                 "import functionalj.lens.core.LensSpec;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import java.lang.Object;\n" + 
+                "import java.util.HashMap;\n" + 
+                "import java.util.Map;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
@@ -81,6 +83,16 @@ public class GenerateParentChildTest {
                 "        if (object instanceof IPostReConstruct)\n" + 
                 "            ((IPostReConstruct)object).postReConstruct();\n" + 
                 "        return object;\n" + 
+                "    }\n" + 
+                "    public static Parent fromMap(Map<String, Object> map) {\n" + 
+                "        return new Parent(\n" + 
+                "                    (Child)map.get(\"child\")\n" + 
+                "                );\n" + 
+                "    }\n" + 
+                "    public Map<String, Object> toMap() {\n" + 
+                "        java.util.Map<String, Object> map = new HashMap<>();\n" + 
+                "        map.put(\"child\",  (Object)child);\n" + 
+                "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
                 "        return \"Parent[\" + \"child: \" + child() + \"]\";\n" + 

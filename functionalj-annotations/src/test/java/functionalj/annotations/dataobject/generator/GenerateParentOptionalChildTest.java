@@ -53,6 +53,8 @@ public class GenerateParentOptionalChildTest {
                 "import functionalj.lens.lenses.OptionalLens;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
                 "import java.lang.Object;\n" + 
+                "import java.util.HashMap;\n" + 
+                "import java.util.Map;\n" + 
                 "import java.util.Optional;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
@@ -108,6 +110,18 @@ public class GenerateParentOptionalChildTest {
                 "        if (object instanceof IPostReConstruct)\n" + 
                 "            ((IPostReConstruct)object).postReConstruct();\n" + 
                 "        return object;\n" + 
+                "    }\n" + 
+                "    public static Parent fromMap(Map<String, Object> map) {\n" + 
+                "        return new Parent(\n" + 
+                "                    (Optional<String>)map.get(\"optionalName\"),\n" + 
+                "                    (Optional<Child>)map.get(\"optionalChild\")\n" + 
+                "                );\n" + 
+                "    }\n" + 
+                "    public Map<String, Object> toMap() {\n" + 
+                "        java.util.Map<String, Object> map = new HashMap<>();\n" + 
+                "        map.put(\"optionalName\",  (Object)optionalName);\n" + 
+                "        map.put(\"optionalChild\",  (Object)optionalChild);\n" + 
+                "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
                 "        return \"Parent[\" + \"optionalName: \" + optionalName() + \", \" + \"optionalChild: \" + optionalChild() + \"]\";\n" + 

@@ -63,6 +63,8 @@ public class GeneratorTest {
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
                 "import java.lang.Object;\n" + 
+                "import java.util.HashMap;\n" + 
+                "import java.util.Map;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
@@ -132,6 +134,20 @@ public class GeneratorTest {
                 "        if (object instanceof IPostReConstruct)\n" + 
                 "            ((IPostReConstruct)object).postReConstruct();\n" + 
                 "        return object;\n" + 
+                "    }\n" + 
+                "    public static Car fromMap(Map<String, Object> map) {\n" + 
+                "        return new Car(\n" + 
+                "                    (int)map.get(\"anint\"),\n" + 
+                "                    (boolean)map.get(\"anbool\"),\n" + 
+                "                    (String)map.get(\"anstring\")\n" + 
+                "                );\n" + 
+                "    }\n" + 
+                "    public Map<String, Object> toMap() {\n" + 
+                "        java.util.Map<String, Object> map = new HashMap<>();\n" + 
+                "        map.put(\"anint\",  (Object)anint);\n" + 
+                "        map.put(\"anbool\",  (Object)anbool);\n" + 
+                "        map.put(\"anstring\",  (Object)anstring);\n" + 
+                "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
                 "        return \"Car[\" + \"anint: \" + anint() + \", \" + \"anbool: \" + anbool() + \", \" + \"anstring: \" + anstring() + \"]\";\n" + 

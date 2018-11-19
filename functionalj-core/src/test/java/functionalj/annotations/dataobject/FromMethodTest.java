@@ -36,13 +36,16 @@ public class FromMethodTest {
                     .append(new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000)))
                     .append(new CarForSale(new Car("Mazda",  2008, "White"),  new Price(30000)))
                     .append(new CarForSale(new Car("WV",     2012, "Black"),  new Price(40000))));
-        System.out.println(inventory);
-        System.out.println(newInventory);
+        assertEquals("Inventory[cars: []]", "" + inventory);
+        assertEquals("Inventory[cars: [CarForSale[car: Car[make: Subaru, year: 2010, color: Silver], price: Price[price: 20000, discountPercent: 0]], CarForSale[car: Car[make: Mazda, year: 2008, color: White], price: Price[price: 30000, discountPercent: 0]], CarForSale[car: Car[make: WV, year: 2012, color: Black], price: Price[price: 40000, discountPercent: 0]]]]",
+                "" + newInventory);
         
-        System.out.println(newInventory.cars().sum    (theCarForSale.price.price));
-        System.out.println(newInventory.cars().average(theCarForSale.price.price));
+        assertEquals("90000",                   "" + newInventory.cars().sum    (theCarForSale.price.price));
+        assertEquals("OptionalDouble[30000.0]", "" + newInventory.cars().average(theCarForSale.price.price));
         
-        
+        assertEquals(
+                "{car=Car[make: Subaru, year: 2010, color: Silver], price=Price[price: 20000, discountPercent: 0]}",
+                new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000)).toMap().toString());
 //        
 //        System.out.println(theCars.cars.at(1).apply(cars));
 //        System.out.println(theCars.cars.at(1).apply(newCars));

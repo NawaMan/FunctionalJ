@@ -32,10 +32,12 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.annotations.IPostReConstruct;
@@ -163,10 +165,51 @@ public class DataObjectBuilder {
                     getterFields,
                     specField
                  );
+        
+        val fromMapBody = ILines.line(
+                sourceSpec.getGetters()
+                .stream()
+                .map(g -> "            (" + g.getType().simpleNameWithGeneric() + ")map.get(\"" + g.getName() + "\")")
+                .collect(Collectors.joining(",\n"))
+                .split("\n"));
+        val fromMap = new GenMethod(
+                Accessibility.PUBLIC,
+                Scope.STATIC,
+                Modifiability.MODIFIABLE,
+                sourceSpec.getTargetType(),
+                "fromMap",
+                asList(new GenParam("map", Type.MAP.withGenerics(asList(Type.STRING, Type.OBJECT)))),
+                ILines.linesOf(
+                    line("return new " + sourceSpec.getTargetType().simpleName() + "("),
+                    fromMapBody,
+                    line("        );")
+                ));
+        
+        val toMapBody = ILines.line(
+                sourceSpec.getGetters()
+                .stream()
+                .map(g -> "map.put(\"" + g.getName() + "\",  (Object)" + g.getName() + ");")
+                .collect(Collectors.toList()));
+        val toMap = new GenMethod(
+                Accessibility.PUBLIC,
+                Scope.INSTANCE,
+                Modifiability.MODIFIABLE,
+                Type.MAP.withGenerics(asList(Type.STRING, Type.OBJECT)),
+                "toMap",
+                emptyList(),
+                ILines.linesOf(
+                    line("java.util.Map<String, Object> map = new HashMap<>();"),
+                    toMapBody,
+                    line("return map;")
+                ),
+                asList(Type.of(HashMap.class)),
+                false);
+        
         val flatMap = Arrays.<Stream<GenMethod>>asList(
                     getterMethods,
                     witherMethods,
                     Stream.of(postReConstructMethod),
+                    Stream.of(fromMap, toMap),
                     Stream.of(toString, hashCode, equals)
                  );
         val methods = flatMap.stream().flatMap(themAll()).collect(toList());

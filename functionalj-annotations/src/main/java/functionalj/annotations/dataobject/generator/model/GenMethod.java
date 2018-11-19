@@ -86,7 +86,7 @@ public class GenMethod implements IGenerateDefinition {
                 .requiredTypes()
                 .forEach(types::add);
         }
-        return types.stream();
+        return Stream.concat(types.stream(), (usedTypes != null) ? usedTypes.stream() : Stream.empty());
     }
     
     @Override

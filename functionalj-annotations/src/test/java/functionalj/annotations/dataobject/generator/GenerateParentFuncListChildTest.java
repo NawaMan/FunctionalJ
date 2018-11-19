@@ -55,6 +55,8 @@ public class GenerateParentFuncListChildTest {
                 "import functionalj.list.FuncList;\n" + 
                 "import functionalj.list.ImmutableList;\n" + 
                 "import java.lang.Object;\n" + 
+                "import java.util.HashMap;\n" + 
+                "import java.util.Map;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
@@ -115,6 +117,18 @@ public class GenerateParentFuncListChildTest {
                 "        if (object instanceof IPostReConstruct)\n" + 
                 "            ((IPostReConstruct)object).postReConstruct();\n" + 
                 "        return object;\n" + 
+                "    }\n" + 
+                "    public static Parent fromMap(Map<String, Object> map) {\n" + 
+                "        return new Parent(\n" + 
+                "                    (FuncList<String>)map.get(\"names\"),\n" + 
+                "                    (FuncList<Child>)map.get(\"children\")\n" + 
+                "                );\n" + 
+                "    }\n" + 
+                "    public Map<String, Object> toMap() {\n" + 
+                "        java.util.Map<String, Object> map = new HashMap<>();\n" + 
+                "        map.put(\"names\",  (Object)names);\n" + 
+                "        map.put(\"children\",  (Object)children);\n" + 
+                "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
                 "        return \"Parent[\" + \"names: \" + names() + \", \" + \"children: \" + children() + \"]\";\n" + 

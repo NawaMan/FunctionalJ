@@ -53,6 +53,8 @@ public class GenerateParentNullableChildTest {
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
                 "import java.lang.Object;\n" + 
+                "import java.util.HashMap;\n" + 
+                "import java.util.Map;\n" + 
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
@@ -108,6 +110,18 @@ public class GenerateParentNullableChildTest {
                 "        if (object instanceof IPostReConstruct)\n" + 
                 "            ((IPostReConstruct)object).postReConstruct();\n" + 
                 "        return object;\n" + 
+                "    }\n" + 
+                "    public static Parent fromMap(Map<String, Object> map) {\n" + 
+                "        return new Parent(\n" + 
+                "                    (Nullable<String>)map.get(\"nullableName\"),\n" + 
+                "                    (Nullable<Child>)map.get(\"nullableChild\")\n" + 
+                "                );\n" + 
+                "    }\n" + 
+                "    public Map<String, Object> toMap() {\n" + 
+                "        java.util.Map<String, Object> map = new HashMap<>();\n" + 
+                "        map.put(\"nullableName\",  (Object)nullableName);\n" + 
+                "        map.put(\"nullableChild\",  (Object)nullableChild);\n" + 
+                "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
                 "        return \"Parent[\" + \"nullableName: \" + nullableName() + \", \" + \"nullableChild: \" + nullableChild() + \"]\";\n" + 

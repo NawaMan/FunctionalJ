@@ -90,6 +90,8 @@ public class Type implements IRequireTypes {
     public static final Type STR = new Type("String", "");
     /** String type */
     public static final Type STRING = Type.of(String .class);
+    /** Object type */
+    public static final Type OBJECT = Type.of(Object .class);
     /** List type */
     public static final Type LIST = Type.of(List.class);
     /** Map type */
