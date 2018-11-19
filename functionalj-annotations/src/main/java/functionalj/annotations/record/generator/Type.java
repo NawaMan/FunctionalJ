@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
 import static functionalj.annotations.uniontype.generator.Utils.toListCode;
 import static functionalj.annotations.uniontype.generator.Utils.toStringLiteral;
@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import functionalj.annotations.dataobject.Core;
+import functionalj.annotations.record.Core;
 import lombok.Builder;
 import lombok.Value;
 import lombok.val;
@@ -481,7 +481,7 @@ public class Type implements IRequireTypes {
                 toStringLiteral(packageName),
                 toListCode     (generics, Type::toCode)
         );
-        return "new functionalj.annotations.dataobject.generator.Type("
+        return "new functionalj.annotations.record.generator.Type("
                 + params.stream().collect(joining(", "))
                 + ")";
     }

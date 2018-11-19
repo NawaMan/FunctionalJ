@@ -13,29 +13,29 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
-import static functionalj.annotations.dataobject.generator.model.Accessibility.PUBLIC;
-import static functionalj.annotations.dataobject.generator.model.Modifiability.MODIFIABLE;
-import static functionalj.annotations.dataobject.generator.model.Scope.NONE;
+import static functionalj.annotations.record.generator.model.Accessibility.PUBLIC;
+import static functionalj.annotations.record.generator.model.Modifiability.MODIFIABLE;
+import static functionalj.annotations.record.generator.model.Scope.NONE;
 import static java.util.Arrays.asList;
 
 import java.util.List;
 
-import functionalj.annotations.dataobject.generator.model.GenClass;
-import functionalj.annotations.dataobject.generator.model.GenConstructor;
-import functionalj.annotations.dataobject.generator.model.GenField;
-import functionalj.annotations.dataobject.generator.model.GenMethod;
+import functionalj.annotations.record.generator.model.GenClass;
+import functionalj.annotations.record.generator.model.GenConstructor;
+import functionalj.annotations.record.generator.model.GenField;
+import functionalj.annotations.record.generator.model.GenMethod;
 import lombok.Value;
 import lombok.experimental.Delegate;
 
 /**
- * Specification for DataObject.
+ * Specification for Record.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
-public class DataObjectSpec {
+public class RecordSpec {
     
     @Delegate
     private GenClass classSpec;
@@ -44,7 +44,7 @@ public class DataObjectSpec {
     private String sourcePackageName;
     
     /**
-     * Constructs a DataObjetSpec.
+     * Constructs a RecordSpec.
      * 
      * @param className           the name of the generated class.
      * @param packageName         the package name.
@@ -58,7 +58,7 @@ public class DataObjectSpec {
      * @param innerClasses        the list of inner classes.
      * @param mores               other ILines.
      */
-    public DataObjectSpec(
+    public RecordSpec(
             String className,
             String packageName,
             String sourceClassName,

@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  */
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DataObject {
+public @interface Record {
     
     /** @return the name of the target class. */
     public String name() default "";

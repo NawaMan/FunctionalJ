@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
 import static functionalj.annotations.uniontype.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
@@ -64,7 +64,7 @@ public class Getter {
                 type.toCode(),
                 "" + isRequired
         );
-        return "new functionalj.annotations.dataobject.generator.Getter("
+        return "new functionalj.annotations.record.generator.Getter("
                 + params.stream().collect(joining(", "))
                 + ")";
     }

@@ -1,16 +1,17 @@
-package functionalj.annotations.dataobject;
+package functionalj.annotations.record;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.annotations.DataObject;
+import functionalj.annotations.Record;
+import functionalj.annotations.record.DOFromClass;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
 public class DOFromClassTest {
     
-    @DataObject(name="DOFromClass")
+    @Record(name="DOFromClass")
     public abstract static class DOFromClassDef {
         
         public abstract String name();

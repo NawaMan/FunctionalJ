@@ -1,22 +1,24 @@
-package functionalj.annotations.dataobject;
+package functionalj.annotations.record;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.annotations.DataObject;
+import functionalj.annotations.Record;
+import functionalj.annotations.record.Child;
+import functionalj.annotations.record.Parent;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
 public class SubDOTest {
     
-    @DataObject(name="Child")
+    @Record(name="Child")
     public static interface IChild {
         
         String name();
         
     }
-    @DataObject(name="Parent")
+    @Record(name="Parent")
     public static interface IParent {
         
         String name();

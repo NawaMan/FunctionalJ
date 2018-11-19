@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;

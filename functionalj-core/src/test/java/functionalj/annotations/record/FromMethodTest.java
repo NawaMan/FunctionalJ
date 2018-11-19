@@ -1,31 +1,35 @@
-package functionalj.annotations.dataobject;
+package functionalj.annotations.record;
 
-import static functionalj.annotations.dataobject.Car.theCar;
-import static functionalj.annotations.dataobject.CarForSale.theCarForSale;
+import static functionalj.annotations.record.Car.theCar;
+import static functionalj.annotations.record.CarForSale.theCarForSale;
 import static functionalj.lens.Access.$I;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.annotations.DataObject;
+import functionalj.annotations.Record;
 import functionalj.annotations.Require;
+import functionalj.annotations.record.Car;
+import functionalj.annotations.record.CarForSale;
+import functionalj.annotations.record.Inventory;
+import functionalj.annotations.record.Price;
 import functionalj.list.FuncList;
 import lombok.val;
 
 public class FromMethodTest {
     
-    @DataObject(specField="spec")
+    @Record(specField="spec")
     public void Car(String make, int year, @Require(false) String color) { }
     
-    @DataObject
+    @Record
     public void Inventory(
             @Require(false) FuncList<CarForSale> cars) {}
     
-    @DataObject(specField="spec")
+    @Record(specField="spec")
     public void Price(int price, @Require(false) int discountPercent) { }
     
-    @DataObject(specField="spec")
+    @Record(specField="spec")
     public void CarForSale(Car car, Price price) { }
     
     @Test

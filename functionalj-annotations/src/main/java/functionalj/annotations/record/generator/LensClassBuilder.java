@@ -13,15 +13,15 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
-import static functionalj.annotations.dataobject.Core.ObjectLensImpl;
-import static functionalj.annotations.dataobject.generator.ILines.line;
-import static functionalj.annotations.dataobject.generator.model.Accessibility.PUBLIC;
-import static functionalj.annotations.dataobject.generator.model.Modifiability.FINAL;
-import static functionalj.annotations.dataobject.generator.model.Modifiability.MODIFIABLE;
-import static functionalj.annotations.dataobject.generator.model.Scope.INSTANCE;
-import static functionalj.annotations.dataobject.generator.model.Scope.STATIC;
+import static functionalj.annotations.record.Core.ObjectLensImpl;
+import static functionalj.annotations.record.generator.ILines.line;
+import static functionalj.annotations.record.generator.model.Accessibility.PUBLIC;
+import static functionalj.annotations.record.generator.model.Modifiability.FINAL;
+import static functionalj.annotations.record.generator.model.Modifiability.MODIFIABLE;
+import static functionalj.annotations.record.generator.model.Scope.INSTANCE;
+import static functionalj.annotations.record.generator.model.Scope.STATIC;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -29,11 +29,11 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.stream.Stream;
 
-import functionalj.annotations.dataobject.Core;
-import functionalj.annotations.dataobject.generator.model.GenClass;
-import functionalj.annotations.dataobject.generator.model.GenConstructor;
-import functionalj.annotations.dataobject.generator.model.GenField;
-import functionalj.annotations.dataobject.generator.model.GenParam;
+import functionalj.annotations.record.Core;
+import functionalj.annotations.record.generator.model.GenClass;
+import functionalj.annotations.record.generator.model.GenConstructor;
+import functionalj.annotations.record.generator.model.GenField;
+import functionalj.annotations.record.generator.model.GenParam;
 import lombok.val;
 
 /**
@@ -106,27 +106,27 @@ public class LensClassBuilder {
         return theField;
     }
     
-    private GenField getterToLensField(Getter getter, String dataObjectClassName, SourceSpec sourceSpec) {
-        val dataObjName  = dataObjectClassName;
-        val name         = getter.getName();
-        val type         = getter.getType().declaredType();
-        val withName     = utils.withMethodName(getter);
+    private GenField getterToLensField(Getter getter, String recordClassName, SourceSpec sourceSpec) {
+        val recordName = recordClassName;
+        val name       = getter.getName();
+        val type       = getter.getType().declaredType();
+        val withName   = utils.withMethodName(getter);
         
         GenField field;
         if (type.isList()) {
-            field = createGenListLensField(dataObjName, name, type, withName);
+            field = createGenListLensField(recordName, name, type, withName);
         } else if (type.isMap()) {
-            field = createGenMapLensField(dataObjName, name, type, withName);
+            field = createGenMapLensField(recordName, name, type, withName);
         } else if (type.isFuncList()) {
-            field = createGenFuncListLensField(dataObjName, name, type, withName);
+            field = createGenFuncListLensField(recordName, name, type, withName);
         } else if (type.isFuncMap()) {
-            field = createGenFuncMapLensField(dataObjName, name, type, withName);
+            field = createGenFuncMapLensField(recordName, name, type, withName);
         } else if (type.isNullable()) {
-            field = createGenNullableLensField(dataObjName, name, type, withName);
+            field = createGenNullableLensField(recordName, name, type, withName);
         } else if (type.isOptional()) {
-            field = createGenOptionalLensField(dataObjName, name, type, withName);
+            field = createGenOptionalLensField(recordName, name, type, withName);
         } else {
-            field = createLensField(dataObjName, name, type, withName);
+            field = createLensField(recordName, name, type, withName);
         }
         return field;
     }

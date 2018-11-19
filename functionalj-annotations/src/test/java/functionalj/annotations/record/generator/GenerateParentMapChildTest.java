@@ -1,4 +1,4 @@
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -7,8 +7,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.annotations.dataobject.generator.SourceSpec.Configurations;
-import functionalj.annotations.dataobject.generator.model.GenDataObject;
+import functionalj.annotations.record.generator.Getter;
+import functionalj.annotations.record.generator.RecordBuilder;
+import functionalj.annotations.record.generator.SourceSpec;
+import functionalj.annotations.record.generator.Type;
+import functionalj.annotations.record.generator.SourceSpec.Configurations;
+import functionalj.annotations.record.generator.model.GenRecord;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -169,8 +173,8 @@ public class GenerateParentMapChildTest {
                     null,
                     configures,          // Configurations
                     getters);
-        val dataObjSpec = new DataObjectBuilder(sourceSpec).build();
-        val generated   = new GenDataObject(dataObjSpec).toText();
+        val dataObjSpec = new RecordBuilder(sourceSpec).build();
+        val generated   = new GenRecord(dataObjSpec).toText();
         return generated;
     }
     

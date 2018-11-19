@@ -1,16 +1,18 @@
-package functionalj.annotations.dataobject;
+package functionalj.annotations.record;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 
-import functionalj.annotations.DataObject;
+import functionalj.annotations.Record;
 import functionalj.annotations.Require;
+import functionalj.annotations.record.DONoAllArgsConstructor;
+import functionalj.annotations.record.DONoNoArgsConstructor;
 
 @SuppressWarnings("javadoc")
 public class DOConstructorTest {
     
-    @DataObject(
+    @Record(
             name = "DONoNoArgsConstructor",
             generateNoArgConstructor = false
         )
@@ -24,7 +26,7 @@ public class DOConstructorTest {
         DONoNoArgsConstructor.class.newInstance();
     }
     
-    @DataObject(
+    @Record(
             name = "DONoAllArgsConstructor",
             generateNoArgConstructor  = true,
             generateAllArgConstructor = false

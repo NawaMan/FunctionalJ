@@ -13,17 +13,17 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
-import static functionalj.annotations.dataobject.generator.ILines.line;
-import static functionalj.annotations.dataobject.generator.model.Accessibility.PRIVATE;
-import static functionalj.annotations.dataobject.generator.model.Accessibility.PUBLIC;
-import static functionalj.annotations.dataobject.generator.model.Modifiability.FINAL;
-import static functionalj.annotations.dataobject.generator.model.Modifiability.MODIFIABLE;
-import static functionalj.annotations.dataobject.generator.model.Scope.INSTANCE;
-import static functionalj.annotations.dataobject.generator.model.Scope.STATIC;
-import static functionalj.annotations.dataobject.generator.utils.listOf;
-import static functionalj.annotations.dataobject.generator.utils.themAll;
+import static functionalj.annotations.record.generator.ILines.line;
+import static functionalj.annotations.record.generator.model.Accessibility.PRIVATE;
+import static functionalj.annotations.record.generator.model.Accessibility.PUBLIC;
+import static functionalj.annotations.record.generator.model.Modifiability.FINAL;
+import static functionalj.annotations.record.generator.model.Modifiability.MODIFIABLE;
+import static functionalj.annotations.record.generator.model.Scope.INSTANCE;
+import static functionalj.annotations.record.generator.model.Scope.STATIC;
+import static functionalj.annotations.record.generator.utils.listOf;
+import static functionalj.annotations.record.generator.utils.themAll;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
@@ -41,14 +41,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.annotations.IPostReConstruct;
-import functionalj.annotations.dataobject.generator.model.Accessibility;
-import functionalj.annotations.dataobject.generator.model.GenClass;
-import functionalj.annotations.dataobject.generator.model.GenConstructor;
-import functionalj.annotations.dataobject.generator.model.GenField;
-import functionalj.annotations.dataobject.generator.model.GenMethod;
-import functionalj.annotations.dataobject.generator.model.GenParam;
-import functionalj.annotations.dataobject.generator.model.Modifiability;
-import functionalj.annotations.dataobject.generator.model.Scope;
+import functionalj.annotations.record.generator.model.Accessibility;
+import functionalj.annotations.record.generator.model.GenClass;
+import functionalj.annotations.record.generator.model.GenConstructor;
+import functionalj.annotations.record.generator.model.GenField;
+import functionalj.annotations.record.generator.model.GenMethod;
+import functionalj.annotations.record.generator.model.GenParam;
+import functionalj.annotations.record.generator.model.Modifiability;
+import functionalj.annotations.record.generator.model.Scope;
 import lombok.val;
 
 /**
@@ -56,7 +56,7 @@ import lombok.val;
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
-public class DataObjectBuilder {
+public class RecordBuilder {
     
     private static final String POST_CONSTRUCT = "postReConstruct";
     
@@ -67,7 +67,7 @@ public class DataObjectBuilder {
      * 
      * @param sourceSpec  the source spec.
      */
-    public DataObjectBuilder(SourceSpec sourceSpec) {
+    public RecordBuilder(SourceSpec sourceSpec) {
         this.sourceSpec = sourceSpec;
     }
     
@@ -76,7 +76,7 @@ public class DataObjectBuilder {
      * 
      * @return  the data object.
      **/
-    public DataObjectSpec build() {
+    public RecordSpec build() {
         // TODO - Find sometime to clean this up - it is a mess.
         val extendeds    = new ArrayList<Type>();
         val implementeds = new ArrayList<Type>();
@@ -225,7 +225,7 @@ public class DataObjectBuilder {
                     builderClass
                 );
         
-        val dataObjSpec = new DataObjectSpec(
+        val dataObjSpec = new RecordSpec(
                 sourceSpec.getTargetClassName(),
                 sourceSpec.getTargetPackageName(),
                 sourceSpec.getSpecClassName(),

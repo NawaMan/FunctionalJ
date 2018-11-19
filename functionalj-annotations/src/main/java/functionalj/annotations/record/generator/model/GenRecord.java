@@ -13,12 +13,12 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator.model;
+package functionalj.annotations.record.generator.model;
 
-import static functionalj.annotations.dataobject.generator.ILines.line;
-import static functionalj.annotations.dataobject.generator.ILines.linesOf;
-import static functionalj.annotations.dataobject.generator.model.utils.themAll;
-import static functionalj.annotations.dataobject.generator.model.utils.wrapWith;
+import static functionalj.annotations.record.generator.ILines.line;
+import static functionalj.annotations.record.generator.ILines.linesOf;
+import static functionalj.annotations.record.generator.model.utils.themAll;
+import static functionalj.annotations.record.generator.model.utils.wrapWith;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
@@ -29,18 +29,18 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import functionalj.annotations.IPostReConstruct;
-import functionalj.annotations.dataobject.Core;
-import functionalj.annotations.dataobject.generator.DataObjectSpec;
-import functionalj.annotations.dataobject.generator.ILines;
-import functionalj.annotations.dataobject.generator.Type;
+import functionalj.annotations.record.Core;
+import functionalj.annotations.record.generator.ILines;
+import functionalj.annotations.record.generator.RecordSpec;
+import functionalj.annotations.record.generator.Type;
 import lombok.val;
 
 /**
- * Representation of DataObject class.
+ * Representation of Record class.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
-public class GenDataObject implements ILines {
+public class GenRecord implements ILines {
     
     private static final List<String> implicitImports = asList(
             "java.lang.String",
@@ -56,14 +56,14 @@ public class GenDataObject implements ILines {
             Core.LensSpec.type()
     );
     
-    private DataObjectSpec dataClass;
+    private RecordSpec dataClass;
     
     /**
-     * Construct a GenDataObject with the data object spec.
+     * Construct a GenRecord with the data object spec.
      * 
      * @param dataObjSpec  the spec.
      */
-    public GenDataObject(DataObjectSpec dataObjSpec) {
+    public GenRecord(RecordSpec dataObjSpec) {
         this.dataClass = dataObjSpec;
     }
     

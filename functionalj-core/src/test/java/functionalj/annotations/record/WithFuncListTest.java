@@ -1,18 +1,20 @@
-package functionalj.annotations.dataobject;
+package functionalj.annotations.record;
 
 import static functionalj.lens.Access.theString;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.annotations.DataObject;
+import functionalj.annotations.Record;
+import functionalj.annotations.record.Child;
+import functionalj.annotations.record.ParentWithFuncList;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 
 @SuppressWarnings("javadoc")
 public class WithFuncListTest {
 
-    @DataObject(name="ParentWithFuncList")
+    @Record(name="ParentWithFuncList")
     public static interface IParent2 {
         
         public FuncList<String> names();

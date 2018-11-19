@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject;
+package functionalj.annotations.record;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -44,22 +44,22 @@ import javax.lang.model.util.Elements;
 //import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-import functionalj.annotations.DataObject;
+import functionalj.annotations.Record;
 import functionalj.annotations.Require;
-import functionalj.annotations.dataobject.generator.DataObjectBuilder;
-import functionalj.annotations.dataobject.generator.Getter;
-import functionalj.annotations.dataobject.generator.SourceSpec;
-import functionalj.annotations.dataobject.generator.SourceSpec.Configurations;
-import functionalj.annotations.dataobject.generator.Type;
-import functionalj.annotations.dataobject.generator.model.GenDataObject;
+import functionalj.annotations.record.generator.Getter;
+import functionalj.annotations.record.generator.RecordBuilder;
+import functionalj.annotations.record.generator.SourceSpec;
+import functionalj.annotations.record.generator.Type;
+import functionalj.annotations.record.generator.SourceSpec.Configurations;
+import functionalj.annotations.record.generator.model.GenRecord;
 import lombok.val;
 
 /**
- * Annotation processor for DataObject.
+ * Annotation processor for Record.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
-public class DataObjectAnnotationProcessor extends AbstractProcessor {
+public class RecordAnnotationProcessor extends AbstractProcessor {
 
     private Elements elementUtils;
 //    private Types    typeUtils;
@@ -77,7 +77,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> annotations = new LinkedHashSet<String>();
-        annotations.add(DataObject.class.getCanonicalName());
+        annotations.add(Record.class.getCanonicalName());
         return annotations;
     }
     
@@ -94,7 +94,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
-        for (Element element : roundEnv.getElementsAnnotatedWith(DataObject.class)) {
+        for (Element element : roundEnv.getElementsAnnotatedWith(Record.class)) {
             val packageName    = extractPackageName(element);
             val specTargetName = extractTargetTypeName(element);
             try {
@@ -102,9 +102,9 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
                 if (sourceSpec == null)
                     continue;
                 
-                val dataObjSpec = new DataObjectBuilder(sourceSpec).build();
+                val dataObjSpec = new RecordBuilder(sourceSpec).build();
                 val className   = (String)dataObjSpec.type().fullName("");
-                val content     = new GenDataObject(dataObjSpec).lines().collect(joining("\n"));
+                val content     = new GenRecord(dataObjSpec).lines().collect(joining("\n"));
                 generateCode(element, className, content);
             } catch (Exception e) {
                 error(element, "Problem generating the class: "
@@ -122,7 +122,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             return extractPackageNameType(element);
         if (element instanceof ExecutableElement)
             return extractPackageNameMethod(element);
-        throw new IllegalArgumentException("DataObject annotation is only support class or method.");
+        throw new IllegalArgumentException("Record annotation is only support class or method.");
     }
     private String extractPackageNameType(Element element) {
         val type        = (TypeElement)element;
@@ -137,8 +137,8 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
     }
     
     private String extractTargetTypeName(Element element) {
-        val dataObject     = element.getAnnotation(DataObject.class);
-        val specTargetName = dataObject.name();
+        val record         = element.getAnnotation(Record.class);
+        val specTargetName = record.name();
         return specTargetName;
     }
     
@@ -147,7 +147,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
             return extractSourceSpecType(element);
         if (element instanceof ExecutableElement)
             return extractSourceSpecMethod(element);
-        throw new IllegalArgumentException("DataObject annotation is only support class or method.");
+        throw new IllegalArgumentException("Record annotation is only support class or method.");
     }
     private SourceSpec extractSourceSpecType(Element element) {
         val type        = (TypeElement)element;
@@ -155,7 +155,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         val isInterface = ElementKind.INTERFACE.equals(element.getKind());
         val isClass     = ElementKind.CLASS    .equals(element.getKind());
         if (!isInterface && !isClass) {
-            error(element, "Only a class or interface can be annotated with " + DataObject.class.getSimpleName() + ": " + simpleName);
+            error(element, "Only a class or interface can be annotated with " + Record.class.getSimpleName() + ": " + simpleName);
             return null;
         }
         
@@ -171,12 +171,12 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         
         val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
         val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
-        val dataObject     = element.getAnnotation(DataObject.class);
-        val specTargetName = dataObject.name();
+        val record         = element.getAnnotation(Record.class);
+        val specTargetName = record.name();
         val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
-        val specField      = dataObject.specField();
+        val specField      = record.specField();
         
-        val configures = extractConfigurations(element, dataObject);
+        val configures = extractConfigurations(element, record);
         if (configures == null)
             return null;
         
@@ -201,10 +201,10 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         val method         = (ExecutableElement)element;
         val packageName    = extractPackageName(element);
         val simpleName     = ((TypeElement)method.getEnclosingElement()).getSimpleName().toString();
-        val dataObject     = element.getAnnotation(DataObject.class);
-        val specTargetName = dataObject.name().isEmpty() ? method.getSimpleName().toString() : dataObject.name();
+        val record         = element.getAnnotation(Record.class);
+        val specTargetName = record.name().isEmpty() ? method.getSimpleName().toString() : record.name();
         val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
-        val specField      = dataObject.specField();
+        val specField      = record.specField();
         
         // TODO - Make the generated class extends or implements the return type.
         //        The challenge are:
@@ -219,7 +219,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         val superName    = (String)null;
         val superPackage = packageName;
         
-        val configures = extractConfigurations(element, dataObject);
+        val configures = extractConfigurations(element, record);
         if (configures == null)
             return null;
         
@@ -242,7 +242,7 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
 
     private boolean ensureNoArgConstructorWhenRequireFieldExists(Element element, List<Getter> getters,
             final java.lang.String packageName, final java.lang.String specTargetName,
-            final functionalj.annotations.dataobject.generator.SourceSpec.Configurations configures) {
+            final functionalj.annotations.record.generator.SourceSpec.Configurations configures) {
         if (!configures.generateNoArgConstructor)
             return true;
         if (getters.stream().noneMatch(g->g.isRequired()))
@@ -261,15 +261,15 @@ public class DataObjectAnnotationProcessor extends AbstractProcessor {
         return getter;
     }
     
-    private Configurations extractConfigurations(Element element, DataObject dataObject) {
+    private Configurations extractConfigurations(Element element, Record record) {
         val configures = new Configurations();
-        configures.coupleWithDefinition            = dataObject.coupleWithDefinition();
-        configures.generateNoArgConstructor        = dataObject.generateNoArgConstructor();
-        configures.generateRequiredOnlyConstructor = dataObject.generateRequiredOnlyConstructor();
-        configures.generateAllArgConstructor       = dataObject.generateAllArgConstructor();
-        configures.generateLensClass               = dataObject.generateLensClass();
-        configures.generateBuilderClass            = dataObject.generateBuilderClass();
-        configures.publicFields                    = dataObject.publicFields();
+        configures.coupleWithDefinition            = record.coupleWithDefinition();
+        configures.generateNoArgConstructor        = record.generateNoArgConstructor();
+        configures.generateRequiredOnlyConstructor = record.generateRequiredOnlyConstructor();
+        configures.generateAllArgConstructor       = record.generateAllArgConstructor();
+        configures.generateLensClass               = record.generateLensClass();
+        configures.generateBuilderClass            = record.generateBuilderClass();
+        configures.publicFields                    = record.publicFields();
 
         if (!configures.generateNoArgConstructor
          && !configures.generateAllArgConstructor) {

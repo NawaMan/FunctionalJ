@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator.model;
+package functionalj.annotations.record.generator.model;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;

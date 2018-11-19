@@ -1,4 +1,4 @@
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -7,7 +7,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.annotations.dataobject.generator.SourceSpec.Configurations;
+import functionalj.annotations.record.generator.BuilderClassBuilder;
+import functionalj.annotations.record.generator.Getter;
+import functionalj.annotations.record.generator.SourceSpec;
+import functionalj.annotations.record.generator.Type;
+import functionalj.annotations.record.generator.SourceSpec.Configurations;
 import lombok.val;
 
 public class BuilderClassBuilderTest {

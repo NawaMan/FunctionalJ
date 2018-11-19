@@ -13,13 +13,13 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
-import static functionalj.annotations.dataobject.generator.utils.delimitWith;
-import static functionalj.annotations.dataobject.generator.utils.prependWith;
-import static functionalj.annotations.dataobject.generator.utils.strNotNullOrEmpty;
-import static functionalj.annotations.dataobject.generator.utils.themAll;
-import static functionalj.annotations.dataobject.generator.utils.toStr;
+import static functionalj.annotations.record.generator.utils.delimitWith;
+import static functionalj.annotations.record.generator.utils.prependWith;
+import static functionalj.annotations.record.generator.utils.strNotNullOrEmpty;
+import static functionalj.annotations.record.generator.utils.themAll;
+import static functionalj.annotations.record.generator.utils.toStr;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;

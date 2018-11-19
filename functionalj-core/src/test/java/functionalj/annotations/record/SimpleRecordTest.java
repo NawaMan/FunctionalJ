@@ -1,6 +1,6 @@
-package functionalj.annotations.dataobject;
+package functionalj.annotations.record;
 
-import static functionalj.annotations.dataobject.SimpleFromInteface.theSimpleFromInteface;
+import static functionalj.annotations.record.SimpleFromInteface.theSimpleFromInteface;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -10,12 +10,13 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import functionalj.annotations.Require;
+import functionalj.annotations.record.SimpleFromInteface;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class SimpleDataObjectTest {
+public class SimpleRecordTest {
     
-    @functionalj.annotations.DataObject(name="SimpleFromInteface", generateNoArgConstructor=true)
+    @functionalj.annotations.Record(name="SimpleFromInteface", generateNoArgConstructor=true)
     public static interface SimpleDOInterface {
         
         @Require(false)

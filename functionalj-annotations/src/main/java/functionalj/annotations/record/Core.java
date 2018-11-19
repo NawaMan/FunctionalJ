@@ -13,9 +13,9 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject;
+package functionalj.annotations.record;
 
-import functionalj.annotations.dataobject.generator.Type;
+import functionalj.annotations.record.generator.Type;
 
 /**
  * This class purpose is to allow decoupling of the annotation projects and the core project.

@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
 import static functionalj.annotations.uniontype.generator.Utils.toListCode;
 import static functionalj.annotations.uniontype.generator.Utils.toStringLiteral;
@@ -102,7 +102,7 @@ public class SourceSpec {
                     generateBuilderClass,
                     publicFields
             );
-            return "new functionalj.annotations.dataobject.generator.SourceSpec.Configurations("
+            return "new functionalj.annotations.record.generator.SourceSpec.Configurations("
                     + params.stream().map(String::valueOf).collect(joining(", "))
                     + ")";
         }
@@ -133,7 +133,7 @@ public class SourceSpec {
                 configures.toCode(),
                 toListCode(getters, Getter::toCode)
         );
-        return "new functionalj.annotations.dataobject.generator.SourceSpec("
+        return "new functionalj.annotations.record.generator.SourceSpec("
                 + params.stream().map(String::valueOf).collect(joining(", "))
                 + ")";
     }

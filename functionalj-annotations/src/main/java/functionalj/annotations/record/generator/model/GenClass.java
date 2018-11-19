@@ -13,16 +13,16 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator.model;
+package functionalj.annotations.record.generator.model;
 
-import static functionalj.annotations.dataobject.generator.ILines.flatenLines;
-import static functionalj.annotations.dataobject.generator.ILines.indent;
-import static functionalj.annotations.dataobject.generator.ILines.line;
-import static functionalj.annotations.dataobject.generator.ILines.linesOf;
-import static functionalj.annotations.dataobject.generator.ILines.oneLineOf;
-import static functionalj.annotations.dataobject.generator.ILines.withSeparateIndentedSpace;
-import static functionalj.annotations.dataobject.generator.model.utils.allLists;
-import static functionalj.annotations.dataobject.generator.model.utils.themAll;
+import static functionalj.annotations.record.generator.ILines.flatenLines;
+import static functionalj.annotations.record.generator.ILines.indent;
+import static functionalj.annotations.record.generator.ILines.line;
+import static functionalj.annotations.record.generator.ILines.linesOf;
+import static functionalj.annotations.record.generator.ILines.oneLineOf;
+import static functionalj.annotations.record.generator.ILines.withSeparateIndentedSpace;
+import static functionalj.annotations.record.generator.model.utils.allLists;
+import static functionalj.annotations.record.generator.model.utils.themAll;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -30,10 +30,10 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import functionalj.annotations.dataobject.generator.IGenerateDefinition;
-import functionalj.annotations.dataobject.generator.ILines;
-import functionalj.annotations.dataobject.generator.IRequireTypes;
-import functionalj.annotations.dataobject.generator.Type;
+import functionalj.annotations.record.generator.IGenerateDefinition;
+import functionalj.annotations.record.generator.ILines;
+import functionalj.annotations.record.generator.IRequireTypes;
+import functionalj.annotations.record.generator.Type;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Accessors;

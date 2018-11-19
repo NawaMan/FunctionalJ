@@ -1,4 +1,4 @@
-package functionalj.annotations.dataobject;
+package functionalj.annotations.record;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,7 +7,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.annotations.DataObject;
+import functionalj.annotations.Record;
+import functionalj.annotations.record.SimpleWithPostReConstruct;
 import functionalj.annotations.IPostReConstruct;
 import lombok.val;
 
@@ -16,7 +17,7 @@ public class WithPostReConstruct {
     
     private static List<String> logs = new ArrayList<>();
     
-    @DataObject(name="SimpleWithPostReConstruct")
+    @Record(name="SimpleWithPostReConstruct")
     public static interface SimpleDOWithPostReConstruct extends IPostReConstruct {
         public String name();
         

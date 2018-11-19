@@ -13,10 +13,10 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator.model;
+package functionalj.annotations.record.generator.model;
 
-import static functionalj.annotations.dataobject.generator.ILines.indent;
-import static functionalj.annotations.dataobject.generator.ILines.line;
+import static functionalj.annotations.record.generator.ILines.indent;
+import static functionalj.annotations.record.generator.ILines.line;
 import static java.util.stream.Collectors.joining;
 
 import java.util.HashSet;
@@ -25,10 +25,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import functionalj.annotations.dataobject.Core;
-import functionalj.annotations.dataobject.generator.IGenerateDefinition;
-import functionalj.annotations.dataobject.generator.ILines;
-import functionalj.annotations.dataobject.generator.Type;
+import functionalj.annotations.record.Core;
+import functionalj.annotations.record.generator.IGenerateDefinition;
+import functionalj.annotations.record.generator.ILines;
+import functionalj.annotations.record.generator.Type;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;

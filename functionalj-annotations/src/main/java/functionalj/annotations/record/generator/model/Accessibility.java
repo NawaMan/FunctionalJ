@@ -13,9 +13,9 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.dataobject.generator.model;
+package functionalj.annotations.record.generator.model;
 
-import functionalj.annotations.dataobject.generator.IGenerateTerm;
+import functionalj.annotations.record.generator.IGenerateTerm;
 
 /**
  * Accessibility of a class or elements.

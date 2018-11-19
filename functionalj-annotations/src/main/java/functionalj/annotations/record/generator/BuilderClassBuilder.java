@@ -1,7 +1,7 @@
-package functionalj.annotations.dataobject.generator;
+package functionalj.annotations.record.generator;
 
-import static functionalj.annotations.dataobject.generator.ILines.line;
-import static functionalj.annotations.dataobject.generator.ILines.linesOf;
+import static functionalj.annotations.record.generator.ILines.line;
+import static functionalj.annotations.record.generator.ILines.linesOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import functionalj.annotations.dataobject.generator.model.Accessibility;
-import functionalj.annotations.dataobject.generator.model.GenClass;
-import functionalj.annotations.dataobject.generator.model.GenConstructor;
-import functionalj.annotations.dataobject.generator.model.GenField;
-import functionalj.annotations.dataobject.generator.model.GenMethod;
-import functionalj.annotations.dataobject.generator.model.GenParam;
-import functionalj.annotations.dataobject.generator.model.Modifiability;
-import functionalj.annotations.dataobject.generator.model.Scope;
+import functionalj.annotations.record.generator.model.Accessibility;
+import functionalj.annotations.record.generator.model.GenClass;
+import functionalj.annotations.record.generator.model.GenConstructor;
+import functionalj.annotations.record.generator.model.GenField;
+import functionalj.annotations.record.generator.model.GenMethod;
+import functionalj.annotations.record.generator.model.GenParam;
+import functionalj.annotations.record.generator.model.Modifiability;
+import functionalj.annotations.record.generator.model.Scope;
 import lombok.val;
 
 public class BuilderClassBuilder {

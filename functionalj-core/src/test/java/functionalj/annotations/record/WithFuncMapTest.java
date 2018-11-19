@@ -1,12 +1,13 @@
-package functionalj.annotations.dataobject;
+package functionalj.annotations.record;
 
-import functionalj.annotations.DataObject;
+import functionalj.annotations.Record;
+import functionalj.annotations.record.Child;
 import functionalj.map.FuncMap;
 
 @SuppressWarnings("javadoc")
 public class WithFuncMapTest {
 
-    @DataObject(name="ParentWithFuncMap")
+    @Record(name="ParentWithFuncMap")
     public static interface IParent4 {
         
         public FuncMap<String, Child> children();
