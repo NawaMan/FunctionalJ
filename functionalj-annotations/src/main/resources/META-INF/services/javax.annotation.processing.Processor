@@ -1,2 +1,2 @@
 functionalj.annotations.record.RecordAnnotationProcessor
-functionalj.annotations.uniontype.UnionTypeAnnotationProcessor
+functionalj.annotations.sealed.SealedClassAnnotationProcessor
