@@ -18,7 +18,7 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public class UnionLinkedListTest {
     
-    @UnionType(name="LinkedList")
+    @UnionType
     public static interface LinkedListSpec {
         void Nill();
         void Node(Object value, LinkedList rest);
@@ -61,18 +61,21 @@ public class UnionLinkedListTest {
     }
     LinkedList map(LinkedList list, Function<Object, Object> mapper) {
         return Switch(list)
-                .nill(__ -> Nill())
-                .node(l -> Node(mapper.apply(l.value()), map(l.rest(), mapper)));
+                .toA(LinkedList.class)
+                .nill(      Nill())
+                .node(l  -> Node(mapper.apply(l.value()), map(l.rest(), mapper)));
     }
     LinkedList filter(LinkedList list, Predicate<Object> filter) {
         return Switch(list)
-                .nill(__ -> Nill())
-                .node(l -> (filter.test(l.value()) ? Node(l.value(), filter(l.rest(), filter)) : filter(l.rest(), filter)));
+                .toA(LinkedList.class)
+                .nill(      Nill())
+                .node(l  -> (filter.test(l.value()) ? Node(l.value(), filter(l.rest(), filter)) : filter(l.rest(), filter)));
     }
     Object reduce(LinkedList list, BinaryOperator<Object> operator) {
         return Switch(list)
-                .nill(()-> null)
-                .node(l -> l.rest().isNill() ? l.value() : operator.apply(l.value(), reduce(l.rest(), operator)));
+                .toA(Object.class)
+                .nill(__ -> null)
+                .node(l  -> l.rest().isNill() ? l.value() : operator.apply(l.value(), reduce(l.rest(), operator)));
     }
     
     @Test

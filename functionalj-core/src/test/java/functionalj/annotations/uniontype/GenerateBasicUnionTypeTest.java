@@ -41,8 +41,8 @@ public class GenerateBasicUnionTypeTest {
     
     private static Function<Color, Boolean> isWhite = (color->
             Switch(color)
-            .white (__ -> true)
-            .orElse(      false)
+            .white (true)
+            .orElse(false)
     );
     
     @Test
@@ -54,8 +54,8 @@ public class GenerateBasicUnionTypeTest {
     
     private static Function<UpOrDown, String> upDownString = (upOrDown->
         Switch(upOrDown)
-        .up  (__ -> "Go up")
-        .down(__ -> "Go down")
+        .up  ("Go up")
+        .down("Go down")
     );
     
     @Test
@@ -66,8 +66,8 @@ public class GenerateBasicUnionTypeTest {
     
     private static BiFunction<Integer, UpOrDown, Integer> counting = ((count, upOrDown)->
             Switch(upOrDown)
-            .up  (() -> count + 1)
-            .down(() -> count - 1)
+            .up  (count + 1)
+            .down(count - 1)
     );
     
     @Test

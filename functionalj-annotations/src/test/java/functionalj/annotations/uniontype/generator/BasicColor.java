@@ -101,6 +101,10 @@ public abstract class BasicColor extends AbstractUnionType<BasicColor.BasicColor
         private BasicColor value;
         private BasicColorFirstSwitch(BasicColor value) { this.value = value; }
         
+        public <T> BasicColorFirstSwitchTyped<T> toA(Class<T> clzz) {
+            return new BasicColorFirstSwitchTyped<T>(value);
+        }
+        
         public <T> BasicColorSwitchBlackRGB<T> white(T action) {
             return white(d->action);
         }
@@ -108,6 +112,30 @@ public abstract class BasicColor extends AbstractUnionType<BasicColor.BasicColor
             return white(d->action.get());
         }
         public <T> BasicColorSwitchBlackRGB<T> white(Function<? super White, T> theAction) {
+            Function<BasicColor, T> action = null;
+            Function<BasicColor, T> oldAction = (Function<BasicColor, T>)action;
+            Function<BasicColor, T> newAction =
+                (action != null)
+                ? oldAction : 
+                    (value instanceof White)
+                    ? (Function<BasicColor, T>)(d -> theAction.apply((White)d))
+                    : oldAction;
+            
+            return new BasicColorSwitchBlackRGB <T>(value, newAction);
+        }
+    }
+    
+    public static class BasicColorFirstSwitchTyped<T> {
+        private BasicColor value;
+        private BasicColorFirstSwitchTyped(BasicColor value) { this.value = value; }
+        
+        public BasicColorSwitchBlackRGB<T> white(T action) {
+            return white(d->action);
+        }
+        public BasicColorSwitchBlackRGB<T> white(Supplier<T> action) {
+            return white(d->action.get());
+        }
+        public BasicColorSwitchBlackRGB<T> white(Function<? super White, T> theAction) {
             Function<BasicColor, T> action = null;
             Function<BasicColor, T> oldAction = (Function<BasicColor, T>)action;
             Function<BasicColor, T> newAction =

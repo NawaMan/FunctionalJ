@@ -53,13 +53,29 @@ public class SwitchClass implements Lines {
         val camelName = toCamelCase(thisChoice.name);
         
         val firstSwitchLines = !isFirst ? new ArrayList<String>() : asList(
-            asList(format("public static class %1$sFirstSwitch%2$s {",                          targetName, targetClass.genericDef())),
-            asList(format("    private %s $value;",                                                         targetClass.typeWithGenerics())),
-            asList(format("    private %sFirstSwitch(%s theValue) { this.$value = theValue; }", targetName, targetClass.typeWithGenerics())),
+            asList(format("public static class %1$sFirstSwitch%2$s {",                                targetName, targetClass.genericDef())),
+            asList(format("    private %s $value;",                                                               targetClass.typeWithGenerics())),
+            asList(format("    private %sFirstSwitch(%s theValue) { this.$value = theValue; }",       targetName, targetClass.typeWithGenerics())),
+            asList(format("    public <%2$s> %1$sFirstSwitchTyped<%2$s%3$s> toA(Class<%2$s> clzz) {", targetName, mapTargetType, (targetClass.genericParams().isEmpty() ? "" : ", " + targetClass.genericParams()))),
+            asList(format("        return new %1$sFirstSwitchTyped<%2$s%3$s>($value);",               targetName, mapTargetType, (targetClass.genericParams().isEmpty() ? "" : ", " + targetClass.genericParams()))),
+            asList(format("    }")),
             asList(format("    ")),
-            createCasesComplete(true,             thisName, camelName,                  targetName, retType, retStmt, mapTargetType),
-            createCasesPartial (true, thisChoice, thisName, camelName, switchClassName, targetName,                   mapTargetType),
-            createCasesExpand  (true, thisChoice, thisName, camelName, switchClassName,                               mapTargetType),
+            createCasesComplete(true, false,             thisName, camelName,                  targetName, retType, retStmt, mapTargetType),
+            createCasesPartial (true, false, thisChoice, thisName, camelName, switchClassName, targetName,                   mapTargetType),
+            createCasesExpand  (true, false, thisChoice, thisName, camelName, switchClassName,                               mapTargetType),
+            asList(format("}"))
+        ).stream()
+        .flatMap(List::stream)
+        .collect(toList());
+        
+        val firstSwitchTypeLines = !isFirst ? new ArrayList<String>() : asList(
+            asList(format("public static class %1$sFirstSwitchTyped<%2$s> {",                        targetName, mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericDefParams()))),
+            asList(format("    private %s $value;",                                                  targetClass.typeWithGenerics())),
+            asList(format("    private %sFirstSwitchTyped(%s theValue) { this.$value = theValue; }", targetName, targetClass.typeWithGenerics())),
+            asList(format("    ")),
+            createCasesComplete(true, true,             thisName, camelName,                  targetName, retType, retStmt, mapTargetType),
+            createCasesPartial (true, true, thisChoice, thisName, camelName, switchClassName, targetName,                   mapTargetType),
+            createCasesExpand  (true, true, thisChoice, thisName, camelName, switchClassName,                               mapTargetType),
             asList(format("}"))
         ).stream()
         .flatMap(List::stream)
@@ -69,9 +85,9 @@ public class SwitchClass implements Lines {
             asList(format("public static class %1$s<%3$s> extends UnionTypeSwitch<%2$s, %4$s> {",                            switchClassName, targetName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericDefParams()), mapTargetType)),
             asList(format("    private %1$s(%2$s theValue, Function<%2$s, %3$s> theAction) { super(theValue, theAction); }", switchClassName, targetName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType)),
             asList(format("    ")),
-            createCasesComplete(false,             thisName, camelName,                  targetName, retType, retStmt, mapTargetType),
-            createCasesPartial (false, thisChoice, thisName, camelName, switchClassName, targetName,                   mapTargetType),
-            createCasesExpand  (false, thisChoice, thisName, camelName, switchClassName,                               mapTargetType),
+            createCasesComplete(false, true,             thisName, camelName,                  targetName, retType, retStmt, mapTargetType),
+            createCasesPartial (false, true, thisChoice, thisName, camelName, switchClassName, targetName,                   mapTargetType),
+            createCasesExpand  (false, true, thisChoice, thisName, camelName, switchClassName,                               mapTargetType),
             asList(format("}"))
         ).stream()
         .flatMap(List::stream)
@@ -79,13 +95,14 @@ public class SwitchClass implements Lines {
         
         val lines = new ArrayList<String>();
         lines.addAll(firstSwitchLines);
+        lines.addAll(firstSwitchTypeLines);
         lines.addAll(switchLines);
         return lines;
     }
     
-    private List<String> createCasesComplete(boolean isFirst, String thisName, String camelName, String targetName, 
+    private List<String> createCasesComplete(boolean isFirst, boolean typed, String thisName, String camelName, String targetName, 
             String retType, String retStmt, String mapTargetType) {
-        val methodGeneric = isFirst ? "<" + mapTargetType + "> " : "";
+        val methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
         val lineBF = isFirst ? "    Function<" + targetName + targetClass.generics() + ", " + mapTargetType + "> $action = null;" : null;
         return asList(
             format("public %1$s%2$s %3$s(Function<? super %4$s, %5$s> theAction) {", methodGeneric, retType, camelName, thisName + targetClass.generics(), mapTargetType),
@@ -102,6 +119,9 @@ public class SwitchClass implements Lines {
             format("}"),
             format("public %1$s%2$s %3$s(Supplier<%4$s> theSupplier) {", methodGeneric, retType, camelName, mapTargetType),
             format("    return %1$s(d->theSupplier.get());"         , camelName),
+            format("}"),
+            format("public %1$s%2$s %3$s(%4$s theValue) {", methodGeneric, retType, camelName, mapTargetType),
+            format("    return %1$s(d->theValue);"         , camelName),
             format("}")
         ).stream()
          .filter(Objects::nonNull)
@@ -109,7 +129,7 @@ public class SwitchClass implements Lines {
          .collect(toList());
     }
     
-    private List<String> createCasesExpand(boolean isFirst, Choice thisChoice, String thisName, String camelName, String switchClassName, String mapTargetType) {
+    private List<String> createCasesExpand(boolean isFirst, boolean typed, Choice thisChoice, String thisName, String camelName, String switchClassName, String mapTargetType) {
         val eachExpand = (Function<Integer, List<String>>)(theCode -> {
             val count = thisChoice.params.size();
             val codes = new ArrayList<Integer>();
@@ -137,7 +157,7 @@ public class SwitchClass implements Lines {
                 }
             }
             
-            val methodGeneric = isFirst ? "<" + mapTargetType + "> " : "";
+            val methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
             String paramDefStr   = paramDefs.stream().collect(joining(", "));
             String paramCheckStr = paramCheck.stream().collect(joining(" && "));
             return asList(
@@ -147,6 +167,9 @@ public class SwitchClass implements Lines {
                 format("}"),
                 format("public %1$s%2$s<%5$s> %3$sOf(%4$s, Supplier<%6$s> theSupplier) {", methodGeneric, switchClassName, camelName, paramDefStr, mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
                 format("    return %1$s(%1$s -> %2$s, theSupplier);",                      camelName, paramCheckStr),
+                format("}"),
+                format("public %1$s%2$s<%5$s> %3$sOf(%4$s, %6$s theValue) {", methodGeneric, switchClassName, camelName, paramDefStr, mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
+                format("    return %1$s(%1$s -> %2$s, theValue);",             camelName, paramCheckStr),
                 format("}")
             );
         });
@@ -160,9 +183,9 @@ public class SwitchClass implements Lines {
           .collect(toList());
     }
     
-    private List<String> createCasesPartial(boolean isFirst, Choice thisChoice, String thisName,
+    private List<String> createCasesPartial(boolean isFirst, boolean typed, Choice thisChoice, String thisName,
             String camelName, String switchClassName, String targetName, String mapTargetType) {
-        val methodGeneric = isFirst ? "<" + mapTargetType + "> " : "";
+        val methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
         val lineBF = isFirst ? "    Function<" + targetName  + targetClass.generics() + ", " + mapTargetType + "> $action = null;" : null;
         return !thisChoice.isParameterized() ? new ArrayList<String>()
         : asList(
@@ -181,6 +204,9 @@ public class SwitchClass implements Lines {
             format("}"),
             format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, Supplier<%6$s> theSupplier) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
             format("    return %1$s(check, d->theSupplier.get());",                                   camelName),
+            format("}"),
+            format("public %1$s%2$s<%5$s> %3$s(Predicate<%4$s> check, %6$s theValue) {", methodGeneric, switchClassName, camelName, thisName + (targetClass.generics().isEmpty() ? "" : targetClass.generics()), mapTargetType + (targetClass.genericDefParams().isEmpty() ? "" : ", " + targetClass.genericParams()), mapTargetType),
+            format("    return %1$s(check, d->theValue);",                                   camelName),
             format("}")
         ).stream()
          .filter(Objects::nonNull)

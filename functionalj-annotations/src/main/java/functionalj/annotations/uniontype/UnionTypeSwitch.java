@@ -47,9 +47,9 @@ public abstract class UnionTypeSwitch<D, T> {
             this.value  = value;
             this.action = action;
         }
-        public D              value()  { return value; }
-        public Function<D, T> action() { return action; }
-        public UnionTypeSwitchData<D, T>     withValue(D value)                { return new UnionTypeSwitchData<>(value, action); }
-        public UnionTypeSwitchData<D, T>     withAction(Function<D, T> action) { return new UnionTypeSwitchData<>(value, action); }
+        public D                         value()                           { return value; }
+        public Function<D, T>            action()                          { return action; }
+        public UnionTypeSwitchData<D, T> withValue(D value)                { return new UnionTypeSwitchData<>(value, action); }
+        public UnionTypeSwitchData<D, T> withAction(Function<D, T> action) { return new UnionTypeSwitchData<>(value, action); }
     }
 }

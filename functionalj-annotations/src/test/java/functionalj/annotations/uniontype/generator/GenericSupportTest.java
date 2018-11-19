@@ -54,10 +54,11 @@ public class GenericSupportTest {
             "@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})\n" + 
             "public abstract class Option<T extends Number> extends AbstractUnionType<Option.OptionFirstSwitch<T>> implements Pipeable<Option<T>> {\n" + 
             "    \n" + 
-            "    public static final <T extends Number> Option<T> None() {\n" + 
+            "    \n" + 
+            "    public static final <T extends Number> None<T> None() {\n" + 
             "        return None.instance;\n" + 
             "    }\n" + 
-            "    public static final <T extends Number> Option<T> Some(T value) {\n" + 
+            "    public static final <T extends Number> Some<T> Some(T value) {\n" + 
             "        return new Some<T>(value);\n" + 
             "    }\n" + 
             "    \n" + 
@@ -132,7 +133,7 @@ public class GenericSupportTest {
             "        private Option<T> $value;\n" + 
             "        private OptionFirstSwitch(Option<T> theValue) { this.$value = theValue; }\n" + 
             "        \n" + 
-            "        public <TARGET> OptionSwitchSome<TARGET, T> none(Function<? super None<T>, TARGET> theAction) {\n" + 
+            "        public <TARGET> OptionSwitchSome<TARGET, T> none$(Function<? super None<T>, TARGET> theAction) {\n" + 
             "            Function<Option<T>, TARGET> $action = null;\n" + 
             "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)$action;\n" + 
             "            Function<Option<T>, TARGET> newAction =\n" + 
@@ -144,14 +145,17 @@ public class GenericSupportTest {
             "            \n" + 
             "            return new OptionSwitchSome<TARGET, T>($value, newAction);\n" + 
             "        }\n" + 
-            "        public <TARGET> OptionSwitchSome<TARGET, T> none(Supplier<TARGET> theSupplier) {\n" + 
+            "        public <TARGET> OptionSwitchSome<TARGET, T> none$(Supplier<TARGET> theSupplier) {\n" + 
             "            return none(d->theSupplier.get());\n" + 
+            "        }\n" + 
+            "        public <TARGET> OptionSwitchSome<TARGET, T> none(TARGET theValue) {\n" + 
+            "            return none(d->theValue);\n" + 
             "        }\n" + 
             "    }\n" + 
             "    public static class OptionSwitchNoneSome<TARGET, T extends Number> extends UnionTypeSwitch<Option<T>, TARGET> {\n" + 
             "        private OptionSwitchNoneSome(Option<T> theValue, Function<Option<T>, TARGET> theAction) { super(theValue, theAction); }\n" + 
             "        \n" + 
-            "        public OptionSwitchSome<TARGET, T> none(Function<? super None<T>, TARGET> theAction) {\n" + 
+            "        public OptionSwitchSome<TARGET, T> none$(Function<? super None<T>, TARGET> theAction) {\n" + 
             "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)$action;\n" + 
             "            Function<Option<T>, TARGET> newAction =\n" + 
             "                ($action != null)\n" + 
@@ -162,14 +166,17 @@ public class GenericSupportTest {
             "            \n" + 
             "            return new OptionSwitchSome<TARGET, T>($value, newAction);\n" + 
             "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> none(Supplier<TARGET> theSupplier) {\n" + 
+            "        public OptionSwitchSome<TARGET, T> none$(Supplier<TARGET> theSupplier) {\n" + 
             "            return none(d->theSupplier.get());\n" + 
+            "        }\n" + 
+            "        public OptionSwitchSome<TARGET, T> none(TARGET theValue) {\n" + 
+            "            return none(d->theValue);\n" + 
             "        }\n" + 
             "    }\n" + 
             "    public static class OptionSwitchSome<TARGET, T extends Number> extends UnionTypeSwitch<Option<T>, TARGET> {\n" + 
             "        private OptionSwitchSome(Option<T> theValue, Function<Option<T>, TARGET> theAction) { super(theValue, theAction); }\n" + 
             "        \n" + 
-            "        public TARGET some(Function<? super Some<T>, TARGET> theAction) {\n" + 
+            "        public TARGET some$(Function<? super Some<T>, TARGET> theAction) {\n" + 
             "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)$action;\n" + 
             "            Function<Option<T>, TARGET> newAction =\n" + 
             "                ($action != null)\n" + 
@@ -180,11 +187,14 @@ public class GenericSupportTest {
             "            \n" + 
             "            return newAction.apply($value);\n" + 
             "        }\n" + 
-            "        public TARGET some(Supplier<TARGET> theSupplier) {\n" + 
+            "        public TARGET some$(Supplier<TARGET> theSupplier) {\n" + 
             "            return some(d->theSupplier.get());\n" + 
             "        }\n" + 
+            "        public TARGET some(TARGET theValue) {\n" + 
+            "            return some(d->theValue);\n" + 
+            "        }\n" + 
             "        \n" + 
-            "        public OptionSwitchSome<TARGET, T> some(Predicate<Some<T>> check, Function<? super Some<T>, TARGET> theAction) {\n" + 
+            "        public OptionSwitchSome<TARGET, T> some$(Predicate<Some<T>> check, Function<? super Some<T>, TARGET> theAction) {\n" + 
             "            Function<Option<T>, TARGET> oldAction = (Function<Option<T>, TARGET>)$action;\n" + 
             "            Function<Option<T>, TARGET> newAction =\n" + 
             "                ($action != null)\n" + 
@@ -195,22 +205,31 @@ public class GenericSupportTest {
             "            \n" + 
             "            return new OptionSwitchSome<TARGET, T>($value, newAction);\n" + 
             "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> some(Predicate<Some<T>> check, Supplier<TARGET> theSupplier) {\n" + 
+            "        public OptionSwitchSome<TARGET, T> some$(Predicate<Some<T>> check, Supplier<TARGET> theSupplier) {\n" + 
             "            return some(check, d->theSupplier.get());\n" + 
             "        }\n" + 
+            "        public OptionSwitchSome<TARGET, T> some(Predicate<Some<T>> check, TARGET theValue) {\n" + 
+            "            return some(check, d->theValue);\n" + 
+            "        }\n" + 
             "        \n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(T aValue, Function<Some<T>, TARGET> theAction) {\n" + 
+            "        public OptionSwitchSome<TARGET, T> someOf$(T aValue, Function<Some<T>, TARGET> theAction) {\n" + 
             "            return some(some -> checkEquals(aValue, some.value), theAction);\n" + 
             "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(T aValue, Supplier<TARGET> theSupplier) {\n" + 
+            "        public OptionSwitchSome<TARGET, T> someOf$(T aValue, Supplier<TARGET> theSupplier) {\n" + 
             "            return some(some -> checkEquals(aValue, some.value), theSupplier);\n" + 
             "        }\n" + 
+            "        public OptionSwitchSome<TARGET, T> someOf(T aValue, TARGET theValue) {\n" + 
+            "            return some(some -> checkEquals(aValue, some.value), theValue);\n" + 
+            "        }\n" + 
             "        \n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, Function<Some<T>, TARGET> theAction) {\n" + 
+            "        public OptionSwitchSome<TARGET, T> someOf$(Predicate<T> valueCheck, Function<Some<T>, TARGET> theAction) {\n" + 
             "            return some(some -> valueCheck.test(some.value), theAction);\n" + 
             "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, Supplier<TARGET> theSupplier) {\n" + 
+            "        public OptionSwitchSome<TARGET, T> someOf$(Predicate<T> valueCheck, Supplier<TARGET> theSupplier) {\n" + 
             "            return some(some -> valueCheck.test(some.value), theSupplier);\n" + 
+            "        }\n" + 
+            "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, TARGET theValue) {\n" + 
+            "            return some(some -> valueCheck.test(some.value), theValue);\n" + 
             "        }\n" + 
             "    }\n" + 
             "    \n" + 

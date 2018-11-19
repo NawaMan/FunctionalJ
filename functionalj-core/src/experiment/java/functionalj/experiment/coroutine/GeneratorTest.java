@@ -4,7 +4,6 @@ import static functionalj.annotations.uniontype.UnionTypes.Switch;
 import static functionalj.experiment.coroutine.GeneratorEntry.Last;
 import static functionalj.experiment.coroutine.GeneratorEntry.Next;
 import static functionalj.experiment.coroutine.GeneratorFinish.Stop;
-import static functionalj.experiment.coroutine.GeneratorFinish.UseValue;
 import static functionalj.experiment.coroutine.GeneratorTest.Generator.e;
 import static org.junit.Assert.assertEquals;
 
