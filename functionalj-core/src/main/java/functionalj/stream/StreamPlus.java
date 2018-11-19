@@ -394,7 +394,7 @@ public interface StreamPlus<DATA>
     
     @SuppressWarnings("unchecked")
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-                Function<? super DATA, ?  extends KEY>  keyMapper,
+                Function<? super DATA, ? extends KEY>  keyMapper,
                 Function<? super DATA, ? extends VALUE> valueMapper) {
         val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper));
         return (FuncMap<KEY, VALUE>) ImmutableMap.of(theMap);
