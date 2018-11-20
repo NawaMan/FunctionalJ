@@ -1,2 +1,2 @@
-functionalj.annotations.record.RecordAnnotationProcessor
+functionalj.annotations.struct.StructAnnotationProcessor
 functionalj.annotations.sealed.SealedClassAnnotationProcessor
