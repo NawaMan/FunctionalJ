@@ -51,7 +51,7 @@ public class GenerateParentListChildTest {
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
-                "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IPostConstruct;\n" + 
                 "import functionalj.annotations.IStruct;\n" + 
                 "import functionalj.annotations.struct.generator.Getter;\n" + 
                 "import functionalj.annotations.struct.generator.Type;\n" + 
@@ -83,6 +83,7 @@ public class GenerateParentListChildTest {
                 "    public Parent(List<String> names, List<Child> children) {\n" + 
                 "        this.names = ImmutableList.from(names);\n" + 
                 "        this.children = ImmutableList.from(children);\n" + 
+                "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public List<String> names() {\n" + 
@@ -92,39 +93,34 @@ public class GenerateParentListChildTest {
                 "        return children;\n" + 
                 "    }\n" + 
                 "    public Parent withNames(String ... names) {\n" + 
-                "        return postReConstruct(new Parent(java.util.Arrays.asList(names), children));\n" + 
+                "        return new Parent(java.util.Arrays.asList(names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withNames(List<String> names) {\n" + 
-                "        return postReConstruct(new Parent(names, children));\n" + 
+                "        return new Parent(names, children);\n" + 
                 "    }\n" + 
                 "    public Parent withNames(Supplier<List<String>> names) {\n" + 
-                "        return postReConstruct(new Parent(names.get(), children));\n" + 
+                "        return new Parent(names.get(), children);\n" + 
                 "    }\n" + 
                 "    public Parent withNames(Function<List<String>, List<String>> names) {\n" + 
-                "        return postReConstruct(new Parent(names.apply(this.names), children));\n" + 
+                "        return new Parent(names.apply(this.names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withNames(BiFunction<Parent, List<String>, List<String>> names) {\n" + 
-                "        return postReConstruct(new Parent(names.apply(this, this.names), children));\n" + 
+                "        return new Parent(names.apply(this, this.names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(Child ... children) {\n" + 
-                "        return postReConstruct(new Parent(names, java.util.Arrays.asList(children)));\n" + 
+                "        return new Parent(names, java.util.Arrays.asList(children));\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(List<Child> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children));\n" + 
+                "        return new Parent(names, children);\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(Supplier<List<Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children.get()));\n" + 
+                "        return new Parent(names, children.get());\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(Function<List<Child>, List<Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children.apply(this.children)));\n" + 
+                "        return new Parent(names, children.apply(this.children));\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(BiFunction<Parent, List<Child>, List<Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(names, children.apply(this, this.children)));\n" + 
-                "    }\n" + 
-                "    private static Parent postReConstruct(Parent object) {\n" + 
-                "        if (object instanceof IPostReConstruct)\n" + 
-                "            ((IPostReConstruct)object).postReConstruct();\n" + 
-                "        return object;\n" + 
+                "        return new Parent(names, children.apply(this, this.children));\n" + 
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 

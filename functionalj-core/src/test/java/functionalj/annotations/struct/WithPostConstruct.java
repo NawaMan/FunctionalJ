@@ -9,29 +9,29 @@ import org.junit.Test;
 
 import functionalj.annotations.Struct;
 import functionalj.annotations.struct.SimpleWithPostReConstruct;
-import functionalj.annotations.IPostReConstruct;
+import functionalj.annotations.IPostConstruct;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class WithPostReConstruct {
+public class WithPostConstruct {
     
     private static List<String> logs = new ArrayList<>();
     
     @Struct(name="SimpleWithPostReConstruct")
-    public static interface SimpleDOWithPostReConstruct extends IPostReConstruct {
+    public static interface SimpleDOWithPostReConstruct extends IPostConstruct {
         public String name();
         
-        public default void postReConstruct() {
-            logs.add("Hello!");
+        public default void postConstruct() {
+            logs.add("Hello: " + name());
         }
     }
     
     @Test
     public void testPostConstruct_runAfterWith() {
         val object = new SimpleWithPostReConstruct("Obj1");
-        assertEquals("[]", logs.toString());
+        assertEquals("[Hello: Obj1]", logs.toString());
         
         object.withName("Object1");
-        assertEquals("[Hello!]", logs.toString());
+        assertEquals("[Hello: Obj1, Hello: Object1]", logs.toString());
     }
 }

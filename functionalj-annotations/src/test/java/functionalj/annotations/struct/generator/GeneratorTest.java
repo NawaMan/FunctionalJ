@@ -60,7 +60,7 @@ public class GeneratorTest {
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
-                "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IPostConstruct;\n" + 
                 "import functionalj.annotations.IStruct;\n" + 
                 "import functionalj.annotations.struct.generator.Getter;\n" + 
                 "import functionalj.annotations.struct.generator.Type;\n" + 
@@ -90,6 +90,7 @@ public class GeneratorTest {
                 "        this.anint = anint;\n" + 
                 "        this.anbool = anbool;\n" + 
                 "        this.anstring = anstring;\n" + 
+                "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public int anint() {\n" + 
@@ -102,45 +103,40 @@ public class GeneratorTest {
                 "        return anstring;\n" + 
                 "    }\n" + 
                 "    public Car withAnint(int anint) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool, anstring));\n" + 
+                "        return new Car(anint, anbool, anstring);\n" + 
                 "    }\n" + 
                 "    public Car withAnint(Supplier<Integer> anint) {\n" + 
-                "        return postReConstruct(new Car(anint.get(), anbool, anstring));\n" + 
+                "        return new Car(anint.get(), anbool, anstring);\n" + 
                 "    }\n" + 
                 "    public Car withAnint(Function<Integer, Integer> anint) {\n" + 
-                "        return postReConstruct(new Car(anint.apply(this.anint), anbool, anstring));\n" + 
+                "        return new Car(anint.apply(this.anint), anbool, anstring);\n" + 
                 "    }\n" + 
                 "    public Car withAnint(BiFunction<Car, Integer, Integer> anint) {\n" + 
-                "        return postReConstruct(new Car(anint.apply(this, this.anint), anbool, anstring));\n" + 
+                "        return new Car(anint.apply(this, this.anint), anbool, anstring);\n" + 
                 "    }\n" + 
                 "    public Car withAnbool(boolean anbool) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool, anstring));\n" + 
+                "        return new Car(anint, anbool, anstring);\n" + 
                 "    }\n" + 
                 "    public Car withAnbool(Supplier<Boolean> anbool) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool.get(), anstring));\n" + 
+                "        return new Car(anint, anbool.get(), anstring);\n" + 
                 "    }\n" + 
                 "    public Car withAnbool(Function<Boolean, Boolean> anbool) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool.apply(this.anbool), anstring));\n" + 
+                "        return new Car(anint, anbool.apply(this.anbool), anstring);\n" + 
                 "    }\n" + 
                 "    public Car withAnbool(BiFunction<Car, Boolean, Boolean> anbool) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool.apply(this, this.anbool), anstring));\n" + 
+                "        return new Car(anint, anbool.apply(this, this.anbool), anstring);\n" + 
                 "    }\n" + 
                 "    public Car withAnstring(String anstring) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool, anstring));\n" + 
+                "        return new Car(anint, anbool, anstring);\n" + 
                 "    }\n" + 
                 "    public Car withAnstring(Supplier<String> anstring) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool, anstring.get()));\n" + 
+                "        return new Car(anint, anbool, anstring.get());\n" + 
                 "    }\n" + 
                 "    public Car withAnstring(Function<String, String> anstring) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool, anstring.apply(this.anstring)));\n" + 
+                "        return new Car(anint, anbool, anstring.apply(this.anstring));\n" + 
                 "    }\n" + 
                 "    public Car withAnstring(BiFunction<Car, String, String> anstring) {\n" + 
-                "        return postReConstruct(new Car(anint, anbool, anstring.apply(this, this.anstring)));\n" + 
-                "    }\n" + 
-                "    private static Car postReConstruct(Car object) {\n" + 
-                "        if (object instanceof IPostReConstruct)\n" + 
-                "            ((IPostReConstruct)object).postReConstruct();\n" + 
-                "        return object;\n" + 
+                "        return new Car(anint, anbool, anstring.apply(this, this.anstring));\n" + 
                 "    }\n" + 
                 "    public static Car fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 

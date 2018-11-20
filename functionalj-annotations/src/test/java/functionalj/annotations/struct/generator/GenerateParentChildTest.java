@@ -44,7 +44,7 @@ public class GenerateParentChildTest {
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
-                "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IPostConstruct;\n" + 
                 "import functionalj.annotations.IStruct;\n" + 
                 "import functionalj.annotations.struct.generator.Getter;\n" + 
                 "import functionalj.annotations.struct.generator.Type;\n" + 
@@ -69,27 +69,23 @@ public class GenerateParentChildTest {
                 "    }\n" + 
                 "    public Parent(Child child) {\n" + 
                 "        this.child = child;\n" + 
+                "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public Child child() {\n" + 
                 "        return child;\n" + 
                 "    }\n" + 
                 "    public Parent withChild(Child child) {\n" + 
-                "        return postReConstruct(new Parent(child));\n" + 
+                "        return new Parent(child);\n" + 
                 "    }\n" + 
                 "    public Parent withChild(Supplier<Child> child) {\n" + 
-                "        return postReConstruct(new Parent(child.get()));\n" + 
+                "        return new Parent(child.get());\n" + 
                 "    }\n" + 
                 "    public Parent withChild(Function<Child, Child> child) {\n" + 
-                "        return postReConstruct(new Parent(child.apply(this.child)));\n" + 
+                "        return new Parent(child.apply(this.child));\n" + 
                 "    }\n" + 
                 "    public Parent withChild(BiFunction<Parent, Child, Child> child) {\n" + 
-                "        return postReConstruct(new Parent(child.apply(this, this.child)));\n" + 
-                "    }\n" + 
-                "    private static Parent postReConstruct(Parent object) {\n" + 
-                "        if (object instanceof IPostReConstruct)\n" + 
-                "            ((IPostReConstruct)object).postReConstruct();\n" + 
-                "        return object;\n" + 
+                "        return new Parent(child.apply(this, this.child));\n" + 
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 

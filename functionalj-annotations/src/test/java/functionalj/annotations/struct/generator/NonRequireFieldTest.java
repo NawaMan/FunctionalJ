@@ -45,7 +45,7 @@ public class NonRequireFieldTest {
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
-                "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IPostConstruct;\n" + 
                 "import functionalj.annotations.IStruct;\n" + 
                 "import functionalj.annotations.struct.generator.Getter;\n" + 
                 "import functionalj.annotations.struct.generator.Type;\n" + 
@@ -79,6 +79,7 @@ public class NonRequireFieldTest {
                 "        this.c=null;\n" + 
                 "        this.d=d;\n" + 
                 "        this.e=null;\n" + 
+                "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    public Data(int a, boolean b, String c, String d, String e) {\n" + 
                 "        this.a = a;\n" + 
@@ -86,6 +87,7 @@ public class NonRequireFieldTest {
                 "        this.c = c;\n" + 
                 "        this.d = d;\n" + 
                 "        this.e = e;\n" + 
+                "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public int a() {\n" + 
@@ -104,69 +106,64 @@ public class NonRequireFieldTest {
                 "        return e;\n" + 
                 "    }\n" + 
                 "    public Data withA(int a) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d, e));\n" + 
+                "        return new Data(a, b, c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withA(Supplier<Integer> a) {\n" + 
-                "        return postReConstruct(new Data(a.get(), b, c, d, e));\n" + 
+                "        return new Data(a.get(), b, c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withA(Function<Integer, Integer> a) {\n" + 
-                "        return postReConstruct(new Data(a.apply(this.a), b, c, d, e));\n" + 
+                "        return new Data(a.apply(this.a), b, c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withA(BiFunction<Data, Integer, Integer> a) {\n" + 
-                "        return postReConstruct(new Data(a.apply(this, this.a), b, c, d, e));\n" + 
+                "        return new Data(a.apply(this, this.a), b, c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withB(boolean b) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d, e));\n" + 
+                "        return new Data(a, b, c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withB(Supplier<Boolean> b) {\n" + 
-                "        return postReConstruct(new Data(a, b.get(), c, d, e));\n" + 
+                "        return new Data(a, b.get(), c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withB(Function<Boolean, Boolean> b) {\n" + 
-                "        return postReConstruct(new Data(a, b.apply(this.b), c, d, e));\n" + 
+                "        return new Data(a, b.apply(this.b), c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withB(BiFunction<Data, Boolean, Boolean> b) {\n" + 
-                "        return postReConstruct(new Data(a, b.apply(this, this.b), c, d, e));\n" + 
+                "        return new Data(a, b.apply(this, this.b), c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withC(String c) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d, e));\n" + 
+                "        return new Data(a, b, c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withC(Supplier<String> c) {\n" + 
-                "        return postReConstruct(new Data(a, b, c.get(), d, e));\n" + 
+                "        return new Data(a, b, c.get(), d, e);\n" + 
                 "    }\n" + 
                 "    public Data withC(Function<String, String> c) {\n" + 
-                "        return postReConstruct(new Data(a, b, c.apply(this.c), d, e));\n" + 
+                "        return new Data(a, b, c.apply(this.c), d, e);\n" + 
                 "    }\n" + 
                 "    public Data withC(BiFunction<Data, String, String> c) {\n" + 
-                "        return postReConstruct(new Data(a, b, c.apply(this, this.c), d, e));\n" + 
+                "        return new Data(a, b, c.apply(this, this.c), d, e);\n" + 
                 "    }\n" + 
                 "    public Data withD(String d) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d, e));\n" + 
+                "        return new Data(a, b, c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withD(Supplier<String> d) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d.get(), e));\n" + 
+                "        return new Data(a, b, c, d.get(), e);\n" + 
                 "    }\n" + 
                 "    public Data withD(Function<String, String> d) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d.apply(this.d), e));\n" + 
+                "        return new Data(a, b, c, d.apply(this.d), e);\n" + 
                 "    }\n" + 
                 "    public Data withD(BiFunction<Data, String, String> d) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d.apply(this, this.d), e));\n" + 
+                "        return new Data(a, b, c, d.apply(this, this.d), e);\n" + 
                 "    }\n" + 
                 "    public Data withE(String e) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d, e));\n" + 
+                "        return new Data(a, b, c, d, e);\n" + 
                 "    }\n" + 
                 "    public Data withE(Supplier<String> e) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d, e.get()));\n" + 
+                "        return new Data(a, b, c, d, e.get());\n" + 
                 "    }\n" + 
                 "    public Data withE(Function<String, String> e) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d, e.apply(this.e)));\n" + 
+                "        return new Data(a, b, c, d, e.apply(this.e));\n" + 
                 "    }\n" + 
                 "    public Data withE(BiFunction<Data, String, String> e) {\n" + 
-                "        return postReConstruct(new Data(a, b, c, d, e.apply(this, this.e)));\n" + 
-                "    }\n" + 
-                "    private static Data postReConstruct(Data object) {\n" + 
-                "        if (object instanceof IPostReConstruct)\n" + 
-                "            ((IPostReConstruct)object).postReConstruct();\n" + 
-                "        return object;\n" + 
+                "        return new Data(a, b, c, d, e.apply(this, this.e));\n" + 
                 "    }\n" + 
                 "    public static Data fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 

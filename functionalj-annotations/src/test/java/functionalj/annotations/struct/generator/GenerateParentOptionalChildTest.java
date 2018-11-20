@@ -51,7 +51,7 @@ public class GenerateParentOptionalChildTest {
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
-                "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IPostConstruct;\n" + 
                 "import functionalj.annotations.IStruct;\n" + 
                 "import functionalj.annotations.struct.generator.Getter;\n" + 
                 "import functionalj.annotations.struct.generator.Type;\n" + 
@@ -81,6 +81,7 @@ public class GenerateParentOptionalChildTest {
                 "    public Parent(Optional<String> optionalName, Optional<Child> optionalChild) {\n" + 
                 "        this.optionalName = optionalName;\n" + 
                 "        this.optionalChild = optionalChild;\n" + 
+                "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public Optional<String> optionalName() {\n" + 
@@ -90,33 +91,28 @@ public class GenerateParentOptionalChildTest {
                 "        return optionalChild;\n" + 
                 "    }\n" + 
                 "    public Parent withOptionalName(Optional<String> optionalName) {\n" + 
-                "        return postReConstruct(new Parent(optionalName, optionalChild));\n" + 
+                "        return new Parent(optionalName, optionalChild);\n" + 
                 "    }\n" + 
                 "    public Parent withOptionalName(Supplier<Optional<String>> optionalName) {\n" + 
-                "        return postReConstruct(new Parent(optionalName.get(), optionalChild));\n" + 
+                "        return new Parent(optionalName.get(), optionalChild);\n" + 
                 "    }\n" + 
                 "    public Parent withOptionalName(Function<Optional<String>, Optional<String>> optionalName) {\n" + 
-                "        return postReConstruct(new Parent(optionalName.apply(this.optionalName), optionalChild));\n" + 
+                "        return new Parent(optionalName.apply(this.optionalName), optionalChild);\n" + 
                 "    }\n" + 
                 "    public Parent withOptionalName(BiFunction<Parent, Optional<String>, Optional<String>> optionalName) {\n" + 
-                "        return postReConstruct(new Parent(optionalName.apply(this, this.optionalName), optionalChild));\n" + 
+                "        return new Parent(optionalName.apply(this, this.optionalName), optionalChild);\n" + 
                 "    }\n" + 
                 "    public Parent withOptionalChild(Optional<Child> optionalChild) {\n" + 
-                "        return postReConstruct(new Parent(optionalName, optionalChild));\n" + 
+                "        return new Parent(optionalName, optionalChild);\n" + 
                 "    }\n" + 
                 "    public Parent withOptionalChild(Supplier<Optional<Child>> optionalChild) {\n" + 
-                "        return postReConstruct(new Parent(optionalName, optionalChild.get()));\n" + 
+                "        return new Parent(optionalName, optionalChild.get());\n" + 
                 "    }\n" + 
                 "    public Parent withOptionalChild(Function<Optional<Child>, Optional<Child>> optionalChild) {\n" + 
-                "        return postReConstruct(new Parent(optionalName, optionalChild.apply(this.optionalChild)));\n" + 
+                "        return new Parent(optionalName, optionalChild.apply(this.optionalChild));\n" + 
                 "    }\n" + 
                 "    public Parent withOptionalChild(BiFunction<Parent, Optional<Child>, Optional<Child>> optionalChild) {\n" + 
-                "        return postReConstruct(new Parent(optionalName, optionalChild.apply(this, this.optionalChild)));\n" + 
-                "    }\n" + 
-                "    private static Parent postReConstruct(Parent object) {\n" + 
-                "        if (object instanceof IPostReConstruct)\n" + 
-                "            ((IPostReConstruct)object).postReConstruct();\n" + 
-                "        return object;\n" + 
+                "        return new Parent(optionalName, optionalChild.apply(this, this.optionalChild));\n" + 
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 

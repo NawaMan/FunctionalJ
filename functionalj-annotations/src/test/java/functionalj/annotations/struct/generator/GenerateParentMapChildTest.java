@@ -48,7 +48,7 @@ public class GenerateParentMapChildTest {
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
-                "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IPostConstruct;\n" + 
                 "import functionalj.annotations.IStruct;\n" + 
                 "import functionalj.annotations.struct.generator.Getter;\n" + 
                 "import functionalj.annotations.struct.generator.Type;\n" + 
@@ -76,27 +76,23 @@ public class GenerateParentMapChildTest {
                 "    }\n" + 
                 "    public Parent(Map<String, Child> children) {\n" + 
                 "        this.children = ImmutableMap.from(children);\n" + 
+                "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public Map<String, Child> children() {\n" + 
                 "        return children;\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(Map<String, Child> children) {\n" + 
-                "        return postReConstruct(new Parent(children));\n" + 
+                "        return new Parent(children);\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(Supplier<Map<String, Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(children.get()));\n" + 
+                "        return new Parent(children.get());\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(Function<Map<String, Child>, Map<String, Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(children.apply(this.children)));\n" + 
+                "        return new Parent(children.apply(this.children));\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(BiFunction<Parent, Map<String, Child>, Map<String, Child>> children) {\n" + 
-                "        return postReConstruct(new Parent(children.apply(this, this.children)));\n" + 
-                "    }\n" + 
-                "    private static Parent postReConstruct(Parent object) {\n" + 
-                "        if (object instanceof IPostReConstruct)\n" + 
-                "            ((IPostReConstruct)object).postReConstruct();\n" + 
-                "        return object;\n" + 
+                "        return new Parent(children.apply(this, this.children));\n" + 
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 

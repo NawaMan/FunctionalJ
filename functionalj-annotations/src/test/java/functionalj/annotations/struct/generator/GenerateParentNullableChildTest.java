@@ -51,7 +51,7 @@ public class GenerateParentNullableChildTest {
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
-                "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IPostConstruct;\n" + 
                 "import functionalj.annotations.IStruct;\n" + 
                 "import functionalj.annotations.struct.generator.Getter;\n" + 
                 "import functionalj.annotations.struct.generator.Type;\n" + 
@@ -81,6 +81,7 @@ public class GenerateParentNullableChildTest {
                 "    public Parent(Nullable<String> nullableName, Nullable<Child> nullableChild) {\n" + 
                 "        this.nullableName = Nullable.of((nullableName == null) ? null : nullableName.get());\n" + 
                 "        this.nullableChild = Nullable.of((nullableChild == null) ? null : nullableChild.get());\n" + 
+                "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public Nullable<String> nullableName() {\n" + 
@@ -90,33 +91,28 @@ public class GenerateParentNullableChildTest {
                 "        return nullableChild;\n" + 
                 "    }\n" + 
                 "    public Parent withNullableName(Nullable<String> nullableName) {\n" + 
-                "        return postReConstruct(new Parent(nullableName, nullableChild));\n" + 
+                "        return new Parent(nullableName, nullableChild);\n" + 
                 "    }\n" + 
                 "    public Parent withNullableName(Supplier<Nullable<String>> nullableName) {\n" + 
-                "        return postReConstruct(new Parent(nullableName.get(), nullableChild));\n" + 
+                "        return new Parent(nullableName.get(), nullableChild);\n" + 
                 "    }\n" + 
                 "    public Parent withNullableName(Function<Nullable<String>, Nullable<String>> nullableName) {\n" + 
-                "        return postReConstruct(new Parent(nullableName.apply(this.nullableName), nullableChild));\n" + 
+                "        return new Parent(nullableName.apply(this.nullableName), nullableChild);\n" + 
                 "    }\n" + 
                 "    public Parent withNullableName(BiFunction<Parent, Nullable<String>, Nullable<String>> nullableName) {\n" + 
-                "        return postReConstruct(new Parent(nullableName.apply(this, this.nullableName), nullableChild));\n" + 
+                "        return new Parent(nullableName.apply(this, this.nullableName), nullableChild);\n" + 
                 "    }\n" + 
                 "    public Parent withNullableChild(Nullable<Child> nullableChild) {\n" + 
-                "        return postReConstruct(new Parent(nullableName, nullableChild));\n" + 
+                "        return new Parent(nullableName, nullableChild);\n" + 
                 "    }\n" + 
                 "    public Parent withNullableChild(Supplier<Nullable<Child>> nullableChild) {\n" + 
-                "        return postReConstruct(new Parent(nullableName, nullableChild.get()));\n" + 
+                "        return new Parent(nullableName, nullableChild.get());\n" + 
                 "    }\n" + 
                 "    public Parent withNullableChild(Function<Nullable<Child>, Nullable<Child>> nullableChild) {\n" + 
-                "        return postReConstruct(new Parent(nullableName, nullableChild.apply(this.nullableChild)));\n" + 
+                "        return new Parent(nullableName, nullableChild.apply(this.nullableChild));\n" + 
                 "    }\n" + 
                 "    public Parent withNullableChild(BiFunction<Parent, Nullable<Child>, Nullable<Child>> nullableChild) {\n" + 
-                "        return postReConstruct(new Parent(nullableName, nullableChild.apply(this, this.nullableChild)));\n" + 
-                "    }\n" + 
-                "    private static Parent postReConstruct(Parent object) {\n" + 
-                "        if (object instanceof IPostReConstruct)\n" + 
-                "            ((IPostReConstruct)object).postReConstruct();\n" + 
-                "        return object;\n" + 
+                "        return new Parent(nullableName, nullableChild.apply(this, this.nullableChild));\n" + 
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 

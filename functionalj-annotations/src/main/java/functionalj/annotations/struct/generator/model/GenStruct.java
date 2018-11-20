@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import functionalj.annotations.IPostReConstruct;
+import functionalj.annotations.IPostConstruct;
 import functionalj.annotations.struct.Core;
 import functionalj.annotations.struct.generator.ILines;
 import functionalj.annotations.struct.generator.StructSpec;
@@ -51,7 +51,7 @@ public class GenStruct implements ILines {
     );
     
     private static final List<Type> alwaysImports = asList(
-            Type.of(IPostReConstruct.class),
+            Type.of(IPostConstruct.class),
             Core.ObjectLensImpl.type(),
             Core.LensSpec.type()
     );
