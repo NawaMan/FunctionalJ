@@ -28,8 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
+import functionalj.annotations.StructConversionException;
 import functionalj.annotations.struct.Core;
 import lombok.Builder;
 import lombok.Value;
@@ -481,9 +483,46 @@ public class Type implements IRequireTypes {
                 toStringLiteral(packageName),
                 toListCode     (generics, Type::toCode)
         );
-        return "new functionalj.annotations.struct.generator.Type("
+        return "new Type("
                 + params.stream().collect(joining(", "))
                 + ")";
+    }
+    
+    private static ConcurrentHashMap<Type, Object> classCache = new ConcurrentHashMap<>();
+    
+    @SuppressWarnings("unchecked")
+    public <T> Class<T> toClass()  {
+        val result = classCache.computeIfAbsent(this, t -> {
+            if (Type.primitiveTypes.containsValue(t)) {
+                if (Type.BYT.equals(t))
+                    return byte.class;
+                if (Type.SHRT.equals(t))
+                    return short.class;
+                if (Type.INT.equals(t))
+                    return int.class;
+                if (Type.LONG.equals(t))
+                    return long.class;
+                if (Type.FLT.equals(t))
+                    return float.class;
+                if (Type.DBL.equals(t))
+                    return double.class;
+                if (Type.CHR.equals(t))
+                    return char.class;
+                if (Type.BOOL.equals(t))
+                    return boolean.class;
+            }
+            
+            try {
+                val fullName = t.fullName();
+                return Class.forName(fullName);
+            } catch (Exception e) {
+                return e;
+            }
+        });
+        if (result instanceof Exception)
+            throw new StructConversionException((Exception)result);
+        
+        return (Class<T>)result;
     }
     
 }

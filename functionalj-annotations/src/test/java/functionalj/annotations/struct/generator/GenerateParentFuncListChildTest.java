@@ -52,6 +52,9 @@ public class GenerateParentFuncListChildTest {
                 "package me.test;\n" + 
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IStruct;\n" + 
+                "import functionalj.annotations.struct.generator.Getter;\n" + 
+                "import functionalj.annotations.struct.generator.Type;\n" + 
                 "import functionalj.lens.core.LensSpec;\n" + 
                 "import functionalj.lens.lenses.FuncListLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
@@ -67,7 +70,7 @@ public class GenerateParentFuncListChildTest {
                 "import me.test.Child;\n" + 
                 "import me.test.Child.ChildLens;\n" + 
                 "\n" + 
-                "public class Parent implements Definitions.ParentDef {\n" + 
+                "public class Parent implements Definitions.ParentDef,IStruct {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
                 "    private final FuncList<String> names;\n" + 
@@ -123,15 +126,25 @@ public class GenerateParentFuncListChildTest {
                 "        return object;\n" + 
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
+                "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        return new Parent(\n" + 
-                "                    (FuncList<String>)map.get(\"names\"),\n" + 
-                "                    (FuncList<Child>)map.get(\"children\")\n" + 
+                "                    (FuncList<String>)IStruct.fromMapValue(map.get(\"names\"), $schema.get(\"names\")),\n" + 
+                "                    (FuncList<Child>)IStruct.fromMapValue(map.get(\"children\"), $schema.get(\"children\"))\n" + 
                 "                );\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
-                "        java.util.Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"names\",  (Object)names);\n" + 
-                "        map.put(\"children\",  (Object)children);\n" + 
+                "        Map<String, Object> map = new HashMap<>();\n" + 
+                "        map.put(\"names\", IStruct.toMapValueObject(names));\n" + 
+                "        map.put(\"children\", IStruct.toMapValueObject(children));\n" + 
+                "        return map;\n" + 
+                "    }\n" + 
+                "    public Map<String, Getter> getSchema() {\n" + 
+                "        return getStructSchema();\n" + 
+                "    }\n" + 
+                "    public static Map<String, Getter> getStructSchema() {\n" + 
+                "        Map<String, Getter> map = new HashMap<>();\n" + 
+                "        map.put(\"names\", new functionalj.annotations.struct.generator.Getter(\"names\", new Type(null, \"FuncList\", \"functionalj.list\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"children\", new functionalj.annotations.struct.generator.Getter(\"children\", new Type(null, \"FuncList\", \"functionalj.list\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.METHOD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Require {
+public @interface DefaultTo {
     
-    public boolean value() default false;
+    public DefaultValue value() default DefaultValue.UNSPECIFIED;
     
 }

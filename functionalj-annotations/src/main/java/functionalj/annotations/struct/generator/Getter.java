@@ -19,6 +19,7 @@ import static functionalj.annotations.sealed.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
+import functionalj.annotations.DefaultValue;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Wither;
@@ -34,7 +35,7 @@ public class Getter {
     
     private String name;
     private Type type;
-    private boolean isRequired;
+    private DefaultValue defaultTo;
     
     /**
      * Create a getter for the name and type.
@@ -43,7 +44,7 @@ public class Getter {
      * @param type  the getter type.
      */
     public Getter(String name, Type type) {
-        this(name, type, true);
+        this(name, type, null);
     }
     
     /**
@@ -52,17 +53,27 @@ public class Getter {
      * @param name  the getter name.
      * @param type  the getter type.
      */
-    public Getter(String name, Type type, boolean isRequired) {
+    public Getter(String name, Type type, DefaultValue defaultValue) {
         this.name = name;
         this.type = type;
-        this.isRequired = isRequired;
+        this.defaultTo = (defaultValue != null) ? defaultValue : DefaultValue.REQUIRED;
+    }
+    
+    public boolean isRequired() {
+        return defaultTo == DefaultValue.REQUIRED;
+    }
+    
+    public String getDefaultValueCode(String orElse) {
+        if (isRequired())
+            return orElse;
+        return DefaultValue.defaultValueCode(type, defaultTo);
     }
     
     public String toCode() {
         val params = asList(
                 toStringLiteral(name),
                 type.toCode(),
-                "" + isRequired
+                DefaultValue.class.getCanonicalName() + "." + defaultTo
         );
         return "new functionalj.annotations.struct.generator.Getter("
                 + params.stream().collect(joining(", "))

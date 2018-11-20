@@ -1,5 +1,8 @@
 package functionalj.annotations.struct;
 
+import static functionalj.annotations.DefaultValue.EMPTY;
+import static functionalj.annotations.DefaultValue.NULL;
+import static functionalj.annotations.DefaultValue.ZERO;
 import static functionalj.annotations.struct.Car.theCar;
 import static functionalj.annotations.struct.CarForSale.theCarForSale;
 import static functionalj.lens.Access.$I;
@@ -8,26 +11,23 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.annotations.DefaultTo;
 import functionalj.annotations.Struct;
-import functionalj.annotations.struct.Car;
-import functionalj.annotations.struct.CarForSale;
-import functionalj.annotations.struct.Inventory;
-import functionalj.annotations.struct.Price;
-import functionalj.annotations.Require;
 import functionalj.list.FuncList;
 import lombok.val;
 
 public class FromMethodTest {
     
     @Struct(specField="spec")
-    public void Car(String make, int year, @Require(false) String color) { }
+    public void Car(String make, int year, @DefaultTo(NULL) String color) { }
     
     @Struct
     public void Inventory(
-            @Require(false) FuncList<CarForSale> cars) {}
+            @DefaultTo(EMPTY) FuncList<CarForSale> cars) {}
     
     @Struct(specField="spec")
-    public void Price(int price, @Require(false) int discountPercent) { }
+    public void Price(int price, 
+            @DefaultTo(ZERO) int discountPercent) { }
     
     @Struct(specField="spec")
     public void CarForSale(Car car, Price price) { }
@@ -52,8 +52,18 @@ public class FromMethodTest {
         assertEquals("OptionalDouble[30000.0]", "" + newInventory.cars().average(theCarForSale.price.price));
         
         assertEquals(
-                "{car=Car[make: Subaru, year: 2010, color: Silver], price=Price[price: 20000, discountPercent: 0]}",
+                "{car={color=Silver, year=2010, make=Subaru}, price={discountPercent=0, price=20000}}",
                 new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000)).toMap().toString());
+        
+        val orgCfS = new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000));
+        val mapCfS = orgCfS.toMap();
+        val newCfS = CarForSale.fromMap(mapCfS);
+        assertEquals("{car={color=Silver, year=2010, make=Subaru}, price={discountPercent=0, price=20000}}", mapCfS.toString());
+        assertEquals("CarForSale[car: Car[make: Subaru, year: 2010, color: Silver], price: Price[price: 20000, discountPercent: 0]]", orgCfS.toString());
+        assertEquals("CarForSale[car: Car[make: Subaru, year: 2010, color: Silver], price: Price[price: 20000, discountPercent: 0]]", newCfS.toString());
+        assertEquals(
+                orgCfS.toString(),
+                newCfS.toString());
     }
     
     @Test

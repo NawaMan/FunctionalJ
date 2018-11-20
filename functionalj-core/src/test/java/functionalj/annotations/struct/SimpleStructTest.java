@@ -1,5 +1,6 @@
 package functionalj.annotations.struct;
 
+import static functionalj.annotations.DefaultValue.NULL;
 import static functionalj.annotations.struct.SimpleFromInteface.theSimpleFromInteface;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
@@ -9,8 +10,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import functionalj.annotations.Require;
-import functionalj.annotations.struct.SimpleFromInteface;
+import functionalj.annotations.DefaultTo;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -19,7 +19,7 @@ public class SimpleStructTest {
     @functionalj.annotations.Struct(name="SimpleFromInteface", generateNoArgConstructor=true)
     public static interface SimpleDOInterface {
         
-        @Require(false)
+        @DefaultTo(NULL)
         public String name();
         
         public default String nameUpperCase() {

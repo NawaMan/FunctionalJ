@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import functionalj.annotations.DefaultValue;
 import functionalj.annotations.struct.generator.BuilderClassBuilder;
 import functionalj.annotations.struct.generator.Getter;
 import functionalj.annotations.struct.generator.SourceSpec;
@@ -32,9 +33,9 @@ public class BuilderClassBuilderTest {
     private List<Getter> getters = asList(
             new Getter("a", Type.INT),
             new Getter("b", Type.BOOL),
-            new Getter("c", Type.STRING, false),
+            new Getter("c", Type.STRING, DefaultValue.NULL),
             new Getter("d", Type.STRING),
-            new Getter("e", Type.STRING, false)
+            new Getter("e", Type.STRING, DefaultValue.NULL)
     );
     
     private SourceSpec getSpec() {

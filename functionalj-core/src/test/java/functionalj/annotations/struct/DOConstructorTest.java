@@ -1,13 +1,13 @@
 package functionalj.annotations.struct;
 
+import static functionalj.annotations.DefaultValue.NULL;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 
+import functionalj.annotations.DefaultTo;
 import functionalj.annotations.Struct;
-import functionalj.annotations.struct.DONoAllArgsConstructor;
-import functionalj.annotations.struct.DONoNoArgsConstructor;
-import functionalj.annotations.Require;
 
 @SuppressWarnings("javadoc")
 public class DOConstructorTest {
@@ -33,7 +33,7 @@ public class DOConstructorTest {
         )
     public static interface DONoAllArgsConstructorDef {
         
-        @Require(false)
+        @DefaultTo(NULL)
         public String name();
         
     }

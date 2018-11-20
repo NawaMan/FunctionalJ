@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.annotations.IPostReConstruct;
+import functionalj.annotations.IStruct;
 import functionalj.annotations.struct.generator.model.Accessibility;
 import functionalj.annotations.struct.generator.model.GenClass;
 import functionalj.annotations.struct.generator.model.GenConstructor;
@@ -88,6 +90,9 @@ public class StructBuilder {
                 else implementeds.add(sourceSpec.toType());
             }
         }
+        
+        val istruct = Type.of(IStruct.class);
+        implementeds.add(istruct);
         
         val withMethodName   = (Function<Getter, String>)(utils::withMethodName);
         val ipostReConstruct = Type.of(IPostReConstruct.class).simpleName();
@@ -169,7 +174,7 @@ public class StructBuilder {
         val fromMapBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
-                .map(g -> "            (" + g.getType().simpleNameWithGeneric() + ")map.get(\"" + g.getName() + "\")")
+                .map(g -> "            (" + g.getType().simpleNameWithGeneric() + ")IStruct.fromMapValue(map.get(\"" + g.getName() + "\"), $schema.get(\"" + g.getName() + "\"))")
                 .collect(Collectors.joining(",\n"))
                 .split("\n"));
         val fromMap = new GenMethod(
@@ -180,6 +185,7 @@ public class StructBuilder {
                 "fromMap",
                 asList(new GenParam("map", Type.MAP.withGenerics(asList(Type.STRING, Type.OBJECT)))),
                 ILines.linesOf(
+                    line("Map<String, Getter> $schema = getStructSchema();"),
                     line("return new " + sourceSpec.getTargetType().simpleName() + "("),
                     fromMapBody,
                     line("        );")
@@ -188,7 +194,7 @@ public class StructBuilder {
         val toMapBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
-                .map(g -> "map.put(\"" + g.getName() + "\",  (Object)" + g.getName() + ");")
+                .map(g -> "map.put(\"" + g.getName() + "\", IStruct.toMapValueObject(" + g.getName() + "));")
                 .collect(Collectors.toList()));
         val toMap = new GenMethod(
                 Accessibility.PUBLIC,
@@ -198,18 +204,49 @@ public class StructBuilder {
                 "toMap",
                 emptyList(),
                 ILines.linesOf(
-                    line("java.util.Map<String, Object> map = new HashMap<>();"),
+                    line("Map<String, Object> map = new HashMap<>();"),
                     toMapBody,
                     line("return map;")
                 ),
-                asList(Type.of(HashMap.class)),
+                asList(Type.of(Map.class), Type.of(HashMap.class)),
+                false);
+        
+        val getStructSchemaBody = ILines.line(
+                sourceSpec.getGetters()
+                .stream()
+                .map(g -> "map.put(\"" + g.getName() + "\", " + g.toCode() + ");")
+                .collect(Collectors.toList()));
+        val getStructSchema = new GenMethod(
+                Accessibility.PUBLIC,
+                Scope.STATIC,
+                Modifiability.MODIFIABLE,
+                Type.MAP.withGenerics(asList(Type.STRING, Type.of(Getter.class))),
+                "getStructSchema",
+                emptyList(),
+                ILines.linesOf(
+                    line("Map<String, Getter> map = new HashMap<>();"),
+                    getStructSchemaBody,
+                    line("return map;")
+                ),
+                asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Type.class), Type.of(Getter.class)),
+                false);
+        
+        val getSchema = new GenMethod(
+                Accessibility.PUBLIC,
+                Scope.INSTANCE,
+                Modifiability.MODIFIABLE,
+                Type.MAP.withGenerics(asList(Type.STRING, Type.of(Getter.class))),
+                "getSchema",
+                emptyList(),
+                ILines.linesOf(line("return getStructSchema();")),
+                asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Type.class), Type.of(Getter.class)),
                 false);
         
         val flatMap = Arrays.<Stream<GenMethod>>asList(
                     getterMethods,
                     witherMethods,
                     Stream.of(postReConstructMethod),
-                    Stream.of(fromMap, toMap),
+                    Stream.of(fromMap, toMap, getSchema, getStructSchema),
                     Stream.of(toString, hashCode, equals)
                  );
         val methods = flatMap.stream().flatMap(themAll()).collect(toList());
@@ -264,7 +301,7 @@ public class StructBuilder {
                         .map   (this::getterToGenParam)
                         .collect(toList());
         val assignments = sourceSpec.getGetters().stream()
-                        .map    (getter -> "this." + getter.getName() + "=" + (getter.isRequired() ? getter.getName() : getter.getType().defaultValue()) + ";")
+                        .map    (getter -> "this." + getter.getName() + "=" + getter.getDefaultValueCode(getter.getName()) + ";")
                         .collect(toList());
         return new GenConstructor(PUBLIC, name, params, ILines.line(assignments));
     }

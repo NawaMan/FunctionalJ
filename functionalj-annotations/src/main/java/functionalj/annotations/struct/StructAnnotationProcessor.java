@@ -45,7 +45,8 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import functionalj.annotations.Struct;
-import functionalj.annotations.Require;
+import functionalj.annotations.DefaultTo;
+import functionalj.annotations.DefaultValue;
 import functionalj.annotations.struct.generator.Getter;
 import functionalj.annotations.struct.generator.StructBuilder;
 import functionalj.annotations.struct.generator.SourceSpec;
@@ -168,6 +169,8 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 .filter(method->method.getParameters().isEmpty())
                 .map   (method->createGetterFromMethod(element, method))
                 .collect(toList());
+        if (getters.stream().anyMatch(g -> g == null))
+            return null;
         
         val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
         val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
@@ -245,7 +248,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             final functionalj.annotations.struct.generator.SourceSpec.Configurations configures) {
         if (!configures.generateNoArgConstructor)
             return true;
-        if (getters.stream().noneMatch(g->g.isRequired()))
+        if (getters.stream().noneMatch(g->g.getDefaultTo() != DefaultValue.REQUIRED))
             return true;
         val field = getters.stream().filter(g->g.isRequired()).findFirst().get().getName();
         error(element, "No arg constructor cannot be generate when at least one field is require: "
@@ -254,10 +257,17 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     }
     
     private Getter createGetterFromParameter(Element element, VariableElement p){
-        val name = p.getSimpleName().toString();
-        val type = getType(element, p.asType());
-        val req  = (p.getAnnotation(Require.class) == null) || p.getAnnotation(Require.class).value();
-        val getter = new Getter(name, type, req);
+        val name  = p.getSimpleName().toString();
+        val type  = getType(element, p.asType());
+        val defTo = (p.getAnnotation(DefaultTo.class) == null)
+                ? DefaultValue.REQUIRED
+                : p.getAnnotation(DefaultTo.class).value();
+        val defValue = (DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(type) : defTo;
+        if (!DefaultValue.isSuitable(type, defValue)) {
+            error(element, "Default value is not suitable for the type: " + type.fullName() + " -> DefaultTo " + defTo);
+            return null;
+        }
+        val getter = new Getter(name, type, defValue);
         return getter;
     }
     
@@ -270,7 +280,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         configures.generateLensClass               = struct.generateLensClass();
         configures.generateBuilderClass            = struct.generateBuilderClass();
         configures.publicFields                    = struct.publicFields();
-
+        
         if (!configures.generateNoArgConstructor
          && !configures.generateAllArgConstructor) {
             error(element, "generateNoArgConstructor and generateAllArgConstructor must be be false at the same time.");
@@ -293,8 +303,15 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     private Getter createGetterFromMethod(Element element, ExecutableElement method) {
         val methodName = method.getSimpleName().toString();
         val returnType = getType(element, method.getReturnType());
-        val req        = (method.getAnnotation(Require.class) == null) || method.getAnnotation(Require.class).value();
-        val getter     = new Getter(methodName, returnType, req);
+        val defTo = (element.getAnnotation(DefaultTo.class) == null)
+                ? DefaultValue.REQUIRED
+                : element.getAnnotation(DefaultTo.class).value();
+        val defValue = (DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo;
+        if (!DefaultValue.isSuitable(returnType, defValue)) {
+            error(element, "Default value is not suitable for the type: " + returnType.fullName() + " -> " + defTo);
+            return null;
+        }
+        val getter     = new Getter(methodName, returnType, defValue);
         return getter;
     }
     

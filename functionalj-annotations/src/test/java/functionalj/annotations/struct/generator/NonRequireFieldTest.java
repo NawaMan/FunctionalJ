@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import functionalj.annotations.DefaultValue;
 import functionalj.annotations.struct.generator.Getter;
 import functionalj.annotations.struct.generator.StructBuilder;
 import functionalj.annotations.struct.generator.SourceSpec;
@@ -33,9 +34,9 @@ public class NonRequireFieldTest {
     private List<Getter> getters = asList(
             new Getter("a", Type.INT),
             new Getter("b", Type.BOOL),
-            new Getter("c", Type.STRING, false),
+            new Getter("c", Type.STRING, DefaultValue.NULL),
             new Getter("d", Type.STRING),
-            new Getter("e", Type.STRING, false)
+            new Getter("e", Type.STRING, DefaultValue.NULL)
     );
     
     @Test
@@ -45,6 +46,9 @@ public class NonRequireFieldTest {
                 "package me.test;\n" + 
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IStruct;\n" + 
+                "import functionalj.annotations.struct.generator.Getter;\n" + 
+                "import functionalj.annotations.struct.generator.Type;\n" + 
                 "import functionalj.lens.core.LensSpec;\n" + 
                 "import functionalj.lens.lenses.BooleanLens;\n" + 
                 "import functionalj.lens.lenses.IntegerLens;\n" + 
@@ -57,7 +61,7 @@ public class NonRequireFieldTest {
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
                 "\n" + 
-                "public class Data implements Definitions.DataDef {\n" + 
+                "public class Data implements Definitions.DataDef,IStruct {\n" + 
                 "    \n" + 
                 "    public static final DataLens<Data> theData = new DataLens<>(LensSpec.of(Data.class));\n" + 
                 "    private final int a;\n" + 
@@ -165,21 +169,34 @@ public class NonRequireFieldTest {
                 "        return object;\n" + 
                 "    }\n" + 
                 "    public static Data fromMap(Map<String, Object> map) {\n" + 
+                "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        return new Data(\n" + 
-                "                    (int)map.get(\"a\"),\n" + 
-                "                    (boolean)map.get(\"b\"),\n" + 
-                "                    (String)map.get(\"c\"),\n" + 
-                "                    (String)map.get(\"d\"),\n" + 
-                "                    (String)map.get(\"e\")\n" + 
+                "                    (int)IStruct.fromMapValue(map.get(\"a\"), $schema.get(\"a\")),\n" + 
+                "                    (boolean)IStruct.fromMapValue(map.get(\"b\"), $schema.get(\"b\")),\n" + 
+                "                    (String)IStruct.fromMapValue(map.get(\"c\"), $schema.get(\"c\")),\n" + 
+                "                    (String)IStruct.fromMapValue(map.get(\"d\"), $schema.get(\"d\")),\n" + 
+                "                    (String)IStruct.fromMapValue(map.get(\"e\"), $schema.get(\"e\"))\n" + 
                 "                );\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
-                "        java.util.Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"a\",  (Object)a);\n" + 
-                "        map.put(\"b\",  (Object)b);\n" + 
-                "        map.put(\"c\",  (Object)c);\n" + 
-                "        map.put(\"d\",  (Object)d);\n" + 
-                "        map.put(\"e\",  (Object)e);\n" + 
+                "        Map<String, Object> map = new HashMap<>();\n" + 
+                "        map.put(\"a\", IStruct.toMapValueObject(a));\n" + 
+                "        map.put(\"b\", IStruct.toMapValueObject(b));\n" + 
+                "        map.put(\"c\", IStruct.toMapValueObject(c));\n" + 
+                "        map.put(\"d\", IStruct.toMapValueObject(d));\n" + 
+                "        map.put(\"e\", IStruct.toMapValueObject(e));\n" + 
+                "        return map;\n" + 
+                "    }\n" + 
+                "    public Map<String, Getter> getSchema() {\n" + 
+                "        return getStructSchema();\n" + 
+                "    }\n" + 
+                "    public static Map<String, Getter> getStructSchema() {\n" + 
+                "        Map<String, Getter> map = new HashMap<>();\n" + 
+                "        map.put(\"a\", new functionalj.annotations.struct.generator.Getter(\"a\", new Type(null, \"int\", \"\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"b\", new functionalj.annotations.struct.generator.Getter(\"b\", new Type(null, \"boolean\", \"\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"c\", new functionalj.annotations.struct.generator.Getter(\"c\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.NULL));\n" + 
+                "        map.put(\"d\", new functionalj.annotations.struct.generator.Getter(\"d\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"e\", new functionalj.annotations.struct.generator.Getter(\"e\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.NULL));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

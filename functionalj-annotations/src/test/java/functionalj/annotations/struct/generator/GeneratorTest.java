@@ -61,6 +61,9 @@ public class GeneratorTest {
                 "package me.test;\n" + 
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IStruct;\n" + 
+                "import functionalj.annotations.struct.generator.Getter;\n" + 
+                "import functionalj.annotations.struct.generator.Type;\n" + 
                 "import functionalj.lens.core.LensSpec;\n" + 
                 "import functionalj.lens.lenses.BooleanLens;\n" + 
                 "import functionalj.lens.lenses.IntegerLens;\n" + 
@@ -73,7 +76,7 @@ public class GeneratorTest {
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
                 "\n" + 
-                "public class Car implements Definitions.CarDef {\n" + 
+                "public class Car implements Definitions.CarDef,IStruct {\n" + 
                 "    \n" + 
                 "    public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));\n" + 
                 "    private final int anint;\n" + 
@@ -140,17 +143,28 @@ public class GeneratorTest {
                 "        return object;\n" + 
                 "    }\n" + 
                 "    public static Car fromMap(Map<String, Object> map) {\n" + 
+                "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        return new Car(\n" + 
-                "                    (int)map.get(\"anint\"),\n" + 
-                "                    (boolean)map.get(\"anbool\"),\n" + 
-                "                    (String)map.get(\"anstring\")\n" + 
+                "                    (int)IStruct.fromMapValue(map.get(\"anint\"), $schema.get(\"anint\")),\n" + 
+                "                    (boolean)IStruct.fromMapValue(map.get(\"anbool\"), $schema.get(\"anbool\")),\n" + 
+                "                    (String)IStruct.fromMapValue(map.get(\"anstring\"), $schema.get(\"anstring\"))\n" + 
                 "                );\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
-                "        java.util.Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"anint\",  (Object)anint);\n" + 
-                "        map.put(\"anbool\",  (Object)anbool);\n" + 
-                "        map.put(\"anstring\",  (Object)anstring);\n" + 
+                "        Map<String, Object> map = new HashMap<>();\n" + 
+                "        map.put(\"anint\", IStruct.toMapValueObject(anint));\n" + 
+                "        map.put(\"anbool\", IStruct.toMapValueObject(anbool));\n" + 
+                "        map.put(\"anstring\", IStruct.toMapValueObject(anstring));\n" + 
+                "        return map;\n" + 
+                "    }\n" + 
+                "    public Map<String, Getter> getSchema() {\n" + 
+                "        return getStructSchema();\n" + 
+                "    }\n" + 
+                "    public static Map<String, Getter> getStructSchema() {\n" + 
+                "        Map<String, Getter> map = new HashMap<>();\n" + 
+                "        map.put(\"anint\", new functionalj.annotations.struct.generator.Getter(\"anint\", new Type(null, \"int\", \"\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"anbool\", new functionalj.annotations.struct.generator.Getter(\"anbool\", new Type(null, \"boolean\", \"\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"anstring\", new functionalj.annotations.struct.generator.Getter(\"anstring\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

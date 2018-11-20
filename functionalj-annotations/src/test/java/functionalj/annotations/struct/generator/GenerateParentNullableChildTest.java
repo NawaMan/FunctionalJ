@@ -52,6 +52,9 @@ public class GenerateParentNullableChildTest {
                 "package me.test;\n" + 
                 "\n" + 
                 "import functionalj.annotations.IPostReConstruct;\n" + 
+                "import functionalj.annotations.IStruct;\n" + 
+                "import functionalj.annotations.struct.generator.Getter;\n" + 
+                "import functionalj.annotations.struct.generator.Type;\n" + 
                 "import functionalj.lens.core.LensSpec;\n" + 
                 "import functionalj.lens.lenses.NullableLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
@@ -66,7 +69,7 @@ public class GenerateParentNullableChildTest {
                 "import me.test.Child.ChildLens;\n" + 
                 "import nawaman.nullablej.nullable.Nullable;\n" + 
                 "\n" + 
-                "public class Parent implements Definitions.ParentDef {\n" + 
+                "public class Parent implements Definitions.ParentDef,IStruct {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
                 "    private final Nullable<String> nullableName;\n" + 
@@ -116,15 +119,25 @@ public class GenerateParentNullableChildTest {
                 "        return object;\n" + 
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
+                "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        return new Parent(\n" + 
-                "                    (Nullable<String>)map.get(\"nullableName\"),\n" + 
-                "                    (Nullable<Child>)map.get(\"nullableChild\")\n" + 
+                "                    (Nullable<String>)IStruct.fromMapValue(map.get(\"nullableName\"), $schema.get(\"nullableName\")),\n" + 
+                "                    (Nullable<Child>)IStruct.fromMapValue(map.get(\"nullableChild\"), $schema.get(\"nullableChild\"))\n" + 
                 "                );\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
-                "        java.util.Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"nullableName\",  (Object)nullableName);\n" + 
-                "        map.put(\"nullableChild\",  (Object)nullableChild);\n" + 
+                "        Map<String, Object> map = new HashMap<>();\n" + 
+                "        map.put(\"nullableName\", IStruct.toMapValueObject(nullableName));\n" + 
+                "        map.put(\"nullableChild\", IStruct.toMapValueObject(nullableChild));\n" + 
+                "        return map;\n" + 
+                "    }\n" + 
+                "    public Map<String, Getter> getSchema() {\n" + 
+                "        return getStructSchema();\n" + 
+                "    }\n" + 
+                "    public static Map<String, Getter> getStructSchema() {\n" + 
+                "        Map<String, Getter> map = new HashMap<>();\n" + 
+                "        map.put(\"nullableName\", new functionalj.annotations.struct.generator.Getter(\"nullableName\", new Type(null, \"Nullable\", \"nawaman.nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"nullableChild\", new functionalj.annotations.struct.generator.Getter(\"nullableChild\", new Type(null, \"Nullable\", \"nawaman.nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
