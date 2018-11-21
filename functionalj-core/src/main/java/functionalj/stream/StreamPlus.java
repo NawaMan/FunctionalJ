@@ -346,11 +346,11 @@ public interface StreamPlus<DATA>
         return stream().toArray(generator);
     }
     
-    public default List<DATA> toList() {
+    public default List<DATA> toJavaList() {
         return stream().collect(Collectors.toList());
     }
     
-    public default FuncList<DATA> toFuncList() {
+    public default FuncList<DATA> toList() {
         return toImmutableList();
     }
     
@@ -363,7 +363,7 @@ public interface StreamPlus<DATA>
     }
     
     public default ArrayList<DATA> toArrayList() {
-        return new ArrayList<DATA>(toList());
+        return new ArrayList<DATA>(toJavaList());
     }
     
     public default Set<DATA> toSet() {
@@ -429,7 +429,7 @@ public interface StreamPlus<DATA>
         val temp = this.mapTuple(
                 it -> predicate.test(it) ? 0 : 1,
                 it -> it
-        ).toFuncList();
+        ).toList();
         val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
         val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
         return Tuple.of(

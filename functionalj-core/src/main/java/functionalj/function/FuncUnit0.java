@@ -3,7 +3,7 @@ package functionalj.function;
 import static java.util.Objects.requireNonNull;
 
 import functionalj.functions.ThrowFuncs;
-import functionalj.promise.Promise;
+import functionalj.promise.DeferAction;
 import functionalj.ref.RunBody;
 import lombok.val;
 
@@ -77,11 +77,11 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         return this::runCarelessly;
     }
     
-    public default Promise<Object> async() {
+    public default DeferAction<Object> async() {
         return this.thenReturnNull().defer();
     }
     
-    public default Promise<Object> defer() {
+    public default DeferAction<Object> defer() {
         return this.thenReturnNull().defer();
     }
     

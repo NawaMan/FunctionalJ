@@ -117,11 +117,11 @@ public interface FuncList<DATA>
     public FuncList<DATA> eager();
     
     @Override
-    public default List<DATA> toList() {
+    public default List<DATA> toJavaList() {
         return this;
     }
     @Override
-    public default FuncList<DATA> toFuncList() {
+    public default FuncList<DATA> toList() {
         return this;
     }
     
@@ -188,7 +188,7 @@ public interface FuncList<DATA>
     
     @Override
     public default <T> T[] toArray(T[] a) {
-        return toList().toArray(a);
+        return toJavaList().toArray(a);
     }
     
     
@@ -205,12 +205,6 @@ public interface FuncList<DATA>
         return ((collection == null) || collection.isEmpty())
                 ? this
                 : deriveWith(stream -> Stream.concat(stream, collection.stream()));
-    }
-    
-    public default FuncList<DATA> appendAll(Streamable<? extends DATA> streamable) {
-        return (streamable == null)
-                ? this
-                : deriveWith(stream -> Stream.concat(stream, streamable.stream()));
     }
     
     public default FuncList<DATA> appendAll(Supplier<Stream<? extends DATA>> supplier) {

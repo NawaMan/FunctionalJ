@@ -64,6 +64,13 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
         }
     }
     
+    public default Result<OUTPUT> apply(Result<INPUT1> input1, Result<INPUT2> input2, Result<INPUT3> input3) {
+        return Result.ofResults(input1, input2, input3, this);
+    }
+    public default Promise<OUTPUT> apply(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2, HasPromise<INPUT3> input3) {
+        return Promise.from(input1, input2, input3, this);
+    }
+    
     /**
      * Applies this function to the given input values.
      *

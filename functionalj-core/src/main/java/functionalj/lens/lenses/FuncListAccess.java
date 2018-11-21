@@ -101,13 +101,6 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         });
     }
     
-    public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(Streamable<? extends TYPE> streamable) {
-        return subList(this, host -> {
-            return apply(host)
-                    .appendAll(streamable);
-        });
-    }
-    
     public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(Supplier<Stream<? extends TYPE>> supplier) {
         return subList(this, host -> {
             return apply(host)

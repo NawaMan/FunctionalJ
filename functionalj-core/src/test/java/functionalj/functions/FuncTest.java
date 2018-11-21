@@ -64,8 +64,8 @@ public class FuncTest {
     @Test
     public void testDefer() {
         val func = ((Func2<Integer, Integer, Integer>)(a, b) -> a+b).defer();
-        val a    = Promise.ofValue(5);
-        val b    = Promise.ofValue(7);
+        val a    = Promise.of(5);
+        val b    = Promise.of(7);
         val c    = func.apply(a, b);
         assertEquals(12, c.getResult().value().intValue());
     }

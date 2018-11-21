@@ -70,6 +70,13 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
         }
     }
     
+    public default Result<OUTPUT> apply(Result<INPUT1> input1, Result<INPUT2> input2, Result<INPUT3> input3, Result<INPUT4> input4, Result<INPUT5> input5, Result<INPUT6> input6) {
+        return Result.ofResults(input1, input2, input3, input4, input5, input6, this);
+    }
+    public default Promise<OUTPUT> apply(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2, HasPromise<INPUT3> input3, HasPromise<INPUT4> input4, HasPromise<INPUT5> input5, HasPromise<INPUT6> input6) {
+        return Promise.from(input1, input2, input3, input4, input5, input6, this);
+    }
+    
     /**
      * Applies this function to the given input values.
      *

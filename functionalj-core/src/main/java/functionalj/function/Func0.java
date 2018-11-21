@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
-import functionalj.promise.Promise;
 import functionalj.ref.ComputeBody;
 import functionalj.result.Result;
 import lombok.val;
@@ -125,11 +124,11 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         };
     }
     
-    public default Promise<OUTPUT> async() {
+    public default DeferAction<OUTPUT> async() {
         return defer();
     }
-    public default Promise<OUTPUT> defer() {
-        return DeferAction.from(this).build().getPromise();
+    public default DeferAction<OUTPUT> defer() {
+        return DeferAction.from(this).build();
     }
     
     public default FuncUnit0 ignoreResult() {

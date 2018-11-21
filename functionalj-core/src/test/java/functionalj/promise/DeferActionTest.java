@@ -54,7 +54,7 @@ public class DeferActionTest {
         assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", action .getCurrentResult().toString());
         assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", promise.getCurrentResult().toString());
         
-        val add1 = theInteger.add(1).defer();
+        val add1 = theInteger.add(1);
         val answer = add1.apply(promise);
         assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", action .getCurrentResult().toString());
         assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", promise.getCurrentResult().toString());
@@ -376,11 +376,11 @@ public class DeferActionTest {
         })
         .chain(str->{
             Thread.sleep(50);
-            return Promise.ofValue(str.length());
+            return Promise.of(str.length());
         })
         .chain(length->{
             Thread.sleep(50);
-            return Promise.ofValue(length + 42);
+            return Promise.of(length + 42);
         })
         .map(value->{
             Thread.sleep(50);
@@ -415,11 +415,11 @@ public class DeferActionTest {
         })
         .chain(str->{
             Thread.sleep(50);
-            return Promise.ofValue(str.length());
+            return Promise.of(str.length());
         })
         .chain(length->{
             Thread.sleep(50);
-            return Promise.ofValue(length + 42);
+            return Promise.of(length + 42);
         })
         .map(value->{
             Thread.sleep(50);

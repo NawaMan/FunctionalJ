@@ -10,7 +10,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import functionalj.result.Result;
 import functionalj.validator.Validator;
 import lombok.val;
 
@@ -199,5 +198,254 @@ public class ResultTest {
                   ()->{ throw new RuntimeException("Test exception"); },
                   (a, b)-> a + "," + b));
     }
+    
+    // TODO - Let deal with this later.
+//    
+//    @Test
+//    public void testResultFor() {
+//        val res1 = FuncList.of(1, 2, 3, 4);
+//        
+//        System.out.println(res1.flatMap(s1 -> {
+//            return StreamPlus.infiniteInt().limit(s1).toList().flatMap(s2 -> {
+//                return Result.of(s1 + " + " + s2 + " = " + (s1 + s2)).toList();
+//            });
+//        }));
+//        
+//        System.out.println(For(
+//                res1, 
+//                (s1)     -> StreamPlus.infiniteInt().limit(s1).toList(),
+//                (s1, s2) -> Result.of(s1 + " + " + s2 + " = " + (s1 + s2)).toList()));
+//    }
+//    
+//    public static <I1, I2, O> FuncList<O> For(
+//            FuncList<I1>               l1,
+//            Func1<I1, FuncList<I2>>    next1,
+//            Func2<I1, I2, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.apply(e1).flatMap(e2 -> {
+//                return yield.apply(e1, e2);
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, O> FuncList<O> For(
+//            FuncList<I1>               l1,
+//            Func0<FuncList<I2>>        next1,
+//            Func2<I1, I2, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.apply().flatMap(e2 -> {
+//                return yield.apply(e1, e2);
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, O> FuncList<O> For(
+//            FuncList<I1>               l1,
+//            FuncList<I2>               next1,
+//            Func2<I1, I2, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.flatMap(e2 -> {
+//                return yield.apply(e1, e2);
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                l1,
+//            Func1<I1, FuncList<I2>>     next1,
+//            Func2<I1, I2, FuncList<I3>> next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.apply(e1).flatMap(e2 -> {
+//                return next2.apply(e1, e2).flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                l1,
+//            Func0<FuncList<I2>>         next1,
+//            Func2<I1, I2, FuncList<I3>> next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.apply().flatMap(e2 -> {
+//                return next2.apply(e1, e2).flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                l1,
+//            FuncList<I2>                next1,
+//            Func2<I1, I2, FuncList<I3>> next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.flatMap(e2 -> {
+//                return next2.apply(e1, e2).flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                l1,
+//            Func1<I1, FuncList<I2>>     next1,
+//            Func1<I2, FuncList<I3>> next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.apply(e1).flatMap(e2 -> {
+//                return next2.apply(e2).flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                l1,
+//            Func0<FuncList<I2>>         next1,
+//            Func1<I2, FuncList<I3>> next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.apply().flatMap(e2 -> {
+//                return next2.apply(e2).flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                l1,
+//            FuncList<I2>                next1,
+//            Func1<I2, FuncList<I3>> next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.flatMap(e2 -> {
+//                return next2.apply(e2).flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                l1,
+//            Func1<I1, FuncList<I2>>     next1,
+//            Func0<FuncList<I3>> next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.apply(e1).flatMap(e2 -> {
+//                return next2.apply().flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                l1,
+//            Func0<FuncList<I2>>         next1,
+//            Func0<FuncList<I3>> next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.apply().flatMap(e2 -> {
+//                return next2.apply().flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                l1,
+//            FuncList<I2>                next1,
+//            Func0<FuncList<I3>> next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.flatMap(e2 -> {
+//                return next2.apply().flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                   l1,
+//            Func1<I1, FuncList<I2>>        next1,
+//            FuncList<I3>                   next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.apply(e1).flatMap(e2 -> {
+//                return next2.flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                   l1,
+//            Func0<FuncList<I2>>            next1,
+//            FuncList<I3>                   next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.apply().flatMap(e2 -> {
+//                return next2.flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
+//    
+//    public static <I1, I2, I3, O> FuncList<O> For(
+//            FuncList<I1>                   l1,
+//            FuncList<I2>                   next1,
+//            FuncList<I3>                   next2,
+//            Func3<I1, I2, I3, FuncList<O>> yield) {
+//        return l1.flatMap(e1 -> {
+//            return next1.flatMap(e2 -> {
+//                return next2.flatMap(e3 -> {
+//                    return yield.apply(e1, e2, e3);
+//                });
+//            });
+//        });
+//    }
     
 }

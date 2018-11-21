@@ -58,7 +58,7 @@ public class ConsoleTest {
             .println("One")
             .println("Two");
             
-            val outLines = StreamPlus.from(stub.outLines()).toList();
+            val outLines = StreamPlus.from(stub.outLines()).toJavaList();
             assertEquals(
                     "[One, Two]",
                     outLines.toString());
@@ -76,7 +76,7 @@ public class ConsoleTest {
             .outPrintln("Three")
             .outPrintln("Four");
             
-            val outLines = StreamPlus.from(stub.outLines()).toList();
+            val outLines = StreamPlus.from(stub.outLines()).toJavaList();
             assertEquals(
                     "[Three, Four]",
                     outLines.toString());
@@ -96,7 +96,7 @@ public class ConsoleTest {
             .errPrintln("Five")
             .errPrintln("Six");
             
-            val outLines = StreamPlus.from(stub.errLines()).toList();
+            val outLines = StreamPlus.from(stub.errLines()).toJavaList();
             assertEquals(
                     "[Five, Six]",
                     outLines.toString());

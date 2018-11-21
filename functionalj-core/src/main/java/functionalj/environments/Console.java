@@ -177,7 +177,7 @@ public final class Console {
     }
     
     public static <D, E extends Exception> StubRecord<D> useStub(Stream<String> inLines, ComputeBody<D, E> body) throws E {
-        val inQueue = new ConsoleInQueue(StreamPlus.from(inLines).toList());
+        val inQueue = new ConsoleInQueue(StreamPlus.from(inLines).toJavaList());
         return useStub(true, inQueue, body);
     }
     

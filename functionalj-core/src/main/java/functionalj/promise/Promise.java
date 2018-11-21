@@ -33,6 +33,8 @@ import functionalj.result.HasResult;
 import functionalj.result.Result;
 import lombok.val;
 
+
+// TODO - Find a way to make toString more useful ... like giving this a name.
 @SuppressWarnings("javadoc")
 public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeable<HasPromise<DATA>> {
     
@@ -49,7 +51,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 .build()
                 .getPromise();
     }
-    public static <D> Promise<D> ofValue(D value) {
+    public static <D> Promise<D> of(D value) {
         return DeferAction.of((Class<D>)null)
                 .start()
                 .complete(value)

@@ -21,10 +21,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
+import functionalj.list.FuncList;
+import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
+import functionalj.stream.StreamPlus;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -65,6 +68,31 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         } catch (Exception e) {
             throw ThrowFuncs.exceptionTranformer.value().apply(e);
         }
+    }
+    
+    public default Result<OUTPUT> apply(Result<INPUT1> input1, Result<INPUT2> input2) {
+        return Result.ofResults(input1, input2, this);
+    }
+    public default Promise<OUTPUT> apply(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2) {
+        return Promise.from(input1, input2, this);
+    }
+    public default StreamPlus<OUTPUT> apply(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
+        return input1.zipWith(input2, this);
+    }
+    public default StreamPlus<OUTPUT> apply(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, boolean requireBoth) {
+        return input1.zipWith(input2, requireBoth, this);
+    }
+    public default FuncList<OUTPUT> apply(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
+        return input1.zipWith(input2, this);
+    }
+    public default FuncList<OUTPUT> apply(FuncList<INPUT1> input1, FuncList<INPUT2> input2, boolean requireBoth) {
+        return input1.zipWith(input2, requireBoth, this);
+    }
+    public default <KEY> FuncMap<KEY, OUTPUT> apply(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
+        return input1.zipWith(input2, this);
+    }
+    public default <KEY> FuncMap<KEY, OUTPUT> apply(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2, boolean requireBoth) {
+        return input1.zipWith(input2, requireBoth, this);
     }
     
     /**
@@ -204,6 +232,9 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2) {
         return (i1) -> this.applyUnsafe(i1, i2);
+    }
+    public default Func1<HasPromise<INPUT1>, Promise<OUTPUT>> elevateWith(HasPromise<INPUT2> i2) {
+        return (i1) -> this.apply(i1, i2);
     }
     
     

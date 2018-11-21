@@ -30,7 +30,7 @@ public class BlockingQueueIteratorPlusTest {
                 iterator
                 .pullNext(2)
                 .map(IteratorPlus::stream)
-                .map(StreamPlus::toList)
+                .map(StreamPlus::toJavaList)
                 .map(String::valueOf)
                 .toString());
     }
@@ -59,7 +59,7 @@ public class BlockingQueueIteratorPlusTest {
                 iterator
                 .pullNext(5)
                 .map(IteratorPlus::stream)
-                .map(StreamPlus::toList)
+                .map(StreamPlus::toJavaList)
                 .map(String::valueOf)
                 .toString());
     }
@@ -86,7 +86,7 @@ public class BlockingQueueIteratorPlusTest {
         }).start();
         
         assertEquals("[One, Two, Three, Four, Five, Six]", 
-                iterator.stream().toList().toString());
+                iterator.stream().toJavaList().toString());
     }
     
 }

@@ -23,7 +23,7 @@ public class LogTest {
             Log.logEach("-->", FuncList.listOf("Three", "Four"), "<--");
             Log.logBy(()-> "42");
             
-            val outLines = StreamPlus.from(stub.outLines()).toList();
+            val outLines = StreamPlus.from(stub.outLines()).toJavaList();
             assertEquals(
                     "[One, 2: Two --, Three, Four, -->Three<--, -->Four<--, 42]",
                     outLines.toString());

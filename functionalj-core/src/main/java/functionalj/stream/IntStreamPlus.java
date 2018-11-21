@@ -384,7 +384,7 @@ public interface IntStreamPlus extends IntStream {
     // No Zip - as it seems to give no additional benefit than just changing it to Stream and zip it there.
     
     public default List<Integer> toList() {
-        return asStream().toList();
+        return asStream().toJavaList();
     }
     
     public default FuncList<Integer> toFuncList() {

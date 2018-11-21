@@ -81,8 +81,7 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     public default Func1<HasPromise<INPUT>, Promise<Object>> defer() {
         return input -> {
             val func0 = this.thenReturnNull();
-            return input.getPromise()
-                    .map(func0);
+            return input.getPromise().map(func0);
         };
     }
     

@@ -46,7 +46,7 @@ public interface ReadOnlyList<DATA>
         return ImmutableList.from(this);
     }
     @Override
-    public default List<DATA> toList() {
+    public default List<DATA> toJavaList() {
         return this;
     }
     
@@ -86,7 +86,7 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default <T> T[] toArray(T[] a) {
-        return StreamPlus.of(stream()).toList().toArray(a);
+        return StreamPlus.of(stream()).toJavaList().toArray(a);
     }
     
     @Override
@@ -101,22 +101,22 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default int indexOf(Object o) {
-        return StreamPlus.from(stream()).toList().indexOf(o);
+        return StreamPlus.from(stream()).toJavaList().indexOf(o);
     }
     
     @Override
     public default int lastIndexOf(Object o) {
-        return StreamPlus.from(stream()).toList().lastIndexOf(o);
+        return StreamPlus.from(stream()).toJavaList().lastIndexOf(o);
     }
     
     @Override
     public default ListIterator<DATA> listIterator() {
-        return StreamPlus.from(stream()).toList().listIterator();
+        return StreamPlus.from(stream()).toJavaList().listIterator();
     }
     
     @Override
     public default ListIterator<DATA> listIterator(int index) {
-        return StreamPlus.from(stream()).toList().listIterator(index);
+        return StreamPlus.from(stream()).toJavaList().listIterator(index);
     }
     
     @Override

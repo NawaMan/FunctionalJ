@@ -658,7 +658,7 @@ public abstract class Result<DATA>
                 Promise::ofException,
                 (value, exception) -> {
                     return (exception == null)
-                            ? Promise.ofValue(value)
+                            ? Promise.of(value)
                             : Promise.ofException(exception);
                 }
         );

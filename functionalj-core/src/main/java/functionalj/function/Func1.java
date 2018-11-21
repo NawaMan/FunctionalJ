@@ -21,10 +21,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
+import functionalj.list.FuncList;
+import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
+import functionalj.stream.StreamPlus;
 import lombok.val;
 
 /**
@@ -58,6 +61,10 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     
     public OUTPUT applyUnsafe(INPUT input) throws Exception;
     
+    public default OUTPUT applyNull() {
+        return apply((INPUT)null);
+    }
+    
     /**
      * Applies this function to the given input value.
      *
@@ -72,6 +79,21 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         } catch (Exception e) {
             throw ThrowFuncs.exceptionTranformer.value().apply(e);
         }
+    }
+    public default Result<OUTPUT> apply(Result<INPUT> input) {
+        return input.map(this);
+    }
+    public default Promise<OUTPUT> apply(HasPromise<INPUT> input) {
+        return input.getPromise().map(this);
+    }
+    public default StreamPlus<OUTPUT> apply(StreamPlus<INPUT> input) {
+        return input.map(this);
+    }
+    public default FuncList<OUTPUT> apply(FuncList<INPUT> input) {
+        return input.map(this);
+    }
+    public default <KEY> FuncMap<KEY, OUTPUT> apply(FuncMap<KEY, INPUT> input) {
+        return input.map(this);
     }
     public default OUTPUT applyTo(INPUT input) {
         return apply(input);
