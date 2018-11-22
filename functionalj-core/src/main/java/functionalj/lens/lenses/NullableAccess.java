@@ -3,6 +3,7 @@ package functionalj.lens.lenses;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
@@ -37,7 +38,9 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
         val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Nullable<TARGET> applyUnsafe(HOST host) throws Exception {
-                return NullableAccess.this.apply(host).map(mapper);
+                Nullable<TYPE> nullable = NullableAccess.this.apply(host);
+                if (nullable == null) nullable = Nullable.empty();
+                return nullable.map(Func1.from(mapper));
             }
             @Override
             public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {

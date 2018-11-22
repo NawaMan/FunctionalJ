@@ -7,7 +7,9 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.FuncListAccess;
 import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.NullableAccess;
+import functionalj.lens.lenses.ResultAccess;
 import functionalj.list.FuncList;
+import functionalj.result.Result;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -59,6 +61,23 @@ public class AccessUtils {
             @Override
             public Nullable<TYPE> applyUnsafe(HOST host) throws Exception {
                 return accessNullable.apply(host);
+            }
+            @Override
+            public TYPELENS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return createSubLens.apply(accessToParameter);
+            }
+        };
+        return () -> accessWithSub;
+    }
+    
+    public static <HOST, TYPE, TYPELENS extends AnyAccess<HOST, TYPE>> 
+            ResultAccess<HOST, TYPE, TYPELENS> createResultAccess(
+                        Function<HOST, Result<TYPE>>             accessResult,
+                        Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
+        val accessWithSub = new AccessParameterized<HOST, Result<TYPE>, TYPE, TYPELENS>() {
+            @Override
+            public Result<TYPE> applyUnsafe(HOST host) throws Exception {
+                return accessResult.apply(host);
             }
             @Override
             public TYPELENS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {

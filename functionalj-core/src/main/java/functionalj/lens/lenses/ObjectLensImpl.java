@@ -10,6 +10,7 @@ import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
+import functionalj.result.Result;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -73,6 +74,20 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         val subWrite   = (WriteLens<HOST, Nullable<SUB>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
         val spec = LensUtils.createLensSpecParameterized(subRead, subWrite, subCreator);
         val lens = (NullableLens<HOST, SUB, SUBLENS>)()->spec;
+        return lens;
+    }
+    
+    protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
+            ResultLens<HOST, SUB, SUBLENS> createSubResultLens(
+                Function<DATA,  Result<SUB>>         readSub,
+                WriteLens<DATA, Result<SUB>>         writeSub,
+                Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
+        val readThis   = this.lensSpec().getRead();
+        val writeThis  = this.lensSpec().getWrite();
+        val subRead    = (Function<HOST, Result<SUB>>) LensUtils.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
+        val subWrite   = (WriteLens<HOST, Result<SUB>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, this.lensSpec().getIsNullSafe());
+        val spec = LensUtils.createLensSpecParameterized(subRead, subWrite, subCreator);
+        val lens = (ResultLens<HOST, SUB, SUBLENS>)()->spec;
         return lens;
     }
     

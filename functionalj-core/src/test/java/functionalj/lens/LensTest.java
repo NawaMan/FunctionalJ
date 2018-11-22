@@ -233,14 +233,6 @@ public class LensTest {
     
     // == Imposter ==
     
-    public static interface IAmMe<T extends Func1<String, Integer>> extends Func1<String, Integer> {
-        T me();
-        
-        default Integer apply(String input) {
-            return me().apply(input);
-        }
-    }
-    
     @Test
     public void testNullSafety() {
         val driverWithNoCar     = new Driver(null);

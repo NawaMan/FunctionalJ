@@ -14,8 +14,10 @@ import functionalj.lens.lenses.MapLens;
 import functionalj.lens.lenses.NullableLens;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.OptionalLens;
+import functionalj.lens.lenses.ResultLens;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
+import functionalj.result.Result;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -110,6 +112,26 @@ public class LensUtils {
         return lens;
     }
     
+    //== Result ==
+    
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ResultLens<HOST, TYPE, SUBLENS> 
+        createResultLens(
+            Function<HOST, Result<TYPE>>          read,
+            WriteLens<HOST, Result<TYPE>>         write,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        val spec = createLensSpecParameterized(read, write, subCreator);
+        val lens = (ResultLens<HOST, TYPE, SUBLENS>)()->spec;
+        return lens;
+    }
+    
+    public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> ResultLens<HOST, TYPE, SUBLENS> 
+        createResultLens(
+            LensSpec<HOST, Result<TYPE>> resultLensSpec,
+            Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
+        val lens = createResultLens(resultLensSpec.getRead(), resultLensSpec.getWrite(), subCreator);
+        return lens;
+    }
+    
     //== Optional ==
     
     public static <HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>> OptionalLens<HOST, TYPE, SUBLENS> 
@@ -161,7 +183,7 @@ public class LensUtils {
     }
     
     //== Map ==
-
+    
     public static <HOST, KEY, VALUE, KEYLENS extends AnyLens<HOST,KEY>, VALUELENS extends AnyLens<HOST,VALUE>>
             MapLens<HOST, KEY, VALUE, KEYLENS, VALUELENS> of(
                     Function<HOST,  Map<KEY, VALUE>>           read,

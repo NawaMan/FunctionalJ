@@ -37,7 +37,9 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
         val accessWithSub = new AccessParameterized<HOST, Optional<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Optional<TARGET> applyUnsafe(HOST host) throws Exception {
-                return OptionalAccess.this.apply(host).map(mapper);
+                Optional<TYPE> optional = OptionalAccess.this.apply(host);
+                if (optional == null) optional = Optional.empty();
+                return optional.map(mapper);
             }
             @Override
             public AnyAccess<HOST, TARGET> createSubAccessFromHost(Function<HOST, TARGET> accessToParameter) {

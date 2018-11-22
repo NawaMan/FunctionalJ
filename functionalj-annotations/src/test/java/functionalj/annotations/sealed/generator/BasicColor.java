@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.annotations.Absent;
+import functionalj.annotations.Sealed;
 import functionalj.annotations.sealed.AbstractSealedClass;
 import functionalj.annotations.sealed.SealedClassSwitch;
 
