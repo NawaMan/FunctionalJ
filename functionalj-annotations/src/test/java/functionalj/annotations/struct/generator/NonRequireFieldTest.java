@@ -1,17 +1,13 @@
 package functionalj.annotations.struct.generator;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
 import org.junit.Test;
 
 import functionalj.annotations.DefaultValue;
-import functionalj.annotations.struct.generator.Getter;
-import functionalj.annotations.struct.generator.StructBuilder;
-import functionalj.annotations.struct.generator.SourceSpec;
-import functionalj.annotations.struct.generator.Type;
 import functionalj.annotations.struct.generator.SourceSpec.Configurations;
 import functionalj.annotations.struct.generator.model.GenStruct;
 import lombok.val;

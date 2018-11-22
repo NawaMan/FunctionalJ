@@ -8,10 +8,6 @@ import java.util.List;
 import org.junit.Test;
 
 import functionalj.annotations.DefaultValue;
-import functionalj.annotations.struct.generator.BuilderClassBuilder;
-import functionalj.annotations.struct.generator.Getter;
-import functionalj.annotations.struct.generator.SourceSpec;
-import functionalj.annotations.struct.generator.Type;
 import functionalj.annotations.struct.generator.SourceSpec.Configurations;
 import lombok.val;
 

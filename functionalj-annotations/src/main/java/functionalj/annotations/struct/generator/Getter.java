@@ -15,7 +15,7 @@
 //  ========================================================================
 package functionalj.annotations.struct.generator;
 
-import static functionalj.annotations.sealed.generator.Utils.toStringLiteral;
+import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 

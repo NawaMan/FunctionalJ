@@ -1,6 +1,5 @@
 package functionalj.experiment.coroutine;
 
-import static functionalj.annotations.sealed.SealedClasses.Switch;
 import static functionalj.experiment.coroutine.GeneratorEntry.Last;
 import static functionalj.experiment.coroutine.GeneratorEntry.Next;
 import static functionalj.experiment.coroutine.GeneratorFinish.Stop;
@@ -12,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
-import functionalj.annotations.Sealed;
+import functionalj.annotations.Choice;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.stream.IteratorPlus;
@@ -22,7 +21,7 @@ import lombok.val;
 // 2018-11-14 - WIP - `Finish` is not done.
 public class GeneratorTest {
     
-    @Sealed(name="GeneratorEntry")
+    @Choice(name="GeneratorEntry")
     public interface GeneratorEntrySpec<D> {
         
         void Next(Func0<D> body, Func1<D, GeneratorEntry<D>> more);
@@ -30,7 +29,7 @@ public class GeneratorTest {
     
     }
     
-    @Sealed(name="GeneratorFinish")
+    @Choice(name="GeneratorFinish")
     public interface GeneratorFinishSpec<D> {
         void RepeatAll();
         void RepeatLast();

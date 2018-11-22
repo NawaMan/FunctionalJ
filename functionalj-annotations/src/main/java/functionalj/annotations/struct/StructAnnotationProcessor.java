@@ -44,14 +44,14 @@ import javax.lang.model.util.Elements;
 //import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-import functionalj.annotations.Struct;
 import functionalj.annotations.DefaultTo;
 import functionalj.annotations.DefaultValue;
+import functionalj.annotations.Struct;
 import functionalj.annotations.struct.generator.Getter;
-import functionalj.annotations.struct.generator.StructBuilder;
 import functionalj.annotations.struct.generator.SourceSpec;
-import functionalj.annotations.struct.generator.Type;
 import functionalj.annotations.struct.generator.SourceSpec.Configurations;
+import functionalj.annotations.struct.generator.StructBuilder;
+import functionalj.annotations.struct.generator.Type;
 import functionalj.annotations.struct.generator.model.GenStruct;
 import lombok.val;
 

@@ -8,7 +8,7 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.result.Result;
 import lombok.val;
 
-// TODO This is made quickly to accommodate Lens for Sealed classes. It is not complete in anyway.
+// TODO This is made quickly to accommodate Lens for Choice type. It is not complete in anyway.
 @FunctionalInterface
 public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
                     extends

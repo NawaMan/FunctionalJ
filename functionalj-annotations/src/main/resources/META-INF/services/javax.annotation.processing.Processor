@@ -1,2 +1,2 @@
 functionalj.annotations.struct.StructAnnotationProcessor
-functionalj.annotations.sealed.SealedClassAnnotationProcessor
+functionalj.annotations.choice.ChoiceAnnotationProcessor
