@@ -55,7 +55,7 @@ public class DeferActionTest {
         assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", promise.getCurrentResult().toString());
         
         val add1 = theInteger.add(1);
-        val answer = add1.apply(promise);
+        val answer = add1.applyTo(promise);
         assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", action .getCurrentResult().toString());
         assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", promise.getCurrentResult().toString());
         

@@ -31,7 +31,7 @@ public class Subscription<DATA> {
         
         // TODO - Add scheduling here.
         try {
-            val cancellation = subscriber.apply(next);
+            val cancellation = subscriber.applyTo(next);
             if (Subscription.Cancel.equals(cancellation))
                 unsubcribe();
         } catch (Exception e) {

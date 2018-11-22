@@ -70,31 +70,6 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         }
     }
     
-    public default Result<OUTPUT> apply(Result<INPUT1> input1, Result<INPUT2> input2) {
-        return Result.ofResults(input1, input2, this);
-    }
-    public default Promise<OUTPUT> apply(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2) {
-        return Promise.from(input1, input2, this);
-    }
-    public default StreamPlus<OUTPUT> apply(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
-        return input1.zipWith(input2, this);
-    }
-    public default StreamPlus<OUTPUT> apply(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, boolean requireBoth) {
-        return input1.zipWith(input2, requireBoth, this);
-    }
-    public default FuncList<OUTPUT> apply(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
-        return input1.zipWith(input2, this);
-    }
-    public default FuncList<OUTPUT> apply(FuncList<INPUT1> input1, FuncList<INPUT2> input2, boolean requireBoth) {
-        return input1.zipWith(input2, requireBoth, this);
-    }
-    public default <KEY> FuncMap<KEY, OUTPUT> apply(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
-        return input1.zipWith(input2, this);
-    }
-    public default <KEY> FuncMap<KEY, OUTPUT> apply(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2, boolean requireBoth) {
-        return input1.zipWith(input2, requireBoth, this);
-    }
-    
     /**
      * Applies this function to the given input values.
      *
@@ -103,6 +78,33 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      */
     public default OUTPUT applyTo(Tuple2<INPUT1, INPUT2> input) {
         return apply(input._1(), input._2());
+    }
+    public default OUTPUT applyTo(INPUT1 input1, INPUT2 input2) {
+        return apply(input1, input2);
+    }
+    public default Result<OUTPUT> applyTo(Result<INPUT1> input1, Result<INPUT2> input2) {
+        return Result.ofResults(input1, input2, this);
+    }
+    public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2) {
+        return Promise.from(input1, input2, this);
+    }
+    public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
+        return input1.zipWith(input2, this);
+    }
+    public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, boolean requireBoth) {
+        return input1.zipWith(input2, requireBoth, this);
+    }
+    public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
+        return input1.zipWith(input2, this);
+    }
+    public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2, boolean requireBoth) {
+        return input1.zipWith(input2, requireBoth, this);
+    }
+    public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
+        return input1.zipWith(input2, this);
+    }
+    public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2, boolean requireBoth) {
+        return input1.zipWith(input2, requireBoth, this);
     }
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2) {
@@ -233,8 +235,11 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2) {
         return (i1) -> this.applyUnsafe(i1, i2);
     }
+    public default Func1<Result<INPUT1>, Result<OUTPUT>> elevateWith(Result<INPUT2> i2) {
+        return (i1) -> this.applyTo(i1, i2);
+    }
     public default Func1<HasPromise<INPUT1>, Promise<OUTPUT>> elevateWith(HasPromise<INPUT2> i2) {
-        return (i1) -> this.apply(i1, i2);
+        return (i1) -> this.applyTo(i1, i2);
     }
     
     

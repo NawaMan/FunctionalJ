@@ -467,23 +467,23 @@ public class PromiseTest {
     
     @Test
     public void testDeferMethod() throws InterruptedException {
-        val addDefer = Func.f((Integer a, Integer b)->(a + b));
-        val mulDefer = Func.f((Integer a, Integer b)->(a * b));
+        val add = Func.f((Integer a, Integer b)->(a + b));
+        val mul = Func.f((Integer a, Integer b)->(a * b));
         
         val a = Sleep(50).thenReturn(20).defer();
         val b = Sleep(50).thenReturn( 1).defer();
         val c = Sleep(50).thenReturn( 2).defer();
         
-        val r1 = addDefer.apply(a, b);
-        val r2 = mulDefer.apply(addDefer.apply(a, b), c);
-//        val r3 = addDefer
-//                .then(mulDefer.elevateWith(c))
+        val r1 = add.applyTo(a, b);
+        val r2 = mul.applyTo(add.applyTo(a, b), c);
+//        val r3 = add
+//                .then(mul.elevateWith(c)) // This does not work as c is a promise.
 //                .apply(a, b);
         val r4 = a.pipe(
-                addDefer.elevateWith(b),
-                mulDefer.elevateWith(c)
+                add.elevateWith(b),
+                mul.elevateWith(c)
             );
-        val f5 = addDefer.elevateWith(b).andThen(mulDefer.elevateWith(c));
+        val f5 = add.elevateWith(b).andThen(mul.elevateWith(c));
         val r5 = f5.apply(a);
         
         assertStrings("Result:{ Value: 21 }", r1.getResult());
@@ -495,16 +495,16 @@ public class PromiseTest {
     
     @Test
     public void testDeferMethod_PipeLine() throws InterruptedException {
-        val addDefer = Func.f((Integer a, Integer b)->(a + b));
-        val mulDefer = Func.f((Integer a, Integer b)->(a * b));
+        val add = Func.f((Integer a, Integer b)->(a + b));
+        val nul = Func.f((Integer a, Integer b)->(a * b));
         
         val a = Sleep(50).thenReturn(20).defer();
         val b = Sleep(50).thenReturn( 1).defer();
         val c = Sleep(50).thenReturn( 2).defer();
         
         val f6 = PipeLine
-                .from(addDefer.elevateWith(b))
-                .then(mulDefer.elevateWith(c))
+                .from(add.elevateWith(b))
+                .then(nul.elevateWith(c))
                 .thenReturn();
         val r6 = f6.apply(a);
         assertStrings("Result:{ Value: 42 }", r6.getResult());

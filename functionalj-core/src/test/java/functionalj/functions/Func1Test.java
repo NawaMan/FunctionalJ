@@ -59,11 +59,11 @@ public class Func1Test {
         assertEquals("0, 1, 2, 3, 4",             "" + stream.get().joining(", "));
         assertEquals("[0, 1, 2, 3, 4]",           "" + list);
         assertEquals("{0:0, 1:1, 2:2, 3:3, 4:4}", "" + map);
-        assertEquals("Result:{ Value: 5 }",       "" + func.apply(result));
-        assertEquals("Result:{ Value: 5 }",       "" + func.apply(promise).getResult());
-        assertEquals("1, 1, 1, 1, 1",             "" + func.apply(stream.get()).joining(", "));
-        assertEquals("[1, 1, 1, 1, 1]",           "" + func.apply(list));
-        assertEquals("{0:1, 1:1, 2:1, 3:1, 4:1}", "" + func.apply(map));
+        assertEquals("Result:{ Value: 5 }",       "" + func.applyTo(result));
+        assertEquals("Result:{ Value: 5 }",       "" + func.applyTo(promise).getResult());
+        assertEquals("1, 1, 1, 1, 1",             "" + func.applyTo(stream.get()).joining(", "));
+        assertEquals("[1, 1, 1, 1, 1]",           "" + func.applyTo(list));
+        assertEquals("{0:1, 1:1, 2:1, 3:1, 4:1}", "" + func.applyTo(map));
     }
     
 }

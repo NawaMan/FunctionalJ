@@ -80,23 +80,24 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             throw ThrowFuncs.exceptionTranformer.value().apply(e);
         }
     }
-    public default Result<OUTPUT> apply(Result<INPUT> input) {
-        return input.map(this);
-    }
-    public default Promise<OUTPUT> apply(HasPromise<INPUT> input) {
-        return input.getPromise().map(this);
-    }
-    public default StreamPlus<OUTPUT> apply(StreamPlus<INPUT> input) {
-        return input.map(this);
-    }
-    public default FuncList<OUTPUT> apply(FuncList<INPUT> input) {
-        return input.map(this);
-    }
-    public default <KEY> FuncMap<KEY, OUTPUT> apply(FuncMap<KEY, INPUT> input) {
-        return input.map(this);
-    }
+    
     public default OUTPUT applyTo(INPUT input) {
         return apply(input);
+    }
+    public default Result<OUTPUT> applyTo(Result<INPUT> input) {
+        return input.map(this);
+    }
+    public default Promise<OUTPUT> applyTo(HasPromise<INPUT> input) {
+        return input.getPromise().map(this);
+    }
+    public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT> input) {
+        return input.map(this);
+    }
+    public default FuncList<OUTPUT> applyTo(FuncList<INPUT> input) {
+        return input.map(this);
+    }
+    public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT> input) {
+        return input.map(this);
     }
     
     public default Result<OUTPUT> applySafely(INPUT input) {
