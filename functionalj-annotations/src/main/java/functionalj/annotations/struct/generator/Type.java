@@ -110,6 +110,7 @@ public class Type implements IRequireTypes {
     // These are lens types that are in the main lens package.
     private static final Map<Type, Type> lensTypes = new HashMap<>();
     static {
+        lensTypes.put(OBJECT,     Core.ObjectLens    .type());
         lensTypes.put(INT,        Core.IntegerLens   .type());
         lensTypes.put(LNG,        Core.LongLens      .type());
         lensTypes.put(DBL,        Core.DoubleLens    .type());
@@ -362,13 +363,14 @@ public class Type implements IRequireTypes {
      * 
      * @return  the lens type.
      */
-    public Type lensType() {
-        val lensType = lensTypes.get(this.declaredType());
+    public Type lensType(String packageName, String encloseName, List<String> localTypeWithoutLens) {
+        val lensType = knownLensType();
         if (lensType != null)
             return lensType;
         
-        if (simpleName().endsWith("Lens"))
-            return this;
+        val isLocal = Objects.equals(packageName, packageName()) && Objects.equals(encloseName, encloseName);
+        if (!isLocal || localTypeWithoutLens.contains(simpleName))
+            return Core.ObjectLens.type();
         
         return new TypeBuilder()
                 .encloseName(simpleName())
@@ -377,6 +379,17 @@ public class Type implements IRequireTypes {
                 .generics(asList(new Type("HOST", "")))
                 .build();
     }
+    
+    public Type knownLensType() {
+        val lensType = lensTypes.get(this.declaredType());
+        if (lensType != null)
+            return lensType;
+        
+        if (simpleName().endsWith("Lens"))
+            return this;
+        
+        return null;
+    }
 
     /**
      * Check if this lens is custom lens.
@@ -384,7 +397,7 @@ public class Type implements IRequireTypes {
      * @return {@code true} if this lens is a custom lens.
      */
     public boolean isCustomLens() {
-        val lensType = this.lensType();
+        val lensType = this.knownLensType();
         return !lensTypes.values().contains(lensType)
             && !lensTypes.values().stream()
              .anyMatch(type -> type.simpleName() .equals(lensType.simpleName())
@@ -443,6 +456,15 @@ public class Type implements IRequireTypes {
      */
     public boolean isOptional() {
         return this.fullName("").equals("java.util.Optional");
+    }
+    
+    /**
+     * Check if this type is a Optional type.
+     * 
+     * @return {@code true} if this type is a Optional.
+     */
+    public boolean isObject() {
+        return this.fullName("").equals("java.lang.Object");
     }
     
     @Override

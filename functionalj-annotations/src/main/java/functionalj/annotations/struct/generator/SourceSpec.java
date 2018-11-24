@@ -19,8 +19,10 @@ import static functionalj.annotations.choice.generator.Utils.toListCode;
 import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.function.Function;
 
 import lombok.Value;
 import lombok.val;
@@ -37,12 +39,14 @@ public class SourceSpec {
     
     private String         specClassName;
     private String         packageName;
+    private String         encloseName;
     private String         targetClassName;
     private String         targetPackageName;
     private Boolean        isClass;
     private String         specObjName;
     private Configurations configures;
     private List<Getter>   getters;
+    private List<String>   localTypeWithNoLens;
     
     /** Configurations */
     public static class Configurations {
@@ -126,12 +130,14 @@ public class SourceSpec {
         val params = asList(
                 toStringLiteral(specClassName),
                 toStringLiteral(packageName),
+                toStringLiteral(encloseName),
                 toStringLiteral(targetClassName),
                 toStringLiteral(targetPackageName),
                 isClass,
                 toStringLiteral(specObjName),
                 configures.toCode(),
-                toListCode(getters, Getter::toCode)
+                toListCode(getters, Getter::toCode),
+                toListCode(localTypeWithNoLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity())
         );
         return "new functionalj.annotations.struct.generator.SourceSpec("
                 + params.stream().map(String::valueOf).collect(joining(", "))

@@ -20,6 +20,12 @@ Its focus is on the practicality aspect and less so on the theoretical aspect.
 This library works within the boundary of the language though pushing to the edge in some aspect. 
 Therefore, it sometimes breaks convention.
 
+
+
+
+Function is a most basic unit of abstraction.
+
+
 ## Usage
 
 ### Using FunctionalJ in a Gradle project

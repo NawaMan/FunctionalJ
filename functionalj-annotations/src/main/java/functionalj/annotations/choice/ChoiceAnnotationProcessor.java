@@ -26,10 +26,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -52,6 +54,7 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import functionalj.annotations.Choice;
+import functionalj.annotations.Struct;
 import functionalj.annotations.choice.generator.Generator;
 import functionalj.annotations.choice.generator.model.Case;
 import functionalj.annotations.choice.generator.model.CaseParam;
@@ -99,11 +102,30 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         messager.printMessage(Diagnostic.Kind.ERROR, msg, e);
     }
     
+    private static final EnumSet<ElementKind> typeElementKinds = EnumSet.of(
+            ElementKind.ENUM,
+            ElementKind.CLASS,
+            ElementKind.ANNOTATION_TYPE,
+            ElementKind.INTERFACE);
+    
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Choice.class)) {
             val typeElement = (TypeElement)element;
+            
+            val localTypeWithNoLens = typeElement
+                    .getEnclosingElement()
+                    .getEnclosedElements().stream()
+                    .filter(elmt -> {
+                        return typeElementKinds.contains(elmt.getKind())
+                            && (elmt.getAnnotation(Struct.class) == null)
+                            && (elmt.getAnnotation(Choice.class) == null);
+                    })
+                    .map(elmt -> elmt.getSimpleName().toString())
+                    .collect(Collectors.toList());
+            
+            
             val simpleName  = typeElement.getSimpleName().toString();
             val isInterface = ElementKind.INTERFACE.equals(element.getKind());
             if (!isInterface) {
@@ -131,7 +153,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             val choices      = extractTypeChoices(element, targetType, typeElement);
             val methods      = extractTypeMethods(element, targetType, typeElement);
             val publicFields = choiceType.publicFields();
-            val generator    = new Generator(targetName, sourceType, specField, publicFields, generics, choices, methods);
+            val generator    = new Generator(targetName, sourceType, specField, publicFields, generics, choices, methods, localTypeWithNoLens);
             
             try {
                 val className  = packageName + "." + targetName;
@@ -316,7 +338,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             val generics    = extractGenericsFromTypeArguments(element, targetType, ((DeclaredType)typeMirror).getTypeArguments());
             val packageName = getPackageName(element, typeElement);
             val foundType = new Type(packageName, null, typeName, generics);
-            if (packageName.equals(Self.class.getPackage().getName()) && typeName.matches("^Self[0-9]+$"))
+            if (packageName.equals(Self.class.getPackage().getName()) && typeName.matches("^Self[0-9]?$"))
                 return new Type(targetType.pckg, targetType.encloseClass, targetType.name, generics);
             
             return foundType;

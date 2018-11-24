@@ -58,7 +58,8 @@ public class FullGeneratorTest {
                   new Method(Kind.STATIC, "toRGBString", Type.BOOLEAN, 
                       asList(new MethodParam("c", new Type("functionalj.annotations.sealed.generator", "BasicColor"))
                   )
-              )));
+              )),
+              emptyList());
       generator.lines().forEach(System.out::println);
   }
   
@@ -84,6 +85,8 @@ public class FullGeneratorTest {
               "import functionalj.annotations.choice.AbstractChoiceClass;\n" + 
               "import functionalj.annotations.choice.ChoiceTypeSwitch;\n" + 
               "import functionalj.annotations.choice.generator.ChoiceTypeExampleTest.ChoiceType1TypeSpec;\n" + 
+              "import functionalj.lens.core.LensSpec;\n" + 
+              "import functionalj.lens.lenses.*;\n" + 
               "import functionalj.pipeable.Pipeable;\n" + 
               "import functionalj.result.Result;\n" + 
               "import java.util.function.Consumer;\n" + 
@@ -110,19 +113,50 @@ public class FullGeneratorTest {
               "    }\n" + 
               "    \n" + 
               "    \n" + 
+              "    public static final BasicColorLens<BasicColor> theBasicColor = new BasicColorLens<>(LensSpec.of(BasicColor.class));\n" + 
+              "    public static class BasicColorLens<HOST> extends ObjectLensImpl<HOST, BasicColor> {\n" + 
+              "\n" + 
+              "        public final BooleanAccess<BasicColor> isWhite = BasicColor::isWhite;\n" + 
+              "        public final BooleanAccess<BasicColor> isBlack = BasicColor::isBlack;\n" + 
+              "        public final BooleanAccess<BasicColor> isRGB = BasicColor::isRGB;\n" + 
+              "        public final ResultAccess<HOST, White, White.WhiteLens<HOST>> asWhite = createSubResultLens(BasicColor::asWhite, null, White.WhiteLens::new);\n" + 
+              "        public final ResultAccess<HOST, Black, Black.BlackLens<HOST>> asBlack = createSubResultLens(BasicColor::asBlack, null, Black.BlackLens::new);\n" + 
+              "        public final ResultAccess<HOST, RGB, RGB.RGBLens<HOST>> asRGB = createSubResultLens(BasicColor::asRGB, null, RGB.RGBLens::new);\n" + 
+              "        public BasicColorLens(LensSpec<HOST, BasicColor> spec) {\n" + 
+              "            super(spec);\n" + 
+              "        }\n" + 
+              "    }\n" + 
+              "    \n" + 
               "    private BasicColor() {}\n" + 
               "    public BasicColor __data() throws Exception { return this; }\n" + 
               "    public Result<BasicColor> toResult() { return Result.of(this); }\n" + 
               "    \n" + 
               "    public static final class White extends BasicColor {\n" + 
+              "        public static final WhiteLens<White> theWhite = new WhiteLens<>(LensSpec.of(White.class));\n" + 
               "        private static final White instance = new White();\n" + 
               "        private White() {}\n" + 
+              "        public static class WhiteLens<HOST> extends ObjectLensImpl<HOST, BasicColor.White> {\n" + 
+              "            \n" + 
+              "            public WhiteLens(LensSpec<HOST, BasicColor.White> spec) {\n" + 
+              "                super(spec);\n" + 
+              "            }\n" + 
+              "            \n" + 
+              "        }\n" + 
               "    }\n" + 
               "    public static final class Black extends BasicColor {\n" + 
+              "        public static final BlackLens<Black> theBlack = new BlackLens<>(LensSpec.of(Black.class));\n" + 
               "        private static final Black instance = new Black();\n" + 
               "        private Black() {}\n" + 
+              "        public static class BlackLens<HOST> extends ObjectLensImpl<HOST, BasicColor.Black> {\n" + 
+              "            \n" + 
+              "            public BlackLens(LensSpec<HOST, BasicColor.Black> spec) {\n" + 
+              "                super(spec);\n" + 
+              "            }\n" + 
+              "            \n" + 
+              "        }\n" + 
               "    }\n" + 
               "    public static final class RGB extends BasicColor {\n" + 
+              "        public static final RGBLens<RGB> theRGB = new RGBLens<>(LensSpec.of(RGB.class));\n" + 
               "        private int r;\n" + 
               "        private int g;\n" + 
               "        private int b;\n" + 
@@ -137,6 +171,17 @@ public class FullGeneratorTest {
               "        public RGB withR(int r) { return new RGB(r, g, b); }\n" + 
               "        public RGB withG(int g) { return new RGB(r, g, b); }\n" + 
               "        public RGB withB(int b) { return new RGB(r, g, b); }\n" + 
+              "        public static class RGBLens<HOST> extends ObjectLensImpl<HOST, BasicColor.RGB> {\n" + 
+              "            \n" + 
+              "            public final IntegerLens<HOST> r = createSubLens(BasicColor.RGB::r, BasicColor.RGB::withR, IntegerLens::of);\n" + 
+              "            public final IntegerLens<HOST> g = createSubLens(BasicColor.RGB::g, BasicColor.RGB::withG, IntegerLens::of);\n" + 
+              "            public final IntegerLens<HOST> b = createSubLens(BasicColor.RGB::b, BasicColor.RGB::withB, IntegerLens::of);\n" + 
+              "            \n" + 
+              "            public RGBLens(LensSpec<HOST, BasicColor.RGB> spec) {\n" + 
+              "                super(spec);\n" + 
+              "            }\n" + 
+              "            \n" + 
+              "        }\n" + 
               "    }\n" + 
               "    \n" + 
               "    public final BasicColorFirstSwitch mapSwitch = new BasicColorFirstSwitch(this);\n" + 

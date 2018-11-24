@@ -66,6 +66,9 @@ public class TargetClass implements Lines {
         imports.add(AbstractChoiceClass.class.getCanonicalName());
         imports.add("functionalj.result.Result");
         imports.add("functionalj.pipeable.Pipeable");
+        imports.add("functionalj.lens.core.LensSpec");
+        imports.add("functionalj.lens.lenses.*");
+        
         
         val hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);
         if (hasChoiceWuthMoreThanOneParam) {
@@ -150,6 +153,8 @@ public class TargetClass implements Lines {
                 .collect(toList())
                 ;
         
+        val choiceLens = new ChoiceLensBuilder(spec).build();
+        
         val typeName     = typeWithGenerics();
         val pckgName     = spec.sourceType.pckg;
         val importLines  = imports.stream().map(i -> "import " + i + ";").collect(toList());
@@ -165,6 +170,8 @@ public class TargetClass implements Lines {
                 subClassConstructors,
                 asList(format("    ")),
                 specObj,
+                asList(format("    ")),
+                choiceLens,
                 asList(format("    ")),
                 asList(format("    private %s() {}", type.name)),
                 asList(format("    public %1$s __data() throws Exception { return this; }",     typeName)),

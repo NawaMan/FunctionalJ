@@ -1,6 +1,7 @@
 package functionalj.annotations.struct.generator;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -38,12 +39,14 @@ public class BuilderClassBuilderTest {
         return new SourceSpec(
                     definitionClassName, // specClassName
                     packageName,         // packageName
+                    null,                // encloseName
                     targetClassName,     // targetClassName
                     packageName,         // targetPackageName
                     isClass,             // isClass
                     null,
                     configures,          // Configurations
-                    getters);
+                    getters,
+                    emptyList());
     }
     
     @Test

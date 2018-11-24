@@ -15,6 +15,7 @@ public class DOFromClassTest {
     public abstract static class DOFromClassDef {
         
         public abstract String name();
+        public abstract int    count();
         
         public String nameUpperCase() {
             return name().toUpperCase();
@@ -24,7 +25,7 @@ public class DOFromClassTest {
     
     @Test
     public void testFromClass() {
-        val obj = new DOFromClass("Obj");
+        val obj = new DOFromClass("Obj", 5);
         assertEquals("Obj", obj.name());
         assertEquals("OBJ", obj.nameUpperCase());
     }

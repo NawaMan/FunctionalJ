@@ -21,9 +21,11 @@ import static java.util.stream.Collectors.toList;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -44,6 +46,7 @@ import javax.lang.model.util.Elements;
 //import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
+import functionalj.annotations.Choice;
 import functionalj.annotations.DefaultTo;
 import functionalj.annotations.DefaultValue;
 import functionalj.annotations.Struct;
@@ -92,12 +95,19 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         messager.printMessage(Diagnostic.Kind.ERROR, msg, e);
     }
     
+    private static final EnumSet<ElementKind> typeElementKinds = EnumSet.of(
+            ElementKind.ENUM,
+            ElementKind.CLASS,
+            ElementKind.ANNOTATION_TYPE,
+            ElementKind.INTERFACE);
+    
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Struct.class)) {
             val packageName    = extractPackageName(element);
             val specTargetName = extractTargetTypeName(element);
+            
             try {
                 val sourceSpec = extractSourceSpec(element);
                 if (sourceSpec == null)
@@ -105,7 +115,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                 
                 val dataObjSpec = new StructBuilder(sourceSpec).build();
                 val className   = (String)dataObjSpec.type().fullName("");
-                val content     = new GenStruct(dataObjSpec).lines().collect(joining("\n"));
+                val content     = new GenStruct(sourceSpec, dataObjSpec).lines().collect(joining("\n"));
                 generateCode(element, className, content);
             } catch (Exception e) {
                 error(element, "Problem generating the class: "
@@ -116,6 +126,19 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             }
         }
         return hasError;
+    }
+
+    private List<String> readLocalTypeWithNoLens(Element element) {
+        return element
+                .getEnclosingElement()
+                .getEnclosedElements().stream()
+                .filter(elmt -> {
+                    return typeElementKinds.contains(elmt.getKind())
+                        && (elmt.getAnnotation(Struct.class) == null)
+                        && (elmt.getAnnotation(Choice.class) == null);
+                })
+                .map(elmt -> elmt.getSimpleName().toString())
+                .collect(Collectors.toList());
     }
     
     private String extractPackageName(Element element) {
@@ -160,6 +183,8 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             return null;
         }
         
+        val localTypeWithNoLens = readLocalTypeWithNoLens(element);
+        
         List<Getter> getters = type.getEnclosedElements().stream()
                 .filter(elmt  ->elmt.getKind().equals(ElementKind.METHOD))
                 .map   (elmt  ->((ExecutableElement)elmt))
@@ -173,10 +198,11 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             return null;
         
         val packageName    = elementUtils.getPackageOf(type).getQualifiedName().toString();
+        val encloseName    = element.getEnclosingElement().getSimpleName().toString();
         val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
         val struct         = element.getAnnotation(Struct.class);
         val specTargetName = struct.name();
-        val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
+        val targetName     = extractTargetName(simpleName, struct.name());
         val specField      = struct.specField();
         
         val configures = extractConfigurations(element, struct);
@@ -187,7 +213,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             return null;
         
         try {
-            return new SourceSpec(sourceName, packageName, targetName, packageName, isClass, specField, configures, getters);
+            return new SourceSpec(sourceName, packageName, encloseName, targetName, packageName, isClass, specField, configures, getters, localTypeWithNoLens);
         } catch (Exception e) {
             error(element, "Problem generating the class: "
                             + packageName + "." + specTargetName
@@ -203,11 +229,12 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         
         val method         = (ExecutableElement)element;
         val packageName    = extractPackageName(element);
-        val simpleName     = ((TypeElement)method.getEnclosingElement()).getSimpleName().toString();
+        val encloseName    = element.getEnclosingElement().getSimpleName().toString();
         val struct         = element.getAnnotation(Struct.class);
-        val specTargetName = struct.name().isEmpty() ? method.getSimpleName().toString() : struct.name();
-        val targetName     = ((specTargetName == null) || specTargetName.isEmpty()) ? simpleName : specTargetName;
+        val specTargetName = extractTargetName(method.getSimpleName().toString(), struct.name());
         val specField      = struct.specField();
+        
+        val localTypeWithNoLens = readLocalTypeWithNoLens(element);
         
         // TODO - Make the generated class extends or implements the return type.
         //        The challenge are:
@@ -232,7 +259,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             return null;
         
         try {
-            return new SourceSpec(superName, superPackage, targetName, packageName, isClass, specField, configures, getters);
+            return new SourceSpec(superName, superPackage, encloseName, specTargetName, packageName, isClass, specField, configures, getters, localTypeWithNoLens);
         } catch (Exception e) {
             error(element, "Problem generating the class: "
                             + packageName + "." + specTargetName
@@ -242,7 +269,19 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             return null;
         }
     }
-
+    
+    private String extractTargetName(String simpleName, String specTargetName) {
+        if ((specTargetName != null) && !specTargetName.isEmpty())
+            return specTargetName;
+        
+        if (simpleName.matches("^.*Spec$"))
+            return simpleName.replaceAll("Spec$", "");
+        if (simpleName.matches("^.*Model$"))
+            return simpleName.replaceAll("Model$", "");
+        
+        return simpleName;
+    }
+    
     private boolean ensureNoArgConstructorWhenRequireFieldExists(Element element, List<Getter> getters,
             final java.lang.String packageName, final java.lang.String specTargetName,
             final functionalj.annotations.struct.generator.SourceSpec.Configurations configures) {
@@ -331,7 +370,9 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                     .collect(toList());
             
             val packageName = getPackageName(element, typeElement);
-            return new Type(null, typeName, packageName, generics);
+            val encloseElmt = typeElement.getEnclosingElement();
+            val encloseName = typeElementKinds.contains(encloseElmt.getKind()) ? encloseElmt.getSimpleName().toString() : null;
+            return new Type(encloseName, typeName, packageName, generics);
         }
         return null;
     }

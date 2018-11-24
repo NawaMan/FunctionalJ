@@ -1,5 +1,6 @@
 package functionalj.stream;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -300,6 +301,24 @@ public interface StreamPlus<DATA>
         return mapToDouble(toDouble).average();
     }
     
+    public default Optional<BigDecimal> sum(Function<? super DATA, BigDecimal> toBigDecimal) {
+        return map(toBigDecimal).reduce(BigDecimal::add);
+    }
+    
+    public default Optional<BigDecimal> min(Function<? super DATA, BigDecimal> toBigDecimal) {
+        return map(toBigDecimal).reduce((a, b) -> a.compareTo(b) <= 0 ? a : b);
+    }
+    
+    public default Optional<BigDecimal> max(Function<? super DATA, BigDecimal> toBigDecimal) {
+        return map(toBigDecimal).reduce((a, b) -> a.compareTo(b) <= 0 ? b : a);
+    }
+    
+    public default Optional<BigDecimal> average(Function<? super DATA, BigDecimal> toBigDecimal) {
+        val countSum = map(each -> Tuple.of(1, toBigDecimal.apply(each)))
+        .reduce((a, b)->Tuple.of(a._1 + b._1, a._2.add(b._2)));
+        return countSum.map(t -> t._2.divide(new BigDecimal(t._1)));
+    }
+    
     public default long count() {
         return stream().count();
     }
@@ -314,6 +333,22 @@ public interface StreamPlus<DATA>
     
     public default boolean noneMatch(Predicate<? super DATA> predicate) {
         return stream().noneMatch(predicate);
+    }
+    
+    public default Optional<DATA> findFirst(Predicate<? super DATA> predicate) {
+        return stream().filter(predicate).findFirst();
+    }
+    
+    public default Optional<DATA> findAny(Predicate<? super DATA> predicate) {
+        return stream().filter(predicate).findAny();
+    }
+    
+    public default <T> Optional<DATA> findFirst(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
+        return filter(mapper, theCondition).findFirst();
+    }
+    
+    public default <T>  Optional<DATA> findAny(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
+        return filter(mapper, theCondition).findAny();
     }
     
     public default Optional<DATA> findFirst() {

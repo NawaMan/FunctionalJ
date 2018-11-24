@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import functionalj.annotations.IPostConstruct;
 import functionalj.annotations.struct.Core;
 import functionalj.annotations.struct.generator.ILines;
+import functionalj.annotations.struct.generator.SourceSpec;
 import functionalj.annotations.struct.generator.StructSpec;
 import functionalj.annotations.struct.generator.Type;
 import lombok.val;
@@ -56,6 +57,7 @@ public class GenStruct implements ILines {
             Core.LensSpec.type()
     );
     
+    private SourceSpec sourceSpec;
     private StructSpec dataClass;
     
     /**
@@ -63,8 +65,9 @@ public class GenStruct implements ILines {
      * 
      * @param dataObjSpec  the spec.
      */
-    public GenStruct(StructSpec dataObjSpec) {
-        this.dataClass = dataObjSpec;
+    public GenStruct(SourceSpec sourceSpec, StructSpec dataObjSpec) {
+        this.sourceSpec = sourceSpec;
+        this.dataClass  = dataObjSpec;
     }
     
     public Stream<String> lines() {
@@ -100,9 +103,10 @@ public class GenStruct implements ILines {
                 .collect(toList());
         
         val thisPackage   = (String)dataClass.type().packageName();
-//        val thisEnclose   = (String)dataClass.type().encloseName();
+        val thisEnclose   = (String)dataClass.type().encloseName();
         val thisClassName = (String)dataClass.type().simpleName();
-        val lensClass     = (String)dataClass.type().lensType().fullName(thisPackage);
+        val localNoLens   = sourceSpec.getLocalTypeWithNoLens();
+        val lensClass     = (String)dataClass.type().lensType(thisPackage, thisEnclose, localNoLens).fullName(thisPackage);
         val superClass    = (String)dataClass.getSourcePackageName() + "." + dataClass.getSourceClassName();
         val isLensClass   = (Predicate<String>)((String name) -> name.equals(lensClass));
         val isSuperClass  = (Predicate<String>)((String name) -> name.equals(superClass));

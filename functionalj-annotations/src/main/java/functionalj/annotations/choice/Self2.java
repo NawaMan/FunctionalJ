@@ -14,8 +14,8 @@ public interface Self2<T1, T2> {
     }
     
     @SuppressWarnings("unchecked")
-    public static <TARGET, T> Self1<T> of(TARGET t) {
-        return (Self1<T>)t;
+    public static <TARGET, T1, T2> Self2<T1, T2> of(TARGET t) {
+        return (Self2<T1, T2>)t;
     }
     
 }

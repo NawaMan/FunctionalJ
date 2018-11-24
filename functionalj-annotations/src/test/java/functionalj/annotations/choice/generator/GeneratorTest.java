@@ -58,6 +58,7 @@ public class GeneratorTest {
                     + "false, "
                     + "java.util.Collections.emptyList(), "
                     + "java.util.Collections.emptyList(), "
+                    + "java.util.Collections.emptyList(), "
                     + "java.util.Collections.emptyList())", sourceSpec.toCode());
     }
     
@@ -89,13 +90,14 @@ public class GeneratorTest {
                 + "false, "
                 + "java.util.Collections.emptyList(), "
                 + "java.util.Collections.emptyList(), "
+                + "java.util.Collections.emptyList(), "
                 + "java.util.Collections.emptyList()"
                 + ")", sourceSpec.toCode());
     }
     @Test
     public void testSubClassConstructor_withParams_withGeneric() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, asList(new Generic("D")), emptyList(), emptyList());
+        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, asList(new Generic("D")), emptyList(), emptyList(), emptyList());
         val target = new TargetClass(sourceSpec);
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
@@ -104,15 +106,25 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class Next<D> extends Coroutine<D> {\n" + 
+                "    public static final NextLens<Next> theNext = new NextLens<>(LensSpec.of(Next.class));\n" + 
                 "    private Func1<D,Coroutine<D>> next;\n" + 
                 "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
                 "        this.next = next;\n" + 
                 "    }\n" + 
                 "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
+                "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
+                "        \n" + 
+                "        public final ObjectLens<HOST, Object> next = createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
+                "        \n" + 
+                "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
+                "            super(spec);\n" + 
+                "        }\n" + 
+                "        \n" + 
+                "    }\n" + 
                 "}", lines);
         assertEquals(
-                "new functionalj.annotations.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.annotations.choice.generator.model.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Generic(\"D\", \"D\", null))), \"spec\", false, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Generic(\"D\", \"D\", null)), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
+                "new functionalj.annotations.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.annotations.choice.generator.model.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Generic(\"D\", \"D\", null))), \"spec\", false, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Generic(\"D\", \"D\", null)), java.util.Collections.emptyList(), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
     }
     
     @Test
@@ -122,8 +134,16 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class White extends Color {\n" + 
+                "    public static final WhiteLens<White> theWhite = new WhiteLens<>(LensSpec.of(White.class));\n" + 
                 "    private static final White instance = new White();\n" + 
                 "    private White() {}\n" + 
+                "    public static class WhiteLens<HOST> extends ObjectLensImpl<HOST, Color.White> {\n" + 
+                "        \n" + 
+                "        public WhiteLens(LensSpec<HOST, Color.White> spec) {\n" + 
+                "            super(spec);\n" + 
+                "        }\n" + 
+                "        \n" + 
+                "    }\n" + 
                 "}", lines);
     }
     
@@ -139,6 +159,7 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class RGB extends Color {\n" + 
+                "    public static final RGBLens<RGB> theRGB = new RGBLens<>(LensSpec.of(RGB.class));\n" + 
                 "    private int r;\n" + 
                 "    private int g;\n" + 
                 "    private int b;\n" + 
@@ -153,13 +174,24 @@ public class GeneratorTest {
                 "    public RGB withR(int r) { return new RGB(r, g, b); }\n" + 
                 "    public RGB withG(int g) { return new RGB(r, g, b); }\n" + 
                 "    public RGB withB(int b) { return new RGB(r, g, b); }\n" + 
+                "    public static class RGBLens<HOST> extends ObjectLensImpl<HOST, Color.RGB> {\n" + 
+                "        \n" + 
+                "        public final IntegerLens<HOST> r = createSubLens(Color.RGB::r, Color.RGB::withR, IntegerLens::of);\n" + 
+                "        public final IntegerLens<HOST> g = createSubLens(Color.RGB::g, Color.RGB::withG, IntegerLens::of);\n" + 
+                "        public final IntegerLens<HOST> b = createSubLens(Color.RGB::b, Color.RGB::withB, IntegerLens::of);\n" + 
+                "        \n" + 
+                "        public RGBLens(LensSpec<HOST, Color.RGB> spec) {\n" + 
+                "            super(spec);\n" + 
+                "        }\n" + 
+                "        \n" + 
+                "    }\n" + 
                 "}", lines);
     }
     
     @Test
     public void testSubClassDefinition_withParams_withGeneric() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, asList(new Generic("D")), emptyList(), emptyList()));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
                     new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))))
@@ -167,12 +199,22 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class Next<D> extends Coroutine<D> {\n" + 
+                "    public static final NextLens<Next> theNext = new NextLens<>(LensSpec.of(Next.class));\n" + 
                 "    private Func1<D,Coroutine<D>> next;\n" + 
                 "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
                 "        this.next = next;\n" + 
                 "    }\n" + 
                 "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
+                "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
+                "        \n" + 
+                "        public final ObjectLens<HOST, Object> next = createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
+                "        \n" + 
+                "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
+                "            super(spec);\n" + 
+                "        }\n" + 
+                "        \n" + 
+                "    }\n" + 
                 "}", lines);
     }
     
@@ -305,7 +347,7 @@ public class GeneratorTest {
                             new Method(Kind.STATIC, "toRGBString", new Type("boolean"), 
                                     asList(new MethodParam("c", new Type("p1.p2", "Color")))
                                 )
-                        )));
+                        ), emptyList()));
         val sub    = new SourceMethod(target);
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -411,7 +453,7 @@ public class GeneratorTest {
                                 new MethodParam("s",  Type.STRING)
                             )
                         )
-                    )));
+                    ), emptyList()));
         val choices = asList(
                         new Case("White", emptyList()),
                         new Case("Black", emptyList()),
@@ -466,7 +508,7 @@ public class GeneratorTest {
     @Test
     public void testSubClassDefinition_withPublicField() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, asList(new Generic("D")), emptyList(), emptyList()));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
                     new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))))
@@ -474,12 +516,22 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class Next<D> extends Coroutine<D> {\n" + 
+                "    public static final NextLens<Next> theNext = new NextLens<>(LensSpec.of(Next.class));\n" + 
                 "    public Func1<D,Coroutine<D>> next;\n" + 
                 "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
                 "        this.next = next;\n" + 
                 "    }\n" + 
                 "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
+                "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
+                "        \n" + 
+                "        public final ObjectLens<HOST, Object> next = createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
+                "        \n" + 
+                "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
+                "            super(spec);\n" + 
+                "        }\n" + 
+                "        \n" + 
+                "    }\n" + 
                 "}", lines);
     }
     

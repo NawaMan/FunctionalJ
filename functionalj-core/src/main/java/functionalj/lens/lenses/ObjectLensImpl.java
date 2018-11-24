@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import functionalj.lens.core.AccessUtils;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
@@ -89,6 +90,15 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         val spec = LensUtils.createLensSpecParameterized(subRead, subWrite, subCreator);
         val lens = (ResultLens<HOST, SUB, SUBLENS>)()->spec;
         return lens;
+    }
+    
+    protected <SUB, SUBACCESSS extends AnyAccess<HOST, SUB>> 
+            ResultAccess<HOST, SUB, SUBACCESSS> createSubResultAccess(
+                Function<DATA,  Result<SUB>>              readSub,
+                Function<Function<HOST, SUB>, SUBACCESSS> subCreator) {
+        val readThis = this.lensSpec().getRead();
+        val subRead  = (Function<HOST, Result<SUB>>) LensUtils.createSubRead(readThis, readSub, this.lensSpec().getIsNullSafe());
+        return AccessUtils.createResultAccess(subRead, subCreator);
     }
     
     protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 

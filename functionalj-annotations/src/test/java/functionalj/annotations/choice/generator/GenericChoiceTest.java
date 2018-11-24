@@ -35,6 +35,7 @@ public class GenericChoiceTest {
                     new Case("Nill", null, emptyList()), 
                     new Case("Just", null, asList(new CaseParam("data", new Type(null, null, "T", emptyList()))))
             ),
+            emptyList(),
             emptyList()
         );
     

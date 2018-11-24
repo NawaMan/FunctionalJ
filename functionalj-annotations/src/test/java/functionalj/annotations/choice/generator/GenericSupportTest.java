@@ -1,6 +1,7 @@
 package functionalj.annotations.choice.generator;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Objects;
@@ -30,7 +31,8 @@ public class GenericSupportTest {
                     new Case("Some", asList(
                         new CaseParam("value", new Type("T"))
                     ))),
-                asList());
+                asList(),
+                emptyList());
         
         val lines  = generator.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(expected, lines);
@@ -41,6 +43,8 @@ public class GenericSupportTest {
             "\n" + 
             "import functionalj.annotations.choice.AbstractChoiceClass;\n" + 
             "import functionalj.annotations.choice.ChoiceTypeSwitch;\n" + 
+            "import functionalj.lens.core.LensSpec;\n" + 
+            "import functionalj.lens.lenses.*;\n" + 
             "import functionalj.pipeable.Pipeable;\n" + 
             "import functionalj.result.Result;\n" + 
             "import java.io.Serializable;\n" + 
@@ -63,21 +67,51 @@ public class GenericSupportTest {
             "    }\n" + 
             "    \n" + 
             "    \n" + 
+            "    public static final OptionLens<Option> theOption = new OptionLens<>(LensSpec.of(Option.class));\n" + 
+            "    public static class OptionLens<HOST> extends ObjectLensImpl<HOST, Option> {\n" + 
+            "\n" + 
+            "        public final BooleanAccess<Option> isNone = Option::isNone;\n" + 
+            "        public final BooleanAccess<Option> isSome = Option::isSome;\n" + 
+            "        public final ResultAccess<HOST, None, None.NoneLens<HOST>> asNone = createSubResultLens(Option::asNone, null, None.NoneLens::new);\n" + 
+            "        public final ResultAccess<HOST, Some, Some.SomeLens<HOST>> asSome = createSubResultLens(Option::asSome, null, Some.SomeLens::new);\n" + 
+            "        public OptionLens(LensSpec<HOST, Option> spec) {\n" + 
+            "            super(spec);\n" + 
+            "        }\n" + 
+            "    }\n" + 
+            "    \n" + 
             "    private Option() {}\n" + 
             "    public Option<T> __data() throws Exception { return this; }\n" + 
             "    public Result<Option<T>> toResult() { return Result.of(this); }\n" + 
             "    \n" + 
             "    public static final class None<T extends Number> extends Option<T> {\n" + 
+            "        public static final NoneLens<None> theNone = new NoneLens<>(LensSpec.of(None.class));\n" + 
             "        private static final None instance = new None();\n" + 
             "        private None() {}\n" + 
+            "        public static class NoneLens<HOST> extends ObjectLensImpl<HOST, Option.None> {\n" + 
+            "            \n" + 
+            "            public NoneLens(LensSpec<HOST, Option.None> spec) {\n" + 
+            "                super(spec);\n" + 
+            "            }\n" + 
+            "            \n" + 
+            "        }\n" + 
             "    }\n" + 
             "    public static final class Some<T extends Number> extends Option<T> {\n" + 
+            "        public static final SomeLens<Some> theSome = new SomeLens<>(LensSpec.of(Some.class));\n" + 
             "        private T value;\n" + 
             "        private Some(T value) {\n" + 
             "            this.value = value;\n" + 
             "        }\n" + 
             "        public T value() { return value; }\n" + 
             "        public Some<T> withValue(T value) { return new Some<T>(value); }\n" + 
+            "        public static class SomeLens<HOST> extends ObjectLensImpl<HOST, Option.Some> {\n" + 
+            "            \n" + 
+            "            public final ObjectLens<HOST, Object> value = createSubLens(Option.Some::value, Option.Some::withValue, ObjectLens::of);\n" + 
+            "            \n" + 
+            "            public SomeLens(LensSpec<HOST, Option.Some> spec) {\n" + 
+            "                super(spec);\n" + 
+            "            }\n" + 
+            "            \n" + 
+            "        }\n" + 
             "    }\n" + 
             "    \n" + 
             "    public final OptionFirstSwitch<T> mapSwitch = new OptionFirstSwitch<T>(this);\n" + 
@@ -259,7 +293,7 @@ public class GenericSupportTest {
             "        }\n" + 
             "    }\n" + 
             "    \n" + 
-            "    public static final functionalj.annotations.choice.generator.model.SourceSpec spec = new functionalj.annotations.choice.generator.model.SourceSpec(\"Option\", new functionalj.annotations.choice.generator.model.Type(\"functionalj.annotations.choice.generator\", \"GenericSupportTest\", \"OptionSpec\", java.util.Collections.emptyList()), \"spec\", false, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Generic(\"T\", \"T extends Number\", java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Type(\"java.lang\", null, \"Number\", java.util.Collections.emptyList()), new functionalj.annotations.choice.generator.model.Type(\"java.io\", null, \"Serializable\", java.util.Collections.emptyList())))), java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Case(\"None\", null, java.util.Collections.emptyList()), new functionalj.annotations.choice.generator.model.Case(\"Some\", null, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.CaseParam(\"value\", new functionalj.annotations.choice.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()))))), java.util.Collections.emptyList());\n" + 
+            "    public static final functionalj.annotations.choice.generator.model.SourceSpec spec = new functionalj.annotations.choice.generator.model.SourceSpec(\"Option\", new functionalj.annotations.choice.generator.model.Type(\"functionalj.annotations.choice.generator\", \"GenericSupportTest\", \"OptionSpec\", java.util.Collections.emptyList()), \"spec\", false, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Generic(\"T\", \"T extends Number\", java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Type(\"java.lang\", null, \"Number\", java.util.Collections.emptyList()), new functionalj.annotations.choice.generator.model.Type(\"java.io\", null, \"Serializable\", java.util.Collections.emptyList())))), java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Case(\"None\", null, java.util.Collections.emptyList()), new functionalj.annotations.choice.generator.model.Case(\"Some\", null, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.CaseParam(\"value\", new functionalj.annotations.choice.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()))))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n" + 
             "    \n" + 
             "}";
     
