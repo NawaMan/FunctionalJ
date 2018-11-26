@@ -105,7 +105,7 @@ public class GenericSupportTest {
             "        public Some<T> withValue(T value) { return new Some<T>(value); }\n" + 
             "        public static class SomeLens<HOST> extends ObjectLensImpl<HOST, Option.Some> {\n" + 
             "            \n" + 
-            "            public final ObjectLens<HOST, Object> value = createSubLens(Option.Some::value, Option.Some::withValue, ObjectLens::of);\n" + 
+            "            public final ObjectLens<HOST, Object> value = (ObjectLens)createSubLens(Option.Some::value, Option.Some::withValue, ObjectLens::of);\n" + 
             "            \n" + 
             "            public SomeLens(LensSpec<HOST, Option.Some> spec) {\n" + 
             "                super(spec);\n" + 

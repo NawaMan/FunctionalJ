@@ -79,6 +79,9 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default OUTPUT applyTo(Tuple2<INPUT1, INPUT2> input) {
         return apply(input._1(), input._2());
     }
+    public default Func1<INPUT2, OUTPUT> applyTo(INPUT1 input1) {
+        return input2 -> apply(input1, input2);
+    }
     public default OUTPUT applyTo(INPUT1 input1, INPUT2 input2) {
         return apply(input1, input2);
     }
@@ -105,6 +108,9 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2, boolean requireBoth) {
         return input1.zipWith(input2, requireBoth, this);
+    }
+    public default Func0<OUTPUT> applyTo(Supplier<INPUT1> input1, Supplier<INPUT2> input2) {
+        return ()->apply(input1.get(), input2.get());
     }
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2) {
@@ -212,15 +218,6 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     
     public default Func1<Tuple2<INPUT1, INPUT2>, OUTPUT> wholly() {
         return t -> this.applyUnsafe(t._1(), t._2());
-    }
-    
-    /**
-     * Create a curry function of the this function.
-     * 
-     * @return  the curried function.
-     */
-    public default Func1<INPUT1, Func1<INPUT2, OUTPUT>> curry() {
-        return i1 -> i2 -> this.applyUnsafe(i1, i2);
     }
     
     /**

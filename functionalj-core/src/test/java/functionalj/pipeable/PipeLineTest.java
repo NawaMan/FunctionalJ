@@ -33,8 +33,8 @@ public class PipeLineTest {
         assertEquals("8",    str.pipe(pipeLine, pipeLine2));
         
         val strNull = Pipeable.of((String)null);
-        assertEquals(null, pipeLine.applyNull());
-        assertEquals(null, pipeLine2.applyNull());
+        assertEquals(null, pipeLine.applyToNull());
+        assertEquals(null, pipeLine2.applyToNull());
         assertEquals(null, strNull.pipe(pipeLine));
         assertEquals(null, strNull.pipe(pipeLine2));
         assertEquals(null, strNull.pipe(pipeLine, pipeLine2));
@@ -51,8 +51,8 @@ public class PipeLineTest {
                 .from(theString.toUpperCase())
                 .thenReturn();
         
-        assertEquals("<none>", pipeLine.applyNull());
-        assertEquals(null,     pipeLine2.applyNull());
+        assertEquals("<none>", pipeLine.applyToNull());
+        assertEquals(null,     pipeLine2.applyToNull());
         
         val str = Pipeable.of((String)null);
         assertEquals("<none>", str.pipe(pipeLine));
@@ -70,7 +70,7 @@ public class PipeLineTest {
                 .then($S.toUpperCase())
                 .thenReturn();
 
-        assertEquals("<NONE>", pipeLine.applyNull());
+        assertEquals("<NONE>", pipeLine.applyToNull());
         
         val str = Pipeable.of((String)null);
         assertEquals("<NONE>", str.pipe(pipeLine));

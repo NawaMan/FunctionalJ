@@ -1,5 +1,7 @@
 package functionalj.functions;
 
+import static functionalj.function.Apply.$;
+import static functionalj.function.Func.f;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -9,6 +11,7 @@ import org.junit.Test;
 
 import functionalj.function.Func;
 import functionalj.function.Func2;
+import functionalj.function.Func4;
 import functionalj.function.FunctionInvocationException;
 import functionalj.promise.Promise;
 import lombok.val;
@@ -54,6 +57,22 @@ public class FuncTest {
         // TODO - Test message
     }
     
+    @Test
+    public void testCompactApply() throws Exception {
+        Func4<Integer, Integer, Integer, Integer, Integer> sum = f((a, b, c, d) -> a + b + c + d);
+        assertEquals(14, $($($($(sum, 5), 4), 3), 2).intValue());
+    }
+    
+    @Test
+    public void testAutoCurry() throws Exception {
+        val sum4 = f((a, b, c, d) -> "" + a + b + c + d);
+        assertEquals("5432", 
+                sum4
+                .applyTo(5)
+                .applyTo(4)
+                .applyTo(3)
+                .applyTo(2));
+    }
     @Test
     public void testElevate() throws Exception {
         assertEquals(true,             Func.elevate(String::contains, "Hello"     ).apply("Hello World!"));

@@ -940,19 +940,19 @@ public interface Func {
         Func2<I1, I2, R> grt = recusive(func3);
         return grt.bind(i1, absent);
     }
+    public static <I, R> Func1<I, R> recusive(Func2<Func1<I, R>, I, R> func2) {
+        AtomicReference<Func1<I, R>> selfRef = new AtomicReference<>();
+        Supplier<Func1<I, R>> self = selfRef::get;
+        Func1<I, R> selfFunc = (_i) -> func2.applyUnsafe(self.get(), _i);
+        selfRef.set(cacheFor(selfFunc));
+        return selfFunc;
+    }
     public static <I1, I2, R> Func2<I1, I2, R> recusive(
             Func3<Func2<I1, I2, R>, I1, I2, R> func3) {
         AtomicReference<Func2<I1, I2, R>> selfRef = new AtomicReference<>();
         Supplier<Func2<I1, I2, R>> self = selfRef::get;
         Func2<I1, I2, R> selfFunc = (i1, i2) -> func3.applyUnsafe(self.get(), i1, i2);
         selfRef.set(selfFunc);
-        return selfFunc;
-    }
-    public static <I, R> Func1<I, R> recusive(Func2<Func1<I, R>, I, R> func2) {
-        AtomicReference<Func1<I, R>> selfRef = new AtomicReference<>();
-        Supplier<Func1<I, R>> self = selfRef::get;
-        Func1<I, R> selfFunc = (_i) -> func2.applyUnsafe(self.get(), _i);
-        selfRef.set(cacheFor(selfFunc));
         return selfFunc;
     }
     

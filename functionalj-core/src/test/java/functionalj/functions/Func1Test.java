@@ -48,12 +48,14 @@ public class Func1Test {
     
     @Test
     public void testApply() {
-        val result  = Result.of("Hello");
-        val promise = Promise.of("Hello");
-        val stream  = f(()->StreamPlus.infiniteInt().limit(5).map($I.asString()));
-        val list    = StreamPlus.infiniteInt().limit(5).map($I.asString()).toList();
-        val map     = StreamPlus.infiniteInt().limit(5).toMap($I, $I.asString());
-        val func    = f(String::length);
+        val result   = Result.of("Hello");
+        val promise  = Promise.of("Hello");
+        val stream   = f(()->StreamPlus.infiniteInt().limit(5).map($I.asString()));
+        val list     = StreamPlus.infiniteInt().limit(5).map($I.asString()).toList();
+        val map      = StreamPlus.infiniteInt().limit(5).toMap($I, $I.asString());
+        val supplier = f(()   -> "Hello");
+        val function = f(name -> "Hello " + name + "!");
+        val func     = f(String::length);
         assertEquals("Result:{ Value: Hello }",   "" + result);
         assertEquals("Result:{ Value: Hello }",   "" + promise.getResult());
         assertEquals("0, 1, 2, 3, 4",             "" + stream.get().joining(", "));
@@ -64,6 +66,9 @@ public class Func1Test {
         assertEquals("1, 1, 1, 1, 1",             "" + func.applyTo(stream.get()).joining(", "));
         assertEquals("[1, 1, 1, 1, 1]",           "" + func.applyTo(list));
         assertEquals("{0:1, 1:1, 2:1, 3:1, 4:1}", "" + func.applyTo(map));
+        assertEquals("5",                         "" + func.applyTo(supplier).get());
+        assertEquals("11",                        "" + func.applyTo(function).apply("John"));
+        assertEquals("8",                         "" + func.applyTo(function).apply(5));
     }
     
 }

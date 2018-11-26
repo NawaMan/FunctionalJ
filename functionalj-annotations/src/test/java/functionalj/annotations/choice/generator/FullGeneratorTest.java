@@ -173,9 +173,9 @@ public class FullGeneratorTest {
               "        public RGB withB(int b) { return new RGB(r, g, b); }\n" + 
               "        public static class RGBLens<HOST> extends ObjectLensImpl<HOST, BasicColor.RGB> {\n" + 
               "            \n" + 
-              "            public final IntegerLens<HOST> r = createSubLens(BasicColor.RGB::r, BasicColor.RGB::withR, IntegerLens::of);\n" + 
-              "            public final IntegerLens<HOST> g = createSubLens(BasicColor.RGB::g, BasicColor.RGB::withG, IntegerLens::of);\n" + 
-              "            public final IntegerLens<HOST> b = createSubLens(BasicColor.RGB::b, BasicColor.RGB::withB, IntegerLens::of);\n" + 
+              "            public final IntegerLens<HOST> r = (IntegerLens)createSubLens(BasicColor.RGB::r, BasicColor.RGB::withR, IntegerLens::of);\n" + 
+              "            public final IntegerLens<HOST> g = (IntegerLens)createSubLens(BasicColor.RGB::g, BasicColor.RGB::withG, IntegerLens::of);\n" + 
+              "            public final IntegerLens<HOST> b = (IntegerLens)createSubLens(BasicColor.RGB::b, BasicColor.RGB::withB, IntegerLens::of);\n" + 
               "            \n" + 
               "            public RGBLens(LensSpec<HOST, BasicColor.RGB> spec) {\n" + 
               "                super(spec);\n" + 

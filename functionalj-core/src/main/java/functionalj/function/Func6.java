@@ -79,6 +79,9 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
     public default OUTPUT applyTo(Tuple6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6> input) {
         return apply(input._1(), input._2(), input._3(), input._4(), input._5(), input._6());
     }
+    public default Func5<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> applyTo(INPUT1 input1) {
+        return (input2, input3, input4, input5, input6) -> apply(input1, input2, input3, input4, input5, input6);
+    }
     public default OUTPUT applyTo(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6) {
         return apply(input1, input2, input3, input4, input5, input6);
     }
@@ -87,6 +90,9 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
     }
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2, HasPromise<INPUT3> input3, HasPromise<INPUT4> input4, HasPromise<INPUT5> input5, HasPromise<INPUT6> input6) {
         return Promise.from(input1, input2, input3, input4, input5, input6, this);
+    }
+    public default Func0<OUTPUT> applyTo(Supplier<INPUT1> input1, Supplier<INPUT2> input2, Supplier<INPUT3> input3, Supplier<INPUT4> input4, Supplier<INPUT5> input5, Supplier<INPUT6> input6) {
+        return ()->apply(input1.get(), input2.get(), input3.get(), input4.get(), input5.get(), input6.get());
     }
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6) {
@@ -183,15 +189,6 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
     
     public default Func1<Tuple6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6>, OUTPUT> wholly() {
         return t -> this.applyUnsafe(t._1(), t._2(), t._3(), t._4(), t._5(), t._6());
-    }
-    
-    /**
-     * Create a curry function of the this function.
-     * 
-     * @return  the curried function.
-     */
-    public default Func1<INPUT1, Func1<INPUT2, Func1<INPUT3, Func1<INPUT4, Func1<INPUT5, Func1<INPUT6, OUTPUT>>>>>> curry() {
-        return i1 -> i2 -> i3 -> i4 -> i5 -> i6 -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
     /**

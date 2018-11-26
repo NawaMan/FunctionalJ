@@ -75,6 +75,9 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default OUTPUT applyTo(Tuple4<INPUT1, INPUT2, INPUT3, INPUT4> input) {
         return apply(input._1(), input._2(), input._3(), input._4());
     }
+    public default Func3<INPUT2, INPUT3, INPUT4, OUTPUT> applyTo(INPUT1 input1) {
+        return (input2, input3, input4) -> apply(input1, input2, input3, input4);
+    }
     public default OUTPUT applyTo(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) {
         return apply(input1, input2, input3, input4);
     }
@@ -83,6 +86,9 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     }
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2, HasPromise<INPUT3> input3, HasPromise<INPUT4> input4) {
         return Promise.from(input1, input2, input3, input4, this);
+    }
+    public default Func0<OUTPUT> applyTo(Supplier<INPUT1> input1, Supplier<INPUT2> input2, Supplier<INPUT3> input3, Supplier<INPUT4> input4) {
+        return ()->apply(input1.get(), input2.get(), input3.get(), input4.get());
     }
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) {
@@ -186,15 +192,6 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     
     public default Func1<Tuple4<INPUT1, INPUT2, INPUT3, INPUT4>, OUTPUT> wholly() {
         return t -> this.applyUnsafe(t._1(), t._2(), t._3(), t._4());
-    }
-    
-    /**
-     * Create a curry function of the this function.
-     * 
-     * @return  the curried function.
-     */
-    public default Func1<INPUT1, Func1<INPUT2, Func1<INPUT3, Func1<INPUT4, OUTPUT>>>> curry() {
-        return i1 -> i2 -> i3 -> i4 -> this.applyUnsafe(i1, i2, i3, i4);
     }
     
     /**

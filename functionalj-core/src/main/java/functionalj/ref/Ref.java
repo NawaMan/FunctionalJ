@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
-import functionalj.result.AsResult;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -106,7 +105,7 @@ public abstract class Ref<DATA> {
         return Result.of(elseValue);
     }
     
-    public final AsResult<DATA> asResult() {
+    public final Result<DATA> asResult() {
         return getResult();
     }
     

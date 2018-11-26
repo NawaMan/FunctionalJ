@@ -61,9 +61,6 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     
     public OUTPUT applyUnsafe(INPUT input) throws Exception;
     
-    public default OUTPUT applyNull() {
-        return apply((INPUT)null);
-    }
     
     /**
      * Applies this function to the given input value.
@@ -81,6 +78,9 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         }
     }
     
+    public default OUTPUT applyToNull() {
+        return apply((INPUT)null);
+    }
     public default OUTPUT applyTo(INPUT input) {
         return apply(input);
     }
@@ -98,6 +98,12 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT> input) {
         return input.map(this);
+    }
+    public default Func0<OUTPUT> applyTo(Supplier<INPUT> input) {
+        return ()->apply(input.get());
+    }
+    public default <T> Func1<T, OUTPUT> applyTo(Function<T, INPUT> input) {
+        return t -> apply(input.apply(t));
     }
     
     public default Result<OUTPUT> applySafely(INPUT input) {

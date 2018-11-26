@@ -115,7 +115,7 @@ public class GeneratorTest {
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
                 "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
                 "        \n" + 
-                "        public final ObjectLens<HOST, Object> next = createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
+                "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
                 "        \n" + 
                 "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
                 "            super(spec);\n" + 
@@ -176,9 +176,9 @@ public class GeneratorTest {
                 "    public RGB withB(int b) { return new RGB(r, g, b); }\n" + 
                 "    public static class RGBLens<HOST> extends ObjectLensImpl<HOST, Color.RGB> {\n" + 
                 "        \n" + 
-                "        public final IntegerLens<HOST> r = createSubLens(Color.RGB::r, Color.RGB::withR, IntegerLens::of);\n" + 
-                "        public final IntegerLens<HOST> g = createSubLens(Color.RGB::g, Color.RGB::withG, IntegerLens::of);\n" + 
-                "        public final IntegerLens<HOST> b = createSubLens(Color.RGB::b, Color.RGB::withB, IntegerLens::of);\n" + 
+                "        public final IntegerLens<HOST> r = (IntegerLens)createSubLens(Color.RGB::r, Color.RGB::withR, IntegerLens::of);\n" + 
+                "        public final IntegerLens<HOST> g = (IntegerLens)createSubLens(Color.RGB::g, Color.RGB::withG, IntegerLens::of);\n" + 
+                "        public final IntegerLens<HOST> b = (IntegerLens)createSubLens(Color.RGB::b, Color.RGB::withB, IntegerLens::of);\n" + 
                 "        \n" + 
                 "        public RGBLens(LensSpec<HOST, Color.RGB> spec) {\n" + 
                 "            super(spec);\n" + 
@@ -208,7 +208,7 @@ public class GeneratorTest {
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
                 "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
                 "        \n" + 
-                "        public final ObjectLens<HOST, Object> next = createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
+                "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
                 "        \n" + 
                 "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
                 "            super(spec);\n" + 
@@ -525,7 +525,7 @@ public class GeneratorTest {
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
                 "    public static class NextLens<HOST> extends ObjectLensImpl<HOST, Coroutine.Next> {\n" + 
                 "        \n" + 
-                "        public final ObjectLens<HOST, Object> next = createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
+                "        public final ObjectLens<HOST, Object> next = (ObjectLens)createSubLens(Coroutine.Next::next, Coroutine.Next::withNext, ObjectLens::of);\n" + 
                 "        \n" + 
                 "        public NextLens(LensSpec<HOST, Coroutine.Next> spec) {\n" + 
                 "            super(spec);\n" + 
