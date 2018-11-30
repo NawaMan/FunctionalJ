@@ -19,7 +19,7 @@ public class RaceResult<DATA> implements HasPromise<DATA> {
         return Race(FuncList.of(actions));
     }
     
-    public static <D> RaceResult<D> of(List<StartableAction<D>> actions) {
+    public static <D> RaceResult<D> from(List<? extends StartableAction<D>> actions) {
         return Race(FuncList.from(actions));
     }
     
@@ -28,7 +28,7 @@ public class RaceResult<DATA> implements HasPromise<DATA> {
         return Race(FuncList.of(actions));
     }
     
-    public static <D> RaceResult<D> Race(List<StartableAction<D>> actions) {
+    public static <D> RaceResult<D> Race(List<? extends StartableAction<D>> actions) {
         DeferAction<D> deferAction   = DeferAction.createNew();
         val            pendingAction = deferAction.start();
         

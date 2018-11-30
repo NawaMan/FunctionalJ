@@ -1,5 +1,8 @@
 package functionalj.io;
 
+import static nawaman.nullablej.nullable.Nullable.nullable;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiPredicate;
@@ -13,8 +16,10 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.list.FuncList;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
+import functionalj.promise.RaceResult;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -358,6 +363,39 @@ public class IOs {
         public String toString() {
             return merger + "(" + input1 + ", " + input2 + ", " + input3 + ", " + input4 + ", " + input5 + ", " + input6 + ")";
         }
+    }
+    
+    public static class IORace<D> implements IO<D> {
+        private final FuncList<IO<D>> list;
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        public IORace(List<? extends IO<D>> list) {
+            this.list = (FuncList)nullable(list).map(FuncList::from).orElse(FuncList.empty());
+        }
+        @Override
+        public DeferAction<D> createAction() {
+            val actions    = list.map(io -> io.createAction());
+            val raceResult = RaceResult.from(actions);
+            val promise    = raceResult.getResultPromise();
+            val action     = DeferAction.of((Class<D>)null, ()->{
+                if (promise != null)
+                    promise.start();
+            });
+            if (promise != null) {
+                promise
+                .eavesdrop(result -> {
+                    val pendingAction = action.start();
+                    if (result.isValue())
+                         pendingAction.complete(result.getValue());
+                    else pendingAction.fail    (result.getException());
+                });
+            }
+            return action;
+        }
+        @Override
+        public String toString() {
+            return "Race(" + list.joining(",") + ")";
+        }
+        
     }
     
 }

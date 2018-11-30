@@ -1,5 +1,6 @@
 package functionalj.io;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -26,6 +27,8 @@ import functionalj.io.IOs.IOResult;
 import functionalj.io.IOs.IOPromise;
 import functionalj.io.IOs.IOSupplier;
 import functionalj.io.IOs.IOValue;
+import functionalj.io.IOs.IORace;
+import functionalj.list.FuncList;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
@@ -88,6 +91,14 @@ public interface IO<DATA> {
             IO<I6>                           io6,
             Func6<I1, I2, I3, I4, I5, I6, D> merger) {
         return new IOMerge6<>(io1, io2, io3, io4, io5, io6, merger);
+    }
+    
+    @SafeVarargs
+    public static <D> IO<D> firstOf(IO<D> ... ios) {
+        return new IORace<D>(FuncList.from(ios));
+    }
+    public static <D> IO<D> firstFrom(List<? extends IO<D>> ios) {
+        return new IORace<D>(FuncList.from(ios));
     }
     
     
