@@ -92,7 +92,7 @@ public class Retry<DATA> {
         if (times == Retry.NO_RETRY)
             return DeferAction.create(interruptOnCancel, supplier, onStart, runner);
         
-        return RetryDeferActionCreator.current.value()
+        return RetryableDeferActionCreator.current.value()
                 .createRetryDeferAction(interruptOnCancel, onStart, runner, this, supplier);
     }
     

@@ -33,6 +33,22 @@ public interface Named {
         return new Annotated.Predicate<T>(name, check);
     }
     
+    /**
+     * Add name to the given bipredicate. 
+     * 
+     * @param name 
+     * @param check 
+     * @return the named predicate.
+     **/
+    public static <T, U> Annotated.BiPredicate<T, U> biPredicate(String name, java.util.function.BiPredicate<T, U> check) {
+        return new Annotated.BiPredicate<T, U>(name, check);
+    }
+    
+    /** Add name to the given bipredicate. */
+    public static <T, U> Annotated.BiPredicate<T, U> BiPredicate(String name, java.util.function.BiPredicate<T, U> check) {
+        return new Annotated.BiPredicate<T, U>(name, check);
+    }
+    
     /** Add name to the given supplier. */
     public static <T> Annotated.Supplier<T> supplier(String name, java.util.function.Supplier<T> supplier) {
         return new Annotated.Supplier<T>(name, supplier);

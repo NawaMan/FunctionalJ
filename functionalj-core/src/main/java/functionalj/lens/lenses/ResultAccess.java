@@ -86,6 +86,11 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
             return ResultAccess.this.apply(host).isNull();
         };
     }
+    public default BooleanAccess<HOST> isValue() {
+        return host -> {
+            return ResultAccess.this.apply(host).isValue();
+        };
+    }
     
     public default SUBACCESS orElse(TYPE fallbackValue) {
         return ResultAccess.this.accessWithSub().createSubAccess((Result<TYPE> nullable) -> { 

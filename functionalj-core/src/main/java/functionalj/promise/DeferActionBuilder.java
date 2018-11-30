@@ -6,15 +6,15 @@ import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit0;
-import functionalj.pipeable.Pipeable;
+import functionalj.io.IO;
 import functionalj.result.Result;
 import lombok.val;
-import lombok.experimental.Delegate;
 
-public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements Pipeable<HasPromise<DATA>> {
+public class DeferActionBuilder<DATA> implements IO<DATA> {
     
     private static final FuncUnit0 DO_NOTHING = ()->{};
     
+    private final String      toString;
     private final Func0<DATA> supplier;
     private boolean           interruptOnCancel = true;
     private FuncUnit0         onStart           = DO_NOTHING;
@@ -23,11 +23,31 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements P
     @SuppressWarnings("unchecked")
     private Retry<DATA> retry = (Retry<DATA>)Retry.noRetry;
     
-    DeferActionBuilder(FuncUnit0 supplier) {
-        this(supplier.thenReturnNull());
+    public static final <D> DeferActionBuilder<D> from(FuncUnit0 runnable) {
+        return new DeferActionBuilder<>(runnable);
+    }
+    public static final <D> DeferActionBuilder<D> from(Func0<D> supplier) {
+        return new DeferActionBuilder<>(supplier);
+    }
+    public static final <D> DeferActionBuilder<D> from(String toString, FuncUnit0 runnable) {
+        return new DeferActionBuilder<>(toString, runnable);
+    }
+    public static final <D> DeferActionBuilder<D> from(String toString, Func0<D> supplier) {
+        return new DeferActionBuilder<>(toString, supplier);
     }
     
-    DeferActionBuilder(Func0<DATA> supplier) {
+    public DeferActionBuilder(FuncUnit0 runnable) {
+        this(null, runnable);
+    }
+    public DeferActionBuilder(String toString, FuncUnit0 runnable) {
+        this(toString, runnable.thenReturnNull());
+    }
+    
+    public DeferActionBuilder(Func0<DATA> supplier) {
+        this(null, supplier);
+    }
+    public DeferActionBuilder(String toString, Func0<DATA> supplier) {
+        this.toString = (toString != null) ? toString : "IO#" + supplier.toString();
         this.supplier = requireNonNull(supplier);
     }
     
@@ -94,9 +114,17 @@ public class DeferActionBuilder<DATA> extends StartableAction<DATA> implements P
         return new RetryBuilderTimes<DATA>(this, times);
     }
     
-    @Delegate
     public DeferAction<DATA> build() {
         return retry.create(this);
+    }
+    
+    public DeferAction<DATA> createAction() {
+        return build();
+    }
+    
+    @Override
+    public String toString() {
+        return toString;
     }
     
     //== Aux classes ==

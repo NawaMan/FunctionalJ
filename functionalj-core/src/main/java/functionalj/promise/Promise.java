@@ -46,7 +46,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (asResult instanceof HasPromise)
             return ((HasPromise<D>)asResult).getPromise();
         
-        return DeferAction
+        return DeferActionBuilder
                 .from(()->asResult.getResult().value())
                 .build()
                 .getPromise();
@@ -77,10 +77,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T1>> promise1,
             NamedExpression<HasPromise<T2>> promise2,
             Func2<T1, T2, D>                merger) {
-        val action = DeferAction.from(promise1, promise2, merger);
-        action.start();
-        
-        val promise  = action.getPromise();
+        val action  = DeferAction.from(promise1, promise2, merger);
+        val promise = action.getPromise();
         return promise;
     }
     
@@ -89,10 +87,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T2>> promise2,
             NamedExpression<HasPromise<T3>> promise3,
             Func3<T1, T2, T3, D>            merger) {
-        val action = DeferAction.from(promise1, promise2, promise3, merger);
-        action.start();
-        
-        val promise  = action.getPromise();
+        val action  = DeferAction.from(promise1, promise2, promise3, merger);
+        val promise = action.getPromise();
         return promise;
     }
     
@@ -102,10 +98,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T3>> promise3,
             NamedExpression<HasPromise<T4>> promise4,
             Func4<T1, T2, T3, T4, D>        merger) {
-        val action = DeferAction.from(promise1, promise2, promise3, promise4, merger);
-        action.start();
-        
-        val promise  = action.getPromise();
+        val action  = DeferAction.from(promise1, promise2, promise3, promise4, merger);
+        val promise = action.getPromise();
         return promise;
     }
     
@@ -116,10 +110,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T4>> promise4,
             NamedExpression<HasPromise<T5>> promise5,
             Func5<T1, T2, T3, T4, T5, D>    merger) {
-        val action = DeferAction.from(promise1, promise2, promise3, promise4, promise5, merger);
-        action.start();
-        
-        val promise  = action.getPromise();
+        val action  = DeferAction.from(promise1, promise2, promise3, promise4, promise5, merger);
+        val promise = action.getPromise();
         return promise;
     }
     
@@ -131,10 +123,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T5>>  promise5,
             NamedExpression<HasPromise<T6>>  promise6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        val action = DeferAction.from(promise1, promise2, promise3, promise4, promise5, promise6, merger);
-        action.start();
-        
-        val promise  = action.getPromise();
+        val action  = DeferAction.from(promise1, promise2, promise3, promise4, promise5, promise6, merger);
+        val promise = action.getPromise();
         return promise;
     }
     

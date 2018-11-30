@@ -50,6 +50,13 @@ public interface StringAccess<HOST>
             return prefix + str;
         });
     }
+    public default StringAccess<HOST> suffix(Object ... suffixes) {
+        return stringAccess("", str -> {
+            val eachToString = __internal__.stringFrom(str);
+            String prefix = Stream.of(suffixes).map(eachToString).collect(joining());
+            return str + prefix;
+        });
+    }
     public default StringAccess<HOST> wrapBy(Object prefix, Object suffix) {
         return stringAccess("", str -> { 
             val eachToString = __internal__.stringFrom(str);

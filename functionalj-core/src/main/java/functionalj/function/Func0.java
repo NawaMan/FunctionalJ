@@ -26,6 +26,9 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     }
     
     public static <T> Func0<T> from(Supplier<T> supplier) {
+        if (supplier instanceof Func0)
+            return (Func0<T>)supplier;
+        
         return supplier::get;
     }
     public static <T> Func0<T> from(IntFunction<T> generatorFunction) {
@@ -128,7 +131,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return defer();
     }
     public default DeferAction<OUTPUT> defer() {
-        return DeferAction.from(this).build();
+        return DeferAction.from(this);
     }
     
     public default FuncUnit0 ignoreResult() {

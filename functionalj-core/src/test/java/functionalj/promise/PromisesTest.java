@@ -4,6 +4,7 @@ import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.promise.DeferAction.run;
 import static functionalj.result.Result.value;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -29,10 +30,10 @@ public class PromisesTest {
                 (str, padding) -> {
                     return padding + str.length();
                 });
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control1.complete("One");
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control2.complete(5);
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
@@ -51,10 +52,10 @@ public class PromisesTest {
                 (str, padding) -> {
                     return padding + str.length();
                 });
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control2.complete(5);
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control1.complete("One");
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());
@@ -73,7 +74,7 @@ public class PromisesTest {
                 (str, padding) -> {
                     return padding + str.length();
                 });
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control1.fail(new Exception());
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
@@ -94,7 +95,7 @@ public class PromisesTest {
                 (str, padding) -> {
                     return padding + str.length();
                 });
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control2.fail(new Exception());
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
@@ -115,10 +116,10 @@ public class PromisesTest {
                 (str, padding) -> {
                     return padding + str.length();
                 });
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control2.complete(5);
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control1.fail(new Exception());
         assertEquals(PromiseStatus.COMPLETED, promise.getStatus());
@@ -148,22 +149,22 @@ public class PromisesTest {
                 });
         promise.start();
         
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control1.complete(1);
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control2.complete(2);
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control3.complete(3);
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control4.complete(4);
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control5.complete(5);
-        assertEquals(PromiseStatus.PENDING, promise.getStatus());
+        assertTrue(!PromiseStatus.COMPLETED.equals(promise.getStatus()));
         
         control6.complete(6);
         assertEquals (PromiseStatus.COMPLETED, promise.getStatus());

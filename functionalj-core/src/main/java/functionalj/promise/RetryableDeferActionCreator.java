@@ -13,13 +13,13 @@ import functionalj.result.Result;
 import lombok.val;
 
 
-public class RetryDeferActionCreator {
+public class RetryableDeferActionCreator {
     
-    private static final RetryDeferActionCreator instance = new RetryDeferActionCreator();
+    private static final RetryableDeferActionCreator instance = new RetryableDeferActionCreator();
     
-    public static final Ref<RetryDeferActionCreator> current
-            = Ref.of(RetryDeferActionCreator.class)
-            .defaultTo(RetryDeferActionCreator.instance);
+    public static final Ref<RetryableDeferActionCreator> current
+            = Ref.of(RetryableDeferActionCreator.class)
+            .defaultTo(RetryableDeferActionCreator.instance);
     
     public <DATA> DeferAction<DATA> createRetryDeferAction(
             boolean     interruptOnCancel,

@@ -6,11 +6,8 @@ import static functionalj.list.FuncList.listOf;
 import static functionalj.promise.RaceResult.Race;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
@@ -50,11 +47,11 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
         return action;
     }
     
-    public static DeferActionBuilder<Object> from(FuncUnit0 runnable) {
-        return DeferActionConfig.current.value().createBuilder(runnable);
+    public static DeferAction<Object> from(FuncUnit0 runnable) {
+        return DeferActionConfig.current.value().createBuilder(runnable).build();
     }
-    public static <D> DeferActionBuilder<D> from(Func0<D> supplier) {
-        return DeferActionConfig.current.value().createBuilder(supplier);
+    public static <D> DeferAction<D> from(Func0<D> supplier) {
+        return DeferActionConfig.current.value().createBuilder(supplier).build();
     }
     
     public static PendingAction<Object> run(FuncUnit0 runnable) {
@@ -89,14 +86,14 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             NamedExpression<HasPromise<T1>> promise1,
             NamedExpression<HasPromise<T2>> promise2,
             Func2<T1, T2, D>                merger) {
-        val merge = f((Result<Object>[] results)-> {
-            val result1 = (Result<T1>)results[0];
-            val result2 = (Result<T2>)results[1];
+        val merge = f((FuncList<Result> results)-> {
+            val result1 = (Result<T1>)results.get(0);
+            val result2 = (Result<T2>)results.get(1);
             val mergedResult = Result.ofResults(result1, result2, merger);
             return (Result<D>)mergedResult;
         });
         val promises = listOf(promise1, promise2);
-        val combiner = new Combiner(promises, merge);
+        val combiner = new CombineResult(promises, merge);
         val action   = combiner.getDeferAction();
         return action;
     }
@@ -107,15 +104,15 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             NamedExpression<HasPromise<T2>> promise2,
             NamedExpression<HasPromise<T3>> promise3,
             Func3<T1, T2, T3, D>            merger) {
-        val merge = f((Result<Object>[] results)-> {
-            val result1 = (Result<T1>)results[0];
-            val result2 = (Result<T2>)results[1];
-            val result3 = (Result<T3>)results[2];
+        val merge = f((FuncList<Result> results)-> {
+            val result1 = (Result<T1>)results.get(0);
+            val result2 = (Result<T2>)results.get(1);
+            val result3 = (Result<T3>)results.get(2);
             val mergedResult = Result.ofResults(result1, result2, result3, merger);
             return (Result<D>)mergedResult;
         });
         val promises = listOf(promise1, promise2, promise3);
-        val combiner = new Combiner(promises, merge);
+        val combiner = new CombineResult(promises, merge);
         val action   = combiner.getDeferAction();
         return action;
     }
@@ -127,16 +124,16 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             NamedExpression<HasPromise<T3>> promise3,
             NamedExpression<HasPromise<T4>> promise4,
             Func4<T1, T2, T3, T4, D>        merger) {
-        val merge = f((Result<Object>[] results)-> {
-            val result1 = (Result<T1>)results[0];
-            val result2 = (Result<T2>)results[1];
-            val result3 = (Result<T3>)results[2];
-            val result4 = (Result<T4>)results[3];
+        val merge = f((FuncList<Result> results)-> {
+            val result1 = (Result<T1>)results.get(0);
+            val result2 = (Result<T2>)results.get(1);
+            val result3 = (Result<T3>)results.get(2);
+            val result4 = (Result<T4>)results.get(3);
             val mergedResult = Result.ofResults(result1, result2, result3, result4, merger);
             return (Result<D>)mergedResult;
         });
         val promises = listOf(promise1, promise2, promise3, promise4);
-        val combiner = new Combiner(promises, merge);
+        val combiner = new CombineResult(promises, merge);
         val action   = combiner.getDeferAction();
         return action;
     }
@@ -149,17 +146,17 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             NamedExpression<HasPromise<T4>> promise4,
             NamedExpression<HasPromise<T5>> promise5,
             Func5<T1, T2, T3, T4, T5, D>    merger) {
-        val merge = f((Result<Object>[] results)-> {
-            val result1 = (Result<T1>)results[0];
-            val result2 = (Result<T2>)results[1];
-            val result3 = (Result<T3>)results[2];
-            val result4 = (Result<T4>)results[3];
-            val result5 = (Result<T5>)results[4];
+        val merge = f((FuncList<Result> results)-> {
+            val result1 = (Result<T1>)results.get(0);
+            val result2 = (Result<T2>)results.get(1);
+            val result3 = (Result<T3>)results.get(2);
+            val result4 = (Result<T4>)results.get(3);
+            val result5 = (Result<T5>)results.get(4);
             val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, merger);
             return (Result<D>)mergedResult;
         });
         val promises = listOf(promise1, promise2, promise3, promise4, promise5);
-        val combiner = new Combiner(promises, merge);
+        val combiner = new CombineResult(promises, merge);
         val action   = combiner.getDeferAction();
         return action;
     }
@@ -173,18 +170,18 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             NamedExpression<HasPromise<T5>>  promise5,
             NamedExpression<HasPromise<T6>>  promise6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        val merge = f((Result<Object>[] results)-> {
-            val result1 = (Result<T1>)results[0];
-            val result2 = (Result<T2>)results[1];
-            val result3 = (Result<T3>)results[2];
-            val result4 = (Result<T4>)results[3];
-            val result5 = (Result<T5>)results[4];
-            val result6 = (Result<T6>)results[5];
+        val merge = f((FuncList<Result> results)-> {
+            val result1 = (Result<T1>)results.get(0);
+            val result2 = (Result<T2>)results.get(1);
+            val result3 = (Result<T3>)results.get(2);
+            val result4 = (Result<T4>)results.get(3);
+            val result5 = (Result<T5>)results.get(4);
+            val result6 = (Result<T6>)results.get(5);
             val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, merger);
             return (Result<D>)mergedResult;
         });
         val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6);
-        val combiner = new Combiner(promises, merge);
+        val combiner = new CombineResult(promises, merge);
         val action   = combiner.getDeferAction();
         return action;
     }
@@ -199,7 +196,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             return (Result<D>)mergedResult;
         });
         val promiseList = listOf(promises);
-        val combiner    = new Combiner(promiseList, merge);
+        val combiner    = new CombineResult(promiseList, merge);
         val action      = combiner.getDeferAction();
         return action;
     }
@@ -324,120 +321,5 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     }
     
     // TODO - Other F-M-FM methods.
-    
-    
-    
-    
-    //== Internal ==
-    
-    @SuppressWarnings("rawtypes")
-    private static class Combiner<D> {
-        
-        private final Func1<Result[], Result<D>> mergeFunc;
-        // TODO - Add Else ... which will be called with the current value when unsuccessfull.
-        
-        private final DeferAction<D> action;
-        private final int            count;
-        private final Result[]       results;
-        private final SubscriptionRecord[] subscriptions;
-        private final AtomicBoolean  isDone;
-        private final Promise<D>     promise;
-        
-        Combiner(FuncList<NamedExpression<HasPromise<Object>>> hasPromises,
-                 Func1<Result[], Result<D>>                    mergeFunc) {
-            this.mergeFunc     = mergeFunc;
-            this.count         = hasPromises.size();
-            this.results       = new Result[count];
-            this.subscriptions = new SubscriptionRecord[count];
-            this.isDone        = new AtomicBoolean(false);
-            
-            val promises = hasPromises
-            .map(promise -> promise.getExpression())
-            .map(promise -> promise.getPromise());
-            
-            this.action = DeferAction.of((Class<D>)null, OnStart.run(()->{
-                promises.forEach(promise -> promise.start());
-            }));
-            
-            promises
-            .mapWithIndex    ((index, promise) -> promise.onComplete(result -> processResult(index, result)))
-            .forEachWithIndex((index, sub)     -> subscriptions[index] = sub);
-            
-            this.promise = action.getPromise();
-            this.promise.eavesdrop(result->{
-                if (result.isCancelled()) {
-                    unsbscribeAll();
-                }
-            });
-        }
-        
-        DeferAction<D> getDeferAction() {
-            return action;
-        }
-        
-        private <T> void processResult(int index, Result<T> result) {
-            if (isDone.get())
-                return;
-            
-            if (result.isCancelled())
-                doneAsCancelled(index);
-            
-            if (result.isNotReady())
-                doneAsNotReady(index, result);
-            
-            if (result.isException())
-                doneAsException(index, result);
-            
-            results[index] = result;
-            
-            if (!(count == Stream.of(results).filter(Objects::nonNull).count()))
-                return;
-            
-            if (!isDone.compareAndSet(false, true))
-                return;
-            
-            val mergedResult = mergeFunc.apply(results);
-            action.completeWith(mergedResult);
-        }
-        
-        private void unsbscribeAll() {
-            for(val subscription : subscriptions) {
-                if (subscription != null)
-                    subscription.unsubscribe();
-            }
-        }
-        
-        private void doneAsCancelled(int index) {
-            if (!isDone.compareAndSet(false, true))
-                return;
-            
-            action.abort("Promise#" + index);
-            unsbscribeAll();
-        }
-        
-        private void doneAsNotReady(
-                int    index, 
-                Result result) {
-            if (!isDone.compareAndSet(false, true))
-                return;
-            
-            action.abort(
-                    "Promise#" + index, 
-                    new IllegalStateException(
-                            "Result cannot be in 'not ready' at this point: " + result.getStatus(),
-                            result.getException()));
-            unsbscribeAll();
-        }
-        
-        private void doneAsException(
-                int index,
-                Result  result) {
-            if (!isDone.compareAndSet(false, true))
-                return;
-            
-            action.fail(new PromisePartiallyFailException(index, count, result.getException()));
-            unsbscribeAll();
-        }
-    }
     
 }

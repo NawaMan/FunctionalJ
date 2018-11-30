@@ -61,7 +61,7 @@ public interface Access {
     //== Internal use only ==
     
     public static class TheListLens implements ListLens<List<?>, Object, ObjectLens<List<?>, Object>> {
-
+        
         private static final LensSpecParameterized<List<?>, List<?>, Object, ObjectLens<List<?>, Object>> 
                 common = LensUtils.createLensSpecParameterized(selfRead(), selfWrite(), ObjectLens::of);
         
@@ -74,7 +74,7 @@ public interface Access {
         }
         
         @SuppressWarnings({ "rawtypes", "unchecked" })
-		@Override
+        @Override
         public LensSpecParameterized<List<?>, List<Object>, Object, ObjectLens<List<?>, Object>> lensSpecParameterized() {
             return (LensSpecParameterized)common;
         }
@@ -114,7 +114,7 @@ public interface Access {
         }
         
         @SuppressWarnings({ "rawtypes", "unchecked" })
-		@Override
+        @Override
         public LensSpecParameterized2<Tuple2<Object, Object>, Tuple2<Object, Object>, Object, Object, 
             ObjectLens<Tuple2<Object, Object>, Object>, ObjectLens<Tuple2<Object, Object>, Object>> lensSpecParameterized2() {
             return (LensSpecParameterized2)common;
