@@ -229,6 +229,9 @@ public interface Func {
             return (FuncUnit0)runnable;
         return runnable::run;
     }
+    public static <INPUT> Predicate<INPUT> from(String name, Predicate<INPUT> predicate) {
+        return Named.predicate(name, predicate);
+    }
     
     public static <INPUT> FuncUnit1<INPUT> from(Consumer<INPUT> consumer) {
         return FuncUnit1.from(consumer);

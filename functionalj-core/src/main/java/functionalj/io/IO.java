@@ -101,6 +101,10 @@ public interface IO<DATA> {
         return new IORace<D>(FuncList.from(ios));
     }
     
+    public static <D> IO<D> doUntil(IO<D> body, Predicate<Result<D>> breakCondition) {
+        return new IOs.IODoUntil<D>(body, breakCondition);
+    }
+    
     
     public default <TARGET> IO<TARGET> map(Func1<? super DATA, TARGET> mapper) {
         return new IOMap<>(this, mapper);

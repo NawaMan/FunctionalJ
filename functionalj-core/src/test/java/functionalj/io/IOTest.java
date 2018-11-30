@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
+import functionalj.function.Func;
 import functionalj.promise.DeferAction;
 import functionalj.promise.DeferActionBuilder;
 import functionalj.result.Result;
@@ -433,6 +434,31 @@ public class IOTest {
                 "Action1 runs!,\n" + 
                 "Action2 runs!,\n" + 
                 "Result: Result:{ Exception: functionalj.result.ResultCancelledException: Finish without non-null result. }",
+                logs.stream().collect(joining(",\n")));
+    }
+    
+    @Test
+    public void testDoUntil() {
+        val logs    = new ArrayList<String>();
+        val counter = new AtomicInteger(0);
+        val io      = DeferActionBuilder.from(f("Action", ()-> { 
+            logs.add("Action runs!");
+            int currentCount = counter.getAndIncrement();
+            String s = "" + (char)('A' + currentCount);
+            logs.add(s);
+            return s;
+        }));
+        val loop = IO.doUntil(io, Func.from("is-C", result -> result.filter("C"::equals).isPresent()));
+        logs.add("Result: " + loop.createAction().getResult());
+        assertEquals("DoUntil(do: IO#F0::Action, util: Predicate::is-C)", loop.toString());
+        assertEquals(
+                "Action runs!,\n" + 
+                "A,\n" + 
+                "Action runs!,\n" + 
+                "B,\n" + 
+                "Action runs!,\n" + 
+                "C,\n" + 
+                "Result: Result:{ Value: C }",
                 logs.stream().collect(joining(",\n")));
     }
 

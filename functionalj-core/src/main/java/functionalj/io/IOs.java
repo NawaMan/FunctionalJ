@@ -398,4 +398,42 @@ public class IOs {
         
     }
     
+    public static class IODoUntil<D> implements IO<D> {
+        private final IO<D>                body;
+        private final Predicate<Result<D>> breakCheck;
+        public IODoUntil(IO<D> body, Predicate<Result<D>> breakCheck) {
+            this.body       = body;
+            this.breakCheck = breakCheck;
+        }
+        @Override
+        public DeferAction<D> createAction() {
+            val actionRef = new AtomicReference<DeferAction<D>>();
+            val action = DeferAction.of((Class<D>)null, ()->{
+                doBody(actionRef);
+            });
+            actionRef.set(action);
+            return action;
+        }
+        private void doBody(AtomicReference<DeferAction<D>> actionRef) {
+            val bodyAction = body.createAction();
+            bodyAction.start();
+            // Ummm not sure if subscribe is good here
+            bodyAction.subscribe(result -> {
+                val isToBreak = breakCheck.test(result);
+                if (isToBreak) {
+                    val action = actionRef.get().start();
+                    if (result.isValue())
+                         action.complete(result.value());
+                    else action.fail    (result.exception());
+                } else {
+                    doBody(actionRef);
+                }
+            });
+        }
+        @Override
+        public String toString() {
+            return "DoUntil(do: " + body + ", util: " + breakCheck + ")";
+        }
+    }
+    
 }
