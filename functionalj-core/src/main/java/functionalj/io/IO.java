@@ -105,6 +105,8 @@ public interface IO<DATA> {
         return new IOs.IODoUntil<D>(body, breakCondition);
     }
     
+    // TODO - Do while that has IO<Boolean> as a way to check if the loop should still continue.
+    
     
     public default <TARGET> IO<TARGET> map(Func1<? super DATA, TARGET> mapper) {
         return new IOMap<>(this, mapper);

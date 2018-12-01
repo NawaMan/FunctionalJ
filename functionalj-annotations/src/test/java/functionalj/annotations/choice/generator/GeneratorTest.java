@@ -68,9 +68,9 @@ public class GeneratorTest {
         val target     = new TargetClass(sourceSpec);
         val sub        = new SubClassConstructor(target, 
                 new Case("RGB",   "__validateRGB", asList(
-                    new CaseParam("r", new Type("int")),
-                    new CaseParam("g", new Type("int")),
-                    new CaseParam("b", new Type("int"))
+                    new CaseParam("r", new Type("int"), false),
+                    new CaseParam("g", new Type("int"), false),
+                    new CaseParam("b", new Type("int"), false)
                 )));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -101,7 +101,7 @@ public class GeneratorTest {
         val target = new TargetClass(sourceSpec);
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
-                    new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))))
+                    new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false)
                 )));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -109,7 +109,7 @@ public class GeneratorTest {
                 "    public static final NextLens<Next> theNext = new NextLens<>(LensSpec.of(Next.class));\n" + 
                 "    private Func1<D,Coroutine<D>> next;\n" + 
                 "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
-                "        this.next = next;\n" + 
+                "        this.next = $utils.notNull(next);\n" + 
                 "    }\n" + 
                 "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
@@ -152,9 +152,9 @@ public class GeneratorTest {
         val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
         val sub    = new SubClassDefinition(target, 
                 new Case("RGB",   "__validateRGB", asList(
-                    new CaseParam("r", new Type("int")),
-                    new CaseParam("g", new Type("int")),
-                    new CaseParam("b", new Type("int"))
+                    new CaseParam("r", new Type("int"), false),
+                    new CaseParam("g", new Type("int"), false),
+                    new CaseParam("b", new Type("int"), false)
                 )));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -194,7 +194,7 @@ public class GeneratorTest {
         val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
-                    new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))))
+                    new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false)
                 )));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -202,7 +202,7 @@ public class GeneratorTest {
                 "    public static final NextLens<Next> theNext = new NextLens<>(LensSpec.of(Next.class));\n" + 
                 "    private Func1<D,Coroutine<D>> next;\n" + 
                 "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
-                "        this.next = next;\n" + 
+                "        this.next = $utils.notNull(next);\n" + 
                 "    }\n" + 
                 "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
@@ -225,9 +225,9 @@ public class GeneratorTest {
                         new Case("White"),
                         new Case("Black"),
                         new Case("RGB",   "__validateRGB", asList(
-                            new CaseParam("r", new Type("int")),
-                            new CaseParam("g", new Type("int")),
-                            new CaseParam("b", new Type("int"))
+                            new CaseParam("r", new Type("int"), false),
+                            new CaseParam("g", new Type("int"), false),
+                            new CaseParam("b", new Type("int"), false)
                         ))));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -290,9 +290,9 @@ public class GeneratorTest {
                         new Case("White", emptyList()),
                         new Case("Black", emptyList()),
                         new Case("RGB",   "__validateRGB", asList(
-                                new CaseParam("r", new Type("int")),
-                                new CaseParam("g", new Type("int")),
-                                new CaseParam("b", new Type("int"))
+                                new CaseParam("r", new Type("int"), false),
+                                new CaseParam("g", new Type("int"), false),
+                                new CaseParam("b", new Type("int"), false)
                                 ))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -373,9 +373,9 @@ public class GeneratorTest {
                         new Case("White", emptyList()),
                         new Case("Black", emptyList()),
                         new Case("RGB",   "__validateRGB", asList(
-                                new CaseParam("r", new Type("int")),
-                                new CaseParam("g", new Type("int")),
-                                new CaseParam("b", new Type("int"))
+                                new CaseParam("r", new Type("int"), false),
+                                new CaseParam("g", new Type("int"), false),
+                                new CaseParam("b", new Type("int"), false)
                                 ))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -458,9 +458,9 @@ public class GeneratorTest {
                         new Case("White", emptyList()),
                         new Case("Black", emptyList()),
                         new Case("RGB", asList(
-                                new CaseParam("r", new Type("int")),
-                                new CaseParam("g", new Type("int")),
-                                new CaseParam("b", new Type("int"))
+                                new CaseParam("r", new Type("int"), false),
+                                new CaseParam("g", new Type("int"), false),
+                                new CaseParam("b", new Type("int"), false)
                                 )));
         assertEquals(
                 "boolean equals(p1.p2.Color, Object)\n" + 
@@ -511,7 +511,7 @@ public class GeneratorTest {
         val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
-                    new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))))
+                    new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false)
                 )));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
@@ -519,7 +519,7 @@ public class GeneratorTest {
                 "    public static final NextLens<Next> theNext = new NextLens<>(LensSpec.of(Next.class));\n" + 
                 "    public Func1<D,Coroutine<D>> next;\n" + 
                 "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
-                "        this.next = next;\n" + 
+                "        this.next = $utils.notNull(next);\n" + 
                 "    }\n" + 
                 "    public Func1<D,Coroutine<D>> next() { return next; }\n" + 
                 "    public Next<D> withNext(Func1<D,Coroutine<D>> next) { return new Next<D>(next); }\n" + 
@@ -540,9 +540,9 @@ public class GeneratorTest {
         val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
         val sub    = new SwitchClass(target, false, asList(
                         new Case("RGB",   "__validateRGB", asList(
-                            new CaseParam("r", new Type("int")),
-                            new CaseParam("g", new Type("int")),
-                            new CaseParam("b", new Type("int"))
+                            new CaseParam("r", new Type("int"), false),
+                            new CaseParam("g", new Type("int"), false),
+                            new CaseParam("b", new Type("int"), false)
                         ))));
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(

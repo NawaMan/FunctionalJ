@@ -27,9 +27,9 @@ public class CaseLensGeneratorTest {
                     white = new Case("White", emptyList()),
                     black = new Case("Black", emptyList()),
                     rgb   = new Case("RGB", asList(
-                        new CaseParam("r", new Type("int")),
-                        new CaseParam("g", new Type("int")),
-                        new CaseParam("b", new Type("int"))
+                        new CaseParam("r", new Type("int"), false),
+                        new CaseParam("g", new Type("int"), false),
+                        new CaseParam("b", new Type("int"), false)
                     ))));
         assertEquals(
                 "public static class WhiteLens<HOST> extends ObjectLensImpl<HOST, BasicColor.White> {\n" + 

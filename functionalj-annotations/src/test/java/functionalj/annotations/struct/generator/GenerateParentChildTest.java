@@ -65,7 +65,7 @@ public class GenerateParentChildTest {
                 "        this(null);\n" + 
                 "    }\n" + 
                 "    public Parent(Child child) {\n" + 
-                "        this.child = child;\n" + 
+                "        this.child = $utils.notNull(child);\n" + 
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
@@ -86,9 +86,11 @@ public class GenerateParentChildTest {
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
-                "        return new Parent(\n" + 
+                "        \n" + 
+                "        Parent obj = new Parent(\n" + 
                 "                    (Child)IStruct.fromMapValue(map.get(\"child\"), $schema.get(\"child\"))\n" + 
                 "                );\n" + 
+                "        return obj;\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
@@ -100,7 +102,7 @@ public class GenerateParentChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"child\", new functionalj.annotations.struct.generator.Getter(\"child\", new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"child\", new functionalj.annotations.struct.generator.Getter(\"child\", new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
@@ -133,7 +135,7 @@ public class GenerateParentChildTest {
                 "            private final Child child;\n" + 
                 "            \n" + 
                 "            private Builder_child(Child child) {\n" + 
-                "                this.child = child;\n" + 
+                "                this.child = $utils.notNull(child);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public Child child() {\n" + 

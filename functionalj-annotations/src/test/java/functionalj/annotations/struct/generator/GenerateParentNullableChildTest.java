@@ -113,10 +113,12 @@ public class GenerateParentNullableChildTest {
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
-                "        return new Parent(\n" + 
+                "        @SuppressWarnings(\"unchecked\")\n" + 
+                "        Parent obj = new Parent(\n" + 
                 "                    (Nullable<String>)IStruct.fromMapValue(map.get(\"nullableName\"), $schema.get(\"nullableName\")),\n" + 
                 "                    (Nullable<Child>)IStruct.fromMapValue(map.get(\"nullableChild\"), $schema.get(\"nullableChild\"))\n" + 
                 "                );\n" + 
+                "        return obj;\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
@@ -129,8 +131,8 @@ public class GenerateParentNullableChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"nullableName\", new functionalj.annotations.struct.generator.Getter(\"nullableName\", new Type(null, \"Nullable\", \"nawaman.nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"nullableChild\", new functionalj.annotations.struct.generator.Getter(\"nullableChild\", new Type(null, \"Nullable\", \"nawaman.nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"nullableName\", new functionalj.annotations.struct.generator.Getter(\"nullableName\", new Type(null, \"Nullable\", \"nawaman.nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"nullableChild\", new functionalj.annotations.struct.generator.Getter(\"nullableChild\", new Type(null, \"Nullable\", \"nawaman.nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
@@ -164,7 +166,7 @@ public class GenerateParentNullableChildTest {
                 "            private final Nullable<String> nullableName;\n" + 
                 "            \n" + 
                 "            private Builder_nullableName(Nullable<String> nullableName) {\n" + 
-                "                this.nullableName = nullableName;\n" + 
+                "                this.nullableName = $utils.notNull(nullableName);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public Nullable<String> nullableName() {\n" + 
@@ -185,7 +187,7 @@ public class GenerateParentNullableChildTest {
                 "            \n" + 
                 "            private Builder_nullableName_nullableChild(Builder_nullableName parent, Nullable<Child> nullableChild) {\n" + 
                 "                this.parent = parent;\n" + 
-                "                this.nullableChild = nullableChild;\n" + 
+                "                this.nullableChild = $utils.notNull(nullableChild);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public Nullable<String> nullableName() {\n" + 

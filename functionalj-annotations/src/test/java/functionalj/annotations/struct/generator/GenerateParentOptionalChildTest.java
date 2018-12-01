@@ -76,8 +76,8 @@ public class GenerateParentOptionalChildTest {
                 "        this(java.util.Optional.empty(), java.util.Optional.empty());\n" + 
                 "    }\n" + 
                 "    public Parent(Optional<String> optionalName, Optional<Child> optionalChild) {\n" + 
-                "        this.optionalName = optionalName;\n" + 
-                "        this.optionalChild = optionalChild;\n" + 
+                "        this.optionalName = $utils.notNull(optionalName);\n" + 
+                "        this.optionalChild = $utils.notNull(optionalChild);\n" + 
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
@@ -113,10 +113,12 @@ public class GenerateParentOptionalChildTest {
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
-                "        return new Parent(\n" + 
+                "        @SuppressWarnings(\"unchecked\")\n" + 
+                "        Parent obj = new Parent(\n" + 
                 "                    (Optional<String>)IStruct.fromMapValue(map.get(\"optionalName\"), $schema.get(\"optionalName\")),\n" + 
                 "                    (Optional<Child>)IStruct.fromMapValue(map.get(\"optionalChild\"), $schema.get(\"optionalChild\"))\n" + 
                 "                );\n" + 
+                "        return obj;\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
@@ -129,8 +131,8 @@ public class GenerateParentOptionalChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"optionalName\", new functionalj.annotations.struct.generator.Getter(\"optionalName\", new Type(null, \"Optional\", \"java.util\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"optionalChild\", new functionalj.annotations.struct.generator.Getter(\"optionalChild\", new Type(null, \"Optional\", \"java.util\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"optionalName\", new functionalj.annotations.struct.generator.Getter(\"optionalName\", new Type(null, \"Optional\", \"java.util\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"optionalChild\", new functionalj.annotations.struct.generator.Getter(\"optionalChild\", new Type(null, \"Optional\", \"java.util\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
@@ -164,7 +166,7 @@ public class GenerateParentOptionalChildTest {
                 "            private final Optional<String> optionalName;\n" + 
                 "            \n" + 
                 "            private Builder_optionalName(Optional<String> optionalName) {\n" + 
-                "                this.optionalName = optionalName;\n" + 
+                "                this.optionalName = $utils.notNull(optionalName);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public Optional<String> optionalName() {\n" + 
@@ -185,7 +187,7 @@ public class GenerateParentOptionalChildTest {
                 "            \n" + 
                 "            private Builder_optionalName_optionalChild(Builder_optionalName parent, Optional<Child> optionalChild) {\n" + 
                 "                this.parent = parent;\n" + 
-                "                this.optionalChild = optionalChild;\n" + 
+                "                this.optionalChild = $utils.notNull(optionalChild);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public Optional<String> optionalName() {\n" + 

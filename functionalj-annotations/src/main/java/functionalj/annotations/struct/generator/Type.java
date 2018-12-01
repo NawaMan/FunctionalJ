@@ -547,4 +547,8 @@ public class Type implements IRequireTypes {
         return (Class<T>)result;
     }
     
+    public boolean isPrimitive() {
+        return primitiveTypes.containsValue(this);
+    }
+    
 }

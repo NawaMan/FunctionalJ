@@ -86,7 +86,7 @@ public class GeneratorTest {
                 "    public Car(int anint, boolean anbool, String anstring) {\n" + 
                 "        this.anint = anint;\n" + 
                 "        this.anbool = anbool;\n" + 
-                "        this.anstring = anstring;\n" + 
+                "        this.anstring = $utils.notNull(anstring);\n" + 
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
@@ -137,11 +137,13 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    public static Car fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
-                "        return new Car(\n" + 
+                "        \n" + 
+                "        Car obj = new Car(\n" + 
                 "                    (int)IStruct.fromMapValue(map.get(\"anint\"), $schema.get(\"anint\")),\n" + 
                 "                    (boolean)IStruct.fromMapValue(map.get(\"anbool\"), $schema.get(\"anbool\")),\n" + 
                 "                    (String)IStruct.fromMapValue(map.get(\"anstring\"), $schema.get(\"anstring\"))\n" + 
                 "                );\n" + 
+                "        return obj;\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
@@ -155,9 +157,9 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"anint\", new functionalj.annotations.struct.generator.Getter(\"anint\", new Type(null, \"int\", \"\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"anbool\", new functionalj.annotations.struct.generator.Getter(\"anbool\", new Type(null, \"boolean\", \"\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"anstring\", new functionalj.annotations.struct.generator.Getter(\"anstring\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"anint\", new functionalj.annotations.struct.generator.Getter(\"anint\", new Type(null, \"int\", \"\", java.util.Collections.emptyList()), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"anbool\", new functionalj.annotations.struct.generator.Getter(\"anbool\", new Type(null, \"boolean\", \"\", java.util.Collections.emptyList()), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"anstring\", new functionalj.annotations.struct.generator.Getter(\"anstring\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
@@ -240,7 +242,7 @@ public class GeneratorTest {
                 "            \n" + 
                 "            private Builder_anint_anbool_anstring(Builder_anint_anbool parent, String anstring) {\n" + 
                 "                this.parent = parent;\n" + 
-                "                this.anstring = anstring;\n" + 
+                "                this.anstring = $utils.notNull(anstring);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public int anint() {\n" + 

@@ -54,6 +54,7 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import functionalj.annotations.Choice;
+import functionalj.annotations.Nullable;
 import functionalj.annotations.Struct;
 import functionalj.annotations.choice.generator.Generator;
 import functionalj.annotations.choice.generator.model.Case;
@@ -299,9 +300,10 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     private Case createChoiceFromMethod(Element element, Type targetType, ExecutableElement method, List<? extends Element> elements) {
         String methodName = method.getSimpleName().toString();
         List<CaseParam> params = method.getParameters().stream().map(p -> {
-            val name = p.getSimpleName().toString();
-            val type = typeOf(element, targetType, p.asType());
-            return new CaseParam(name, type);
+            val name       = p.getSimpleName().toString();
+            val type       = typeOf(element, targetType, p.asType());
+            val isNullable = (element.getAnnotation(Nullable.class) != null) ? true : false;
+            return new CaseParam(name, type, isNullable);
         }).collect(toList());
         
         val validateMethodName = "__validate" + methodName;

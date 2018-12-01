@@ -4,7 +4,6 @@ import static functionalj.annotations.DefaultValue.NULL;
 import static functionalj.annotations.struct.SimpleFromInteface.theSimpleFromInteface;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 
@@ -56,9 +55,9 @@ public class SimpleStructTest {
         assertEquals(1, list.stream().filter(theSimpleFromInteface.name.thatEquals("Obj2")).count());
     }
     
-    @Test
+    @Test(expected=NullPointerException.class)
     public void testNoArgConstructor_null() {
-        assertNull(new SimpleFromInteface().name());
+        new SimpleFromInteface().name();
     }
     
     @Test

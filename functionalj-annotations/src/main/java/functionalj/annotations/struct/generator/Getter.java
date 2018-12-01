@@ -35,6 +35,7 @@ public class Getter {
     
     private String name;
     private Type type;
+    private boolean nullable;
     private DefaultValue defaultTo;
     
     /**
@@ -44,19 +45,23 @@ public class Getter {
      * @param type  the getter type.
      */
     public Getter(String name, Type type) {
-        this(name, type, null);
+        this(name, type, false, null);
     }
     
     /**
      * Create a getter for the name and type.
      * 
-     * @param name  the getter name.
-     * @param type  the getter type.
+     * @param name      the getter name.
+     * @param type      the getter type.
+     * @param nullable  nullable flag for this getter.
      */
-    public Getter(String name, Type type, DefaultValue defaultValue) {
-        this.name = name;
-        this.type = type;
+    public Getter(String name, Type type, boolean nullable, DefaultValue defaultValue) {
+        this.name      = name;
+        this.type      = type;
+        this.nullable  = nullable;
         this.defaultTo = (defaultValue != null) ? defaultValue : DefaultValue.REQUIRED;
+        if (!nullable && (defaultTo == DefaultValue.NULL))
+            throw new IllegalArgumentException("Nullable field can't have null as a default: " + name);
     }
     
     public boolean isRequired() {
@@ -73,10 +78,11 @@ public class Getter {
         val params = asList(
                 toStringLiteral(name),
                 type.toCode(),
+                nullable,
                 DefaultValue.class.getCanonicalName() + "." + defaultTo
         );
         return "new functionalj.annotations.struct.generator.Getter("
-                + params.stream().collect(joining(", "))
+                + params.stream().map(String::valueOf).collect(joining(", "))
                 + ")";
     }
     

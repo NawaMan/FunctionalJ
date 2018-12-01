@@ -298,6 +298,7 @@ public abstract class FuncMap<KEY, VALUE>
     public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, Func2<VALUE, IN, OUT> merger) {
         return zipWith(anotherMap, true, merger);
     }
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, boolean requireBoth, Func2<VALUE, IN, OUT> merger) {
         val keys1 = this.keys();
         val keys2 = FuncList.from(anotherMap.keySet());
@@ -308,7 +309,7 @@ public abstract class FuncMap<KEY, VALUE>
             val v2 = anotherMap.get(key);
             return merger.apply(v1, v2);
         });
-        return (FuncMap<KEY, OUT>)map;
+        return (FuncMap)map;
     }
     
     public String toString() {

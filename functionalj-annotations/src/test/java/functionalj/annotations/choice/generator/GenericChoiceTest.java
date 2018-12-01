@@ -33,7 +33,7 @@ public class GenericChoiceTest {
             emptyList(), 
             asList(
                     new Case("Nill", null, emptyList()), 
-                    new Case("Just", null, asList(new CaseParam("data", new Type(null, null, "T", emptyList()))))
+                    new Case("Just", null, asList(new CaseParam("data", new Type(null, null, "T", emptyList()), false)))
             ),
             emptyList(),
             emptyList()

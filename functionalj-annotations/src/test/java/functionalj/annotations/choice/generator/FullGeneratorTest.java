@@ -44,9 +44,9 @@ public class FullGeneratorTest {
                   new Case("White", emptyList()),
                   new Case("Black", emptyList()),
                   new Case("RGB", "__validateRGB", asList(
-                      new CaseParam("r", new Type("int")),
-                      new CaseParam("g", new Type("int")),
-                      new CaseParam("b", new Type("int"))
+                      new CaseParam("r", new Type("int"), false),
+                      new CaseParam("g", new Type("int"), false),
+                      new CaseParam("b", new Type("int"), false)
                   ))),
               asList(
                   new Method(Kind.DEFAULT, "equals", Type.BOOLEAN, 
@@ -72,9 +72,9 @@ public class FullGeneratorTest {
                   new Case("White", emptyList()),
                   new Case("Black", emptyList()),
                   new Case("RGB", "__validateRGB", asList(
-                      new CaseParam("r", new Type("int")),
-                      new CaseParam("g", new Type("int")),
-                      new CaseParam("b", new Type("int"))
+                      new CaseParam("r", new Type("int"), false),
+                      new CaseParam("g", new Type("int"), false),
+                      new CaseParam("b", new Type("int"), false)
                   ))));
       val target = new TargetClass(spec);
       val lines  = target.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));

@@ -93,9 +93,11 @@ public class GenerateParentMapChildTest {
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
-                "        return new Parent(\n" + 
+                "        @SuppressWarnings(\"unchecked\")\n" + 
+                "        Parent obj = new Parent(\n" + 
                 "                    (Map<String, Child>)IStruct.fromMapValue(map.get(\"children\"), $schema.get(\"children\"))\n" + 
                 "                );\n" + 
+                "        return obj;\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
@@ -107,7 +109,7 @@ public class GenerateParentMapChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"children\", new functionalj.annotations.struct.generator.Getter(\"children\", new Type(null, \"Map\", \"java.util\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"children\", new functionalj.annotations.struct.generator.Getter(\"children\", new Type(null, \"Map\", \"java.util\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
@@ -140,7 +142,7 @@ public class GenerateParentMapChildTest {
                 "            private final Map<String, Child> children;\n" + 
                 "            \n" + 
                 "            private Builder_children(Map<String, Child> children) {\n" + 
-                "                this.children = children;\n" + 
+                "                this.children = $utils.notNull(children);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public Map<String, Child> children() {\n" + 

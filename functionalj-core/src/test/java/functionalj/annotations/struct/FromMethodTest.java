@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import functionalj.annotations.DefaultTo;
+import functionalj.annotations.Nullable;
 import functionalj.annotations.Struct;
 import functionalj.list.FuncList;
 import lombok.val;
@@ -19,7 +20,7 @@ import lombok.val;
 public class FromMethodTest {
     
     @Struct(specField="spec")
-    public void Car(String make, int year, @DefaultTo(NULL) String color) { }
+    public void Car(String make, int year, @Nullable @DefaultTo(NULL) String color) { }
     
     @Struct
     public void Inventory(

@@ -58,7 +58,6 @@ public class GenerateParentListChildTest {
                 "import functionalj.lens.lenses.StringLens;\n" + 
                 "import functionalj.list.ImmutableList;\n" + 
                 "import java.lang.Object;\n" + 
-                "import java.util.Arrays;\n" + 
                 "import java.util.HashMap;\n" + 
                 "import java.util.List;\n" + 
                 "import java.util.Map;\n" + 
@@ -90,7 +89,7 @@ public class GenerateParentListChildTest {
                 "        return children;\n" + 
                 "    }\n" + 
                 "    public Parent withNames(String ... names) {\n" + 
-                "        return new Parent(java.util.Arrays.asList(names), children);\n" + 
+                "        return new Parent($utils.asList(names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withNames(List<String> names) {\n" + 
                 "        return new Parent(names, children);\n" + 
@@ -105,7 +104,7 @@ public class GenerateParentListChildTest {
                 "        return new Parent(names.apply(this, this.names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(Child ... children) {\n" + 
-                "        return new Parent(names, java.util.Arrays.asList(children));\n" + 
+                "        return new Parent(names, $utils.asList(children));\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(List<Child> children) {\n" + 
                 "        return new Parent(names, children);\n" + 
@@ -121,10 +120,12 @@ public class GenerateParentListChildTest {
                 "    }\n" + 
                 "    public static Parent fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
-                "        return new Parent(\n" + 
+                "        @SuppressWarnings(\"unchecked\")\n" + 
+                "        Parent obj = new Parent(\n" + 
                 "                    (List<String>)IStruct.fromMapValue(map.get(\"names\"), $schema.get(\"names\")),\n" + 
                 "                    (List<Child>)IStruct.fromMapValue(map.get(\"children\"), $schema.get(\"children\"))\n" + 
                 "                );\n" + 
+                "        return obj;\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
@@ -137,8 +138,8 @@ public class GenerateParentListChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"names\", new functionalj.annotations.struct.generator.Getter(\"names\", new Type(null, \"List\", \"java.util\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"children\", new functionalj.annotations.struct.generator.Getter(\"children\", new Type(null, \"List\", \"java.util\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"names\", new functionalj.annotations.struct.generator.Getter(\"names\", new Type(null, \"List\", \"java.util\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"children\", new functionalj.annotations.struct.generator.Getter(\"children\", new Type(null, \"List\", \"java.util\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
@@ -172,7 +173,7 @@ public class GenerateParentListChildTest {
                 "            private final List<String> names;\n" + 
                 "            \n" + 
                 "            private Builder_names(List<String> names) {\n" + 
-                "                this.names = names;\n" + 
+                "                this.names = $utils.notNull(names);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public List<String> names() {\n" + 
@@ -193,7 +194,7 @@ public class GenerateParentListChildTest {
                 "            \n" + 
                 "            private Builder_names_children(Builder_names parent, List<Child> children) {\n" + 
                 "                this.parent = parent;\n" + 
-                "                this.children = children;\n" + 
+                "                this.children = $utils.notNull(children);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public List<String> names() {\n" + 

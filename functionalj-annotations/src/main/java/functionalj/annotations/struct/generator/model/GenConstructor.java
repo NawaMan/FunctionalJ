@@ -55,7 +55,7 @@ public class GenConstructor implements IGenerateDefinition {
             val paramType = param.getType();
             if (types.contains(paramType))
                 continue;
-
+            
             paramType
                 .requiredTypes()
                 .forEach(types::add);

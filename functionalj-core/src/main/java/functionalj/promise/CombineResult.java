@@ -55,6 +55,7 @@ public class CombineResult<D> {
         return action;
     }
     
+    @SuppressWarnings("unchecked")
     private <T> void processResult(int index, Result<T> result) {
         if (isDone.get())
             return;
@@ -76,9 +77,9 @@ public class CombineResult<D> {
         if (!isDone.compareAndSet(false, true))
             return;
         
-        val resultList   = FuncList.from(results);
+        val resultList   = (FuncList)FuncList.from(results);
         val mergedResult = mergeFunc.apply(resultList);
-        action.completeWith(mergedResult);
+        action.completeWith((Result)mergedResult);
     }
     
     private void unsbscribeAll() {

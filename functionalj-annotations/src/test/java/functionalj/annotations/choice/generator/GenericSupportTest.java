@@ -29,7 +29,7 @@ public class GenericSupportTest {
                 asList(
                     new Case("None"),
                     new Case("Some", asList(
-                        new CaseParam("value", new Type("T"))
+                        new CaseParam("value", new Type("T"), false)
                     ))),
                 asList(),
                 emptyList());
@@ -99,7 +99,7 @@ public class GenericSupportTest {
             "        public static final SomeLens<Some> theSome = new SomeLens<>(LensSpec.of(Some.class));\n" + 
             "        private T value;\n" + 
             "        private Some(T value) {\n" + 
-            "            this.value = value;\n" + 
+            "            this.value = $utils.notNull(value);\n" + 
             "        }\n" + 
             "        public T value() { return value; }\n" + 
             "        public Some<T> withValue(T value) { return new Some<T>(value); }\n" + 
@@ -293,7 +293,7 @@ public class GenericSupportTest {
             "        }\n" + 
             "    }\n" + 
             "    \n" + 
-            "    public static final functionalj.annotations.choice.generator.model.SourceSpec spec = new functionalj.annotations.choice.generator.model.SourceSpec(\"Option\", new functionalj.annotations.choice.generator.model.Type(\"functionalj.annotations.choice.generator\", \"GenericSupportTest\", \"OptionSpec\", java.util.Collections.emptyList()), \"spec\", false, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Generic(\"T\", \"T extends Number\", java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Type(\"java.lang\", null, \"Number\", java.util.Collections.emptyList()), new functionalj.annotations.choice.generator.model.Type(\"java.io\", null, \"Serializable\", java.util.Collections.emptyList())))), java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Case(\"None\", null, java.util.Collections.emptyList()), new functionalj.annotations.choice.generator.model.Case(\"Some\", null, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.CaseParam(\"value\", new functionalj.annotations.choice.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()))))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n" + 
+            "    public static final functionalj.annotations.choice.generator.model.SourceSpec spec = new functionalj.annotations.choice.generator.model.SourceSpec(\"Option\", new functionalj.annotations.choice.generator.model.Type(\"functionalj.annotations.choice.generator\", \"GenericSupportTest\", \"OptionSpec\", java.util.Collections.emptyList()), \"spec\", false, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Generic(\"T\", \"T extends Number\", java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Type(\"java.lang\", null, \"Number\", java.util.Collections.emptyList()), new functionalj.annotations.choice.generator.model.Type(\"java.io\", null, \"Serializable\", java.util.Collections.emptyList())))), java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Case(\"None\", null, java.util.Collections.emptyList()), new functionalj.annotations.choice.generator.model.Case(\"Some\", null, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.CaseParam(\"value\", new functionalj.annotations.choice.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()), false)))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n" + 
             "    \n" + 
             "}";
     

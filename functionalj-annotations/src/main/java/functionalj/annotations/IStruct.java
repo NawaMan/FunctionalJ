@@ -1,9 +1,18 @@
 package functionalj.annotations;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import functionalj.annotations.struct.generator.Getter;
 import lombok.val;
+
+// TODO - Move commonly used things in here like
+//   - new Getter
+//   - primitive type
+//   - java.util.Collections.emptyList()
+//   - access to DefaultValue.
 
 public interface IStruct {
     
@@ -41,6 +50,16 @@ public interface IStruct {
         
         val value = DefaultValue.defaultValue(type, defaultValue);
         return (T)value;
+    }
+    
+    public static class $utils {
+        public static <D> D notNull(D value) {
+            return Objects.requireNonNull(value);
+        }
+        @SafeVarargs
+        public static <D> List<D> asList(D ... ds) {
+            return Arrays.asList(ds);
+        }
     }
     
 }

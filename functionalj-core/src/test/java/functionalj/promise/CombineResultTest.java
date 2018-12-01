@@ -2,14 +2,12 @@ package functionalj.promise;
 
 import static functionalj.list.FuncList.listOf;
 import static java.util.stream.Collectors.joining;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
 

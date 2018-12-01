@@ -100,6 +100,18 @@ public class Type {
         if ("float"  .equals(toString)) return FLOAT;
         return this;
     }
+    public boolean isPrimitive() {
+        val toString = this.toString();
+        if ("int"    .equals(toString)) return true;
+        if ("long"   .equals(toString)) return true;
+        if ("boolean".equals(toString)) return true;
+        if ("double" .equals(toString)) return true;
+        if ("char"   .equals(toString)) return true;
+        if ("byte"   .equals(toString)) return true;
+        if ("short"  .equals(toString)) return true;
+        if ("float"  .equals(toString)) return true;
+        return false;
+    }
     public String toCode() {
         val params = asList(
                 toStringLiteral(pckg),

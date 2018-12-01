@@ -31,9 +31,9 @@ public class NonRequireFieldTest {
     private List<Getter> getters = asList(
             new Getter("a", Type.INT),
             new Getter("b", Type.BOOL),
-            new Getter("c", Type.STRING, DefaultValue.NULL),
+            new Getter("c", Type.STRING, true, DefaultValue.NULL),
             new Getter("d", Type.STRING),
-            new Getter("e", Type.STRING, DefaultValue.NULL)
+            new Getter("e", Type.STRING, true, DefaultValue.NULL)
     );
     
     @Test
@@ -82,7 +82,7 @@ public class NonRequireFieldTest {
                 "        this.a = a;\n" + 
                 "        this.b = b;\n" + 
                 "        this.c = c;\n" + 
-                "        this.d = d;\n" + 
+                "        this.d = $utils.notNull(d);\n" + 
                 "        this.e = e;\n" + 
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
@@ -164,13 +164,15 @@ public class NonRequireFieldTest {
                 "    }\n" + 
                 "    public static Data fromMap(Map<String, Object> map) {\n" + 
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
-                "        return new Data(\n" + 
+                "        \n" + 
+                "        Data obj = new Data(\n" + 
                 "                    (int)IStruct.fromMapValue(map.get(\"a\"), $schema.get(\"a\")),\n" + 
                 "                    (boolean)IStruct.fromMapValue(map.get(\"b\"), $schema.get(\"b\")),\n" + 
                 "                    (String)IStruct.fromMapValue(map.get(\"c\"), $schema.get(\"c\")),\n" + 
                 "                    (String)IStruct.fromMapValue(map.get(\"d\"), $schema.get(\"d\")),\n" + 
                 "                    (String)IStruct.fromMapValue(map.get(\"e\"), $schema.get(\"e\"))\n" + 
                 "                );\n" + 
+                "        return obj;\n" + 
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
@@ -186,11 +188,11 @@ public class NonRequireFieldTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"a\", new functionalj.annotations.struct.generator.Getter(\"a\", new Type(null, \"int\", \"\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"b\", new functionalj.annotations.struct.generator.Getter(\"b\", new Type(null, \"boolean\", \"\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"c\", new functionalj.annotations.struct.generator.Getter(\"c\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.NULL));\n" + 
-                "        map.put(\"d\", new functionalj.annotations.struct.generator.Getter(\"d\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"e\", new functionalj.annotations.struct.generator.Getter(\"e\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), functionalj.annotations.DefaultValue.NULL));\n" + 
+                "        map.put(\"a\", new functionalj.annotations.struct.generator.Getter(\"a\", new Type(null, \"int\", \"\", java.util.Collections.emptyList()), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"b\", new functionalj.annotations.struct.generator.Getter(\"b\", new Type(null, \"boolean\", \"\", java.util.Collections.emptyList()), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"c\", new functionalj.annotations.struct.generator.Getter(\"c\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), true, functionalj.annotations.DefaultValue.NULL));\n" + 
+                "        map.put(\"d\", new functionalj.annotations.struct.generator.Getter(\"d\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"e\", new functionalj.annotations.struct.generator.Getter(\"e\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), true, functionalj.annotations.DefaultValue.NULL));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
@@ -311,7 +313,7 @@ public class NonRequireFieldTest {
                 "            \n" + 
                 "            private Builder_a_b_c_d(Builder_a_b_c parent, String d) {\n" + 
                 "                this.parent = parent;\n" + 
-                "                this.d = d;\n" + 
+                "                this.d = $utils.notNull(d);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public int a() {\n" + 

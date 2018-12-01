@@ -30,9 +30,9 @@ public class BuilderClassBuilderTest {
     private List<Getter> getters = asList(
             new Getter("a", Type.INT),
             new Getter("b", Type.BOOL),
-            new Getter("c", Type.STRING, DefaultValue.NULL),
+            new Getter("c", Type.STRING, true, DefaultValue.NULL),
             new Getter("d", Type.STRING),
-            new Getter("e", Type.STRING, DefaultValue.NULL)
+            new Getter("e", Type.STRING, true, DefaultValue.NULL)
     );
     
     private SourceSpec getSpec() {
@@ -149,7 +149,7 @@ public class BuilderClassBuilderTest {
                 "        \n" + 
                 "        private Builder_a_b_c_d(Builder_a_b_c parent, String d) {\n" + 
                 "            this.parent = parent;\n" + 
-                "            this.d = d;\n" + 
+                "            this.d = $utils.notNull(d);\n" + 
                 "        }\n" + 
                 "        \n" + 
                 "        public int a() {\n" + 

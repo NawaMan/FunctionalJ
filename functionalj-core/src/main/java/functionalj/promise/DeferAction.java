@@ -86,7 +86,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             NamedExpression<HasPromise<T1>> promise1,
             NamedExpression<HasPromise<T2>> promise2,
             Func2<T1, T2, D>                merger) {
-        val merge = f((FuncList<Result> results)-> {
+        val merge = (Func1)f((FuncList<Result> results)-> {
             val result1 = (Result<T1>)results.get(0);
             val result2 = (Result<T2>)results.get(1);
             val mergedResult = Result.ofResults(result1, result2, merger);
@@ -104,7 +104,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             NamedExpression<HasPromise<T2>> promise2,
             NamedExpression<HasPromise<T3>> promise3,
             Func3<T1, T2, T3, D>            merger) {
-        val merge = f((FuncList<Result> results)-> {
+        val merge = (Func1)f((FuncList<Result> results)-> {
             val result1 = (Result<T1>)results.get(0);
             val result2 = (Result<T2>)results.get(1);
             val result3 = (Result<T3>)results.get(2);
@@ -124,7 +124,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             NamedExpression<HasPromise<T3>> promise3,
             NamedExpression<HasPromise<T4>> promise4,
             Func4<T1, T2, T3, T4, D>        merger) {
-        val merge = f((FuncList<Result> results)-> {
+        val merge = (Func1)f((FuncList<Result> results)-> {
             val result1 = (Result<T1>)results.get(0);
             val result2 = (Result<T2>)results.get(1);
             val result3 = (Result<T3>)results.get(2);
@@ -146,7 +146,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             NamedExpression<HasPromise<T4>> promise4,
             NamedExpression<HasPromise<T5>> promise5,
             Func5<T1, T2, T3, T4, T5, D>    merger) {
-        val merge = f((FuncList<Result> results)-> {
+        val merge = (Func1)f((FuncList<Result> results)-> {
             val result1 = (Result<T1>)results.get(0);
             val result2 = (Result<T2>)results.get(1);
             val result3 = (Result<T3>)results.get(2);
@@ -170,7 +170,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
             NamedExpression<HasPromise<T5>>  promise5,
             NamedExpression<HasPromise<T6>>  promise6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        val merge = f((FuncList<Result> results)-> {
+        val merge = (Func1)f((FuncList<Result> results)-> {
             val result1 = (Result<T1>)results.get(0);
             val result2 = (Result<T2>)results.get(1);
             val result3 = (Result<T3>)results.get(2);

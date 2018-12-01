@@ -1,11 +1,8 @@
-package functionalj.annotations.choice;
+package functionalj.annotations.struct;
 
 import java.util.Objects;
 
-public abstract class AbstractChoiceClass<S> {
-    
-    public abstract S __switch();
-    
+public interface IStruct {
     
     public static class $utils {
         public static <D> D notNull(D value) {

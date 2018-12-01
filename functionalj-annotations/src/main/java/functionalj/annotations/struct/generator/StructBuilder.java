@@ -163,6 +163,7 @@ public class StructBuilder {
                 .map(g -> "            (" + g.getType().simpleNameWithGeneric() + ")IStruct.fromMapValue(map.get(\"" + g.getName() + "\"), $schema.get(\"" + g.getName() + "\"))")
                 .collect(Collectors.joining(",\n"))
                 .split("\n"));
+        val getterHasGeneric = sourceSpec.getGetters().stream().anyMatch(g -> !g.getType().generics().isEmpty());
         val fromMap = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.STATIC,
@@ -172,9 +173,11 @@ public class StructBuilder {
                 asList(new GenParam("map", Type.MAP.withGenerics(asList(Type.STRING, Type.OBJECT)))),
                 ILines.linesOf(
                     line("Map<String, Getter> $schema = getStructSchema();"),
-                    line("return new " + sourceSpec.getTargetType().simpleName() + "("),
+                    getterHasGeneric ? line("@SuppressWarnings(\"unchecked\")") : line(""),
+                    line(sourceSpec.getTargetType().simpleName() + " obj = new " + sourceSpec.getTargetType().simpleName() + "("),
                     fromMapBody,
-                    line("        );")
+                    line("        );"),
+                    line("return obj;")
                 ));
         
         val toMapBody = ILines.line(
@@ -312,8 +315,9 @@ public class StructBuilder {
                 : PRIVATE;
         return allArgsConstructor.apply(sourceSpec, allArgsConstAccessibility);
     }
-
+    
     private String initGetterField(Getter getter) {
+        // TODO - some of these should be pushed to $utils
         if (getter.getType().isList()) {
             val getterName = getter.getName();
             return String.format("this.%1$s = ImmutableList.from(%1$s);", getterName);
@@ -329,6 +333,9 @@ public class StructBuilder {
         } else if (getter.getType().isNullable()) {
             val getterName = getter.getName();
             return String.format("this.%1$s = Nullable.of((%1$s == null) ? null : %1$s.get());", getterName);
+        } else if (!getter.isNullable() && !getter.getType().isPrimitive()){
+            val getterName = getter.getName();
+            return String.format("this.%1$s = $utils.notNull(%1$s);", getterName);
         } else {
             val getterName = getter.getName();
             return String.format("this.%1$s = %1$s;", getterName);
@@ -379,7 +386,7 @@ public class StructBuilder {
         val type = sourceSpec.getTargetType();
         val params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0)));
         val isFList = getter.getType().isFuncList();
-        val newArray = isFList ? "functionalj.list.ImmutableList.of" : "java.util.Arrays.asList";
+        val newArray = isFList ? "functionalj.list.ImmutableList.of" : "$utils.asList";
         val paramCall 
                 = sourceSpec
                 .getGetters()
@@ -388,7 +395,7 @@ public class StructBuilder {
                         ? newArray + "(" + g.getName() + ")"
                         : g.getName())
                 .collect(joining(", "));
-        val usedTypes = asList(isFList ? Type.FUNC_LIST : Type.of(Arrays.class));
+        val usedTypes = isFList ? asList(Type.FUNC_LIST) : Collections.<Type>emptyList();
         val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
         return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine), usedTypes, true);
     }

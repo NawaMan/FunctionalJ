@@ -49,6 +49,7 @@ import javax.tools.Diagnostic;
 import functionalj.annotations.Choice;
 import functionalj.annotations.DefaultTo;
 import functionalj.annotations.DefaultValue;
+import functionalj.annotations.Nullable;
 import functionalj.annotations.Struct;
 import functionalj.annotations.struct.generator.Getter;
 import functionalj.annotations.struct.generator.SourceSpec;
@@ -306,7 +307,13 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             error(element, "Default value is not suitable for the type: " + type.fullName() + " -> DefaultTo " + defTo);
             return null;
         }
-        val getter = new Getter(name, type, defValue);
+        Nullable annotation = p.getAnnotation(Nullable.class);
+        val isNullable = (annotation != null) ? true : false;
+        if (!isNullable && (defValue == DefaultValue.NULL)) {
+            error(element, "Default value cannot be null: " + type.fullName() + " -> DefaultTo " + defTo);
+            return null;
+        }
+        val getter = new Getter(name, type, isNullable, defValue);
         return getter;
     }
     
@@ -350,7 +357,12 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             error(element, "Default value is not suitable for the type: " + returnType.fullName() + " -> " + defTo);
             return null;
         }
-        val getter     = new Getter(methodName, returnType, defValue);
+        val isNullable = (element.getAnnotation(Nullable.class) != null) ? true : false;
+        if (!isNullable && (defValue == DefaultValue.NULL)) {
+            error(element, "Default value cannot be null: " + returnType.fullName() + " -> DefaultTo " + defTo);
+            return null;
+        }
+        val getter = new Getter(methodName, returnType, isNullable, defValue);
         return getter;
     }
     
