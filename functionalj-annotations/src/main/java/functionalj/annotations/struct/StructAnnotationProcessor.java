@@ -297,18 +297,18 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     }
     
     private Getter createGetterFromParameter(Element element, VariableElement p){
-        val name  = p.getSimpleName().toString();
-        val type  = getType(element, p.asType());
-        val defTo = (p.getAnnotation(DefaultTo.class) == null)
-                ? DefaultValue.REQUIRED
-                : p.getAnnotation(DefaultTo.class).value();
+        val name        = p.getSimpleName().toString();
+        val type        = getType(element, p.asType());
+        val isPrimitive = type.isPrimitive();
+        val isNullable  = (p.getAnnotation(Nullable.class) != null) ? true : false;
+        val defTo       = (p.getAnnotation(DefaultTo.class) != null)
+                        ? p.getAnnotation(DefaultTo.class).value()
+                        : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
         val defValue = (DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(type) : defTo;
         if (!DefaultValue.isSuitable(type, defValue)) {
             error(element, "Default value is not suitable for the type: " + type.fullName() + " -> DefaultTo " + defTo);
             return null;
         }
-        Nullable annotation = p.getAnnotation(Nullable.class);
-        val isNullable = (annotation != null) ? true : false;
         if (!isNullable && (defValue == DefaultValue.NULL)) {
             error(element, "Default value cannot be null: " + type.fullName() + " -> DefaultTo " + defTo);
             return null;
@@ -347,17 +347,18 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     }
     
     private Getter createGetterFromMethod(Element element, ExecutableElement method) {
-        val methodName = method.getSimpleName().toString();
-        val returnType = getType(element, method.getReturnType());
-        val defTo = (element.getAnnotation(DefaultTo.class) == null)
-                ? DefaultValue.REQUIRED
-                : element.getAnnotation(DefaultTo.class).value();
-        val defValue = (DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo;
+        val methodName  = method.getSimpleName().toString();
+        val returnType  = getType(element, method.getReturnType());
+        val isPrimitive = returnType.isPrimitive();
+        val isNullable  = (element.getAnnotation(Nullable.class) != null) ? true : false;
+        val defTo       = (element.getAnnotation(DefaultTo.class) != null)
+                        ? element.getAnnotation(DefaultTo.class)
+                        : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
+        val defValue = (DefaultValue)((DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo);
         if (!DefaultValue.isSuitable(returnType, defValue)) {
-            error(element, "Default value is not suitable for the type: " + returnType.fullName() + " -> " + defTo);
+            error(element, "Default value is not suitable for the type: " + returnType.fullName() + " -> DefaultTo " + defTo);
             return null;
         }
-        val isNullable = (element.getAnnotation(Nullable.class) != null) ? true : false;
         if (!isNullable && (defValue == DefaultValue.NULL)) {
             error(element, "Default value cannot be null: " + returnType.fullName() + " -> DefaultTo " + defTo);
             return null;

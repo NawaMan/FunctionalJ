@@ -150,7 +150,7 @@ public class SwitchClass implements Lines {
                 } else if (code == 1) {
                 	val paramName = "a" + param.name.substring(0, 1).toUpperCase() + param.name.substring(1);
                     paramDefs. add(param.type.name + " " + paramName);
-                    paramCheck.add(format("checkEquals(%s, %s.%s)", paramName, camelName, param.name));
+                    paramCheck.add(format("$utils.checkEquals(%s, %s.%s)", paramName, camelName, param.name));
                 } else if (code == 2) {
                     val predicateType = param.type.getPredicateType();
                     paramDefs.add("Predicate<" + predicateType.name + "> " + param.name + "Check");

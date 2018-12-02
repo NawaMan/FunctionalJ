@@ -52,8 +52,6 @@ public class GenericSupportTest {
             "import java.util.function.Function;\n" + 
             "import java.util.function.Predicate;\n" + 
             "import java.util.function.Supplier;\n" + 
-            "import static functionalj.annotations.choice.CheckEquals.checkEquals;\n" + 
-            "import static functionalj.annotations.choice.ChoiceTypes.Switch;\n" + 
             "\n" + 
             "@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})\n" + 
             "public abstract class Option<T extends Number> extends AbstractChoiceClass<Option.OptionFirstSwitch<T>> implements Pipeable<Option<T>> {\n" + 
@@ -127,7 +125,7 @@ public class GenericSupportTest {
             "        synchronized(this) {\n" + 
             "            if (toString != null)\n" + 
             "                return toString;\n" + 
-            "            toString = Switch(this)\n" + 
+            "            toString = $utils.Switch(this)\n" + 
             "                    .none(__ -> \"None\")\n" + 
             "                    .some(some -> \"Some(\" + String.format(\"%1$s\", some.value) + \")\")\n" + 
             "            ;\n" + 
@@ -273,13 +271,13 @@ public class GenericSupportTest {
             "        }\n" + 
             "        \n" + 
             "        public OptionSwitchSome<TARGET, T> someOf(T aValue, Function<Some<T>, TARGET> theAction) {\n" + 
-            "            return some(some -> checkEquals(aValue, some.value), theAction);\n" + 
+            "            return some(some -> $utils.checkEquals(aValue, some.value), theAction);\n" + 
             "        }\n" + 
             "        public OptionSwitchSome<TARGET, T> someOf(T aValue, Supplier<TARGET> theSupplier) {\n" + 
-            "            return some(some -> checkEquals(aValue, some.value), theSupplier);\n" + 
+            "            return some(some -> $utils.checkEquals(aValue, some.value), theSupplier);\n" + 
             "        }\n" + 
             "        public OptionSwitchSome<TARGET, T> someOf(T aValue, TARGET theValue) {\n" + 
-            "            return some(some -> checkEquals(aValue, some.value), theValue);\n" + 
+            "            return some(some -> $utils.checkEquals(aValue, some.value), theValue);\n" + 
             "        }\n" + 
             "        \n" + 
             "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, Function<Some<T>, TARGET> theAction) {\n" + 

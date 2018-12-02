@@ -116,7 +116,7 @@ public class TargetTypeGeneral implements Lines {
                   + "    synchronized(this) {\n"
                   + "        if (toString != null)\n"
                   + "            return toString;\n"
-                  + "        toString = Switch(this)"
+                  + "        toString = $utils.Switch(this)"
                   ).split("\n")
             ),
             choiceStrings,

@@ -11,9 +11,7 @@ import java.util.Objects;
 import java.util.TreeSet;
 
 import functionalj.annotations.choice.AbstractChoiceClass;
-import functionalj.annotations.choice.CheckEquals;
 import functionalj.annotations.choice.ChoiceTypeSwitch;
-import functionalj.annotations.choice.ChoiceTypes;
 import functionalj.annotations.choice.Self;
 import functionalj.annotations.choice.generator.model.Method.Kind;
 import functionalj.annotations.choice.generator.model.SourceSpec;
@@ -61,8 +59,6 @@ public class TargetClass implements Lines {
         imports.add("java.util.function.Predicate");
         imports.add("java.util.function.Supplier");
         imports.add(ChoiceTypeSwitch.class.getCanonicalName());
-        imports.add("static " + ChoiceTypes.class.getCanonicalName() + ".Switch");
-        imports.add("static " + CheckEquals.class.getCanonicalName()   + ".checkEquals");
         imports.add(AbstractChoiceClass.class.getCanonicalName());
         imports.add("functionalj.result.Result");
         imports.add("functionalj.pipeable.Pipeable");
