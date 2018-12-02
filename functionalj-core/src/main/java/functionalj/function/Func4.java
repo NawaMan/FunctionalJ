@@ -207,6 +207,16 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
         return (i1) -> this.applyUnsafe(i1, i2, i3, i4);
     }
     
+    public default Func1<INPUT1, Func3<INPUT2, INPUT3, INPUT4, OUTPUT>> split1() {
+        return (i1) -> (i2, i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
+    }
+    public default Func2<INPUT1, INPUT2, Func2<INPUT3, INPUT4, OUTPUT>> split2() {
+        return (i1, i2) -> (i3, i4) -> this.applyUnsafe(i1, i2, i3, i4);
+    }
+    public default Func3<INPUT1, INPUT2, INPUT3, Func1<INPUT4, OUTPUT>> split3() {
+        return (i1, i2, i3) -> (i4) -> this.applyUnsafe(i1, i2, i3, i4);
+    }
+    
     //== Partially apply functions ==
     
     @SuppressWarnings("javadoc")

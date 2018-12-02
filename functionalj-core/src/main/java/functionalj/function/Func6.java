@@ -204,6 +204,22 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
         return (i1) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
+    public default Func1<INPUT1, Func5<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT>> split1() {
+        return (i1) -> (i2, i3, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
+    }
+    public default Func2<INPUT1, INPUT2, Func4<INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT>> split2() {
+        return (i1, i2) -> (i3, i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
+    }
+    public default Func3<INPUT1, INPUT2, INPUT3, Func3<INPUT4, INPUT5, INPUT6, OUTPUT>> split3() {
+        return (i1, i2, i3) -> (i4, i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
+    }
+    public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, Func2<INPUT5, INPUT6, OUTPUT>> split4() {
+        return (i1, i2, i3, i4) -> (i5, i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
+    }
+    public default Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, Func1<INPUT6, OUTPUT>> split5() {
+        return (i1, i2, i3, i4, i5) -> (i6) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
+    }
+    
     //== Partially apply functions ==
     
     @SuppressWarnings("javadoc")
