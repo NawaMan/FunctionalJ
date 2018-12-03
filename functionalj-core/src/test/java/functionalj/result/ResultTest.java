@@ -113,12 +113,12 @@ public class ResultTest {
     }
     @Test
     public void testResult_validate_oneline() throws Exception {
-        assertEquals("Result:{ Exception: functionalj.result.ValidationException: Has upper case: \"VALUE\" }", 
+        assertEquals("Result:{ Validation: Has upper case: \"VALUE\" }", 
                 Result.of("VALUE")
                 .validate("Has upper case: \"%s\"", s -> !s.matches("^.*[A-Z].*$"))
                 .toString());
         
-        assertEquals("Result:{ Exception: functionalj.result.ValidationException: Too long: \"VALUE\" }", 
+        assertEquals("Result:{ Validation: Too long: \"VALUE\" }", 
                 Result.of("VALUE")
                 .validate("Too long: \"%s\"", String::length, l -> l < 3)
                 .toString());

@@ -1072,9 +1072,11 @@ public abstract class Result<DATA>
               + mapData(
                 e -> ":{ Exception: " + e  + " }",
                 (value, exception) -> {
-                    if (exception == null)
-                        return ":{ Value: "     + value      + " }";
-                   else return ":{ Exception: " + exception  + " }";
+                    if (exception instanceof ValidationException)
+                         return ":{ Validation: " + exception.getMessage() + " }";
+                    else if (exception == null)
+                         return ":{ Value: "     + value      + " }";
+                    else return ":{ Exception: " + exception  + " }";
                 });
     }
     
