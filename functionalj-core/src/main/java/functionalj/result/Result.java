@@ -1065,12 +1065,16 @@ public abstract class Result<DATA>
     }
     @Override
     public final String toString() {
-        return mapData(
-                e -> "Result:{ Exception: " + e  + " }",
+        val clssName = ((this instanceof ImmutableResult) || (this instanceof DerivedResult))
+                ? "Result"
+                : this.getClass().getSimpleName();
+        return clssName
+              + mapData(
+                e -> ":{ Exception: " + e  + " }",
                 (value, exception) -> {
                     if (exception == null)
-                        return "Result:{ Value: "     + value      + " }";
-                   else return "Result:{ Exception: " + exception  + " }";
+                        return ":{ Value: "     + value      + " }";
+                   else return ":{ Exception: " + exception  + " }";
                 });
     }
     

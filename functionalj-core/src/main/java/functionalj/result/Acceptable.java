@@ -2,6 +2,7 @@ package functionalj.result;
 
 import static functionalj.annotations.choice.ChoiceTypes.Switch;
 import static java.util.Objects.requireNonNull;
+import static nawaman.nullablej.nullable.Nullable.nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -40,12 +41,12 @@ public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
     
     @Choice
     public static interface ValidationSpec<D> {
-        void ToBoolean  (Function<D, Boolean>             checker);
+        void ToBoolean  (Function<D, Boolean>             checker, String messageTemplate);
         void ToMessage  (Function<D, String>              errorMsg);
         void ToException(Function<D, ValidationException> errorChecker);
         
         // TODO - BUG!!! ... the method has to return something can't be void. ... fix this when can.
-        public default boolean ensureValid(Self1<D> self, D data) {
+        default boolean ensureValid(Self1<D> self, D data) {
             @SuppressWarnings("unchecked")
             val validation          = (Validation<D>)self.asMe();
             val validationException = Switch(validation)
@@ -59,22 +60,27 @@ public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
             return true;
         }
         
-        public static class $inner {
+        static class $inner {
             
-            public static <D> ValidationException checkToBoolean(Validation.ToBoolean<D> validating, D data) {
+            static <D> ValidationException checkToBoolean(Validation.ToBoolean<D> validating, D data) {
                 return Result
                         .from  (()    -> validating.checker().apply(data))
                         .filter(valid -> !valid)
-                        .map   (__    -> new ValidationException())
+                        .map   (__    -> new ValidationException(getErrorMessage(validating, data)))
                         .get   ();
             }
-            public static <D> ValidationException checkToMessage(Validation.ToMessage<D> validating, D data) {
+            private static <D> String getErrorMessage(Validation.ToBoolean<D> validating, D data) {
+                return nullable(validating.messageTemplate())
+                        .map   (template -> String.format(template, data))
+                        .get   ();
+            }
+            static <D> ValidationException checkToMessage(Validation.ToMessage<D> validating, D data) {
                 return Result
                         .from(()     -> validating.errorMsg().apply(data))
                         .map (errMsg -> new ValidationException(errMsg))
                         .get ();
             }
-            public static <D> ValidationException checkToException(Validation.ToException<D> validating, D data) {
+            static <D> ValidationException checkToException(Validation.ToException<D> validating, D data) {
                 val exception = validating.errorChecker().apply(data);
                 return exception;
             }

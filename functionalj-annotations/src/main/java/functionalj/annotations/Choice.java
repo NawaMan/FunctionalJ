@@ -21,7 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation marks classes to create choice type.
+ * This annotation marks an interface to create a choice type.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
