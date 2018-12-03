@@ -1,9 +1,13 @@
 package functionalj.result;
 
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
+import static functionalj.annotations.choice.ChoiceTypes.Switch;
+import static java.util.Objects.requireNonNull;
 
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+
+import functionalj.annotations.Choice;
+import functionalj.annotations.choice.Self1;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -12,53 +16,68 @@ public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
     protected Acceptable(Exception exception) {
         super(null, (exception == null) ? new UnacceptableForUnknownReasonException() : exception);
     }
-    protected Acceptable(DATA value, Predicate<DATA> checker) {
-        this(value, checker, null, new AtomicReference<Exception>());
+    protected Acceptable(Validation<DATA> validating, DATA value) {
+        this(validating, value, new AtomicReference<Exception>());
     }
-    protected Acceptable(
-            DATA                                                             value, 
-            Predicate<DATA>                                                  checker, 
-            BiFunction<? super DATA, ? super Exception, ? extends Exception> unacceptableException) {
-        this(value, checker, unacceptableException, new AtomicReference<Exception>());
-    }
-    private Acceptable(
-            DATA                                                             value, 
-            Predicate<DATA>                                                  checker, 
-            BiFunction<? super DATA, ? super Exception, ? extends Exception> unacceptableExceptionSupplier, 
-            AtomicReference<Exception>                                       unacceptableExceptionReference) {
-        super(prepareValue(value, checker, unacceptableExceptionSupplier, unacceptableExceptionReference),
-              unacceptableExceptionReference.get());
+    private Acceptable(Validation<DATA> validating, DATA value, AtomicReference<Exception> exceptionRef) {
+        super(prepareValue(validating, value, exceptionRef), exceptionRef);
     }
     
-    private static <D> D prepareValue(
-                    D            value, 
-                    Predicate<D> checker,
-                    BiFunction<? super D, ? super Exception, ? extends Exception> unacceptableExceptionSupplier,
-                    AtomicReference<Exception>                                    unacceptableExceptionReference) {
+    private static <D> D prepareValue(Validation<D> validating, D value, AtomicReference<Exception> exceptionRef) {
         try {
-            if ((value == null) && !(checker instanceof NullSafePredicate)) {
-                if (!(checker instanceof NullSafePredicate))
-                    throw new NullPointerException();
-                
-                return null;
-            }
-            
-            if (checker.test(value))
-                return value;
-            
-            val exception
-                    = (unacceptableExceptionSupplier != null)
-                    ? unacceptableExceptionSupplier.apply(value, null)
-                    : null;
-            unacceptableExceptionReference.set(exception);
-            return null;
+            requireNonNull(validating);
+            validating.ensureValid(value);
+            return value;
+        } catch (ValidationException e) {
+            exceptionRef.set(e);
         } catch (Exception e) {
-            val exception
-                = (unacceptableExceptionSupplier != null)
-                ? unacceptableExceptionSupplier.apply(value, e)
-                : e;
-            unacceptableExceptionReference.set(exception);
-            return null;
+            exceptionRef.set(new ValidationException(e));
+        }
+        return null;
+    }
+    
+    //== AUX class ==
+    
+    @Choice
+    public static interface ValidationSpec<D> {
+        void ToBoolean  (Function<D, Boolean>             checker);
+        void ToMessage  (Function<D, String>              errorMsg);
+        void ToException(Function<D, ValidationException> errorChecker);
+        
+        // TODO - BUG!!! ... the method has to return something can't be void. ... fix this when can.
+        public default boolean ensureValid(Self1<D> self, D data) {
+            @SuppressWarnings("unchecked")
+            val validation          = (Validation<D>)self.asMe();
+            val validationException = Switch(validation)
+                    .toBoolean  (v -> $inner.checkToBoolean(v, data))
+                    .toMessage  (v -> $inner.checkToMessage(v, data))
+                    .toException(v -> $inner.checkToException(v, data));
+            
+            if (validationException != null)
+                throw validationException;
+            
+            return true;
+        }
+        
+        public static class $inner {
+            
+            public static <D> ValidationException checkToBoolean(Validation.ToBoolean<D> validating, D data) {
+                return Result
+                        .from  (()    -> validating.checker().apply(data))
+                        .filter(valid -> !valid)
+                        .map   (__    -> new ValidationException())
+                        .get   ();
+            }
+            public static <D> ValidationException checkToMessage(Validation.ToMessage<D> validating, D data) {
+                return Result
+                        .from(()     -> validating.errorMsg().apply(data))
+                        .map (errMsg -> new ValidationException(errMsg))
+                        .get ();
+            }
+            public static <D> ValidationException checkToException(Validation.ToException<D> validating, D data) {
+                val exception = validating.errorChecker().apply(data);
+                return exception;
+            }
         }
     }
     

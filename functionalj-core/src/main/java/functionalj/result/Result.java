@@ -267,13 +267,13 @@ public abstract class Result<DATA>
         if (value == null)
             return Result.ofNull();
         
-        return new ImmutableResult<D>(value, null);
+        return new ImmutableResult<D>(value, (Exception)null);
     }
     public static <D> Result<D> of(D value) {
         if (value == null)
             return Result.ofNull();
         
-        return new ImmutableResult<D>(value, null);
+        return new ImmutableResult<D>(value, (Exception)null);
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -888,21 +888,6 @@ public abstract class Result<DATA>
                         return this;
                     
                     return validator.validate(value);
-                });
-    }
-    
-    public final <D extends Validatable<D, ?>> Valid<D> toValidValue(Func1<DATA, D> mapper) {
-        return mapData(
-                e -> new Valid<D>((D)null, e),
-                (value, exception)->{
-                    if (exception == null) {
-                        val target = mapper.applyUnsafe(value);
-                        Valid<D> valueOf = Valid.valueOf((D)target);
-                        return valueOf;
-                    }
-                    
-                    Valid<D> valueOf = new Valid<D>((D)null, exception);
-                    return valueOf;
                 });
     }
     
