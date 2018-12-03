@@ -11,12 +11,12 @@ public class AcceptableTest {
     
     public static class ThreeDigitString extends Acceptable<String> {
         public ThreeDigitString(String value) {
-            super(Validation.ToBoolean(str -> str.matches("^[0-9]{3}$"), "Three digit string is required."), value);
+            super(value, Validation.ToBoolean(str -> str.matches("^[0-9]{3}$"), "Three digit string is required."));
         }
     }
     
     @Test
-    public void test() {
+    public void test() throws Exception {
         assertTrue (new ThreeDigitString("123").isPresent());
         assertFalse(new ThreeDigitString("ABC").isPresent());
         assertFalse(new ThreeDigitString(null) .isPresent());
@@ -44,7 +44,7 @@ public class AcceptableTest {
     // Notice the null value is passed to the checker
     public static class ThreeDigitStringOrNull extends Acceptable<String> {
         public ThreeDigitStringOrNull(String value) {
-            super(Validation.ToBoolean(str -> (str != null) && str.matches("^[0-9]{3}$"), "Three digit string is required."), value);
+            super(value, Validation.ToBoolean(str -> (str != null) && str.matches("^[0-9]{3}$"), "Three digit string is required."));
         }
     }
     

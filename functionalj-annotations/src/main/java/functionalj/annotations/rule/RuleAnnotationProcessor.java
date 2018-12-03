@@ -23,6 +23,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import functionalj.annotations.Rule;
@@ -32,6 +33,8 @@ import lombok.val;
 public class RuleAnnotationProcessor extends AbstractProcessor {
 
     private Elements elementUtils;
+    @SuppressWarnings("unused")
+    private Types    typeUtils;
     private Filer    filer;
     private Messager messager;
     private boolean  hasError;
@@ -42,6 +45,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         elementUtils = processingEnv.getElementUtils();
+        typeUtils    = processingEnv.getTypeUtils();
         filer        = processingEnv.getFiler();
         messager     = processingEnv.getMessager();
     }
@@ -96,14 +100,15 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
             val enclosingClass = method.getEnclosingElement().getSimpleName().toString();
             val packageName    = elementUtils.getPackageOf(method).getQualifiedName().toString();
             val dataType       = getDataType(method);
+            val isSubRule      = isSubRule(method);
             val errorMsg       = isBool ? msg : null;
-            val spec           = new RuleSpec(targetName, enclosingClass, packageName, dataType, errorMsg, ruleType);
+            val spec           = new RuleSpec(targetName, enclosingClass, packageName, dataType, isSubRule, errorMsg, ruleType);
             
             try {
                 val className  = packageName + "." + targetName;
-                val content    = /*"// " + spec.toString() + "\n" 
+                val content    = "// " + spec.toString() + "\n" 
                                + "// " + logs.toString() + "\n" 
-                               + */
+                               + 
                                spec.toCode();
                 val logString  = "";//"\n" + logs.stream().map("// "::concat).collect(joining("\n"));
                 generateCode(element, className, content + logString);
@@ -123,6 +128,17 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         try (Writer writer = filer.createSourceFile(className, element).openWriter()) {
             writer.write(content);
         }
+    }
+    
+    private boolean isSubRule(ExecutableElement method) {
+        return false;
+        // TODO - OK, This does not work yet and we also need to get the dataType of the super type which is not easy.
+//        val type = method.getParameters().get(0).asType();
+//        if (type instanceof DeclaredType) {
+//            val iRule = elementUtils.getTypeElement(IRule.class.getCanonicalName()).asType();
+//            return typeUtils.isAssignable(type, iRule);
+//        }
+//        return false;
     }
     
     private String getDataType(ExecutableElement method) {
@@ -154,3 +170,23 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         return null;
     }
 }
+
+/*
+
+It should be good to allow inheritance between rule.
+
+Once, we can detect if the parameter type is a Rule type, we can do this.
+
+public class VerifiedEmail extends Email {
+    public static VerifiedEmail from(String value) { 
+        return new VerifiedEmail(value);
+    }
+    protected VerifiedEmail(String value) {
+        this(value, null);
+    }
+    protected VerifiedEmail(String value, functionalj.list.FuncList<functionalj.validator.Validator<? super String>> validators) {
+        super(value, FuncList.from(validators).append(functionalj.result.Validation.ToException(functionalj.annotations.rule.RuleTest::VerifiedEmail).toValidator()));
+    }
+}
+
+ */

@@ -227,7 +227,7 @@ public class IOTest {
         }));
         val counter2 = new AtomicInteger(0);
         val io2      = DeferActionBuilder.from(f("Action2", ()-> { 
-            Thread.sleep(10);
+            Thread.sleep(20);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;

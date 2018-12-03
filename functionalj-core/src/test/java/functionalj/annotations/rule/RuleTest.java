@@ -25,8 +25,9 @@ public class RuleTest {
                 ? null
                 : ("Not a valid email address: " + emailStr);
     }
+    // Umm - It should be good to allow auto-unwrap 
     @Rule
-    static ValidationException VerifiedEmail(Email email) {
+    static ValidationException VerifiedEmail(functionalj.annotations.rule.Email email) {
         if ("nawa@nawaman.net".equals(email.value()))
             return null;
         

@@ -1,7 +1,6 @@
 package functionalj.result;
 
 import static functionalj.annotations.choice.ChoiceTypes.Switch;
-import static java.util.Objects.requireNonNull;
 import static nawaman.nullablej.nullable.Nullable.nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -9,32 +8,21 @@ import java.util.function.Function;
 
 import functionalj.annotations.Choice;
 import functionalj.annotations.choice.Self1;
+import functionalj.list.FuncList;
+import functionalj.validator.Validator;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
 public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
     
-    protected Acceptable(Exception exception) {
-        super(null, (exception == null) ? new UnacceptableForUnknownReasonException() : exception);
+    protected Acceptable(DATA data, Validation<DATA> validating) {
+        this(data, FuncList.of(validating.toValidator()));
     }
-    protected Acceptable(Validation<DATA> validating, DATA value) {
-        this(validating, value, new AtomicReference<Exception>());
+    protected Acceptable(DATA data, FuncList<Validator<? super DATA>> validators) {
+        super(data, validators);
     }
-    private Acceptable(Validation<DATA> validating, DATA value, AtomicReference<Exception> exceptionRef) {
-        super(prepareValue(validating, value, exceptionRef), exceptionRef);
-    }
-    
-    private static <D> D prepareValue(Validation<D> validating, D value, AtomicReference<Exception> exceptionRef) {
-        try {
-            requireNonNull(validating);
-            validating.ensureValid(value);
-            return value;
-        } catch (ValidationException e) {
-            exceptionRef.set(e);
-        } catch (Exception e) {
-            exceptionRef.set(new ValidationException(e));
-        }
-        return null;
+    protected Acceptable(DATA data, FuncList<Validator<? super DATA>> validators, Validation<DATA> validating) {
+        super(data, FuncList.from(validators).append(validating.toValidator()));
     }
     
     //== AUX class ==
@@ -47,17 +35,28 @@ public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
         
         // TODO - BUG!!! ... the method has to return something can't be void. ... fix this when can.
         default boolean ensureValid(Self1<D> self, D data) {
-            @SuppressWarnings("unchecked")
-            val validation          = (Validation<D>)self.asMe();
-            val validationException = Switch(validation)
-                    .toBoolean  (v -> $inner.checkToBoolean(v, data))
-                    .toMessage  (v -> $inner.checkToMessage(v, data))
-                    .toException(v -> $inner.checkToException(v, data));
-            
+            val validationException = validate(self, data);
             if (validationException != null)
                 throw validationException;
             
             return true;
+        }
+        default ValidationException validate(Self1<D> self, D data) {
+            @SuppressWarnings("unchecked")
+            val validation          = (Validation<D>)self.asMe();
+            val validationException = Switch(validation)
+                    .toBoolean  (v -> $inner.checkToBoolean  (v, data))
+                    .toMessage  (v -> $inner.checkToMessage  (v, data))
+                    .toException(v -> $inner.checkToException(v, data));
+            return validationException;
+        }
+        default Validator<D> toValidator(Self1<D> self) {
+            val ref = new AtomicReference<ValidationException>();
+            return Validator.of(data -> {
+                        ref.set(validate(self, data));
+                        return (ref.get() == null);
+                    },
+                    (__, ___) -> ref.get());
         }
         
         static class $inner {

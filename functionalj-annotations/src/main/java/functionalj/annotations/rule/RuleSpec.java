@@ -28,6 +28,7 @@ public class RuleSpec {
     private final String packageName;
     
     private final String dataType;
+    private final boolean isSubRule;
     
     private final String   errorMsg;
     private final RuleType ruleType;
@@ -49,14 +50,18 @@ public class RuleSpec {
     public String toCode() {
         val dataTypeGeneric = getDataTypeGeneric();
         val validationCall  = validationCall();
+        val superClass      = isSubRule ? dataType : "functionalj.result.Acceptable<" + dataTypeGeneric + "> implements functionalj.annotations.IRule";
         val strTemplate =
                 "package " + packageName + ";\n" +
-                "public class " + targetName + " extends functionalj.result.Acceptable<" + dataTypeGeneric + "> {\n" + 
+                "public class " + targetName + " extends " + superClass + " {\n" + 
                 "    public static " + targetName + " from(" + dataType + " value) { \n" +
-                "       return new " + targetName + "(value);\n" + 
+                "        return new " + targetName + "(value);\n" + 
                 "    }\n" + 
-                "    private " + targetName + "(" + dataType + " value) {\n" + 
-                "        super(" + validationCall + ", value);\n" + 
+                "    protected " + targetName + "(" + dataType + " value) {\n" + 
+                "        this(value, null);\n" + 
+                "    }\n" + 
+                "    protected " + targetName + "(" + dataType + " value, functionalj.list.FuncList<functionalj.validator.Validator<? super " + dataTypeGeneric + ">> validators) {\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).append(" + validationCall + ".toValidator()));\n" + 
                 "    }\n" + 
                 "}";
         return strTemplate;
@@ -68,7 +73,7 @@ public class RuleSpec {
         return "functionalj.result.Validation." + validationType
                 + "(" + packageName + "." + enclosingClass + "::" + targetName + msgParam + ")";
     }
-
+    
     private String getDataTypeGeneric() {
         return genericTypes.getOrDefault(dataType, dataType);
     }

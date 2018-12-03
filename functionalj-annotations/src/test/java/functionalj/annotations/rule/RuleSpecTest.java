@@ -11,60 +11,72 @@ public class RuleSpecTest {
 
     @Test
     public void testBoolean() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "java.lang.String", "Not valid.", RuleType.Bool);
+        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "java.lang.String", false, "Not valid.", RuleType.Bool);
         assertEquals(
                 "package functionalj.annotations.rule;\n" + 
-                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.String> {\n" + 
+                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.String> implements functionalj.annotations.IRule {\n" + 
                 "    public static ThreeDigitString from(java.lang.String value) { \n" + 
-                "       return new ThreeDigitString(value);\n" + 
+                "        return new ThreeDigitString(value);\n" + 
                 "    }\n" + 
-                "    private ThreeDigitString(java.lang.String value) {\n" + 
-                "        super(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\"), value);\n" + 
+                "    protected ThreeDigitString(java.lang.String value) {\n" + 
+                "        this(value, null);\n" + 
+                "    }\n" + 
+                "    protected ThreeDigitString(java.lang.String value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.String>> validators) {\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
                 "    }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
     @Test
     public void testBoolean_int() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "int", "Not valid.", RuleType.Bool);
+        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "int", false, "Not valid.", RuleType.Bool);
         assertEquals(
                 "package functionalj.annotations.rule;\n" + 
-                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> {\n" + 
+                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.annotations.IRule {\n" + 
                 "    public static ThreeDigitString from(int value) { \n" + 
-                "       return new ThreeDigitString(value);\n" + 
+                "        return new ThreeDigitString(value);\n" + 
                 "    }\n" + 
-                "    private ThreeDigitString(int value) {\n" + 
-                "        super(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\"), value);\n" + 
+                "    protected ThreeDigitString(int value) {\n" + 
+                "        this(value, null);\n" + 
+                "    }\n" + 
+                "    protected ThreeDigitString(int value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.Integer>> validators) {\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
                 "    }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
     @Test
     public void testErrorMessage() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "int", null, RuleType.ErrMsg);
+        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "int", false, null, RuleType.ErrMsg);
         assertEquals(
                 "package functionalj.annotations.rule;\n" + 
-                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> {\n" + 
+                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.annotations.IRule {\n" + 
                 "    public static ThreeDigitString from(int value) { \n" + 
-                "       return new ThreeDigitString(value);\n" + 
+                "        return new ThreeDigitString(value);\n" + 
                 "    }\n" + 
-                "    private ThreeDigitString(int value) {\n" + 
-                "        super(functionalj.result.Validation.ToMessage(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString), value);\n" + 
+                "    protected ThreeDigitString(int value) {\n" + 
+                "        this(value, null);\n" + 
+                "    }\n" + 
+                "    protected ThreeDigitString(int value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.Integer>> validators) {\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToMessage(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString).toValidator()));\n" + 
                 "    }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
     @Test
     public void testException() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "int", null, RuleType.Func);
+        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "int", false, null, RuleType.Func);
         assertEquals(
                 "package functionalj.annotations.rule;\n" + 
-                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> {\n" + 
+                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.annotations.IRule {\n" + 
                 "    public static ThreeDigitString from(int value) { \n" + 
-                "       return new ThreeDigitString(value);\n" + 
+                "        return new ThreeDigitString(value);\n" + 
                 "    }\n" + 
-                "    private ThreeDigitString(int value) {\n" + 
-                "        super(functionalj.result.Validation.ToException(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString), value);\n" + 
+                "    protected ThreeDigitString(int value) {\n" + 
+                "        this(value, null);\n" + 
+                "    }\n" + 
+                "    protected ThreeDigitString(int value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.Integer>> validators) {\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToException(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString).toValidator()));\n" + 
                 "    }\n" + 
                 "}",
                 ruleSpec.toCode());
