@@ -21,8 +21,8 @@ public class AcceptableTest {
         assertFalse(new ThreeDigitString("ABC").isPresent());
         assertFalse(new ThreeDigitString(null) .isPresent());
         assertEquals("Result:{ Value: 123 }",                                  "" + new ThreeDigitString("123"));
-        assertEquals("Result:{ Validation: Three digit string is required. }", "" + new ThreeDigitString("ABC"));
-        assertEquals("Result:{ Validation: java.lang.NullPointerException }",  "" + new ThreeDigitString(null));
+        assertEquals("Result:{ Invalid: Three digit string is required. }", "" + new ThreeDigitString("ABC"));
+        assertEquals("Result:{ Invalid: java.lang.NullPointerException }",  "" + new ThreeDigitString(null));
     }
     
     private Result<Integer> lengthOf(ThreeDigitString str) {
@@ -35,8 +35,8 @@ public class AcceptableTest {
         assertFalse (lengthOf(new ThreeDigitString("ABC")).isPresent());
         assertFalse (lengthOf(new ThreeDigitString(null)).isPresent());
         assertEquals("Result:{ Value: 3 }",                                    "" + lengthOf(new ThreeDigitString("123")));
-        assertEquals("Result:{ Validation: Three digit string is required. }", "" + lengthOf(new ThreeDigitString("ABC")));
-        assertEquals("Result:{ Validation: java.lang.NullPointerException }",  "" + lengthOf(new ThreeDigitString(null)));
+        assertEquals("Result:{ Invalid: Three digit string is required. }", "" + lengthOf(new ThreeDigitString("ABC")));
+        assertEquals("Result:{ Invalid: java.lang.NullPointerException }",  "" + lengthOf(new ThreeDigitString(null)));
         assertTrue  (new ThreeDigitString("123").isPresent());
         assertFalse (new ThreeDigitString(null).isPresent());
     }
@@ -54,8 +54,8 @@ public class AcceptableTest {
         assertFalse(new ThreeDigitStringOrNull("ABC").isPresent());
         assertFalse(new ThreeDigitStringOrNull(null).isPresent());
         assertEquals("Result:{ Value: 123 }",                                  "" + new ThreeDigitStringOrNull("123"));
-        assertEquals("Result:{ Validation: Three digit string is required. }", "" + new ThreeDigitStringOrNull("ABC"));
-        assertEquals("Result:{ Validation: Three digit string is required. }", "" + new ThreeDigitStringOrNull(null));
+        assertEquals("Result:{ Invalid: Three digit string is required. }", "" + new ThreeDigitStringOrNull("ABC"));
+        assertEquals("Result:{ Invalid: Three digit string is required. }", "" + new ThreeDigitStringOrNull(null));
     }
     
 }

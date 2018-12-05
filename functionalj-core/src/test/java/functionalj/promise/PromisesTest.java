@@ -214,13 +214,13 @@ public class PromisesTest {
         val subscription = promise.onComplete();
         subscription.unsubscribe();
         
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise .getResult());
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise1.getResult());
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise2.getResult());
-        assertStrings("Result:{ Value: 5 }",                                                                  promise3.getResult());
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise4.getResult());
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise5.getResult());
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }", promise6.getResult());
+        assertStrings("Result:{ Cancelled: No more listener. }", promise .getResult());
+        assertStrings("Result:{ Cancelled: No more listener. }", promise1.getResult());
+        assertStrings("Result:{ Cancelled: No more listener. }", promise2.getResult());
+        assertStrings("Result:{ Value: 5 }",                     promise3.getResult());
+        assertStrings("Result:{ Cancelled: No more listener. }", promise4.getResult());
+        assertStrings("Result:{ Cancelled: No more listener. }", promise5.getResult());
+        assertStrings("Result:{ Cancelled: No more listener. }", promise6.getResult());
     }
     
 }

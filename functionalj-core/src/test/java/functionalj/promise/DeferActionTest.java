@@ -53,13 +53,13 @@ public class DeferActionTest {
                 .map(i -> i + 1);
         
         val promise = action.getPromise();
-        assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", action .getCurrentResult().toString());
-        assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", promise.getCurrentResult().toString());
+        assertEquals("Result:{ NotReady }", action .getCurrentResult().toString());
+        assertEquals("Result:{ NotReady }", promise.getCurrentResult().toString());
         
         val add1 = theInteger.add(1);
         val answer = add1.applyTo(promise);
-        assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", action .getCurrentResult().toString());
-        assertEquals("Result:{ Exception: functionalj.result.ResultNotReadyException }", promise.getCurrentResult().toString());
+        assertEquals("Result:{ NotReady }", action .getCurrentResult().toString());
+        assertEquals("Result:{ NotReady }", promise.getCurrentResult().toString());
         
         answer.start();
         Thread.sleep(100);
@@ -107,7 +107,7 @@ public class DeferActionTest {
         action.abort();
         
         assertTrue(endRef.get() < 150);
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException }", action.getResult());
+        assertStrings("Result:{ Cancelled }", action.getResult());
     }
     
     @Test
@@ -168,7 +168,7 @@ public class DeferActionTest {
             val end = System.currentTimeMillis();
             log.add("End: " + (100*((end - start) / 100)));
             log.add("Result: " + action.getCurrentResult());
-            assertStrings("[Start: 0, End: 500, Result: Result:{ Exception: functionalj.result.ResultNotReadyException }]", log);
+            assertStrings("[Start: 0, End: 500, Result: Result:{ NotReady }]", log);
         }
     }
     
@@ -441,8 +441,8 @@ public class DeferActionTest {
         
         assertStrings("["
                 + "Eavesdrop: true, "
-                + "Eavesdrop: Result:{ Exception: functionalj.result.ResultCancelledException }, "
-                + "Done: Result:{ Exception: functionalj.result.ResultCancelledException }"
+                + "Eavesdrop: Result:{ Cancelled }, "
+                + "Done: Result:{ Cancelled }"
                 + "]", log);
     }
     
@@ -702,7 +702,7 @@ public class DeferActionTest {
         val action1 = DeferAction.run(TimeFuncs.Sleep(60000).thenReturn("60000"));
         val action2 = DeferAction.run(TimeFuncs.Sleep(10   ).thenReturn("10"));
         assertEquals("10", DeferAction.race(action1, action2).getResult().get());
-        assertEquals("Result:{ Exception: functionalj.result.ResultCancelledException }", action1.getResult().toString());
+        assertEquals("Result:{ Cancelled }", action1.getResult().toString());
     }
     
     @Test
@@ -722,9 +722,9 @@ public class DeferActionTest {
         val action  = DeferAction.race(action1, action2);
         action1.abort();
         action2.abort();
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException }", action1.getResult());
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException }", action2.getResult());
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: Finish without non-null result. }", action.getResult());
+        assertStrings("Result:{ Cancelled }", action1.getResult());
+        assertStrings("Result:{ Cancelled }", action2.getResult());
+        assertStrings("Result:{ Cancelled: Finish without non-null result. }", action.getResult());
     }
     
     @Test
@@ -744,7 +744,7 @@ public class DeferActionTest {
                 .retry(5).times().waitFor(50L).milliseconds()
                 .build()
                 .start();
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: Retry exceed: 5 }", action.getResult());
+        assertStrings("Result:{ Cancelled: Retry exceed: 5 }", action.getResult());
         assertEquals(5, counter.get());
     }
     
@@ -792,7 +792,7 @@ public class DeferActionTest {
         Thread.sleep(70);
         action.abort("Can't wait.");
         
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException: Can't wait. }", action.getResult());
+        assertStrings("Result:{ Cancelled: Can't wait. }", action.getResult());
     }
     
     @Test

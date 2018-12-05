@@ -34,11 +34,11 @@ public class PublishTest {
         assertEquals("["
                 + "Result:{ Value: One }, "
                 + "Result:{ Value: Two }, "
-                + "Result:{ Exception: functionalj.result.NoMoreResultException }"
+                + "Result:{ NoMoreResult }"
                 + "]", logsResult.toString());
         assertEquals("["
                 + "Result:{ Value: One }, "
-                + "Result:{ Exception: functionalj.result.NoMoreResultException }"
+                + "Result:{ NoMoreResult }"
                 + "]", logsHalf.toString());
         
         assertFalse(publisher.isActive());

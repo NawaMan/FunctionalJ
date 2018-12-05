@@ -1072,10 +1072,21 @@ public abstract class Result<DATA>
               + mapData(
                 e -> ":{ Exception: " + e  + " }",
                 (value, exception) -> {
-                    if (exception instanceof ValidationException)
-                         return ":{ Validation: " + exception.getMessage() + " }";
-                    else if (exception == null)
-                         return ":{ Value: "     + value      + " }";
+                    val msg = ((exception != null) && (exception.getMessage() != null)) ? ": " + exception.getMessage() : "";
+                    if (exception == null)
+                        return ":{ Value: "     + value      + " }";
+                    else if (exception instanceof NoMoreResultException)
+                        return ":{ NoMoreResult" + msg + " }";
+                    else if (exception instanceof ResultCancelledException)
+                        return ":{ Cancelled" + msg + " }";
+                    else if (exception instanceof ResultNotReadyException)
+                        return ":{ NotReady" + msg + " }";
+                    else if (exception instanceof ResultNotExistException)
+                        return ":{ NotExist" + msg + " }";
+                    else if (exception instanceof ResultNotAvailableException)
+                        return ":{ NotAvailable" + msg + " }";
+                    else if (exception instanceof ValidationException)
+                         return ":{ Invalid" + msg + " }";
                     else return ":{ Exception: " + exception  + " }";
                 });
     }

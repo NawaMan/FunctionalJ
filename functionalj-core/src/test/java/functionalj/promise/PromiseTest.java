@@ -47,8 +47,8 @@ public class PromiseTest {
     @Test
     public void testCancel() {
         val promise = Promise.ofAborted();
-        assertEquals (PromiseStatus.ABORTED,                                                     promise.getStatus());
-        assertStrings("Result:{ Exception: functionalj.result.ResultCancelledException }", promise.getCurrentResult());
+        assertEquals (PromiseStatus.ABORTED,  promise.getStatus());
+        assertStrings("Result:{ Cancelled }", promise.getCurrentResult());
         
         val ref = new AtomicReference<String>(null);
         promise.onComplete(r -> ref.set("" + r.get()));
@@ -102,10 +102,10 @@ public class PromiseTest {
                 .subscribe(r -> ref.set("" + r))
                 .start();
         
-        assertStrings("Result:{ Exception: functionalj.result.ResultNotReadyException }", action.getCurrentResult());
+        assertStrings("Result:{ NotReady }", action.getCurrentResult());
         
         action.abort();
-        assertEquals("Result:{ Exception: functionalj.result.ResultCancelledException }", ref.get());
+        assertEquals("Result:{ Cancelled }", ref.get());
     }
     
     @Test
@@ -186,7 +186,7 @@ public class PromiseTest {
         
         assertEquals (PromiseStatus.ABORTED, promise.getStatus());
         assertStrings(
-                "Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }",
+                "Result:{ Cancelled: No more listener. }",
                 promise.getCurrentResult());
         
         // This subscription will get cancelled as the result.
@@ -194,7 +194,7 @@ public class PromiseTest {
         sub2.unsubscribe();
         
         assertStrings(
-                "[2: Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }]",
+                "[2: Result:{ Cancelled: No more listener. }]",
               list);
     }
     
@@ -218,10 +218,10 @@ public class PromiseTest {
         
         assertEquals (PromiseStatus.ABORTED, promise.getStatus());
         assertStrings(
-                "Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }",
+                "Result:{ Cancelled: No more listener. }",
                 promise.getCurrentResult());
         
-        assertStrings("[e: Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }]", list);
+        assertStrings("[e: Result:{ Cancelled: No more listener. }]", list);
     }
     
     @Test
@@ -253,7 +253,7 @@ public class PromiseTest {
         onExpireds.forEach(c -> c.accept(null, null));
         assertEquals (PromiseStatus.ABORTED, promise.getStatus());
         
-        assertStrings("[e: Result:{ Exception: functionalj.result.ResultCancelledException: No more listener. }]", list);
+        assertStrings("[e: Result:{ Cancelled: No more listener. }]", list);
     }
     
     @Test

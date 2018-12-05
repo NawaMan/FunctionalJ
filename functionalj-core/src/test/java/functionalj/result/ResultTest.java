@@ -113,12 +113,12 @@ public class ResultTest {
     }
     @Test
     public void testResult_validate_oneline() throws Exception {
-        assertEquals("Result:{ Validation: Has upper case: \"VALUE\" }", 
+        assertEquals("Result:{ Invalid: Has upper case: \"VALUE\" }", 
                 Result.of("VALUE")
                 .validate("Has upper case: \"%s\"", s -> !s.matches("^.*[A-Z].*$"))
                 .toString());
         
-        assertEquals("Result:{ Validation: Too long: \"VALUE\" }", 
+        assertEquals("Result:{ Invalid: Too long: \"VALUE\" }", 
                 Result.of("VALUE")
                 .validate("Too long: \"%s\"", String::length, l -> l < 3)
                 .toString());
@@ -199,7 +199,7 @@ public class ResultTest {
                   (a, b)-> a + "," + b));
     }
     
-    // TODO - Let deal with this later.
+    // TODO - Don't know why when we have multiple layer of flatMap, Eclipse hangs. Let deal with this later.
 //    
 //    @Test
 //    public void testResultFor() {

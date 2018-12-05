@@ -37,8 +37,8 @@ public class IOTest {
     @Test
     public void testResult() {
         val io = IO.from(Result.ofNotExist());
-        assertEquals("Result:{ Exception: functionalj.result.ResultNotExistException }", io.createAction().getResult().toString());
-        assertEquals("Result:{ Exception: functionalj.result.ResultNotExistException }", io.createAction().getResult().toString());
+        assertEquals("Result:{ NotExist }", io.createAction().getResult().toString());
+        assertEquals("Result:{ NotExist }", io.createAction().getResult().toString());
     }
     @Test
     public void testPromise() {
@@ -227,7 +227,7 @@ public class IOTest {
         }));
         val counter2 = new AtomicInteger(0);
         val io2      = DeferActionBuilder.from(f("Action2", ()-> { 
-            Thread.sleep(20);
+            Thread.sleep(50);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
@@ -428,13 +428,13 @@ public class IOTest {
                 "Result: Result:{ Value: a },\n" + 
                 "Action1 runs!,\n" + 
                 "Action2 runs!,\n" + 
-                "Result: Result:{ Exception: functionalj.result.ResultCancelledException: Finish without non-null result. },\n" + 
+                "Result: Result:{ Cancelled: Finish without non-null result. },\n" + 
                 "Action1 runs!,\n" + 
                 "Action2 runs!,\n" + 
-                "Result: Result:{ Exception: functionalj.result.ResultCancelledException: Finish without non-null result. },\n" + 
+                "Result: Result:{ Cancelled: Finish without non-null result. },\n" + 
                 "Action1 runs!,\n" + 
                 "Action2 runs!,\n" + 
-                "Result: Result:{ Exception: functionalj.result.ResultCancelledException: Finish without non-null result. }",
+                "Result: Result:{ Cancelled: Finish without non-null result. }",
                 logs.stream().collect(joining(",\n")));
     }
     
