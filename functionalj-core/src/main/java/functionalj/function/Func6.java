@@ -200,6 +200,10 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
         return (i6, i5, i4, i3, i2, i1) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }
     
+    public default Func5<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, Func1<INPUT1, OUTPUT>> elevate() {
+        return (i2, i3, i4, i5, i6) -> (i1) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
+    }
+    
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2, INPUT3 i3, INPUT4 i4, INPUT5 i5, INPUT6 i6) {
         return (i1) -> this.applyUnsafe(i1, i2, i3, i4, i5, i6);
     }

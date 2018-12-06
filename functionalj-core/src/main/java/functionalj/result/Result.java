@@ -1066,7 +1066,7 @@ public abstract class Result<DATA>
     @Override
     public final String toString() {
         @SuppressWarnings("rawtypes")
-        val clss = this.getClass();
+        val clss = (Class)this.getClass();
         val clssName = ((clss == ImmutableResult.class) || (clss == DerivedResult.class))
                 ? "Result"
                 : clss.getSimpleName();

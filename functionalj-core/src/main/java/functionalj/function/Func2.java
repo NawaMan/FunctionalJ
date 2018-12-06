@@ -229,6 +229,10 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return (i2, i1) -> this.applyUnsafe(i1, i2);
     }
     
+    public default Func1<INPUT2, Func1<INPUT1, OUTPUT>> elevate() {
+        return (i2) -> (i1) -> this.applyUnsafe(i1, i2);
+    }
+    
     public default Func1<INPUT1, OUTPUT> elevateWith(INPUT2 i2) {
         return (i1) -> this.applyUnsafe(i1, i2);
     }
