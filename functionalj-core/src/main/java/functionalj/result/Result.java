@@ -1065,9 +1065,11 @@ public abstract class Result<DATA>
     }
     @Override
     public final String toString() {
-        val clssName = ((this instanceof ImmutableResult) || (this instanceof DerivedResult))
+        @SuppressWarnings("rawtypes")
+        val clss = this.getClass();
+        val clssName = ((clss == ImmutableResult.class) || (clss == DerivedResult.class))
                 ? "Result"
-                : this.getClass().getSimpleName();
+                : clss.getSimpleName();
         return clssName
               + mapData(
                 e -> ":{ Exception: " + e  + " }",

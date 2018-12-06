@@ -43,30 +43,30 @@ public class RuleTest {
     
     @Test
     public void testIntPositive() {
-        assertEquals("Result:{ Value: 15 }", "" + IntPositive.from(15));
-        assertEquals("Result:{ Value: 0 }",  "" + IntPositive.from( 0));
+        assertEquals("IntPositive:{ Value: 15 }", "" + IntPositive.from(15));
+        assertEquals("IntPositive:{ Value: 0 }",  "" + IntPositive.from( 0));
         assertEquals(
-                "Result:{ Invalid: Int value must be positive: -5 }",
+                "IntPositive:{ Invalid: Int value must be positive: -5 }",
                 "" + IntPositive.from(-5));
     }
     @Test
     public void testInt255() {
-        assertEquals("Result:{ Value: 15 }",  "" + Int255.from(15));
-        assertEquals("Result:{ Value: 0 }",   "" + Int255.from( 0));
-        assertEquals("Result:{ Invalid: Int value must be between 0 to 255 inclusively: 260 }", "" + Int255.from(260));
-        assertEquals("Result:{ Invalid: Int value must be between 0 to 255 inclusively: -5 }",  "" + Int255.from(-5));
+        assertEquals("Int255:{ Value: 15 }",  "" + Int255.from(15));
+        assertEquals("Int255:{ Value: 0 }",   "" + Int255.from( 0));
+        assertEquals("Int255:{ Invalid: Int value must be between 0 to 255 inclusively: 260 }", "" + Int255.from(260));
+        assertEquals("Int255:{ Invalid: Int value must be between 0 to 255 inclusively: -5 }",  "" + Int255.from(-5));
     }
     @Test
     public void testEmail() {
-        assertEquals("Result:{ Value: nawa@nawaman.net }",   "" + Email.from("nawa@nawaman.net"));
-        assertEquals("Result:{ Value: nawaman@gmail.com }",  "" + Email.from("nawaman@gmail.com"));
-        assertEquals("Result:{ Invalid: Not a valid email address: nawaman.net }",  "" + Email.from("nawaman.net"));
+        assertEquals("Email:{ Value: nawa@nawaman.net }",   "" + Email.from("nawa@nawaman.net"));
+        assertEquals("Email:{ Value: nawaman@gmail.com }",  "" + Email.from("nawaman@gmail.com"));
+        assertEquals("Email:{ Invalid: Not a valid email address: nawaman.net }",  "" + Email.from("nawaman.net"));
     }
     @Test
     public void testVerifiedEmail() {
-        assertEquals("Result:{ Value: nawa@nawaman.net }",                             "" + VerifiedEmail.from("nawa@nawaman.net"));
-        assertEquals("Result:{ Invalid: Not a valid email address: nawanawaman.net }", "" + VerifiedEmail.from("nawanawaman.net"));
-        assertEquals("Result:{ Invalid: Unverified email: nawaman@gmail.com }",        "" + VerifiedEmail.from("nawaman@gmail.com"));
+        assertEquals("VerifiedEmail:{ Value: nawa@nawaman.net }",                             "" + VerifiedEmail.from("nawa@nawaman.net"));
+        assertEquals("VerifiedEmail:{ Invalid: Not a valid email address: nawanawaman.net }", "" + VerifiedEmail.from("nawanawaman.net"));
+        assertEquals("VerifiedEmail:{ Invalid: Unverified email: nawaman@gmail.com }",        "" + VerifiedEmail.from("nawaman@gmail.com"));
     }
 
 }
