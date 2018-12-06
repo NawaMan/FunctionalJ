@@ -22,14 +22,17 @@ public class RuleSpecTest {
                 "        this(value, null);\n" + 
                 "    }\n" + 
                 "    protected ThreeDigitString(java.lang.String value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.String>> validators) {\n" + 
-                "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).prepend(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public java.lang.String value() { return value(); }\n" + 
                 "    public String __dataName()  { return \"value\"; }\n" + 
                 "    public java.lang.String __dataValue() { return value(); }\n" + 
                 "    public Class<java.lang.String> __dataType() { return java.lang.String.class; }\n" + 
-                "    public <R extends functionalj.annotations.IRule<java.lang.String>> Class<R> __superRule() { return null; }\n" + 
+                "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" + 
+                "    public <R extends functionalj.annotations.IRule<java.lang.String>> Class<R> __superRule() { \n" + 
+                "        return (Class)null;\n" + 
+                "    }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
@@ -46,14 +49,17 @@ public class RuleSpecTest {
                 "        this(value, null);\n" + 
                 "    }\n" + 
                 "    protected ThreeDigitString(int value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.Integer>> validators) {\n" + 
-                "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).prepend(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public java.lang.Integer value() { return value(); }\n" + 
                 "    public String __dataName()  { return \"value\"; }\n" + 
                 "    public java.lang.Integer __dataValue() { return value(); }\n" + 
                 "    public Class<java.lang.Integer> __dataType() { return int.class; }\n" + 
-                "    public <R extends functionalj.annotations.IRule<java.lang.Integer>> Class<R> __superRule() { return null; }\n" + 
+                "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" + 
+                "    public <R extends functionalj.annotations.IRule<java.lang.Integer>> Class<R> __superRule() { \n" + 
+                "        return (Class)null;\n" + 
+                "    }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
@@ -70,14 +76,17 @@ public class RuleSpecTest {
                 "        this(value, null);\n" + 
                 "    }\n" + 
                 "    protected ThreeDigitString(int value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.Integer>> validators) {\n" + 
-                "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToMessage(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString).toValidator()));\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).prepend(functionalj.result.Validation.ToMessage(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString).toValidator()));\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public java.lang.Integer value() { return value(); }\n" + 
                 "    public String __dataName()  { return \"value\"; }\n" + 
                 "    public java.lang.Integer __dataValue() { return value(); }\n" + 
                 "    public Class<java.lang.Integer> __dataType() { return int.class; }\n" + 
-                "    public <R extends functionalj.annotations.IRule<java.lang.Integer>> Class<R> __superRule() { return null; }\n" + 
+                "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" + 
+                "    public <R extends functionalj.annotations.IRule<java.lang.Integer>> Class<R> __superRule() { \n" + 
+                "        return (Class)null;\n" + 
+                "    }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
@@ -94,14 +103,17 @@ public class RuleSpecTest {
                 "        this(value, null);\n" + 
                 "    }\n" + 
                 "    protected ThreeDigitString(int value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.Integer>> validators) {\n" + 
-                "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToException(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString).toValidator()));\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).prepend(functionalj.result.Validation.ToException(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString).toValidator()));\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public java.lang.Integer value() { return value(); }\n" + 
                 "    public String __dataName()  { return \"value\"; }\n" + 
                 "    public java.lang.Integer __dataValue() { return value(); }\n" + 
                 "    public Class<java.lang.Integer> __dataType() { return int.class; }\n" + 
-                "    public <R extends functionalj.annotations.IRule<java.lang.Integer>> Class<R> __superRule() { return null; }\n" + 
+                "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" + 
+                "    public <R extends functionalj.annotations.IRule<java.lang.Integer>> Class<R> __superRule() { \n" + 
+                "        return (Class)null;\n" + 
+                "    }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
@@ -118,14 +130,17 @@ public class RuleSpecTest {
                 "        this(value, null);\n" + 
                 "    }\n" + 
                 "    protected ThreeDigitString(java.lang.String value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.String>> validators) {\n" + 
-                "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).prepend(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public java.lang.String value() { return value(); }\n" + 
                 "    public String __dataName()  { return \"value\"; }\n" + 
                 "    public java.lang.String __dataValue() { return value(); }\n" + 
                 "    public Class<java.lang.String> __dataType() { return java.lang.String.class; }\n" + 
-                "    public <R extends functionalj.annotations.IRule<java.lang.String>> Class<R> __superRule() { return NonNullString.class; }\n" + 
+                "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" + 
+                "    public <R extends functionalj.annotations.IRule<java.lang.String>> Class<R> __superRule() { \n" + 
+                "        return (Class)NonNullString.class;\n" + 
+                "    }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
