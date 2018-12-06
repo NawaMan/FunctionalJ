@@ -12,6 +12,7 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.function.FuncUnit1;
 import functionalj.function.Named;
 import functionalj.io.IOs.IOCached;
 import functionalj.io.IOs.IOCachedFor;
@@ -28,6 +29,7 @@ import functionalj.io.IOs.IOPromise;
 import functionalj.io.IOs.IOSupplier;
 import functionalj.io.IOs.IOValue;
 import functionalj.io.IOs.IORace;
+import functionalj.io.IOs.IOPeek;
 import functionalj.list.FuncList;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
@@ -107,6 +109,9 @@ public interface IO<DATA> {
     
     // TODO - Do while that has IO<Boolean> as a way to check if the loop should still continue.
     
+    public default IO<DATA> peek(FuncUnit1<? super DATA> keeper) {
+        return new IOPeek<>(this, keeper);
+    }
     
     public default <TARGET> IO<TARGET> map(Func1<? super DATA, TARGET> mapper) {
         return new IOMap<>(this, mapper);

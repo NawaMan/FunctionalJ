@@ -132,7 +132,7 @@ public class IOTest {
                 + "]", logs.toString());
     }
     
-    // Ummm - Somehow this test is not deterministic.
+    // Ummm - Somehow this test is not deterministic - The problem seems to be .map.
     @Test
     public void testMapError() {
         val logs    = new ArrayList<String>();
@@ -159,6 +159,7 @@ public class IOTest {
                 + "]", logs.toString());
     }
     
+    // Ummm - Somehow this test is not deterministic - The problem seems to be .map.
     @Test
     public void testReuseable() {
         val logs    = new ArrayList<String>();

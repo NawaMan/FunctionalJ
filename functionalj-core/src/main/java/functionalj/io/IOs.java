@@ -16,6 +16,7 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.function.FuncUnit1;
 import functionalj.list.FuncList;
 import functionalj.promise.DeferAction;
 import functionalj.promise.Promise;
@@ -112,6 +113,22 @@ public class IOs {
         }
         public String toString() {
             return toString;
+        }
+    }
+    
+    public static class IOPeek<SOURCE, DATA> implements IO<DATA> {
+        private final IO<DATA>                source;
+        private final FuncUnit1<? super DATA> peeker;
+        public IOPeek(IO<DATA> source, FuncUnit1<? super DATA> peeker) {
+            this.source = source;
+            this.peeker = peeker;
+        }
+        @Override
+        public DeferAction<DATA> createAction() {
+            return source.createAction().peek(peeker);
+        }
+        public String toString() {
+            return source + ".peek(" + peeker + ")";
         }
     }
     

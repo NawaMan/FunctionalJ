@@ -539,6 +539,14 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         });
     }
     
+    public final Promise<DATA> peek(FuncUnit1<? super DATA> peeker) {
+        requireNonNull(peeker);
+        return (Promise<DATA>)newSubPromise((Result<DATA> r, Promise<DATA> targetPromise) -> {
+            val result = r.peek(peeker);
+            targetPromise.makeDone((Result<DATA>) result);
+        });
+    }
+    
     @SuppressWarnings("unchecked")
     public final <TARGET> Promise<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         requireNonNull(mapper);

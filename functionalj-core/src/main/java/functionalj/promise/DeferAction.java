@@ -304,6 +304,11 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
         return new DeferAction<DATA>(this, newPromise);
     }
     
+    public final DeferAction<DATA> peek(FuncUnit1<? super DATA> peeker) {
+        val newPromise = promise.peek(peeker);
+        return new DeferAction<DATA>(this, (Promise<DATA>)newPromise);
+    }
+    
     @SuppressWarnings("unchecked")
     public final <TARGET> DeferAction<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         val newPromise = promise.map(mapper);
