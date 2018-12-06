@@ -20,6 +20,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
+import functionalj.io.IO;
 import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
@@ -85,8 +86,19 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2, HasPromise<INPUT3> input3) {
         return Promise.from(input1, input2, input3, this);
     }
+    public default IO<OUTPUT> applyTo(IO<INPUT1> input1, IO<INPUT2> input2, IO<INPUT3> input3) {
+        return IO.from(input1, input2, input3, this);
+    }
     public default Func0<OUTPUT> applyTo(Supplier<INPUT1> input1, Supplier<INPUT2> input2, Supplier<INPUT3> input3) {
         return ()->apply(input1.get(), input2.get(), input3.get());
+    }
+    public default <SOURCE> Func1<SOURCE, OUTPUT> applyTo(Func1<SOURCE, INPUT1> input1, Func1<SOURCE, INPUT2> input2, Func1<SOURCE, INPUT3> input3) {
+        return source -> {
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            val i3 = input3.apply(source);
+            return applyTo(i1, i2, i3);
+        };
     }
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3) {

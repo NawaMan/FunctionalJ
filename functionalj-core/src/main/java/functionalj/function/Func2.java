@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
+import functionalj.io.IO;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
@@ -91,6 +92,9 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2) {
         return Promise.from(input1, input2, this);
     }
+    public default IO<OUTPUT> applyTo(IO<INPUT1> input1, IO<INPUT2> input2) {
+        return IO.from(input1, input2, this);
+    }
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
         return input1.zipWith(input2, this);
     }
@@ -111,6 +115,13 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     public default Func0<OUTPUT> applyTo(Supplier<INPUT1> input1, Supplier<INPUT2> input2) {
         return ()->apply(input1.get(), input2.get());
+    }
+    public default <SOURCE> Func1<SOURCE, OUTPUT> applyTo(Func1<SOURCE, INPUT1> input1, Func1<SOURCE, INPUT2> input2) {
+        return source -> {
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            return applyTo(i1, i2);
+        };
     }
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2) {

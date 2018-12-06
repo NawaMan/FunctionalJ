@@ -21,6 +21,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
+import functionalj.io.IO;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
@@ -89,6 +90,9 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT> input) {
         return input.getPromise().map(this);
+    }
+    public default IO<OUTPUT> applyTo(IO<INPUT> input) {
+        return input.map(this);
     }
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT> input) {
         return input.map(this);
