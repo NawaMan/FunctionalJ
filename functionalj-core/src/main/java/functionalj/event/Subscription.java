@@ -1,4 +1,4 @@
-package functionalj.reactive;
+package functionalj.event;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

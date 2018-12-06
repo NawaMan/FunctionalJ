@@ -1,4 +1,4 @@
-package functionalj.reactive;
+package functionalj.event;
 
 public enum Cancellation {
     Continue, Cancel
