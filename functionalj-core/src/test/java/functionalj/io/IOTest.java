@@ -58,7 +58,9 @@ public class IOTest {
             logs.add(s); return s;
         }));
         
-        val action2 = action.map(f("prefix-with-dash","-"::concat)).map(f("suffix-with-dash", $S.concat("-")));
+        val action2 = action
+                .map(f("prefix-with-dash","-"::concat))
+                .map(f("suffix-with-dash", $S.concat("-")));
         logs.add("Result: " + action2.createAction().getResult());
         logs.add("Result: " + action2.createAction().getResult());
         logs.add("Result: " + action2.createAction().getResult());

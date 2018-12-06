@@ -17,4 +17,6 @@ public @interface Rule {
     /** The error message used in the case of boolean validation */
     public String value() default "";
     
+    public String extendRule() default "";
+    
 }

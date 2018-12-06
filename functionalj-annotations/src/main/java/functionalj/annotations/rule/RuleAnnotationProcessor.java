@@ -26,6 +26,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
+import functionalj.annotations.IRule;
 import functionalj.annotations.Rule;
 import functionalj.annotations.rule.RuleSpec.RuleType;
 import lombok.val;
@@ -99,10 +100,11 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
             val targetName     = method.getSimpleName().toString();
             val enclosingClass = method.getEnclosingElement().getSimpleName().toString();
             val packageName    = elementUtils.getPackageOf(method).getQualifiedName().toString();
+            val superType      = getSuperType(method);
+            val dataName       = getDataName(method);
             val dataType       = getDataType(method);
-            val isSubRule      = isSubRule(method);
             val errorMsg       = isBool ? msg : null;
-            val spec           = new RuleSpec(targetName, enclosingClass, packageName, dataType, isSubRule, errorMsg, ruleType);
+            val spec           = new RuleSpec(targetName, enclosingClass, packageName, superType, dataName, dataType, errorMsg, ruleType);
             
             try {
                 val className  = packageName + "." + targetName;
@@ -130,15 +132,20 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         }
     }
     
-    private boolean isSubRule(ExecutableElement method) {
-        return false;
-        // TODO - OK, This does not work yet and we also need to get the dataType of the super type which is not easy.
-//        val type = method.getParameters().get(0).asType();
-//        if (type instanceof DeclaredType) {
-//            val iRule = elementUtils.getTypeElement(IRule.class.getCanonicalName()).asType();
-//            return typeUtils.isAssignable(type, iRule);
-//        }
-//        return false;
+    private String getSuperType(ExecutableElement method) {
+        val rule = method.getAnnotation(Rule.class);
+        if (rule == null)
+            return null;
+        
+        val clzz = rule.extendRule();
+        if (clzz == null)
+            return null;
+        
+        return (clzz.trim().isEmpty() || clzz.equals(IRule.class.getCanonicalName())) ? null : clzz;
+    }
+    private String getDataName(ExecutableElement method) {
+        val name = method.getParameters().get(0).getSimpleName().toString();
+        return name;
     }
     
     private String getDataType(ExecutableElement method) {

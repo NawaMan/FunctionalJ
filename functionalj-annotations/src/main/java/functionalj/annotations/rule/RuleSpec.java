@@ -5,10 +5,13 @@ import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
 import java.util.HashMap;
 import java.util.Map;
 
+import functionalj.annotations.IRule;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.val;
 
 @Value
+@AllArgsConstructor
 public class RuleSpec {
     
     enum RuleType {
@@ -27,8 +30,9 @@ public class RuleSpec {
     private final String enclosingClass;
     private final String packageName;
     
+    private final String superRule;
+    private final String dataName;
     private final String dataType;
-    private final boolean isSubRule;
     
     private final String   errorMsg;
     private final RuleType ruleType;
@@ -50,20 +54,31 @@ public class RuleSpec {
     public String toCode() {
         val dataTypeGeneric = getDataTypeGeneric();
         val validationCall  = validationCall();
-        val superClass      = isSubRule ? dataType : "functionalj.result.Acceptable<" + dataTypeGeneric + "> implements functionalj.annotations.IRule";
+        val isSubRule       = (superRule != null) && !superRule.equals(IRule.class.getCanonicalName());
+        val superClass      = isSubRule ? superRule : "functionalj.result.Acceptable<" + dataTypeGeneric + "> implements functionalj.annotations.IRule<" + dataTypeGeneric + ">";
         val strTemplate =
                 "package " + packageName + ";\n" +
                 "public class " + targetName + " extends " + superClass + " {\n" + 
-                "    public static " + targetName + " from(" + dataType + " value) { \n" +
-                "        return new " + targetName + "(value);\n" + 
+                "    public static " + targetName + " from(" + dataType + " " + dataName + ") { \n" +
+                "        return new " + targetName + "(" + dataName + ");\n" + 
                 "    }\n" + 
-                "    protected " + targetName + "(" + dataType + " value) {\n" + 
-                "        this(value, null);\n" + 
+                "    protected " + targetName + "(" + dataType + " " + dataName + ") {\n" + 
+                "        this(" + dataName + ", null);\n" + 
                 "    }\n" + 
-                "    protected " + targetName + "(" + dataType + " value, functionalj.list.FuncList<functionalj.validator.Validator<? super " + dataTypeGeneric + ">> validators) {\n" + 
-                "        super(value, functionalj.list.FuncList.from(validators).append(" + validationCall + ".toValidator()));\n" + 
+                "    protected " + targetName + "(" + dataType + " " + dataName + ", functionalj.list.FuncList<functionalj.validator.Validator<? super " + dataTypeGeneric + ">> validators) {\n" + 
+                "        super(" + dataName + ", functionalj.list.FuncList.from(validators).prepend(" + validationCall + ".toValidator()));\n" + 
+                "    }\n" + 
+                "    \n" + 
+                "    public " + dataTypeGeneric + " " + dataName + "() { return value(); }\n" + 
+                "    public String __dataName()  { return " + toStringLiteral(dataName) + "; }\n" + 
+                "    public " + dataTypeGeneric + " __dataValue() { return value(); }\n" + 
+                "    public Class<" + dataTypeGeneric + "> __dataType() { return " + dataType + ".class; }\n" + 
+                "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" +
+                "    public <R extends functionalj.annotations.IRule<" + dataTypeGeneric + ">> Class<R> __superRule() { \n" + 
+                "        return (Class)" + ((superRule == null) ? null : superClass + ".class") + ";\n" +
                 "    }\n" + 
                 "}";
+        
         return strTemplate;
     }
     

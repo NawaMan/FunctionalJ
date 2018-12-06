@@ -156,6 +156,15 @@ public interface FuncList<DATA>
         return Optional.ofNullable(get(size - 1));
     }
     
+    public default Optional<DATA> at(int index) {
+        val ref   = new AtomicReference<DATA>();
+        val found = Helper.hasAt(this.stream(), index, ref);
+        if (!found)
+            Optional.empty();
+        
+        return Optional.ofNullable(ref.get());
+    }
+    
     public default FuncList<DATA> rest() {
         return deriveWith(stream -> stream.skip(1));
     }

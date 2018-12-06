@@ -107,7 +107,8 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             ElementKind.ENUM,
             ElementKind.CLASS,
             ElementKind.ANNOTATION_TYPE,
-            ElementKind.INTERFACE);
+            ElementKind.INTERFACE,
+            ElementKind.METHOD);
     
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {

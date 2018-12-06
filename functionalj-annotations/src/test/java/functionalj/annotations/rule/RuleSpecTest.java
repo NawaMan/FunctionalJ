@@ -11,10 +11,10 @@ public class RuleSpecTest {
 
     @Test
     public void testBoolean() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "java.lang.String", false, "Not valid.", RuleType.Bool);
+        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", null, "value", "java.lang.String", "Not valid.", RuleType.Bool);
         assertEquals(
                 "package functionalj.annotations.rule;\n" + 
-                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.String> implements functionalj.annotations.IRule {\n" + 
+                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.String> implements functionalj.annotations.IRule<java.lang.String> {\n" + 
                 "    public static ThreeDigitString from(java.lang.String value) { \n" + 
                 "        return new ThreeDigitString(value);\n" + 
                 "    }\n" + 
@@ -24,15 +24,21 @@ public class RuleSpecTest {
                 "    protected ThreeDigitString(java.lang.String value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.String>> validators) {\n" + 
                 "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
                 "    }\n" + 
+                "    \n" + 
+                "    public java.lang.String value() { return value(); }\n" + 
+                "    public String __dataName()  { return \"value\"; }\n" + 
+                "    public java.lang.String __dataValue() { return value(); }\n" + 
+                "    public Class<java.lang.String> __dataType() { return java.lang.String.class; }\n" + 
+                "    public <R extends functionalj.annotations.IRule<java.lang.String>> Class<R> __superRule() { return null; }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
     @Test
     public void testBoolean_int() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "int", false, "Not valid.", RuleType.Bool);
+        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", null, "value", "int", "Not valid.", RuleType.Bool);
         assertEquals(
                 "package functionalj.annotations.rule;\n" + 
-                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.annotations.IRule {\n" + 
+                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.annotations.IRule<java.lang.Integer> {\n" + 
                 "    public static ThreeDigitString from(int value) { \n" + 
                 "        return new ThreeDigitString(value);\n" + 
                 "    }\n" + 
@@ -42,15 +48,21 @@ public class RuleSpecTest {
                 "    protected ThreeDigitString(int value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.Integer>> validators) {\n" + 
                 "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
                 "    }\n" + 
+                "    \n" + 
+                "    public java.lang.Integer value() { return value(); }\n" + 
+                "    public String __dataName()  { return \"value\"; }\n" + 
+                "    public java.lang.Integer __dataValue() { return value(); }\n" + 
+                "    public Class<java.lang.Integer> __dataType() { return int.class; }\n" + 
+                "    public <R extends functionalj.annotations.IRule<java.lang.Integer>> Class<R> __superRule() { return null; }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
     @Test
     public void testErrorMessage() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "int", false, null, RuleType.ErrMsg);
+        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", null, "value", "int", null, RuleType.ErrMsg);
         assertEquals(
                 "package functionalj.annotations.rule;\n" + 
-                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.annotations.IRule {\n" + 
+                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.annotations.IRule<java.lang.Integer> {\n" + 
                 "    public static ThreeDigitString from(int value) { \n" + 
                 "        return new ThreeDigitString(value);\n" + 
                 "    }\n" + 
@@ -60,15 +72,21 @@ public class RuleSpecTest {
                 "    protected ThreeDigitString(int value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.Integer>> validators) {\n" + 
                 "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToMessage(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString).toValidator()));\n" + 
                 "    }\n" + 
+                "    \n" + 
+                "    public java.lang.Integer value() { return value(); }\n" + 
+                "    public String __dataName()  { return \"value\"; }\n" + 
+                "    public java.lang.Integer __dataValue() { return value(); }\n" + 
+                "    public Class<java.lang.Integer> __dataType() { return int.class; }\n" + 
+                "    public <R extends functionalj.annotations.IRule<java.lang.Integer>> Class<R> __superRule() { return null; }\n" + 
                 "}",
                 ruleSpec.toCode());
     }
     @Test
     public void testException() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "int", false, null, RuleType.Func);
+        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", null, "value", "int", null, RuleType.Func);
         assertEquals(
                 "package functionalj.annotations.rule;\n" + 
-                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.annotations.IRule {\n" + 
+                "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.annotations.IRule<java.lang.Integer> {\n" + 
                 "    public static ThreeDigitString from(int value) { \n" + 
                 "        return new ThreeDigitString(value);\n" + 
                 "    }\n" + 
@@ -78,6 +96,36 @@ public class RuleSpecTest {
                 "    protected ThreeDigitString(int value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.Integer>> validators) {\n" + 
                 "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToException(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString).toValidator()));\n" + 
                 "    }\n" + 
+                "    \n" + 
+                "    public java.lang.Integer value() { return value(); }\n" + 
+                "    public String __dataName()  { return \"value\"; }\n" + 
+                "    public java.lang.Integer __dataValue() { return value(); }\n" + 
+                "    public Class<java.lang.Integer> __dataType() { return int.class; }\n" + 
+                "    public <R extends functionalj.annotations.IRule<java.lang.Integer>> Class<R> __superRule() { return null; }\n" + 
+                "}",
+                ruleSpec.toCode());
+    }
+    @Test
+    public void testSubRule() {
+        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.annotations.rule", "NonNullString", "value", "java.lang.String", "Not valid.", RuleType.Bool);
+        assertEquals(
+                "package functionalj.annotations.rule;\n" + 
+                "public class ThreeDigitString extends NonNullString {\n" + 
+                "    public static ThreeDigitString from(java.lang.String value) { \n" + 
+                "        return new ThreeDigitString(value);\n" + 
+                "    }\n" + 
+                "    protected ThreeDigitString(java.lang.String value) {\n" + 
+                "        this(value, null);\n" + 
+                "    }\n" + 
+                "    protected ThreeDigitString(java.lang.String value, functionalj.list.FuncList<functionalj.validator.Validator<? super java.lang.String>> validators) {\n" + 
+                "        super(value, functionalj.list.FuncList.from(validators).append(functionalj.result.Validation.ToBoolean(functionalj.annotations.rule.RuleSpecTest::ThreeDigitString, \"Not valid.\").toValidator()));\n" + 
+                "    }\n" + 
+                "    \n" + 
+                "    public java.lang.String value() { return value(); }\n" + 
+                "    public String __dataName()  { return \"value\"; }\n" + 
+                "    public java.lang.String __dataValue() { return value(); }\n" + 
+                "    public Class<java.lang.String> __dataType() { return java.lang.String.class; }\n" + 
+                "    public <R extends functionalj.annotations.IRule<java.lang.String>> Class<R> __superRule() { return NonNullString.class; }\n" + 
                 "}",
                 ruleSpec.toCode());
     }

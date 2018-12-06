@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import functionalj.annotations.Rule;
+import functionalj.annotations.Struct;
 import functionalj.result.ValidationException;
 
 public class RuleTest {
@@ -22,18 +23,22 @@ public class RuleTest {
                 ? null
                 : ("Not a valid email address: " + emailStr);
     }
-    // Umm - It should be good to allow auto-unwrap 
-    @Rule
-    static ValidationException VerifiedEmail(functionalj.annotations.rule.Email email) {
-        if ("nawa@nawaman.net".equals(email.value()))
+    @Rule(extendRule="functionalj.annotations.rule.Email")
+    static ValidationException VerifiedEmail(String email) {
+        if ("nawa@nawaman.net".equals(email))
             return null;
         
-        return new ValidationException("Unverified email: " + email.value());
+        return new ValidationException("Unverified email: " + email);
     }
     // TODO - Unable to get the fully qualified name for a class being generated. So gotta put the full things here.
     @Rule
     static String UsableCar(functionalj.annotations.struct.Car car) {
         return null;
+    }
+    
+    @Struct(specField = "spec")
+    void TestStruct(IntPositive positveInt) {
+        
     }
     
     @Test
@@ -53,13 +58,15 @@ public class RuleTest {
     }
     @Test
     public void testEmail() {
-        assertEquals("Result:{ Value: nawa@nawaman.net }",                         "" + Email.from("nawa@nawaman.net"));
-        assertEquals("Result:{ Value: nawaman@gmail.com }",                        "" + Email.from("nawaman@gmail.com"));
-        assertEquals("Result:{ Invalid: Not a valid email address: nawaman.net }", "" + Email.from("nawaman.net"));
+        assertEquals("Result:{ Value: nawa@nawaman.net }",   "" + Email.from("nawa@nawaman.net"));
+        assertEquals("Result:{ Value: nawaman@gmail.com }",  "" + Email.from("nawaman@gmail.com"));
+        assertEquals("Result:{ Invalid: Not a valid email address: nawaman.net }",  "" + Email.from("nawaman.net"));
     }
     @Test
     public void testVerifiedEmail() {
-        assertEquals("Result:{ Value: Result:{ Value: nawa@nawaman.net } }",     "" + VerifiedEmail.from(Email.from("nawa@nawaman.net")));
-        assertEquals("Result:{ Invalid: Unverified email: nawaman@gmail.com }",  "" + VerifiedEmail.from(Email.from("nawaman@gmail.com")));
+        assertEquals("Result:{ Value: nawa@nawaman.net }",                             "" + VerifiedEmail.from("nawa@nawaman.net"));
+        assertEquals("Result:{ Invalid: Not a valid email address: nawanawaman.net }", "" + VerifiedEmail.from("nawanawaman.net"));
+        assertEquals("Result:{ Invalid: Unverified email: nawaman@gmail.com }",        "" + VerifiedEmail.from("nawaman@gmail.com"));
     }
+
 }

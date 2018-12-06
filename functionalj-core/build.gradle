@@ -11,9 +11,9 @@ dependencies {
     
     compileOnly 'org.projectlombok:lombok:1.18.2'
     
-    compile 'defaultj:defaultj-api:1.2.1.0'
+    compile 'defaultj:defaultj-api:1.2.2.0'
     compile 'nawaman:nullablej:3.3.0.0'
-    compile 'nawaman-utils:nawaman-utils-reflection:0.1.5'
+    compile 'nawaman-utils:nawaman-utils-reflection:0.1.7'
     
     //== Test ==
     

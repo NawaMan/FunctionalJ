@@ -100,7 +100,8 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             ElementKind.ENUM,
             ElementKind.CLASS,
             ElementKind.ANNOTATION_TYPE,
-            ElementKind.INTERFACE);
+            ElementKind.INTERFACE,
+            ElementKind.METHOD);
     
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -128,7 +129,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         }
         return hasError;
     }
-
+    
     private List<String> readLocalTypeWithNoLens(Element element) {
         return element
                 .getEnclosingElement()
