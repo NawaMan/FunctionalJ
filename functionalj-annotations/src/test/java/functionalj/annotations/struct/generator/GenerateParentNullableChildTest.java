@@ -230,6 +230,7 @@ public class GenerateParentNullableChildTest {
                     packageName,         // targetPackageName
                     isClass,             // isClass
                     null,
+                    null,
                     configures,          // Configurations
                     getters,
                     emptyList());

@@ -44,6 +44,7 @@ public class BuilderClassBuilderTest {
                     packageName,         // targetPackageName
                     isClass,             // isClass
                     null,
+                    null,
                     configures,          // Configurations
                     getters,
                     emptyList());

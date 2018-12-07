@@ -177,23 +177,3 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         return null;
     }
 }
-
-/*
-
-It should be good to allow inheritance between rule.
-
-Once, we can detect if the parameter type is a Rule type, we can do this.
-
-public class VerifiedEmail extends Email {
-    public static VerifiedEmail from(String value) { 
-        return new VerifiedEmail(value);
-    }
-    protected VerifiedEmail(String value) {
-        this(value, null);
-    }
-    protected VerifiedEmail(String value, functionalj.list.FuncList<functionalj.validator.Validator<? super String>> validators) {
-        super(value, FuncList.from(validators).append(functionalj.result.Validation.ToException(functionalj.annotations.rule.RuleTest::VerifiedEmail).toValidator()));
-    }
-}
-
- */

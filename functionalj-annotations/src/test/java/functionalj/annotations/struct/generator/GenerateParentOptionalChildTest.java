@@ -21,6 +21,7 @@ public class GenerateParentOptionalChildTest {
         configures.generateNoArgConstructor  = true;
         configures.generateAllArgConstructor = true;
         configures.generateLensClass         = true;
+        configures.toStringTemplate          = "";
     }
     
     private String  definitionClassName = "Definitions.ParentDef";
@@ -227,9 +228,10 @@ public class GenerateParentOptionalChildTest {
                     packageName,         // packageName
                     null,                // encloseName
                     targetClassName,     // targetClassName
-                    packageName,         // targetPackageName
+                    packageName,         // targetPackag eName
                     isClass,             // isClass
                     null,
+                    null,                // Validate
                     configures,          // Configurations
                     getters,
                     emptyList());

@@ -38,6 +38,7 @@ public class GeneratorTest {
         configures.generateNoArgConstructor  = true;
         configures.generateAllArgConstructor = true;
         configures.generateLensClass         = true;
+        configures.toStringTemplate          = "";
     }
     
     private String  definitionClassName = "Definitions.CarDef";
@@ -356,6 +357,7 @@ public class GeneratorTest {
                     targetClassName,     // targetClassName
                     packageName,         // targetPackageName
                     isClass,             // isClass
+                    null,
                     null,
                     configures,          // Configurations
                     getters,

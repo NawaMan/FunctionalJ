@@ -40,6 +40,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Func;
+import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
@@ -251,6 +252,14 @@ public interface StreamPlus<DATA>
     
     public default Optional<DATA> max(Comparator<? super DATA> comparator) {
         return stream().max(comparator);
+    }
+    
+    public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
+        return stream().min((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
+    }
+    
+    public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
+        return stream().max((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
     }
     
     public default int sum(ToIntFunction<? super DATA> toInt) {

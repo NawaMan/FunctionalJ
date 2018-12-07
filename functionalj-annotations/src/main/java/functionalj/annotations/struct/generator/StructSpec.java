@@ -61,7 +61,7 @@ public class StructSpec {
     public StructSpec(
             String className,
             String packageName,
-            String sourceClassName,
+            String sourceName,
             String sourcePackageName,
             List<Type>           extendeds,
             List<Type>           implementeds,
@@ -70,8 +70,8 @@ public class StructSpec {
             List<GenMethod>      methods,
             List<GenClass>      innerClasses,
             List<ILines>         mores) {
-        this.classSpec = new GenClass(PUBLIC, NONE, MODIFIABLE, new Type(className, packageName), null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
-        this.sourceClassName = sourceClassName;
+        this.classSpec         = new GenClass(PUBLIC, NONE, MODIFIABLE, new Type(className, packageName), null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
+        this.sourceClassName   = sourceName;
         this.sourcePackageName = sourcePackageName;
     }
     

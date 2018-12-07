@@ -21,6 +21,7 @@ public class GenerateParentChildTest {
         configures.generateNoArgConstructor  = true;
         configures.generateAllArgConstructor = true;
         configures.generateLensClass         = true;
+        configures.toStringTemplate          = "";
     }
     
     private String  definitionClassName = "Definitions.ParentDef";
@@ -170,6 +171,7 @@ public class GenerateParentChildTest {
                     targetClassName,     // targetClassName
                     packageName,         // targetPackageName
                     isClass,             // isClass
+                    null,
                     null,
                     configures,          // Configurations
                     getters,

@@ -14,8 +14,10 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.BooleanLens;
 import functionalj.lens.lenses.ComparableLens;
+import functionalj.lens.lenses.DoubleLens;
 import functionalj.lens.lenses.IntegerLens;
 import functionalj.lens.lenses.ListLens;
+import functionalj.lens.lenses.LongLens;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
@@ -28,10 +30,14 @@ public interface Access {
     public static final BooleanLens<Boolean>    theBoolean = BooleanLens.of(LensSpec.of(Boolean.class));
     public static final StringLens<String>      theString  = StringLens .of(LensSpec.of(String.class));
     public static final IntegerLens<Integer>    theInteger = IntegerLens.of(LensSpec.of(Integer.class));
+    public static final LongLens<Long>          theLong    = LongLens   .of(LensSpec.of(Long.class));
+    public static final DoubleLens<Double>      theDouble  = DoubleLens .of(LensSpec.of(Double.class));
     
-    public static final BooleanLens<Boolean>    $B = theBoolean;
-    public static final StringLens<String>      $S = theString;
-    public static final IntegerLens<Integer>    $I = theInteger;
+    public static final BooleanLens<Boolean> $B = theBoolean;
+    public static final StringLens<String>   $S = theString;
+    public static final IntegerLens<Integer> $I = theInteger;
+    public static final LongLens<Long>       $L = theLong;
+    public static final DoubleLens<Double>   $D = theDouble;
     
     public static final TheListLens   theList   = new TheListLens();
     public static final TheTuple2Lens theTuple2 = new TheTuple2Lens();

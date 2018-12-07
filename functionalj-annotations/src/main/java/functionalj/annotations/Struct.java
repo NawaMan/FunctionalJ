@@ -59,4 +59,10 @@ public @interface Struct {
     /** @return the flag indicating that the fields should be made public - default to true. */
     public boolean publicFields() default false;
     
+    /** @return the flag indicating that the fields should be made public - default to true. */
+    public String toStringTemplate() default "";
+    
+    /** @return the flag indicating that the fields should be made public - default to true. */
+    public boolean generateToString() default true;
+    
 }

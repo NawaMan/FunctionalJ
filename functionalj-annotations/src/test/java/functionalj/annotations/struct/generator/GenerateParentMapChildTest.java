@@ -179,6 +179,7 @@ public class GenerateParentMapChildTest {
                     packageName,         // targetPackageName
                     isClass,             // isClass
                     null,
+                    null,
                     configures,          // Configurations
                     getters, 
                     emptyList());

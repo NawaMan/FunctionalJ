@@ -237,6 +237,7 @@ public class GenerateParentListChildTest {
                     packageName,         // targetPackageName
                     isClass,             // isClass
                     null,
+                    null,
                     configures,          // Configurations
                     getters,
                     emptyList());

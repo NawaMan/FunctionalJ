@@ -24,6 +24,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.function.Function;
 
+import functionalj.annotations.choice.generator.Utils;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Wither;
@@ -37,13 +38,14 @@ import lombok.experimental.Wither;
 @Wither
 public class SourceSpec {
     
-    private String         specClassName;
+    private String         specName;
     private String         packageName;
     private String         encloseName;
     private String         targetClassName;
     private String         targetPackageName;
     private Boolean        isClass;
     private String         specObjName;
+    private String         validatorName;
     private Configurations configures;
     private List<Getter>   getters;
     private List<String>   localTypeWithNoLens;
@@ -65,6 +67,8 @@ public class SourceSpec {
         public boolean generateBuilderClass = true;
         /** Should the fields be made public */
         public boolean publicFields = false;
+        /** Template for toString. null for no toString generated, "" for auto-generate toString, or template */
+        public String toStringTemplate = "";
         
         public Configurations() {}
         public Configurations(
@@ -74,7 +78,8 @@ public class SourceSpec {
                 boolean generateAllArgConstructor,
                 boolean generateLensClass,
                 boolean generateBuilderClass,
-                boolean publicFields) {
+                boolean publicFields,
+                String toStringTemplate) {
             this.coupleWithDefinition            = coupleWithDefinition;
             this.generateNoArgConstructor        = generateNoArgConstructor;
             this.generateRequiredOnlyConstructor = generateRequiredOnlyConstructor;
@@ -82,6 +87,7 @@ public class SourceSpec {
             this.generateLensClass               = generateLensClass;
             this.generateBuilderClass            = generateBuilderClass;
             this.publicFields                    = publicFields;
+            this.toStringTemplate                = toStringTemplate;
         }
         
         @Override
@@ -93,7 +99,8 @@ public class SourceSpec {
                     + "generateAllArgConstructor="       + generateAllArgConstructor + ", "
                     + "generateLensClass="               + generateLensClass + ", "
                     + "generateBuilderClass="            + generateBuilderClass + ","
-                    + "publicFields="                     + publicFields
+                    + "publicFields="                    + publicFields
+                    + "toStringTemplate="                + toStringTemplate
                     + "]";
         }
         public String toCode() {
@@ -104,7 +111,8 @@ public class SourceSpec {
                     generateAllArgConstructor,
                     generateLensClass,
                     generateBuilderClass,
-                    publicFields
+                    publicFields,
+                    Utils.toStringLiteral(toStringTemplate)
             );
             return "new functionalj.annotations.struct.generator.SourceSpec.Configurations("
                     + params.stream().map(String::valueOf).collect(joining(", "))
@@ -118,7 +126,7 @@ public class SourceSpec {
     }
     /** @return the type of this source. */
     public Type toType() {
-        return new Type(specClassName, packageName);
+        return new Type(specName, packageName);
     }
     public Boolean isClass() {
         return isClass;
@@ -128,13 +136,14 @@ public class SourceSpec {
     
     public String toCode() {
         val params = asList(
-                toStringLiteral(specClassName),
+                toStringLiteral(specName),
                 toStringLiteral(packageName),
                 toStringLiteral(encloseName),
                 toStringLiteral(targetClassName),
                 toStringLiteral(targetPackageName),
                 isClass,
                 toStringLiteral(specObjName),
+                toStringLiteral(validatorName),
                 configures.toCode(),
                 toListCode(getters, Getter::toCode),
                 toListCode(localTypeWithNoLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity())

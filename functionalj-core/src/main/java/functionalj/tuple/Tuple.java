@@ -38,6 +38,33 @@ public class Tuple {
         return new ImmutableTuple6<>(_1, _2, _3, _4, _5, _6);
     }
     
+    // == Use ==
+    
+    public static <T1, T2> T1 _1(Tuple2<T1, T2> t) { return t._1(); }
+    public static <T1, T2> T2 _2(Tuple2<T1, T2> t) { return t._2(); }
+    
+    public static <T1, T2, T3> T1 _1(Tuple3<T1, T2, T3> t) { return t._1(); }
+    public static <T1, T2, T3> T2 _2(Tuple3<T1, T2, T3> t) { return t._2(); }
+    public static <T1, T2, T3> T3 _3(Tuple3<T1, T2, T3> t) { return t._3(); }
+    
+    public static <T1, T2, T3, T4> T1 _1(Tuple4<T1, T2, T3, T4> t) { return t._1(); }
+    public static <T1, T2, T3, T4> T2 _2(Tuple4<T1, T2, T3, T4> t) { return t._2(); }
+    public static <T1, T2, T3, T4> T3 _3(Tuple4<T1, T2, T3, T4> t) { return t._3(); }
+    public static <T1, T2, T3, T4> T4 _4(Tuple4<T1, T2, T3, T4> t) { return t._4(); }
+    
+    public static <T1, T2, T3, T4, T5> T1 _1(Tuple5<T1, T2, T3, T4, T5> t) { return t._1(); }
+    public static <T1, T2, T3, T4, T5> T2 _2(Tuple5<T1, T2, T3, T4, T5> t) { return t._2(); }
+    public static <T1, T2, T3, T4, T5> T3 _3(Tuple5<T1, T2, T3, T4, T5> t) { return t._3(); }
+    public static <T1, T2, T3, T4, T5> T4 _4(Tuple5<T1, T2, T3, T4, T5> t) { return t._4(); }
+    public static <T1, T2, T3, T4, T5> T5 _5(Tuple5<T1, T2, T3, T4, T5> t) { return t._5(); }
+    
+    public static <T1, T2, T3, T4, T5, T6> T1 _1(Tuple6<T1, T2, T3, T4, T5, T6> t) { return t._1(); }
+    public static <T1, T2, T3, T4, T5, T6> T2 _2(Tuple6<T1, T2, T3, T4, T5, T6> t) { return t._2(); }
+    public static <T1, T2, T3, T4, T5, T6> T3 _3(Tuple6<T1, T2, T3, T4, T5, T6> t) { return t._3(); }
+    public static <T1, T2, T3, T4, T5, T6> T4 _4(Tuple6<T1, T2, T3, T4, T5, T6> t) { return t._4(); }
+    public static <T1, T2, T3, T4, T5, T6> T5 _5(Tuple6<T1, T2, T3, T4, T5, T6> t) { return t._5(); }
+    public static <T1, T2, T3, T4, T5, T6> T6 _6(Tuple6<T1, T2, T3, T4, T5, T6> t) { return t._6(); }
+    
     // == Access & Lens ==
     
     public static IntTuple2Lens<IntTuple2<Object>, Object, ObjectLens<IntTuple2<Object>, Object>>

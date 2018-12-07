@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -42,6 +43,7 @@ import java.util.stream.Stream;
 
 import functionalj.annotations.IPostConstruct;
 import functionalj.annotations.IStruct;
+import functionalj.annotations.choice.generator.Utils;
 import functionalj.annotations.struct.generator.model.Accessibility;
 import functionalj.annotations.struct.generator.model.GenClass;
 import functionalj.annotations.struct.generator.model.GenConstructor;
@@ -121,18 +123,30 @@ public class StructBuilder {
                         Type.of(SourceSpec.class),
                         sourceSpec.toCode()));
         
-        val toString = new GenMethod(
-                Accessibility.PUBLIC,
-                Scope.INSTANCE,
-                Modifiability.MODIFIABLE,
-                Type.STRING,
-                "toString",
-                Collections.emptyList(),
-                line("return \"" + sourceSpec.getTargetClassName() + "[\" + " +
+        GenMethod toString = null;
+        
+        val toStringTemplate = sourceSpec.getConfigures().toStringTemplate;
+        if (toStringTemplate != null) {
+            String toStringBody = null;
+            if (!toStringTemplate.isEmpty()) {
+                toStringBody = "return functionalj.functions.StrFuncs.template(" + Utils.toStringLiteral(toStringTemplate) + ",toMap()::get);";
+            } else {
+                toStringBody =
+                        "return \"" + sourceSpec.getTargetClassName() + "[\" + " +
                         getters.stream()
                         .map(g -> "\""+ g.getName() + ": \" + " + g.getName() + "()")
                         .collect(joining(" + \", \" + ")) +
-                        " + \"]\";"));
+                        " + \"]\";";
+            }
+            toString =  new GenMethod(
+                    Accessibility.PUBLIC,
+                    Scope.INSTANCE,
+                    Modifiability.MODIFIABLE,
+                    Type.STRING,
+                    "toString",
+                    Collections.emptyList(),
+                    line(toStringBody));
+        }
         
         val hashCode = new GenMethod(
                 Accessibility.PUBLIC,
@@ -235,7 +249,7 @@ public class StructBuilder {
                     getterMethods,
                     witherMethods,
                     Stream.of(fromMap, toMap, getSchema, getStructSchema),
-                    Stream.of(toString, hashCode, equals)
+                    Stream.of(toString, hashCode, equals).filter(Objects::nonNull)
                  );
         val methods = flatMap.stream().flatMap(themAll()).collect(toList());
         
@@ -253,7 +267,7 @@ public class StructBuilder {
         val dataObjSpec = new StructSpec(
                 sourceSpec.getTargetClassName(),
                 sourceSpec.getTargetPackageName(),
-                sourceSpec.getSpecClassName(),
+                sourceSpec.getSpecName(),
                 sourceSpec.getPackageName(),
                 extendeds, implementeds,
                 constructors, fields, methods, innerClasses, emptyList());
@@ -288,11 +302,23 @@ public class StructBuilder {
                         .filter(getter -> getter.isRequired())
                         .map   (this::getterToGenParam)
                         .collect(toList());
+        
+        val pkgName      = sourceSpec.getPackageName();
+        val eclName      = sourceSpec.getEncloseName();
+        val valName      = sourceSpec.getValidatorName();
+        val getterParams = sourceSpec.getGetters().stream().map(getter -> getter.getDefaultValueCode(getter.getName())).collect(Collectors.joining(","));
+        
+        val assignGetters  = sourceSpec.getGetters().stream().map(getter -> "this." + getter.getName() + "=" + getter.getDefaultValueCode(getter.getName()) + ";");
+        val validate       = (Stream<String>)((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
         val ipostConstruct = Type.of(IPostConstruct.class).simpleName();
-        val assignments = Stream.concat(
-                sourceSpec.getGetters().stream()
-                        .map    (getter -> "this." + getter.getName() + "=" + getter.getDefaultValueCode(getter.getName()) + ";"),
-                Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();"))
+        val postConstruct  = Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();");
+        val assignments
+                = Stream.of(
+                        assignGetters,
+                        validate,
+                        postConstruct)
+                .filter(Objects::nonNull)
+                .flatMap(Function.identity())
                 .collect(toList());
         return new GenConstructor(PUBLIC, name, params, ILines.line(assignments));
     }
@@ -300,13 +326,22 @@ public class StructBuilder {
         val allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>)((spec, acc) ->{
             val name = spec.getTargetClassName();
             List<GenParam> params = spec.getGetters().stream()
-                    .map    (this::getterToGenParam)
-                    .collect(toList());
+                        .map(this::getterToGenParam)
+                        .collect(toList());
+            
+            val pkgName         = sourceSpec.getPackageName();
+            val eclName         = sourceSpec.getEncloseName();
+            val valName         = sourceSpec.getValidatorName();
+            String getterParams = sourceSpec.getGetters().stream().map(getter -> getter.getName()).collect(Collectors.joining(","));
+            
+            val assignGetters  = spec.getGetters().stream().map(this::initGetterField);
+            val validate       = (Stream<String>)((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
             val ipostConstruct = Type.of(IPostConstruct.class).simpleName();
-            val body = Stream.concat(
-                    spec.getGetters().stream().map(this::initGetterField),
-                    Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();")
-            );
+            val body = Stream.of(
+                            assignGetters,
+                            validate,
+                            Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();"))
+                    .flatMap(Function.identity());
             return new GenConstructor(acc, name, params, ILines.of(()->body));
         });
         val allArgsConstAccessibility

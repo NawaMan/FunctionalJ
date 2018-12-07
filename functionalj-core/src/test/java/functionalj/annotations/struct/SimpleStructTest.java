@@ -25,7 +25,7 @@ public class SimpleStructTest {
             return name().toUpperCase();
         }
     }
-        
+    
     @Test
     public void testReadLens_getProperty() {
         val obj1 = new SimpleFromInteface("Obj1");

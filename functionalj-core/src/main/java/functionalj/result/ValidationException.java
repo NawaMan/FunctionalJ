@@ -4,17 +4,60 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 public class ValidationException extends RuntimeException {
-
-	private static final long serialVersionUID = 2317758566674598943L;
-
-
-
-	public ValidationException(String message) {
+    
+    private static final long serialVersionUID = 2317758566674598943L;
+    
+    public static <DATA> ValidationException from(boolean checkResult, String template, DATA data) {
+        if (checkResult)
+            return null;
+        
+        return from(template, data);
+    }
+    public static <DATA> ValidationException from(boolean checkResult, DATA data) {
+        if (checkResult)
+            return null;
+        
+        return from(((data == null) ? "Invalid value: " : data.getClass().getSimpleName() + ": ") + "%s", data);
+    }
+    public static <DATA> ValidationException from(String template, DATA data) {
+        if (template == null)
+            return null;
+        
+        return new ValidationException(String.format(template, data));
+    }
+    public static <DATA> ValidationException from(ValidationException validationException) {
+        return validationException;
+    }
+    
+    public static <DATA> void ensure(boolean checkResult, DATA data) {
+        val exception = from(checkResult, data);
+        if (exception != null)
+            throw exception;
+    }
+    public static <DATA> void ensure(boolean checkResult, String template, DATA data) {
+        val exception = from(checkResult, template, data);
+        if (exception != null)
+            throw exception;
+    }
+    public static <DATA> void ensure(String template, DATA data) {
+        val exception = from(template, data);
+        if (exception != null)
+            throw exception;
+    }
+    public static <DATA> void ensure(ValidationException validationException, DATA data) {
+        if (validationException != null)
+            throw validationException;
+    }
+    
+    
+    public ValidationException(String message) {
         super(message);
     }
+    
     public ValidationException(Exception cause) {
         super(cause);
     }
+    
     public ValidationException(String message, Exception cause) {
         super(message, cause);
     }
@@ -24,17 +67,15 @@ public class ValidationException extends RuntimeException {
     
     @Override
     public String toString() {
-        val msg      = this.getMessage();
-        val cause    = getCause();
+        val msg = this.getMessage();
+        val cause = getCause();
         val causeMsg = ((msg != null) || (cause == null)) ? "" : ": " + cause.toString();
         return super.toString() + causeMsg;
     }
     
-    
-    
     public static ValidationException of(Exception e) {
         if (e instanceof ValidationException)
-            return (ValidationException)e;
+            return (ValidationException) e;
         return new ValidationException(e);
     }
     

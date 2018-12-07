@@ -20,7 +20,7 @@ import lombok.val;
 public class FromMethodTest {
     
     @Struct(specField="spec")
-    public void Car(String make, int year, @Nullable @DefaultTo(NULL) String color) { }
+    static boolean Car(String make, int year, @Nullable @DefaultTo(NULL) String color) { return true; }
     
     @Struct
     public void Inventory(

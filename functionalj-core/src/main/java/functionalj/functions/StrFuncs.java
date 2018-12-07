@@ -338,10 +338,10 @@ public class StrFuncs {
         };
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
-    public static String template(String str, Func1<String, String> replacer) {
+    public static String template(String str, Func1<String, Object> replacer) {
         return template((CharSequence)str, replacer);
     }
-    public static String template(CharSequence str, Func1<String, String> replacer) {
+    public static String template(CharSequence str, Func1<String, Object> replacer) {
         if (str == null)
             return null;
         if (str == null || (str.length() == 0))
@@ -354,7 +354,7 @@ public class StrFuncs {
         while (matcher.find()) {
             val group       = matcher.group();
             val name        = group.substring(1, group.length());
-            val replacement = replacer.apply(name);
+            val replacement = String.valueOf(replacer.apply(name));
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);

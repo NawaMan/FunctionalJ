@@ -1,5 +1,6 @@
 package functionalj.list;
 
+import static functionalj.function.Func.alwaysTrue;
 import static functionalj.lens.Access.$I;
 
 import java.util.Collection;
@@ -18,6 +19,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
@@ -30,6 +32,7 @@ import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import functionalj.tuple.IntTuple2;
+import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
@@ -191,6 +194,30 @@ public interface FuncList<DATA>
         return this
                 .mapWithIndex((index, data)-> check.test(data) ? new IntTuple2<DATA>(index, data) : null)
                 .filterNonNull();
+    }
+    
+    public default <D extends Comparable<D>> Optional<Integer> minIndexBy(Func1<DATA, D> mapper) {
+        return minIndexBy(alwaysTrue(), mapper);
+    }
+    
+    public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(Func1<DATA, D> mapper) {
+        return maxIndexBy(alwaysTrue(), mapper);
+    }
+    
+    public default <D extends Comparable<D>> Optional<Integer> minIndexBy(Predicate<DATA> filter, Func1<DATA, D> mapper) {
+        return stream()
+                .mapWithIndex(Tuple::of)
+                .filter(t -> filter.test (t._2))
+                .minBy (t -> mapper.apply(t._2))
+                .map   (t -> t._1);
+    }
+    
+    public default <D extends Comparable<D>> Optional<Integer> maxIndexBy(Predicate<DATA> filter, Func1<DATA, D> mapper) {
+        return stream()
+                .mapWithIndex(Tuple::of)
+                .filter(t -> filter.test (t._2))
+                .maxBy (t -> mapper.apply(t._2))
+                .map   (t -> t._1);
     }
     
     //== Modified methods ==

@@ -214,8 +214,10 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, specTargetName, configures))
             return null;
         
+        val validatorName = (String)null;
+        
         try {
-            return new SourceSpec(sourceName, packageName, encloseName, targetName, packageName, isClass, specField, configures, getters, localTypeWithNoLens);
+            return new SourceSpec(sourceName, packageName, encloseName, targetName, packageName, isClass, specField, validatorName, configures, getters, localTypeWithNoLens);
         } catch (Exception e) {
             error(element, "Problem generating the class: "
                             + packageName + "." + specTargetName
@@ -227,8 +229,6 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     }
     
     private SourceSpec extractSourceSpecMethod(Element element) {
-//        error(element, elementUtils.getDocComment(element));
-        
         val method         = (ExecutableElement)element;
         val packageName    = extractPackageName(element);
         val encloseName    = element.getEnclosingElement().getSimpleName().toString();
@@ -237,19 +237,11 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         val specField      = struct.specField();
         
         val localTypeWithNoLens = readLocalTypeWithNoLens(element);
-        
-        // TODO - Make the generated class extends or implements the return type.
-        //        The challenge are:
-        //          - check if it is class or interface.
-        //          - deal with generic.
-//        val hasReturnType  = !method.getReturnType().toString().equals("void");
-//        error(element, typeUtils.asElement(method.getReturnType()).getKind().toString());
-//        val isClass        = hasReturnType ? false : (Boolean)null;//method.getReturnType().toString().equals("void") ? null : typeUtils.asElement(method.getReturnType()).getKind() == ElementKind.CLASS;
-//        val superName      = (String)null;
-//        val superPackage   = (String)null;
         val isClass      = (Boolean)null;
-        val superName    = (String)null;
+        val sourceName   = (String)null;
         val superPackage = packageName;
+        
+        val validatorName = isBooleanStringOrValidation(method.getReturnType()) ? method.getSimpleName().toString() : null;
         
         val configures = extractConfigurations(element, struct);
         if (configures == null)
@@ -261,7 +253,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             return null;
         
         try {
-            return new SourceSpec(superName, superPackage, encloseName, specTargetName, packageName, isClass, specField, configures, getters, localTypeWithNoLens);
+            return new SourceSpec(sourceName, superPackage, encloseName, specTargetName, packageName, isClass, specField, validatorName, configures, getters, localTypeWithNoLens);
         } catch (Exception e) {
             error(element, "Problem generating the class: "
                             + packageName + "." + specTargetName
@@ -270,6 +262,22 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                             + " @ " + e.getStackTrace()[0]);
             return null;
         }
+    }
+    
+    private boolean isBooleanStringOrValidation(TypeMirror returnType) {
+        if (returnType instanceof PrimitiveType) {
+            if ("boolean".equals(((PrimitiveType)returnType).toString()))
+                return true;
+        }
+        if (returnType instanceof DeclaredType) {
+            val typeElement = ((TypeElement)((DeclaredType)returnType).asElement());
+            val fullName    = typeElement.getQualifiedName().toString();
+            if ("java.lang.String".equals(fullName))
+                return true;
+            if ("functionalj.result.ValidationException".equals(fullName))
+                return true;
+        }
+        return false;
     }
     
     private String extractTargetName(String simpleName, String specTargetName) {
@@ -327,6 +335,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         configures.generateLensClass               = struct.generateLensClass();
         configures.generateBuilderClass            = struct.generateBuilderClass();
         configures.publicFields                    = struct.publicFields();
+        configures.toStringTemplate                = !struct.generateToString() ? null : struct.toStringTemplate();
         
         if (!configures.generateNoArgConstructor
          && !configures.generateAllArgConstructor) {
