@@ -286,6 +286,16 @@ public interface FuncList<DATA>
         return deriveWith(stream -> stream.map(each -> (i.getAndIncrement() == index) ? value : each));
     }
     
+    public default FuncList<DATA> with(int index, Function<DATA, DATA> mapper) {
+        if (index < 0)
+            throw new IndexOutOfBoundsException(index + "");
+        if (index >= size())
+            throw new IndexOutOfBoundsException(index + " vs " + size());
+        
+        val i = new AtomicInteger();
+        return deriveWith(stream -> stream.map(each -> (i.getAndIncrement() == index) ? mapper.apply(each) : each));
+    }
+    
     @SuppressWarnings("unchecked")
     public default FuncList<DATA> insertAt(int index, DATA ... elements) {
         if ((elements == null) || (elements.length == 0))

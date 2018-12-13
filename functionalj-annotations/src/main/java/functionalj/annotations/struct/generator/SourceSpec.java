@@ -48,7 +48,7 @@ public class SourceSpec {
     private String         validatorName;
     private Configurations configures;
     private List<Getter>   getters;
-    private List<String>   localTypeWithNoLens;
+    private List<String>   typeWithLens;
     
     /** Configurations */
     public static class Configurations {
@@ -146,7 +146,7 @@ public class SourceSpec {
                 toStringLiteral(validatorName),
                 configures.toCode(),
                 toListCode(getters, Getter::toCode),
-                toListCode(localTypeWithNoLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity())
+                toListCode(typeWithLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity())
         );
         return "new functionalj.annotations.struct.generator.SourceSpec("
                 + params.stream().map(String::valueOf).collect(joining(", "))

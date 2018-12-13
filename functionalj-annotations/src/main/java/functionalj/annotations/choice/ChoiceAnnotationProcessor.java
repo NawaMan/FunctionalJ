@@ -26,12 +26,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -55,7 +53,7 @@ import javax.tools.Diagnostic;
 
 import functionalj.annotations.Choice;
 import functionalj.annotations.Nullable;
-import functionalj.annotations.Struct;
+import functionalj.annotations.common;
 import functionalj.annotations.choice.generator.Generator;
 import functionalj.annotations.choice.generator.model.Case;
 import functionalj.annotations.choice.generator.model.CaseParam;
@@ -103,30 +101,13 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         messager.printMessage(Diagnostic.Kind.ERROR, msg, e);
     }
     
-    private static final EnumSet<ElementKind> typeElementKinds = EnumSet.of(
-            ElementKind.ENUM,
-            ElementKind.CLASS,
-            ElementKind.ANNOTATION_TYPE,
-            ElementKind.INTERFACE,
-            ElementKind.METHOD);
-    
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Choice.class)) {
             val typeElement = (TypeElement)element;
             
-            val localTypeWithNoLens = typeElement
-                    .getEnclosingElement()
-                    .getEnclosedElements().stream()
-                    .filter(elmt -> {
-                        return typeElementKinds.contains(elmt.getKind())
-                            && (elmt.getAnnotation(Struct.class) == null)
-                            && (elmt.getAnnotation(Choice.class) == null);
-                    })
-                    .map(elmt -> elmt.getSimpleName().toString())
-                    .collect(Collectors.toList());
-            
+            val localTypeWithLens = common.readLocalTypeWithLens(element);
             
             val simpleName  = typeElement.getSimpleName().toString();
             val isInterface = ElementKind.INTERFACE.equals(element.getKind());
@@ -143,7 +124,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             val sourceType     = new Type(packageName, enclosedClass, simpleName, generics);
             val choiceType    = element.getAnnotation(Choice.class);
             val specTargetName = choiceType.name();
-            val targetName     = extractTargetName(simpleName, specTargetName);
+            val targetName     = common.extractTargetName(simpleName, specTargetName);
             val targetType     = new Type(packageName, null, targetName, generics);
             
             val specField = emptyToNull(choiceType.specField());
@@ -155,7 +136,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             val choices      = extractTypeChoices(element, targetType, typeElement);
             val methods      = extractTypeMethods(element, targetType, typeElement);
             val publicFields = choiceType.publicFields();
-            val generator    = new Generator(targetName, sourceType, specField, publicFields, generics, choices, methods, localTypeWithNoLens);
+            val generator    = new Generator(targetName, sourceType, specField, publicFields, generics, choices, methods, localTypeWithLens);
             
             try {
                 val className  = packageName + "." + targetName;
@@ -180,18 +161,6 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         if (sourceSpec == null)
             return null;
         return sourceSpec.isEmpty() ? null : sourceSpec;
-    }
-    
-    private String extractTargetName(String simpleName, String specTargetName) {
-        if ((specTargetName != null) && !specTargetName.isEmpty())
-            return specTargetName;
-        
-        if (simpleName.matches("^.*Spec$"))
-            return simpleName.replaceAll("Spec$", "");
-        if (simpleName.matches("^.*Model$"))
-            return simpleName.replaceAll("Model$", "");
-        
-        return simpleName;
     }
     
     private boolean isDefaultOrStatic(ExecutableElement mthd) {

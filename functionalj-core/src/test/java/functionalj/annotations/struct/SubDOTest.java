@@ -18,7 +18,7 @@ public class SubDOTest {
         String name();
         
     }
-    @Struct(name="Parent")
+    @Struct(name="Parent", specField="spec")
     public static interface IParent {
         
         String name();

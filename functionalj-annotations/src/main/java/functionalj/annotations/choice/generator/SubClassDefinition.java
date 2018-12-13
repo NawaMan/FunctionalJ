@@ -22,7 +22,7 @@ public class SubClassDefinition implements Lines {
     @Override
     public List<String> lines() {
         val name = choice.name;
-        val lens = new CaseLens(targetClass.spec, choice);
+        val lens = new CaseLensBuilder(targetClass.spec, choice);
         val lensInstance = lens.generateTheLensField().toDefinition(targetClass.type.pckg).lines().findFirst().get();
         if (!choice.isParameterized()) {
             return asList(

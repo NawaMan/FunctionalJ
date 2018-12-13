@@ -53,14 +53,14 @@ public class GenClass implements IGenerateDefinition {
     private final Scope         scope;
     private final Modifiability modifiability;
     
-    private final Type       type;
-    private final String     generic;
-    private final List<Type> extendeds;
-    private final List<Type> implementeds;
+    private final Type                 type;
+    private final String               generic;
+    private final List<Type>           extendeds;
+    private final List<Type>           implementeds;
     private final List<GenConstructor> constructors;
     private final List<GenField>       fields;
     private final List<GenMethod>      methods;
-    private final List<GenClass>      innerClasses;
+    private final List<GenClass>       innerClasses;
     private final List<ILines>         mores;
     
     @Override

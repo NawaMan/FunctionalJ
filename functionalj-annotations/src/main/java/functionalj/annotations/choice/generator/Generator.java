@@ -21,8 +21,8 @@ public class Generator implements Lines {
     public final SourceSpec  sourceSpec;
     public final TargetClass targetClass;
     
-    public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithNoLens) {
-        this.sourceSpec  = new SourceSpec(targetName, sourceType, specObjName, publicFields, generics, choices, methods, localTypeWithNoLens);
+    public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
+        this.sourceSpec  = new SourceSpec(targetName, sourceType, specObjName, publicFields, generics, choices, methods, localTypeWithLens);
         this.targetClass = new TargetClass(sourceSpec);
     }
     public Generator(String targetName, Type sourceType, List<Case> choices) {

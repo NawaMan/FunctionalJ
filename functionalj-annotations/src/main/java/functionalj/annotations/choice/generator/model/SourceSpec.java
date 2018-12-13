@@ -24,7 +24,7 @@ public class SourceSpec {
     public final List<Generic> generics;
     public final List<Case>    choices;
     public final List<Method>  methods;
-    public final List<String>  localTypeWithNoLens;
+    public final List<String>  localTypeWithLens;
     public SourceSpec(String targetName, Type sourceType, List<Case> choices) {
         this(targetName, sourceType, null, false, new ArrayList<Generic>(), choices, new ArrayList<>(), new ArrayList<>());
     }
@@ -38,7 +38,7 @@ public class SourceSpec {
                 toListCode     (generics, Generic::toCode),
                 toListCode     (choices,  Case::toCode),
                 toListCode     (methods,  Method::toCode),
-                toListCode     (localTypeWithNoLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity())
+                toListCode     (localTypeWithLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity())
         );
         
         return "new " + this.getClass().getCanonicalName() + "("

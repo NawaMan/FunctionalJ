@@ -363,13 +363,12 @@ public class Type implements IRequireTypes {
      * 
      * @return  the lens type.
      */
-    public Type lensType(String packageName, String encloseName, List<String> localTypeWithoutLens) {
+    public Type lensType(String packageName, String encloseName, List<String> localTypeWithLens) {
         val lensType = knownLensType();
         if (lensType != null)
             return lensType;
         
-        val isLocal = Objects.equals(packageName, packageName()) && Objects.equals(encloseName, encloseName);
-        if (!isLocal || localTypeWithoutLens.contains(simpleName))
+        if ((localTypeWithLens != null) && !localTypeWithLens.contains(simpleName))
             return Core.ObjectLens.type();
         
         return new TypeBuilder()

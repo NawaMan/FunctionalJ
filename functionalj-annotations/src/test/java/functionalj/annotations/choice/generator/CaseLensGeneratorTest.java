@@ -38,7 +38,7 @@ public class CaseLensGeneratorTest {
                 "        super(spec);\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "}", new CaseLens(spec, white).build().stream().collect(joining("\n")).toString());
+                "}", new CaseLensBuilder(spec, white).build().stream().collect(joining("\n")).toString());
         assertEquals(
                 "public static class BlackLens<HOST> extends ObjectLensImpl<HOST, BasicColor.Black> {\n" + 
                 "    \n" + 
@@ -46,7 +46,7 @@ public class CaseLensGeneratorTest {
                 "        super(spec);\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "}", new CaseLens(spec, black).build().stream().collect(joining("\n")).toString());
+                "}", new CaseLensBuilder(spec, black).build().stream().collect(joining("\n")).toString());
         assertEquals(
                 "public static class RGBLens<HOST> extends ObjectLensImpl<HOST, BasicColor.RGB> {\n" + 
                 "    \n" + 
@@ -58,7 +58,7 @@ public class CaseLensGeneratorTest {
                 "        super(spec);\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "}", new CaseLens(spec, rgb).build().stream().collect(joining("\n")).toString());
+                "}", new CaseLensBuilder(spec, rgb).build().stream().collect(joining("\n")).toString());
     }
 
 }

@@ -1,7 +1,6 @@
 package functionalj.annotations.struct.generator;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -182,7 +181,7 @@ public class GenerateParentMapChildTest {
                     null,
                     configures,          // Configurations
                     getters, 
-                    emptyList());
+                    asList("Child"));
         val dataObjSpec = new StructBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;

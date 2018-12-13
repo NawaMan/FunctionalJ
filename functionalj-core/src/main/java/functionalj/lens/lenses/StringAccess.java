@@ -72,6 +72,9 @@ public interface StringAccess<HOST>
     public default BooleanAccess<HOST> thatContains(CharSequence charSequence) {
         return booleanAccess(false, str->str.contains(charSequence));
     }
+    public default BooleanAccess<HOST> thatNotContains(CharSequence charSequence) {
+        return booleanAccess(false, str->!str.contains(charSequence));
+    }
     
     public default BooleanAccess<HOST> thatEndsWith(String suffix) {
         boolean isSuffixEmpty = (suffix == null) || suffix.isEmpty();

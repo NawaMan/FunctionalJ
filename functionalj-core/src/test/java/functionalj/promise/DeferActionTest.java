@@ -113,9 +113,9 @@ public class DeferActionTest {
     @Test
     public void testDeferAction_exception() throws InterruptedException {
         val log   = new ArrayList<String>();
+        val endRef = new AtomicInteger();
         val latch = new CountDownLatch(2);
         val start = System.currentTimeMillis();
-        log.add("Start: " + (start - start));
         DeferAction.run(()->{
             Thread.sleep(100);
             latch.countDown();
@@ -123,14 +123,16 @@ public class DeferActionTest {
         })
         .subscribe(result -> {
             val end = System.currentTimeMillis();
-            log.add("End: " + (20*((end - start) / 20)));
+            endRef.set((int)(20*((end - start) / 20)));
+            
             log.add("Result: " + result);
             latch.countDown();
         });
         
         latch.await();
         
-        assertStrings("[Start: 0, End: 100, Result: Result:{ Exception: java.io.IOException: Fail hard! }]", log);
+        assertTrue(endRef.get() >= 100);
+        assertStrings("[Result: Result:{ Exception: java.io.IOException: Fail hard! }]", log);
     }
     
     @Test

@@ -59,16 +59,16 @@ public class StructSpec {
      * @param mores               other ILines.
      */
     public StructSpec(
-            String className,
-            String packageName,
-            String sourceName,
-            String sourcePackageName,
+            String               className,
+            String               packageName,
+            String               sourceName,
+            String               sourcePackageName,
             List<Type>           extendeds,
             List<Type>           implementeds,
             List<GenConstructor> constructors,
             List<GenField>       fields,
             List<GenMethod>      methods,
-            List<GenClass>      innerClasses,
+            List<GenClass>       innerClasses,
             List<ILines>         mores) {
         this.classSpec         = new GenClass(PUBLIC, NONE, MODIFIABLE, new Type(className, packageName), null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
         this.sourceClassName   = sourceName;

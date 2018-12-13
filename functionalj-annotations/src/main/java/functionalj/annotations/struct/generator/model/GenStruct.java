@@ -54,6 +54,7 @@ public class GenStruct implements ILines {
     private static final List<Type> alwaysImports = asList(
             Type.of(IPostConstruct.class),
             Core.ObjectLensImpl.type(),
+//            Core.ObjectLens.type(),
             Core.LensSpec.type()
     );
     
@@ -105,8 +106,8 @@ public class GenStruct implements ILines {
         val thisPackage   = (String)dataClass.type().packageName();
         val thisEnclose   = (String)dataClass.type().encloseName();
         val thisClassName = (String)dataClass.type().simpleName();
-        val localNoLens   = sourceSpec.getLocalTypeWithNoLens();
-        val lensClass     = (String)dataClass.type().lensType(thisPackage, thisEnclose, localNoLens).fullName(thisPackage);
+        val withLens      = sourceSpec.getTypeWithLens();
+        val lensClass     = (String)dataClass.type().lensType(thisPackage, thisEnclose, withLens).fullName(thisPackage);
         val superClass    = (String)dataClass.getSourcePackageName() + "." + dataClass.getSourceClassName();
         val isLensClass   = (Predicate<String>)((String name) -> name.equals(lensClass));
         val isSuperClass  = (Predicate<String>)((String name) -> name.equals(superClass));
@@ -123,7 +124,6 @@ public class GenStruct implements ILines {
             .collect(toList());
         
         val importList = importTypes.stream()
-//                .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisEnclose,   type.encloseName()))
                 .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisClassName, type.encloseName()))
                 .map   (Type::declaredType)
                 .map   (Type::fullName)
