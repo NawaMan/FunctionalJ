@@ -4,8 +4,8 @@ public class ChoiceTypes {
     
     private ChoiceTypes() {}
     
-    public static <S> S Switch(AbstractChoiceClass<S> choiceType) {
-        return choiceType.__switch();
+    public static <S> S Match(AbstractChoiceClass<S> choiceType) {
+        return choiceType.match();
     }
     
 }

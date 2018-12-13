@@ -113,7 +113,7 @@ public class GenericSupportTest {
             "    }\n" + 
             "    \n" + 
             "    public final OptionFirstSwitch<T> mapSwitch = new OptionFirstSwitch<T>(this);\n" + 
-            "    @Override public OptionFirstSwitch<T> __switch() {\n" + 
+            "    @Override public OptionFirstSwitch<T> match() {\n" + 
             "         return mapSwitch;\n" + 
             "    }\n" + 
             "    \n" + 
@@ -125,7 +125,7 @@ public class GenericSupportTest {
             "        synchronized(this) {\n" + 
             "            if (toString != null)\n" + 
             "                return toString;\n" + 
-            "            toString = $utils.Switch(this)\n" + 
+            "            toString = $utils.Match(this)\n" + 
             "                    .none(__ -> \"None\")\n" + 
             "                    .some(some -> \"Some(\" + String.format(\"%1$s\", some.value) + \")\")\n" + 
             "            ;\n" + 

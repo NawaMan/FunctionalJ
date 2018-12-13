@@ -183,7 +183,7 @@ public class FullGeneratorTest {
               "    }\n" + 
               "    \n" + 
               "    public final BasicColorFirstSwitch mapSwitch = new BasicColorFirstSwitch(this);\n" + 
-              "    @Override public BasicColorFirstSwitch __switch() {\n" + 
+              "    @Override public BasicColorFirstSwitch match() {\n" + 
               "         return mapSwitch;\n" + 
               "    }\n" + 
               "    \n" + 
@@ -195,7 +195,7 @@ public class FullGeneratorTest {
               "        synchronized(this) {\n" + 
               "            if (toString != null)\n" + 
               "                return toString;\n" + 
-              "            toString = $utils.Switch(this)\n" + 
+              "            toString = $utils.Match(this)\n" + 
               "                    .white(__ -> \"White\")\n" + 
               "                    .black(__ -> \"Black\")\n" + 
               "                    .rgb(rgb -> \"RGB(\" + String.format(\"%1$s,%2$s,%3$s\", rgb.r,rgb.g,rgb.b) + \")\")\n" + 

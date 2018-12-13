@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public abstract class AbstractChoiceClass<S> {
     
-    public abstract S __switch();
+    public abstract S match();
     
     
     public static class $utils {
@@ -12,8 +12,8 @@ public abstract class AbstractChoiceClass<S> {
             return Objects.requireNonNull(value);
         }
         
-        public static <S> S Switch(AbstractChoiceClass<S> choiceType) {
-            return ChoiceTypes.Switch(choiceType);
+        public static <S> S Match(AbstractChoiceClass<S> choiceType) {
+            return ChoiceTypes.Match(choiceType);
         }
         
         public static boolean checkEquals(byte a, byte b) {

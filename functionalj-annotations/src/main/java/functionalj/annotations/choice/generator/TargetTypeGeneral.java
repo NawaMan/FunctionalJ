@@ -77,7 +77,7 @@ public class TargetTypeGeneral implements Lines {
         val firstSwitchLines = 
                 asList(format(
                           "public final %1$s mapSwitch = new %1$s(this);\n"
-                        + "@Override public %1$s __switch() {\n"
+                        + "@Override public %1$s match() {\n"
                         + "     return mapSwitch;\n"
                         + "}",
                         firstSwitchTypeDef)
@@ -116,7 +116,7 @@ public class TargetTypeGeneral implements Lines {
                   + "    synchronized(this) {\n"
                   + "        if (toString != null)\n"
                   + "            return toString;\n"
-                  + "        toString = $utils.Switch(this)"
+                  + "        toString = $utils.Match(this)"
                   ).split("\n")
             ),
             choiceStrings,

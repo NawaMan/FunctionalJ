@@ -1,7 +1,7 @@
 package functionalj.annotations.choice.generator;
 
 import static functionalj.annotations.Absent.__;
-import static functionalj.annotations.choice.ChoiceTypes.Switch;
+import static functionalj.annotations.choice.ChoiceTypes.Match;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,27 +27,27 @@ public class ChoiceTypeExampleTest {
     }
     
     private static Function<BasicColor, String> colorToString = (color->
-            Switch(color)
+            Match(color)
             .white("White")
             .black("Black")
             .rgb  (rgb-> "rgb#(" + rgb.r() + "," + rgb.g() + "," + rgb.b() + ")")
     );
     
     private static Function<BasicColor, Boolean> isWhite = (color->
-            Switch(color)
+            Match(color)
             .white(true)
             .orElse(false)
     );
     
     private static Function<BasicColor, Boolean> isBlack = (color->
-            Switch(color)
+            Match(color)
             .white(false)
             .black(true)
             .orElse(false)
     );
     
     private static Function<BasicColor, Boolean> isFull = (color->
-            Switch(color)
+            Match(color)
             .white(true)
             .black(true)
             .rgb(__, 0, 0,       true)

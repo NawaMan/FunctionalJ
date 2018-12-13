@@ -1,6 +1,6 @@
 package functionalj.annotations.choice;
 
-import static functionalj.annotations.choice.ChoiceTypes.Switch;
+import static functionalj.annotations.choice.ChoiceTypes.Match;
 import static functionalj.annotations.choice.UpOrDown.Down;
 import static functionalj.annotations.choice.UpOrDown.Up;
 import static org.junit.Assert.assertEquals;
@@ -40,8 +40,14 @@ public class GenerateBasicChoiceTypeTest {
     }
     
     private static Function<Color, Boolean> isWhite = (color->
-            Switch(color)
+            Match(color)
             .white (true)
+            .orElse(false)
+    );
+    private static Function<Color, Boolean> isBlack = (color->
+            color.match()
+            .white (false)
+            .black (true)
             .orElse(false)
     );
     
@@ -52,8 +58,15 @@ public class GenerateBasicChoiceTypeTest {
         assertFalse(isWhite.apply(Color.RGB(126, 126, 126)));
     }
     
+    @Test
+    public void testIsBlack() {
+        assertFalse(isBlack.apply(Color.White()));
+        assertTrue (isBlack.apply(Color.Black()));
+        assertFalse(isBlack.apply(Color.RGB(126, 126, 126)));
+    }
+    
     private static Function<UpOrDown, String> upDownString = (upOrDown->
-        Switch(upOrDown)
+        Match(upOrDown)
         .up  ("Go up")
         .down("Go down")
     );
@@ -65,7 +78,7 @@ public class GenerateBasicChoiceTypeTest {
     }
     
     private static BiFunction<Integer, UpOrDown, Integer> counting = ((count, upOrDown)->
-            Switch(upOrDown)
+        Match(upOrDown)
             .up  (count + 1)
             .down(count - 1)
     );

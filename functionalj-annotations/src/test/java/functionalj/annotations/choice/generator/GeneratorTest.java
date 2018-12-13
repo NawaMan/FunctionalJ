@@ -380,7 +380,7 @@ public class GeneratorTest {
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public final ColorFirstSwitch mapSwitch = new ColorFirstSwitch(this);\n" + 
-                "@Override public ColorFirstSwitch __switch() {\n" + 
+                "@Override public ColorFirstSwitch match() {\n" + 
                 "     return mapSwitch;\n" + 
                 "}\n" + 
                 "\n" + 
@@ -392,7 +392,7 @@ public class GeneratorTest {
                 "    synchronized(this) {\n" + 
                 "        if (toString != null)\n" + 
                 "            return toString;\n" + 
-                "        toString = $utils.Switch(this)\n" + 
+                "        toString = $utils.Match(this)\n" + 
                 "                .white(__ -> \"White\")\n" + 
                 "                .black(__ -> \"Black\")\n" + 
                 "                .rgb(rgb -> \"RGB(\" + String.format(\"%1$s,%2$s,%3$s\", rgb.r,rgb.g,rgb.b) + \")\")\n" + 
@@ -473,7 +473,7 @@ public class GeneratorTest {
         
         assertEquals(
                 "public final ColorFirstSwitch mapSwitch = new ColorFirstSwitch(this);\n" + 
-                "@Override public ColorFirstSwitch __switch() {\n" + 
+                "@Override public ColorFirstSwitch match() {\n" + 
                 "     return mapSwitch;\n" + 
                 "}\n" + 
                 "\n" + 

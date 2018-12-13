@@ -1,6 +1,6 @@
 package functionalj.result;
 
-import static functionalj.annotations.choice.ChoiceTypes.Switch;
+import static functionalj.annotations.choice.ChoiceTypes.Match;
 import static nawaman.nullablej.nullable.Nullable.nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,7 +44,7 @@ public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
         default ValidationException validate(Self1<D> self, D data) {
             @SuppressWarnings("unchecked")
             val validation          = (Validation<D>)self.asMe();
-            val validationException = Switch(validation)
+            val validationException = Match(validation)
                     .toBoolean  (v -> $inner.checkToBoolean  (v, data))
                     .toMessage  (v -> $inner.checkToMessage  (v, data))
                     .toException(v -> $inner.checkToException(v, data));

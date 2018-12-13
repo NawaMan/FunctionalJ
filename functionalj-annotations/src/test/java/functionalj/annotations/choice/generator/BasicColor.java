@@ -1,7 +1,7 @@
 package functionalj.annotations.choice.generator;
 
 import static functionalj.annotations.choice.CheckEquals.checkEquals;
-import static functionalj.annotations.choice.ChoiceTypes.Switch;
+import static functionalj.annotations.choice.ChoiceTypes.Match;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -49,7 +49,7 @@ public abstract class BasicColor extends AbstractChoiceClass<BasicColor.BasicCol
     }
     
     private final BasicColorFirstSwitch __theSwitch = new BasicColorFirstSwitch(this);
-    @Override public BasicColorFirstSwitch __switch() { return __theSwitch; }
+    @Override public BasicColorFirstSwitch match() { return __theSwitch; }
     
     private volatile String toString = null;
     @Override
@@ -59,7 +59,7 @@ public abstract class BasicColor extends AbstractChoiceClass<BasicColor.BasicCol
         synchronized(this) {
             if (toString != null)
                 return toString;
-            toString = Switch(this)
+            toString = Match(this)
                     .white("White")
                     .black("Black")
                     .rgb(rgb -> "RGB(" + String.format("%1$s,%2$s,%3$s", rgb.r,rgb.g,rgb.b) + ")")
@@ -68,7 +68,7 @@ public abstract class BasicColor extends AbstractChoiceClass<BasicColor.BasicCol
         }
     }
     public String alternativeString() {
-        return Switch(this)
+        return Match(this)
                     .white("RGB(255,255,255)")
                     .black("RGB(0,0,0)")
                     .rgb(it -> it.toString())

@@ -2,7 +2,7 @@ package functionalj.annotations.choice;
 
 import static functionalj.annotations.choice.LinkedList.Nill;
 import static functionalj.annotations.choice.LinkedList.Node;
-import static functionalj.annotations.choice.ChoiceTypes.Switch;
+import static functionalj.annotations.choice.ChoiceTypes.Match;
 import static functionalj.function.Func.recusive;
 import static org.junit.Assert.assertEquals;
 
@@ -26,21 +26,21 @@ public class ChioceTypeLinkedListTest {
     }
     
     int length(LinkedList list) {
-        return Switch(list)
+        return Match(list)
                 .nill(l -> 0)
                 .node(l -> 1 + length(l.rest()));
     }
     String toStr(LinkedList list) {
-        return Switch(list)
+        return Match(list)
                 .nill(l -> "[]")
                 .node(l -> "[" + l.value() + "," + toStr(l.rest()) + "]");
     }
     String toStr2(LinkedList list) {
         val noBracketToStr = recusive((f, l) -> {
-            return Switch((LinkedList)l)
+            return Match((LinkedList)l)
                      .nill(l2 -> "")
                      .node(l2 -> l2.value() + 
-                                 Switch(l2.rest())
+                             Match(l2.rest())
                                    .nill(__ -> "")
                                    .node(lr -> "," + f.apply(lr)));
         });
@@ -48,9 +48,9 @@ public class ChioceTypeLinkedListTest {
     }
     String toStrReverse(LinkedList list) {
         val noBracketToStr = recusive((f, l) -> {
-            return Switch((LinkedList)l)
+            return Match((LinkedList)l)
                      .nill(l2 -> "")
-                     .node(l2 -> Switch(l2.rest())
+                     .node(l2 -> Match(l2.rest())
                                    .nill(__ -> "")
                                    .node(lr -> f.apply(lr) + ",")
                                  + l2.value());
@@ -61,19 +61,19 @@ public class ChioceTypeLinkedListTest {
         return Node(value, list);
     }
     LinkedList map(LinkedList list, Function<Object, Object> mapper) {
-        return Switch(list)
+        return Match(list)
                 .toA(LinkedList.class)
                 .nill(      Nill())
                 .node(l  -> Node(mapper.apply(l.value()), map(l.rest(), mapper)));
     }
     LinkedList filter(LinkedList list, Predicate<Object> filter) {
-        return Switch(list)
+        return Match(list)
                 .toA(LinkedList.class)
                 .nill(      Nill())
                 .node(l  -> (filter.test(l.value()) ? Node(l.value(), filter(l.rest(), filter)) : filter(l.rest(), filter)));
     }
     Object reduce(LinkedList list, BinaryOperator<Object> operator) {
-        return Switch(list)
+        return Match(list)
                 .toA(Object.class)
                 .nill(__ -> null)
                 .node(l  -> l.rest().isNill() ? l.value() : operator.apply(l.value(), reduce(l.rest(), operator)));
