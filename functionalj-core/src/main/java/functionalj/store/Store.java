@@ -3,6 +3,7 @@ package functionalj.store;
 import java.util.concurrent.atomic.AtomicReference;
 
 import functionalj.annotations.Choice;
+import functionalj.annotations.choice.Self1;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.result.Result;
@@ -11,13 +12,31 @@ import nawaman.nullablej.nullable.Nullable;
 
 public class Store<DATA> {
     
-    @Choice(specField="spec")
+    @Choice
     static interface ChangeResultSpec<D> {
         void NotAllowed(ChangeNotAllowedException reason);
         void Accepted(D oldData, D newData);
         void Adjusted(D oldData, D proposedData, D adjustedData);
         void Rejected(D propose, D rollback, ChangeRejectedException reason);
         void Failed  (ChangeFailException prolems);
+        
+        default boolean hasChanged(Self1<D> self) {
+            ChangeResult<D> result = self.asMe();
+            return result.match()
+                    .notAllowed(false)
+                    .accepted  (true)
+                    .adjusted  (true)
+                    .orElse    (false);
+        }
+        @SuppressWarnings("unchecked")
+        default Result<D> getNewData(Self1<D> self) {
+            ChangeResult<D> result = self.asMe();
+            return result.match()
+                    .notAllowed(n -> (Result<D>)Result.ofNotExist())
+                    .accepted  (a -> Result.of(a.newData()))
+                    .adjusted  (a -> Result.of(a.adjustedData()))
+                    .orElse    (     (Result<D>)Result.ofNotExist());
+        }
     }
     
     private final AtomicReference<DATA>                                     dataRef = new AtomicReference<DATA>();
@@ -56,13 +75,22 @@ public class Store<DATA> {
         if (approveResult.isPresent()) {
             return ChangeResult.NotAllowed(approveResult.get());
         }
-        
-        val newResult = changer.applySafely(oldData).pipe(accepter.applyTo(oldData));
-        // TODO - set this atomically
-        if (newResult.isAccepted())
-            dataRef.set(newResult.asAccepted().value().newData());
-        else if (newResult.isAdjusted())
-            dataRef.set(newResult.asAdjusted().value().adjustedData());
+        val newResult = changer
+                .applySafely(oldData)
+                .pipe(accepter.applyTo(oldData));
+        val newData = newResult.getNewData();
+        if (newData.isValue()) {
+            val newValue = newData.value();
+            val isSuccess = dataRef.compareAndSet(oldData, newValue);
+            if (!isSuccess) {
+                val dataAlreadyChanged = new IllegalStateException(
+                        "The data in the store has already changed: "
+                        + "oldData=" + oldData + ", "
+                        + "currentData=" + dataRef.get() + ", "
+                        + "proposedData=" + newValue);
+                return ChangeResult.Failed(new ChangeFailException(dataAlreadyChanged));
+            }
+        }
         
         return newResult;
     }

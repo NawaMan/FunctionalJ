@@ -76,9 +76,9 @@ public class TargetTypeGeneral implements Lines {
         val firstSwitchTypeDef = format("%1$sFirstSwitch%2$s", targetName, targetClass.generics());
         val firstSwitchLines = 
                 asList(format(
-                          "public final %1$s mapSwitch = new %1$s(this);\n"
+                          "private final %1$s __switch = new %1$s(this);\n"
                         + "@Override public %1$s match() {\n"
-                        + "     return mapSwitch;\n"
+                        + "     return __switch;\n"
                         + "}",
                         firstSwitchTypeDef)
                         .split("\n"));
