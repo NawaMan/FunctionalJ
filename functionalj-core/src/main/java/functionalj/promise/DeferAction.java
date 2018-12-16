@@ -6,6 +6,7 @@ import static functionalj.list.FuncList.listOf;
 import static functionalj.promise.RaceResult.Race;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -52,6 +53,23 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     }
     public static <D> DeferAction<D> from(Func0<D> supplier) {
         return DeferActionConfig.current.value().createBuilder(supplier).build();
+    }
+    public static <D> DeferAction<D> from(CompletableFuture<D> completableFucture) {
+        val action = DeferAction.of((Class<D>)null);
+        val pending = action.start();
+        
+        completableFucture.handle((value, exception) -> {
+            if (exception != null) {
+                if (exception instanceof Exception)
+                     pending.fail((Exception)exception);
+                else pending.fail(new RuntimeException("CompletableFuture completed with failure: ", exception));
+            } else {
+                pending.complete(value);
+            }
+            
+            return null;
+        });
+        return action;
     }
     
     public static PendingAction<Object> run(FuncUnit0 runnable) {

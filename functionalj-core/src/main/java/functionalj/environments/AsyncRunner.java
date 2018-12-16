@@ -3,6 +3,7 @@ package functionalj.environments;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadFactory;
 
 import functionalj.function.FuncUnit1;
@@ -65,6 +66,10 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
     
     public static final AsyncRunner completeableFuture = runnable -> {
         CompletableFuture.runAsync(runnable);
+    };
+    
+    public static final AsyncRunner forkJoinPool = runnable -> {
+        ForkJoinPool.commonPool().execute(runnable);
     };
     
     public static AsyncRunner threadFactory(ThreadFactory threadFactory) {
