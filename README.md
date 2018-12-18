@@ -41,7 +41,7 @@ and the dependencies to FunctionalJ.
     compile 'functionalj:functionalj-core:0.1.59.0' // Please lookup for the latest version.
 ```
 
-[UseNullableJGradle](https://github.com/NawaMan/UseFunctionalJGradle) is an example project that use FunctionalJ.
+[UseFunctionalJGradle](https://github.com/NawaMan/UseFunctionalJGradle) is an example project that use FunctionalJ.
 You can use that as a starting point.
 Just add the dependency to FunctionalJ to it.
 
@@ -77,7 +77,7 @@ and the dependencies to FunctionalJ.
     </dependency>
 ```
 
-[UseNullableJMaven](https://github.com/NawaMan/UseFunctionalJMaven) is an example project that use FunctionalJ.
+[UseFunctionalJMaven](https://github.com/NawaMan/UseFunctionalJMaven) is an example project that use FunctionalJ.
 You can use that as a starting point.
 Just add the dependency to FunctionalJ to it.
 
