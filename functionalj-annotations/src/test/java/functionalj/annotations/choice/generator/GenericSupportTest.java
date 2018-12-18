@@ -112,9 +112,9 @@ public class GenericSupportTest {
             "        }\n" + 
             "    }\n" + 
             "    \n" + 
-            "    public final OptionFirstSwitch<T> mapSwitch = new OptionFirstSwitch<T>(this);\n" + 
+            "    private final OptionFirstSwitch<T> __switch = new OptionFirstSwitch<T>(this);\n" + 
             "    @Override public OptionFirstSwitch<T> match() {\n" + 
-            "         return mapSwitch;\n" + 
+            "         return __switch;\n" + 
             "    }\n" + 
             "    \n" + 
             "    private volatile String toString = null;\n" + 

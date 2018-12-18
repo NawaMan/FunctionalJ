@@ -5,25 +5,21 @@ Its focus is on the practicality aspect and less so on the theoretical aspect.
 
 ## Here are some features:
 - More ways to create and manipulate functions
-- Useful predefined functions
 - Accesses and Lenses
 - Lazy functional list and map
 - Addition to Stream and Iterator
-- Pipeable (flow) and PipeLine (point free)
+- Pipeable and PipeLine (point free)
 - Result (boxed object similar in concept with Optional)
-- Struct type with automatically created lens and exhaustive builder
-- Sealed type with pattern matching
+- Algebraic data type - Struct and choice types
+  - Struct type - an immutable data with lens and exhaustive builder
+  - Choice type - a sum type with payload and pattern matching
+- Rule type to constrain existing types.
 - Ref for Implicit and dependency injection
-- Promise
-- Reactive (Work in progress)
+- IO for side effect management
+- Event (Work in progress)
 
 This library works within the boundary of the language though pushing to the edge in some aspect. 
 Therefore, it sometimes breaks convention.
-
-
-
-
-Function is a most basic unit of abstraction.
 
 
 ## Usage
@@ -42,14 +38,14 @@ Add the maven repository ...
 and the dependencies to FunctionalJ.
 
 ```Groovy
-    compile 'functionalj:functionalj-annotations:0.1.54.0' // Please lookup for the latest version.
+    compile 'functionalj:functionalj-core:0.1.59.0' // Please lookup for the latest version.
 ```
 
-[UseNullableJGradle](https://github.com/NawaMan/UseNullableJGradle) is an example project that use FunctionalJ.
+[UseNullableJGradle](https://github.com/NawaMan/UseFunctionalJGradle) is an example project that use FunctionalJ.
 You can use that as a starting point.
-Just add the dependency to DefaultJ to it.
+Just add the dependency to FunctionalJ to it.
 
-### Using DefaultJ in a Maven project
+### Using FunctionalJ in a Maven project
 
 Adding the required maven repository (hosted by github).
 
@@ -64,19 +60,14 @@ Adding the required maven repository (hosted by github).
 </repository>
 ```
 
-and the dependencies to DefaultJ.
+and the dependencies to FunctionalJ.
 
 ```xml
 
     <dependency>
-        <groupId>defaultj</groupId>
-        <artifactId>defaultj-annotations</artifactId>
-        <version>1.1.0.0</version>
-    </dependency>
-    <dependency>
-        <groupId>defaultj</groupId>
-        <artifactId>defaultj-core</artifactId>
-        <version>1.1.0.0</version>
+        <groupId>functionalj</groupId>
+        <artifactId>functionalj-core</artifactId>
+        <version>0.1.59.0</version>
     </dependency>
     <dependency>
         <groupId>junit</groupId>
@@ -86,9 +77,9 @@ and the dependencies to DefaultJ.
     </dependency>
 ```
 
-[UseNullableJMaven](https://github.com/NawaMan/UseNullableJMaven) is an example project that use NullableJ.
+[UseNullableJMaven](https://github.com/NawaMan/UseFunctionalJMaven) is an example project that use FunctionalJ.
 You can use that as a starting point.
-Just add the dependency to DefaultJ to it.
+Just add the dependency to FunctionalJ to it.
 
 ## Build
 
@@ -111,7 +102,7 @@ This is done this way as it was found that the version was updates too quickly
 
 ## Issues
 
-Please use our [issues tracking page](https://github.com/NawaMan/DefaultJ/issues) to report any issues.
+Please use our [issues tracking page](https://github.com/NawaMan/FunctionalJ/issues) to report any issues.
 
 ## Take what you need
 
@@ -122,7 +113,7 @@ But if you just need a small part of it, feel free to fork it or just copy the p
 ## Contribute
 
 Feel free to join in.
-Report problems, suggest solutions, suggest more functionalities, making pull requests ... anything is appreciated (please do it in [issues tracking page](https://github.com/NawaMan/DefaultJ/issues) or email me directly).
+Report problems, suggest solutions, suggest more functionalities, making pull requests ... anything is appreciated (please do it in [issues tracking page](https://github.com/NawaMan/FunctionalJ/issues) or email me directly).
 
 If this is useful to you and want to buy me a [coffee](https://www.paypal.me/NawaMan/2.00)
  or [lunch](https://www.paypal.me/NawaMan/10.00) or [help with my kids college fund](https://www.paypal.me/NawaMan/100.00) ... that would be great :-p

@@ -379,9 +379,9 @@ public class GeneratorTest {
                                 ))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
-                "public final ColorFirstSwitch mapSwitch = new ColorFirstSwitch(this);\n" + 
+                "private final ColorFirstSwitch __switch = new ColorFirstSwitch(this);\n" + 
                 "@Override public ColorFirstSwitch match() {\n" + 
-                "     return mapSwitch;\n" + 
+                "     return __switch;\n" + 
                 "}\n" + 
                 "\n" + 
                 "private volatile String toString = null;\n" + 
@@ -472,9 +472,9 @@ public class GeneratorTest {
                 target.spec.methods.stream().map(m -> m.signature).collect(joining("\n")));
         
         assertEquals(
-                "public final ColorFirstSwitch mapSwitch = new ColorFirstSwitch(this);\n" + 
+                "private final ColorFirstSwitch __switch = new ColorFirstSwitch(this);\n" + 
                 "@Override public ColorFirstSwitch match() {\n" + 
-                "     return mapSwitch;\n" + 
+                "     return __switch;\n" + 
                 "}\n" + 
                 "\n" + 
                 "\n" + 
