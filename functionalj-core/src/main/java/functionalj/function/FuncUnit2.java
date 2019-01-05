@@ -28,7 +28,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTranformer.value().apply(e);
+            throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
     }
     

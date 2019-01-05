@@ -429,7 +429,7 @@ public final class Console {
                 inLines.add("" + currentLine);
                 return currentLine;
             } catch (InterruptedException e) {
-                throw ThrowFuncs.exceptionTranformer.get().apply(e);
+                throw ThrowFuncs.exceptionTransformer.get().apply(e);
             }
         }
         

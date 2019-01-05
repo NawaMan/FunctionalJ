@@ -33,7 +33,7 @@ public class BlockingQueueIteratorPlus<DATA> implements IteratorPlus<DATA> {
             try {
                 return queue.take();
             } catch (InterruptedException e) {
-                throw ThrowFuncs.exceptionTranformer.get().apply(e);
+                throw ThrowFuncs.exceptionTransformer.get().apply(e);
             }
         });
         return !Objects.equals(next.get(), endData);

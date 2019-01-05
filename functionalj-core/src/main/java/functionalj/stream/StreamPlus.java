@@ -1,5 +1,7 @@
 package functionalj.stream;
 
+import static functionalj.stream.ZipWithOption.AllowUnpaired;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1317,19 +1319,19 @@ public interface StreamPlus<DATA>
     //-- Zip --
     
     public default <B, TARGET> StreamPlus<TARGET> zipWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
-        return zipWith(anotherStream, true)
+        return zipWith(anotherStream, ZipWithOption.RequireBoth)
                 .map(combinator::applyTo);
     }
-    public default <B, TARGET> StreamPlus<TARGET> zipWith(Stream<B> anotherStream, boolean requireBoth, Func2<DATA, B, TARGET> combinator) {
-        return zipWith(anotherStream, requireBoth)
+    public default <B, TARGET> StreamPlus<TARGET> zipWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
+        return zipWith(anotherStream, option)
                 .map(combinator::applyTo);
     }
     
     public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream) {
-        return zipWith(anotherStream, true);
+        return zipWith(anotherStream, ZipWithOption.RequireBoth);
     }
     // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
-    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, boolean requireBoth) {
+    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, ZipWithOption option) {
         val iteratorA = this.iterator();
         val iteratorB = anotherStream.iterator();
         val iterable = new Iterable<Tuple2<DATA,B>>() {
@@ -1342,7 +1344,7 @@ public interface StreamPlus<DATA>
                     public boolean hasNext() {
                         hasNextA = iteratorA.hasNext();
                         hasNextB = iteratorB.hasNext();
-                        return requireBoth
+                        return (option == ZipWithOption.RequireBoth)
                                 ? (hasNextA && hasNextB)
                                 : (hasNextA || hasNextB);
                     }
@@ -1359,7 +1361,7 @@ public interface StreamPlus<DATA>
     }
     
     public default StreamPlus<DATA> choose(Stream<DATA> anotherStream, Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return zipWith(anotherStream, false)
+        return zipWith(anotherStream, AllowUnpaired)
                 .map(t -> {
                     val _1 = t._1();
                     val _2 = t._2();

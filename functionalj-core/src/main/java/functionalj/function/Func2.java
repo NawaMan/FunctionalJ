@@ -29,6 +29,7 @@ import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.ZipWithOption;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -67,7 +68,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTranformer.value().apply(e);
+            throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
     }
     
@@ -98,20 +99,20 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
         return input1.zipWith(input2, this);
     }
-    public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, boolean requireBoth) {
-        return input1.zipWith(input2, requireBoth, this);
+    public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, ZipWithOption option) {
+        return input1.zipWith(input2, option, this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
         return input1.zipWith(input2, this);
     }
-    public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2, boolean requireBoth) {
-        return input1.zipWith(input2, requireBoth, this);
+    public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2, ZipWithOption option) {
+        return input1.zipWith(input2, option, this);
     }
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
         return input1.zipWith(input2, this);
     }
-    public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2, boolean requireBoth) {
-        return input1.zipWith(input2, requireBoth, this);
+    public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2, ZipWithOption option) {
+        return input1.zipWith(input2, option, this);
     }
     public default Func0<OUTPUT> applyTo(Supplier<INPUT1> input1, Supplier<INPUT2> input2) {
         return ()->apply(input1.get(), input2.get());

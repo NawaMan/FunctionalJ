@@ -1,6 +1,7 @@
 package functionalj.map;
 
 import static functionalj.function.Func.it;
+import static functionalj.stream.ZipWithOption.RequireBoth;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.stream.Stream;
 
 import functionalj.function.Func2;
 import functionalj.list.FuncList;
+import functionalj.stream.ZipWithOption;
 import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
 
@@ -296,14 +298,14 @@ public abstract class FuncMap<KEY, VALUE>
     public abstract void forEach(Consumer<? super Map.Entry<? super KEY, ? super VALUE>> action);
     
     public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, Func2<VALUE, IN, OUT> merger) {
-        return zipWith(anotherMap, true, merger);
+        return zipWith(anotherMap, RequireBoth, merger);
     }
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, boolean requireBoth, Func2<VALUE, IN, OUT> merger) {
+    public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, ZipWithOption option, Func2<VALUE, IN, OUT> merger) {
         val keys1 = this.keys();
         val keys2 = FuncList.from(anotherMap.keySet());
         val map   = keys1.appendAll(keys2.excludeIn(keys1))
-        .filter(key -> !requireBoth || (this.containsKey(key) && anotherMap.containsKey(key)))
+        .filter(key -> !(option == RequireBoth) || (this.containsKey(key) && anotherMap.containsKey(key)))
         .toMap(it(), key -> {
             val v1 = this.get(key);
             val v2 = anotherMap.get(key);

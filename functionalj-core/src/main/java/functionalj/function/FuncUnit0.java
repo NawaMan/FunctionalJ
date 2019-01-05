@@ -27,7 +27,7 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception exception) {
-            throw ThrowFuncs.exceptionTranformer.value().apply(exception);
+            throw ThrowFuncs.exceptionTransformer.value().apply(exception);
         }
     }
     

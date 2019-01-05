@@ -31,6 +31,7 @@ import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
+import functionalj.stream.ZipWithOption;
 import functionalj.tuple.IntTuple2;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -1037,9 +1038,9 @@ public interface FuncList<DATA>
             return StreamPlus.from(stream).zipWith(anotherStream, combinator);
         });
     }
-    public default <B, TARGET> FuncList<TARGET> zipWith(Stream<B> anotherStream, boolean requireBoth, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> FuncList<TARGET> zipWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream).zipWith(anotherStream, requireBoth, combinator);
+            return StreamPlus.from(stream).zipWith(anotherStream, option, combinator);
         });
     }
     
@@ -1048,9 +1049,9 @@ public interface FuncList<DATA>
             return StreamPlus.from(stream).zipWith(anotherStream);
         });
     }
-    public default <B> FuncList<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, boolean requireBoth) {
+    public default <B> FuncList<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, ZipWithOption option) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream).zipWith(anotherStream, requireBoth);
+            return StreamPlus.from(stream).zipWith(anotherStream, option);
         });
     }
     

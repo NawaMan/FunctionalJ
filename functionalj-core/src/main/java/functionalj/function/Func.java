@@ -1037,7 +1037,7 @@ public interface Func {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTranformer.get().apply(e);
+            throw ThrowFuncs.exceptionTransformer.get().apply(e);
         }
     }
     
@@ -1050,7 +1050,7 @@ public interface Func {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTranformer.get().apply(e);
+            throw ThrowFuncs.exceptionTransformer.get().apply(e);
         }
     }
     

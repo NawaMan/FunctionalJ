@@ -11,10 +11,9 @@ import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.ref.Ref;
 import functionalj.result.Result;
+import functionalj.stream.ZipWithOption;
 
 public interface Apply {
-    
-    // TODO - Do for Result, List, Map, Supplier, Func1, Promise, and IO
     
     public static <O> O apply(Supplier<O> func) {
         return func.get();
@@ -138,14 +137,14 @@ public interface Apply {
     public static <I1, I2, O> FuncList<O> $(BiFunction<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
-    public static <I1, I2, O> FuncList<O> $(BiFunction<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2, boolean requireBoth) {
-        return Func2.from(func).applyTo(input1, input2, requireBoth);
+    public static <I1, I2, O> FuncList<O> $(BiFunction<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2, ZipWithOption option) {
+        return Func2.from(func).applyTo(input1, input2, option);
     }
     public static <K, I1, I2, O> FuncMap<K, O> $(BiFunction<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
-    public static <K, I1, I2, O> FuncMap<K, O> $(BiFunction<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2, boolean requireBoth) {
-        return Func2.from(func).applyTo(input1, input2, requireBoth);
+    public static <K, I1, I2, O> FuncMap<K, O> $(BiFunction<I1, I2, O> func, FuncMap<K, I1> input1, FuncMap<K, I2> input2, ZipWithOption option) {
+        return Func2.from(func).applyTo(input1, input2, option);
     }
     public static <I1, I2, O> Supplier<O> $(BiFunction<I1, I2, O> func, Supplier<I1> input1, Supplier<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);

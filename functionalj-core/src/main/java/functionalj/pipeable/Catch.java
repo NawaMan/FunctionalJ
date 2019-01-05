@@ -137,7 +137,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
                 if (exception instanceof RuntimeException)
                     throw (RuntimeException)exception;
                 if (exception != null)
-                    throw ThrowFuncs.exceptionTranformer.value().apply(exception);
+                    throw ThrowFuncs.exceptionTransformer.value().apply(exception);
                 
                 return data;
             }

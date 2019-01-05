@@ -4,6 +4,8 @@ import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
 import static functionalj.stream.StreamPlus.noMoreElement;
+import static functionalj.stream.ZipWithOption.AllowUnpaired;
+import static functionalj.stream.ZipWithOption.RequireBoth;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
@@ -547,12 +549,12 @@ public class StreamPlusTest {
         {
             val streamA = StreamPlus.of("A", "B", "C");
             val streamB = IntStreamPlus.infinite().asStream();
-            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB,  true).limit(5).joining(", "));
+            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB, RequireBoth).limit(5).joining(", "));
         }
         {
             val streamA = StreamPlus.of("A", "B", "C");
             val streamB = IntStreamPlus.infinite().asStream();
-            assertEquals("(A,0), (B,1), (C,2), (null,3), (null,4)", streamA.zipWith(streamB, false).limit(5).joining(", "));
+            assertEquals("(A,0), (B,1), (C,2), (null,3), (null,4)", streamA.zipWith(streamB, AllowUnpaired).limit(5).joining(", "));
         }
     }
     

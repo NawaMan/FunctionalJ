@@ -75,7 +75,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw ThrowFuncs.exceptionTranformer.value().apply(e);
+            throw ThrowFuncs.exceptionTransformer.value().apply(e);
         }
     }
     
@@ -94,12 +94,15 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default IO<OUTPUT> applyTo(IO<INPUT> input) {
         return input.map(this);
     }
+    // Should make it just Stream
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT> input) {
         return input.map(this);
     }
+    // Should make it just List
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT> input) {
         return input.map(this);
     }
+    // Should make it just Map
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT> input) {
         return input.map(this);
     }
