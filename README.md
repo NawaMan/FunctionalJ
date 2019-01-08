@@ -7,7 +7,7 @@ FunctionalJ is a pure Java library with all code written in Java
 No additional build steps or tools are required outside of adding dependencies.
 
 ## Here are some features:
-- Flexible uses of and more ways to create and manipulate functions [▼](https://github.com/NawaMan/FunctionalJ/blob/master/docs/functions.md)
+- Flexible uses of and more ways to create and manipulate functions [▼ "Functions"](https://github.com/NawaMan/FunctionalJ/blob/master/docs/functions.md)
 - Accesses and Lenses
 - Lazy functional list and map
 - Addition to Stream and Iterator
