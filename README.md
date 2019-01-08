@@ -8,7 +8,7 @@ No additional build steps or tools are required outside of adding dependencies.
 
 ## Here are some features:
 - Flexible uses of and more ways to create and manipulate functions [▼](https://github.com/NawaMan/FunctionalJ/blob/master/docs/functions.md "Functions")
-- Accesses and Lenses
+- Accesses and Lenses [▼](https://github.com/NawaMan/FunctionalJ/blob/master/docs/access_lenses.md "Access and Lenses")
 - Lazy functional list and map
 - Addition to Stream and Iterator
 - Pipeable and PipeLine (point-free style of programming)
