@@ -1,4 +1,4 @@
-# Functions
+# Pipeable and PipeLine
 
 I will write this -- promise.
 

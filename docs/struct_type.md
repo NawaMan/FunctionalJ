@@ -1,4 +1,4 @@
-# Functions
+# Struct
 
 I will write this -- promise.
 

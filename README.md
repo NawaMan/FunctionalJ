@@ -7,18 +7,18 @@ FunctionalJ is a pure Java library with all code written in Java
 No additional build steps or tools are required outside of adding dependencies.
 
 ## Here are some features:
-- Flexible uses of and more ways to create and manipulate functions [▼](https://github.com/NawaMan/FunctionalJ/blob/master/docs/functions.md "Functions")
-- Accesses and Lenses [▼](https://github.com/NawaMan/FunctionalJ/blob/master/docs/access_lenses.md "Access and Lenses")
-- Lazy functional list and map
-- Addition to Stream and Iterator
-- Pipeable and PipeLine (point-free style of programming)
-- Result (boxed object similar in concept with Optional)
-- Struct type - an immutable data with build-in lens and exhaustive builder
-- Choice type - a sum type with payload and pattern matching
-- Rule type to constrain existing types.
-- Ref for dependency injection
-- DeferAction, Promise and IO for side effect management
-- Event (Work in progress)
+- Flexible uses of and more ways to create and manipulate functions [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/functions.md "Functions")
+- Accesses and Lenses [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/access_lens.md "Access and Lens")
+- Lazy functional list and map [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/list_map.md "List and Map")
+- Addition to Stream and Iterator [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/stream_iterator.md "Stream and Iterator")
+- Pipeable (flow) and PipeLine (point-free style of programming) [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/pipeable_pipeline.md "Pipeable and PipeLine")
+- Result [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/result.md "Result")
+- Struct type - an immutable data with build-in lens and exhaustive builder [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/struct_type.md "Struct")
+- Choice type - a sum type with payload and pattern matching [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/choice_type.md "Choice Type")
+- Rule type to constrain existing types. [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/rule_type.md "Rule Type")
+- Ref for context and dependency injection [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/ref.md "Ref")
+- DeferAction, Promise and IO for side effect management [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/side_effect.md "Side Effect")
+- Event (Work in progress) [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/event.md "Event")
 
 ## Examples
 
