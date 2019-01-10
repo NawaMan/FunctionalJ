@@ -38,7 +38,7 @@ Add the maven repository ...
 ```Groovy
     maven { url 'https://raw.githubusercontent.com/nawmaman/nawaman-maven-repository/master/' }
 ```
-
+   
 and the dependencies to FunctionalJ.
 
 ```Groovy
