@@ -32,12 +32,13 @@ public interface Access {
     public static final IntegerLens<Integer>    theInteger = IntegerLens.of(LensSpec.of(Integer.class));
     public static final LongLens<Long>          theLong    = LongLens   .of(LensSpec.of(Long.class));
     public static final DoubleLens<Double>      theDouble  = DoubleLens .of(LensSpec.of(Double.class));
-    
-    public static final BooleanLens<Boolean> $B = theBoolean;
-    public static final StringLens<String>   $S = theString;
-    public static final IntegerLens<Integer> $I = theInteger;
-    public static final LongLens<Long>       $L = theLong;
-    public static final DoubleLens<Double>   $D = theDouble;
+
+    public static final AnyLens<Object, Object> $O = theObject;
+    public static final BooleanLens<Boolean>    $B = theBoolean;
+    public static final StringLens<String>      $S = theString;
+    public static final IntegerLens<Integer>    $I = theInteger;
+    public static final LongLens<Long>          $L = theLong;
+    public static final DoubleLens<Double>      $D = theDouble;
     
     public static final TheListLens   theList   = new TheListLens();
     public static final TheTuple2Lens theTuple2 = new TheTuple2Lens();

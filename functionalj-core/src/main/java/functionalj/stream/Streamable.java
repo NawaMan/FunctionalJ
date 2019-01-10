@@ -677,6 +677,9 @@ public interface Streamable<DATA>
     
     //-- FlatMap --
     
+    public default Streamable<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, Stream<DATA>> mapper) {
+        return flatMap(d -> checker.test(d) ? mapper.apply(d) : StreamPlus.of(d));
+    }
     public default <T> Streamable<T> flatMapIf(
             Predicate<? super DATA> checker, 
             Function<? super DATA, Stream<T>> mapper, 
