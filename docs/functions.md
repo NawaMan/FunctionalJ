@@ -62,7 +62,7 @@ Static methods `Func.f(...)` and `Func.F(...)` can also be used.
     import static functionalj.function.Func.f;
     
     ...
-        val toInt = Func.of(this::toInt);
+        val toInt = f(this::toInt);
         assertEquals(42, (int)toInt.apply("42"));
     ...
 ```
@@ -79,7 +79,7 @@ Functions in FunctionalJ can be created with name so its `toString()` returns so
     assertEquals("F1::Str2Int", toInt.toString());
 ```
 
-You can also use `Func.F(...)` method to create functions that `toString()` point us  where in the code the function is created.
+You can also use `Func.F(...)` method to create functions that `toString()` points us  where in the code the function is created.
 
 ```java
     import static functionalj.function.Func.F;
@@ -101,16 +101,18 @@ A name can be given to `F(...)` and have its `toString()` show both name and loc
 
 ```java
     val readLines = f(this::readLines).safely();
-    val lines     = readLines.apply("SomeFile.txt").orElse(FuncList.empty());
-    assertEquals("[]", lines.toString());
+    val lines     = readLines.apply("FileNotFound.txt");
+    assertEquals(
+            "Result:{ Exception: java.nio.file.NoSuchFileException: FileNotFound.txt }",
+            lines.toString());
 ```
 
 - `optionally()` makes the function returns standard Java `Optional<>` and do not throw exception.
 
 ```java
     val readLines = f(this::readLines).optionally();
-    val lines     = readLines.apply("SomeFile.txt").orElse(FuncList.empty());
-    assertEquals("[]", lines.toString());
+    val lines     = readLines.apply("FileNotFound.txt");
+    assertEquals("Optional.empty", lines.toString());
 ```
 
 - `async()` makes the function returns `Promise<...>`.
@@ -118,16 +120,17 @@ A name can be given to `F(...)` and have its `toString()` show both name and loc
 ```java
     val readLines = f(this::readLines).async();
     readLines
-            .apply("SomeFile.txt")
+            .apply        ("FileNotFound.txt")
             .whenAbsentUse(FuncList.empty())
-            .subscribe(lines -> {
+            .subscribe    (lines -> {
                 assertEquals("[]", lines.toString());
+                lock.countDown();
             });
 ```
 - `ignoreResult()` changes function to be a consumer function (return void).
 - `toPredicate()` creates a predicate from this function by checking if this function return `true` or not.
 - `toPredicate(mapperToBoolean)` creates a predicate from this function using the conversion to convert the result to a boolean.
-- `bind(...)` binds some parameters to the function. This is known as partial application. See the section: Partial Application for more information.
+- `bind(...)` binds some parameters to the function. This is known as partial application. See the section: **Partial Application** for more information.
 - `memoize()` to return a function that cache the result by the input.
 
 ## Default Return
@@ -140,7 +143,7 @@ Since returning `null` and throwing exception can become problematic, there are 
     assertEquals("[]", lines.toString());
 ```
 
-- `whenAbsentXXX(...)` specified how to adjust the return result in case of null or exception.
+- `whenAbsentXXX(...)` specifies how to adjust the return result in case of null or exception.
 
 ```java
     val readLines = f(this::readLines).whenAbsentUse(FuncList.empty());
@@ -148,7 +151,7 @@ Since returning `null` and throwing exception can become problematic, there are 
     assertEquals("[]", lines.toString());
 ```
 
-In case you didn't catch it, `whenAbsentXXX(...)` just specified before the apply when `orElse(...)` and `orGet(...)` apply the input right away.
+In case you didn't catch it, `whenAbsentXXX(...)` just specified and not apply but `orElse(...)` and `orGet(...)` apply the input right away.
 
 ## Flexible Inputs
 Functions can handle multiple types of input.
@@ -156,6 +159,8 @@ The method `applyTo(...)` has many overload for input.
 For example, `String::length` is a `Func1<String, Integer>`.
 This function can take a regular string (returns `Integer`), `Result<String>` (returns `Result<Integer>`), `Promise<String>` (returns `Promise<Integer>`), `IO<String>` (returns `IO<Integer>`), `StreamPlus<String>` (returns `StreamPlus<Integer>`), `FuncList<String>` (returns `FuncList<Integer>`), `FuncMap<String>` (returns `FuncMap<Integer>`), `Supplier<String>`  (returns `Supplier<Integer>`) and `Function<T, String>` (returns `Function<T, Integer>`).
 This enables functions to be reused without additional work.
+
+It might be easier to see an example.
 
 ```java
     val toInt = f(this::toInt);

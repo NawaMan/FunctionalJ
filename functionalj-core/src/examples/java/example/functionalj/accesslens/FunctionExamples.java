@@ -98,27 +98,29 @@ public class FunctionExamples {
     @Test
     public void example06_ToString_Stack() {
         val toInt = F(this::toInt);
-        assertEquals("F1@example.functionalj.accesslens.FunctionExamples#101", toInt.toString());
+        assertEquals("F1@example.functionalj.accesslens.FunctionExamples#100", toInt.toString());
     }
     
     @Test
     public void example07_ToString_StackName() {
         val toInt = F("Str2Int", this::toInt);
-        assertEquals("F1::Str2Int@example.functionalj.accesslens.FunctionExamples#107", toInt.toString());
+        assertEquals("F1::Str2Int@example.functionalj.accesslens.FunctionExamples#106", toInt.toString());
     }
     
     @Test
     public void example08_Safely() {
         val readLines = f(this::readLines).safely();
-        val lines     = readLines.apply("FileNotFound.txt").orElse(FuncList.empty());
-        assertEquals("[]", lines.toString());
+        val lines     = readLines.apply("FileNotFound.txt");
+        assertEquals(
+                "Result:{ Exception: java.nio.file.NoSuchFileException: FileNotFound.txt }",
+                lines.toString());
     }
     
     @Test
     public void example08_Optionally() {
         val readLines = f(this::readLines).optionally();
-        val lines     = readLines.apply("FileNotFound.txt").orElse(FuncList.empty());
-        assertEquals("[]", lines.toString());
+        val lines     = readLines.apply("FileNotFound.txt");
+        assertEquals("Optional.empty", lines.toString());
     }
     
     @Test
@@ -127,9 +129,9 @@ public class FunctionExamples {
         
         val readLines = f(this::readLines).async();
         readLines
-                .apply("FileNotFound.txt")
+                .apply        ("FileNotFound.txt")
                 .whenAbsentUse(FuncList.empty())
-                .subscribe(lines -> {
+                .subscribe    (lines -> {
                     assertEquals("[]", lines.toString());
                     lock.countDown();
                 });
