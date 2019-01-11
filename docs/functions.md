@@ -1,11 +1,11 @@
 # Functions
-Functions are, unsurprisingly, essential of functional programming.
+Functions are, obviously, essential to functional programming.
 FunctionalJ provides more function types as well as many way to use them.
 
 FunctionalJ expands the function-representing objects to 6 parameters (`Func1`, ... `Func6`)
   and up to 3 parameters for no-return-value ones (`FuncUnit1`, ... `FuncUnit3`).
 
-Since functions are functional interfaces, Java 8 method reference can be used to create function.
+Since functions are functional interfaces, Java 8 method references can be used to create function.
 
 ```java
     public int toInt(String str) {
@@ -18,11 +18,13 @@ Since functions are functional interfaces, Java 8 method reference can be used t
     ...
 ```
 
+## Exception Handling
 
-Functions body can throw an exception. There are different application methods:
-    - `applyUnsafe(...)` that throw the exception
-    - `apply(...)` that wrap the exception with a runtime exception (FunctionInvocationException)
-    - `applySafely(...)` that return `Result<>` (with the return value or exception inside). 
+Functions body can throw an exception. There are different application methods that handle exception differently:
+
+- `applyUnsafe(...)` throws the exception as is.
+- `apply(...)` wraps the exception with a runtime exception (`FunctionInvocationException`) or throw as is it is already a runtime exception.
+- `applySafely(...)` returns `Result<...>` (with the value or exception inside). 
 
 The code below demonstrate the differences.
 
@@ -46,7 +48,7 @@ The code below demonstrate the differences.
     ...
 ```
 
-### Creating functions
+## Creating functions
 Functions can be created using the static method `Func.of(...)`. This method take lambda or method reference.
 
 ```java
@@ -64,6 +66,8 @@ Static methods `Func.f(...)` and `Func.F(...)` can also be used.
         assertEquals(42, (int)toInt.apply("42"));
     ...
 ```
+
+## Function `toString()`
 
 One frustration of lambda is that its `toString()` is not very useful.
 For example, the above `toInt.toString()` might be something like this: `example.functionalj.accesslens.FunctionExamples$$Lambda$2/460332449@726f3b58`.
@@ -92,7 +96,7 @@ A name can be given to `F(...)` and have its `toString()` show both name and loc
     assertEquals("F1::Str2Int@example.functionalj.accesslens.FunctionExamples#98", toInt.toString());
 ```
 
-### Manipulate functions
+## Manipulate functions
 - `safely()` makes the function returns `Result<...>` and do not throw exception.
 
 ```java
@@ -126,7 +130,7 @@ A name can be given to `F(...)` and have its `toString()` show both name and loc
 - `bind(...)` binds some parameters to the function. This is known as partial application. See the section: Partial Application for more information.
 - `memoize()` to return a function that cache the result by the input.
 
-### Default Return
+## Default Return
 Since returning `null` and throwing exception can become problematic, there are methods to adjust the return value before returning.
 - `orElse(...)` and `orGet(...)` applies the function with input and adjust the return value when the return value is null or exception.
 
@@ -146,7 +150,7 @@ Since returning `null` and throwing exception can become problematic, there are 
 
 In case you didn't catch it, `whenAbsentXXX(...)` just specified before the apply when `orElse(...)` and `orGet(...)` apply the input right away.
 
-### Flexible Inputs
+## Flexible Inputs
 Functions can handle multiple types of input.
 The method `applyTo(...)` has many overload for input.
 For example, `String::length` is a `Func1<String, Integer>`.
@@ -182,7 +186,7 @@ In case of functions with more than one parameter, any tuple of the matching par
     assertEquals("12", "" + add.applyTo(pair));
 ```
 
-### Partial Application
+## Partial Application
 Partial application is the process of applying part of the parameters to a function producing another function that will take the rest of the parameters.
 
 In FunctionalJ, the methods `bind(...)` can be used to do partial application.
@@ -203,7 +207,7 @@ Additionally, any function can accept only the first parameter using `applyTo(..
     assertEquals("12", "" + add.applyTo(5).applyTo(7));
 ```
 
-### Composition
+## Composition
 Composition is a processing of creating another function from two existing functions in the way that the result of the first function will be applied to the second function. This is done using method `then(...)`.
 
 ```java

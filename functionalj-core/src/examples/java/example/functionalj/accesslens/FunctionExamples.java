@@ -17,7 +17,6 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 
-import functionalj.function.Absent;
 import functionalj.function.Func;
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
