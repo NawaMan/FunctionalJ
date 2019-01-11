@@ -17,6 +17,12 @@ import org.junit.Test;
 import functionalj.annotations.Choice;
 import lombok.val;
 
+@Choice
+interface UpOrDownSpec {
+    void Up();
+    void Down();
+}
+
 @SuppressWarnings("javadoc")
 public class GenerateBasicChoiceTypeTest {
 
@@ -31,12 +37,6 @@ public class GenerateBasicChoiceTypeTest {
             if ((g < 0) || (g > 255)) throw new IllegalArgumentException("g: " + g);
             if ((b < 0) || (b > 255)) throw new IllegalArgumentException("b: " + b);
         }
-    }
-    
-    @Choice(name="UpOrDown")
-    public static interface UpOrDownSpec {
-        void Up();
-        void Down();
     }
     
     private static Function<Color, Boolean> isWhite = (color->

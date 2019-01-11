@@ -120,7 +120,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             
             val packageName    = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
             val sourceName     = typeElement.getQualifiedName().toString().substring(packageName.length() + 1 );
-            val enclosedClass  = sourceName.substring(0, sourceName.length() - simpleName.length() - 1);
+            val enclosedClass  = extractEncloseClass(simpleName, sourceName);
             val sourceType     = new Type(packageName, enclosedClass, simpleName, generics);
             val choiceType    = element.getAnnotation(Choice.class);
             val specTargetName = choiceType.name();
@@ -155,6 +155,14 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             }
         }
         return hasError;
+    }
+
+    private String extractEncloseClass(final java.lang.String simpleName, final java.lang.String sourceName) {
+        try {
+            return sourceName.substring(0, sourceName.length() - simpleName.length() - 1);
+        } catch (StringIndexOutOfBoundsException e) {
+            return null;
+        }
     }
     
     private String emptyToNull(String sourceSpec) {
