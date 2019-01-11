@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.function.Func1;
@@ -16,9 +17,12 @@ import nawaman.nullablej.nullable.Nullable;
 @FunctionalInterface
 public interface AnyAccess<HOST, DATA> 
         extends Func1<HOST, DATA> {
-
+    
     public default AnyAccess<HOST, DATA> newAccess(Function<HOST, DATA> access) {
         return access::apply;
+    }
+    public default BooleanAccess<HOST> that(Predicate<DATA> checker) {
+        return booleanAccess(false, any -> checker.test(any));
     }
     
     public default BooleanAccess<HOST> thatIs(DATA value) {

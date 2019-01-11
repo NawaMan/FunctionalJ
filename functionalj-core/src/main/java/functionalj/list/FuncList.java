@@ -46,7 +46,8 @@ public interface FuncList<DATA>
                     extends 
                         ReadOnlyList<DATA>, 
                         Streamable<DATA>,
-                        Pipeable<FuncList<DATA>> {
+                        Pipeable<FuncList<DATA>>,
+                        Predicate<DATA> {
     
     public static <T> FuncList<T> empty() {
         return ImmutableList.empty();
@@ -107,6 +108,11 @@ public interface FuncList<DATA>
     @Override
     public default FuncList<DATA> __data() throws Exception {
         return this;
+    }
+    
+    @Override
+    public default boolean test(DATA data) {
+        return contains(data);
     }
     
     public default boolean isLazy() {

@@ -5,16 +5,33 @@ Accesses are functions used to read value out of an object field.
 In Java, Access can be created as method reference to the field getter.
 
 For example, given the class:
-```Java
+
+```java
     public class User {
-        public User(String name) { this.name = name; }
         private String name;
-        public String getName() { return name; }
+        
+        public User(String name) {
+            this.name = name;
+        }
+        public String name() {
+            return name;
+        }
+        public String toString() {
+            return "User(" + name + ")";
+        }
     }
 ```
 
-The access for name will be `Function<User, String> getName = User::getName`.
-With that you can access the name using `getName.apply(user1)`.
+The access for name will be `Function<User, String> name = User::name`.
+With that you can access the name using `name.apply(user1)`.
+
+```java
+    User user1 = new User("John");
+    
+    StringAccess<User> userName = User::name;
+    
+    assertEquals("John", userName.apply(user1));
+```
 
 FunctionalJ introduces `Access` interface and its sub interfaces for common data types.
 These access interfaces has child access already attach to it.
@@ -22,28 +39,41 @@ For example, `StringAccess` is itself a function but as also an object has many 
 One of them is `length`.
 Here is how it can be used.
 
-```Java
-    StringAccess<User> userName = User::getName;
-    IntegerAccess<User> userNameLength = userName.length();
+```java
     User user1 = new User("John");
+    
+    StringAccess<User>  userName       = User::name;
+    IntegerAccess<User> userNameLength = userName.length();
+    
     assertEquals("John", userName.apply(user1));
-    assertEquals(4, userNameLength.apply(user1));
+    assertEquals(4, (int)userNameLength.apply(user1));
 ```
 
 In the above code, `userNameLength` is a function of `User` to the length of its string.
 `IntegerAccess` in turn has many sub access such as `thatGreaterThan(int value)`.
 
-```Java
-    StringAccess<User> userName = User::getName;
+```java
+    User user1 = new User("John");
+    
+    StringAccess<User> userName = User::name;
+    
     assertFalse(userName.length().thatGreaterThan(4).apply(user1));
-    asserTrue (userName.length().thatGreaterThan(4).apply(new User("NawaMan")));
+    assertTrue (userName.length().thatGreaterThan(4).apply(new User("NawaMan")));
 ```
 
 You can also use it with stream.
 
-```Java
-    StringAccess<User> userName = User::getName;
-    var userWithLongName = users.stream().filter(userName.length().thatGreaterThan(4)).collect(toList());
+```java
+    val users = FuncList.of(
+                new User("John"),
+                new User("NawaMan"),
+                new User("Jack")
+            );
+    
+    StringAccess<User> userName = User::name;
+    
+    val usersWithLongName = users.filter(userName.length().thatGreaterThan(4));
+    assertEquals("[User(NawaMan)]", usersWithLongName.toString());
 ```
 
 ## Common accesses
@@ -54,12 +84,14 @@ There are also short hands for those: `$S`, `$B`, `$I`, `$L`, `$D` and `$O`.
 
 This is how it might be used.
 
-```Java
-    static import functionalj.lens.Access.*;
-    ...
-    val names = List.of("John", "David", "Adam", "Ben");
-    var shortNames = names.stream().filter(theString.length().thatLessThan(4)).collect(toList());
-    var longNames = names.stream().filter($S.length().thatGreaterThan(4)).collect(toList());
+```java
+    val names = FuncList.of("John", "David", "Adam", "Ben");
+    
+    val shortNames = names.filter(theString.length().thatLessThan(4));
+    val longNames  = names.filter($S.length().thatGreaterThan(4));
+    
+    assertEquals("[Ben]",   shortNames.toString());
+    assertEquals("[David]", longNames.toString());
 ```
 
 ## Lenses
@@ -68,7 +100,7 @@ Another word, a lens is two functions: read and change.
 These duality make hard to make them composible in Java.
 For now, let say we have lens ready to use.
 
-```Java
+```java
     StringLens<User> userName = ... already made somewhere ...;
     assertEquals("John", userName.apply(new User1("John")));    // Read.
 ```
@@ -76,10 +108,18 @@ For now, let say we have lens ready to use.
 When lens is used to change property value,
   it takes the object and the new field value and return a new object with the new field value.
 
-```Java
+```java
     StringLens<User> userName = ... already made somewhere ...;
-    assertEquals(new User("Jack"), userName.apply(new User1("John"), "Jack"));    // Write.
+    
+    User user1 = new User("John");
+    User user2 = userName.apply(user1, "Jack");    // Write.
+    assertEquals("User[name: John]", user1.toString());
+    assertEquals("User[name: Jack]", user2.toString());
 ```
 
 Similar to accesses, lenses can be composed but it is quite tedious to do.
 The best way to create lenses in FnctionalJ is to use `Struct` data type [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/struct_type.md "Struct").
+
+**Note:** All the code can be find in the file `example.functionalj.accesslens.AccessLensExamples.java`.
+
+**TODO** Null handling.

@@ -4,14 +4,15 @@ Choice data types are type of data that can be in any of the list value.
 
 To define a choice type, you annotate an interface with `@Choice`.
 The interface name must be suffixed by either `Spec` or `Model`.
-```Java
-package pkg;
 
-@Choice
-interface UpOrDownSpec {
-    void Up();
-    void Down();
-}
+```java
+    package pkg;
+    
+    @Choice
+    interface UpOrDownSpec {
+        void Up();
+        void Down();
+    }
 ```
 
 This will tell FunctionalJ to generate a class called `UpOrDown` in the same package with the spec class (package `pkg`).
@@ -21,9 +22,9 @@ Noted that, since spec interfaces have no use but to specify how choice type is 
 As said, the code above create a abstract class called `pkg.UpOrDown`.
 This class has two values: up and down.
 
-```Java
+```java
     UpOrDown direction1 = UpOrDown.up;
-    UpOrDown direction1 = UpOrDown.down;
+    UpOrDown direction2 = UpOrDown.down;
 ```
 
 At first glance,
@@ -31,9 +32,9 @@ At first glance,
   but the choice can contains a payload.
 For example:
 
-```Java
+```java
     @Choice
-    interface LoginStatus {
+    interface LoginStatusSpec {
         void Login(String userName);
         void Logout();
     }
@@ -41,7 +42,7 @@ For example:
 
 In this case, the Login status can be in two states: Login with a user name and logout.
 
-```Java
+```java
     LoginStatus status1 = LoginStatus.Login("root");
     LoginStatus status2 = LoginStatus.Logout();
 ```
@@ -54,7 +55,7 @@ All the choices are generated as inner classes that implement the main choice cl
 ## Checking Choice
 `isXXX` methods can be used to check what choice a choice object is.
 
-```Java
+```java
     LoginStatus status1 = LoginStatus.Login("root");
     LoginStatus status2 = LoginStatus.Logout();
     assertTrue(status1.isLogin());
@@ -66,7 +67,7 @@ All the choices are generated as inner classes that implement the main choice cl
 ## Using Choice
 `asXXXX` methods return a `Result<XXXX>` containing the choice if the type match otherwise return result of null.
 
-```Java
+```java
     LoginStatus status1 = LoginStatus.Login("root");
     LoginStatus status2 = LoginStatus.Logout();
     assertEquals("Login(root)", status1.asLogin().map(String::valueOf).orElse("Not login"));
@@ -76,7 +77,7 @@ All the choices are generated as inner classes that implement the main choice cl
 Another way to use the choice is the methods `ifXXX(...)` which has two overloads.
 These methods run the given code (either a consumer or a runnable) if the type choice type match.
 
-```Java
+```java
     LoginStatus status = LoginStatus.Login("root");
     status
         .ifLogin(s -> System.out.println("user: " + s.userName()))
@@ -90,10 +91,10 @@ Another word, pattern matching is exhaustive.
 
 Here is the basic example.
 
-```Java
-        var currentUser = status.match()
-            .login (s -> "User: " + s.userName()) 
-            .logout("Guess");
+```java
+    String currentUser = status.match()
+        .login (s -> "User: " + s.userName()) 
+        .logout("Guess");
 ```
 
 In the above code, we pattern match the status.
@@ -106,16 +107,18 @@ The cases must also be in the right order -- this is actually because of the cur
 The match can be expanded in to the payload so that different action can be taken while ensure exhaustion matching.
 Consider the following code.
 
-```Java
-        var moderators = Arrays.asList("Jack", "John");
-        var user = status1.match()
-            .loginOf("root"::equals,       "Administrator")
-            .loginOf(moderators::contains, "Moderator")
-            .login  (s ->                  "User: " + s.userName())
-            .logout (                      "Guess");
+```java
+    var moderators = Arrays.asList("Jack", "John");
+    var user = status1.match()
+        .loginOf("root",               "Administrator")
+        .loginOf(moderators::contains, "Moderator")
+        .login  (s ->                  "User: " + s.userName())
+        .logout (                      "Guess");
 ```
 
 If the user name is root, the string "Administrator" is returned.
 If the user name is in the `moderators` list, the string "Moderator" is returned.
 For other login users, the user name is returned.
 If the status is not login (i.e., logout), the word "Guess" is returned.
+
+
