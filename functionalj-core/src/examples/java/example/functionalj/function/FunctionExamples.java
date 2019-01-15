@@ -1,4 +1,4 @@
-package example.functionalj.accesslens;
+package example.functionalj.function;
 
 import static functionalj.function.Absent.__;
 import static functionalj.function.Func.F;

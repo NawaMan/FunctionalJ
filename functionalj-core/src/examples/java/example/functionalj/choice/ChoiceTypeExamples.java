@@ -1,4 +1,4 @@
-package example.functionalj.accesslens;
+package example.functionalj.choice;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;

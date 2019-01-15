@@ -1,7 +1,7 @@
-package example.functionalj.accesslens;
+package example.functionalj.structtype;
 
-import static example.functionalj.accesslens.Department.theDepartment;
-import static example.functionalj.accesslens.Employee.theEmployee;
+import static example.functionalj.structtype.Department.theDepartment;
+import static example.functionalj.structtype.Employee.theEmployee;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

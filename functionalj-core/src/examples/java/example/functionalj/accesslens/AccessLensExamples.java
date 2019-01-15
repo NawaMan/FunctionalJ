@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import example.functionalj.accesslens.User;
 import functionalj.annotations.Struct;
 import functionalj.lens.lenses.IntegerAccess;
 import functionalj.lens.lenses.StringAccess;
