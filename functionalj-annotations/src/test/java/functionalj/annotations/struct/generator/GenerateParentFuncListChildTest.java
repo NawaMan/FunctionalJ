@@ -172,7 +172,7 @@ public class GenerateParentFuncListChildTest {
                 "            private final FuncList<String> names;\n" + 
                 "            \n" + 
                 "            private Builder_names(FuncList<String> names) {\n" + 
-                "                this.names = $utils.notNull(names);\n" + 
+                "                this.names = ImmutableList.from(names);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public FuncList<String> names() {\n" + 
@@ -193,7 +193,7 @@ public class GenerateParentFuncListChildTest {
                 "            \n" + 
                 "            private Builder_names_children(Builder_names parent, FuncList<Child> children) {\n" + 
                 "                this.parent = parent;\n" + 
-                "                this.children = $utils.notNull(children);\n" + 
+                "                this.children = ImmutableList.from(children);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public FuncList<String> names() {\n" + 

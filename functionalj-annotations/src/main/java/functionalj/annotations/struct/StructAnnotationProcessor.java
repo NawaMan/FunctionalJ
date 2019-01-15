@@ -24,6 +24,7 @@ import java.io.Writer;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -104,6 +105,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        // TODO - Should find a way to warn when a field is not immutable.
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Struct.class)) {
             val packageName    = extractPackageName(element);
@@ -234,7 +236,10 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         if (configures == null)
             return null;
         
-        val getters = method.getParameters().stream().map(p -> createGetterFromParameter(element, p)).collect(toList());
+        val getters = method.getParameters().stream()
+                .map(p -> createGetterFromParameter(element, p))
+                .filter(Objects::nonNull)
+                .collect(toList());
         
         if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, specTargetName, configures))
             return null;

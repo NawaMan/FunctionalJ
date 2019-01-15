@@ -71,19 +71,19 @@ public class NonRequireFieldTest {
                 "        this(0, false, null, null, null);\n" + 
                 "    }\n" + 
                 "    public Data(int a, boolean b, String d) {\n" + 
-                "        this.a=a;\n" + 
-                "        this.b=b;\n" + 
-                "        this.c=null;\n" + 
-                "        this.d=d;\n" + 
-                "        this.e=null;\n" + 
+                "        this.a = $utils.notNull(a);\n" + 
+                "        this.b = $utils.notNull(b);\n" + 
+                "        this.c = null;\n" + 
+                "        this.d = $utils.notNull(d);\n" + 
+                "        this.e = null;\n" + 
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    public Data(int a, boolean b, String c, String d, String e) {\n" + 
                 "        this.a = a;\n" + 
                 "        this.b = b;\n" + 
-                "        this.c = c;\n" + 
+                "        this.c = java.util.Optional.ofNullable(c).orElseGet(()->null);\n" + 
                 "        this.d = $utils.notNull(d);\n" + 
-                "        this.e = e;\n" + 
+                "        this.e = java.util.Optional.ofNullable(e).orElseGet(()->null);\n" + 
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
@@ -280,7 +280,7 @@ public class NonRequireFieldTest {
                 "            \n" + 
                 "            private Builder_a_b_c(Builder_a_b parent, String c) {\n" + 
                 "                this.parent = parent;\n" + 
-                "                this.c = c;\n" + 
+                "                this.c = java.util.Optional.ofNullable(c).orElseGet(()->null);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public int a() {\n" + 
@@ -355,7 +355,7 @@ public class NonRequireFieldTest {
                 "            \n" + 
                 "            private Builder_a_b_c_d_e(Builder_a_b_c_d parent, String e) {\n" + 
                 "                this.parent = parent;\n" + 
-                "                this.e = e;\n" + 
+                "                this.e = java.util.Optional.ofNullable(e).orElseGet(()->null);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public int a() {\n" + 

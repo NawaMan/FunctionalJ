@@ -21,6 +21,7 @@ import static functionalj.annotations.struct.generator.model.Accessibility.PUBLI
 import static functionalj.annotations.struct.generator.model.Modifiability.FINAL;
 import static functionalj.annotations.struct.generator.model.Modifiability.MODIFIABLE;
 import static functionalj.annotations.struct.generator.model.Scope.INSTANCE;
+import static functionalj.annotations.struct.generator.model.Scope.STATIC;
 import static functionalj.annotations.struct.generator.utils.listOf;
 import static functionalj.annotations.struct.generator.utils.themAll;
 import static java.util.Arrays.asList;
@@ -41,6 +42,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.annotations.DefaultValue;
 import functionalj.annotations.IPostConstruct;
 import functionalj.annotations.IStruct;
 import functionalj.annotations.choice.generator.Utils;
@@ -112,16 +114,7 @@ public class StructBuilder {
             builderClass            = builderClassBuilder.build();
         }
         
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        val specField = ((sourceSpec.getSpecObjName() == null) || sourceSpec.getSpecObjName().isEmpty())
-                ? (Stream<GenField>)(Stream)Stream.empty()
-                : Stream.of(new GenField(
-                        Accessibility.PUBLIC,
-                        Modifiability.FINAL,
-                        Scope.STATIC,
-                        sourceSpec.getSpecObjName(),
-                        Type.of(SourceSpec.class),
-                        sourceSpec.toCode()));
+        val specField = generateSpecField();
         
         GenMethod toString = null;
         
@@ -274,6 +267,20 @@ public class StructBuilder {
         return dataObjSpec;
     }
     
+    private Stream<GenField> generateSpecField() {
+        if (sourceSpec.hasSpecField()) {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Stream<GenField> emptyStream = (Stream<GenField>)(Stream)Stream.empty();
+            return emptyStream;
+        }
+        
+        val genField = new GenField(PUBLIC, FINAL, STATIC,
+                        sourceSpec.getSpecObjName(),
+                        Type.of(SourceSpec.class),
+                        sourceSpec.toCode());
+        return Stream.of(genField);
+    }
+    
     private GenConstructor noArgConstructor() {
         if (!sourceSpec.getConfigures().generateNoArgConstructor)
             return null;
@@ -306,9 +313,9 @@ public class StructBuilder {
         val pkgName      = sourceSpec.getPackageName();
         val eclName      = sourceSpec.getEncloseName();
         val valName      = sourceSpec.getValidatorName();
-        val getterParams = sourceSpec.getGetters().stream().map(getter -> getter.getDefaultValueCode(getter.getName())).collect(Collectors.joining(","));
+        val getterParams = sourceSpec.getGetters().stream().map(getter -> getter.getDefaultValueCode(getter.getName())).collect(joining(","));
         
-        val assignGetters  = sourceSpec.getGetters().stream().map(getter -> "this." + getter.getName() + "=" + getter.getDefaultValueCode(getter.getName()) + ";");
+        val assignGetters  = sourceSpec.getGetters().stream().map(getter -> "this." + getter.getName() + " = " + getter.getDefaultValueCode(getter.getName()) + ";");
         val validate       = (Stream<String>)((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
         val ipostConstruct = Type.of(IPostConstruct.class).simpleName();
         val postConstruct  = Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();");
@@ -353,28 +360,31 @@ public class StructBuilder {
     
     private String initGetterField(Getter getter) {
         // TODO - some of these should be pushed to $utils
-        if (getter.getType().isList()) {
-            val getterName = getter.getName();
-            return String.format("this.%1$s = ImmutableList.from(%1$s);", getterName);
-        } else if (getter.getType().isMap()) {
-            val getterName = getter.getName();
-            return String.format("this.%1$s = ImmutableMap.from(%1$s);", getterName);
-        } else if (getter.getType().isFuncList()) {
-            val getterName = getter.getName();
-            return String.format("this.%1$s = ImmutableList.from(%1$s);", getterName);
-        } else if (getter.getType().isFuncMap()) {
-            val getterName = getter.getName();
-            return String.format("this.%1$s = ImmutableMap.from(%1$s);", getterName);
-        } else if (getter.getType().isNullable()) {
-            val getterName = getter.getName();
-            return String.format("this.%1$s = Nullable.of((%1$s == null) ? null : %1$s.get());", getterName);
-        } else if (!getter.isNullable() && !getter.getType().isPrimitive()){
-            val getterName = getter.getName();
-            return String.format("this.%1$s = $utils.notNull(%1$s);", getterName);
+        val    getterName = getter.getName();
+        val    getterType = getter.getType();
+        String initValue  = null;
+        if (getterType.isList()) {
+            initValue = String.format("ImmutableList.from(%1$s)", getterName);
+        } else if (getterType.isMap()) {
+            initValue = String.format("ImmutableMap.from(%1$s)", getterName);
+        } else if (getterType.isFuncList()) {
+            initValue = String.format("ImmutableList.from(%1$s)", getterName);
+        } else if (getterType.isFuncMap()) {
+            initValue = String.format("ImmutableMap.from(%1$s)", getterName);
+        } else if (getterType.isNullable()) {
+            initValue = String.format("Nullable.of((%1$s == null) ? null : %1$s.get())", getterName);
+        } else if (!getter.isNullable() && !getterType.isPrimitive()){
+            initValue = String.format("$utils.notNull(%1$s)", getterName);
         } else {
-            val getterName = getter.getName();
-            return String.format("this.%1$s = %1$s;", getterName);
+            initValue = getterName;
         }
+        
+        if (!getter.isRequired()) {
+            val defaultValue = DefaultValue.defaultValueCode(getterType, getter.getDefaultTo());
+            initValue = String.format("java.util.Optional.ofNullable(%1$s).orElseGet(()->%2$s)", getterName, defaultValue);
+        }
+        
+        return String.format("this.%1$s = %2$s;", getterName, initValue);
     }
     
     private GenField getterToField(SourceSpec sourceSpec, Getter getter) {

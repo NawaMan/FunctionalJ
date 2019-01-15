@@ -165,7 +165,7 @@ public class GenerateParentNullableChildTest {
                 "            private final Nullable<String> nullableName;\n" + 
                 "            \n" + 
                 "            private Builder_nullableName(Nullable<String> nullableName) {\n" + 
-                "                this.nullableName = $utils.notNull(nullableName);\n" + 
+                "                this.nullableName = Nullable.of((nullableName == null) ? null : nullableName.get());\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public Nullable<String> nullableName() {\n" + 
@@ -186,7 +186,7 @@ public class GenerateParentNullableChildTest {
                 "            \n" + 
                 "            private Builder_nullableName_nullableChild(Builder_nullableName parent, Nullable<Child> nullableChild) {\n" + 
                 "                this.parent = parent;\n" + 
-                "                this.nullableChild = $utils.notNull(nullableChild);\n" + 
+                "                this.nullableChild = Nullable.of((nullableChild == null) ? null : nullableChild.get());\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public Nullable<String> nullableName() {\n" + 

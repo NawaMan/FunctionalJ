@@ -42,6 +42,8 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     public static <T> ImmutableList<T> from(Collection<T> data) {
         if (data instanceof ImmutableList)
             return (ImmutableList<T>)data;
+        if (data == null)
+            return empty();
         
         return new ImmutableList<T>(data);
     }

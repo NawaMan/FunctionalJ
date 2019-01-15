@@ -72,9 +72,6 @@ public class LensClassBuilder {
         // TODO - methods to access.
         Stream<GenField> lensFields  = sourceSpec.getGetters().stream().map(getter -> getterToLensField(getter, dataObjClassName, sourceSpec));
         
-        // Example
-        // public final BigDecimalAccess<HOST> total() { return bigDecimalAccess(BigDecimal.ZERO, Order::total); }
-        
         val lensSpecType = new Type.TypeBuilder()
                 .packageName(Core.LensSpec.type().packageName())
                 .simpleName (Core.LensSpec.type().simpleName())

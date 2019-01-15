@@ -117,7 +117,7 @@ public class BuilderClassBuilderTest {
                 "        \n" + 
                 "        private Builder_a_b_c(Builder_a_b parent, String c) {\n" + 
                 "            this.parent = parent;\n" + 
-                "            this.c = c;\n" + 
+                "            this.c = java.util.Optional.ofNullable(c).orElseGet(()->null);\n" + 
                 "        }\n" + 
                 "        \n" + 
                 "        public int a() {\n" + 
@@ -192,7 +192,7 @@ public class BuilderClassBuilderTest {
                 "        \n" + 
                 "        private Builder_a_b_c_d_e(Builder_a_b_c_d parent, String e) {\n" + 
                 "            this.parent = parent;\n" + 
-                "            this.e = e;\n" + 
+                "            this.e = java.util.Optional.ofNullable(e).orElseGet(()->null);\n" + 
                 "        }\n" + 
                 "        \n" + 
                 "        public int a() {\n" + 

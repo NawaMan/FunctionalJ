@@ -70,8 +70,10 @@ public class Getter {
     
     public String getDefaultValueCode(String orElse) {
         if (isRequired())
-            return orElse;
+            return "$utils.notNull(" + orElse + ")";
         return DefaultValue.defaultValueCode(type, defaultTo);
+
+//        return "java.util.Optional.ofNullable(" + orElse + ").orElse()";
     }
     
     public String toCode() {

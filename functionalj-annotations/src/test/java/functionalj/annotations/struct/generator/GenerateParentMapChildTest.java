@@ -141,7 +141,7 @@ public class GenerateParentMapChildTest {
                 "            private final Map<String, Child> children;\n" + 
                 "            \n" + 
                 "            private Builder_children(Map<String, Child> children) {\n" + 
-                "                this.children = $utils.notNull(children);\n" + 
+                "                this.children = ImmutableMap.from(children);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public Map<String, Child> children() {\n" + 

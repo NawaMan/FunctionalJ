@@ -172,7 +172,7 @@ public class GenerateParentListChildTest {
                 "            private final List<String> names;\n" + 
                 "            \n" + 
                 "            private Builder_names(List<String> names) {\n" + 
-                "                this.names = $utils.notNull(names);\n" + 
+                "                this.names = ImmutableList.from(names);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public List<String> names() {\n" + 
@@ -193,7 +193,7 @@ public class GenerateParentListChildTest {
                 "            \n" + 
                 "            private Builder_names_children(Builder_names parent, List<Child> children) {\n" + 
                 "                this.parent = parent;\n" + 
-                "                this.children = $utils.notNull(children);\n" + 
+                "                this.children = ImmutableList.from(children);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "            public List<String> names() {\n" + 

@@ -33,6 +33,11 @@ public enum DefaultValue {
         if (value == UNSPECIFIED)
             return true;
         
+        boolean posibleNumber = (value == ZERO)
+                || (value == ONE)
+                || (value == MINUS_ONE)
+                || (value == MAX_VALUE)
+                || (value == MIN_VALUE);
         if (Type.primitiveTypes.containsValue(type)) {
             if (Type.BOOL.equals(type))
                 return ((value == TRUE) || (value == FALSE));
@@ -49,12 +54,20 @@ public enum DefaultValue {
                || (value == MAX_VALUE)         || (value == MIN_VALUE)))
                        return true;
             
-            return ((value == ZERO)
-                 || (value == ONE)
-                 || (value == MINUS_ONE)
-                 || (value == MAX_VALUE)
-                 || (value == MIN_VALUE));
+            return posibleNumber;
         }
+        
+        if (posibleNumber) {
+            return Type.BYTE      .equals(type)
+                || Type.SHORT     .equals(type)
+                || Type.INTEGER   .equals(type)
+                || Type.LONG      .equals(type)
+                || Type.FLOAT     .equals(type)
+                || Type.DOUBLE    .equals(type)
+                || Type.BIGINTEGER.equals(type)
+                || Type.BIGDECIMAL.equals(type);
+        }
+        
         if (value == NULL)
             return true;
         
@@ -102,7 +115,7 @@ public enum DefaultValue {
         if (value == NULL)
             return "null";
         
-        if (Type.BYT.equals(type)) {
+        if (Type.BYT.equals(type) || Type.BYTE.equals(type)) {
             if (value == ZERO)      return "(byte)0";
             if (value == ONE)       return "(byte)1";
             if (value == MINUS_ONE) return "(byte)-1";
@@ -110,7 +123,7 @@ public enum DefaultValue {
             if (value == MIN_VALUE) return "Byte.MIN_VALUE";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.SHRT.equals(type)) {
+        if (Type.SHRT.equals(type) || Type.SHORT.equals(type)) {
             if (value == ZERO)      return "(short)0";
             if (value == ONE)       return "(short)1";
             if (value == MINUS_ONE) return "(short)-1";
@@ -118,7 +131,7 @@ public enum DefaultValue {
             if (value == MIN_VALUE) return "Short.MIN_VALUE";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.INT.equals(type)) {
+        if (Type.INT.equals(type) || Type.INTEGER.equals(type)) {
             if (value == ZERO)      return "(int)0";
             if (value == ONE)       return "(int)1";
             if (value == MINUS_ONE) return "(int)-1";
@@ -126,7 +139,7 @@ public enum DefaultValue {
             if (value == MIN_VALUE) return "Integer.MIN_VALUE";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.LNG.equals(type)) {
+        if (Type.LNG.equals(type) || Type.LONG.equals(type)) {
             if (value == ZERO)      return "(long)0";
             if (value == ONE)       return "(long)1";
             if (value == MINUS_ONE) return "(long)-1";
@@ -134,7 +147,7 @@ public enum DefaultValue {
             if (value == MIN_VALUE) return "Long.MIN_VALUE";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.FLT.equals(type)) {
+        if (Type.FLT.equals(type) || Type.FLOAT.equals(type)) {
             if (value == ZERO)      return "(float)0.0";
             if (value == ONE)       return "(float)1.0";
             if (value == MINUS_ONE) return "(float)-1.0";
@@ -145,7 +158,7 @@ public enum DefaultValue {
             if (value == NaN)               return "Float.NaN";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.DBL.equals(type)) {
+        if (Type.DBL.equals(type) || Type.DOUBLE.equals(type)) {
             if (value == ZERO)      return "(double)0.0";
             if (value == ONE)       return "(double)1.0";
             if (value == MINUS_ONE) return "(double)-1.0";

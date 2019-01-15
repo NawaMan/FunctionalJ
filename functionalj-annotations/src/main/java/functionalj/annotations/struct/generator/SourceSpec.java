@@ -132,6 +132,10 @@ public class SourceSpec {
         return isClass;
     }
     
+    public boolean hasSpecField() {
+        return (getSpecObjName() == null) || getSpecObjName().isEmpty();
+    }
+    
     // TODO - Optimize spec by importing them.
     
     public String toCode() {

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import functionalj.annotations.DefaultValue;
 import functionalj.annotations.struct.generator.model.Accessibility;
 import functionalj.annotations.struct.generator.model.GenClass;
 import functionalj.annotations.struct.generator.model.GenConstructor;
@@ -138,9 +139,12 @@ public class BuilderClassBuilder {
         val constParams  = (index == 0) ? asList(valueParam) : asList(parentParam, valueParam);
         val assignParent = line("this.parent = parent;");
         val notNull      = !thisGetter.isNullable() && !thisGetter.getType().isPrimitive();
-        val assignValue  = notNull
-                         ? line("this." + thisGetter.getName() + " = $utils.notNull(" + thisGetter.getName() + ");")
-                         : line("this." + thisGetter.getName() + " = " +                thisGetter.getName() +  ";");
+        val assignValue  = 
+                ILines.line(initGetterField(thisGetter));
+//                
+//                notNull
+//                         ? line("this." + thisGetter.getName() + " = $utils.notNull(" + thisGetter.getName() + ");")
+//                         : line("this." + thisGetter.getName() + " = " +                thisGetter.getName() +  ";");
         val constLines   = (index == 0) ? linesOf(assignValue) : linesOf(assignParent, assignValue);
         val constructor  = new GenConstructor(
                 Accessibility.PRIVATE,
@@ -277,6 +281,35 @@ public class BuilderClassBuilder {
                 emptyList(),
                 emptyList());
         return builderClass;
+    }
+    
+    private String initGetterField(Getter getter) {
+        // TODO - some of these should be pushed to $utils
+        val    getterName = getter.getName();
+        val    getterType = getter.getType();
+        String initValue  = null;
+        if (getterType.isList()) {
+            initValue = String.format("ImmutableList.from(%1$s)", getterName);
+        } else if (getterType.isMap()) {
+            initValue = String.format("ImmutableMap.from(%1$s)", getterName);
+        } else if (getterType.isFuncList()) {
+            initValue = String.format("ImmutableList.from(%1$s)", getterName);
+        } else if (getterType.isFuncMap()) {
+            initValue = String.format("ImmutableMap.from(%1$s)", getterName);
+        } else if (getterType.isNullable()) {
+            initValue = String.format("Nullable.of((%1$s == null) ? null : %1$s.get())", getterName);
+        } else if (!getter.isNullable() && !getterType.isPrimitive()){
+            initValue = String.format("$utils.notNull(%1$s)", getterName);
+        } else {
+            initValue = getterName;
+        }
+        
+        if (!getter.isRequired()) {
+            val defaultValue = DefaultValue.defaultValueCode(getterType, getter.getDefaultTo());
+            initValue = String.format("java.util.Optional.ofNullable(%1$s).orElseGet(()->%2$s)", getterName, defaultValue);
+        }
+        
+        return String.format("this.%1$s = %2$s;", getterName, initValue);
     }
     
     private GenMethod createBuildMethod(String targetName, List<Getter> getters) {
