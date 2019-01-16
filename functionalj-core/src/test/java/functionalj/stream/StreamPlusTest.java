@@ -450,13 +450,13 @@ public class StreamPlusTest {
     
     @Test
     public void testFilterType() {
-        val stream = StreamPlus.of("One", "Two", 3, 4.0, 5L);
+        StreamPlus<Object>  stream = StreamPlus.of("One", "Two", 3, 4.0, 5L);
         assertStrings("[4.0]", stream.filter(Double.class).toJavaList());
     }
     
     @Test
     public void testFilterType2() {
-        val stream = StreamPlus.of("One", "Two", 3, 4.0, 5.0, 6L);
+        StreamPlus<Object> stream = StreamPlus.of("One", "Two", 3, 4.0, 5.0, 6L);
         assertStrings("[5.0]", stream.filter(Double.class, d -> d > 4.5).toJavaList());
     }
     

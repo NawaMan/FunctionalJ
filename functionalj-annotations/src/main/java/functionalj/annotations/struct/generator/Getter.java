@@ -19,9 +19,10 @@ import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
+import java.util.List;
+
 import functionalj.annotations.DefaultValue;
 import lombok.Value;
-import lombok.val;
 import lombok.experimental.Wither;
 
 /**
@@ -72,12 +73,10 @@ public class Getter {
         if (isRequired())
             return "$utils.notNull(" + orElse + ")";
         return DefaultValue.defaultValueCode(type, defaultTo);
-
-//        return "java.util.Optional.ofNullable(" + orElse + ").orElse()";
     }
     
     public String toCode() {
-        val params = asList(
+        List<Object> params = asList(
                 toStringLiteral(name),
                 type.toCode(),
                 nullable,

@@ -26,7 +26,6 @@ import java.util.function.Function;
 
 import functionalj.annotations.choice.generator.Utils;
 import lombok.Value;
-import lombok.val;
 import lombok.experimental.Wither;
 
 /**
@@ -104,7 +103,7 @@ public class SourceSpec {
                     + "]";
         }
         public String toCode() {
-            val params = asList(
+            List<Object> params = asList(
                     coupleWithDefinition,
                     generateNoArgConstructor,
                     generateRequiredOnlyConstructor,
@@ -139,7 +138,7 @@ public class SourceSpec {
     // TODO - Optimize spec by importing them.
     
     public String toCode() {
-        val params = asList(
+        List<Object> params = asList(
                 toStringLiteral(specName),
                 toStringLiteral(packageName),
                 toStringLiteral(encloseName),

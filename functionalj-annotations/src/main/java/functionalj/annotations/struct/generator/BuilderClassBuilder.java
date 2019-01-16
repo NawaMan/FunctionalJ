@@ -138,13 +138,7 @@ public class BuilderClassBuilder {
         val parentParam  = (index == 0) ? null : new GenParam("parent", parentBuilderType);
         val constParams  = (index == 0) ? asList(valueParam) : asList(parentParam, valueParam);
         val assignParent = line("this.parent = parent;");
-        val notNull      = !thisGetter.isNullable() && !thisGetter.getType().isPrimitive();
-        val assignValue  = 
-                ILines.line(initGetterField(thisGetter));
-//                
-//                notNull
-//                         ? line("this." + thisGetter.getName() + " = $utils.notNull(" + thisGetter.getName() + ");")
-//                         : line("this." + thisGetter.getName() + " = " +                thisGetter.getName() +  ";");
+        val assignValue  = ILines.line(initGetterField(thisGetter));
         val constLines   = (index == 0) ? linesOf(assignValue) : linesOf(assignParent, assignValue);
         val constructor  = new GenConstructor(
                 Accessibility.PRIVATE,
