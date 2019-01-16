@@ -4,7 +4,7 @@ Mutable objects hide changes.
 Hidden changes can lead to chaos.
 
 FunctionalJ has a mechanism to create immutable data objects using `@Struct` annotation.
-This can be done in two form: a expand form and compact for.
+This can be done in two forms: a expand form and compact form.
 For brevity, we will use compact form when possible.
 
 ```java
@@ -15,12 +15,12 @@ public class Model {
 }
 ```
 
-Notice that this is just a method and it can be in any class.
+Notice that this is just a method and it can be in any class or interface.
 
 The above code results in a class called `pkg.Person` in the same package with this code.
 This class has two fields: `fieldName` and `lastName`.
 
-## Creating an Object
+## Creating a Struct
 The following code shows how to create the object.
 
 ```java
@@ -203,3 +203,5 @@ This build is exhaustive meaning that all requires fields are required.
             .build();
     assertEquals("Person[firstName: John, middleName: null, lastName: Doe, age: -1]", person.toString());
 ```
+
+## Validation

@@ -81,7 +81,7 @@ public class GenStruct implements ILines {
                 = linesOf(Stream.of(
                     line(packageDef),
                     line(imports),
-//                    line("// " + sourceSpec.getPackageName() + "." + sourceSpec.getEncloseName()),
+                    line("// " + sourceSpec.getPackageName() + "." + sourceSpec.getEncloseName() + "." + sourceSpec.getSpecName()),
                     dataObjDef
                 )
                 .filter (Objects::nonNull)
