@@ -5,27 +5,45 @@ Hidden changes can lead to chaos.
 
 FunctionalJ has a mechanism to create immutable data objects using `@Struct` annotation.
 This can be done in two forms: a expand form and compact form.
+The expand form allow provide an opportunity to add additional methods.
 For brevity, we will use compact form when possible.
+The following code show how to define a struct.
 
 ```java
 package pkg;
-public class Model {
+public class Models {
     @Struct
     void Person(String firstName, String lastName) {}
 }
 ```
 
-Notice that this is just a method and it can be in any class or interface.
+Notice that `@Struct` is annotated on `Person` which is just a method.
+The annotated method can be in any class or interface.
+In this case, we put `Person` method in class named `Models` which should make it is easy to locate.
 
-The above code results in a class called `pkg.Person` in the same package with this code.
-This class has two fields: `fieldName` and `lastName`.
+With the above code, FunctionalJ generates a class called `Person` in the same package with this code (`pkg`).
+This class has two fields: `firstName` and `lastName`.
 
 ## Creating a Struct
 The following code shows how to create the object.
 
 ```java
-    val person = new Person("John", "Doe");
+    val person = **new Person("John", "Doe")**;
     assertEquals("Person[firstName: John, lastName: Doe]", person.toString());
+```
+
+## Common Methods
+
+Common object methods such as `toString()`, `hashCode()` and `equals(...)` are automatically generated.
+The code above shows how `toString()` might return and the following code shows how to use `hashCode()` and `equals(...)`.
+
+```java
+    val person1 = new Person("John", "Doe");
+    val person2 = new Person("John", "Doe");
+    assertTrue(person1.hashCode() == person2.hashCode());
+    assertTrue(person1.equals(person2));
+    assertFalse(person1.hashCode() == person3.hashCode());
+    assertFalse(person1.equals(person3));
 ```
 
 ## Accessing a Field
@@ -50,19 +68,6 @@ The method `withXXX(...)` can be used to do that.
 ```
 
 In the code above, person2 is person1 with changed last name.
-
-## Common Methods
-
-Common object methods such as `toString()`, `hashCode()` and `equals(...)` are automatically generated.
-
-```java
-    val person1 = new Person("John", "Doe");
-    val person2 = new Person("John", "Doe");
-    assertTrue(person1.hashCode() == person2.hashCode());
-    assertTrue(person1.equals(person2));
-    assertFalse(person1.hashCode() == person3.hashCode());
-    assertFalse(person1.equals(person3));
-```
 
 ## Null
 By default, `null` is not allowed as the property value.
