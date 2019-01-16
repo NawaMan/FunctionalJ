@@ -28,14 +28,14 @@ This class has two fields: `firstName` and `lastName`.
 The following code shows how to create the object.
 
 ```java
-    val person = **new Person("John", "Doe")**;
+    val person = new Person("John", "Doe");
     assertEquals("Person[firstName: John, lastName: Doe]", person.toString());
 ```
 
 ## Common Methods
 
 Common object methods such as `toString()`, `hashCode()` and `equals(...)` are automatically generated.
-The code above shows how `toString()` might return and the following code shows how to use `hashCode()` and `equals(...)`.
+The code above shows how `toString()` might return and the following code shows `hashCode()` and `equals(...)`.
 
 ```java
     val person1 = new Person("John", "Doe");
@@ -57,8 +57,8 @@ The fields can be access using its getter which is just the method with the same
 
 ## Changing a Field Value
 Since the object is immutable, there is no way to actually change the value of the field in the object.
-So to change the field value, we create anther object with the new field value.
-The method `withXXX(...)` can be used to do that.
+So to change the field value, we create another object with the new field value.
+The method `withXXX(...)` can be used to do just that.
 
 ```java
     val person1 = new Person("John", "Doe");
@@ -67,11 +67,11 @@ The method `withXXX(...)` can be used to do that.
     assertEquals("Person[firstName: John, lastName: Smith]", person2.toString());
 ```
 
-In the code above, person2 is person1 with changed last name.
+In the code above, `person2` is `person1` with changed last name.
 
 ## Null
 By default, `null` is not allowed as the property value.
-NullPointerException will be thrown of null is given as the field value.
+`NullPointerException` will be thrown of `null` is given as the field value.
 
 ```java
     try {
@@ -105,8 +105,8 @@ With this **nullable** field,
     assertEquals("Person[firstName: John, middleName: null, lastName: Doe]", person.toString());
 ```
 
-We can also give them default value by annotation `DefaultTo(...)` and given it default value.
-Let say we want to add age field to the Person type and default it to -1.
+We can also give them default value by annotating with `DefaultTo(...)` and given it default value.
+Let say we want to add age field to the Person type and default it to `-1`.
 
 ```java
     @Struct
@@ -132,10 +132,18 @@ So now we can create person with either a value or null (to use default value).
     assertEquals("Person[firstName: John, middleName: null, lastName: Doe, age: -1]", person2.toString());
 ```
 
+Of course, the constructors with only required field is still there.
+
+```java
+    val person = new Person("John", "Doe");
+    assertEquals("Person[firstName: John, middleName: null, lastName: Doe]", person.toString());
+```
+
 ## Lens
 
-Lenses are functions that allow access to field for both read and change (using `withXXX(...)`).
+Lenses are functions that allow access to fields for both reading and changing (using `withXXX(...)`).
 Lens are composable so you can use it to access deep into the sub object.
+Consider the following code: 
 
 ```java
     @Struct
@@ -151,9 +159,12 @@ Lens are composable so you can use it to access deep into the sub object.
             Employee manager) {};
 ```
 
-Now you can use the lens to access the field in person.
+Now you can use the lens to access the field in employee.
 
 ```java
+    import static pkg.Employee.theEmployee;
+    ...
+    
     val employee1 = new Employee("John", "Doe");
     assertEquals("John", theEmployee.firstName.apply(employee1));
     assertEquals("Doe",  theEmployee.lastName .apply(employee1));
@@ -162,28 +173,32 @@ Now you can use the lens to access the field in person.
     assertEquals("Employee[firstName: Jonathan, middleName: null, lastName: Doe]", employee2.toString());
 ```
 
-Notice `theEmployee` which is a static field in the generated `Employee` class.
+Notice the static import for `theEmployee`.
 Another word, lens is created as a static final field of the generated class.
 
-With lens, it is possible to quickly access to employee from department.
+With lens, it is possible to quickly access to field in the employee from the department.
 
 ```java
+    import static pkg.Department.theDepartment;
+    import static pkg.Employee.theEmployee;
+    ...
+    
     val employee   = new Employee("John", "Doe");
     val department = new Department("Sales", employee);
     assertEquals(
             "Department[name: Sales, manager: Employee[firstName: John, middleName: null, lastName: Doe]]",
             department.toString());
     
+    // Read
     assertEquals("John", theDepartment.manager.firstName.apply(department));
     assertEquals("Doe",  theDepartment.manager.lastName .apply(department));
     
+    // Change
     val department2 = theDepartment.manager.firstName.changeTo("Jonathan").apply(department);
     assertEquals(
             "Department[name: Sales, manager: Employee[firstName: Jonathan, middleName: null, lastName: Doe]]",
             department2.toString());
 ```
-
-Notice `theDepartment` which is a static fields in the generated `Department` class.
 
 This is more useful when using it with stream or `FuncList`.
 The following code extract the list of manager family name.
@@ -196,6 +211,8 @@ The following code extract the list of manager family name.
     );
     assertEquals("[Doe, Jackson, Johnson]", departments.map(theDepartment.manager.lastName).toString());
 ```
+
+Another example get the list of last name 
 
 ## Builder
 Struct is also comes with a builder.
