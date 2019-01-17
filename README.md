@@ -16,7 +16,7 @@ No additional build steps or tools are required outside of adding dependencies.
 - Struct type - an immutable data with build-in lens and exhaustive builder [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/struct_type.md "Struct")
 - Choice type - a sum type with payload and pattern matching [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/choice_type.md "Choice Type")
 - Rule type to constrain existing types. [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/rule_type.md "Rule Type")
-- Ref for context and dependency injection [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/ref.md "Ref")
+- Ref for implicit context and dependency injection [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/ref.md "Ref")
 - DeferAction, Promise and IO for side effect management [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/side_effect.md "Side Effect")
 - Event (Work in progress) [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/event.md "Event")
 

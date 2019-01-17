@@ -120,6 +120,12 @@ When lens is used to change property value,
 Similar to accesses, lenses can be composed but it is quite tedious to do.
 The best way to create lenses in FnctionalJ is to use `Struct` data type [▲](https://github.com/NawaMan/FunctionalJ/blob/master/docs/struct_type.md "Struct").
 
+There are four change options:
+  - `changeTo(V)` - change the field to the given value,
+  - `changeTo(Supplier<V>)` - change the field to the value from the given supplier,
+  - `changeTo(Function<V,V>)` - change the field value by transforming it using the given function,
+  - `changeTo(BiFunction<HOST,V,V>)` - change the field by consider the host value and the old value.
+
 **Note:** All the code can be find in the file `example.functionalj.accesslens.AccessLensExamples.java`.
 
 **TODO** Null handling.

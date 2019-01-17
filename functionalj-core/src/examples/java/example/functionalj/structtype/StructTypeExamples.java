@@ -14,9 +14,10 @@ import functionalj.annotations.DefaultValue;
 import functionalj.annotations.Nullable;
 import functionalj.annotations.Struct;
 import functionalj.list.FuncList;
+import functionalj.result.ValidationException;
 import lombok.val;
 
-public class StructTypeExample {
+public class StructTypeExamples {
     
     @Struct
     void Person(
@@ -39,6 +40,31 @@ public class StructTypeExample {
     void Department(
             String   name,
             Employee manager) {};
+    
+    @Struct
+    static boolean Circle1(int x, int y, int radius) {
+        return radius > 0;
+    }
+    
+    @Struct
+    static String Circle2(int x, int y, int radius) {
+        return radius > 0 ? null : "Radius cannot be less than zero: " + radius;
+    }
+    
+    @Struct
+    static ValidationException Circle3(int x, int y, int radius) {
+        return radius > 0
+                ? null
+                : new NegativeRadiusException(radius);
+    }
+    
+    @SuppressWarnings("serial")
+    public static class NegativeRadiusException extends ValidationException {
+        public NegativeRadiusException(int radius) {
+            super("Radius: " + radius);
+        }
+    }
+    
     
     @Test
     public void example01_Basic() {
@@ -136,11 +162,79 @@ public class StructTypeExample {
     }
     
     @Test
-    public void example08_Builder() {
+    public void example08_Lens_List_Filter() {
+        val departments = FuncList.of(
+                new Department("Sales",   new Employee("John", "Doe")),
+                new Department("R&D",     new Employee("John", "Jackson")),
+                new Department("Support", new Employee("Jack", "Johnson"))
+        );
+        assertEquals("[(Sales,Doe), (R&D,Jackson)]",
+                departments
+                    .filter  (theDepartment.manager.firstName.thatEquals("John"))
+                    .mapTuple(theDepartment.name, theDepartment.manager.lastName)
+                    .toString());
+    }
+    
+    @Test
+    public void example09_Builder() {
         val person = new Person.Builder()
                 .firstName("John")
-                .lastName("Doe")
+                .lastName ("Doe")
                 .build();
         assertEquals("Person[firstName: John, middleName: null, lastName: Doe, age: -1]", person.toString());
+    }
+    
+    @Test
+    public void example10_Builder_notRequired() {
+        val person = new Person.Builder()
+                .firstName ("John")
+                .middleName("F")
+                .lastName  ("Doe")
+                .build();
+        assertEquals("Person[firstName: John, middleName: F, lastName: Doe, age: -1]", person.toString());
+    }
+    
+    @Test
+    public void example11_Validation_boolean() {
+        val validCircle = new Circle1(10, 10, 10);
+        assertEquals("Circle1[x: 10, y: 10, radius: 10]", validCircle.toString());
+        try {
+            new Circle1(10, 10, -10);
+            fail("Except a ValidationException.");
+        } catch (ValidationException e) {
+            assertEquals(
+                    "functionalj.result.ValidationException: Circle1: Circle1[x: 10, y: 10, radius: -10]", 
+                    e.toString());
+        }
+    }
+    
+    @Test
+    public void example12_Validation_String() {
+        val validCircle = new Circle2(10, 10, 10);
+        assertEquals("Circle2[x: 10, y: 10, radius: 10]", validCircle.toString());
+        
+        try {
+            new Circle2(10, 10, -10);
+            fail("Except a ValidationException.");
+        } catch (ValidationException e) {
+            assertEquals(
+                    "functionalj.result.ValidationException: Radius cannot be less than zero: -10", 
+                    e.toString());
+        }
+    }
+    
+    @Test
+    public void example13_Validation_Exception() {
+        val validCircle = new Circle3(10, 10, 10);
+        assertEquals("Circle3[x: 10, y: 10, radius: 10]", validCircle.toString());
+        
+        try {
+            new Circle3(10, 10, -10);
+            fail("Except a ValidationException.");
+        } catch (ValidationException e) {
+            assertEquals(
+                    "example.functionalj.structtype.StructTypeExample$NegativeRadiusException: Radius: -10",
+                    e.toString());
+        }
     }
 }
