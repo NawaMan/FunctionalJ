@@ -555,6 +555,14 @@ public abstract class Result<DATA>
     
     abstract Object __valueData();
     
+    public Result<DATA> or(Result<DATA> anotherResult) {
+        if (this.isPresent())
+            return this;
+        if (anotherResult.isPresent())
+            return anotherResult;
+        return this;
+    }
+    
     @SuppressWarnings("unchecked")
     protected <T> Result<T> newException(Exception exception) {
         return (Result<T>)Result.ofException(exception);

@@ -96,7 +96,7 @@ This is how it might be used.
 
 ## Lenses
 Lenses are access functions used to create new instance with new field value.
-Another word, a lens is two functions: read and change.
+Another word, a lens is two functions: read and change (immutable modification -- creating a new instance with the modification).
 These duality make hard to make them composible in Java.
 For now, let say we have lens ready to use.
 

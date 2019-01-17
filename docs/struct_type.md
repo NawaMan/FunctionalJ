@@ -58,7 +58,7 @@ The fields can be access using its getter which is just the method with the same
 
 ## Changing a Field Value
 Since the object is immutable, there is no way to actually change the value of the field in the object.
-So to change the field value, we create another object with the new field value.
+So to change the field value, we create another object with the new field value (immutable modification -- creating a new instance with the modification).
 The method `withXXX(...)` can be used to do just that.
 
 ```java
