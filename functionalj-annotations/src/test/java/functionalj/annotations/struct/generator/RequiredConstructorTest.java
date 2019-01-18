@@ -55,6 +55,8 @@ public class RequiredConstructorTest {
             "import java.util.function.Function;\n" + 
             "import java.util.function.Supplier;\n" + 
             "\n" + 
+            "// example.functionalj.accesslens.StructTypeExample.null\n" + 
+            "\n" + 
             "public class Person implements IStruct {\n" + 
             "    \n" + 
             "    public static final PersonLens<Person> thePerson = new PersonLens<>(LensSpec.of(Person.class));\n" + 

@@ -74,6 +74,8 @@ public class GeneratorTest {
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
                 "\n" + 
+                "// me.test.null.Definitions.CarDef\n" + 
+                "\n" + 
                 "public class Car implements Definitions.CarDef,IStruct {\n" + 
                 "    \n" + 
                 "    public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));\n" + 
@@ -280,12 +282,12 @@ public class GeneratorTest {
         val generatedWith = generate(()->{
             configures.coupleWithDefinition = true;
         });
-        assertTrue(generatedWith.contains("Definitions.CarDef"));
+        assertTrue(generatedWith.contains(" implements Definitions.CarDef"));
         
         val generatedWithout = generate(()->{
             configures.coupleWithDefinition = false;
         });
-        assertFalse(generatedWithout.contains("Definitions.CarDef"));
+        assertFalse(generatedWithout.contains(" implements Definitions.CarDef"));
     }
     
     @Test

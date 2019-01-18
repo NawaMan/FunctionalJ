@@ -66,6 +66,8 @@ public class GenerateParentListChildTest {
                 "import me.test.Child;\n" + 
                 "import me.test.Child.ChildLens;\n" + 
                 "\n" + 
+                "// me.test.null.Definitions.ParentDef\n" + 
+                "\n" + 
                 "public class Parent implements Definitions.ParentDef,IStruct {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 

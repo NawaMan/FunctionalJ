@@ -58,6 +58,8 @@ public class NonRequireFieldTest {
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
                 "\n" + 
+                "// me.test.null.Definitions.DataDef\n" + 
+                "\n" + 
                 "public class Data implements Definitions.DataDef,IStruct {\n" + 
                 "    \n" + 
                 "    public static final DataLens<Data> theData = new DataLens<>(LensSpec.of(Data.class));\n" + 

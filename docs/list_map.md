@@ -95,22 +95,8 @@ Here are some of the functionalities of `FuncList`.
   - `merge(...)` - merge with anther list.
 
 Here are some of the functionalities of `FuncMap`.
-  -
-  
-    @Override
-    public abstract boolean hasKey(KEY key);
-    
-    @Override
-    public abstract boolean hasValue(VALUE value);
-    
-    @Override
-    public abstract boolean hasKey(Predicate<? super KEY> keyCheck);
-    
-    @Override
-    public abstract boolean hasValue(Predicate<? super VALUE> valueCheck);
-    
-    @Override
-    public abstract Optional<VALUE> findBy(KEY key);
+  - `findBy(...)` get the Optional value by key.
+  - `select(...)` get the list of values by key predicate.
 
     @Override
     public abstract FuncList<VALUE> select(Predicate<? super KEY> keyPredicate);

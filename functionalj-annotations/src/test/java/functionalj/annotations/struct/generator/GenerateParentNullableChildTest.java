@@ -65,6 +65,8 @@ public class GenerateParentNullableChildTest {
                 "import me.test.Child.ChildLens;\n" + 
                 "import nawaman.nullablej.nullable.Nullable;\n" + 
                 "\n" + 
+                "// me.test.null.Definitions.ParentDef\n" + 
+                "\n" + 
                 "public class Parent implements Definitions.ParentDef,IStruct {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
