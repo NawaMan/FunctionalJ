@@ -96,93 +96,11 @@ Here are some of the functionalities of `FuncList`.
 
 Here are some of the functionalities of `FuncMap`.
   - `findBy(...)` get the Optional value by key.
-  - `select(...)` get the list of values by key predicate.
-
-    @Override
-    public abstract FuncList<VALUE> select(Predicate<? super KEY> keyPredicate);
-    
-    @Override
-    public abstract FuncList<ImmutableTuple2<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> with(KEY key, VALUE value);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> withAll(Map<? extends KEY, ? extends VALUE> entries);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> defaultTo(KEY key, VALUE value);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> defaultBy(KEY key, Supplier<VALUE> value);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> defaultBy(KEY key, Function<KEY, VALUE> value);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> defaultTo(Map<? extends KEY, ? extends VALUE> entries);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> exclude(KEY key);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> filter(Predicate<? super KEY> keyCheck);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> filterByEntry(Predicate<Entry<? super KEY, ? super VALUE>> entryCheck);
-
-    @Override
-    public abstract FuncList<KEY> keys();
-    
-    @Override
-    public abstract FuncList<VALUE> values();
-    
-    @Override
-    public abstract Set<Entry<KEY, VALUE>> entrySet();
-    
-    @Override
-    public abstract FuncList<ImmutableTuple2<KEY, VALUE>> entries();
-    
-    @Override
-    public abstract Map<KEY, VALUE> toMap();
-    
-    @Override
-    public abstract ImmutableMap<KEY, VALUE> toImmutableMap();
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> sorted();
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator);
-    
-    @Override
-    public abstract <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper);
-    
-    @Override
-    public abstract void forEach(BiConsumer<? super KEY, ? super VALUE> action);
-    
-    @Override
-    public abstract void forEach(Consumer<? super Map.Entry<? super KEY, ? super VALUE>> action);
-    
-    public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, Func2<VALUE, IN, OUT> merger) {
-        return zipWith(anotherMap, RequireBoth, merger);
-    }
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, ZipWithOption option, Func2<VALUE, IN, OUT> merger) {
-        val keys1 = this.keys();
-        val keys2 = FuncList.from(anotherMap.keySet());
-        val map   = keys1.appendAll(keys2.excludeIn(keys1))
-        .filter(key -> !(option == RequireBoth) || (this.containsKey(key) && anotherMap.containsKey(key)))
-        .toMap(it(), key -> {
-            val v1 = this.get(key);
-            val v2 = anotherMap.get(key);
-            return merger.apply(v1, v2);
-        });
-        return (FuncMap)map;
-    }
+  - `select(...)` and `selectEntry(...)` get the list of values or entries by key predicate.
+  - `with(...)` and `withAll(...)` immutably motify the value matching to the key.
+  - `defaultXXX(..)` make the map return some value if the key was not there.
+  - `filter(...)` and `exclude(...)` only select the entry desired.
+  - `zipWith(...)` combine the value of the same key.
 
 ## Lazy and Eager
 By default, `FuncList` and `FuncMap` are lazy.
