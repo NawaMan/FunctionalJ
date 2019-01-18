@@ -20,6 +20,7 @@ import functionalj.function.Func2;
 import functionalj.list.FuncList;
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.ImmutableTuple2;
+import functionalj.tuple.IntTuple2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -205,7 +206,25 @@ public abstract class FuncMap<KEY, VALUE>
                 new ImmutableTuple2<KEY, VALUE>(key10, value10));
     }
     
+    <K, V> FuncMapStream<K, V> derivedWith(Boolean isKeyComparable, FuncList<IntTuple2<ImmutableTuple2<K, V>>> entries) {
+        val lazyMap = new FuncMapStream<K, V>(isKeyComparable, entries);
+        return isLazy()
+                ? lazyMap
+                : new ImmutableMap<K, V>(lazyMap.entries(), true);
+    }
+    
     // TODO Map builder.
+    
+    public boolean isLazy() {
+        return true;
+    }
+    
+    public boolean isEager() {
+        return false;
+    }
+    
+    public abstract FuncMap<KEY, VALUE> lazy();
+    public abstract FuncMap<KEY, VALUE> eager();
     
     @Override
     public abstract int size();
@@ -281,6 +300,10 @@ public abstract class FuncMap<KEY, VALUE>
     
     @Override
     public abstract ImmutableMap<KEY, VALUE> toImmutableMap();
+    
+    public ImmutableMap<KEY, VALUE> freeze() {
+        return toImmutableMap();
+    }
     
     @Override
     public abstract FuncMap<KEY, VALUE> sorted();

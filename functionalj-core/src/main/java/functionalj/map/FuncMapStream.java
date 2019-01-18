@@ -48,6 +48,23 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
                 .orElse(0);
     }
     
+    public boolean isLazy() {
+        return true;
+    }
+    
+    public boolean isEager() {
+        return false;
+    }
+    
+    public FuncMap<KEY, VALUE> lazy() {
+        return this;
+    }
+    public FuncMap<KEY, VALUE> eager() {
+        @SuppressWarnings("unchecked")
+        val entries = (Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>>)this.entries;
+        return new ImmutableMap<KEY, VALUE>(entries, false);
+    }
+    
     @Override
     public int size() {
         return entries.size();
@@ -55,6 +72,36 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
     @Override
     public boolean isEmpty() {
         return entries.isEmpty();
+    }
+    
+    @Override
+    public int hashCode() {
+        return FuncMap.class.hashCode() + entries.hashCode();
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Map))
+            return false;
+        
+        val thisMap = toImmutableMap();
+        
+        val keyExist = ((Predicate<Object>)((Map)o)::containsKey).negate();
+        val hasMissingKey = thisMap.keys().anyMatch(keyExist);
+        if (hasMissingKey)
+            return false;
+        
+        val thatMap = ImmutableMap.from((Map)o);
+        if (thatMap.size() != thisMap.size())
+            return false;
+        
+        val matchEntry = (Predicate<? super ImmutableTuple2<KEY, VALUE>>)(t -> Objects.equals(thatMap.get(t._1), t._2));
+        val allMatchValue 
+                = thisMap
+                .entries()
+                .allMatch(matchEntry);
+        return allMatchValue;
     }
     
     @Override
@@ -152,7 +199,7 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
                             .filter(entry -> !Objects.equals(key, entry._2._1))
                             .append(mapEntry);
         val newIsKeyComparable = isKeyComparable && ((key == null) || (key instanceof Comparable));
-        return new FuncMapStream<>(newIsKeyComparable, newEntries);
+        return derivedWith(newIsKeyComparable, newEntries);
     }
     
     @Override
@@ -197,7 +244,7 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
                     return (Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>>)Stream.of(main, ref).
                             flatMap(each -> each.get().get());
                 });
-        return new FuncMapStream<KEY, VALUE>(newIsKeyComparable, FuncListStream.from(streamable));
+        return derivedWith(newIsKeyComparable, FuncListStream.from(streamable));
     }
     
     @Override
@@ -207,28 +254,28 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
     
     @Override
     public FuncMap<KEY, VALUE> exclude(KEY key) {
-        return new FuncMapStream<>(isKeyComparable,
+        return derivedWith(isKeyComparable,
                 entries
                     .filter(entry -> !Objects.equals(key, entry._2._1)));
     }
     
     @Override
     public FuncMap<KEY, VALUE> filter(Predicate<? super KEY> keyCheck) {
-        return new FuncMapStream<>(isKeyComparable, 
+        return derivedWith(isKeyComparable, 
                 entries
                     .filter(entry -> keyCheck.test(entry._2._1)));
     }
     
     @Override
     public FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck) {
-        return new FuncMapStream<>(isKeyComparable, 
+        return derivedWith(isKeyComparable, 
                 entries
                     .filter(entry -> entryCheck.test(entry._2._1, entry._2._2)));
     }
     
     @Override
     public FuncMap<KEY, VALUE> filterByEntry(Predicate<Entry<? super KEY, ? super VALUE>> entryCheck) {
-        return new FuncMapStream<>(isKeyComparable, 
+        return derivedWith(isKeyComparable, 
                 entries
                     .filter(entry -> entryCheck.test(entry._2)));
     }
@@ -278,7 +325,7 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public FuncMap<KEY, VALUE> sorted() {
         if (isKeyComparable) {
-            return new FuncMapStream<>(isKeyComparable, 
+            return derivedWith(isKeyComparable, 
                     entries.sorted((t1,t2)-> {
                         val k1 = t1._2._1;
                         val k2 = t2._2._1;
@@ -299,14 +346,14 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
     
     @Override
     public FuncMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator) {
-        return new FuncMapStream<>(isKeyComparable, 
+        return derivedWith(isKeyComparable, 
                 entries
                 .sorted((t1,t2)->comparator.compare(t1._2._1, t2._2._1)));
     }
     
     @Override
     public <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
-        return new FuncMapStream<>(isKeyComparable, 
+        return derivedWith(isKeyComparable, 
                 entries
                 .map(intTuple -> 
                     new IntTuple2<>(intTuple._1, 

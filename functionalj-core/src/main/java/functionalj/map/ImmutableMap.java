@@ -25,9 +25,16 @@ public final class ImmutableMap<KEY, VALUE> extends FuncMapStream<KEY, VALUE> {
                 ? (ImmutableMap<KEY, VALUE>)map
                 : new ImmutableMap<KEY, VALUE>(map.entries().stream());
     }
+    
+    private final boolean isLazy;
+
     public ImmutableMap(Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>> stream) {
+        this(stream, true);
+    }
+    public ImmutableMap(Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>> stream, boolean isLazy) {
         // TODO - this shitty code have to be replaced .... :-(
         super(null, createPairList(stream));
+        this.isLazy = isLazy;
     }
     private static <KEY, VALUE> ImmutableList<IntTuple2<ImmutableTuple2<KEY, VALUE>>> createPairList(
             Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>> stream) {
@@ -50,6 +57,29 @@ public final class ImmutableMap<KEY, VALUE> extends FuncMapStream<KEY, VALUE> {
         return Nullable.of(key)
                 .map(Object::hashCode)
                 .orElse(0);
+    }
+    
+    public boolean isLazy() {
+        return isLazy;
+    }
+    
+    public boolean isEager() {
+        return !isLazy;
+    }
+    
+    public FuncMap<KEY, VALUE> lazy() {
+        if (isLazy)
+            return this;
+        
+        val entries = entries();
+        return new ImmutableMap<KEY, VALUE>(entries, true);
+    }
+    public FuncMap<KEY, VALUE> eager() {
+        if (!isLazy)
+            return this;
+        
+        val entries = entries();
+        return new ImmutableMap<KEY, VALUE>(entries, false);
     }
     
 }

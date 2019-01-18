@@ -134,6 +134,9 @@ public interface FuncList<DATA>
     public default FuncList<DATA> toList() {
         return this;
     }
+    public default ImmutableList<DATA> freeze() {
+        return toImmutableList();
+    }
     
     //-- List specific --
     

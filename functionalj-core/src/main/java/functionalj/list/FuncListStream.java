@@ -1,5 +1,7 @@
 package functionalj.list;
 
+import static functionalj.stream.ZipWithOption.AllowUnpaired;
+
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
@@ -103,9 +105,20 @@ public class FuncListStream<SOURCE, DATA>
         return new ImmutableList<DATA>(this);
     }
     
-    // TODO - equals, hashCode
+    @Override
     public int hashCode() {
         return Helper.hashCode(this);
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public boolean equals(Object o) {
+        if ((o instanceof Collection))
+            return false;
+        
+        return zipWith(((Collection)o).stream(), AllowUnpaired, Objects::equals)
+                .findFirst(Boolean.TRUE::equals)
+                .isPresent();
     }
     
     @Override

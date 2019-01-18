@@ -4,14 +4,16 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.junit.Test;
 
+import functionalj.function.Func;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import lombok.val;
 
-public class ListExamples {
+public class ListMapExamples {
     
     @Test
     public void exampleListMap() {
@@ -68,6 +70,18 @@ public class ListExamples {
         val map  = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
         assertEquals("[1, 2, 6]",          list.map(String::length).toString());
         assertEquals("{One:1, PI:3, E:3}", map .map(Math::round)   .toString());
+    }
+    
+    @Test
+    public void exampleImmutable() {
+        val cats         = FuncList.of("Kitty", "Tigger", "Striped", "Oreo", "Simba", "Scar", "Felix", "Pete", "Schrödinger's");
+        val rand         = new Random();
+        val deadNotAlive = Func.f((String s) -> rand.nextBoolean()).toPredicate();
+        val deadCats     = cats.filter(deadNotAlive);
+        assertNotEquals(deadCats, deadCats);
+        
+        val surelyDeadCats = deadCats.toImmutableList();
+        assertEquals(surelyDeadCats, surelyDeadCats);
     }
     
 }

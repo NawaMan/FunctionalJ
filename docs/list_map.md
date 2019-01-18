@@ -95,8 +95,180 @@ Here are some of the functionalities of `FuncList`.
   - `merge(...)` - merge with anther list.
 
 Here are some of the functionalities of `FuncMap`.
+  -
+  
+    @Override
+    public abstract boolean hasKey(KEY key);
+    
+    @Override
+    public abstract boolean hasValue(VALUE value);
+    
+    @Override
+    public abstract boolean hasKey(Predicate<? super KEY> keyCheck);
+    
+    @Override
+    public abstract boolean hasValue(Predicate<? super VALUE> valueCheck);
+    
+    @Override
+    public abstract Optional<VALUE> findBy(KEY key);
+
+    @Override
+    public abstract FuncList<VALUE> select(Predicate<? super KEY> keyPredicate);
+    
+    @Override
+    public abstract FuncList<ImmutableTuple2<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> with(KEY key, VALUE value);
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> withAll(Map<? extends KEY, ? extends VALUE> entries);
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> defaultTo(KEY key, VALUE value);
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> defaultBy(KEY key, Supplier<VALUE> value);
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> defaultBy(KEY key, Function<KEY, VALUE> value);
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> defaultTo(Map<? extends KEY, ? extends VALUE> entries);
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> exclude(KEY key);
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> filter(Predicate<? super KEY> keyCheck);
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck);
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> filterByEntry(Predicate<Entry<? super KEY, ? super VALUE>> entryCheck);
+
+    @Override
+    public abstract FuncList<KEY> keys();
+    
+    @Override
+    public abstract FuncList<VALUE> values();
+    
+    @Override
+    public abstract Set<Entry<KEY, VALUE>> entrySet();
+    
+    @Override
+    public abstract FuncList<ImmutableTuple2<KEY, VALUE>> entries();
+    
+    @Override
+    public abstract Map<KEY, VALUE> toMap();
+    
+    @Override
+    public abstract ImmutableMap<KEY, VALUE> toImmutableMap();
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> sorted();
+    
+    @Override
+    public abstract FuncMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator);
+    
+    @Override
+    public abstract <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper);
+    
+    @Override
+    public abstract void forEach(BiConsumer<? super KEY, ? super VALUE> action);
+    
+    @Override
+    public abstract void forEach(Consumer<? super Map.Entry<? super KEY, ? super VALUE>> action);
+    
+    public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, Func2<VALUE, IN, OUT> merger) {
+        return zipWith(anotherMap, RequireBoth, merger);
+    }
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, ZipWithOption option, Func2<VALUE, IN, OUT> merger) {
+        val keys1 = this.keys();
+        val keys2 = FuncList.from(anotherMap.keySet());
+        val map   = keys1.appendAll(keys2.excludeIn(keys1))
+        .filter(key -> !(option == RequireBoth) || (this.containsKey(key) && anotherMap.containsKey(key)))
+        .toMap(it(), key -> {
+            val v1 = this.get(key);
+            val v2 = anotherMap.get(key);
+            return merger.apply(v1, v2);
+        });
+        return (FuncMap)map;
+    }
+
+## Lazy and Eager
+By default, `FuncList` and `FuncMap` are lazy.
+That means, intermediate processing are not evaluated until terminal operation is invoked. 
+If you know Java 8 Stream, this is exact same thing.
+Lazy evaluation allow more efficient for both memory and clock cycle for more cases.
+However, if this is not desired, `FuncList` and `FuncMap` has two mode: lazy and eager.
+In eager mode, any operation result in the a immutable list or immutable map.
+
+** Lazy mode **
+
+```java
+    val counter = new AtomicInteger(0);
+    val value   = IntStreamPlus.range(0, 10).toFuncList()
+                .map(i -> counter.getAndIncrement())
+                .limit(4)
+                .joining(", ");
+    assertStrings("0, 1, 2, 3", value);
+    assertStrings("4",          counter.get());
+```
+
+** Eager mode **
+
+```java
+    val counter = new AtomicInteger(0);
+    val value   = IntStreamPlus.range(0, 10)
+                .toFuncList()
+                .eager()
+                .map(i -> counter.getAndIncrement())
+                .limit(4)
+                .joining(", ");
+    assertStrings("0, 1, 2, 3", value);
+    assertStrings("10",          counter.get());
+```
+
+Notice that in the eager mode, the counter ends with 10 as oppose to 4 in lazy mode.
+And that because, in the eager mode, the map operation is run for all elements.
+   while, in the lazy mode, the limit is applied and both operations are only run the termination operation `joining` is apply.
+
+## Lazyness and Immutability
+`List` and `Map` are read-only BUT its elements are not necessary "never changes".
+There are two reasons for this.
+First, the element itself might change if it is not immutable.
+Second, if the list or map is derived from other list or map,
+  the derivation might not be pure so it might not always lead to the same result.
+The following code highlights the behavior.
+
+```java
+    val cats         = FuncList.of("Kitty", "Tigger", "Striped", "Oreo", "Simba", "Scar", "Felix", "Pete", "Schrödinger's");
+    val rand         = new Random();
+    val deadNotAlive = Func.f((String s) -> rand.nextBoolean()).toPredicate();
+    val deadCats     = cats.filter(deadNotAlive);
+    assertNotEquals(deadCats, deadCats);
+```
+
+Notice that `deadCats` DOES NOT EQUALS TO `deadCats`!
+And that because the filter (if a cat is dead or alive) is random.
+`equals(...)` method is a termination method and cause the filtering to process.
+As the filtering is random, you get random result; hence not equals to itself.
+
+The method `toImmutableList()` or its alias `freeze()` can be used to create the final immutable list.
+You can also change to eager mode using `eager()`.
+
+```java
+    val surelyDeadCats = deadCats.toImmutableList();
+    assertEquals(surelyDeadCats, surelyDeadCats);
+```
+
+## Disclaimer on Parallelism
+Many of the added functionalities to `FuncList` are not necessary parallel-safe.
+The excuse is that I personally rarely use it in that environment.
+So please test it first before relying on it.
 
 
-I will write this -- promise.
-
-Nawa - 2019-01-08
+**Note:** All the code can be find in the file `example.functionalj.list_map.LisMapExamples.java`.
