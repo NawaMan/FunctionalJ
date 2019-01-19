@@ -98,6 +98,10 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(IntStream.iterate(0, i -> i + 1).mapToObj(i -> data[i % data.length]));
     }
     
+    public static StreamPlus<Object> loop(int time) {
+        return StreamPlus.cycle(null).limit(time);
+    }
+    
     public static StreamPlus<Integer> infiniteInt() {
         return IntStreamPlus.from(IntStream.iterate(0, i -> i + 1)).mapToObj(i -> i);
     }

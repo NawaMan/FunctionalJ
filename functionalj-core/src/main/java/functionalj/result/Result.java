@@ -945,6 +945,10 @@ public abstract class Result<DATA>
         return whenAbsentGet(elseSupplier);
     }
     
+    public final DATA orNull() {
+        return orElse(null);
+    }
+    
     public final DATA orElse(DATA elseValue) {
         return mapData(
                 __ -> elseValue,

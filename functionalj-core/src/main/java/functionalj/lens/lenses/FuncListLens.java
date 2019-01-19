@@ -20,7 +20,7 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
             ObjectLens<HOST, FuncList<TYPE>>,
             FuncListAccess<HOST, TYPE, TYPELENS> {
     
-
+    
     public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             FuncListLens<HOST, TYPE, TYPELENS> of(
                 Function<HOST,  FuncList<TYPE>>    read,

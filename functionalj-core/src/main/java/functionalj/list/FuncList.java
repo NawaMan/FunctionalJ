@@ -594,7 +594,7 @@ public interface FuncList<DATA>
     
     public default <TARGET> FuncList<TARGET> mapWithPrev(BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> mapper) {
         return deriveWith(stream -> {
-            val prev = new AtomicReference<Result<DATA>>(Result.ofNotReady());
+            val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
             return map(element -> {
                 val newValue = mapper.apply(prev.get(), element);
                 prev.set(Result.of(element));

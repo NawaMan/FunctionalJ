@@ -42,6 +42,8 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     public static interface MathOperators<NUMBER> {
         
         public NUMBER zero();
+        public NUMBER one();
+        public NUMBER minusOne();
         
         public Integer    toInt(NUMBER number);
         public Long       toLong(NUMBER number);
@@ -65,7 +67,6 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         
     }
     
-    
     public default IntegerAccess<HOST> toInt() {
         return intAccess(0, __mathOperators()::toInt);
     }
@@ -82,7 +83,13 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return bigDecimalAccess(BigDecimal.ZERO, __mathOperators()::toBigDecimal);
     }
     
-    
+    public default NUMACCESS __operate(
+            AccessCreator<HOST, TYPE, NUMACCESS> accessCreator,  
+            Supplier<TYPE>                       operator) {
+        return accessCreator.newAccess(host -> {
+            return operator.get();
+        });
+    }
     public default NUMACCESS __operate(
             TYPE                                 value, 
             NUMACCESS                            orgAccess,
@@ -140,7 +147,16 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
             return operator.apply(v, value);
         });
     }
-    
+
+    public default NUMACCESS toZero() {
+        return __operate(this::newAccess, __mathOperators()::zero);
+    }
+    public default NUMACCESS toOne() {
+        return __operate(this::newAccess, __mathOperators()::one);
+    }
+    public default NUMACCESS toMinusOne() {
+        return __operate(this::newAccess, __mathOperators()::minusOne);
+    }
     @SuppressWarnings("unchecked")
     public default NUMACCESS add(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::add);

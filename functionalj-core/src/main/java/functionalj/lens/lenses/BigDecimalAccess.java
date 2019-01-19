@@ -8,6 +8,11 @@ import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
 
+class BigDecimalAccessConstants {
+    public static final BigDecimal MINUS_ONE = BigDecimal.ZERO.subtract(BigDecimal.ONE);
+}
+
+
 @SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BigDecimalAccess<HOST> 
@@ -26,10 +31,18 @@ public interface BigDecimalAccess<HOST>
     }
     
     public static MathOperators<BigDecimal> __BigDecimalMathOperators = new MathOperators<BigDecimal>() {
-
+        
         @Override
         public BigDecimal zero() {
             return BigDecimal.ZERO;
+        }
+        @Override
+        public BigDecimal one() {
+            return BigDecimal.ONE;
+        }
+        @Override
+        public BigDecimal minusOne() {
+            return BigDecimalAccessConstants.MINUS_ONE;
         }
         @Override
         public Integer toInt(BigDecimal number) {

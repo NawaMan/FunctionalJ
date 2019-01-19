@@ -1,9 +1,13 @@
 package functionalj.store;
 
+import static functionalj.store.ChangeResult.Accepted;
+import static functionalj.store.ChangeResult.Adjusted;
+import static functionalj.store.ChangeResult.Failed;
+import static functionalj.store.ChangeResult.NotAllowed;
+import static functionalj.store.ChangeResult.Rejected;
+
 import java.util.concurrent.atomic.AtomicReference;
 
-import functionalj.annotations.Choice;
-import functionalj.annotations.choice.Self1;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.result.Result;
@@ -12,44 +16,24 @@ import nawaman.nullablej.nullable.Nullable;
 
 public class Store<DATA> {
     
-    @Choice
-    static interface ChangeResultSpec<D> {
-        void NotAllowed(ChangeNotAllowedException reason);
-        void Accepted(D oldData, D newData);
-        void Adjusted(D oldData, D proposedData, D adjustedData);
-        void Rejected(D propose, D rollback, ChangeRejectedException reason);
-        void Failed  (ChangeFailException prolems);
-        
-        default boolean hasChanged(Self1<D> self) {
-            ChangeResult<D> result = self.asMe();
-            return result.match()
-                    .notAllowed(false)
-                    .accepted  (true)
-                    .adjusted  (true)
-                    .orElse    (false);
-        }
-        @SuppressWarnings("unchecked")
-        default Result<D> getNewData(Self1<D> self) {
-            ChangeResult<D> result = self.asMe();
-            return result.match()
-                    .notAllowed(n -> (Result<D>)Result.ofNotExist())
-                    .accepted  (a -> Result.of(a.newData()))
-                    .adjusted  (a -> Result.of(a.adjustedData()))
-                    .orElse    (     (Result<D>)Result.ofNotExist());
-        }
-    }
-    
     private final AtomicReference<DATA>                                     dataRef = new AtomicReference<DATA>();
     private final Func2<DATA, Func1<DATA, DATA>, ChangeNotAllowedException> approver;
     private final Func2<DATA, Result<DATA>, ChangeResult<DATA>>             accepter;
+    
+    // Add onChange?, use?, lock?
     
     public Store(DATA data) {
         this(data, null, null);
     }
     public Store(
-            DATA data, 
-            Func2<DATA, Func1<DATA, DATA>, ChangeNotAllowedException> approver,
-            Func2<DATA, Result<DATA>, ChangeResult<DATA>>             accepter) {
+            DATA data,
+            Func2<DATA, Result<DATA>, ChangeResult<DATA>> accepter) {
+        this(data, accepter, null);
+    }
+    public Store(
+            DATA data,
+            Func2<DATA, Result<DATA>, ChangeResult<DATA>>             accepter, 
+            Func2<DATA, Func1<DATA, DATA>, ChangeNotAllowedException> approver) {
         this.dataRef.set(data);
         this.approver = Nullable.of(approver).orElse(this::defaultApprover);
         this.accepter = Nullable.of(accepter).orElse(this::defaultAcceptor);
@@ -59,40 +43,65 @@ public class Store<DATA> {
         return null;
     }
     
-    private ChangeResult<DATA> defaultAcceptor(DATA oldData, Result<DATA> newResult) {
+    private ChangeResult<DATA> defaultAcceptor(DATA originalData, Result<DATA> newResult) {
         if (newResult.isValue()) {
-            val changeResult = ChangeResult.Accepted(oldData, newResult.value());
+            val changeResult = Accepted(this, originalData, newResult.value());
             return changeResult;
         }
         val exception  = newResult.getException();
-        val failResult = ChangeResult.<DATA>Failed(new ChangeFailException(exception));
+        val failResult = Failed(this, originalData, new ChangeFailException(exception));
         return failResult;
+    }
+    @SuppressWarnings("unchecked")
+    private ChangeResult<DATA> ensureStore(ChangeResult<DATA> changeResult) {
+        if (changeResult.store() == this)
+            return changeResult;
+        
+        return (ChangeResult<DATA>)
+                changeResult.match()
+                .toA(ChangeResult.class)
+                .notAllowed(n -> NotAllowed(this, n.originalData(), n.reason()))
+                .accepted  (a -> Accepted  (this, a.originalData(), a.newData()))
+                .adjusted  (a -> Adjusted  (this, a.originalData(), a.proposedData(), a.adjustedData()))
+                .rejected  (r -> Rejected  (this, r.originalData(), r.propose(), r.rollback(), r.reason()))
+                .failed    (f -> Failed    (this, f.originalData(), f.problem()));
     }
     
     public ChangeResult<DATA> change(Func1<DATA, DATA> changer) {
-        val oldData       = dataRef.get();
-        val approveResult = approver.applySafely(oldData, changer);
+        val originalData  = dataRef.get();
+        val approveResult = approver.applySafely(originalData, changer);
         if (approveResult.isPresent()) {
-            return ChangeResult.NotAllowed(approveResult.get());
+            return NotAllowed(this, originalData, approveResult.get());
         }
         val newResult = changer
-                .applySafely(oldData)
-                .pipe(accepter.applyTo(oldData));
-        val newData = newResult.getNewData();
-        if (newData.isValue()) {
-            val newValue = newData.value();
-            val isSuccess = dataRef.compareAndSet(oldData, newValue);
+                .applySafely(originalData)
+                .pipe(
+                    accepter.applyTo(originalData),
+                    this::ensureStore
+                );
+        val result = newResult.result();
+        if (result.isValue()) {
+            val newValue = result.value();
+            val isSuccess = dataRef.compareAndSet(originalData, newValue);
             if (!isSuccess) {
                 val dataAlreadyChanged = new IllegalStateException(
                         "The data in the store has already changed: "
-                        + "oldData=" + oldData + ", "
-                        + "currentData=" + dataRef.get() + ", "
+                        + "originalData=" + originalData + ", "
+                        + "currentData="  + dataRef.get() + ", "
                         + "proposedData=" + newValue);
-                return ChangeResult.Failed(new ChangeFailException(dataAlreadyChanged));
+                return Failed(this, originalData, new ChangeFailException(dataAlreadyChanged));
             }
         }
         
         return newResult;
+    }
+    
+    public DATA value() {
+        return dataRef.get();
+    }
+    
+    public Result<DATA> extract() {
+        return Result.of(dataRef.get());
     }
     
     @Override

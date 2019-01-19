@@ -8,6 +8,10 @@ import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import nawaman.nullablej.nullable.Nullable;
 
+class BigIntegerAccessConstants {
+    public static final BigInteger MINUS_ONE = BigInteger.ZERO.subtract(BigInteger.ONE);
+}
+
 @SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BigIntegerAccess<HOST> 
@@ -30,6 +34,14 @@ public interface BigIntegerAccess<HOST>
         @Override
         public BigInteger zero() {
             return BigInteger.ZERO;
+        }
+        @Override
+        public BigInteger one() {
+            return BigInteger.ONE;
+        }
+        @Override
+        public BigInteger minusOne() {
+            return BigIntegerAccessConstants.MINUS_ONE;
         }
         @Override
         public Integer toInt(BigInteger number) {

@@ -48,6 +48,14 @@ public interface IntegerAccess<HOST>
             return 0;
         }
         @Override
+        public Integer one() {
+            return 1;
+        }
+        @Override
+        public Integer minusOne() {
+            return -1;
+        }
+        @Override
         public Integer toInt(Integer number) {
             return (number == null) ? 0 : number.intValue();
         }

@@ -32,10 +32,18 @@ public interface LongAccess<HOST>
     }
     
     public static MathOperators<Long> __LongMathOperators = new MathOperators<Long>() {
-
+        
         @Override
         public Long zero() {
             return 0L;
+        }
+        @Override
+        public Long one() {
+            return 1L;
+        }
+        @Override
+        public Long minusOne() {
+            return -1L;
         }
         @Override
         public Integer toInt(Long number) {

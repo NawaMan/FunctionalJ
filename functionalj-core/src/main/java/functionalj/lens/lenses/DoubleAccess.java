@@ -33,10 +33,18 @@ public interface DoubleAccess<HOST>
     
     
     public static MathOperators<Double> __DoubleMathOperators = new MathOperators<Double>() {
-
+        
         @Override
         public Double zero() {
             return 0.0;
+        }
+        @Override
+        public Double one() {
+            return 1.0;
+        }
+        @Override
+        public Double minusOne() {
+            return -1.0;
         }
         @Override
         public Integer toInt(Double number) {
