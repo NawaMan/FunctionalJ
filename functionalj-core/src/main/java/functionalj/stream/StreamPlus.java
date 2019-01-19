@@ -99,7 +99,7 @@ public interface StreamPlus<DATA>
     }
     
     public static StreamPlus<Object> loop(int time) {
-        return StreamPlus.cycle(null).limit(time);
+        return StreamPlus.cycle((Object)null).limit(time);
     }
     
     public static StreamPlus<Integer> infiniteInt() {
@@ -461,12 +461,12 @@ public interface StreamPlus<DATA>
     
     //== Plus ==
     
-    public default String joining() {
+    public default String joinToString() {
         return stream()
                 .map(StrFuncs::toStr)
                 .collect(Collectors.joining());
     }
-    public default String joining(String delimiter) {
+    public default String joinToString(String delimiter) {
         return stream()
                 .map(StrFuncs::toStr)
                 .collect(Collectors.joining(delimiter));
@@ -1453,7 +1453,7 @@ public interface StreamPlus<DATA>
         }
         
         public static <T> String toString(Stream<T> stream) {
-            return "[" + StreamPlus.from(stream).joining(", ") + "]";
+            return "[" + StreamPlus.from(stream).joinToString(", ") + "]";
         }
         
     }

@@ -32,8 +32,8 @@ public class StreamableTest {
     @Test
     public void testMapWithPrev() {
         val stream = Streamable.of("One", "Two", "Three").mapWithPrev((prev, element) -> prev.orElse("").length() + element.length());
-        assertEquals("3, 6, 8", stream.joining(", "));
-        assertEquals("3, 6, 8", stream.joining(", "));
+        assertEquals("3, 6, 8", stream.joinToString(", "));
+        assertEquals("3, 6, 8", stream.joinToString(", "));
     }
     
 }

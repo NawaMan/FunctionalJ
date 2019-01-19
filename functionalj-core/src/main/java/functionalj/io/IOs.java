@@ -410,7 +410,7 @@ public class IOs {
         }
         @Override
         public String toString() {
-            return "Race(" + list.joining(",") + ")";
+            return "Race(" + list.joinToString(",") + ")";
         }
         
     }

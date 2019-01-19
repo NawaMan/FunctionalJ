@@ -99,7 +99,7 @@ public class StreamPlusTest {
     @Test
     public void testMapWithPrev() {
         val stream = StreamPlus.of("One", "Two", "Three").mapWithPrev((prev, element) -> prev.orElse("").length() + element.length());
-        assertStrings("3, 6, 8", stream.joining(", "));
+        assertStrings("3, 6, 8", stream.joinToString(", "));
     }
     
     @Test
@@ -318,13 +318,13 @@ public class StreamPlusTest {
     @Test
     public void testJoining() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("OneTwoThree", stream.joining());
+        assertStrings("OneTwoThree", stream.joinToString());
     }
     
     @Test
     public void testJoiningDelimiter() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("One, Two, Three", stream.joining(", "));
+        assertStrings("One, Two, Three", stream.joinToString(", "));
     }
     
     @Test
@@ -465,7 +465,7 @@ public class StreamPlusTest {
     @Test
     public void testCycle() {
         val stream = StreamPlus.cycle("One", "Two", "Three");
-        assertStrings("Two, Three, One, Two, Three", stream.skip(1).limit(5).joining(", "));
+        assertStrings("Two, Three, One, Two, Three", stream.skip(1).limit(5).joinToString(", "));
     }
     
     //-- Generate -- 
@@ -479,10 +479,10 @@ public class StreamPlusTest {
                 return count;
             throw new NoMoreResultException();
         });
-        assertStrings("0, 1, 2, 3, 4", stream.joining(", "));
+        assertStrings("0, 1, 2, 3, 4", stream.joinToString(", "));
         
         val stream2 = StreamPlus.generateBy(Func0.from(i -> i < 5 ? i : noMoreElement()));
-        assertStrings("0, 1, 2, 3, 4", stream2.joining(", "));
+        assertStrings("0, 1, 2, 3, 4", stream2.joinToString(", "));
     }
     
     //-- Segmentation --
@@ -499,8 +499,8 @@ public class StreamPlusTest {
                 .segment(startCondition, endCondition)
                 .skip(5)
                 .limit(3)
-                .map(s -> s.joining(", "))
-                .joining("\n"));
+                .map(s -> s.joinToString(", "))
+                .joinToString("\n"));
         
         assertEquals("53, 54, 55, 56\n" + 
                      "63, 64, 65, 66\n" + 
@@ -509,8 +509,8 @@ public class StreamPlusTest {
                 .segment(startCondition, endCondition, true)
                 .skip(5)
                 .limit(3)
-                .map(s -> s.joining(", "))
-                .joining("\n"));
+                .map(s -> s.joinToString(", "))
+                .joinToString("\n"));
         
         assertEquals("53, 54, 55\n" + 
                      "63, 64, 65\n" + 
@@ -519,8 +519,8 @@ public class StreamPlusTest {
                 .segment(startCondition, endCondition, false)
                 .skip(5)
                 .limit(3)
-                .map(s -> s.joining(", "))
-                .joining("\n"));
+                .map(s -> s.joinToString(", "))
+                .joinToString("\n"));
         
         assertEquals("53, 54, 55, 56, 57, 58, 59, 60, 61, 62\n" + 
                      "63, 64, 65, 66, 67, 68, 69, 70, 71, 72\n" + 
@@ -530,13 +530,13 @@ public class StreamPlusTest {
                 .skip(50)
                 .limit(36)
                 .segment(startCondition)
-                .map(s -> s.joining(", "))
-                .joining("\n"));
+                .map(s -> s.joinToString(", "))
+                .joinToString("\n"));
     }
     @Test
     public void testSegment2() {
-        assertEquals("[A, B], [C]",  StreamPlus.of("A", "B", "C").segment(2       ).map(s -> s.toJavaList().toString()).joining(", "));
-        assertEquals("[A, B]",       StreamPlus.of("A", "B", "C").segment(2, false).map(s -> s.toJavaList().toString()).joining(", "));
+        assertEquals("[A, B], [C]",  StreamPlus.of("A", "B", "C").segment(2       ).map(s -> s.toJavaList().toString()).joinToString(", "));
+        assertEquals("[A, B]",       StreamPlus.of("A", "B", "C").segment(2, false).map(s -> s.toJavaList().toString()).joinToString(", "));
     }
     
     @Test
@@ -544,17 +544,17 @@ public class StreamPlusTest {
         {
             val streamA = StreamPlus.of("A", "B", "C");
             val streamB = IntStreamPlus.infinite().asStream();
-            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB).limit(5).joining(", "));
+            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB).limit(5).joinToString(", "));
         }
         {
             val streamA = StreamPlus.of("A", "B", "C");
             val streamB = IntStreamPlus.infinite().asStream();
-            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB, RequireBoth).limit(5).joining(", "));
+            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB, RequireBoth).limit(5).joinToString(", "));
         }
         {
             val streamA = StreamPlus.of("A", "B", "C");
             val streamB = IntStreamPlus.infinite().asStream();
-            assertEquals("(A,0), (B,1), (C,2), (null,3), (null,4)", streamA.zipWith(streamB, AllowUnpaired).limit(5).joining(", "));
+            assertEquals("(A,0), (B,1), (C,2), (null,3), (null,4)", streamA.zipWith(streamB, AllowUnpaired).limit(5).joinToString(", "));
         }
     }
     
@@ -566,14 +566,14 @@ public class StreamPlusTest {
         assertEquals("A, 1, C, 3, 4", streamA.choose(streamB, (a, b) -> {
             boolean curValue = bool.get();
             return bool.getAndSet(!curValue);
-        }).limit(5).joining(", "));
+        }).limit(5).joinToString(", "));
     }
     
     @Test
     public void testMerge() {
         val streamA = StreamPlus.of("A", "B", "C");
         val streamB = IntStreamPlus.infinite().asStream().map(theInteger.asString());
-        assertEquals("A, 0, B, 1, C, 2, 3, 4, 5, 6", streamA.merge(streamB).limit(10).joining(", "));
+        assertEquals("A, 0, B, 1, C, 2, 3, 4, 5, 6", streamA.merge(streamB).limit(10).joinToString(", "));
     }
     
 }

@@ -24,7 +24,7 @@ public class FuncListTest {
     @Test
     public void testLazy() {
         val counter = new AtomicInteger(0);
-        val value   = IntStreamPlus.range(0, 10).toFuncList().map(i -> counter.getAndIncrement()).limit(4).joining(", ");
+        val value   = IntStreamPlus.range(0, 10).toFuncList().map(i -> counter.getAndIncrement()).limit(4).joinToString(", ");
         assertStrings("0, 1, 2, 3", value);
         assertStrings("4",          counter.get());
     }
@@ -37,7 +37,7 @@ public class FuncListTest {
                 .eager()
                 .map(i -> counter.getAndIncrement())
                 .limit(4)
-                .joining(", ");
+                .joinToString(", ");
         assertStrings("0, 1, 2, 3", value);
         assertStrings("10",          counter.get());
     }
@@ -50,7 +50,7 @@ public class FuncListTest {
                 .eager()
                 .limit(4)
                 .map(i -> counter.getAndIncrement())
-                .joining(", ");
+                .joinToString(", ");
         assertStrings("0, 1, 2, 3", value);
         assertStrings("4",          counter.get());
     }

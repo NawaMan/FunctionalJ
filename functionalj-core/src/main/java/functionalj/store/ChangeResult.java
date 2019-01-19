@@ -68,7 +68,7 @@ public abstract class ChangeResult<D extends Object> extends AbstractChoiceClass
         private D originalData;
         private ChangeNotAllowedException reason;
         private NotAllowed(Store<D> store, D originalData, ChangeNotAllowedException reason) {
-            this.store = $utils.notNull(store);
+            this.store = store;
             this.originalData = $utils.notNull(originalData);
             this.reason = $utils.notNull(reason);
         }
@@ -96,7 +96,7 @@ public abstract class ChangeResult<D extends Object> extends AbstractChoiceClass
         private D originalData;
         private D newData;
         private Accepted(Store<D> store, D originalData, D newData) {
-            this.store = $utils.notNull(store);
+            this.store = store;
             this.originalData = $utils.notNull(originalData);
             this.newData = $utils.notNull(newData);
         }
@@ -125,7 +125,7 @@ public abstract class ChangeResult<D extends Object> extends AbstractChoiceClass
         private D proposedData;
         private D adjustedData;
         private Adjusted(Store<D> store, D originalData, D proposedData, D adjustedData) {
-            this.store = $utils.notNull(store);
+            this.store = store;
             this.originalData = $utils.notNull(originalData);
             this.proposedData = $utils.notNull(proposedData);
             this.adjustedData = $utils.notNull(adjustedData);
@@ -159,7 +159,7 @@ public abstract class ChangeResult<D extends Object> extends AbstractChoiceClass
         private D rollback;
         private ChangeRejectedException reason;
         private Rejected(Store<D> store, D originalData, D propose, D rollback, ChangeRejectedException reason) {
-            this.store = $utils.notNull(store);
+            this.store = store;
             this.originalData = $utils.notNull(originalData);
             this.propose = $utils.notNull(propose);
             this.rollback = $utils.notNull(rollback);
@@ -195,7 +195,7 @@ public abstract class ChangeResult<D extends Object> extends AbstractChoiceClass
         private D originalData;
         private ChangeFailException problem;
         private Failed(Store<D> store, D originalData, ChangeFailException problem) {
-            this.store = $utils.notNull(store);
+            this.store = store;
             this.originalData = $utils.notNull(originalData);
             this.problem = $utils.notNull(problem);
         }

@@ -32,7 +32,7 @@ public class StoreTest {
         assertEquals("Store [data=2]", store.toString());
     }
     @Test
-    public void testReject() {
+    public void testReject1() {
         val positiveNumberAcceptor = (Func2<Integer, Result<Integer>, ChangeResult<Integer>>)((org, res)->{
             return res.map(newValue -> rejectNegative(org, newValue)).get();
         });
@@ -43,6 +43,21 @@ public class StoreTest {
             .change(theInteger.add(1))
             .change(theInteger.add(-5))
             .change(theInteger.add(1));
+        assertEquals("Store [data=1]", store.toString());
+    }
+    @Test
+    public void testReject2() {
+        val positiveNumberAcceptor = (Func2<Integer, Result<Integer>, ChangeResult<Integer>>)((org, res)->{
+            return res.map(newValue -> rejectNegative(org, newValue)).get();
+        });
+        
+        val store = new Store<>(0, positiveNumberAcceptor);
+        assertEquals("Store [data=0]", store.toString());
+        store.change(theInteger.add(1));
+        assertEquals("Store [data=1]", store.toString());
+        store.change(theInteger.add(-5));
+        assertEquals("Store [data=1]", store.toString());
+        store.change(theInteger.add(1));
         assertEquals("Store [data=2]", store.toString());
     }
     

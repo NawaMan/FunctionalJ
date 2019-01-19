@@ -686,7 +686,7 @@ public class DeferActionTest {
             
             assertTrue("Taking too long", diffTime < 1000);
         });
-        assertEquals("java.lang.InterruptedException: sleep interrupted", stub.errLines().limit(1).joining(", "));
+        assertEquals("java.lang.InterruptedException: sleep interrupted", stub.errLines().limit(1).joinToString(", "));
     }
     
     @Test

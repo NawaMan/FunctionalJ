@@ -44,7 +44,7 @@ public class LogTest {
             val expected =
                     "Error!\n" + 
                     "java.lang.NullPointerException: NULL!!!";
-            assertEquals(expected, stub.errLines().limit(2).joining("\n"));
+            assertEquals(expected, stub.errLines().limit(2).joinToString("\n"));
         });
     }
     
