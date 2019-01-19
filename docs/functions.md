@@ -153,7 +153,7 @@ Since returning `null` and throwing exception can become problematic, there are 
 
 In case you didn't catch it, `whenAbsentXXX(...)` just specified and not apply but `orElse(...)` and `orGet(...)` apply the input right away.
 
-## Flexible Inputs
+## Flexible Inputs (Functor agnostic)
 Functions can handle multiple types of input.
 The method `applyTo(...)` has many overload for input.
 For example, `String::length` is a `Func1<String, Integer>`.

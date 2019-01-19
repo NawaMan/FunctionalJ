@@ -59,9 +59,9 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
     public FuncMap<KEY, VALUE> lazy() {
         return this;
     }
+    @SuppressWarnings({ "unchecked", "rawtypes"})
     public FuncMap<KEY, VALUE> eager() {
-        @SuppressWarnings("unchecked")
-        val entries = (Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>>)this.entries;
+        Stream entries = this.entries.stream();
         return new ImmutableMap<KEY, VALUE>(entries, false);
     }
     

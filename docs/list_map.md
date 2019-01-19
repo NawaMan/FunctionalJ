@@ -59,8 +59,9 @@ This is done using with `append` and `with`.
 Please read more further below on "Immutability".
 
 ## Functional
-`FuncList` and `FuncMap` are functional meaning that it directly support functional collection operation.
-Operation such as `map`, `filter`, `peek`, `forEach` are available.
+`FuncList` and `FuncMap` are functional.
+Meaning that it directly supports functional collection operations.
+Operations such as `map`, `filter`, `peek`, `forEach` are available.
 
 ```java
     val list = FuncList.of("I", "Me", "Myself");
@@ -106,11 +107,11 @@ Here are some of the functionalities of `FuncMap`.
 By default, `FuncList` and `FuncMap` are lazy.
 That means, intermediate processing are not evaluated until terminal operation is invoked. 
 If you know Java 8 Stream, this is exact same thing.
-Lazy evaluation allow more efficient for both memory and clock cycle for more cases.
+Lazy evaluation allows better efficiency for both memory and clock cycle.
 However, if this is not desired, `FuncList` and `FuncMap` has two mode: lazy and eager.
 In eager mode, any operation result in the a immutable list or immutable map.
 
-** Lazy mode **
+**Lazy mode**
 
 ```java
     val counter = new AtomicInteger(0);
@@ -122,7 +123,7 @@ In eager mode, any operation result in the a immutable list or immutable map.
     assertStrings("4",          counter.get());
 ```
 
-** Eager mode **
+**Eager mode**
 
 ```java
     val counter = new AtomicInteger(0);
