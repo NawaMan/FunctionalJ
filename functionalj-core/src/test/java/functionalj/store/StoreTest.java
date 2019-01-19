@@ -5,6 +5,8 @@ import static functionalj.store.ChangeResult.Accepted;
 import static functionalj.store.ChangeResult.Rejected;
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 import functionalj.function.Func2;
@@ -65,6 +67,16 @@ public class StoreTest {
         return newValue >= 0
                 ? Accepted(null, orgValue, newValue)
                 : Rejected(null, orgValue, newValue, orgValue, new ChangeRejectedException("Only positive value is allowed: " + newValue));
+    }
+    
+    @Test
+    public void testUse() {
+    	val log   = new ArrayList<String>();
+        val store = new Store<>(0);
+        assertEquals("Store [data=0]", store.toString());
+        store   .change(theInteger.add(1))
+        .store().use   (value -> log.add("" + value));
+        assertEquals("Store [data=1]", store.toString());
     }
     
 }

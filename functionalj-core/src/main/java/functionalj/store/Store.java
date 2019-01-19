@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import functionalj.function.Func1;
 import functionalj.function.Func2;
+import functionalj.function.FuncUnit1;
 import functionalj.result.Result;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
@@ -20,7 +21,7 @@ public class Store<DATA> {
     private final Func2<DATA, Func1<DATA, DATA>, ChangeNotAllowedException> approver;
     private final Func2<DATA, Result<DATA>, ChangeResult<DATA>>             accepter;
     
-    // Add onChange?, use?, lock?
+    // Add onChange?, lock?
     
     public Store(DATA data) {
         this(data, null, null);
@@ -94,6 +95,15 @@ public class Store<DATA> {
         }
         
         return newResult;
+    }
+    
+    public Store<DATA> use(FuncUnit1<DATA> consumer) {
+    	if (consumer == null)
+    		return this;
+    	
+    	val value = dataRef.get();
+		consumer.accept(value);
+    	return this;
     }
     
     public DATA value() {
