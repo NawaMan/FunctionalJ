@@ -6,6 +6,7 @@ import static functionalj.ref.Run.With;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -19,6 +20,8 @@ import functionalj.InterruptedRuntimeException;
 import functionalj.function.FuncUnit1;
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
+import functionalj.promise.DeferAction;
+import functionalj.promise.Promise;
 import functionalj.ref.ComputeBody;
 import functionalj.ref.RunBody;
 import functionalj.stream.BlockingQueueIteratorPlus;
@@ -66,6 +69,16 @@ public final class Console {
     public static String readln() {
         return Env.console().readln();
     }
+    public static String pollln() {
+        return Env.console().pollln();
+    }
+    public static Promise<String> inputLine() {
+        return Env.console().inputLine();
+    }
+    
+    public static void stopRead() {
+        Env.console().stopRead();
+    }
     
     
     public static abstract class Instance {
@@ -103,6 +116,20 @@ public final class Console {
         
         
         public abstract String readln();
+        public abstract String pollln();
+        
+        public Promise<String> inputLine() {
+            return DeferAction.run(()->{
+                String str;
+                while ((str = pollln()) == null) {
+                    Thread.sleep(1);
+                }
+                return str;
+            })
+            .getPromise();
+        }
+        
+        public abstract void   stopRead();
         
     }
     
@@ -199,7 +226,51 @@ public final class Console {
         
         public static Instance instance = new System();
         
-        private final ConcurrentLinkedQueue<String> lines = new ConcurrentLinkedQueue<String>();
+        private static class InPuller {
+            private static final ConcurrentLinkedQueue<String> lines = new ConcurrentLinkedQueue<String>();
+            private static final AtomicReference<Thread> pullThread = new AtomicReference<Thread>();
+            static {
+                if (pullThread.get() == null) {
+                    if (pullThread.compareAndSet(null, createPullThread())) {
+                        pullThread.get().start();
+                    }
+                }
+            }
+            
+            private static Thread createPullThread() {
+                Thread thread = new Thread(()->{
+                    try (BufferedReader br = new BufferedReader(new InputStreamReader(java.lang.System.in))) {
+                        br.lines()
+                        .forEach(lines::add);
+                    } catch (UncheckedIOException e) {
+                    } catch (IOException e) {
+                        throw new InterruptedRuntimeException(e);
+                    }
+                }, "SystemInReadThread");
+                thread.setDaemon(false);
+                return thread;
+            }
+            
+            static String readln() {
+                String line;
+                while ((line = lines.poll()) == null);
+                return line;
+            }
+            static String pollln() {
+                return lines.poll();
+            }
+            static void stopRead() {
+                pullThread.getAndUpdate(t -> {
+                    t.interrupt();
+                    try {
+                        java.lang.System.in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return t;
+                });
+            }
+        }
         
         
         @Override
@@ -246,15 +317,15 @@ public final class Console {
         
         @Override
         public String readln() {
-            String currentLine = null;
-            while ((currentLine = lines.poll()) == null) {
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(java.lang.System.in))) {
-                    br.lines().forEach(lines::add);
-                } catch (IOException e) {
-                    throw new InterruptedRuntimeException(e);
-                }
-            }
-            return currentLine;
+            return InPuller.readln();
+        }
+        @Override
+        public String pollln() {
+            return InPuller.pollln();
+        }
+        
+        public void stopRead() {
+            InPuller.stopRead();
         }
         
     }
@@ -431,6 +502,20 @@ public final class Console {
             } catch (InterruptedException e) {
                 throw ThrowFuncs.exceptionTransformer.get().apply(e);
             }
+        }
+        
+        @Override
+        public String pollln() {
+            String currentLine = inQueue.poll();
+            if (currentLine == null)
+                return null;
+            
+            inLines.add("" + currentLine);
+            return currentLine;
+        }
+        
+        public void stopRead() {
+            // Not sure what to do here.
         }
         
     }

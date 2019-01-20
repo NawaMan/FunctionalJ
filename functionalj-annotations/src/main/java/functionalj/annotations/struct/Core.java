@@ -68,6 +68,8 @@ public enum Core {
     
     Nullable      ("Nullable",      "nawaman.nullablej.nullable"),
     Optional      ("Optional",      "java.util"),
+    
+    Pipeable      ("Pipeable",      "functionalj.pipeable"),
     ;
     
     private static final String LENSES_PACKAGE = "functionalj.lens.lenses";

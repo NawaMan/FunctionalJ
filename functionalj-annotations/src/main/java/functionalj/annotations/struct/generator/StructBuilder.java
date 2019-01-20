@@ -46,6 +46,7 @@ import functionalj.annotations.DefaultValue;
 import functionalj.annotations.IPostConstruct;
 import functionalj.annotations.IStruct;
 import functionalj.annotations.choice.generator.Utils;
+import functionalj.annotations.struct.Core;
 import functionalj.annotations.struct.generator.model.Accessibility;
 import functionalj.annotations.struct.generator.model.GenClass;
 import functionalj.annotations.struct.generator.model.GenConstructor;
@@ -94,6 +95,12 @@ public class StructBuilder {
         
         val istruct = Type.of(IStruct.class);
         implementeds.add(istruct);
+        
+        val targetType = new Type(sourceSpec.getTargetClassName(), sourceSpec.getTargetPackageName());
+        val pipeable   = Core.Pipeable.type().withGenerics(asList(targetType));
+        implementeds.add(pipeable);
+        
+        val pipeMethod = new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, targetType, "__data", emptyList(), ILines.line("return this;"), emptyList(), asList(Type.of(Exception.class)), false);
         
         val withMethodName = (Function<Getter, String>)(utils::withMethodName);
         val getters        = sourceSpec.getGetters();
@@ -205,6 +212,7 @@ public class StructBuilder {
                     line("return map;")
                 ),
                 asList(Type.of(Map.class), Type.of(HashMap.class)),
+                emptyList(),
                 false);
         
         val getStructSchemaBody = ILines.line(
@@ -225,6 +233,7 @@ public class StructBuilder {
                     line("return map;")
                 ),
                 asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Type.class), Type.of(Getter.class)),
+                emptyList(),
                 false);
         
         val getSchema = new GenMethod(
@@ -236,9 +245,11 @@ public class StructBuilder {
                 emptyList(),
                 ILines.linesOf(line("return getStructSchema();")),
                 asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Type.class), Type.of(Getter.class)),
+                emptyList(),
                 false);
         
         val flatMap = Arrays.<Stream<GenMethod>>asList(
+                    Stream.of(pipeMethod),
                     getterMethods,
                     witherMethods,
                     Stream.of(fromMap, toMap, getSchema, getStructSchema),
@@ -442,7 +453,7 @@ public class StructBuilder {
                 .collect(joining(", "));
         val usedTypes = isFList ? asList(Type.FUNC_LIST) : Collections.<Type>emptyList();
         val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
-        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine), usedTypes, true);
+        return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine), usedTypes, emptyList(),true);
     }
     private GenMethod getterToWitherMethodValue(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {

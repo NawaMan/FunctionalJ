@@ -52,7 +52,7 @@ public class RetryableDeferActionCreator {
                     
                     builder
                     .build()
-                    .subscribe(onCompleteRef.get())
+                    .onComplete(onCompleteRef.get())
                     .start();
                 }
             }
@@ -61,7 +61,7 @@ public class RetryableDeferActionCreator {
         
         builder
         .build()
-        .subscribe(onComplete)
+        .onComplete(onComplete)
         .start();
         
         return finalAction;

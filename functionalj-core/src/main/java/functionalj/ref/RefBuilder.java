@@ -22,8 +22,11 @@ public class RefBuilder<DATA> {
     }
     
     public Ref<DATA> orTypeDefault() {
+        return orTypeDefaultOrGet(null);
+    }
+    public Ref<DATA> orTypeDefaultOrGet(Supplier<DATA> manualDefault) {
         return defaultToTypeDefault()
-                .whenAbsentUseDefault();
+                .whenAbsentUseDefaultOrGet(manualDefault);
     }
     
     public RefBuilder<DATA> whenAbsentUse(DATA defaultValue) {

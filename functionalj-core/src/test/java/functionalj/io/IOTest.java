@@ -111,6 +111,7 @@ public class IOTest {
                 action2.toString());
     }
     
+    // Ummm - Somehow this test is not deterministic - The problem seems to be .map.
     @Test
     public void testFilter() {
         val logs    = new ArrayList<String>();

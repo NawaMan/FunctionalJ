@@ -257,6 +257,10 @@ public abstract class ChangeResult<D extends Object> extends AbstractChoiceClass
     public functionalj.store.ChangeResult<D> change(functionalj.function.Func1<D,D> changer) {
         return Self1.getAsMe(__spec.change(Self1.of(this), changer));
     }
+    public functionalj.store.ChangeResult<D> use(functionalj.function.FuncUnit1<D> consumer) {
+        return Self1.getAsMe(__spec.use(Self1.of(this), consumer));
+    }
+    
     public java.lang.String toString() {
         return __spec.toString(Self1.of(this));
     }

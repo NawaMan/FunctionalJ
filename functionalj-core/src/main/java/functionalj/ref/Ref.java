@@ -88,9 +88,9 @@ public abstract class Ref<DATA> {
             if (result.isPresent() || (whenAbsentSupplier == null))
                 return result;
             if (!result.isPresent() && (whenAbsentSupplier != null)) {
-                val elseValue = whenAbsentSupplier.get();
-                if (elseValue != null)
-                    return Result.of(elseValue);
+                val elseValue = Result.from(whenAbsentSupplier);
+                if (elseValue.isPresent())
+                    return elseValue;
                else return Result.ofNotExist();
             }
         }
@@ -158,7 +158,13 @@ public abstract class Ref<DATA> {
         return whenAbsent(WhenAbsent.Get(defaultSupplier));
     }
     public Ref<DATA> whenAbsentUseDefault() {
-        return whenAbsent(WhenAbsent.UseDefault(getDataType()));
+        return whenAbsentUseDefaultOrGet(null);
+    }
+    public Ref<DATA> whenAbsentUseDefaultOrGet(Supplier<DATA> manualDefault) {
+        Func0<DATA> useDefault = WhenAbsent.UseDefault(getDataType());
+        if (manualDefault != null)
+            useDefault = useDefault.whenAbsentGet(manualDefault);
+        return whenAbsent(useDefault);
     }
     public DictatedRef<DATA> dictate() {
         return new DictatedRef<DATA>(this);

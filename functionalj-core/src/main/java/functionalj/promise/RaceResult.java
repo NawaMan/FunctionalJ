@@ -41,7 +41,7 @@ public class RaceResult<DATA> implements HasPromise<DATA> {
         val hasNull = new AtomicBoolean(false);
         startedActions
         .forEach(action -> {
-            action.subscribe(result -> {
+            action.onComplete(result -> {
                 result.ifPresent(value ->{
                     pendingAction.complete(value);
                     startedActions.forEach(PendingAction::abort);

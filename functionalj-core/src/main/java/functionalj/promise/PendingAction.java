@@ -40,17 +40,27 @@ public class PendingAction<DATA> extends UncompleteAction<DATA> implements Pipea
         return this;
     }
     
-    public PendingAction<DATA> subscribe(FuncUnit1<Result<DATA>> resultConsumer) {
+    public PendingAction<DATA> subscribe(FuncUnit1<DATA> resultConsumer) {
+        promise.subscribe(Wait.forever(), resultConsumer);
+        return this;
+    }
+    
+    public final PendingAction<DATA> subscribe(Wait wait, FuncUnit1<DATA> resultConsumer) {
+        promise.subscribe(wait, resultConsumer);
+        return this;
+    }
+    
+    public PendingAction<DATA> onComplete(FuncUnit1<Result<DATA>> resultConsumer) {
         promise.onComplete(Wait.forever(), resultConsumer);
         return this;
     }
     
-    public PendingAction<DATA> subscribe(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
+    public PendingAction<DATA> onComplete(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         promise.onComplete(wait, resultConsumer);
         return this;
     }
     
-    public PendingAction<DATA> subscribe(
+    public PendingAction<DATA> onComplete(
             FuncUnit1<Result<DATA>>       resultConsumer,
             FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
         val subscription = promise.onComplete(Wait.forever(), resultConsumer);
@@ -58,7 +68,7 @@ public class PendingAction<DATA> extends UncompleteAction<DATA> implements Pipea
         return this;
     }
     
-    public PendingAction<DATA> subscribe(
+    public PendingAction<DATA> onComplete(
             Wait                          wait,
             FuncUnit1<Result<DATA>>       resultConsumer,
             FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {

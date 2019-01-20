@@ -99,7 +99,7 @@ public class PromiseTest {
     public void testAbort() {
         val ref = new AtomicReference<String>(null);
         val action = DeferAction.of(String.class)
-                .subscribe(r -> ref.set("" + r))
+                .onComplete(r -> ref.set("" + r))
                 .start();
         
         assertStrings("Result:{ NotReady }", action.getCurrentResult());
@@ -276,8 +276,8 @@ public class PromiseTest {
         
         val promise = DeferAction.of(String.class)
                 .abortNoSubsriptionAfter(wait)
-                .eavesdrop(r -> list.add("e: " + r.toString()))
-                .subscribe(r -> list.add("s: " + r.toString()))
+                .eavesdrop (r -> list.add("e: " + r.toString()))
+                .onComplete(r -> list.add("s: " + r.toString()))
                 .start()
                 .getPromise();
         

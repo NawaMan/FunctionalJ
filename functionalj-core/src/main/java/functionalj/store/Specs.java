@@ -2,6 +2,7 @@ package functionalj.store;
 
 import functionalj.annotations.choice.Self1;
 import functionalj.function.Func1;
+import functionalj.function.FuncUnit1;
 import functionalj.result.Result;
 
 class Specs {
@@ -55,6 +56,11 @@ class Specs {
             return result.hasChanged()
                     ? store(self).change(changer)
                     : result;
+        }
+        default ChangeResult<D> use(Self1<D> self, FuncUnit1<D> consumer) {
+            ChangeResult<D> result = self.asMe();
+            store(self).use(consumer);
+            return result;
         }
         default String toString(Self1<D> self) {
             ChangeResult<D> result = self.asMe();

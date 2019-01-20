@@ -105,6 +105,9 @@ public interface StreamPlus<DATA>
     public static StreamPlus<Integer> infiniteInt() {
         return IntStreamPlus.from(IntStream.iterate(0, i -> i + 1)).mapToObj(i -> i);
     }
+    public static StreamPlus<Integer> range(int startInclusive, int endExclusive) {
+        return IntStreamPlus.range(startInclusive, endExclusive).mapToObj(i -> i);
+    }
     
     public static <D> StreamPlus<D> empty() {
         return StreamPlus.from(Stream.empty());

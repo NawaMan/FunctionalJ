@@ -15,7 +15,9 @@ public class DeferActionConfig {
         return new DeferActionConfig();
     }
     
-    public static final Ref<DeferActionConfig> current = Ref.of(DeferActionConfig.class).orTypeDefault();
+    public static final Ref<DeferActionConfig> current
+            = Ref.of(DeferActionConfig.class)
+            .orTypeDefaultOrGet(DeferActionConfig::new);
     
     private static final FuncUnit0 DO_NOTHING = ()->{};
     

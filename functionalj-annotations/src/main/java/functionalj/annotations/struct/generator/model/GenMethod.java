@@ -23,6 +23,7 @@ import static java.util.stream.Collectors.joining;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.annotations.struct.generator.IGenerateDefinition;
@@ -53,6 +54,7 @@ public class GenMethod implements IGenerateDefinition {
     private List<GenParam> params;
     private ILines         body;
     private List<Type>     usedTypes;
+    private List<Type>     exceptions;
     private boolean        isVarAgrs;
     
     /**
@@ -67,7 +69,7 @@ public class GenMethod implements IGenerateDefinition {
      */
     public GenMethod(Accessibility accessibility, Scope scope, Modifiability modifiability, Type type, String name,
             List<GenParam> params, ILines body) {
-        this(accessibility, scope, modifiability, type, name, params, body, emptyList(), false);
+        this(accessibility, scope, modifiability, type, name, params, body, emptyList(), emptyList(), false);
     }
     
     @Override
@@ -86,7 +88,13 @@ public class GenMethod implements IGenerateDefinition {
                 .requiredTypes()
                 .forEach(types::add);
         }
-        return Stream.concat(types.stream(), (usedTypes != null) ? usedTypes.stream() : Stream.empty());
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        val streams = Stream.of(
+                    types.stream(),
+                    (usedTypes  != null) ? usedTypes .stream() : (Stream<Type>)(Stream)Stream.empty(),
+                    (exceptions != null) ? exceptions.stream() : (Stream<Type>)(Stream)Stream.empty()
+                );
+        return streams.flatMap(s -> s);
     }
     
     @Override
@@ -99,10 +107,14 @@ public class GenMethod implements IGenerateDefinition {
             = isVarAgrs 
             ? paramDefs.replaceAll("([^ ]+)$", "... $1") 
             : paramDefs;
+        val throwing = (exceptions == null || exceptions.isEmpty())
+                     ? ""
+                     : " throws " + exceptions.stream().map(type -> type.simpleName()).collect(Collectors.joining(", ")) + " ";
         val definition
                 = ILines.oneLineOf(
                     accessibility, modifiability, scope,
                     type.simpleNameWithGeneric(""), name + "(" + paramDefsToText + ")",
+                    throwing,
                     "{");
         return ILines.flatenLines(
                 line(definition),

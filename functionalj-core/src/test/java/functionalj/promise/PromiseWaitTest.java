@@ -54,7 +54,7 @@ public class PromiseWaitTest {
     public void testWaitAWhile_neverStart() throws InterruptedException {
         val list   = new ArrayList<String>();
         DeferAction.of(String.class)
-                .subscribe(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get()));
+                .onComplete(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get()));
         
         Thread.sleep(100);
         assertStrings("[Not done.]", list);

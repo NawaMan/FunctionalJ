@@ -55,6 +55,8 @@ public class GenerateParentNullableChildTest {
                 "import functionalj.lens.lenses.NullableLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
+                "import functionalj.pipeable.Pipeable;\n" + 
+                "import java.lang.Exception;\n" + 
                 "import java.lang.Object;\n" + 
                 "import java.util.HashMap;\n" + 
                 "import java.util.Map;\n" + 
@@ -67,7 +69,7 @@ public class GenerateParentNullableChildTest {
                 "\n" + 
                 "// me.test.null.Definitions.ParentDef\n" + 
                 "\n" + 
-                "public class Parent implements Definitions.ParentDef,IStruct {\n" + 
+                "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
                 "    private final Nullable<String> nullableName;\n" + 
@@ -82,6 +84,9 @@ public class GenerateParentNullableChildTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
+                "    public Parent __data()  throws Exception  {\n" + 
+                "        return this;\n" + 
+                "    }\n" + 
                 "    public Nullable<String> nullableName() {\n" + 
                 "        return nullableName;\n" + 
                 "    }\n" + 

@@ -42,7 +42,7 @@ public interface IntegerAccess<HOST>
     }
     
     public static MathOperators<Integer> __IntMathOperators = new MathOperators<Integer>() {
-
+        
         @Override
         public Integer zero() {
             return 0;

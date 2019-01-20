@@ -278,17 +278,27 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
         return this;
     }
     
-    public DeferAction<DATA> subscribe(FuncUnit1<Result<DATA>> resultConsumer) {
+    public DeferAction<DATA> subscribe(FuncUnit1<DATA> resultConsumer) {
+        promise.subscribe(Wait.forever(), resultConsumer);
+        return this;
+    }
+    
+    public final DeferAction<DATA> subscribe(Wait wait, FuncUnit1<DATA> resultConsumer) {
+        promise.subscribe(wait, resultConsumer);
+        return this;
+    }
+    
+    public DeferAction<DATA> onComplete(FuncUnit1<Result<DATA>> resultConsumer) {
         promise.onComplete(Wait.forever(), resultConsumer);
         return this;
     }
     
-    public DeferAction<DATA> subscribe(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
+    public DeferAction<DATA> onComplete(Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
         promise.onComplete(wait, resultConsumer);
         return this;
     }
     
-    public DeferAction<DATA> subscribe(
+    public DeferAction<DATA> onComplete(
             FuncUnit1<Result<DATA>>       resultConsumer,
             FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
         val subscription = promise.onComplete(Wait.forever(), resultConsumer);
@@ -296,7 +306,7 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
         return this;
     }
     
-    public DeferAction<DATA> subscribe(
+    public DeferAction<DATA> onComplete(
             Wait                          wait,
             FuncUnit1<Result<DATA>>       resultConsumer,
             FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {

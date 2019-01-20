@@ -20,7 +20,9 @@ public class DeferActionCreator {
     @Default
     public static final DeferActionCreator instance = new DeferActionCreator();
     
-    public static final Ref<DeferActionCreator> current = Ref.of(DeferActionCreator.class).orTypeDefault();
+    public static final Ref<DeferActionCreator> current
+                = Ref.of(DeferActionCreator.class)
+                        .orTypeDefaultOrGet(DeferActionCreator::new);
     
     public <D> DeferAction<D> create(
             Func0<D>    supplier,

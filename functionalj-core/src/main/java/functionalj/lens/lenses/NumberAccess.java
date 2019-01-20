@@ -30,8 +30,47 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     public default BooleanAccess<HOST> thatLessThanOrEqualsTo(TYPE anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
-    public default BooleanAccess<HOST> thatEqualsZero(TYPE anotherValue) {
-        return booleanAccess(false, any -> any.compareTo(anotherValue) == 0);
+    public default BooleanAccess<HOST> thatIsZero() {
+        return (BooleanAccess<HOST>)(host -> {
+            val value = apply(host);
+            val zero  = toZero().apply(host);
+            return value.compareTo(zero) == 0;
+        });
+    }
+    public default BooleanAccess<HOST> thatIsNotZero() {
+        return (BooleanAccess<HOST>)(host -> {
+            val value = apply(host);
+            val zero  = toZero().apply(host);
+            return value.compareTo(zero) != 0;
+        });
+    }
+    public default BooleanAccess<HOST> thatIsPositive() {
+        return (BooleanAccess<HOST>)(host -> {
+            val value = apply(host);
+            val zero  = toZero().apply(host);
+            return value.compareTo(zero) > 0;
+        });
+    }
+    public default BooleanAccess<HOST> thatIsNegative() {
+        return (BooleanAccess<HOST>)(host -> {
+            val value = apply(host);
+            val zero  = toZero().apply(host);
+            return value.compareTo(zero) < 0;
+        });
+    }
+    public default BooleanAccess<HOST> thatIsNotPositive() {
+        return (BooleanAccess<HOST>)(host -> {
+            val value = apply(host);
+            val zero  = toZero().apply(host);
+            return value.compareTo(zero) <= 0;
+        });
+    }
+    public default BooleanAccess<HOST> thatIsNotNegative() {
+        return (BooleanAccess<HOST>)(host -> {
+            val value = apply(host);
+            val zero  = toZero().apply(host);
+            return value.compareTo(zero) >= 0;
+        });
     }
     
     public NUMACCESS newAccess(Function<HOST, TYPE> accessToValue);

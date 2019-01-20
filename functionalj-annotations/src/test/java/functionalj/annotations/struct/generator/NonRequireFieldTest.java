@@ -51,6 +51,8 @@ public class NonRequireFieldTest {
                 "import functionalj.lens.lenses.IntegerLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
+                "import functionalj.pipeable.Pipeable;\n" + 
+                "import java.lang.Exception;\n" + 
                 "import java.lang.Object;\n" + 
                 "import java.util.HashMap;\n" + 
                 "import java.util.Map;\n" + 
@@ -60,7 +62,7 @@ public class NonRequireFieldTest {
                 "\n" + 
                 "// me.test.null.Definitions.DataDef\n" + 
                 "\n" + 
-                "public class Data implements Definitions.DataDef,IStruct {\n" + 
+                "public class Data implements Definitions.DataDef,IStruct,Pipeable<Data> {\n" + 
                 "    \n" + 
                 "    public static final DataLens<Data> theData = new DataLens<>(LensSpec.of(Data.class));\n" + 
                 "    private final int a;\n" + 
@@ -89,6 +91,9 @@ public class NonRequireFieldTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
+                "    public Data __data()  throws Exception  {\n" + 
+                "        return this;\n" + 
+                "    }\n" + 
                 "    public int a() {\n" + 
                 "        return a;\n" + 
                 "    }\n" + 

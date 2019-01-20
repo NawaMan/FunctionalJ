@@ -67,6 +67,8 @@ public class GeneratorTest {
                 "import functionalj.lens.lenses.IntegerLens;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
+                "import functionalj.pipeable.Pipeable;\n" + 
+                "import java.lang.Exception;\n" + 
                 "import java.lang.Object;\n" + 
                 "import java.util.HashMap;\n" + 
                 "import java.util.Map;\n" + 
@@ -76,7 +78,7 @@ public class GeneratorTest {
                 "\n" + 
                 "// me.test.null.Definitions.CarDef\n" + 
                 "\n" + 
-                "public class Car implements Definitions.CarDef,IStruct {\n" + 
+                "public class Car implements Definitions.CarDef,IStruct,Pipeable<Car> {\n" + 
                 "    \n" + 
                 "    public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));\n" + 
                 "    private final int anint;\n" + 
@@ -93,6 +95,9 @@ public class GeneratorTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
+                "    public Car __data()  throws Exception  {\n" + 
+                "        return this;\n" + 
+                "    }\n" + 
                 "    public int anint() {\n" + 
                 "        return anint;\n" + 
                 "    }\n" + 

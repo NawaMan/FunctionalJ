@@ -389,4 +389,10 @@ New methods can be added to the generated class by just adding them to the speci
 Basically, the generated class `FiendlyGuy` extends `FriendlyGuySpec` which intern extends `Greeter`.
 
 
+
+## TODO: From Map, To Map and Schema
+
+
+
+
 **Note:** All the code can be find in the file `example.functionalj.structtype.StructTypeExamples.java`.

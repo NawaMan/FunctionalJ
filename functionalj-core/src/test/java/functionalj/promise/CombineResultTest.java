@@ -25,7 +25,7 @@ public class CombineResultTest {
                 l -> Result.of(l.toString()));
         
         val combine = combiner.getDeferAction()
-        .subscribe(result -> {
+        .onComplete(result -> {
             logs.add(result.toString());
         });
         

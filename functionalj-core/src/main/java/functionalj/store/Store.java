@@ -98,12 +98,12 @@ public class Store<DATA> {
     }
     
     public Store<DATA> use(FuncUnit1<DATA> consumer) {
-    	if (consumer == null)
-    		return this;
-    	
-    	val value = dataRef.get();
-		consumer.accept(value);
-    	return this;
+        if (consumer == null)
+            return this;
+        
+        val value = dataRef.get();
+        consumer.accept(value);
+        return this;
     }
     
     public DATA value() {

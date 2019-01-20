@@ -48,6 +48,8 @@ public class RequiredConstructorTest {
             "import functionalj.lens.core.LensSpec;\n" + 
             "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
             "import functionalj.lens.lenses.StringLens;\n" + 
+            "import functionalj.pipeable.Pipeable;\n" + 
+            "import java.lang.Exception;\n" + 
             "import java.lang.Object;\n" + 
             "import java.util.HashMap;\n" + 
             "import java.util.Map;\n" + 
@@ -57,7 +59,7 @@ public class RequiredConstructorTest {
             "\n" + 
             "// example.functionalj.accesslens.StructTypeExample.null\n" + 
             "\n" + 
-            "public class Person implements IStruct {\n" + 
+            "public class Person implements IStruct,Pipeable<Person> {\n" + 
             "    \n" + 
             "    public static final PersonLens<Person> thePerson = new PersonLens<>(LensSpec.of(Person.class));\n" + 
             "    private final String firstName;\n" + 
@@ -78,6 +80,9 @@ public class RequiredConstructorTest {
             "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
             "    }\n" + 
             "    \n" + 
+            "    public Person __data()  throws Exception  {\n" + 
+            "        return this;\n" + 
+            "    }\n" + 
             "    public String firstName() {\n" + 
             "        return firstName;\n" + 
             "    }\n" + 

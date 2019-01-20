@@ -78,7 +78,7 @@ public class DeferActionTest {
             Thread.sleep(100);
             return "Hello";
         })
-        .subscribe(result -> {
+        .onComplete(result -> {
             val end = System.currentTimeMillis();
             log.add("End: " + (100*((end - start) / 100)));
             log.add("Result: " + result);
@@ -97,7 +97,7 @@ public class DeferActionTest {
         
         val start  = System.currentTimeMillis();
         val endRef = new AtomicLong();
-        val action = deferAction.subscribe(result -> {
+        val action = deferAction.onComplete(result -> {
             val end = System.currentTimeMillis();
             endRef.set(end - start);
         })
@@ -121,7 +121,7 @@ public class DeferActionTest {
             latch.countDown();
             throw new IOException("Fail hard!");
         })
-        .subscribe(result -> {
+        .onComplete(result -> {
             val end = System.currentTimeMillis();
             endRef.set((int)(20*((end - start) / 20)));
             
@@ -205,7 +205,7 @@ public class DeferActionTest {
             log.add("... onStart ...");
         })
         .build()
-        .subscribe(result -> {
+        .onComplete(result -> {
             Thread.sleep(100);
             log.add("Done: " + result);
             latch.countDown();
@@ -244,7 +244,7 @@ public class DeferActionTest {
             log.add("... onStart ...");
         })
         .build()
-        .subscribe(result -> {
+        .onComplete(result -> {
             log.add("Done: " + result);
             latch.countDown();
             throw new Exception();
@@ -290,7 +290,7 @@ public class DeferActionTest {
             latch.countDown();
         })
         .build()
-        .subscribe(result -> {
+        .onComplete(result -> {
             Thread.sleep(100);
             log.add("Done: " + result);
             onDoneThread.set(Thread.currentThread().toString());
@@ -351,7 +351,7 @@ public class DeferActionTest {
             .build()
             .start();
         })
-        .subscribe(result -> {
+        .onComplete(result -> {
             log.add("Done #1: " + result);
             latch.countDown();
         })
@@ -396,7 +396,7 @@ public class DeferActionTest {
             Thread.sleep(50);
             return "Total=" + value;
         })
-        .subscribe(result -> {
+        .onComplete(result -> {
             log.add("Done: " + result);
         })
         .start()
@@ -435,7 +435,7 @@ public class DeferActionTest {
             Thread.sleep(50);
             return "Total=" + value;
         })
-        .subscribe(result -> {
+        .onComplete(result -> {
             log.add("Done: " + result);
         })
         .start()
@@ -674,7 +674,7 @@ public class DeferActionTest {
                     }
                     latch.countDown();
                 });
-            }).subscribe(result -> {
+            }).onComplete(result -> {
                 Console.outPrintln(result);
             });
             

@@ -433,9 +433,8 @@ public class IOs {
         }
         private void doBody(AtomicReference<DeferAction<D>> actionRef) {
             val bodyAction = body.createAction();
-            bodyAction.start();
             // Ummm not sure if subscribe is good here
-            bodyAction.subscribe(result -> {
+            bodyAction.onComplete(result -> {
                 val isToBreak = breakCheck.test(result);
                 if (isToBreak) {
                     val action = actionRef.get().start();
@@ -446,6 +445,7 @@ public class IOs {
                     doBody(actionRef);
                 }
             });
+            bodyAction.start();
         }
         @Override
         public String toString() {

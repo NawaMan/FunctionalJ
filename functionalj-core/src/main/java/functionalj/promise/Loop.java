@@ -93,7 +93,7 @@ public class Loop<DATA> extends Retry<DATA> {
                 
                 actionBuilder
                 .build()
-                .subscribe(this)
+                .onComplete(this)
                 .start();
             }
         }

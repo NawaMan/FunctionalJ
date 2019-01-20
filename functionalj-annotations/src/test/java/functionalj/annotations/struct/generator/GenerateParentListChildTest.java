@@ -56,6 +56,8 @@ public class GenerateParentListChildTest {
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
                 "import functionalj.list.ImmutableList;\n" + 
+                "import functionalj.pipeable.Pipeable;\n" + 
+                "import java.lang.Exception;\n" + 
                 "import java.lang.Object;\n" + 
                 "import java.util.HashMap;\n" + 
                 "import java.util.List;\n" + 
@@ -68,7 +70,7 @@ public class GenerateParentListChildTest {
                 "\n" + 
                 "// me.test.null.Definitions.ParentDef\n" + 
                 "\n" + 
-                "public class Parent implements Definitions.ParentDef,IStruct {\n" + 
+                "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
                 "    private final List<String> names;\n" + 
@@ -83,6 +85,9 @@ public class GenerateParentListChildTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
+                "    public Parent __data()  throws Exception  {\n" + 
+                "        return this;\n" + 
+                "    }\n" + 
                 "    public List<String> names() {\n" + 
                 "        return names;\n" + 
                 "    }\n" + 
