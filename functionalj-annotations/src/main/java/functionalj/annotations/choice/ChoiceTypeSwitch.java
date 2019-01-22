@@ -6,9 +6,9 @@ import java.util.function.Supplier;
 import lombok.val;
 
 public abstract class ChoiceTypeSwitch<D, T> {
-    protected final D                      $value;
-    protected final Function<? super D, T> $action;
-    protected ChoiceTypeSwitch(D theValue, Function<? super D, T> theAction) {
+    protected final D                                $value;
+    protected final Function<? super D, ? extends T> $action;
+    protected ChoiceTypeSwitch(D theValue, Function<? super D, ? extends T> theAction) {
         this.$value  = theValue;
         this.$action = theAction;
     }

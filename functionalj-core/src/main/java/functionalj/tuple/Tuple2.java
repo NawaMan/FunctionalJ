@@ -56,8 +56,8 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
         Array.set(array, 0, _1);
         Array.set(array, 1, _2);
         @SuppressWarnings("unchecked")
-		val toArray = (T[])array;
-		return toArray;
+        val toArray = (T[])array;
+        return toArray;
     }
     
     public default FuncList<Object> toList() {
@@ -89,8 +89,8 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     }
     
     public default <NT1, NT2> Tuple2<NT1, NT2> map(
-    		Function<? super T1, NT1> mapper1,
-    		Function<? super T2, NT2> mapper2) {
+            Function<? super T1, NT1> mapper1,
+            Function<? super T2, NT2> mapper2) {
         return map(mapper1, mapper2, Tuple::of);
     }
     public default <NT1, NT2, T> T map(

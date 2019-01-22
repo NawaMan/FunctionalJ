@@ -237,6 +237,40 @@ public interface ResultStatusAddOn<DATA> {
         return mapValue(helper.processWhenApply(ResultStatus::isException, asResult(), recoverFunction));
     }
     
+    public default Result<DATA> recover(Class<? extends Throwable> problemClass, DATA fallbackValue) {
+        return mapValue((data, exception)->{
+            if (exception == null)
+                return asResult();
+            
+            if (!problemClass.isInstance(exception))
+                return asResult();
+            
+            return Result.of(fallbackValue);
+        });
+    }
+    public default Result<DATA> recover(Class<? extends Throwable> problemClass, Supplier<? extends DATA> fallbackSupplier) {
+        return mapValue((data, exception)->{
+            if (exception == null)
+                return asResult();
+            
+            if (!problemClass.isInstance(exception))
+                return asResult();
+            
+            return Result.from(fallbackSupplier);
+        });
+    }
+    public default Result<DATA> recover(Class<? extends Throwable> problemClass, Func1<? super Exception,? extends DATA> recoverFunction) {
+        return mapValue((data, exception)->{
+            if (exception == null)
+                return asResult();
+            
+            if (!problemClass.isInstance(exception))
+                return asResult();
+            
+            return Result.of(exception).map(recoverFunction);
+        });
+    }
+    
     //== Cancelled ==
     
     public default boolean isCancelled() {
