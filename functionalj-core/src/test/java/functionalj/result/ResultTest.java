@@ -311,18 +311,14 @@ public class ResultTest {
         val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess
                 = nums
-                .map(num -> (String)Result.of(num)
+                .map(num -> Result.of(num)
                     .mapAny(
                         i -> ((i < 10)   ? i             : null),
                         i -> ((i < 100)  ? (i + " TENS") : null)
                     ).orElse("UNKNOWN"))
                 .toList();
         assertEquals(
-                "["
-                + "0 ONES, 1 ONES, 8 ONES, "
-                + "27 TENS, 64 TENS, "
-                + "125 HUNDRED, 216 HUNDRED, 343 HUNDRED, 512 HUNDRED, 729 HUNDRED, "
-                + "1000 THOUSANDS, 1331 THOUSANDS, 1728 THOUSANDS]",
+                "[0, 1, 8, 27 TENS, 64 TENS, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN]",
                 guess.toString());
     }
     
