@@ -66,6 +66,7 @@ public interface ResultMapAddOn<DATA> {
         return map(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
     }
     
+    // TODO - Find a better name  --- mapAnyOf, mapOneOf, tryMap
     public default <T> Result<T> mapAny(
             Function<? super DATA, ? extends T> mapper1,
             Function<? super DATA, ? extends T> mapper2) {

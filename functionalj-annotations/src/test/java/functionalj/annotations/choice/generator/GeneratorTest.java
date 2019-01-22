@@ -358,7 +358,7 @@ public class GeneratorTest {
                 "    return __spec.thisName(Self.of(this), Self.of(c2), s);\n" + 
                 "}\n" + 
                 "public p1.p2.Color thisSelf(p1.p2.Color c2, String s) {\n" + 
-                "    return Self.getAsMe(__spec.thisSelf(Self.of(this), Self.of(c2), s));\n" + 
+                "    return functionalj.annotations.choice.Self.getAsMe(__spec.thisSelf(Self.of(this), Self.of(c2), s));\n" + 
                 "}\n" + 
                 "public static boolean toRGBString(p1.p2.Color c) {\n" + 
                 "    return ColorSpec.toRGBString(c);\n" + 

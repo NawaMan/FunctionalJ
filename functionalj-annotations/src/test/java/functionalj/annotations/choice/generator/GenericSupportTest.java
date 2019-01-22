@@ -43,6 +43,7 @@ public class GenericSupportTest {
             "\n" + 
             "import functionalj.annotations.choice.AbstractChoiceClass;\n" + 
             "import functionalj.annotations.choice.ChoiceTypeSwitch;\n" + 
+            "import functionalj.annotations.choice.generator.GenericSupportTest.OptionSpec;\n" + 
             "import functionalj.lens.core.LensSpec;\n" + 
             "import functionalj.lens.lenses.*;\n" + 
             "import functionalj.pipeable.Pipeable;\n" + 
@@ -52,6 +53,8 @@ public class GenericSupportTest {
             "import java.util.function.Function;\n" + 
             "import java.util.function.Predicate;\n" + 
             "import java.util.function.Supplier;\n" + 
+            "\n" + 
+            "// functionalj.annotations.choice.generator.GenericSupportTest.OptionSpec\n" + 
             "\n" + 
             "@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})\n" + 
             "public abstract class Option<T extends Number> extends AbstractChoiceClass<Option.OptionFirstSwitch<T>> implements Pipeable<Option<T>> {\n" + 

@@ -94,6 +94,8 @@ public class FullGeneratorTest {
               "import java.util.function.Predicate;\n" + 
               "import java.util.function.Supplier;\n" + 
               "\n" + 
+              "// functionalj.annotations.choice.generator.ChoiceTypeExampleTest.ChoiceType1TypeSpec\n" + 
+              "\n" + 
               "@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})\n" + 
               "public abstract class BasicColor extends AbstractChoiceClass<BasicColor.BasicColorFirstSwitch> implements Pipeable<BasicColor> {\n" + 
               "    \n" + 
