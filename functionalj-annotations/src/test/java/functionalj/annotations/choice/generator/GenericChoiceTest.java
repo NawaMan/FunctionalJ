@@ -16,14 +16,7 @@ import functionalj.annotations.choice.generator.model.Type;
 import lombok.val;
 
 
-@Ignore("Experiment in progress.")
 public class GenericChoiceTest {
-//    
-//    @Sealed(specField="spec")
-//    public static interface MayBe {
-//            void Nill();
-//        <T> void Just(T data);
-//    }
     
     public static final SourceSpec spec = new SourceSpec(
             "MayBe", 

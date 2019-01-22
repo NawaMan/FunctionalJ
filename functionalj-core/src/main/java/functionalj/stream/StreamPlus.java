@@ -1,5 +1,6 @@
 package functionalj.stream;
 
+import static functionalj.function.Func.f;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 
 import java.math.BigDecimal;
@@ -65,6 +66,33 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
+class StreamPlusMapAddOnHelper {
+    
+    @SafeVarargs
+    public static final <D, T> StreamPlus<T> mapAny(
+            StreamPlus<D>              stream,
+            Function<? super D, T> ... mappers) {
+        return stream.map(f(d -> {
+            Exception exception = null;
+            boolean hasNull = false;
+            for(val mapper : mappers) {
+                try {
+                    val res = mapper.apply(d);
+                    if (res == null)
+                         hasNull = true;
+                    else return (T)res;
+                } catch (Exception e) {
+                    if (exception == null)
+                        exception = e;
+                }
+            }
+            if (hasNull)
+                return (T)null;
+            
+            throw exception;
+        }));
+    }
+}
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
@@ -98,8 +126,11 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(IntStream.iterate(0, i -> i + 1).mapToObj(i -> data[i % data.length]));
     }
     
-    public static StreamPlus<Object> loop(int time) {
-        return StreamPlus.cycle((Object)null).limit(time);
+    public static StreamPlus<Integer> loop(int time) {
+        return StreamPlus.infiniteInt().limit(time);
+    }
+    public static StreamPlus<Integer> loop() {
+        return StreamPlus.infiniteInt();
     }
     
     public static StreamPlus<Integer> infiniteInt() {
@@ -826,6 +857,46 @@ public interface StreamPlus<DATA>
         return map(d -> {
             return checker.test(d) ? mapper.apply(d) : elseMapper.apply(d);
         });
+    }
+    
+    public default <T> StreamPlus<T> mapAny(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2) {
+        return StreamPlusMapAddOnHelper.mapAny(this, mapper1, mapper2);
+    }
+    
+    public default <T> StreamPlus<T> mapAny(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2,
+            Function<? super DATA, T> mapper3) {
+        return StreamPlusMapAddOnHelper.mapAny(this, mapper1, mapper2, mapper3);
+    }
+    
+    public default <T> StreamPlus<T> mapAny(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2,
+            Function<? super DATA, T> mapper3,
+            Function<? super DATA, T> mapper4) {
+        return StreamPlusMapAddOnHelper.mapAny(this, mapper1, mapper2, mapper3, mapper4);
+    }
+    
+    public default <T> StreamPlus<T> mapAny(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2,
+            Function<? super DATA, T> mapper3,
+            Function<? super DATA, T> mapper4,
+            Function<? super DATA, T> mapper5) {
+        return StreamPlusMapAddOnHelper.mapAny(this, mapper1, mapper2, mapper3, mapper4, mapper5);
+    }
+    
+    public default <T> StreamPlus<T> mapAny(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2,
+            Function<? super DATA, T> mapper3,
+            Function<? super DATA, T> mapper4,
+            Function<? super DATA, T> mapper5,
+            Function<? super DATA, T> mapper6) {
+        return StreamPlusMapAddOnHelper.mapAny(this, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
     
     //-- mapWithIndex --

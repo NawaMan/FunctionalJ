@@ -1,0 +1,3 @@
+functionalj.annotations.choice.ChoiceAnnotationProcessor
+functionalj.annotations.rule.RuleAnnotationProcessor
+functionalj.annotations.struct.StructAnnotationProcessor

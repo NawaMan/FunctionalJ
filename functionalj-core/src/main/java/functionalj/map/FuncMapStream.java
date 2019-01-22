@@ -241,7 +241,7 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
                         }).stream();
                         return stream;
                     });
-                    return (Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>>)Stream.of(main, ref).
+                    return (StreamPlus<IntTuple2<ImmutableTuple2<KEY, VALUE>>>)StreamPlus.of(main, ref).
                             flatMap(each -> each.get().get());
                 });
         return derivedWith(newIsKeyComparable, FuncListStream.from(streamable));

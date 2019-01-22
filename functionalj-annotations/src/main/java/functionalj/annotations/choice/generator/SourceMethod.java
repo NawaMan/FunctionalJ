@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Objects;
 
+import functionalj.annotations.choice.Self;
 import functionalj.annotations.choice.generator.model.Method;
 import lombok.Value;
 import lombok.val;
@@ -37,7 +38,7 @@ public class SourceMethod implements Lines {
                       && Objects.equals(m.returnType.name,            targetClass.type.name)
                       && Objects.equals(m.returnType.generics.size(), targetClass.type.generics.size());
         val genericCount = targetClass.type.generics.size();
-        val returnPrefix = returnSelf ? "Self" + (genericCount == 0 ? "" : genericCount) + ".getAsMe(" : "";
+        val returnPrefix = returnSelf ? Self.class.getCanonicalName() + (genericCount == 0 ? "" : genericCount) + ".getAsMe(" : "";
         val returnSuffix = returnSelf ? ")"                            : "";
         if (DEFAULT.equals(m.kind)) {
             if (isThisMethod(m)) {

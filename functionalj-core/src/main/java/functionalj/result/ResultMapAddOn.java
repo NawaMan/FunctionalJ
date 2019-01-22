@@ -18,6 +18,34 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
+class ResultMapAddOnHelper {
+    
+    @SafeVarargs
+    public static final <D, T> Result<T> mapAny(
+            ResultMapAddOn<D>                    result,
+            Function<? super D, ? extends T> ... mappers) {
+        return result.map(d -> {
+            Exception exception = null;
+            boolean hasNull = false;
+            for(val mapper : mappers) {
+                try {
+                    val res = mapper.apply(d);
+                    if (res == null)
+                         hasNull = true;
+                    else return (T)res;
+                } catch (Exception e) {
+                    if (exception == null)
+                        exception = e;
+                }
+            }
+            if (hasNull)
+                return (T)null;
+            
+            throw exception;
+        });
+    }
+}
+
 @SuppressWarnings("javadoc")
 public interface ResultMapAddOn<DATA> {
     
@@ -26,19 +54,61 @@ public interface ResultMapAddOn<DATA> {
     public default <TARGET> Result<TARGET> mapTo(Func1<? super DATA, TARGET> mapper) {
         return map(mapper);
     }
-    public default Result<DATA> mapIf(Predicate<? super DATA> checker, Func1<? super DATA, DATA> mapper) {
+    public default Result<DATA> mapOnly(
+            Predicate<? super DATA>   checker,
+            Func1<? super DATA, ? extends DATA> mapper) {
         return map(d -> checker.test(d) ? mapper.apply(d) : d);
     }
     public default <T> Result<T> mapIf(
             Predicate<? super DATA>   checker, 
-            Function<? super DATA, T> mapper, 
-            Function<? super DATA, T> elseMapper) {
+            Function<? super DATA, ? extends T> mapper, 
+            Function<? super DATA, ? extends T> elseMapper) {
         return map(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
+    }
+    
+    public default <T> Result<T> mapAny(
+            Function<? super DATA, ? extends T> mapper1,
+            Function<? super DATA, ? extends T> mapper2) {
+        return ResultMapAddOnHelper.mapAny(this, mapper1, mapper2);
+    }
+    
+    public default <T> Result<T> mapAny(
+            Function<? super DATA, ? extends T> mapper1,
+            Function<? super DATA, ? extends T> mapper2,
+            Function<? super DATA, ? extends T> mapper3) {
+        return ResultMapAddOnHelper.mapAny(this, mapper1, mapper2, mapper3);
+    }
+    
+    public default <T> Result<T> mapAny(
+            Function<? super DATA, ? extends T> mapper1,
+            Function<? super DATA, ? extends T> mapper2,
+            Function<? super DATA, ? extends T> mapper3,
+            Function<? super DATA, ? extends T> mapper4) {
+        return ResultMapAddOnHelper.mapAny(this, mapper1, mapper2, mapper3, mapper4);
+    }
+    
+    public default <T> Result<T> mapAny(
+            Function<? super DATA, ? extends T> mapper1,
+            Function<? super DATA, ? extends T> mapper2,
+            Function<? super DATA, ? extends T> mapper3,
+            Function<? super DATA, ? extends T> mapper4,
+            Function<? super DATA, ? extends T> mapper5) {
+        return ResultMapAddOnHelper.mapAny(this, mapper1, mapper2, mapper3, mapper4, mapper5);
+    }
+    
+    public default <T> Result<T> mapAny(
+            Function<? super DATA, ? extends T> mapper1,
+            Function<? super DATA, ? extends T> mapper2,
+            Function<? super DATA, ? extends T> mapper3,
+            Function<? super DATA, ? extends T> mapper4,
+            Function<? super DATA, ? extends T> mapper5,
+            Function<? super DATA, ? extends T> mapper6) {
+        return ResultMapAddOnHelper.mapAny(this, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
     
     //== Map to tuple. ==
     // ++ Generated with: GeneratorFunctorMapToTupleToObject ++
-
+    
     public default <T1, T2> 
         Result<Tuple2<T1, T2>> mapTuple(
                 Func1<? super DATA, ? extends T1> mapper1,

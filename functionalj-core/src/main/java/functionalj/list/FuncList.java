@@ -561,13 +561,52 @@ public interface FuncList<DATA>
     public default FuncList<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
         return map(d -> checker.test(d) ? mapper.apply(d) : d);
     }
+    
     public default <T> FuncList<T> mapIf(
             Predicate<? super DATA>   checker, 
             Function<? super DATA, T> mapper, 
             Function<? super DATA, T> elseMapper) {
-        return map(d -> {
-            return checker.test(d) ? mapper.apply(d) : elseMapper.apply(d);
-        });
+        return deriveWith(stream -> StreamPlus.from(stream).mapIf(checker, mapper, elseMapper));
+    }
+    
+    public default <T> FuncList<T> mapAny(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2) {
+        return deriveWith(stream -> StreamPlus.from(stream).mapAny(mapper1, mapper2));
+    }
+    
+    public default <T> FuncList<T> mapAny(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2,
+            Function<? super DATA, T> mapper3) {
+        return deriveWith(stream -> StreamPlus.from(stream).mapAny(mapper1, mapper2, mapper3));
+    }
+    
+    public default <T> FuncList<T> mapAny(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2,
+            Function<? super DATA, T> mapper3,
+            Function<? super DATA, T> mapper4) {
+        return deriveWith(stream -> StreamPlus.from(stream).mapAny(mapper1, mapper2, mapper3, mapper4));
+    }
+    
+    public default <T> FuncList<T> mapAny(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2,
+            Function<? super DATA, T> mapper3,
+            Function<? super DATA, T> mapper4,
+            Function<? super DATA, T> mapper5) {
+        return deriveWith(stream -> StreamPlus.from(stream).mapAny(mapper1, mapper2, mapper3, mapper4, mapper5));
+    }
+    
+    public default <T> FuncList<T> mapAny(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2,
+            Function<? super DATA, T> mapper3,
+            Function<? super DATA, T> mapper4,
+            Function<? super DATA, T> mapper5,
+            Function<? super DATA, T> mapper6) {
+        return deriveWith(stream -> StreamPlus.from(stream).mapAny(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
     }
     
     //-- mapWithIndex --

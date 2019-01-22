@@ -6,7 +6,6 @@ public abstract class AbstractChoiceClass<S> {
     
     public abstract S match();
     
-    
     public static class $utils {
         public static <D> D notNull(D value) {
             return Objects.requireNonNull(value);

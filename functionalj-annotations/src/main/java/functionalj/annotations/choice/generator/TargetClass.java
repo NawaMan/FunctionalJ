@@ -64,7 +64,7 @@ public class TargetClass implements Lines {
         imports.add("functionalj.pipeable.Pipeable");
         imports.add("functionalj.lens.core.LensSpec");
         imports.add("functionalj.lens.lenses.*");
-        
+        imports.add(spec.sourceType.fullName());
         
         val hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);
         if (hasChoiceWuthMoreThanOneParam) {
@@ -160,6 +160,8 @@ public class TargetClass implements Lines {
                 asList(format("package %s;", pckgName)),
                 asList(format("")),
                 importLines,
+                asList(format("")),
+                asList("// " + spec.sourceType.fullName()),
                 asList(format("")),
                 asList(format("@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})")),
                 asList(format("public abstract class %1$s extends %6$s<%2$s.%2$sFirstSwitch%3$s> implements Pipeable<%4$s>%5$s {", typeWithGenericDef(), type.name, generics(), typeWithGenerics(), selfDef, AbstractChoiceClass.class.getSimpleName())),

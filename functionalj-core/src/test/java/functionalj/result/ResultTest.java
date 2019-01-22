@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import functionalj.stream.StreamPlus;
 import functionalj.validator.Validator;
 import lombok.val;
 
@@ -199,8 +200,135 @@ public class ResultTest {
                   (a, b)-> a + "," + b));
     }
     
-    // TODO - Don't know why when we have multiple layer of flatMap, Eclipse hangs. Let deal with this later.
+    @Test
+    public void testResultMapAny() {
+        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val guess
+                = nums
+                .map(num -> (String)Result.of(num)
+                    .mapAny(
+                        i -> ((i < 10)   ? (i + " ONES")    : null),
+                        i -> ((i < 100)  ? (i + " TENS")    : null),
+                        i -> ((i < 1000) ? (i + " HUNDRED") : (i + " THOUSANDS"))
+                    ).orElse("UNKNOWN"))
+                .toList();
+        assertEquals(
+                "["
+                + "0 ONES, 1 ONES, 8 ONES, "
+                + "27 TENS, 64 TENS, "
+                + "125 HUNDRED, 216 HUNDRED, 343 HUNDRED, 512 HUNDRED, 729 HUNDRED, "
+                + "1000 THOUSANDS, 1331 THOUSANDS, 1728 THOUSANDS]",
+                guess.toString());
+    }
+    
+    @Test
+    public void testResultMapAny_Exception() {
+        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val guess
+                = nums
+                .map(num -> (String)Result.of(num)
+                    .mapAny(
+                        i -> ((i < 10)   ? (i + " ONES")    : null),
+                        i -> { if (i < 100) return (i + " TENS"); throw new NullPointerException(); },
+                        i -> ((i < 1000) ? (i + " HUNDRED") : (i + " THOUSANDS"))
+                    ).orElse("UNKNOWN"))
+        .toList();
+        assertEquals(
+                "["
+                + "0 ONES, 1 ONES, 8 ONES, "
+                + "27 TENS, 64 TENS, "
+                + "125 HUNDRED, 216 HUNDRED, 343 HUNDRED, 512 HUNDRED, 729 HUNDRED, "
+                + "1000 THOUSANDS, 1331 THOUSANDS, 1728 THOUSANDS]",
+                guess.toString());
+    }
+    
+    @Test
+    public void testResultMapAny_AllNull() {
+        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val guess
+                = nums
+                .map(num -> (String)Result.of(num)
+                    .mapAny(
+                        i -> null,
+                        i -> null,
+                        i -> null
+                    ).get())
+        .toList();
+        assertEquals(
+                "[null, null, null, null, null, null, null, null, null, null, null, null, null]",
+                guess.toString());
+    }
+    
+    @Test
+    public void testResultMapAny_AllException() {
+        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val guess
+                = nums
+                .map(num -> (String)Result.of(num)
+                    .mapAny(
+                        i -> { throw new ArrayIndexOutOfBoundsException(-1); },
+                        i -> { throw new NullPointerException(); },
+                        i -> { throw new NumberFormatException(); }
+                    ).toString())
+        .toList();
+        assertEquals(
+                "["
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }, "
+                + "Result:{ Exception: java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1 }"
+                + "]",
+                guess.toString());
+    }
+    
+    @Test
+    public void testResultMapAny_OneNullAllException() {
+        val nums  = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val guess = nums
+        .map(num -> (String)Result.of(num)
+                    .mapAny(
+                        i -> null,
+                        i -> { throw new NullPointerException(); },
+                        i -> null
+                    ).get())
+        .toList();
+        assertEquals(
+                "[null, null, null, null, null, null, null, null, null, null, null, null, null]",
+                guess.toString());
+    }
+    
+    @Test
+    public void testResultMapAny_Mix() {
+        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val guess
+                = nums
+                .map(num -> (String)Result.of(num)
+                    .mapAny(
+                        i -> ((i < 10)   ? i             : null),
+                        i -> ((i < 100)  ? (i + " TENS") : null)
+                    ).orElse("UNKNOWN"))
+                .toList();
+        assertEquals(
+                "["
+                + "0 ONES, 1 ONES, 8 ONES, "
+                + "27 TENS, 64 TENS, "
+                + "125 HUNDRED, 216 HUNDRED, 343 HUNDRED, 512 HUNDRED, 729 HUNDRED, "
+                + "1000 THOUSANDS, 1331 THOUSANDS, 1728 THOUSANDS]",
+                guess.toString());
+    }
+    
 //    
+//    // TODO - Don't know why when we have multiple layer of flatMap, Eclipse hangs. Let deal with this later.
+//    //        Seems to goes away after upgrade Eclipse to 2018-12 ... but no time to deal with it now.
 //    @Test
 //    public void testResultFor() {
 //        val res1 = FuncList.of(1, 2, 3, 4);
@@ -212,10 +340,21 @@ public class ResultTest {
 //        }));
 //        
 //        System.out.println(For(
-//                res1, 
-//                (s1)     -> StreamPlus.infiniteInt().limit(s1).toList(),
-//                (s1, s2) -> Result.of(s1 + " + " + s2 + " = " + (s1 + s2)).toList()));
+//                                StreamPlus.infiniteInt().limit(3).toList(), 
+//                (s1)         -> StreamPlus.infiniteInt().limit(3).toList(),
+//                (s1, s2)     -> StreamPlus.infiniteInt().limit(3).toList(),
+//                (s1, s2, s3) -> Result.of(s1 + "-" + s2 + "-" + s3).toList()
+//        ));
+//        
+//        System.out.println(For(
+//                StreamPlus.infiniteInt().limit(3).toList(), 
+//                StreamPlus.infiniteInt().limit(3).toList(),
+//                StreamPlus.infiniteInt().limit(3).toList(),
+//                (s1, s2, s3) -> Result.of(s1 + "-" + s2 + "-" + s3).toList()
+//        ));
 //    }
+//    
+//    // -- 2 --
 //    
 //    public static <I1, I2, O> FuncList<O> For(
 //            FuncList<I1>               l1,
@@ -223,17 +362,6 @@ public class ResultTest {
 //            Func2<I1, I2, FuncList<O>> yield) {
 //        return l1.flatMap(e1 -> {
 //            return next1.apply(e1).flatMap(e2 -> {
-//                return yield.apply(e1, e2);
-//            });
-//        });
-//    }
-//    
-//    public static <I1, I2, O> FuncList<O> For(
-//            FuncList<I1>               l1,
-//            Func0<FuncList<I2>>        next1,
-//            Func2<I1, I2, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.apply().flatMap(e2 -> {
 //                return yield.apply(e1, e2);
 //            });
 //        });
@@ -250,6 +378,8 @@ public class ResultTest {
 //        });
 //    }
 //    
+//    // -- 3 --
+//    
 //    public static <I1, I2, I3, O> FuncList<O> For(
 //            FuncList<I1>                l1,
 //            Func1<I1, FuncList<I2>>     next1,
@@ -258,176 +388,6 @@ public class ResultTest {
 //        return l1.flatMap(e1 -> {
 //            return next1.apply(e1).flatMap(e2 -> {
 //                return next2.apply(e1, e2).flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                l1,
-//            Func0<FuncList<I2>>         next1,
-//            Func2<I1, I2, FuncList<I3>> next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.apply().flatMap(e2 -> {
-//                return next2.apply(e1, e2).flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                l1,
-//            FuncList<I2>                next1,
-//            Func2<I1, I2, FuncList<I3>> next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.flatMap(e2 -> {
-//                return next2.apply(e1, e2).flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                l1,
-//            Func1<I1, FuncList<I2>>     next1,
-//            Func1<I2, FuncList<I3>> next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.apply(e1).flatMap(e2 -> {
-//                return next2.apply(e2).flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                l1,
-//            Func0<FuncList<I2>>         next1,
-//            Func1<I2, FuncList<I3>> next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.apply().flatMap(e2 -> {
-//                return next2.apply(e2).flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                l1,
-//            FuncList<I2>                next1,
-//            Func1<I2, FuncList<I3>> next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.flatMap(e2 -> {
-//                return next2.apply(e2).flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                l1,
-//            Func1<I1, FuncList<I2>>     next1,
-//            Func0<FuncList<I3>> next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.apply(e1).flatMap(e2 -> {
-//                return next2.apply().flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                l1,
-//            Func0<FuncList<I2>>         next1,
-//            Func0<FuncList<I3>> next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.apply().flatMap(e2 -> {
-//                return next2.apply().flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                l1,
-//            FuncList<I2>                next1,
-//            Func0<FuncList<I3>> next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.flatMap(e2 -> {
-//                return next2.apply().flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                   l1,
-//            Func1<I1, FuncList<I2>>        next1,
-//            FuncList<I3>                   next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.apply(e1).flatMap(e2 -> {
-//                return next2.flatMap(e3 -> {
-//                    return yield.apply(e1, e2, e3);
-//                });
-//            });
-//        });
-//    }
-//    
-//    public static <I1, I2, I3, O> FuncList<O> For(
-//            FuncList<I1>                   l1,
-//            Func0<FuncList<I2>>            next1,
-//            FuncList<I3>                   next2,
-//            Func3<I1, I2, I3, FuncList<O>> yield) {
-//        return l1.flatMap(e1 -> {
-//            return next1.apply().flatMap(e2 -> {
-//                return next2.flatMap(e3 -> {
 //                    return yield.apply(e1, e2, e3);
 //                });
 //            });
@@ -447,5 +407,8 @@ public class ResultTest {
 //            });
 //        });
 //    }
+//    
+//    
+//    
     
 }
