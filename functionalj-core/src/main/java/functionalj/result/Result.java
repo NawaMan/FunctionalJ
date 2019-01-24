@@ -276,6 +276,13 @@ public abstract class Result<DATA>
         return new ImmutableResult<D>(value, (Exception)null);
     }
     
+    public static <D> Result<D> from(Optional<? extends D> optional) {
+        return Result.of(optional.orElse(null));
+    }
+    public static <D> Result<D> from(Nullable<? extends D> nullable) {
+        return Result.of(nullable.orElse(null));
+    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> Result<D> from(Supplier<? extends D> supplier) {
         try {

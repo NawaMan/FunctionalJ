@@ -200,7 +200,7 @@ public interface FuncList<DATA>
         return isLazy() ? list.lazy() : list.eager();
     }
     
-    public default FuncList<IntTuple2<DATA>> select(Predicate<? super DATA> check) {
+    public default FuncList<IntTuple2<DATA>> query(Predicate<? super DATA> check) {
         return this
                 .mapWithIndex((index, data)-> check.test(data) ? new IntTuple2<DATA>(index, data) : null)
                 .filterNonNull();
@@ -1118,5 +1118,5 @@ public interface FuncList<DATA>
     
     //-- Plus w/ Self --
     //==================================================================================================================
-
+    
 }

@@ -213,6 +213,9 @@ public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
         return (i1) -> this.applyUnsafe(i1, i2, i3, i4, i5);
     }
     
+    public default Func1<INPUT1, Func4<INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT>> split() {
+        return split1();
+    }
     public default Func1<INPUT1, Func4<INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT>> split1() {
         return (i1) -> (i2, i3, i4, i5) -> this.applyUnsafe(i1, i2, i3, i4, i5);
     }

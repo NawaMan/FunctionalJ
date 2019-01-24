@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
 import functionalj.result.Result;
+import lombok.val;
 
 /**
  * Classes extending this class handle the last step in the processing of the Pipeable.
@@ -164,16 +165,15 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
     /**
      * Returns the catch that will returns the value OR process the exception by mapping it to other value.
      *   
-     * @param  <OUTPUT>       the output data type.
-     * @param  <FINALOUTPUT>  the final output data type.
-     * @param  mapper         the mapper.
+     * @param  <OUTPUT> the output data type.
+     * @param  mapper   the mapper.
      * @return the catch.
      */
-    public static <OUTPUT, FINALOUTPUT> 
-            Catch<OUTPUT, FINALOUTPUT, RuntimeException> thenHandleException(Function<Exception, FINALOUTPUT> mapper) {
-        return new Catch<OUTPUT, FINALOUTPUT, RuntimeException>() {
-            public FINALOUTPUT doCatch(OUTPUT data, Exception exception) {
-                return mapper.apply(exception);
+    public static <OUTPUT> 
+            Catch<OUTPUT, OUTPUT, RuntimeException> thenHandleException(Function<Exception, OUTPUT> mapper) {
+        return new Catch<OUTPUT, OUTPUT, RuntimeException>() {
+            public OUTPUT doCatch(OUTPUT data, Exception exception) {
+                return (exception != null) ? mapper.apply(exception) : data;
             }
         };
     }
@@ -191,6 +191,24 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
         return new Catch<OUTPUT, FINALOUTPUT, RuntimeException>() {
             public FINALOUTPUT doCatch(OUTPUT data, Exception exception) {
                 return mapper.apply(data, exception);
+            }
+        };
+    }
+    
+    /**
+     * Returns the catch that will process both the value and exception.
+     *   
+     * @param  <OUTPUT>       the output data type.
+     * @param  <FINALOUTPUT>  the final output data type.
+     * @param  mapper         the mapper.
+     * @return the catch.
+     */
+    public static <OUTPUT, FINALOUTPUT> 
+            Catch<OUTPUT, FINALOUTPUT, RuntimeException> thenHandle(Function<Result<OUTPUT>, FINALOUTPUT> mapper) {
+        return new Catch<OUTPUT, FINALOUTPUT, RuntimeException>() {
+            public FINALOUTPUT doCatch(OUTPUT data, Exception exception) {
+                val result = (exception == null) ? Result.of(data) : Result.<OUTPUT>ofException(exception);
+                return mapper.apply(result);
             }
         };
     }
