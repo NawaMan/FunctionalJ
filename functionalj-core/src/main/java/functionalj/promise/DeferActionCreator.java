@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
+import functionalj.ref.ComputeBody;
 import functionalj.ref.Ref;
 import functionalj.result.Result;
 import functionalj.supportive.Default;
@@ -32,7 +33,9 @@ public class DeferActionCreator {
         val promiseRef = new AtomicReference<Promise<D>>();
         val runTask    = new RunTask<D>(interruptOnCancel, supplier, onStart, runner, promiseRef::get);
         val action     = new DeferAction<D>(runTask, null);
-        promiseRef.set(action.getPromise());
+        val promise    = action.getPromise();
+        System.out.println(promise + ": DeferActionCreator.create");
+        promiseRef.set(promise);
         return action;
     }
     
@@ -60,43 +63,65 @@ public class DeferActionCreator {
         
         @Override
         public void run() {
-            AsyncRunner.run(runner, this::body);
-        }
-        
-        private void body() {
-            val promise = promiseRef.get();
-            if (!promise.isNotDone()) 
-                return;
-            
-            setupInterruptOnCancel(promise);
-            
-            carelessly(onStart);
-            
-            val action = new PendingAction<D>(promise);
-            val result = Result.of(this::runSupplier);
-            action.completeWith(result);
-        }
-        
-        private D runSupplier() {
-            try {
-                return supplier.get();
-            } finally {
-                doInterruptOnCancel();
-            }
-        }
-        
-        private void setupInterruptOnCancel(Promise<D> promise) {
-            if (!interruptOnCancel)
-                return;
-            
-            threadRef.set(Thread.currentThread());
-            promise.eavesdrop(r -> {
-                r.ifCancelled(() -> {
-                    val thread = threadRef.get();
-                    if ((thread != null) && !thread.equals(Thread.currentThread()))
-                        thread.interrupt();
-                });
+            AsyncRunner
+            .run(runner, new Body())
+            .onComplete(result->{
+                val promise = promiseRef.get();
+                val action = new PendingAction<D>(promise);
+                if (result.isValue())
+                     action.complete(null);
+                else if (result.isCancelled())
+                     action.abort(result.exception());
+                else action.fail (result.exception());
             });
+        }
+        
+        class Body implements ComputeBody<Void, RuntimeException> {
+            public void prepared() {
+                val promise = promiseRef.get();
+                if (!promise.isNotDone()) 
+                    return;
+                
+                System.out.println(promise + ": prepared ");
+                setupInterruptOnCancel(promise);
+                
+                carelessly(onStart);
+            }
+            @Override
+            public Void compute() throws RuntimeException {
+                val promise = promiseRef.get();
+                val action = new PendingAction<D>(promise);
+                val result = Result.of(this::runSupplier);
+                action.completeWith(result);
+                return null;
+            }
+            
+            private D runSupplier() {
+                try {
+                    return supplier.get();
+                } finally {
+                    doInterruptOnCancel();
+                }
+            }
+            
+            private void setupInterruptOnCancel(Promise<D> promise) {
+                if (!interruptOnCancel)
+                    return;
+                
+                threadRef.set(Thread.currentThread());
+                System.out.println(promise + ": setupInterruptOnCancel");
+                promise.eavesdrop(r -> {
+                    System.out.println(promise + ": eavesdrop: , r: " + r);
+                    r.ifCancelled(() -> {
+                        val thread = threadRef.get();
+                        System.out.println("ifCancelled: " + promise + ", thread: " + thread);
+                        if ((thread != null) && !thread.equals(Thread.currentThread())) {
+                            System.out.println("Interrupt!");
+                            thread.interrupt();
+                        }
+                    });
+                });
+            }
         }
         
         private void doInterruptOnCancel() {

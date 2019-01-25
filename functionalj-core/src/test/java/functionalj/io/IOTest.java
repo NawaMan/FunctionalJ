@@ -17,7 +17,6 @@ import functionalj.promise.DeferActionBuilder;
 import functionalj.result.Result;
 import lombok.val;
 
-@Ignore
 public class IOTest {
     @Test
     public void testValue() {
@@ -50,6 +49,8 @@ public class IOTest {
         assertEquals("Result:{ Value: 0 }", io.createAction().getResult().toString());
         assertEquals("Result:{ Value: 0 }", io.createAction().getResult().toString());
     }
+    
+    @Ignore("Fail but no time to fix.")
     @Test
     public void testMap() {
         val logs    = new ArrayList<String>();
@@ -114,6 +115,7 @@ public class IOTest {
     }
     
     // Ummm - Somehow this test is not deterministic - The problem seems to be .map.
+    @Ignore("Fail but no time to fix.")
     @Test
     public void testFilter() {
         val logs    = new ArrayList<String>();
@@ -136,6 +138,7 @@ public class IOTest {
     }
     
     // Ummm - Somehow this test is not deterministic - The problem seems to be .map.
+    @Ignore("Fail but no time to fix.")
     @Test
     public void testMapError() {
         val logs    = new ArrayList<String>();
@@ -164,6 +167,7 @@ public class IOTest {
     }
     
     // Ummm - Somehow this test is not deterministic - The problem seems to be .map.
+    @Ignore("Fail but no time to fix.")
     @Test
     public void testReuseable() {
         val logs    = new ArrayList<String>();

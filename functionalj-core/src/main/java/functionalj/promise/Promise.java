@@ -384,6 +384,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                     });
                     
                     try {
+                        System.out.println(this + ": Await! ");
                         if ((timeout < 0) || (unit == null))
                              latch.await();
                         else latch.await(timeout, unit);
