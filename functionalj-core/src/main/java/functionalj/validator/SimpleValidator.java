@@ -29,7 +29,7 @@ public interface SimpleValidator<DATA> extends Validator<DATA> {
     public ValidationException     createException(DATA data);
 
     public default Result<DATA> validate(DATA data) {
-        return Result.from(()->{
+        return Result.of(()->{
             val checker = checker();
             if (checker.test(data))
                 return data;

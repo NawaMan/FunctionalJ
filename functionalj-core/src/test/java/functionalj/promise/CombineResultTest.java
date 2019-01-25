@@ -22,7 +22,7 @@ public class CombineResultTest {
         val action3  = DeferAction.createNew().start();
         val combiner = new CombineResult<>(
                 listOf(action1, action2, action3),
-                l -> Result.of(l.toString()));
+                l -> Result.valueOf(l.toString()));
         
         val combine = combiner.getDeferAction()
         .onComplete(result -> {

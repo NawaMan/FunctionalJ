@@ -297,15 +297,15 @@ public class GeneratorTest {
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public boolean isWhite() { return this instanceof White; }\n" + 
-                "public Result<White> asWhite() { return Result.of(this).filter(White.class).map(White.class::cast); }\n" + 
+                "public Result<White> asWhite() { return Result.valueOf(this).filter(White.class).map(White.class::cast); }\n" + 
                 "public Color ifWhite(Consumer<White> action) { if (isWhite()) action.accept((White)this); return this; }\n" + 
                 "public Color ifWhite(Runnable action) { if (isWhite()) action.run(); return this; }\n" + 
                 "public boolean isBlack() { return this instanceof Black; }\n" + 
-                "public Result<Black> asBlack() { return Result.of(this).filter(Black.class).map(Black.class::cast); }\n" + 
+                "public Result<Black> asBlack() { return Result.valueOf(this).filter(Black.class).map(Black.class::cast); }\n" + 
                 "public Color ifBlack(Consumer<Black> action) { if (isBlack()) action.accept((Black)this); return this; }\n" + 
                 "public Color ifBlack(Runnable action) { if (isBlack()) action.run(); return this; }\n" + 
                 "public boolean isRGB() { return this instanceof RGB; }\n" + 
-                "public Result<RGB> asRGB() { return Result.of(this).filter(RGB.class).map(RGB.class::cast); }\n" + 
+                "public Result<RGB> asRGB() { return Result.valueOf(this).filter(RGB.class).map(RGB.class::cast); }\n" + 
                 "public Color ifRGB(Consumer<RGB> action) { if (isRGB()) action.accept((RGB)this); return this; }\n" + 
                 "public Color ifRGB(Runnable action) { if (isRGB()) action.run(); return this; }",
                 lines);

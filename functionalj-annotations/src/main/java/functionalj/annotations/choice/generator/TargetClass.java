@@ -174,7 +174,7 @@ public class TargetClass implements Lines {
                 asList(format("    ")),
                 asList(format("    private %s() {}", type.name)),
                 asList(format("    public %1$s __data() throws Exception { return this; }",     typeName)),
-                asList(format("    public Result<%1$s> toResult() { return Result.of(this); }", typeName)),
+                asList(format("    public Result<%1$s> toResult() { return Result.valueOf(this); }", typeName)),
                 asList(format("    ")),
                 subClassDefinitions,
                 asList(format("    ")),

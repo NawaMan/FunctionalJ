@@ -46,7 +46,7 @@ public class RefBuilder<DATA> {
         return ref;
     }
     public Ref<DATA> defaultTo(DATA value) {
-        val result = Result.of(value);
+        val result = Result.valueOf(value);
         val ref    = new RefOf.FromResult<>(dataClass, result, elseSupplier);
         return ref;
     }

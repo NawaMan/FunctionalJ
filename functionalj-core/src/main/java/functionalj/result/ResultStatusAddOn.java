@@ -245,7 +245,7 @@ public interface ResultStatusAddOn<DATA> {
             if (!problemClass.isInstance(exception))
                 return asResult();
             
-            return Result.of(fallbackValue);
+            return Result.valueOf(fallbackValue);
         });
     }
     public default Result<DATA> recover(Class<? extends Throwable> problemClass, Supplier<? extends DATA> fallbackSupplier) {
@@ -256,7 +256,7 @@ public interface ResultStatusAddOn<DATA> {
             if (!problemClass.isInstance(exception))
                 return asResult();
             
-            return Result.from(fallbackSupplier);
+            return Result.of(fallbackSupplier);
         });
     }
     public default Result<DATA> recover(Class<? extends Throwable> problemClass, Func1<? super Exception,? extends DATA> recoverFunction) {
@@ -267,7 +267,7 @@ public interface ResultStatusAddOn<DATA> {
             if (!problemClass.isInstance(exception))
                 return asResult();
             
-            return Result.of(exception).map(recoverFunction);
+            return Result.valueOf(exception).map(recoverFunction);
         });
     }
     

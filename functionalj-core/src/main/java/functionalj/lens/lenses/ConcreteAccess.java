@@ -37,4 +37,7 @@ public interface ConcreteAccess<HOST, DATA, ACCESS extends AnyAccess<HOST, DATA>
     public default NullableAccess<HOST, DATA, ACCESS> toNullable() {
         return __internal__.toNullable(this, f -> newAccess(f));
     }
+    public default ResultAccess<HOST, DATA, ACCESS> toResult() {
+        return __internal__.toResult(this, f -> newAccess(f));
+    }
 }

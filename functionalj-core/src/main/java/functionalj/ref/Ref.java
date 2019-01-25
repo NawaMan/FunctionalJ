@@ -28,7 +28,7 @@ public abstract class Ref<DATA> {
     public static <D> Ref<D> ofValue(D value) {
         @SuppressWarnings("unchecked")
         val dataClass = (Class<D>)value.getClass();
-        val result    = Result.of(value);
+        val result    = Result.valueOf(value);
         val ref       = new RefOf.FromResult<D>(dataClass, result, null);
         return ref;
     }
@@ -52,7 +52,7 @@ public abstract class Ref<DATA> {
         val entry    = refEntry.get();
         val supplier = entry.findSupplier(this);
         if (supplier != null) {
-            val result = Result.from(supplier);
+            val result = Result.of(supplier);
             return result;
         }
         
@@ -78,7 +78,7 @@ public abstract class Ref<DATA> {
             if (!override.isPresent() && (whenAbsentSupplier != null)) {
                 val elseValue = whenAbsentSupplier.get();
                 if (elseValue != null)
-                     return Result.of(elseValue);
+                     return Result.valueOf(elseValue);
                 else return Result.ofNotExist();
             }
         }
@@ -88,7 +88,7 @@ public abstract class Ref<DATA> {
             if (result.isPresent() || (whenAbsentSupplier == null))
                 return result;
             if (!result.isPresent() && (whenAbsentSupplier != null)) {
-                val elseValue = Result.from(whenAbsentSupplier);
+                val elseValue = Result.of(whenAbsentSupplier);
                 if (elseValue.isPresent())
                     return elseValue;
                else return Result.ofNotExist();
@@ -102,7 +102,7 @@ public abstract class Ref<DATA> {
         if (elseValue == null)
             return Result.ofNotExist();
         
-        return Result.of(elseValue);
+        return Result.valueOf(elseValue);
     }
     
     public final Result<DATA> asResult() {

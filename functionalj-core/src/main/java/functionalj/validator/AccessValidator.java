@@ -16,7 +16,7 @@ public interface AccessValidator<DATA, TARGET> extends Validator<DATA> {
     public ValidationException       createException(DATA data, TARGET target);
     
     public default Result<DATA> validate(DATA data) {
-        return Result.from(()->{
+        return Result.of(()->{
             val mapper  = access();
             val target  = mapper.apply(data);
             val checker = checker();

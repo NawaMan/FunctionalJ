@@ -240,7 +240,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     boolean makeComplete(DATA data) { 
-        val result = Result.of(data);
+        val result = Result.valueOf(data);
         return makeDone(result);
     }
     
@@ -587,7 +587,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 targetPromise.makeDone((Result<TARGET>)result);
             })
             .ifAbsent(() -> {
-                targetPromise.makeDone(Result.of(elseValue));
+                targetPromise.makeDone(Result.valueOf(elseValue));
             });
         });
     }
@@ -600,7 +600,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 targetPromise.makeDone((Result<TARGET>)result);
             })
             .ifAbsent(() -> {
-                targetPromise.makeDone(Result.from(elseSupplier));
+                targetPromise.makeDone(Result.of(elseSupplier));
             });
         });
     }

@@ -48,7 +48,7 @@ public class Specs {
             
             static <D> ValidationException checkToBoolean(Validation.ToBoolean<D> validating, D data) {
                 return Result
-                        .from  (()    -> validating.checker().apply(data))
+                        .of  (()    -> validating.checker().apply(data))
                         .filter(valid -> !valid)
                         .map   (__    -> new ValidationException(getErrorMessage(validating, data)))
                         .get   ();
@@ -60,7 +60,7 @@ public class Specs {
             }
             static <D> ValidationException checkToMessage(Validation.ToMessage<D> validating, D data) {
                 return Result
-                        .from(()     -> validating.errorMsg().apply(data))
+                        .of(()     -> validating.errorMsg().apply(data))
                         .map (errMsg -> new ValidationException(errMsg))
                         .get ();
             }

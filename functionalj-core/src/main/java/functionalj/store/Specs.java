@@ -37,8 +37,8 @@ class Specs {
             ChangeResult<D> result = self.asMe();
             return result.match()
                     .notAllowed(n -> (Result<D>)Result.ofNotExist())
-                    .accepted  (a -> Result.of(a.newData()))
-                    .adjusted  (a -> Result.of(a.adjustedData()))
+                    .accepted  (a -> Result.valueOf(a.newData()))
+                    .adjusted  (a -> Result.valueOf(a.adjustedData()))
                     .orElse    (     (Result<D>)Result.ofNotExist());
         }
         @SuppressWarnings("unchecked")
@@ -46,8 +46,8 @@ class Specs {
             ChangeResult<D> result = self.asMe();
             return result.match()
                     .notAllowed(n -> (Result<D>)Result.ofNotExist())
-                    .accepted  (a -> Result.of(a.newData()))
-                    .adjusted  (a -> Result.of(a.adjustedData()))
+                    .accepted  (a -> Result.valueOf(a.newData()))
+                    .adjusted  (a -> Result.valueOf(a.adjustedData()))
                     .orElse    (     (Result<D>)Result.ofNotExist())
                     .value();
         }

@@ -111,7 +111,7 @@ public class Store<DATA> {
     }
     
     public Result<DATA> extract() {
-        return Result.of(dataRef.get());
+        return Result.valueOf(dataRef.get());
     }
     
     @Override

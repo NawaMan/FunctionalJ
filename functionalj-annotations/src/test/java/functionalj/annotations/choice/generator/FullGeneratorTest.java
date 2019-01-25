@@ -129,7 +129,7 @@ public class FullGeneratorTest {
               "    \n" + 
               "    private BasicColor() {}\n" + 
               "    public BasicColor __data() throws Exception { return this; }\n" + 
-              "    public Result<BasicColor> toResult() { return Result.of(this); }\n" + 
+              "    public Result<BasicColor> toResult() { return Result.valueOf(this); }\n" + 
               "    \n" + 
               "    public static final class White extends BasicColor {\n" + 
               "        public static final WhiteLens<White> theWhite = new WhiteLens<>(LensSpec.of(White.class));\n" + 
@@ -226,15 +226,15 @@ public class FullGeneratorTest {
               "    \n" + 
               "    \n" + 
               "    public boolean isWhite() { return this instanceof White; }\n" + 
-              "    public Result<White> asWhite() { return Result.of(this).filter(White.class).map(White.class::cast); }\n" + 
+              "    public Result<White> asWhite() { return Result.valueOf(this).filter(White.class).map(White.class::cast); }\n" + 
               "    public BasicColor ifWhite(Consumer<White> action) { if (isWhite()) action.accept((White)this); return this; }\n" + 
               "    public BasicColor ifWhite(Runnable action) { if (isWhite()) action.run(); return this; }\n" + 
               "    public boolean isBlack() { return this instanceof Black; }\n" + 
-              "    public Result<Black> asBlack() { return Result.of(this).filter(Black.class).map(Black.class::cast); }\n" + 
+              "    public Result<Black> asBlack() { return Result.valueOf(this).filter(Black.class).map(Black.class::cast); }\n" + 
               "    public BasicColor ifBlack(Consumer<Black> action) { if (isBlack()) action.accept((Black)this); return this; }\n" + 
               "    public BasicColor ifBlack(Runnable action) { if (isBlack()) action.run(); return this; }\n" + 
               "    public boolean isRGB() { return this instanceof RGB; }\n" + 
-              "    public Result<RGB> asRGB() { return Result.of(this).filter(RGB.class).map(RGB.class::cast); }\n" + 
+              "    public Result<RGB> asRGB() { return Result.valueOf(this).filter(RGB.class).map(RGB.class::cast); }\n" + 
               "    public BasicColor ifRGB(Consumer<RGB> action) { if (isRGB()) action.accept((RGB)this); return this; }\n" + 
               "    public BasicColor ifRGB(Runnable action) { if (isRGB()) action.run(); return this; }\n" + 
               "    \n" + 

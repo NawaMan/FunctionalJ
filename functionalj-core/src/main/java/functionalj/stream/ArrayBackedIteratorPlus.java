@@ -87,7 +87,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
         if ((newIndex >= end) && (count != 0))
             return Result.ofNoMore();
         
-        return Result.of(new ArrayBackedIteratorPlus<DATA>(array, oldIndex, oldIndex + count));
+        return Result.valueOf(new ArrayBackedIteratorPlus<DATA>(array, oldIndex, oldIndex + count));
     }
     
     public <TARGET> Result<TARGET> mapNext(int count, Func1<StreamPlus<DATA>, TARGET> mapper) {
@@ -97,7 +97,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
         
         val stream = new ArrayBackedIteratorPlus<DATA>(array, old, old + count).stream();
         val value = mapper.apply(stream);
-        return Result.of(value);
+        return Result.valueOf(value);
     }
     
     public Streamable<DATA> streamable() {

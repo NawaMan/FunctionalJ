@@ -45,7 +45,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA> {
     
     public default Result<DATA> pullNext() {
         if (hasNext())
-             return Result.of(next());
+             return Result.valueOf(next());
         else return Result.ofNoMore();
     }
     
@@ -56,7 +56,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA> {
             return Result.ofNoMore();
         
         val iterator = (ArrayBackedIteratorPlus<DATA>)new ArrayBackedIteratorPlus<Object>(array);
-        return Result.value(iterator);
+        return Result.valueOf(iterator);
     }
     
     public default IteratorPlus<DATA> useNext(FuncUnit1<DATA> usage) {
@@ -84,7 +84,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA> {
         if (hasNext()) {
             val next  = next();
             val value = mapper.apply(next);
-            return Result.of(value);
+            return Result.valueOf(value);
         } else {
             return Result.ofNoMore();
         }
@@ -99,7 +99,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA> {
         val input  = (IteratorPlus<DATA>)ArrayBackedIteratorPlus.from(array);
         val stream = input.stream();
         val value = mapper.apply(stream);
-        return Result.of(value);
+        return Result.valueOf(value);
     }
     
 }

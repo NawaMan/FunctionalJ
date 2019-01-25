@@ -12,14 +12,14 @@ public class MapToTest {
 
     @Test
     public void testSelectThen() {
-        System.out.println(Result.of("Hello").map(only(s -> s.length() < 4))); //.then(s -> "--" + s + "")
+        System.out.println(Result.valueOf("Hello").map(only(s -> s.length() < 4))); //.then(s -> "--" + s + "")
     }
     
     @Test
     public void testTuple() {
         val f1 = toTuple  ((String s)->s, (String s) -> s.length())
                 .thenReduce((a,b)-> a + " - " + b);
-        System.out.println(Result.of("Hello").map(f1));
+        System.out.println(Result.valueOf("Hello").map(f1));
     }
 
 }

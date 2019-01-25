@@ -48,7 +48,7 @@ public class Func1Test {
     
     @Test
     public void testApply() {
-        val result   = Result.of("Hello");
+        val result   = Result.valueOf("Hello");
         val promise  = Promise.of("Hello");
         val stream   = f(()->StreamPlus.infiniteInt().limit(5).map($I.asString()));
         val list     = StreamPlus.infiniteInt().limit(5).map($I.asString()).toList();

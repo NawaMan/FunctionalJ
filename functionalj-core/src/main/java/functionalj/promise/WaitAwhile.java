@@ -19,11 +19,11 @@ public abstract class WaitAwhile extends Wait {
     
     
     public <DATA> WaitOrDefault<DATA> orDefaultTo(DATA data) {
-        return new WaitOrDefault<>(this, ()->Result.of(data));
+        return new WaitOrDefault<>(this, ()->Result.valueOf(data));
     }
     
     public <DATA> WaitOrDefault<DATA> orDefaultFrom(Supplier<DATA> supplier) {
-        return new WaitOrDefault<>(this, ()->Result.from(supplier));
+        return new WaitOrDefault<>(this, ()->Result.of(supplier));
     }
     
     public <DATA> WaitOrDefault<DATA> orDefaultGet(Supplier<Result<DATA>> supplier) {

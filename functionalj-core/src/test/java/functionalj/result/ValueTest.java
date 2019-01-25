@@ -13,7 +13,7 @@ import lombok.val;
 
 public class ValueTest {
     
-    private static final Result<String> value = Result.of("Test");
+    private static final Result<String> value = Result.valueOf("Test");
     
     private void assertStrings(String str, Object obj) {
         assertEquals(str, "" + obj);

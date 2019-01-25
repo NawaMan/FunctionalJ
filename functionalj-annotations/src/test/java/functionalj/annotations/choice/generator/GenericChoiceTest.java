@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.annotations.choice.generator.model.Case;
@@ -32,57 +31,90 @@ public class GenericChoiceTest {
             emptyList()
         );
     
-    @Ignore("Have not implement.")
+//    @Ignore("Have not implement.")
     @Test
     public void test() {
         val targetClass = new TargetClass(spec);
         val code = targetClass.lines().stream().collect(Collectors.joining("\n"));
         val expect = 
-                "package functionalj.annotations.uniontype;\n" + 
+                "package functionalj.annotations.choice.generator;\n" + 
                 "\n" + 
-                "import functionalj.annotations.uniontype.AbstractUnionType;\n" + 
-                "import functionalj.annotations.uniontype.UnionTypeSwitch;\n" + 
+                "import functionalj.annotations.choice.AbstractChoiceClass;\n" + 
+                "import functionalj.annotations.choice.ChoiceTypeSwitch;\n" + 
+                "import functionalj.annotations.choice.generator.MayBeTest.MayBe;\n" + 
+                "import functionalj.lens.core.LensSpec;\n" + 
+                "import functionalj.lens.lenses.*;\n" + 
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.result.Result;\n" + 
                 "import java.util.function.Consumer;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Predicate;\n" + 
                 "import java.util.function.Supplier;\n" + 
-                "import static functionalj.annotations.uniontype.CheckEquals.checkEquals;\n" + 
-                "import static functionalj.annotations.uniontype.UnionTypes.Switch;\n" + 
+                "\n" + 
+                "// functionalj.annotations.choice.generator.MayBeTest.MayBe\n" + 
                 "\n" + 
                 "@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})\n" + 
-                "public abstract class MayBe extends AbstractUnionType<MayBe.MayBeFirstSwitch> implements Pipeable<MayBe> {\n" + 
+                "public abstract class MayBe extends AbstractChoiceClass<MayBe.MayBeFirstSwitch> implements Pipeable<MayBe> {\n" + 
                 "    \n" + 
                 "    public static final Nill nill = Nill.instance;\n" + 
                 "    public static final Nill Nill() {\n" + 
                 "        return Nill.instance;\n" + 
                 "    }\n" + 
-                "    public static final <T> Just Just(T data) {\n" + 
+                "    public static final Just Just(T data) {\n" + 
                 "        return new Just(data);\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    \n" + 
+                "    public static final MayBeLens<MayBe> theMayBe = new MayBeLens<>(LensSpec.of(MayBe.class));\n" + 
+                "    public static class MayBeLens<HOST> extends ObjectLensImpl<HOST, MayBe> {\n" + 
+                "\n" + 
+                "        public final BooleanAccess<MayBe> isNill = MayBe::isNill;\n" + 
+                "        public final BooleanAccess<MayBe> isJust = MayBe::isJust;\n" + 
+                "        public final ResultAccess<HOST, Nill, Nill.NillLens<HOST>> asNill = createSubResultLens(MayBe::asNill, null, Nill.NillLens::new);\n" + 
+                "        public final ResultAccess<HOST, Just, Just.JustLens<HOST>> asJust = createSubResultLens(MayBe::asJust, null, Just.JustLens::new);\n" + 
+                "        public MayBeLens(LensSpec<HOST, MayBe> spec) {\n" + 
+                "            super(spec);\n" + 
+                "        }\n" + 
+                "    }\n" + 
+                "    \n" + 
                 "    private MayBe() {}\n" + 
                 "    public MayBe __data() throws Exception { return this; }\n" + 
-                "    public Result<MayBe> toResult() { return Result.of(this); }\n" + 
+                "    public Result<MayBe> toResult() { return Result.valueOf(this); }\n" + 
                 "    \n" + 
                 "    public static final class Nill extends MayBe {\n" + 
+                "        public static final NillLens<Nill> theNill = new NillLens<>(LensSpec.of(Nill.class));\n" + 
                 "        private static final Nill instance = new Nill();\n" + 
                 "        private Nill() {}\n" + 
+                "        public static class NillLens<HOST> extends ObjectLensImpl<HOST, MayBe.Nill> {\n" + 
+                "            \n" + 
+                "            public NillLens(LensSpec<HOST, MayBe.Nill> spec) {\n" + 
+                "                super(spec);\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
                 "    }\n" + 
-                "    public static final class Just<T> extends MayBe {\n" + 
+                "    public static final class Just extends MayBe {\n" + 
+                "        public static final JustLens<Just> theJust = new JustLens<>(LensSpec.of(Just.class));\n" + 
                 "        private T data;\n" + 
                 "        private Just(T data) {\n" + 
-                "            this.data = data;\n" + 
+                "            this.data = $utils.notNull(data);\n" + 
                 "        }\n" + 
                 "        public T data() { return data; }\n" + 
                 "        public Just withData(T data) { return new Just(data); }\n" + 
+                "        public static class JustLens<HOST> extends ObjectLensImpl<HOST, MayBe.Just> {\n" + 
+                "            \n" + 
+                "            public final ObjectLens<HOST, Object> data = (ObjectLens)createSubLens(MayBe.Just::data, MayBe.Just::withData, ObjectLens::of);\n" + 
+                "            \n" + 
+                "            public JustLens(LensSpec<HOST, MayBe.Just> spec) {\n" + 
+                "                super(spec);\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public final MayBeFirstSwitch mapSwitch = new MayBeFirstSwitch(this);\n" + 
-                "    @Override public MayBeFirstSwitch __switch() {\n" + 
-                "         return mapSwitch;\n" + 
+                "    private final MayBeFirstSwitch __switch = new MayBeFirstSwitch(this);\n" + 
+                "    @Override public MayBeFirstSwitch match() {\n" + 
+                "         return __switch;\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    private volatile String toString = null;\n" + 
@@ -93,7 +125,7 @@ public class GenericChoiceTest {
                 "        synchronized(this) {\n" + 
                 "            if (toString != null)\n" + 
                 "                return toString;\n" + 
-                "            toString = Switch(this)\n" + 
+                "            toString = $utils.Match(this)\n" + 
                 "                    .nill(__ -> \"Nill\")\n" + 
                 "                    .just(just -> \"Just(\" + String.format(\"%1$s\", just.data) + \")\")\n" + 
                 "            ;\n" + 
@@ -121,19 +153,22 @@ public class GenericChoiceTest {
                 "    \n" + 
                 "    \n" + 
                 "    public boolean isNill() { return this instanceof Nill; }\n" + 
-                "    public Result<Nill> asNill() { return Result.of(this).filter(Nill.class).map(Nill.class::cast); }\n" + 
+                "    public Result<Nill> asNill() { return Result.valueOf(this).filter(Nill.class).map(Nill.class::cast); }\n" + 
                 "    public MayBe ifNill(Consumer<Nill> action) { if (isNill()) action.accept((Nill)this); return this; }\n" + 
                 "    public MayBe ifNill(Runnable action) { if (isNill()) action.run(); return this; }\n" + 
                 "    public boolean isJust() { return this instanceof Just; }\n" + 
-                "    public Result<Just> asJust() { return Result.of(this).filter(Just.class).map(Just.class::cast); }\n" + 
+                "    public Result<Just> asJust() { return Result.valueOf(this).filter(Just.class).map(Just.class::cast); }\n" + 
                 "    public MayBe ifJust(Consumer<Just> action) { if (isJust()) action.accept((Just)this); return this; }\n" + 
                 "    public MayBe ifJust(Runnable action) { if (isJust()) action.run(); return this; }\n" + 
                 "    \n" + 
                 "    public static class MayBeFirstSwitch {\n" + 
                 "        private MayBe $value;\n" + 
                 "        private MayBeFirstSwitch(MayBe theValue) { this.$value = theValue; }\n" + 
+                "        public <TARGET> MayBeFirstSwitchTyped<TARGET> toA(Class<TARGET> clzz) {\n" + 
+                "            return new MayBeFirstSwitchTyped<TARGET>($value);\n" + 
+                "        }\n" + 
                 "        \n" + 
-                "        public <TARGET> MayBeSwitchJust<TARGET> nill(Function<? super Nill, TARGET> theAction) {\n" + 
+                "        public <TARGET> MayBeSwitchJust<TARGET> nill(Function<? super Nill, ? extends TARGET> theAction) {\n" + 
                 "            Function<MayBe, TARGET> $action = null;\n" + 
                 "            Function<MayBe, TARGET> oldAction = (Function<MayBe, TARGET>)$action;\n" + 
                 "            Function<MayBe, TARGET> newAction =\n" + 
@@ -145,14 +180,19 @@ public class GenericChoiceTest {
                 "            \n" + 
                 "            return new MayBeSwitchJust<TARGET>($value, newAction);\n" + 
                 "        }\n" + 
-                "        public <TARGET> MayBeSwitchJust<TARGET> nill(Supplier<TARGET> theSupplier) {\n" + 
+                "        public <TARGET> MayBeSwitchJust<TARGET> nill(Supplier<? extends TARGET> theSupplier) {\n" + 
                 "            return nill(d->theSupplier.get());\n" + 
                 "        }\n" + 
+                "        public <TARGET> MayBeSwitchJust<TARGET> nill(TARGET theValue) {\n" + 
+                "            return nill(d->theValue);\n" + 
+                "        }\n" + 
                 "    }\n" + 
-                "    public static class MayBeSwitchNillJust<TARGET> extends UnionTypeSwitch<MayBe, TARGET> {\n" + 
-                "        private MayBeSwitchNillJust(MayBe theValue, Function<MayBe, TARGET> theAction) { super(theValue, theAction); }\n" + 
+                "    public static class MayBeFirstSwitchTyped<TARGET> {\n" + 
+                "        private MayBe $value;\n" + 
+                "        private MayBeFirstSwitchTyped(MayBe theValue) { this.$value = theValue; }\n" + 
                 "        \n" + 
-                "        public MayBeSwitchJust<TARGET> nill(Function<? super Nill, TARGET> theAction) {\n" + 
+                "        public MayBeSwitchJust<TARGET> nill(Function<? super Nill, ? extends TARGET> theAction) {\n" + 
+                "            Function<MayBe, TARGET> $action = null;\n" + 
                 "            Function<MayBe, TARGET> oldAction = (Function<MayBe, TARGET>)$action;\n" + 
                 "            Function<MayBe, TARGET> newAction =\n" + 
                 "                ($action != null)\n" + 
@@ -163,14 +203,38 @@ public class GenericChoiceTest {
                 "            \n" + 
                 "            return new MayBeSwitchJust<TARGET>($value, newAction);\n" + 
                 "        }\n" + 
-                "        public MayBeSwitchJust<TARGET> nill(Supplier<TARGET> theSupplier) {\n" + 
+                "        public MayBeSwitchJust<TARGET> nill(Supplier<? extends TARGET> theSupplier) {\n" + 
                 "            return nill(d->theSupplier.get());\n" + 
                 "        }\n" + 
+                "        public MayBeSwitchJust<TARGET> nill(TARGET theValue) {\n" + 
+                "            return nill(d->theValue);\n" + 
+                "        }\n" + 
                 "    }\n" + 
-                "    public static class MayBeSwitchJust<TARGET> extends UnionTypeSwitch<MayBe, TARGET> {\n" + 
-                "        private MayBeSwitchJust(MayBe theValue, Function<MayBe, TARGET> theAction) { super(theValue, theAction); }\n" + 
+                "    public static class MayBeSwitchNillJust<TARGET> extends ChoiceTypeSwitch<MayBe, TARGET> {\n" + 
+                "        private MayBeSwitchNillJust(MayBe theValue, Function<MayBe, ? extends TARGET> theAction) { super(theValue, theAction); }\n" + 
                 "        \n" + 
-                "        public TARGET just(Function<? super Just, TARGET> theAction) {\n" + 
+                "        public MayBeSwitchJust<TARGET> nill(Function<? super Nill, ? extends TARGET> theAction) {\n" + 
+                "            Function<MayBe, TARGET> oldAction = (Function<MayBe, TARGET>)$action;\n" + 
+                "            Function<MayBe, TARGET> newAction =\n" + 
+                "                ($action != null)\n" + 
+                "                ? oldAction : \n" + 
+                "                    ($value instanceof Nill)\n" + 
+                "                    ? (Function<MayBe, TARGET>)(d -> theAction.apply((Nill)d))\n" + 
+                "                    : oldAction;\n" + 
+                "            \n" + 
+                "            return new MayBeSwitchJust<TARGET>($value, newAction);\n" + 
+                "        }\n" + 
+                "        public MayBeSwitchJust<TARGET> nill(Supplier<? extends TARGET> theSupplier) {\n" + 
+                "            return nill(d->theSupplier.get());\n" + 
+                "        }\n" + 
+                "        public MayBeSwitchJust<TARGET> nill(TARGET theValue) {\n" + 
+                "            return nill(d->theValue);\n" + 
+                "        }\n" + 
+                "    }\n" + 
+                "    public static class MayBeSwitchJust<TARGET> extends ChoiceTypeSwitch<MayBe, TARGET> {\n" + 
+                "        private MayBeSwitchJust(MayBe theValue, Function<MayBe, ? extends TARGET> theAction) { super(theValue, theAction); }\n" + 
+                "        \n" + 
+                "        public TARGET just(Function<? super Just, ? extends TARGET> theAction) {\n" + 
                 "            Function<MayBe, TARGET> oldAction = (Function<MayBe, TARGET>)$action;\n" + 
                 "            Function<MayBe, TARGET> newAction =\n" + 
                 "                ($action != null)\n" + 
@@ -181,11 +245,14 @@ public class GenericChoiceTest {
                 "            \n" + 
                 "            return newAction.apply($value);\n" + 
                 "        }\n" + 
-                "        public TARGET just(Supplier<TARGET> theSupplier) {\n" + 
+                "        public TARGET just(Supplier<? extends TARGET> theSupplier) {\n" + 
                 "            return just(d->theSupplier.get());\n" + 
                 "        }\n" + 
+                "        public TARGET just(TARGET theValue) {\n" + 
+                "            return just(d->theValue);\n" + 
+                "        }\n" + 
                 "        \n" + 
-                "        public <T> MayBeSwitchJust<TARGET> just(Predicate<Just<T>> check, Function<? super Just, TARGET> theAction) {\n" + 
+                "        public MayBeSwitchJust<TARGET> just(Predicate<Just> check, Function<? super Just, ? extends TARGET> theAction) {\n" + 
                 "            Function<MayBe, TARGET> oldAction = (Function<MayBe, TARGET>)$action;\n" + 
                 "            Function<MayBe, TARGET> newAction =\n" + 
                 "                ($action != null)\n" + 
@@ -196,29 +263,37 @@ public class GenericChoiceTest {
                 "            \n" + 
                 "            return new MayBeSwitchJust<TARGET>($value, newAction);\n" + 
                 "        }\n" + 
-                "        public <T> MayBeSwitchJust<TARGET> just(Predicate<Just<T>> check, Supplier<TARGET> theSupplier) {\n" + 
+                "        public MayBeSwitchJust<TARGET> just(Predicate<Just> check, Supplier<? extends TARGET> theSupplier) {\n" + 
                 "            return just(check, d->theSupplier.get());\n" + 
                 "        }\n" + 
-                "        \n" + 
-                "        public <T> MayBeSwitchJust<TARGET> justOf(T aData, Function<Just, TARGET> theAction) {\n" + 
-                "            return just(just -> checkEquals(aData, just.data), theAction);\n" + 
-                "        }\n" + 
-                "        public <T> MayBeSwitchJust<TARGET> justOf(T aData, Supplier<TARGET> theSupplier) {\n" + 
-                "            return just(just -> checkEquals(aData, just.data), theSupplier);\n" + 
+                "        public MayBeSwitchJust<TARGET> just(Predicate<Just> check, TARGET theValue) {\n" + 
+                "            return just(check, d->theValue);\n" + 
                 "        }\n" + 
                 "        \n" + 
-                "        public <T> MayBeSwitchJust<TARGET> justOf(Predicate<T> dataCheck, Function<Just, TARGET> theAction) {\n" + 
+                "        public MayBeSwitchJust<TARGET> justOf(T aData, Function<Just, ? extends TARGET> theAction) {\n" + 
+                "            return just(just -> $utils.checkEquals(aData, just.data), theAction);\n" + 
+                "        }\n" + 
+                "        public MayBeSwitchJust<TARGET> justOf(T aData, Supplier<? extends TARGET> theSupplier) {\n" + 
+                "            return just(just -> $utils.checkEquals(aData, just.data), theSupplier);\n" + 
+                "        }\n" + 
+                "        public MayBeSwitchJust<TARGET> justOf(T aData, TARGET theValue) {\n" + 
+                "            return just(just -> $utils.checkEquals(aData, just.data), theValue);\n" + 
+                "        }\n" + 
+                "        \n" + 
+                "        public MayBeSwitchJust<TARGET> justOf(Predicate<T> dataCheck, Function<Just, ? extends TARGET> theAction) {\n" + 
                 "            return just(just -> dataCheck.test(just.data), theAction);\n" + 
                 "        }\n" + 
-                "        public <T> MayBeSwitchJust<TARGET> justOf(Predicate<T> dataCheck, Supplier<TARGET> theSupplier) {\n" + 
+                "        public MayBeSwitchJust<TARGET> justOf(Predicate<T> dataCheck, Supplier<? extends TARGET> theSupplier) {\n" + 
                 "            return just(just -> dataCheck.test(just.data), theSupplier);\n" + 
+                "        }\n" + 
+                "        public MayBeSwitchJust<TARGET> justOf(Predicate<T> dataCheck, TARGET theValue) {\n" + 
+                "            return just(just -> dataCheck.test(just.data), theValue);\n" + 
                 "        }\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public static final SourceSpec spec = new SourceSpec(\"MayBe\", new Type(\"functionalj.annotations.uniontype\", \"MayBeTest\", \"MayBe\", emptyList()), \"spec\", false, emptyList(), java.util.Arrays.asList(new Choice(\"Nill\", null, emptyList()), new Choice(\"Just\", null, java.util.Arrays.asList(new ChoiceParam(\"data\", new Type(null, null, \"T\", emptyList()))))), emptyList());\n" + 
+                "    public static final functionalj.annotations.choice.generator.model.SourceSpec spec = new functionalj.annotations.choice.generator.model.SourceSpec(\"MayBe\", new functionalj.annotations.choice.generator.model.Type(\"functionalj.annotations.choice.generator\", \"MayBeTest\", \"MayBe\", java.util.Collections.emptyList()), \"spec\", false, java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.Case(\"Nill\", null, java.util.Collections.emptyList()), new functionalj.annotations.choice.generator.model.Case(\"Just\", null, java.util.Arrays.asList(new functionalj.annotations.choice.generator.model.CaseParam(\"data\", new functionalj.annotations.choice.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()), false)))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n" + 
                 "    \n" + 
-                "}\n" + 
-                "";
+                "}";
         assertEquals(expect, code);
     }
 

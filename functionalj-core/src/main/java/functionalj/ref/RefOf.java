@@ -80,7 +80,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         
         @Override
         protected final Result<DATA> findResult() {
-            val result = Result.from(supplier);
+            val result = Result.of(supplier);
             return result;
         }
         
@@ -101,7 +101,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         
         @Override
         protected final Result<DATA> findResult() {
-            val result = Result.from(anotherRef.valueSupplier()).whenAbsentGet(whenAbsentSupplier);
+            val result = Result.of(anotherRef.valueSupplier()).whenAbsentGet(whenAbsentSupplier);
             return result;
         }
         

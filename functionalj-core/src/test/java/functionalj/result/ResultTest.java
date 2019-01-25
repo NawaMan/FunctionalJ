@@ -16,7 +16,7 @@ import lombok.val;
 
 public class ResultTest {
     
-    private static final Result<String> result = Result.of("Test");
+    private static final Result<String> result = Result.valueOf("Test");
     
     private void assertStrings(String str, Object obj) {
         assertEquals(str, "" + obj);
@@ -30,13 +30,13 @@ public class ResultTest {
     
     @Test
     public void testResultFom() {
-        assertEquals("Result:{ Value: VALUE }", "" + Result.from(()->"VALUE"));
+        assertEquals("Result:{ Value: VALUE }", "" + Result.of(()->"VALUE"));
         assertEquals("Result:{ Exception: java.io.IOException }",
-                "" + Result.from(f(()->{ throw new IOException(); })));
+                "" + Result.of(f(()->{ throw new IOException(); })));
     }
     @Test
     public void testResult_value() {
-        val result = Result.of("VALUE");
+        val result = Result.valueOf("VALUE");
         assertEquals("Result:{ Value: VALUE }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -46,7 +46,7 @@ public class ResultTest {
     
     @Test
     public void testResult_null() {
-        val result = Result.of(null);
+        val result = Result.valueOf(null);
         assertEquals("Result:{ Value: null }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -56,7 +56,7 @@ public class ResultTest {
     
     @Test
     public void testResult_exception() {
-        val result = Result.of((String)null).ensureNotNull();
+        val result = Result.valueOf((String)null).ensureNotNull();
         assertEquals("Result:{ Exception: java.lang.NullPointerException }", "" + result);
         assertFalse(result.isValue());
         assertTrue (result.isException());
@@ -66,7 +66,7 @@ public class ResultTest {
     
     @Test
     public void testResult_map() {
-        val result = Result.of("VALUE").map(str -> str.length());
+        val result = Result.valueOf("VALUE").map(str -> str.length());
         assertEquals("Result:{ Value: 5 }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -76,7 +76,7 @@ public class ResultTest {
     
     @Test
     public void testResult_failableMap() {
-        val result = Result.of("VALUE").map(str -> new UnsupportedOperationException("Not support."));
+        val result = Result.valueOf("VALUE").map(str -> new UnsupportedOperationException("Not support."));
         assertEquals("Result:{ Value: java.lang.UnsupportedOperationException: Not support. }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -86,7 +86,7 @@ public class ResultTest {
     
     @Test
     public void testResult_map_null() {
-        val result = Result.of("VALUE").map(str -> (String)null).map(String::length);
+        val result = Result.valueOf("VALUE").map(str -> (String)null).map(String::length);
         assertEquals("Result:{ Value: null }", "" + result);
     }
     @Test
@@ -94,40 +94,40 @@ public class ResultTest {
         val validator1 = Validator.of((String s) -> s.toUpperCase().equals(s), "Not upper case");
         val validator2 = Validator.of((String s) -> s.matches("^.*[A-Z].*$"),  "No upper case");
         val validator3 = Validator.of((String s) -> !s.isEmpty(),              "Empty");
-        assertEquals("Result:{ Value: (VALUE,[]) }", "" + Result.of("VALUE").validate(validator1, validator2));
+        assertEquals("Result:{ Value: (VALUE,[]) }", "" + Result.valueOf("VALUE").validate(validator1, validator2));
         assertEquals("Result:{ Value: (value,["
                 +   "functionalj.result.ValidationException: Not upper case, "
                 +   "functionalj.result.ValidationException: No upper case"
                 + "]) }",
-                "" + Result.of("value").validate(validator1, validator2, validator3));
+                "" + Result.valueOf("value").validate(validator1, validator2, validator3));
         assertEquals("Result:{ Value: (,["
                 +   "functionalj.result.ValidationException: No upper case, "
                 +   "functionalj.result.ValidationException: Empty]) }",
-                "" + Result.of("").validate(validator1, validator2, validator3));
+                "" + Result.valueOf("").validate(validator1, validator2, validator3));
         
         assertEquals("Result:{ Value: (null,["
                 +   "functionalj.result.ValidationException: java.lang.NullPointerException, "
                 +   "functionalj.result.ValidationException: java.lang.NullPointerException, "
                 +   "functionalj.result.ValidationException: java.lang.NullPointerException"
                 + "]) }",
-                "" + Result.of((String)null).validate(validator1, validator2, validator3));
+                "" + Result.valueOf((String)null).validate(validator1, validator2, validator3));
     }
     @Test
     public void testResult_validate_oneline() throws Exception {
         assertEquals("Result:{ Invalid: Has upper case: \"VALUE\" }", 
-                Result.of("VALUE")
+                Result.valueOf("VALUE")
                 .validate("Has upper case: \"%s\"", s -> !s.matches("^.*[A-Z].*$"))
                 .toString());
         
         assertEquals("Result:{ Invalid: Too long: \"VALUE\" }", 
-                Result.of("VALUE")
+                Result.valueOf("VALUE")
                 .validate("Too long: \"%s\"", String::length, l -> l < 3)
                 .toString());
     }
     
     @Test
     public void testResultOf() {
-        assertStrings("Result:{ Value: One }", Result.of("One"));
+        assertStrings("Result:{ Value: One }", Result.valueOf("One"));
         
         assertStrings("Result:{ Value: One,Two }",
                 Result.of("One", "Two", (a, b)-> a + "," + b));
@@ -140,18 +140,18 @@ public class ResultTest {
     public void testResultResult() {
         assertStrings(
                 "Result:{ Value: One }",
-                Result.ofResult(Result.of("One")));
+                Result.ofResult(Result.valueOf("One")));
         assertStrings("Result:{ Value: One,Two }",
                 Result.ofResults(
-                        Result.of("One"),
-                        Result.of("Two"),
+                        Result.valueOf("One"),
+                        Result.valueOf("Two"),
                         (a, b)-> a + "," + b));
         
         assertStrings("Result:{ Value: One,Two,Three }",
                 Result.ofResults(
-                        Result.of("One"),
-                        Result.of("Two"),
-                        Result.of("Three"),
+                        Result.valueOf("One"),
+                        Result.valueOf("Two"),
+                        Result.valueOf("Three"),
                         (a, b, c)-> a + "," + b + "," + c));
     }
     
@@ -159,16 +159,16 @@ public class ResultTest {
     public void testResultResult_withException() {
         assertStrings("Result:{ Exception: functionalj.function.FunctionInvocationException: Test fail }",
                 Result.ofResults(
-                        Result.of("One"),
+                        Result.valueOf("One"),
                         Result.ofException("Test fail"),
-                        Result.of("Three"),
+                        Result.valueOf("Three"),
                         (a, b, c)-> a + "," + b + "," + c));
     }
     
     @Test
     public void testResultPeek() {
         assertStrings("Result:{ Value: 3 }", 
-                Result.of("One")
+                Result.valueOf("One")
                 .pipe(
                     r -> r.map(String::length),
                     String::valueOf));
@@ -178,7 +178,7 @@ public class ResultTest {
     public void testResultDo() {
         assertStrings(
                 "Result:{ Value: One }",
-                Result.ofResult(Result.of("One")));
+                Result.ofResult(Result.valueOf("One")));
         
         assertStrings("Result:{ Value: One,Two }",
                 Do(
@@ -205,7 +205,7 @@ public class ResultTest {
         val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess
                 = nums
-                .map(num -> (String)Result.of(num)
+                .map(num -> (String)Result.valueOf(num)
                     .mapFirst(
                         i -> ((i < 10)   ? (i + " ONES")    : null),
                         i -> ((i < 100)  ? (i + " TENS")    : null),
@@ -226,7 +226,7 @@ public class ResultTest {
         val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess
                 = nums
-                .map(num -> (String)Result.of(num)
+                .map(num -> (String)Result.valueOf(num)
                     .mapFirst(
                         i -> ((i < 10)   ? (i + " ONES")    : null),
                         i -> { if (i < 100) return (i + " TENS"); throw new NullPointerException(); },
@@ -247,7 +247,7 @@ public class ResultTest {
         val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess
                 = nums
-                .map(num -> (String)Result.of(num)
+                .map(num -> (String)Result.valueOf(num)
                     .mapFirst(
                         i -> null,
                         i -> null,
@@ -264,7 +264,7 @@ public class ResultTest {
         val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess
                 = nums
-                .map(num -> (String)Result.of(num)
+                .map(num -> (String)Result.valueOf(num)
                     .mapFirst(
                         i -> { throw new ArrayIndexOutOfBoundsException(-1); },
                         i -> { throw new NullPointerException(); },
@@ -294,7 +294,7 @@ public class ResultTest {
     public void testResultmapFirst_OneNullAllException() {
         val nums  = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess = nums
-        .map(num -> (String)Result.of(num)
+        .map(num -> (String)Result.valueOf(num)
                     .mapFirst(
                         i -> null,
                         i -> { throw new NullPointerException(); },
@@ -306,13 +306,13 @@ public class ResultTest {
                 guess.toString());
     }
     
-    // TODO - Put this back.
+    // TODO - Fail gradle build - Put this back.
 //    @Test
 //    public void testResultmapFirst_Mix() {
 //        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
 //        val guess
 //                = nums
-//                .map(num -> Result.of(num)
+//                .map(num -> Result.value(num)
 //                    .mapFirst(
 //                        i -> ((i < 10)   ? i             : null),
 //                        i -> ((i < 100)  ? (i + " TENS") : null)
@@ -332,7 +332,7 @@ public class ResultTest {
 //        
 //        System.out.println(res1.flatMap(s1 -> {
 //            return StreamPlus.infiniteInt().limit(s1).toList().flatMap(s2 -> {
-//                return Result.of(s1 + " + " + s2 + " = " + (s1 + s2)).toList();
+//                return Result.value(s1 + " + " + s2 + " = " + (s1 + s2)).toList();
 //            });
 //        }));
 //        
@@ -340,14 +340,14 @@ public class ResultTest {
 //                                StreamPlus.infiniteInt().limit(3).toList(), 
 //                (s1)         -> StreamPlus.infiniteInt().limit(3).toList(),
 //                (s1, s2)     -> StreamPlus.infiniteInt().limit(3).toList(),
-//                (s1, s2, s3) -> Result.of(s1 + "-" + s2 + "-" + s3).toList()
+//                (s1, s2, s3) -> Result.value(s1 + "-" + s2 + "-" + s3).toList()
 //        ));
 //        
 //        System.out.println(For(
 //                StreamPlus.infiniteInt().limit(3).toList(), 
 //                StreamPlus.infiniteInt().limit(3).toList(),
 //                StreamPlus.infiniteInt().limit(3).toList(),
-//                (s1, s2, s3) -> Result.of(s1 + "-" + s2 + "-" + s3).toList()
+//                (s1, s2, s3) -> Result.value(s1 + "-" + s2 + "-" + s3).toList()
 //        ));
 //    }
 //    

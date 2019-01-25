@@ -46,19 +46,18 @@ public interface FuncMapLens<HOST, KEY, VALUE,
     }
     
     // TODO - Fix this.
-//    
-//    public default VALUELENS get(KEY key) {
-//        WriteLens<Map<KEY, VALUE>, VALUE> write = (map, value) -> {
-//            val newMap = new LinkedHashMap<KEY, VALUE>();
-//            newMap.putAll(map);
-//            newMap.put(key, value);
-//            return newMap;
-//        };
-//        Function<Map<KEY, VALUE>, VALUE> read = map -> {
-//            return map.get(key);
-//        };
-//        return LensUtils.createSubLens(this, read, write, lensSpecParameterized2()::createSubLens2);
-//    }
+    
+    public default VALUELENS get(KEY key) {
+        WriteLens<FuncMap<KEY, VALUE>, VALUE> write = (map, value) -> {
+            val newMap = map.with(key, value);
+            return newMap;
+        };
+        Function<FuncMap<KEY, VALUE>, VALUE> read = map -> {
+            return map.get(key);
+        };
+        return LensUtils.createSubLens(this, read, write, lensSpecParameterized2()::createSubLens2);
+    }
+    
 //    
 //    public default Function<HOST, HOST> changeTo(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {
 //        val mapEntry = Func1.of((Map.Entry<KEY, VALUE> each) ->{

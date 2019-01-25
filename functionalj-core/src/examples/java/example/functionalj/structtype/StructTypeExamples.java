@@ -233,7 +233,7 @@ public class StructTypeExamples {
             fail("Except a ValidationException.");
         } catch (ValidationException e) {
             assertEquals(
-                    "example.functionalj.structtype.StructTypeExample$NegativeRadiusException: Radius: -10",
+                    "example.functionalj.structtype.StructTypeExamples$NegativeRadiusException: Radius: -10",
                     e.toString());
         }
     }

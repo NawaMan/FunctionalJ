@@ -82,7 +82,7 @@ public class GenericSupportTest {
             "    \n" + 
             "    private Option() {}\n" + 
             "    public Option<T> __data() throws Exception { return this; }\n" + 
-            "    public Result<Option<T>> toResult() { return Result.of(this); }\n" + 
+            "    public Result<Option<T>> toResult() { return Result.valueOf(this); }\n" + 
             "    \n" + 
             "    public static final class None<T extends Number> extends Option<T> {\n" + 
             "        public static final NoneLens<None> theNone = new NoneLens<>(LensSpec.of(None.class));\n" + 
@@ -156,11 +156,11 @@ public class GenericSupportTest {
             "    \n" + 
             "    \n" + 
             "    public boolean isNone() { return this instanceof None; }\n" + 
-            "    public Result<None<T>> asNone() { return Result.of(this).filter(None.class).map(None.class::cast); }\n" + 
+            "    public Result<None<T>> asNone() { return Result.valueOf(this).filter(None.class).map(None.class::cast); }\n" + 
             "    public Option<T> ifNone(Consumer<None<T>> action) { if (isNone()) action.accept((None<T>)this); return this; }\n" + 
             "    public Option<T> ifNone(Runnable action) { if (isNone()) action.run(); return this; }\n" + 
             "    public boolean isSome() { return this instanceof Some; }\n" + 
-            "    public Result<Some<T>> asSome() { return Result.of(this).filter(Some.class).map(Some.class::cast); }\n" + 
+            "    public Result<Some<T>> asSome() { return Result.valueOf(this).filter(Some.class).map(Some.class::cast); }\n" + 
             "    public Option<T> ifSome(Consumer<Some<T>> action) { if (isSome()) action.accept((Some<T>)this); return this; }\n" + 
             "    public Option<T> ifSome(Runnable action) { if (isSome()) action.run(); return this; }\n" + 
             "    \n" + 

@@ -64,11 +64,11 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     }
     
     public default Result<OUTPUT> applySafely() {
-        return Result.from(this);
+        return Result.of(this);
     }
     
     public default Result<OUTPUT> getSafely() {
-        return Result.from(this);
+        return Result.of(this);
     }
     
     public default Func0<OUTPUT> memoize() {

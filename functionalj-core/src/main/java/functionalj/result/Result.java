@@ -263,25 +263,26 @@ public abstract class Result<DATA>
         return invalidResult;
     }
     
-    public static <D> Result<D> value(D value) {
-        if (value == null)
-            return Result.ofNull();
-        
-        return new ImmutableResult<D>(value, (Exception)null);
-    }
-    public static <D> Result<D> of(D value) {
+    public static <D> Result<D> valueOf(D value) {
         if (value == null)
             return Result.ofNull();
         
         return new ImmutableResult<D>(value, (Exception)null);
     }
     
+//    public static <D> Result<D> from(Optional<? extends D> optional) {
+//        return Result.value(optional.orElse(null));
+//    }
+//    public static <D> Result<D> from(Nullable<? extends D> nullable) {
+//        return Result.value(nullable.orElse(null));
+//    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <D> Result<D> from(Supplier<? extends D> supplier) {
+    public static <D> Result<D> of(Supplier<? extends D> supplier) {
         try {
             if (supplier instanceof Func0)
-                 return Result.of((D)((Func0)supplier).applyUnsafe());
-            else return Result.of(supplier.get());
+                 return Result.valueOf((D)((Func0)supplier).applyUnsafe());
+            else return Result.valueOf(supplier.get());
         } catch (FunctionInvocationException e) {
             val cause = e.getCause();
             if (cause instanceof Exception)
@@ -295,8 +296,8 @@ public abstract class Result<DATA>
     public static <D> Result<D> Try(Supplier<? extends D> supplier) {
         try {
             if (supplier instanceof Func0)
-                 return Result.of((D)((Func0)supplier).applyUnsafe());
-            else return Result.of(supplier.get());
+                 return Result.valueOf((D)((Func0)supplier).applyUnsafe());
+            else return Result.valueOf(supplier.get());
         } catch (Exception e) {
             return Result.ofException(e);
         }
@@ -325,14 +326,14 @@ public abstract class Result<DATA>
         if (exception != null)
             return Result.ofException(exception);
             
-        return Result.of(value);
+        return Result.valueOf(value);
     }
     
     public static <D, T1, T2> Result<D> of(
             T1 value1,
             T2 value2,
             BiFunction<T1, T2, D> merger) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value = Func.applyUnsafe(merger, value1, value2);
             return value;
         }));
@@ -343,7 +344,7 @@ public abstract class Result<DATA>
             T2 value2,
             T3 value3,
             Func3<T1, T2, T3, D> merger) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value = merger.applyUnsafe(value1, value2, value3);
             return value;
         }));
@@ -355,7 +356,7 @@ public abstract class Result<DATA>
             T3 value3,
             T4 value4,
             Func4<T1, T2, T3, T4, D> merger) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value = merger.applyUnsafe(value1, value2, value3, value4);
             return value;
         }));
@@ -368,7 +369,7 @@ public abstract class Result<DATA>
             T4 value4,
             T5 value5,
             Func5<T1, T2, T3, T4, T5, D> merger) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value = merger.applyUnsafe(value1, value2, value3, value4, value5);
             return value;
         }));
@@ -382,7 +383,7 @@ public abstract class Result<DATA>
             T5 value5,
             T6 value6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6);
             return value;
         }));
@@ -390,7 +391,7 @@ public abstract class Result<DATA>
     
     public static <D> Result<D> Do(Func0<? extends D> supplier) {
         try {
-            return Result.of((D)supplier.applyUnsafe());
+            return Result.valueOf((D)supplier.applyUnsafe());
         } catch (Exception e) {
             return Result.ofException(e);
         }
@@ -475,7 +476,7 @@ public abstract class Result<DATA>
             HasResult<T1> result1,
             HasResult<T2> result2,
             BiFunction<T1, T2, D> merger) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value1 = result1.getResult().orThrow();
             val value2 = result2.getResult().orThrow();
             val value = Func.applyUnsafe(merger, value1, value2);
@@ -488,7 +489,7 @@ public abstract class Result<DATA>
             HasResult<T2> result2,
             HasResult<T3> result3,
             Func3<T1, T2, T3, D> merger) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value1 = result1.getResult().orThrow();
             val value2 = result2.getResult().orThrow();
             val value3 = result3.getResult().orThrow();
@@ -503,7 +504,7 @@ public abstract class Result<DATA>
             HasResult<T3> result3,
             HasResult<T4> result4,
             Func4<T1, T2, T3, T4, D> merger) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value1 = result1.getResult().orThrow();
             val value2 = result2.getResult().orThrow();
             val value3 = result3.getResult().orThrow();
@@ -520,7 +521,7 @@ public abstract class Result<DATA>
             HasResult<T4> result4,
             HasResult<T5> result5,
             Func5<T1, T2, T3, T4, T5, D> merger) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value1 = result1.getResult().orThrow();
             val value2 = result2.getResult().orThrow();
             val value3 = result3.getResult().orThrow();
@@ -539,7 +540,7 @@ public abstract class Result<DATA>
             HasResult<T5> result5,
             HasResult<T6> result6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value1 = result1.getResult().orThrow();
             val value2 = result2.getResult().orThrow();
             val value3 = result3.getResult().orThrow();
@@ -685,7 +686,7 @@ public abstract class Result<DATA>
                         return (Result<TARGET>)this;
                     
                     val newValue = mapper.applyUnsafe(value);
-                    return Result.of(newValue);
+                    return Result.valueOf(newValue);
                 }
         );
     }
@@ -714,7 +715,7 @@ public abstract class Result<DATA>
                         return (Result<TARGET>)this;
                     
                     val monad = (Nullable<TARGET>)mapper.applyUnsafe(value);
-                    return Result.of(monad.orElse(null));
+                    return Result.valueOf(monad.orElse(null));
                 }
         );
     }
@@ -917,7 +918,7 @@ public abstract class Result<DATA>
                         .filter(result    -> !result.isValue())
                         .map   (result    -> result.getException())
                         .map   (error     -> ValidationException.of(error));
-                    return Result.of(Tuple.of(value, exceptions));
+                    return Result.valueOf(Tuple.of(value, exceptions));
                 });
     }
     

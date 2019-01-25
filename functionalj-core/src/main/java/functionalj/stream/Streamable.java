@@ -327,7 +327,7 @@ public interface Streamable<DATA>
             val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
             return map(element -> {
                 val newValue = mapper.apply(prev.get(), element);
-                prev.set(Result.of(element));
+                prev.set(Result.valueOf(element));
                 return newValue;
             });
         });

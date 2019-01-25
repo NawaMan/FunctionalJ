@@ -122,7 +122,7 @@ public class ResultAccessTest {
     public void testResultAccessMap() {
         val logs = new ArrayList<String>();
         theDriver.secondCar.map(Car::color)
-        .apply(new Driver(new Car("Black"), Result.of(new Car("White"))))
+        .apply(new Driver(new Car("Black"), Result.valueOf(new Car("White"))))
         .pipe(me -> logs.add(me.toString()));
         theDriver.secondCar.map(Car::color)
         .apply(new Driver(new Car("Black"), Result.ofNull()))

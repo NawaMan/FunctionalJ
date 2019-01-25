@@ -55,7 +55,7 @@ class helper {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
-                return Result.of(fallbackValue);
+                return Result.valueOf(fallbackValue);
             
             return result;
         };
@@ -68,7 +68,7 @@ class helper {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
-                return Result.from(fallbackSupplier);
+                return Result.of(fallbackSupplier);
             
             return result;
         };
@@ -81,7 +81,7 @@ class helper {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
-                return Result.from(()->recoverFunction.apply(exception));
+                return Result.of(()->recoverFunction.apply(exception));
             
             return result;
         };
@@ -94,7 +94,7 @@ class helper {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
-                return Result.from(()->recoverFunction.apply(value, exception));
+                return Result.of(()->recoverFunction.apply(value, exception));
             
             return result;
         };

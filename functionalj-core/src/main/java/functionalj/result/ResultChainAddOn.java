@@ -172,7 +172,7 @@ public interface ResultChainAddOn<DATA> {
             Func1<? super DATA, ? extends Result<T1>> mapper1,
             Func1<? super DATA, ? extends Result<T2>> mapper2,
             Func2<T1, T2, T> mapper) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value   = asResult().orThrow();
             
             val result1 = mapper1.apply(value);
@@ -192,7 +192,7 @@ public interface ResultChainAddOn<DATA> {
             Func1<? super DATA, ? extends Result<T2>> mapper2,
             Func1<? super DATA, ? extends Result<T3>> mapper3,
             Func3<T1, T2, T3, T> mapper) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value   = asResult().orThrow();
             
             val result1 = mapper1.apply(value);
@@ -216,7 +216,7 @@ public interface ResultChainAddOn<DATA> {
             Func1<? super DATA, ? extends Result<T3>> mapper3,
             Func1<? super DATA, ? extends Result<T4>> mapper4,
             Func4<T1, T2, T3, T4, T> mapper) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value   = asResult().orThrow();
             
             val result1 = mapper1.apply(value);
@@ -244,7 +244,7 @@ public interface ResultChainAddOn<DATA> {
             Func1<? super DATA, ? extends Result<T4>> mapper4,
             Func1<? super DATA, ? extends Result<T5>> mapper5,
             Func5<T1, T2, T3, T4, T5, T> mapper) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value   = asResult().orThrow();
             
             val result1 = mapper1.apply(value);
@@ -276,7 +276,7 @@ public interface ResultChainAddOn<DATA> {
             Func1<? super DATA, ? extends Result<T5>> mapper5,
             Func1<? super DATA, ? extends Result<T6>> mapper6,
             Func6<T1, T2, T3, T4, T5, T6, T> mapper) {
-        return Result.from(Func0.of(()->{
+        return Result.of(Func0.of(()->{
             val value   = asResult().orThrow();
             
             val result1 = mapper1.apply(value);

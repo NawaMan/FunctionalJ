@@ -84,7 +84,7 @@ public class FunctionExamples {
     @Test
     public void example04_ToString() {
         val toInt = f(this::toInt);
-        assertTrue(toInt.toString().startsWith("example.functionalj.accesslens.FunctionExamples$$Lambda$"));
+        assertTrue(toInt.toString().startsWith("example.functionalj.function.FunctionExamples$$Lambda$"));
         // example.functionalj.accesslens.FunctionExamples$$Lambda$2/460332449@726f3b58
         // System.out.println(toInt.toString());
     }
@@ -98,13 +98,13 @@ public class FunctionExamples {
     @Test
     public void example06_ToString_Stack() {
         val toInt = F(this::toInt);
-        assertEquals("F1@example.functionalj.accesslens.FunctionExamples#100", toInt.toString());
+        assertEquals("F1@example.functionalj.function.FunctionExamples#100", toInt.toString());
     }
     
     @Test
     public void example07_ToString_StackName() {
         val toInt = F("Str2Int", this::toInt);
-        assertEquals("F1::Str2Int@example.functionalj.accesslens.FunctionExamples#106", toInt.toString());
+        assertEquals("F1::Str2Int@example.functionalj.function.FunctionExamples#106", toInt.toString());
     }
     
     @Test
@@ -161,7 +161,7 @@ public class FunctionExamples {
         
         assertEquals(
                 "Result:{ Value: 42 }",
-                "" + toInt.applyTo(Result  .of("42")));
+                "" + toInt.applyTo(Result  .valueOf("42")));
         
         assertEquals(
                 "{One:1, Forty-Two:42}",

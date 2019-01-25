@@ -116,7 +116,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Result<OUTPUT> applySafely(INPUT input) {
         try {
             val output = applyUnsafe(input);
-            return Result.of(output);
+            return Result.valueOf(output);
         } catch (Exception exception) {
             return Result.ofException(exception);
         }

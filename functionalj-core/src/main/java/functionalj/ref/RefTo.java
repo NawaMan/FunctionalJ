@@ -21,7 +21,7 @@ public class RefTo<DATA> extends Ref<DATA> {
     
     @Override
     protected Result<DATA> findResult() {
-        val result = Result.from(()->{
+        val result = Result.of(()->{
             val provider = defaultProvider.value();
             val dataType = getDataType();
             val value    = provider.get(dataType);

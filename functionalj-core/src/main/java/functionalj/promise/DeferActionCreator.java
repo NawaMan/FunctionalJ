@@ -73,7 +73,7 @@ public class DeferActionCreator {
             carelessly(onStart);
             
             val action = new PendingAction<D>(promise);
-            val result = Result.from(this::runSupplier);
+            val result = Result.of(this::runSupplier);
             action.completeWith(result);
         }
         

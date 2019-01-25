@@ -46,7 +46,7 @@ public abstract class Validation<D extends Object> extends AbstractChoiceClass<V
     
     private Validation() {}
     public Validation<D> __data() throws Exception { return this; }
-    public Result<Validation<D>> toResult() { return Result.of(this); }
+    public Result<Validation<D>> toResult() { return Result.valueOf(this); }
     
     public static final class ToBoolean<D extends Object> extends Validation<D> {
         public static final ToBooleanLens<ToBoolean> theToBoolean = new ToBooleanLens<>(LensSpec.of(ToBoolean.class));
@@ -159,15 +159,15 @@ public abstract class Validation<D extends Object> extends AbstractChoiceClass<V
     }
     
     public boolean isToBoolean() { return this instanceof ToBoolean; }
-    public Result<ToBoolean<D>> asToBoolean() { return Result.of(this).filter(ToBoolean.class).map(ToBoolean.class::cast); }
+    public Result<ToBoolean<D>> asToBoolean() { return Result.valueOf(this).filter(ToBoolean.class).map(ToBoolean.class::cast); }
     public Validation<D> ifToBoolean(Consumer<ToBoolean<D>> action) { if (isToBoolean()) action.accept((ToBoolean<D>)this); return this; }
     public Validation<D> ifToBoolean(Runnable action) { if (isToBoolean()) action.run(); return this; }
     public boolean isToMessage() { return this instanceof ToMessage; }
-    public Result<ToMessage<D>> asToMessage() { return Result.of(this).filter(ToMessage.class).map(ToMessage.class::cast); }
+    public Result<ToMessage<D>> asToMessage() { return Result.valueOf(this).filter(ToMessage.class).map(ToMessage.class::cast); }
     public Validation<D> ifToMessage(Consumer<ToMessage<D>> action) { if (isToMessage()) action.accept((ToMessage<D>)this); return this; }
     public Validation<D> ifToMessage(Runnable action) { if (isToMessage()) action.run(); return this; }
     public boolean isToException() { return this instanceof ToException; }
-    public Result<ToException<D>> asToException() { return Result.of(this).filter(ToException.class).map(ToException.class::cast); }
+    public Result<ToException<D>> asToException() { return Result.valueOf(this).filter(ToException.class).map(ToException.class::cast); }
     public Validation<D> ifToException(Consumer<ToException<D>> action) { if (isToException()) action.accept((ToException<D>)this); return this; }
     public Validation<D> ifToException(Runnable action) { if (isToException()) action.run(); return this; }
     

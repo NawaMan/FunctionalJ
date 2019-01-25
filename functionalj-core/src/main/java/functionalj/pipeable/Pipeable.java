@@ -7,6 +7,8 @@ import functionalj.function.Func1;
 import functionalj.functions.ThrowFuncs;
 import lombok.val;
 
+// TODO - Think about splitting Catch to Catch and Finally.
+
 @SuppressWarnings("javadoc")
 public interface Pipeable<DATA> {
     

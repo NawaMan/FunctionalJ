@@ -93,7 +93,7 @@ public class TupleMapGenMain {
         val trueTemplate  = templates._1();
         val falseTemplate = templates._2();
         return Func.of((Integer i, Boolean e)->{ 
-            return Result.of(e ? trueTemplate : falseTemplate)
+            return Result.value(e ? trueTemplate : falseTemplate)
                     .map(template -> String.format(template, i + 1))
                     .get();
         });

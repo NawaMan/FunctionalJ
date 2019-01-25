@@ -62,14 +62,19 @@ public class LensUtils {
             WriteLens<DATA, SUB>  writeSub,
             BooleanSupplier       isNullSafe) {
         return (host, newSubValue)->{
-            val oldValue = readValue.apply(host);
-            if (isNullSafe.getAsBoolean() && (oldValue == null))
-                return host;
-            
-            val newValue = writeSub.apply(oldValue, newSubValue);
-            val newHost  = writeValue.apply(host, newValue);
-            return newHost;
+            return performWrite(readValue, writeValue, writeSub, isNullSafe, host, newSubValue);
         };
+    }
+    
+    private static <DATA, HOST, SUB> HOST performWrite(Function<HOST, DATA> readValue, WriteLens<HOST, DATA> writeValue,
+            WriteLens<DATA, SUB> writeSub, BooleanSupplier isNullSafe, HOST host, SUB newSubValue) {
+        val oldValue = readValue.apply(host);
+        if (isNullSafe.getAsBoolean() && (oldValue == null))
+            return host;
+        
+        val newValue = writeSub.apply(oldValue, newSubValue);
+        val newHost  = writeValue.apply(host, newValue);
+        return newHost;
     }
     
     //== Parameterized ==

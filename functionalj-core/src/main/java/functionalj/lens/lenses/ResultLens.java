@@ -53,7 +53,7 @@ public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     
     public default SUBLENS get() {
         WriteLens<HOST, TYPE> write = (HOST host, TYPE newValue)->{
-            return lensSpec().getWrite().apply(host, Result.of(newValue));
+            return lensSpec().getWrite().apply(host, Result.valueOf(newValue));
         };
         LensSpec<HOST, TYPE> subSpec = LensSpec.of(lensSpec().getRead().andThen(Result::get), write);
         return lensSpecWithSub().createSubLens(subSpec);
@@ -61,7 +61,7 @@ public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
     
     public default SUBLENS value() {
         WriteLens<HOST, TYPE> write = (HOST host, TYPE newValue)->{
-            return lensSpec().getWrite().apply(host, Result.of(newValue));
+            return lensSpec().getWrite().apply(host, Result.valueOf(newValue));
         };
         LensSpec<HOST, TYPE> subSpec = LensSpec.of(lensSpec().getRead().andThen(Result::get), write);
         return lensSpecWithSub().createSubLens(subSpec);

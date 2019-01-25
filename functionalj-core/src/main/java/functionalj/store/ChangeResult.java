@@ -60,7 +60,7 @@ public abstract class ChangeResult<D extends Object> extends AbstractChoiceClass
     
     private ChangeResult() {}
     public ChangeResult<D> __data() throws Exception { return this; }
-    public Result<ChangeResult<D>> toResult() { return Result.of(this); }
+    public Result<ChangeResult<D>> toResult() { return Result.valueOf(this); }
     
     public static final class NotAllowed<D extends Object> extends ChangeResult<D> {
         public static final NotAllowedLens<NotAllowed> theNotAllowed = new NotAllowedLens<>(LensSpec.of(NotAllowed.class));
@@ -266,23 +266,23 @@ public abstract class ChangeResult<D extends Object> extends AbstractChoiceClass
     }
     
     public boolean isNotAllowed() { return this instanceof NotAllowed; }
-    public Result<NotAllowed<D>> asNotAllowed() { return Result.of(this).filter(NotAllowed.class).map(NotAllowed.class::cast); }
+    public Result<NotAllowed<D>> asNotAllowed() { return Result.valueOf(this).filter(NotAllowed.class).map(NotAllowed.class::cast); }
     public ChangeResult<D> ifNotAllowed(Consumer<NotAllowed<D>> action) { if (isNotAllowed()) action.accept((NotAllowed<D>)this); return this; }
     public ChangeResult<D> ifNotAllowed(Runnable action) { if (isNotAllowed()) action.run(); return this; }
     public boolean isAccepted() { return this instanceof Accepted; }
-    public Result<Accepted<D>> asAccepted() { return Result.of(this).filter(Accepted.class).map(Accepted.class::cast); }
+    public Result<Accepted<D>> asAccepted() { return Result.valueOf(this).filter(Accepted.class).map(Accepted.class::cast); }
     public ChangeResult<D> ifAccepted(Consumer<Accepted<D>> action) { if (isAccepted()) action.accept((Accepted<D>)this); return this; }
     public ChangeResult<D> ifAccepted(Runnable action) { if (isAccepted()) action.run(); return this; }
     public boolean isAdjusted() { return this instanceof Adjusted; }
-    public Result<Adjusted<D>> asAdjusted() { return Result.of(this).filter(Adjusted.class).map(Adjusted.class::cast); }
+    public Result<Adjusted<D>> asAdjusted() { return Result.valueOf(this).filter(Adjusted.class).map(Adjusted.class::cast); }
     public ChangeResult<D> ifAdjusted(Consumer<Adjusted<D>> action) { if (isAdjusted()) action.accept((Adjusted<D>)this); return this; }
     public ChangeResult<D> ifAdjusted(Runnable action) { if (isAdjusted()) action.run(); return this; }
     public boolean isRejected() { return this instanceof Rejected; }
-    public Result<Rejected<D>> asRejected() { return Result.of(this).filter(Rejected.class).map(Rejected.class::cast); }
+    public Result<Rejected<D>> asRejected() { return Result.valueOf(this).filter(Rejected.class).map(Rejected.class::cast); }
     public ChangeResult<D> ifRejected(Consumer<Rejected<D>> action) { if (isRejected()) action.accept((Rejected<D>)this); return this; }
     public ChangeResult<D> ifRejected(Runnable action) { if (isRejected()) action.run(); return this; }
     public boolean isFailed() { return this instanceof Failed; }
-    public Result<Failed<D>> asFailed() { return Result.of(this).filter(Failed.class).map(Failed.class::cast); }
+    public Result<Failed<D>> asFailed() { return Result.valueOf(this).filter(Failed.class).map(Failed.class::cast); }
     public ChangeResult<D> ifFailed(Consumer<Failed<D>> action) { if (isFailed()) action.accept((Failed<D>)this); return this; }
     public ChangeResult<D> ifFailed(Runnable action) { if (isFailed()) action.run(); return this; }
     

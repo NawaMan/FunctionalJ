@@ -1,6 +1,7 @@
 package functionalj.lens.lenses;
 
 import static functionalj.lens.core.AccessUtils.createNullableAccess;
+import static functionalj.lens.core.AccessUtils.createResultAccess;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -218,6 +219,14 @@ public interface AnyAccess<HOST, DATA>
                         val value = access.apply(host);
                         return Nullable.of(value);
                     },
+                    createSubLens);
+        }
+        public static <HOST, DATA, ACCESS extends AnyAccess<HOST, DATA>> 
+                ResultAccess<HOST, DATA, ACCESS> toResult(
+                        Function<HOST, DATA>                   access, 
+                        Function<Function<HOST, DATA>, ACCESS> createSubLens) {
+            return createResultAccess(
+                    Func1.from(access)::applySafely,
                     createSubLens);
         }
     }

@@ -2,7 +2,7 @@ package functionalj.promise;
 
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.promise.DeferAction.run;
-import static functionalj.result.Result.value;
+import static functionalj.result.Result.valueOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -176,11 +176,11 @@ public class PromisesTest {
         val promise 
             = Promise.from(
                 _1 -> run(Sleep(50).thenReturn(1)),
-                _2 -> Result.of(2),
+                _2 -> Result.valueOf(2),
                 _3 -> run(Sleep(50).thenReturn(3)),
-                _4 -> value(4),
+                _4 -> valueOf(4),
                 _5 -> run(Sleep(50).thenReturn(5)),
-                _6 -> value(6),
+                _6 -> valueOf(6),
                 (_1, _2, _3, _4, _5, _6) -> {
                     return _1 + _2 + _3 + _4 + _5 + 6;
                 });

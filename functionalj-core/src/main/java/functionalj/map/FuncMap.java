@@ -29,6 +29,9 @@ public abstract class FuncMap<KEY, VALUE>
                         ReadOnlyMap<KEY, VALUE>, 
                         IFuncMap<KEY, VALUE, FuncMap<KEY, VALUE>> {
     
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> empty() {
+        return new ImmutableMap<KEY, VALUE>(Stream.empty());
+    }
     
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(Map<? extends KEY, ? extends VALUE> map) {
         return new ImmutableMap<KEY, VALUE>(map.entrySet().stream());

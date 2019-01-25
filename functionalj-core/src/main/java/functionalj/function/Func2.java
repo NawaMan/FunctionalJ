@@ -128,7 +128,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2) {
         try {
             val output = applyUnsafe(input1, input2);
-            return Result.of(output);
+            return Result.valueOf(output);
         } catch (Exception exception) {
             return Result.ofException(exception);
         }
@@ -255,6 +255,9 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return (i1) -> this.applyTo(i1, i2);
     }
     
+    public default Func1<INPUT1, Func1<INPUT2, OUTPUT>> split() {
+        return split1();
+    }
     public default Func1<INPUT1, Func1<INPUT2, OUTPUT>> split1() {
         return (i1) -> (i2) -> this.applyUnsafe(i1, i2);
     }

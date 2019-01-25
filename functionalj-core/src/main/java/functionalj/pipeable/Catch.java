@@ -61,7 +61,7 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
                 if (exception != null)
                     return Result.ofException(exception);
                 
-                return Result.of(data);
+                return Result.valueOf(data);
             }
         };
     }

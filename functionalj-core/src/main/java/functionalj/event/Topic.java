@@ -27,7 +27,7 @@ public class Topic<DATA> {
     boolean publish(DATA data) {
         boolean stillActive = isActive.get();
         if (stillActive) {
-            val result = Result.of(data);
+            val result = Result.valueOf(data);
             notifySubscription(result);
         }
         return stillActive;
