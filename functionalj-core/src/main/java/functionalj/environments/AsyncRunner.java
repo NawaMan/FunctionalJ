@@ -1,6 +1,7 @@
 package functionalj.environments;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
@@ -36,19 +37,36 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
         
         val theRunner     = (runner != null) ? runner : Env.async();
         val substitutions = Substitution.getCurrentSubstitutions().exclude(Substitution::isThreadLocal);
+        val latch         = new CountDownLatch(1);
         theRunner.accept(()->{
             try {
                 Run.with(substitutions)
                 .run(()->{
+                    body.prepared();
+                    latch.countDown();
+                    
                     val value = body.compute();
                     action.complete(value);
                 });
             } catch (Exception exception) {
+                System.out.println(action.getPromise() + ": FAIL");
+                action.fail(exception);
                 ThrowFuncs.handleNoThrow(exception);
+            } catch (Throwable exception) {
+                // TODO - Make a dedicate exception.
+                action.fail(new Exception(exception));
             }
         });
         
-        return action.getPromise();
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        val promise = action.getPromise();
+        System.out.println(promise + ": AsyncRunner.run");
+        return promise;
     }
     
     

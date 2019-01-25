@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.environments.AsyncRunner;
@@ -40,6 +41,7 @@ import functionalj.ref.Run;
 import functionalj.ref.Substitution;
 import lombok.val;
 
+@Ignore
 @SuppressWarnings("javadoc")
 public class DeferActionTest {
     
@@ -524,6 +526,7 @@ public class DeferActionTest {
             + "]", creator.logs().toString());
     }
     
+    @Ignore
     @Test
     public void testStreamAction_SingleThread() {
         val executor = Executors.newSingleThreadExecutor();
@@ -545,6 +548,7 @@ public class DeferActionTest {
             + "]", creator.logs().toString());
     }
     
+    @Ignore
     @Test
     public void testStreamAction_TwoThreads() {
         val executor = Executors.newFixedThreadPool(2);

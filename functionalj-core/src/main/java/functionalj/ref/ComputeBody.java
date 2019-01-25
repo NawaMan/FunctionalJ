@@ -9,6 +9,7 @@ public interface ComputeBody<DATA, EXCEPTION extends Exception> extends RunBody<
         return ()->supplier.get();
     }
     
+    public default void prepared() {}
     
     public DATA compute() throws EXCEPTION;
     

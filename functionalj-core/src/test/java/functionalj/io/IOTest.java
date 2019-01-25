@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func;
@@ -16,6 +17,7 @@ import functionalj.promise.DeferActionBuilder;
 import functionalj.result.Result;
 import lombok.val;
 
+@Ignore
 public class IOTest {
     @Test
     public void testValue() {
@@ -144,7 +146,8 @@ public class IOTest {
             if (count % 2 == 0)
                 throw new IllegalArgumentException("Count: " + count);
             String s = "" + (char)('A' + count);
-            logs.add(s); return s;
+            logs.add(s);
+            return s;
         });
         
         val action2 = action.map("-"::concat).map($S.concat("-"));
