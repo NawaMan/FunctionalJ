@@ -260,6 +260,10 @@ public class Type implements IRequireTypes {
                     .filter(type -> !((type.packageName == null) && (type.encloseName == null))));
     }
     
+    public List<Type> generics() {
+        return (generics == null) ? emptyList() : generics;
+    }
+    
     /**
      * Returns the full type name without the generic without the package name opt-out when same package.
      * 
