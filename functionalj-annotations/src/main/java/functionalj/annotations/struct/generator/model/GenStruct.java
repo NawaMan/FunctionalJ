@@ -125,6 +125,7 @@ public class GenStruct implements ILines {
             .collect(toList());
         
         val importList = importTypes.stream()
+                .filter(type->!type.isVirtual())
                 .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisClassName, type.encloseName()))
                 .map   (Type::declaredType)
                 .map   (Type::fullName)

@@ -177,7 +177,14 @@ public class StructBuilder {
                 .map(g -> "            (" + g.getType().simpleNameWithGeneric() + ")IStruct.fromMapValue(map.get(\"" + g.getName() + "\"), $schema.get(\"" + g.getName() + "\"))")
                 .collect(Collectors.joining(",\n"))
                 .split("\n"));
-        val getterHasGeneric = sourceSpec.getGetters().stream().anyMatch(g -> !g.getType().generics().isEmpty());
+        val getterHasGeneric
+                = sourceSpec
+                .getGetters().stream()
+                .anyMatch(g -> 
+                        !g
+                        .getType()
+                        .generics()
+                        .isEmpty());
         val fromMap = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.STATIC,

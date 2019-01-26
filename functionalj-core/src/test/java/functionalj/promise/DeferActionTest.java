@@ -813,6 +813,7 @@ public class DeferActionTest {
         assertStrings("Result:{ Value: 10 }", action.build().getResult());
     }
     
+    @Ignore
     @Test
     public void testDeferLoopCondition() throws InterruptedException {
         val counter = new AtomicInteger(0);

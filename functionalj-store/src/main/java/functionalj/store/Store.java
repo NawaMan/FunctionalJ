@@ -1,10 +1,8 @@
 package functionalj.store;
 
-import static functionalj.store.ChangeResult.Accepted;
-import static functionalj.store.ChangeResult.Adjusted;
-import static functionalj.store.ChangeResult.Failed;
-import static functionalj.store.ChangeResult.NotAllowed;
-import static functionalj.store.ChangeResult.Rejected;
+import static functionalj.store.ResultStatus.Accepted;
+import static functionalj.store.ResultStatus.Failed;
+import static functionalj.store.ResultStatus.NotAllowed;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -46,33 +44,25 @@ public class Store<DATA> {
     
     private ChangeResult<DATA> defaultAcceptor(DATA originalData, Result<DATA> newResult) {
         if (newResult.isValue()) {
-            val changeResult = Accepted(this, originalData, newResult.value());
+            val changeResult = new ChangeResult<DATA>(this, originalData, Accepted(newResult.value()));
             return changeResult;
         }
         val exception  = newResult.getException();
-        val failResult = Failed(this, originalData, new ChangeFailException(exception));
+        val failResult = new ChangeResult<DATA>(this, originalData, Failed(new ChangeFailException(exception)));
         return failResult;
     }
-    @SuppressWarnings("unchecked")
     private ChangeResult<DATA> ensureStore(ChangeResult<DATA> changeResult) {
         if (changeResult.store() == this)
             return changeResult;
         
-        return (ChangeResult<DATA>)
-                changeResult.match()
-                .toA(ChangeResult.class)
-                .notAllowed(n -> NotAllowed(this, n.originalData(), n.reason()))
-                .accepted  (a -> Accepted  (this, a.originalData(), a.newData()))
-                .adjusted  (a -> Adjusted  (this, a.originalData(), a.proposedData(), a.adjustedData()))
-                .rejected  (r -> Rejected  (this, r.originalData(), r.propose(), r.rollback(), r.reason()))
-                .failed    (f -> Failed    (this, f.originalData(), f.problem()));
+        return new ChangeResult<DATA>(this, changeResult.originalData(), changeResult.status());
     }
     
     public ChangeResult<DATA> change(Func1<DATA, DATA> changer) {
         val originalData  = dataRef.get();
         val approveResult = approver.applySafely(originalData, changer);
         if (approveResult.isPresent()) {
-            return NotAllowed(this, originalData, approveResult.get());
+            return new ChangeResult<DATA>(this, originalData, NotAllowed(approveResult.get()));
         }
         val newResult = changer
                 .applySafely(originalData)
@@ -90,7 +80,7 @@ public class Store<DATA> {
                         + "originalData=" + originalData + ", "
                         + "currentData="  + dataRef.get() + ", "
                         + "proposedData=" + newValue);
-                return Failed(this, originalData, new ChangeFailException(dataAlreadyChanged));
+                return new ChangeResult<DATA>(this, originalData, Failed(new ChangeFailException(dataAlreadyChanged)));
             }
         }
         

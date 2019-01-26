@@ -1,12 +1,10 @@
 package functionalj.result;
 
-import static functionalj.annotations.choice.ChoiceTypes.Match;
 import static nawaman.nullablej.nullable.Nullable.nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-import functionalj.annotations.choice.Self1;
 import functionalj.validator.Validator;
 import lombok.val;
 
@@ -19,23 +17,21 @@ public class Specs {
         void ToException(Function<D, ValidationException> errorChecker);
         
         // TODO - BUG!!! ... the method has to return something can't be void. ... fix this when can.
-        default boolean ensureValid(Self1<D> self, D data) {
+        default boolean ensureValid(Validation<D> self, D data) {
             val validationException = validate(self, data);
             if (validationException != null)
                 throw validationException;
             
             return true;
         }
-        default ValidationException validate(Self1<D> self, D data) {
-            @SuppressWarnings("unchecked")
-            val validation          = (Validation<D>)self.asMe();
-            val validationException = Match(validation)
+        default ValidationException validate(Validation<D> validation, D data) {
+            val validationException = validation.match()
                     .toBoolean  (v -> $inner.checkToBoolean  (v, data))
                     .toMessage  (v -> $inner.checkToMessage  (v, data))
                     .toException(v -> $inner.checkToException(v, data));
             return validationException;
         }
-        default Validator<D> toValidator(Self1<D> self) {
+        default Validator<D> toValidator(Validation<D> self) {
             val ref = new AtomicReference<ValidationException>();
             return Validator.of(data -> {
                         ref.set(validate(self, data));

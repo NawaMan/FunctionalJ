@@ -7,11 +7,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.2'
-    
-    compile 'defaultj:defaultj-api:1.2.2.0'
-    compile 'nawaman:nullablej:3.3.0.0'
-    compile 'nawaman-utils:nawaman-utils-reflection:0.1.7'
+   compile project(':functionalj-annotations')
+   compile project(':functionalj-core')
+   compile project(':functionalj-store')
     
     //== Test ==
     

@@ -109,7 +109,7 @@ public class GenerateParentChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"child\", new functionalj.annotations.struct.generator.Getter(\"child\", new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"child\", new functionalj.annotations.struct.generator.Getter(\"child\", new Type(null, \"Child\", \"me.test\", null), false, functionalj.annotations.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

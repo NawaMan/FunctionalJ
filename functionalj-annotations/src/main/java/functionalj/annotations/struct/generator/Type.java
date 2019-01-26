@@ -18,6 +18,7 @@ package functionalj.annotations.struct.generator;
 import static functionalj.annotations.choice.generator.Utils.toListCode;
 import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -33,6 +34,7 @@ import java.util.stream.Stream;
 
 import functionalj.annotations.StructConversionException;
 import functionalj.annotations.struct.Core;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import lombok.val;
@@ -48,6 +50,7 @@ import lombok.experimental.Wither;
 @Accessors(fluent=true)
 @Wither
 @Builder
+@AllArgsConstructor
 public class Type implements IRequireTypes {
     
     /** char type */
@@ -174,6 +177,7 @@ public class Type implements IRequireTypes {
     private String     encloseName;
     private String     simpleName;
     private String     packageName;
+    private boolean    isVirtual;
     private List<Type> generics;
     
     /**
@@ -188,6 +192,7 @@ public class Type implements IRequireTypes {
         this.encloseName = encloseName;
         this.simpleName  = simpleName;
         this.packageName = packageName;
+        this.isVirtual   = false;
         this.generics    = asList(generics).stream().map(generic->new Type(generic, null)).collect(toList());
     }
     
@@ -214,6 +219,7 @@ public class Type implements IRequireTypes {
         this.encloseName = encloseName;
         this.simpleName  = simpleName;
         this.packageName = packageName;
+        this.isVirtual   = false;
         
         List<Type> genericList = (generics == null)
                             ? null
@@ -229,6 +235,20 @@ public class Type implements IRequireTypes {
      */
     public Type(String simpleName, String packageName) {
         this(null, simpleName, packageName, (List<Type>)null);
+    }
+    
+    private Type(String simpleName, boolean isVirtual) {
+        if (!isVirtual)
+            throw new IllegalArgumentException();
+        this.encloseName = null;
+        this.simpleName  = simpleName;
+        this.packageName = null;
+        this.isVirtual   = isVirtual;
+        this.generics    = emptyList();
+    }
+    
+    public static Type newVirtualType(String name) {
+        return new Type(name, true);
     }
     
     @Override

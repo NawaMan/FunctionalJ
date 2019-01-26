@@ -337,24 +337,29 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     }
     
     private Getter createGetterFromMethod(Element element, ExecutableElement method) {
-        val methodName  = method.getSimpleName().toString();
-        val returnType  = getType(element, method.getReturnType());
-        val isPrimitive = returnType.isPrimitive();
-        val isNullable  = (element.getAnnotation(Nullable.class) != null) ? true : false;
-        val defTo       = (element.getAnnotation(DefaultTo.class) != null)
-                        ? element.getAnnotation(DefaultTo.class)
-                        : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
-        val defValue = (DefaultValue)((DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo);
-        if (!DefaultValue.isSuitable(returnType, defValue)) {
-            error(element, "Default value is not suitable for the type: " + returnType.fullName() + " -> DefaultTo " + defTo);
-            return null;
+        try {
+            val methodName  = method.getSimpleName().toString();
+            val returnType  = getType(element, method.getReturnType());
+            val isPrimitive = returnType.isPrimitive();
+            val isNullable  = (element.getAnnotation(Nullable.class) != null) ? true : false;
+            val defTo       = (element.getAnnotation(DefaultTo.class) != null)
+                            ? element.getAnnotation(DefaultTo.class)
+                            : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
+            val defValue = (DefaultValue)((DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo);
+            if (!DefaultValue.isSuitable(returnType, defValue)) {
+                error(element, "Default value is not suitable for the type: " + returnType.fullName() + " -> DefaultTo " + defTo);
+                return null;
+            }
+            if (!isNullable && (defValue == DefaultValue.NULL)) {
+                error(element, "Default value cannot be null: " + returnType.fullName() + " -> DefaultTo " + defTo);
+                return null;
+            }
+            val getter = new Getter(methodName, returnType, isNullable, defValue);
+            return getter;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
-        if (!isNullable && (defValue == DefaultValue.NULL)) {
-            error(element, "Default value cannot be null: " + returnType.fullName() + " -> DefaultTo " + defTo);
-            return null;
-        }
-        val getter = new Getter(methodName, returnType, isNullable, defValue);
-        return getter;
     }
     
     private Type getType(Element element, TypeMirror typeMirror) {
@@ -377,7 +382,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             val encloseName = typeElementKinds.contains(encloseElmt.getKind()) ? encloseElmt.getSimpleName().toString() : null;
             return new Type(encloseName, typeName, packageName, generics);
         }
-        return null;
+        return Type.newVirtualType(typeMirror.toString());
     }
     
     private String getPackageName(Element element, TypeElement typeElement) {

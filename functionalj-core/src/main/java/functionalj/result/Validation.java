@@ -1,22 +1,25 @@
 package functionalj.result;
 
-import functionalj.annotations.Absent;
-import functionalj.annotations.choice.AbstractChoiceClass;
-import functionalj.annotations.choice.ChoiceTypeSwitch;
-import functionalj.annotations.choice.Self1;
-import functionalj.lens.core.LensSpec;
-import functionalj.lens.lenses.*;
-import functionalj.pipeable.Pipeable;
-import functionalj.result.Result;
-import functionalj.result.Specs.ValidationSpec;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import functionalj.function.Absent;
+import functionalj.lens.core.LensSpec;
+import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.ObjectLens;
+import functionalj.lens.lenses.ObjectLensImpl;
+import functionalj.lens.lenses.ResultAccess;
+import functionalj.lens.lenses.StringLens;
+import functionalj.pipeable.Pipeable;
+import functionalj.result.Specs.ValidationSpec;
+import lombok.val;
 import nawaman.utils.reflection.UProxy;
 
 @SuppressWarnings({"javadoc", "rawtypes", "unchecked"})
-public abstract class Validation<D extends Object> extends AbstractChoiceClass<Validation.ValidationFirstSwitch<D>> implements Pipeable<Validation<D>>, Self1<D> {
+public abstract class Validation<D extends Object> implements Pipeable<Validation<D>> {
     
     public static final <D extends Object> ToBoolean<D> ToBoolean(Function<D,java.lang.Boolean> checker, String messageTemplate) {
         return new ToBoolean<D>(checker, messageTemplate);
@@ -109,7 +112,7 @@ public abstract class Validation<D extends Object> extends AbstractChoiceClass<V
     }
     
     private final ValidationFirstSwitch<D> __switch = new ValidationFirstSwitch<D>(this);
-    @Override public ValidationFirstSwitch<D> match() {
+    public ValidationFirstSwitch<D> match() {
          return __switch;
     }
     
@@ -121,7 +124,7 @@ public abstract class Validation<D extends Object> extends AbstractChoiceClass<V
         synchronized(this) {
             if (toString != null)
                 return toString;
-            toString = $utils.Match(this)
+            toString = match()
                     .toBoolean(toBoolean -> "ToBoolean(" + String.format("%1$s,%2$s", toBoolean.checker,toBoolean.messageTemplate) + ")")
                     .toMessage(toMessage -> "ToMessage(" + String.format("%1$s", toMessage.errorMsg) + ")")
                     .toException(toException -> "ToException(" + String.format("%1$s", toException.errorChecker) + ")")
@@ -149,13 +152,13 @@ public abstract class Validation<D extends Object> extends AbstractChoiceClass<V
     }
     
     public boolean ensureValid(D data) {
-        return __spec.ensureValid(Self1.of(this), data);
+        return __spec.ensureValid(this, data);
     }
     public functionalj.result.ValidationException validate(D data) {
-        return __spec.validate(Self1.of(this), data);
+        return __spec.validate(this, data);
     }
     public functionalj.validator.Validator<D> toValidator() {
-        return __spec.toValidator(Self1.of(this));
+        return __spec.toValidator(this);
     }
     
     public boolean isToBoolean() { return this instanceof ToBoolean; }
@@ -657,5 +660,85 @@ public abstract class Validation<D extends Object> extends AbstractChoiceClass<V
     }
     
     
+    //== Duplicate ==
     
+    
+    public static class $utils {
+        public static <D> D notNull(D value) {
+            return Objects.requireNonNull(value);
+        }
+        
+        public static boolean checkEquals(byte a, byte b) {
+            return a == b;
+        }
+        public static boolean checkEquals(short a, short b) {
+            return a == b;
+        }
+        public static boolean checkEquals(int a, int b) {
+            return a == b;
+        }
+        public static boolean checkEquals(long a, long b) {
+            return a == b;
+        }
+        public static boolean checkEquals(float a, float b) {
+            return a == b;
+        }
+        public static boolean checkEquals(double a, double b) {
+            return a == b;
+        }
+        public static boolean checkEquals(boolean a, boolean b) {
+            return a == b;
+        }
+        public static boolean checkEquals(Object a, Object b) {
+            return ((a == null) && (b == null)) || Objects.equals(a, b);
+        }
+    }
+    
+    public static abstract class ChoiceTypeSwitch<D, T> {
+        protected final D                                $value;
+        protected final Function<? super D, ? extends T> $action;
+        protected ChoiceTypeSwitch(D theValue, Function<? super D, ? extends T> theAction) {
+            this.$value  = theValue;
+            this.$action = theAction;
+        }
+        
+        public T orElse(T elseValue) {
+            return ($action != null)
+                    ? $action.apply($value)
+                    : elseValue;
+        }
+        
+        public T orGet(Supplier<T> valueSupplier) {
+            return ($action != null)
+                    ? $action.apply($value)
+                    : valueSupplier.get();
+        }
+        public T orGet(Function<? super D, T> valueMapper) {
+            val newAction = (Function<? super D, T>)(($action != null) ? $action : valueMapper);
+            return newAction.apply($value);
+        }
+        public T orElseGet(Supplier<T> valueSupplier) {
+            return orGet(valueSupplier);
+        }
+        public T orElseGet(Function<? super D, T> valueMapper) {
+            return orGet(valueMapper);
+        }
+        
+        public static class ChoiceTypeSwitchData<D, T> {
+            protected final D              value;
+            protected final Function<D, T> action;
+            
+            public ChoiceTypeSwitchData(D value) {
+                this(value, null);
+            }
+            public ChoiceTypeSwitchData(D value, Function<D, T> action) {
+                this.value  = value;
+                this.action = action;
+            }
+            public D                         value()                           { return value; }
+            public Function<D, T>            action()                          { return action; }
+            public ChoiceTypeSwitchData<D, T> withValue(D value)                { return new ChoiceTypeSwitchData<>(value, action); }
+            public ChoiceTypeSwitchData<D, T> withAction(Function<D, T> action) { return new ChoiceTypeSwitchData<>(value, action); }
+        }
+    }
 }
