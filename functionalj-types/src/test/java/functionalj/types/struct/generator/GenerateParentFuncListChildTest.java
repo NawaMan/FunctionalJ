@@ -77,8 +77,8 @@ public class GenerateParentFuncListChildTest {
                 "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
-                "    private final FuncList<String> names;\n" + 
-                "    private final FuncList<Child> children;\n" + 
+                "    public final FuncList<String> names;\n" + 
+                "    public final FuncList<Child> children;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
                 "        this(functionalj.list.FuncList.empty(), functionalj.list.FuncList.empty());\n" + 

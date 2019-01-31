@@ -76,8 +76,8 @@ public class GenerateParentNullableChildTest {
                 "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
-                "    private final Nullable<String> nullableName;\n" + 
-                "    private final Nullable<Child> nullableChild;\n" + 
+                "    public final Nullable<String> nullableName;\n" + 
+                "    public final Nullable<Child> nullableChild;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
                 "        this(nawaman.nullablej.nullable.Nullable.empty(), nawaman.nullablej.nullable.Nullable.empty());\n" + 

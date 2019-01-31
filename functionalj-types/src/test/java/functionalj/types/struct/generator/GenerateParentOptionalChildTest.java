@@ -77,8 +77,8 @@ public class GenerateParentOptionalChildTest {
                 "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
                 "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
-                "    private final Optional<String> optionalName;\n" + 
-                "    private final Optional<Child> optionalChild;\n" + 
+                "    public final Optional<String> optionalName;\n" + 
+                "    public final Optional<Child> optionalChild;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
                 "        this(java.util.Optional.empty(), java.util.Optional.empty());\n" + 

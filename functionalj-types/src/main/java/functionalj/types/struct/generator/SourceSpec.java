@@ -65,7 +65,7 @@ public class SourceSpec {
         /** Should the builder class be generated. */
         public boolean generateBuilderClass = true;
         /** Should the fields be made public */
-        public boolean publicFields = false;
+        public boolean publicFields = true;
         /** Template for toString. null for no toString generated, "" for auto-generate toString, or template */
         public String toStringTemplate = "";
         

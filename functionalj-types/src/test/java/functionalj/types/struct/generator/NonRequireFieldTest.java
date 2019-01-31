@@ -69,11 +69,11 @@ public class NonRequireFieldTest {
                 "public class Data implements Definitions.DataDef,IStruct,Pipeable<Data> {\n" + 
                 "    \n" + 
                 "    public static final DataLens<Data> theData = new DataLens<>(LensSpec.of(Data.class));\n" + 
-                "    private final int a;\n" + 
-                "    private final boolean b;\n" + 
-                "    private final String c;\n" + 
-                "    private final String d;\n" + 
-                "    private final String e;\n" + 
+                "    public final int a;\n" + 
+                "    public final boolean b;\n" + 
+                "    public final String c;\n" + 
+                "    public final String d;\n" + 
+                "    public final String e;\n" + 
                 "    \n" + 
                 "    public Data() {\n" + 
                 "        this(0, false, null, null, null);\n" + 
