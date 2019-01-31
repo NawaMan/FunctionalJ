@@ -1,11 +1,11 @@
-package functionalj.annotations.rule;
+package functionalj.types.rule;
 
-import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
+import static functionalj.types.choice.generator.Utils.toStringLiteral;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import functionalj.annotations.IRule;
+import functionalj.types.IRule;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.val;

@@ -1,4 +1,4 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
@@ -6,7 +6,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Arrays;
 import java.util.List;
 
-import functionalj.annotations.choice.generator.model.Case;
+import functionalj.types.choice.generator.model.Case;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

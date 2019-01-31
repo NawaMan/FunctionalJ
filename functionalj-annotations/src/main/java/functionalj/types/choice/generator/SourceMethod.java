@@ -1,6 +1,6 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
-import static functionalj.annotations.choice.generator.model.Method.Kind.DEFAULT;
+import static functionalj.types.choice.generator.model.Method.Kind.DEFAULT;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
@@ -9,14 +9,22 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Objects;
 
-import functionalj.annotations.choice.Self;
-import functionalj.annotations.choice.generator.model.Method;
-import lombok.Value;
+import functionalj.types.choice.Self;
+import functionalj.types.choice.generator.model.Method;
 import lombok.val;
 
-@Value
 public class SourceMethod implements Lines {
+    
     private final TargetClass targetClass;
+    
+    public SourceMethod(TargetClass targetClass) {
+        super();
+        this.targetClass = targetClass;
+    }
+    
+    public TargetClass getTargetClass() {
+        return targetClass;
+    }
     
     @Override
     public List<String> lines() {

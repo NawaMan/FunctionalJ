@@ -13,19 +13,19 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator;
+package functionalj.types.struct.generator;
 
-import static functionalj.annotations.struct.generator.model.Accessibility.PUBLIC;
-import static functionalj.annotations.struct.generator.model.Modifiability.MODIFIABLE;
-import static functionalj.annotations.struct.generator.model.Scope.NONE;
+import static functionalj.types.struct.generator.model.Accessibility.PUBLIC;
+import static functionalj.types.struct.generator.model.Modifiability.MODIFIABLE;
+import static functionalj.types.struct.generator.model.Scope.NONE;
 import static java.util.Arrays.asList;
 
 import java.util.List;
 
-import functionalj.annotations.struct.generator.model.GenClass;
-import functionalj.annotations.struct.generator.model.GenConstructor;
-import functionalj.annotations.struct.generator.model.GenField;
-import functionalj.annotations.struct.generator.model.GenMethod;
+import functionalj.types.struct.generator.model.GenClass;
+import functionalj.types.struct.generator.model.GenConstructor;
+import functionalj.types.struct.generator.model.GenField;
+import functionalj.types.struct.generator.model.GenMethod;
 import lombok.Value;
 import lombok.experimental.Delegate;
 

@@ -13,10 +13,10 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator.model;
+package functionalj.types.struct.generator.model;
 
-import static functionalj.annotations.struct.generator.ILines.indent;
-import static functionalj.annotations.struct.generator.ILines.line;
+import static functionalj.types.struct.generator.ILines.indent;
+import static functionalj.types.struct.generator.ILines.line;
 import static java.util.stream.Collectors.joining;
 
 import java.util.HashSet;
@@ -25,10 +25,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import functionalj.annotations.struct.Core;
-import functionalj.annotations.struct.generator.IGenerateDefinition;
-import functionalj.annotations.struct.generator.ILines;
-import functionalj.annotations.struct.generator.Type;
+import functionalj.types.struct.Core;
+import functionalj.types.struct.generator.IGenerateDefinition;
+import functionalj.types.struct.generator.ILines;
+import functionalj.types.struct.generator.Type;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;

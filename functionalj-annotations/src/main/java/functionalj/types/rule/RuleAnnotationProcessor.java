@@ -1,4 +1,4 @@
-package functionalj.annotations.rule;
+package functionalj.types.rule;
 
 import static java.util.stream.Collectors.toList;
 
@@ -26,9 +26,9 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-import functionalj.annotations.IRule;
-import functionalj.annotations.Rule;
-import functionalj.annotations.rule.RuleSpec.RuleType;
+import functionalj.types.IRule;
+import functionalj.types.Rule;
+import functionalj.types.rule.RuleSpec.RuleType;
 import lombok.val;
 
 public class RuleAnnotationProcessor extends AbstractProcessor {

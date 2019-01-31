@@ -1,4 +1,4 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
 
-import functionalj.annotations.choice.AbstractChoiceClass;
-import functionalj.annotations.choice.ChoiceTypeSwitch;
-import functionalj.annotations.choice.Self;
-import functionalj.annotations.choice.generator.model.Method.Kind;
-import functionalj.annotations.choice.generator.model.SourceSpec;
-import functionalj.annotations.choice.generator.model.Type;
+import functionalj.types.choice.AbstractChoiceClass;
+import functionalj.types.choice.ChoiceTypeSwitch;
+import functionalj.types.choice.Self;
+import functionalj.types.choice.generator.model.SourceSpec;
+import functionalj.types.choice.generator.model.Type;
+import functionalj.types.choice.generator.model.Method.Kind;
 import lombok.Value;
 import lombok.val;
 

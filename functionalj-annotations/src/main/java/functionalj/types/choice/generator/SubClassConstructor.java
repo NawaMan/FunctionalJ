@@ -1,19 +1,24 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 
 import java.util.List;
 
-import functionalj.annotations.choice.generator.model.Case;
-import lombok.AllArgsConstructor;
+import functionalj.types.choice.generator.model.Case;
 import lombok.val;
 
 
-@AllArgsConstructor
 public class SubClassConstructor implements Lines {
     public final TargetClass targetClass;
     public final Case      choice;
+    
+    
+    public SubClassConstructor(TargetClass targetClass, Case choice) {
+        super();
+        this.targetClass = targetClass;
+        this.choice = choice;
+    }
     
     @Override
     public List<String> lines() {

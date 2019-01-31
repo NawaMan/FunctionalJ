@@ -1,4 +1,4 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import functionalj.annotations.choice.generator.model.SourceSpec;
+import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.val;
 
 public class ChoiceLensBuilder {

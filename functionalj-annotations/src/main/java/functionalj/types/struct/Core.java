@@ -13,9 +13,9 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct;
+package functionalj.types.struct;
 
-import functionalj.annotations.struct.generator.Type;
+import functionalj.types.struct.generator.Type;
 
 /**
  * This class purpose is to allow decoupling of the annotation projects and the core project.

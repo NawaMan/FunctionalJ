@@ -13,10 +13,10 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator;
+package functionalj.types.struct.generator;
 
-import static functionalj.annotations.choice.generator.Utils.toListCode;
-import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
+import static functionalj.types.choice.generator.Utils.toListCode;
+import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
@@ -32,26 +32,51 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import functionalj.annotations.StructConversionException;
-import functionalj.annotations.struct.Core;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import functionalj.types.StructConversionException;
+import functionalj.types.struct.Core;
 import lombok.val;
-import lombok.experimental.Accessors;
-import lombok.experimental.Wither;
 
 /**
  * Data type.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
-@Value
-@Accessors(fluent=true)
-@Wither
-@Builder
-@AllArgsConstructor
 public class Type implements IRequireTypes {
+    
+    static public class TypeBuilder {
+        
+        private String     encloseName;
+        private String     simpleName;
+        private String     packageName;
+        private boolean    isVirtual;
+        private List<Type> generics;
+        
+        public TypeBuilder encloseName(String encloseName) {
+            this.encloseName = encloseName;
+            return this;
+        }
+        public TypeBuilder simpleName(String simpleName) {
+            this.simpleName = simpleName;
+            return this;
+        }
+        public TypeBuilder packageName(String packageName) {
+            this.packageName = packageName;
+            return this;
+        }
+        public TypeBuilder isVirtual(boolean isVirtual) {
+            this.isVirtual = isVirtual;
+            return this;
+        }
+        public TypeBuilder generics(List<Type> generics) {
+            this.generics = generics;
+            return this;
+        }
+        
+        public Type build() {
+            return new Type(encloseName, simpleName, packageName, isVirtual, generics);
+        }
+        
+    }
     
     /** char type */
     public static final Type CHR = new Type("char", "");
@@ -174,11 +199,13 @@ public class Type implements IRequireTypes {
         return new Type(name, pckg).withGenerics(asList(generics));
     }
     
-    private String     encloseName;
-    private String     simpleName;
-    private String     packageName;
-    private boolean    isVirtual;
-    private List<Type> generics;
+    private final String     encloseName;
+    private final String     simpleName;
+    private final String     packageName;
+    private final boolean    isVirtual;
+    private final List<Type> generics;
+    
+    
     
     /**
      * Construct a type with the parameters.
@@ -249,6 +276,24 @@ public class Type implements IRequireTypes {
     
     public static Type newVirtualType(String name) {
         return new Type(name, true);
+    }
+    
+    public String     encloseName() { return encloseName; }
+    public String     simpleName()  { return simpleName; }
+    public String     packageName() { return packageName; }
+    public boolean    isVirtual()   { return isVirtual; }
+    
+    public Type(String encloseName, String simpleName, String packageName, boolean isVirtual, List<Type> generics) {
+        super();
+        this.encloseName = encloseName;
+        this.simpleName = simpleName;
+        this.packageName = packageName;
+        this.isVirtual = isVirtual;
+        this.generics = generics;
+    }
+
+    public Type withGenerics(List<Type> generics) {
+        return new Type(encloseName, simpleName, packageName, isVirtual, generics);
     }
     
     @Override
@@ -395,12 +440,7 @@ public class Type implements IRequireTypes {
         if ((localTypeWithLens != null) && !localTypeWithLens.contains(simpleName))
             return Core.ObjectLens.type();
         
-        return new TypeBuilder()
-                .encloseName(simpleName())
-                .simpleName(simpleName() + "Lens")
-                .packageName(packageName())
-                .generics(asList(new Type("HOST", "")))
-                .build();
+        return new Type(simpleName(), simpleName() + "Lens", packageName(), false, asList(new Type("HOST", "")));
     }
     
     public Type knownLensType() {

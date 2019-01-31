@@ -1,18 +1,19 @@
-package functionalj.annotations.choice.generator.model;
+package functionalj.types.choice.generator.model;
 
-import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
+import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
-import lombok.AllArgsConstructor;
-import lombok.ToString;
 import lombok.val;
 
-@ToString
-@AllArgsConstructor
 public class MethodParam {
     public final String name;
     public final Type   type;
+    
+    public MethodParam(String name, Type type) {
+        this.name = name;
+        this.type = type;
+    }
     
     public String toCode() {
         val params = asList(
@@ -23,4 +24,10 @@ public class MethodParam {
                 + params.stream().collect(joining(", "))
                 + ")";
     }
+    
+    @Override
+    public String toString() {
+        return "MethodParam [name=" + name + ", type=" + type + "]";
+    }
+    
 }

@@ -13,16 +13,16 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator.model;
+package functionalj.types.struct.generator.model;
 
-import static functionalj.annotations.struct.generator.ILines.flatenLines;
-import static functionalj.annotations.struct.generator.ILines.indent;
-import static functionalj.annotations.struct.generator.ILines.line;
-import static functionalj.annotations.struct.generator.ILines.linesOf;
-import static functionalj.annotations.struct.generator.ILines.oneLineOf;
-import static functionalj.annotations.struct.generator.ILines.withSeparateIndentedSpace;
-import static functionalj.annotations.struct.generator.model.utils.allLists;
-import static functionalj.annotations.struct.generator.model.utils.themAll;
+import static functionalj.types.struct.generator.ILines.flatenLines;
+import static functionalj.types.struct.generator.ILines.indent;
+import static functionalj.types.struct.generator.ILines.line;
+import static functionalj.types.struct.generator.ILines.linesOf;
+import static functionalj.types.struct.generator.ILines.oneLineOf;
+import static functionalj.types.struct.generator.ILines.withSeparateIndentedSpace;
+import static functionalj.types.struct.generator.model.utils.allLists;
+import static functionalj.types.struct.generator.model.utils.themAll;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -30,10 +30,10 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import functionalj.annotations.struct.generator.IGenerateDefinition;
-import functionalj.annotations.struct.generator.ILines;
-import functionalj.annotations.struct.generator.IRequireTypes;
-import functionalj.annotations.struct.generator.Type;
+import functionalj.types.struct.generator.IGenerateDefinition;
+import functionalj.types.struct.generator.ILines;
+import functionalj.types.struct.generator.IRequireTypes;
+import functionalj.types.struct.generator.Type;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Accessors;

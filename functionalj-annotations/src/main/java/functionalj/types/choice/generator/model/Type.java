@@ -1,7 +1,7 @@
-package functionalj.annotations.choice.generator.model;
+package functionalj.types.choice.generator.model;
 
-import static functionalj.annotations.choice.generator.Utils.toListCode;
-import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
+import static functionalj.types.choice.generator.Utils.toListCode;
+import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Optional.ofNullable;
@@ -11,15 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import lombok.Value;
 import lombok.val;
 
-@Value
 public class Type {
     public final String pckg;
     public final String encloseClass;
     public final String name;
     public final List<Generic> generics;
+    
     public Type(String pckg, String name) {
         this(pckg, null, name, new ArrayList<Generic>());
     }
@@ -36,6 +35,18 @@ public class Type {
         this.generics     = unmodifiableList(generics);
     }
     
+    public String getPckg() {
+        return pckg;
+    }
+    public String getEncloseClass() {
+        return encloseClass;
+    }
+    public String getName() {
+        return name;
+    }
+    public List<Generic> getGenerics() {
+        return generics;
+    }
     public String fullName() {
         return asList(pckg, encloseClass, name)
                 .stream()

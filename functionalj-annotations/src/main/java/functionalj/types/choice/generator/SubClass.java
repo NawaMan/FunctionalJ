@@ -1,6 +1,6 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
-import functionalj.annotations.choice.generator.model.Case;
+import functionalj.types.choice.generator.model.Case;
 
 public class SubClass {
     public final SubClassConstructor constructor;

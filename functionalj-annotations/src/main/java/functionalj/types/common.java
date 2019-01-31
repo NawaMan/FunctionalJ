@@ -1,4 +1,4 @@
-package functionalj.annotations;
+package functionalj.types;
 
 import java.util.List;
 import java.util.Objects;

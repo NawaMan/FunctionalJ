@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator;
+package functionalj.types.struct.generator;
 
 import java.util.stream.Stream;
 

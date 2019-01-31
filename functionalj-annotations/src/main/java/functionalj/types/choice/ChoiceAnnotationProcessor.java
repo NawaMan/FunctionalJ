@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.choice;
+package functionalj.types.choice;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -51,17 +51,17 @@ import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
-import functionalj.annotations.Choice;
-import functionalj.annotations.Nullable;
-import functionalj.annotations.common;
-import functionalj.annotations.choice.generator.Generator;
-import functionalj.annotations.choice.generator.model.Case;
-import functionalj.annotations.choice.generator.model.CaseParam;
-import functionalj.annotations.choice.generator.model.Generic;
-import functionalj.annotations.choice.generator.model.Method;
-import functionalj.annotations.choice.generator.model.Method.Kind;
-import functionalj.annotations.choice.generator.model.MethodParam;
-import functionalj.annotations.choice.generator.model.Type;
+import functionalj.types.Choice;
+import functionalj.types.Nullable;
+import functionalj.types.common;
+import functionalj.types.choice.generator.Generator;
+import functionalj.types.choice.generator.model.Case;
+import functionalj.types.choice.generator.model.CaseParam;
+import functionalj.types.choice.generator.model.Generic;
+import functionalj.types.choice.generator.model.Method;
+import functionalj.types.choice.generator.model.MethodParam;
+import functionalj.types.choice.generator.model.Type;
+import functionalj.types.choice.generator.model.Method.Kind;
 import lombok.val;
 
 /**
@@ -220,7 +220,11 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                 .collect(toList());
         val paramName = t.toString();
         val boundAsString = (boundTypes.isEmpty()) ? ""
-                : " extends " + t.getBounds().stream().map(b -> typeOf(element, targetType, (TypeMirror)b).getName()).collect(joining(" & "));
+                : " extends " + t.getBounds().stream().map(b -> {
+                    Type   typeOf     = typeOf(element, targetType, (TypeMirror)b);
+                    String typeNameOf = typeOf.getName();
+                    return typeNameOf;
+                }).collect(joining(" & "));
         return new Generic(
                 paramName, 
                 paramName 

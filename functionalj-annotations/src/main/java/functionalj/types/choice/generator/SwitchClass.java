@@ -1,7 +1,7 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
-import static functionalj.annotations.choice.generator.Utils.switchClassName;
-import static functionalj.annotations.choice.generator.Utils.toCamelCase;
+import static functionalj.types.choice.generator.Utils.switchClassName;
+import static functionalj.types.choice.generator.Utils.toCamelCase;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.lang.String.format;
@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-import functionalj.annotations.choice.ChoiceTypeSwitch;
-import functionalj.annotations.choice.generator.model.Case;
+import functionalj.types.choice.ChoiceTypeSwitch;
+import functionalj.types.choice.generator.model.Case;
 import lombok.val;
 import lombok.experimental.ExtensionMethod;
 

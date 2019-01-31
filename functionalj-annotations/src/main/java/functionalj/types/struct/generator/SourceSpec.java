@@ -13,10 +13,10 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator;
+package functionalj.types.struct.generator;
 
-import static functionalj.annotations.choice.generator.Utils.toListCode;
-import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
+import static functionalj.types.choice.generator.Utils.toListCode;
+import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.function.Function;
 
-import functionalj.annotations.choice.generator.Utils;
+import functionalj.types.choice.generator.Utils;
 import lombok.Value;
 import lombok.experimental.Wither;
 
@@ -113,7 +113,7 @@ public class SourceSpec {
                     publicFields,
                     Utils.toStringLiteral(toStringTemplate)
             );
-            return "new functionalj.annotations.struct.generator.SourceSpec.Configurations("
+            return "new " + Configurations.class.getCanonicalName() + "("
                     + params.stream().map(String::valueOf).collect(joining(", "))
                     + ")";
         }
@@ -151,7 +151,7 @@ public class SourceSpec {
                 toListCode(getters, Getter::toCode),
                 toListCode(typeWithLens.stream().map(name -> toStringLiteral(name)).collect(toList()), Function.identity())
         );
-        return "new functionalj.annotations.struct.generator.SourceSpec("
+        return "new " + SourceSpec.class.getCanonicalName() + "("
                 + params.stream().map(String::valueOf).collect(joining(", "))
                 + ")";
     }

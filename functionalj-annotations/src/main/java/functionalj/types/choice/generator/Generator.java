@@ -1,13 +1,13 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import functionalj.annotations.choice.generator.model.Case;
-import functionalj.annotations.choice.generator.model.Generic;
-import functionalj.annotations.choice.generator.model.Method;
-import functionalj.annotations.choice.generator.model.SourceSpec;
-import functionalj.annotations.choice.generator.model.Type;
+import functionalj.types.choice.generator.model.Case;
+import functionalj.types.choice.generator.model.Generic;
+import functionalj.types.choice.generator.model.Method;
+import functionalj.types.choice.generator.model.SourceSpec;
+import functionalj.types.choice.generator.model.Type;
 import lombok.Value;
 
 

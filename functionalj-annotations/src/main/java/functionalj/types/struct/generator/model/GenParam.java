@@ -13,12 +13,12 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator.model;
+package functionalj.types.struct.generator.model;
 
 import java.util.stream.Stream;
 
-import functionalj.annotations.struct.generator.IGenerateTerm;
-import functionalj.annotations.struct.generator.Type;
+import functionalj.types.struct.generator.IGenerateTerm;
+import functionalj.types.struct.generator.Type;
 import lombok.Value;
 import lombok.experimental.Wither;
 

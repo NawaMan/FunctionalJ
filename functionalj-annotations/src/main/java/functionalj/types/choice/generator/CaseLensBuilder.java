@@ -1,12 +1,12 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
-import static functionalj.annotations.struct.Core.ObjectLensImpl;
-import static functionalj.annotations.struct.generator.ILines.line;
-import static functionalj.annotations.struct.generator.model.Accessibility.PUBLIC;
-import static functionalj.annotations.struct.generator.model.Modifiability.FINAL;
-import static functionalj.annotations.struct.generator.model.Modifiability.MODIFIABLE;
-import static functionalj.annotations.struct.generator.model.Scope.INSTANCE;
-import static functionalj.annotations.struct.generator.model.Scope.STATIC;
+import static functionalj.types.struct.Core.ObjectLensImpl;
+import static functionalj.types.struct.generator.ILines.line;
+import static functionalj.types.struct.generator.model.Accessibility.PUBLIC;
+import static functionalj.types.struct.generator.model.Modifiability.FINAL;
+import static functionalj.types.struct.generator.model.Modifiability.MODIFIABLE;
+import static functionalj.types.struct.generator.model.Scope.INSTANCE;
+import static functionalj.types.struct.generator.model.Scope.STATIC;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -16,15 +16,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import functionalj.annotations.choice.generator.model.Case;
-import functionalj.annotations.choice.generator.model.CaseParam;
-import functionalj.annotations.choice.generator.model.SourceSpec;
-import functionalj.annotations.struct.Core;
-import functionalj.annotations.struct.generator.Type;
-import functionalj.annotations.struct.generator.model.GenClass;
-import functionalj.annotations.struct.generator.model.GenConstructor;
-import functionalj.annotations.struct.generator.model.GenField;
-import functionalj.annotations.struct.generator.model.GenParam;
+import functionalj.types.choice.generator.model.Case;
+import functionalj.types.choice.generator.model.CaseParam;
+import functionalj.types.choice.generator.model.SourceSpec;
+import functionalj.types.struct.Core;
+import functionalj.types.struct.generator.Type;
+import functionalj.types.struct.generator.model.GenClass;
+import functionalj.types.struct.generator.model.GenConstructor;
+import functionalj.types.struct.generator.model.GenField;
+import functionalj.types.struct.generator.model.GenParam;
 import lombok.val;
 
 public class CaseLensBuilder {
@@ -40,16 +40,16 @@ public class CaseLensBuilder {
     public List<String> build() {
         val packageName      = sourceSpec.sourceType.pckg;
         val dataObjClassName = sourceSpec.targetName + "." + choiceCase.name;
-        val lensType = new functionalj.annotations.struct.generator.Type(
+        val lensType = new functionalj.types.struct.generator.Type(
                 null,
                 choiceCase.name + "Lens",
                 null,
-                asList(new functionalj.annotations.struct.generator.Type("HOST", null)));
+                asList(new functionalj.types.struct.generator.Type("HOST", null)));
         val superType = ObjectLensImpl.type();
         
         Stream<GenField> lensFields = choiceCase.params.stream().map(getter -> getterToLensField(getter, dataObjClassName, sourceSpec));
         
-        val lensSpecType = new functionalj.annotations.struct.generator.Type(
+        val lensSpecType = new functionalj.types.struct.generator.Type(
                 null,
                 Core.LensSpec.type().simpleName(),
                 Core.LensSpec.type().packageName(),
@@ -141,7 +141,7 @@ public class CaseLensBuilder {
         return field;
     }
     
-    private Type getLensTypeDef(final functionalj.annotations.struct.generator.Type lensType) {
+    private Type getLensTypeDef(final functionalj.types.struct.generator.Type lensType) {
         if (lensType.fullName().equals(Core.ObjectLens.type().fullName()))
             return lensType.withGenerics(asList(new Type("HOST", null), Type.OBJECT));
         return lensType.withGenerics(asList(new Type("HOST", null)));

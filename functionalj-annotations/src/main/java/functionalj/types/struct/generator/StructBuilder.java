@@ -13,17 +13,17 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator;
+package functionalj.types.struct.generator;
 
-import static functionalj.annotations.struct.generator.ILines.line;
-import static functionalj.annotations.struct.generator.model.Accessibility.PRIVATE;
-import static functionalj.annotations.struct.generator.model.Accessibility.PUBLIC;
-import static functionalj.annotations.struct.generator.model.Modifiability.FINAL;
-import static functionalj.annotations.struct.generator.model.Modifiability.MODIFIABLE;
-import static functionalj.annotations.struct.generator.model.Scope.INSTANCE;
-import static functionalj.annotations.struct.generator.model.Scope.STATIC;
-import static functionalj.annotations.struct.generator.utils.listOf;
-import static functionalj.annotations.struct.generator.utils.themAll;
+import static functionalj.types.struct.generator.ILines.line;
+import static functionalj.types.struct.generator.model.Accessibility.PRIVATE;
+import static functionalj.types.struct.generator.model.Accessibility.PUBLIC;
+import static functionalj.types.struct.generator.model.Modifiability.FINAL;
+import static functionalj.types.struct.generator.model.Modifiability.MODIFIABLE;
+import static functionalj.types.struct.generator.model.Scope.INSTANCE;
+import static functionalj.types.struct.generator.model.Scope.STATIC;
+import static functionalj.types.struct.generator.utils.listOf;
+import static functionalj.types.struct.generator.utils.themAll;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
@@ -42,19 +42,19 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import functionalj.annotations.DefaultValue;
-import functionalj.annotations.IPostConstruct;
-import functionalj.annotations.IStruct;
-import functionalj.annotations.choice.generator.Utils;
-import functionalj.annotations.struct.Core;
-import functionalj.annotations.struct.generator.model.Accessibility;
-import functionalj.annotations.struct.generator.model.GenClass;
-import functionalj.annotations.struct.generator.model.GenConstructor;
-import functionalj.annotations.struct.generator.model.GenField;
-import functionalj.annotations.struct.generator.model.GenMethod;
-import functionalj.annotations.struct.generator.model.GenParam;
-import functionalj.annotations.struct.generator.model.Modifiability;
-import functionalj.annotations.struct.generator.model.Scope;
+import functionalj.types.DefaultValue;
+import functionalj.types.IPostConstruct;
+import functionalj.types.IStruct;
+import functionalj.types.choice.generator.Utils;
+import functionalj.types.struct.Core;
+import functionalj.types.struct.generator.model.Accessibility;
+import functionalj.types.struct.generator.model.GenClass;
+import functionalj.types.struct.generator.model.GenConstructor;
+import functionalj.types.struct.generator.model.GenField;
+import functionalj.types.struct.generator.model.GenMethod;
+import functionalj.types.struct.generator.model.GenParam;
+import functionalj.types.struct.generator.model.Modifiability;
+import functionalj.types.struct.generator.model.Scope;
 import lombok.val;
 
 /**

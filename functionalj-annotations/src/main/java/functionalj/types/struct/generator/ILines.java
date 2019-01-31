@@ -13,13 +13,13 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator;
+package functionalj.types.struct.generator;
 
-import static functionalj.annotations.struct.generator.utils.delimitWith;
-import static functionalj.annotations.struct.generator.utils.prependWith;
-import static functionalj.annotations.struct.generator.utils.strNotNullOrEmpty;
-import static functionalj.annotations.struct.generator.utils.themAll;
-import static functionalj.annotations.struct.generator.utils.toStr;
+import static functionalj.types.struct.generator.utils.delimitWith;
+import static functionalj.types.struct.generator.utils.prependWith;
+import static functionalj.types.struct.generator.utils.strNotNullOrEmpty;
+import static functionalj.types.struct.generator.utils.themAll;
+import static functionalj.types.struct.generator.utils.toStr;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;

@@ -1,4 +1,4 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import functionalj.annotations.choice.generator.model.Case;
+import functionalj.types.choice.generator.model.Case;
 import lombok.val;
 
 public class Utils {

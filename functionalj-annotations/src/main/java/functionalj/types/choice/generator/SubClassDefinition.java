@@ -1,6 +1,6 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
-import static functionalj.annotations.choice.generator.Utils.toTitleCase;
+import static functionalj.types.choice.generator.Utils.toTitleCase;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -8,8 +8,8 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import functionalj.annotations.choice.generator.model.Case;
-import functionalj.annotations.choice.generator.model.CaseParam;
+import functionalj.types.choice.generator.model.Case;
+import functionalj.types.choice.generator.model.CaseParam;
 import lombok.AllArgsConstructor;
 import lombok.val;
 

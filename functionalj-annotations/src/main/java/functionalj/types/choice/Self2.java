@@ -1,4 +1,4 @@
-package functionalj.annotations.choice;
+package functionalj.types.choice;
 
 
 @SuppressWarnings("javadoc")

@@ -13,15 +13,15 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator;
+package functionalj.types.struct.generator;
 
-import static functionalj.annotations.struct.Core.ObjectLensImpl;
-import static functionalj.annotations.struct.generator.ILines.line;
-import static functionalj.annotations.struct.generator.model.Accessibility.PUBLIC;
-import static functionalj.annotations.struct.generator.model.Modifiability.FINAL;
-import static functionalj.annotations.struct.generator.model.Modifiability.MODIFIABLE;
-import static functionalj.annotations.struct.generator.model.Scope.INSTANCE;
-import static functionalj.annotations.struct.generator.model.Scope.STATIC;
+import static functionalj.types.struct.Core.ObjectLensImpl;
+import static functionalj.types.struct.generator.ILines.line;
+import static functionalj.types.struct.generator.model.Accessibility.PUBLIC;
+import static functionalj.types.struct.generator.model.Modifiability.FINAL;
+import static functionalj.types.struct.generator.model.Modifiability.MODIFIABLE;
+import static functionalj.types.struct.generator.model.Scope.INSTANCE;
+import static functionalj.types.struct.generator.model.Scope.STATIC;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -29,11 +29,11 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.stream.Stream;
 
-import functionalj.annotations.struct.Core;
-import functionalj.annotations.struct.generator.model.GenClass;
-import functionalj.annotations.struct.generator.model.GenConstructor;
-import functionalj.annotations.struct.generator.model.GenField;
-import functionalj.annotations.struct.generator.model.GenParam;
+import functionalj.types.struct.Core;
+import functionalj.types.struct.generator.model.GenClass;
+import functionalj.types.struct.generator.model.GenConstructor;
+import functionalj.types.struct.generator.model.GenField;
+import functionalj.types.struct.generator.model.GenParam;
 import lombok.val;
 
 /**

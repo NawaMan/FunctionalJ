@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct;
+package functionalj.types.struct;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -46,17 +46,17 @@ import javax.lang.model.util.Elements;
 //import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-import functionalj.annotations.DefaultTo;
-import functionalj.annotations.DefaultValue;
-import functionalj.annotations.Nullable;
-import functionalj.annotations.Struct;
-import functionalj.annotations.common;
-import functionalj.annotations.struct.generator.Getter;
-import functionalj.annotations.struct.generator.SourceSpec;
-import functionalj.annotations.struct.generator.SourceSpec.Configurations;
-import functionalj.annotations.struct.generator.StructBuilder;
-import functionalj.annotations.struct.generator.Type;
-import functionalj.annotations.struct.generator.model.GenStruct;
+import functionalj.types.DefaultTo;
+import functionalj.types.DefaultValue;
+import functionalj.types.Nullable;
+import functionalj.types.Struct;
+import functionalj.types.common;
+import functionalj.types.struct.generator.Getter;
+import functionalj.types.struct.generator.SourceSpec;
+import functionalj.types.struct.generator.StructBuilder;
+import functionalj.types.struct.generator.Type;
+import functionalj.types.struct.generator.SourceSpec.Configurations;
+import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
 
 /**
@@ -274,7 +274,7 @@ public class StructAnnotationProcessor extends AbstractProcessor {
     
     private boolean ensureNoArgConstructorWhenRequireFieldExists(Element element, List<Getter> getters,
             final java.lang.String packageName, final java.lang.String specTargetName,
-            final functionalj.annotations.struct.generator.SourceSpec.Configurations configures) {
+            final functionalj.types.struct.generator.SourceSpec.Configurations configures) {
         if (!configures.generateNoArgConstructor)
             return true;
         if (getters.stream().noneMatch(g->g.getDefaultTo() != DefaultValue.REQUIRED))

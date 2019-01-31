@@ -13,9 +13,9 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator.model;
+package functionalj.types.struct.generator.model;
 
-import functionalj.annotations.struct.generator.IGenerateTerm;
+import functionalj.types.struct.generator.IGenerateTerm;
 
 /**
  * Representation of scope.

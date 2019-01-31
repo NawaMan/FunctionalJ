@@ -13,7 +13,7 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator.model;
+package functionalj.types.struct.generator.model;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;

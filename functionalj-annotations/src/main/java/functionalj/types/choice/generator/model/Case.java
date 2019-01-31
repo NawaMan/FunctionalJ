@@ -1,7 +1,7 @@
-package functionalj.annotations.choice.generator.model;
+package functionalj.types.choice.generator.model;
 
-import static functionalj.annotations.choice.generator.Utils.toListCode;
-import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
+import static functionalj.types.choice.generator.Utils.toListCode;
+import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;

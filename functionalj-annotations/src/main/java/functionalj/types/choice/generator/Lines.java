@@ -1,4 +1,4 @@
-package functionalj.annotations.choice.generator;
+package functionalj.types.choice.generator;
 
 import java.util.List;
 

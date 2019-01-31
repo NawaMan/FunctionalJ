@@ -13,15 +13,15 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator;
+package functionalj.types.struct.generator;
 
-import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
+import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 
-import functionalj.annotations.DefaultValue;
+import functionalj.types.DefaultValue;
 import lombok.Value;
 import lombok.experimental.Wither;
 
@@ -82,7 +82,7 @@ public class Getter {
                 nullable,
                 DefaultValue.class.getCanonicalName() + "." + defaultTo
         );
-        return "new functionalj.annotations.struct.generator.Getter("
+        return "new functionalj.types.struct.generator.Getter("
                 + params.stream().map(String::valueOf).collect(joining(", "))
                 + ")";
     }

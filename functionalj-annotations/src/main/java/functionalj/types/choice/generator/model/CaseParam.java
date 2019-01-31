@@ -1,19 +1,21 @@
-package functionalj.annotations.choice.generator.model;
+package functionalj.types.choice.generator.model;
 
-import static functionalj.annotations.choice.generator.Utils.toStringLiteral;
+import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
-import lombok.AllArgsConstructor;
-import lombok.ToString;
 import lombok.val;
 
-@ToString
-@AllArgsConstructor
 public class CaseParam {
     public final String  name;
     public final Type    type;
     public final boolean isNotNull;
+    
+    public CaseParam(String name, Type type, boolean isNotNull) {
+        this.name = name;
+        this.type = type;
+        this.isNotNull = isNotNull;
+    }
     
     public String toCode() {
         val params = asList(
@@ -25,4 +27,10 @@ public class CaseParam {
                 + params.stream().collect(joining(", "))
                 + ")";
     }
+    
+    @Override
+    public String toString() {
+        return "CaseParam [name=" + name + ", type=" + type + ", isNotNull=" + isNotNull + "]";
+    }
+    
 }

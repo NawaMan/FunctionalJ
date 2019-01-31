@@ -13,15 +13,15 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator.model;
+package functionalj.types.struct.generator.model;
 
-import static functionalj.annotations.struct.generator.ILines.oneLineOf;
+import static functionalj.types.struct.generator.ILines.oneLineOf;
 
 import java.util.stream.Stream;
 
-import functionalj.annotations.struct.generator.IGenerateDefinition;
-import functionalj.annotations.struct.generator.ILines;
-import functionalj.annotations.struct.generator.Type;
+import functionalj.types.struct.generator.IGenerateDefinition;
+import functionalj.types.struct.generator.ILines;
+import functionalj.types.struct.generator.Type;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;

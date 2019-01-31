@@ -13,12 +13,12 @@
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-package functionalj.annotations.struct.generator.model;
+package functionalj.types.struct.generator.model;
 
-import static functionalj.annotations.struct.generator.ILines.line;
-import static functionalj.annotations.struct.generator.ILines.linesOf;
-import static functionalj.annotations.struct.generator.model.utils.themAll;
-import static functionalj.annotations.struct.generator.model.utils.wrapWith;
+import static functionalj.types.struct.generator.ILines.line;
+import static functionalj.types.struct.generator.ILines.linesOf;
+import static functionalj.types.struct.generator.model.utils.themAll;
+import static functionalj.types.struct.generator.model.utils.wrapWith;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
@@ -28,12 +28,12 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import functionalj.annotations.IPostConstruct;
-import functionalj.annotations.struct.Core;
-import functionalj.annotations.struct.generator.ILines;
-import functionalj.annotations.struct.generator.SourceSpec;
-import functionalj.annotations.struct.generator.StructSpec;
-import functionalj.annotations.struct.generator.Type;
+import functionalj.types.IPostConstruct;
+import functionalj.types.struct.Core;
+import functionalj.types.struct.generator.ILines;
+import functionalj.types.struct.generator.SourceSpec;
+import functionalj.types.struct.generator.StructSpec;
+import functionalj.types.struct.generator.Type;
 import lombok.val;
 
 /**
