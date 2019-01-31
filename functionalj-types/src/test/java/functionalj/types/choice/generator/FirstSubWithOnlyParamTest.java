@@ -78,26 +78,6 @@ public class FirstSubWithOnlyParamTest {
                 "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgb(Predicate<RGB> check, TARGET theValue) {\n" + 
                 "        return rgb(check, d->theValue);\n" + 
                 "    }\n" + 
-                "    \n" + 
-                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, Function<RGB, ? extends TARGET> theAction) {\n" + 
-                "        return rgb(rgb -> $utils.checkEquals(aR, rgb.r), theAction);\n" + 
-                "    }\n" + 
-                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, Supplier<? extends TARGET> theSupplier) {\n" + 
-                "        return rgb(rgb -> $utils.checkEquals(aR, rgb.r), theSupplier);\n" + 
-                "    }\n" + 
-                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, TARGET theValue) {\n" + 
-                "        return rgb(rgb -> $utils.checkEquals(aR, rgb.r), theValue);\n" + 
-                "    }\n" + 
-                "    \n" + 
-                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, Function<RGB, ? extends TARGET> theAction) {\n" + 
-                "        return rgb(rgb -> rCheck.test(rgb.r), theAction);\n" + 
-                "    }\n" + 
-                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, Supplier<? extends TARGET> theSupplier) {\n" + 
-                "        return rgb(rgb -> rCheck.test(rgb.r), theSupplier);\n" + 
-                "    }\n" + 
-                "    public <TARGET> BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, TARGET theValue) {\n" + 
-                "        return rgb(rgb -> rCheck.test(rgb.r), theValue);\n" + 
-                "    }\n" + 
                 "}\n" + 
                 "public static class BasicColorFirstSwitchTyped<TARGET> {\n" + 
                 "    private BasicColor $value;\n" + 
@@ -140,26 +120,6 @@ public class FirstSubWithOnlyParamTest {
                 "    public BasicColorSwitchRGBWhite<TARGET> rgb(Predicate<RGB> check, TARGET theValue) {\n" + 
                 "        return rgb(check, d->theValue);\n" + 
                 "    }\n" + 
-                "    \n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, Function<RGB, ? extends TARGET> theAction) {\n" + 
-                "        return rgb(rgb -> $utils.checkEquals(aR, rgb.r), theAction);\n" + 
-                "    }\n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, Supplier<? extends TARGET> theSupplier) {\n" + 
-                "        return rgb(rgb -> $utils.checkEquals(aR, rgb.r), theSupplier);\n" + 
-                "    }\n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, TARGET theValue) {\n" + 
-                "        return rgb(rgb -> $utils.checkEquals(aR, rgb.r), theValue);\n" + 
-                "    }\n" + 
-                "    \n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, Function<RGB, ? extends TARGET> theAction) {\n" + 
-                "        return rgb(rgb -> rCheck.test(rgb.r), theAction);\n" + 
-                "    }\n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, Supplier<? extends TARGET> theSupplier) {\n" + 
-                "        return rgb(rgb -> rCheck.test(rgb.r), theSupplier);\n" + 
-                "    }\n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, TARGET theValue) {\n" + 
-                "        return rgb(rgb -> rCheck.test(rgb.r), theValue);\n" + 
-                "    }\n" + 
                 "}\n" + 
                 "public static class BasicColorSwitchRGBWhite<TARGET> extends ChoiceTypeSwitch<BasicColor, TARGET> {\n" + 
                 "    private BasicColorSwitchRGBWhite(BasicColor theValue, Function<BasicColor, ? extends TARGET> theAction) { super(theValue, theAction); }\n" + 
@@ -198,26 +158,6 @@ public class FirstSubWithOnlyParamTest {
                 "    }\n" + 
                 "    public BasicColorSwitchRGBWhite<TARGET> rgb(Predicate<RGB> check, TARGET theValue) {\n" + 
                 "        return rgb(check, d->theValue);\n" + 
-                "    }\n" + 
-                "    \n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, Function<RGB, ? extends TARGET> theAction) {\n" + 
-                "        return rgb(rgb -> $utils.checkEquals(aR, rgb.r), theAction);\n" + 
-                "    }\n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, Supplier<? extends TARGET> theSupplier) {\n" + 
-                "        return rgb(rgb -> $utils.checkEquals(aR, rgb.r), theSupplier);\n" + 
-                "    }\n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(int aR, TARGET theValue) {\n" + 
-                "        return rgb(rgb -> $utils.checkEquals(aR, rgb.r), theValue);\n" + 
-                "    }\n" + 
-                "    \n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, Function<RGB, ? extends TARGET> theAction) {\n" + 
-                "        return rgb(rgb -> rCheck.test(rgb.r), theAction);\n" + 
-                "    }\n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, Supplier<? extends TARGET> theSupplier) {\n" + 
-                "        return rgb(rgb -> rCheck.test(rgb.r), theSupplier);\n" + 
-                "    }\n" + 
-                "    public BasicColorSwitchRGBWhite<TARGET> rgbOf(Predicate<Integer> rCheck, TARGET theValue) {\n" + 
-                "        return rgb(rgb -> rCheck.test(rgb.r), theValue);\n" + 
                 "    }\n" + 
                 "}",
                 lines);

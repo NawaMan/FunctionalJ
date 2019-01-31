@@ -273,26 +273,6 @@ public class GenericSupportTest {
             "        public OptionSwitchSome<TARGET, T> some(Predicate<Some<T>> check, TARGET theValue) {\n" + 
             "            return some(check, d->theValue);\n" + 
             "        }\n" + 
-            "        \n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(T aValue, Function<Some<T>, ? extends TARGET> theAction) {\n" + 
-            "            return some(some -> $utils.checkEquals(aValue, some.value), theAction);\n" + 
-            "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(T aValue, Supplier<? extends TARGET> theSupplier) {\n" + 
-            "            return some(some -> $utils.checkEquals(aValue, some.value), theSupplier);\n" + 
-            "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(T aValue, TARGET theValue) {\n" + 
-            "            return some(some -> $utils.checkEquals(aValue, some.value), theValue);\n" + 
-            "        }\n" + 
-            "        \n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, Function<Some<T>, ? extends TARGET> theAction) {\n" + 
-            "            return some(some -> valueCheck.test(some.value), theAction);\n" + 
-            "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, Supplier<? extends TARGET> theSupplier) {\n" + 
-            "            return some(some -> valueCheck.test(some.value), theSupplier);\n" + 
-            "        }\n" + 
-            "        public OptionSwitchSome<TARGET, T> someOf(Predicate<T> valueCheck, TARGET theValue) {\n" + 
-            "            return some(some -> valueCheck.test(some.value), theValue);\n" + 
-            "        }\n" + 
             "    }\n" + 
             "    \n" + 
             "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"Option\", new functionalj.types.choice.generator.model.Type(\"functionalj.types.choice.generator\", \"GenericSupportTest\", \"OptionSpec\", java.util.Collections.emptyList()), \"spec\", false, java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"T\", \"T extends Number\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Type(\"java.lang\", null, \"Number\", java.util.Collections.emptyList()), new functionalj.types.choice.generator.model.Type(\"java.io\", null, \"Serializable\", java.util.Collections.emptyList())))), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"None\", null, java.util.Collections.emptyList()), new functionalj.types.choice.generator.model.Case(\"Some\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"value\", new functionalj.types.choice.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()), false)))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n" + 

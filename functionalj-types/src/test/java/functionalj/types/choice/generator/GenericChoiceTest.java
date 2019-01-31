@@ -32,7 +32,6 @@ public class GenericChoiceTest {
             emptyList()
         );
     
-//    @Ignore("Have not implement.")
     @Test
     public void test() {
         val targetClass = new TargetClass(spec);
@@ -269,26 +268,6 @@ public class GenericChoiceTest {
                 "        }\n" + 
                 "        public MayBeSwitchJust<TARGET> just(Predicate<Just> check, TARGET theValue) {\n" + 
                 "            return just(check, d->theValue);\n" + 
-                "        }\n" + 
-                "        \n" + 
-                "        public MayBeSwitchJust<TARGET> justOf(T aData, Function<Just, ? extends TARGET> theAction) {\n" + 
-                "            return just(just -> $utils.checkEquals(aData, just.data), theAction);\n" + 
-                "        }\n" + 
-                "        public MayBeSwitchJust<TARGET> justOf(T aData, Supplier<? extends TARGET> theSupplier) {\n" + 
-                "            return just(just -> $utils.checkEquals(aData, just.data), theSupplier);\n" + 
-                "        }\n" + 
-                "        public MayBeSwitchJust<TARGET> justOf(T aData, TARGET theValue) {\n" + 
-                "            return just(just -> $utils.checkEquals(aData, just.data), theValue);\n" + 
-                "        }\n" + 
-                "        \n" + 
-                "        public MayBeSwitchJust<TARGET> justOf(Predicate<T> dataCheck, Function<Just, ? extends TARGET> theAction) {\n" + 
-                "            return just(just -> dataCheck.test(just.data), theAction);\n" + 
-                "        }\n" + 
-                "        public MayBeSwitchJust<TARGET> justOf(Predicate<T> dataCheck, Supplier<? extends TARGET> theSupplier) {\n" + 
-                "            return just(just -> dataCheck.test(just.data), theSupplier);\n" + 
-                "        }\n" + 
-                "        public MayBeSwitchJust<TARGET> justOf(Predicate<T> dataCheck, TARGET theValue) {\n" + 
-                "            return just(just -> dataCheck.test(just.data), theValue);\n" + 
                 "        }\n" + 
                 "    }\n" + 
                 "    \n" + 
