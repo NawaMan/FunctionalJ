@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.annotations.Rule;
-import functionalj.annotations.Struct;
 import functionalj.result.ValidationException;
+import functionalj.types.Rule;
+import functionalj.types.Struct;
 
 public class RuleTest {
     

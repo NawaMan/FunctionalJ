@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.annotations.Struct;
-import functionalj.annotations.struct.SimpleWithPostReConstruct;
-import functionalj.annotations.IPostConstruct;
+import functionalj.types.IPostConstruct;
+import functionalj.types.Struct;
+import functionalj.types.struct.SimpleWithPostReConstruct;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

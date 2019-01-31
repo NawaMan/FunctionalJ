@@ -1,8 +1,8 @@
 package functionalj.annotations.choice;
 
-import static functionalj.annotations.choice.Option.None;
-import static functionalj.annotations.choice.Option.Some;
-import static functionalj.annotations.choice.ChoiceTypes.Match;
+import static functionalj.types.choice.ChoiceTypes.Match;
+import static functionalj.types.choice.Option.None;
+import static functionalj.types.choice.Option.Some;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -13,9 +13,9 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 
-import functionalj.annotations.Choice;
-import functionalj.annotations.choice.Option;
-import functionalj.annotations.choice.Self1;
+import functionalj.types.Choice;
+import functionalj.types.choice.Option;
+import functionalj.types.choice.Self1;
 
 @SuppressWarnings("javadoc")
 public class ChoiceTypeWithGenericMethodTest {

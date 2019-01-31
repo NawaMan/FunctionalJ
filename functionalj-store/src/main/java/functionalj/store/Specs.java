@@ -1,6 +1,6 @@
 package functionalj.store;
 
-import functionalj.annotations.Choice;
+import functionalj.types.Choice;
 
 class Specs {
     

@@ -2,7 +2,7 @@ package functionalj.annotations.struct;
 
 import java.util.Optional;
 
-import functionalj.annotations.Struct;
+import functionalj.types.Struct;
 import nawaman.nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")

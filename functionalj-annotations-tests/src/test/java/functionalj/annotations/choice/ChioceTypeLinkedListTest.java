@@ -1,9 +1,9 @@
 package functionalj.annotations.choice;
 
-import static functionalj.annotations.choice.LinkedList.Nill;
-import static functionalj.annotations.choice.LinkedList.Node;
-import static functionalj.annotations.choice.ChoiceTypes.Match;
 import static functionalj.function.Func.recusive;
+import static functionalj.types.choice.ChoiceTypes.Match;
+import static functionalj.types.choice.LinkedList.Nill;
+import static functionalj.types.choice.LinkedList.Node;
 import static org.junit.Assert.assertEquals;
 
 import java.util.function.BinaryOperator;
@@ -12,8 +12,8 @@ import java.util.function.Predicate;
 
 import org.junit.Test;
 
-import functionalj.annotations.Choice;
-import functionalj.annotations.choice.LinkedList;
+import functionalj.types.Choice;
+import functionalj.types.choice.LinkedList;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

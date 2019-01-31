@@ -1,13 +1,13 @@
 package functionalj.annotations.struct;
 
-import static functionalj.annotations.DefaultValue.NULL;
+import static functionalj.types.DefaultValue.NULL;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 
-import functionalj.annotations.DefaultTo;
-import functionalj.annotations.Struct;
+import functionalj.types.DefaultTo;
+import functionalj.types.Struct;
 
 @SuppressWarnings("javadoc")
 public class DOConstructorTest {

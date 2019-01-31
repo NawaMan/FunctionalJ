@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.annotations.Struct;
-import functionalj.annotations.struct.Child;
-import functionalj.annotations.struct.Parent;
+import functionalj.types.Struct;
+import functionalj.types.struct.Child;
+import functionalj.types.struct.Parent;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

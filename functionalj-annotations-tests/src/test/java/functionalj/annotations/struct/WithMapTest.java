@@ -2,8 +2,8 @@ package functionalj.annotations.struct;
 
 import java.util.Map;
 
-import functionalj.annotations.Struct;
-import functionalj.annotations.struct.Child;
+import functionalj.types.Struct;
+import functionalj.types.struct.Child;
 
 @SuppressWarnings("javadoc")
 public class WithMapTest {

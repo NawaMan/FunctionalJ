@@ -1,8 +1,8 @@
 package functionalj.annotations.choice;
 
-import static functionalj.annotations.choice.ChoiceTypes.Match;
-import static functionalj.annotations.choice.UpOrDown.Down;
-import static functionalj.annotations.choice.UpOrDown.Up;
+import static functionalj.types.choice.ChoiceTypes.Match;
+import static functionalj.types.choice.UpOrDown.Down;
+import static functionalj.types.choice.UpOrDown.Up;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import functionalj.annotations.Choice;
+import functionalj.types.Choice;
 import lombok.val;
 
 @Choice

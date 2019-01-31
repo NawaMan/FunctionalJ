@@ -1,20 +1,20 @@
 package functionalj.annotations.struct;
 
-import static functionalj.annotations.DefaultValue.EMPTY;
-import static functionalj.annotations.DefaultValue.NULL;
-import static functionalj.annotations.DefaultValue.ZERO;
-import static functionalj.annotations.struct.Car.theCar;
-import static functionalj.annotations.struct.CarForSale.theCarForSale;
 import static functionalj.lens.Access.$I;
+import static functionalj.types.DefaultValue.EMPTY;
+import static functionalj.types.DefaultValue.NULL;
+import static functionalj.types.DefaultValue.ZERO;
+import static functionalj.types.struct.Car.theCar;
+import static functionalj.types.struct.CarForSale.theCarForSale;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.annotations.DefaultTo;
-import functionalj.annotations.Nullable;
-import functionalj.annotations.Struct;
 import functionalj.list.FuncList;
+import functionalj.types.DefaultTo;
+import functionalj.types.Nullable;
+import functionalj.types.Struct;
 import lombok.val;
 
 public class FromMethodTest {

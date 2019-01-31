@@ -5,11 +5,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.annotations.Struct;
-import functionalj.annotations.struct.Child;
-import functionalj.annotations.struct.ParentWithFuncList;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
+import functionalj.types.Struct;
+import functionalj.types.struct.Child;
+import functionalj.types.struct.ParentWithFuncList;
 
 @SuppressWarnings("javadoc")
 public class WithFuncListTest {

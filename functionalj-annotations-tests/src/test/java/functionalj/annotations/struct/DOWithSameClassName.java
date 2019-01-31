@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.annotations.Struct;
+import functionalj.types.Struct;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
