@@ -68,7 +68,7 @@ public class TargetClass implements Lines {
         
         val hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);
         if (hasChoiceWuthMoreThanOneParam) {
-            imports.add("functionalj.annotations.Absent");
+            imports.add("functionalj.types.Absent");
         }
         
         String selfDef = "";

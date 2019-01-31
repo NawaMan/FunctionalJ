@@ -55,7 +55,7 @@ public class RuleSpec {
         val dataTypeGeneric = getDataTypeGeneric();
         val validationCall  = validationCall();
         val isSubRule       = (superRule != null) && !superRule.equals(IRule.class.getCanonicalName());
-        val superClass      = isSubRule ? superRule : "functionalj.result.Acceptable<" + dataTypeGeneric + "> implements functionalj.annotations.IRule<" + dataTypeGeneric + ">";
+        val superClass      = isSubRule ? superRule : "functionalj.result.Acceptable<" + dataTypeGeneric + "> implements functionalj.types.IRule<" + dataTypeGeneric + ">";
         val strTemplate =
                 "package " + packageName + ";\n" +
                 "public class " + targetName + " extends " + superClass + " {\n" + 
@@ -74,7 +74,7 @@ public class RuleSpec {
                 "    public " + dataTypeGeneric + " __dataValue() { return value(); }\n" + 
                 "    public Class<" + dataTypeGeneric + "> __dataType() { return " + dataType + ".class; }\n" + 
                 "    @SuppressWarnings({ \"unchecked\", \"rawtypes\" })\n" +
-                "    public <R extends functionalj.annotations.IRule<" + dataTypeGeneric + ">> Class<R> __superRule() { \n" + 
+                "    public <R extends functionalj.types.IRule<" + dataTypeGeneric + ">> Class<R> __superRule() { \n" + 
                 "        return (Class)" + ((superRule == null) ? null : superClass + ".class") + ";\n" +
                 "    }\n" + 
                 "}";
