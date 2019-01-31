@@ -7,9 +7,9 @@ repositories {
 }
 
 dependencies {
-   compile project(':functionalj-annotations')
    compile project(':functionalj-core')
    compile project(':functionalj-store')
+   compile project(':functionalj-types')
     
     //== Test ==
     

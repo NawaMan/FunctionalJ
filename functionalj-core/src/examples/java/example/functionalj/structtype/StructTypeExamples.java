@@ -9,10 +9,10 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import functionalj.annotations.DefaultTo;
-import functionalj.annotations.DefaultValue;
-import functionalj.annotations.Nullable;
-import functionalj.annotations.Struct;
+import functionalj.types.DefaultTo;
+import functionalj.types.DefaultValue;
+import functionalj.types.Nullable;
+import functionalj.types.Struct;
 import functionalj.list.FuncList;
 import functionalj.result.ValidationException;
 import lombok.val;

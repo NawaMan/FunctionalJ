@@ -83,7 +83,7 @@ By default, `null` is not allowed as the property value.
 ```
 
 In order to allow the field to accept `null`,
-  the field must be annotated with `@Nullable` (`functionalj.annotations.Nullable`).
+  the field must be annotated with `@Nullable` (`functionalj.types.Nullable`).
 So let say we add `middleName` field to the `Person` class and make it nullable.
 
 ```java

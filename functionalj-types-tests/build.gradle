@@ -12,13 +12,8 @@ dependencies {
     compile project(':functionalj-core')
     compile project(':functionalj-types')
     
-    //compile 'defaultj:defaultj-api:1.2.2.0'
-    //compile 'nawaman:nullablej:3.3.0.0'
-    //compile 'nawaman-utils:nawaman-utils-reflection:0.1.7'
-    
     //== Test ==
     
     testCompile 'junit:junit:4.12'
-    //testCompile 'defaultj:defaultj-core:1.2.0.0'
     
 }

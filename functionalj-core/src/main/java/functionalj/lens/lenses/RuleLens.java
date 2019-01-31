@@ -5,7 +5,7 @@
 //
 //import java.util.function.Function;
 //
-//import functionalj.annotations.IRule;
+//import functionalj.types.IRule;
 //import functionalj.lens.core.LensSpec;
 //import functionalj.lens.core.LensSpecParameterized;
 //import functionalj.lens.core.LensUtils;
