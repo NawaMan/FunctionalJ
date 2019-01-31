@@ -10,7 +10,7 @@ import lombok.val;
 
 public class Specs {
     
-//    @functionalj.annotations.Choice
+//    @functionalj.types.Choice
     public static interface ValidationSpec<D> {
         void ToBoolean  (Function<D, Boolean>             checker, String messageTemplate);
         void ToMessage  (Function<D, String>              errorMsg);

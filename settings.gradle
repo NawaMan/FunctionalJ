@@ -1,12 +1,12 @@
 
-include ":functionalj-annotations"
 include ":functionalj-core"
 include ":functionalj-store"
+include ":functionalj-types"
 
 include ":functionalj-all"
 
 
-include ":functionalj-annotations-tests"
+include ":functionalj-types-tests"
 
 
 rootProject.name = theGroup

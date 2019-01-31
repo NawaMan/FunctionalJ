@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
-import functionalj.annotations.Choice;
+import functionalj.types.Choice;
 import functionalj.function.Func;
 import lombok.val;
 

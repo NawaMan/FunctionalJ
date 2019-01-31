@@ -9,8 +9,8 @@ repositories {
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.2'
     
-    compile project(':functionalj-annotations')
     compile project(':functionalj-core')
+    compile project(':functionalj-types')
     
     //compile 'defaultj:defaultj-api:1.2.2.0'
     //compile 'nawaman:nullablej:3.3.0.0'
