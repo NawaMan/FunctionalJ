@@ -2,9 +2,12 @@ package functionalj.lens.lenses;
 
 import static functionalj.lens.core.AccessUtils.createNullableAccess;
 import static functionalj.lens.core.AccessUtils.createResultAccess;
+import static java.util.Arrays.asList;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -39,6 +42,27 @@ public interface AnyAccess<HOST, DATA>
                 any -> {
                     return any != value;
                 });
+    }
+    
+    public default BooleanAccess<HOST> thatIsIn(Collection<DATA> collection) {
+        return booleanAccess(
+                collection != null,
+                any -> {
+                    return collection.contains(any);
+                });
+    }
+    public default BooleanAccess<HOST> thatIsNotIn(Collection<DATA> collection) {
+        return booleanAccess(
+                collection == null,
+                any -> {
+                    return collection.contains(any);
+                });
+    }
+    public default BooleanAccess<HOST> thatIsOneOf(DATA ... array) {
+        return thatIsNotIn(asList(array));
+    }
+    public default BooleanAccess<HOST> thatIsNoneOf(DATA ... array) {
+        return thatIsNotIn(asList(array));
     }
     public default BooleanAccess<HOST> thatEquals(DATA value) {
         return booleanAccess(

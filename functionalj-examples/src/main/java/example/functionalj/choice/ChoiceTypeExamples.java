@@ -1,5 +1,6 @@
 package example.functionalj.choice;
 
+import static example.functionalj.choice.LoginStatus.Login.theLogin;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,8 +10,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
-import functionalj.types.Choice;
 import functionalj.function.Func;
+import functionalj.types.Choice;
 import lombok.val;
 
 public class ChoiceTypeExamples {
@@ -91,10 +92,10 @@ public class ChoiceTypeExamples {
         val moderators = asList("Jack", "John");
         val f = Func.f((LoginStatus status) -> {
             return status.match()
-                    .loginOf("root",               "Administrator")
-                    .loginOf(moderators::contains, "Moderator")
-                    .login  (s ->                  "User: " + s.userName())
-                    .logout (                      "Guess");
+                    .login (theLogin.userName.thatEquals("root"),   "Administrator")
+                    .login (theLogin.userName.thatIsIn(moderators), "Moderator")
+                    .login (s ->                                    "User: " + s.userName())
+                    .logout(                                        "Guess");
         });
         
         LoginStatus status1 = LoginStatus.Login("root");
