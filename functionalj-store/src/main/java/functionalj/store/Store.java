@@ -13,6 +13,8 @@ import functionalj.result.Result;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
+// TODO - Generate Store that immitate an immutable type and have the changes store inside.
+
 public class Store<DATA> {
     
     private final AtomicReference<DATA>                                     dataRef = new AtomicReference<DATA>();

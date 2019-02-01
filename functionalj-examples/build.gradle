@@ -7,11 +7,10 @@ repositories {
 }
 
 dependencies {
-   compile project(':functionalj-all')
+    compile project(':functionalj-all')
     
     //== Test ==
     
-    testCompile 'junit:junit:4.12'
-    testCompile 'defaultj:defaultj-core:1.2.0.0'
+    compile 'junit:junit:4.12'
     
 }

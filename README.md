@@ -1,4 +1,4 @@
-# FunctionalJ
+# FunctionalJ [▲](http://functionalj.io "FunctionalJ")
 
 FunctionalJ is a library for writing functional style code in Java.
 It aims be a practical expansion to functional programming added in Java 8.
@@ -22,9 +22,8 @@ No additional build steps or tools are required outside of adding dependencies.
 
 ## Examples
 
-```Java
-
-```
+See some examples in the example project [here](https://github.com/NawaMan/FunctionalJ/tree/master/functionalj-examples/src/main/java/example/functionalj)
+  or [functionaj.io](http://functionalj.io "FunctionalJ").
 
 ## Usage
 
