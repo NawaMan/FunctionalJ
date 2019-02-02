@@ -1062,6 +1062,9 @@ public interface FuncList<DATA>
     
     //-- FlatMap --
     
+    public default FuncList<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, ? extends Stream<DATA>> mapper) {
+        return flatMap(d -> checker.test(d) ? mapper.apply(d) : StreamPlus.of(d));
+    }
     public default <T> FuncList<T> flatMapIf(
             Predicate<? super DATA> checker, 
             Function<? super DATA, Stream<T>> mapper, 
