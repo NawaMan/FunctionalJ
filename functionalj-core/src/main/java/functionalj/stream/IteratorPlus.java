@@ -29,6 +29,7 @@ import java.util.stream.StreamSupport;
 
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
+import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -64,6 +65,10 @@ public interface IteratorPlus<DATA> extends Iterator<DATA> {
     public default StreamPlus<DATA> stream() {
         val iterable = (Iterable<DATA>)()->this;
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+    }
+    
+    public default FuncList<DATA> toList() {
+        return stream().toList();
     }
     
     public default Result<DATA> pullNext() {

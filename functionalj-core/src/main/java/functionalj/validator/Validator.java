@@ -38,8 +38,8 @@ public interface Validator<DATA> extends Predicate<DATA>, Func1<DATA, Boolean> {
         return new SimpleValidator.Impl<D>(checker, exceptionCreator);
     }
     
-    public static <D> Validator<D> of(Predicate<D> checker, String templateMsg) {
-        return new SimpleValidator.Impl<D>(checker, SimpleValidator.exceptionFor(templateMsg));
+    public static <D> Validator<D> of(Predicate<D> validChecker, String templateMsg) {
+        return new SimpleValidator.Impl<D>(validChecker, SimpleValidator.exceptionFor(templateMsg));
     }
     
     @Override

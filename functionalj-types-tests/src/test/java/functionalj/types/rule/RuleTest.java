@@ -48,7 +48,7 @@ public class RuleTest {
     }
     @Rule(extendRule="functionalj.types.rule.Email")
     static ValidationException VerifiedEmail(String email) {
-        if ("nawa@nawaman.net".equals(email))
+        if ("name@email.com".equals(email))
             return null;
         
         return new ValidationException("Unverified email: " + email);
@@ -81,15 +81,14 @@ public class RuleTest {
     }
     @Test
     public void testEmail() {
-        assertEquals("Email:{ Value: nawa@nawaman.net }",   "" + Email.from("nawa@nawaman.net"));
-        assertEquals("Email:{ Value: nawaman@gmail.com }",  "" + Email.from("nawaman@gmail.com"));
-        assertEquals("Email:{ Invalid: Not a valid email address: nawaman.net }",  "" + Email.from("nawaman.net"));
+        assertEquals("Email:{ Value: name@email.com }",   "" + Email.from("name@email.com"));
+        assertEquals("Email:{ Invalid: Not a valid email address: name_email.com }",  "" + Email.from("name_email.com"));
     }
     @Test
     public void testVerifiedEmail() {
-        assertEquals("VerifiedEmail:{ Value: nawa@nawaman.net }",                             "" + VerifiedEmail.from("nawa@nawaman.net"));
-        assertEquals("VerifiedEmail:{ Invalid: Not a valid email address: nawanawaman.net }", "" + VerifiedEmail.from("nawanawaman.net"));
-        assertEquals("VerifiedEmail:{ Invalid: Unverified email: nawaman@gmail.com }",        "" + VerifiedEmail.from("nawaman@gmail.com"));
+        assertEquals("VerifiedEmail:{ Value: name@email.com }",                              "" + VerifiedEmail.from("name@email.com"));
+        assertEquals("VerifiedEmail:{ Invalid: Not a valid email address: name_email.com }", "" + VerifiedEmail.from("name_email.com"));
+        assertEquals("VerifiedEmail:{ Invalid: Unverified email: name@email.net }",          "" + VerifiedEmail.from("name@email.net"));
     }
 
 }

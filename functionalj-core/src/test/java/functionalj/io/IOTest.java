@@ -31,7 +31,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func;
@@ -40,7 +39,6 @@ import functionalj.promise.DeferActionBuilder;
 import functionalj.result.Result;
 import lombok.val;
 
-@Ignore("Fail but no time to fix.")
 public class IOTest {
     @Test
     public void testValue() {
@@ -137,8 +135,6 @@ public class IOTest {
                 action2.toString());
     }
     
-    // Ummm - Somehow this test is not deterministic - The problem seems to be .map.
-    @Ignore("Fail but no time to fix.")
     @Test
     public void testFilter() {
         val logs    = new ArrayList<String>();
@@ -160,8 +156,6 @@ public class IOTest {
                 + "]", logs.toString());
     }
     
-    // Ummm - Somehow this test is not deterministic - The problem seems to be .map.
-    @Ignore("Fail but no time to fix.")
     @Test
     public void testMapError() {
         val logs    = new ArrayList<String>();
@@ -189,8 +183,6 @@ public class IOTest {
                 + "]", logs.toString());
     }
     
-    // Ummm - Somehow this test is not deterministic - The problem seems to be .map.
-    @Ignore("Fail but no time to fix.")
     @Test
     public void testReuseable() {
         val logs    = new ArrayList<String>();
@@ -353,7 +345,6 @@ public class IOTest {
                 + "]", logs.toString());
     }
     
-    @Ignore("Skip for now ... no time to fix")
     @Test
     public void testRace_complete_UpperCaseDoneFirst() {
         val logs     = new ArrayList<String>();
@@ -388,7 +379,6 @@ public class IOTest {
                 logs.stream().collect(joining(",\n")));
     }
     
-    @Ignore("Skip for now ... no time to fix")
     @Test
     public void testRace_complete_LowerCaseDoneFirst() {
         val logs     = new ArrayList<String>();

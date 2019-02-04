@@ -26,6 +26,7 @@ package functionalj.stream;
 import static functionalj.function.Func.f;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -325,70 +326,134 @@ public interface StreamPlus<DATA>
         return stream().max((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
     }
     
-    public default int sum(ToIntFunction<? super DATA> toInt) {
+    public default int sumToInt(ToIntFunction<? super DATA> toInt) {
         return mapToInt(toInt).sum();
     }
     
-    public default OptionalInt min(ToIntFunction<? super DATA> toInt) {
+    public default OptionalInt minToInt(ToIntFunction<? super DATA> toInt) {
         return mapToInt(toInt).min();
     }
     
-    public default OptionalInt max(ToIntFunction<? super DATA> toInt) {
+    public default OptionalInt maxToInt(ToIntFunction<? super DATA> toInt) {
         return mapToInt(toInt).max();
     }
     
-    public default OptionalDouble average(ToIntFunction<? super DATA> toInt) {
+    public default OptionalDouble averageToInt(ToIntFunction<? super DATA> toInt) {
         return mapToInt(toInt).average();
     }
     
-    public default long sum(ToLongFunction<? super DATA> toLong) {
+    public default long sumToLong(ToLongFunction<? super DATA> toLong) {
         return mapToLong(toLong).sum();
     }
     
-    public default OptionalLong min(ToLongFunction<? super DATA> toLong) {
+    public default OptionalLong minToLong(ToLongFunction<? super DATA> toLong) {
         return mapToLong(toLong).min();
     }
     
-    public default OptionalLong max(ToLongFunction<? super DATA> toLong) {
+    public default OptionalLong maxToLong(ToLongFunction<? super DATA> toLong) {
         return mapToLong(toLong).max();
     }
     
-    public default OptionalDouble average(ToLongFunction<? super DATA> toLong) {
+    public default OptionalDouble averageToLong(ToLongFunction<? super DATA> toLong) {
         return mapToLong(toLong).average();
     }
     
-    public default double sum(ToDoubleFunction<? super DATA> toDouble) {
+    public default double sumToDouble(ToDoubleFunction<? super DATA> toDouble) {
         return mapToDouble(toDouble).sum();
     }
     
-    public default OptionalDouble min(ToDoubleFunction<? super DATA> toDouble) {
+    public default OptionalDouble minToDouble(ToDoubleFunction<? super DATA> toDouble) {
         return mapToDouble(toDouble).min();
     }
     
-    public default OptionalDouble max(ToDoubleFunction<? super DATA> toDouble) {
+    public default OptionalDouble maxToDouble(ToDoubleFunction<? super DATA> toDouble) {
         return mapToDouble(toDouble).max();
     }
     
-    public default OptionalDouble average(ToDoubleFunction<? super DATA> toDouble) {
+    public default OptionalDouble averageToDouble(ToDoubleFunction<? super DATA> toDouble) {
         return mapToDouble(toDouble).average();
     }
     
-    public default Optional<BigDecimal> sum(Function<? super DATA, BigDecimal> toBigDecimal) {
+    public default Optional<BigDecimal> sumToBigDecimal(Function<? super DATA, BigDecimal> toBigDecimal) {
         return map(toBigDecimal).reduce(BigDecimal::add);
     }
     
-    public default Optional<BigDecimal> min(Function<? super DATA, BigDecimal> toBigDecimal) {
+    public default Optional<BigDecimal> minToBigDecimal(Function<? super DATA, BigDecimal> toBigDecimal) {
         return map(toBigDecimal).reduce((a, b) -> a.compareTo(b) <= 0 ? a : b);
     }
     
-    public default Optional<BigDecimal> max(Function<? super DATA, BigDecimal> toBigDecimal) {
+    public default Optional<BigDecimal> maxToBigDecimal(Function<? super DATA, BigDecimal> toBigDecimal) {
         return map(toBigDecimal).reduce((a, b) -> a.compareTo(b) <= 0 ? b : a);
     }
     
-    public default Optional<BigDecimal> average(Function<? super DATA, BigDecimal> toBigDecimal) {
+    public default Optional<BigDecimal> averageToBigDecimal(Function<? super DATA, BigDecimal> toBigDecimal) {
         val countSum = map(each -> Tuple.of(1, toBigDecimal.apply(each)))
         .reduce((a, b)->Tuple.of(a._1 + b._1, a._2.add(b._2)));
         return countSum.map(t -> t._2.divide(new BigDecimal(t._1)));
+    }
+    
+    public default int sum(ToIntFunction<? super DATA> toInt) {
+        return sumToInt(toInt);
+    }
+    
+    public default OptionalInt min(ToIntFunction<? super DATA> toInt) {
+        return minToInt(toInt);
+    }
+    
+    public default OptionalInt max(ToIntFunction<? super DATA> toInt) {
+        return maxToInt(toInt);
+    }
+    
+    public default OptionalDouble average(ToIntFunction<? super DATA> toInt) {
+        return averageToInt(toInt);
+    }
+    
+    public default long sum(ToLongFunction<? super DATA> toLong) {
+        return sumToLong(toLong);
+    }
+    
+    public default OptionalLong min(ToLongFunction<? super DATA> toLong) {
+        return minToLong(toLong);
+    }
+    
+    public default OptionalLong max(ToLongFunction<? super DATA> toLong) {
+        return maxToLong(toLong);
+    }
+    
+    public default OptionalDouble average(ToLongFunction<? super DATA> toLong) {
+        return averageToLong(toLong);
+    }
+    
+    public default double sum(ToDoubleFunction<? super DATA> toDouble) {
+        return sumToDouble(toDouble);
+    }
+    
+    public default OptionalDouble min(ToDoubleFunction<? super DATA> toDouble) {
+        return minToDouble(toDouble);
+    }
+    
+    public default OptionalDouble max(ToDoubleFunction<? super DATA> toDouble) {
+        return maxToDouble(toDouble);
+    }
+    
+    public default OptionalDouble average(ToDoubleFunction<? super DATA> toDouble) {
+        return averageToDouble(toDouble);
+    }
+    
+    public default Optional<BigDecimal> sum(Function<? super DATA, BigDecimal> toBigDecimal) {
+        return sumToBigDecimal(toBigDecimal);
+    }
+    
+    public default Optional<BigDecimal> min(Function<? super DATA, BigDecimal> toBigDecimal) {
+        return minToBigDecimal(toBigDecimal);
+    }
+    
+    public default Optional<BigDecimal> max(Function<? super DATA, BigDecimal> toBigDecimal) {
+        return maxToBigDecimal(toBigDecimal);
+    }
+    
+    public default Optional<BigDecimal> average(Function<? super DATA, BigDecimal> toBigDecimal) {
+        return averageToBigDecimal(toBigDecimal);
     }
     
     public default long count() {
@@ -457,8 +522,30 @@ public interface StreamPlus<DATA>
         return stream().collect(Collectors.toList());
     }
     
+    public default byte[] toByteArray(Func1<DATA, Byte> toByte) {
+        val byteArray = new ByteArrayOutputStream();
+        stream().forEach(d -> byteArray.write(toByte.apply(d)));
+        return byteArray.toByteArray();
+    }
+    
+    public default int[] toIntArray(ToIntFunction<DATA> toInt) {
+        return mapToInt(toInt).toArray();
+    }
+    
+    public default long[] toLongArray(ToLongFunction<DATA> toLong) {
+        return mapToLong(toLong).toArray();
+    }
+    
+    public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
+        return mapToDouble(toDouble).toArray();
+    }
+    
     public default FuncList<DATA> toList() {
         return toImmutableList();
+    }
+    
+    public default String toListString() {
+        return "[" + map(String::valueOf).collect(Collectors.joining(", ")) + "]";
     }
     
     public default ImmutableList<DATA> toImmutableList() {
@@ -643,6 +730,122 @@ public interface StreamPlus<DATA>
                 list5,
                 list6
         );
+    }
+    
+    //-- SplitToMap --
+    
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate,
+            KEY key2) {
+        val temp = this.mapTuple(
+                it -> predicate.test(it) ? 0 : 1,
+                it -> it
+        ).toList();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        return FuncMap.of(
+                key1, list1, 
+                key2, list2);
+    }
+    
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    :                       2,
+                it -> it
+        ).toImmutableList();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        return FuncMap.of(
+                key1, list1, 
+                key2, list2, 
+                key3, list3);
+    }
+    
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3, Predicate<? super DATA> predicate3,
+            KEY key4) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    :                       3,
+                it -> it
+        ).toImmutableList();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        return FuncMap.of(
+                key1, list1, 
+                key2, list2, 
+                key3, list3, 
+                key4, list4);
+    }
+    
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3, Predicate<? super DATA> predicate3,
+            KEY key4, Predicate<? super DATA> predicate4,
+            KEY key5) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    : predicate4.test(it) ? 3
+                    :                       4,
+                it -> it
+        ).toImmutableList();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
+        return FuncMap.of(
+                key1, list1, 
+                key2, list2, 
+                key3, list3, 
+                key4, list4, 
+                key5, list5);
+    }
+    
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3, Predicate<? super DATA> predicate3,
+            KEY key4, Predicate<? super DATA> predicate4,
+            KEY key5, Predicate<? super DATA> predicate5,
+            KEY key6) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    : predicate4.test(it) ? 3
+                    : predicate5.test(it) ? 4
+                    :                       5,
+                it -> it
+        ).toImmutableList();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).map(it -> it._2()) : FuncList.<DATA>empty();
+        return FuncMap.of(
+                key1, list1, 
+                key2, list2, 
+                key3, list3, 
+                key4, list4, 
+                key5, list5,
+                key6, list6);
     }
     
     //++ Plus w/ Self ++
@@ -1419,11 +1622,11 @@ public interface StreamPlus<DATA>
     
     //-- Zip --
     
-    public default <B, TARGET> StreamPlus<TARGET> zipWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> StreamPlus<TARGET> combine(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
         return zipWith(anotherStream, ZipWithOption.RequireBoth)
                 .map(combinator::applyTo);
     }
-    public default <B, TARGET> StreamPlus<TARGET> zipWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> StreamPlus<TARGET> combine(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
         return zipWith(anotherStream, option)
                 .map(combinator::applyTo);
     }

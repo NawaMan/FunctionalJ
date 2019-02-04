@@ -72,7 +72,6 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
                     action.complete(value);
                 });
             } catch (Exception exception) {
-                System.out.println(action.getPromise() + ": FAIL");
                 action.fail(exception);
                 ThrowFuncs.handleNoThrow(exception);
             } catch (Throwable exception) {
@@ -88,7 +87,6 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
         }
         
         val promise = action.getPromise();
-        System.out.println(promise + ": AsyncRunner.run");
         return promise;
     }
     

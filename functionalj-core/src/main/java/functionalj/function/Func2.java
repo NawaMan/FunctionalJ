@@ -105,16 +105,16 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return IO.from(input1, input2, this);
     }
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
-        return input1.zipWith(input2, this);
+        return input1.combine(input2, this);
     }
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, ZipWithOption option) {
-        return input1.zipWith(input2, option, this);
+        return input1.combine(input2, option, this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
-        return input1.zipWith(input2, this);
+        return input1.combine(input2, this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2, ZipWithOption option) {
-        return input1.zipWith(input2, option, this);
+        return input1.combine(input2, option, this);
     }
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
         return input1.zipWith(input2, this);

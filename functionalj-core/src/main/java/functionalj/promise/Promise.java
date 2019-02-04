@@ -282,28 +282,31 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     private boolean makeDone(Result<DATA> result) {
         val isDone = synchronouseOperation(()->{
             val data = dataRef.get();
-            if (data instanceof Promise) {
-                @SuppressWarnings("unchecked")
-                val parent = (Promise<DATA>)data;
-                if (!result.isException()) {
-                    if (!dataRef.compareAndSet(parent, result))
+            try {
+                if (data instanceof Promise) {
+                    @SuppressWarnings("unchecked")
+                    val parent = (Promise<DATA>)data;
+                    if (!result.isException()) {
+                        if (!dataRef.compareAndSet(parent, result))
+                            return false;
+                    } else {
+                        parent.makeDone(result);
+                    }
+                } else if ((data instanceof StartableAction) || (data instanceof OnStart)) {
+                    if (!dataRef.compareAndSet(data, result))
                         return false;
                 } else {
-                    parent.makeDone(result);
+                    if (!dataRef.compareAndSet(consumers, result))
+                        return false;
                 }
-            } else if ((data instanceof StartableAction) || (data instanceof OnStart)) {
-                if (!dataRef.compareAndSet(data, result))
-                    return false;
-            } else {
-                if (!dataRef.compareAndSet(consumers, result))
-                    return false;
+                return null;
+            } finally {
             }
-            return null;
         });
         
         if (isDone != null)
             return isDone.booleanValue();
-            
+        
         val subscribers = new HashMap<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>>(consumers);
         this.consumers.clear();
         
@@ -337,9 +340,9 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     protected void handleResultConsumptionExcepion(
-            SubscriptionRecord<DATA>      subscription,
-            FuncUnit1<Result<DATA>> consumer,
-            Result<DATA>            result) {
+            SubscriptionRecord<DATA> subscription,
+            FuncUnit1<Result<DATA>>  consumer,
+            Result<DATA>             result) {
     }
     
     private <T> Promise<T> newSubPromise(FuncUnit2<Result<DATA>, Promise<T>> resultConsumer) {
@@ -363,8 +366,9 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return PromiseStatus.COMPLETED.equals(getStatus());
     }
     public final boolean isDone() {
-        PromiseStatus status;
-        return (null != (status = getStatus())) && status.isDone();
+        val status = getStatus();
+        val isDone = (null != status) && status.isDone();
+        return isDone;
     }
     public final boolean isNotDone() {
         return !isDone();
@@ -399,22 +403,22 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         start();
         if (!this.isDone()) {
-            synchronized (this) {
-                if (!this.isDone()) {
-                    val latch = new CountDownLatch(1);
-                    onComplete(result -> {
-                        latch.countDown();
-                    });
+            val latch = new CountDownLatch(1);
+            synchronouseOperation(()->{
+                onComplete(result -> {
+                    latch.countDown();
+                });
+                return this.isDone();
+            });
+            
+            if (!this.isDone()) {
+                try {
+                    if ((timeout < 0) || (unit == null))
+                         latch.await();
+                    else latch.await(timeout, unit);
                     
-                    try {
-                        System.out.println(this + ": Await! ");
-                        if ((timeout < 0) || (unit == null))
-                             latch.await();
-                        else latch.await(timeout, unit);
-                        
-                    } catch (InterruptedException exception) {
-                        throw new UncheckedInterruptedException(exception);
-                    }
+                } catch (InterruptedException exception) {
+                    throw new UncheckedInterruptedException(exception);
                 }
             }
         }
@@ -624,7 +628,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 targetPromise.makeDone((Result<TARGET>)result);
             })
             .ifAbsent(() -> {
-                targetPromise.makeDone(Result.of(elseSupplier));
+                targetPromise.makeDone(Result.from(elseSupplier));
             });
         });
     }

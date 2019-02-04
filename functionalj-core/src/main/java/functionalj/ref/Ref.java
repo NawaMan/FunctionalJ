@@ -111,7 +111,7 @@ public abstract class Ref<DATA> {
             if (result.isPresent() || (whenAbsentSupplier == null))
                 return result;
             if (!result.isPresent() && (whenAbsentSupplier != null)) {
-                val elseValue = Result.of(whenAbsentSupplier);
+                val elseValue = Result.from(whenAbsentSupplier);
                 if (elseValue.isPresent())
                     return elseValue;
                else return Result.ofNotExist();

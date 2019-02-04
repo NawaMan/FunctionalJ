@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.FuncUnit2;
@@ -91,7 +92,7 @@ class helper {
         return (value, exception) -> {
             val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
-                return Result.of(fallbackSupplier);
+                return Result.of(Func0.from(fallbackSupplier));
             
             return result;
         };
