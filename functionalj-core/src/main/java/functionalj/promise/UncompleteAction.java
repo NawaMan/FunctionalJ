@@ -89,7 +89,9 @@ public abstract class UncompleteAction<DATA> extends StartableAction<DATA> imple
         if (!promise.isStarted() && this instanceof DeferAction) {
             ((DeferAction<DATA>)this).start();
         }
-        return promise.getResult();
+        Result<DATA> result = promise.getResult();
+        System.out.println("UncompleteAction.getResult() : " + this + ", promise: " + promise + ", result: " + result);
+        return result;
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         return promise.getResult(timeout, unit);

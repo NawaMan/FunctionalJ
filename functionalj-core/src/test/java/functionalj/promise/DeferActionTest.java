@@ -51,6 +51,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -440,6 +441,7 @@ public class DeferActionTest {
     @Test
     public void testDeferAction_moreChainAbort() throws InterruptedException {
         val log = new ArrayList<String>();
+        val latch = new CountDownLatch(1);
         DeferAction.from(()->{
             Thread.sleep(50);
             return "Hello";
@@ -447,6 +449,7 @@ public class DeferActionTest {
         .eavesdrop(result -> {
             log.add("Eavesdrop: " + result.isCancelled());
             log.add("Eavesdrop: " + result.toString());
+            latch.countDown();
         })
         .chain(str->{
             Thread.sleep(50);
@@ -466,11 +469,11 @@ public class DeferActionTest {
         .start()
         .abort();
         
-        assertStrings("["
-                + "Eavesdrop: true, "
-                + "Eavesdrop: Result:{ Cancelled }, "
-                + "Done: Result:{ Cancelled }"
-                + "]", log);
+        // Wait for all "Done" propagated.
+        latch.await();
+        val logString = log.toString();
+        assertTrue(logString.contains("Done: Result:{ Cancelled }"));
+        assertTrue(logString.contains("Eavesdrop: false, Eavesdrop: Result:{ Value: Hello }"));
     }
     
     static class LoggedCreator extends DeferActionCreator {

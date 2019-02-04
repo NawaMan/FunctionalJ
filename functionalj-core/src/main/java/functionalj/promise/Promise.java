@@ -23,19 +23,17 @@
 // ============================================================================
 package functionalj.promise;
 
-import static functionalj.function.Func.carelessly;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -158,10 +156,20 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     //    result          -> done.
     //      result.cancelled -> aborted
     //      result.completed -> completed
-    private final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>(INITIAL_CAPACITY);
-    private final List<FuncUnit1<Result<DATA>>>                          eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
+    final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>(INITIAL_CAPACITY);
+    final List<FuncUnit1<Result<DATA>>>                          eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
     
-    private final AtomicReference<Object> dataRef = new AtomicReference<>();
+    private static final AtomicInteger ID = new AtomicInteger(0);
+    
+    final AtomicReference<Object> dataRef = new AtomicReference<>();
+    private final int id = ID.getAndIncrement();
+    
+    public int hashCode() {
+        return id;
+    }
+    public String toString() {
+        return "Promise#" + id;
+    }
     
     Promise(OnStart onStart) {
         dataRef.set(onStart);
@@ -188,7 +196,11 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (data instanceof Promise) {
             @SuppressWarnings("unchecked")
             Promise<DATA> promise = (Promise<DATA>)data;
-            return promise.getStatus();
+            PromiseStatus parentStatus = promise.getStatus();
+            // Pending ... as the result is not yet propagated down
+            if (parentStatus.isNotDone())
+                 return parentStatus;
+            else return PromiseStatus.PENDING;
         }
         
         if ((data instanceof StartableAction) || (data instanceof OnStart))
@@ -273,65 +285,14 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return makeDone(result);
     }
     
-    private <T> T synchronouseOperation(Func0<T> operation) {
+    <T> T synchronouseOperation(Func0<T> operation) {
         synchronized (dataRef) {
             return operation.get();
         }
     }
     
     private boolean makeDone(Result<DATA> result) {
-        val isDone = synchronouseOperation(()->{
-            val data = dataRef.get();
-            try {
-                if (data instanceof Promise) {
-                    @SuppressWarnings("unchecked")
-                    val parent = (Promise<DATA>)data;
-                    if (!result.isException()) {
-                        if (!dataRef.compareAndSet(parent, result))
-                            return false;
-                    } else {
-                        parent.makeDone(result);
-                    }
-                } else if ((data instanceof StartableAction) || (data instanceof OnStart)) {
-                    if (!dataRef.compareAndSet(data, result))
-                        return false;
-                } else {
-                    if (!dataRef.compareAndSet(consumers, result))
-                        return false;
-                }
-                return null;
-            } finally {
-            }
-        });
-        
-        if (isDone != null)
-            return isDone.booleanValue();
-        
-        val subscribers = new HashMap<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>>(consumers);
-        this.consumers.clear();
-        
-        val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(this.eavesdroppers);
-        this.eavesdroppers.clear();
-        
-        for (val eavesdropper : eavesdroppers) {
-            carelessly(()->{
-                eavesdropper.accept(result);
-            });
-        }
-        
-        subscribers
-        .forEach((subscription, consumer) -> {
-            try {
-                consumer.accept(result);
-            } catch (Exception e) {
-                try {
-                    handleResultConsumptionExcepion(subscription, consumer, result);
-                } catch (Exception anotherException) {
-                    // Do nothing this time.
-                }
-            }
-        });
-        return true;
+        return PromiseLifeCycle.makeDone(this, result);
     }
     
     //== Customizable ==
@@ -381,6 +342,12 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         consumers.remove(subscription);
         abortWhenNoSubscription();
     }
+    void unsubscribe(Promise<DATA> promise) {
+        val entry = consumers.entrySet().stream().filter(e -> Objects.equals(e.getValue(), promise)).findFirst();
+        if (entry.isPresent())
+            consumers.remove(entry.get().getKey());
+        abortWhenNoSubscription();
+    }
     
     private void abortWhenNoSubscription() {
         if (consumers.isEmpty())
@@ -401,32 +368,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return getResult(timeout, null);
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
-        start();
-        if (!this.isDone()) {
-            val latch = new CountDownLatch(1);
-            synchronouseOperation(()->{
-                onComplete(result -> {
-                    latch.countDown();
-                });
-                return this.isDone();
-            });
-            
-            if (!this.isDone()) {
-                try {
-                    if ((timeout < 0) || (unit == null))
-                         latch.await();
-                    else latch.await(timeout, unit);
-                    
-                } catch (InterruptedException exception) {
-                    throw new UncheckedInterruptedException(exception);
-                }
-            }
-        }
-        
-        if (!this.isDone())
-            throw new UncheckedInterruptedException(new InterruptedException());
-        
-        return getCurrentResult();
+        return PromiseLifeCycle.getResult(this, timeout, unit);
     }
     
     public final Result<DATA> getCurrentResult() {
@@ -434,6 +376,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (data instanceof Result) {
             @SuppressWarnings("unchecked")
             val result = (Result<DATA>)data;
+            System.out.println(this + ".getCurrentResult() = " + result);
             return result;
         }
         if (data instanceof Promise) {

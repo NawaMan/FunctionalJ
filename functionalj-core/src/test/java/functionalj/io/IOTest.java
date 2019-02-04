@@ -31,7 +31,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func;
@@ -40,7 +39,7 @@ import functionalj.promise.DeferActionBuilder;
 import functionalj.result.Result;
 import lombok.val;
 
-@Ignore("Still has problems")
+//@Ignore("Still has problems")
 public class IOTest {
     @Test
     public void testValue() {
@@ -92,6 +91,7 @@ public class IOTest {
         logs.add("Result: " + action2.createAction().getResult());
         logs.add("Result: " + action2.createAction().getResult());
         assertEquals("["
+//                + "Action1 runs!, A, Result: Result:{ Value: -A- }"
                 + "Action1 runs!, A, Result: Result:{ Value: -A- }, "
                 + "Action1 runs!, B, Result: Result:{ Value: -B- }, "
                 + "Action1 runs!, C, Result: Result:{ Value: -C- }, "

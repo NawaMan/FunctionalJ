@@ -164,7 +164,11 @@ public class IOs {
         }
         @Override
         public DeferAction<DATA> createAction() {
-            return source.createAction().map(mapper);
+            DeferAction<DATA> map = source
+                    .createAction()
+                    .map(mapper);
+            System.out.println(this + ", map action: " + map + ", promise: " + map.getPromise());
+            return map;
         }
         public String toString() {
             return source + ".map(" + mapper + ")";
