@@ -23,8 +23,8 @@ public class RefExamples {
     }
     
     public static void greet(String name) {
-        val greeting = greeting.value().apply(name);
-        println.value().accept(greeting);
+        val greetingString = greeting.value().apply(name);
+        println.value().accept(greetingString);
     }
     
     public static void main(String[] args) {
