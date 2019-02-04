@@ -31,6 +31,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func;
