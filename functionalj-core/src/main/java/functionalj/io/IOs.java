@@ -167,7 +167,6 @@ public class IOs {
             DeferAction<DATA> map = source
                     .createAction()
                     .map(mapper);
-            System.out.println(this + ", map action: " + map + ", promise: " + map.getPromise());
             return map;
         }
         public String toString() {

@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.stream;
 
-import static functionalj.function.Func.f;
 import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
@@ -50,14 +49,11 @@ import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
-import functionalj.function.Apply;
-import functionalj.function.Func;
 import functionalj.function.Func0;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.result.NoMoreResultException;
 import functionalj.tuple.Tuple;
-import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import lombok.val;
 

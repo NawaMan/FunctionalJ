@@ -382,26 +382,33 @@ public class IOTest {
     }
     
     @Test
-    public void testRace_complete_LowerCaseDoneFirst() {
+    public void testRace_complete_LowerCaseDoneFirst() throws InterruptedException {
         val logs     = new ArrayList<String>();
         val counter1 = new AtomicInteger(0);
         val io1      = DeferActionBuilder.from(f("Action1", ()-> { 
-            Thread.sleep(10);
+            // Action1 will start a little late.
+            Thread.sleep(50);
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
-            logs.add(s); return s;
+            logs.add(s);
+            return s;
         }));
         val counter2 = new AtomicInteger(0);
         val io2      = DeferActionBuilder.from(f("Action2", ()-> { 
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
-            logs.add(s); return s;
+            logs.add(s);
+            return s;
         }));
         val action = IO.firstOf(io1, io2);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         assertEquals("Race(IO#F0::Action1,IO#F0::Action2)", action.toString());
+        
+        // Ensure that if there is enough time, Action1 will finish
+        Thread.sleep(100);
+        // Then check that the action didn't get to run.
         assertEquals(
                 "Action2 runs!,\n" + 
                 "a,\n" + 

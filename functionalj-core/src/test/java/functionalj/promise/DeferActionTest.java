@@ -51,8 +51,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.environments.AsyncRunner;
