@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.io;
+package functionalj.task;
 
 import static functionalj.function.Func.f;
 import static functionalj.lens.Access.$S;
@@ -37,22 +37,23 @@ import functionalj.function.Func;
 import functionalj.promise.DeferAction;
 import functionalj.promise.DeferActionBuilder;
 import functionalj.result.Result;
+import functionalj.task.Task;
 import lombok.val;
 
 //@Ignore("Still has problems")
-public class IOTest {
+public class TaskTest {
     @Test
     public void testValue() {
-        val io     = IO.ofValue("Hello!");
-        val action = io.createAction();
+        val task   = Task.ofValue("Hello!");
+        val action = task.createAction();
         assertEquals("Result:{ Value: Hello! }", action.getResult().toString());
     }
     @Test
     public void testSupplier() {
         val counter = new AtomicInteger(0);
-        val io      = IO.from(counter::getAndIncrement);
-        val action1 = io.createAction();
-        val action2 = io.createAction();
+        val task    = Task.from(counter::getAndIncrement);
+        val action1 = task.createAction();
+        val action2 = task.createAction();
         assertEquals("Result:{ Value: 0 }", action1.getResult().toString());
         assertEquals("Result:{ Value: 0 }", action1.getResult().toString());
         assertEquals("Result:{ Value: 1 }", action2.getResult().toString());
@@ -60,17 +61,17 @@ public class IOTest {
     }
     @Test
     public void testResult() {
-        val io = IO.from(Result.ofNotExist());
-        assertEquals("Result:{ NotExist }", io.createAction().getResult().toString());
-        assertEquals("Result:{ NotExist }", io.createAction().getResult().toString());
+        val task = Task.from(Result.ofNotExist());
+        assertEquals("Result:{ NotExist }", task.createAction().getResult().toString());
+        assertEquals("Result:{ NotExist }", task.createAction().getResult().toString());
     }
     @Test
     public void testPromise() {
         val counter = new AtomicInteger(0);
         val action  = DeferAction.from(counter::getAndIncrement);
-        val io      = IO.from(action.getPromise());
-        assertEquals("Result:{ Value: 0 }", io.createAction().getResult().toString());
-        assertEquals("Result:{ Value: 0 }", io.createAction().getResult().toString());
+        val task    = Task.from(action.getPromise());
+        assertEquals("Result:{ Value: 0 }", task.createAction().getResult().toString());
+        assertEquals("Result:{ Value: 0 }", task.createAction().getResult().toString());
     }
     
     @Test
@@ -97,9 +98,9 @@ public class IOTest {
                 + "Action1 runs!, C, Result: Result:{ Value: -C- }, "
                 + "Action1 runs!, D, Result: Result:{ Value: -D- }"
                 + "]", logs.toString());
-        assertEquals("IO#F0::Action1", action.toString());
+        assertEquals("Task#F0::Action1", action.toString());
         assertEquals(
-                "IO#F0::Action1"
+                "Task#F0::Action1"
                 + ".map(F1::prefix-with-dash)"
                 + ".map(F1::suffix-with-dash)",
                 action2.toString());
@@ -131,9 +132,9 @@ public class IOTest {
                 + "Action1 runs!, B, Action2 runs!, B - b, Result: Result:{ Value: B - b }, "
                 + "Action1 runs!, C, Action2 runs!, C - c, Result: Result:{ Value: C - c }"
                 + "]", logs.toString());
-        assertEquals("IO#F0::Action1", action1.toString());
+        assertEquals("Task#F0::Action1", action1.toString());
         assertEquals(
-                "IO#F0::Action1.chain(F1::FM)",
+                "Task#F0::Action1.chain(F1::FM)",
                 action2.toString());
     }
     
@@ -219,24 +220,24 @@ public class IOTest {
     public void testMerge() {
         val logs     = new ArrayList<String>();
         val counter1 = new AtomicInteger(0);
-        val io1      = DeferActionBuilder.from(f("Action1", ()-> { 
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
         val counter2 = new AtomicInteger(0);
-        val io2      = DeferActionBuilder.from(f("Action2", ()-> { 
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(10);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
         }));
         val merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
-        val action = IO.from(io1, io2, merger);
+        val action = Task.from(task1, task2, merger);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
-        assertEquals("F2::merge(IO#F0::Action1, IO#F0::Action2)", action.toString());
+        assertEquals("F2::merge(Task#F0::Action1, Task#F0::Action2)", action.toString());
         assertEquals("["
                 + "Action1 runs!, A, Action2 runs!, a, Result: Result:{ Value: A-a }, "
                 + "Action1 runs!, B, Action2 runs!, b, Result: Result:{ Value: B-b }, "
@@ -248,24 +249,24 @@ public class IOTest {
     public void testMerge_ioUsedMultipleTime() {
         val logs     = new ArrayList<String>();
         val counter1 = new AtomicInteger(0);
-        val io1      = DeferActionBuilder.from(f("Action1", ()-> { 
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
         val counter2 = new AtomicInteger(0);
-        val io2      = DeferActionBuilder.from(f("Action2", ()-> { 
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(50);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
         }));
         val merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
-        val action = IO.from(io1, IO.from(io1, io2, merger), merger);
+        val action = Task.from(task1, Task.from(task1, task2, merger), merger);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
-        assertEquals("F2::merge(IO#F0::Action1, F2::merge(IO#F0::Action1, IO#F0::Action2))", action.toString());
+        assertEquals("F2::merge(Task#F0::Action1, F2::merge(Task#F0::Action1, Task#F0::Action2))", action.toString());
         assertEquals("["
                 + "Action1 runs!, A, Action1 runs!, B, Action2 runs!, a, Result: Result:{ Value: A-B-a }, "
                 + "Action1 runs!, C, Action1 runs!, D, Action2 runs!, b, Result: Result:{ Value: C-D-b }, "
@@ -277,25 +278,25 @@ public class IOTest {
     public void testMerge3_reusable() {
         val logs     = new ArrayList<String>();
         val counter1 = new AtomicInteger(0);
-        val io1      = DeferActionBuilder.from(f("Action1", ()-> { 
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
         val counter2 = new AtomicInteger(0);
-        val io2      = DeferActionBuilder.from(f("Action2", ()-> { 
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(10);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
         }));
-        val w1  = io1.cached();
+        val w1  = task1.cached();
         val merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
-        val action = IO.from(w1, IO.from(w1, io2, merger), merger);
+        val action = Task.from(w1, Task.from(w1, task2, merger), merger);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
-        assertEquals("F2::merge(IO#F0::Action1.cached(), F2::merge(IO#F0::Action1.cached(), IO#F0::Action2))", action.toString());
+        assertEquals("F2::merge(Task#F0::Action1.cached(), F2::merge(Task#F0::Action1.cached(), Task#F0::Action2))", action.toString());
         assertEquals("["
                 + "Action1 runs!, A, "
                 + "Action2 runs!, a, "
@@ -311,22 +312,22 @@ public class IOTest {
     public void testMerge4_reusable_withRef() {
         val logs     = new ArrayList<String>();
         val counter1 = new AtomicInteger(0);
-        val io1      = DeferActionBuilder.from(f("Action1", ()-> { 
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
         val counter2 = new AtomicInteger(0);
-        val io2      = DeferActionBuilder.from(f("Action2", ()-> { 
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(10);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
         }));
         val ref = new AtomicInteger(0);
-        val w1  = io1.cached(f("get-ref", ref::get));
+        val w1  = task1.cached(f("get-ref", ref::get));
         val merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
-        val action = IO.from(w1, IO.from(w1, io2, merger), merger);
+        val action = Task.from(w1, Task.from(w1, task2, merger), merger);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
@@ -334,7 +335,7 @@ public class IOTest {
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
-        assertEquals("F2::merge(IO#F0::Action1.cachedFor(F0::get-ref,BiPredicate::when-change), F2::merge(IO#F0::Action1.cachedFor(F0::get-ref,BiPredicate::when-change), IO#F0::Action2))", action.toString());
+        assertEquals("F2::merge(Task#F0::Action1.cachedFor(F0::get-ref,BiPredicate::when-change), F2::merge(Task#F0::Action1.cachedFor(F0::get-ref,BiPredicate::when-change), Task#F0::Action2))", action.toString());
         assertEquals("["
                 + "Action1 runs!, A, "
                 + "Action2 runs!, a, Result: Result:{ Value: A-A-a }, "
@@ -351,23 +352,23 @@ public class IOTest {
     public void testRace_complete_UpperCaseDoneFirst() {
         val logs     = new ArrayList<String>();
         val counter1 = new AtomicInteger(0);
-        val io1      = DeferActionBuilder.from(f("Action1", ()-> { 
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
         val counter2 = new AtomicInteger(0);
-        val io2      = DeferActionBuilder.from(f("Action2", ()-> { 
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(10);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
         }));
-        val action = IO.firstOf(io1, io2);
+        val action = Task.firstOf(task1, task2);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
-        assertEquals("Race(IO#F0::Action1,IO#F0::Action2)", action.toString());
+        assertEquals("Race(Task#F0::Action1,Task#F0::Action2)", action.toString());
         assertEquals(
                 "Action1 runs!,\n" + 
                 "A,\n" + 
@@ -385,7 +386,7 @@ public class IOTest {
     public void testRace_complete_LowerCaseDoneFirst() throws InterruptedException {
         val logs     = new ArrayList<String>();
         val counter1 = new AtomicInteger(0);
-        val io1      = DeferActionBuilder.from(f("Action1", ()-> { 
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             // Action1 will start a little late.
             Thread.sleep(50);
             logs.add("Action1 runs!");
@@ -394,17 +395,17 @@ public class IOTest {
             return s;
         }));
         val counter2 = new AtomicInteger(0);
-        val io2      = DeferActionBuilder.from(f("Action2", ()-> { 
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s);
             return s;
         }));
-        val action = IO.firstOf(io1, io2);
+        val action = Task.firstOf(task1, task2);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
-        assertEquals("Race(IO#F0::Action1,IO#F0::Action2)", action.toString());
+        assertEquals("Race(Task#F0::Action1,Task#F0::Action2)", action.toString());
         
         // Ensure that if there is enough time, Action1 will finish
         Thread.sleep(100);
@@ -426,7 +427,7 @@ public class IOTest {
     public void testRace_complete_bothFail() {
         val logs     = new ArrayList<String>();
         val counter1 = new AtomicInteger(0);
-        val io1      = DeferActionBuilder.from(f("Action1", ()-> { 
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             int currentCount = counter1.getAndIncrement();
             if (currentCount >= 1)
@@ -436,7 +437,7 @@ public class IOTest {
             return s;
         }));
         val counter2 = new AtomicInteger(0);
-        val io2      = DeferActionBuilder.from(f("Action2", ()-> { 
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(10);
             logs.add("Action2 runs!");
             int currentCount = counter2.getAndIncrement();
@@ -446,13 +447,13 @@ public class IOTest {
             logs.add(s);
             return s;
         }));
-        val action = IO.firstOf(io1, io2);
+        val action = Task.firstOf(task1, task2);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
-        assertEquals("Race(IO#F0::Action1,IO#F0::Action2)", action.toString());
+        assertEquals("Race(Task#F0::Action1,Task#F0::Action2)", action.toString());
         assertEquals(
                 "Action1 runs!,\n" + 
                 "A,\n" + 
@@ -477,16 +478,16 @@ public class IOTest {
     public void testDoUntil() {
         val logs    = new ArrayList<String>();
         val counter = new AtomicInteger(0);
-        val io      = DeferActionBuilder.from(f("Action", ()-> { 
+        val task    = DeferActionBuilder.from(f("Action", ()-> { 
             logs.add("Action runs!");
             int currentCount = counter.getAndIncrement();
             String s = "" + (char)('A' + currentCount);
             logs.add(s);
             return s;
         }));
-        val loop = IO.doUntil(io, Func.from("is-C", result -> result.filter("C"::equals).isPresent()));
+        val loop = Task.doUntil(task, Func.from("is-C", result -> result.filter("C"::equals).isPresent()));
         logs.add("Result: " + loop.createAction().getResult());
-        assertEquals("DoUntil(do: IO#F0::Action, util: Predicate::is-C)", loop.toString());
+        assertEquals("DoUntil(do: Task#F0::Action, util: Predicate::is-C)", loop.toString());
         assertEquals(
                 "Action runs!,\n" + 
                 "A,\n" + 

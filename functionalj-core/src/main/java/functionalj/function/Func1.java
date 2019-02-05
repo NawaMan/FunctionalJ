@@ -29,7 +29,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
-import functionalj.io.IO;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
@@ -37,6 +36,7 @@ import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
+import functionalj.task.Task;
 import lombok.val;
 
 /**
@@ -99,7 +99,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT> input) {
         return input.getPromise().map(this);
     }
-    public default IO<OUTPUT> applyTo(IO<INPUT> input) {
+    public default Task<OUTPUT> applyTo(Task<INPUT> input) {
         return input.map(this);
     }
     // Should make it just Stream
