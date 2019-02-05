@@ -29,11 +29,11 @@ import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit0;
-import functionalj.io.IO;
 import functionalj.result.Result;
+import functionalj.task.Task;
 import lombok.val;
 
-public class DeferActionBuilder<DATA> implements IO<DATA> {
+public class DeferActionBuilder<DATA> implements Task<DATA> {
     
     private static final FuncUnit0 DO_NOTHING = ()->{};
     
@@ -70,7 +70,7 @@ public class DeferActionBuilder<DATA> implements IO<DATA> {
         this(null, supplier);
     }
     public DeferActionBuilder(String toString, Func0<DATA> supplier) {
-        this.toString = (toString != null) ? toString : "IO#" + supplier.toString();
+        this.toString = (toString != null) ? toString : "Task#" + supplier.toString();
         this.supplier = requireNonNull(supplier);
     }
     

@@ -139,7 +139,7 @@ public class FuncListStream<SOURCE, DATA>
         if ((o instanceof Collection))
             return false;
         
-        return zipWith(((Collection)o).stream(), AllowUnpaired, Objects::equals)
+        return combine(((Collection)o).stream(), AllowUnpaired, Objects::equals)
                 .findFirst(Boolean.TRUE::equals)
                 .isPresent();
     }

@@ -26,10 +26,8 @@ package functionalj.tuple;
 import static functionalj.function.Absent.__;
 import static functionalj.function.Func.it;
 import static functionalj.tuple.Keep.keep;
-import static java.util.stream.Collectors.joining;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.function.Function;
 
 import functionalj.function.Absent;
@@ -930,62 +928,6 @@ public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, 
         val _1 = _1();
         val _2 = _2();
         return Tuple.of(_1, _2);
-    }
-    
-    public static void main(String[] args) {
-        for (int i = 0; i < 2*2*2*2*2; i++) {
-            val b0 = (0 != (i & 1));
-            val b1 = (0 != (i & 2));
-            val b2 = (0 != (i & 2*2));
-            val b3 = (0 != (i & 2*2*2));
-            val b4 = (0 != (i & 2*2*2*2));
-            val d0 = (b0 ? "Absent drop" : "Keep   keep") + 1 + ",";
-            val d1 = (b1 ? "Absent drop" : "Keep   keep") + 2 + ",";
-            val d2 = (b2 ? "Absent drop" : "Keep   keep") + 3 + ",";
-            val d3 = (b3 ? "Absent drop" : "Keep   keep") + 4 + ",";
-            val d4 = (b4 ? "Absent drop" : "Keep   keep") + 5 + ") {";
-            val count = (b0 ? 1 : 0)
-                      + (b1 ? 1 : 0)
-                      + (b2 ? 1 : 0)
-                      + (b3 ? 1 : 0)
-                      + (b4 ? 1 : 0);
-            if (count == 5)
-                continue;
-            if (count == 0)
-                continue;
-            if (count == 4)
-                continue;
-            
-            val includes = new ArrayList<String>();
-            val excludes = new ArrayList<String>();
-            if (b0) includes.add("" + 1);
-            if (b1) includes.add("" + 2);
-            if (b2) includes.add("" + 3);
-            if (b3) includes.add("" + 4);
-            if (b4) includes.add("" + 5);
-            if (!b0) excludes.add("" + 1);
-            if (!b1) excludes.add("" + 2);
-            if (!b2) excludes.add("" + 3);
-            if (!b3) excludes.add("" + 4);
-            if (!b4) excludes.add("" + 5);
-            
-            System.out.println("    public default Tuple" + (5 - count) + "<" + excludes.stream().map("T"::concat).collect(joining(", ")) + "> drop(");
-            System.out.println("            " + d0);
-            System.out.println("            " + d1);
-            System.out.println("            " + d2);
-            System.out.println("            " + d3);
-            System.out.println("            " + d4);
-            
-            excludes.stream()
-            .map("_"::concat)
-            .map(each -> "        val " + each + " = " + each + "();")
-            .forEach(System.out::println);
-            
-            System.out.println("        return Tuple.of(" + excludes.stream().map("_"::concat).collect(joining(", ")) + ");");
-            System.out.println("    }");
-            
-            System.out.println("    ");
-        }
     }
     
 }

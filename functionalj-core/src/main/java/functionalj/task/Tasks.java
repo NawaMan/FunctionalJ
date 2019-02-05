@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.io;
+package functionalj.task;
 
 import static nawaman.nullablej.nullable.Nullable.nullable;
 
@@ -47,11 +47,11 @@ import functionalj.promise.RaceResult;
 import functionalj.result.Result;
 import lombok.val;
 
-public class IOs {
+public class Tasks {
     
-    public static class IOValue<DATA> implements IO<DATA> {
+    public static class TaskValue<DATA> implements Task<DATA> {
         private final DATA value;
-        public IOValue(DATA value) {
+        public TaskValue(DATA value) {
             this.value = value;
         }
         @Override
@@ -59,13 +59,13 @@ public class IOs {
             return DeferAction.ofValue(value);
         }
         public String toString() {
-            return "IO(" + value + ")";
+            return "Task(" + value + ")";
         }
     }
     
-    public static class IOSupplier<DATA> implements IO<DATA> {
+    public static class TaskSupplier<DATA> implements Task<DATA> {
         private final Supplier<DATA> supplier;
-        public IOSupplier(Supplier<DATA> supplier) {
+        public TaskSupplier(Supplier<DATA> supplier) {
             this.supplier = supplier;
         }
         @Override
@@ -73,13 +73,13 @@ public class IOs {
             return DeferAction.from(Func0.from(supplier));
         }
         public String toString() {
-            return "IO(()->" + supplier + ")";
+            return "Task(()->" + supplier + ")";
         }
     }
     
-    public static class IOResult<DATA> implements IO<DATA> {
+    public static class TaskResult<DATA> implements Task<DATA> {
         private final Result<DATA> result;
-        public IOResult(Result<DATA> result) {
+        public TaskResult(Result<DATA> result) {
             this.result = result;
         }
         @Override
@@ -92,13 +92,13 @@ public class IOs {
             return action;
         }
         public String toString() {
-            return "IO(" + result + ")";
+            return "Task(" + result + ")";
         }
     }
     
-    public static class IOPromise<DATA> implements IO<DATA> {
+    public static class TaskPromise<DATA> implements Task<DATA> {
         private final Promise<DATA> promise;
-        public IOPromise(Promise<DATA> promise) {
+        public TaskPromise(Promise<DATA> promise) {
             this.promise = promise;
         }
         @Override
@@ -119,15 +119,15 @@ public class IOs {
             return action;
         }
         public String toString() {
-            return "IO(" + promise + ")";
+            return "Task(" + promise + ")";
         }
     }
     
-    public static class IOInstance<DATA> implements IO<DATA> {
+    public static class IOInstance<DATA> implements Task<DATA> {
         private final String toString;
         private final Supplier<DeferAction<DATA>> createAction;
         public IOInstance(String toString, Supplier<DeferAction<DATA>> createAction) {
-            this.toString     = (toString != null) ? toString : "IO@" + hashCode();
+            this.toString     = (toString != null) ? toString : "Task@" + hashCode();
             this.createAction = Objects.requireNonNull(createAction);
         }
         @Override
@@ -139,10 +139,10 @@ public class IOs {
         }
     }
     
-    public static class IOPeek<SOURCE, DATA> implements IO<DATA> {
-        private final IO<DATA>                source;
+    public static class TaskPeek<SOURCE, DATA> implements Task<DATA> {
+        private final Task<DATA>                source;
         private final FuncUnit1<? super DATA> peeker;
-        public IOPeek(IO<DATA> source, FuncUnit1<? super DATA> peeker) {
+        public TaskPeek(Task<DATA> source, FuncUnit1<? super DATA> peeker) {
             this.source = source;
             this.peeker = peeker;
         }
@@ -155,25 +155,28 @@ public class IOs {
         }
     }
     
-    public static class IOMap<SOURCE, DATA> implements IO<DATA> {
-        private final IO<SOURCE>                            source;
+    public static class TaskMap<SOURCE, DATA> implements Task<DATA> {
+        private final Task<SOURCE>                            source;
         private final Func1<? super SOURCE, ? extends DATA> mapper;
-        public IOMap(IO<SOURCE> source, Func1<? super SOURCE, ? extends DATA> mapper) {
+        public TaskMap(Task<SOURCE> source, Func1<? super SOURCE, ? extends DATA> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
         @Override
         public DeferAction<DATA> createAction() {
-            return source.createAction().map(mapper);
+            DeferAction<DATA> map = source
+                    .createAction()
+                    .map(mapper);
+            return map;
         }
         public String toString() {
             return source + ".map(" + mapper + ")";
         }
     }
-    public static class IOChain<SOURCE, DATA> implements IO<DATA> {
-        private final IO<SOURCE>                                source;
-        private final Func1<? super SOURCE, IO<? extends DATA>> mapper;
-        public IOChain(IO<SOURCE> source, Func1<? super SOURCE, IO<? extends DATA>> mapper) {
+    public static class TaskChain<SOURCE, DATA> implements Task<DATA> {
+        private final Task<SOURCE>                                source;
+        private final Func1<? super SOURCE, Task<? extends DATA>> mapper;
+        public TaskChain(Task<SOURCE> source, Func1<? super SOURCE, Task<? extends DATA>> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -201,10 +204,10 @@ public class IOs {
             return source + ".chain(" + mapper + ")";
         }
     }
-    public static class IOFilter<DATA> implements IO<DATA> {
-        private final IO<DATA>                source;
+    public static class TaskFilter<DATA> implements Task<DATA> {
+        private final Task<DATA>                source;
         private final Predicate<? super DATA> predicate;
-        public IOFilter(IO<DATA> source, Predicate<? super DATA> predicate) {
+        public TaskFilter(Task<DATA> source, Predicate<? super DATA> predicate) {
             this.source    = source;
             this.predicate = predicate;
         }
@@ -216,10 +219,10 @@ public class IOs {
             return source + ".filter(" + predicate + ")";
         }
     }
-    public static class IOCached<DATA> implements IO<DATA> {
-        private final IO<DATA>          source;
+    public static class TaskCached<DATA> implements Task<DATA> {
+        private final Task<DATA>          source;
         private final DeferAction<DATA> action;
-        public IOCached(IO<DATA> source) {
+        public TaskCached(Task<DATA> source) {
             this.source = source;
             this.action = source.createAction();
         }
@@ -232,13 +235,13 @@ public class IOs {
         }
     }
     
-    public static class IOCachedFor<CONTEXT, DATA> implements IO<DATA> {
-        private final IO<DATA>                           source;
+    public static class TaskCachedFor<CONTEXT, DATA> implements Task<DATA> {
+        private final Task<DATA>                           source;
         private final Supplier<CONTEXT>                  contextSupplier;
         private final BiPredicate<CONTEXT, CONTEXT>      staleChecker;
         private final AtomicReference<CONTEXT>           contxtRef;
         private final AtomicReference<DeferAction<DATA>> actionRef;
-        public IOCachedFor(IO<DATA> source, Supplier<CONTEXT> contextSupplier, BiPredicate<CONTEXT, CONTEXT> staleChecker) {
+        public TaskCachedFor(Task<DATA> source, Supplier<CONTEXT> contextSupplier, BiPredicate<CONTEXT, CONTEXT> staleChecker) {
             this.source          = source;
             this.contextSupplier = contextSupplier;
             this.staleChecker    = staleChecker;
@@ -265,11 +268,11 @@ public class IOs {
     
     // merge, race, loop, branch
     
-    public static class IOMerge2<I1, I2, DATA> implements IO<DATA> {
-        private final IO<I1> input1;
-        private final IO<I2> input2;
+    public static class TaskMerge2<I1, I2, DATA> implements Task<DATA> {
+        private final Task<I1> input1;
+        private final Task<I2> input2;
         private final Func2 <I1, I2, DATA> merger;
-        public IOMerge2(IO<I1> input1, IO<I2> input2, Func2<I1, I2, DATA> merger) {
+        public TaskMerge2(Task<I1> input1, Task<I2> input2, Func2<I1, I2, DATA> merger) {
             this.input1 = input1;
             this.input2 = input2;
             this.merger = merger;
@@ -287,12 +290,12 @@ public class IOs {
         }
     }
     
-    public static class IOMerge3<I1, I2, I3, DATA> implements IO<DATA> {
-        private final IO<I1> input1;
-        private final IO<I2> input2;
-        private final IO<I3> input3;
+    public static class TaskMerge3<I1, I2, I3, DATA> implements Task<DATA> {
+        private final Task<I1> input1;
+        private final Task<I2> input2;
+        private final Task<I3> input3;
         private final Func3<I1, I2, I3, DATA> merger;
-        public IOMerge3(IO<I1> input1, IO<I2> input2, IO<I3> input3, Func3<I1, I2, I3, DATA> merger) {
+        public TaskMerge3(Task<I1> input1, Task<I2> input2, Task<I3> input3, Func3<I1, I2, I3, DATA> merger) {
             this.input1 = input1;
             this.input2 = input2;
             this.input3 = input3;
@@ -312,13 +315,13 @@ public class IOs {
         }
     }
     
-    public static class IOMerge4<I1, I2, I3, I4, DATA> implements IO<DATA> {
-        private final IO<I1> input1;
-        private final IO<I2> input2;
-        private final IO<I3> input3;
-        private final IO<I4> input4;
+    public static class TaskMerge4<I1, I2, I3, I4, DATA> implements Task<DATA> {
+        private final Task<I1> input1;
+        private final Task<I2> input2;
+        private final Task<I3> input3;
+        private final Task<I4> input4;
         private final Func4<I1, I2, I3, I4, DATA> merger;
-        public IOMerge4(IO<I1> input1, IO<I2> input2, IO<I3> input3, IO<I4> input4, Func4<I1, I2, I3, I4, DATA> merger) {
+        public TaskMerge4(Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Func4<I1, I2, I3, I4, DATA> merger) {
             this.input1 = input1;
             this.input2 = input2;
             this.input3 = input3;
@@ -340,14 +343,14 @@ public class IOs {
         }
     }
     
-    public static class IOMerge5<I1, I2, I3, I4, I5, DATA> implements IO<DATA> {
-        private final IO<I1> input1;
-        private final IO<I2> input2;
-        private final IO<I3> input3;
-        private final IO<I4> input4;
-        private final IO<I5> input5;
+    public static class TaskMerge5<I1, I2, I3, I4, I5, DATA> implements Task<DATA> {
+        private final Task<I1> input1;
+        private final Task<I2> input2;
+        private final Task<I3> input3;
+        private final Task<I4> input4;
+        private final Task<I5> input5;
         private final Func5<I1, I2, I3, I4, I5, DATA> merger;
-        public IOMerge5(IO<I1> input1, IO<I2> input2, IO<I3> input3, IO<I4> input4, IO<I5> input5, Func5<I1, I2, I3, I4, I5, DATA> merger) {
+        public TaskMerge5(Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Task<I5> input5, Func5<I1, I2, I3, I4, I5, DATA> merger) {
             this.input1 = input1;
             this.input2 = input2;
             this.input3 = input3;
@@ -371,15 +374,15 @@ public class IOs {
         }
     }
     
-    public static class IOMerge6<I1, I2, I3, I4, I5, I6, DATA> implements IO<DATA> {
-        private final IO<I1> input1;
-        private final IO<I2> input2;
-        private final IO<I3> input3;
-        private final IO<I4> input4;
-        private final IO<I5> input5;
-        private final IO<I6> input6;
+    public static class TaskMerge6<I1, I2, I3, I4, I5, I6, DATA> implements Task<DATA> {
+        private final Task<I1> input1;
+        private final Task<I2> input2;
+        private final Task<I3> input3;
+        private final Task<I4> input4;
+        private final Task<I5> input5;
+        private final Task<I6> input6;
         private final Func6<I1, I2, I3, I4, I5, I6, DATA> merger;
-        public IOMerge6(IO<I1> input1, IO<I2> input2, IO<I3> input3, IO<I4> input4, IO<I5> input5, IO<I6> input6, Func6<I1, I2, I3, I4, I5, I6, DATA> merger) {
+        public TaskMerge6(Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Task<I5> input5, Task<I6> input6, Func6<I1, I2, I3, I4, I5, I6, DATA> merger) {
             this.input1 = input1;
             this.input2 = input2;
             this.input3 = input3;
@@ -405,10 +408,10 @@ public class IOs {
         }
     }
     
-    public static class IORace<D> implements IO<D> {
-        private final FuncList<IO<D>> list;
+    public static class TaskRace<D> implements Task<D> {
+        private final FuncList<Task<D>> list;
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        public IORace(List<? extends IO<D>> list) {
+        public TaskRace(List<? extends Task<D>> list) {
             this.list = (FuncList)nullable(list).map(FuncList::from).orElse(FuncList.empty());
         }
         @Override
@@ -438,10 +441,10 @@ public class IOs {
         
     }
     
-    public static class IODoUntil<D> implements IO<D> {
-        private final IO<D>                body;
+    public static class TaskDoUntil<D> implements Task<D> {
+        private final Task<D>                body;
         private final Predicate<Result<D>> breakCheck;
-        public IODoUntil(IO<D> body, Predicate<Result<D>> breakCheck) {
+        public TaskDoUntil(Task<D> body, Predicate<Result<D>> breakCheck) {
             this.body       = body;
             this.breakCheck = breakCheck;
         }

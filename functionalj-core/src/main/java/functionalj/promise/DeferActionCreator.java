@@ -57,7 +57,6 @@ public class DeferActionCreator {
         val runTask    = new RunTask<D>(interruptOnCancel, supplier, onStart, runner, promiseRef::get);
         val action     = new DeferAction<D>(runTask, null);
         val promise    = action.getPromise();
-        System.out.println(promise + ": DeferActionCreator.create");
         promiseRef.set(promise);
         return action;
     }
@@ -105,7 +104,6 @@ public class DeferActionCreator {
                 if (!promise.isNotDone()) 
                     return;
                 
-                System.out.println(promise + ": prepared ");
                 setupInterruptOnCancel(promise);
                 
                 carelessly(onStart);
@@ -132,14 +130,11 @@ public class DeferActionCreator {
                     return;
                 
                 threadRef.set(Thread.currentThread());
-                System.out.println(promise + ": setupInterruptOnCancel");
                 promise.eavesdrop(r -> {
-                    System.out.println(promise + ": eavesdrop: , r: " + r);
                     r.ifCancelled(() -> {
                         val thread = threadRef.get();
-                        System.out.println("ifCancelled: " + promise + ", thread: " + thread);
-                        if ((thread != null) && !thread.equals(Thread.currentThread())) {
-                            System.out.println("Interrupt!");
+                        val isCurrentThread = (thread != null) && !thread.equals(Thread.currentThread());
+                        if (isCurrentThread) {
                             thread.interrupt();
                         }
                     });

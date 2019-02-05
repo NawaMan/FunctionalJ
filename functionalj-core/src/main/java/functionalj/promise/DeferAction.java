@@ -363,7 +363,8 @@ public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeabl
     @SuppressWarnings("unchecked")
     public final <TARGET> DeferAction<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         val newPromise = promise.map(mapper);
-        return new DeferAction<TARGET>(this, (Promise<TARGET>)newPromise);
+        val newAction  = new DeferAction<TARGET>(this, (Promise<TARGET>)newPromise);
+        return newAction;
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })

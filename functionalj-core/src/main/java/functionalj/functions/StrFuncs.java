@@ -326,13 +326,19 @@ public class StrFuncs {
         return repeat(prefix, width - str.length()) + str;
     }
     
-    public static StreamPlus<RegExMatchResult> matches(String str, String regex) {
-        return matches(str, regex, -1);
+    public static Func1<CharSequence, StreamPlus<RegExMatchResult>> matches(String regex) {
+        return str -> matches(str, regex, -1);
+    }
+    public static Func1<CharSequence, StreamPlus<RegExMatchResult>> matches(String regex, RegExFlag flags) {
+        return str -> matches(str, regex, flags);
+    }
+    public static Func1<CharSequence, StreamPlus<RegExMatchResult>> matches(String regex, int flags) {
+        return str -> matches(str, regex, flags);
     }
     public static StreamPlus<RegExMatchResult> matches(CharSequence str, String regex) {
         return matches(str, regex, -1);
     }
-    public static StreamPlus<RegExMatchResult> matches(String str, String regex, RegExFlag flags) {
+    public static StreamPlus<RegExMatchResult> matches(CharSequence str, String regex, RegExFlag flags) {
         return matches(str, regex, flags);
     }
     public static StreamPlus<RegExMatchResult> matches(CharSequence str, String regex, int flags) {

@@ -50,13 +50,13 @@ public final class ImmutableMap<KEY, VALUE> extends FuncMapStream<KEY, VALUE> {
     }
     
     private final boolean isLazy;
-
+    
     public ImmutableMap(Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>> stream) {
-        this(stream, true);
+        this(stream.filter(t -> t.getKey() != null), true);
     }
     public ImmutableMap(Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>> stream, boolean isLazy) {
         // TODO - this shitty code have to be replaced .... :-(
-        super(null, createPairList(stream));
+        super(null, createPairList(stream.filter(t -> t.getKey() != null)));
         this.isLazy = isLazy;
     }
     private static <KEY, VALUE> ImmutableList<IntTuple2<ImmutableTuple2<KEY, VALUE>>> createPairList(

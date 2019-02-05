@@ -27,7 +27,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import functionalj.io.IO;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.HasPromise;
@@ -35,6 +34,7 @@ import functionalj.promise.Promise;
 import functionalj.ref.Ref;
 import functionalj.result.Result;
 import functionalj.stream.ZipWithOption;
+import functionalj.task.Task;
 
 public interface Apply {
     
@@ -144,7 +144,7 @@ public interface Apply {
     public static <I, O> Promise<O> $(Function<I, O> func, HasPromise<I> input) {
         return Func1.from(func).applyTo(input);
     }
-    public static <I, O> IO<O> $(Function<I, O> func, IO<I> input) {
+    public static <I, O> Task<O> $(Function<I, O> func, Task<I> input) {
         return Func1.from(func).applyTo(input);
     }
     
@@ -175,7 +175,7 @@ public interface Apply {
     public static <I1, I2, O> Promise<O> $(BiFunction<I1, I2, O> func, HasPromise<I1> input1, HasPromise<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
-    public static <I1, I2, O> IO<O> $(BiFunction<I1, I2, O> func, IO<I1> input1, IO<I2> input2) {
+    public static <I1, I2, O> Task<O> $(BiFunction<I1, I2, O> func, Task<I1> input1, Task<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
     public static <S, I1, I2, O> Func1<S, O> $(BiFunction<I1, I2, O> func, Func1<S, I1> input1, Func1<S, I2> input2) {
@@ -200,7 +200,7 @@ public interface Apply {
     public static <I1, I2, I3, O> Promise<O> $(Func3<I1, I2, I3, O> func, HasPromise<I1> input1, HasPromise<I2> input2, HasPromise<I3> input3) {
         return func.applyTo(input1, input2, input3);
     }
-    public static <I1, I2, I3, O> IO<O> $(Func3<I1, I2, I3, O> func, IO<I1> input1, IO<I2> input2, IO<I3> input3) {
+    public static <I1, I2, I3, O> Task<O> $(Func3<I1, I2, I3, O> func, Task<I1> input1, Task<I2> input2, Task<I3> input3) {
         return func.applyTo(input1, input2, input3);
     }
     public static <S, I1, I2, I3, O> Func1<S, O> $(Func3<I1, I2, I3, O> func, Func1<S, I1> input1, Func1<S, I2> input2, Func1<S, I3> input3) {
@@ -228,7 +228,7 @@ public interface Apply {
     public static <I1, I2, I3, I4, O> Promise<O> $(Func4<I1, I2, I3, I4, O> func, HasPromise<I1> input1, HasPromise<I2> input2, HasPromise<I3> input3, HasPromise<I4> input4) {
         return func.applyTo(input1, input2, input3, input4);
     }
-    public static <I1, I2, I3, I4, O> IO<O> $(Func4<I1, I2, I3, I4, O> func, IO<I1> input1, IO<I2> input2, IO<I3> input3, IO<I4> input4) {
+    public static <I1, I2, I3, I4, O> Task<O> $(Func4<I1, I2, I3, I4, O> func, Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4) {
         return func.applyTo(input1, input2, input3, input4);
     }
     public static <S, I1, I2, I3, I4, O> Func1<S, O> $(Func4<I1, I2, I3, I4, O> func, Func1<S, I1> input1, Func1<S, I2> input2, Func1<S, I3> input3, Func1<S, I4> input4) {
@@ -259,7 +259,7 @@ public interface Apply {
     public static <I1, I2, I3, I4, I5, O> Promise<O> $(Func4<I1, I2, I3, I4, O> func, HasPromise<I1> input1, HasPromise<I2> input2, HasPromise<I3> input3, HasPromise<I4> input4, HasPromise<I5> input5) {
         return func.applyTo(input1, input2, input3, input4);
     }
-    public static <I1, I2, I3, I4, I5, O> IO<O> $(Func4<I1, I2, I3, I4, O> func, IO<I1> input1, IO<I2> input2, IO<I3> input3, IO<I4> input4, IO<I5> input5) {
+    public static <I1, I2, I3, I4, I5, O> Task<O> $(Func4<I1, I2, I3, I4, O> func, Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Task<I5> input5) {
         return func.applyTo(input1, input2, input3, input4);
     }
     public static <S, I1, I2, I3, I4, I5, O> Func1<S, O> $(Func4<I1, I2, I3, I4, O> func, Func1<S, I1> input1, Func1<S, I2> input2, Func1<S, I3> input3, Func1<S, I4> input4, Func1<S, I5> input5) {
@@ -293,7 +293,7 @@ public interface Apply {
     public static <I1, I2, I3, I4, I5, I6, O> Promise<O> $(Func4<I1, I2, I3, I4, O> func, HasPromise<I1> input1, HasPromise<I2> input2, HasPromise<I3> input3, HasPromise<I4> input4, HasPromise<I5> input5, HasPromise<I6> input6) {
         return func.applyTo(input1, input2, input3, input4);
     }
-    public static <I1, I2, I3, I4, I5, I6, O> IO<O> $(Func4<I1, I2, I3, I4, O> func, IO<I1> input1, IO<I2> input2, IO<I3> input3, IO<I4> input4, IO<I5> input5, IO<I6> input6) {
+    public static <I1, I2, I3, I4, I5, I6, O> Task<O> $(Func4<I1, I2, I3, I4, O> func, Task<I1> input1, Task<I2> input2, Task<I3> input3, Task<I4> input4, Task<I5> input5, Task<I6> input6) {
         return func.applyTo(input1, input2, input3, input4);
     }
     public static <S, I1, I2, I3, I4, I5, I6, O> Func1<S, O> $(Func4<I1, I2, I3, I4, O> func, Func1<S, I1> input1, Func1<S, I2> input2, Func1<S, I3> input3, Func1<S, I4> input4, Func1<S, I5> input5, Func1<S, I6> input6) {

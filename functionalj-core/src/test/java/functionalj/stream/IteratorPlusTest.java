@@ -60,13 +60,13 @@ public class IteratorPlusTest {
     @Test
     public void testPullNext_multiple() {
         val iterator = IteratorPlus.of(IntStreamPlus.infinite().limit(10).iterator());
-        assertEquals("[0, 1, 2, 3, 4]", iterator.pullNext(5).get().stream().toJavaList().toString());
-        assertEquals("[5]",             iterator.pullNext(1).get().stream().toJavaList().toString());
-        assertEquals("[6, 7]",          iterator.pullNext(2).get().stream().toJavaList().toString());
-        assertEquals("[8, 9]",          iterator.pullNext(2).get().stream().toJavaList().toString());
+        assertEquals("[0, 1, 2, 3, 4]", iterator.pullNext(5).get().toList().toString());
+        assertEquals("[5]",             iterator.pullNext(1).get().toList().toString());
+        assertEquals("[6, 7]",          iterator.pullNext(2).get().toList().toString());
+        assertEquals("[8, 9]",          iterator.pullNext(2).get().toList().toString());
         
         try {
-            iterator.pullNext(2).get().stream().toJavaList().toString();
+            iterator.pullNext(2).get().stream().toList().toString();
             fail("Exception is expected.");
         } catch (NoMoreResultException e) {
         }
@@ -87,9 +87,9 @@ public class IteratorPlusTest {
         val iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
         val logs     = new ArrayList<String>();
         
-        iterator.useNext(3, s -> logs.add(s.toJavaList().toString()));
-        iterator.useNext(1, s -> logs.add(s.toJavaList().toString()));
-        iterator.useNext(1, s -> logs.add(s.toJavaList().toString()));
+        iterator.useNext(3, s -> logs.add(s.toList().toString()));
+        iterator.useNext(1, s -> logs.add(s.toList().toString()));
+        iterator.useNext(1, s -> logs.add(s.toList().toString()));
         assertEquals("[[One, Two, null], [Three]]", logs.toString());
     }
     
@@ -107,16 +107,16 @@ public class IteratorPlusTest {
         val iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
         val logs     = new ArrayList<String>();
         
-        logs.add(iterator.mapNext(3, s -> s.toJavaList().toString()).get());
-        logs.add(iterator.mapNext(1, s -> s.toJavaList().toString()).get());
+        logs.add(iterator.mapNext(3, s -> s.toList().toString()).get());
+        logs.add(iterator.mapNext(1, s -> s.toList().toString()).get());
         
         try {
-            logs.add(iterator.mapNext(1, s -> s.toJavaList().toString()).get());
+            logs.add(iterator.mapNext(1, s -> s.toList().toString()).get());
             fail("Exception is expected.");
         } catch (NoMoreResultException e) {
         }
         
-        assertTrue(iterator.mapNext(1, s -> s.toJavaList().toString()).isAbsent());
+        assertTrue(iterator.mapNext(1, s -> s.toList().toString()).isAbsent());
         
         
         assertEquals("[[One, Two, null], [Three]]", logs.toString());

@@ -51,7 +51,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.environments.AsyncRunner;
@@ -62,6 +61,7 @@ import functionalj.functions.TimeFuncs;
 import functionalj.list.FuncList;
 import functionalj.ref.Run;
 import functionalj.ref.Substitution;
+import functionalj.stream.StreamPlus;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -439,6 +439,7 @@ public class DeferActionTest {
     @Test
     public void testDeferAction_moreChainAbort() throws InterruptedException {
         val log = new ArrayList<String>();
+        val latch = new CountDownLatch(1);
         DeferAction.from(()->{
             Thread.sleep(50);
             return "Hello";
@@ -446,6 +447,7 @@ public class DeferActionTest {
         .eavesdrop(result -> {
             log.add("Eavesdrop: " + result.isCancelled());
             log.add("Eavesdrop: " + result.toString());
+            latch.countDown();
         })
         .chain(str->{
             Thread.sleep(50);
@@ -465,11 +467,11 @@ public class DeferActionTest {
         .start()
         .abort();
         
-        assertStrings("["
-                + "Eavesdrop: true, "
-                + "Eavesdrop: Result:{ Cancelled }, "
-                + "Done: Result:{ Cancelled }"
-                + "]", log);
+        // Wait for all "Done" propagated.
+        latch.await();
+        val logString = log.toString();
+        assertTrue(logString.contains("Done: Result:{ Cancelled }"));
+        assertTrue(logString.contains("Eavesdrop: false, Eavesdrop: Result:{ Value: Hello }"));
     }
     
     static class LoggedCreator extends DeferActionCreator {
@@ -487,7 +489,7 @@ public class DeferActionTest {
             val id = deferActionCount.getAndIncrement();
             logs.add("New defer action: " + id);
             val wrappedSupplier = (Func0<D>)()->{
-                Thread.sleep(50);
+                Thread.sleep(100);
                 logs.add("Start #" + id + ": ");
                 
                 D result = null;
@@ -548,7 +550,6 @@ public class DeferActionTest {
             + "]", creator.logs().toString());
     }
     
-    @Ignore("Fail but no time to fix.")
     @Test
     public void testStreamAction_SingleThread() {
         val executor = Executors.newSingleThreadExecutor();
@@ -570,7 +571,6 @@ public class DeferActionTest {
             + "]", creator.logs().toString());
     }
     
-    @Ignore("Fail but no time to fix.")
     @Test
     public void testStreamAction_TwoThreads() {
         val executor = Executors.newFixedThreadPool(2);
@@ -629,9 +629,12 @@ public class DeferActionTest {
         val list = Run.with(DeferActionCreator.current.butWith(creator))
         .run(()->{
             val actions = FuncList
-                .from(IntStream.range(0, 5).mapToObj(Integer::valueOf))
-                .map (i -> DeferAction.run(Sleep(100).thenReturn(i)))
+                .from(StreamPlus.range(0, 5))
+                .map (i -> DeferAction.from(Sleep(100).thenReturn(i)))
                 .toImmutableList();
+            
+            actions
+                .forEach(DeferAction::start);
             
             val results = actions
                 .map(action  -> action.getPromise())
@@ -823,7 +826,6 @@ public class DeferActionTest {
         assertStrings("Result:{ Cancelled: Can't wait. }", action.getResult());
     }
     
-    @Ignore("Fail but no time to fix.")
     @Test
     public void testDeferLoopTimes() throws InterruptedException {
         val counter = new AtomicInteger(0);
@@ -836,14 +838,16 @@ public class DeferActionTest {
         assertStrings("Result:{ Value: 10 }", action.build().getResult());
     }
     
-    @Ignore
     @Test
     public void testDeferLoopCondition() throws InterruptedException {
         val counter = new AtomicInteger(0);
         val action  = DeferActionBuilder
                 .from(()->counter.incrementAndGet())
                 .loopUntil(result -> result.get() >= 5);
-        assertStrings("Result:{ Value: 5 }", action.build().getResult());
+        assertStrings("Result:{ Value: 5 }", 
+                        action
+                        .build()
+                        .getResult());
         assertStrings("5", counter.get());
     }
     
@@ -869,6 +873,5 @@ public class DeferActionTest {
                 "Result: Result:{ Value: Aa }",
                 logs.stream().collect(joining(",\n")));
     }
-    
     
 }
