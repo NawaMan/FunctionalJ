@@ -47,7 +47,6 @@ and the dependencies to FunctionalJ.
 
 [UseFunctionalJGradle](https://github.com/NawaMan/UseFunctionalJGradle) is an example project that use FunctionalJ.
 You can use that as a starting point.
-Just add the dependency to FunctionalJ to it.
 
 ### Using FunctionalJ in a Maven project
 
@@ -77,7 +76,6 @@ and the dependencies to FunctionalJ.
 
 [UseFunctionalJMaven](https://github.com/NawaMan/UseFunctionalJMaven) is an example project that use FunctionalJ.
 You can use that as a starting point.
-Just add the dependency to FunctionalJ to it.
 
 ## Build
 

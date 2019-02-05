@@ -28,11 +28,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
-import functionalj.io.IO;
 import functionalj.promise.DeferAction;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
+import functionalj.task.Task;
 import functionalj.tuple.Tuple3;
 import lombok.val;
 
@@ -94,8 +94,8 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2, HasPromise<INPUT3> input3) {
         return Promise.from(input1, input2, input3, this);
     }
-    public default IO<OUTPUT> applyTo(IO<INPUT1> input1, IO<INPUT2> input2, IO<INPUT3> input3) {
-        return IO.from(input1, input2, input3, this);
+    public default Task<OUTPUT> applyTo(Task<INPUT1> input1, Task<INPUT2> input2, Task<INPUT3> input3) {
+        return Task.from(input1, input2, input3, this);
     }
     public default Func0<OUTPUT> applyTo(Supplier<INPUT1> input1, Supplier<INPUT2> input2, Supplier<INPUT3> input3) {
         return ()->apply(input1.get(), input2.get(), input3.get());

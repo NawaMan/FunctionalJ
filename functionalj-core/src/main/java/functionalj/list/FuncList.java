@@ -1062,6 +1062,9 @@ public interface FuncList<DATA>
     
     //-- FlatMap --
     
+    public default FuncList<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, ? extends Stream<DATA>> mapper) {
+        return flatMap(d -> checker.test(d) ? mapper.apply(d) : StreamPlus.of(d));
+    }
     public default <T> FuncList<T> flatMapIf(
             Predicate<? super DATA> checker, 
             Function<? super DATA, Stream<T>> mapper, 
@@ -1106,14 +1109,14 @@ public interface FuncList<DATA>
     
     //-- Zip --
     
-    public default <B, TARGET> FuncList<TARGET> zipWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> FuncList<TARGET> combine(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream).zipWith(anotherStream, combinator);
+            return StreamPlus.from(stream).combine(anotherStream, combinator);
         });
     }
-    public default <B, TARGET> FuncList<TARGET> zipWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> FuncList<TARGET> combine(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream).zipWith(anotherStream, option, combinator);
+            return StreamPlus.from(stream).combine(anotherStream, option, combinator);
         });
     }
     

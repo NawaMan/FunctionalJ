@@ -41,6 +41,7 @@ public class AcceptableTest {
     @Test
     public void test() throws Exception {
         assertTrue (new ThreeDigitString("123").isPresent());
+        assertFalse(new ThreeDigitString("12") .isPresent());
         assertFalse(new ThreeDigitString("ABC").isPresent());
         assertFalse(new ThreeDigitString(null) .isPresent());
         assertEquals("ThreeDigitString:{ Value: 123 }",                               "" + new ThreeDigitString("123"));

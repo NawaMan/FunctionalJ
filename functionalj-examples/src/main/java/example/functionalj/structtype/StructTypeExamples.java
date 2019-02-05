@@ -49,8 +49,7 @@ public class StructTypeExamples {
             String middleName,
             String lastName,
             @DefaultTo(DefaultValue.MINUS_ONE)
-            Integer age) {
-    }
+            Integer age) {}
     
     @Struct
     void Employee(
@@ -62,7 +61,7 @@ public class StructTypeExamples {
     @Struct
     void Department(
             String   name,
-            Employee manager) {};
+            Employee manager) {}
     
     @Struct
     static boolean Circle1(int x, int y, int radius) {
@@ -98,16 +97,18 @@ public class StructTypeExamples {
     @Test
     public void example02_FieldRead() {
         val person = new Person("John", "Doe");
+        assertEquals("John", person.firstName);
+        assertEquals("Doe",  person.lastName);
         assertEquals("John", person.firstName());
         assertEquals("Doe",  person.lastName());
     }
     
     @Test
     public void example03_FieldChange() {
-        val person1 = new Person("John", "Doe");
-        val person2 = person1.withLastName("Smith");
-        assertEquals("Person[firstName: John, middleName: null, lastName: Doe, age: -1]",   person1.toString());
-        assertEquals("Person[firstName: John, middleName: null, lastName: Smith, age: -1]", person2.toString());
+        val person    = new Person("John", "Doe");
+        val newperson = person.withLastName("Smith");
+        assertEquals("Person[firstName: John, middleName: null, lastName: Doe, age: -1]",   person.toString());
+        assertEquals("Person[firstName: John, middleName: null, lastName: Smith, age: -1]", newperson.toString());
     }
     
     @Test
@@ -212,9 +213,9 @@ public class StructTypeExamples {
         val person = new Person.Builder()
                 .firstName ("John")
                 .middleName("F")
-                .lastName  ("Doe")
+                .lastName  ("Kookies")
                 .build();
-        assertEquals("Person[firstName: John, middleName: F, lastName: Doe, age: -1]", person.toString());
+        assertEquals("Person[firstName: John, middleName: F, lastName: Kookies, age: -1]", person.toString());
     }
     
     @Test

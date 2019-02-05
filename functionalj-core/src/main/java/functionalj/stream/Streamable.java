@@ -786,14 +786,14 @@ public interface Streamable<DATA>
     
     //-- Zip --
     
-    public default <B, TARGET> Streamable<TARGET> zipWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> Streamable<TARGET> combine(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream).zipWith(anotherStream, combinator);
+            return StreamPlus.from(stream).combine(anotherStream, combinator);
         });
     }
-    public default <B, TARGET> Streamable<TARGET> zipWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> Streamable<TARGET> combine(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream).zipWith(anotherStream, option, combinator);
+            return StreamPlus.from(stream).combine(anotherStream, option, combinator);
         });
     }
     

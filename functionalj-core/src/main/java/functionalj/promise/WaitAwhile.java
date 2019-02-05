@@ -28,6 +28,7 @@ import static functionalj.function.Func.getOrElse;
 import java.util.function.Supplier;
 
 import functionalj.environments.AsyncRunner;
+import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -45,11 +46,11 @@ public abstract class WaitAwhile extends Wait {
         return new WaitOrDefault<>(this, ()->Result.valueOf(data));
     }
     
-    public <DATA> WaitOrDefault<DATA> orDefaultFrom(Supplier<DATA> supplier) {
+    public <DATA> WaitOrDefault<DATA> orDefaultFrom(Func0<DATA> supplier) {
         return new WaitOrDefault<>(this, ()->Result.of(supplier));
     }
     
-    public <DATA> WaitOrDefault<DATA> orDefaultGet(Supplier<Result<DATA>> supplier) {
+    public <DATA> WaitOrDefault<DATA> orDefaultGet(Func0<Result<DATA>> supplier) {
         return new WaitOrDefault<>(this, supplier);
     }
     

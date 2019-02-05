@@ -30,10 +30,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -58,6 +60,7 @@ import lombok.val;
 
 
 // TODO - Find a way to make toString more useful ... like giving this a name.
+// TODO - Should extract important stuff to PromiseBase ... so it is not floored with the less important things.
 @SuppressWarnings("javadoc")
 public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeable<HasPromise<DATA>> {
     
@@ -158,10 +161,20 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     //    result          -> done.
     //      result.cancelled -> aborted
     //      result.completed -> completed
-    private final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>(INITIAL_CAPACITY);
-    private final List<FuncUnit1<Result<DATA>>>                          eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
+    final Map<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>> consumers     = new ConcurrentHashMap<>(INITIAL_CAPACITY);
+    final List<FuncUnit1<Result<DATA>>>                          eavesdroppers = new ArrayList<>(INITIAL_CAPACITY);
     
-    private final AtomicReference<Object> dataRef = new AtomicReference<>();
+    private static final AtomicInteger ID = new AtomicInteger(0);
+    
+    final AtomicReference<Object> dataRef = new AtomicReference<>();
+    private final int id = ID.getAndIncrement();
+    
+    public int hashCode() {
+        return id;
+    }
+    public String toString() {
+        return "Promise#" + id;
+    }
     
     Promise(OnStart onStart) {
         dataRef.set(onStart);
@@ -188,7 +201,11 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (data instanceof Promise) {
             @SuppressWarnings("unchecked")
             Promise<DATA> promise = (Promise<DATA>)data;
-            return promise.getStatus();
+            PromiseStatus parentStatus = promise.getStatus();
+            // Pending ... as the result is not yet propagated down
+            if (parentStatus.isNotDone())
+                 return parentStatus;
+            else return PromiseStatus.PENDING;
         }
         
         if ((data instanceof StartableAction) || (data instanceof OnStart))
@@ -273,42 +290,44 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return makeDone(result);
     }
     
-    private <T> T synchronouseOperation(Func0<T> operation) {
+    <T> T synchronouseOperation(Func0<T> operation) {
         synchronized (dataRef) {
             return operation.get();
         }
     }
-    
-    private boolean makeDone(Result<DATA> result) {
-        val isDone = synchronouseOperation(()->{
-            val data = dataRef.get();
-            if (data instanceof Promise) {
-                @SuppressWarnings("unchecked")
-                val parent = (Promise<DATA>)data;
-                if (!result.isException()) {
-                    if (!dataRef.compareAndSet(parent, result))
+    static <DATA> boolean makeDone(Promise<DATA> promise, Result<DATA> result) {
+        val isDone = promise.synchronouseOperation(()->{
+            val data = promise.dataRef.get();
+            try {
+                if (data instanceof Promise) {
+                    @SuppressWarnings("unchecked")
+                    val parent = (Promise<DATA>)data;
+                    try {
+                        if (!promise.dataRef.compareAndSet(parent, result))
+                            return false;
+                    } finally {
+                        parent.unsubscribe(promise);
+                    }
+                } else if ((data instanceof StartableAction) || (data instanceof OnStart)) {
+                    if (!promise.dataRef.compareAndSet(data, result))
                         return false;
                 } else {
-                    parent.makeDone(result);
+                    if (!promise.dataRef.compareAndSet(promise.consumers, result))
+                        return false;
                 }
-            } else if ((data instanceof StartableAction) || (data instanceof OnStart)) {
-                if (!dataRef.compareAndSet(data, result))
-                    return false;
-            } else {
-                if (!dataRef.compareAndSet(consumers, result))
-                    return false;
+                return null;
+            } finally {
             }
-            return null;
         });
         
         if (isDone != null)
             return isDone.booleanValue();
-            
-        val subscribers = new HashMap<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>>(consumers);
-        this.consumers.clear();
         
-        val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(this.eavesdroppers);
-        this.eavesdroppers.clear();
+        val subscribers = new HashMap<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>>(promise.consumers);
+        promise.consumers.clear();
+        
+        val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(promise.eavesdroppers);
+        promise.eavesdroppers.clear();
         
         for (val eavesdropper : eavesdroppers) {
             carelessly(()->{
@@ -322,7 +341,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 consumer.accept(result);
             } catch (Exception e) {
                 try {
-                    handleResultConsumptionExcepion(subscription, consumer, result);
+                    promise.handleResultConsumptionExcepion(subscription, consumer, result);
                 } catch (Exception anotherException) {
                     // Do nothing this time.
                 }
@@ -331,15 +350,19 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return true;
     }
     
+    private boolean makeDone(Result<DATA> result) {
+        return makeDone(this, result);
+    }
+    
     //== Customizable ==
     
     protected void handleIllegalStatusException(Object data) {
     }
     
     protected void handleResultConsumptionExcepion(
-            SubscriptionRecord<DATA>      subscription,
-            FuncUnit1<Result<DATA>> consumer,
-            Result<DATA>            result) {
+            SubscriptionRecord<DATA> subscription,
+            FuncUnit1<Result<DATA>>  consumer,
+            Result<DATA>             result) {
     }
     
     private <T> Promise<T> newSubPromise(FuncUnit2<Result<DATA>, Promise<T>> resultConsumer) {
@@ -363,8 +386,9 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return PromiseStatus.COMPLETED.equals(getStatus());
     }
     public final boolean isDone() {
-        PromiseStatus status;
-        return (null != (status = getStatus())) && status.isDone();
+        val status = getStatus();
+        val isDone = (null != status) && status.isDone();
+        return isDone;
     }
     public final boolean isNotDone() {
         return !isDone();
@@ -375,6 +399,12 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     void unsubscribe(SubscriptionRecord<DATA> subscription) {
         consumers.remove(subscription);
+        abortWhenNoSubscription();
+    }
+    void unsubscribe(Promise<DATA> promise) {
+        val entry = consumers.entrySet().stream().filter(e -> Objects.equals(e.getValue(), promise)).findFirst();
+        if (entry.isPresent())
+            consumers.remove(entry.get().getKey());
         abortWhenNoSubscription();
     }
     
@@ -398,31 +428,32 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         start();
-        if (!this.isDone()) {
-            synchronized (this) {
-                if (!this.isDone()) {
-                    val latch = new CountDownLatch(1);
-                    onComplete(result -> {
-                        latch.countDown();
-                    });
+        if (!isDone()) {
+            val latch = new CountDownLatch(1);
+            synchronouseOperation(()->{
+                onComplete(result -> {
+                    latch.countDown();
+                });
+                return isDone();
+            });
+            
+            if (!isDone()) {
+                try {
+                    if ((timeout < 0) || (unit == null))
+                         latch.await();
+                    else latch.await(timeout, unit);
                     
-                    try {
-                        System.out.println(this + ": Await! ");
-                        if ((timeout < 0) || (unit == null))
-                             latch.await();
-                        else latch.await(timeout, unit);
-                        
-                    } catch (InterruptedException exception) {
-                        throw new UncheckedInterruptedException(exception);
-                    }
+                } catch (InterruptedException exception) {
+                    throw new UncheckedInterruptedException(exception);
                 }
             }
         }
         
-        if (!this.isDone())
+        if (!isDone())
             throw new UncheckedInterruptedException(new InterruptedException());
         
-        return getCurrentResult();
+        val currentResult = getCurrentResult();
+        return currentResult;
     }
     
     public final Result<DATA> getCurrentResult() {
@@ -624,7 +655,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 targetPromise.makeDone((Result<TARGET>)result);
             })
             .ifAbsent(() -> {
-                targetPromise.makeDone(Result.of(elseSupplier));
+                targetPromise.makeDone(Result.from(elseSupplier));
             });
         });
     }

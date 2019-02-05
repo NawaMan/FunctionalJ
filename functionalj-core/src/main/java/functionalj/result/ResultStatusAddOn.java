@@ -27,6 +27,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.FuncUnit2;
@@ -279,7 +280,7 @@ public interface ResultStatusAddOn<DATA> {
             if (!problemClass.isInstance(exception))
                 return asResult();
             
-            return Result.of(fallbackSupplier);
+            return Result.of(Func0.from(fallbackSupplier));
         });
     }
     public default Result<DATA> recover(Class<? extends Throwable> problemClass, Func1<? super Exception,? extends DATA> recoverFunction) {

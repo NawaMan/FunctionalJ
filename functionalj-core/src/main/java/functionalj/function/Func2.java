@@ -25,11 +25,11 @@ package functionalj.function;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
-import functionalj.io.IO;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
@@ -38,6 +38,7 @@ import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.ZipWithOption;
+import functionalj.task.Task;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -101,20 +102,20 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2) {
         return Promise.from(input1, input2, this);
     }
-    public default IO<OUTPUT> applyTo(IO<INPUT1> input1, IO<INPUT2> input2) {
-        return IO.from(input1, input2, this);
+    public default Task<OUTPUT> applyTo(Task<INPUT1> input1, Task<INPUT2> input2) {
+        return Task.from(input1, input2, this);
     }
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2) {
-        return input1.zipWith(input2, this);
+        return input1.combine(input2, this);
     }
     public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT1> input1, StreamPlus<INPUT2> input2, ZipWithOption option) {
-        return input1.zipWith(input2, option, this);
+        return input1.combine(input2, option, this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
-        return input1.zipWith(input2, this);
+        return input1.combine(input2, this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2, ZipWithOption option) {
-        return input1.zipWith(input2, option, this);
+        return input1.combine(input2, option, this);
     }
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
         return input1.zipWith(input2, this);
@@ -238,6 +239,14 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     
     public default Func1<Tuple2<INPUT1, INPUT2>, OUTPUT> wholly() {
         return t -> this.applyUnsafe(t._1(), t._2());
+    }
+    
+    public default BiPredicate<INPUT1, INPUT2> toPredicate() {
+        return (i1, i2) -> Boolean.TRUE.equals(apply(i1, i2));
+    }
+    
+    public default BiPredicate<INPUT1, INPUT2> toPredicate(Func1<OUTPUT, Boolean> toPredicate) {
+        return (i1, i2) -> toPredicate.apply((apply(i1, i2)));
     }
     
     /**

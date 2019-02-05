@@ -300,8 +300,12 @@ public abstract class Result<DATA>
 //        return Result.value(nullable.orElse(null));
 //    }
     
+    public static <D> Result<D> from(Supplier<? extends D> supplier) {
+        return of(Func0.of(supplier::get));
+    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <D> Result<D> of(Supplier<? extends D> supplier) {
+    public static <D> Result<D> of(Func0<? extends D> supplier) {
         try {
             if (supplier instanceof Func0)
                  return Result.valueOf((D)((Func0)supplier).applyUnsafe());
@@ -316,7 +320,7 @@ public abstract class Result<DATA>
         }
     }
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <D> Result<D> Try(Supplier<? extends D> supplier) {
+    public static <D> Result<D> Try(Func0<? extends D> supplier) {
         try {
             if (supplier instanceof Func0)
                  return Result.valueOf((D)((Func0)supplier).applyUnsafe());
@@ -871,20 +875,20 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public final Result<DATA> validate(String stringFormat, Predicate<? super DATA> checker) {
+    public final Result<DATA> validate(String stringFormat, Predicate<? super DATA> validChecker) {
         return mapData(
                 returnValueException(),
                 (value, exception)->{
                     if (value == null) 
                         return this;
                     try {
-                        if (checker.test(value))
+                        if (validChecker.test(value))
                             return this;
                         
-                        val validationException = SimpleValidator.exceptionFor(stringFormat).apply(value, (Predicate)checker);
+                        val validationException = SimpleValidator.exceptionFor(stringFormat).apply(value, (Predicate)validChecker);
                         return (Result<DATA>)newException(validationException);
                     } catch (Exception cause) {
-                        val validationException = SimpleValidator.exceptionFor(stringFormat, cause).apply(value, (Predicate)checker);
+                        val validationException = SimpleValidator.exceptionFor(stringFormat, cause).apply(value, (Predicate)validChecker);
                         return (Result<DATA>)newException(validationException);
                     }
                 }
@@ -892,7 +896,7 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public final <T> Result<DATA> validate(String stringFormat, Func1<? super DATA, T> mapper, Predicate<? super T> checker) {
+    public final <T> Result<DATA> validate(String stringFormat, Func1<? super DATA, T> mapper, Predicate<? super T> validChecker) {
         return mapData(
                 returnValueException(),
                 (value, exception)->{
@@ -900,14 +904,14 @@ public abstract class Result<DATA>
                         return this;
                     try {
                         val target = mapper.applyUnsafe(value);
-                        if (checker.test(target))
+                        if (validChecker.test(target))
                             return this;
                         
-                        val validationException = SimpleValidator.exceptionFor(stringFormat).apply(value, (Predicate)checker);
+                        val validationException = SimpleValidator.exceptionFor(stringFormat).apply(value, (Predicate)validChecker);
                         return (Result<DATA>)newException(validationException);
                         
                     } catch (Exception cause) {
-                        val validationException = SimpleValidator.exceptionFor(stringFormat, cause).apply(value, (Predicate)checker);
+                        val validationException = SimpleValidator.exceptionFor(stringFormat, cause).apply(value, (Predicate)validChecker);
                         return (Result<DATA>)newException(validationException);
                     }
                 });
