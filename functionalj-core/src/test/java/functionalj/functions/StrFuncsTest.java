@@ -57,8 +57,14 @@ public class StrFuncsTest {
     
     @Test
     public void testMatches() {
-        assertEquals("A, AA, AAA, AAAA", matches("ABAABAAABAAAA", "A+").toTexts().joinToString(", "));
-        assertEquals("#{Hello}, #{There}", matches("--#{Hello}--#{There}--", "#\\{[a-zA-Z0-9$_]+\\}").toTexts().joinToString(", "));
+        assertEquals("A, AA, AAA, AAAA", 
+                matches("ABAABAAABAAAA", "A+")
+                .toTexts()
+                .joinToString(", "));
+        assertEquals("#{Hello}, #{There}", 
+                matches("--#{Hello}--#{There}--", "#\\{[a-zA-Z0-9$_]+\\}")
+                .toTexts()
+                .joinToString(", "));
     }
     
     @Test
