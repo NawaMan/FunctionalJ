@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import functionalj.function.Func0;
@@ -132,6 +133,10 @@ public abstract class Ref<DATA> {
         return getResult();
     }
     
+    public final Optional<DATA> asOptional() {
+        return getResult().toOptional();
+    }
+    
     public final Func0<DATA> valueSupplier() {
         return ()->{
             val value = value();
@@ -152,6 +157,8 @@ public abstract class Ref<DATA> {
                 .valueSupplier()
                 .then(mapper);
     }
+    
+    // Map to ...
     
     public final <TARGET> Ref<TARGET> map(Class<TARGET> targetClass, Func1<DATA, TARGET> mapper) {
         return Ref.of(targetClass).defaultFrom(()->{

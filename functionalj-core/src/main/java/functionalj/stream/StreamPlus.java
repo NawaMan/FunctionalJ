@@ -460,6 +460,10 @@ public interface StreamPlus<DATA>
         return stream().count();
     }
     
+    public default int size() {
+        return (int)stream().count();
+    }
+    
     public default boolean anyMatch(Predicate<? super DATA> predicate) {
         return stream().anyMatch(predicate);
     }

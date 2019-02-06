@@ -25,15 +25,36 @@ package functionalj.promise;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+
 import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit0;
+import functionalj.list.FuncList;
 import functionalj.result.Result;
 import functionalj.task.Task;
 import lombok.val;
 
 public class DeferActionBuilder<DATA> implements Task<DATA> {
+    
+    public static <DATA> RetryConfig<DATA> Retry(int times) {
+        return new RetryConfig<DATA>(times);
+    }
+    
+    public static <DATA> Function<DeferActionBuilder<DATA>, DeferActionBuilder<DATA>> InterruptOnCancel(boolean interruptOnCancel) {
+        return builder -> builder.interruptOnCancel(interruptOnCancel);
+    }
+    
+    public static <DATA> Function<DeferActionBuilder<DATA>, DeferActionBuilder<DATA>> OnStart(FuncUnit0 onStart) {
+        return builder -> builder.onStart(onStart);
+    }
+    public static <DATA> Function<DeferActionBuilder<DATA>, DeferActionBuilder<DATA>> Runner(AsyncRunner runner) {
+        return builder -> builder.runner(runner);
+    }
+    
+    // TODO - Add other configuration.
     
     private static final FuncUnit0 DO_NOTHING = ()->{};
     
@@ -74,7 +95,28 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
         this.supplier = requireNonNull(supplier);
     }
     
-    Func0<DATA> supplier() {
+    // TODO - Find the way to make this work without resorting to "Object"
+    @SafeVarargs
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public final DeferActionBuilder<DATA> config(Function<DeferActionBuilder<Object> , DeferActionBuilder<Object>> ... configs) {
+        if (configs == null)
+            return this;
+        
+        val configList = FuncList.of(configs).filterNonNull();
+        val current    = new AtomicReference<>(this);
+        configList.forEach(config -> {
+            val curBuilder = current.get();
+            val newBuilder = config.apply((DeferActionBuilder)curBuilder);
+            val nextBuilder
+                    = (newBuilder == null)
+                    ? curBuilder
+                    : (DeferActionBuilder<DATA>)newBuilder;
+            current.set(nextBuilder);
+        });
+        return current.get();
+    }
+    
+    protected Func0<DATA> supplier() {
         return this.supplier;
     }
     
