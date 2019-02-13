@@ -92,13 +92,14 @@ public class GenerateParentNullableChildTest {
                 "import java.util.function.Supplier;\n" + 
                 "import me.test.Child;\n" + 
                 "import me.test.Child.ChildLens;\n" + 
+                "import me.test.Parent.ParentLens;\n" + 
                 "import nawaman.nullablej.nullable.Nullable;\n" + 
                 "\n" + 
                 "// me.test.null.Definitions.ParentDef\n" + 
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
-                "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
+                "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n" + 
                 "    public final Nullable<String> nullableName;\n" + 
                 "    public final Nullable<Child> nullableChild;\n" + 
                 "    \n" + 
@@ -181,7 +182,7 @@ public class GenerateParentNullableChildTest {
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
                 "        public final NullableLens<HOST, String, StringLens<HOST>> nullableName = createSubNullableLens(Parent::nullableName, Parent::withNullableName, StringLens::of);\n" + 
-                "        public final NullableLens<HOST, Child, ChildLens<HOST>> nullableChild = createSubNullableLens(Parent::nullableChild, Parent::withNullableChild, ChildLens::new);\n" + 
+                "        public final NullableLens<HOST, Child, Child.ChildLens<HOST>> nullableChild = createSubNullableLens(Parent::nullableChild, Parent::withNullableChild, Child.ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 
                 "            super(spec);\n" + 

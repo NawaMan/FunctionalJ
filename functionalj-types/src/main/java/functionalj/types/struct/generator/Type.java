@@ -299,7 +299,7 @@ public class Type implements IRequireTypes {
         this.isVirtual = isVirtual;
         this.generics = generics;
     }
-
+    
     public Type withGenerics(List<Type> generics) {
         return new Type(encloseName, simpleName, packageName, isVirtual, generics);
     }
@@ -448,7 +448,7 @@ public class Type implements IRequireTypes {
         if ((localTypeWithLens != null) && !localTypeWithLens.contains(simpleName))
             return Core.ObjectLens.type();
         
-        return new Type(simpleName(), simpleName() + "Lens", packageName(), false, asList(new Type("HOST", "")));
+        return new Type(null, simpleName() + "." + simpleName() + "Lens", packageName(), false, asList(new Type("HOST", "")));
     }
     
     public Type knownLensType() {

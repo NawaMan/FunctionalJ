@@ -109,7 +109,7 @@ public class GenericSupportTest {
             "    public Result<Option<T>> toResult() { return Result.valueOf(this); }\n" + 
             "    \n" + 
             "    public static final class None<T extends Number> extends Option<T> {\n" + 
-            "        public static final NoneLens<None> theNone = new NoneLens<>(LensSpec.of(None.class));\n" + 
+            "        public static final None.NoneLens<None> theNone = new None.NoneLens<>(LensSpec.of(None.class));\n" + 
             "        private static final None instance = new None();\n" + 
             "        private None() {}\n" + 
             "        public static class NoneLens<HOST> extends ObjectLensImpl<HOST, Option.None> {\n" + 
@@ -121,7 +121,7 @@ public class GenericSupportTest {
             "        }\n" + 
             "    }\n" + 
             "    public static final class Some<T extends Number> extends Option<T> {\n" + 
-            "        public static final SomeLens<Some> theSome = new SomeLens<>(LensSpec.of(Some.class));\n" + 
+            "        public static final Some.SomeLens<Some> theSome = new Some.SomeLens<>(LensSpec.of(Some.class));\n" + 
             "        private T value;\n" + 
             "        private Some(T value) {\n" + 
             "            this.value = $utils.notNull(value);\n" + 

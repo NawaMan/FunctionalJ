@@ -87,12 +87,13 @@ public class GeneratorTest {
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
+                "import me.test.Car.CarLens;\n" + 
                 "\n" + 
                 "// me.test.null.Definitions.CarDef\n" + 
                 "\n" + 
                 "public class Car implements Definitions.CarDef,IStruct,Pipeable<Car> {\n" + 
                 "    \n" + 
-                "    public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));\n" + 
+                "    public static final Car.CarLens<Car> theCar = new Car.CarLens<>(LensSpec.of(Car.class));\n" + 
                 "    public final int anint;\n" + 
                 "    public final boolean anbool;\n" + 
                 "    public final String anstring;\n" + 
@@ -351,7 +352,7 @@ public class GeneratorTest {
         val generatedWith = generate(()->{
             configures.generateLensClass = true;
         });
-        assertTrue(generatedWith.contains("public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));"));
+        assertTrue(generatedWith.contains("public static final Car.CarLens<Car> theCar = new Car.CarLens<>(LensSpec.of(Car.class));"));
         assertTrue(generatedWith.contains("public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {"));
         
         val generatedWithout = generate(()->{

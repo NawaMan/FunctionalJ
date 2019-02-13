@@ -157,7 +157,7 @@ public class FullGeneratorTest {
               "    public Result<BasicColor> toResult() { return Result.valueOf(this); }\n" + 
               "    \n" + 
               "    public static final class White extends BasicColor {\n" + 
-              "        public static final WhiteLens<White> theWhite = new WhiteLens<>(LensSpec.of(White.class));\n" + 
+              "        public static final White.WhiteLens<White> theWhite = new White.WhiteLens<>(LensSpec.of(White.class));\n" + 
               "        private static final White instance = new White();\n" + 
               "        private White() {}\n" + 
               "        public static class WhiteLens<HOST> extends ObjectLensImpl<HOST, BasicColor.White> {\n" + 
@@ -169,7 +169,7 @@ public class FullGeneratorTest {
               "        }\n" + 
               "    }\n" + 
               "    public static final class Black extends BasicColor {\n" + 
-              "        public static final BlackLens<Black> theBlack = new BlackLens<>(LensSpec.of(Black.class));\n" + 
+              "        public static final Black.BlackLens<Black> theBlack = new Black.BlackLens<>(LensSpec.of(Black.class));\n" + 
               "        private static final Black instance = new Black();\n" + 
               "        private Black() {}\n" + 
               "        public static class BlackLens<HOST> extends ObjectLensImpl<HOST, BasicColor.Black> {\n" + 
@@ -181,7 +181,7 @@ public class FullGeneratorTest {
               "        }\n" + 
               "    }\n" + 
               "    public static final class RGB extends BasicColor {\n" + 
-              "        public static final RGBLens<RGB> theRGB = new RGBLens<>(LensSpec.of(RGB.class));\n" + 
+              "        public static final RGB.RGBLens<RGB> theRGB = new RGB.RGBLens<>(LensSpec.of(RGB.class));\n" + 
               "        private int r;\n" + 
               "        private int g;\n" + 
               "        private int b;\n" + 

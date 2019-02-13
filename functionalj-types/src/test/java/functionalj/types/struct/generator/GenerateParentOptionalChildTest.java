@@ -94,12 +94,13 @@ public class GenerateParentOptionalChildTest {
                 "import java.util.function.Supplier;\n" + 
                 "import me.test.Child;\n" + 
                 "import me.test.Child.ChildLens;\n" + 
+                "import me.test.Parent.ParentLens;\n" + 
                 "\n" + 
                 "// me.test.null.Definitions.ParentDef\n" + 
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
-                "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
+                "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n" + 
                 "    public final Optional<String> optionalName;\n" + 
                 "    public final Optional<Child> optionalChild;\n" + 
                 "    \n" + 
@@ -182,7 +183,7 @@ public class GenerateParentOptionalChildTest {
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
                 "        public final OptionalLens<HOST, String, StringLens<HOST>> optionalName = createSubOptionalLens(Parent::optionalName, Parent::withOptionalName, StringLens::of);\n" + 
-                "        public final OptionalLens<HOST, Child, ChildLens<HOST>> optionalChild = createSubOptionalLens(Parent::optionalChild, Parent::withOptionalChild, ChildLens::new);\n" + 
+                "        public final OptionalLens<HOST, Child, Child.ChildLens<HOST>> optionalChild = createSubOptionalLens(Parent::optionalChild, Parent::withOptionalChild, Child.ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 
                 "            super(spec);\n" + 
