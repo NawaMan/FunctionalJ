@@ -66,6 +66,7 @@ public class RequiredConstructorTest {
     private String expected =
             "package example.functionalj.accesslens;\n" + 
             "\n" + 
+            "import example.functionalj.accesslens.Person.PersonLens;\n" + 
             "import functionalj.lens.core.LensSpec;\n" + 
             "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
             "import functionalj.lens.lenses.StringLens;\n" + 
@@ -87,7 +88,7 @@ public class RequiredConstructorTest {
             "\n" + 
             "public class Person implements IStruct,Pipeable<Person> {\n" + 
             "    \n" + 
-            "    public static final PersonLens<Person> thePerson = new PersonLens<>(LensSpec.of(Person.class));\n" + 
+            "    public static final Person.PersonLens<Person> thePerson = new Person.PersonLens<>(LensSpec.of(Person.class));\n" + 
             "    private final String firstName;\n" + 
             "    private final String midName;\n" + 
             "    private final String lastName;\n" + 

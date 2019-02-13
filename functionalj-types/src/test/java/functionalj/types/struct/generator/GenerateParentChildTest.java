@@ -84,12 +84,13 @@ public class GenerateParentChildTest {
                 "import java.util.function.Supplier;\n" + 
                 "import me.test.Child;\n" + 
                 "import me.test.Child.ChildLens;\n" + 
+                "import me.test.Parent.ParentLens;\n" + 
                 "\n" + 
                 "// me.test.null.Definitions.ParentDef\n" + 
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
-                "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
+                "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n" + 
                 "    public final Child child;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
@@ -151,7 +152,7 @@ public class GenerateParentChildTest {
                 "    \n" + 
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
-                "        public final ChildLens<HOST> child = createSubLens(Parent::child, Parent::withChild, ChildLens::new);\n" + 
+                "        public final Child.ChildLens<HOST> child = createSubLens(Parent::child, Parent::withChild, Child.ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 
                 "            super(spec);\n" + 
