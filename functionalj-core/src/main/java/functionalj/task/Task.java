@@ -29,6 +29,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
@@ -39,6 +40,7 @@ import functionalj.function.FuncUnit1;
 import functionalj.function.Named;
 import functionalj.list.FuncList;
 import functionalj.promise.DeferAction;
+import functionalj.promise.DeferActionBuilder;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.task.Tasks.TaskCached;
@@ -67,7 +69,7 @@ public interface Task<DATA> {
     public static <D> Task<D> ofValue(D value) {
         return new TaskValue<>(value);
     }
-    public static <D> Task<D> from(Supplier<D> supplier) {
+    public static <D> DeferActionBuilder<D> from(Func0<D> supplier) {
         return new TaskSupplier<>(supplier);
     }
     public static <D> Task<D> from(Result<D> result) {

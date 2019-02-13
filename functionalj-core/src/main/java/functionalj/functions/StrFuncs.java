@@ -326,24 +326,24 @@ public class StrFuncs {
         return repeat(prefix, width - str.length()) + str;
     }
     
-    public static Func1<CharSequence, StreamPlus<RegExMatchResult>> matches(String regex) {
+    public static Func1<CharSequence, RegExMatchResultStream> matches(String regex) {
         return str -> matches(str, regex, -1);
     }
-    public static Func1<CharSequence, StreamPlus<RegExMatchResult>> matches(String regex, RegExFlag flags) {
+    public static Func1<CharSequence, RegExMatchResultStream> matches(String regex, RegExFlag flags) {
         return str -> matches(str, regex, flags);
     }
-    public static Func1<CharSequence, StreamPlus<RegExMatchResult>> matches(String regex, int flags) {
+    public static Func1<CharSequence, RegExMatchResultStream> matches(String regex, int flags) {
         return str -> matches(str, regex, flags);
     }
-    public static StreamPlus<RegExMatchResult> matches(CharSequence str, String regex) {
+    public static RegExMatchResultStream matches(CharSequence str, String regex) {
         return matches(str, regex, -1);
     }
-    public static StreamPlus<RegExMatchResult> matches(CharSequence str, String regex, RegExFlag flags) {
+    public static RegExMatchResultStream matches(CharSequence str, String regex, RegExFlag flags) {
         return matches(str, regex, flags);
     }
-    public static StreamPlus<RegExMatchResult> matches(CharSequence str, String regex, int flags) {
+    public static RegExMatchResultStream matches(CharSequence str, String regex, int flags) {
         if (str == null || (str.length() == 0))
-            return StreamPlus.empty();
+            return RegExMatchResultStream.empty;
         
         val pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
         val matcher = pattern.matcher(str);
@@ -365,7 +365,7 @@ public class StrFuncs {
                 };
             }
         };
-        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+        return RegExMatchResultStream.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     public static String template(String str, Func1<String, Object> replacer) {
         return template((CharSequence)str, replacer);

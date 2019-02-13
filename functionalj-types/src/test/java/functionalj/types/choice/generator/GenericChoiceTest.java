@@ -105,7 +105,7 @@ public class GenericChoiceTest {
                 "    public Result<MayBe> toResult() { return Result.valueOf(this); }\n" + 
                 "    \n" + 
                 "    public static final class Nill extends MayBe {\n" + 
-                "        public static final NillLens<Nill> theNill = new NillLens<>(LensSpec.of(Nill.class));\n" + 
+                "        public static final Nill.NillLens<Nill> theNill = new Nill.NillLens<>(LensSpec.of(Nill.class));\n" + 
                 "        private static final Nill instance = new Nill();\n" + 
                 "        private Nill() {}\n" + 
                 "        public static class NillLens<HOST> extends ObjectLensImpl<HOST, MayBe.Nill> {\n" + 
@@ -117,7 +117,7 @@ public class GenericChoiceTest {
                 "        }\n" + 
                 "    }\n" + 
                 "    public static final class Just extends MayBe {\n" + 
-                "        public static final JustLens<Just> theJust = new JustLens<>(LensSpec.of(Just.class));\n" + 
+                "        public static final Just.JustLens<Just> theJust = new Just.JustLens<>(LensSpec.of(Just.class));\n" + 
                 "        private T data;\n" + 
                 "        private Just(T data) {\n" + 
                 "            this.data = $utils.notNull(data);\n" + 

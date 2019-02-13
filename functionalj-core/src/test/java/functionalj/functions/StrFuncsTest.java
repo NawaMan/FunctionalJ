@@ -24,7 +24,7 @@
 package functionalj.functions;
 
 import static functionalj.functions.StrFuncs.matches;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -57,8 +57,14 @@ public class StrFuncsTest {
     
     @Test
     public void testMatches() {
-        assertEquals("A, AA, AAA, AAAA", matches("ABAABAAABAAAA", "A+").joinToString(", "));
-        assertEquals("#{Hello}, #{There}", matches("--#{Hello}--#{There}--", "#\\{[a-zA-Z0-9$_]+\\}").joinToString(", "));
+        assertEquals("A, AA, AAA, AAAA", 
+                matches("ABAABAAABAAAA", "A+")
+                .toTexts()
+                .joinToString(", "));
+        assertEquals("#{Hello}, #{There}", 
+                matches("--#{Hello}--#{There}--", "#\\{[a-zA-Z0-9$_]+\\}")
+                .toTexts()
+                .joinToString(", "));
     }
     
     @Test

@@ -136,7 +136,7 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class Next<D> extends Coroutine<D> {\n" + 
-                "    public static final NextLens<Next> theNext = new NextLens<>(LensSpec.of(Next.class));\n" + 
+                "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(LensSpec.of(Next.class));\n" + 
                 "    private Func1<D,Coroutine<D>> next;\n" + 
                 "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
                 "        this.next = $utils.notNull(next);\n" + 
@@ -164,7 +164,7 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class White extends Color {\n" + 
-                "    public static final WhiteLens<White> theWhite = new WhiteLens<>(LensSpec.of(White.class));\n" + 
+                "    public static final White.WhiteLens<White> theWhite = new White.WhiteLens<>(LensSpec.of(White.class));\n" + 
                 "    private static final White instance = new White();\n" + 
                 "    private White() {}\n" + 
                 "    public static class WhiteLens<HOST> extends ObjectLensImpl<HOST, Color.White> {\n" + 
@@ -189,7 +189,7 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class RGB extends Color {\n" + 
-                "    public static final RGBLens<RGB> theRGB = new RGBLens<>(LensSpec.of(RGB.class));\n" + 
+                "    public static final RGB.RGBLens<RGB> theRGB = new RGB.RGBLens<>(LensSpec.of(RGB.class));\n" + 
                 "    private int r;\n" + 
                 "    private int g;\n" + 
                 "    private int b;\n" + 
@@ -229,7 +229,7 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class Next<D> extends Coroutine<D> {\n" + 
-                "    public static final NextLens<Next> theNext = new NextLens<>(LensSpec.of(Next.class));\n" + 
+                "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(LensSpec.of(Next.class));\n" + 
                 "    private Func1<D,Coroutine<D>> next;\n" + 
                 "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
                 "        this.next = $utils.notNull(next);\n" + 
@@ -546,7 +546,7 @@ public class GeneratorTest {
         val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class Next<D> extends Coroutine<D> {\n" + 
-                "    public static final NextLens<Next> theNext = new NextLens<>(LensSpec.of(Next.class));\n" + 
+                "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(LensSpec.of(Next.class));\n" + 
                 "    public Func1<D,Coroutine<D>> next;\n" + 
                 "    private Next(Func1<D,Coroutine<D>> next) {\n" + 
                 "        this.next = $utils.notNull(next);\n" + 

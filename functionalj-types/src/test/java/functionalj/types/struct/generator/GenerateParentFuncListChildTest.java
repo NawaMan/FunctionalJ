@@ -94,12 +94,13 @@ public class GenerateParentFuncListChildTest {
                 "import java.util.function.Supplier;\n" + 
                 "import me.test.Child;\n" + 
                 "import me.test.Child.ChildLens;\n" + 
+                "import me.test.Parent.ParentLens;\n" + 
                 "\n" + 
                 "// me.test.null.Definitions.ParentDef\n" + 
                 "\n" + 
                 "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
-                "    public static final ParentLens<Parent> theParent = new ParentLens<>(LensSpec.of(Parent.class));\n" + 
+                "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n" + 
                 "    public final FuncList<String> names;\n" + 
                 "    public final FuncList<Child> children;\n" + 
                 "    \n" + 
@@ -188,7 +189,7 @@ public class GenerateParentFuncListChildTest {
                 "    public static class ParentLens<HOST> extends ObjectLensImpl<HOST, Parent> {\n" + 
                 "        \n" + 
                 "        public final FuncListLens<HOST, String, StringLens<HOST>> names = createSubFuncListLens(Parent::names, Parent::withNames, StringLens::of);\n" + 
-                "        public final FuncListLens<HOST, Child, ChildLens<HOST>> children = createSubFuncListLens(Parent::children, Parent::withChildren, ChildLens::new);\n" + 
+                "        public final FuncListLens<HOST, Child, Child.ChildLens<HOST>> children = createSubFuncListLens(Parent::children, Parent::withChildren, Child.ChildLens::new);\n" + 
                 "        \n" + 
                 "        public ParentLens(LensSpec<HOST, Parent> spec) {\n" + 
                 "            super(spec);\n" + 

@@ -42,6 +42,7 @@ import functionalj.function.Func6;
 import functionalj.function.FuncUnit1;
 import functionalj.list.FuncList;
 import functionalj.promise.DeferAction;
+import functionalj.promise.DeferActionBuilder;
 import functionalj.promise.Promise;
 import functionalj.promise.RaceResult;
 import functionalj.result.Result;
@@ -63,17 +64,16 @@ public class Tasks {
         }
     }
     
-    public static class TaskSupplier<DATA> implements Task<DATA> {
-        private final Supplier<DATA> supplier;
-        public TaskSupplier(Supplier<DATA> supplier) {
-            this.supplier = supplier;
+    public static class TaskSupplier<DATA> extends DeferActionBuilder<DATA> implements Task<DATA> {
+        public TaskSupplier(Func0<DATA> supplier) {
+            super(supplier);
         }
         @Override
         public DeferAction<DATA> createAction() {
-            return DeferAction.from(Func0.from(supplier));
+            return build();
         }
         public String toString() {
-            return "Task(()->" + supplier + ")";
+            return "Task(()->" + supplier() + ")";
         }
     }
     

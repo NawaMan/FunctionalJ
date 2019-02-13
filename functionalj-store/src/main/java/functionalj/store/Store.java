@@ -33,10 +33,12 @@ import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
 import functionalj.result.Result;
+import functionalj.stream.StreamPlus;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
 // TODO - Generate Store that immitate an immutable type and have the changes store inside.
+// TODO - Must mention that this is not thread safe.
 
 public class Store<DATA> {
     
@@ -110,6 +112,20 @@ public class Store<DATA> {
         }
         
         return newResult;
+    }
+    
+    @SafeVarargs
+    public final ChangeResult<DATA> change(Func1<DATA, DATA> changer, Func1<DATA, DATA> ... moreChangers) {
+        // TODO - Let try at some point to make it ok for any chaner to be null.
+        val result = new AtomicReference<>(this.change(changer));
+        StreamPlus
+        .of(moreChangers)
+        .forEach(c -> {
+            val prevResult = result.get();
+            val newResult  = prevResult.change(c);
+            result.set(newResult);
+        });
+        return result.get();
     }
     
     public Store<DATA> use(FuncUnit1<DATA> consumer) {

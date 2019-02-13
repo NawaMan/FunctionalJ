@@ -86,12 +86,13 @@ public class NonRequireFieldTest {
                 "import java.util.function.BiFunction;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Supplier;\n" + 
+                "import me.test.Data.DataLens;\n" + 
                 "\n" + 
                 "// me.test.null.Definitions.DataDef\n" + 
                 "\n" + 
                 "public class Data implements Definitions.DataDef,IStruct,Pipeable<Data> {\n" + 
                 "    \n" + 
-                "    public static final DataLens<Data> theData = new DataLens<>(LensSpec.of(Data.class));\n" + 
+                "    public static final Data.DataLens<Data> theData = new Data.DataLens<>(LensSpec.of(Data.class));\n" + 
                 "    public final int a;\n" + 
                 "    public final boolean b;\n" + 
                 "    public final String c;\n" + 

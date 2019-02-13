@@ -232,6 +232,171 @@ public abstract class FuncMap<KEY, VALUE>
                 new ImmutableTuple2<KEY, VALUE>(key10, value10));
     }
     
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0) {
+        return ofEntries(new ImmutableTuple2<KEY, VALUE>(key0, value0));
+    }
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0,
+            KEY key1, VALUE value1) {
+        return (ImmutableMap<KEY, VALUE>) ofEntries(
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1));
+    }
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0,
+            KEY key1, VALUE value1,
+            KEY key2, VALUE value2) {
+        return (ImmutableMap<KEY, VALUE>) ofEntries(
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2));
+    }
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0,
+            KEY key1, VALUE value1,
+            KEY key2, VALUE value2,
+            KEY key3, VALUE value3) {
+        return (ImmutableMap<KEY, VALUE>) ofEntries(
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3));
+    }
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0,
+            KEY key1, VALUE value1,
+            KEY key2, VALUE value2,
+            KEY key3, VALUE value3,
+            KEY key4, VALUE value4) {
+        return (ImmutableMap<KEY, VALUE>) ofEntries(
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3),
+                new ImmutableTuple2<KEY, VALUE>(key4, value4));
+    }
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0,
+            KEY key1, VALUE value1,
+            KEY key2, VALUE value2,
+            KEY key3, VALUE value3,
+            KEY key4, VALUE value4,
+            KEY key5, VALUE value5) {
+        return (ImmutableMap<KEY, VALUE>) ofEntries(
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3),
+                new ImmutableTuple2<KEY, VALUE>(key4, value4),
+                new ImmutableTuple2<KEY, VALUE>(key5, value5));
+    }
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0,
+            KEY key1, VALUE value1,
+            KEY key2, VALUE value2,
+            KEY key3, VALUE value3,
+            KEY key4, VALUE value4,
+            KEY key5, VALUE value5,
+            KEY key6, VALUE value6) {
+        return (ImmutableMap<KEY, VALUE>) ofEntries(
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3),
+                new ImmutableTuple2<KEY, VALUE>(key4, value4),
+                new ImmutableTuple2<KEY, VALUE>(key5, value5),
+                new ImmutableTuple2<KEY, VALUE>(key6, value6));
+    }
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0,
+            KEY key1, VALUE value1,
+            KEY key2, VALUE value2,
+            KEY key3, VALUE value3,
+            KEY key4, VALUE value4,
+            KEY key5, VALUE value5,
+            KEY key6, VALUE value6,
+            KEY key7, VALUE value7) {
+        return (ImmutableMap<KEY, VALUE>) ofEntries(
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3),
+                new ImmutableTuple2<KEY, VALUE>(key4, value4),
+                new ImmutableTuple2<KEY, VALUE>(key5, value5),
+                new ImmutableTuple2<KEY, VALUE>(key6, value6),
+                new ImmutableTuple2<KEY, VALUE>(key7, value7));
+    }
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0,
+            KEY key1, VALUE value1,
+            KEY key2, VALUE value2,
+            KEY key3, VALUE value3,
+            KEY key4, VALUE value4,
+            KEY key5, VALUE value5,
+            KEY key6, VALUE value6,
+            KEY key7, VALUE value7,
+            KEY key8, VALUE value8) {
+        return (ImmutableMap<KEY, VALUE>) ofEntries(
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3),
+                new ImmutableTuple2<KEY, VALUE>(key4, value4),
+                new ImmutableTuple2<KEY, VALUE>(key5, value5),
+                new ImmutableTuple2<KEY, VALUE>(key6, value6),
+                new ImmutableTuple2<KEY, VALUE>(key7, value7),
+                new ImmutableTuple2<KEY, VALUE>(key8, value8));
+    }
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0,
+            KEY key1, VALUE value1,
+            KEY key2, VALUE value2,
+            KEY key3, VALUE value3,
+            KEY key4, VALUE value4,
+            KEY key5, VALUE value5,
+            KEY key6, VALUE value6,
+            KEY key7, VALUE value7,
+            KEY key8, VALUE value8,
+            KEY key9, VALUE value9) {
+        return (ImmutableMap<KEY, VALUE>) ofEntries(
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3),
+                new ImmutableTuple2<KEY, VALUE>(key4, value4),
+                new ImmutableTuple2<KEY, VALUE>(key5, value5),
+                new ImmutableTuple2<KEY, VALUE>(key6, value6),
+                new ImmutableTuple2<KEY, VALUE>(key7, value7),
+                new ImmutableTuple2<KEY, VALUE>(key8, value8),
+                new ImmutableTuple2<KEY, VALUE>(key9, value9));
+    }
+    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
+            KEY key0, VALUE value0,
+            KEY key1, VALUE value1,
+            KEY key2, VALUE value2,
+            KEY key3, VALUE value3,
+            KEY key4, VALUE value4,
+            KEY key5, VALUE value5,
+            KEY key6, VALUE value6,
+            KEY key7, VALUE value7,
+            KEY key8, VALUE value8,
+            KEY key9, VALUE value9,
+            KEY key10, VALUE value10) {
+        return (ImmutableMap<KEY, VALUE>) ofEntries(
+                new ImmutableTuple2<KEY, VALUE>(key0, value0),
+                new ImmutableTuple2<KEY, VALUE>(key1, value1),
+                new ImmutableTuple2<KEY, VALUE>(key2, value2),
+                new ImmutableTuple2<KEY, VALUE>(key3, value3),
+                new ImmutableTuple2<KEY, VALUE>(key4, value4),
+                new ImmutableTuple2<KEY, VALUE>(key5, value5),
+                new ImmutableTuple2<KEY, VALUE>(key6, value6),
+                new ImmutableTuple2<KEY, VALUE>(key7, value7),
+                new ImmutableTuple2<KEY, VALUE>(key8, value8),
+                new ImmutableTuple2<KEY, VALUE>(key9, value9),
+                new ImmutableTuple2<KEY, VALUE>(key10, value10));
+    }
+    
     <K, V> FuncMapStream<K, V> derivedWith(Boolean isKeyComparable, FuncList<IntTuple2<ImmutableTuple2<K, V>>> entries) {
         val lazyMap = new FuncMapStream<K, V>(isKeyComparable, entries);
         return isLazy()
