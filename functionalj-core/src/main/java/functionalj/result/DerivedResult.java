@@ -23,34 +23,36 @@
 // ============================================================================
 package functionalj.result;
 
+import static functionalj.function.Func.f;
+
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 
 public class DerivedResult<DATA> extends Result<DATA>{
 
-    private final Func0<Result<DATA>> valueSupplier;
+    private final Func0<Object> dataSupplier;
     
     public DerivedResult(Func0<DATA> dataSupplier) {
-        this.valueSupplier = ()->{
+        this.dataSupplier = f(()->{
             try {
-                return dataSupplier.applySafely();
+                return dataSupplier.applySafely().__valueData();
             } catch (Exception e) {
-                return Result.ofException(e);
+                return new ExceptionHolder(e);
             }
-        };
+        }).memoize();
     }
     public <ORG> DerivedResult(Result<ORG> orgValue, Func1<Result<ORG>, Result<DATA>> mapper) {
-        this.valueSupplier = ()->{
+        this.dataSupplier = f(()->{
             try {
-                return mapper.applyUnsafe(orgValue);
+                return mapper.applyUnsafe(orgValue).__valueData();
             } catch (Exception e) {
-                return Result.ofException(e);
+                return new ExceptionHolder(e);
             }
-        };
+        }).memoize();
     }
     
     @Override
     Object __valueData() {
-        return valueSupplier.get().__valueData();
+        return dataSupplier.get();
     }
 }
