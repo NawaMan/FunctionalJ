@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.result;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -248,6 +250,19 @@ public interface ResultStatusAddOn<DATA> {
     
     public default Result<DATA> ifException(Consumer<? super Exception> consumer) {
         useData(helper.processIfException(ResultStatus::isException, consumer));
+        return asResult();
+    }
+    
+    public default Result<DATA> ifExceptionPrint() {
+        useData(helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace()));
+        return asResult();
+    }
+    public default Result<DATA> ifExceptionPrint(PrintStream printStream) {
+        useData(helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace(printStream)));
+        return asResult();
+    }
+    public default Result<DATA> ifExceptionPrint(PrintWriter printWriter) {
+        useData(helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace(printWriter)));
         return asResult();
     }
     
