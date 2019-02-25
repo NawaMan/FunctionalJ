@@ -68,9 +68,9 @@ public class ValueTest {
         assertStrings("Result:{ Value: 4 }", length);
         assertStrings("[--- After map but logged first ---, Test]",    logs);
         
-        // Second use will also have 'Test' added to the log.
+        // Second use does not add 'Test' to the log.
         assertStrings("Result:{ Value: 4 }", length);
-        assertStrings("[--- After map but logged first ---, Test, Test]",    logs);
+        assertStrings("[--- After map but logged first ---, Test]",    logs);
     }
     
     @Test
