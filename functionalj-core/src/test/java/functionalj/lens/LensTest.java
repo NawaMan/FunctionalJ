@@ -101,7 +101,7 @@ public class LensTest {
         assertThis(true,  checkForCompanyWithBlueCar.applyTo(new Company(asList(driver1))));
         assertThis(true,  checkForCompanyWithBlueCar.applyTo(new Company(asList(driver1, driver1.withCar(new Car("red"))))));
         
-        val findCarColor = theDriver.car.toNullable().map(theCar.color);
+        val findCarColor = theDriver.car.toNullable().thenMap(theCar.color);
         assertThis("Nullable.EMPTY",    findCarColor.applyTo(new Driver(null)));
         assertThis("Nullable.of(blue)", findCarColor.applyTo(new Driver(new Car("blue"))));
         

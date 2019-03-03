@@ -57,7 +57,7 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
     }
     
     public default <TARGET> 
-        ResultAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> map(Function<TYPE, TARGET> mapper) {
+        ResultAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenMap(Function<TYPE, TARGET> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Result<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Result<TARGET> applyUnsafe(HOST host) throws Exception {
@@ -79,7 +79,7 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
     }
     
     public default <TARGET> 
-        ResultAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> flatMap(Function<TYPE, Result<TARGET>> mapper) {
+        ResultAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenFlatMap(Function<TYPE, Result<TARGET>> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Result<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Result<TARGET> applyUnsafe(HOST host) throws Exception {

@@ -37,7 +37,6 @@ import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.task.Task;
 import functionalj.tuple.Tuple;
-import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import lombok.val;
 
