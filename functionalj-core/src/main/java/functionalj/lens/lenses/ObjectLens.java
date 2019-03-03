@@ -52,8 +52,5 @@ public interface ObjectLens<HOST, DATA> extends AnyLens<HOST, DATA>, ObjectAcces
     public default DATA applyUnsafe(HOST host) throws Exception{
         return lensSpec().getRead().apply(host);
     }
-    public default Func1<HOST, HOST> changeTo(DATA data) {
-        return host -> ObjectLensHelper.performChange(this, data, host);
-    }
     
 }
