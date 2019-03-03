@@ -94,6 +94,13 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         };
     }
     
+    public default FuncUnit1<INPUT> ignoreNullInput() {
+        return input -> {
+            if (input != null)
+                acceptUnsafe(input);
+        };
+    }
+    
     public default FuncUnit1<INPUT> carelessly() {
         return this::acceptCarelessly;
     }

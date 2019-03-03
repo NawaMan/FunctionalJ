@@ -94,6 +94,15 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
         };
     }
     
+    public default FuncUnit3<INPUT1, INPUT2, INPUT3> ignoreNullInput() {
+        return (input1, input2, input3) -> {
+            if ((input1 != null)
+             && (input2 != null)
+             && (input3 != null))
+                acceptUnsafe(input1, input2, input3);
+        };
+    }
+    
     public default FuncUnit1<Tuple3<INPUT1, INPUT2, INPUT3>> wholly() {
         return tuple -> {
             val _1 = tuple._1();
