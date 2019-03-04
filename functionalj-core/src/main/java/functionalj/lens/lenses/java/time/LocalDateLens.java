@@ -25,5 +25,4 @@ public class LocalDateLens<HOST>
     public LocalDateLens(LensSpec<HOST, LocalDate> spec) {
         super(spec);
     }
-    
 }

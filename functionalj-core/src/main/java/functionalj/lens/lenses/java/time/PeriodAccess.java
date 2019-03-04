@@ -1,11 +1,18 @@
 package functionalj.lens.lenses.java.time;
 
 import java.time.Period;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
+import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
+import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.LongAccess;
+import lombok.val;
 
+@FunctionalInterface
 public interface PeriodAccess<HOST>
                     extends
                         AnyAccess<HOST, Period>,
@@ -17,124 +24,144 @@ public interface PeriodAccess<HOST>
     }
     
     // TODO
-//    
-//    @Override
-//    public long get(TemporalUnit unit) {
-//        if (unit == ChronoUnit.YEARS) {
-//            return getYears();
-//        } else if (unit == ChronoUnit.MONTHS) {
-//            return getMonths();
-//        } else if (unit == ChronoUnit.DAYS) {
-//            return getDays();
-//        } else {
-//            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
-//        }
-//    }
-//    @Override
+    public default LongAccess<HOST> get(TemporalUnit unit) {
+        return host -> {
+            val value = apply(host);
+            return value.get(unit);
+        };
+    }
 //    public List<TemporalUnit> getUnits() {
-//        return SUPPORTED_UNITS;
+//        return host -> {
+//            val value = apply(host);
+//            return value.getUnits();
+//        };
 //    }
-//    @Override
-//    public IsoChronology getChronology() {
-//        return IsoChronology.INSTANCE;
-//    }
-//    public boolean isZero() {
-//        return (this == ZERO);
-//    }
-//    public boolean isNegative() {
-//        return years < 0 || months < 0 || days < 0;
-//    }
-//    public int getYears() {
-//        return years;
-//    }
-//    public int getMonths() {
-//        return months;
-//    }
-//    public int getDays() {
-//        return days;
-//    }
-//    public Period withYears(int years) {
-//        if (years == this.years) {
-//            return this;
-//        }
-//        return create(years, months, days);
-//    }
-//    public Period withMonths(int months) {
-//        if (months == this.months) {
-//            return this;
-//        }
-//        return create(years, months, days);
-//    }
-//    public Period withDays(int days) {
-//        if (days == this.days) {
-//            return this;
-//        }
-//        return create(years, months, days);
-//    }
-//    public Period plus(TemporalAmount amountToAdd) {
-//        Period isoAmount = Period.from(amountToAdd);
-//        return create(
-//                Math.addExact(years, isoAmount.years),
-//                Math.addExact(months, isoAmount.months),
-//                Math.addExact(days, isoAmount.days));
-//    }
-//    public Period plusYears(long yearsToAdd) {
-//        if (yearsToAdd == 0) {
-//            return this;
-//        }
-//        return create(Math.toIntExact(Math.addExact(years, yearsToAdd)), months, days);
-//    }
-//    public Period plusMonths(long monthsToAdd) {
-//        if (monthsToAdd == 0) {
-//            return this;
-//        }
-//        return create(years, Math.toIntExact(Math.addExact(months, monthsToAdd)), days);
-//    }
-//    public Period plusDays(long daysToAdd) {
-//        if (daysToAdd == 0) {
-//            return this;
-//        }
-//        return create(years, months, Math.toIntExact(Math.addExact(days, daysToAdd)));
-//    }
-//    public Period minus(TemporalAmount amountToSubtract) {
-//        Period isoAmount = Period.from(amountToSubtract);
-//        return create(
-//                Math.subtractExact(years, isoAmount.years),
-//                Math.subtractExact(months, isoAmount.months),
-//                Math.subtractExact(days, isoAmount.days));
-//    }
-//    public Period minusYears(long yearsToSubtract) {
-//        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
-//    }
-//    public Period minusMonths(long monthsToSubtract) {
-//        return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
-//    }
-//    public Period minusDays(long daysToSubtract) {
-//        return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
-//    }
-//    public Period multipliedBy(int scalar) {
-//        if (this == ZERO || scalar == 1) {
-//            return this;
-//        }
-//        return create(
-//                Math.multiplyExact(years, scalar),
-//                Math.multiplyExact(months, scalar),
-//                Math.multiplyExact(days, scalar));
-//    }
-//    public Period negated() {
-//        return multipliedBy(-1);
-//    }
-//    public Period normalized() {
-//        long totalMonths = toTotalMonths();
-//        long splitYears = totalMonths / 12;
-//        int splitMonths = (int) (totalMonths % 12);  // no overflow
-//        if (splitYears == years && splitMonths == months) {
-//            return this;
-//        }
-//        return create(Math.toIntExact(splitYears), splitMonths, days);
-//    }
-//    public long toTotalMonths() {
-//        return years * 12L + months;  // no overflow
-//    }
+    @SuppressWarnings("unchecked")
+    public default IsoChronologyAccess<HOST> getChronology() {
+        return host -> {
+            val value = apply(host);
+            return value.getChronology();
+        };
+    }
+    public default BooleanAccess<HOST> isZero() {
+        return host -> {
+            val value = apply(host);
+            return value.isZero();
+        };
+    }
+    public default BooleanAccess<HOST> isNegative() {
+        return host -> {
+            val value = apply(host);
+            return value.isNegative();
+        };
+    }
+    public default IntegerAccess<HOST> getYears() {
+        return host -> {
+            val value = apply(host);
+            return value.getYears();
+        };
+    }
+    public default IntegerAccess<HOST> getMonths() {
+        return host -> {
+            val value = apply(host);
+            return value.getMonths();
+        };
+    }
+    public default IntegerAccess<HOST> getDays() {
+        return host -> {
+            val value = apply(host);
+            return value.getDays();
+        };
+    }
+    public default PeriodAccess<HOST> withYears(int years) {
+        return host -> {
+            val value = apply(host);
+            return value.withYears(years);
+        };
+    }
+    public default PeriodAccess<HOST> withMonths(int months) {
+        return host -> {
+            val value = apply(host);
+            return value.withMonths(months);
+        };
+    }
+    public default PeriodAccess<HOST> withDays(int days) {
+        return host -> {
+            val value = apply(host);
+            return value.withDays(days);
+        };
+    }
+    public default PeriodAccess<HOST> plus(TemporalAmount amountToAdd) {
+        return host -> {
+            val value = apply(host);
+            return value.plus(amountToAdd);
+        };
+    }
+    public default PeriodAccess<HOST> plusYears(long yearsToAdd) {
+        return host -> {
+            val value = apply(host);
+            return value.plusYears(yearsToAdd);
+        };
+    }
+    public default PeriodAccess<HOST> plusMonths(long monthsToAdd) {
+        return host -> {
+            val value = apply(host);
+            return value.plusMonths(monthsToAdd);
+        };
+    }
+    public default PeriodAccess<HOST> plusDays(long daysToAdd) {
+        return host -> {
+            val value = apply(host);
+            return value.plusDays(daysToAdd);
+        };
+    }
+    public default PeriodAccess<HOST> minus(TemporalAmount amountToSubtract) {
+        return host -> {
+            val value = apply(host);
+            return value.minus(amountToSubtract);
+        };
+    }
+    public default PeriodAccess<HOST> minusYears(long yearsToSubtract) {
+        return host -> {
+            val value = apply(host);
+            return value.minusYears(yearsToSubtract);
+        };
+    }
+    public default PeriodAccess<HOST> minusMonths(long monthsToSubtract) {
+        return host -> {
+            val value = apply(host);
+            return value.minusMonths(monthsToSubtract);
+        };
+    }
+    public default PeriodAccess<HOST> minusDays(long daysToSubtract) {
+        return host -> {
+            val value = apply(host);
+            return value.minusDays(daysToSubtract);
+        };
+    }
+    public default PeriodAccess<HOST> multipliedBy(int scalar) {
+        return host -> {
+            val value = apply(host);
+            return value.multipliedBy(scalar);
+        };
+    }
+    public default PeriodAccess<HOST> negated() {
+        return host -> {
+            val value = apply(host);
+            return value.negated();
+        };
+    }
+    public default PeriodAccess<HOST> normalized() {
+        return host -> {
+            val value = apply(host);
+            return value.normalized();
+        };
+    }
+    public default LongAccess<HOST> toTotalMonths() {
+        return host -> {
+            val value = apply(host);
+            return value.toTotalMonths();
+        };
+    }
     
 }

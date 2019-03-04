@@ -137,7 +137,6 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
             return value.compareTo(other);
         };
     }
-    // Duplicate the lt,lte,gt,gte as I am fail to make this extends ComparableAccess
     public default BooleanAccess<HOST> thatGreaterThan(ChronoLocalDate anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) > 0);
     }

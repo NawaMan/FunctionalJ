@@ -23,6 +23,9 @@ public class TimeLensTest {
         
         val localDateTime1 = theLocalDate.atTime(6, 0).apply(localDate3);
         assertEquals("2019-05-05T06:00", localDateTime1.toString());
+        
+        val period1 = theLocalDate.periodFrom(localDate1).apply(localDate3);
+        assertEquals("P2M2D", period1.toString());
     }
 
 }

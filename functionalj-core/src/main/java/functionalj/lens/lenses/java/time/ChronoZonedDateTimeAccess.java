@@ -170,7 +170,6 @@ public interface ChronoZonedDateTimeAccess<
             return value.compareTo(other);
         };
     }
-    // Duplicate the lt,lte,gt,gte as I am fail to make this extends ComparableAccess
     public default BooleanAccess<HOST> thatGreaterThan(CHRONO_ZONED_DATE_TIME anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) > 0);
     }

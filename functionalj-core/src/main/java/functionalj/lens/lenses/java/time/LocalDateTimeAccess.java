@@ -309,7 +309,6 @@ public interface LocalDateTimeAccess<HOST>
             return value.compareTo(other);
         };
     }
-    // Duplicate the lt,lte,gt,gte as I am fail to make this extends ComparableAccess
     public default BooleanAccess<HOST> thatGreaterThan(LocalDateTime anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) > 0);
     }

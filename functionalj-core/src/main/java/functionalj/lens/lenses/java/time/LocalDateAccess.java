@@ -3,6 +3,7 @@ package functionalj.lens.lenses.java.time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
 import java.time.temporal.TemporalAdjuster;
@@ -28,6 +29,13 @@ public interface LocalDateAccess<HOST>
     
     public default LocalDateAccess<HOST> newAccess(Function<HOST, LocalDate> accessToValue) {
         return host -> accessToValue.apply(host);
+    }
+    
+    public default PeriodAccess<HOST> periodFrom(LocalDate startDateInclusive) {
+        return host -> {
+            val value = apply(host);
+            return Period.between(startDateInclusive, value);
+        };
     }
     
     public default IsoChronologyAccess<HOST> getIsoChronology() {

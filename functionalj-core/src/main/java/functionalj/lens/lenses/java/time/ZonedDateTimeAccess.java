@@ -1,4 +1,4 @@
-package functionalj.lens.lenses.time;
+package functionalj.lens.lenses.java.time;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
