@@ -5,6 +5,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
+import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
@@ -13,9 +14,12 @@ import lombok.val;
 
 @FunctionalInterface
 public interface TemporalAccess<HOST, TEMPORAL extends Temporal>
-                    extends
-                        AnyAccess             <HOST, TEMPORAL>,
-                        TemporalAccessorAccess<HOST, TEMPORAL> {
+                    extends AnyAccess             <HOST, TEMPORAL>
+                    ,       TemporalAccessorAccess<HOST, TEMPORAL> {
+    
+    public static <H, T extends Temporal> TemporalAccess<H, T> of(Function<H, T> func) {
+        return func::apply;
+    }
     
     public default BooleanAccess<HOST> thatIsSupported(TemporalUnit unit) {
         return host -> {
@@ -23,46 +27,40 @@ public interface TemporalAccess<HOST, TEMPORAL extends Temporal>
             return value.isSupported(unit);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default TemporalAccess<HOST, TEMPORAL> with(TemporalAdjuster adjuster) {
+    public default TemporalAccess<HOST, ? extends Temporal> with(TemporalAdjuster adjuster) {
         return host -> {
             val value = apply(host);
-            return (TEMPORAL)value.with(adjuster);
+            return value.with(adjuster);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default TemporalAccess<HOST, TEMPORAL> with(TemporalField field, long newValue) {
+    public default TemporalAccess<HOST, ? extends Temporal> with(TemporalField field, long newValue) {
         return host -> {
             val value = apply(host);
-            return (TEMPORAL)value.with(field, newValue);
+            return value.with(field, newValue);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default TemporalAccess<HOST, TEMPORAL> plus(TemporalAmount amountToAdd) {
+    public default TemporalAccess<HOST, ? extends Temporal> plus(TemporalAmount amountToAdd) {
         return host -> {
             val value = apply(host);
-            return (TEMPORAL)value.plus(amountToAdd);
+            return value.plus(amountToAdd);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default TemporalAccess<HOST, TEMPORAL> plus(long amountToAdd, TemporalUnit unit) {
+    public default TemporalAccess<HOST, ? extends Temporal> plus(long amountToAdd, TemporalUnit unit) {
         return host -> {
             val value = apply(host);
-            return (TEMPORAL)value.plus(amountToAdd, unit);
+            return value.plus(amountToAdd, unit);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default TemporalAccess<HOST, TEMPORAL> minus(TemporalAmount amountToSubtract) {
+    public default TemporalAccess<HOST, ? extends Temporal> minus(TemporalAmount amountToSubtract) {
         return host -> {
             val value = apply(host);
-            return (TEMPORAL)value.minus(amountToSubtract);
+            return value.minus(amountToSubtract);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default TemporalAccess<HOST, TEMPORAL> minus(long amountToSubtract, TemporalUnit unit) {
+    public default TemporalAccess<HOST, ? extends Temporal> minus(long amountToSubtract, TemporalUnit unit) {
         return host -> {
             val value = apply(host);
-            return (TEMPORAL)value.minus(amountToSubtract, unit);
+            return value.minus(amountToSubtract, unit);
         };
     }
     

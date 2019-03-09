@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
-import functionalj.function.Func1;
 import functionalj.lens.core.LensSpec;
 
 

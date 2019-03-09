@@ -17,10 +17,13 @@ import lombok.val;
 
 @FunctionalInterface
 public interface InstantAccess<HOST>
-                    extends
-                        TemporalAccess<HOST, Instant>
-                      , TemporalAdjusterAccess<HOST, Instant>
-                      , ConcreteAccess<HOST, Instant, InstantAccess<HOST>>{
+                    extends TemporalAccess        <HOST, Instant>
+                    ,       TemporalAdjusterAccess<HOST, Instant>
+                    ,       ConcreteAccess        <HOST, Instant, InstantAccess<HOST>>{
+    
+    public static <H> InstantAccess<H> of(Function<H, Instant> func) {
+        return func::apply;
+    }
     
     public default InstantAccess<HOST> newAccess(Function<HOST, Instant> accessToValue) {
         return accessToValue::apply;
@@ -90,14 +93,12 @@ public interface InstantAccess<HOST>
             return value.plusNanos(nanosToAdd);
         };
     }
-    @Override
     public default InstantAccess<HOST> minus(TemporalAmount amountToSubtract) {
         return host -> {
             val value = apply(host);
             return value.minus(amountToSubtract);
         };
     }
-    @Override
     public default InstantAccess<HOST> minus(long amountToSubtract, TemporalUnit unit) {
         return host -> {
             val value = apply(host);

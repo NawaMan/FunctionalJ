@@ -16,11 +16,14 @@ import lombok.val;
 
 @FunctionalInterface
 public interface MonthAccess<HOST>
-                    extends
-                        AnyAccess             <HOST, Month>,
-                        TemporalAccessorAccess<HOST, Month>,
-                        TemporalAdjusterAccess<HOST, Month>,
-                        ConcreteAccess        <HOST, Month, MonthAccess<HOST>> {
+                    extends AnyAccess             <HOST, Month>
+                    ,       TemporalAccessorAccess<HOST, Month>
+                    ,       TemporalAdjusterAccess<HOST, Month>
+                    ,       ConcreteAccess        <HOST, Month, MonthAccess<HOST>> {
+    
+    public static <H> MonthAccess<H> of(Function<H, Month> func) {
+        return func::apply;
+    }
     
     public default MonthAccess<HOST> newAccess(Function<HOST, Month> accessToValue) {
         return host -> accessToValue.apply(host);

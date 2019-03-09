@@ -5,11 +5,13 @@ import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.chrono.Chronology;
+import java.time.chrono.Era;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
+import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
@@ -20,12 +22,14 @@ import lombok.val;
 
 @FunctionalInterface
 public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLocalDate>
-                    extends
-                        AnyAccess             <HOST, CHRONO_LOCAL_DATE>,
-                        TemporalAccess        <HOST, CHRONO_LOCAL_DATE>,
-                        TemporalAdjusterAccess<HOST, CHRONO_LOCAL_DATE> {
-                            
-                            
+                    extends AnyAccess             <HOST, CHRONO_LOCAL_DATE>
+                    ,       TemporalAccess        <HOST, CHRONO_LOCAL_DATE>
+                    ,       TemporalAdjusterAccess<HOST, CHRONO_LOCAL_DATE> {
+    
+    public static <H, C extends ChronoLocalDate> ChronoLocalDateAccess<H, C> of(Function<H, C> func) {
+        return func::apply;
+    }
+    
     @SuppressWarnings("unchecked")
     public default <CHRONOLOGY extends Chronology> ChronologyAccess<HOST, CHRONOLOGY> getChronology() {
         return host -> {
@@ -34,7 +38,7 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
         };
     }
     
-    public default EraAccess<HOST> getEra() {
+    public default EraAccess<HOST, Era> getEra() {
         return host -> {
             val value = apply(host);
             return value.getEra();

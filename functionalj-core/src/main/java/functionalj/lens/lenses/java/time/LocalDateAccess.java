@@ -20,12 +20,15 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface LocalDateAccess<HOST>
-                    extends
-                        AnyAccess             <HOST, LocalDate>,
-                        TemporalAccess        <HOST, LocalDate>,
-                        TemporalAdjusterAccess<HOST, LocalDate>,
-                        ChronoLocalDateAccess <HOST, LocalDate>,
-                        ConcreteAccess        <HOST, LocalDate, LocalDateAccess<HOST>> {
+                    extends AnyAccess             <HOST, LocalDate>
+                    ,       TemporalAccess        <HOST, LocalDate>
+                    ,       TemporalAdjusterAccess<HOST, LocalDate>
+                    ,       ChronoLocalDateAccess <HOST, LocalDate>
+                    ,       ConcreteAccess        <HOST, LocalDate, LocalDateAccess<HOST>> {
+    
+    public static <H> LocalDateAccess<H> of(Function<H, LocalDate> func) {
+        return func::apply;
+    }
     
     public default LocalDateAccess<HOST> newAccess(Function<HOST, LocalDate> accessToValue) {
         return host -> accessToValue.apply(host);

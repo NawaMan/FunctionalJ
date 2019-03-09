@@ -10,10 +10,8 @@ import functionalj.lens.lenses.IntegerLens;
 import functionalj.lens.lenses.ObjectLensImpl;
 
 public class LocalDateTimeLens<HOST>
-                    extends
-                        ObjectLensImpl<HOST, LocalDateTime>
-                    implements
-                        LocalDateTimeAccess<HOST> {
+                    extends    ObjectLensImpl<HOST, LocalDateTime>
+                    implements LocalDateTimeAccess<HOST> {
     
     public static final LocalDateTimeLens<LocalDateTime> theLocalDateTime = new LocalDateTimeLens<LocalDateTime>(LensSpec.of(LocalDateTime.class));
     

@@ -12,6 +12,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
+import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
@@ -22,12 +23,16 @@ import lombok.val;
 
 @FunctionalInterface
 public interface ChronoZonedDateTimeAccess<
-                    HOST, 
-                    CHRONO_LOCAL_DATE      extends ChronoLocalDate, 
-                    CHRONO_ZONED_DATE_TIME extends ChronoZonedDateTime<CHRONO_LOCAL_DATE>>
-                        extends
-                            AnyAccess             <HOST, CHRONO_ZONED_DATE_TIME>,
-                            TemporalAccess        <HOST, CHRONO_ZONED_DATE_TIME> {
+                            HOST, 
+                            CHRONO_LOCAL_DATE      extends ChronoLocalDate, 
+                            CHRONO_ZONED_DATE_TIME extends ChronoZonedDateTime<CHRONO_LOCAL_DATE>>
+                        extends AnyAccess     <HOST, CHRONO_ZONED_DATE_TIME>
+                        ,       TemporalAccess<HOST, CHRONO_ZONED_DATE_TIME> {
+    
+    public static <H, D extends ChronoLocalDate, DT extends ChronoLocalDateTime<D>>
+                ChronoLocalDateTimeAccess<H, D, DT> of(Function<H, DT> func) {
+        return func::apply;
+    }
     
     public default LocalDateAccess<HOST> toLocalDate() {
         return host -> {
@@ -162,40 +167,38 @@ public interface ChronoZonedDateTimeAccess<
         };
     }
     
-    // NOTE: Ok has to admit, with no time to test, these generic is likely wrong :-(
-    
-    public default IntegerAccess<HOST> compareTo(CHRONO_ZONED_DATE_TIME other) {
+    public default IntegerAccess<HOST> compareTo(ChronoZonedDateTime<?> other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);
         };
     }
-    public default BooleanAccess<HOST> thatGreaterThan(CHRONO_ZONED_DATE_TIME anotherValue) {
+    public default BooleanAccess<HOST> thatGreaterThan(ChronoZonedDateTime<?> anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) > 0);
     }
-    public default BooleanAccess<HOST> thatLessThan(CHRONO_ZONED_DATE_TIME anotherValue) {
+    public default BooleanAccess<HOST> thatLessThan(ChronoZonedDateTime<?> anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) < 0);
     }
-    public default BooleanAccess<HOST> thatGreaterThanOrEqualsTo(CHRONO_ZONED_DATE_TIME anotherValue) {
+    public default BooleanAccess<HOST> thatGreaterThanOrEqualsTo(ChronoZonedDateTime<?> anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) >= 0);
     }
-    public default BooleanAccess<HOST> thatLessThanOrEqualsTo(CHRONO_ZONED_DATE_TIME anotherValue) {
+    public default BooleanAccess<HOST> thatLessThanOrEqualsTo(ChronoZonedDateTime<?> anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(CHRONO_ZONED_DATE_TIME other) {
+    public default BooleanAccess<HOST> thatIsAfter(ChronoZonedDateTime<?> other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(CHRONO_ZONED_DATE_TIME other) {
+    public default BooleanAccess<HOST> thatIsBefore(ChronoZonedDateTime<?> other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsEqual(CHRONO_ZONED_DATE_TIME other) {
+    public default BooleanAccess<HOST> thatIsEqual(ChronoZonedDateTime<?> other) {
         return host -> {
             val value = apply(host);
             return value.isEqual(other);

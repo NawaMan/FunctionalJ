@@ -17,11 +17,14 @@ import functionalj.lens.lenses.LongAccess;
 import lombok.val;
 
 public interface LocalTimeAccess<HOST>
-                    extends
-                        AnyAccess             <HOST, LocalTime>,
-                        TemporalAccess        <HOST, LocalTime>,
-                        TemporalAdjusterAccess<HOST, LocalTime>,
-                        ConcreteAccess        <HOST, LocalTime, LocalTimeAccess<HOST>>  {
+                    extends AnyAccess             <HOST, LocalTime>
+                    ,       TemporalAccess        <HOST, LocalTime>
+                    ,       TemporalAdjusterAccess<HOST, LocalTime>
+                    ,       ConcreteAccess        <HOST, LocalTime, LocalTimeAccess<HOST>> {
+    
+    public static <H> LocalTimeAccess<H> of(Function<H, LocalTime> func) {
+        return func::apply;
+    }
     
     public default LocalTimeAccess<HOST> newAccess(Function<HOST, LocalTime> accessToValue) {
         return host -> accessToValue.apply(host);

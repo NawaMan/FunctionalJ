@@ -10,10 +10,8 @@ import functionalj.lens.lenses.ObjectLensImpl;
 
 
 public class ZonedDateTimeLens<HOST>
-                extends
-                    ObjectLensImpl<HOST, ZonedDateTime>
-                implements
-                    ZonedDateTimeAccess<HOST> {
+                extends    ObjectLensImpl<HOST, ZonedDateTime>
+                implements ZonedDateTimeAccess<HOST> {
                 
     public static final ZonedDateTimeLens<ZonedDateTime> theZonedDateTime
                     = new ZonedDateTimeLens<ZonedDateTime>(LensSpec.of(ZonedDateTime.class));

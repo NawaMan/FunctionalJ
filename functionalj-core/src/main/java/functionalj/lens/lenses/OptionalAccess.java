@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.lens.core.AccessParameterized;
+import functionalj.lens.core.AccessUtils;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -36,6 +37,20 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
             extends
                 ObjectAccess<HOST, Optional<TYPE>>,
                 AccessParameterized<HOST, Optional<TYPE>, TYPE, SUBACCESS> {
+    
+    public static <H, T, A extends AnyAccess<H, T>> OptionalAccess<H, T, A> of(Function<H, Optional<T>> read, Function<Function<H, T>, A> createAccess) {
+        val accessParameterized = new AccessParameterized<H, Optional<T>, T, A>() {
+            @Override
+            public Optional<T> applyUnsafe(H host) throws Exception {
+                return read.apply(host);
+            }
+            @Override
+            public A createSubAccessFromHost(Function<H, T> accessToParameter) {
+                return createAccess.apply(accessToParameter);
+            }
+        };
+        return AccessUtils.createSubOptionalAccess(accessParameterized, read);
+    }
     
     public AccessParameterized<HOST, Optional<TYPE>, TYPE, SUBACCESS> accessWithSub();
     

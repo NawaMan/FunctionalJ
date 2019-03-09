@@ -16,17 +16,22 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
 @FunctionalInterface
 public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
-                    extends
-                        AnyAccess<HOST, CHRONOLOGY> {
+                    extends AnyAccess<HOST, CHRONOLOGY> {
+    
+    public static <H, C extends Chronology> ChronologyAccess<H, C> of(Function<H, C> func) {
+        return func::apply;
+    }
     
     public default StringAccess<HOST> getId() {
         return host -> {
@@ -132,13 +137,16 @@ public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
             return value.prolepticYear(era, yearOfEra);
         };
     }
-    public default EraAccess<HOST> eraOf(int eraValue) {
+    @SuppressWarnings("unchecked")
+    public default <E extends Era> EraAccess<HOST, E> eraOf(int eraValue) {
         return host -> {
             val value = apply(host);
-            return value.eraOf(eraValue);
+            return (E) value.eraOf(eraValue);
         };
     }
-//    public default List<Era> eras();
+    public default ListAccess<HOST, Era, EraAccess<HOST, Era>> eras() {
+        return ListAccess.of(host -> ChronologyAccess.this.apply(host).eras(), EraAccess::of);
+    }
     public default ValueRangeAccess<HOST> range(ChronoField field) {
         return host -> {
             val value = apply(host);

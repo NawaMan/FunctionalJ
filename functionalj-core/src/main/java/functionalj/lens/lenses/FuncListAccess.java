@@ -33,6 +33,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import functionalj.lens.core.AccessParameterized;
+import functionalj.lens.core.AccessUtils;
 import functionalj.list.FuncList;
 import functionalj.stream.Streamable;
 import lombok.val;
@@ -41,6 +42,20 @@ import lombok.val;
 @FunctionalInterface
 public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> 
         extends CollectionAccess<HOST, FuncList<TYPE>, TYPE, TYPEACCESS> {
+    
+    public static <H, T, A extends AnyAccess<H, T>> FuncListAccess<H, T, A> of(Function<H, FuncList<T>> read, Function<Function<H, T>, A> createAccess) {
+        val accessParameterized = new AccessParameterized<H, FuncList<T>, T, A>() {
+            @Override
+            public FuncList<T> applyUnsafe(H host) throws Exception {
+                return read.apply(host);
+            }
+            @Override
+            public A createSubAccessFromHost(Function<H, T> accessToParameter) {
+                return createAccess.apply(accessToParameter);
+            }
+        };
+        return AccessUtils.createSubFuncListAccess(accessParameterized, read);
+    }
     
     // :-( .. have to be duplicate
     public default TYPEACCESS first() {

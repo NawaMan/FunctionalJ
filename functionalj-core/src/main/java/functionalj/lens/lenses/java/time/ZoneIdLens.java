@@ -7,10 +7,8 @@ import functionalj.lens.lenses.ObjectLensImpl;
 
 
 public class ZoneIdLens<HOST>
-                extends
-                    ObjectLensImpl<HOST, ZoneId>
-                implements
-                    ZoneIdAccess<HOST, ZoneId> {
+                extends    ObjectLensImpl<HOST, ZoneId>
+                implements ZoneIdAccess  <HOST, ZoneId> {
                 
     public static final ZoneIdLens<ZoneId> theZoneId = new ZoneIdLens<ZoneId>(LensSpec.of(ZoneId.class));
     

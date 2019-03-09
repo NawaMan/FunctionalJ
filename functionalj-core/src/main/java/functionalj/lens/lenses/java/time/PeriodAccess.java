@@ -9,33 +9,35 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.LongAccess;
 import lombok.val;
 
 @FunctionalInterface
 public interface PeriodAccess<HOST>
-                    extends
-                        AnyAccess<HOST, Period>,
-                        ChronoPeriodAccess<HOST, Period>,
-                        ConcreteAccess<HOST, Period, PeriodAccess<HOST>> {
+                    extends AnyAccess<HOST, Period>
+                    ,       ChronoPeriodAccess<HOST, Period>
+                    ,       ConcreteAccess<HOST, Period, PeriodAccess<HOST>> {
+    
+    public static <H> PeriodAccess<H> of(Function<H, Period> func) {
+        return func::apply;
+    }
     
     public default PeriodAccess<HOST> newAccess(Function<HOST, Period> accessToValue) {
         return host -> accessToValue.apply(host);
     }
     
-    // TODO
     public default LongAccess<HOST> get(TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return value.get(unit);
         };
     }
-//    public List<TemporalUnit> getUnits() {
-//        return host -> {
-//            val value = apply(host);
-//            return value.getUnits();
-//        };
-//    }
+    
+    public default ListAccess<HOST, TemporalUnit, TemporalUnitAccess<HOST, TemporalUnit>> getUnits() {
+        return ListAccess.of(this.then(TemporalAmount::getUnits), TemporalUnitAccess::of);
+    }
+    
     @SuppressWarnings("unchecked")
     public default IsoChronologyAccess<HOST> getChronology() {
         return host -> {

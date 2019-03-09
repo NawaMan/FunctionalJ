@@ -19,11 +19,14 @@ import lombok.val;
 
 @FunctionalInterface
 public interface OffsetTimeAccess<HOST>
-                    extends
-                        AnyAccess             <HOST, OffsetTime>,
-                        TemporalAccess        <HOST, OffsetTime>,
-                        TemporalAdjusterAccess<HOST, OffsetTime>,
-                        ConcreteAccess        <HOST, OffsetTime, OffsetTimeAccess<HOST>> {
+                    extends AnyAccess             <HOST, OffsetTime>
+                    ,       TemporalAccess        <HOST, OffsetTime>
+                    ,       TemporalAdjusterAccess<HOST, OffsetTime>
+                    ,       ConcreteAccess        <HOST, OffsetTime, OffsetTimeAccess<HOST>> {
+    
+    public static <H> OffsetTimeAccess<H> of(Function<H, OffsetTime> func) {
+        return func::apply;
+    }
     
     public default OffsetTimeAccess<HOST> newAccess(Function<HOST, OffsetTime> accessToValue) {
         return host -> accessToValue.apply(host);

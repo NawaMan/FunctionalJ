@@ -11,11 +11,14 @@ import lombok.val;
 
 @FunctionalInterface
 public interface DayOfWeekAccess<HOST>
-                    extends
-                        AnyAccess             <HOST, DayOfWeek>,
-                        TemporalAccessorAccess<HOST, DayOfWeek>,
-                        TemporalAdjusterAccess<HOST, DayOfWeek>,
-                        ConcreteAccess        <HOST, DayOfWeek, DayOfWeekAccess<HOST>> {
+                    extends AnyAccess             <HOST, DayOfWeek>
+                    ,       TemporalAccessorAccess<HOST, DayOfWeek>
+                    ,       TemporalAdjusterAccess<HOST, DayOfWeek>
+                    ,       ConcreteAccess        <HOST, DayOfWeek, DayOfWeekAccess<HOST>> {
+    
+    public static <H> DayOfWeekAccess<H> of(Function<H, DayOfWeek> func) {
+        return func::apply;
+    }
     
     public default DayOfWeekAccess<HOST> newAccess(Function<HOST, DayOfWeek> accessToValue) {
         return host -> accessToValue.apply(host);
@@ -95,6 +98,5 @@ public interface DayOfWeekAccess<HOST>
     public default BooleanAccess<HOST> thatLessThanOrEqualsTo(DayOfWeek anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
-    
     
 }

@@ -13,6 +13,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
+import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
@@ -23,12 +24,17 @@ import lombok.val;
 
 @FunctionalInterface
 public interface ChronoLocalDateTimeAccess<HOST, 
-                    CHRONO_LOCAL_DATE      extends ChronoLocalDate, 
-                    CHRONO_LOCAL_DATE_TIME extends ChronoLocalDateTime<CHRONO_LOCAL_DATE>>
-                        extends
-                            AnyAccess             <HOST, CHRONO_LOCAL_DATE_TIME>,
-                            TemporalAccess        <HOST, CHRONO_LOCAL_DATE_TIME>,
-                            TemporalAdjusterAccess<HOST, CHRONO_LOCAL_DATE_TIME> {
+                            CHRONO_LOCAL_DATE      extends ChronoLocalDate, 
+                            CHRONO_LOCAL_DATE_TIME extends ChronoLocalDateTime<CHRONO_LOCAL_DATE>>
+                        extends AnyAccess             <HOST, CHRONO_LOCAL_DATE_TIME>
+                        ,       TemporalAccess        <HOST, CHRONO_LOCAL_DATE_TIME>
+                        ,       TemporalAdjusterAccess<HOST, CHRONO_LOCAL_DATE_TIME>
+                        {
+    
+    public static <H, D extends ChronoLocalDate, DT extends ChronoLocalDateTime<D>>
+                ChronoLocalDateTimeAccess<H, D, DT> of(Function<H, DT> func) {
+        return func::apply;
+    }
     
     @SuppressWarnings("unchecked")
     public default <CHRONOLOGY extends Chronology> ChronologyAccess<HOST, CHRONOLOGY> getChronology() {
@@ -128,7 +134,6 @@ public interface ChronoLocalDateTimeAccess<HOST,
             return value.compareTo(other);
         };
     }
-    // Duplicate the lt,lte,gt,gte as I am fail to make this extends ComparableAccess
     public default BooleanAccess<HOST> thatGreaterThan(CHRONO_LOCAL_DATE_TIME anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) > 0);
     }

@@ -11,13 +11,16 @@ import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
 @FunctionalInterface
-public interface EraAccess<HOST>
-                    extends
-                        AnyAccess<HOST, Era>,
-                        TemporalAccessorAccess<HOST, Era>,
-                        TemporalAdjusterAccess<HOST, Era> {
+public interface EraAccess<HOST, ERA extends Era>
+                    extends AnyAccess             <HOST, ERA>
+                    ,       TemporalAccessorAccess<HOST, ERA>
+                    ,       TemporalAdjusterAccess<HOST, ERA> {
     
-    public default EraAccess<HOST> newAccess(Function<HOST, Era> accessToValue) {
+    public static <H, E extends Era> EraAccess<H, E> of(Function<H, E> func) {
+        return func::apply;
+    }
+    
+    public default EraAccess<HOST, ERA> newAccess(Function<HOST, ERA> accessToValue) {
         return host -> accessToValue.apply(host);
     }
     

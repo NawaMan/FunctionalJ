@@ -7,10 +7,8 @@ import functionalj.lens.lenses.ObjectLensImpl;
 
 
 public class ZoneOffsetLens<HOST>
-                extends
-                    ObjectLensImpl<HOST, ZoneOffset>
-                implements
-                    ZoneOffsetAccess<HOST> {
+                extends    ObjectLensImpl<HOST, ZoneOffset>
+                implements ZoneOffsetAccess<HOST> {
                 
     public static final ZoneOffsetLens<ZoneOffset> theZoneOffset = new ZoneOffsetLens<ZoneOffset>(LensSpec.of(ZoneOffset.class));
     

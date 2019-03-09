@@ -9,10 +9,8 @@ import functionalj.lens.lenses.LongLens;
 import functionalj.lens.lenses.ObjectLensImpl;
 
 public class InstantLens<HOST>
-                    extends
-                        ObjectLensImpl<HOST, Instant>
-                    implements
-                        InstantAccess<HOST> {
+                    extends    ObjectLensImpl<HOST, Instant>
+                    implements InstantAccess<HOST> {
     
     public static final InstantLens<Instant> theInstant = new InstantLens<Instant>(LensSpec.of(Instant.class));
     
