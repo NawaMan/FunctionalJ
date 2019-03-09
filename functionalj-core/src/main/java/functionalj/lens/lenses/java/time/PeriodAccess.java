@@ -38,7 +38,6 @@ public interface PeriodAccess<HOST>
         return ListAccess.of(this.then(TemporalAmount::getUnits), TemporalUnitAccess::of);
     }
     
-    @SuppressWarnings("unchecked")
     public default IsoChronologyAccess<HOST> getChronology() {
         return host -> {
             val value = apply(host);

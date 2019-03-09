@@ -197,7 +197,6 @@ public interface LocalDateAccess<HOST>
             return value.until(endDateExclusive);
         };
     }
-    @SuppressWarnings("unchecked")
     public default LocalDateTimeAccess<HOST> atTime(LocalTime time) {
         return host -> {
             val value = apply(host);

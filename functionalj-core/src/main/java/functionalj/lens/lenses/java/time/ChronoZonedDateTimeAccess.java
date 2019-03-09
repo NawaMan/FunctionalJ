@@ -24,13 +24,12 @@ import lombok.val;
 @FunctionalInterface
 public interface ChronoZonedDateTimeAccess<
                             HOST, 
-                            CHRONO_LOCAL_DATE      extends ChronoLocalDate, 
-                            CHRONO_ZONED_DATE_TIME extends ChronoZonedDateTime<CHRONO_LOCAL_DATE>>
+                            CHRONO_ZONED_DATE_TIME extends ChronoZonedDateTime<? extends ChronoLocalDate>>
                         extends AnyAccess     <HOST, CHRONO_ZONED_DATE_TIME>
                         ,       TemporalAccess<HOST, CHRONO_ZONED_DATE_TIME> {
     
-    public static <H, D extends ChronoLocalDate, DT extends ChronoLocalDateTime<D>>
-                ChronoLocalDateTimeAccess<H, D, DT> of(Function<H, DT> func) {
+    public static <H, DT extends ChronoLocalDateTime<? extends ChronoLocalDate>>
+                ChronoLocalDateTimeAccess<H, DT> of(Function<H, DT> func) {
         return func::apply;
     }
     
@@ -46,11 +45,10 @@ public interface ChronoZonedDateTimeAccess<
             return (LocalTime)value.toLocalTime();
         };
     }
-    @SuppressWarnings("unchecked")
-    public default <TIME extends ChronoLocalDateTime<CHRONO_LOCAL_DATE>> ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE, TIME> toLocalDateTime() {
+    public default ChronoLocalDateTimeAccess<HOST, ? extends ChronoLocalDateTime<? extends ChronoLocalDate>> toLocalDateTime() {
         return host -> {
             val value = apply(host);
-            return (TIME) value.toLocalDateTime();
+            return value.toLocalDateTime();
         };
     }
     
@@ -76,70 +74,70 @@ public interface ChronoZonedDateTimeAccess<
     }
     
     @SuppressWarnings("unchecked")
-    public default ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_ZONED_DATE_TIME> withEarlierOffsetAtOverlap() {
+    public default ChronoZonedDateTimeAccess<HOST, CHRONO_ZONED_DATE_TIME> withEarlierOffsetAtOverlap() {
         return host -> {
             val value = apply(host);
             return (CHRONO_ZONED_DATE_TIME) value.withEarlierOffsetAtOverlap();
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_ZONED_DATE_TIME> withLaterOffsetAtOverlap() {
+    public default ChronoZonedDateTimeAccess<HOST, CHRONO_ZONED_DATE_TIME> withLaterOffsetAtOverlap() {
         return host -> {
             val value = apply(host);
             return (CHRONO_ZONED_DATE_TIME) value.withLaterOffsetAtOverlap();
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_ZONED_DATE_TIME> withZoneSameLocal(ZoneId zone) {
+    public default ChronoZonedDateTimeAccess<HOST, CHRONO_ZONED_DATE_TIME> withZoneSameLocal(ZoneId zone) {
         return host -> {
             val value = apply(host);
             return (CHRONO_ZONED_DATE_TIME) value.withZoneSameLocal(zone);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_ZONED_DATE_TIME> withZoneSameInstant(ZoneId zone) {
+    public default ChronoZonedDateTimeAccess<HOST, CHRONO_ZONED_DATE_TIME> withZoneSameInstant(ZoneId zone) {
         return host -> {
             val value = apply(host);
             return (CHRONO_ZONED_DATE_TIME) value.withZoneSameInstant(zone);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_ZONED_DATE_TIME> with(TemporalAdjuster adjuster) {
+    public default ChronoZonedDateTimeAccess<HOST, CHRONO_ZONED_DATE_TIME> with(TemporalAdjuster adjuster) {
         return host -> {
             val value = apply(host);
             return (CHRONO_ZONED_DATE_TIME) value.with(adjuster);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_ZONED_DATE_TIME> with(TemporalField field, long newValue) {
+    public default ChronoZonedDateTimeAccess<HOST, CHRONO_ZONED_DATE_TIME> with(TemporalField field, long newValue) {
         return host -> {
             val value = apply(host);
             return (CHRONO_ZONED_DATE_TIME) value.with(field, newValue);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_ZONED_DATE_TIME> plus(TemporalAmount amount) {
+    public default ChronoZonedDateTimeAccess<HOST, CHRONO_ZONED_DATE_TIME> plus(TemporalAmount amount) {
         return host -> {
             val value = apply(host);
             return (CHRONO_ZONED_DATE_TIME) value.plus(amount);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_ZONED_DATE_TIME> plus(long amountToAdd, TemporalUnit unit) {
+    public default ChronoZonedDateTimeAccess<HOST, CHRONO_ZONED_DATE_TIME> plus(long amountToAdd, TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return (CHRONO_ZONED_DATE_TIME) value.plus(amountToAdd, unit);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_ZONED_DATE_TIME> minus(TemporalAmount amount) {
+    public default ChronoZonedDateTimeAccess<HOST, CHRONO_ZONED_DATE_TIME> minus(TemporalAmount amount) {
         return host -> {
             val value = apply(host);
             return (CHRONO_ZONED_DATE_TIME) value.minus(amount);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_ZONED_DATE_TIME> minus(long amountToAdd, TemporalUnit unit) {
+    public default ChronoZonedDateTimeAccess<HOST, CHRONO_ZONED_DATE_TIME> minus(long amountToAdd, TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return (CHRONO_ZONED_DATE_TIME) value.minus(amountToAdd, unit);

@@ -119,12 +119,11 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
         };
     }
     
-    @SuppressWarnings("unchecked")
-    public default <DATE extends ChronoLocalDate> ChronoLocalDateTimeAccess<HOST, DATE, ChronoLocalDateTime<DATE>>
+    public default ChronoLocalDateTimeAccess<HOST, ? extends ChronoLocalDateTime<? extends ChronoLocalDate>>
                     atTime(LocalTime localTime) {
         return host -> {
             val value = apply(host);
-            return (ChronoLocalDateTime<DATE>) value.atTime(localTime);
+            return value.atTime(localTime);
         };
     }
     

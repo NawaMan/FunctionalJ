@@ -100,28 +100,25 @@ public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
             return value.date(temporal);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default <DATE extends ChronoLocalDate> ChronoLocalDateTimeAccess<HOST, DATE, ChronoLocalDateTime<DATE>> 
+    public default ChronoLocalDateTimeAccess<HOST, ? extends ChronoLocalDateTime<? extends ChronoLocalDate>> 
                     localDateTime(TemporalAccessor temporal) {
         return host -> {
             val value = apply(host);
-            return (ChronoLocalDateTime<DATE>) value.localDateTime(temporal);
+            return value.localDateTime(temporal);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default <DATE extends ChronoLocalDate> ChronoZonedDateTimeAccess<HOST, DATE, ChronoZonedDateTime<DATE>> 
+    public default ChronoZonedDateTimeAccess<HOST, ? extends ChronoZonedDateTime<? extends ChronoLocalDate>> 
             zonedDateTime(TemporalAccessor temporal) {
         return host -> {
             val value = apply(host);
-            return (ChronoZonedDateTime<DATE>) value.zonedDateTime(temporal);
+            return value.zonedDateTime(temporal);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default <DATE extends ChronoLocalDate> ChronoZonedDateTimeAccess<HOST, DATE, ChronoZonedDateTime<DATE>> 
+    public default ChronoZonedDateTimeAccess<HOST, ? extends ChronoZonedDateTime<? extends ChronoLocalDate>> 
             zonedDateTime(Instant instant, ZoneId zone) {
         return host -> {
             val value = apply(host);
-            return (ChronoZonedDateTime<DATE>) value.zonedDateTime(instant, zone);
+            return value.zonedDateTime(instant, zone);
         };
     }
     
@@ -137,11 +134,10 @@ public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
             return value.prolepticYear(era, yearOfEra);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default <E extends Era> EraAccess<HOST, E> eraOf(int eraValue) {
+    public default EraAccess<HOST, ? extends Era> eraOf(int eraValue) {
         return host -> {
             val value = apply(host);
-            return (E) value.eraOf(eraValue);
+            return value.eraOf(eraValue);
         };
     }
     public default ListAccess<HOST, Era, EraAccess<HOST, Era>> eras() {

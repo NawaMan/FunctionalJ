@@ -1,9 +1,10 @@
 package functionalj.lens.lenses.java.time;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
@@ -21,7 +22,7 @@ public interface LocalDateTimeAccess<HOST>
                     extends AnyAccess                <HOST, LocalDateTime>
                     ,       TemporalAccess           <HOST, LocalDateTime>
                     ,       TemporalAdjusterAccess   <HOST, LocalDateTime>
-                    ,       ChronoLocalDateTimeAccess<HOST, LocalDate, LocalDateTime>
+                    ,       ChronoLocalDateTimeAccess<HOST, LocalDateTime>
                     ,       ConcreteAccess           <HOST, LocalDateTime, LocalDateTimeAccess<HOST>> {
     
     public static <H> LocalDateTimeAccess<H> of(Function<H, LocalDateTime> func) {
@@ -298,8 +299,7 @@ public interface LocalDateTimeAccess<HOST>
             return value.atOffset(offset);
         };
     }
-    @SuppressWarnings("unchecked")
-    public default ZonedDateTimeAccess<HOST> atZone(ZoneId zone) {
+    public default ChronoZonedDateTimeAccess<HOST, ChronoZonedDateTime<? extends ChronoLocalDate>> atZone(ZoneId zone) {
         return host -> {
             val value = apply(host);
             return value.atZone(zone);

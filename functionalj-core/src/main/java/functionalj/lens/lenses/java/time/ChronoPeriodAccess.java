@@ -18,11 +18,10 @@ public interface ChronoPeriodAccess<HOST, CHRONO_PERIOD extends ChronoPeriod>
         return func::apply;
     }
     
-    @SuppressWarnings("unchecked")
-    public default <CHRONOLOGY extends Chronology> ChronologyAccess<HOST, CHRONOLOGY> getChronology() {
+    public default ChronologyAccess<HOST, ? extends Chronology> getChronology() {
         return host -> {
             val value = apply(host);
-            return (CHRONOLOGY)value.getChronology();
+            return value.getChronology();
         };
     }
     public default BooleanAccess<HOST> isZero() {

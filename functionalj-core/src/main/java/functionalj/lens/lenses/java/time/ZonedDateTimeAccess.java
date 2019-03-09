@@ -1,6 +1,5 @@
 package functionalj.lens.lenses.java.time;
 
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjuster;
@@ -18,7 +17,7 @@ import lombok.val;
 public interface ZonedDateTimeAccess<HOST>
                     extends AnyAccess                <HOST, ZonedDateTime>
                     ,       TemporalAccess           <HOST, ZonedDateTime>
-                    ,       ChronoZonedDateTimeAccess<HOST, LocalDate, ZonedDateTime>
+                    ,       ChronoZonedDateTimeAccess<HOST, ZonedDateTime>
                     ,       ConcreteAccess           <HOST, ZonedDateTime, ZonedDateTimeAccess<HOST>> {
     
     public static <H> ZonedDateTimeAccess<H> of(Function<H, ZonedDateTime> func) {
@@ -59,7 +58,6 @@ public interface ZonedDateTimeAccess<HOST>
             return value.withFixedOffsetZone();
         };
     }
-    @SuppressWarnings("unchecked")
     public default LocalDateTimeAccess<HOST> toLocalDateTime() {
         return host -> {
             val value = apply(host);

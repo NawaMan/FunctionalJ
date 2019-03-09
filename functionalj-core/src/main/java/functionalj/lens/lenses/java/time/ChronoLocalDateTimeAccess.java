@@ -23,16 +23,14 @@ import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
 @FunctionalInterface
-public interface ChronoLocalDateTimeAccess<HOST, 
-                            CHRONO_LOCAL_DATE      extends ChronoLocalDate, 
-                            CHRONO_LOCAL_DATE_TIME extends ChronoLocalDateTime<CHRONO_LOCAL_DATE>>
+public interface ChronoLocalDateTimeAccess<HOST,
+                            CHRONO_LOCAL_DATE_TIME extends ChronoLocalDateTime<? extends ChronoLocalDate>>
                         extends AnyAccess             <HOST, CHRONO_LOCAL_DATE_TIME>
                         ,       TemporalAccess        <HOST, CHRONO_LOCAL_DATE_TIME>
-                        ,       TemporalAdjusterAccess<HOST, CHRONO_LOCAL_DATE_TIME>
-                        {
+                        ,       TemporalAdjusterAccess<HOST, CHRONO_LOCAL_DATE_TIME> {
     
-    public static <H, D extends ChronoLocalDate, DT extends ChronoLocalDateTime<D>>
-                ChronoLocalDateTimeAccess<H, D, DT> of(Function<H, DT> func) {
+    public static <H, DT extends ChronoLocalDateTime<? extends ChronoLocalDate>>
+                ChronoLocalDateTimeAccess<H, DT> of(Function<H, DT> func) {
         return func::apply;
     }
     
@@ -57,42 +55,42 @@ public interface ChronoLocalDateTimeAccess<HOST,
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_LOCAL_DATE_TIME> with(TemporalAdjuster adjuster) {
+    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE_TIME> with(TemporalAdjuster adjuster) {
         return host -> {
             val value = apply(host);
             return (CHRONO_LOCAL_DATE_TIME) value.with(adjuster);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_LOCAL_DATE_TIME> with(TemporalField field, long newValue) {
+    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE_TIME> with(TemporalField field, long newValue) {
         return host -> {
             val value = apply(host);
             return (CHRONO_LOCAL_DATE_TIME) value.with(field, newValue);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_LOCAL_DATE_TIME> plus(TemporalAmount amount) {
+    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE_TIME> plus(TemporalAmount amount) {
         return host -> {
             val value = apply(host);
             return (CHRONO_LOCAL_DATE_TIME) value.plus(amount);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_LOCAL_DATE_TIME> plus(long amountToAdd, TemporalUnit unit) {
+    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE_TIME> plus(long amountToAdd, TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return (CHRONO_LOCAL_DATE_TIME) value.plus(amountToAdd, unit);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_LOCAL_DATE_TIME> minus(TemporalAmount amount) {
+    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE_TIME> minus(TemporalAmount amount) {
         return host -> {
             val value = apply(host);
             return (CHRONO_LOCAL_DATE_TIME) value.minus(amount);
         };
     }
     @SuppressWarnings("unchecked")
-    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE, CHRONO_LOCAL_DATE_TIME> minus(long amountToSubtract, TemporalUnit unit) {
+    public default ChronoLocalDateTimeAccess<HOST, CHRONO_LOCAL_DATE_TIME> minus(long amountToSubtract, TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return (CHRONO_LOCAL_DATE_TIME) value.minus(amountToSubtract, unit);
@@ -106,12 +104,10 @@ public interface ChronoLocalDateTimeAccess<HOST,
         };
     }
     
-    @SuppressWarnings("unchecked")
-    public default <ZONED extends ChronoZonedDateTime<CHRONO_LOCAL_DATE>> 
-                    ChronoZonedDateTimeAccess<HOST, CHRONO_LOCAL_DATE, ZONED> atZone(ZoneId zone) {
+    public default ChronoZonedDateTimeAccess<HOST, ChronoZonedDateTime<? extends ChronoLocalDate>> atZone(ZoneId zone) {
         return host -> {
             val value = apply(host);
-            return (ZONED) value.atZone(zone);
+            return value.atZone(zone);
         };
     }
     
@@ -128,7 +124,7 @@ public interface ChronoLocalDateTimeAccess<HOST,
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(ChronoLocalDateTime<CHRONO_LOCAL_DATE> other) {
+    public default IntegerAccess<HOST> compareTo(ChronoLocalDateTime<? extends ChronoLocalDate> other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

@@ -69,21 +69,18 @@ public interface IsoChronologyAccess<HOST>
             return value.date(temporal);
         };
     }
-    @SuppressWarnings("unchecked")
     public default LocalDateTimeAccess<HOST> localDateTime(TemporalAccessor temporal) {
         return host -> {
             val value = apply(host);
             return value.localDateTime(temporal);
         };
     }
-    @SuppressWarnings("unchecked")
     public default ZonedDateTimeAccess<HOST> zonedDateTime(TemporalAccessor temporal) {
         return host -> {
             val value = apply(host);
             return value.zonedDateTime(temporal);
         };
     }
-    @SuppressWarnings("unchecked")
     public default ZonedDateTimeAccess<HOST>  zonedDateTime(Instant instant, ZoneId zone) {
         return host -> {
             val value = apply(host);
@@ -120,7 +117,6 @@ public interface IsoChronologyAccess<HOST>
             return value.prolepticYear(era, yearOfEra);
         };
     }
-    @SuppressWarnings("unchecked")
     public default IsoEraAccess<HOST> eraOf(int eraValue) {
         return host -> {
             val value = apply(host);
