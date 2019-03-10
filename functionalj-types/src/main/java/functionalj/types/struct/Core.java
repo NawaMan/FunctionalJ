@@ -78,6 +78,36 @@ public enum Core {
     Optional      ("Optional",      "java.util"),
     
     Pipeable      ("Pipeable",      "functionalj.pipeable"),
+    
+    DayOfWeek                ("DayOfWeek",                 "java.time"),
+    Duration                 ("Duration",                  "java.time"),
+    Instant                  ("Instant",                   "java.time"),
+    LocalDate                ("LocalDate",                 "java.time"),
+    LocalDateTime            ("LocalDateTime",             "java.time"),
+    LocalTime                ("LocalTime",                 "java.time"),
+    Month                    ("Month",                     "java.time"),
+    OffsetDateTime           ("OffsetDateTime",            "java.time"),
+    Period                   ("Period",                    "java.time"),
+    ZonedDateTime            ("ZonedDateTime",             "java.time"),
+    ZonedId                  ("ZonedId",                   "java.time"),
+    ZonedOffset              ("ZonedOffset",               "java.time"),
+    ZonedOffsetTransition    ("ZonedOffsetTransition",     "java.time"),
+    ZonedOffsetTransitionRule("ZonedOffsetTransitionRule", "java.time"),
+    
+    DayOfWeekLens                ("DayOfWeekLens",                 "functionalj.lens.lenses.java.time"),
+    DurationLens                 ("DurationLens",                  "functionalj.lens.lenses.java.time"),
+    InstantLens                  ("InstantLens",                   "functionalj.lens.lenses.java.time"),
+    LocalDateLens                ("LocalDateLens",                 "functionalj.lens.lenses.java.time"),
+    LocalDateTimeLens            ("LocalDateTimeLens",             "functionalj.lens.lenses.java.time"),
+    LocalTimeLens                ("LocalTimeLens",                 "functionalj.lens.lenses.java.time"),
+    MonthLens                    ("MonthLens",                     "functionalj.lens.lenses.java.time"),
+    OffsetDateTimeLens           ("OffsetDateTimeLens",            "functionalj.lens.lenses.java.time"),
+    PeriodLens                   ("PeriodLens",                    "functionalj.lens.lenses.java.time"),
+    ZonedDateTimeLens            ("ZonedDateTimeLens",             "functionalj.lens.lenses.java.time"),
+    ZonedIdLens                  ("ZonedIdLens",                   "functionalj.lens.lenses.java.time"),
+    ZonedOffsetLens              ("ZonedOffsetLens",               "functionalj.lens.lenses.java.time"),
+    ZonedOffsetTransitionLens    ("ZonedOffsetTransitionLens",     "functionalj.lens.lenses.java.time"),
+    ZonedOffsetTransitionRuleLens("ZonedOffsetTransitionRuleLens", "functionalj.lens.lenses.java.time")
     ;
     
     private static final String LENSES_PACKAGE = "functionalj.lens.lenses";

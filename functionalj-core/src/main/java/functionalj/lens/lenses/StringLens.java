@@ -67,6 +67,5 @@ public interface StringLens<HOST>
     default Func1<HOST, HOST> changeTo(BiFunction<HOST, String, String> function) {
         return host -> lensSpec().getWrite().apply(host, function.apply(host, read(host)));
     }
-    // Add the chagne to that is supplier and function1
     
 }

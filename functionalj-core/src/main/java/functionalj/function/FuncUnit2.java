@@ -96,6 +96,14 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
         };
     }
     
+    public default FuncUnit2<INPUT1, INPUT2> ignoreNullInput() {
+        return (input1, input2) -> {
+            if ((input1 != null)
+             && (input2 != null))
+                acceptUnsafe(input1, input2);
+        };
+    }
+    
     public default FuncUnit1<Tuple2<INPUT1, INPUT2>> wholly() {
         return tuple -> {
             val _1 = tuple._1();

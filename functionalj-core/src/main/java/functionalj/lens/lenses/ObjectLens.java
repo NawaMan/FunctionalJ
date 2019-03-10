@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
-import functionalj.function.Func1;
 import functionalj.lens.core.LensSpec;
 
 
@@ -51,9 +50,6 @@ public interface ObjectLens<HOST, DATA> extends AnyLens<HOST, DATA>, ObjectAcces
     @Override
     public default DATA applyUnsafe(HOST host) throws Exception{
         return lensSpec().getRead().apply(host);
-    }
-    public default Func1<HOST, HOST> changeTo(DATA data) {
-        return host -> ObjectLensHelper.performChange(this, data, host);
     }
     
 }

@@ -253,15 +253,15 @@ public interface ResultStatusAddOn<DATA> {
         return asResult();
     }
     
-    public default Result<DATA> ifExceptionPrint() {
+    public default Result<DATA> ifExceptionThenPrint() {
         useData(helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace()));
         return asResult();
     }
-    public default Result<DATA> ifExceptionPrint(PrintStream printStream) {
+    public default Result<DATA> ifExceptionThenPrint(PrintStream printStream) {
         useData(helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace(printStream)));
         return asResult();
     }
-    public default Result<DATA> ifExceptionPrint(PrintWriter printWriter) {
+    public default Result<DATA> ifExceptionThenPrint(PrintWriter printWriter) {
         useData(helper.processIfException(ResultStatus::isException, exception -> exception.printStackTrace(printWriter)));
         return asResult();
     }

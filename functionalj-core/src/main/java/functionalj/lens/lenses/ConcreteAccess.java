@@ -31,7 +31,7 @@ import functionalj.lens.core.AccessCreator;
 /*
 This is (unexpected) work around for the reusability problems for these common methods whose are SELF typed.
 This way, we just need to duplicate these methods here and AnyAccess.
-All concrete access still have to implement this interface and the _of method.
+All concrete access still have to implement this interface and the newAccess method.
  */
 
 

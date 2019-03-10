@@ -24,12 +24,14 @@
 package functionalj.lens.core;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.FuncListAccess;
 import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.NullableAccess;
+import functionalj.lens.lenses.OptionalAccess;
 import functionalj.lens.lenses.ResultAccess;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
@@ -38,8 +40,45 @@ import nawaman.nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
 public class AccessUtils {
-
-
+    
+    // Nullable
+    
+    public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> NullableAccess<HOST, TYPE, TYPEACCESS>
+            createSubNullableAccess(
+                    AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPEACCESS> accessParameterized,
+                    Function<HOST, Nullable<TYPE>>                              read) {
+        val specWithSub = new AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPEACCESS>() {
+            @Override
+            public Nullable<TYPE> applyUnsafe(HOST host) throws Exception {
+                return read.apply(host);
+            }
+            @Override
+            public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return accessParameterized.createSubAccessFromHost(accessToParameter);
+            }
+        };
+        return () -> specWithSub;
+    }
+    
+    // Optional 
+    
+    public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> OptionalAccess<HOST, TYPE, TYPEACCESS>
+            createSubOptionalAccess(
+                    AccessParameterized<HOST, Optional<TYPE>, TYPE, TYPEACCESS> accessParameterized,
+                    Function<HOST, Optional<TYPE>>                              read) {
+        val specWithSub = new AccessParameterized<HOST, Optional<TYPE>, TYPE, TYPEACCESS>() {
+            @Override
+            public Optional<TYPE> applyUnsafe(HOST host) throws Exception {
+                return read.apply(host);
+            }
+            @Override
+            public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return accessParameterized.createSubAccessFromHost(accessToParameter);
+            }
+        };
+        return () -> specWithSub;
+    }
+    
     // List 
     
     public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> ListAccess<HOST, TYPE, TYPEACCESS>
