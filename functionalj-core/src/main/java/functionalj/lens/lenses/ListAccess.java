@@ -24,15 +24,32 @@
 package functionalj.lens.lenses;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
+import lombok.val;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface ListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> 
         extends CollectionAccess<HOST, List<TYPE>, TYPE, TYPEACCESS> {
+    
+    public static <H, T, A extends AnyAccess<H, T>> ListAccess<H, T, A> of(Function<H, List<T>> read, Function<Function<H, T>, A> createAccess) {
+        val accessParameterized = new AccessParameterized<H, List<T>, T, A>() {
+            @Override
+            public List<T> applyUnsafe(H host) throws Exception {
+                return read.apply(host);
+            }
+            @Override
+            public A createSubAccessFromHost(Function<H, T> accessToParameter) {
+                return createAccess.apply(accessToParameter);
+            }
+        };
+        return AccessUtils.createSubListAccess(accessParameterized, read);
+    }
     
     public default TYPEACCESS first() {
         return at(0);

@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
+import functionalj.lens.core.AccessUtils;
 import lombok.val;
 import nawaman.nullablej.nullable.Nullable;
 
@@ -37,6 +38,20 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
             extends
                 ObjectAccess<HOST, Nullable<TYPE>>,
                 AccessParameterized<HOST, Nullable<TYPE>, TYPE, SUBACCESS> {
+    
+    public static <H, T, A extends AnyAccess<H, T>> NullableAccess<H, T, A> of(Function<H, Nullable<T>> read, Function<Function<H, T>, A> createAccess) {
+        val accessParameterized = new AccessParameterized<H, Nullable<T>, T, A>() {
+            @Override
+            public Nullable<T> applyUnsafe(H host) throws Exception {
+                return read.apply(host);
+            }
+            @Override
+            public A createSubAccessFromHost(Function<H, T> accessToParameter) {
+                return createAccess.apply(accessToParameter);
+            }
+        };
+        return AccessUtils.createSubNullableAccess(accessParameterized, read);
+    }
     
     public AccessParameterized<HOST, Nullable<TYPE>, TYPE, SUBACCESS> accessWithSub();
     
@@ -57,7 +72,7 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     }
     
     public default <TARGET> 
-    NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> map(Function<TYPE, TARGET> mapper) {
+    NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenMap(Function<TYPE, TARGET> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Nullable<TARGET> applyUnsafe(HOST host) throws Exception {
@@ -79,7 +94,7 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     }
     
     public default <TARGET> 
-    NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> flatMap(Function<TYPE, Nullable<TARGET>> mapper) {
+    NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenFlatMap(Function<TYPE, Nullable<TARGET>> mapper) {
         val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Nullable<TARGET> applyUnsafe(HOST host) throws Exception {

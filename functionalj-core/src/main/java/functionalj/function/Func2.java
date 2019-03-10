@@ -23,9 +23,12 @@
 // ============================================================================
 package functionalj.function;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -39,6 +42,7 @@ import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.ZipWithOption;
 import functionalj.task.Task;
+import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -147,51 +151,216 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
      * Compose this function to the given function.
      * NOTE: Too bad the name 'compose' is already been taken :-(
      * 
-     * @param  <FINAL>  the final result value.
-     * @param  after    the function to be run after this function.
-     * @return          the composed function.
+     * @param  <TARGET>  the target result value.
+     * @param  after     the function to be run after this function.
+     * @return           the composed function.
      */
-    public default <FINAL> Func2<INPUT1, INPUT2, FINAL> then(Function<? super OUTPUT, ? extends FINAL> after) {
+    public default <TARGET> Func2<INPUT1, INPUT2, TARGET> then(Function<? super OUTPUT, ? extends TARGET> after) {
         return (input1, input2) -> {
-            OUTPUT out1 = this.applyUnsafe(input1, input2);
-            FINAL  out2 = Func.applyUnsafe(after, out1);
-            return out2;
+            OUTPUT output = this.applyUnsafe(input1, input2);
+            TARGET target = Func.applyUnsafe(after, output);
+            return target;
+        };
+    }
+    public default <TARGET> Func2<INPUT1, INPUT2, TARGET> map(Function<? super OUTPUT, ? extends TARGET> after) {
+        return (input1, input2) -> {
+            OUTPUT output = this.applyUnsafe(input1, input2);
+            TARGET target = (output != null)
+                          ? Func.applyUnsafe(after, output)
+                          : null;
+            return target;
+        };
+    }
+    
+    public default Func2<INPUT1, INPUT2, OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
+        return (input1, input2)->{
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                return outputValue;
+            } catch (Exception e) {
+                exceptionHandler.accept(e);
+                return null;
+            }
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> ifExceptionThenPrint() {
+        return (input1, input2)->{
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                return outputValue;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> ifExceptionThenPrint(PrintStream printStream) {
+        return (input1, input2)->{
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                return outputValue;
+            } catch (Exception e) {
+                e.printStackTrace(printStream);
+                return null;
+            }
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> ifExceptionThenPrint(PrintWriter printWriter) {
+        return (input1, input2)->{
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                return outputValue;
+            } catch (Exception e) {
+                e.printStackTrace(printWriter);
+                return null;
+            }
         };
     }
     
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input1, input2)->{
-            val result = applySafely(input1, input2);
-            val value  = result.orElse(defaultValue);
-            return value;
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue 
+                        = (outputValue != null)
+                        ? outputValue
+                        : defaultValue;
+                return returnValue;
+            } catch (Exception e) {
+                return defaultValue;
+            }
         };
     }
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2)->{
-            val result = applySafely(input1, input2);
-            val value  = result.orElseGet(defaultSupplier);
-            return value;
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue 
+                        = (outputValue != null)
+                        ? outputValue
+                        : defaultSupplier.get();
+                return returnValue;
+            } catch (Exception e) {
+                return defaultSupplier.get();
+            }
         };
     }
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
         return (input1, input2)->{
-            val result = applySafely(input1, input2);
-            val value  = result.orApply(exceptionMapper);
-            return value;
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue 
+                        = (outputValue != null)
+                        ? outputValue
+                        : exceptionMapper.apply(null);
+                return returnValue;
+            } catch (Exception e) {
+                return exceptionMapper.apply(e);
+            }
         };
     }
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func3<INPUT1, INPUT2, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2)->{
-            val result = applySafely(input1, input2);
-            val value  = result.orApply(exception -> exceptionMapper.apply(input1, input2, exception));
-            return value;
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue 
+                        = (outputValue != null)
+                        ? outputValue
+                        : exceptionMapper.apply(input1, input2, null);
+                return returnValue;
+            } catch (Exception e) {
+                return exceptionMapper.apply(input1, input2, e);
+            }
         };
     }
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func2<Tuple2<INPUT1, INPUT2>, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2)->{
-            val result = applySafely(input1, input2);
-            val value  = result.orApply(exception -> exceptionMapper.apply(Tuple2.of(input1, input2), exception));
-            return value;
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue 
+                        = (outputValue != null)
+                        ? outputValue
+                        : exceptionMapper.apply(Tuple.of(input1, input2), null);
+                return returnValue;
+            } catch (Exception e) {
+                return exceptionMapper.apply(Tuple.of(input1, input2), e);
+            }
+        };
+    }
+    
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentUse(Consumer<Exception> exceptionHandler, OUTPUT defaultValue) {
+        return (input1, input2)->{
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue 
+                        = (outputValue != null)
+                        ? outputValue
+                        : defaultValue;
+                return returnValue;
+            } catch (Exception e) {
+                exceptionHandler.accept(e);
+                return defaultValue;
+            }
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentGet(Consumer<Exception> exceptionHandler, Supplier<OUTPUT> defaultSupplier) {
+        return (input1, input2)->{
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue 
+                        = (outputValue != null)
+                        ? outputValue
+                        : defaultSupplier.get();
+                return returnValue;
+            } catch (Exception e) {
+                exceptionHandler.accept(e);
+                return defaultSupplier.get();
+            }
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func1<Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2)->{
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue 
+                        = (outputValue != null)
+                        ? outputValue
+                        : exceptionMapper.apply(null);
+                return returnValue;
+            } catch (Exception e) {
+                exceptionHandler.accept(e);
+                return exceptionMapper.apply(e);
+            }
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func3<INPUT1, INPUT2, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2)->{
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue 
+                        = (outputValue != null)
+                        ? outputValue
+                        : exceptionMapper.apply(input1, input2, null);
+                return returnValue;
+            } catch (Exception e) {
+                exceptionHandler.accept(e);
+                return exceptionMapper.apply(input1, input2, e);
+            }
+        };
+    }
+    public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func2<Tuple2<INPUT1, INPUT2>, Exception, OUTPUT> exceptionMapper) {
+        return (input1, input2)->{
+            try {
+                val outputValue = this.applyUnsafe(input1, input2);
+                val returnValue 
+                        = (outputValue != null)
+                        ? outputValue
+                        : exceptionMapper.apply(Tuple.of(input1, input2), null);
+                return returnValue;
+            } catch (Exception e) {
+                exceptionHandler.accept(e);
+                return exceptionMapper.apply(Tuple.of(input1, input2), e);
+            }
         };
     }
     
