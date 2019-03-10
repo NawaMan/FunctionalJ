@@ -35,6 +35,10 @@ public class ZonedDateTimeLens<HOST>
                             (ZonedDateTime zdt, ZoneId z) ->ZonedDateTime.of(zdt.toLocalDateTime(), z),
                             ZoneIdLens::new);
     
+    public static <H> ZonedDateTimeLens<H> of(LensSpec<H, ZonedDateTime> spec) {
+        return new ZonedDateTimeLens<H>(spec);
+    }
+    
     public ZonedDateTimeLens(LensSpec<HOST, ZonedDateTime> spec) {
         super(spec);
     }

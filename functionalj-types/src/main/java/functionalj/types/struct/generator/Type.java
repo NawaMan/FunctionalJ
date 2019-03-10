@@ -166,6 +166,21 @@ public class Type implements IRequireTypes {
         
         lensTypes.put(FUNC_LIST, Core.FuncListLens.type());
         lensTypes.put(FUNC_MAP,  Core.FuncMapLens.type());
+        
+        lensTypes.put(Core.DayOfWeek.type(),                 Core.DayOfWeekLens.type());
+        lensTypes.put(Core.Duration.type(),                  Core.DurationLens.type());
+        lensTypes.put(Core.Instant.type(),                   Core.InstantLens.type());
+        lensTypes.put(Core.LocalDate.type(),                 Core.LocalDateLens.type());
+        lensTypes.put(Core.LocalDateTime.type(),             Core.LocalDateTimeLens.type());
+        lensTypes.put(Core.LocalTime.type(),                 Core.LocalTimeLens.type());
+        lensTypes.put(Core.Month.type(),                     Core.MonthLens.type());
+        lensTypes.put(Core.OffsetDateTime.type(),            Core.OffsetDateTimeLens.type());
+        lensTypes.put(Core.Period.type(),                    Core.PeriodLens.type());
+        lensTypes.put(Core.ZonedDateTime.type(),             Core.ZonedDateTimeLens.type());
+        lensTypes.put(Core.ZonedId.type(),                   Core.ZonedIdLens.type());
+        lensTypes.put(Core.ZonedOffset.type(),               Core.ZonedOffsetLens.type());
+        lensTypes.put(Core.ZonedOffsetTransition.type(),     Core.ZonedOffsetTransitionLens.type());
+        lensTypes.put(Core.ZonedOffsetTransitionRule.type(), Core.ZonedOffsetTransitionRuleLens.type());
     }
     public static final Map<String, Type> primitiveTypes;
     static {

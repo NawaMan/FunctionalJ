@@ -12,6 +12,10 @@ public class ZoneOffsetTransitionLens<HOST>
     public static final ZoneOffsetTransitionLens<ZoneOffsetTransition> theZoneOffsetTransition
                     = new ZoneOffsetTransitionLens<ZoneOffsetTransition>(LensSpec.of(ZoneOffsetTransition.class));
     
+    public static <H> ZoneOffsetTransitionLens<H> of(LensSpec<H, ZoneOffsetTransition> spec) {
+        return new ZoneOffsetTransitionLens<H>(spec);
+    }
+    
     public ZoneOffsetTransitionLens(LensSpec<HOST, ZoneOffsetTransition> spec) {
         super(spec);
     }

@@ -17,6 +17,10 @@ public class InstantLens<HOST>
     public final LongLens<HOST>    seconds = createSubLens(Instant::getEpochSecond, (inst, secs) -> inst.with(ChronoField.INSTANT_SECONDS, secs), LongLens::of);
     public final IntegerLens<HOST> nanos   = createSubLens(Instant::getNano,        (inst, secs) -> inst.with(ChronoField.NANO_OF_SECOND, secs),  IntegerLens::of);
     
+    public static <H> InstantLens<H> of(LensSpec<H, Instant> spec) {
+        return new InstantLens<H>(spec);
+    }
+    
     public InstantLens(LensSpec<HOST, Instant> spec) {
         super(spec);
     }

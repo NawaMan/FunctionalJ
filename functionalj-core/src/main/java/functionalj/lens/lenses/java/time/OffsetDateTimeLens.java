@@ -26,6 +26,10 @@ public class OffsetDateTimeLens<HOST>
                             (OffsetDateTime odt, ZoneOffset zo) -> OffsetDateTime.of(odt.toLocalDateTime(), zo),
                             ZoneOffsetLens::new);
     
+    public static <H> OffsetDateTimeLens<H> of(LensSpec<H, OffsetDateTime> spec) {
+        return new OffsetDateTimeLens<H>(spec);
+    }
+    
     public OffsetDateTimeLens(LensSpec<HOST, OffsetDateTime> spec) {
         super(spec);
     }

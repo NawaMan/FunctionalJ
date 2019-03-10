@@ -18,6 +18,10 @@ public class PeriodLens<HOST>
     public final IntegerLens<HOST> months = createSubLens(Period::getMonths, Period::withMonths, IntegerLens::of);
     public final IntegerLens<HOST> days   = createSubLens(Period::getDays,   Period::withDays,   IntegerLens::of);
     
+    public static <H> PeriodLens<H> of(LensSpec<H, Period> spec) {
+        return new PeriodLens<H>(spec);
+    }
+    
     public PeriodLens(LensSpec<HOST, Period> spec) {
         super(spec);
     }

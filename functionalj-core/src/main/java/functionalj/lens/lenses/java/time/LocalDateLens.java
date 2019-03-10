@@ -8,10 +8,8 @@ import functionalj.lens.lenses.IntegerLens;
 import functionalj.lens.lenses.ObjectLensImpl;
 
 public class LocalDateLens<HOST>
-                    extends
-                        ObjectLensImpl<HOST, LocalDate>
-                    implements
-                        LocalDateAccess<HOST> {
+                    extends    ObjectLensImpl<HOST, LocalDate>
+                    implements LocalDateAccess<HOST> {
     
     public static final LocalDateLens<LocalDate> theLocalDate = new LocalDateLens<LocalDate>(LensSpec.of(LocalDate.class));
     
@@ -21,6 +19,10 @@ public class LocalDateLens<HOST>
     
     public final IntegerLens<HOST> monthValue = createSubLens(LocalDate::getMonthValue, (inst, month) -> inst.withMonth(month),   IntegerLens::of);
     public final IntegerLens<HOST> dayOfYear  = createSubLens(LocalDate::getDayOfYear,  (inst, day)   -> inst.withDayOfYear(day), IntegerLens::of);
+    
+    public static <H> LocalDateLens<H> of(LensSpec<H, LocalDate> spec) {
+        return new LocalDateLens<H>(spec);
+    }
     
     public LocalDateLens(LensSpec<HOST, LocalDate> spec) {
         super(spec);

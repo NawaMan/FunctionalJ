@@ -12,6 +12,10 @@ public class ZoneOffsetLens<HOST>
                 
     public static final ZoneOffsetLens<ZoneOffset> theZoneOffset = new ZoneOffsetLens<ZoneOffset>(LensSpec.of(ZoneOffset.class));
     
+    public static <H> ZoneOffsetLens<H> of(LensSpec<H, ZoneOffset> spec) {
+        return new ZoneOffsetLens<H>(spec);
+    }
+    
     public ZoneOffsetLens(LensSpec<HOST, ZoneOffset> spec) {
         super(spec);
     }

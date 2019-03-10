@@ -20,12 +20,14 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.lenses.ObjectLensImpl;
 
 public class MonthLens<HOST>
-            extends
-                ObjectLensImpl<HOST, Month>
-            implements
-                MonthAccess<HOST> {
+            extends    ObjectLensImpl<HOST, Month>
+            implements MonthAccess<HOST> {
             
     public static final MonthLens<Month> theMonth = new MonthLens<Month>(LensSpec.of(Month.class));
+    
+    public static <H> MonthLens<H> of(LensSpec<H, Month> spec) {
+        return new MonthLens<H>(spec);
+    }
     
     public MonthLens(LensSpec<HOST, Month> spec) {
         super(spec);

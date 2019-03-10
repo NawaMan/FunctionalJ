@@ -12,6 +12,10 @@ public class ZoneIdLens<HOST>
                 
     public static final ZoneIdLens<ZoneId> theZoneId = new ZoneIdLens<ZoneId>(LensSpec.of(ZoneId.class));
     
+    public static <H> ZoneIdLens<H> of(LensSpec<H, ZoneId> spec) {
+        return new ZoneIdLens<H>(spec);
+    }
+    
     public ZoneIdLens(LensSpec<HOST, ZoneId> spec) {
         super(spec);
     }
