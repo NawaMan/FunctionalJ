@@ -67,9 +67,9 @@ import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.Generic;
 import functionalj.types.choice.generator.model.Method;
+import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.MethodParam;
 import functionalj.types.choice.generator.model.Type;
-import functionalj.types.choice.generator.model.Method.Kind;
 import lombok.val;
 
 /**
@@ -187,6 +187,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     private Method createMethodFromMethodElement(Element element, Type targetType, ExecutableElement mthd) {
         val kind       = mthd.isDefault() ? Kind.DEFAULT : Kind.STATIC;
         val name       = mthd.getSimpleName().toString();
+        
         val type       = typeOf(element, targetType, mthd.getReturnType());
         val params     = extractParameters(element, targetType, mthd);
         val generics   = extractGenerics(element, targetType, mthd.getTypeParameters());
@@ -267,12 +268,12 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     
     private List<Method> extractTypeMethods(Element element, Type targetType, TypeElement typeElement) {
         return typeElement.getEnclosedElements().stream()
-                .filter(elmt->elmt.getKind().equals(ElementKind.METHOD))
-                .map   (elmt->((ExecutableElement)elmt))
-                .filter(mthd->!mthd.getSimpleName().toString().startsWith("__"))
-                .filter(mthd->isPublicOrPackage(mthd))
-                .filter(mthd->isDefaultOrStatic(mthd))
-                .map(mthd -> createMethodFromMethodElement(element, targetType, mthd))
+                .filter (elmt->elmt.getKind().equals(ElementKind.METHOD))
+                .map    (elmt->((ExecutableElement)elmt))
+                .filter (mthd->!mthd.getSimpleName().toString().startsWith("__"))
+                .filter (mthd->isPublicOrPackage(mthd))
+                .filter (mthd->isDefaultOrStatic(mthd))
+                .map    (mthd -> createMethodFromMethodElement(element, targetType, mthd))
                 .collect(toList());
     }
     
@@ -325,11 +326,12 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
             return new Type(typeStr);
         
         if (typeMirror instanceof DeclaredType) {
-            val typeElement = ((TypeElement)((DeclaredType)typeMirror).asElement());
-            val typeName    = typeElement.getSimpleName().toString();
-            val generics    = extractGenericsFromTypeArguments(element, targetType, ((DeclaredType)typeMirror).getTypeArguments());
-            val packageName = getPackageName(element, typeElement);
-            val foundType = new Type(packageName, null, typeName, generics);
+            val typeElement  = ((TypeElement)((DeclaredType)typeMirror).asElement());
+            val packageName  = getPackageName(element, typeElement);
+            val typeName     = typeElement.getSimpleName().toString();
+            val encloseClass = extractEnclosedClassName(typeElement, packageName, typeName);
+            val generics     = extractGenericsFromTypeArguments(element, targetType, ((DeclaredType)typeMirror).getTypeArguments());
+            val foundType    = new Type(packageName, encloseClass, typeName, generics);
             if (packageName.equals(Self.class.getPackage().getName()) && typeName.matches("^Self[0-9]?$"))
                 return new Type(targetType.pckg, targetType.encloseClass, targetType.name, generics);
             
@@ -342,6 +344,19 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         }
         
         return null;
+    }
+
+    private String extractEnclosedClassName(final javax.lang.model.element.TypeElement typeElement,
+            final java.lang.String packageName, final java.lang.String typeName) {
+        String encloseClass = null;
+        val qualifiedName = typeElement.getQualifiedName().toString();
+        encloseClass  = (typeElement.getEnclosingElement().getKind() != ElementKind.PACKAGE) &&  qualifiedName.endsWith("." + typeName)
+                      ? qualifiedName.substring(0, qualifiedName.length() - typeName.length() - 1)
+                      : null;
+        encloseClass  = (typeElement.getEnclosingElement().getKind() != ElementKind.PACKAGE) && encloseClass != null && encloseClass.startsWith(packageName + ".")
+                      ? encloseClass.substring(packageName.length() + 1)
+                      : null;
+        return encloseClass;
     }
     
     private String getPackageName(Element element, TypeElement typeElement) {
