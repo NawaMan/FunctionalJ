@@ -25,6 +25,18 @@ No additional build steps or tools are required outside of adding dependencies.
 See some examples in the example project [here](https://github.com/NawaMan/FunctionalJ/tree/master/functionalj-examples/src/main/java/example/functionalj)
   or [functionaj.io](http://functionalj.io "FunctionalJ").
 
+## Resources
+
+Articles
+- [Introducing FunctionalJ.io](https://nawaman.net/blog/2019-02-12#IntroducingFunctionalJ)
+- [Setup FunctionalJ for Eclipse](https://nawaman.net/blog/2019-02-26#FunctionalJEclipse)
+- [Immutable Data With FunctionalJ.io](https://dzone.com/articles/immutable-data-with-functionalio)
+
+![alt text](https://raw.githubusercontent.com/NawaMan/FunctionalJ/Development/docs/youtube.png "VDO on Youtube")
+- [Introduction to FunctionalJ.io](https://www.youtube.com/watch?v=gIHY1wUSQzs)
+- [Setup Eclipse for FunctionalJ](https://www.youtube.com/watch?v=nTOb6r13HvM)
+- [Immutable Data with FunctionalJ.io](https://www.youtube.com/watch?v=Q_cdFh9fhxY)
+
 ## Usage
 
 ### Using FunctionalJ in a Gradle project

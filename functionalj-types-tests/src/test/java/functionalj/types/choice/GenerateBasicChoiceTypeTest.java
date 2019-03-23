@@ -132,4 +132,10 @@ public class GenerateBasicChoiceTypeTest {
         assertEquals("[White, Black, RGB]", Color.spec.choices.stream().map(c -> c.name).collect(Collectors.toList()).toString());
     }
     
+    @Test
+    public void testColorChoiceLens() {
+        assertEquals(null,    Color.theColor.asBlack.get().asString().apply(Color.white));
+        assertEquals("Black", Color.theColor.asBlack.get().asString().apply(Color.black));
+    }
+    
 }

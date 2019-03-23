@@ -205,6 +205,11 @@ public enum DefaultValue {
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         
+        if (Type.STRING.equals(type)
+         || Type.STRING.equals(type)) {
+            if (value == EMPTY) return "\"\"";
+            throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+        }
         if (Type.LIST.equals(type)) {
             if (value == EMPTY) return "java.util.Collections.emptyList()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
