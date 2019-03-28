@@ -41,6 +41,7 @@ import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.task.Task;
 import lombok.val;
+import nawaman.nullablej.nullable.Nullable;
 
 /**
  * Function of one parameter.
@@ -97,6 +98,12 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return apply(input);
     }
     public default Result<OUTPUT> applyTo(Result<INPUT> input) {
+        return input.map(this);
+    }
+    public default Optional<OUTPUT> applyTo(Optional<INPUT> input) {
+        return input.map(this);
+    }
+    public default Nullable<OUTPUT> applyTo(Nullable<INPUT> input) {
         return input.map(this);
     }
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT> input) {

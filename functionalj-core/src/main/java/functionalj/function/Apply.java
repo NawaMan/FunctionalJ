@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.function;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -35,6 +36,7 @@ import functionalj.ref.Ref;
 import functionalj.result.Result;
 import functionalj.stream.ZipWithOption;
 import functionalj.task.Task;
+import nawaman.nullablej.nullable.Nullable;
 
 public interface Apply {
     
@@ -129,6 +131,12 @@ public interface Apply {
     public static <I, O> Result<O> $(Function<I, O> func, Result<I> input) {
         return Func1.from(func).applyTo(input);
     }
+    public static <I, O> Optional<O> $(Function<I, O> func, Optional<I> input) {
+        return Func1.from(func).applyTo(input);
+    }
+    public static <I, O> Nullable<O> $(Function<I, O> func, Nullable<I> input) {
+        return Func1.from(func).applyTo(input);
+    }
     public static <I, O> FuncList<O> $(Function<I, O> func, FuncList<I> input) {
         return Func1.from(func).applyTo(input);
     }
@@ -155,6 +163,12 @@ public interface Apply {
         return input2 -> func.apply(input1, input2);
     }
     public static <I1, I2, O> Result<O> $(BiFunction<I1, I2, O> func, Result<I1> input1, Result<I2> input2) {
+        return Func2.from(func).applyTo(input1, input2);
+    }
+    public static <I1, I2, O> Optional<O> $(BiFunction<I1, I2, O> func, Optional<I1> input1, Optional<I2> input2) {
+        return Func2.from(func).applyTo(input1, input2);
+    }
+    public static <I1, I2, O> Nullable<O> $(BiFunction<I1, I2, O> func, Nullable<I1> input1, Nullable<I2> input2) {
         return Func2.from(func).applyTo(input1, input2);
     }
     public static <I1, I2, O> FuncList<O> $(BiFunction<I1, I2, O> func, FuncList<I1> input1, FuncList<I2> input2) {
@@ -194,6 +208,12 @@ public interface Apply {
     public static <I1, I2, I3, O> Result<O> $(Func3<I1, I2, I3, O> func, Result<I1> input1, Result<I2> input2, Result<I3> input3) {
         return func.applyTo(input1, input2, input3);
     }
+    public static <I1, I2, I3, O> Optional<O> $(Func3<I1, I2, I3, O> func, Optional<I1> input1, Optional<I2> input2, Optional<I3> input3) {
+        return func.applyTo(input1, input2, input3);
+    }
+    public static <I1, I2, I3, O> Nullable<O> $(Func3<I1, I2, I3, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3) {
+        return func.applyTo(input1, input2, input3);
+    }
     public static <I1, I2, I3, O> Supplier<O> $(Func3<I1, I2, I3, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3) {
         return func.applyTo(input1, input2, input3);
     }
@@ -220,6 +240,12 @@ public interface Apply {
         return func.applyTo(input1).applyTo(input2).applyTo(input3);
     }
     public static <I1, I2, I3, I4, O> Result<O> $(Func4<I1, I2, I3, I4, O> func, Result<I1> input1, Result<I2> input2, Result<I3> input3, Result<I4> input4) {
+        return func.applyTo(input1, input2, input3, input4);
+    }
+    public static <I1, I2, I3, I4, O> Optional<O> $(Func4<I1, I2, I3, I4, O> func, Optional<I1> input1, Optional<I2> input2, Optional<I3> input3, Optional<I4> input4) {
+        return func.applyTo(input1, input2, input3, input4);
+    }
+    public static <I1, I2, I3, I4, O> Nullable<O> $(Func4<I1, I2, I3, I4, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3, Nullable<I4> input4) {
         return func.applyTo(input1, input2, input3, input4);
     }
     public static <I1, I2, I3, I4, O> Supplier<O> $(Func4<I1, I2, I3, I4, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3, Supplier<I4> input4) {
@@ -251,6 +277,12 @@ public interface Apply {
         return func.applyTo(input1).applyTo(input2).applyTo(input3).applyTo(input4);
     }
     public static <I1, I2, I3, I4, I5, O> Result<O> $(Func4<I1, I2, I3, I4, O> func, Result<I1> input1, Result<I2> input2, Result<I3> input3, Result<I4> input4, Result<I5> input5) {
+        return func.applyTo(input1, input2, input3, input4);
+    }
+    public static <I1, I2, I3, I4, I5, O> Optional<O> $(Func4<I1, I2, I3, I4, O> func, Optional<I1> input1, Optional<I2> input2, Optional<I3> input3, Optional<I4> input4, Optional<I5> input5) {
+        return func.applyTo(input1, input2, input3, input4);
+    }
+    public static <I1, I2, I3, I4, I5, O> Nullable<O> $(Func4<I1, I2, I3, I4, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3, Nullable<I4> input4, Nullable<I5> input5) {
         return func.applyTo(input1, input2, input3, input4);
     }
     public static <I1, I2, I3, I4, I5, O> Supplier<O> $(Func4<I1, I2, I3, I4, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3, Supplier<I4> input4, Supplier<I5> input5) {
@@ -285,6 +317,12 @@ public interface Apply {
         return func.applyTo(input1).applyTo(input2).applyTo(input3).applyTo(input4).applyTo(input5);
     }
     public static <I1, I2, I3, I4, I5, I6, O> Result<O> $(Func4<I1, I2, I3, I4, O> func, Result<I1> input1, Result<I2> input2, Result<I3> input3, Result<I4> input4, Result<I5> input5, Result<I6> input6) {
+        return func.applyTo(input1, input2, input3, input4);
+    }
+    public static <I1, I2, I3, I4, I5, I6, O> Optional<O> $(Func4<I1, I2, I3, I4, O> func, Optional<I1> input1, Optional<I2> input2, Optional<I3> input3, Optional<I4> input4, Optional<I5> input5, Optional<I6> input6) {
+        return func.applyTo(input1, input2, input3, input4);
+    }
+    public static <I1, I2, I3, I4, I5, I6, O> Nullable<O> $(Func4<I1, I2, I3, I4, O> func, Nullable<I1> input1, Nullable<I2> input2, Nullable<I3> input3, Nullable<I4> input4, Nullable<I5> input5, Nullable<I6> input6) {
         return func.applyTo(input1, input2, input3, input4);
     }
     public static <I1, I2, I3, I4, I5, I6, O> Supplier<O> $(Func4<I1, I2, I3, I4, O> func, Supplier<I1> input1, Supplier<I2> input2, Supplier<I3> input3, Supplier<I4> input4, Supplier<I5> input5, Supplier<I6> input6) {
