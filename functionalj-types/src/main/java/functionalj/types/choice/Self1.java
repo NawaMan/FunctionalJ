@@ -27,16 +27,16 @@ package functionalj.types.choice;
 public interface Self1<T> {
     
     @SuppressWarnings("unchecked")
-    public default <TARGET> TARGET asMe() {
+    public default <TARGET> TARGET unwrap() {
         return (TARGET)this;
     }
     
-    public static <TARGET, T> TARGET getAsMe(Self1<T> self) {
-        return self == null ? null : self.asMe();
+    public static <TARGET, T> TARGET unwrap(Self1<T> self) {
+        return self == null ? null : self.unwrap();
     }
     
     @SuppressWarnings("unchecked")
-    public static <TARGET, T> Self1<T> of(TARGET t) {
+    public static <TARGET, T> Self1<T> wrap(TARGET t) {
         return (Self1<T>)t;
     }
     

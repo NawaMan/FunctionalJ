@@ -36,7 +36,6 @@ import java.util.function.Predicate;
 import org.junit.Test;
 
 import functionalj.types.Choice;
-import functionalj.types.choice.LinkedList;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -46,13 +45,15 @@ public class ChioceTypeLinkedListTest {
     public static interface LinkedListSpec {
         void Nill();
         void Node(Object value, LinkedList rest);
+        
+        default int length(Self self) {
+            LinkedList list = Self.unwrap(self);
+            return Match(list)
+                    .nill(l -> 0)
+                    .node(l -> 1 + length(l.rest()));
+        }
     }
     
-    int length(LinkedList list) {
-        return Match(list)
-                .nill(l -> 0)
-                .node(l -> 1 + length(l.rest()));
-    }
     String toStr(LinkedList list) {
         return Match(list)
                 .nill(l -> "[]")
@@ -104,9 +105,9 @@ public class ChioceTypeLinkedListTest {
     
     @Test
     public void testLength() {
-        assertEquals(0, length(Nill()));
-        assertEquals(1, length(Node(5, Nill())));
-        assertEquals(2, length(Node(5, Node(6, Nill()))));
+        assertEquals(0, Nill().length());
+        assertEquals(1, Node(5, Nill()).length());
+        assertEquals(2, Node(5, Node(6, Nill())).length());
     }
     
     @Test

@@ -60,6 +60,7 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
+import functionalj.types.DefaultTo;
 import functionalj.types.Nullable;
 import functionalj.types.common;
 import functionalj.types.choice.generator.Generator;
@@ -293,8 +294,9 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         List<CaseParam> params = method.getParameters().stream().map(p -> {
             val name       = p.getSimpleName().toString();
             val type       = typeOf(element, targetType, p.asType());
-            val isNullable = (element.getAnnotation(Nullable.class) != null) ? true : false;
-            return new CaseParam(name, type, isNullable);
+            val isNullable = (p.getAnnotation(Nullable.class) != null) ? false : true;
+            val defValue   = (p.getAnnotation(DefaultTo.class) != null) ? p.getAnnotation(DefaultTo.class).value() : null;
+            return new CaseParam(name, type, isNullable, defValue);
         }).collect(toList());
         
         val validateMethodName = "__validate" + methodName;

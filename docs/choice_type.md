@@ -1,6 +1,6 @@
 # Choice
 
-Choice data types are type of data that can be in any of the list value.
+Choice data types are type of data that can be in any of the listed values.
 
 To define a choice type, you annotate an interface with `@Choice`.
 The interface name must be suffixed by either `Spec` or `Model`.
@@ -104,21 +104,5 @@ If the status is logout, the match returns the string "Guess".
 As mentioned, pattern matching is exhaustive so both the choices must be there for this to compile.
 The cases must also be in the right order -- this is actually because of the current implementation.
 
-The match can be expanded in to the payload so that different action can be taken while ensure exhaustion matching.
-Consider the following code.
-
-```java
-    var moderators = Arrays.asList("Jack", "John");
-    var user = status1.match()
-        .loginOf("root",               "Administrator")
-        .loginOf(moderators::contains, "Moderator")
-        .login  (s ->                  "User: " + s.userName())
-        .logout (                      "Guess");
-```
-
-If the user name is root, the string "Administrator" is returned.
-If the user name is in the `moderators` list, the string "Moderator" is returned.
-For other login users, the user name is returned.
-If the status is not login (i.e., logout), the word "Guess" is returned.
 
 

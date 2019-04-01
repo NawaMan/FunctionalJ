@@ -39,6 +39,7 @@ import functionalj.task.Task;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple4;
 import lombok.val;
+import nawaman.nullablej.nullable.Nullable;
 
 /**
  * Function of four parameters.
@@ -96,6 +97,28 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     }
     public default Result<OUTPUT> applyTo(Result<INPUT1> input1, Result<INPUT2> input2, Result<INPUT3> input3, Result<INPUT4> input4) {
         return Result.ofResults(input1, input2, input3, input4, this);
+    }
+    public default Optional<OUTPUT> applyTo(Optional<INPUT1> input1, Optional<INPUT2> input2, Optional<INPUT3> input3, Optional<INPUT4> input4) {
+        return input1.flatMap(i1 -> {
+            return input2.flatMap(i2 -> {
+                return input3.flatMap(i3 -> {
+                    return input4.map(i4 -> {
+                        return Func4.this.apply(i1, i2, i3, i4);
+                    });
+                });
+            });
+        });
+    }
+    public default Nullable<OUTPUT> applyTo(Nullable<INPUT1> input1, Nullable<INPUT2> input2, Nullable<INPUT3> input3, Nullable<INPUT4> input4) {
+        return input1.flatMap(i1 -> {
+            return input2.flatMap(i2 -> {
+                return input3.flatMap(i3 -> {
+                    return input4.map(i4 -> {
+                        return Func4.this.apply(i1, i2, i3, i4);
+                    });
+                });
+            });
+        });
     }
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2, HasPromise<INPUT3> input3, HasPromise<INPUT4> input4) {
         return Promise.from(input1, input2, input3, input4, this);
