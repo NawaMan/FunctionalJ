@@ -34,17 +34,17 @@ import lombok.val;
 public class CaseParam {
     public final String  name;
     public final Type    type;
-    public final boolean isNotNull;
+    public final boolean isNullable;
     public final DefaultValue defValue;
     
-    public CaseParam(String name, Type type, boolean isNotNull) {
-        this(name, type, isNotNull, DefaultValue.REQUIRED);
+    public CaseParam(String name, Type type, boolean isNullable) {
+        this(name, type, isNullable, null);
     }
     
-    public CaseParam(String name, Type type, boolean isNotNull, DefaultValue defValue) {
+    public CaseParam(String name, Type type, boolean isNullable, DefaultValue defValue) {
         this.name = name;
         this.type = type;
-        this.isNotNull = isNotNull;
+        this.isNullable = isNullable;
         this.defValue = defValue;
     }
     
@@ -68,7 +68,7 @@ public class CaseParam {
         val params = asList(
                 toStringLiteral(name),
                 type.toCode(),
-                "" + isNotNull,
+                "" + isNullable,
                 (defValue == null) ? "null" : DefaultValue.defaultValueCode(toStructType(type), defValue)
         );
         return "new " + this.getClass().getCanonicalName() + "("
@@ -78,7 +78,7 @@ public class CaseParam {
     
     @Override
     public String toString() {
-        return "CaseParam [name=" + name + ", type=" + type + ", isNotNull=" + isNotNull + "]";
+        return "CaseParam [name=" + name + ", type=" + type + ", isNullable=" + isNullable + "]";
     }
     
 }
