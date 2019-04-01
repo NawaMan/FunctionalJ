@@ -81,7 +81,9 @@ public class SubClassDefinition implements Lines {
     }
     
     private String fieldAssignment(CaseParam p) {
-        if (p.type.isPrimitive())
+        if (!p.type.isPrimitive() && (p.defValue != null))
+             return format("        this.%1$s = (%1$s != null) ? %1$s : %2$s;", p.name, p.defaultValueCode());
+        else if (p.type.isPrimitive() || !p.isNotNull)
              return format("        this.%1$s = %1$s;",                 p.name);
         else return format("        this.%1$s = $utils.notNull(%1$s);", p.name);
     }

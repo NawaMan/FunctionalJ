@@ -382,13 +382,13 @@ public class GeneratorTest {
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public boolean equals(Object obj) {\n" + 
-                "    return __spec.equals(Self.of(this), obj);\n" + 
+                "    return __spec.equals(Self.wrap(this), obj);\n" + 
                 "}\n" + 
                 "public <T extends Exception> String thisName(p1.p2.Color c2, String s) throws T {\n" + 
-                "    return __spec.thisName(Self.of(this), Self.of(c2), s);\n" + 
+                "    return __spec.thisName(Self.wrap(this), Self.wrap(c2), s);\n" + 
                 "}\n" + 
                 "public p1.p2.Color thisSelf(p1.p2.Color c2, String s) {\n" + 
-                "    return functionalj.types.choice.Self.getAsMe(__spec.thisSelf(Self.of(this), Self.of(c2), s));\n" + 
+                "    return functionalj.types.choice.Self.unwrap(__spec.thisSelf(Self.wrap(this), Self.wrap(c2), s));\n" + 
                 "}\n" + 
                 "public static boolean toRGBString(p1.p2.Color c) {\n" + 
                 "    return ColorSpec.toRGBString(c);\n" + 
@@ -514,16 +514,16 @@ public class GeneratorTest {
         
         assertEquals(
                 "public boolean equals(Object obj) {\n" + 
-                "    return __spec.equals(Self.of(this), obj);\n" + 
+                "    return __spec.equals(Self.wrap(this), obj);\n" + 
                 "}\n" + 
                 "public String toString() {\n" + 
-                "    return __spec.toString(Self.of(this));\n" + 
+                "    return __spec.toString(Self.wrap(this));\n" + 
                 "}\n" + 
                 "public int hashCode() {\n" + 
-                "    return __spec.hashCode(Self.of(this));\n" + 
+                "    return __spec.hashCode(Self.wrap(this));\n" + 
                 "}\n" + 
                 "public String thisMethod(p1.p2.Color c2, String s) {\n" + 
-                "    return __spec.thisMethod(Self.of(this), Self.of(c2), s);\n" + 
+                "    return __spec.thisMethod(Self.wrap(this), Self.wrap(c2), s);\n" + 
                 "}\n" + 
                 "public String thisString(String s) {\n" + 
                 "    return __spec.thisString(s);\n" + 

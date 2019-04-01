@@ -69,7 +69,7 @@ public class SourceMethod implements Lines {
                       && Objects.equals(m.returnType.name,            targetClass.type.name)
                       && Objects.equals(m.returnType.generics.size(), targetClass.type.generics.size());
         val genericCount = targetClass.type.generics.size();
-        val returnPrefix = returnSelf ? Self.class.getCanonicalName() + (genericCount == 0 ? "" : genericCount) + ".getAsMe(" : "";
+        val returnPrefix = returnSelf ? Self.class.getCanonicalName() + (genericCount == 0 ? "" : genericCount) + ".unwrap(" : "";
         val returnSuffix = returnSelf ? ")"                            : "";
         if (DEFAULT.equals(m.kind)) {
             if (isThisMethod(m)) {

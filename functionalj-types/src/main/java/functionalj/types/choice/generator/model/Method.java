@@ -100,7 +100,7 @@ public class Method {
         return toString(param ->  {
             val isFirstCall = isFirst.get();
             isFirst.set(false);
-            val prefix = param.type.toString().equals(type.toString()) ? format("Self%1$s.of(", (genericCount != 0) ? "" + genericCount : "") : "";
+            val prefix = param.type.toString().equals(type.toString()) ? format("Self%1$s.wrap(", (genericCount != 0) ? "" + genericCount : "") : "";
             val suffix = param.type.toString().equals(type.toString()) ? ")" : "";
             return prefix + (isFirstCall ? firstStr : param.name) + suffix;
         });
