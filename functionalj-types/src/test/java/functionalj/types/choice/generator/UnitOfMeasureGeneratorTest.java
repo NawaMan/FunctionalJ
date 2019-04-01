@@ -203,7 +203,7 @@ public class UnitOfMeasureGeneratorTest {
                 "    }\n" + 
                 "    \n" + 
                 "    public static functionalj.types.choice.Temperature toTemperature() {\n" + 
-                "        return functionalj.types.choice.Self.getAsMe(TemperatureSpec.toTemperature());\n" + 
+                "        return functionalj.types.choice.Self.unwrap(TemperatureSpec.toTemperature());\n" + 
                 "    }\n" + 
                 "    public static functionalj.types.choice.Temperature.Fahrenheit toFahrenheit() {\n" + 
                 "        return TemperatureSpec.toFahrenheit();\n" + 

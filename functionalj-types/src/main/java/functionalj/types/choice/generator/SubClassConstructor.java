@@ -65,8 +65,8 @@ public class SubClassConstructor implements Lines {
         val paramCalls = choice.mapJoinParams(p ->                                   p.name, ", ");
         return asList(
                 format      ("public static final %1$s%2$s %3$s(%4$s) {", genericDef, name + targetClass.generics(), name, paramDefs),
-                isV ? format("    %1$s.%2$s(%3$s);",                       sourceName, validateName, paramCalls) : null,
-                format      ("    return new %1$s%2$s(%3$s);",             name, targetClass.generics(), paramCalls),
+                isV ? format("    %1$s.%2$s(%3$s);",                      sourceName, validateName, paramCalls) : null,
+                format      ("    return new %1$s%2$s(%3$s);",            name, targetClass.generics(), paramCalls),
                 format      ("}")
         );
     }

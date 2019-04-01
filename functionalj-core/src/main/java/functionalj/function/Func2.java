@@ -45,6 +45,7 @@ import functionalj.task.Task;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import lombok.val;
+import nawaman.nullablej.nullable.Nullable;
 
 /**
  * Function of two parameters.
@@ -102,6 +103,20 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     public default Result<OUTPUT> applyTo(Result<INPUT1> input1, Result<INPUT2> input2) {
         return Result.ofResults(input1, input2, this);
+    }
+    public default Optional<OUTPUT> applyTo(Optional<INPUT1> input1, Optional<INPUT2> input2) {
+        return input1.flatMap(i1 -> {
+            return input2.map(i2 -> {
+                return Func2.this.apply(i1, i2);
+            });
+        });
+    }
+    public default Nullable<OUTPUT> applyTo(Nullable<INPUT1> input1, Nullable<INPUT2> input2) {
+        return input1.flatMap(i1 -> {
+            return input2.map(i2 -> {
+                return Func2.this.apply(i1, i2);
+            });
+        });
     }
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2) {
         return Promise.from(input1, input2, this);

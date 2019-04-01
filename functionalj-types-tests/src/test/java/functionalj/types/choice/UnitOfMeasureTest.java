@@ -17,13 +17,13 @@ public class UnitOfMeasureTest {
         void Fahrenheit(double fahrenheit);
         
         default Temperature.Fahrenheit toFahrenheit(Self self) {
-            Temperature temp = self.asMe();
+            Temperature temp = self.unwrap();
             return temp.match()
                     .celsius   (c -> Temperature.Fahrenheit(c.celsius()*1.8 + 32.0))
                     .fahrenheit(f -> f);
         }
         default Temperature.Celsius toCelsius(Self self) {
-            Temperature temp = self.asMe();
+            Temperature temp = self.unwrap();
             return temp.match()
                     .celsius   (c -> c)
                     .fahrenheit(f -> Temperature.Celsius((f.fahrenheit() - 32.0)/1.8));
@@ -32,7 +32,7 @@ public class UnitOfMeasureTest {
     
     @Test
     public void test() {
-        val celsius = Celsius(0);
+        val celsius = Celsius(0.0);
         Assert.assertEquals("Celsius(0.0)",     "" + celsius);
         Assert.assertEquals("Fahrenheit(32.0)", "" + celsius.toFahrenheit());
         Assert.assertEquals("Celsius(0.0)",     "" + celsius.toCelsius());

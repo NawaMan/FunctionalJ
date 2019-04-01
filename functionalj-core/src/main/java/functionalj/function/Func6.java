@@ -37,6 +37,7 @@ import functionalj.result.Result;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple6;
 import lombok.val;
+import nawaman.nullablej.nullable.Nullable;
 
 /**
  * Function of five parameters.
@@ -99,6 +100,36 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
     }
     public default Result<OUTPUT> applyTo(Result<INPUT1> input1, Result<INPUT2> input2, Result<INPUT3> input3, Result<INPUT4> input4, Result<INPUT5> input5, Result<INPUT6> input6) {
         return Result.ofResults(input1, input2, input3, input4, input5, input6, this);
+    }
+    public default Optional<OUTPUT> applyTo(Optional<INPUT1> input1, Optional<INPUT2> input2, Optional<INPUT3> input3, Optional<INPUT4> input4, Optional<INPUT5> input5, Optional<INPUT6> input6) {
+        return input1.flatMap(i1 -> {
+            return input2.flatMap(i2 -> {
+                return input3.flatMap(i3 -> {
+                    return input4.flatMap(i4 -> {
+                        return input5.flatMap(i5 -> {
+                            return input6.map(i6 -> {
+                                return Func6.this.apply(i1, i2, i3, i4, i5, i6);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    }
+    public default Nullable<OUTPUT> applyTo(Nullable<INPUT1> input1, Nullable<INPUT2> input2, Nullable<INPUT3> input3, Nullable<INPUT4> input4, Nullable<INPUT5> input5, Nullable<INPUT6> input6) {
+        return input1.flatMap(i1 -> {
+            return input2.flatMap(i2 -> {
+                return input3.flatMap(i3 -> {
+                    return input4.flatMap(i4 -> {
+                        return input5.flatMap(i5 -> {
+                            return input6.map(i6 -> {
+                                return Func6.this.apply(i1, i2, i3, i4, i5, i6);
+                            });
+                        });
+                    });
+                });
+            });
+        });
     }
     public default Promise<OUTPUT> applyTo(HasPromise<INPUT1> input1, HasPromise<INPUT2> input2, HasPromise<INPUT3> input3, HasPromise<INPUT4> input4, HasPromise<INPUT5> input5, HasPromise<INPUT6> input6) {
         return Promise.from(input1, input2, input3, input4, input5, input6, this);

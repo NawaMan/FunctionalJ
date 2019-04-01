@@ -26,25 +26,50 @@ package functionalj.types.choice.generator.model;
 import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
+import functionalj.types.DefaultValue;
 import lombok.val;
 
 public class CaseParam {
     public final String  name;
     public final Type    type;
     public final boolean isNotNull;
+    public final DefaultValue defValue;
     
     public CaseParam(String name, Type type, boolean isNotNull) {
+        this(name, type, isNotNull, DefaultValue.REQUIRED);
+    }
+    
+    public CaseParam(String name, Type type, boolean isNotNull, DefaultValue defValue) {
         this.name = name;
         this.type = type;
         this.isNotNull = isNotNull;
+        this.defValue = defValue;
+    }
+    
+    static private functionalj.types.struct.generator.Type toStructType(Type choiceType) {
+        val encloseName = choiceType.encloseClass;
+        val simpleName  = choiceType.name;
+        val packageName = choiceType.pckg;
+        val generics    = choiceType.generics.stream()
+                        .map(g -> g.getBoundTypes().stream().findFirst().get())
+                        .map(t -> toStructType(t))
+                        .collect(toList());
+        val structType = new functionalj.types.struct.generator.Type(encloseName, simpleName, packageName, generics);
+        return structType;
+    }
+    
+    public String defaultValueCode() {
+        return (defValue == null) ? "null" : DefaultValue.defaultValueCode(toStructType(type), defValue);
     }
     
     public String toCode() {
         val params = asList(
                 toStringLiteral(name),
                 type.toCode(),
-                "" + isNotNull
+                "" + isNotNull,
+                (defValue == null) ? "null" : DefaultValue.defaultValueCode(toStructType(type), defValue)
         );
         return "new " + this.getClass().getCanonicalName() + "("
                 + params.stream().collect(joining(", "))
