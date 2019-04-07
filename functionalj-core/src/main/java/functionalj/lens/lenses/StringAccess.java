@@ -52,6 +52,10 @@ public interface StringAccess<HOST>
         return booleanAccess(true, str->str.trim().isEmpty());
     }
     
+    public default BooleanAccess<HOST> thatIsNotBlank() {
+        return booleanAccess(true, str->!str.trim().isEmpty());
+    }
+    
     // java.lang.String
     
     public default IntegerAccess<HOST> compareToIgnoreCase(String anotherString) {
@@ -135,6 +139,9 @@ public interface StringAccess<HOST>
     
     public default BooleanAccess<HOST> thatIsEmpty() {
         return booleanAccess(true, str->str.isEmpty());
+    }
+    public default BooleanAccess<HOST> thatIsNotEmpty() {
+        return booleanAccess(true, str->!str.isEmpty());
     }
     
     public default IntegerAccess<HOST> lastIndexOf(int ch) {

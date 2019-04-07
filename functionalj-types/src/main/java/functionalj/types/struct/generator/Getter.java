@@ -70,7 +70,7 @@ public class Getter {
         this.nullable  = nullable;
         this.defaultTo = (defaultValue != null) ? defaultValue : DefaultValue.REQUIRED;
         if (!nullable && (defaultTo == DefaultValue.NULL))
-            throw new IllegalArgumentException("Nullable field can't have null as a default: " + name);
+            throw new IllegalArgumentException("Non-nullable field can't have null as a default: " + name);
     }
     
     public boolean isRequired() {

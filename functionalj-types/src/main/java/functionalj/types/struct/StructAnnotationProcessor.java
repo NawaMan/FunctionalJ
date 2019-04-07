@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.types.struct;
 
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -61,9 +62,9 @@ import functionalj.types.Struct;
 import functionalj.types.common;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
+import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.StructBuilder;
 import functionalj.types.struct.generator.Type;
-import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
 
@@ -133,7 +134,9 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                                 + packageName + "." + specTargetName
                                 + ": "  + e.getMessage()
                                 + ":"   + e.getClass()
-                                + " @ " + e.getStackTrace()[0]);
+                                + stream(e.getStackTrace())
+                                    .map(st -> "\n    @" + st)
+                                    .collect(joining()));
             }
         }
         return hasError;
@@ -219,7 +222,9 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                             + packageName + "." + specTargetName
                             + ": "  + e.getMessage()
                             + ":"   + e.getClass()
-                            + " @ " + e.getStackTrace()[0]);
+                            + stream(e.getStackTrace())
+                                .map(st -> "\n    @" + st)
+                                .collect(joining()));
             return null;
         }
     }
@@ -259,7 +264,9 @@ public class StructAnnotationProcessor extends AbstractProcessor {
                             + packageName + "." + specTargetName
                             + ": "  + e.getMessage()
                             + ":"   + e.getClass()
-                            + " @ " + e.getStackTrace()[0]);
+                            + stream(e.getStackTrace())
+                                .map(st -> "\n    @" + st)
+                                .collect(joining()));
             return null;
         }
     }
@@ -285,9 +292,9 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             final functionalj.types.struct.generator.SourceSpec.Configurations configures) {
         if (!configures.generateNoArgConstructor)
             return true;
-        if (getters.stream().noneMatch(g->g.getDefaultTo() != DefaultValue.REQUIRED))
+        if (getters.stream().noneMatch(Getter::isRequired))
             return true;
-        val field = getters.stream().filter(g->g.isRequired()).findFirst().get().getName();
+        val field = getters.stream().filter(Getter::isRequired).findFirst().get().getName();
         error(element, "No arg constructor cannot be generate when at least one field is require: "
                         + packageName + "." + specTargetName + " -> field: " + field);
         return false;
@@ -297,17 +304,13 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         val name        = p.getSimpleName().toString();
         val type        = getType(element, p.asType());
         val isPrimitive = type.isPrimitive();
-        val isNullable  = (p.getAnnotation(Nullable.class) != null) ? true : false;
+        val isNullable  = ((p.getAnnotation(Nullable.class) != null) || (p.getAnnotation(DefaultTo.class) != null));
         val defTo       = (p.getAnnotation(DefaultTo.class) != null)
                         ? p.getAnnotation(DefaultTo.class).value()
                         : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
         val defValue = (DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(type) : defTo;
         if (!DefaultValue.isSuitable(type, defValue)) {
-            error(element, "Default value is not suitable for the type: " + type.fullName() + " -> DefaultTo " + defTo);
-            return null;
-        }
-        if (!isNullable && (defValue == DefaultValue.NULL)) {
-            error(element, "Default value cannot be null: " + type.fullName() + " -> DefaultTo " + defTo);
+            error(element, "Default value is not suitable for the type: " + type.fullName() + " -> DefaultTo " + defValue);
             return null;
         }
         val getter = new Getter(name, type, isNullable, defValue);
@@ -349,17 +352,13 @@ public class StructAnnotationProcessor extends AbstractProcessor {
             val methodName  = method.getSimpleName().toString();
             val returnType  = getType(element, method.getReturnType());
             val isPrimitive = returnType.isPrimitive();
-            val isNullable  = (element.getAnnotation(Nullable.class) != null) ? true : false;
-            val defTo       = (element.getAnnotation(DefaultTo.class) != null)
-                            ? element.getAnnotation(DefaultTo.class)
+            val isNullable  = ((method.getAnnotation(Nullable.class) != null) || (method.getAnnotation(DefaultTo.class) != null));
+            val defTo       = (method.getAnnotation(DefaultTo.class) != null)
+                            ? method.getAnnotation(DefaultTo.class).value()
                             : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
-            val defValue = (DefaultValue)((DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo);
+            val defValue = ((DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo);
             if (!DefaultValue.isSuitable(returnType, defValue)) {
                 error(element, "Default value is not suitable for the type: " + returnType.fullName() + " -> DefaultTo " + defTo);
-                return null;
-            }
-            if (!isNullable && (defValue == DefaultValue.NULL)) {
-                error(element, "Default value cannot be null: " + returnType.fullName() + " -> DefaultTo " + defTo);
                 return null;
             }
             val getter = new Getter(methodName, returnType, isNullable, defValue);

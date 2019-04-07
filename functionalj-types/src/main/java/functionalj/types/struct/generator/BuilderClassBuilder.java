@@ -243,7 +243,7 @@ public class BuilderClassBuilder {
             
             val nextGetter = getters.get(g + 1);
             
-            val nextBuilderName = "Builder_" + getters.stream().limit(index + 3).map(Getter::getName).collect(joining("_"));
+            val nextBuilderName = "Builder_" + getters.stream().limit(g + 2).map(Getter::getName).collect(joining("_"));
             val nextBuilderType = new Type(sourceSpec.getTargetClassName() + ".Builder", nextBuilderName, sourceSpec.getPackageName(), new String[0]);
             
             val line = (g == 0)

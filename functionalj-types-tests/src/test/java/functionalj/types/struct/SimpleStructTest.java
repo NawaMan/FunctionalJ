@@ -78,11 +78,6 @@ public class SimpleStructTest {
         assertEquals(1, list.stream().filter(theSimpleFromInteface.name.thatEquals("Obj2")).count());
     }
     
-    @Test(expected=NullPointerException.class)
-    public void testNoArgConstructor_null() {
-        new SimpleFromInteface().name();
-    }
-    
     @Test
     public void testDefaultMethod_callNormally() {
         assertEquals("OBJ1", new SimpleFromInteface("Obj1").nameUpperCase());
