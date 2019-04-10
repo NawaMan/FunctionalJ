@@ -3,7 +3,7 @@ package functionalj.map;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-import functionalj.function.Func1;
+import functionalj.function.Func2;
 
 abstract class MapAction<K, S, V> {
     
@@ -28,8 +28,8 @@ abstract class MapAction<K, S, V> {
         }
     }
     static class Mapping<K, S, V> extends MapAction<K, S, V> {
-        final Func1<? super S, ? extends V> mapper;
-        public Mapping(final Func1<? super S, ? extends V> mapper) {
+        final Func2<? super K, ? super S, ? extends V> mapper;
+        public Mapping(final Func2<? super K, ? super S, ? extends V> mapper) {
             this.mapper = mapper;
         }
     }

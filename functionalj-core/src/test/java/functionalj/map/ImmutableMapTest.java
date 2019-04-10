@@ -396,7 +396,7 @@ public class ImmutableMapTest {
     @Test
     public void testMap_Full() {
         val orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
-        val mapMap = orgMap.map(v -> ("Two".equals(v) ? "Du" : v));
+        val mapMap = orgMap.map((k,v) -> ("2".equals(k) ? "Du" : v));
         
         assertEquals("{1:One, 2:Two, 3:Three}", orgMap.toString());
         assertEquals("{1:One, 2:Du, 3:Three}",  mapMap.toString());
@@ -463,9 +463,6 @@ public class ImmutableMapTest {
         assertEquals("{1:One, 2:Du, 3:Three}",  "" + mapMap.sorted());
         assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sorted(reverseOrder()));
         assertEquals("{3:Three, 2:Du, 1:One}",  "" + mapMap.sorted(reverseOrder()));
-        
-        // TODO - Test filter for key+value
-        // TODO - Add map with key,value
     }
     
     @Test

@@ -33,13 +33,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import functionalj.function.Func1;
+import functionalj.function.Func2;
 import functionalj.list.FuncList;
 import functionalj.list.FuncListStream;
 import functionalj.map.MapAction.FilterBoth;
@@ -131,7 +132,7 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
                        .map(e -> {
                            val key = e.getKey();
                            val orgValue = e.getValue();
-                           val newValue = mapper.mapper.apply(orgValue);
+                           val newValue = mapper.mapper.apply(key, orgValue);
                            val newEntry = FuncMap.Entry.of(key, newValue);
                            return newEntry;
                        });
@@ -302,9 +303,8 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
         if (action instanceof Mapping) {
             val mapping = (Mapping<KEY, SOURCE, VALUE>)action;
             val mpapper = mapping.mapper;
-            return map
-                    .values().stream()
-                    .map     (v -> mpapper.apply(v))
+            return originalEntryStream()
+                    .map     (e -> mpapper.apply(e.getKey(), e.getValue()))
                     .anyMatch(v -> valueCheck.test(v));
         }
         
@@ -357,7 +357,7 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
                 return Optional.empty();
             }
             
-            val newValue = mapper.apply(orgValue);
+            val newValue = mapper.apply(key, orgValue);
             if (newValue == null) {
                 return Optional.empty();
             }
@@ -371,7 +371,8 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     @SuppressWarnings("unchecked")
     @Override
-    public VALUE get(Object key) {
+    public VALUE get(Object keyObj) {
+        KEY key = (KEY)keyObj;
         if (action instanceof With) {
             val with = (With<KEY,VALUE>)action;
             if (Objects.equals(key, with.key))
@@ -401,7 +402,7 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
                 return null;
             }
             
-            val newValue = mapper.apply(orgValue);
+            val newValue = mapper.apply(key, orgValue);
             if (newValue == null) {
                 return null;
             }
@@ -567,7 +568,14 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     @Override
     public <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
-        val mapped = new FuncMapStream<KEY, VALUE, TARGET>(this, new MapAction.Mapping<KEY, VALUE, TARGET>(Func1.from(mapper)));
+        return map((k, v)->mapper.apply(v));
+    }
+    
+    @Override
+    public <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
+        val mapFunc = Func2.from(mapper);
+        val mapping = new MapAction.Mapping<KEY, VALUE, TARGET>(mapFunc);
+        val mapped  = new FuncMapStream<KEY, VALUE, TARGET>(this, mapping);
         if (isEager()) {
             return mapped.toImmutableMap();
         }

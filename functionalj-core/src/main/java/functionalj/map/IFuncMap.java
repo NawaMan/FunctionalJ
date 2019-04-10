@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -85,7 +86,11 @@ public interface IFuncMap<KEY, VALUE, SELF extends IFuncMap<KEY, VALUE, ?>> {
     
     public FuncMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator);
     
-    public <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper);
+    public default <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
+        return map((k, v)->mapper.apply(v));
+    }
+    
+    public <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper);
     
     public void forEach(BiConsumer<? super KEY, ? super VALUE> action);
     
