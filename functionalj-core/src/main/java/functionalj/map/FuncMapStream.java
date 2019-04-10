@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.map;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.joining;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,44 +31,36 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.TreeMap;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import functionalj.function.Func2;
 import functionalj.list.FuncList;
 import functionalj.list.FuncListStream;
+import functionalj.map.MapAction.FilterBoth;
+import functionalj.map.MapAction.FilterKey;
+import functionalj.map.MapAction.Mapping;
+import functionalj.map.MapAction.With;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
-import functionalj.tuple.ImmutableTuple2;
-import functionalj.tuple.IntTuple2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
+public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
-    private static final Supplier<Stream<IntTuple2<ImmutableTuple2<?, ?>>>> EmptyStreamSupplier = ()->Stream.empty();
+    final Map<KEY, SOURCE> map;
     
-    private final FuncList<IntTuple2<ImmutableTuple2<KEY, VALUE>>> entries;
-    private final boolean isKeyComparable;
+    private final MapAction<KEY, SOURCE, VALUE> action;
     
-    FuncMapStream(Boolean isKeyComparable, FuncList<IntTuple2<ImmutableTuple2<KEY, VALUE>>> entries) {
-        // TODO - Thinking about sorting by hash to take advantage of binary search
-        this.entries         = entries;
-        this.isKeyComparable = (isKeyComparable != null)
-                ? isKeyComparable.booleanValue()
-                : entries.allMatch(entry -> 
-                    (entry._2._1 == null) || (entry._2._1 instanceof Comparable));
-    }
-    
-    private Integer calculateHash(Object key) {
-        return Optional.ofNullable(key)
-                .map   (Object::hashCode)
-                .orElse(0);
+    FuncMapStream(Map<KEY, SOURCE> map, MapAction<KEY, SOURCE, VALUE> action) {
+        this.map    = map;
+        this.action = action;
     }
     
     public boolean isLazy() {
@@ -82,24 +74,123 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
     public FuncMap<KEY, VALUE> lazy() {
         return this;
     }
-    @SuppressWarnings({ "unchecked", "rawtypes"})
     public FuncMap<KEY, VALUE> eager() {
-        Stream entries = this.entries.stream();
-        return new ImmutableMap<KEY, VALUE>(entries, false);
+        return new ImmutableMap<KEY, VALUE>(this, false);
+    }
+    
+    private Stream<Map.Entry<KEY, SOURCE>> originalEntryStream() {
+        Stream<Map.Entry<KEY, SOURCE>> stream
+            = (map instanceof FuncMap)
+            ? ((FuncMap<KEY, SOURCE>)map).entries()
+            : map.entrySet().stream();
+        return stream;
+    }
+    
+    @SuppressWarnings("unchecked")
+    StreamPlus<Map.Entry<KEY, VALUE>> entryStream() {
+        if (action instanceof With) {
+            val with = (With<KEY, VALUE>)action;
+            Stream<Map.Entry<KEY, VALUE>> entries 
+                    = originalEntryStream()
+                        .filter  (e -> !Objects.equals(e.getKey(), with.key))
+                        .map     (e -> (Map.Entry<KEY, VALUE>)e);
+            Stream<Map.Entry<KEY, VALUE>> combined = StreamPlus.concat(
+                entries,
+                Stream.of(FuncMap.Entry.of(with.key, with.value))
+            );
+            if (map instanceof TreeMap) {
+                val comparator = ((TreeMap<KEY, SOURCE>)map).comparator();
+                combined = combined.sorted((a, b) -> {
+                    val aKey = a.getKey();
+                    val bKey = b.getKey();
+                    return comparator.compare(aKey, bKey);
+                });
+            }
+            return StreamPlus.from(combined);
+        }
+        if (action instanceof FilterKey) {
+            val filter = (FilterKey<KEY, VALUE>)action;
+            Stream<Map.Entry<KEY, VALUE>> entries
+                    =  originalEntryStream()
+                        .filter  (e -> filter.keyCheck.test(e.getKey()))
+                        .map     (e -> (Map.Entry<KEY, VALUE>)e);
+            return StreamPlus.from(entries);
+        }
+        if (action instanceof FilterBoth) {
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            Stream<Map.Entry<KEY, VALUE>> entries
+                    = originalEntryStream()
+                       .map     (e -> (Map.Entry<KEY, VALUE>)e)
+                       .filter  (e -> check.test(e));
+            return StreamPlus.from(entries);
+        }
+        if (action instanceof Mapping) {
+            val mapper = (Mapping<KEY, SOURCE, VALUE>)action;
+            Stream<Map.Entry<KEY, VALUE>> entries
+                    = originalEntryStream()
+                       .map(e -> {
+                           val key = e.getKey();
+                           val orgValue = e.getValue();
+                           val newValue = mapper.mapper.apply(key, orgValue);
+                           val newEntry = FuncMap.Entry.of(key, newValue);
+                           return newEntry;
+                       });
+            return StreamPlus.from(entries);
+        }
+        
+        val source 
+                = originalEntryStream()
+                .map(e -> (Map.Entry<KEY, VALUE>)e);
+        return StreamPlus.from(source);
     }
     
     @Override
+    @SuppressWarnings("unchecked")
     public int size() {
-        return entries.size();
+        if (action instanceof With) {
+            val with = (With<KEY,SOURCE>)action;
+            if (map.containsKey(with.key))
+                return map.size();
+            
+            return map.size() + 1;
+        }
+        if (action instanceof FilterKey) {
+            val filter = (FilterKey<KEY, SOURCE>)action;
+            return (int)map.keySet().stream().filter(filter.keyCheck).count();
+        }
+        if (action instanceof FilterBoth) {
+            val filter = (FilterBoth<KEY, SOURCE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, SOURCE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            return (int)originalEntryStream()
+                    .filter(check)
+                    .count();
+        }
+        return map.size();
     }
     @Override
     public boolean isEmpty() {
-        return entries.isEmpty();
+        if (action instanceof With)
+            return false;
+        
+        // TODO - Find a faster way.
+        return size() == 0;
+    }
+    
+    public String toString() {
+        return "{" +
+                entryStream()
+                    .map(each -> each.getKey() + ":" + each.getValue())
+                    .collect(joining(", ")) +
+                "}";
     }
     
     @Override
     public int hashCode() {
-        return FuncMap.class.hashCode() + entries.hashCode();
+        int hashCode = entryStream()
+                .mapToInt(each -> Objects.hashCode(each.getKey())*37 + Objects.hashCode(each.getValue()))
+                .sum();
+        return 43 + FuncMap.class.hashCode() + hashCode;
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -108,9 +199,11 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
         if (!(o instanceof Map))
             return false;
         
+        // TODO - not efficient
+        // Try to use: entryStream()
         val thisMap = toImmutableMap();
         
-        val keyExist = ((Predicate<Object>)((Map)o)::containsKey).negate();
+        val keyExist = ((Predicate<KEY>)((Map)o)::containsKey).negate();
         val hasMissingKey = thisMap.keys().anyMatch(keyExist);
         if (hasMissingKey)
             return false;
@@ -119,7 +212,7 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
         if (thatMap.size() != thisMap.size())
             return false;
         
-        val matchEntry = (Predicate<? super ImmutableTuple2<KEY, VALUE>>)(t -> Objects.equals(thatMap.get(t._1), t._2));
+        val matchEntry = (Predicate<? super Map.Entry<KEY, VALUE>>)(t -> Objects.equals(thatMap.get(t.getKey()), t.getValue()));
         val allMatchValue 
                 = thisMap
                 .entries()
@@ -127,211 +220,324 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
         return allMatchValue;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public boolean hasKey(Predicate<? super KEY> keyCheck) {
-        return entries.anyMatch(entry -> keyCheck.test(entry._2._1));
+        if (action instanceof With) {
+            val with = (With<KEY,VALUE>)action;
+            if (keyCheck.test(with.key))
+                return true;
+        }
+        if (action instanceof FilterKey) {
+            val filter = (FilterKey<KEY, VALUE>)action;
+            return map
+                    .keySet  ().stream()
+                    .filter  (filter.keyCheck)
+                    .anyMatch(keyCheck);
+        }
+        if (action instanceof FilterBoth) {
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            return originalEntryStream()
+                    .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
+                    .anyMatch(e -> keyCheck.test(e.getKey()));
+        }
+        
+        return map
+                .keySet().stream()
+                .anyMatch(keyCheck);
     }
-
-    @Override
-    public boolean hasValue(Predicate<? super VALUE> valueCheck) {
-        return entries.anyMatch(entry -> valueCheck.test(entry._2._2));
-    }
+    
+    @SuppressWarnings("unchecked")
     @Override
     public boolean hasKey(KEY key) {
-        return containsKey(key);
+        if (action instanceof With) {
+            val with = (With<KEY,VALUE>)action;
+            if (Objects.equals(key, with.key))
+                return true;
+        }
+        if (action instanceof FilterKey) {
+            val filter = (FilterKey<KEY, VALUE>)action;
+            if (!filter.keyCheck.test(key))
+                return false;
+        }
+        if (action instanceof FilterBoth) {
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            return originalEntryStream()
+                    .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
+                    .anyMatch(e -> Objects.equals(e.getKey(), key));
+        }
+        
+        return map.containsKey(key);
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean containsKey(Object key) {
+        return hasKey((KEY)key);
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean hasValue(Predicate<? super VALUE> valueCheck) {
+        if (action instanceof With) {
+            val with = (With<KEY,VALUE>)action;
+            if (valueCheck.test(with.value))
+                return true;
+        }
+        
+        if (action instanceof FilterKey) {
+            val filter = (FilterKey<KEY, SOURCE>)action;
+            return originalEntryStream()
+                    .filter  (e -> filter.keyCheck.test(e.getKey()))
+                    .anyMatch(e -> valueCheck.test((VALUE)e.getValue()));
+        }
+        if (action instanceof FilterBoth) {
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            return originalEntryStream()
+                    .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
+                    .anyMatch(e -> valueCheck.test((VALUE)e.getValue()));
+        }
+        if (action instanceof Mapping) {
+            val mapping = (Mapping<KEY, SOURCE, VALUE>)action;
+            val mpapper = mapping.mapper;
+            return originalEntryStream()
+                    .map     (e -> mpapper.apply(e.getKey(), e.getValue()))
+                    .anyMatch(v -> valueCheck.test(v));
+        }
+        
+        return map
+                .values().stream()
+                .map     (v -> ((VALUE)v))
+                .anyMatch(v -> valueCheck.test(v));
     }
     
     @Override
     public boolean hasValue(VALUE value) {
-        return containsValue(value);
+        return hasValue(v -> Objects.equals(v, value));
     }
     
-    @Override
-    public boolean containsKey(Object key) {
-        val keyHash = calculateHash(key);
-        return StreamPlus.Helper.hasAt(
-                entries
-                    .filter(entry -> entry._int() == keyHash)
-                    .filter(entry -> Objects.equals(key, entry._2._1))
-                    .stream(),
-                0L);
-    }
-    
+    @SuppressWarnings("unchecked")
     @Override
     public boolean containsValue(Object value) {
-        return StreamPlus.Helper.hasAt(
-                entries
-                    .filter(entry -> Objects.equals(value, entry._2._2))
-                    .stream(),
-                0L);
+        return hasValue((VALUE)value);
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public Optional<VALUE> findBy(KEY key) {
-        val keyHash = calculateHash(key);
-        return entries
-                .filter (entry -> entry._int() == keyHash)
-                .filter (entry -> Objects.equals(entry._2._1, key))
-                .map    (entry -> entry._2()._2())
-                .findAny();
+        if (action instanceof With) {
+            val with = (With<KEY,VALUE>)action;
+            if (Objects.equals(key, with.key))
+                return Optional.ofNullable(with.value);
+        }
+        if (action instanceof FilterKey) {
+            val filter = (FilterKey<KEY, VALUE>)action;
+            if (!filter.keyCheck.test(key))
+                return Optional.empty();
+        }
+        if (action instanceof FilterBoth) {
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            
+            val hasKey = originalEntryStream()
+                    .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
+                    .anyMatch(e -> Objects.equals(e.getKey(), key));
+            if (!hasKey)
+                return Optional.empty();
+        }
+        if (action instanceof Mapping) {
+            val mapping = (Mapping<KEY, SOURCE, VALUE>)action;
+            val mapper  = mapping.mapper;
+            
+            val orgValue = map.get(key);
+            if (orgValue == null) {
+                return Optional.empty();
+            }
+            
+            val newValue = mapper.apply(key, orgValue);
+            if (newValue == null) {
+                return Optional.empty();
+            }
+            return Optional.of(newValue);
+        }
+        
+        val value = map.get(key);
+        return Optional
+                .ofNullable((VALUE)value);
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public VALUE get(Object key) {
-        val keyHash = calculateHash(key);
-        return entries
-                .filter (entry -> entry._int() == keyHash)
-                .filter (entry -> Objects.equals(entry._2._1, key))
-                .map    (entry -> entry._2._2)
-                .findAny()
-                .orElse (null);
+    public VALUE get(Object keyObj) {
+        KEY key = (KEY)keyObj;
+        if (action instanceof With) {
+            val with = (With<KEY,VALUE>)action;
+            if (Objects.equals(key, with.key))
+                return with.value;
+        }
+        if (action instanceof FilterKey) {
+            val filter = (FilterKey<KEY, VALUE>)action;
+            if (!filter.keyCheck.test((KEY)key))
+                return null;
+        }
+        if (action instanceof FilterBoth) {
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            
+            val hasKey = originalEntryStream()
+                    .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
+                    .anyMatch(e -> Objects.equals(e.getKey(), key));
+            if (!hasKey)
+                return null;
+        }
+        if (action instanceof Mapping) {
+            val mapping = (Mapping<KEY, SOURCE, VALUE>)action;
+            val mapper  = mapping.mapper;
+            
+            val orgValue = map.get(key);
+            if (orgValue == null) {
+                return null;
+            }
+            
+            val newValue = mapper.apply(key, orgValue);
+            if (newValue == null) {
+                return null;
+            }
+            return newValue;
+        }
+        
+        val value = (VALUE)map.get(key);
+        return value;
     }
     
     @Override
     public VALUE getOrDefault(Object key, VALUE orElse) {
-        val keyHash = calculateHash(key);
-        return entries
-                .filter (entry -> entry._int() == keyHash)
-                .filter (entry -> Objects.equals(key, entry._2._1))
-                .map    (entry -> entry._2._2)
-                .findAny()
-                .orElse (orElse);
+        VALUE v;
+        return (((v = get(key)) != null) || containsKey(key))
+            ? v
+            : orElse;
     }
     
     @Override
     public FuncList<VALUE> select(Predicate<? super KEY> keyPredicate) {
-        return entries
-                .filter(entry -> keyPredicate.test(entry._2._1))
-                .map   (entry -> entry._2._2);
+        return entryStream()
+                .filter(Map.Entry::getKey, keyPredicate)
+                .map   (Map.Entry::getValue)
+                .toList();
     }
     
     @Override
-    public FuncList<ImmutableTuple2<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate) {
-        return entries
-                .filter(entry -> keyPredicate.test(entry._2._1))
-                .map   (entry -> entry._2);
+    public FuncList<Map.Entry<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate) {
+        return entryStream()
+                .filter(Map.Entry::getKey, keyPredicate)
+                .map(e -> (Map.Entry<KEY, VALUE>)e)
+                .toList();
     }
     
     @Override
     public FuncMap<KEY, VALUE> with(KEY key, VALUE value) {
-        // Find the way to put in it in the same location.
-        int keyHash    = calculateHash(key);
-        val valueEntry = new ImmutableTuple2<KEY, VALUE>(key, value);
-        val mapEntry   = new IntTuple2<ImmutableTuple2<KEY, VALUE>>(keyHash, valueEntry);
-        val newEntries = entries
-                            .filter(entry -> !Objects.equals(key, entry._2._1))
-                            .append(mapEntry);
-        val newIsKeyComparable = isKeyComparable && ((key == null) || (key instanceof Comparable));
-        return derivedWith(newIsKeyComparable, newEntries);
+        val action = new With<KEY, VALUE>(key, value);
+        return new FuncMapStream<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
     public FuncMap<KEY, VALUE> withAll(Map<? extends KEY, ? extends VALUE> entries) {
+        // TODO: Find the way to do it
         val newMap = new HashMap<>(this.toMap());
         newMap.putAll(entries);
         return ImmutableMap.of(newMap);
     }
     
     @Override
-    public FuncMap<KEY, VALUE> defaultTo(KEY key, VALUE value) {
-        return defaultBy(key, oldValue -> value);
-    }
-    
-    @Override
-    public FuncMap<KEY, VALUE> defaultBy(KEY key, Supplier<VALUE> valueSupplier) {
-        return defaultBy(key, oldValue -> valueSupplier.get());
-    }
-    
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
-    public FuncMap<KEY, VALUE> defaultBy(KEY key, Function<KEY, VALUE> valueFunction) {
-        int keyHash = calculateHash(key);
-        val newIsKeyComparable = isKeyComparable && ((key == null) || (key instanceof Comparable));
-        val streamable = (Streamable)(() -> {
-                AtomicReference<Supplier<Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>>>> ref = new AtomicReference<>(()->{
-                        val valueEntry = new ImmutableTuple2<KEY, VALUE>(key, valueFunction.apply(key));
-                        val mapEntry   = new IntTuple2<ImmutableTuple2<KEY, VALUE>>(keyHash, valueEntry);
-                        return Stream.of(mapEntry);
-                    });
-                    val main = new AtomicReference<Supplier<Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>>>>(()->{
-                        Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>> stream = entries
-                        .filter(entry -> {
-                            boolean found = (entry._1 == keyHash) && Objects.equals(key, entry._2._1);
-                            if (found) {
-                                ref.set((Supplier<Stream<IntTuple2<ImmutableTuple2<KEY, VALUE>>>>)(Supplier)EmptyStreamSupplier);
-                            }
-                            return true;
-                        }).stream();
-                        return stream;
-                    });
-                    return (StreamPlus<IntTuple2<ImmutableTuple2<KEY, VALUE>>>)StreamPlus.of(main, ref).
-                            flatMap(each -> each.get().get());
-                });
-        return derivedWith(newIsKeyComparable, FuncListStream.from(streamable));
-    }
-    
-    @Override
-    public FuncMap<KEY, VALUE> defaultTo(Map<? extends KEY, ? extends VALUE> entries) {
-        return null;
-    }
-    
-    @Override
     public FuncMap<KEY, VALUE> exclude(KEY key) {
-        return derivedWith(isKeyComparable,
-                entries
-                    .filter(entry -> !Objects.equals(key, entry._2._1)));
+        val action = new FilterKey<KEY, VALUE>(k -> !Objects.equals(k, key));
+        return new FuncMapStream<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
     public FuncMap<KEY, VALUE> filter(Predicate<? super KEY> keyCheck) {
-        return derivedWith(isKeyComparable, 
-                entries
-                    .filter(entry -> keyCheck.test(entry._2._1)));
+        val action = new FilterKey<KEY, VALUE>(keyCheck);
+        return new FuncMapStream<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
     public FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck) {
-        return derivedWith(isKeyComparable, 
-                entries
-                    .filter(entry -> entryCheck.test(entry._2._1, entry._2._2)));
+        val action = new FilterBoth<KEY, VALUE>(entryCheck);
+        return new FuncMapStream<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
-    public FuncMap<KEY, VALUE> filterByEntry(Predicate<Entry<? super KEY, ? super VALUE>> entryCheck) {
-        return derivedWith(isKeyComparable, 
-                entries
-                    .filter(entry -> entryCheck.test(entry._2)));
+    public FuncMap<KEY, VALUE> filterByEntry(Predicate<? super Map.Entry<? super KEY, ? super VALUE>> entryCheck) {
+        val action = new FilterBoth<KEY, VALUE>((k, v) -> entryCheck.test(FuncMap.Entry.of(k,  v)));
+        return new FuncMapStream<KEY, VALUE, VALUE>(this, action);
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public FuncList<KEY> keys() {
-        return new FuncListStream<>(
-                entries.map(each -> each._2._1));
+        if (action instanceof With) {
+            val with   = (With<KEY,VALUE>)action;
+            val source = Streamable.from(()->{
+                StreamPlus<KEY> stream = StreamPlus.concat(
+                    map.keySet().stream()
+                       .filter(k -> !Objects.equals(k, with.key)),
+                   Stream.of(with.key)
+                );
+                if (map instanceof TreeMap) {
+                    val treeMap    = (TreeMap<KEY, SOURCE>)map;
+                    val comparator = treeMap.comparator();
+                    stream = stream.sorted(comparator);
+                }
+                return stream;
+            });
+            return FuncListStream.from(source);
+        }
+        if (action instanceof FilterKey) {
+            val filter = (FilterKey<KEY, VALUE>)action;
+            val source = (Streamable<KEY>)(()->StreamPlus.from(map.keySet().stream().filter(filter.keyCheck)));
+            return FuncListStream.from(source);
+        }
+        if (action instanceof FilterBoth) {
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            val source = (Streamable<KEY>)(()->{
+                
+                return StreamPlus.from(
+                        originalEntryStream()
+                                .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
+                                .map     (Map.Entry::getKey));
+            });
+            return FuncListStream.from(source);
+        }
+        
+        return FuncListStream.from(()->map.keySet().stream());
     }
     
     @Override
     public FuncList<VALUE> values() {
-        return new FuncListStream<>(
-                entries.map(each -> each._2._2));
+        return FuncListStream.from(()->entryStream().map(Map.Entry::getValue));
     }
     
     @Override
     public Set<KEY> keySet() {
-        return entries
-                .map(each -> each._2._1)
-                .collect(toSet());
+        if (action != null)
+            return keys().toSet();
+        
+        return map.keySet();
     }
     
     @Override
-    public Set<Entry<KEY, VALUE>> entrySet() {
-        return entries
-                .map    (each -> each._2)
-                .collect(toSet());
+    public Set<Map.Entry<KEY, VALUE>> entrySet() {
+        return entryStream()
+                .toSet();
     }
     @Override
-    public FuncList<ImmutableTuple2<KEY, VALUE>> entries() {
-        return new FuncListStream<>(
-                entries.map(each -> each._2));
+    public FuncList<Map.Entry<KEY, VALUE>> entries() {
+        return entryStream()
+                .toList();
     }
     
     @Override
@@ -345,57 +551,51 @@ public class FuncMapStream<KEY, VALUE> extends FuncMap<KEY, VALUE> {
     }
     
     @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public FuncMap<KEY, VALUE> sorted() {
-        if (isKeyComparable) {
-            return derivedWith(isKeyComparable, 
-                    entries.sorted((t1,t2)-> {
-                        val k1 = t1._2._1;
-                        val k2 = t2._2._1;
-                        if (k1 == k2)
-                            return 0;
-                        if (k1 == null)
-                            return -1;
-                        if (k2 == null)
-                            return 1;
-                        return ((Comparable)k1).compareTo(k2);
-                    }));
-        }
-        
-        return new FuncMapStream<>(isKeyComparable, 
-                entries
-                .sorted((t1,t2)->t1._int() - t2._int()));
+        val map = new TreeMap<KEY, VALUE>();
+        entryStream()
+            .forEach(e -> map.put(e.getKey(), e.getValue()));
+        return new ImmutableMap<KEY, VALUE>(map, isLazy());
     }
     
     @Override
     public FuncMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator) {
-        return derivedWith(isKeyComparable, 
-                entries
-                .sorted((t1,t2)->comparator.compare(t1._2._1, t2._2._1)));
+        val map = new TreeMap<KEY, VALUE>(comparator);
+        entryStream()
+            .forEach(e -> map.put(e.getKey(), e.getValue()));
+        return new ImmutableMap<KEY, VALUE>(map, isLazy());
     }
     
     @Override
     public <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
-        return derivedWith(isKeyComparable, 
-                entries
-                .map(intTuple -> 
-                    new IntTuple2<>(intTuple._1, 
-                            new ImmutableTuple2<>(intTuple._2._1, 
-                                    mapper.apply(intTuple._2._2)))));
+        return map((k, v)->mapper.apply(v));
+    }
+    
+    @Override
+    public <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
+        val mapFunc = Func2.from(mapper);
+        val mapping = new MapAction.Mapping<KEY, VALUE, TARGET>(mapFunc);
+        val mapped  = new FuncMapStream<KEY, VALUE, TARGET>(this, mapping);
+        if (isEager()) {
+            return mapped.toImmutableMap();
+        }
+        return mapped;
     }
     
     @Override
     public void forEach(BiConsumer<? super KEY, ? super VALUE> action) {
-        entries
-            .map(entry -> entry._2)
-            .forEach(entry -> action.accept(entry._1, entry._2));
+        entryStream()
+        .forEach(entry -> {
+            val key   = entry.getKey();
+            val value = entry.getValue();
+            action.accept(key, value);
+        });
     }
     
     @Override
     public void forEach(Consumer<? super Map.Entry<? super KEY, ? super VALUE>> action) {
-        entries
-        .map(entry -> entry._2)
-        .forEach(entry -> action.accept(entry));
+        entryStream()
+        .forEach(action);
     }
-
+    
 }

@@ -85,7 +85,7 @@ public class FuncMapTest {
                 6, "Six",
                 7, "Seven");
         val value = map.map(i -> counter.getAndIncrement()).entries().limit(4).joinToString(", ");
-        assertStrings("(1,0), (2,1), (3,2), (4,3)", value);
+        assertStrings("1=0, 2=1, 3=2, 4=3", value);
         assertStrings("4",                          counter.get());
     }
     
@@ -104,8 +104,8 @@ public class FuncMapTest {
         val value = map
                 .map(i -> counter.getAndIncrement())
                 .entries().limit(4).joinToString(", ");
-        assertStrings("(1,0), (2,1), (3,2), (4,3)", value);
-        assertStrings("7",                          counter.get());
+        assertStrings("1=0, 2=1, 3=2, 4=3", value);
+        assertStrings("7",                  counter.get());
     }
     
 }
