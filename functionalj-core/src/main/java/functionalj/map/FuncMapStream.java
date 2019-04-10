@@ -567,7 +567,7 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     }
     
     @Override
-    public <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
+    public <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, ? extends TARGET> mapper) {
         return map((k, v)->mapper.apply(v));
     }
     

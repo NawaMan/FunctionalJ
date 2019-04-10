@@ -469,8 +469,8 @@ public class ImmutableMapTest {
     public void testMap_thenFilter() {
         val orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
         val newMap = orgMap
-                        .map(v -> ("Two".equals(v) ? "Du" : v))
-                        .filter((k, v)->Objects.equals(k, "2") && Objects.equals(v, "Du"));
+                        .map   ((k, v) -> ("Two".equals(v) ? "Du" : v))
+                        .filter((k, v) -> Objects.equals(k, "2") && Objects.equals(v, "Du"));
         
         assertEquals("{1:One, 2:Two, 3:Three}", orgMap.toString());
         assertEquals("{2:Du}",                  newMap.toString());
