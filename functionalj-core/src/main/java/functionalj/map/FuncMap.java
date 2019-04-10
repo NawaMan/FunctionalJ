@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -610,7 +611,10 @@ public abstract class FuncMap<KEY, VALUE>
     public abstract FuncMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator);
     
     @Override
-    public abstract <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper);
+    public abstract <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, ? extends TARGET> mapper);
+    
+    @Override
+    public abstract <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper);
     
     @Override
     public abstract void forEach(BiConsumer<? super KEY, ? super VALUE> action);

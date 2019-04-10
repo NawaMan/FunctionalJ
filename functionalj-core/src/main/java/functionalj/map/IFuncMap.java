@@ -86,7 +86,7 @@ public interface IFuncMap<KEY, VALUE, SELF extends IFuncMap<KEY, VALUE, ?>> {
     
     public FuncMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator);
     
-    public default <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
+    public default <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, ? extends TARGET> mapper) {
         return map((k, v)->mapper.apply(v));
     }
     

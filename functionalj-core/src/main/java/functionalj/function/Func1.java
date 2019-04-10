@@ -122,7 +122,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     }
     // Should make it just Map
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT> input) {
-        return input.map(this);
+        return input.mapValue(this);
     }
     public default Func0<OUTPUT> applyTo(Supplier<INPUT> input) {
         return ()->apply(input.get());

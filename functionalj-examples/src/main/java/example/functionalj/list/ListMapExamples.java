@@ -91,8 +91,8 @@ public class ListMapExamples {
     public void exampleFunctional() {
         val list = FuncList.of("I", "Me", "Myself");
         val map  = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
-        assertEquals("[1, 2, 6]",          list.map(String::length).toString());
-        assertEquals("{One:1, PI:3, E:3}", map .map(Math::round)   .toString());
+        assertEquals("[1, 2, 6]",          list.map     (String::length).toString());
+        assertEquals("{One:1, PI:3, E:3}", map .mapValue(Math::round)   .toString());
     }
     
     @Test
