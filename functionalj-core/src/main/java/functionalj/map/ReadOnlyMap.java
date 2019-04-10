@@ -35,48 +35,48 @@ public interface ReadOnlyMap<KEY, VALUE> extends Map<KEY, VALUE> {
     
     @Override
     public int size();
-
+    
     @Override
     public default boolean isEmpty() {
         return size() == 0;
     }
-
+    
     @Override
     public Set<KEY> keySet();
-
+    
     @Override
     public Collection<VALUE> values();
-
+    
     @Override
     public Set<Entry<KEY, VALUE>> entrySet() ;
-
+    
     @Override
     public boolean containsKey(Object key);
-
+    
     @Override
     public boolean containsValue(Object value);
-
+    
     @Override
     public VALUE get(Object key);
     
     @Override
     public VALUE getOrDefault(Object key, VALUE defaultValue);
-
+    
     @Override
     public default VALUE put(KEY key, VALUE value) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default VALUE remove(Object key) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default void putAll(Map<? extends KEY, ? extends VALUE> m) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public default void clear() {
         throw new UnsupportedOperationException();

@@ -152,6 +152,12 @@ public abstract class Ref<DATA> {
     public final DATA orElse(DATA elseValue) {
         return getResult().orElse(elseValue);
     }
+    public final DATA orGet(Supplier<DATA> elseValue) {
+        return getResult().orElseGet(elseValue);
+    }
+    public final DATA orElseGet(Supplier<DATA> elseValue) {
+        return getResult().orElseGet(elseValue);
+    }
     public final <TARGET> Func0<TARGET> then(Func1<DATA, TARGET> mapper) {
         return this
                 .valueSupplier()

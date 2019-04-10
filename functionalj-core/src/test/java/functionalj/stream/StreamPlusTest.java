@@ -26,6 +26,9 @@ package functionalj.stream;
 import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
+import static functionalj.map.FuncMap.underlineMap;
+import static functionalj.map.FuncMap.UnderlineMap.LinkedHashMap;
+import static functionalj.ref.Run.With;
 import static functionalj.stream.StreamPlus.noMoreElement;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static functionalj.stream.ZipWithOption.RequireBoth;
@@ -385,18 +388,25 @@ public class StreamPlusTest {
     
     @Test
     public void testFizzBuzz() {
-        val stream = StreamPlus.infiniteInt().limit(20);
+        val stream  = StreamPlus.infiniteInt().limit(20);
+        val toString = 
+                With(underlineMap.butWith(LinkedHashMap))
+                .run(()->{
+                    val splited 
+                            = stream
+                            .split(
+                                "FizzBuzz", i -> i % (3*5) == 0,
+                                "Buzz",     i -> i % 5     == 0,
+                                "Fizz",     i -> i % 3     == 0,
+                                null);
+                    return splited.toString();
+                });
         assertEquals("{"
                 + "FizzBuzz:[0, 15], "
                 + "Buzz:[5, 10], "
-                + "Fizz:[3, 6, 9, 12, 18]}", 
-                stream
-                    .split(
-                        "FizzBuzz", i -> i % (3*5) == 0,
-                        "Buzz",     i -> i % 5     == 0,
-                        "Fizz",     i -> i % 3     == 0,
-                        null)
-                    .toString());
+                + "Fizz:[3, 6, 9, 12, 18], "
+                + "null:[]}", 
+                toString);
     }
     
     //== Plus w/ Self ==

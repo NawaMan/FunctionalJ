@@ -25,9 +25,11 @@ package functionalj.map;
 
 import static functionalj.function.Func.it;
 import static functionalj.stream.ZipWithOption.RequireBoth;
+import static java.util.Arrays.stream;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -35,15 +37,15 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.function.Func0;
 import functionalj.function.Func2;
 import functionalj.list.FuncList;
+import functionalj.ref.Ref;
 import functionalj.stream.ZipWithOption;
-import functionalj.tuple.ImmutableTuple2;
-import functionalj.tuple.IntTuple2;
+import functionalj.tuple.Tuple2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -52,356 +54,473 @@ public abstract class FuncMap<KEY, VALUE>
                         ReadOnlyMap<KEY, VALUE>, 
                         IFuncMap<KEY, VALUE, FuncMap<KEY, VALUE>> {
     
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> empty() {
-        return new ImmutableMap<KEY, VALUE>(Stream.empty());
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static enum UnderlineMap {
+        HashMap      (java.util.HashMap::new),
+        LinkedHashMap(java.util.LinkedHashMap::new),
+        TreeMap      (java.util.TreeMap::new);
+        
+        private final Func0<Map> newMap;
+        private UnderlineMap(Func0<Map> newMap) {
+            this.newMap = newMap;
+        }
+        <K, V> Map<K, V> newMap() {
+            return (Map<K, V>)newMap.apply();
+        }
     }
     
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(Map<? extends KEY, ? extends VALUE> map) {
-        return new ImmutableMap<KEY, VALUE>(map.entrySet().stream());
+    public static Ref<UnderlineMap> underlineMap = Ref.ofValue(UnderlineMap.HashMap);
+    
+    public static class Entry<KEY, VALUE> implements Map.Entry<KEY, VALUE>, Tuple2<KEY, VALUE> {
+        
+        private final KEY   key;
+        private final VALUE value;
+        
+        public static <K, V> Entry<K, V> of(K key, V value) {
+            return new Entry<K, V>(key, value);
+        }
+        public static <K, V> Entry<K, V> of(Map.Entry<K, V> entry) {
+            if (entry == null)
+                return null;
+            
+            if (entry instanceof Entry)
+                return (Entry<K, V>)entry;
+            
+            K key   = entry.getKey();
+            V value = entry.getValue();
+            return new Entry<K, V>(key, value);
+        }
+        
+        public Entry(KEY key, VALUE value) {
+            this.key = key;
+            this.value = value;
+        }
+        @Override
+        public final KEY _1() {
+            return key;
+        }
+        @Override
+        public final VALUE _2() {
+            return value;
+        }
+        @Override
+        public final KEY getKey() {
+            return key;
+        }
+        @Override
+        public final VALUE getValue() {
+            return value;
+        }
+        @Override
+        public final VALUE setValue(VALUE value) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public final String toString() {
+            return key + "=" + value;
+        }
+        @Override
+        public final int hashCode() {
+            return Entry.class.hashCode() + Objects.hash(key, value);
+        }
+        @SuppressWarnings("unchecked")
+        @Override
+        public final boolean equals(Object obj) {
+            if (obj == this)
+                return true;
+            
+            if (!(obj instanceof Entry))
+                return false;
+            
+            val entry = (Entry<KEY, VALUE>)obj;
+            return Objects.equals(entry.getKey(),   key)
+                && Objects.equals(entry.getValue(), value);
+        }
+        
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(Stream<? extends Map.Entry<? extends KEY, ? extends VALUE>> stream) {
-        return new ImmutableMap<KEY, VALUE>(stream);
+    
+    public static <K, V> ImmutableMap<K, V> empty() {
+        return ImmutableMap.empty();
+    }
+    
+    public static <K, V> ImmutableMap<K, V> of(Map<? extends K, ? extends V> map) {
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> of(Stream<? extends Map.Entry<? extends K, ? extends V>> stream) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        stream
+        .forEach(entry -> map.put(entry.getKey(), entry.getValue()));
+        return new ImmutableMap<K, V>(map);
     }
     
     @SafeVarargs
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> ofEntries(ImmutableTuple2<KEY, VALUE> ... entries) {
-        return new ImmutableMap<KEY, VALUE>(Stream.of(entries));
+    public static <K, V> ImmutableMap<K, V> ofEntries(Map.Entry<K, V> ... entries) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        stream(entries)
+            .forEach(entry -> map.putIfAbsent(entry.getKey(), entry.getValue()));
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0) {
-        return ofEntries(new ImmutableTuple2<KEY, VALUE>(key0, value0));
-    }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1));
-    }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2));
-    }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3));
-    }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4));
-    }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5));
-    }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5,
-            KEY key6, VALUE value6) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5),
-                new ImmutableTuple2<KEY, VALUE>(key6, value6));
-    }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5,
-            KEY key6, VALUE value6,
-            KEY key7, VALUE value7) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5),
-                new ImmutableTuple2<KEY, VALUE>(key6, value6),
-                new ImmutableTuple2<KEY, VALUE>(key7, value7));
-    }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5,
-            KEY key6, VALUE value6,
-            KEY key7, VALUE value7,
-            KEY key8, VALUE value8) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5),
-                new ImmutableTuple2<KEY, VALUE>(key6, value6),
-                new ImmutableTuple2<KEY, VALUE>(key7, value7),
-                new ImmutableTuple2<KEY, VALUE>(key8, value8));
-    }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5,
-            KEY key6, VALUE value6,
-            KEY key7, VALUE value7,
-            KEY key8, VALUE value8,
-            KEY key9, VALUE value9) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5),
-                new ImmutableTuple2<KEY, VALUE>(key6, value6),
-                new ImmutableTuple2<KEY, VALUE>(key7, value7),
-                new ImmutableTuple2<KEY, VALUE>(key8, value8),
-                new ImmutableTuple2<KEY, VALUE>(key9, value9));
-    }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> of(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5,
-            KEY key6, VALUE value6,
-            KEY key7, VALUE value7,
-            KEY key8, VALUE value8,
-            KEY key9, VALUE value9,
-            KEY key10, VALUE value10) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5),
-                new ImmutableTuple2<KEY, VALUE>(key6, value6),
-                new ImmutableTuple2<KEY, VALUE>(key7, value7),
-                new ImmutableTuple2<KEY, VALUE>(key8, value8),
-                new ImmutableTuple2<KEY, VALUE>(key9, value9),
-                new ImmutableTuple2<KEY, VALUE>(key10, value10));
+    @SafeVarargs
+    public static <K, V> ImmutableMap<K, V> ofTuples(Tuple2<K, V> ... entries) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        stream(entries)
+            .forEach(entry -> map.putIfAbsent(entry._1(), entry._2()));
+        return new ImmutableMap<K, V>(map);
     }
     
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0) {
-        return ofEntries(new ImmutableTuple2<KEY, VALUE>(key0, value0));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0,
+            K key1, V value1) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5,
-            KEY key6, VALUE value6) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5),
-                new ImmutableTuple2<KEY, VALUE>(key6, value6));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5,
+            K key6, V value6) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        map.putIfAbsent(key6, value6);
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5,
-            KEY key6, VALUE value6,
-            KEY key7, VALUE value7) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5),
-                new ImmutableTuple2<KEY, VALUE>(key6, value6),
-                new ImmutableTuple2<KEY, VALUE>(key7, value7));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5,
+            K key6, V value6,
+            K key7, V value7) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        map.putIfAbsent(key6, value6);
+        map.putIfAbsent(key7, value7);
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5,
-            KEY key6, VALUE value6,
-            KEY key7, VALUE value7,
-            KEY key8, VALUE value8) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5),
-                new ImmutableTuple2<KEY, VALUE>(key6, value6),
-                new ImmutableTuple2<KEY, VALUE>(key7, value7),
-                new ImmutableTuple2<KEY, VALUE>(key8, value8));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5,
+            K key6, V value6,
+            K key7, V value7,
+            K key8, V value8) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        map.putIfAbsent(key6, value6);
+        map.putIfAbsent(key7, value7);
+        map.putIfAbsent(key8, value8);
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5,
-            KEY key6, VALUE value6,
-            KEY key7, VALUE value7,
-            KEY key8, VALUE value8,
-            KEY key9, VALUE value9) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5),
-                new ImmutableTuple2<KEY, VALUE>(key6, value6),
-                new ImmutableTuple2<KEY, VALUE>(key7, value7),
-                new ImmutableTuple2<KEY, VALUE>(key8, value8),
-                new ImmutableTuple2<KEY, VALUE>(key9, value9));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5,
+            K key6, V value6,
+            K key7, V value7,
+            K key8, V value8,
+            K key9, V value9) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        map.putIfAbsent(key6, value6);
+        map.putIfAbsent(key7, value7);
+        map.putIfAbsent(key8, value8);
+        map.putIfAbsent(key9, value9);
+        return new ImmutableMap<K, V>(map);
     }
-    public static <KEY, VALUE> ImmutableMap<KEY, VALUE> mapOf(
-            KEY key0, VALUE value0,
-            KEY key1, VALUE value1,
-            KEY key2, VALUE value2,
-            KEY key3, VALUE value3,
-            KEY key4, VALUE value4,
-            KEY key5, VALUE value5,
-            KEY key6, VALUE value6,
-            KEY key7, VALUE value7,
-            KEY key8, VALUE value8,
-            KEY key9, VALUE value9,
-            KEY key10, VALUE value10) {
-        return (ImmutableMap<KEY, VALUE>) ofEntries(
-                new ImmutableTuple2<KEY, VALUE>(key0, value0),
-                new ImmutableTuple2<KEY, VALUE>(key1, value1),
-                new ImmutableTuple2<KEY, VALUE>(key2, value2),
-                new ImmutableTuple2<KEY, VALUE>(key3, value3),
-                new ImmutableTuple2<KEY, VALUE>(key4, value4),
-                new ImmutableTuple2<KEY, VALUE>(key5, value5),
-                new ImmutableTuple2<KEY, VALUE>(key6, value6),
-                new ImmutableTuple2<KEY, VALUE>(key7, value7),
-                new ImmutableTuple2<KEY, VALUE>(key8, value8),
-                new ImmutableTuple2<KEY, VALUE>(key9, value9),
-                new ImmutableTuple2<KEY, VALUE>(key10, value10));
+    public static <K, V> ImmutableMap<K, V> of(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5,
+            K key6, V value6,
+            K key7, V value7,
+            K key8, V value8,
+            K key9, V value9,
+            K key10, V value10) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        map.putIfAbsent(key6, value6);
+        map.putIfAbsent(key7, value7);
+        map.putIfAbsent(key8, value8);
+        map.putIfAbsent(key9, value9);
+        map.putIfAbsent(key10, value10);
+        return new ImmutableMap<K, V>(map);
     }
-    
-    <K, V> FuncMapStream<K, V> derivedWith(Boolean isKeyComparable, FuncList<IntTuple2<ImmutableTuple2<K, V>>> entries) {
-        val lazyMap = new FuncMapStream<K, V>(isKeyComparable, entries);
-        return isLazy()
-                ? lazyMap
-                : new ImmutableMap<K, V>(lazyMap.entries(), true);
+
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0,
+            K key1, V value1) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5,
+            K key6, V value6) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        map.putIfAbsent(key6, value6);
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5,
+            K key6, V value6,
+            K key7, V value7) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        map.putIfAbsent(key6, value6);
+        map.putIfAbsent(key7, value7);
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5,
+            K key6, V value6,
+            K key7, V value7,
+            K key8, V value8) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        map.putIfAbsent(key6, value6);
+        map.putIfAbsent(key7, value7);
+        map.putIfAbsent(key8, value8);
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5,
+            K key6, V value6,
+            K key7, V value7,
+            K key8, V value8,
+            K key9, V value9) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        map.putIfAbsent(key6, value6);
+        map.putIfAbsent(key7, value7);
+        map.putIfAbsent(key8, value8);
+        map.putIfAbsent(key9, value9);
+        return new ImmutableMap<K, V>(map);
+    }
+    public static <K, V> ImmutableMap<K, V> mapOf(
+            K key0, V value0,
+            K key1, V value1,
+            K key2, V value2,
+            K key3, V value3,
+            K key4, V value4,
+            K key5, V value5,
+            K key6, V value6,
+            K key7, V value7,
+            K key8, V value8,
+            K key9, V value9,
+            K key10, V value10) {
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        map.putIfAbsent(key0, value0);
+        map.putIfAbsent(key1, value1);
+        map.putIfAbsent(key2, value2);
+        map.putIfAbsent(key3, value3);
+        map.putIfAbsent(key4, value4);
+        map.putIfAbsent(key5, value5);
+        map.putIfAbsent(key6, value6);
+        map.putIfAbsent(key7, value7);
+        map.putIfAbsent(key8, value8);
+        map.putIfAbsent(key9, value9);
+        map.putIfAbsent(key10, value10);
+        return new ImmutableMap<K, V>(map);
     }
     
     // TODO Map builder.
@@ -442,25 +561,13 @@ public abstract class FuncMap<KEY, VALUE>
     public abstract FuncList<VALUE> select(Predicate<? super KEY> keyPredicate);
     
     @Override
-    public abstract FuncList<ImmutableTuple2<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
+    public abstract FuncList<Map.Entry<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
     
     @Override
     public abstract FuncMap<KEY, VALUE> with(KEY key, VALUE value);
     
     @Override
     public abstract FuncMap<KEY, VALUE> withAll(Map<? extends KEY, ? extends VALUE> entries);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> defaultTo(KEY key, VALUE value);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> defaultBy(KEY key, Supplier<VALUE> value);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> defaultBy(KEY key, Function<KEY, VALUE> value);
-    
-    @Override
-    public abstract FuncMap<KEY, VALUE> defaultTo(Map<? extends KEY, ? extends VALUE> entries);
     
     @Override
     public abstract FuncMap<KEY, VALUE> exclude(KEY key);
@@ -472,8 +579,8 @@ public abstract class FuncMap<KEY, VALUE>
     public abstract FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck);
     
     @Override
-    public abstract FuncMap<KEY, VALUE> filterByEntry(Predicate<Entry<? super KEY, ? super VALUE>> entryCheck);
-
+    public abstract FuncMap<KEY, VALUE> filterByEntry(Predicate<? super Map.Entry<? super KEY, ? super VALUE>> entryCheck);
+    
     @Override
     public abstract FuncList<KEY> keys();
     
@@ -481,10 +588,10 @@ public abstract class FuncMap<KEY, VALUE>
     public abstract FuncList<VALUE> values();
     
     @Override
-    public abstract Set<Entry<KEY, VALUE>> entrySet();
+    public abstract Set<Map.Entry<KEY, VALUE>> entrySet();
     
     @Override
-    public abstract FuncList<ImmutableTuple2<KEY, VALUE>> entries();
+    public abstract FuncList<Map.Entry<KEY, VALUE>> entries();
     
     @Override
     public abstract Map<KEY, VALUE> toMap();
@@ -531,10 +638,42 @@ public abstract class FuncMap<KEY, VALUE>
     public String toString() {
         return "{" +
                 entries()
-                .map(each -> each._1 + ":" + each._2)
-                .collect(Collectors.joining(", ")) +
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(", ")) +
                 "}";
     }
     
+    @Override
+    public int hashCode() {
+        return FuncMap.class.hashCode() + entries().hashCode();
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Map))
+            return false;
+        
+        val thatMap = (Map<KEY, VALUE>)o;
+        if (thatMap.size() != size())
+            return false;
+        
+        val keyExist = ((Predicate<KEY>)((Map)o)::containsKey).negate();
+        val hasMissingKey = keys().anyMatch(keyExist);
+        if (hasMissingKey)
+            return false;
+        
+        val matchEntry = (Predicate<? super Map.Entry<KEY, VALUE>>)(t -> {
+            val key       = t.getKey();
+            val thatValue = this.get(key);
+            val thisValue = t.getValue();
+            return Objects.equals(thatValue, thisValue);
+        });
+        val allMatchValue 
+                = thatMap
+                .entrySet().stream()
+                .allMatch(matchEntry);
+        return allMatchValue;
+    }
     
 }

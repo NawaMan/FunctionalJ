@@ -34,6 +34,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import functionalj.function.Func0;
 import functionalj.function.Func2;
 import functionalj.function.Func3;
 import functionalj.function.Func4;
@@ -63,6 +64,9 @@ public interface Streamable<DATA>
     
     public static <D> Streamable<D> from(Collection<D> collection) {
         return ()->StreamPlus.from(collection.stream());
+    }
+    public static <D> Streamable<D> from(Func0<Stream<D>> supplier) {
+        return ()->StreamPlus.from(supplier.get());
     }
     
     public static <D, T> Streamable<T> with(Streamable<D> source, Function<Stream<D>, Stream<T>> action) {

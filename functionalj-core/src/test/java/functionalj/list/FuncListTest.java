@@ -24,6 +24,9 @@
 package functionalj.list;
 
 import static functionalj.lens.Access.theString;
+import static functionalj.map.FuncMap.underlineMap;
+import static functionalj.map.FuncMap.UnderlineMap.LinkedHashMap;
+import static functionalj.ref.Run.With;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
@@ -156,8 +159,16 @@ public class FuncListTest {
     
     @Test
     public void testToMap() {
-        val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
-        val index = new AtomicInteger();
+        val index   = new AtomicInteger();
+        val theList = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
+        val theMap  = theList.mapToMap(
+                        "index",   __ -> index.getAndIncrement(), 
+                        "word",   theString, 
+                        "length", theString.length().asString());
+        
+        String mapString = 
+                With(underlineMap.butWith(LinkedHashMap))
+                .run(()->theMap.toString());
         assertEquals("["
                         + "{index:0, word:One, length:3}, "
                         + "{index:1, word:Two, length:3}, "
@@ -165,11 +176,9 @@ public class FuncListTest {
                         + "{index:3, word:Four, length:4}, "
                         + "{index:4, word:Five, length:4}, "
                         + "{index:5, word:Six, length:3}, "
-                        + "{index:6, word:Seven, length:5}]",
-                "" + list.mapToMap(
-                        "index",   __ -> index.getAndIncrement(), 
-                        "word",   theString, 
-                        "length", theString.length().asString()));
+                        + "{index:6, word:Seven, length:5}"
+                    + "]",
+                    mapString);
     }
     
     @Test

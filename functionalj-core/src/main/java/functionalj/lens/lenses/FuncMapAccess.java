@@ -24,7 +24,6 @@
 package functionalj.lens.lenses;
 
 import java.util.Collection;
-import java.util.Map.Entry;
 import java.util.function.Function;
 
 import functionalj.function.Func1;
@@ -249,7 +248,7 @@ public interface FuncMapAccess<HOST, KEY, VALUE,
             AccessParameterized2<HOST, FuncMap.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> entrySpec
             = new AccessParameterized2<HOST, FuncMap.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>() {
                 @Override
-                public Entry<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
+                public FuncMap.Entry<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
                     val map   = mapAccessSpec.apply(host);
                     val entry = accessEntry.apply(map);
                     return entry;
