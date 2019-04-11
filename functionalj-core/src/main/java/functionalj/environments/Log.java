@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func;
 import functionalj.list.FuncList;
-import functionalj.list.FuncListStream;
+import functionalj.list.FuncListDerived;
 import functionalj.stream.Streamable;
 import lombok.val;
 
@@ -101,7 +101,7 @@ public final class Log {
         @SuppressWarnings("unchecked")
         public <T> FuncList<T> logEach(T ... values) {
             val streamable = Streamable.of((T[])values);
-            val list       = FuncListStream.from(streamable);
+            val list       = FuncListDerived.from(streamable);
             list.forEach(value -> this.log(value));
             return list;
         }
@@ -110,7 +110,7 @@ public final class Log {
             return logEach(prefix, values, null);
         }
         public <T> FuncList<T> logEach(String prefix, Collection<T> values, String suffix) {
-            val list = FuncListStream.from(values);
+            val list = FuncListDerived.from(values);
             list.forEach(value -> this.log(prefix, value, suffix));
             return list;
         }

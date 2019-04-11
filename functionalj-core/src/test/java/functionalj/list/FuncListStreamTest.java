@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.list.FuncListStream;
+import functionalj.list.FuncListDerived;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import lombok.val;
@@ -44,7 +44,7 @@ public class FuncListStreamTest {
     public void testStream() {
         val rawList    = (List<String>)asList("One", "Two", "Three");
         val streamable = (Streamable<String>)(()->StreamPlus.from(rawList.stream()));
-        val newList    = new FuncListStream<String, Integer>(streamable, stream -> stream.map(String::length));
+        val newList    = new FuncListDerived<String, Integer>(streamable, stream -> stream.map(String::length));
         assertEquals("[3, 3, 5]", newList.stream().collect(toList()).toString());
     }
     
@@ -53,7 +53,7 @@ public class FuncListStreamTest {
     public void testAppend() {
         val rawList    = (List<String>)asList("One", "Two", "Three");
         val streamable = (Streamable<String>)(()->StreamPlus.from(rawList.stream()));
-        val newList    = new FuncListStream<String, Integer>(streamable, stream -> stream.map(String::length));
+        val newList    = new FuncListDerived<String, Integer>(streamable, stream -> stream.map(String::length));
         assertEquals("[3, 3, 5, 6]", newList.append(6).toString());
     }
     
@@ -62,7 +62,7 @@ public class FuncListStreamTest {
     public void testSet() {
         val rawList    = (List<String>)asList("One", "Two", "Three");
         val streamable = (Streamable<String>)(()->StreamPlus.from(rawList.stream()));
-        val newList    = new FuncListStream<String, Integer>(streamable, stream -> stream.map(String::length));
+        val newList    = new FuncListDerived<String, Integer>(streamable, stream -> stream.map(String::length));
         assertEquals("[3, 1, 5]", newList.with(1, 1).toString());
     }
     

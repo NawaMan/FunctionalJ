@@ -31,7 +31,7 @@ import java.util.TreeMap;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public final class ImmutableMap<KEY, VALUE> extends FuncMapStream<KEY, VALUE, VALUE> {
+public final class ImmutableMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, VALUE> {
     
     @SuppressWarnings("unchecked")
     public static <KEY, VALUE> ImmutableMap<KEY, VALUE> from(Map<? extends KEY, ? extends VALUE> map) {

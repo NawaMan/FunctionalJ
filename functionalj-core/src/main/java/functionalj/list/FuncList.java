@@ -116,14 +116,14 @@ public interface FuncList<DATA>
     
     @Override
     public default <TARGET> FuncList<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action) {
-        val list   = new FuncListStream<DATA, TARGET>(this, action);
+        val list   = new FuncListDerived<DATA, TARGET>(this, action);
         val isLazy = isLazy();
         return isLazy ? list : new ImmutableList<>(list, false);
     }
     
     @Override
     public default <TARGET> FuncList<TARGET> deriveFrom(Function<Streamable<DATA>, Stream<TARGET>> action) {
-        return FuncListStream.from((Supplier<Stream<TARGET>>)()->{
+        return FuncListDerived.from((Supplier<Stream<TARGET>>)()->{
             return action.apply(FuncList.this);
         });
     }
@@ -334,7 +334,7 @@ public interface FuncList<DATA>
         if ((elements == null) || (elements.length == 0))
             return this;
         
-        return FuncListStream.from(deriveFrom((Streamable<DATA> streamable)->{
+        return FuncListDerived.from(deriveFrom((Streamable<DATA> streamable)->{
             return Stream.concat(
                     streamable.stream().limit(index), Stream.concat(
                     Stream.of(elements),
@@ -347,7 +347,7 @@ public interface FuncList<DATA>
           || collection.isEmpty())
             return this;
         
-        return FuncListStream.from(deriveFrom((Streamable<DATA> streamable)->{
+        return FuncListDerived.from(deriveFrom((Streamable<DATA> streamable)->{
             return (Stream<DATA>)Stream.concat(
                     streamable.stream().limit(index), Stream.concat(
                     collection.stream(),
@@ -359,7 +359,7 @@ public interface FuncList<DATA>
         if (theStreamable == null)
             return this;
         
-        return FuncListStream.from(deriveFrom((Streamable<DATA> streamable)->{
+        return FuncListDerived.from(deriveFrom((Streamable<DATA> streamable)->{
             return Stream.concat(
                     streamable.stream().limit(index), Stream.concat(
                     theStreamable.stream(),
@@ -371,7 +371,7 @@ public interface FuncList<DATA>
         if (index < 0)
             throw new IndexOutOfBoundsException("index: " + index);
         
-        return FuncListStream.from(deriveFrom((Streamable<DATA> streamable)->{
+        return FuncListDerived.from(deriveFrom((Streamable<DATA> streamable)->{
             return Stream.concat(
                     streamable.stream().limit(index), 
                     streamable.stream().skip(index + 2));
@@ -384,7 +384,7 @@ public interface FuncList<DATA>
         if (count <= 0)
             throw new IndexOutOfBoundsException("count: " + count);
         
-        return FuncListStream.from(deriveFrom((Streamable<DATA> streamable)->{
+        return FuncListDerived.from(deriveFrom((Streamable<DATA> streamable)->{
             return Stream.concat(
                     stream().limit(fromIndexInclusive), 
                     stream().skip(fromIndexInclusive + count));
@@ -402,7 +402,7 @@ public interface FuncList<DATA>
         if (fromIndexInclusive == toIndexExclusive)
             return this;
         
-        return FuncListStream.from(deriveFrom((Streamable<DATA> streamable)->{
+        return FuncListDerived.from(deriveFrom((Streamable<DATA> streamable)->{
             return Stream.concat(
                     stream().limit(fromIndexInclusive), 
                     stream().skip(toIndexExclusive + 1));
@@ -414,7 +414,7 @@ public interface FuncList<DATA>
     @Override
     public default FuncList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
         val length = toIndexExclusive - fromIndexInclusive;
-        return new FuncListStream<>(this, stream -> stream.skip(fromIndexInclusive).limit(length));
+        return new FuncListDerived<>(this, stream -> stream.skip(fromIndexInclusive).limit(length));
     }
     
     //============================================================================
