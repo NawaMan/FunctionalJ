@@ -37,6 +37,7 @@ Articles
 - [Introduction to FunctionalJ.io](https://www.youtube.com/watch?v=gIHY1wUSQzs)
 - [Setup Eclipse for FunctionalJ](https://www.youtube.com/watch?v=nTOb6r13HvM)
 - [Immutable Data with FunctionalJ.io](https://www.youtube.com/watch?v=Q_cdFh9fhxY)
+- [Choice Types in Java with FunctionalJ.io](https://www.youtube.com/watch?v=JWKl2cfkVrw)
 
 ## Usage
 
@@ -54,7 +55,7 @@ Add the maven repository ...
 and the dependencies to FunctionalJ.
 
 ```Groovy
-    compile 'functionalj:functionalj-all:0.1.69.0' // Please lookup for the latest version.
+    compile 'functionalj:functionalj-all:0.1.72.0' // Please lookup for the latest version.
 ```
 
 [UseFunctionalJGradle](https://github.com/NawaMan/UseFunctionalJGradle) is an example project that use FunctionalJ.
@@ -82,7 +83,7 @@ and the dependencies to FunctionalJ.
     <dependency>
         <groupId>functionalj</groupId>
         <artifactId>functionalj-all</artifactId>
-        <version>0.1.69.0</version>
+        <version>0.1.72.0</version>
     </dependency>
 ```
 
