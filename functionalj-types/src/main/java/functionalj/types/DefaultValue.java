@@ -138,6 +138,11 @@ public enum DefaultValue {
         if (value == NULL)
             return "null";
         
+        if (Type.BOOL.equals(type) || Type.BOOLEAN.equals(type)) {
+            if (value == TRUE)  return "true";
+            if (value == FALSE) return "false";
+            throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+        }
         if (Type.BYT.equals(type) || Type.BYTE.equals(type)) {
             if (value == ZERO)      return "(byte)0";
             if (value == ONE)       return "(byte)1";
@@ -155,9 +160,9 @@ public enum DefaultValue {
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.INT.equals(type) || Type.INTEGER.equals(type)) {
-            if (value == ZERO)      return "(int)0";
-            if (value == ONE)       return "(int)1";
-            if (value == MINUS_ONE) return "(int)-1";
+            if (value == ZERO)      return "0";
+            if (value == ONE)       return "1";
+            if (value == MINUS_ONE) return "-1";
             if (value == MAX_VALUE) return "Integer.MAX_VALUE";
             if (value == MIN_VALUE) return "Integer.MIN_VALUE";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
@@ -182,9 +187,9 @@ public enum DefaultValue {
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.DBL.equals(type) || Type.DOUBLE.equals(type)) {
-            if (value == ZERO)      return "(double)0.0";
-            if (value == ONE)       return "(double)1.0";
-            if (value == MINUS_ONE) return "(double)-1.0";
+            if (value == ZERO)      return "0.0";
+            if (value == ONE)       return "1.0";
+            if (value == MINUS_ONE) return "-1.0";
             if (value == MAX_VALUE) return "Double.MAX_VALUE";
             if (value == MIN_VALUE) return "-Double.MIN_VALUE";
             if (value == POSITIVE_INFINITY) return "Double.POSITIVE_INFINITY";

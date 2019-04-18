@@ -101,7 +101,7 @@ public class GenerateParentChildTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public Parent __data()  throws Exception  {\n" + 
+                "    public Parent __data() throws Exception  {\n" + 
                 "        return this;\n" + 
                 "    }\n" + 
                 "    public Child child() {\n" + 
@@ -159,31 +159,24 @@ public class GenerateParentChildTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
-                "    public static class Builder {\n" + 
+                "    public static final class Builder {\n" + 
                 "        \n" + 
-                "        public Builder_child child(Child child) {\n" + 
-                "            return new Builder_child(child);\n" + 
+                "        public final ParentBuilder_ready child(Child child) {\n" + 
+                "            return ()->{\n" + 
+                "                return new Parent(\n" + 
+                "                    child\n" + 
+                "                );\n" + 
+                "            };\n" + 
                 "        }\n" + 
                 "        \n" + 
-                "        public static class Builder_child {\n" + 
+                "        public static interface ParentBuilder_ready {\n" + 
                 "            \n" + 
-                "            private final Child child;\n" + 
+                "            public Parent build();\n" + 
                 "            \n" + 
-                "            private Builder_child(Child child) {\n" + 
-                "                this.child = $utils.notNull(child);\n" + 
-                "            }\n" + 
                 "            \n" + 
-                "            public Child child() {\n" + 
-                "                return child;\n" + 
-                "            }\n" + 
-                "            public Builder_child child(Child child) {\n" + 
-                "                return new Builder_child(child);\n" + 
-                "            }\n" + 
-                "            public Parent build() {\n" + 
-                "                return new Parent(child());\n" + 
-                "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
+                "        \n" + 
                 "        \n" + 
                 "    }\n" + 
                 "    \n" + 

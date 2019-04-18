@@ -107,7 +107,7 @@ public class RequiredConstructorTest {
             "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
             "    }\n" + 
             "    \n" + 
-            "    public Person __data()  throws Exception  {\n" + 
+            "    public Person __data() throws Exception  {\n" + 
             "        return this;\n" + 
             "    }\n" + 
             "    public String firstName() {\n" + 
@@ -203,94 +203,44 @@ public class RequiredConstructorTest {
             "        }\n" + 
             "        \n" + 
             "    }\n" + 
-            "    public static class Builder {\n" + 
+            "    public static final class Builder {\n" + 
             "        \n" + 
-            "        public Builder_firstName firstName(String firstName) {\n" + 
-            "            return new Builder_firstName(firstName);\n" + 
+            "        public final PersonBuilder_withoutMidName firstName(String firstName) {\n" + 
+            "            return (String midName)->{\n" + 
+            "            return (String lastName)->{\n" + 
+            "            return ()->{\n" + 
+            "                return new Person(\n" + 
+            "                    firstName,\n" + 
+            "                    midName,\n" + 
+            "                    lastName\n" + 
+            "                );\n" + 
+            "            };\n" + 
+            "            };\n" + 
+            "            };\n" + 
             "        }\n" + 
             "        \n" + 
-            "        public static class Builder_firstName {\n" + 
+            "        public static interface PersonBuilder_withoutMidName {\n" + 
             "            \n" + 
-            "            private final String firstName;\n" + 
+            "            public PersonBuilder_withoutLastName midName(String midName);\n" + 
             "            \n" + 
-            "            private Builder_firstName(String firstName) {\n" + 
-            "                this.firstName = $utils.notNull(firstName);\n" + 
-            "            }\n" + 
-            "            \n" + 
-            "            public String firstName() {\n" + 
-            "                return firstName;\n" + 
-            "            }\n" + 
-            "            public Builder_firstName firstName(String firstName) {\n" + 
-            "                return new Builder_firstName(firstName);\n" + 
-            "            }\n" + 
-            "            public Builder_firstName_midName midName(String midName) {\n" + 
-            "                return new Builder_firstName_midName(this, midName);\n" + 
-            "            }\n" + 
-            "            public Builder_firstName_midName_lastName lastName(String lastName) {\n" + 
+            "            public default PersonBuilder_ready lastName(String lastName){\n" + 
             "                return midName(null).lastName(lastName);\n" + 
             "            }\n" + 
             "            \n" + 
             "        }\n" + 
-            "        public static class Builder_firstName_midName {\n" + 
+            "        public static interface PersonBuilder_withoutLastName {\n" + 
             "            \n" + 
-            "            private final Builder_firstName parent;\n" + 
-            "            private final String midName;\n" + 
-            "            \n" + 
-            "            private Builder_firstName_midName(Builder_firstName parent, String midName) {\n" + 
-            "                this.parent = parent;\n" + 
-            "                this.midName = java.util.Optional.ofNullable(midName).orElseGet(()->null);\n" + 
-            "            }\n" + 
-            "            \n" + 
-            "            public String firstName() {\n" + 
-            "                return parent.firstName();\n" + 
-            "            }\n" + 
-            "            public String midName() {\n" + 
-            "                return midName;\n" + 
-            "            }\n" + 
-            "            public Builder_firstName_midName firstName(String firstName) {\n" + 
-            "                return parent.firstName(firstName).midName(midName);\n" + 
-            "            }\n" + 
-            "            public Builder_firstName_midName midName(String midName) {\n" + 
-            "                return parent.midName(midName);\n" + 
-            "            }\n" + 
-            "            public Builder_firstName_midName_lastName lastName(String lastName) {\n" + 
-            "                return new Builder_firstName_midName_lastName(this, lastName);\n" + 
-            "            }\n" + 
+            "            public PersonBuilder_ready lastName(String lastName);\n" + 
             "            \n" + 
             "        }\n" + 
-            "        public static class Builder_firstName_midName_lastName {\n" + 
+            "        public static interface PersonBuilder_ready {\n" + 
             "            \n" + 
-            "            private final Builder_firstName_midName parent;\n" + 
-            "            private final String lastName;\n" + 
+            "            public Person build();\n" + 
             "            \n" + 
-            "            private Builder_firstName_midName_lastName(Builder_firstName_midName parent, String lastName) {\n" + 
-            "                this.parent = parent;\n" + 
-            "                this.lastName = $utils.notNull(lastName);\n" + 
-            "            }\n" + 
             "            \n" + 
-            "            public String firstName() {\n" + 
-            "                return parent.firstName();\n" + 
-            "            }\n" + 
-            "            public String midName() {\n" + 
-            "                return parent.midName();\n" + 
-            "            }\n" + 
-            "            public String lastName() {\n" + 
-            "                return lastName;\n" + 
-            "            }\n" + 
-            "            public Builder_firstName_midName_lastName firstName(String firstName) {\n" + 
-            "                return parent.firstName(firstName).lastName(lastName);\n" + 
-            "            }\n" + 
-            "            public Builder_firstName_midName_lastName midName(String midName) {\n" + 
-            "                return parent.midName(midName).lastName(lastName);\n" + 
-            "            }\n" + 
-            "            public Builder_firstName_midName_lastName lastName(String lastName) {\n" + 
-            "                return parent.lastName(lastName);\n" + 
-            "            }\n" + 
-            "            public Person build() {\n" + 
-            "                return new Person(firstName(), midName(), lastName());\n" + 
-            "            }\n" + 
             "            \n" + 
             "        }\n" + 
+            "        \n" + 
             "        \n" + 
             "    }\n" + 
             "    \n" + 

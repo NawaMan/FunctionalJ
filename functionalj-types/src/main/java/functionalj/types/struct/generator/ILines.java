@@ -41,7 +41,7 @@ import java.util.stream.Stream;
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
-public interface ILines {
+public interface ILines extends IRequireTypes {
 
     /** An empty line */
     public static final ILines emptyLine = ()->Stream.of("");
@@ -58,6 +58,11 @@ public interface ILines {
      */
     public default String toText() {
         return lines().collect(joining("\n"));
+    }
+    
+    @Override
+    public default Stream<Type> requiredTypes() {
+        return Stream.empty();
     }
     
     // == Factory methods ==

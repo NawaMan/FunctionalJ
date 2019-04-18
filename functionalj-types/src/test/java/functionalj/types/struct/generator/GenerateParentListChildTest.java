@@ -113,7 +113,7 @@ public class GenerateParentListChildTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public Parent __data()  throws Exception  {\n" + 
+                "    public Parent __data() throws Exception  {\n" + 
                 "        return this;\n" + 
                 "    }\n" + 
                 "    public List<String> names() {\n" + 
@@ -196,58 +196,32 @@ public class GenerateParentListChildTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
-                "    public static class Builder {\n" + 
+                "    public static final class Builder {\n" + 
                 "        \n" + 
-                "        public Builder_names names(List<String> names) {\n" + 
-                "            return new Builder_names(names);\n" + 
+                "        public final ParentBuilder_withoutChildren names(List<String> names) {\n" + 
+                "            return (List<Child> children)->{\n" + 
+                "            return ()->{\n" + 
+                "                return new Parent(\n" + 
+                "                    names,\n" + 
+                "                    children\n" + 
+                "                );\n" + 
+                "            };\n" + 
+                "            };\n" + 
                 "        }\n" + 
                 "        \n" + 
-                "        public static class Builder_names {\n" + 
+                "        public static interface ParentBuilder_withoutChildren {\n" + 
                 "            \n" + 
-                "            private final List<String> names;\n" + 
-                "            \n" + 
-                "            private Builder_names(List<String> names) {\n" + 
-                "                this.names = ImmutableList.from(names);\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public List<String> names() {\n" + 
-                "                return names;\n" + 
-                "            }\n" + 
-                "            public Builder_names names(List<String> names) {\n" + 
-                "                return new Builder_names(names);\n" + 
-                "            }\n" + 
-                "            public Builder_names_children children(List<Child> children) {\n" + 
-                "                return new Builder_names_children(this, children);\n" + 
-                "            }\n" + 
+                "            public ParentBuilder_ready children(List<Child> children);\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_names_children {\n" + 
+                "        public static interface ParentBuilder_ready {\n" + 
                 "            \n" + 
-                "            private final Builder_names parent;\n" + 
-                "            private final List<Child> children;\n" + 
+                "            public Parent build();\n" + 
                 "            \n" + 
-                "            private Builder_names_children(Builder_names parent, List<Child> children) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.children = ImmutableList.from(children);\n" + 
-                "            }\n" + 
                 "            \n" + 
-                "            public List<String> names() {\n" + 
-                "                return parent.names();\n" + 
-                "            }\n" + 
-                "            public List<Child> children() {\n" + 
-                "                return children;\n" + 
-                "            }\n" + 
-                "            public Builder_names_children names(List<String> names) {\n" + 
-                "                return parent.names(names).children(children);\n" + 
-                "            }\n" + 
-                "            public Builder_names_children children(List<Child> children) {\n" + 
-                "                return parent.children(children);\n" + 
-                "            }\n" + 
-                "            public Parent build() {\n" + 
-                "                return new Parent(names(), children());\n" + 
-                "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
+                "        \n" + 
                 "        \n" + 
                 "    }\n" + 
                 "    \n" + 

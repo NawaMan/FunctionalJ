@@ -108,7 +108,7 @@ public class GeneratorTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public Car __data()  throws Exception  {\n" + 
+                "    public Car __data() throws Exception  {\n" + 
                 "        return this;\n" + 
                 "    }\n" + 
                 "    public int anint() {\n" + 
@@ -204,91 +204,40 @@ public class GeneratorTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
-                "    public static class Builder {\n" + 
+                "    public static final class Builder {\n" + 
                 "        \n" + 
-                "        public Builder_anint anint(int anint) {\n" + 
-                "            return new Builder_anint(anint);\n" + 
+                "        public final CarBuilder_withoutAnbool anint(int anint) {\n" + 
+                "            return (boolean anbool)->{\n" + 
+                "            return (String anstring)->{\n" + 
+                "            return ()->{\n" + 
+                "                return new Car(\n" + 
+                "                    anint,\n" + 
+                "                    anbool,\n" + 
+                "                    anstring\n" + 
+                "                );\n" + 
+                "            };\n" + 
+                "            };\n" + 
+                "            };\n" + 
                 "        }\n" + 
                 "        \n" + 
-                "        public static class Builder_anint {\n" + 
+                "        public static interface CarBuilder_withoutAnbool {\n" + 
                 "            \n" + 
-                "            private final int anint;\n" + 
-                "            \n" + 
-                "            private Builder_anint(int anint) {\n" + 
-                "                this.anint = anint;\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public int anint() {\n" + 
-                "                return anint;\n" + 
-                "            }\n" + 
-                "            public Builder_anint anint(int anint) {\n" + 
-                "                return new Builder_anint(anint);\n" + 
-                "            }\n" + 
-                "            public Builder_anint_anbool anbool(boolean anbool) {\n" + 
-                "                return new Builder_anint_anbool(this, anbool);\n" + 
-                "            }\n" + 
+                "            public CarBuilder_withoutAnstring anbool(boolean anbool);\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_anint_anbool {\n" + 
+                "        public static interface CarBuilder_withoutAnstring {\n" + 
                 "            \n" + 
-                "            private final Builder_anint parent;\n" + 
-                "            private final boolean anbool;\n" + 
-                "            \n" + 
-                "            private Builder_anint_anbool(Builder_anint parent, boolean anbool) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.anbool = anbool;\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public int anint() {\n" + 
-                "                return parent.anint();\n" + 
-                "            }\n" + 
-                "            public boolean anbool() {\n" + 
-                "                return anbool;\n" + 
-                "            }\n" + 
-                "            public Builder_anint_anbool anint(int anint) {\n" + 
-                "                return parent.anint(anint).anbool(anbool);\n" + 
-                "            }\n" + 
-                "            public Builder_anint_anbool anbool(boolean anbool) {\n" + 
-                "                return parent.anbool(anbool);\n" + 
-                "            }\n" + 
-                "            public Builder_anint_anbool_anstring anstring(String anstring) {\n" + 
-                "                return new Builder_anint_anbool_anstring(this, anstring);\n" + 
-                "            }\n" + 
+                "            public CarBuilder_ready anstring(String anstring);\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_anint_anbool_anstring {\n" + 
+                "        public static interface CarBuilder_ready {\n" + 
                 "            \n" + 
-                "            private final Builder_anint_anbool parent;\n" + 
-                "            private final String anstring;\n" + 
+                "            public Car build();\n" + 
                 "            \n" + 
-                "            private Builder_anint_anbool_anstring(Builder_anint_anbool parent, String anstring) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.anstring = $utils.notNull(anstring);\n" + 
-                "            }\n" + 
                 "            \n" + 
-                "            public int anint() {\n" + 
-                "                return parent.anint();\n" + 
-                "            }\n" + 
-                "            public boolean anbool() {\n" + 
-                "                return parent.anbool();\n" + 
-                "            }\n" + 
-                "            public String anstring() {\n" + 
-                "                return anstring;\n" + 
-                "            }\n" + 
-                "            public Builder_anint_anbool_anstring anint(int anint) {\n" + 
-                "                return parent.anint(anint).anstring(anstring);\n" + 
-                "            }\n" + 
-                "            public Builder_anint_anbool_anstring anbool(boolean anbool) {\n" + 
-                "                return parent.anbool(anbool).anstring(anstring);\n" + 
-                "            }\n" + 
-                "            public Builder_anint_anbool_anstring anstring(String anstring) {\n" + 
-                "                return parent.anstring(anstring);\n" + 
-                "            }\n" + 
-                "            public Car build() {\n" + 
-                "                return new Car(anint(), anbool(), anstring());\n" + 
-                "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
+                "        \n" + 
                 "        \n" + 
                 "    }\n" + 
                 "    \n" + 
