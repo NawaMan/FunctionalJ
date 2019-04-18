@@ -61,6 +61,8 @@ public class GenClass implements IGenerateDefinition {
     private final Scope         scope;
     private final Modifiability modifiability;
     
+    private final boolean isClass;
+    
     private final Type                 type;
     private final String               generic;
     private final List<Type>           extendeds;
@@ -70,6 +72,56 @@ public class GenClass implements IGenerateDefinition {
     private final List<GenMethod>      methods;
     private final List<GenClass>       innerClasses;
     private final List<ILines>         mores;
+    
+    public GenClass(
+            Accessibility        accessibility,
+            Scope                scope,
+            Modifiability        modifiability,
+            Type                 type,
+            String               generic,
+            List<Type>           extendeds,
+            List<Type>           implementeds,
+            List<GenConstructor> constructors,
+            List<GenField>       fields,
+            List<GenMethod>      methods,
+            List<GenClass>       innerClasses,
+            List<ILines>         mores) {
+        this(accessibility, scope, modifiability,
+                true,
+                type, generic, extendeds, implementeds,
+                constructors, fields, methods, innerClasses, mores);
+    }
+    
+    public GenClass(
+            Accessibility        accessibility,
+            Scope                scope,
+            Modifiability        modifiability,
+            boolean              isClass,
+            Type                 type,
+            String               generic,
+            List<Type>           extendeds,
+            List<Type>           implementeds,
+            List<GenConstructor> constructors,
+            List<GenField>       fields,
+            List<GenMethod>      methods,
+            List<GenClass>       innerClasses,
+            List<ILines>         mores) {
+        this.accessibility = accessibility;
+        this.scope         = scope;
+        this.modifiability = modifiability;
+        
+        this.isClass = isClass;
+        
+        this.type         = type;
+        this.generic      = generic;
+        this.extendeds    = extendeds;
+        this.implementeds = implementeds;
+        this.constructors = constructors;
+        this.fields       = fields;
+        this.methods      = methods;
+        this.innerClasses = innerClasses;
+        this.mores        = mores;
+    }
     
     @Override
     public Stream<Type> requiredTypes() {
@@ -101,7 +153,7 @@ public class GenClass implements IGenerateDefinition {
         val className = type().simpleNameWithGeneric();
         val firstLine
                 = oneLineOf(
-                    accessibility, scope, modifiability, "class", className,
+                    accessibility, scope, modifiability, isClass ? "class" : "interface", className,
                     utils.prefixWith(extendedList,    "extends "),
                     utils.prefixWith(implementedList, "implements "),
                     "{");

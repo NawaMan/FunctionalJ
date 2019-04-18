@@ -113,7 +113,7 @@ public class GenerateParentFuncListChildTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public Parent __data()  throws Exception  {\n" + 
+                "    public Parent __data() throws Exception  {\n" + 
                 "        return this;\n" + 
                 "    }\n" + 
                 "    public FuncList<String> names() {\n" + 
@@ -196,58 +196,32 @@ public class GenerateParentFuncListChildTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
-                "    public static class Builder {\n" + 
+                "    public static final class Builder {\n" + 
                 "        \n" + 
-                "        public Builder_names names(FuncList<String> names) {\n" + 
-                "            return new Builder_names(names);\n" + 
+                "        public final ParentBuilder_withoutChildren names(FuncList<String> names) {\n" + 
+                "            return (FuncList<Child> children)->{\n" + 
+                "            return ()->{\n" + 
+                "                return new Parent(\n" + 
+                "                    names,\n" + 
+                "                    children\n" + 
+                "                );\n" + 
+                "            };\n" + 
+                "            };\n" + 
                 "        }\n" + 
                 "        \n" + 
-                "        public static class Builder_names {\n" + 
+                "        public static interface ParentBuilder_withoutChildren {\n" + 
                 "            \n" + 
-                "            private final FuncList<String> names;\n" + 
-                "            \n" + 
-                "            private Builder_names(FuncList<String> names) {\n" + 
-                "                this.names = ImmutableList.from(names);\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public FuncList<String> names() {\n" + 
-                "                return names;\n" + 
-                "            }\n" + 
-                "            public Builder_names names(FuncList<String> names) {\n" + 
-                "                return new Builder_names(names);\n" + 
-                "            }\n" + 
-                "            public Builder_names_children children(FuncList<Child> children) {\n" + 
-                "                return new Builder_names_children(this, children);\n" + 
-                "            }\n" + 
+                "            public ParentBuilder_ready children(FuncList<Child> children);\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_names_children {\n" + 
+                "        public static interface ParentBuilder_ready {\n" + 
                 "            \n" + 
-                "            private final Builder_names parent;\n" + 
-                "            private final FuncList<Child> children;\n" + 
+                "            public Parent build();\n" + 
                 "            \n" + 
-                "            private Builder_names_children(Builder_names parent, FuncList<Child> children) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.children = ImmutableList.from(children);\n" + 
-                "            }\n" + 
                 "            \n" + 
-                "            public FuncList<String> names() {\n" + 
-                "                return parent.names();\n" + 
-                "            }\n" + 
-                "            public FuncList<Child> children() {\n" + 
-                "                return children;\n" + 
-                "            }\n" + 
-                "            public Builder_names_children names(FuncList<String> names) {\n" + 
-                "                return parent.names(names).children(children);\n" + 
-                "            }\n" + 
-                "            public Builder_names_children children(FuncList<Child> children) {\n" + 
-                "                return parent.children(children);\n" + 
-                "            }\n" + 
-                "            public Parent build() {\n" + 
-                "                return new Parent(names(), children());\n" + 
-                "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
+                "        \n" + 
                 "        \n" + 
                 "    }\n" + 
                 "    \n" + 

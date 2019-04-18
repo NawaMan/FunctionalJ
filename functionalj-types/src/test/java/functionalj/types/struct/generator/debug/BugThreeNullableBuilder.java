@@ -72,7 +72,7 @@ public class BugThreeNullableBuilder {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public Brand __data()  throws Exception  {\n" + 
+                "    public Brand __data() throws Exception  {\n" + 
                 "        return this;\n" + 
                 "    }\n" + 
                 "    public String id() {\n" + 
@@ -225,256 +225,98 @@ public class BugThreeNullableBuilder {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
-                "    public static class Builder {\n" + 
+                "    public static final class Builder {\n" + 
                 "        \n" + 
-                "        public Builder_id id(String id) {\n" + 
-                "            return new Builder_id(id);\n" + 
+                "        public final BrandBuilder_withoutName id(String id) {\n" + 
+                "            return (String name)->{\n" + 
+                "            return (String owner)->{\n" + 
+                "            return (String website)->{\n" + 
+                "            return (String country)->{\n" + 
+                "            return (String description)->{\n" + 
+                "            return ()->{\n" + 
+                "                return new Brand(\n" + 
+                "                    id,\n" + 
+                "                    name,\n" + 
+                "                    owner,\n" + 
+                "                    website,\n" + 
+                "                    country,\n" + 
+                "                    description\n" + 
+                "                );\n" + 
+                "            };\n" + 
+                "            };\n" + 
+                "            };\n" + 
+                "            };\n" + 
+                "            };\n" + 
+                "            };\n" + 
                 "        }\n" + 
                 "        \n" + 
-                "        public static class Builder_id {\n" + 
+                "        public static interface BrandBuilder_withoutName {\n" + 
                 "            \n" + 
-                "            private final String id;\n" + 
-                "            \n" + 
-                "            private Builder_id(String id) {\n" + 
-                "                this.id = $utils.notNull(id);\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public String id() {\n" + 
-                "                return id;\n" + 
-                "            }\n" + 
-                "            public Builder_id id(String id) {\n" + 
-                "                return new Builder_id(id);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name name(String name) {\n" + 
-                "                return new Builder_id_name(this, name);\n" + 
-                "            }\n" + 
+                "            public BrandBuilder_withoutOwner name(String name);\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_id_name {\n" + 
+                "        public static interface BrandBuilder_withoutOwner {\n" + 
                 "            \n" + 
-                "            private final Builder_id parent;\n" + 
-                "            private final String name;\n" + 
+                "            public BrandBuilder_withoutWebsite owner(String owner);\n" + 
                 "            \n" + 
-                "            private Builder_id_name(Builder_id parent, String name) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.name = $utils.notNull(name);\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public String id() {\n" + 
-                "                return parent.id();\n" + 
-                "            }\n" + 
-                "            public String name() {\n" + 
-                "                return name;\n" + 
-                "            }\n" + 
-                "            public Builder_id_name id(String id) {\n" + 
-                "                return parent.id(id).name(name);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name name(String name) {\n" + 
-                "                return parent.name(name);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner owner(String owner) {\n" + 
-                "                return new Builder_id_name_owner(this, owner);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website website(String website) {\n" + 
+                "            public default BrandBuilder_withoutCountry website(String website){\n" + 
                 "                return owner(null).website(website);\n" + 
                 "            }\n" + 
-                "            public Builder_id_name_owner_website_country country(String country) {\n" + 
+                "            public default BrandBuilder_withoutDescription country(String country){\n" + 
+                "                return owner(null).website(null).country(country);\n" + 
+                "            }\n" + 
+                "            public default BrandBuilder_ready description(String description){\n" + 
+                "                return owner(null).website(null).country(null).description(description);\n" + 
+                "            }\n" + 
+                "            public default Brand build() {\n" + 
+                "                return owner(null).website(null).country(null).description(null).build();\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
+                "        public static interface BrandBuilder_withoutWebsite {\n" + 
+                "            \n" + 
+                "            public BrandBuilder_withoutCountry website(String website);\n" + 
+                "            \n" + 
+                "            public default BrandBuilder_withoutDescription country(String country){\n" + 
                 "                return website(null).country(country);\n" + 
                 "            }\n" + 
-                "            public Builder_id_name_owner_website_country_description description(String description) {\n" + 
+                "            public default BrandBuilder_ready description(String description){\n" + 
+                "                return website(null).country(null).description(description);\n" + 
+                "            }\n" + 
+                "            public default Brand build() {\n" + 
+                "                return website(null).country(null).description(null).build();\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
+                "        public static interface BrandBuilder_withoutCountry {\n" + 
+                "            \n" + 
+                "            public BrandBuilder_withoutDescription country(String country);\n" + 
+                "            \n" + 
+                "            public default BrandBuilder_ready description(String description){\n" + 
                 "                return country(null).description(description);\n" + 
                 "            }\n" + 
-                "            public Brand build() {\n" + 
+                "            public default Brand build() {\n" + 
+                "                return country(null).description(null).build();\n" + 
+                "            }\n" + 
+                "            \n" + 
+                "        }\n" + 
+                "        public static interface BrandBuilder_withoutDescription {\n" + 
+                "            \n" + 
+                "            public BrandBuilder_ready description(String description);\n" + 
+                "            \n" + 
+                "            public default Brand build() {\n" + 
                 "                return description(null).build();\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_id_name_owner {\n" + 
+                "        public static interface BrandBuilder_ready {\n" + 
                 "            \n" + 
-                "            private final Builder_id_name parent;\n" + 
-                "            private final String owner;\n" + 
+                "            public Brand build();\n" + 
                 "            \n" + 
-                "            private Builder_id_name_owner(Builder_id_name parent, String owner) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.owner = java.util.Optional.ofNullable(owner).orElseGet(()->null);\n" + 
-                "            }\n" + 
                 "            \n" + 
-                "            public String id() {\n" + 
-                "                return parent.id();\n" + 
-                "            }\n" + 
-                "            public String name() {\n" + 
-                "                return parent.name();\n" + 
-                "            }\n" + 
-                "            public String owner() {\n" + 
-                "                return owner;\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner id(String id) {\n" + 
-                "                return parent.id(id).owner(owner);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner name(String name) {\n" + 
-                "                return parent.name(name).owner(owner);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner owner(String owner) {\n" + 
-                "                return parent.owner(owner);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website website(String website) {\n" + 
-                "                return new Builder_id_name_owner_website(this, website);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country country(String country) {\n" + 
-                "                return website(null).country(country);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country_description description(String description) {\n" + 
-                "                return country(null).description(description);\n" + 
-                "            }\n" + 
-                "            public Brand build() {\n" + 
-                "                return description(null).build();\n" + 
-                "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_id_name_owner_website {\n" + 
-                "            \n" + 
-                "            private final Builder_id_name_owner parent;\n" + 
-                "            private final String website;\n" + 
-                "            \n" + 
-                "            private Builder_id_name_owner_website(Builder_id_name_owner parent, String website) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.website = java.util.Optional.ofNullable(website).orElseGet(()->null);\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public String id() {\n" + 
-                "                return parent.id();\n" + 
-                "            }\n" + 
-                "            public String name() {\n" + 
-                "                return parent.name();\n" + 
-                "            }\n" + 
-                "            public String owner() {\n" + 
-                "                return parent.owner();\n" + 
-                "            }\n" + 
-                "            public String website() {\n" + 
-                "                return website;\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website id(String id) {\n" + 
-                "                return parent.id(id).website(website);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website name(String name) {\n" + 
-                "                return parent.name(name).website(website);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website owner(String owner) {\n" + 
-                "                return parent.owner(owner).website(website);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website website(String website) {\n" + 
-                "                return parent.website(website);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country country(String country) {\n" + 
-                "                return new Builder_id_name_owner_website_country(this, country);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country_description description(String description) {\n" + 
-                "                return country(null).description(description);\n" + 
-                "            }\n" + 
-                "            public Brand build() {\n" + 
-                "                return description(null).build();\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "        }\n" + 
-                "        public static class Builder_id_name_owner_website_country {\n" + 
-                "            \n" + 
-                "            private final Builder_id_name_owner_website parent;\n" + 
-                "            private final String country;\n" + 
-                "            \n" + 
-                "            private Builder_id_name_owner_website_country(Builder_id_name_owner_website parent, String country) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.country = java.util.Optional.ofNullable(country).orElseGet(()->null);\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public String id() {\n" + 
-                "                return parent.id();\n" + 
-                "            }\n" + 
-                "            public String name() {\n" + 
-                "                return parent.name();\n" + 
-                "            }\n" + 
-                "            public String owner() {\n" + 
-                "                return parent.owner();\n" + 
-                "            }\n" + 
-                "            public String website() {\n" + 
-                "                return parent.website();\n" + 
-                "            }\n" + 
-                "            public String country() {\n" + 
-                "                return country;\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country id(String id) {\n" + 
-                "                return parent.id(id).country(country);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country name(String name) {\n" + 
-                "                return parent.name(name).country(country);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country owner(String owner) {\n" + 
-                "                return parent.owner(owner).country(country);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country website(String website) {\n" + 
-                "                return parent.website(website).country(country);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country country(String country) {\n" + 
-                "                return parent.country(country);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country_description description(String description) {\n" + 
-                "                return new Builder_id_name_owner_website_country_description(this, description);\n" + 
-                "            }\n" + 
-                "            public Brand build() {\n" + 
-                "                return description(null).build();\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "        }\n" + 
-                "        public static class Builder_id_name_owner_website_country_description {\n" + 
-                "            \n" + 
-                "            private final Builder_id_name_owner_website_country parent;\n" + 
-                "            private final String description;\n" + 
-                "            \n" + 
-                "            private Builder_id_name_owner_website_country_description(Builder_id_name_owner_website_country parent, String description) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.description = java.util.Optional.ofNullable(description).orElseGet(()->null);\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public String id() {\n" + 
-                "                return parent.id();\n" + 
-                "            }\n" + 
-                "            public String name() {\n" + 
-                "                return parent.name();\n" + 
-                "            }\n" + 
-                "            public String owner() {\n" + 
-                "                return parent.owner();\n" + 
-                "            }\n" + 
-                "            public String website() {\n" + 
-                "                return parent.website();\n" + 
-                "            }\n" + 
-                "            public String country() {\n" + 
-                "                return parent.country();\n" + 
-                "            }\n" + 
-                "            public String description() {\n" + 
-                "                return description;\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country_description id(String id) {\n" + 
-                "                return parent.id(id).description(description);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country_description name(String name) {\n" + 
-                "                return parent.name(name).description(description);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country_description owner(String owner) {\n" + 
-                "                return parent.owner(owner).description(description);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country_description website(String website) {\n" + 
-                "                return parent.website(website).description(description);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country_description country(String country) {\n" + 
-                "                return parent.country(country).description(description);\n" + 
-                "            }\n" + 
-                "            public Builder_id_name_owner_website_country_description description(String description) {\n" + 
-                "                return parent.description(description);\n" + 
-                "            }\n" + 
-                "            public Brand build() {\n" + 
-                "                return new Brand(id(), name(), owner(), website(), country(), description());\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "        }\n" + 
+                "        \n" + 
                 "        \n" + 
                 "    }\n" + 
                 "    \n" + 

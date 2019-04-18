@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 
 import functionalj.types.struct.generator.IGenerateTerm;
 import functionalj.types.struct.generator.Type;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.experimental.Wither;
 
@@ -37,6 +38,7 @@ import lombok.experimental.Wither;
  */
 @Value
 @Wither
+@AllArgsConstructor
 public class GenParam implements IGenerateTerm {
     private String name;
     private Type   type;

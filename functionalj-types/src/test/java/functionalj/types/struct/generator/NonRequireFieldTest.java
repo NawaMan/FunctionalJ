@@ -119,7 +119,7 @@ public class NonRequireFieldTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public Data __data()  throws Exception  {\n" + 
+                "    public Data __data() throws Exception  {\n" + 
                 "        return this;\n" + 
                 "    }\n" + 
                 "    public int a() {\n" + 
@@ -253,181 +253,64 @@ public class NonRequireFieldTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
-                "    public static class Builder {\n" + 
+                "    public static final class Builder {\n" + 
                 "        \n" + 
-                "        public Builder_a a(int a) {\n" + 
-                "            return new Builder_a(a);\n" + 
+                "        public final DataBuilder_withoutB a(int a) {\n" + 
+                "            return (boolean b)->{\n" + 
+                "            return (String c)->{\n" + 
+                "            return (String d)->{\n" + 
+                "            return (String e)->{\n" + 
+                "            return ()->{\n" + 
+                "                return new Data(\n" + 
+                "                    a,\n" + 
+                "                    b,\n" + 
+                "                    c,\n" + 
+                "                    d,\n" + 
+                "                    e\n" + 
+                "                );\n" + 
+                "            };\n" + 
+                "            };\n" + 
+                "            };\n" + 
+                "            };\n" + 
+                "            };\n" + 
                 "        }\n" + 
                 "        \n" + 
-                "        public static class Builder_a {\n" + 
+                "        public static interface DataBuilder_withoutB {\n" + 
                 "            \n" + 
-                "            private final int a;\n" + 
-                "            \n" + 
-                "            private Builder_a(int a) {\n" + 
-                "                this.a = a;\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public int a() {\n" + 
-                "                return a;\n" + 
-                "            }\n" + 
-                "            public Builder_a a(int a) {\n" + 
-                "                return new Builder_a(a);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b b(boolean b) {\n" + 
-                "                return new Builder_a_b(this, b);\n" + 
-                "            }\n" + 
+                "            public DataBuilder_withoutC b(boolean b);\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_a_b {\n" + 
+                "        public static interface DataBuilder_withoutC {\n" + 
                 "            \n" + 
-                "            private final Builder_a parent;\n" + 
-                "            private final boolean b;\n" + 
+                "            public DataBuilder_withoutD c(String c);\n" + 
                 "            \n" + 
-                "            private Builder_a_b(Builder_a parent, boolean b) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.b = b;\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public int a() {\n" + 
-                "                return parent.a();\n" + 
-                "            }\n" + 
-                "            public boolean b() {\n" + 
-                "                return b;\n" + 
-                "            }\n" + 
-                "            public Builder_a_b a(int a) {\n" + 
-                "                return parent.a(a).b(b);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b b(boolean b) {\n" + 
-                "                return parent.b(b);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c c(String c) {\n" + 
-                "                return new Builder_a_b_c(this, c);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d d(String d) {\n" + 
+                "            public default DataBuilder_withoutE d(String d){\n" + 
                 "                return c(null).d(d);\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_a_b_c {\n" + 
+                "        public static interface DataBuilder_withoutD {\n" + 
                 "            \n" + 
-                "            private final Builder_a_b parent;\n" + 
-                "            private final String c;\n" + 
-                "            \n" + 
-                "            private Builder_a_b_c(Builder_a_b parent, String c) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.c = java.util.Optional.ofNullable(c).orElseGet(()->null);\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public int a() {\n" + 
-                "                return parent.a();\n" + 
-                "            }\n" + 
-                "            public boolean b() {\n" + 
-                "                return parent.b();\n" + 
-                "            }\n" + 
-                "            public String c() {\n" + 
-                "                return c;\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c a(int a) {\n" + 
-                "                return parent.a(a).c(c);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c b(boolean b) {\n" + 
-                "                return parent.b(b).c(c);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c c(String c) {\n" + 
-                "                return parent.c(c);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d d(String d) {\n" + 
-                "                return new Builder_a_b_c_d(this, d);\n" + 
-                "            }\n" + 
+                "            public DataBuilder_withoutE d(String d);\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_a_b_c_d {\n" + 
+                "        public static interface DataBuilder_withoutE {\n" + 
                 "            \n" + 
-                "            private final Builder_a_b_c parent;\n" + 
-                "            private final String d;\n" + 
+                "            public DataBuilder_ready e(String e);\n" + 
                 "            \n" + 
-                "            private Builder_a_b_c_d(Builder_a_b_c parent, String d) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.d = $utils.notNull(d);\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public int a() {\n" + 
-                "                return parent.a();\n" + 
-                "            }\n" + 
-                "            public boolean b() {\n" + 
-                "                return parent.b();\n" + 
-                "            }\n" + 
-                "            public String c() {\n" + 
-                "                return parent.c();\n" + 
-                "            }\n" + 
-                "            public String d() {\n" + 
-                "                return d;\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d a(int a) {\n" + 
-                "                return parent.a(a).d(d);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d b(boolean b) {\n" + 
-                "                return parent.b(b).d(d);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d c(String c) {\n" + 
-                "                return parent.c(c).d(d);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d d(String d) {\n" + 
-                "                return parent.d(d);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d_e e(String e) {\n" + 
-                "                return new Builder_a_b_c_d_e(this, e);\n" + 
-                "            }\n" + 
-                "            public Data build() {\n" + 
+                "            public default Data build() {\n" + 
                 "                return e(null).build();\n" + 
                 "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_a_b_c_d_e {\n" + 
+                "        public static interface DataBuilder_ready {\n" + 
                 "            \n" + 
-                "            private final Builder_a_b_c_d parent;\n" + 
-                "            private final String e;\n" + 
+                "            public Data build();\n" + 
                 "            \n" + 
-                "            private Builder_a_b_c_d_e(Builder_a_b_c_d parent, String e) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.e = java.util.Optional.ofNullable(e).orElseGet(()->null);\n" + 
-                "            }\n" + 
                 "            \n" + 
-                "            public int a() {\n" + 
-                "                return parent.a();\n" + 
-                "            }\n" + 
-                "            public boolean b() {\n" + 
-                "                return parent.b();\n" + 
-                "            }\n" + 
-                "            public String c() {\n" + 
-                "                return parent.c();\n" + 
-                "            }\n" + 
-                "            public String d() {\n" + 
-                "                return parent.d();\n" + 
-                "            }\n" + 
-                "            public String e() {\n" + 
-                "                return e;\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d_e a(int a) {\n" + 
-                "                return parent.a(a).e(e);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d_e b(boolean b) {\n" + 
-                "                return parent.b(b).e(e);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d_e c(String c) {\n" + 
-                "                return parent.c(c).e(e);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d_e d(String d) {\n" + 
-                "                return parent.d(d).e(e);\n" + 
-                "            }\n" + 
-                "            public Builder_a_b_c_d_e e(String e) {\n" + 
-                "                return parent.e(e);\n" + 
-                "            }\n" + 
-                "            public Data build() {\n" + 
-                "                return new Data(a(), b(), c(), d(), e());\n" + 
-                "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
+                "        \n" + 
                 "        \n" + 
                 "    }\n" + 
                 "    \n" + 
