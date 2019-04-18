@@ -107,7 +107,7 @@ public class GenerateParentMapChildTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public Parent __data()  throws Exception  {\n" + 
+                "    public Parent __data() throws Exception  {\n" + 
                 "        return this;\n" + 
                 "    }\n" + 
                 "    public Map<String, Child> children() {\n" + 
@@ -165,31 +165,24 @@ public class GenerateParentMapChildTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
-                "    public static class Builder {\n" + 
+                "    public static final class Builder {\n" + 
                 "        \n" + 
-                "        public Builder_children children(Map<String, Child> children) {\n" + 
-                "            return new Builder_children(children);\n" + 
+                "        public final ParentBuilder_ready children(Map<String, Child> children) {\n" + 
+                "            return ()->{\n" + 
+                "                return new Parent(\n" + 
+                "                    children\n" + 
+                "                );\n" + 
+                "            };\n" + 
                 "        }\n" + 
                 "        \n" + 
-                "        public static class Builder_children {\n" + 
+                "        public static interface ParentBuilder_ready {\n" + 
                 "            \n" + 
-                "            private final Map<String, Child> children;\n" + 
+                "            public Parent build();\n" + 
                 "            \n" + 
-                "            private Builder_children(Map<String, Child> children) {\n" + 
-                "                this.children = ImmutableMap.from(children);\n" + 
-                "            }\n" + 
                 "            \n" + 
-                "            public Map<String, Child> children() {\n" + 
-                "                return children;\n" + 
-                "            }\n" + 
-                "            public Builder_children children(Map<String, Child> children) {\n" + 
-                "                return new Builder_children(children);\n" + 
-                "            }\n" + 
-                "            public Parent build() {\n" + 
-                "                return new Parent(children());\n" + 
-                "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
+                "        \n" + 
                 "        \n" + 
                 "    }\n" + 
                 "    \n" + 

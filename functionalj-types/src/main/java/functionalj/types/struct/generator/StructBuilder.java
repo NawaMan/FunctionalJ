@@ -125,8 +125,7 @@ public class StructBuilder {
         }
         GenClass builderClass = null;
         if (sourceSpec.getConfigures().generateBuilderClass) {
-            val builderClassBuilder = new BuilderClassBuilder(sourceSpec);
-            builderClass            = builderClassBuilder.build();
+            builderClass = new BuilderGenerator(sourceSpec).build();
         }
         
         val specField = generateSpecField();

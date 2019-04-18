@@ -36,7 +36,7 @@ import functionalj.stream.Streamable;
 
 // TODO - Add Integer length here to help with a few operations.
 @SuppressWarnings("javadoc")
-public class FuncListStream<SOURCE, DATA> 
+public class FuncListDerived<SOURCE, DATA> 
                 implements FuncList<DATA> {
     
     @SuppressWarnings("rawtypes")
@@ -45,45 +45,45 @@ public class FuncListStream<SOURCE, DATA>
     private final Object                                 source;
     private final Function<Stream<SOURCE>, Stream<DATA>> action;
     
-    public static <DATA> FuncListStream<DATA, DATA> from(FuncList<DATA> funcList) {
-        return new FuncListStream<>(funcList);
+    public static <DATA> FuncListDerived<DATA, DATA> from(FuncList<DATA> funcList) {
+        return new FuncListDerived<>(funcList);
     }
     @SuppressWarnings("unchecked")
-    public static <DATA> FuncListStream<DATA, DATA> from(Supplier<Stream<DATA>> supplier) {
-        return new FuncListStream<>(supplier, noAction);
+    public static <DATA> FuncListDerived<DATA, DATA> from(Supplier<Stream<DATA>> supplier) {
+        return new FuncListDerived<>(supplier, noAction);
     }
     @SuppressWarnings("unchecked")
-    public static <DATA> FuncListStream<DATA, DATA> from(Streamable<DATA> streamable) {
-        return new FuncListStream<>(streamable, noAction);
+    public static <DATA> FuncListDerived<DATA, DATA> from(Streamable<DATA> streamable) {
+        return new FuncListDerived<>(streamable, noAction);
     }
     
     @SuppressWarnings("unchecked")
-    public static <DATA> FuncListStream<DATA, DATA> from(Collection<DATA> streamable) {
-        return new FuncListStream<>(streamable, noAction);
+    public static <DATA> FuncListDerived<DATA, DATA> from(Collection<DATA> streamable) {
+        return new FuncListDerived<>(streamable, noAction);
     }
     
-    public FuncListStream(Iterable<SOURCE> collection, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FuncListDerived(Iterable<SOURCE> collection, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = collection;
     }
-    public FuncListStream(Supplier<Stream<SOURCE>> streamSupplier, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FuncListDerived(Supplier<Stream<SOURCE>> streamSupplier, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streamSupplier;
     }
-    public FuncListStream(Streamable<SOURCE> streamable, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FuncListDerived(Streamable<SOURCE> streamable, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = streamable;
     }
-    public FuncListStream(ReadOnlyList<SOURCE> readOnlyList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FuncListDerived(ReadOnlyList<SOURCE> readOnlyList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = readOnlyList;
     }
-    public FuncListStream(FuncList<SOURCE> abstractFuncList, Function<Stream<SOURCE>, Stream<DATA>> action) {
+    public FuncListDerived(FuncList<SOURCE> abstractFuncList, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = abstractFuncList;
     }
     @SuppressWarnings("unchecked")
-    public FuncListStream(FuncList<DATA> abstractFuncList) {
+    public FuncListDerived(FuncList<DATA> abstractFuncList) {
         this.action = s -> (Stream<DATA>)s;
         this.source = abstractFuncList;
     }

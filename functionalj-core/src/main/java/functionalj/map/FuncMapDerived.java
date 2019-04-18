@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 
 import functionalj.function.Func2;
 import functionalj.list.FuncList;
-import functionalj.list.FuncListStream;
+import functionalj.list.FuncListDerived;
 import functionalj.map.MapAction.FilterBoth;
 import functionalj.map.MapAction.FilterKey;
 import functionalj.map.MapAction.Mapping;
@@ -52,13 +52,13 @@ import functionalj.stream.Streamable;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
+public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     final Map<KEY, SOURCE> map;
     
     private final MapAction<KEY, SOURCE, VALUE> action;
     
-    FuncMapStream(Map<KEY, SOURCE> map, MapAction<KEY, SOURCE, VALUE> action) {
+    FuncMapDerived(Map<KEY, SOURCE> map, MapAction<KEY, SOURCE, VALUE> action) {
         this.map    = map;
         this.action = action;
     }
@@ -440,7 +440,7 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     @Override
     public FuncMap<KEY, VALUE> with(KEY key, VALUE value) {
         val action = new With<KEY, VALUE>(key, value);
-        return new FuncMapStream<KEY, VALUE, VALUE>(this, action);
+        return new FuncMapDerived<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
@@ -454,25 +454,25 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     @Override
     public FuncMap<KEY, VALUE> exclude(KEY key) {
         val action = new FilterKey<KEY, VALUE>(k -> !Objects.equals(k, key));
-        return new FuncMapStream<KEY, VALUE, VALUE>(this, action);
+        return new FuncMapDerived<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
     public FuncMap<KEY, VALUE> filter(Predicate<? super KEY> keyCheck) {
         val action = new FilterKey<KEY, VALUE>(keyCheck);
-        return new FuncMapStream<KEY, VALUE, VALUE>(this, action);
+        return new FuncMapDerived<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
     public FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck) {
         val action = new FilterBoth<KEY, VALUE>(entryCheck);
-        return new FuncMapStream<KEY, VALUE, VALUE>(this, action);
+        return new FuncMapDerived<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
     public FuncMap<KEY, VALUE> filterByEntry(Predicate<? super Map.Entry<? super KEY, ? super VALUE>> entryCheck) {
         val action = new FilterBoth<KEY, VALUE>((k, v) -> entryCheck.test(FuncMap.Entry.of(k,  v)));
-        return new FuncMapStream<KEY, VALUE, VALUE>(this, action);
+        return new FuncMapDerived<KEY, VALUE, VALUE>(this, action);
     }
     
     @SuppressWarnings("unchecked")
@@ -493,12 +493,12 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
                 }
                 return stream;
             });
-            return FuncListStream.from(source);
+            return FuncListDerived.from(source);
         }
         if (action instanceof FilterKey) {
             val filter = (FilterKey<KEY, VALUE>)action;
             val source = (Streamable<KEY>)(()->StreamPlus.from(map.keySet().stream().filter(filter.keyCheck)));
-            return FuncListStream.from(source);
+            return FuncListDerived.from(source);
         }
         if (action instanceof FilterBoth) {
             val filter = (FilterBoth<KEY, VALUE>)action;
@@ -510,15 +510,15 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
                                 .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
                                 .map     (Map.Entry::getKey));
             });
-            return FuncListStream.from(source);
+            return FuncListDerived.from(source);
         }
         
-        return FuncListStream.from(()->map.keySet().stream());
+        return FuncListDerived.from(()->map.keySet().stream());
     }
     
     @Override
     public FuncList<VALUE> values() {
-        return FuncListStream.from(()->entryStream().map(Map.Entry::getValue));
+        return FuncListDerived.from(()->entryStream().map(Map.Entry::getValue));
     }
     
     @Override
@@ -575,7 +575,7 @@ public class FuncMapStream<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     public <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
         val mapFunc = Func2.from(mapper);
         val mapping = new MapAction.Mapping<KEY, VALUE, TARGET>(mapFunc);
-        val mapped  = new FuncMapStream<KEY, VALUE, TARGET>(this, mapping);
+        val mapped  = new FuncMapDerived<KEY, VALUE, TARGET>(this, mapping);
         if (isEager()) {
             return mapped.toImmutableMap();
         }

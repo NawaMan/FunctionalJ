@@ -72,7 +72,7 @@ public class DateTimeLens {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public Person __data()  throws Exception  {\n" + 
+                "    public Person __data() throws Exception  {\n" + 
                 "        return this;\n" + 
                 "    }\n" + 
                 "    public LocalDate child() {\n" + 
@@ -130,31 +130,24 @@ public class DateTimeLens {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
-                "    public static class Builder {\n" + 
+                "    public static final class Builder {\n" + 
                 "        \n" + 
-                "        public Builder_child child(LocalDate child) {\n" + 
-                "            return new Builder_child(child);\n" + 
+                "        public final PersonBuilder_ready child(LocalDate child) {\n" + 
+                "            return ()->{\n" + 
+                "                return new Person(\n" + 
+                "                    child\n" + 
+                "                );\n" + 
+                "            };\n" + 
                 "        }\n" + 
                 "        \n" + 
-                "        public static class Builder_child {\n" + 
+                "        public static interface PersonBuilder_ready {\n" + 
                 "            \n" + 
-                "            private final LocalDate child;\n" + 
+                "            public Person build();\n" + 
                 "            \n" + 
-                "            private Builder_child(LocalDate child) {\n" + 
-                "                this.child = $utils.notNull(child);\n" + 
-                "            }\n" + 
                 "            \n" + 
-                "            public LocalDate child() {\n" + 
-                "                return child;\n" + 
-                "            }\n" + 
-                "            public Builder_child child(LocalDate child) {\n" + 
-                "                return new Builder_child(child);\n" + 
-                "            }\n" + 
-                "            public Person build() {\n" + 
-                "                return new Person(child());\n" + 
-                "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
+                "        \n" + 
                 "        \n" + 
                 "    }\n" + 
                 "    \n" + 

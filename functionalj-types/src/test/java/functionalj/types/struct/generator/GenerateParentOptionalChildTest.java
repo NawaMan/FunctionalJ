@@ -113,7 +113,7 @@ public class GenerateParentOptionalChildTest {
                 "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public Parent __data()  throws Exception  {\n" + 
+                "    public Parent __data() throws Exception  {\n" + 
                 "        return this;\n" + 
                 "    }\n" + 
                 "    public Optional<String> optionalName() {\n" + 
@@ -190,58 +190,32 @@ public class GenerateParentOptionalChildTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
-                "    public static class Builder {\n" + 
+                "    public static final class Builder {\n" + 
                 "        \n" + 
-                "        public Builder_optionalName optionalName(Optional<String> optionalName) {\n" + 
-                "            return new Builder_optionalName(optionalName);\n" + 
+                "        public final ParentBuilder_withoutOptionalChild optionalName(Optional<String> optionalName) {\n" + 
+                "            return (Optional<Child> optionalChild)->{\n" + 
+                "            return ()->{\n" + 
+                "                return new Parent(\n" + 
+                "                    optionalName,\n" + 
+                "                    optionalChild\n" + 
+                "                );\n" + 
+                "            };\n" + 
+                "            };\n" + 
                 "        }\n" + 
                 "        \n" + 
-                "        public static class Builder_optionalName {\n" + 
+                "        public static interface ParentBuilder_withoutOptionalChild {\n" + 
                 "            \n" + 
-                "            private final Optional<String> optionalName;\n" + 
-                "            \n" + 
-                "            private Builder_optionalName(Optional<String> optionalName) {\n" + 
-                "                this.optionalName = $utils.notNull(optionalName);\n" + 
-                "            }\n" + 
-                "            \n" + 
-                "            public Optional<String> optionalName() {\n" + 
-                "                return optionalName;\n" + 
-                "            }\n" + 
-                "            public Builder_optionalName optionalName(Optional<String> optionalName) {\n" + 
-                "                return new Builder_optionalName(optionalName);\n" + 
-                "            }\n" + 
-                "            public Builder_optionalName_optionalChild optionalChild(Optional<Child> optionalChild) {\n" + 
-                "                return new Builder_optionalName_optionalChild(this, optionalChild);\n" + 
-                "            }\n" + 
+                "            public ParentBuilder_ready optionalChild(Optional<Child> optionalChild);\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public static class Builder_optionalName_optionalChild {\n" + 
+                "        public static interface ParentBuilder_ready {\n" + 
                 "            \n" + 
-                "            private final Builder_optionalName parent;\n" + 
-                "            private final Optional<Child> optionalChild;\n" + 
+                "            public Parent build();\n" + 
                 "            \n" + 
-                "            private Builder_optionalName_optionalChild(Builder_optionalName parent, Optional<Child> optionalChild) {\n" + 
-                "                this.parent = parent;\n" + 
-                "                this.optionalChild = $utils.notNull(optionalChild);\n" + 
-                "            }\n" + 
                 "            \n" + 
-                "            public Optional<String> optionalName() {\n" + 
-                "                return parent.optionalName();\n" + 
-                "            }\n" + 
-                "            public Optional<Child> optionalChild() {\n" + 
-                "                return optionalChild;\n" + 
-                "            }\n" + 
-                "            public Builder_optionalName_optionalChild optionalName(Optional<String> optionalName) {\n" + 
-                "                return parent.optionalName(optionalName).optionalChild(optionalChild);\n" + 
-                "            }\n" + 
-                "            public Builder_optionalName_optionalChild optionalChild(Optional<Child> optionalChild) {\n" + 
-                "                return parent.optionalChild(optionalChild);\n" + 
-                "            }\n" + 
-                "            public Parent build() {\n" + 
-                "                return new Parent(optionalName(), optionalChild());\n" + 
-                "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
+                "        \n" + 
                 "        \n" + 
                 "    }\n" + 
                 "    \n" + 

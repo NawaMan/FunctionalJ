@@ -117,17 +117,16 @@ public class GenMethod implements IGenerateDefinition {
             : paramDefs;
         val throwing = (exceptions == null || exceptions.isEmpty())
                      ? ""
-                     : " throws " + exceptions.stream().map(type -> type.simpleName()).collect(Collectors.joining(", ")) + " ";
+                     : (" throws " + exceptions.stream().map(type -> type.simpleName()).collect(Collectors.joining(", ")) + " ");
+        val lineEnd = throwing + ((body == null) ? ";" : " {");
         val definition
                 = ILines.oneLineOf(
                     accessibility, modifiability, scope,
-                    type.simpleNameWithGeneric(""), name + "(" + paramDefsToText + ")",
-                    throwing,
-                    "{");
+                    type.simpleNameWithGeneric(""), name + "(" + paramDefsToText + ")" + lineEnd);
         return ILines.flatenLines(
                 line(definition),
-                indent(body),
-                line("}"));
+                (body == null) ? line("") : indent(body),
+                (body == null) ? line("") : line("}"));
     }
     
 }

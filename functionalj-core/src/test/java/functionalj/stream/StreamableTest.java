@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import functionalj.list.FuncListStream;
+import functionalj.list.FuncListDerived;
 import functionalj.list.ImmutableList;
 import lombok.val;
 
@@ -46,7 +46,7 @@ public class StreamableTest {
     @Test
     public void testSplit() {
         assertEquals("([One, Two],[Four, Five],[Three])", 
-                FuncListStream.from((Supplier<Stream<String>>)()->Stream.of("One", "Two", "Three", "Four", "Five"))
+                FuncListDerived.from((Supplier<Stream<String>>)()->Stream.of("One", "Two", "Three", "Four", "Five"))
                 .split($S.length().thatEquals(3),
                        $S.length().thatLessThanOrEqualsTo(4))
                 .toString());
