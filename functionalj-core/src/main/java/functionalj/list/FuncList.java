@@ -463,9 +463,9 @@ public interface FuncList<DATA>
         });
     }
     
-    public default <TARGET> FuncList<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+    public default <TARGET> FuncList<TARGET> flatMap(Function<? super DATA, ? extends Streamable<? extends TARGET>> mapper) {
         return deriveWith(stream -> {
-            return stream.flatMap(mapper);
+            return stream.flatMap(e -> mapper.apply(e).stream());
         });
     }
     
@@ -1066,13 +1066,15 @@ public interface FuncList<DATA>
     
     //-- FlatMap --
     
-    public default FuncList<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, ? extends Stream<DATA>> mapper) {
-        return flatMap(d -> checker.test(d) ? mapper.apply(d) : StreamPlus.of(d));
+    public default FuncList<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, ? extends Streamable<DATA>> mapper) {
+        return flatMap(d -> checker.test(d) 
+                          ? mapper.apply(d)
+                          : ()->StreamPlus.of(d));
     }
     public default <T> FuncList<T> flatMapIf(
             Predicate<? super DATA> checker, 
-            Function<? super DATA, Stream<T>> mapper, 
-            Function<? super DATA, Stream<T>> elseMapper) {
+            Function<? super DATA, Streamable<T>> mapper, 
+            Function<? super DATA, Streamable<T>> elseMapper) {
         return flatMap(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
     }
     

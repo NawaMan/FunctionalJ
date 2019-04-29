@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
-import functionalj.stream.Streamable;
 import lombok.val;
 
 public class StreamableHelperTest {

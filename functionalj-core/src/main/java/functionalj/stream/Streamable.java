@@ -81,7 +81,6 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
-// TODO - Reconsider if Streamable should be a StreamPlus
 @SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface Streamable<DATA> {
@@ -138,9 +137,9 @@ public interface Streamable<DATA> {
         });
     }
     
-    public default <TARGET> Streamable<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+    public default <TARGET> Streamable<TARGET> flatMap(Function<? super DATA, ? extends Streamable<? extends TARGET>> mapper) {
         return deriveWith(stream -> {
-            return stream.flatMap(mapper);
+            return stream.flatMap(e -> mapper.apply(e).stream());
         });
     }
     
@@ -725,13 +724,13 @@ public interface Streamable<DATA> {
     
     //-- FlatMap --
     
-    public default Streamable<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, ? extends Stream<DATA>> mapper) {
-        return flatMap(d -> checker.test(d) ? mapper.apply(d) : StreamPlus.of(d));
+    public default Streamable<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, ? extends Streamable<DATA>> mapper) {
+        return flatMap(d -> checker.test(d) ? mapper.apply(d) :()-> StreamPlus.of(d));
     }
     public default <T> Streamable<T> flatMapIf(
             Predicate<? super DATA> checker, 
-            Function<? super DATA, Stream<T>> mapper, 
-            Function<? super DATA, Stream<T>> elseMapper) {
+            Function<? super DATA, Streamable<T>> mapper, 
+            Function<? super DATA, Streamable<T>> elseMapper) {
         return flatMap(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
     }
     

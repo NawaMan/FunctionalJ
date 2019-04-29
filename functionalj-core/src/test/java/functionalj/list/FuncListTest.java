@@ -141,7 +141,7 @@ public class FuncListTest {
     public void testFlatMapOnly() {
         val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
         assertEquals("[One, One, Two, Two, Three, Four, Five, Six, Six, Seven]",
-                "" + list.flatMapOnly(theString.length().thatLessThan(4), s -> ImmutableList.of(s, s).stream()));
+                "" + list.flatMapOnly(theString.length().thatLessThan(4), s -> ImmutableList.of(s, s)));
     }
     
     @Test
@@ -150,8 +150,8 @@ public class FuncListTest {
         assertEquals("[One, One, Two, Two, Three, Three, Three, Four, Four, Four, Five, Five, Five, Six, Six, Seven, Seven, Seven]",
                 "" + list.flatMapIf(
                         theString.length().thatLessThan(4),
-                        s -> ImmutableList.of(s, s).stream(),
-                        s -> ImmutableList.of(s, s, s).stream()));
+                        s -> ImmutableList.of(s, s),
+                        s -> ImmutableList.of(s, s, s)));
     }
     
     @Test
