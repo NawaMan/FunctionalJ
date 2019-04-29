@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
-import functionalj.stream.Streamable;
 import lombok.val;
 
 public class StreamableHelperTest {
@@ -42,16 +41,16 @@ public class StreamableHelperTest {
         val list     = Arrays.asList("One", "Two", "Three");
         val valueRef = new AtomicReference<String>();
         
-        assertTrue(Streamable.Helper.hasAt(list.stream(), 0, valueRef));
+        assertTrue(StreamPlus.Helper.hasAt(list.stream(), 0, valueRef));
         assertEquals("One", valueRef.get());
         
-        assertTrue(Streamable.Helper.hasAt(list.stream(), 1, valueRef));
+        assertTrue(StreamPlus.Helper.hasAt(list.stream(), 1, valueRef));
         assertEquals("Two", valueRef.get());
-
-        assertTrue(Streamable.Helper.hasAt(list.stream(), 2, valueRef));
+        
+        assertTrue(StreamPlus.Helper.hasAt(list.stream(), 2, valueRef));
         assertEquals("Three", valueRef.get());
         
-        assertFalse(Streamable.Helper.hasAt(list.stream(), 3, valueRef));
+        assertFalse(StreamPlus.Helper.hasAt(list.stream(), 3, valueRef));
         assertEquals(null, valueRef.get());
     }
     

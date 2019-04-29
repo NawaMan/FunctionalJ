@@ -37,7 +37,7 @@ public class Func2Test {
     
     @Test
     public void testApplyBare() {
-        assertEquals("Hello world!",                   "" + concat.applyTo("Hello",            " world!"));
+        assertEquals("Hello world!",                   "" + concat.apply  ("Hello",            " world!"));
         assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Result .valueOf("Hello"), Result .valueOf(" world!")));
         assertEquals("Result:{ Value: Hello world! }", "" + concat.applyTo(Promise.of("Hello"), Promise.of(" world!")).getResult());
     }

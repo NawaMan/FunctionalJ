@@ -179,7 +179,7 @@ public class FunctionExamples {
     public void example10_FlexibleInputs() {
         val toInt = f(this::toInt);
         
-        assertEquals("42",      "" + toInt.applyTo("42"));
+        assertEquals("42",      "" + toInt.apply("42"));
         assertEquals("[1, 42]", "" + toInt.applyTo(FuncList.of("1", "42")));
         
         assertEquals(
@@ -220,14 +220,14 @@ public class FunctionExamples {
     @Test
     public void example13_Currying() {
         val add = f((Integer a, Integer b)->a + b);
-        assertEquals("12", "" + add.applyTo(5).applyTo(7));
+        assertEquals("12", "" + add.applyTo(5).apply(7));
     }
     
     @Test
     public void example14_Composition() {
         val add = f((Integer a, Integer b)->a + b);
         val sum = add.then(i -> "Sum: " + i);
-        assertEquals("Sum: 12", "" + sum.applyTo(5, 7));
+        assertEquals("Sum: 12", "" + sum.apply(5, 7));
     }
     
 }

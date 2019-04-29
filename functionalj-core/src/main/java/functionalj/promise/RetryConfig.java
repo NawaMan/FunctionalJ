@@ -30,7 +30,7 @@ public class RetryConfig<DATA> implements AnyAccess<DeferActionBuilder<DATA>, Re
         
         @Override
         public WaitRetryBuilder<DATA> applyUnsafe(DeferActionBuilder<DATA> input) throws Exception {
-            return retryConfig.applyTo(input).times();
+            return retryConfig.apply(input).times();
         }
         
         public WaitForConfig<DATA> waitFor(long period) {

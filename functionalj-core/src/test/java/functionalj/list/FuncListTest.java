@@ -28,11 +28,8 @@ import static functionalj.map.FuncMap.underlineMap;
 import static functionalj.map.FuncMap.UnderlineMap.LinkedHashMap;
 import static functionalj.ref.Run.With;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
@@ -179,26 +176,6 @@ public class FuncListTest {
                         + "{index:6, word:Seven, length:5}"
                     + "]",
                     mapString);
-    }
-    
-    @Test
-    public void testStreamCloseHasNoEffect() {
-        val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
-        val lengthLessThanFive = list.indexesOf(theString.length().thatLessThan(4));
-        val isOnClosedCalled = new AtomicBoolean(false);
-        assertEquals("[0, 1, 5]", "" + lengthLessThanFive);
-        assertEquals("[0, 1, 5]", "" + lengthLessThanFive);
-        lengthLessThanFive.onClose(()->{
-            if (isOnClosedCalled.get())
-                fail("Hash already called.");
-            
-            isOnClosedCalled.set(true);
-        });
-        lengthLessThanFive.close();
-        assertEquals("[0, 1, 5]", "" + lengthLessThanFive);
-        assertEquals("[0, 1, 5]", "" + lengthLessThanFive);
-        
-        assertFalse(isOnClosedCalled.get());
     }
     
 }
