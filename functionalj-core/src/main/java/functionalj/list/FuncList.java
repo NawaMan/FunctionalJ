@@ -25,6 +25,7 @@ package functionalj.list;
 
 import static functionalj.function.Func.alwaysTrue;
 import static functionalj.lens.Access.$I;
+import static java.util.function.Function.identity;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -53,6 +54,7 @@ import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamPlus.Helper;
 import functionalj.stream.Streamable;
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.IntTuple2;
@@ -100,7 +102,7 @@ public interface FuncList<DATA>
     	return ImmutableList.of(data);
     }
     public static <T> FuncList<T> from(Streamable<T> streamable) {
-        return ImmutableList.from(streamable);
+        return new FuncListDerived<T, T>(streamable, identity());
     }
     public static <T> FuncList<T> from(Stream<T> stream) {
         return new ImmutableList<T>(stream.collect(Collectors.toList()));
@@ -110,6 +112,18 @@ public interface FuncList<DATA>
     }
     public static <T> FuncList<T> from(FuncList<T> funcList) {
         return ImmutableList.from(funcList);
+    }
+    
+    public static <T> FuncListBuilder<T> newFuncList() {
+        return new FuncListBuilder<T>();
+    }
+    
+    public static <T> FuncListBuilder<T> newList() {
+        return new FuncListBuilder<T>();
+    }
+    
+    public static <T> FuncListBuilder<T> newBuilder() {
+        return new FuncListBuilder<T>();
     }
     
     //== Override ==
@@ -153,7 +167,6 @@ public interface FuncList<DATA>
     public default List<DATA> toJavaList() {
         return this;
     }
-    @Override
     public default FuncList<DATA> toList() {
         return this;
     }
@@ -444,22 +457,15 @@ public interface FuncList<DATA>
         });
     }
     
-    @Override
-    public default FuncList<DATA> onClose(Runnable closeHandler) {
-        return deriveWith(stream -> { 
-            return stream.onClose(closeHandler);
-        });
-    }
-    
     public default <TARGET> FuncList<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         return deriveWith(stream -> {
             return stream.map(mapper);
         });
     }
     
-    public default <TARGET> FuncList<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+    public default <TARGET> FuncList<TARGET> flatMap(Function<? super DATA, ? extends Streamable<? extends TARGET>> mapper) {
         return deriveWith(stream -> {
-            return stream.flatMap(mapper);
+            return stream.flatMap(e -> mapper.apply(e).stream());
         });
     }
     
@@ -635,10 +641,8 @@ public interface FuncList<DATA>
     //-- mapWithIndex --
     
     public default <T> FuncList<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
-        return deriveWith(stream -> {
-            val index = new AtomicInteger();
-            return map(each -> mapper.apply(index.getAndIncrement(), each));
-        });
+        val index = new AtomicInteger();
+        return map(each -> mapper.apply(index.getAndIncrement(), each));
     }
     
     public default <T1, T> FuncList<T> mapWithIndex(
@@ -657,7 +661,7 @@ public interface FuncList<DATA>
     public default <TARGET> FuncList<TARGET> mapWithPrev(BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> mapper) {
         return deriveWith(stream -> {
             val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
-            return map(element -> {
+            return stream.map(element -> {
                 val newValue = mapper.apply(prev.get(), element);
                 prev.set(Result.valueOf(element));
                 return newValue;
@@ -1062,13 +1066,15 @@ public interface FuncList<DATA>
     
     //-- FlatMap --
     
-    public default FuncList<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, ? extends Stream<DATA>> mapper) {
-        return flatMap(d -> checker.test(d) ? mapper.apply(d) : StreamPlus.of(d));
+    public default FuncList<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, ? extends Streamable<DATA>> mapper) {
+        return flatMap(d -> checker.test(d) 
+                          ? mapper.apply(d)
+                          : ()->StreamPlus.of(d));
     }
     public default <T> FuncList<T> flatMapIf(
             Predicate<? super DATA> checker, 
-            Function<? super DATA, Stream<T>> mapper, 
-            Function<? super DATA, Stream<T>> elseMapper) {
+            Function<? super DATA, Streamable<T>> mapper, 
+            Function<? super DATA, Streamable<T>> elseMapper) {
         return flatMap(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
     }
     

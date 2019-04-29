@@ -95,9 +95,6 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
     public default Func5<INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> applyTo(INPUT1 input1) {
         return (input2, input3, input4, input5, input6) -> apply(input1, input2, input3, input4, input5, input6);
     }
-    public default OUTPUT applyTo(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6) {
-        return apply(input1, input2, input3, input4, input5, input6);
-    }
     public default Result<OUTPUT> applyTo(Result<INPUT1> input1, Result<INPUT2> input2, Result<INPUT3> input3, Result<INPUT4> input4, Result<INPUT5> input5, Result<INPUT6> input6) {
         return Result.ofResults(input1, input2, input3, input4, input5, input6, this);
     }

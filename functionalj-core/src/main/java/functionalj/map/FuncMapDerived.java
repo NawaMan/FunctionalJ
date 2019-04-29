@@ -36,7 +36,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -81,7 +80,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     private Stream<Map.Entry<KEY, SOURCE>> originalEntryStream() {
         Stream<Map.Entry<KEY, SOURCE>> stream
             = (map instanceof FuncMap)
-            ? ((FuncMap<KEY, SOURCE>)map).entries()
+            ? ((FuncMap<KEY, SOURCE>)map).entries().stream()
             : map.entrySet().stream();
         return stream;
     }
@@ -448,7 +447,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
         // TODO: Find the way to do it
         val newMap = new HashMap<>(this.toMap());
         newMap.putAll(entries);
-        return ImmutableMap.of(newMap);
+        return ImmutableMap.from(newMap);
     }
     
     @Override
@@ -536,8 +535,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     }
     @Override
     public FuncList<Map.Entry<KEY, VALUE>> entries() {
-        return entryStream()
-                .toList();
+        return FuncList.from((Streamable<Map.Entry<KEY, VALUE>>)(()->entryStream()));
     }
     
     @Override
@@ -547,7 +545,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     @Override
     public ImmutableMap<KEY, VALUE> toImmutableMap() {
-        return ImmutableMap.of(this);
+        return ImmutableMap.from(this);
     }
     
     @Override
@@ -567,12 +565,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     }
     
     @Override
-    public <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, ? extends TARGET> mapper) {
-        return map((k, v)->mapper.apply(v));
-    }
-    
-    @Override
-    public <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
+    public <TARGET> FuncMap<KEY, TARGET> mapEntry(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
         val mapFunc = Func2.from(mapper);
         val mapping = new MapAction.Mapping<KEY, VALUE, TARGET>(mapFunc);
         val mapped  = new FuncMapDerived<KEY, VALUE, TARGET>(this, mapping);

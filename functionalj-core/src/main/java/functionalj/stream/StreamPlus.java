@@ -581,13 +581,13 @@ public interface StreamPlus<DATA>
         stream()
             .collect(Collectors.groupingBy(classifier))
             .forEach((key,list)->theMap.put(key, ImmutableList.from(list)));
-        return ImmutableMap.of(theMap);
+        return ImmutableMap.from(theMap);
     }
     
     @SuppressWarnings("unchecked")
     public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, ? extends KEY> keyMapper) {
         val theMap = stream().collect(Collectors.toMap(keyMapper, data -> data));
-        return (FuncMap<KEY, DATA>)ImmutableMap.of(theMap);
+        return (FuncMap<KEY, DATA>)ImmutableMap.from(theMap);
     }
     
     @SuppressWarnings("unchecked")
@@ -595,7 +595,7 @@ public interface StreamPlus<DATA>
                 Function<? super DATA, ? extends KEY>  keyMapper,
                 Function<? super DATA, ? extends VALUE> valueMapper) {
         val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper));
-        return (FuncMap<KEY, VALUE>) ImmutableMap.of(theMap);
+        return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
     }
     
     @SuppressWarnings("unchecked")
@@ -604,7 +604,7 @@ public interface StreamPlus<DATA>
                 Function<? super DATA, ? extends VALUE> valueMapper,
                 BinaryOperator<VALUE> mergeFunction) {
         val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
-        return (FuncMap<KEY, VALUE>) ImmutableMap.of(theMap);
+        return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
     }
     
     //== Plus ==

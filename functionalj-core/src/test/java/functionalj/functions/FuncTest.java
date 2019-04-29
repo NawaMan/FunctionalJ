@@ -94,7 +94,7 @@ public class FuncTest {
                 .applyTo(5)
                 .applyTo(4)
                 .applyTo(3)
-                .applyTo(2));
+                .apply  (2));
     }
     @Test
     public void testElevate() throws Exception {

@@ -107,7 +107,7 @@ public class Loop<DATA> extends Retry<DATA> {
         
         @Override
         public void acceptUnsafe(Result<DATA> result) throws Exception {
-            val shouldBreak = shouldStop.applyTo(result);
+            val shouldBreak = shouldStop.apply(result);
             if (shouldBreak) {
                 val value = result.value();
                 finalAction.complete(value);

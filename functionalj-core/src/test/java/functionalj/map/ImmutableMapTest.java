@@ -74,7 +74,7 @@ public class ImmutableMapTest {
     
     @Test
     public void testDuplicateElement() {
-        assertEquals("{1:One}", "" + FuncMap.of("1", "One", "1", "Two").sorted());
+        assertEquals("{1:Two}", "" + FuncMap.of("1", "One", "1", "Two").sorted());
     }
     
     @Test
