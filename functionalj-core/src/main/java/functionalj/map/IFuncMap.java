@@ -35,6 +35,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import functionalj.function.Func0;
+import functionalj.function.Func1;
+import functionalj.function.FuncUnit1;
 import functionalj.list.FuncList;
 
 @SuppressWarnings("javadoc")
@@ -82,15 +85,37 @@ public interface IFuncMap<KEY, VALUE, SELF extends IFuncMap<KEY, VALUE, ?>> {
     
     public ImmutableMap<KEY, VALUE> toImmutableMap();
     
+    public Func1<KEY, VALUE> toFunction();
+    
+    public Func1<KEY, VALUE> toFunction(VALUE elseValue);
+    
+    public Func1<KEY, VALUE> toFunction(Func0<VALUE> elseSupplier);
+    
+    public Func1<KEY, VALUE> toFunction(Func1<KEY, VALUE> elseProvider);
+    
+    public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, VALUE elseValue);
+    
+    public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, Func0<VALUE> elseSupplier);
+    
+    public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, Func1<KEY, VALUE> elseProvider);
+    
     public FuncMap<KEY, VALUE> sorted();
     
     public FuncMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator);
+    
+    public default <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
+        return mapValue(v->mapper.apply(v));
+    }
+    
+    public default <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
+        return mapEntry((k, v)->mapper.apply(k, v));
+    }
     
     public default <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, ? extends TARGET> mapper) {
         return map((k, v)->mapper.apply(v));
     }
     
-    public <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper);
+    public <TARGET> FuncMap<KEY, TARGET> mapEntry(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper);
     
     public void forEach(BiConsumer<? super KEY, ? super VALUE> action);
     

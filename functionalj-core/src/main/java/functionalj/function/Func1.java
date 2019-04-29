@@ -25,11 +25,14 @@ package functionalj.function;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
@@ -70,7 +73,76 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public static <I1, O> Func1<I1, O> from(Function<I1, O> func) {
         return func::apply;
     }
-    
+    public static <O, I, I1, I2> Func1<I, O> from(
+            Func2<I1, I2, O> func,
+            Func1<I, I1> input1,
+            Func1<I, I2> input2) {
+        return source -> {
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            return func.apply(i1, i2);
+        };
+    }
+    public static <O, I, I1, I2, I3> Func1<I, O> from(
+            Func3<I1, I2, I3, O> func,
+            Func1<I, I1> input1,
+            Func1<I, I2> input2,
+            Func1<I, I3> input3) {
+        return source -> {
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            val i3 = input3.apply(source);
+            return func.apply(i1, i2, i3);
+        };
+    }
+    public static <O, I, I1, I2, I3, I4> Func1<I, O> from(
+            Func4<I1, I2, I3, I4, O> func,
+            Func1<I, I1> input1,
+            Func1<I, I2> input2,
+            Func1<I, I3> input3,
+            Func1<I, I4> input4) {
+        return source -> {
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            val i3 = input3.apply(source);
+            val i4 = input4.apply(source);
+            return func.apply(i1, i2, i3, i4);
+        };
+    }
+    public static <O, I, I1, I2, I3, I4, I5> Func1<I, O> from(
+            Func5<I1, I2, I3, I4, I5, O> func,
+            Func1<I, I1> input1,
+            Func1<I, I2> input2,
+            Func1<I, I3> input3,
+            Func1<I, I4> input4,
+            Func1<I, I5> input5) {
+        return source -> {
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            val i3 = input3.apply(source);
+            val i4 = input4.apply(source);
+            val i5 = input5.apply(source);
+            return func.apply(i1, i2, i3, i4, i5);
+        };
+    }
+    public static <O, I, I1, I2, I3, I4, I5, I6> Func1<I, O> from(
+            Func6<I1, I2, I3, I4, I5, I6, O> func,
+            Func1<I, I1> input1,
+            Func1<I, I2> input2,
+            Func1<I, I3> input3,
+            Func1<I, I4> input4,
+            Func1<I, I5> input5,
+            Func1<I, I6> input6) {
+        return source -> {
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            val i3 = input3.apply(source);
+            val i4 = input4.apply(source);
+            val i5 = input5.apply(source);
+            val i6 = input6.apply(source);
+            return func.apply(i1, i2, i3, i4, i5, i6);
+        };
+    }
     
     public OUTPUT applyUnsafe(INPUT input) throws Exception;
     
@@ -94,9 +166,6 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default OUTPUT applyToNull() {
         return apply((INPUT)null);
     }
-    public default OUTPUT applyTo(INPUT input) {
-        return apply(input);
-    }
     public default Result<OUTPUT> applyTo(Result<INPUT> input) {
         return input.map(this);
     }
@@ -112,17 +181,20 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Task<OUTPUT> applyTo(Task<INPUT> input) {
         return input.map(this);
     }
-    // Should make it just Stream
-    public default StreamPlus<OUTPUT> applyTo(StreamPlus<INPUT> input) {
-        return input.map(this);
+    public default StreamPlus<OUTPUT> applyTo(Stream<INPUT> input) {
+        return StreamPlus.from(input).map(this);
     }
-    // Should make it just List
+    public default FuncList<OUTPUT> applyTo(List<INPUT> input) {
+        return FuncList.from(input).map(this);
+    }
+    public default <KEY> FuncMap<KEY, OUTPUT> applyTo(Map<KEY, INPUT> input) {
+        return FuncMap.from(input).map(this);
+    }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT> input) {
-        return input.map(this);
+        return FuncList.from(input).map(this);
     }
-    // Should make it just Map
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT> input) {
-        return input.mapValue(this);
+        return FuncMap.from(input).map(this);
     }
     public default Func0<OUTPUT> applyTo(Supplier<INPUT> input) {
         return ()->apply(input.get());

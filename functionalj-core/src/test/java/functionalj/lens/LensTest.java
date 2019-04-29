@@ -72,14 +72,14 @@ public class LensTest {
         val car1 = new Car("blue");
         val driver1 = new Driver(car1);
         
-        assertThis("blue",             theCar.color.applyTo(car1));
-        assertThis("Car(color=green)", theCar.color.changeTo("green").applyTo(car1));
-        assertThis(false,              theCar.color.thatIsBlank().applyTo(car1));
+        assertThis("blue",             theCar.color.apply(car1));
+        assertThis("Car(color=green)", theCar.color.changeTo("green").apply(car1));
+        assertThis(false,              theCar.color.thatIsBlank().apply(car1));
         
-        assertThis("blue",                         theDriver.car.color.applyTo(driver1));
-        assertThis("Driver(car=Car(color=green))", theDriver.car.color.changeTo("green").applyTo(driver1));
-        assertThis("Driver(car=Car(color=red))",   theDriver.car.withColor("red").applyTo(driver1));
-        assertThis(false,                          theDriver.car.color.thatIsBlank().applyTo(driver1));
+        assertThis("blue",                         theDriver.car.color.apply(driver1));
+        assertThis("Driver(car=Car(color=green))", theDriver.car.color.changeTo("green").apply(driver1));
+        assertThis("Driver(car=Car(color=red))",   theDriver.car.withColor("red").apply(driver1));
+        assertThis(false,                          theDriver.car.color.thatIsBlank().apply(driver1));
         
         val drivers = asList(
                 driver1,
@@ -97,13 +97,13 @@ public class LensTest {
                 }));
         
         val checkForCompanyWithBlueCar = theCompany.drivers.thatContains(theDriver.car.color.thatEquals("blue"));
-        assertThis(false, checkForCompanyWithBlueCar.applyTo(new Company(asList())));
-        assertThis(true,  checkForCompanyWithBlueCar.applyTo(new Company(asList(driver1))));
-        assertThis(true,  checkForCompanyWithBlueCar.applyTo(new Company(asList(driver1, driver1.withCar(new Car("red"))))));
+        assertThis(false, checkForCompanyWithBlueCar.apply(new Company(asList())));
+        assertThis(true,  checkForCompanyWithBlueCar.apply(new Company(asList(driver1))));
+        assertThis(true,  checkForCompanyWithBlueCar.apply(new Company(asList(driver1, driver1.withCar(new Car("red"))))));
         
         val findCarColor = theDriver.car.toNullable().thenMap(theCar.color);
-        assertThis("Nullable.EMPTY",    findCarColor.applyTo(new Driver(null)));
-        assertThis("Nullable.of(blue)", findCarColor.applyTo(new Driver(new Car("blue"))));
+        assertThis("Nullable.EMPTY",    findCarColor.apply(new Driver(null)));
+        assertThis("Nullable.of(blue)", findCarColor.apply(new Driver(new Car("blue"))));
         
         val company = new Company(asList(driver1, driver1.withCar(new Car("red"))));
          assertEquals("Driver(car=Car(color=blue))", theCompany.drivers.first().apply(company).toString());
@@ -265,8 +265,8 @@ public class LensTest {
         val nullUnsafeGetColor  = nullUnsafeGetCar.color;
         val mayBeGetColor       = nullSafeGetColor.toNullable();
         
-        assertNull(nullSafeGetColor.applyTo(driverWithNoCar));
-        assertEquals(Nullable.empty(), mayBeGetColor.applyTo(driverWithNoCar));
+        assertNull(nullSafeGetColor.apply(driverWithNoCar));
+        assertEquals(Nullable.empty(), mayBeGetColor.apply(driverWithNoCar));
         
         try {
             nullUnsafeGetColor.apply(driverWithNoCar);

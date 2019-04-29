@@ -30,11 +30,13 @@ import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamPlus.Helper;
 import functionalj.stream.Streamable;
 import lombok.val;
 
@@ -154,6 +156,14 @@ public interface ReadOnlyList<DATA>
     @Override
     public default Spliterator<DATA> spliterator() {
         return Streamable.super.spliterator();
+    }
+    
+    @Override
+    public default void forEach(Consumer<? super DATA> action) {
+        if (action == null)
+            return;
+        
+        stream().forEach(action);
     }
     
     //== Mutable methods are not supported.

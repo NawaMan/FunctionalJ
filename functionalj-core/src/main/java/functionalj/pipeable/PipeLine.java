@@ -55,11 +55,12 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     }
     
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     public OUTPUT applyUnsafe(INPUT input) throws Exception {
         try {
             Object data = input;
             for (int i = 0; i < functions.size(); i++) {
+                @SuppressWarnings("rawtypes")
                 val func1 = functions.get(i);
                 data = __internal.apply(func1, data);
             }

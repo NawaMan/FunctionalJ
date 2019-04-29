@@ -98,9 +98,6 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func1<INPUT2, OUTPUT> applyTo(INPUT1 input1) {
         return input2 -> apply(input1, input2);
     }
-    public default OUTPUT applyTo(INPUT1 input1, INPUT2 input2) {
-        return apply(input1, input2);
-    }
     public default Result<OUTPUT> applyTo(Result<INPUT1> input1, Result<INPUT2> input2) {
         return Result.ofResults(input1, input2, this);
     }
@@ -131,10 +128,10 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return input1.combine(input2, option, this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2) {
-        return input1.combine(input2, this);
+        return input1.combine(input2.stream(), this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT1> input1, FuncList<INPUT2> input2, ZipWithOption option) {
-        return input1.combine(input2, option, this);
+        return input1.combine(input2.stream(), option, this);
     }
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT1> input1, FuncMap<KEY, INPUT2> input2) {
         return input1.zipWith(input2, this);
@@ -149,7 +146,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
         return source -> {
             val i1 = input1.apply(source);
             val i2 = input2.apply(source);
-            return applyTo(i1, i2);
+            return apply(i1, i2);
         };
     }
     

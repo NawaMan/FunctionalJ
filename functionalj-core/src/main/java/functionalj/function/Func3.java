@@ -90,9 +90,6 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
     public default Func2<INPUT2, INPUT3, OUTPUT> applyTo(INPUT1 input1) {
         return (input2, input3) -> apply(input1, input2, input3);
     }
-    public default OUTPUT applyTo(INPUT1 input1, INPUT2 input2, INPUT3 input3) {
-        return apply(input1, input2, input3);
-    }
     public default Result<OUTPUT> applyTo(Result<INPUT1> input1, Result<INPUT2> input2, Result<INPUT3> input3) {
         return Result.ofResults(input1, input2, input3, this);
     }
@@ -128,7 +125,7 @@ public interface Func3<INPUT1, INPUT2, INPUT3, OUTPUT> {
             val i1 = input1.apply(source);
             val i2 = input2.apply(source);
             val i3 = input3.apply(source);
-            return applyTo(i1, i2, i3);
+            return apply(i1, i2, i3);
         };
     }
     

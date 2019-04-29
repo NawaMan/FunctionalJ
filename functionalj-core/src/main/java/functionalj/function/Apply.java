@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.function;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -59,7 +61,7 @@ public interface Apply {
     }
     
     public static <I1, I2, I3, O> O apply(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) {
-        return func.applyTo(input1, input2, input3);
+        return func.apply(input1, input2, input3);
     }
     public static <I1, I2, I3, O> Func2<I2, I3, O> apply(Func3<I1, I2, I3, O> func, I1 input1) {
         return func.applyTo(input1);
@@ -137,10 +139,10 @@ public interface Apply {
     public static <I, O> Nullable<O> $(Function<I, O> func, Nullable<I> input) {
         return Func1.from(func).applyTo(input);
     }
-    public static <I, O> FuncList<O> $(Function<I, O> func, FuncList<I> input) {
+    public static <I, O> FuncList<O> $(Function<I, O> func, List<I> input) {
         return Func1.from(func).applyTo(input);
     }
-    public static <K, I, O> FuncMap<K, O> $(Function<I, O> func, FuncMap<K, I> input) {
+    public static <K, I, O> FuncMap<K, O> $(Function<I, O> func, Map<K, I> input) {
         return Func1.from(func).applyTo(input);
     }
     public static <I, O> Supplier<O> $(Function<I, O> func, Supplier<I> input) {
@@ -197,7 +199,7 @@ public interface Apply {
     }
     
     public static <I1, I2, I3, O> O $(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) {
-        return func.applyTo(input1, input2, input3);
+        return func.apply(input1, input2, input3);
     }
     public static <I1, I2, I3, O> Func2<I2, I3, O> $(Func3<I1, I2, I3, O> func, I1 input1) {
         return func.applyTo(input1);
@@ -350,7 +352,7 @@ public interface Apply {
         return Result.of(()->func.apply(input));
     }
     public static <I1, I2, I3, O> Result<O> $$(Func3<I1, I2, I3, O> func, I1 input1, I2 input2, I3 input3) {
-        return Result.of(()->func.applyTo(input1, input2, input3));
+        return Result.of(()->func.apply(input1, input2, input3));
     }
     public static <I1, I2, I3, I4, O> Result<O> $$(Func4<I1, I2, I3, I4, O> func, I1 input1, I2 input2, I3 input3, I4 input4) {
         return Result.of(()->func.apply(input1, input2, input3, input4));
