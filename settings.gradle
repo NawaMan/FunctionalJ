@@ -6,6 +6,7 @@ include ":functionalj-types"
 include ":functionalj-all"
 
 
+include ":functionalj-annotations-tests"
 include ":functionalj-types-tests"
 include ":functionalj-examples"
 
