@@ -556,6 +556,14 @@ public class StreamPlusTest {
         assertStrings("[0, 1, 2, 3, 4]", stream2.toListString());
     }
     
+    //-- Compound --
+    
+    @Test
+    public void testCompound() {
+        val stream = StreamPlus.compound(1, a -> a + 1);
+        assertStrings("[1, 2, 3, 4, 5]", stream.limit(5).toListString());
+    }
+    
     //-- Segmentation --
     
     @Test

@@ -143,8 +143,6 @@ public interface StreamPlus<DATA>
         return ArrayBackedStream.from(data);
     }
     
-    // TODO - cycleFrom - from supplier.
-    
     @SafeVarargs
     public static <D> StreamPlus<D> cycle(D ... data) {
         return StreamPlus.from(IntStream.iterate(0, i -> i + 1).mapToObj(i -> data[i % data.length]));
@@ -215,6 +213,10 @@ public interface StreamPlus<DATA>
     
     public static <D> StreamPlus<D> iterate(D seed, UnaryOperator<D> f) {
         return StreamPlus.from(Stream.iterate(seed, f));
+    }
+    
+    public static <D> StreamPlus<D> compound(D seed, UnaryOperator<D> f) {
+        return iterate(seed, f);
     }
     
     // TODO - Take from Iterator, Enumeration

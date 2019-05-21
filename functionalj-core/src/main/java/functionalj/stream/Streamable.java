@@ -807,17 +807,6 @@ public interface Streamable<DATA> {
     //-- Plus w/ Self --
     //============================================================================
     
-    
-    
-    
-    
-    
-    // BlahBlah
-    
-    
-    
-    
-    
     //== Functionalities ==
     
     public default IntStreamPlus mapToInt(ToIntFunction<? super DATA> mapper) {
