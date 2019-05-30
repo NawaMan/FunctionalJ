@@ -21,48 +21,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.list;
 
-import static functionalj.lens.Access.$S;
-import static org.junit.Assert.assertEquals;
+import java.util.Objects;
 
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import org.junit.Test;
-
-import functionalj.list.FuncListDerived;
-import functionalj.list.ImmutableList;
-import lombok.val;
-
-public class StreamableTest {
+public class ReadOnlyListException extends UnsupportedOperationException {
     
-    @Test
-    public void testSelectiveMap() {
-        assertEquals("[One, --Two, Three, Four, Five]", 
-                ImmutableList.of("One", "Two", "Three", "Four", "Five").mapOnly("Two"::equals, str -> "--" + str).toString());
+    private static final long serialVersionUID = 832691415697511541L;
+    
+    public ReadOnlyListException(@SuppressWarnings("rawtypes") ReadOnlyList list) {
+        super(message(list));
     }
     
-    @Test
-    public void testSplit() {
-        assertEquals("([One, Two],[Four, Five],[Three])", 
-                FuncListDerived.from((Supplier<Stream<String>>)()->Stream.of("One", "Two", "Three", "Four", "Five"))
-                .split($S.length().thatEquals(3),
-                       $S.length().thatLessThanOrEqualsTo(4))
-                .toString());
-    }
-    
-    @Test
-    public void testMapWithPrev() {
-        val stream = Streamable.of("One", "Two", "Three").mapWithPrev((prev, element) -> prev.orElse("").length() + element.length());
-        assertEquals("3, 6, 8", stream.joinToString(", "));
-        assertEquals("3, 6, 8", stream.joinToString(", "));
-    }
-    
-    @Test
-    public void testAccumulate() {
-        val stream = Streamable.of(1, 2, 3, 4, 5);
-        assertEquals("1, 3, 6, 10, 15", stream.accumulate((a, b)->a+b).joinToString(", "));
+    @SuppressWarnings("rawtypes")
+    public static String message(ReadOnlyList list) {
+        Objects.requireNonNull(list);
+        
+        String listToString = null;
+        try {
+            if (list.size() <= 3) {
+                listToString = "List " + list;
+            } else {
+                listToString = "List starting with" + list.stream().limit(3).joinToString(", ");
+            }
+        } catch (Exception e) {
+            try {
+                listToString = "Unprintable list (@" + list.hashCode() + ")";
+            } catch (Exception e2) {
+                listToString = "An unprintable list ";
+            }
+        }
+        return listToString + " is read only.";
     }
     
 }

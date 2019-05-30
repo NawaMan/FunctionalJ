@@ -64,22 +64,22 @@ public interface ReadOnlyMap<KEY, VALUE> extends Map<KEY, VALUE> {
     
     @Override
     public default VALUE put(KEY key, VALUE value) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default VALUE remove(Object key) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default void putAll(Map<? extends KEY, ? extends VALUE> m) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default void clear() {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
@@ -87,47 +87,47 @@ public interface ReadOnlyMap<KEY, VALUE> extends Map<KEY, VALUE> {
     
     @Override
     public default void replaceAll(BiFunction<? super KEY, ? super VALUE, ? extends VALUE> function) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default VALUE putIfAbsent(KEY key, VALUE value) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default boolean remove(Object key, Object value) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default boolean replace(KEY key, VALUE oldValue, VALUE newValue) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default VALUE replace(KEY key, VALUE value) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default VALUE computeIfAbsent(KEY key, Function<? super KEY, ? extends VALUE> mappingFunction) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default VALUE computeIfPresent(KEY key, BiFunction<? super KEY, ? super VALUE, ? extends VALUE> remappingFunction) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default VALUE compute(KEY key, BiFunction<? super KEY, ? super VALUE, ? extends VALUE> remappingFunction) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
     @Override
     public default VALUE merge(KEY key, VALUE value, BiFunction<? super VALUE, ? super VALUE, ? extends VALUE> remappingFunction) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyMapException(this);
     }
     
 }

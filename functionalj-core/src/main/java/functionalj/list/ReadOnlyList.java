@@ -170,62 +170,62 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default DATA set(int index, DATA element) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default boolean add(DATA e) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default boolean remove(Object o) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default boolean addAll(Collection<? extends DATA> c) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default boolean addAll(int index, Collection<? extends DATA> c) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default void clear() {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default void add(int index, DATA element) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default DATA remove(int index) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default void replaceAll(UnaryOperator<DATA> operator) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
     @Override
     public default void sort(Comparator<? super DATA> c) {
-        throw new UnsupportedOperationException();
+        throw new ReadOnlyListException(this);
     }
     
 }

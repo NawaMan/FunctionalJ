@@ -131,6 +131,25 @@ public class StreamPlusTest {
     }
     
     @Test
+    public void testAccumulate() {
+        val stream = StreamPlus.of(1, 2, 3, 4, 5);
+        assertStrings("1, 3, 6, 10, 15", stream.accumulate((a, b)->a+b).joinToString(", "));
+    }
+    
+    @Test
+    public void testRestate() {
+        val stream = StreamPlus.infiniteInt().skip(2);
+        assertStrings(
+                "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, "
+              + "31, 37, 41, 43, 47, 53, 59, 61, 67, 71, "
+              + "73, 79, 83, 89, 97, 101, 103, 107, 109, 113, "
+              + "127, 131, 137, 139, 149, 151, 157, 163, 167, 173, "
+              + "179, 181, 191, 193, 197, 199, 211, 223, 227, 229, "
+              + "233, 239, 241, 251, 257, 263, 269, 271, 277, 281",
+              stream.restate((a, s)->s.filter(x -> x % a != 0)).limit(60).joinToString(", "));
+    }
+    
+    @Test
     public void testForEach() {
         val stream = StreamPlus.of("One", "Two", "Three");
         val logs   = new ArrayList<String>();
@@ -554,6 +573,14 @@ public class StreamPlusTest {
         
         val stream2 = StreamPlus.generateBy(Func0.from(i -> i < 5 ? i : noMoreElement()));
         assertStrings("[0, 1, 2, 3, 4]", stream2.toListString());
+    }
+    
+    //-- Compound --
+    
+    @Test
+    public void testCompound() {
+        val stream = StreamPlus.compound(1, a -> a * 2);
+        assertStrings("[1, 2, 4, 8, 16]", stream.limit(5).toListString());
     }
     
     //-- Segmentation --

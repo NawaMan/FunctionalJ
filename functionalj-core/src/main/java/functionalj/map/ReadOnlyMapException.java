@@ -21,48 +21,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.map;
 
-import static functionalj.lens.Access.$S;
-import static org.junit.Assert.assertEquals;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+public class ReadOnlyMapException extends UnsupportedOperationException{
 
-import org.junit.Test;
-
-import functionalj.list.FuncListDerived;
-import functionalj.list.ImmutableList;
-import lombok.val;
-
-public class StreamableTest {
+    private static final long serialVersionUID = 3110853798441402736L;
     
-    @Test
-    public void testSelectiveMap() {
-        assertEquals("[One, --Two, Three, Four, Five]", 
-                ImmutableList.of("One", "Two", "Three", "Four", "Five").mapOnly("Two"::equals, str -> "--" + str).toString());
+    public ReadOnlyMapException(@SuppressWarnings("rawtypes") ReadOnlyMap map) {
+        super(message(map));
     }
     
-    @Test
-    public void testSplit() {
-        assertEquals("([One, Two],[Four, Five],[Three])", 
-                FuncListDerived.from((Supplier<Stream<String>>)()->Stream.of("One", "Two", "Three", "Four", "Five"))
-                .split($S.length().thatEquals(3),
-                       $S.length().thatLessThanOrEqualsTo(4))
-                .toString());
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static String message(ReadOnlyMap map) {
+        Objects.requireNonNull(map);
+        
+        String mapToString = null;
+        try {
+            if (map.size() <= 3) {
+                mapToString = "Map " + map;
+            } else {
+                mapToString = "Map starting with" + map.entrySet().stream().limit(3).map(e -> e.toString()).collect(Collectors.joining(","));
+            }
+        } catch (Exception e) {
+            try {
+                mapToString = "Unprintable map (@" + map.hashCode() + ")";
+            } catch (Exception e2) {
+                mapToString = "An unprintable map ";
+            }
+        }
+        return mapToString + " is read only.";
     }
-    
-    @Test
-    public void testMapWithPrev() {
-        val stream = Streamable.of("One", "Two", "Three").mapWithPrev((prev, element) -> prev.orElse("").length() + element.length());
-        assertEquals("3, 6, 8", stream.joinToString(", "));
-        assertEquals("3, 6, 8", stream.joinToString(", "));
-    }
-    
-    @Test
-    public void testAccumulate() {
-        val stream = Streamable.of(1, 2, 3, 4, 5);
-        assertEquals("1, 3, 6, 10, 15", stream.accumulate((a, b)->a+b).joinToString(", "));
-    }
-    
 }
