@@ -60,13 +60,17 @@ import lombok.val;
 
 @FunctionalInterface
 public interface IntStreamPlus extends IntStream {
-
+    
     public static IntStreamPlus of(int ... ints) {
         return IntStreamPlus.from(IntStream.of(ints));
     }
     
     public static IntStreamPlus from(IntStream intStream) {
         return ()->intStream;
+    }
+    
+    public static IntStreamPlus concat(IntStreamPlus ... streams) {
+        return StreamPlus.of(streams).flatMap(s -> s.asStream()).mapToInt(i -> i);
     }
     
     public static IntStreamPlus empty() {
@@ -91,6 +95,28 @@ public interface IntStreamPlus extends IntStream {
     
     public static IntStreamPlus iterate(int seed, IntUnaryOperator f) {
         return IntStreamPlus.from(IntStream.iterate(seed, f));
+    }
+    
+    public static IntStreamPlus compound(int seed, IntUnaryOperator f) {
+        return IntStreamPlus.from(IntStream.iterate(seed, f));
+    }
+    
+    public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator f) {
+        AtomicInteger counter = new AtomicInteger(0);
+        AtomicInteger int1    = new AtomicInteger(seed1);
+        AtomicInteger int2    = new AtomicInteger(seed2);
+        return IntStreamPlus.generate(()->{
+            if (counter.getAndIncrement() == 0)
+                return seed1;
+            if (counter.getAndIncrement() == 2)
+                return seed2;
+            
+            int i2 = int2.get();
+            int i1 = int1.getAndSet(i2);
+            int i  = f.applyAsInt(i1, i2);
+            int2.set(i);
+            return i;
+        });
     }
     
     //== Stream ==

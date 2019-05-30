@@ -59,4 +59,10 @@ public class StreamableTest {
         assertEquals("3, 6, 8", stream.joinToString(", "));
     }
     
+    @Test
+    public void testAccumulate() {
+        val stream = Streamable.of(1, 2, 3, 4, 5);
+        assertEquals("1, 3, 6, 10, 15", stream.accumulate((a, b)->a+b).joinToString(", "));
+    }
+    
 }

@@ -669,6 +669,26 @@ public interface FuncList<DATA>
         });
     }
     
+    // -- accumulate --
+    
+    public default FuncList<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
+        return deriveWith(stream -> {
+            val iterator = StreamPlus.from(stream).iterator();
+            if (!iterator.hasNext())
+                return StreamPlus.empty();
+            
+            val prev = new AtomicReference<DATA>(iterator.next());
+            return StreamPlus.concat(
+                        StreamPlus.of(prev.get()),
+                        iterator.stream().map(n -> {
+                            val next = accumulator.apply(n, prev.get());
+                            prev.set(next);
+                            return next;
+                        })
+                    );
+        });
+    }
+    
     //== Map to tuple. ==
     // ++ Generated with: GeneratorFunctorMapToTupleToObject ++
     

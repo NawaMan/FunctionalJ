@@ -52,6 +52,7 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -95,6 +96,74 @@ public interface Streamable<DATA> {
     }
     public static <D> Streamable<D> from(Func0<Stream<D>> supplier) {
         return ()->StreamPlus.from(supplier.get());
+    }
+    
+    @SafeVarargs
+    public static <D> Streamable<D> cycle(D ... data) {
+        return ()->StreamPlus.cycle(data);
+    }
+    
+    public static Streamable<Integer> loop(int time) {
+        return ()->StreamPlus.loop(time);
+    }
+    public static Streamable<Integer> loop() {
+        return ()->StreamPlus.loop();
+    }
+    
+    public static Streamable<Integer> infiniteInt() {
+        return ()->StreamPlus.infiniteInt();
+    }
+    public static Streamable<Integer> range(int startInclusive, int endExclusive) {
+        return ()->StreamPlus.range(startInclusive, endExclusive);
+    }
+    
+    public static <D> Streamable<D> empty() {
+        return ()->StreamPlus.empty();
+    }
+    
+    // Because people know this.
+    @SafeVarargs
+    public static <D> Streamable<D> concat(Streamable<D> ... streams) {
+        return ()->StreamPlus.of(streams).flatMap(s -> s.stream());
+    }
+    // To avoid name conflict with String.concat
+    @SafeVarargs
+    public static <D> Streamable<D> combine(Streamable<D> ... streams) {
+        return ()->StreamPlus.of(streams).flatMap(s -> s.stream());
+    }
+    public static <D> Streamable<D> generate(Supplier<Supplier<D>> supplier) {
+        return ()->StreamPlus.generate(supplier.get());
+    }
+    public static <D> Streamable<D> generateBy(Supplier<Supplier<D>> supplier) {
+        return ()->StreamPlus.generate(supplier.get());
+    }
+    
+    public static <D> Streamable<D> iterate(D seed, UnaryOperator<D> f) {
+        return ()->StreamPlus.iterate(seed, f);
+    }
+    
+    public static <D> Streamable<D> compound(D seed, UnaryOperator<D> f) {
+        return ()->StreamPlus.compound(seed, f);
+    }
+    
+    public static <D> Streamable<D> iterate(D seed1, D seed2, BinaryOperator<D> f) {
+        return ()->{
+            AtomicInteger      counter = new AtomicInteger(0);
+            AtomicReference<D> d1      = new AtomicReference<D>(seed1);
+            AtomicReference<D> d2      = new AtomicReference<D>(seed2);
+            return StreamPlus.generate(()->{
+                if (counter.getAndIncrement() == 0)
+                    return seed1;
+                if (counter.getAndIncrement() == 2)
+                    return seed2;
+                
+                D i2 = d2.get();
+                D i1 = d1.getAndSet(i2);
+                D i  = f.apply(i1, i2);
+                d2.set(i);
+                return i;
+            });
+        };
     }
     
     public static <D, T> Streamable<T> with(Streamable<D> source, Function<Stream<D>, Stream<T>> action) {
@@ -339,6 +408,42 @@ public interface Streamable<DATA> {
             })
             .stream();
         });
+    }
+    
+    // -- accumulate --
+    
+    public default Streamable<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
+        return deriveWith(stream -> {
+            val iterator = StreamPlus.from(stream).iterator();
+            if (!iterator.hasNext())
+                return StreamPlus.empty();
+            
+            val prev = new AtomicReference<DATA>(iterator.next());
+            return StreamPlus.concat(
+                        StreamPlus.of(prev.get()),
+                        iterator.stream().map(n -> {
+                            val next = accumulator.apply(n, prev.get());
+                            prev.set(next);
+                            return next;
+                        })
+                    );
+        });
+    }
+    
+    public default Streamable<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
+        val func = (UnaryOperator<Tuple2<DATA, Streamable<DATA>>>)((Tuple2<DATA, Streamable<DATA>> pair) -> {
+            val stream   = pair._2();
+            val iterator = stream.iterator();
+            if (!iterator.hasNext())
+                return null;
+            
+            val head = iterator.next();
+            val tail =restater.apply(head, ()->iterator.stream());
+            return Tuple2.of(head, tail);
+        });
+        val seed = Tuple2.of((DATA)null, this);
+        val endStream = (Streamable<DATA>)(()->StreamPlus.iterate(seed, func).takeUntil(t -> t == null).skip(1).map(t -> t._1()));
+        return endStream;
     }
     
     //== Map to tuple. ==
