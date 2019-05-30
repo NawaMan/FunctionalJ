@@ -46,6 +46,15 @@ public class IntStreamPlusTest {
     }
     
     @Test
+    public void testIterate() {
+        val intStream = IntStreamPlus.iterate(1, a -> a + 1);
+        assertEquals("6, 7, 8, 9, 10", intStream.skip(5).limit(5).asStream().joinToString(", "));
+        
+        val intStream2 = IntStreamPlus.iterate(1, 1, (a, b) -> a + b);
+        assertEquals("1, 1, 2, 3, 5, 8, 13", intStream2.limit(7).asStream().joinToString(", "));
+    }
+    
+    @Test
     public void testSegment() {
         IntPredicate startCondition = i ->(i % 10) == 3;
         IntPredicate endCondition   = i ->(i % 10) == 6;

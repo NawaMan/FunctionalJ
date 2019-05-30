@@ -74,43 +74,43 @@ public interface FuncList<DATA>
                         Pipeable<FuncList<DATA>>,
                         Predicate<DATA> {
     
-    public static <T> FuncList<T> empty() {
+    public static <T> ImmutableList<T> empty() {
         return ImmutableList.empty();
     }
-    public static <T> FuncList<T> empty(Class<T> elementClass) {
+    public static <T> ImmutableList<T> empty(Class<T> elementClass) {
         return ImmutableList.empty();
     }
     @SafeVarargs
-    public static <T> FuncList<T> of(T ... data) {
+    public static <T> ImmutableList<T> of(T ... data) {
         return ImmutableList.of(data);
     }
     @SafeVarargs
-    public static <T> FuncList<T> AllOf(T ... data) {
+    public static <T> ImmutableList<T> AllOf(T ... data) {
         return ImmutableList.of(data);
     }
-    public static <T> FuncList<T> from(T[] datas) {
+    public static <T> ImmutableList<T> from(T[] datas) {
         return ImmutableList.from(datas);
     }
-    public static <T> FuncList<T> from(Collection<T> data) {
+    public static <T> ImmutableList<T> from(Collection<T> data) {
         return ImmutableList.from(data);
     }
-    public static <T> FuncList<T> from(List<T> data) {
+    public static <T> ImmutableList<T> from(List<T> data) {
         return ImmutableList.from(data);
     }
     @SafeVarargs
-    public static <T> FuncList<T> listOf(T ... data) {
+    public static <T> ImmutableList<T> listOf(T ... data) {
     	return ImmutableList.of(data);
     }
     public static <T> FuncList<T> from(Streamable<T> streamable) {
         return new FuncListDerived<T, T>(streamable, identity());
     }
-    public static <T> FuncList<T> from(Stream<T> stream) {
+    public static <T> ImmutableList<T> from(Stream<T> stream) {
         return new ImmutableList<T>(stream.collect(Collectors.toList()));
     }
-    public static <T> FuncList<T> from(ReadOnlyList<T> readOnlyList) {
+    public static <T> ImmutableList<T> from(ReadOnlyList<T> readOnlyList) {
         return ImmutableList.from(readOnlyList);
     }
-    public static <T> FuncList<T> from(FuncList<T> funcList) {
+    public static <T> ImmutableList<T> from(FuncList<T> funcList) {
         return ImmutableList.from(funcList);
     }
     
@@ -666,6 +666,26 @@ public interface FuncList<DATA>
                 prev.set(Result.valueOf(element));
                 return newValue;
             });
+        });
+    }
+    
+    // -- accumulate --
+    
+    public default FuncList<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
+        return deriveWith(stream -> {
+            val iterator = StreamPlus.from(stream).iterator();
+            if (!iterator.hasNext())
+                return StreamPlus.empty();
+            
+            val prev = new AtomicReference<DATA>(iterator.next());
+            return StreamPlus.concat(
+                        StreamPlus.of(prev.get()),
+                        iterator.stream().map(n -> {
+                            val next = accumulator.apply(n, prev.get());
+                            prev.set(next);
+                            return next;
+                        })
+                    );
         });
     }
     

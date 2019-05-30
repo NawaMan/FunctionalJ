@@ -143,8 +143,6 @@ public interface StreamPlus<DATA>
         return ArrayBackedStream.from(data);
     }
     
-    // TODO - cycleFrom - from supplier.
-    
     @SafeVarargs
     public static <D> StreamPlus<D> cycle(D ... data) {
         return StreamPlus.from(IntStream.iterate(0, i -> i + 1).mapToObj(i -> data[i % data.length]));
@@ -215,6 +213,28 @@ public interface StreamPlus<DATA>
     
     public static <D> StreamPlus<D> iterate(D seed, UnaryOperator<D> f) {
         return StreamPlus.from(Stream.iterate(seed, f));
+    }
+    
+    public static <D> StreamPlus<D> compound(D seed, UnaryOperator<D> f) {
+        return iterate(seed, f);
+    }
+    
+    public static <D> StreamPlus<D> iterate(D seed1, D seed2, BinaryOperator<D> f) {
+        AtomicInteger      counter = new AtomicInteger(0);
+        AtomicReference<D> d1      = new AtomicReference<D>(seed1);
+        AtomicReference<D> d2      = new AtomicReference<D>(seed2);
+        return StreamPlus.generate(()->{
+            if (counter.getAndIncrement() == 0)
+                return seed1;
+            if (counter.getAndIncrement() == 2)
+                return seed2;
+            
+            D i2 = d2.get();
+            D i1 = d1.getAndSet(i2);
+            D i  = f.apply(i1, i2);
+            d2.set(i);
+            return i;
+        });
     }
     
     // TODO - Take from Iterator, Enumeration
@@ -1156,6 +1176,40 @@ public interface StreamPlus<DATA>
         });
     }
     
+    // -- accumulate --
+    
+    public default StreamPlus<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
+        val iterator = this.iterator();
+        if (!iterator.hasNext())
+            return StreamPlus.empty();
+        
+        val prev = new AtomicReference<DATA>(iterator.next());
+        return StreamPlus.concat(
+                    StreamPlus.of(prev.get()),
+                    iterator.stream().map(n -> {
+                        val next = accumulator.apply(n, prev.get());
+                        prev.set(next);
+                        return next;
+                    })
+                );
+    }
+    
+    public default StreamPlus<DATA> restate(BiFunction<? super DATA, StreamPlus<DATA>, StreamPlus<DATA>> restater) {
+        val func = (UnaryOperator<Tuple2<DATA, StreamPlus<DATA>>>)((Tuple2<DATA, StreamPlus<DATA>> pair) -> {
+            val stream   = pair._2();
+            val iterator = stream.iterator();
+            if (!iterator.hasNext())
+                return null;
+            
+            val head = iterator.next();
+            val tail = restater.apply(head, iterator.stream());
+            return Tuple2.of(head, tail);
+        });
+        val seed = Tuple2.of((DATA)null, this);
+        val endStream = StreamPlus.iterate(seed, func).takeUntil(t -> t == null).skip(1).map(t -> t._1());
+        return endStream;
+    }
+    
     //== Map to tuple. ==
     // ++ Generated with: GeneratorFunctorMapToTupleToObject ++
     
@@ -1556,9 +1610,6 @@ public interface StreamPlus<DATA>
         return segment(count, true);
     }
     public default StreamPlus<StreamPlus<DATA>> segment(int count, boolean includeTail) {
-//        if (count <= 1)
-//            return this;
-        
         val index = new AtomicInteger(0);
         return segment(data -> (index.getAndIncrement() % count) == 0, includeTail);
     }

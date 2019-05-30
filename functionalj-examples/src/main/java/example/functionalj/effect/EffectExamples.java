@@ -14,6 +14,7 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.Test;
 
 import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
 import functionalj.promise.DeferAction;
 import functionalj.store.Store;
 import functionalj.stream.StreamPlus;
@@ -82,11 +83,10 @@ public class EffectExamples {
     
     @Test
     public void storeExample() {
-        val apppend = f((String str) -> f((FuncList<String> list)-> list.append(str)));
+        val apppend = f((String str) -> f((ImmutableList<String> list)-> list.append(str).toImmutableList()));
         
         val list = FuncList.of("One", "Two");
         val store = new Store<>(list);
-        
         
         assertEquals("[One, Two]", store.value().toString());
         
