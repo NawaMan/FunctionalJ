@@ -55,7 +55,7 @@ Add the maven repository ...
 and the dependencies to FunctionalJ.
 
 ```Groovy
-    compile 'functionalj:functionalj-all:0.1.74.0' // Please lookup for the latest version.
+    compile 'functionalj:functionalj-all:0.1.75.0' // Please lookup for the latest version.
 ```
 
 [UseFunctionalJGradle](https://github.com/NawaMan/UseFunctionalJGradle) is an example project that use FunctionalJ.
@@ -83,7 +83,7 @@ and the dependencies to FunctionalJ.
     <dependency>
         <groupId>functionalj</groupId>
         <artifactId>functionalj-all</artifactId>
-        <version>0.1.74.0</version>
+        <version>0.1.75.0</version>
     </dependency>
 ```
 
