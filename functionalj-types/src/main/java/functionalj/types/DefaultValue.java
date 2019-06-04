@@ -23,8 +23,20 @@
 // ============================================================================
 package functionalj.types;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
 
+import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.Type;
 import lombok.val;
 
@@ -45,7 +57,27 @@ public enum DefaultValue {
     NULL,
     EMPTY,
     SPACE,
+    RANDOM,
+    NOW,
     DEFAULT;
+    
+    public static Random RAND = new Random();
+    private static String RANDSTR = DefaultValue.class.getCanonicalName() + ".RAND";
+    
+    public static byte randomByte() {
+        byte[] bytes = new byte[1];
+        RAND.nextBytes(bytes);
+        return bytes[0];
+    }
+    public static short randomShort() {
+        return (short)(RAND.nextInt(65536) - 32768);
+    }
+    public static BigInteger randomBigInteger() {
+        return BigInteger.valueOf(RAND.nextLong());
+    }
+    public static BigDecimal randomBigDecimal() {
+        return BigDecimal.valueOf(RAND.nextDouble());
+    }
     
     public static boolean isSuitable(Type type, DefaultValue value) {
         if (value == REQUIRED)
@@ -55,6 +87,24 @@ public enum DefaultValue {
         
         if (value == UNSPECIFIED)
             return true;
+        
+        if (value == RANDOM) {
+            return Type.primitiveTypes.containsValue(type)
+                || Type.declaredTypes.containsValue(type)
+                || Type.STR.equals(type)
+                || Type.STRING.equals(type)
+                || Type.OBJECT.equals(type)
+                || Type.BIGDECIMAL.equals(type)
+                || Type.BIGINTEGER.equals(type)
+                || Type.UUID.equals(type);
+        }
+        if (value == NOW) {
+            return Type.temporalTypes.containsValue(type)
+                || Type.LNG.equals(type)
+                || Type.LONG.equals(type)
+                || Type.STR.equals(type)
+                || Type.STRING.equals(type);
+        }
         
         boolean posibleNumber = (value == ZERO)
                 || (value == ONE)
@@ -72,11 +122,6 @@ public enum DefaultValue {
              && ((value == POSITIVE_INFINITY) || (value == NEGATIVE_INFINITY) || (value == NaN)))
                 return true;
             
-            if ((Type.BIGINTEGER.equals(type) || Type.BIGDECIMAL.equals(type))
-             && !((value == POSITIVE_INFINITY) || (value == NEGATIVE_INFINITY) || (value == NaN)
-               || (value == MAX_VALUE)         || (value == MIN_VALUE)))
-                       return true;
-            
             return posibleNumber;
         }
         
@@ -90,6 +135,11 @@ public enum DefaultValue {
                 || Type.BIGINTEGER.equals(type)
                 || Type.BIGDECIMAL.equals(type);
         }
+        
+        if ((Type.BIGINTEGER.equals(type) || Type.BIGDECIMAL.equals(type))
+         && !((value == POSITIVE_INFINITY) || (value == NEGATIVE_INFINITY) || (value == NaN)
+           || (value == MAX_VALUE)         || (value == MIN_VALUE)))
+                   return true;
         
         if (value == NULL)
             return true;
@@ -119,6 +169,13 @@ public enum DefaultValue {
             
             return ZERO;
         }
+        if (Type.temporalTypes.containsValue(type))
+            return NOW;
+        if (type == Type.OBJECT)
+            return NULL;
+        if (type == Type.UUID)
+            return RANDOM;
+        
         if (Type.NULLABLE .equals(type)
          || Type.OPTIONAL .equals(type)
          || Type.LIST     .equals(type)
@@ -139,8 +196,9 @@ public enum DefaultValue {
             return "null";
         
         if (Type.BOOL.equals(type) || Type.BOOLEAN.equals(type)) {
-            if (value == TRUE)  return "true";
-            if (value == FALSE) return "false";
+            if (value == TRUE)   return "true";
+            if (value == FALSE)  return "false";
+            if (value == RANDOM) return RANDSTR + ".nextBoolean()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.BYT.equals(type) || Type.BYTE.equals(type)) {
@@ -149,6 +207,7 @@ public enum DefaultValue {
             if (value == MINUS_ONE) return "(byte)-1";
             if (value == MAX_VALUE) return "Byte.MAX_VALUE";
             if (value == MIN_VALUE) return "Byte.MIN_VALUE";
+            if (value == RANDOM)    return DefaultValue.class.getCanonicalName() + ".randomByte()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.SHRT.equals(type) || Type.SHORT.equals(type)) {
@@ -157,6 +216,7 @@ public enum DefaultValue {
             if (value == MINUS_ONE) return "(short)-1";
             if (value == MAX_VALUE) return "Short.MAX_VALUE";
             if (value == MIN_VALUE) return "Short.MIN_VALUE";
+            if (value == RANDOM)    return DefaultValue.class.getCanonicalName() + ".randomShort()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.INT.equals(type) || Type.INTEGER.equals(type)) {
@@ -165,6 +225,7 @@ public enum DefaultValue {
             if (value == MINUS_ONE) return "-1";
             if (value == MAX_VALUE) return "Integer.MAX_VALUE";
             if (value == MIN_VALUE) return "Integer.MIN_VALUE";
+            if (value == RANDOM)    return RANDSTR + ".nextInt()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.LNG.equals(type) || Type.LONG.equals(type)) {
@@ -173,6 +234,8 @@ public enum DefaultValue {
             if (value == MINUS_ONE) return "(long)-1";
             if (value == MAX_VALUE) return "Long.MAX_VALUE";
             if (value == MIN_VALUE) return "Long.MIN_VALUE";
+            if (value == RANDOM)    return RANDSTR + ".nextLong()";
+            if (value == NOW)       return "System.currentTimeMillis()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.FLT.equals(type) || Type.FLOAT.equals(type)) {
@@ -184,6 +247,7 @@ public enum DefaultValue {
             if (value == POSITIVE_INFINITY) return "Float.POSITIVE_INFINITY";
             if (value == NEGATIVE_INFINITY) return "Float.NEGATIVE_INFINITY";
             if (value == NaN)               return "Float.NaN";
+            if (value == RANDOM)            return RANDSTR + ".nextFloat()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.DBL.equals(type) || Type.DOUBLE.equals(type)) {
@@ -195,24 +259,62 @@ public enum DefaultValue {
             if (value == POSITIVE_INFINITY) return "Double.POSITIVE_INFINITY";
             if (value == NEGATIVE_INFINITY) return "Double.NEGATIVE_INFINITY";
             if (value == NaN)               return "Double.NaN";
+            if (value == RANDOM)            return RANDSTR + ".nextDouble()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.BIGINTEGER.equals(type)) {
             if (value == ZERO)      return "java.math.BigInteger.ZERO";
             if (value == ONE)       return "java.math.BigInteger.ONE";
             if (value == MINUS_ONE) return "java.math.BigInteger.NEGATIVE_ONE";
+            if (value == RANDOM)    return DefaultValue.class.getCanonicalName() + ".randomBigInteger()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.BIGDECIMAL.equals(type)) {
             if (value == ZERO)      return "java.math.BigDecimal.ZERO";
             if (value == ONE)       return "java.math.BigDecimal.ONE";
             if (value == MINUS_ONE) return "new java.math.BigDecimal(\"-1\")";
+            if (value == RANDOM)    return DefaultValue.class.getCanonicalName() + ".randomBigDecimal()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         
-        if (Type.STRING.equals(type)
+        if (Type.OBJECT.equals(type)) {
+            if (value == RANDOM) return "new Object()";
+            throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+        }
+        if (Type.UUID.equals(type)) {
+            if (value == RANDOM) return UUID.class.getCanonicalName() + ".randomUUID()";
+            throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+        }
+        
+        if (Type.temporalTypes.containsValue(type)) {
+            if (value == NOW) {
+                if (Core.DayOfWeek.type().equals(type))
+                    return LocalDate.class.getCanonicalName() + ".now().getDayOfWeek()";
+                if (Core.Month.type().equals(type))
+                    return LocalDate.class.getCanonicalName() + ".now().getMonth()";
+                if (Core.Instant.type().equals(type))
+                    return Instant.class.getCanonicalName() + ".now()";
+                if (Core.LocalDate.type().equals(type))
+                    return LocalDate.class.getCanonicalName() + ".now()";
+                if (Core.LocalDateTime.type().equals(type))
+                    return LocalDateTime.class.getCanonicalName() + ".now()";
+                if (Core.LocalTime.type().equals(type))
+                    return LocalTime.class.getCanonicalName() + ".now()";
+                if (Core.OffsetDateTime.type().equals(type))
+                    return OffsetDateTime.class.getCanonicalName() + ".now()";
+                if (Core.ZonedDateTime.type().equals(type))
+                    return ZonedDateTime.class.getCanonicalName() + ".now()";
+                
+                throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+            }
+            throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+        }
+            
+        if (Type.STR.equals(type)
          || Type.STRING.equals(type)) {
-            if (value == EMPTY) return "\"\"";
+            if (value == EMPTY)  return "\"\"";
+            if (value == RANDOM) return UUID.class.getCanonicalName() + "UUID.randomUUID().toString()";
+            if (value == NOW)    return DateTimeFormatter.class.getCanonicalName() + ".ISO_LOCAL_DATE_TIME";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.LIST.equals(type)) {
@@ -269,6 +371,7 @@ public enum DefaultValue {
             if (value == MINUS_ONE) return (byte)-1;
             if (value == MAX_VALUE) return Byte.MAX_VALUE;
             if (value == MIN_VALUE) return Byte.MIN_VALUE;
+            if (value == RANDOM)    return randomByte();
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.SHRT.equals(type)) {
@@ -277,6 +380,7 @@ public enum DefaultValue {
             if (value == MINUS_ONE) return (short)-1;
             if (value == MAX_VALUE) return Short.MAX_VALUE;
             if (value == MIN_VALUE) return Short.MIN_VALUE;
+            if (value == RANDOM)    return randomShort();
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.INT.equals(type)) {
@@ -285,6 +389,7 @@ public enum DefaultValue {
             if (value == MINUS_ONE) return (int)-1;
             if (value == MAX_VALUE) return Integer.MAX_VALUE;
             if (value == MIN_VALUE) return Integer.MIN_VALUE;
+            if (value == RANDOM)    return RAND.nextInt();
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.LNG.equals(type)) {
@@ -293,6 +398,7 @@ public enum DefaultValue {
             if (value == MINUS_ONE) return (long)-1;
             if (value == MAX_VALUE) return Long.MAX_VALUE;
             if (value == MIN_VALUE) return Long.MIN_VALUE;
+            if (value == RANDOM)    return RAND.nextLong();
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.FLT.equals(type)) {
@@ -304,6 +410,7 @@ public enum DefaultValue {
             if (value == POSITIVE_INFINITY) return Float.POSITIVE_INFINITY;
             if (value == NEGATIVE_INFINITY) return Float.NEGATIVE_INFINITY;
             if (value == NaN)               return Float.NaN;
+            if (value == RANDOM)            return RAND.nextFloat();
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.DBL.equals(type)) {
@@ -315,18 +422,62 @@ public enum DefaultValue {
             if (value == POSITIVE_INFINITY) return Double.POSITIVE_INFINITY;
             if (value == NEGATIVE_INFINITY) return Double.NEGATIVE_INFINITY;
             if (value == NaN)               return Double.NaN;
+            if (value == RANDOM)            return RAND.nextDouble();
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.BIGINTEGER.equals(type)) {
             if (value == ZERO)      return java.math.BigInteger.ZERO;
             if (value == ONE)       return java.math.BigInteger.ONE;
             if (value == MINUS_ONE) return new java.math.BigInteger("-1");
+            if (value == RANDOM)    return randomBigInteger();
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.BIGDECIMAL.equals(type)) {
             if (value == ZERO)      return java.math.BigDecimal.ZERO;
             if (value == ONE)       return java.math.BigDecimal.ONE;
             if (value == MINUS_ONE) return new java.math.BigDecimal("-1");
+            if (value == RANDOM)    return randomBigDecimal();
+            throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+        }
+        
+        if (Type.OBJECT.equals(type)) {
+            if (value == RANDOM) return new Object();
+            throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+        }
+        if (Type.UUID.equals(type)) {
+            if (value == RANDOM) return UUID.randomUUID();
+            throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+        }
+        
+        if (Type.temporalTypes.containsValue(type)) {
+            if (value == NOW) {
+                if (Core.DayOfWeek.type().equals(type))
+                    return LocalDate.now().getDayOfWeek();
+                if (Core.Month.type().equals(type))
+                    return LocalDate.now().getMonth();
+                if (Core.Instant.type().equals(type))
+                    return Instant.now();
+                if (Core.LocalDate.type().equals(type))
+                    return LocalDate.now();
+                if (Core.LocalDateTime.type().equals(type))
+                    return LocalDateTime.now();
+                if (Core.LocalTime.type().equals(type))
+                    return LocalTime.now();
+                if (Core.OffsetDateTime.type().equals(type))
+                    return OffsetDateTime.now();
+                if (Core.ZonedDateTime.type().equals(type))
+                    return ZonedDateTime.now();
+                
+                throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+            }
+            throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
+        }
+            
+        if (Type.STR.equals(type)
+         || Type.STRING.equals(type)) {
+            if (value == EMPTY)  return "";
+            if (value == RANDOM) return UUID.randomUUID().toString();
+            if (value == NOW)    return DateTimeFormatter.class.getCanonicalName() + ".ISO_LOCAL_DATE_TIME";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         

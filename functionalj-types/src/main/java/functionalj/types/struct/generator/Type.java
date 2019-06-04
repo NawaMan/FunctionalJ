@@ -32,6 +32,14 @@ import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,6 +138,8 @@ public class Type implements IRequireTypes {
     public static final Type STRING = Type.of(String .class);
     /** Object type */
     public static final Type OBJECT = Type.of(Object .class);
+    /** UUID type */
+    public static final Type UUID = Type.of(java.util.UUID .class);
     /** List type */
     public static final Type LIST = Type.of(List.class);
     /** Map type */
@@ -177,10 +187,10 @@ public class Type implements IRequireTypes {
         lensTypes.put(Core.OffsetDateTime.type(),            Core.OffsetDateTimeLens.type());
         lensTypes.put(Core.Period.type(),                    Core.PeriodLens.type());
         lensTypes.put(Core.ZonedDateTime.type(),             Core.ZonedDateTimeLens.type());
-        lensTypes.put(Core.ZonedId.type(),                   Core.ZonedIdLens.type());
-        lensTypes.put(Core.ZonedOffset.type(),               Core.ZonedOffsetLens.type());
-        lensTypes.put(Core.ZonedOffsetTransition.type(),     Core.ZonedOffsetTransitionLens.type());
-        lensTypes.put(Core.ZonedOffsetTransitionRule.type(), Core.ZonedOffsetTransitionRuleLens.type());
+        lensTypes.put(Core.ZoneId.type(),                   Core.ZonedIdLens.type());
+        lensTypes.put(Core.ZoneOffset.type(),               Core.ZonedOffsetLens.type());
+        lensTypes.put(Core.ZoneOffsetTransition.type(),     Core.ZonedOffsetTransitionLens.type());
+        lensTypes.put(Core.ZoneOffsetTransitionRule.type(), Core.ZonedOffsetTransitionRuleLens.type());
     }
     public static final Map<String, Type> primitiveTypes;
     static {
@@ -207,6 +217,19 @@ public class Type implements IRequireTypes {
         map.put(DBL,  DOUBLE);
         map.put(BOOL, BOOLEAN);
         declaredTypes = map;
+    }
+    public static final Map<String, Type> temporalTypes;
+    static {
+        val map = new HashMap<String, Type>();
+        map.put(DayOfWeek.class.getCanonicalName(),      Core.DayOfWeek.type());
+        map.put(Instant.class.getCanonicalName(),        Core.Instant.type());
+        map.put(LocalDate.class.getCanonicalName(),      Core.LocalDate.type());
+        map.put(LocalDateTime.class.getCanonicalName(),  Core.LocalDateTime.type());
+        map.put(LocalTime.class.getCanonicalName(),      Core.LocalTime.type());
+        map.put(Month.class.getCanonicalName(),          Core.Month.type());
+        map.put(OffsetDateTime.class.getCanonicalName(), Core.OffsetDateTime.type());
+        map.put(ZonedDateTime.class.getCanonicalName(),  Core.ZonedDateTime.type());
+        temporalTypes = map;
     }
     
     /**
