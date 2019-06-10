@@ -44,12 +44,12 @@ public class Generator implements Lines {
     public final SourceSpec  sourceSpec;
     public final TargetClass targetClass;
     
-    public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
-        this.sourceSpec  = new SourceSpec(targetName, sourceType, specObjName, publicFields, generics, choices, methods, localTypeWithLens);
+    public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
+        this.sourceSpec  = new SourceSpec(targetName, sourceType, specObjName, publicFields, tagMapKeyName, generics, choices, methods, localTypeWithLens);
         this.targetClass = new TargetClass(sourceSpec);
     }
     public Generator(String targetName, Type sourceType, List<Case> choices) {
-        this(targetName, sourceType, null, true, new ArrayList<Generic>(), choices, new ArrayList<Method>(), new ArrayList<String>());
+        this(targetName, sourceType, null, true, null, new ArrayList<Generic>(), choices, new ArrayList<Method>(), new ArrayList<String>());
     }
     
     @Override

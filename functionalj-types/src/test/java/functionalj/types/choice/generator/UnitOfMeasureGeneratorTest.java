@@ -27,6 +27,7 @@ public class UnitOfMeasureGeneratorTest {
                             emptyList()),
                     null,
                     false,
+                    null,
                     emptyList(),
                     asList(
                             new Case(
@@ -126,6 +127,23 @@ public class UnitOfMeasureGeneratorTest {
                 "    public Temperature __data() throws Exception { return this; }\n" + 
                 "    public Result<Temperature> toResult() { return Result.valueOf(this); }\n" + 
                 "    \n" + 
+                "    public static <T extends Temperature> T fromMap(java.util.Map<String, Object> map) {\n" + 
+                "        String __tagged = (String)map.get(\"__tagged\");\n" + 
+                "        if (\"Celsius\".equals(__tagged))\n" + 
+                "            return (T)Celsius.caseFromMap(map);\n" + 
+                "        if (\"Fahrenheit\".equals(__tagged))\n" + 
+                "            return (T)Fahrenheit.caseFromMap(map);\n" + 
+                "        throw new IllegalArgumentException(\"Tagged value does not represent a valid type: \" + __tagged);\n" + 
+                "    }\n" + 
+                "    \n" + 
+                "    static private functionalj.map.FuncMap<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>> __schema__ = functionalj.map.FuncMap.<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>>newMap()\n" + 
+                "        .with(\"Celsius\", Celsius.getCaseSchema())\n" + 
+                "        .with(\"Fahrenheit\", Fahrenheit.getCaseSchema())\n" + 
+                "        .build();\n" + 
+                "    public static java.util.Map<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>> getChoiceSchema() {\n" + 
+                "        return __schema__;\n" + 
+                "    }\n" + 
+                "    \n" + 
                 "    public static final class Celsius extends Temperature {\n" + 
                 "        public static final Celsius.CelsiusLens<Celsius> theCelsius = new Celsius.CelsiusLens<>(LensSpec.of(Celsius.class));\n" + 
                 "        private double celsius;\n" + 
@@ -142,6 +160,23 @@ public class UnitOfMeasureGeneratorTest {
                 "                super(spec);\n" + 
                 "            }\n" + 
                 "            \n" + 
+                "        }\n" + 
+                "        public java.util.Map<String, Object> toMap() {\n" + 
+                "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
+                "            map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Celsius\"));\n" + 
+                "            map.put(\"celsius\", this.celsius);\n" + 
+                "            return map;\n" + 
+                "        }\n" + 
+                "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
+                "            .with(\"celsius\", new functionalj.types.choice.generator.model.CaseParam(\"celsius\", new functionalj.types.choice.generator.model.Type(null, null, \"double\", java.util.Collections.emptyList()), false, null))\n" + 
+                "            .build();\n" + 
+                "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+                "            return __schema__;\n" + 
+                "        }\n" + 
+                "        public static Celsius caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "            return Celsius(\n" + 
+                "                $utils.propertyFromMap(map, __schema__, \"celsius\")\n" + 
+                "            );\n" + 
                 "        }\n" + 
                 "    }\n" + 
                 "    public static final class Fahrenheit extends Temperature {\n" + 
@@ -160,6 +195,23 @@ public class UnitOfMeasureGeneratorTest {
                 "                super(spec);\n" + 
                 "            }\n" + 
                 "            \n" + 
+                "        }\n" + 
+                "        public java.util.Map<String, Object> toMap() {\n" + 
+                "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
+                "            map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Fahrenheit\"));\n" + 
+                "            map.put(\"fahrenheit\", this.fahrenheit);\n" + 
+                "            return map;\n" + 
+                "        }\n" + 
+                "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
+                "            .with(\"fahrenheit\", new functionalj.types.choice.generator.model.CaseParam(\"fahrenheit\", new functionalj.types.choice.generator.model.Type(null, null, \"double\", java.util.Collections.emptyList()), false, null))\n" + 
+                "            .build();\n" + 
+                "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+                "            return __schema__;\n" + 
+                "        }\n" + 
+                "        public static Fahrenheit caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "            return Fahrenheit(\n" + 
+                "                $utils.propertyFromMap(map, __schema__, \"fahrenheit\")\n" + 
+                "            );\n" + 
                 "        }\n" + 
                 "    }\n" + 
                 "    \n" + 

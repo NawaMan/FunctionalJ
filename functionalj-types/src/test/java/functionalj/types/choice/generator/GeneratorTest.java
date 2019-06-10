@@ -86,6 +86,7 @@ public class GeneratorTest {
                         + "java.util.Collections.emptyList()), "
                     + "null, "
                     + "false, "
+                    + "\"__tagged\", "
                     + "java.util.Collections.emptyList(), "
                     + "java.util.Collections.emptyList(), "
                     + "java.util.Collections.emptyList(), "
@@ -118,6 +119,7 @@ public class GeneratorTest {
                     + "java.util.Collections.emptyList()), "
                 + "null, "
                 + "false, "
+                + "\"__tagged\", "
                 + "java.util.Collections.emptyList(), "
                 + "java.util.Collections.emptyList(), "
                 + "java.util.Collections.emptyList(), "
@@ -127,7 +129,7 @@ public class GeneratorTest {
     @Test
     public void testSubClassConstructor_withParams_withGeneric() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, asList(new Generic("D")), emptyList(), emptyList(), emptyList());
+        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList());
         val target = new TargetClass(sourceSpec);
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
@@ -152,9 +154,26 @@ public class GeneratorTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
+                "    public java.util.Map<String, Object> toMap() {\n" + 
+                "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
+                "        map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Next\"));\n" + 
+                "        map.put(\"next\", this.next);\n" + 
+                "        return map;\n" + 
+                "    }\n" + 
+                "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
+                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.choice.generator.model.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null), new functionalj.types.choice.generator.model.Generic(\"Coroutine<D>\", \"Coroutine<D>\", null))), false, null))\n" + 
+                "        .build();\n" + 
+                "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+                "        return __schema__;\n" + 
+                "    }\n" + 
+                "    public static Next caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "        return Next(\n" + 
+                "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
+                "        );\n" + 
+                "    }\n" + 
                 "}", lines);
         assertEquals(
-                "new functionalj.types.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.types.choice.generator.model.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null))), \"spec\", false, java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null)), java.util.Collections.emptyList(), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
+                "new functionalj.types.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.types.choice.generator.model.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null))), \"spec\", false, \"__tagged\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null)), java.util.Collections.emptyList(), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
     }
     
     @Test
@@ -173,6 +192,14 @@ public class GeneratorTest {
                 "            super(spec);\n" + 
                 "        }\n" + 
                 "        \n" + 
+                "    }\n" + 
+                "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n" + 
+                "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+                "        return __schema__;\n" + 
+                "    }\n" + 
+                "    public static White caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "        return White(\n" + 
+                "        );\n" + 
                 "    }\n" + 
                 "}", lines);
     }
@@ -215,13 +242,36 @@ public class GeneratorTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
+                "    public java.util.Map<String, Object> toMap() {\n" + 
+                "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
+                "        map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"RGB\"));\n" + 
+                "        map.put(\"r\", this.r);\n" + 
+                "        map.put(\"g\", this.g);\n" + 
+                "        map.put(\"b\", this.b);\n" + 
+                "        return map;\n" + 
+                "    }\n" + 
+                "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
+                "        .with(\"r\", new functionalj.types.choice.generator.model.CaseParam(\"r\", new functionalj.types.choice.generator.model.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
+                "        .with(\"g\", new functionalj.types.choice.generator.model.CaseParam(\"g\", new functionalj.types.choice.generator.model.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
+                "        .with(\"b\", new functionalj.types.choice.generator.model.CaseParam(\"b\", new functionalj.types.choice.generator.model.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
+                "        .build();\n" + 
+                "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+                "        return __schema__;\n" + 
+                "    }\n" + 
+                "    public static RGB caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "        return RGB(\n" + 
+                "            $utils.propertyFromMap(map, __schema__, \"r\"),\n" + 
+                "            $utils.propertyFromMap(map, __schema__, \"g\"),\n" + 
+                "            $utils.propertyFromMap(map, __schema__, \"b\")\n" + 
+                "        );\n" + 
+                "    }\n" + 
                 "}", lines);
     }
     
     @Test
     public void testSubClassDefinition_withParams_withGeneric() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
                     new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false)
@@ -244,6 +294,23 @@ public class GeneratorTest {
                 "            super(spec);\n" + 
                 "        }\n" + 
                 "        \n" + 
+                "    }\n" + 
+                "    public java.util.Map<String, Object> toMap() {\n" + 
+                "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
+                "        map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Next\"));\n" + 
+                "        map.put(\"next\", this.next);\n" + 
+                "        return map;\n" + 
+                "    }\n" + 
+                "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
+                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.choice.generator.model.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null), new functionalj.types.choice.generator.model.Generic(\"Coroutine<D>\", \"Coroutine<D>\", null))), false, null))\n" + 
+                "        .build();\n" + 
+                "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+                "        return __schema__;\n" + 
+                "    }\n" + 
+                "    public static Next caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "        return Next(\n" + 
+                "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
+                "        );\n" + 
                 "    }\n" + 
                 "}", lines);
     }
@@ -344,7 +411,7 @@ public class GeneratorTest {
     @Test
     public void testSourceMethods() {
         val target = new TargetClass(
-                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true,
+                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null,
                     emptyList(),
                     emptyList(),
                     asList(
@@ -455,7 +522,7 @@ public class GeneratorTest {
     public void testTargetTypeGeneral_withMethods() {
         val colorType = new Type("p1.p2", "Color");
         val target = new TargetClass(
-                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true,
+                    new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null,
                     emptyList(),
                     emptyList(),
                     asList(
@@ -538,7 +605,7 @@ public class GeneratorTest {
     @Test
     public void testSubClassDefinition_withPublicField() {
         val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
+        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
         val sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
                     new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false)
@@ -561,6 +628,23 @@ public class GeneratorTest {
                 "            super(spec);\n" + 
                 "        }\n" + 
                 "        \n" + 
+                "    }\n" + 
+                "    public java.util.Map<String, Object> toMap() {\n" + 
+                "        java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
+                "        map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Next\"));\n" + 
+                "        map.put(\"next\", this.next);\n" + 
+                "        return map;\n" + 
+                "    }\n" + 
+                "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
+                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.choice.generator.model.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null), new functionalj.types.choice.generator.model.Generic(\"Coroutine<D>\", \"Coroutine<D>\", null))), false, null))\n" + 
+                "        .build();\n" + 
+                "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+                "        return __schema__;\n" + 
+                "    }\n" + 
+                "    public static Next caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "        return Next(\n" + 
+                "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
+                "        );\n" + 
                 "    }\n" + 
                 "}", lines);
     }

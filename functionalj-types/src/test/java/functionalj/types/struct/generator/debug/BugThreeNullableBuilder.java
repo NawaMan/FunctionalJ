@@ -169,12 +169,12 @@ public class BugThreeNullableBuilder {
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        \n" + 
                 "        Brand obj = new Brand(\n" + 
-                "                    (String)IStruct.fromMapValue(map.get(\"id\"), $schema.get(\"id\")),\n" + 
-                "                    (String)IStruct.fromMapValue(map.get(\"name\"), $schema.get(\"name\")),\n" + 
-                "                    (String)IStruct.fromMapValue(map.get(\"owner\"), $schema.get(\"owner\")),\n" + 
-                "                    (String)IStruct.fromMapValue(map.get(\"website\"), $schema.get(\"website\")),\n" + 
-                "                    (String)IStruct.fromMapValue(map.get(\"country\"), $schema.get(\"country\")),\n" + 
-                "                    (String)IStruct.fromMapValue(map.get(\"description\"), $schema.get(\"description\"))\n" + 
+                "                    (String)$utils.fromMapValue(map.get(\"id\"), $schema.get(\"id\")),\n" + 
+                "                    (String)$utils.fromMapValue(map.get(\"name\"), $schema.get(\"name\")),\n" + 
+                "                    (String)$utils.fromMapValue(map.get(\"owner\"), $schema.get(\"owner\")),\n" + 
+                "                    (String)$utils.fromMapValue(map.get(\"website\"), $schema.get(\"website\")),\n" + 
+                "                    (String)$utils.fromMapValue(map.get(\"country\"), $schema.get(\"country\")),\n" + 
+                "                    (String)$utils.fromMapValue(map.get(\"description\"), $schema.get(\"description\"))\n" + 
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 

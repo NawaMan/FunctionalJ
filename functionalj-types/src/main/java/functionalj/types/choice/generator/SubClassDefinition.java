@@ -54,15 +54,18 @@ public class SubClassDefinition implements Lines {
                     asList(format("    private static final %1$s instance = new %1$s();", name)),
                     asList(format("    private %1$s() {}",                                name)),
                     lens.build().stream().map(l -> "    " + l).collect(Collectors.toList()),
+                    new SubSchemaBuilder(choice) .lines().stream().map(line -> "    " + line).collect(toList()),
+                    new SubFromMapBuilder(choice).lines().stream().map(line -> "    " + line).collect(toList()),
                     asList(format("}"))
             ).stream()
             .flatMap(List::stream)
             .collect(toList());
         }
         
-        val paramDefs  = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
-        val paramCalls = choice.mapJoinParams(p ->                                   p.name, ", ");
-        val fieldAccss = targetClass.spec.publicFields ? "public" : "private";
+        val paramDefs   = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
+        val paramCalls  = choice.mapJoinParams(p ->                                   p.name, ", ");
+        val fieldAccss  = targetClass.spec.publicFields ? "public" : "private";
+        val toMapMethod = new ToMapBuilder(targetClass, this.choice);
         return asList(
                 asList(               format("public static final class %1$s%2$s extends %3$s {", name, targetClass.genericDef(), targetClass.typeWithGenerics())),
                 asList(               format("    " + lensInstance)),
@@ -73,7 +76,10 @@ public class SubClassDefinition implements Lines {
                 choice.mapParams(p -> format("    public %1$s %2$s() { return %2$s; }",           p.type.typeWithGenerics(), p.name)),
                 choice.mapParams(p -> format("    public %1$s with%2$s(%3$s %4$s) { return new %5$s(%6$s); }",
                                                       name + targetClass.generics(), toTitleCase(p.name), p.type.typeWithGenerics(), p.name, name + targetClass.generics(), paramCalls)),
-                lens.build().stream().map(l -> "    " + l).collect(Collectors.toList()),
+                lens       .build().stream().map(line -> "    " + line).collect(toList()),
+                toMapMethod.lines().stream().map(line -> "    " + line).collect(toList()),
+                new SubSchemaBuilder(choice) .lines().stream().map(line -> "    " + line).collect(toList()),
+                new SubFromMapBuilder(choice).lines().stream().map(line -> "    " + line).collect(toList()),
                 asList(               format("}"))
             ).stream()
             .flatMap(List::stream)

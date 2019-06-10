@@ -164,6 +164,16 @@ public class TargetClass implements Lines {
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
+        val fromMapMethod 
+                = new FromMapBuilder(this)
+                .lines().stream()
+                .map("    "::concat)
+                .collect(toList());
+        val schemaMethod
+                = new SchemaBuilder(this)
+                .lines().stream()
+                .map("    "::concat)
+                .collect(toList());
         
         val switchClasses = range(0, spec.choices.size())
                 .mapToObj(index   -> spec.choices.stream().skip(index).collect(toList()))
@@ -198,6 +208,10 @@ public class TargetClass implements Lines {
                 asList(format("    private %s() {}", type.name)),
                 asList(format("    public %1$s __data() throws Exception { return this; }",     typeName)),
                 asList(format("    public Result<%1$s> toResult() { return Result.valueOf(this); }", typeName)),
+                asList(format("    ")),
+                fromMapMethod,
+                asList(format("    ")),
+                schemaMethod,
                 asList(format("    ")),
                 subClassDefinitions,
                 asList(format("    ")),

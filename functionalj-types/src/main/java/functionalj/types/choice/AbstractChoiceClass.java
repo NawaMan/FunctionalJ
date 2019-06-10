@@ -23,9 +23,21 @@
 // ============================================================================
 package functionalj.types.choice;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-public abstract class AbstractChoiceClass<S> {
+import functionalj.types.ICanToMap;
+import functionalj.types.IStruct;
+import functionalj.types.StructConversionException;
+import functionalj.types.choice.generator.model.CaseParam;
+import lombok.val;
+
+public abstract class AbstractChoiceClass<S> implements ICanToMap {
+    
+    public Map<String, Object> toMap() {
+        throw new UnsupportedOperationException(this.getClass().getCanonicalName());
+    }
     
     public abstract S match();
     
@@ -61,6 +73,38 @@ public abstract class AbstractChoiceClass<S> {
         }
         public static boolean checkEquals(Object a, Object b) {
             return ((a == null) && (b == null)) || Objects.equals(a, b);
+        }
+        
+        public static <S extends AbstractChoiceClass<S>> S fromMap(Map<String, Object> map, Class<S> clazz) {
+            try {
+                val method = clazz.getMethod("fromMap", Map.class);
+                val struct = method.invoke(clazz, map);
+                return clazz.cast(struct);
+            } catch (Exception cause) {
+                throw new StructConversionException(cause);
+            }
+        }
+        
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        public static <T> T fromMapValue(Object obj, CaseParam caseParam) {
+            val   type         = caseParam.type;
+            Class clzz         = type.toClass();
+            val   defaultValue = caseParam.defValue;
+            
+            if ((obj instanceof List) && type.toStructType().isList()) {
+                return IStruct.$utils.fromMapValue(obj, type.toStructType(), defaultValue);
+            }
+            
+            return (T)ICanToMap.fromMapValue(obj, clzz, defaultValue, ()->caseParam.defaultValue());
+        }
+        
+        public static <T> T propertyFromMap(Map<String, Object> map, Map<String, CaseParam> schema, String name) {
+            val caseParam = schema.get(name);
+            if (caseParam == null)
+                throw new IllegalArgumentException("Unknown property: " + name);
+            
+            val rawValue = map.get(name);
+            return fromMapValue(rawValue, caseParam);
         }
     }
     

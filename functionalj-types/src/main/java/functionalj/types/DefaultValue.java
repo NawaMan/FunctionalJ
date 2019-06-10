@@ -188,6 +188,8 @@ public enum DefaultValue {
     }
     
     public static String defaultValueCode(Type type, DefaultValue value) {
+        if (value == REQUIRED)
+            return IStruct.class.getCanonicalName() + ".$utils.notNull((" + type.fullNameWithGeneric(type.packageName()) + ")null)";
         if (value == UNSPECIFIED)
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         if (value == DEFAULT)
@@ -347,6 +349,8 @@ public enum DefaultValue {
     
     @SuppressWarnings({ "rawtypes" })
     public static Object defaultValue(Type type, DefaultValue value) {
+        if (value == REQUIRED)
+            throw new NullPointerException("Value is required. (type=" + type + ", defaultValue=" + value + ")");
         if (value == UNSPECIFIED)
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         if (value == DEFAULT) {

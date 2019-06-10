@@ -160,9 +160,9 @@ public class GeneratorTest {
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        \n" + 
                 "        Car obj = new Car(\n" + 
-                "                    (int)IStruct.fromMapValue(map.get(\"anint\"), $schema.get(\"anint\")),\n" + 
-                "                    (boolean)IStruct.fromMapValue(map.get(\"anbool\"), $schema.get(\"anbool\")),\n" + 
-                "                    (String)IStruct.fromMapValue(map.get(\"anstring\"), $schema.get(\"anstring\"))\n" + 
+                "                    (int)$utils.fromMapValue(map.get(\"anint\"), $schema.get(\"anint\")),\n" + 
+                "                    (boolean)$utils.fromMapValue(map.get(\"anbool\"), $schema.get(\"anbool\")),\n" + 
+                "                    (String)$utils.fromMapValue(map.get(\"anstring\"), $schema.get(\"anstring\"))\n" + 
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 

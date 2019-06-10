@@ -36,21 +36,26 @@ import java.util.function.Function;
 import lombok.val;
 
 public class SourceSpec {
+    
+    public static final String TAG_MAP_KEY_NAME = "__tagged";
+    
     public final String        targetName;
     public final Type          sourceType;
     public final String        specObjName;
     public final boolean       publicFields;
+    public final String        tagMapKeyName;
     public final List<Generic> generics;
     public final List<Case>    choices;
     public final List<Method>  methods;
     public final List<String>  localTypeWithLens;
     
-    public SourceSpec(String targetName, Type sourceType, String specObjName, boolean publicFields,
+    public SourceSpec(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName,
             List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
         this.targetName = targetName;
         this.sourceType = sourceType;
         this.specObjName = specObjName;
         this.publicFields = publicFields;
+        this.tagMapKeyName = (tagMapKeyName != null) ? tagMapKeyName : TAG_MAP_KEY_NAME;
         this.generics = generics;
         this.choices = choices;
         this.methods = methods;
@@ -58,7 +63,7 @@ public class SourceSpec {
     }
     
     public SourceSpec(String targetName, Type sourceType, List<Case> choices) {
-        this(targetName, sourceType, null, false, new ArrayList<Generic>(), choices, new ArrayList<>(), new ArrayList<>());
+        this(targetName, sourceType, null, false, null, new ArrayList<Generic>(), choices, new ArrayList<>(), new ArrayList<>());
     }
     
     public String toCode() {
@@ -67,6 +72,7 @@ public class SourceSpec {
                 sourceType.toCode(),
                 toStringLiteral(specObjName),
                 "" + publicFields,
+                toStringLiteral(tagMapKeyName),
                 toListCode     (generics, Generic::toCode),
                 toListCode     (choices,  Case::toCode),
                 toListCode     (methods,  Method::toCode),

@@ -64,6 +64,7 @@ public class FullGeneratorTest {
               new Type(FullGeneratorTest.class.getPackage().getName(), "ChoiceTypeExampleTest", "ChoiceType1TypeSpec"),
               "spec",
               true,
+              null,
               asList(),
               asList(
                   new Case("White", emptyList()),
@@ -156,6 +157,26 @@ public class FullGeneratorTest {
               "    public BasicColor __data() throws Exception { return this; }\n" + 
               "    public Result<BasicColor> toResult() { return Result.valueOf(this); }\n" + 
               "    \n" + 
+              "    public static <T extends BasicColor> T fromMap(java.util.Map<String, Object> map) {\n" + 
+              "        String __tagged = (String)map.get(\"__tagged\");\n" + 
+              "        if (\"White\".equals(__tagged))\n" + 
+              "            return (T)White.caseFromMap(map);\n" + 
+              "        if (\"Black\".equals(__tagged))\n" + 
+              "            return (T)Black.caseFromMap(map);\n" + 
+              "        if (\"RGB\".equals(__tagged))\n" + 
+              "            return (T)RGB.caseFromMap(map);\n" + 
+              "        throw new IllegalArgumentException(\"Tagged value does not represent a valid type: \" + __tagged);\n" + 
+              "    }\n" + 
+              "    \n" + 
+              "    static private functionalj.map.FuncMap<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>> __schema__ = functionalj.map.FuncMap.<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>>newMap()\n" + 
+              "        .with(\"White\", White.getCaseSchema())\n" + 
+              "        .with(\"Black\", Black.getCaseSchema())\n" + 
+              "        .with(\"RGB\", RGB.getCaseSchema())\n" + 
+              "        .build();\n" + 
+              "    public static java.util.Map<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>> getChoiceSchema() {\n" + 
+              "        return __schema__;\n" + 
+              "    }\n" + 
+              "    \n" + 
               "    public static final class White extends BasicColor {\n" + 
               "        public static final White.WhiteLens<White> theWhite = new White.WhiteLens<>(LensSpec.of(White.class));\n" + 
               "        private static final White instance = new White();\n" + 
@@ -166,6 +187,14 @@ public class FullGeneratorTest {
               "                super(spec);\n" + 
               "            }\n" + 
               "            \n" + 
+              "        }\n" + 
+              "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n" + 
+              "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+              "            return __schema__;\n" + 
+              "        }\n" + 
+              "        public static White caseFromMap(java.util.Map<String, Object> map) {\n" + 
+              "            return White(\n" + 
+              "            );\n" + 
               "        }\n" + 
               "    }\n" + 
               "    public static final class Black extends BasicColor {\n" + 
@@ -178,6 +207,14 @@ public class FullGeneratorTest {
               "                super(spec);\n" + 
               "            }\n" + 
               "            \n" + 
+              "        }\n" + 
+              "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n" + 
+              "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+              "            return __schema__;\n" + 
+              "        }\n" + 
+              "        public static Black caseFromMap(java.util.Map<String, Object> map) {\n" + 
+              "            return Black(\n" + 
+              "            );\n" + 
               "        }\n" + 
               "    }\n" + 
               "    public static final class RGB extends BasicColor {\n" + 
@@ -206,6 +243,29 @@ public class FullGeneratorTest {
               "                super(spec);\n" + 
               "            }\n" + 
               "            \n" + 
+              "        }\n" + 
+              "        public java.util.Map<String, Object> toMap() {\n" + 
+              "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
+              "            map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"RGB\"));\n" + 
+              "            map.put(\"r\", this.r);\n" + 
+              "            map.put(\"g\", this.g);\n" + 
+              "            map.put(\"b\", this.b);\n" + 
+              "            return map;\n" + 
+              "        }\n" + 
+              "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
+              "            .with(\"r\", new functionalj.types.choice.generator.model.CaseParam(\"r\", new functionalj.types.choice.generator.model.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
+              "            .with(\"g\", new functionalj.types.choice.generator.model.CaseParam(\"g\", new functionalj.types.choice.generator.model.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
+              "            .with(\"b\", new functionalj.types.choice.generator.model.CaseParam(\"b\", new functionalj.types.choice.generator.model.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
+              "            .build();\n" + 
+              "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+              "            return __schema__;\n" + 
+              "        }\n" + 
+              "        public static RGB caseFromMap(java.util.Map<String, Object> map) {\n" + 
+              "            return RGB(\n" + 
+              "                $utils.propertyFromMap(map, __schema__, \"r\"),\n" + 
+              "                $utils.propertyFromMap(map, __schema__, \"g\"),\n" + 
+              "                $utils.propertyFromMap(map, __schema__, \"b\")\n" + 
+              "            );\n" + 
               "        }\n" + 
               "    }\n" + 
               "    \n" + 
