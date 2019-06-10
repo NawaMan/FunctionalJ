@@ -94,7 +94,7 @@ public class DateTimeLens {
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        \n" + 
                 "        Person obj = new Person(\n" + 
-                "                    (LocalDate)IStruct.fromMapValue(map.get(\"child\"), $schema.get(\"child\"))\n" + 
+                "                    (LocalDate)$utils.fromMapValue(map.get(\"child\"), $schema.get(\"child\"))\n" + 
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 

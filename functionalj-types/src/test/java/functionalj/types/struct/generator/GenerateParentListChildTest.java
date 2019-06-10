@@ -156,8 +156,8 @@ public class GenerateParentListChildTest {
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        @SuppressWarnings(\"unchecked\")\n" + 
                 "        Parent obj = new Parent(\n" + 
-                "                    (List<String>)IStruct.fromMapValue(map.get(\"names\"), $schema.get(\"names\")),\n" + 
-                "                    (List<Child>)IStruct.fromMapValue(map.get(\"children\"), $schema.get(\"children\"))\n" + 
+                "                    (List<String>)$utils.fromMapValue(map.get(\"names\"), $schema.get(\"names\")),\n" + 
+                "                    (List<Child>)$utils.fromMapValue(map.get(\"children\"), $schema.get(\"children\"))\n" + 
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 

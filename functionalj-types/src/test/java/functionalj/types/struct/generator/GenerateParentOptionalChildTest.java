@@ -150,8 +150,8 @@ public class GenerateParentOptionalChildTest {
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        @SuppressWarnings(\"unchecked\")\n" + 
                 "        Parent obj = new Parent(\n" + 
-                "                    (Optional<String>)IStruct.fromMapValue(map.get(\"optionalName\"), $schema.get(\"optionalName\")),\n" + 
-                "                    (Optional<Child>)IStruct.fromMapValue(map.get(\"optionalChild\"), $schema.get(\"optionalChild\"))\n" + 
+                "                    (Optional<String>)$utils.fromMapValue(map.get(\"optionalName\"), $schema.get(\"optionalName\")),\n" + 
+                "                    (Optional<Child>)$utils.fromMapValue(map.get(\"optionalChild\"), $schema.get(\"optionalChild\"))\n" + 
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 

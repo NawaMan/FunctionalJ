@@ -159,9 +159,9 @@ public class RequiredConstructorTest {
             "        Map<String, Getter> $schema = getStructSchema();\n" + 
             "        \n" + 
             "        Person obj = new Person(\n" + 
-            "                    (String)IStruct.fromMapValue(map.get(\"firstName\"), $schema.get(\"firstName\")),\n" + 
-            "                    (String)IStruct.fromMapValue(map.get(\"midName\"), $schema.get(\"midName\")),\n" + 
-            "                    (String)IStruct.fromMapValue(map.get(\"lastName\"), $schema.get(\"lastName\"))\n" + 
+            "                    (String)$utils.fromMapValue(map.get(\"firstName\"), $schema.get(\"firstName\")),\n" + 
+            "                    (String)$utils.fromMapValue(map.get(\"midName\"), $schema.get(\"midName\")),\n" + 
+            "                    (String)$utils.fromMapValue(map.get(\"lastName\"), $schema.get(\"lastName\"))\n" + 
             "                );\n" + 
             "        return obj;\n" + 
             "    }\n" + 

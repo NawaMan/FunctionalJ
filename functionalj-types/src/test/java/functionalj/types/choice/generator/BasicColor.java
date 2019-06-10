@@ -26,6 +26,8 @@ package functionalj.types.choice.generator;
 import static functionalj.types.choice.CheckEquals.checkEquals;
 import static functionalj.types.choice.ChoiceTypes.Match;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -49,10 +51,18 @@ public abstract class BasicColor extends AbstractChoiceClass<BasicColor.BasicCol
     public static final class White extends BasicColor {
         private static final White instance = new White();
         private White() {}
+        @Override
+        public Map<String, Object> toMap() {
+            return new HashMap<String, Object>();
+        }
     }
     public static final class Black extends BasicColor {
         private static final Black instance = new Black();
         private Black() {}
+        @Override
+        public Map<String, Object> toMap() {
+            return new HashMap<String, Object>();
+        }
     }
     public static final class RGB extends BasicColor {
         private int r;
@@ -69,6 +79,14 @@ public abstract class BasicColor extends AbstractChoiceClass<BasicColor.BasicCol
         public RGB withR(int r) { return new RGB(r, g, b); }
         public RGB withG(int g) { return new RGB(r, g, b); }
         public RGB withB(int b) { return new RGB(r, g, b); }
+        @Override
+        public Map<String, Object> toMap() {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("r", r);
+            map.put("g", g);
+            map.put("b", b);
+            return map;
+        }
     }
     
     private final BasicColorFirstSwitch __theSwitch = new BasicColorFirstSwitch(this);

@@ -129,7 +129,7 @@ public class GenerateParentMapChildTest {
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        @SuppressWarnings(\"unchecked\")\n" + 
                 "        Parent obj = new Parent(\n" + 
-                "                    (Map<String, Child>)IStruct.fromMapValue(map.get(\"children\"), $schema.get(\"children\"))\n" + 
+                "                    (Map<String, Child>)$utils.fromMapValue(map.get(\"children\"), $schema.get(\"children\"))\n" + 
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 
