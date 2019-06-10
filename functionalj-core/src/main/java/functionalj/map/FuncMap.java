@@ -145,6 +145,18 @@ public abstract class FuncMap<KEY, VALUE>
         return ImmutableMap.empty();
     }
     
+    public static <K, V> ImmutableMap<K, V> emptyMap() {
+        return ImmutableMap.empty();
+    }
+    
+    public static <K, V> ImmutableMap<K, V> empty(Class<K> keyClass, Class<V> valueClass) {
+        return ImmutableMap.empty();
+    }
+    
+    public static <K, V> ImmutableMap<K, V> emptyMap(Class<K> keyClass, Class<V> valueClass) {
+        return ImmutableMap.empty();
+    }
+    
     public static <K, V> ImmutableMap<K, V> from(Map<? extends K, ? extends V> map) {
         return new ImmutableMap<K, V>(map);
     }
@@ -533,6 +545,18 @@ public abstract class FuncMap<KEY, VALUE>
     }
     
     public static <K, V> FuncMapBuilder<K, V> newBuilder() {
+        return new FuncMapBuilder<K, V>();
+    }
+    
+    public static <K, V> FuncMapBuilder<K, V> newFuncMap(Class<K> keyClass, Class<V> valueClass) {
+        return new FuncMapBuilder<K, V>();
+    }
+    
+    public static <K, V> FuncMapBuilder<K, V> newMap(Class<K> keyClass, Class<V> valueClass) {
+        return new FuncMapBuilder<K, V>();
+    }
+    
+    public static <K, V> FuncMapBuilder<K, V> newBuilder(Class<K> keyClass, Class<V> valueClass) {
         return new FuncMapBuilder<K, V>();
     }
     

@@ -181,7 +181,7 @@ public class StructBuilder {
         val fromMapBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
-                .map(g -> "            (" + g.getType().simpleNameWithGeneric() + ")IStruct.fromMapValue(map.get(\"" + g.getName() + "\"), $schema.get(\"" + g.getName() + "\"))")
+                .map(g -> "            (" + g.getType().simpleNameWithGeneric() + ")$utils.fromMapValue(map.get(\"" + g.getName() + "\"), $schema.get(\"" + g.getName() + "\"))")
                 .collect(Collectors.joining(",\n"))
                 .split("\n"));
         val getterHasGeneric

@@ -28,6 +28,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import functionalj.types.choice.generator.model.SourceSpec;
+
 /**
  * This annotation marks an interface to create a choice type.
  * 
@@ -42,6 +44,9 @@ public @interface Choice {
     
     /** @return the name of the static final field for the source spec. */
     public String specField() default "";
+    
+    /** @return the name of key in the map when do toMap(). */
+    public String tagMapKeyName() default SourceSpec.TAG_MAP_KEY_NAME;
     
     /** @return the flag indicating that the fields should be made public - default to true. */
     public boolean publicFields() default false;

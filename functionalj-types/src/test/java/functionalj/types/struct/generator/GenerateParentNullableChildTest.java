@@ -149,8 +149,8 @@ public class GenerateParentNullableChildTest {
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        @SuppressWarnings(\"unchecked\")\n" + 
                 "        Parent obj = new Parent(\n" + 
-                "                    (Nullable<String>)IStruct.fromMapValue(map.get(\"nullableName\"), $schema.get(\"nullableName\")),\n" + 
-                "                    (Nullable<Child>)IStruct.fromMapValue(map.get(\"nullableChild\"), $schema.get(\"nullableChild\"))\n" + 
+                "                    (Nullable<String>)$utils.fromMapValue(map.get(\"nullableName\"), $schema.get(\"nullableName\")),\n" + 
+                "                    (Nullable<Child>)$utils.fromMapValue(map.get(\"nullableChild\"), $schema.get(\"nullableChild\"))\n" + 
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 

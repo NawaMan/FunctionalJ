@@ -142,10 +142,12 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                 continue;
             }
             
+            val tagMapKeyName = choiceType.tagMapKeyName();
+            
             val choices      = extractTypeChoices(element, targetType, typeElement);
             val methods      = extractTypeMethods(element, targetType, typeElement);
             val publicFields = choiceType.publicFields();
-            val generator    = new Generator(targetName, sourceType, specField, publicFields, generics, choices, methods, localTypeWithLens);
+            val generator    = new Generator(targetName, sourceType, specField, publicFields, tagMapKeyName, generics, choices, methods, localTypeWithLens);
             
             try {
                 val className  = packageName + "." + targetName;

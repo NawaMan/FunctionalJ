@@ -44,8 +44,9 @@ public class GenericChoiceTest {
     public static final SourceSpec spec = new SourceSpec(
             "MayBe", 
             new Type(FullGeneratorTest.class.getPackage().getName(), "MayBeTest", "MayBe"),
-            "spec", 
-            false, 
+            "spec",
+            false,
+            null,
             emptyList(), 
             asList(
                     new Case("Nill", null, emptyList()), 
@@ -104,6 +105,23 @@ public class GenericChoiceTest {
                 "    public MayBe __data() throws Exception { return this; }\n" + 
                 "    public Result<MayBe> toResult() { return Result.valueOf(this); }\n" + 
                 "    \n" + 
+                "    public static <T extends MayBe> T fromMap(java.util.Map<String, Object> map) {\n" + 
+                "        String __tagged = (String)map.get(\"__tagged\");\n" + 
+                "        if (\"Nill\".equals(__tagged))\n" + 
+                "            return (T)Nill.caseFromMap(map);\n" + 
+                "        if (\"Just\".equals(__tagged))\n" + 
+                "            return (T)Just.caseFromMap(map);\n" + 
+                "        throw new IllegalArgumentException(\"Tagged value does not represent a valid type: \" + __tagged);\n" + 
+                "    }\n" + 
+                "    \n" + 
+                "    static private functionalj.map.FuncMap<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>> __schema__ = functionalj.map.FuncMap.<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>>newMap()\n" + 
+                "        .with(\"Nill\", Nill.getCaseSchema())\n" + 
+                "        .with(\"Just\", Just.getCaseSchema())\n" + 
+                "        .build();\n" + 
+                "    public static java.util.Map<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>> getChoiceSchema() {\n" + 
+                "        return __schema__;\n" + 
+                "    }\n" + 
+                "    \n" + 
                 "    public static final class Nill extends MayBe {\n" + 
                 "        public static final Nill.NillLens<Nill> theNill = new Nill.NillLens<>(LensSpec.of(Nill.class));\n" + 
                 "        private static final Nill instance = new Nill();\n" + 
@@ -114,6 +132,14 @@ public class GenericChoiceTest {
                 "                super(spec);\n" + 
                 "            }\n" + 
                 "            \n" + 
+                "        }\n" + 
+                "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n" + 
+                "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+                "            return __schema__;\n" + 
+                "        }\n" + 
+                "        public static Nill caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "            return Nill(\n" + 
+                "            );\n" + 
                 "        }\n" + 
                 "    }\n" + 
                 "    public static final class Just extends MayBe {\n" + 
@@ -132,6 +158,23 @@ public class GenericChoiceTest {
                 "                super(spec);\n" + 
                 "            }\n" + 
                 "            \n" + 
+                "        }\n" + 
+                "        public java.util.Map<String, Object> toMap() {\n" + 
+                "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
+                "            map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Just\"));\n" + 
+                "            map.put(\"data\", this.data);\n" + 
+                "            return map;\n" + 
+                "        }\n" + 
+                "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
+                "            .with(\"data\", new functionalj.types.choice.generator.model.CaseParam(\"data\", new functionalj.types.choice.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()), false, null))\n" + 
+                "            .build();\n" + 
+                "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
+                "            return __schema__;\n" + 
+                "        }\n" + 
+                "        public static Just caseFromMap(java.util.Map<String, Object> map) {\n" + 
+                "            return Just(\n" + 
+                "                $utils.propertyFromMap(map, __schema__, \"data\")\n" + 
+                "            );\n" + 
                 "        }\n" + 
                 "    }\n" + 
                 "    \n" + 
@@ -294,7 +337,7 @@ public class GenericChoiceTest {
                 "        }\n" + 
                 "    }\n" + 
                 "    \n" + 
-                "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"MayBe\", new functionalj.types.choice.generator.model.Type(\"functionalj.types.choice.generator\", \"MayBeTest\", \"MayBe\", java.util.Collections.emptyList()), \"spec\", false, java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"Nill\", null, java.util.Collections.emptyList()), new functionalj.types.choice.generator.model.Case(\"Just\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"data\", new functionalj.types.choice.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()), false, null)))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n" + 
+                "    public static final functionalj.types.choice.generator.model.SourceSpec spec = new functionalj.types.choice.generator.model.SourceSpec(\"MayBe\", new functionalj.types.choice.generator.model.Type(\"functionalj.types.choice.generator\", \"MayBeTest\", \"MayBe\", java.util.Collections.emptyList()), \"spec\", false, \"__tagged\", java.util.Collections.emptyList(), java.util.Arrays.asList(new functionalj.types.choice.generator.model.Case(\"Nill\", null, java.util.Collections.emptyList()), new functionalj.types.choice.generator.model.Case(\"Just\", null, java.util.Arrays.asList(new functionalj.types.choice.generator.model.CaseParam(\"data\", new functionalj.types.choice.generator.model.Type(null, null, \"T\", java.util.Collections.emptyList()), false, null)))), java.util.Collections.emptyList(), java.util.Collections.emptyList());\n" + 
                 "    \n" + 
                 "}";
         assertEquals(expect, code);

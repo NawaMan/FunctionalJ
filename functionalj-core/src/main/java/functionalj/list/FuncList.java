@@ -77,7 +77,13 @@ public interface FuncList<DATA>
     public static <T> ImmutableList<T> empty() {
         return ImmutableList.empty();
     }
+    public static <T> ImmutableList<T> emptyList() {
+        return ImmutableList.empty();
+    }
     public static <T> ImmutableList<T> empty(Class<T> elementClass) {
+        return ImmutableList.empty();
+    }
+    public static <T> ImmutableList<T> emptyList(Class<T> elementClass) {
         return ImmutableList.empty();
     }
     @SafeVarargs

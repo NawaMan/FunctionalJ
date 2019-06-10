@@ -29,6 +29,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +90,18 @@ public class Type {
                 .stream()
                 .filter(Objects::nonNull)
                 .collect(joining("."));
+    }
+    
+    public functionalj.types.struct.generator.Type toStructType() {
+        val encloseName = this.encloseClass;
+        val simpleName  = this.name;
+        val packageName = this.pckg;
+        val generics    = this.generics.stream()
+                        .map(g -> g.getBoundTypes().stream().findFirst().get())
+                        .map(t -> t.toStructType())
+                        .collect(toList());
+        val structType = new functionalj.types.struct.generator.Type(encloseName, simpleName, packageName, generics);
+        return structType;
     }
     
     public static final Type INTEGER = new Type("java.lang", "Integer");
@@ -156,5 +169,18 @@ public class Type {
         return "new " + Type.class.getCanonicalName() + "("
                 + params.stream().collect(joining(", "))
                 + ")";
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T> Class<T> toClass() {
+        if (isPrimitive())
+            return getPredicateType().toClass();
+        
+        try {
+            return ((Class<T>)Class.forName(fullName()));
+        } catch (ClassNotFoundException e) {
+            // Bad bad bad
+            throw new RuntimeException(e);
+        }
     }
 }

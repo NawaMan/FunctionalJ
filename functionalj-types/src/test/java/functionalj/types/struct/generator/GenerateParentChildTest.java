@@ -123,7 +123,7 @@ public class GenerateParentChildTest {
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        \n" + 
                 "        Parent obj = new Parent(\n" + 
-                "                    (Child)IStruct.fromMapValue(map.get(\"child\"), $schema.get(\"child\"))\n" + 
+                "                    (Child)$utils.fromMapValue(map.get(\"child\"), $schema.get(\"child\"))\n" + 
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 

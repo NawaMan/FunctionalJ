@@ -201,11 +201,11 @@ public class NonRequireFieldTest {
                 "        Map<String, Getter> $schema = getStructSchema();\n" + 
                 "        \n" + 
                 "        Data obj = new Data(\n" + 
-                "                    (int)IStruct.fromMapValue(map.get(\"a\"), $schema.get(\"a\")),\n" + 
-                "                    (boolean)IStruct.fromMapValue(map.get(\"b\"), $schema.get(\"b\")),\n" + 
-                "                    (String)IStruct.fromMapValue(map.get(\"c\"), $schema.get(\"c\")),\n" + 
-                "                    (String)IStruct.fromMapValue(map.get(\"d\"), $schema.get(\"d\")),\n" + 
-                "                    (String)IStruct.fromMapValue(map.get(\"e\"), $schema.get(\"e\"))\n" + 
+                "                    (int)$utils.fromMapValue(map.get(\"a\"), $schema.get(\"a\")),\n" + 
+                "                    (boolean)$utils.fromMapValue(map.get(\"b\"), $schema.get(\"b\")),\n" + 
+                "                    (String)$utils.fromMapValue(map.get(\"c\"), $schema.get(\"c\")),\n" + 
+                "                    (String)$utils.fromMapValue(map.get(\"d\"), $schema.get(\"d\")),\n" + 
+                "                    (String)$utils.fromMapValue(map.get(\"e\"), $schema.get(\"e\"))\n" + 
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 

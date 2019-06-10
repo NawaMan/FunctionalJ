@@ -89,7 +89,6 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
     public default ListAccess<HOST, TYPE, SUBACCESS> toList() {
         val spec        = accessParameterized();
         val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, SUBACCESS>() {
-            @SuppressWarnings("unchecked")
             @Override
             public List<TYPE> applyUnsafe(HOST host) throws Exception{
                 val collection = spec.apply(host);
