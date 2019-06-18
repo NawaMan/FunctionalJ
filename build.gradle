@@ -97,7 +97,7 @@ subprojects {
         archives javadocJar, sourceJar
     }
     
-    archivesBaseName = "${group}-${project.name}"
+    archivesBaseName = "${project.name}"
     version = "${project.version}"
     
     // Build, sign, and upload
