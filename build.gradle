@@ -59,9 +59,14 @@ subprojects {
         }
     }
     
+    // Add Javadoc JAR and sources JAR to artifact
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
     task sourceJar(type: Jar) {
         classifier = 'sources'
-        from sourceSets.main.allJava
+        from sourceSets.main.allSource
     }
     
     task packageJavadoc(type: Jar) {
@@ -77,4 +82,71 @@ subprojects {
     }
     
     tasks.withType(Javadoc).all { enabled = false }
+    
+    
+    // Signing
+    apply plugin: 'signing'
+    signing {
+        sign configurations.archives
+    }
+    
+    // Deploying
+    apply plugin: 'maven'
+    
+    artifacts {
+        archives javadocJar, sourceJar
+    }
+    
+    archivesBaseName = "${group}-${project.name}"
+    version = "${project.version}"
+    
+    // Build, sign, and upload
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                
+                // Sign POM
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                
+                // Destination
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+                
+                // Add required metadata to POM
+                pom.project {
+                    name project.name
+                    packaging 'jar'
+                    description 'Brining functional goodies to Java: ' + project.name
+                    url 'https://github.com/NawaMan/FunctionalJ'
+                    
+                    scm {
+                        connection 'scm:git:git://github.com/NawaMan/FunctionalJ.git'
+                            developerConnection 'scm:git:ssh://github.com/NawaMan/FunctionalJ.git'
+                            url 'http://github.com/NawaMan/FunctionalJ/tree/master'
+                    }
+                    
+                    licenses {
+                        license {
+                            name 'MIT License'
+                            url 'http://www.opensource.org/licenses/MIT'
+                        }
+                    }
+                    
+                    developers {
+                        developer {
+                            id 'NawaMan'
+                            name 'Nawapunth Manusitthipol'
+                            email 'nawa@nawaman.net'
+                            organization 'NawaMan'
+                            organizationUrl 'http://nawaman.net'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
