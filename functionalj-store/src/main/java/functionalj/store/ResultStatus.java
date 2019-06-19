@@ -1,18 +1,19 @@
 package functionalj.store;
 
-import functionalj.lens.core.LensSpec;
-import functionalj.lens.lenses.*;
-import functionalj.pipeable.Pipeable;
-import functionalj.result.Result;
-import functionalj.store.ChangeFailException;
-import functionalj.store.ChangeNotAllowedException;
-import functionalj.store.ChangeRejectedException;
-import functionalj.types.choice.AbstractChoiceClass;
-import functionalj.types.choice.ChoiceTypeSwitch;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import functionalj.lens.core.LensSpec;
+import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.ObjectLens;
+import functionalj.lens.lenses.ObjectLensImpl;
+import functionalj.lens.lenses.ResultAccess;
+import functionalj.pipeable.Pipeable;
+import functionalj.result.Result;
+import functionalj.types.choice.AbstractChoiceClass;
+import functionalj.types.choice.ChoiceTypeSwitch;
 
 // functionalj.store.Specs.ResultStatusSpec
 
