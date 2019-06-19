@@ -7,13 +7,14 @@ repositories {
 }
 
 dependencies {
-   compile project(':functionalj-core')
-   compile project(':functionalj-store')
-   compile project(':functionalj-types')
+    compileOnly 'org.projectlombok:lombok:1.18.2'
+    
+    compile project(':functionalj-core')
+    compile project(':functionalj-store')
+    compile project(':functionalj-types')
     
     //== Test ==
     
     testCompile 'junit:junit:4.12'
-    testCompile 'defaultj:defaultj-core:1.2.0.0'
     
 }
