@@ -3,19 +3,22 @@ version="${theVersion}.0"
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url 'https://raw.githubusercontent.com/nawaman/nawaman-maven-repository/master/' }
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.2'
+    compile 'io.defaultj:defaultj-api:2.0.0.0'
+    compile 'io.nullablej:nullablej:4.0.1.0'
     
-    compile 'defaultj:defaultj-api:1.2.2.0'
-    compile 'nawaman:nullablej:3.3.0.0'
-    compile 'nawaman-utils:nawaman-utils-reflection:0.1.7'
+    compileOnly         'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
     
-    //== Test ==
+    // == Test ==
     
+    testCompile 'io.defaultj:defaultj-api:2.0.0.0'
+    testCompile 'io.defaultj:defaultj-core:2.0.0.0'
     testCompile 'junit:junit:4.12'
-    testCompile 'defaultj:defaultj-core:1.2.0.0'
+    
+    testCompile             'org.projectlombok:lombok:1.18.8'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
     
 }

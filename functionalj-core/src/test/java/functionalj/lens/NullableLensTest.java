@@ -39,7 +39,7 @@ import functionalj.lens.lenses.NullableLens;
 import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.StringLens;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 public class NullableLensTest {
 

@@ -32,7 +32,7 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
 import functionalj.lens.core.WriteLens;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface

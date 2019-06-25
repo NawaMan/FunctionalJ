@@ -46,16 +46,10 @@ Articles
 This project binary is published on [my maven repo](https://github.com/NawaMan/nawaman-maven-repository) hosted on GitHub.
 So to use FunctionalJ you will need to ...
 
-Add the maven repository ...
+Add the dependencies to FunctionalJ.
 
 ```Groovy
-    maven { url 'https://raw.githubusercontent.com/nawmaman/nawaman-maven-repository/master/' }
-```
-   
-and the dependencies to FunctionalJ.
-
-```Groovy
-    compile 'functionalj:functionalj-all:0.1.77.0' // Please lookup for the latest version.
+    compile 'functionalj:functionalj-all:0.1.83.0' // Please lookup for the latest version.
 ```
 
 [UseFunctionalJGradle](https://github.com/NawaMan/UseFunctionalJGradle) is an example project that use FunctionalJ.
@@ -63,27 +57,14 @@ You can use that as a starting point.
 
 ### Using FunctionalJ in a Maven project
 
-Adding the required maven repository (hosted by github).
-
-```xml
-<repository>
-    <id>Nullable-mvn-repo</id>
-    <url>https://raw.githubusercontent.com/nawaman/nawaman-maven-repository/master/</url>
-    <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-    </snapshots>
-</repository>
-```
-
-and the dependencies to FunctionalJ.
+Add the dependencies to FunctionalJ.
 
 ```xml
 
     <dependency>
         <groupId>functionalj</groupId>
         <artifactId>functionalj-all</artifactId>
-        <version>0.1.77.0</version>
+        <version>0.1.83.0</version>
     </dependency>
 ```
 

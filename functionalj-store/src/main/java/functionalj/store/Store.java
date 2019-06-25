@@ -35,7 +35,6 @@ import functionalj.function.FuncUnit1;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
 
 // TODO - Generate Store that immitate an immutable type and have the changes store inside.
 // TODO - Must mention that this is not thread safe.
@@ -61,8 +60,8 @@ public class Store<DATA> {
             Func2<DATA, Result<DATA>, ChangeResult<DATA>>             accepter, 
             Func2<DATA, Func1<DATA, DATA>, ChangeNotAllowedException> approver) {
         this.dataRef.set(data);
-        this.approver = Nullable.of(approver).orElse(this::defaultApprover);
-        this.accepter = Nullable.of(accepter).orElse(this::defaultAcceptor);
+        this.approver = (approver != null) ? approver : this::defaultApprover;
+        this.accepter = (accepter != null) ? accepter : this::defaultAcceptor;
     }
     
     private ChangeNotAllowedException defaultApprover(DATA oldData, Func1<DATA, DATA> changer) {

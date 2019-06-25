@@ -39,7 +39,7 @@ import functionalj.task.Task;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple4;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 /**
  * Function of four parameters.

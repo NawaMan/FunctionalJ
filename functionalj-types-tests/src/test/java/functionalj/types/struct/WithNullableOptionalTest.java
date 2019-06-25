@@ -26,7 +26,7 @@ package functionalj.types.struct;
 import java.util.Optional;
 
 import functionalj.types.Struct;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
 public class WithNullableOptionalTest {

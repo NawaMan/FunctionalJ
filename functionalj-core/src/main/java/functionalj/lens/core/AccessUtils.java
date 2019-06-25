@@ -36,7 +36,7 @@ import functionalj.lens.lenses.ResultAccess;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
 public class AccessUtils {

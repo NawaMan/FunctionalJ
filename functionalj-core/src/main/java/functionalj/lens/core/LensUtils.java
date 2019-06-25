@@ -42,7 +42,7 @@ import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.result.Result;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
 public class LensUtils {

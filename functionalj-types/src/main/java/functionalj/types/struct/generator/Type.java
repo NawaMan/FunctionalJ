@@ -177,16 +177,16 @@ public class Type implements IRequireTypes {
         lensTypes.put(FUNC_LIST, Core.FuncListLens.type());
         lensTypes.put(FUNC_MAP,  Core.FuncMapLens.type());
         
-        lensTypes.put(Core.DayOfWeek.type(),                 Core.DayOfWeekLens.type());
-        lensTypes.put(Core.Duration.type(),                  Core.DurationLens.type());
-        lensTypes.put(Core.Instant.type(),                   Core.InstantLens.type());
-        lensTypes.put(Core.LocalDate.type(),                 Core.LocalDateLens.type());
-        lensTypes.put(Core.LocalDateTime.type(),             Core.LocalDateTimeLens.type());
-        lensTypes.put(Core.LocalTime.type(),                 Core.LocalTimeLens.type());
-        lensTypes.put(Core.Month.type(),                     Core.MonthLens.type());
-        lensTypes.put(Core.OffsetDateTime.type(),            Core.OffsetDateTimeLens.type());
-        lensTypes.put(Core.Period.type(),                    Core.PeriodLens.type());
-        lensTypes.put(Core.ZonedDateTime.type(),             Core.ZonedDateTimeLens.type());
+        lensTypes.put(Core.DayOfWeek.type(),                Core.DayOfWeekLens.type());
+        lensTypes.put(Core.Duration.type(),                 Core.DurationLens.type());
+        lensTypes.put(Core.Instant.type(),                  Core.InstantLens.type());
+        lensTypes.put(Core.LocalDate.type(),                Core.LocalDateLens.type());
+        lensTypes.put(Core.LocalDateTime.type(),            Core.LocalDateTimeLens.type());
+        lensTypes.put(Core.LocalTime.type(),                Core.LocalTimeLens.type());
+        lensTypes.put(Core.Month.type(),                    Core.MonthLens.type());
+        lensTypes.put(Core.OffsetDateTime.type(),           Core.OffsetDateTimeLens.type());
+        lensTypes.put(Core.Period.type(),                   Core.PeriodLens.type());
+        lensTypes.put(Core.ZonedDateTime.type(),            Core.ZonedDateTimeLens.type());
         lensTypes.put(Core.ZoneId.type(),                   Core.ZonedIdLens.type());
         lensTypes.put(Core.ZoneOffset.type(),               Core.ZonedOffsetLens.type());
         lensTypes.put(Core.ZoneOffsetTransition.type(),     Core.ZonedOffsetTransitionLens.type());
@@ -555,7 +555,7 @@ public class Type implements IRequireTypes {
      * @return {@code true} if this type is a nullable.
      */
     public boolean isNullable() {
-        return this.fullName("").equals("nawaman.nullablej.nullable.Nullable");
+        return this.fullName("").equals("nullablej.nullable.Nullable");
     }
     
     /**

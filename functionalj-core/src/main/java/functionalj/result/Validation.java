@@ -39,7 +39,7 @@ import functionalj.lens.lenses.StringLens;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Specs.ValidationSpec;
 import lombok.val;
-import nawaman.utils.reflection.UProxy;
+import nullablej.utils.reflection.UProxy;
 
 @SuppressWarnings({"javadoc", "rawtypes", "unchecked"})
 public abstract class Validation<D extends Object> implements Pipeable<Validation<D>> {

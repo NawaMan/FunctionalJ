@@ -29,7 +29,7 @@ import java.util.function.Function;
 
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 class BigDecimalAccessConstants {
     public static final BigDecimal MINUS_ONE = BigDecimal.ZERO.subtract(BigDecimal.ONE);

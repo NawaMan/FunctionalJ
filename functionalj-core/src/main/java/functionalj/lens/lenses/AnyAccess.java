@@ -36,7 +36,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func1;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
