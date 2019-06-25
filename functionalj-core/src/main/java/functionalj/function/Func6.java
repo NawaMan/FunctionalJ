@@ -37,7 +37,7 @@ import functionalj.result.Result;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple6;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 /**
  * Function of five parameters.

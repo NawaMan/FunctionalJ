@@ -6,13 +6,17 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.2'
-    
     compile project(':functionalj-core')
     compile project(':functionalj-types')
     
-    //== Test ==
+    compileOnly         'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    
+    // == Test ==
     
     testCompile 'junit:junit:4.12'
+    
+    testCompile             'org.projectlombok:lombok:1.18.8'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
     
 }

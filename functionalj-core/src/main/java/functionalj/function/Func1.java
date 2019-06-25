@@ -44,7 +44,7 @@ import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.task.Task;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 /**
  * Function of one parameter.

@@ -14,9 +14,6 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven {
-            url 'https://raw.githubusercontent.com/dssb/maven-repository/master/'
-        }
     }
     
     // IDE
@@ -32,6 +29,21 @@ subprojects {
             downloadJavadoc = true
             downloadSources = true
         }
+    }
+    
+    // Add Javadoc JAR and sources JAR to artifact
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+    task sourceJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+    
+    task packageJavadoc(type: Jar) {
+        from javadoc
+        classifier = 'javadoc'
     }
     
     // Building/Publishing
@@ -59,20 +71,6 @@ subprojects {
         }
     }
     
-    // Add Javadoc JAR and sources JAR to artifact
-    task javadocJar(type: Jar) {
-        classifier = 'javadoc'
-        from javadoc
-    }
-    task sourceJar(type: Jar) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-    
-    task packageJavadoc(type: Jar) {
-        from javadoc
-        classifier = 'javadoc'
-    }
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs << "-parameters"
@@ -149,4 +147,17 @@ subprojects {
             }
         }
     }
+    
+    // == Annotation processor
+    
+    task compileAnnotationProcessor (type: JavaCompile) {
+        options.compilerArgs << "-proc:none"
+        options.incremental = true
+        
+        source         = file("src/main/annotationprocessor")
+        destinationDir = file('build/classes/java/main')
+        classpath      = sourceSets.main.compileClasspath
+    }
+    
+    compileJava.dependsOn compileAnnotationProcessor
 }

@@ -29,7 +29,7 @@ import java.util.function.Function;
 
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 class BigIntegerAccessConstants {
     public static final BigInteger MINUS_ONE = BigInteger.ZERO.subtract(BigInteger.ONE);

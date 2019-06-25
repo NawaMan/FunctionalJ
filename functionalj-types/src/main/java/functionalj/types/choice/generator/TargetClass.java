@@ -98,7 +98,7 @@ public class TargetClass implements Lines {
         List<String> specObj = null;
         if (spec.methods.stream().anyMatch(m -> Kind.DEFAULT.equals(m.kind))) {
             // TODO - move this to $utils ?
-            imports.add("nawaman.utils.reflection.UProxy");
+            imports.add("nullablej.utils.reflection.UProxy");
             imports.add(spec.sourceType.pckg + "." + spec.sourceType.encloseClass + "." + spec.sourceType.name);
             specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);", 
                     spec.sourceType.name + spec.sourceType.generics(),

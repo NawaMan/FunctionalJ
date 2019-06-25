@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.task;
 
-import static nawaman.nullablej.nullable.Nullable.nullable;
+import static nullablej.nullable.Nullable.nullable;
 
 import java.util.List;
 import java.util.Objects;

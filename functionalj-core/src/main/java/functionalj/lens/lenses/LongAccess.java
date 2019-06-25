@@ -30,7 +30,7 @@ import java.util.function.ToLongFunction;
 
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
