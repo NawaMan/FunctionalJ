@@ -58,12 +58,12 @@ public class GenerateParentNullableChildTest {
             new Getter("nullableName", new Type.TypeBuilder()
                                 .simpleName("Nullable")
                                 .generics(asList(new Type("String", "java.lang")))
-                                .packageName("nawaman.nullablej.nullable")
+                                .packageName("nullablej.nullable")
                                 .build()),
             new Getter("nullableChild", new Type.TypeBuilder()
                                 .simpleName("Nullable")
                                 .generics(asList(new Type("Child", "me.test")))
-                                .packageName("nawaman.nullablej.nullable")
+                                .packageName("nullablej.nullable")
                                 .build())
     );
     
@@ -93,7 +93,7 @@ public class GenerateParentNullableChildTest {
                 "import me.test.Child;\n" + 
                 "import me.test.Child.ChildLens;\n" + 
                 "import me.test.Parent.ParentLens;\n" + 
-                "import nawaman.nullablej.nullable.Nullable;\n" + 
+                "import nullablej.nullable.Nullable;\n" + 
                 "\n" + 
                 "// me.test.null.Definitions.ParentDef\n" + 
                 "\n" + 
@@ -104,7 +104,7 @@ public class GenerateParentNullableChildTest {
                 "    public final Nullable<Child> nullableChild;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 
-                "        this(nawaman.nullablej.nullable.Nullable.empty(), nawaman.nullablej.nullable.Nullable.empty());\n" + 
+                "        this(nullablej.nullable.Nullable.empty(), nullablej.nullable.Nullable.empty());\n" + 
                 "    }\n" + 
                 "    public Parent(Nullable<String> nullableName, Nullable<Child> nullableChild) {\n" + 
                 "        this.nullableName = Nullable.of((nullableName == null) ? null : nullableName.get());\n" + 
@@ -165,8 +165,8 @@ public class GenerateParentNullableChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"nullableName\", new functionalj.types.struct.generator.Getter(\"nullableName\", new Type(null, \"Nullable\", \"nawaman.nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"nullableChild\", new functionalj.types.struct.generator.Getter(\"nullableChild\", new Type(null, \"Nullable\", \"nawaman.nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"nullableName\", new functionalj.types.struct.generator.Getter(\"nullableName\", new Type(null, \"Nullable\", \"nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"nullableChild\", new functionalj.types.struct.generator.Getter(\"nullableChild\", new Type(null, \"Nullable\", \"nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

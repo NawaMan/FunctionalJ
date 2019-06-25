@@ -38,7 +38,7 @@ import functionalj.ref.Ref;
 import functionalj.result.Result;
 import functionalj.stream.ZipWithOption;
 import functionalj.task.Task;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 public interface Apply {
     

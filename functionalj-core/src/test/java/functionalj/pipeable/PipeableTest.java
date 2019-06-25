@@ -34,7 +34,7 @@ import org.junit.Test;
 
 import functionalj.function.FunctionInvocationException;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
 public class PipeableTest {

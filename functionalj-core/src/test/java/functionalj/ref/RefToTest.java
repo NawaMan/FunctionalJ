@@ -29,9 +29,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import lombok.val;
-import nawaman.defaultj.core.Bindings;
-import nawaman.defaultj.core.DefaultProvider;
-import nawaman.defaultj.core.bindings.TypeBinding;
+import defaultj.core.Bindings;
+import defaultj.core.DefaultProvider;
+import defaultj.core.bindings.TypeBinding;
 
 public class RefToTest {
 

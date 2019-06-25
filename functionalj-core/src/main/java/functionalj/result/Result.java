@@ -55,7 +55,7 @@ import functionalj.tuple.Tuple2;
 import functionalj.validator.SimpleValidator;
 import functionalj.validator.Validator;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 public abstract class Result<DATA>
         implements

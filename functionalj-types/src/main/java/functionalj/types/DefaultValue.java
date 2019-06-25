@@ -336,7 +336,7 @@ public enum DefaultValue {
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.NULLABLE.equals(type)) {
-            if (value == EMPTY) return "nawaman.nullablej.nullable.Nullable.empty()";
+            if (value == EMPTY) return "nullablej.nullable.Nullable.empty()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
         if (Type.OPTIONAL.equals(type)) {

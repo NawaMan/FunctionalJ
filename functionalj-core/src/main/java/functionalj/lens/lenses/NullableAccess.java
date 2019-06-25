@@ -30,7 +30,7 @@ import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
 import lombok.val;
-import nawaman.nullablej.nullable.Nullable;
+import nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface

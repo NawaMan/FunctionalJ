@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.result;
 
-import static nawaman.nullablej.nullable.Nullable.nullable;
+import static nullablej.nullable.Nullable.nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
