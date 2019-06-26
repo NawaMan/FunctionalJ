@@ -61,7 +61,7 @@ public enum DefaultValue {
     NOW,
     DEFAULT;
     
-    public static Random RAND = new Random();
+    private static Random RAND = new Random();
     private static String RANDSTR = DefaultValue.class.getCanonicalName() + ".RAND";
     
     public static byte randomByte() {
