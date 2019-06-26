@@ -50,7 +50,7 @@ So to use FunctionalJ you will need to ...
 Add the dependencies to FunctionalJ.
 
 ```Groovy
-    compile 'functionalj:functionalj-all:0.1.83.0' // Please lookup for the latest version.
+    compile 'io.functionalj:functionalj-all:0.1.84.0' // Please lookup for the latest version.
 ```
 
 [UseFunctionalJGradle](https://github.com/NawaMan/UseFunctionalJGradle) is an example project that use FunctionalJ.
@@ -63,9 +63,9 @@ Add the dependencies to FunctionalJ.
 ```xml
 
     <dependency>
-        <groupId>functionalj</groupId>
+        <groupId>io.functionalj</groupId>
         <artifactId>functionalj-all</artifactId>
-        <version>0.1.83.0</version>
+        <version>0.1.84.0</version>
     </dependency>
 ```
 
