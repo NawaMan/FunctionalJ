@@ -315,7 +315,7 @@ public enum DefaultValue {
         if (Type.STR.equals(type)
          || Type.STRING.equals(type)) {
             if (value == EMPTY)  return "\"\"";
-            if (value == RANDOM) return UUID.class.getCanonicalName() + "UUID.randomUUID().toString()";
+            if (value == RANDOM) return UUID.class.getCanonicalName() + ".randomUUID().toString()";
             if (value == NOW)    return DateTimeFormatter.class.getCanonicalName() + ".ISO_LOCAL_DATE_TIME";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
