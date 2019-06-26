@@ -24,7 +24,7 @@ public class DefaultValueTest {
         assertTrue(DefaultValue.isSuitable(Core.LocalDate.type(), DefaultValue.NOW));
         assertTrue(DefaultValue.isSuitable(Core.LocalDateTime.type(), DefaultValue.NOW));
         
-        assertEquals("java.util.UUIDUUID.randomUUID().toString()",     DefaultValue.defaultValueCode(Type.STR, DefaultValue.RANDOM));
+        assertEquals("java.util.UUID.randomUUID().toString()",     DefaultValue.defaultValueCode(Type.STR, DefaultValue.RANDOM));
         assertEquals("functionalj.types.DefaultValue.RAND.nextLong()", DefaultValue.defaultValueCode(Type.LONG, DefaultValue.RANDOM));
         
         assertEquals("java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME", DefaultValue.defaultValueCode(Type.STR, DefaultValue.NOW));
