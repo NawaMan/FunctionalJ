@@ -193,6 +193,9 @@ public class GeneratorTest {
                 "        }\n" + 
                 "        \n" + 
                 "    }\n" + 
+                "    public java.util.Map<String, Object> toMap() {\n" + 
+                "        return functionalj.map.FuncMap.empty();\n" + 
+                "    }\n" + 
                 "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n" + 
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 

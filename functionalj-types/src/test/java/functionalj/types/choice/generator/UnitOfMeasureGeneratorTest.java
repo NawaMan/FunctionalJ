@@ -90,8 +90,8 @@ public class UnitOfMeasureGeneratorTest {
                 "import functionalj.lens.lenses.*;\n" + 
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.result.Result;\n" + 
-                "import functionalj.types.choice.AbstractChoiceClass;\n" + 
                 "import functionalj.types.choice.ChoiceTypeSwitch;\n" + 
+                "import functionalj.types.choice.IChoice;\n" + 
                 "import functionalj.types.choice.UnitOfMeatureTest.TemperatureSpec;\n" + 
                 "import java.util.function.Consumer;\n" + 
                 "import java.util.function.Function;\n" + 
@@ -101,7 +101,7 @@ public class UnitOfMeasureGeneratorTest {
                 "// functionalj.types.choice.UnitOfMeatureTest.TemperatureSpec\n" + 
                 "\n" + 
                 "@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})\n" + 
-                "public abstract class Temperature extends AbstractChoiceClass<Temperature.TemperatureFirstSwitch> implements Pipeable<Temperature> {\n" + 
+                "public abstract class Temperature implements IChoice<Temperature.TemperatureFirstSwitch>, Pipeable<Temperature> {\n" + 
                 "    \n" + 
                 "    public static final Celsius Celsius(double celsius) {\n" + 
                 "        return new Celsius(celsius);\n" + 

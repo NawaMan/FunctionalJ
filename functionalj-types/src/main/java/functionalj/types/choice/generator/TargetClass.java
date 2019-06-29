@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
 
-import functionalj.types.choice.AbstractChoiceClass;
+import functionalj.types.choice.IChoice;
 import functionalj.types.choice.ChoiceTypeSwitch;
 import functionalj.types.choice.Self;
 import functionalj.types.choice.generator.model.SourceSpec;
@@ -76,13 +76,13 @@ public class TargetClass implements Lines {
     
     @Override
     public List<String> lines() {
-        val imports     = new TreeSet<String>();
+        val imports = new TreeSet<String>();
+        imports.add(ChoiceTypeSwitch.class.getCanonicalName());
+        imports.add(IChoice.class.getCanonicalName());
         imports.add("java.util.function.Function");
         imports.add("java.util.function.Consumer");
         imports.add("java.util.function.Predicate");
         imports.add("java.util.function.Supplier");
-        imports.add(ChoiceTypeSwitch.class.getCanonicalName());
-        imports.add(AbstractChoiceClass.class.getCanonicalName());
         imports.add("functionalj.result.Result");
         imports.add("functionalj.pipeable.Pipeable");
         imports.add("functionalj.lens.core.LensSpec");
@@ -197,7 +197,7 @@ public class TargetClass implements Lines {
                 asList("// " + spec.sourceType.fullName()),
                 asList(format("")),
                 asList(format("@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})")),
-                asList(format("public abstract class %1$s extends %6$s<%2$s.%2$sFirstSwitch%3$s> implements Pipeable<%4$s>%5$s {", typeWithGenericDef(), type.name, generics(), typeWithGenerics(), selfDef, AbstractChoiceClass.class.getSimpleName())),
+                asList(format("public abstract class %1$s implements %6$s<%2$s.%2$sFirstSwitch%3$s>, Pipeable<%4$s>%5$s {", typeWithGenericDef(), type.name, generics(), typeWithGenerics(), selfDef, IChoice.class.getSimpleName())),
                 asList(format("    ")),
                 subClassConstructors,
                 asList(format("    ")),

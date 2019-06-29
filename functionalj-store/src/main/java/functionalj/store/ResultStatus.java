@@ -12,13 +12,13 @@ import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.ResultAccess;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
-import functionalj.types.choice.AbstractChoiceClass;
+import functionalj.types.choice.IChoice;
 import functionalj.types.choice.ChoiceTypeSwitch;
 
 // functionalj.store.Specs.ResultStatusSpec
 
 @SuppressWarnings({"javadoc", "rawtypes", "unchecked"})
-public abstract class ResultStatus<D extends Object> extends AbstractChoiceClass<ResultStatus.ResultStatusFirstSwitch<D>> implements Pipeable<ResultStatus<D>> {
+public abstract class ResultStatus<D extends Object> implements IChoice<ResultStatus.ResultStatusFirstSwitch<D>>, Pipeable<ResultStatus<D>> {
     
     public static final <D extends Object> NotAllowed<D> NotAllowed(ChangeNotAllowedException reason) {
         return new NotAllowed<D>(reason);

@@ -33,20 +33,18 @@ import functionalj.types.StructConversionException;
 import functionalj.types.choice.generator.model.CaseParam;
 import lombok.val;
 
-public abstract class AbstractChoiceClass<S> implements ICanToMap {
+public interface IChoice<S> extends ICanToMap {
     
-    public Map<String, Object> toMap() {
-        throw new UnsupportedOperationException(this.getClass().getCanonicalName());
-    }
+    public Map<String, Object> toMap();
     
-    public abstract S match();
+    public S match();
     
     public static class $utils {
         public static <D> D notNull(D value) {
             return Objects.requireNonNull(value);
         }
         
-        public static <S> S Match(AbstractChoiceClass<S> choiceType) {
+        public static <S> S Match(IChoice<S> choiceType) {
             return ChoiceTypes.Match(choiceType);
         }
         
@@ -75,7 +73,7 @@ public abstract class AbstractChoiceClass<S> implements ICanToMap {
             return ((a == null) && (b == null)) || Objects.equals(a, b);
         }
         
-        public static <S extends AbstractChoiceClass<S>> S fromMap(Map<String, Object> map, Class<S> clazz) {
+        public static <S extends IChoice<S>> S fromMap(Map<String, Object> map, Class<S> clazz) {
             try {
                 val method = clazz.getMethod("fromMap", Map.class);
                 val struct = method.invoke(clazz, map);

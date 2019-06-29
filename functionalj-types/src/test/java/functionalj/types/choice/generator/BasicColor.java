@@ -33,11 +33,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.types.Absent;
-import functionalj.types.choice.AbstractChoiceClass;
+import functionalj.types.choice.IChoice;
 import functionalj.types.choice.ChoiceTypeSwitch;
 
 @SuppressWarnings("javadoc")
-public abstract class BasicColor extends AbstractChoiceClass<BasicColor.BasicColorFirstSwitch> {
+public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSwitch> {
     
     public static final BasicColor White() { return White.instance; }
     public static final BasicColor Black() { return Black.instance; }

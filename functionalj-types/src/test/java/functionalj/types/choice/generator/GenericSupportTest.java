@@ -69,8 +69,8 @@ public class GenericSupportTest {
             "import functionalj.lens.lenses.*;\n" + 
             "import functionalj.pipeable.Pipeable;\n" + 
             "import functionalj.result.Result;\n" + 
-            "import functionalj.types.choice.AbstractChoiceClass;\n" + 
             "import functionalj.types.choice.ChoiceTypeSwitch;\n" + 
+            "import functionalj.types.choice.IChoice;\n" + 
             "import functionalj.types.choice.generator.GenericSupportTest.OptionSpec;\n" + 
             "import java.io.Serializable;\n" + 
             "import java.util.function.Consumer;\n" + 
@@ -81,7 +81,7 @@ public class GenericSupportTest {
             "// functionalj.types.choice.generator.GenericSupportTest.OptionSpec\n" + 
             "\n" + 
             "@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})\n" + 
-            "public abstract class Option<T extends Number> extends AbstractChoiceClass<Option.OptionFirstSwitch<T>> implements Pipeable<Option<T>> {\n" + 
+            "public abstract class Option<T extends Number> implements IChoice<Option.OptionFirstSwitch<T>>, Pipeable<Option<T>> {\n" + 
             "    \n" + 
             "    \n" + 
             "    public static final <T extends Number> None<T> None() {\n" + 
@@ -135,6 +135,9 @@ public class GenericSupportTest {
             "                super(spec);\n" + 
             "            }\n" + 
             "            \n" + 
+            "        }\n" + 
+            "        public java.util.Map<String, Object> toMap() {\n" + 
+            "            return functionalj.map.FuncMap.empty();\n" + 
             "        }\n" + 
             "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n" + 
             "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 

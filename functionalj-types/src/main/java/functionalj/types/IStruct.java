@@ -31,17 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import functionalj.types.choice.AbstractChoiceClass;
+import functionalj.types.choice.IChoice;
 import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.Type;
 import lombok.val;
-
-// TODO - Move commonly used things in here like
-//   - new Getter
-//   - primitive type
-//   - java.util.Collections.emptyList()
-//   - access to DefaultValue.
 
 public interface IStruct extends ICanToMap {
     
@@ -94,7 +88,7 @@ public interface IStruct extends ICanToMap {
             
             val clazz    = type.toClass();
             val isStruct = IStruct.class.isAssignableFrom(clazz);
-            val isChoice = AbstractChoiceClass.class.isAssignableFrom(clazz);
+            val isChoice = IChoice.class.isAssignableFrom(clazz);
             val isList   = List.class.isAssignableFrom(clazz);
             val isMap    = Map.class.isAssignableFrom(clazz);
             

@@ -67,8 +67,8 @@ public class GenericChoiceTest {
                 "import functionalj.lens.lenses.*;\n" + 
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.result.Result;\n" + 
-                "import functionalj.types.choice.AbstractChoiceClass;\n" + 
                 "import functionalj.types.choice.ChoiceTypeSwitch;\n" + 
+                "import functionalj.types.choice.IChoice;\n" + 
                 "import functionalj.types.choice.generator.MayBeTest.MayBe;\n" + 
                 "import java.util.function.Consumer;\n" + 
                 "import java.util.function.Function;\n" + 
@@ -78,7 +78,7 @@ public class GenericChoiceTest {
                 "// functionalj.types.choice.generator.MayBeTest.MayBe\n" + 
                 "\n" + 
                 "@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})\n" + 
-                "public abstract class MayBe extends AbstractChoiceClass<MayBe.MayBeFirstSwitch> implements Pipeable<MayBe> {\n" + 
+                "public abstract class MayBe implements IChoice<MayBe.MayBeFirstSwitch>, Pipeable<MayBe> {\n" + 
                 "    \n" + 
                 "    public static final Nill nill = Nill.instance;\n" + 
                 "    public static final Nill Nill() {\n" + 
@@ -132,6 +132,9 @@ public class GenericChoiceTest {
                 "                super(spec);\n" + 
                 "            }\n" + 
                 "            \n" + 
+                "        }\n" + 
+                "        public java.util.Map<String, Object> toMap() {\n" + 
+                "            return functionalj.map.FuncMap.empty();\n" + 
                 "        }\n" + 
                 "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n" + 
                 "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 

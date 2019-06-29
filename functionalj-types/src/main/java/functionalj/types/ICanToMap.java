@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import functionalj.types.choice.AbstractChoiceClass;
+import functionalj.types.choice.IChoice;
 import functionalj.types.struct.generator.Type;
 import lombok.val;
 
@@ -43,8 +43,8 @@ public interface ICanToMap {
         
         if ((obj instanceof Map) && IStruct.class.isAssignableFrom(clzz))
             return (T)IStruct.$utils.fromMap((Map)obj, (Class)clzz);
-        if ((obj instanceof Map) && AbstractChoiceClass.class.isAssignableFrom(clzz))
-            return (T)AbstractChoiceClass.$utils.fromMap((Map)obj, (Class)clzz);
+        if ((obj instanceof Map) && IChoice.class.isAssignableFrom(clzz))
+            return (T)IChoice.$utils.fromMap((Map)obj, (Class)clzz);
         
         if (obj != null)
             return (T)obj;

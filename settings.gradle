@@ -8,5 +8,4 @@ include ":functionalj-all"
 include ":functionalj-types-tests"
 include ":functionalj-examples"
 
-
 rootProject.name = theGroup
