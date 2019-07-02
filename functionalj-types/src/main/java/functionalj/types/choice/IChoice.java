@@ -35,9 +35,10 @@ import lombok.val;
 
 public interface IChoice<S> extends ICanToMap {
     
-    public Map<String, Object> toMap();
+    public Map<String, Object> __toMap();
     
     public S match();
+    
     
     public static class $utils {
         public static <D> D notNull(D value) {

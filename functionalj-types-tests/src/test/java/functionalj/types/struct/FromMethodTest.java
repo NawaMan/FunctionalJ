@@ -77,10 +77,10 @@ public class FromMethodTest {
         
         assertEquals(
                 "{car={color=Silver, year=2010, make=Subaru}, price={discountPercent=0, price=20000}}",
-                new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000)).toMap().toString());
+                new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000)).__toMap().toString());
         
         val orgCfS = new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000));
-        val mapCfS = orgCfS.toMap();
+        val mapCfS = orgCfS.__toMap();
         val newCfS = CarForSale.fromMap(mapCfS);
         assertEquals("{car={color=Silver, year=2010, make=Subaru}, price={discountPercent=0, price=20000}}", mapCfS.toString());
         assertEquals("CarForSale[car: Car[make: Subaru, year: 2010, color: Silver], price: Price[price: 20000, discountPercent: 0]]", orgCfS.toString());

@@ -39,8 +39,9 @@ import lombok.val;
 
 public interface IStruct extends ICanToMap {
     
-    public Map<String, Object> toMap();
-    public Map<String, Getter> getSchema();
+    public Map<String, Object> __toMap();
+    public Map<String, Getter> __getSchema();
+    
     
     public static class $utils {
         public static <D> D notNull(D value) {

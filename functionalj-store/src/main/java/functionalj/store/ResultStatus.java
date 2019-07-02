@@ -102,7 +102,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             }
             
         }
-        public java.util.Map<String, Object> toMap() {
+        public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
             map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("NotAllowed"));
             map.put("reason", this.reason);
@@ -137,7 +137,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             }
             
         }
-        public java.util.Map<String, Object> toMap() {
+        public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
             map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Accepted"));
             map.put("newData", this.newData);
@@ -177,7 +177,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             }
             
         }
-        public java.util.Map<String, Object> toMap() {
+        public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
             map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Adjusted"));
             map.put("proposedData", this.proposedData);
@@ -225,7 +225,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             }
             
         }
-        public java.util.Map<String, Object> toMap() {
+        public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
             map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Rejected"));
             map.put("propose", this.propose);
@@ -266,7 +266,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             }
             
         }
-        public java.util.Map<String, Object> toMap() {
+        public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
             map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Failed"));
             map.put("problem", this.problem);

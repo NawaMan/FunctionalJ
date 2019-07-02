@@ -178,7 +178,7 @@ public class BugThreeNullableBuilder {
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 
-                "    public Map<String, Object> toMap() {\n" + 
+                "    public Map<String, Object> __toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
                 "        map.put(\"id\", functionalj.types.IStruct.$utils.toMapValueObject(id));\n" + 
                 "        map.put(\"name\", functionalj.types.IStruct.$utils.toMapValueObject(name));\n" + 
@@ -188,7 +188,7 @@ public class BugThreeNullableBuilder {
                 "        map.put(\"description\", functionalj.types.IStruct.$utils.toMapValueObject(description));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
-                "    public Map<String, Getter> getSchema() {\n" + 
+                "    public Map<String, Getter> __getSchema() {\n" + 
                 "        return getStructSchema();\n" + 
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 

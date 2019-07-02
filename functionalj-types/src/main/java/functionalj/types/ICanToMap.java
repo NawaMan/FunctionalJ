@@ -12,7 +12,7 @@ import lombok.val;
 
 public interface ICanToMap {
     
-    public Map<String, Object> toMap();
+    public Map<String, Object> __toMap();
     
     @SuppressWarnings("unchecked")
     public static <T> List<Object> toMap(List<T> data) {
@@ -28,7 +28,7 @@ public interface ICanToMap {
         }
         
         return (data instanceof ICanToMap) 
-                ? ((ICanToMap)data).toMap() 
+                ? ((ICanToMap)data).__toMap() 
                 : data;
     }
     

@@ -136,7 +136,7 @@ public class GenericSupportTest {
             "            }\n" + 
             "            \n" + 
             "        }\n" + 
-            "        public java.util.Map<String, Object> toMap() {\n" + 
+            "        public java.util.Map<String, Object> __toMap() {\n" + 
             "            return functionalj.map.FuncMap.empty();\n" + 
             "        }\n" + 
             "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>empty();\n" + 
@@ -165,7 +165,7 @@ public class GenericSupportTest {
             "            }\n" + 
             "            \n" + 
             "        }\n" + 
-            "        public java.util.Map<String, Object> toMap() {\n" + 
+            "        public java.util.Map<String, Object> __toMap() {\n" + 
             "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
             "            map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Some\"));\n" + 
             "            map.put(\"value\", this.value);\n" + 

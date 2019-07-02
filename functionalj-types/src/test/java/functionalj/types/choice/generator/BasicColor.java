@@ -52,7 +52,7 @@ public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSw
         private static final White instance = new White();
         private White() {}
         @Override
-        public Map<String, Object> toMap() {
+        public Map<String, Object> __toMap() {
             return new HashMap<String, Object>();
         }
     }
@@ -60,7 +60,7 @@ public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSw
         private static final Black instance = new Black();
         private Black() {}
         @Override
-        public Map<String, Object> toMap() {
+        public Map<String, Object> __toMap() {
             return new HashMap<String, Object>();
         }
     }
@@ -80,7 +80,7 @@ public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSw
         public RGB withG(int g) { return new RGB(r, g, b); }
         public RGB withB(int b) { return new RGB(r, g, b); }
         @Override
-        public Map<String, Object> toMap() {
+        public Map<String, Object> __toMap() {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("r", r);
             map.put("g", g);

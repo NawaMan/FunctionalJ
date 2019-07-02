@@ -154,13 +154,13 @@ public class GenerateParentNullableChildTest {
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 
-                "    public Map<String, Object> toMap() {\n" + 
+                "    public Map<String, Object> __toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
                 "        map.put(\"nullableName\", functionalj.types.IStruct.$utils.toMapValueObject(nullableName));\n" + 
                 "        map.put(\"nullableChild\", functionalj.types.IStruct.$utils.toMapValueObject(nullableChild));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
-                "    public Map<String, Getter> getSchema() {\n" + 
+                "    public Map<String, Getter> __getSchema() {\n" + 
                 "        return getStructSchema();\n" + 
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 

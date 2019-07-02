@@ -218,7 +218,7 @@ public class StructBuilder {
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
                 Type.MAP.withGenerics(asList(Type.STRING, Type.OBJECT)),
-                "toMap",
+                "__toMap",
                 emptyList(),
                 ILines.linesOf(
                     line("Map<String, Object> map = new HashMap<>();"),
@@ -255,7 +255,7 @@ public class StructBuilder {
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
                 Type.MAP.withGenerics(asList(Type.STRING, Type.of(Getter.class))),
-                "getSchema",
+                "__getSchema",
                 emptyList(),
                 ILines.linesOf(line("return getStructSchema();")),
                 asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Type.class), Type.of(Getter.class)),

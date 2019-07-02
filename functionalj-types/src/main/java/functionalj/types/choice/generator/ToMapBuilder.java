@@ -37,7 +37,7 @@ public class ToMapBuilder implements Lines {
     @Override
     public List<String> lines() {
         return Stream.of(
-                Stream.of("public java.util.Map<String, Object> toMap() {"),
+                Stream.of("public java.util.Map<String, Object> __toMap() {"),
                 body(),
                 Stream.of("}")
             )

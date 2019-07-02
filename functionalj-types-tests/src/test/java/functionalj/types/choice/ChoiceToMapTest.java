@@ -43,13 +43,13 @@ public class ChoiceToMapTest {
     
     @Test
     public void testToMap() {
-        assertEquals("{__tagged=Rotate, degree=5}", new TreeMap<>(Rotate(5).toMap()).toString());
-        assertEquals("{__tagged=Move, distance=7}", new TreeMap<>(Move  (7).toMap()).toString());
+        assertEquals("{__tagged=Rotate, degree=5}", new TreeMap<>(Rotate(5).__toMap()).toString());
+        assertEquals("{__tagged=Move, distance=7}", new TreeMap<>(Move  (7).__toMap()).toString());
         assertEquals(
                 "{time=2019-06-10T23:08:34, commands=[{__tagged=Rotate, degree=5}, {distance=7, __tagged=Move}]}", 
                 new TimedAction(
                         LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
-                        FuncList.of(Rotate(5), Move(7))).toMap().toString());
+                        FuncList.of(Rotate(5), Move(7))).__toMap().toString());
     }
     
     @Test
@@ -58,7 +58,7 @@ public class ChoiceToMapTest {
                 = new TimedAction(
                 LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
                 FuncList.of(Rotate(5), Move(7)));
-        val map = timedAction1.toMap();
+        val map = timedAction1.__toMap();
         val timedAction2 = FuncType.structFromMap(map, TimedAction.class);
         assertEquals(timedAction1, timedAction2);
     }
@@ -70,7 +70,7 @@ public class ChoiceToMapTest {
                 FuncMap.of(
                         "One", Rotate(5),
                         "Two", Move(7)));
-        val map = mapTimedAction1.toMap();
+        val map = mapTimedAction1.__toMap();
         val mapTimedAction2 = FuncType.structFromMap(map, MapTimedAction.class);
         assertEquals(mapTimedAction1, mapTimedAction2);
     }

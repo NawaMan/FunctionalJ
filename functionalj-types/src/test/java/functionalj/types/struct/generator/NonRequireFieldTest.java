@@ -209,7 +209,7 @@ public class NonRequireFieldTest {
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 
-                "    public Map<String, Object> toMap() {\n" + 
+                "    public Map<String, Object> __toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
                 "        map.put(\"a\", functionalj.types.IStruct.$utils.toMapValueObject(a));\n" + 
                 "        map.put(\"b\", functionalj.types.IStruct.$utils.toMapValueObject(b));\n" + 
@@ -218,7 +218,7 @@ public class NonRequireFieldTest {
                 "        map.put(\"e\", functionalj.types.IStruct.$utils.toMapValueObject(e));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
-                "    public Map<String, Getter> getSchema() {\n" + 
+                "    public Map<String, Getter> __getSchema() {\n" + 
                 "        return getStructSchema();\n" + 
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
