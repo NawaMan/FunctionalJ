@@ -13,7 +13,7 @@ import org.junit.Test;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.types.Choice;
-import functionalj.types.FuncType;
+import functionalj.types.IData;
 import functionalj.types.Struct;
 import lombok.val;
 
@@ -59,7 +59,7 @@ public class ChoiceToMapTest {
                 LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
                 FuncList.of(Rotate(5), Move(7)));
         val map = timedAction1.__toMap();
-        val timedAction2 = FuncType.structFromMap(map, TimedAction.class);
+        val timedAction2 = IData.$utils.fromMap(map, TimedAction.class);
         assertEquals(timedAction1, timedAction2);
     }
     @Test
@@ -71,7 +71,7 @@ public class ChoiceToMapTest {
                         "One", Rotate(5),
                         "Two", Move(7)));
         val map = mapTimedAction1.__toMap();
-        val mapTimedAction2 = FuncType.structFromMap(map, MapTimedAction.class);
+        val mapTimedAction2 = IData.$utils.fromMap(map, MapTimedAction.class);
         assertEquals(mapTimedAction1, mapTimedAction2);
     }
     

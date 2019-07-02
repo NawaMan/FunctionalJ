@@ -163,7 +163,7 @@ public class UnitOfMeasureGeneratorTest {
                 "        }\n" + 
                 "        public java.util.Map<String, Object> __toMap() {\n" + 
                 "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
-                "            map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Celsius\"));\n" + 
+                "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Celsius\"));\n" + 
                 "            map.put(\"celsius\", this.celsius);\n" + 
                 "            return map;\n" + 
                 "        }\n" + 
@@ -198,7 +198,7 @@ public class UnitOfMeasureGeneratorTest {
                 "        }\n" + 
                 "        public java.util.Map<String, Object> __toMap() {\n" + 
                 "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
-                "            map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Fahrenheit\"));\n" + 
+                "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Fahrenheit\"));\n" + 
                 "            map.put(\"fahrenheit\", this.fahrenheit);\n" + 
                 "            return map;\n" + 
                 "        }\n" + 

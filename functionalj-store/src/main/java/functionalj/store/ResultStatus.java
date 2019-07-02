@@ -108,7 +108,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("NotAllowed"));
+            map.put("__tagged", functionalj.types.IData.$utils.toMapValueObject("NotAllowed"));
             map.put("reason", this.reason);
             return map;
         }
@@ -143,7 +143,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Accepted"));
+            map.put("__tagged", functionalj.types.IData.$utils.toMapValueObject("Accepted"));
             map.put("newData", this.newData);
             return map;
         }
@@ -183,7 +183,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Adjusted"));
+            map.put("__tagged", functionalj.types.IData.$utils.toMapValueObject("Adjusted"));
             map.put("proposedData", this.proposedData);
             map.put("adjustedData", this.adjustedData);
             return map;
@@ -231,7 +231,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Rejected"));
+            map.put("__tagged", functionalj.types.IData.$utils.toMapValueObject("Rejected"));
             map.put("propose", this.propose);
             map.put("rollback", this.rollback);
             map.put("reason", this.reason);
@@ -272,7 +272,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         }
         public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Failed"));
+            map.put("__tagged", functionalj.types.IData.$utils.toMapValueObject("Failed"));
             map.put("problem", this.problem);
             return map;
         }
@@ -635,7 +635,5 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             return failed(check, d->theValue);
         }
     }
-    
-    
     
 }

@@ -21,29 +21,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.choice;
+package functionalj.types;
 
-import java.util.Map;
-
-import functionalj.types.ChoiceConversionException;
-import functionalj.types.IData;
-import functionalj.types.choice.generator.model.CaseParam;
-import lombok.val;
-
-public interface IChoice<S> extends IData {
+public class DataConversionException extends RuntimeException {
     
-    public Map<String, Object> __toMap();
-    public Map<String, Map<String, CaseParam>> __getSchema();
+    private static final long serialVersionUID = -1438488960840238751L;
     
-    public S match();
-    
-    public static <S extends IChoice<S>> S fromMap(Map<String, Object> map, Class<S> clazz) {
-        try {
-            val method = clazz.getMethod("fromMap", Map.class);
-            val struct = method.invoke(clazz, map);
-            return clazz.cast(struct);
-        } catch (Exception cause) {
-            throw new ChoiceConversionException(cause);
-        }
+    public DataConversionException(@SuppressWarnings("rawtypes") Class clzz) {
+        super("Non data class: " + clzz);
     }
+    
 }

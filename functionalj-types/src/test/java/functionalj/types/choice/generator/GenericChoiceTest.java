@@ -164,7 +164,7 @@ public class GenericChoiceTest {
                 "        }\n" + 
                 "        public java.util.Map<String, Object> __toMap() {\n" + 
                 "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
-                "            map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Just\"));\n" + 
+                "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Just\"));\n" + 
                 "            map.put(\"data\", this.data);\n" + 
                 "            return map;\n" + 
                 "        }\n" + 
