@@ -43,10 +43,10 @@ public class ChoiceToMapTest {
     
     @Test
     public void testToMap() {
-        assertEquals("{__tagged=Rotate, degree=5}", new TreeMap<>(Rotate(5).__toMap()).toString());
-        assertEquals("{__tagged=Move, distance=7}", new TreeMap<>(Move  (7).__toMap()).toString());
+        assertEquals("{degree=5, type=Rotate}", new TreeMap<>(Rotate(5).__toMap()).toString());
+        assertEquals("{distance=7, type=Move}", new TreeMap<>(Move  (7).__toMap()).toString());
         assertEquals(
-                "{time=2019-06-10T23:08:34, commands=[{__tagged=Rotate, degree=5}, {distance=7, __tagged=Move}]}", 
+                "{time=2019-06-10T23:08:34, commands=[{degree=5, type=Rotate}, {distance=7, type=Move}]}", 
                 new TimedAction(
                         LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
                         FuncList.of(Rotate(5), Move(7))).__toMap().toString());
