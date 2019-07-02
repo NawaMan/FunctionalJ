@@ -19,19 +19,19 @@ import lombok.val;
 
 public class ChoiceToMapTest {
     
-    @Choice
+    @Choice(tagMapKeyName = "type")
     interface CommandModel {
         void Rotate(int degree);
         void Move  (int distance);
     }
     
     @Struct
-    void TimedAction(
+    void TimedActionModel(
             LocalDateTime time, 
             FuncList<Command> commands) {}
     
     @Struct
-    void MapTimedAction(
+    void MapTimedActionModel(
             LocalDateTime time, 
             FuncMap<String, Command> commands) {}
     

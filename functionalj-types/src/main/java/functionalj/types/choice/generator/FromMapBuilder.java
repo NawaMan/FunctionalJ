@@ -15,7 +15,7 @@ public class FromMapBuilder implements Lines {
     
     private Stream<String> body() {
         return Stream.of(
-                Stream.of("    String __tagged = (String)map.get(\"__tagged\");"),
+                Stream.of("    String __tagged = (String)map.get(\"" + targetClass.spec.tagMapKeyName + "\");"),
                 targetClass.spec
                     .choices.stream()
                     .flatMap(choice -> Stream.of(
