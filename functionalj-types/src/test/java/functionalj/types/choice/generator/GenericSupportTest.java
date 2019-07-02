@@ -184,6 +184,10 @@ public class GenericSupportTest {
             "        }\n" + 
             "    }\n" + 
             "    \n" + 
+            "    public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
+            "    	return getChoiceSchema();\n" + 
+            "    }\n" + 
+            "    \n" + 
             "    private final OptionFirstSwitch<T> __switch = new OptionFirstSwitch<T>(this);\n" + 
             "    @Override public OptionFirstSwitch<T> match() {\n" + 
             "         return __switch;\n" + 

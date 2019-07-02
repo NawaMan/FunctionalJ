@@ -64,12 +64,14 @@ public class TargetTypeGeneral implements Lines {
     
     @Override
     public List<String> lines() {
-        val emptyLine = asList("");
+        val emptyLine   = asList("");
+        val getSchema   = new GetSchemaBuilder().lines();
         val firstSwitch = prepareFirstSwitch(targetName);
         val toString    = prepareToStringMethod();
         val hashCode    = prepareHashCode();
         val equals      = prepareEquals(targetName);
         return asList(
+    		getSchema,   emptyLine,
             firstSwitch, emptyLine,
             toString,    emptyLine,
             hashCode,    emptyLine,

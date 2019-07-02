@@ -36,6 +36,8 @@ import lombok.val;
 public interface IChoice<S> extends ICanToMap {
     
     public Map<String, Object> __toMap();
+    public Map<String, Map<String, CaseParam>> __getSchema();
+    
     
     public S match();
     

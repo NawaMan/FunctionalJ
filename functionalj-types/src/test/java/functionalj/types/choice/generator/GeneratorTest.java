@@ -479,6 +479,10 @@ public class GeneratorTest {
                                 ))));
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
+                "public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
+                "	return getChoiceSchema();\n" + 
+                "}\n" + 
+                "\n" + 
                 "private final ColorFirstSwitch __switch = new ColorFirstSwitch(this);\n" + 
                 "@Override public ColorFirstSwitch match() {\n" + 
                 "     return __switch;\n" + 
@@ -572,6 +576,10 @@ public class GeneratorTest {
                 target.spec.methods.stream().map(m -> m.signature).collect(joining("\n")));
         
         assertEquals(
+                "public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
+                "	return getChoiceSchema();\n" + 
+                "}\n" + 
+                "\n" + 
                 "private final ColorFirstSwitch __switch = new ColorFirstSwitch(this);\n" + 
                 "@Override public ColorFirstSwitch match() {\n" + 
                 "     return __switch;\n" + 

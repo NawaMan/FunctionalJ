@@ -215,6 +215,10 @@ public class UnitOfMeasureGeneratorTest {
                 "        }\n" + 
                 "    }\n" + 
                 "    \n" + 
+                "    public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
+                "    	return getChoiceSchema();\n" + 
+                "    }\n" + 
+                "    \n" + 
                 "    private final TemperatureFirstSwitch __switch = new TemperatureFirstSwitch(this);\n" + 
                 "    @Override public TemperatureFirstSwitch match() {\n" + 
                 "         return __switch;\n" + 

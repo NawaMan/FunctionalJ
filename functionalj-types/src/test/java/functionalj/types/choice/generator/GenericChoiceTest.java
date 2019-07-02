@@ -181,6 +181,10 @@ public class GenericChoiceTest {
                 "        }\n" + 
                 "    }\n" + 
                 "    \n" + 
+                "    public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
+                "    	return getChoiceSchema();\n" + 
+                "    }\n" + 
+                "    \n" + 
                 "    private final MayBeFirstSwitch __switch = new MayBeFirstSwitch(this);\n" + 
                 "    @Override public MayBeFirstSwitch match() {\n" + 
                 "         return __switch;\n" + 

@@ -74,6 +74,10 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         throw new IllegalArgumentException("Tagged value does not represent a valid type: " + __tagged);
     }
     
+    public java.util.Map<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {
+        return getChoiceSchema();
+    }
+    
     static private functionalj.map.FuncMap<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>> __schema__ = functionalj.map.FuncMap.<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>>newMap()
         .with("NotAllowed", NotAllowed.getCaseSchema())
         .with("Accepted", Accepted.getCaseSchema())

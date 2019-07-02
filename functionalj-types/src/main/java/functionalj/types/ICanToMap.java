@@ -14,10 +14,6 @@ public interface ICanToMap {
     
     public Map<String, Object> __toMap();
     
-    @SuppressWarnings("unchecked")
-    public static <T> List<Object> toMap(List<T> data) {
-        return (List<Object>)toMapValueObject(data);
-    }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Object toMapValueObject(Object data) {
