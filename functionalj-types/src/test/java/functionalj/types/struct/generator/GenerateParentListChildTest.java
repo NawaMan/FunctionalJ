@@ -123,7 +123,7 @@ public class GenerateParentListChildTest {
                 "        return children;\n" + 
                 "    }\n" + 
                 "    public Parent withNames(String ... names) {\n" + 
-                "        return new Parent($utils.asList(names), children);\n" + 
+                "        return new Parent(java.util.Arrays.asList(names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withNames(List<String> names) {\n" + 
                 "        return new Parent(names, children);\n" + 
@@ -138,7 +138,7 @@ public class GenerateParentListChildTest {
                 "        return new Parent(names.apply(this, this.names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(Child ... children) {\n" + 
-                "        return new Parent(names, $utils.asList(children));\n" + 
+                "        return new Parent(names, java.util.Arrays.asList(children));\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(List<Child> children) {\n" + 
                 "        return new Parent(names, children);\n" + 
