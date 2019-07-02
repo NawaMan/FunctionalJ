@@ -211,7 +211,7 @@ public class StructBuilder {
         val toMapBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
-                .map(g -> "map.put(\"" + g.getName() + "\", IStruct.toMapValueObject(" + g.getName() + "));")
+                .map(g -> "map.put(\"" + g.getName() + "\", " + IStruct.class.getCanonicalName() + ".$utils.toMapValueObject(" + g.getName() + "));")
                 .collect(Collectors.toList()));
         val toMap = new GenMethod(
                 Accessibility.PUBLIC,

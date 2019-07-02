@@ -157,8 +157,8 @@ public class GenerateParentOptionalChildTest {
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"optionalName\", IStruct.toMapValueObject(optionalName));\n" + 
-                "        map.put(\"optionalChild\", IStruct.toMapValueObject(optionalChild));\n" + 
+                "        map.put(\"optionalName\", functionalj.types.IStruct.$utils.toMapValueObject(optionalName));\n" + 
+                "        map.put(\"optionalChild\", functionalj.types.IStruct.$utils.toMapValueObject(optionalChild));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public Map<String, Getter> getSchema() {\n" + 

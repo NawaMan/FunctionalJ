@@ -167,9 +167,9 @@ public class RequiredConstructorTest {
             "    }\n" + 
             "    public Map<String, Object> toMap() {\n" + 
             "        Map<String, Object> map = new HashMap<>();\n" + 
-            "        map.put(\"firstName\", IStruct.toMapValueObject(firstName));\n" + 
-            "        map.put(\"midName\", IStruct.toMapValueObject(midName));\n" + 
-            "        map.put(\"lastName\", IStruct.toMapValueObject(lastName));\n" + 
+            "        map.put(\"firstName\", functionalj.types.IStruct.$utils.toMapValueObject(firstName));\n" + 
+            "        map.put(\"midName\", functionalj.types.IStruct.$utils.toMapValueObject(midName));\n" + 
+            "        map.put(\"lastName\", functionalj.types.IStruct.$utils.toMapValueObject(lastName));\n" + 
             "        return map;\n" + 
             "    }\n" + 
             "    public Map<String, Getter> getSchema() {\n" + 

@@ -156,8 +156,8 @@ public class GenerateParentNullableChildTest {
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"nullableName\", IStruct.toMapValueObject(nullableName));\n" + 
-                "        map.put(\"nullableChild\", IStruct.toMapValueObject(nullableChild));\n" + 
+                "        map.put(\"nullableName\", functionalj.types.IStruct.$utils.toMapValueObject(nullableName));\n" + 
+                "        map.put(\"nullableChild\", functionalj.types.IStruct.$utils.toMapValueObject(nullableChild));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public Map<String, Getter> getSchema() {\n" + 

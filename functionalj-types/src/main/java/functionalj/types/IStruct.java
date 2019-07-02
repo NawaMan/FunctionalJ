@@ -42,14 +42,15 @@ public interface IStruct extends ICanToMap {
     public Map<String, Object> toMap();
     public Map<String, Getter> getSchema();
     
-    public static Object toMapValueObject(Object data) {
-        return ICanToMap.toMapValueObject(data);
-    }
-    
     public static class $utils {
         public static <D> D notNull(D value) {
             return Objects.requireNonNull(value);
         }
+        
+        public static Object toMapValueObject(Object data) {
+            return ICanToMap.toMapValueObject(data);
+        }
+        
         @SafeVarargs
         public static <D> List<D> asList(D ... ds) {
             return Arrays.asList(ds);

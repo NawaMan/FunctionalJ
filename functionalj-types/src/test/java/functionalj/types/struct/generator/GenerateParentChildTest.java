@@ -129,7 +129,7 @@ public class GenerateParentChildTest {
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"child\", IStruct.toMapValueObject(child));\n" + 
+                "        map.put(\"child\", functionalj.types.IStruct.$utils.toMapValueObject(child));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public Map<String, Getter> getSchema() {\n" + 

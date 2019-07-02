@@ -211,11 +211,11 @@ public class NonRequireFieldTest {
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"a\", IStruct.toMapValueObject(a));\n" + 
-                "        map.put(\"b\", IStruct.toMapValueObject(b));\n" + 
-                "        map.put(\"c\", IStruct.toMapValueObject(c));\n" + 
-                "        map.put(\"d\", IStruct.toMapValueObject(d));\n" + 
-                "        map.put(\"e\", IStruct.toMapValueObject(e));\n" + 
+                "        map.put(\"a\", functionalj.types.IStruct.$utils.toMapValueObject(a));\n" + 
+                "        map.put(\"b\", functionalj.types.IStruct.$utils.toMapValueObject(b));\n" + 
+                "        map.put(\"c\", functionalj.types.IStruct.$utils.toMapValueObject(c));\n" + 
+                "        map.put(\"d\", functionalj.types.IStruct.$utils.toMapValueObject(d));\n" + 
+                "        map.put(\"e\", functionalj.types.IStruct.$utils.toMapValueObject(e));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public Map<String, Getter> getSchema() {\n" + 

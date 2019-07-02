@@ -180,12 +180,12 @@ public class BugThreeNullableBuilder {
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"id\", IStruct.toMapValueObject(id));\n" + 
-                "        map.put(\"name\", IStruct.toMapValueObject(name));\n" + 
-                "        map.put(\"owner\", IStruct.toMapValueObject(owner));\n" + 
-                "        map.put(\"website\", IStruct.toMapValueObject(website));\n" + 
-                "        map.put(\"country\", IStruct.toMapValueObject(country));\n" + 
-                "        map.put(\"description\", IStruct.toMapValueObject(description));\n" + 
+                "        map.put(\"id\", functionalj.types.IStruct.$utils.toMapValueObject(id));\n" + 
+                "        map.put(\"name\", functionalj.types.IStruct.$utils.toMapValueObject(name));\n" + 
+                "        map.put(\"owner\", functionalj.types.IStruct.$utils.toMapValueObject(owner));\n" + 
+                "        map.put(\"website\", functionalj.types.IStruct.$utils.toMapValueObject(website));\n" + 
+                "        map.put(\"country\", functionalj.types.IStruct.$utils.toMapValueObject(country));\n" + 
+                "        map.put(\"description\", functionalj.types.IStruct.$utils.toMapValueObject(description));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public Map<String, Getter> getSchema() {\n" + 

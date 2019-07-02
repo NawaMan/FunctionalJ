@@ -168,9 +168,9 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    public Map<String, Object> toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"anint\", IStruct.toMapValueObject(anint));\n" + 
-                "        map.put(\"anbool\", IStruct.toMapValueObject(anbool));\n" + 
-                "        map.put(\"anstring\", IStruct.toMapValueObject(anstring));\n" + 
+                "        map.put(\"anint\", functionalj.types.IStruct.$utils.toMapValueObject(anint));\n" + 
+                "        map.put(\"anbool\", functionalj.types.IStruct.$utils.toMapValueObject(anbool));\n" + 
+                "        map.put(\"anstring\", functionalj.types.IStruct.$utils.toMapValueObject(anstring));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public Map<String, Getter> getSchema() {\n" + 
