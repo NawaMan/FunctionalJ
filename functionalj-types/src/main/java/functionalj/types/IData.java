@@ -25,7 +25,6 @@ package functionalj.types;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +45,16 @@ public interface IData {
     
     
     public static class $utils {
+        
+        public static Supplier<Object> defaultValueOf(Type type, DefaultValue defaultValue) {
+            return ()->DefaultValue.defaultValue(type, defaultValue);
+        }
+        
+        public static <D> D notNull(D value) {
+            return Objects.requireNonNull(value);
+        }
+        
+        // == To and from Map ==
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
         public static <D extends IData> D fromMap(Map<String, Object> map, Class<D> clazz) {
@@ -91,26 +100,35 @@ public interface IData {
             return (T)value;
         }
         
-        public static Supplier<Object> defaultValueOf(Type type, DefaultValue defaultValue) {
-            return ()->DefaultValue.defaultValue(type, defaultValue);
-        }
-        
-        
-        public static <D> D notNull(D value) {
-            return Objects.requireNonNull(value);
-        }
-        
-        @SafeVarargs
-        public static <D> List<D> asList(D ... ds) {
-            return Arrays.asList(ds);
-        }
-        
         public static <T> T fromMapValue(Object obj, Getter getter) {
             val type         = getter.getType();
             val defaultValue = getter.getDefaultTo();
             
             return fromMapValue(obj, type, defaultValue);
         }
+        
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        public static <T> T fromMapValue(Object obj, CaseParam caseParam) {
+            val   type         = caseParam.type;
+            Class clzz         = type.toClass();
+            val   defaultValue = caseParam.defValue;
+            
+            if ((obj instanceof List) && type.toStructType().isList()) {
+                return IStruct.$utils.fromMapValue(obj, type.toStructType(), defaultValue);
+            }
+            
+            return (T)IData.$utils.fromMapValue(obj, clzz, defaultValue, ()->caseParam.defaultValue());
+        }
+        
+        public static <T> T propertyFromMap(Map<String, Object> map, Map<String, CaseParam> schema, String name) {
+            val caseParam = schema.get(name);
+            if (caseParam == null)
+                throw new IllegalArgumentException("Unknown property: " + name);
+            
+            val rawValue = map.get(name);
+            return fromMapValue(rawValue, caseParam);
+        }
+        
         @SuppressWarnings({ "unchecked", "rawtypes" })
         public static <T> T fromMapValue(Object obj, Type type, DefaultValue defaultValue) {
             if ((obj instanceof List) && (type.isList() || type.isFuncList())) {
@@ -123,34 +141,7 @@ public interface IData {
             Class<T> clzz = type.toClass();
             return IData.$utils.fromMapValue(obj, clzz, defaultValue, ()-> DefaultValue.defaultValue(type, defaultValue));
         }
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        private static Object fromValue(Object obj, Type type) {
-            if (obj == null)
-                return null;
-            
-            val clazz    = type.toClass();
-            val isStruct = IStruct.class.isAssignableFrom(clazz);
-            val isChoice = IChoice.class.isAssignableFrom(clazz);
-            val isList   = List.class.isAssignableFrom(clazz);
-            val isMap    = Map.class.isAssignableFrom(clazz);
-            
-            if (isStruct) {
-                if (obj instanceof Map)
-                    return IStruct.fromMap((Map<String, Object>)obj, (Class)clazz);
-            } else if (isChoice) {
-                if (obj instanceof Map)
-                    return IChoice.fromMap((Map<String, Object>)obj, (Class)clazz);
-            } else if (isList) {
-                if (obj instanceof List)
-                    return fromListValue((List)obj, type.generics().get(0));
-                throw new IllegalArgumentException("Invalid list element (" + type + "): " + obj);
-            } else if (isMap) {
-                if (obj instanceof Map)
-                    return fromMapValue((Map)obj, type);
-                throw new IllegalArgumentException("Invalid list element (" + type + "): " + obj);
-            }
-            return clazz.cast(obj);
-        }
+        
         @SuppressWarnings({ "unchecked", "rawtypes" })
         private static Map fromMapValue(Map obj, Type type) {
             val keyType = ((type.generics().size() > 0) ? type.generics().get(0) : Type.OBJECT);
@@ -175,6 +166,35 @@ public interface IData {
             }
             return map;
         }
+        
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        private static Object fromValue(Object obj, Type type) {
+            if (obj == null)
+                return null;
+            
+            val clazz    = type.toClass();
+            val isStruct = IStruct.class.isAssignableFrom(clazz);
+            val isChoice = IChoice.class.isAssignableFrom(clazz);
+            val isList   = List.class.isAssignableFrom(clazz);
+            val isMap    = Map.class.isAssignableFrom(clazz);
+            
+            if (isStruct) {
+                if (obj instanceof Map)
+                    return IStruct.fromMap((Map<String, Object>)obj, (Class)clazz);
+            } else if (isChoice) {
+                if (obj instanceof Map)
+                    return IChoice.fromMap((Map<String, Object>)obj, (Class)clazz);
+            } else if (isList) {
+                if (obj instanceof List)
+                    return fromListValue((List)obj, type.generics().get(0));
+                throw new IllegalArgumentException("Invalid list element (" + type + "): " + obj);
+            } else if (isMap) {
+                if (obj instanceof Map)
+                    return fromMapValue((Map)obj, type);
+                throw new IllegalArgumentException("Invalid map element (" + type + "): " + obj);
+            }
+            return clazz.cast(obj);
+        }
         @SuppressWarnings({ "unchecked", "rawtypes" })
         private static List fromListValue(List obj, Type type) {
             val elementType = ((type.generics().size() > 0) ? type.generics().get(0) : Type.OBJECT);
@@ -193,6 +213,8 @@ public interface IData {
             }
             return list;
         }
+        
+        //== Choice ==
         
         public static <S> S Match(IChoice<S> choiceType) {
             return ChoiceTypes.Match(choiceType);
@@ -221,28 +243,6 @@ public interface IData {
         }
         public static boolean checkEquals(Object a, Object b) {
             return ((a == null) && (b == null)) || Objects.equals(a, b);
-        }
-        
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        public static <T> T fromMapValue(Object obj, CaseParam caseParam) {
-            val   type         = caseParam.type;
-            Class clzz         = type.toClass();
-            val   defaultValue = caseParam.defValue;
-            
-            if ((obj instanceof List) && type.toStructType().isList()) {
-                return IStruct.$utils.fromMapValue(obj, type.toStructType(), defaultValue);
-            }
-            
-            return (T)IData.$utils.fromMapValue(obj, clzz, defaultValue, ()->caseParam.defaultValue());
-        }
-        
-        public static <T> T propertyFromMap(Map<String, Object> map, Map<String, CaseParam> schema, String name) {
-            val caseParam = schema.get(name);
-            if (caseParam == null)
-                throw new IllegalArgumentException("Unknown property: " + name);
-            
-            val rawValue = map.get(name);
-            return fromMapValue(rawValue, caseParam);
         }
     }
 }

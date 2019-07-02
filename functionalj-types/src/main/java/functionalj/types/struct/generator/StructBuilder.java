@@ -456,7 +456,7 @@ public class StructBuilder {
         val type = sourceSpec.getTargetType();
         val params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0)));
         val isFList = getter.getType().isFuncList();
-        val newArray = isFList ? "functionalj.list.ImmutableList.of" : "$utils.asList";
+        val newArray = isFList ? "functionalj.list.ImmutableList.of" : Arrays.class.getCanonicalName() + ".asList";
         val paramCall 
                 = sourceSpec
                 .getGetters()
