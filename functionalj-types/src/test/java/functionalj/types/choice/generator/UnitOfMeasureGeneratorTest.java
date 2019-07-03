@@ -92,7 +92,6 @@ public class UnitOfMeasureGeneratorTest {
                 "import functionalj.result.Result;\n" + 
                 "import functionalj.types.choice.ChoiceTypeSwitch;\n" + 
                 "import functionalj.types.choice.IChoice;\n" + 
-                "import functionalj.types.choice.UnitOfMeatureTest.TemperatureSpec;\n" + 
                 "import java.util.function.Consumer;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Predicate;\n" + 
@@ -216,7 +215,7 @@ public class UnitOfMeasureGeneratorTest {
                 "    }\n" + 
                 "    \n" + 
                 "    public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
-                "    	return getChoiceSchema();\n" + 
+                "        return getChoiceSchema();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    private final TemperatureFirstSwitch __switch = new TemperatureFirstSwitch(this);\n" + 
@@ -259,10 +258,10 @@ public class UnitOfMeasureGeneratorTest {
                 "    }\n" + 
                 "    \n" + 
                 "    public static functionalj.types.choice.Temperature toTemperature() {\n" + 
-                "        return functionalj.types.choice.Self.unwrap(TemperatureSpec.toTemperature());\n" + 
+                "        return functionalj.types.choice.Self.unwrap(functionalj.types.choice.UnitOfMeatureTest.TemperatureSpec.toTemperature());\n" + 
                 "    }\n" + 
                 "    public static functionalj.types.choice.Temperature.Fahrenheit toFahrenheit() {\n" + 
-                "        return TemperatureSpec.toFahrenheit();\n" + 
+                "        return functionalj.types.choice.UnitOfMeatureTest.TemperatureSpec.toFahrenheit();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public boolean isCelsius() { return this instanceof Celsius; }\n" + 

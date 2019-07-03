@@ -69,7 +69,6 @@ public class GenericChoiceTest {
                 "import functionalj.result.Result;\n" + 
                 "import functionalj.types.choice.ChoiceTypeSwitch;\n" + 
                 "import functionalj.types.choice.IChoice;\n" + 
-                "import functionalj.types.choice.generator.MayBeTest.MayBe;\n" + 
                 "import java.util.function.Consumer;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Predicate;\n" + 
@@ -182,7 +181,7 @@ public class GenericChoiceTest {
                 "    }\n" + 
                 "    \n" + 
                 "    public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
-                "    	return getChoiceSchema();\n" + 
+                "        return getChoiceSchema();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    private final MayBeFirstSwitch __switch = new MayBeFirstSwitch(this);\n" + 

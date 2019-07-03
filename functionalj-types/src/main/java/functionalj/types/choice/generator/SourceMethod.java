@@ -93,7 +93,7 @@ public class SourceMethod implements Lines {
                   genericsDef,
                   m.definition(),
                   returnPrefix,
-                  targetClass.spec.sourceType.name,
+                  targetClass.spec.sourceType.fullName(),
                   m.call(),
                   returnSuffix)
                   .split("\n"));

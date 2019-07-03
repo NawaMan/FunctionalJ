@@ -461,7 +461,7 @@ public class GeneratorTest {
                 "    return functionalj.types.choice.Self.unwrap(__spec.thisSelf(Self.wrap(this), Self.wrap(c2), s));\n" + 
                 "}\n" + 
                 "public static boolean toRGBString(p1.p2.Color c) {\n" + 
-                "    return ColorSpec.toRGBString(c);\n" + 
+                "    return p1.p2.ColorSpec.toRGBString(c);\n" + 
                 "}",
                 lines);
     }
@@ -480,7 +480,7 @@ public class GeneratorTest {
         val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
-                "	return getChoiceSchema();\n" + 
+                "    return getChoiceSchema();\n" + 
                 "}\n" + 
                 "\n" + 
                 "private final ColorFirstSwitch __switch = new ColorFirstSwitch(this);\n" + 
@@ -577,7 +577,7 @@ public class GeneratorTest {
         
         assertEquals(
                 "public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
-                "	return getChoiceSchema();\n" + 
+                "    return getChoiceSchema();\n" + 
                 "}\n" + 
                 "\n" + 
                 "private final ColorFirstSwitch __switch = new ColorFirstSwitch(this);\n" + 
@@ -607,7 +607,7 @@ public class GeneratorTest {
                 "    return __spec.thisString(s);\n" + 
                 "}\n" + 
                 "public static String staticName(p1.p2.Color c, p1.p2.Color c2, String s) {\n" + 
-                "    return ColorSpec.staticName(c, c2, s);\n" + 
+                "    return p1.p2.ColorSpec.staticName(c, c2, s);\n" + 
                 "}",
                 new SourceMethod(target)
                 .lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n")));

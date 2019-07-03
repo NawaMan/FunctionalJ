@@ -276,7 +276,7 @@ public class FullGeneratorTest {
               "    }\n" + 
               "    \n" + 
               "    public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
-              "    	return getChoiceSchema();\n" + 
+              "        return getChoiceSchema();\n" + 
               "    }\n" + 
               "    \n" + 
               "    private final BasicColorFirstSwitch __switch = new BasicColorFirstSwitch(this);\n" + 

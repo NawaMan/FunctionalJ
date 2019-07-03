@@ -92,14 +92,14 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Choice.class)) {
             val input      = new ChoiceSpecInputImpl(element, elementUtils, messager);
-            val extractor  = new ChoiceSpec(input);
-            val sourceSpec = extractor.sourceSpec();
+            val choiceSpec = new ChoiceSpec(input);
+            val sourceSpec = choiceSpec.sourceSpec();
             val generator  = new Generator(sourceSpec);
             
             val typeElement    = (TypeElement)element;
-            val packageName    = extractor.packageName();
-            val targetName     = extractor.targetName();
-            val specTargetName = extractor.specTargetName();
+            val packageName    = choiceSpec.packageName();
+            val targetName     = choiceSpec.targetName();
+            val specTargetName = choiceSpec.specTargetName();
             try {
                 val className      = packageName + "." + targetName;
                 val content        = generator.lines().stream().collect(joining("\n"));
@@ -115,7 +115,7 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
                                 + ":"   + generator
                                 + " @ " + Stream.of(e.getStackTrace()).map(String::valueOf).collect(toList()));
             } finally {
-                hasError |= extractor.hasError();
+                hasError |= choiceSpec.hasError();
             }
         }
         return hasError;

@@ -71,7 +71,6 @@ public class GenericSupportTest {
             "import functionalj.result.Result;\n" + 
             "import functionalj.types.choice.ChoiceTypeSwitch;\n" + 
             "import functionalj.types.choice.IChoice;\n" + 
-            "import functionalj.types.choice.generator.GenericSupportTest.OptionSpec;\n" + 
             "import java.io.Serializable;\n" + 
             "import java.util.function.Consumer;\n" + 
             "import java.util.function.Function;\n" + 
@@ -185,7 +184,7 @@ public class GenericSupportTest {
             "    }\n" + 
             "    \n" + 
             "    public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
-            "    	return getChoiceSchema();\n" + 
+            "        return getChoiceSchema();\n" + 
             "    }\n" + 
             "    \n" + 
             "    private final OptionFirstSwitch<T> __switch = new OptionFirstSwitch<T>(this);\n" + 

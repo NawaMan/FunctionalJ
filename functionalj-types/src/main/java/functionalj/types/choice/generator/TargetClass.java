@@ -87,7 +87,6 @@ public class TargetClass implements Lines {
         imports.add("functionalj.pipeable.Pipeable");
         imports.add("functionalj.lens.core.LensSpec");
         imports.add("functionalj.lens.lenses.*");
-        imports.add(spec.sourceType.fullName());
         
         val hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);
         if (hasChoiceWuthMoreThanOneParam) {
@@ -99,10 +98,9 @@ public class TargetClass implements Lines {
         if (spec.methods.stream().anyMatch(m -> Kind.DEFAULT.equals(m.kind))) {
             // TODO - move this to $utils ?
             imports.add("nullablej.utils.reflection.UProxy");
-            imports.add(spec.sourceType.pckg + "." + spec.sourceType.encloseClass + "." + spec.sourceType.name);
             specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);", 
-                    spec.sourceType.name + spec.sourceType.generics(),
-                    spec.sourceType.name));
+                    spec.sourceType.fullName() + spec.sourceType.generics(),
+                    spec.sourceType.fullName()));
             
             if (spec.sourceType.generics.isEmpty())
                  selfDef = ", Self";
