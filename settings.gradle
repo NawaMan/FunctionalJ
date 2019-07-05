@@ -9,3 +9,5 @@ include ":functionalj-types-tests"
 include ":functionalj-examples"
 
 rootProject.name = theGroup
+
+rootProject.name = "functionalj"
