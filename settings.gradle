@@ -8,6 +8,6 @@ include ":functionalj-all"
 include ":functionalj-types-tests"
 include ":functionalj-examples"
 
-rootProject.name = theGroup
+include ":functionalj-elm"
 
 rootProject.name = "functionalj"

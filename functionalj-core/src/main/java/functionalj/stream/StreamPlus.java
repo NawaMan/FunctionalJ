@@ -910,12 +910,6 @@ public interface StreamPlus<DATA>
         return piper.apply(this);
     }
     
-    public default <TARGET> StreamPlus<TARGET> map(Supplier<? extends TARGET> supplier) {
-        return deriveWith(stream -> {
-            return stream.map(e -> supplier.get());
-        });
-    }
-    
     public default <TARGET> StreamPlus<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         return deriveWith(stream -> {
             return stream.map(mapper);

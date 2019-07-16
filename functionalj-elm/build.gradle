@@ -6,10 +6,8 @@ repositories {
 }
 
 dependencies {
-    compile             project(':functionalj-all')
-    compile             project(':functionalj-elm')
+    compile project(':functionalj-types')
     annotationProcessor project(':functionalj-types')
-    annotationProcessor project(':functionalj-elm')
     
     compile 'junit:junit:4.12'
     
@@ -17,6 +15,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
     
     // == Test ==
+    
+    testAnnotationProcessor project(':functionalj-types')
     
     testCompile 'junit:junit:4.12'
     

@@ -34,7 +34,7 @@ import lombok.val;
 
 public class SubClassConstructor implements Lines {
     public final TargetClass targetClass;
-    public final Case      choice;
+    public final Case        choice;
     
     
     public SubClassConstructor(TargetClass targetClass, Case choice) {

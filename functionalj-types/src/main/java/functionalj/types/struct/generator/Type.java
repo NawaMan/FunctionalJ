@@ -41,6 +41,7 @@ import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -338,6 +339,9 @@ public class Type implements IRequireTypes {
         this.generics = generics;
     }
     
+    public Type withGenerics(Type... generics) {
+        return withGenerics(Arrays.asList(generics));
+    }
     public Type withGenerics(List<Type> generics) {
         return new Type(encloseName, simpleName, packageName, isVirtual, generics);
     }

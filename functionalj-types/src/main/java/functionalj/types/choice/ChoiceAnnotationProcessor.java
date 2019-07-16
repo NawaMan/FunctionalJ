@@ -56,7 +56,7 @@ import lombok.val;
  * @author NawaMan -- nawa@nawaman.net
  */
 public class ChoiceAnnotationProcessor extends AbstractProcessor {
-
+    
     private Elements elementUtils;
     private Filer    filer;
     private Messager messager;
