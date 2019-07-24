@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.types.elm.processor;
 
+import static functionalj.types.elm.processor.Utils.toCamelCase;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -75,6 +77,14 @@ public class UElmType {
         
         // Must check if the type is local. If not, we need to use full name.
         return elmFullName(type);
+    }
+    
+    public static String elmParamType(Type type) {
+        return param(type);
+    }
+    
+    public static String elmParamType(String type) {
+        return wrap(type);
     }
     
     private static String elmFullName(Type type) {
@@ -131,10 +141,16 @@ public class UElmType {
         return elmType;
     }
     
-    private static String elmMayBeType(Type type) {
+    public static String elmMayBeType(Type type) {
         val aType = type.generics().get(0);
         val aStrg = param(aType);
-        val elmType = "MayBe " + aStrg;
+        val elmType = "Maybe " + aStrg;
+        return elmType;
+    }
+    
+    public static String elmMayBeOfType(Type type) {
+        val aStrg = param(type);
+        val elmType = "Maybe " + aStrg;
         return elmType;
     }
     
@@ -152,25 +168,38 @@ public class UElmType {
         return "(" + typeStr + ")";
     }
     
-    public static String encoderNameOf(Type type) {
+    public static String encoderNameOf(Type type, String name) {
+        return encoderNameOf(type, name, false);
+    }
+    public static String encoderNameOf(Type type, String name, boolean isNullable) {
+        name = (name != null) ? name : "";
+        
+        boolean isOptionalType = type.isOptional() || type.isNullable();
+        if (isNullable || isOptionalType) {
+            val paramType    = isOptionalType ? type.generics().get(0) : type;
+            val paramEncoder = encoderNameOf(paramType, name);
+            return "Maybe.withDefault Json.Encode.null (Maybe.map " + paramEncoder + ")";
+        }
+        
         val primitiveElmType = primitiveTypes.get(type);
         if (primitiveElmType != null)
-            return "Json.Encode." + primitiveElmType.toLowerCase();
+            return "Json.Encode." + primitiveElmType.toLowerCase() + " " + name;
         
-        val typeName = Utils.toCamelCase(type.simpleName());
+        val typeName = toCamelCase(type.simpleName());
         if (type.isList() || type.isFuncList()) {
-            return typeName + "ListEncoder";
+            val paramType            = type.generics().get(0);
+            val genericPrimitiveType = primitiveTypes.get(paramType);
+            if (genericPrimitiveType != null)
+                return "Json.Encode.list Json.Encode." + genericPrimitiveType.toLowerCase() + " " + name;
+            
+            return typeName + "ListEncoder " + name;
         }
         
         if (type.isMap() || type.isFuncMap()) {
             throw new UnsupportedOperationException("Encoder of map type is not yet support.");
         }
         
-        if (type.isOptional() || type.isNullable()) {
-            throw new UnsupportedOperationException("Encoder of optional type is not yet support.");
-        }
-        
-        return typeName + "Encoder";
+        return typeName + "Encoder " + name;
     }
     
     public static String decoderNameOf(Type type) {

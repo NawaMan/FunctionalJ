@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -98,12 +97,14 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
                 handleStructType(element);
                 continue;
             }
-//            
-//            val choice = element.getAnnotation(Choice.class);
-//            if (choice != null) {
-//                handleChoiceType(element);
-//                continue;
-//            }
+            
+            val choice = element.getAnnotation(Choice.class);
+            if (choice != null) {
+                handleChoiceType(element);
+                continue;
+            }
+            
+            error(element, "The element must either be a struct or a choice.");
         }
         return hasError;
     }
@@ -146,19 +147,37 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
         val lines         = asList(generatedCode.split("\n"));
         Files.write(generatedFile.toPath(), lines);
     }
-//    
-//    private void handleChoiceType(Element element) {
-//        val dummyMessager  = new DummyMessager();
-//        val input          = new ChoiceSpecInputImpl(element, elementUtils, dummyMessager);
-//        val choiceSpec     = new ChoiceSpec(input);
-//        val sourceSpec     = choiceSpec.sourceSpec();
-//        val packageName    = choiceSpec.packageName();
-//        val specTargetName = choiceSpec.targetName();
-//        try {
-//        } catch (Exception e) {
-//        } finally {
-//            hasError |= choiceSpec.hasError();
-//        }
-//    }
+    
+    private void handleChoiceType(Element element) {
+        val dummyMessager  = new DummyMessager();
+        val input          = new ChoiceSpecInputImpl(element, elementUtils, dummyMessager);
+        val choiceSpec     = new ChoiceSpec(input);
+        val sourceSpec     = choiceSpec.sourceSpec();
+        val packageName    = choiceSpec.packageName();
+        val specTargetName = choiceSpec.targetName();
+        try {
+            val elmChoiceSpec = new ElmChoiceSpec(sourceSpec, element);
+            val elmChoice     = new ElmChoiceBuilder(elmChoiceSpec);
+            val baseDir       = "./generated/elm/";
+            val folderName    = elmChoiceSpec.folderName();
+            val fileName      = elmChoiceSpec.fileName();
+            
+            val generatedPath = baseDir + folderName + "/";
+            val generatedCode = elmChoice.toElmCode();
+            val generatedName = generatedPath + fileName;
+            
+            generateElmCode(generatedPath, generatedCode, generatedName);
+        } catch (Exception e) {
+            error(element, "Problem generating the class: "
+                    + packageName + "." + specTargetName
+                    + ": "  + e.getMessage()
+                    + ":"   + e.getClass()
+                    + stream(e.getStackTrace())
+                        .map(st -> "\n    @" + st)
+                        .collect(joining()));
+        } finally {
+            hasError |= choiceSpec.hasError();
+        }
+    }
     
 }

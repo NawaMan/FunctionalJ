@@ -93,6 +93,12 @@ public class Type {
     }
     
     public functionalj.types.struct.generator.Type toStructType() {
+        if (this.equals(Type.STRING))
+            return functionalj.types.struct.generator.Type.STRING;
+        if (this.equals(Type.OBJECT))
+            return functionalj.types.struct.generator.Type.OBJECT;
+        
+        
         val encloseName = this.encloseClass;
         val simpleName  = this.name;
         val packageName = this.pckg;

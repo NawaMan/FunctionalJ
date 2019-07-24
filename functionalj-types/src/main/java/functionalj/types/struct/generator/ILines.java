@@ -71,6 +71,10 @@ public interface ILines extends IRequireTypes {
         return Stream.empty();
     }
     
+    public default Stream<ILines> toStream() {
+        return Stream.of(this);
+    }
+    
     // == Factory methods ==
     
     /**
@@ -273,13 +277,15 @@ public interface ILines extends IRequireTypes {
         val lines     = this.lines().collect(toList());
         val firstLine = lines.stream().limit(1).map(line -> prefix    + " " + line).collect(toList());
         val restLines = lines.stream().skip (1).map(line -> delimiter + " " + line).collect(toList());
-        val lastLine  = Stream.of(suffix);
+        val lastLine  = (suffix == null) ? null : Stream.of(suffix);
         val stream
             = Stream.of(
-                firstLine.stream(), 
-                restLines.stream(), 
+                firstLine.stream(),
+                restLines.stream(),
                 lastLine)
+            .filter (Objects::nonNull)
             .flatMap(Function.identity())
+            .map    (String::trim)
             .map    (ILines::line);
         return ILines.linesOf(stream);
     }

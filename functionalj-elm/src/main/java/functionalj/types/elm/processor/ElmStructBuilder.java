@@ -115,8 +115,8 @@ public class ElmStructBuilder implements ElmTypeDef {
     private static String toFieldEncoder(String typeName, Getter getter) {
         val fieldName   = getter.getName();
         val camelName   = toCamelCase   (typeName);
-        val typeEncoder = encoderNameOf (getter.getType());
-        return "( \"" + fieldName + "\", " + typeEncoder + " " + camelName + "." + fieldName + " )";
+        val typeEncoder = encoderNameOf (getter.getType(), camelName + "." + fieldName, getter.isNullable());
+        return "( \"" + fieldName + "\", " + typeEncoder + " )";
     }
     
     public ElmFunctionBuilder decoder() {

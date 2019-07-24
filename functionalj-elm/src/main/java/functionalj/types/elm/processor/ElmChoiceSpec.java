@@ -28,29 +28,24 @@ import static java.util.stream.Collectors.joining;
 
 import javax.lang.model.element.Element;
 
+import functionalj.types.choice.generator.model.SourceSpec;
 import functionalj.types.elm.Elm;
-import functionalj.types.struct.generator.SourceSpec;
 import lombok.val;
 
-/**
- * This class represents The spec for an Elm structure type.
- * 
- * @author NawaMan -- nawa@nawaman.net
- */
-public class ElmStructSpec {
+public class ElmChoiceSpec {
     
     private final SourceSpec sourceSpec;
     private final String typeName;
     private final String folderName;
     
-    public ElmStructSpec(SourceSpec sourceSpec, Element element) {
+    public ElmChoiceSpec(SourceSpec sourceSpec, Element element) {
         this.sourceSpec = sourceSpec;
-        this.typeName   = sourceSpec.getTargetClassName();
+        this.typeName   = sourceSpec.targetName;
         
         val baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
         this.folderName = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
     }
-    ElmStructSpec(SourceSpec sourceSpec, String typeName, String folderName) {
+    ElmChoiceSpec(SourceSpec sourceSpec, String typeName, String folderName) {
         this.sourceSpec = sourceSpec;
         this.typeName   = typeName;
         this.folderName = folderName;
@@ -58,7 +53,7 @@ public class ElmStructSpec {
     
     private String elmBaseModule(Element element, SourceSpec sourceSpec) {
         val baseModule  = element.getAnnotation(Elm.class).baseModule();
-        val elmtPackage = sourceSpec.getPackageName();
+        val elmtPackage = sourceSpec.sourceType.pckg;
         return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) 
                 ? elmtPackage
                 : baseModule;
@@ -93,5 +88,5 @@ public class ElmStructSpec {
                 + "folderName=" + folderName 
                 + "]";
     }
-    
+
 }

@@ -55,7 +55,7 @@ public class ElmStructTest {
     }
     
     private static final String expected =
-            "module Example.Functionalj.ElmUser exposing\n" + 
+            "module Example.Functionalj.Elm.User exposing\n" + 
             "    ( User\n" + 
             "    , userEncoder\n" + 
             "    , userDecoder\n" + 
