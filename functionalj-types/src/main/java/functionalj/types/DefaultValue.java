@@ -148,12 +148,12 @@ public enum DefaultValue {
          || Type.STRING.equals(type))
             return ((value != MAX_VALUE) || (value != MIN_VALUE));
         
-        if (Type.LIST.equals(type)
-         || Type.MAP.equals(type)
-         || Type.FUNC_LIST.equals(type)
-         || Type.FUNC_MAP.equals(type)
-         || Type.NULLABLE.equals(type)
-         || Type.OPTIONAL.equals(type))
+        if (type.isList()
+         || type.isMap()
+         || type.isFuncList()
+         || type.isFuncMap()
+         || type.isNullable()
+         || type.isOptional())
             return (value == EMPTY);
         
         return false;
@@ -319,27 +319,27 @@ public enum DefaultValue {
             if (value == NOW)    return DateTimeFormatter.class.getCanonicalName() + ".ISO_LOCAL_DATE_TIME";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.LIST.equals(type)) {
+        if (type.isList()) {
             if (value == EMPTY) return "java.util.Collections.emptyList()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.FUNC_LIST.equals(type)) {
+        if (type.isFuncList()) {
             if (value == EMPTY) return "functionalj.list.FuncList.empty()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.MAP.equals(type)) {
+        if (type.isMap()) {
             if (value == EMPTY) return "java.util.Collections.emptyMap()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.FUNC_MAP.equals(type)) {
+        if (type.isFuncMap()) {
             if (value == EMPTY) return "functionalj.list.FuncMap.empty()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.NULLABLE.equals(type)) {
+        if (type.isNullable()) {
             if (value == EMPTY) return "nullablej.nullable.Nullable.empty()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-        if (Type.OPTIONAL.equals(type)) {
+        if (type.isOptional()) {
             if (value == EMPTY) return "java.util.Optional.empty()";
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }

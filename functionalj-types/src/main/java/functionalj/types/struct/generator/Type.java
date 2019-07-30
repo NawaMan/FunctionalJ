@@ -206,6 +206,20 @@ public class Type implements IRequireTypes {
         map.put("boolean", BOOL);
         primitiveTypes = map;
     }
+    public static final Map<String, Type> boxedType;
+    static {
+        val map = new HashMap<String, Type>();
+        map.put(Character.class.getCanonicalName(), CHARACTER);
+        map.put(Byte.class.getCanonicalName(),      BYTE);
+        map.put(Short.class.getCanonicalName(),     SHORT);
+        map.put(Integer.class.getCanonicalName(),   INTEGER);
+        map.put(Long.class.getCanonicalName(),      LONG);
+        map.put(Float.class.getCanonicalName(),     FLOAT);
+        map.put(Double.class.getCanonicalName(),    DOUBLE);
+        map.put(Boolean.class.getCanonicalName(),   BOOLEAN);
+        map.put(Object.class.getCanonicalName(),    OBJECT);
+        boxedType = map;
+    }
     public static final Map<Type, Type> declaredTypes;
     static {
         val map = new HashMap<Type, Type>();
@@ -267,7 +281,11 @@ public class Type implements IRequireTypes {
         this.simpleName  = simpleName;
         this.packageName = packageName;
         this.isVirtual   = false;
-        this.generics    = asList(generics).stream().map(generic->new Type(generic, null)).collect(toList());
+        this.generics    
+                = asList(generics)
+                .stream()
+                .map(generic->new Type(generic, null))
+                .collect(toList());
     }
     
     /**
@@ -487,6 +505,24 @@ public class Type implements IRequireTypes {
         if (lensType != null)
             return lensType;
         
+        if (this.isOptional())
+            return Core.OptionalLens.type().withGenerics(this.generics());
+        
+        if (this.isNullable())
+            return Core.NullableLens.type().withGenerics(this.generics());
+        
+        if (this.isList())
+            return Core.ListLens.type().withGenerics(this.generics());
+        
+        if (this.isFuncList())
+            return Core.FuncListLens.type().withGenerics(this.generics());
+        
+        if (this.isMap())
+            return Core.MapLens.type().withGenerics(this.generics());
+        
+        if (this.isFuncMap())
+            return Core.FuncMapLens.type().withGenerics(this.generics());
+        
         if ((localTypeWithLens != null) && !localTypeWithLens.contains(simpleName))
             return Core.ObjectLens.type();
         
@@ -494,7 +530,8 @@ public class Type implements IRequireTypes {
     }
     
     public Type knownLensType() {
-        val lensType = lensTypes.get(this.declaredType());
+        val declaredType = this.declaredType();
+        val lensType = lensTypes.get(declaredType);
         if (lensType != null)
             return lensType;
         
@@ -581,34 +618,22 @@ public class Type implements IRequireTypes {
     }
     
     @Override
+    public String toString() {
+        return fullNameWithGeneric("");
+    }
+    
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Type other = (Type) obj;
-        if (packageName == null) {
-            if (other.packageName != null)
-                return false;
-        } else if (!packageName.equals(other.packageName))
-            return false;
-        if (simpleName == null) {
-            if (other.simpleName != null)
-                return false;
-        } else if (!simpleName.equals(other.simpleName))
-            return false;
-        return true;
+        if (obj instanceof Type)
+            return toString().equals(String.valueOf(obj));
+        if (obj instanceof functionalj.types.choice.generator.model.Type)
+            return toString().equals(String.valueOf(obj));
+        return false;
     }
     
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((packageName == null) ? 0 : packageName.hashCode());
-        result = prime * result + ((simpleName == null) ? 0 : simpleName.hashCode());
-        return result;
+        return toString().hashCode();
     }
     
     public String toCode() {

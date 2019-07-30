@@ -92,6 +92,20 @@ public class Type {
                 .collect(joining("."));
     }
     
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Type)
+            return toString().equals(String.valueOf(obj));
+        if (obj instanceof functionalj.types.struct.generator.Type)
+            return toString().equals(String.valueOf(obj));
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+    
     public functionalj.types.struct.generator.Type toStructType() {
         if (this.equals(Type.STRING))
             return functionalj.types.struct.generator.Type.STRING;
@@ -120,7 +134,6 @@ public class Type {
     public static final Type CHAR    = new Type("java.lang", "Character");
     public static final Type STRING  = new Type("String");
     public static final Type OBJECT  = new Type("Object");
-
     
     public String genericParams() {
         return (generics.isEmpty() ? "" : (generics.stream().map(g -> g.name).collect(joining(","))));
