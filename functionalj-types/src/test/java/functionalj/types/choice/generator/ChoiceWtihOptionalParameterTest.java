@@ -43,7 +43,8 @@ public class ChoiceWtihOptionalParameterTest {
         assertEquals(expected, lines);
     }
     
-    private static final String expected = "package example.functionalj.elm;\n" + 
+    private static final String expected = 
+            "package example.functionalj.elm;\n" + 
             "\n" + 
             "import functionalj.lens.core.LensSpec;\n" + 
             "import functionalj.lens.lenses.*;\n" + 
@@ -128,7 +129,7 @@ public class ChoiceWtihOptionalParameterTest {
             "            return map;\n" + 
             "        }\n" + 
             "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-            "            .with(\"wealth\", new functionalj.types.choice.generator.model.CaseParam(\"wealth\", new functionalj.types.choice.generator.model.Type(\"java.util\", null, \"Optional\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"java.lang.Double\", \"java.lang.Double\", null))), true, null))\n" + 
+            "            .with(\"wealth\", new functionalj.types.choice.generator.model.CaseParam(\"wealth\", new functionalj.types.choice.generator.model.Type(\"java.util\", null, \"Optional\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"java.lang.Double\", \"java.lang.Double\", java.util.Collections.emptyList()))), true, null))\n" + 
             "            .build();\n" + 
             "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
             "            return __schema__;\n" + 

@@ -161,7 +161,7 @@ public class GeneratorTest {
                 "        return map;\n" + 
                 "    }\n" + 
                 "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.choice.generator.model.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null), new functionalj.types.choice.generator.model.Generic(\"Coroutine<D>\", \"Coroutine<D>\", null))), false, null))\n" + 
+                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.choice.generator.model.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Type(null, null, \"D\", java.util.Collections.emptyList()))), new functionalj.types.choice.generator.model.Generic(\"Coroutine<D>\", \"Coroutine<D>\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Type(null, null, \"Coroutine<D>\", java.util.Collections.emptyList()))))), false, null))\n" + 
                 "        .build();\n" + 
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
@@ -173,7 +173,7 @@ public class GeneratorTest {
                 "    }\n" + 
                 "}", lines);
         assertEquals(
-                "new functionalj.types.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.types.choice.generator.model.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null))), \"spec\", false, \"__tagged\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null)), java.util.Collections.emptyList(), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
+                "new functionalj.types.choice.generator.model.SourceSpec(\"Coroutine\", new functionalj.types.choice.generator.model.Type(\"p1.p2\", null, \"Next\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Type(null, null, \"D\", java.util.Collections.emptyList()))))), \"spec\", false, \"__tagged\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Type(null, null, \"D\", java.util.Collections.emptyList())))), java.util.Collections.emptyList(), java.util.Collections.emptyList(), java.util.Collections.emptyList())", sourceSpec.toCode());
     }
     
     @Test
@@ -305,7 +305,7 @@ public class GeneratorTest {
                 "        return map;\n" + 
                 "    }\n" + 
                 "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.choice.generator.model.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null), new functionalj.types.choice.generator.model.Generic(\"Coroutine<D>\", \"Coroutine<D>\", null))), false, null))\n" + 
+                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.choice.generator.model.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Type(null, null, \"D\", java.util.Collections.emptyList()))), new functionalj.types.choice.generator.model.Generic(\"Coroutine<D>\", \"Coroutine<D>\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Type(null, null, \"Coroutine<D>\", java.util.Collections.emptyList()))))), false, null))\n" + 
                 "        .build();\n" + 
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
@@ -647,7 +647,7 @@ public class GeneratorTest {
                 "        return map;\n" + 
                 "    }\n" + 
                 "    static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.choice.generator.model.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", null), new functionalj.types.choice.generator.model.Generic(\"Coroutine<D>\", \"Coroutine<D>\", null))), false, null))\n" + 
+                "        .with(\"next\", new functionalj.types.choice.generator.model.CaseParam(\"next\", new functionalj.types.choice.generator.model.Type(\"functionalj.function\", null, \"Func1\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Generic(\"D\", \"D\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Type(null, null, \"D\", java.util.Collections.emptyList()))), new functionalj.types.choice.generator.model.Generic(\"Coroutine<D>\", \"Coroutine<D>\", java.util.Arrays.asList(new functionalj.types.choice.generator.model.Type(null, null, \"Coroutine<D>\", java.util.Collections.emptyList()))))), false, null))\n" + 
                 "        .build();\n" + 
                 "    public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "        return __schema__;\n" + 
@@ -656,58 +656,6 @@ public class GeneratorTest {
                 "        return Next(\n" + 
                 "            $utils.propertyFromMap(map, __schema__, \"next\")\n" + 
                 "        );\n" + 
-                "    }\n" + 
-                "}", lines);
-    }
-    
-    @Test
-    public void testSwitchClass_expand() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
-        val sub    = new SwitchClass(target, false, asList(
-                        new Case("RGB",   "__validateRGB", asList(
-                            new CaseParam("r", new Type("int"), false),
-                            new CaseParam("g", new Type("int"), false),
-                            new CaseParam("b", new Type("int"), false)
-                        ))));
-        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
-        assertEquals(
-                "public static class ColorSwitchRGB<TARGET> extends ChoiceTypeSwitch<Color, TARGET> {\n" + 
-                "    private ColorSwitchRGB(Color theValue, Function<Color, ? extends TARGET> theAction) { super(theValue, theAction); }\n" + 
-                "    \n" + 
-                "    public TARGET rgb(Function<? super RGB, ? extends TARGET> theAction) {\n" + 
-                "        Function<Color, TARGET> oldAction = (Function<Color, TARGET>)$action;\n" + 
-                "        Function<Color, TARGET> newAction =\n" + 
-                "            ($action != null)\n" + 
-                "            ? oldAction : \n" + 
-                "                ($value instanceof RGB)\n" + 
-                "                ? (Function<Color, TARGET>)(d -> theAction.apply((RGB)d))\n" + 
-                "                : oldAction;\n" + 
-                "        \n" + 
-                "        return newAction.apply($value);\n" + 
-                "    }\n" + 
-                "    public TARGET rgb(Supplier<? extends TARGET> theSupplier) {\n" + 
-                "        return rgb(d->theSupplier.get());\n" + 
-                "    }\n" + 
-                "    public TARGET rgb(TARGET theValue) {\n" + 
-                "        return rgb(d->theValue);\n" + 
-                "    }\n" + 
-                "    \n" + 
-                "    public ColorSwitchRGB<TARGET> rgb(Predicate<RGB> check, Function<? super RGB, ? extends TARGET> theAction) {\n" + 
-                "        Function<Color, TARGET> oldAction = (Function<Color, TARGET>)$action;\n" + 
-                "        Function<Color, TARGET> newAction =\n" + 
-                "            ($action != null)\n" + 
-                "            ? oldAction : \n" + 
-                "                (($value instanceof RGB) && check.test((RGB)$value))\n" + 
-                "                ? (Function<Color, TARGET>)(d -> theAction.apply((RGB)d))\n" + 
-                "                : oldAction;\n" + 
-                "        \n" + 
-                "        return new ColorSwitchRGB<TARGET>($value, newAction);\n" + 
-                "    }\n" + 
-                "    public ColorSwitchRGB<TARGET> rgb(Predicate<RGB> check, Supplier<? extends TARGET> theSupplier) {\n" + 
-                "        return rgb(check, d->theSupplier.get());\n" + 
-                "    }\n" + 
-                "    public ColorSwitchRGB<TARGET> rgb(Predicate<RGB> check, TARGET theValue) {\n" + 
-                "        return rgb(check, d->theValue);\n" + 
                 "    }\n" + 
                 "}", lines);
     }
