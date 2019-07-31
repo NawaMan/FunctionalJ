@@ -54,13 +54,17 @@ public class ChoiceToMapTest {
     
     @Test
     public void testFromMap() {
-        val timedAction1 
-                = new TimedAction(
-                LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
-                FuncList.of(Rotate(5), Move(7)));
-        val map = timedAction1.__toMap();
-        val timedAction2 = IData.$utils.fromMap(map, TimedAction.class);
-        assertEquals(timedAction1, timedAction2);
+        try {
+            val timedAction1 
+                    = new TimedAction(
+                    LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
+                    FuncList.of(Rotate(5), Move(7)));
+            val map = timedAction1.__toMap();
+            val timedAction2 = IData.$utils.fromMap(map, TimedAction.class);
+            assertEquals(timedAction1, timedAction2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     @Test
     public void testFromMap_map() {

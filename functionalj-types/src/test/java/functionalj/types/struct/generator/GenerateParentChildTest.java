@@ -137,7 +137,7 @@ public class GenerateParentChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"child\", new functionalj.types.struct.generator.Getter(\"child\", new Type(null, \"Child\", \"me.test\", null), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"child\", new functionalj.types.struct.generator.Getter(\"child\", new Type(\"me.test\", null, \"Child\", null), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

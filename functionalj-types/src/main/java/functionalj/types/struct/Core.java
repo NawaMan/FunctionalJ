@@ -135,7 +135,7 @@ public enum Core {
     
     public Type type() {
         if (type == null)
-            type = new Type(simpleName, packageName);
+            type = new Type(packageName, simpleName);
         
         return type;
     }

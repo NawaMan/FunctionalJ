@@ -355,7 +355,7 @@ public enum DefaultValue {
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         if (value == DEFAULT) {
             try {
-                val clzz      = new Type("IProvideDefault", "nawaman.defaultj.api").toClass();
+                val clzz      = new Type("nawaman.defaultj.api", "IProvideDefault").toClass();
                 val dpMethod  = clzz.getMethod("defaultProvider");
                 val dpOption  = (Optional)dpMethod.invoke(clzz);
                 val dp        = dpOption.get();

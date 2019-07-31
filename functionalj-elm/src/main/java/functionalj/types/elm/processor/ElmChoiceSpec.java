@@ -53,7 +53,7 @@ public class ElmChoiceSpec {
     
     private String elmBaseModule(Element element, SourceSpec sourceSpec) {
         val baseModule  = element.getAnnotation(Elm.class).baseModule();
-        val elmtPackage = sourceSpec.sourceType.pckg;
+        val elmtPackage = sourceSpec.sourceType.packageName;
         return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) 
                 ? elmtPackage
                 : baseModule;

@@ -220,7 +220,7 @@ public class ChoiceSpec {
         val boundAsString = (boundTypes.isEmpty()) ? ""
                 : " extends " + t.getBounds().stream().map(b -> {
                     Type   typeOf     = typeOf(targetType, (TypeMirror)b);
-                    String typeNameOf = typeOf.getName();
+                    String typeNameOf = typeOf.simpleName();
                     return typeNameOf;
                 }).collect(joining(" & "));
         return new Generic(
@@ -322,7 +322,7 @@ public class ChoiceSpec {
             val generics     = extractGenericsFromTypeArguments(targetType, ((DeclaredType)typeMirror).getTypeArguments());
             val foundType    = new Type(packageName, encloseClass, typeName, generics);
             if (packageName.equals(Self.class.getPackage().getName()) && typeName.matches("^Self[0-9]?$"))
-                return new Type(targetType.pckg, targetType.encloseClass, targetType.name, generics);
+                return new Type(targetType.packageName, targetType.encloseName, targetType.simpleName, generics);
             
             return foundType;
         }

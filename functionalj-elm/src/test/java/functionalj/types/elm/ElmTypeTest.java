@@ -38,12 +38,12 @@ public class ElmTypeTest {
             asList(
                 new Getter(
                     "firstName", 
-                    new functionalj.types.struct.generator.Type(null, "String", "java.lang", emptyList()), 
+                    new functionalj.types.struct.generator.Type("java.lang", null, "String", emptyList()), 
                     false, 
                     REQUIRED), 
                 new Getter(
                     "lastName", 
-                    new functionalj.types.struct.generator.Type(null, "String", "java.lang", emptyList()), 
+                    new functionalj.types.struct.generator.Type("java.lang", null, "String", emptyList()), 
                     false, 
                     REQUIRED)), 
             asList("User"));

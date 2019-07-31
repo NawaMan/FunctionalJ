@@ -57,12 +57,12 @@ public class GenerateParentNullableChildTest {
     private List<Getter> getters = asList(
             new Getter("nullableName", new Type.TypeBuilder()
                                 .simpleName("Nullable")
-                                .generics(asList(new Type("String", "java.lang")))
+                                .generics(asList(new Type("java.lang", "String")))
                                 .packageName("nullablej.nullable")
                                 .build()),
             new Getter("nullableChild", new Type.TypeBuilder()
                                 .simpleName("Nullable")
-                                .generics(asList(new Type("Child", "me.test")))
+                                .generics(asList(new Type("me.test", "Child")))
                                 .packageName("nullablej.nullable")
                                 .build())
     );
@@ -165,8 +165,8 @@ public class GenerateParentNullableChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"nullableName\", new functionalj.types.struct.generator.Getter(\"nullableName\", new Type(null, \"Nullable\", \"nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"nullableChild\", new functionalj.types.struct.generator.Getter(\"nullableChild\", new Type(null, \"Nullable\", \"nullablej.nullable\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"nullableName\", new functionalj.types.struct.generator.Getter(\"nullableName\", new Type(\"nullablej.nullable\", null, \"Nullable\", java.util.Arrays.asList(new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"nullableChild\", new functionalj.types.struct.generator.Getter(\"nullableChild\", new Type(\"nullablej.nullable\", null, \"Nullable\", java.util.Arrays.asList(new Type(\"me.test\", null, \"Child\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

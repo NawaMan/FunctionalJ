@@ -104,7 +104,7 @@ public class StructBuilder {
         val istruct = Type.of(IStruct.class);
         implementeds.add(istruct);
         
-        val targetType = new Type(sourceSpec.getTargetClassName(), sourceSpec.getTargetPackageName());
+        val targetType = new Type(sourceSpec.getTargetPackageName(), sourceSpec.getTargetClassName());
         val pipeable   = Core.Pipeable.type().withGenerics(asList(targetType));
         implementeds.add(pipeable);
         

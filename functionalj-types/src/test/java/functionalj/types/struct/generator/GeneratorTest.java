@@ -178,9 +178,9 @@ public class GeneratorTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"anint\", new functionalj.types.struct.generator.Getter(\"anint\", new Type(null, \"int\", \"\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"anbool\", new functionalj.types.struct.generator.Getter(\"anbool\", new Type(null, \"boolean\", \"\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"anstring\", new functionalj.types.struct.generator.Getter(\"anstring\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"anint\", new functionalj.types.struct.generator.Getter(\"anint\", new Type(\"\", null, \"int\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"anbool\", new functionalj.types.struct.generator.Getter(\"anbool\", new Type(\"\", null, \"boolean\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"anstring\", new functionalj.types.struct.generator.Getter(\"anstring\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

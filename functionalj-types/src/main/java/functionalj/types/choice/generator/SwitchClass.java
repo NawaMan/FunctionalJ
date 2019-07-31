@@ -59,7 +59,7 @@ public class SwitchClass implements Lines {
     
     @Override
     public List<String> lines() {
-        val targetName      = targetClass.type.name;
+        val targetName      = targetClass.type.simpleName;
         val switchClassName = switchClassName(targetName, choices);
         val mapTargetType   = "TARGET";
         

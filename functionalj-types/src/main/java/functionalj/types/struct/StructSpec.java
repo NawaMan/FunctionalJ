@@ -343,7 +343,7 @@ public class StructSpec {
             val packageName = getPackageName(element, typeElement);
             val encloseElmt = typeElement.getEnclosingElement();
             val encloseName = typeElementKinds.contains(encloseElmt.getKind()) ? encloseElmt.getSimpleName().toString() : null;
-            return new Type(encloseName, typeName, packageName, generics);
+            return new Type(packageName, encloseName, typeName, generics);
         }
         return Type.newVirtualType(typeMirror.toString());
     }

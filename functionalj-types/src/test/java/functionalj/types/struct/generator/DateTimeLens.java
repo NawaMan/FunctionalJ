@@ -108,7 +108,7 @@ public class DateTimeLens {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"child\", new functionalj.types.struct.generator.Getter(\"child\", new Type(null, \"LocalDate\", \"java.time\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"child\", new functionalj.types.struct.generator.Getter(\"child\", new Type(\"java.time\", null, \"LocalDate\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

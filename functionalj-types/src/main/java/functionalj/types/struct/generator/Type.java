@@ -96,21 +96,21 @@ public class Type implements IRequireTypes {
     }
     
     /** char type */
-    public static final Type CHR = new Type("char", "");
+    public static final Type CHR = new Type("", "char");
     /** byte type */
-    public static final Type BYT = new Type("byte", "");
+    public static final Type BYT = new Type("", "byte");
     /** short type */
-    public static final Type SHRT = new Type("short", "");
+    public static final Type SHRT = new Type("", "short");
     /** int type */
-    public static final Type INT = new Type("int", "");
+    public static final Type INT = new Type("", "int");
     /** long type */
-    public static final Type LNG = new Type("long", "");
+    public static final Type LNG = new Type("", "long");
     /** float type */
-    public static final Type FLT = new Type("float", "");
+    public static final Type FLT = new Type("", "float");
     /** double type */
-    public static final Type DBL = new Type("double", "");
+    public static final Type DBL = new Type("", "double");
     /** boolean type */
-    public static final Type BOOL = new Type("boolean", "");
+    public static final Type BOOL = new Type("", "boolean");
     
     /** Character type */
     public static final Type CHARACTER = Type.of(Character.class);
@@ -134,7 +134,7 @@ public class Type implements IRequireTypes {
     /** BigDecimal type */
     public static final Type BIGDECIMAL = Type.of(BigDecimal.class);
     /** string type */
-    public static final Type STR = new Type("String", "");
+    public static final Type STR = new Type("", "String");
     /** String type */
     public static final Type STRING = Type.of(String .class);
     /** Object type */
@@ -257,26 +257,35 @@ public class Type implements IRequireTypes {
     public static Type of(Class<?> clzz, Type ... generics) {
         val pckg = clzz.getPackage().getName().toString();
         val name = clzz.getCanonicalName().toString().substring(pckg.length() + 1 );
-        return new Type(name, pckg).withGenerics(asList(generics));
+        return new Type(pckg, name).withGenerics(asList(generics));
     }
     
-    private final String     encloseName;
-    private final String     simpleName;
-    private final String     packageName;
-    private final boolean    isVirtual;
+    private final String  simpleName;
+    private final String  encloseName;
+    private final String  packageName;
+    private final boolean isVirtual;
     private final List<Type> generics;
     
-    
+    public Type(String simpleName) {
+        this(null, simpleName);
+    }
+    /**
+     * Construct a type with the parameters.
+     * @param packageName  the package name.
+     * @param simpleName   the simple name.
+     */
+    public Type(String packageName, String simpleName) {
+        this(packageName, null, simpleName, (List<Type>)null);
+    }
     
     /**
      * Construct a type with the parameters.
-     * 
+     * @param packageName  the package name.
      * @param encloseName  the enclose component name.
      * @param simpleName   the simple name.
-     * @param packageName  the package name.
      * @param generics     the generic value.
      */
-    public Type(String encloseName, String simpleName, String packageName, String ... generics) {
+    public Type(String packageName, String encloseName, String simpleName, String ... generics) {
         this.encloseName = encloseName;
         this.simpleName  = simpleName;
         this.packageName = packageName;
@@ -284,30 +293,28 @@ public class Type implements IRequireTypes {
         this.generics    
                 = asList(generics)
                 .stream()
-                .map(generic->new Type(generic, null))
+                .map(generic->new Type(null, generic))
                 .collect(toList());
     }
     
     /**
      * Construct a type with the parameters.
-     * 
+     * @param packageName  the package name.
      * @param encloseName  the enclose component name.
      * @param simpleName   the simple name.
-     * @param packageName  the package name.
      * @param generics     the generic value.
      */
-    public Type(String encloseName, String simpleName, String packageName, Type ... generics) {
-        this(encloseName, simpleName, packageName, asList(generics));
+    public Type(String packageName, String encloseName, String simpleName, Type ... generics) {
+        this(packageName, encloseName, simpleName, asList(generics));
     }
     /**
      * Construct a type with the parameters.
-     * 
+     * @param packageName  the package name.
      * @param encloseName  the enclose component name.
      * @param simpleName   the simple name.
-     * @param packageName  the package name.
      * @param generics     the generic value.
      */
-    public Type(String encloseName, String simpleName, String packageName, List<Type> generics) {
+    public Type(String packageName, String encloseName, String simpleName, List<Type> generics) {
         this.encloseName = encloseName;
         this.simpleName  = simpleName;
         this.packageName = packageName;
@@ -317,16 +324,26 @@ public class Type implements IRequireTypes {
                             ? null
                             : generics.stream().filter(Objects::nonNull).collect(toList());
         this.generics = ((genericList == null) || genericList.isEmpty()) ? new ArrayList<Type>() : genericList;
+        
+        if ("LocalDateTime.java.time".equals(fullName())) {
+            System.err.println("Quinn: " + fullName());
+            Stream.of(Thread.currentThread().getStackTrace())
+                .forEach(line -> System.err.println("    " + line));
+        }
     }
     
-    /**
-     * Construct a type with the parameters.
-     * 
-     * @param simpleName   the simple name.
-     * @param packageName  the package name.
-     */
-    public Type(String simpleName, String packageName) {
-        this(null, simpleName, packageName, (List<Type>)null);
+    public Type(String encloseName, String simpleName, String packageName, boolean isVirtual, List<Type> generics) {
+        this.encloseName = encloseName;
+        this.simpleName  = simpleName;
+        this.packageName = packageName;
+        this.isVirtual   = isVirtual;
+        this.generics    = generics;
+        
+        if ("LocalDateTime.java.time".equals(fullName())) {
+            System.err.println("Quinn: " + fullName());
+            Stream.of(Thread.currentThread().getStackTrace())
+                .forEach(line -> System.err.println("    " + line));
+        }
     }
     
     private Type(String simpleName, boolean isVirtual) {
@@ -337,24 +354,25 @@ public class Type implements IRequireTypes {
         this.packageName = null;
         this.isVirtual   = isVirtual;
         this.generics    = emptyList();
+        
+        if ("LocalDateTime.java.time".equals(fullName())) {
+            System.err.println("Quinn: " + fullName());
+            Stream.of(Thread.currentThread().getStackTrace())
+                .forEach(line -> System.err.println("    " + line));
+        }
     }
     
     public static Type newVirtualType(String name) {
         return new Type(name, true);
     }
     
-    public String     encloseName() { return encloseName; }
-    public String     simpleName()  { return simpleName; }
-    public String     packageName() { return packageName; }
-    public boolean    isVirtual()   { return isVirtual; }
+    public String  encloseName() { return encloseName; }
+    public String  simpleName()  { return simpleName; }
+    public String  packageName() { return packageName; }
+    public boolean isVirtual()   { return isVirtual; }
     
-    public Type(String encloseName, String simpleName, String packageName, boolean isVirtual, List<Type> generics) {
-        super();
-        this.encloseName = encloseName;
-        this.simpleName = simpleName;
-        this.packageName = packageName;
-        this.isVirtual = isVirtual;
-        this.generics = generics;
+    public List<Type> generics() {
+        return (generics == null) ? emptyList() : generics;
     }
     
     public Type withGenerics(Type... generics) {
@@ -371,10 +389,6 @@ public class Type implements IRequireTypes {
                 this.generics()
                     .stream()
                     .filter(type -> !((type.packageName == null) && (type.encloseName == null))));
-    }
-    
-    public List<Type> generics() {
-        return (generics == null) ? emptyList() : generics;
     }
     
     /**
@@ -526,7 +540,7 @@ public class Type implements IRequireTypes {
         if ((localTypeWithLens != null) && !localTypeWithLens.contains(simpleName))
             return Core.ObjectLens.type();
         
-        return new Type(null, simpleName() + "." + simpleName() + "Lens", packageName(), false, asList(new Type("HOST", "")));
+        return new Type(null, simpleName() + "." + simpleName() + "Lens", packageName(), false, asList(new Type("", "HOST")));
     }
     
     public Type knownLensType() {
@@ -638,9 +652,9 @@ public class Type implements IRequireTypes {
     
     public String toCode() {
         val params = asList(
+                toStringLiteral(packageName),
                 toStringLiteral(encloseName),
                 toStringLiteral(simpleName),
-                toStringLiteral(packageName),
                 toListCode     (generics, Type::toCode)
         );
         return "new Type("

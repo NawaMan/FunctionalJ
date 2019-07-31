@@ -129,11 +129,11 @@ public class SourceSpec {
     
     /** @return the target type. */
     public Type getTargetType() {
-        return new Type(targetClassName, targetPackageName);
+        return new Type(targetPackageName, targetClassName);
     }
     /** @return the type of this source. */
     public Type toType() {
-        return new Type(specName, packageName);
+        return new Type(packageName, specName);
     }
     public Boolean isClass() {
         return isClass;

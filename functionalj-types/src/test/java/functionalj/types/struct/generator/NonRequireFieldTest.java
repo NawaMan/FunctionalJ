@@ -223,11 +223,11 @@ public class NonRequireFieldTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"a\", new functionalj.types.struct.generator.Getter(\"a\", new Type(null, \"int\", \"\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"b\", new functionalj.types.struct.generator.Getter(\"b\", new Type(null, \"boolean\", \"\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"c\", new functionalj.types.struct.generator.Getter(\"c\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
-                "        map.put(\"d\", new functionalj.types.struct.generator.Getter(\"d\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"e\", new functionalj.types.struct.generator.Getter(\"e\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"a\", new functionalj.types.struct.generator.Getter(\"a\", new Type(\"\", null, \"int\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"b\", new functionalj.types.struct.generator.Getter(\"b\", new Type(\"\", null, \"boolean\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"c\", new functionalj.types.struct.generator.Getter(\"c\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"d\", new functionalj.types.struct.generator.Getter(\"d\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"e\", new functionalj.types.struct.generator.Getter(\"e\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

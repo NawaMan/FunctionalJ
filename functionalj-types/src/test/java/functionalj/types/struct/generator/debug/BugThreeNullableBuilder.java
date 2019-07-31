@@ -193,12 +193,12 @@ public class BugThreeNullableBuilder {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"id\", new functionalj.types.struct.generator.Getter(\"id\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"name\", new functionalj.types.struct.generator.Getter(\"name\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"owner\", new functionalj.types.struct.generator.Getter(\"owner\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
-                "        map.put(\"website\", new functionalj.types.struct.generator.Getter(\"website\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
-                "        map.put(\"country\", new functionalj.types.struct.generator.Getter(\"country\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
-                "        map.put(\"description\", new functionalj.types.struct.generator.Getter(\"description\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"id\", new functionalj.types.struct.generator.Getter(\"id\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"name\", new functionalj.types.struct.generator.Getter(\"name\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"owner\", new functionalj.types.struct.generator.Getter(\"owner\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"website\", new functionalj.types.struct.generator.Getter(\"website\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"country\", new functionalj.types.struct.generator.Getter(\"country\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"description\", new functionalj.types.struct.generator.Getter(\"description\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
@@ -342,12 +342,12 @@ public class BugThreeNullableBuilder {
                 null,
                 new Configurations(true, false, true, true, true, true, true, ""),  // Configurations
                 asList(
-                    new Getter("id",          new Type(null, "String", "java.lang", emptyList()), false, REQUIRED),
-                    new Getter("name",        new Type(null, "String", "java.lang", emptyList()), false, REQUIRED),
-                    new Getter("owner",       new Type(null, "String", "java.lang", emptyList()), true,  NULL),
-                    new Getter("website",     new Type(null, "String", "java.lang", emptyList()), true,  NULL),
-                    new Getter("country",     new Type(null, "String", "java.lang", emptyList()), true,  NULL),
-                    new Getter("description", new Type(null, "String", "java.lang", emptyList()), true,  NULL)),
+                    new Getter("id",          new Type("java.lang", null, "String", emptyList()), false, REQUIRED),
+                    new Getter("name",        new Type("java.lang", null, "String", emptyList()), false, REQUIRED),
+                    new Getter("owner",       new Type("java.lang", null, "String", emptyList()), true,  NULL),
+                    new Getter("website",     new Type("java.lang", null, "String", emptyList()), true,  NULL),
+                    new Getter("country",     new Type("java.lang", null, "String", emptyList()), true,  NULL),
+                    new Getter("description", new Type("java.lang", null, "String", emptyList()), true,  NULL)),
                 asList("Brand", "Product"));
         val dataObjSpec = new StructBuilder(sourceSpec).build();
         val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();

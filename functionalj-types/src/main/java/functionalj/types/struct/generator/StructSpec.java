@@ -78,7 +78,7 @@ public class StructSpec {
             List<GenMethod>      methods,
             List<GenClass>       innerClasses,
             List<ILines>         mores) {
-        this.classSpec         = new GenClass(PUBLIC, NONE, MODIFIABLE, new Type(className, packageName), null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
+        this.classSpec         = new GenClass(PUBLIC, NONE, MODIFIABLE, new Type(packageName, className), null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
         this.sourceClassName   = sourceName;
         this.sourcePackageName = sourcePackageName;
     }
@@ -93,7 +93,7 @@ public class StructSpec {
                 .encloseName(type().simpleName())
                 .simpleName(type().simpleName() + "Lens")
                 .packageName(type().packageName())
-                .generics(asList(new Type("HOST", null)))
+                .generics(asList(new Type(null, "HOST")))
                 .build();
     }
     

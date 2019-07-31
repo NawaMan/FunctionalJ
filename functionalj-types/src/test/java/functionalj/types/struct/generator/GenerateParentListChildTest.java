@@ -57,12 +57,12 @@ public class GenerateParentListChildTest {
     private List<Getter> getters = asList(
             new Getter("names", new Type.TypeBuilder()
                                 .simpleName("List")
-                                .generics(asList(new Type("String", "java.lang")))
+                                .generics(asList(new Type("java.lang", "String")))
                                 .packageName("java.util")
                                 .build()),
             new Getter("children", new Type.TypeBuilder()
                                 .simpleName("List")
-                                .generics(asList(new Type("Child", "me.test")))
+                                .generics(asList(new Type("me.test", "Child")))
                                 .packageName("java.util")
                                 .build())
     );
@@ -172,8 +172,8 @@ public class GenerateParentListChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"names\", new functionalj.types.struct.generator.Getter(\"names\", new Type(null, \"List\", \"java.util\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"children\", new functionalj.types.struct.generator.Getter(\"children\", new Type(null, \"List\", \"java.util\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"names\", new functionalj.types.struct.generator.Getter(\"names\", new Type(\"java.util\", null, \"List\", java.util.Arrays.asList(new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"children\", new functionalj.types.struct.generator.Getter(\"children\", new Type(\"java.util\", null, \"List\", java.util.Arrays.asList(new Type(\"me.test\", null, \"Child\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 
