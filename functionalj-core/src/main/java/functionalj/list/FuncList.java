@@ -49,6 +49,7 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.lens.lenses.AnyLens;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
@@ -591,6 +592,45 @@ public interface FuncList<DATA>
         });
     }
     
+    // -- fillNull --
+    
+    public default <VALUE> FuncList<DATA> fillNull(AnyLens<DATA, VALUE> lens, VALUE replacement) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacement));
+    }
+    
+    public default <VALUE> FuncList<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            VALUE                    replacement) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacement));
+    }
+    
+    public default <VALUE> FuncList<DATA> fillNull(
+            AnyLens<DATA, VALUE> lens, 
+            Supplier<VALUE>      replacementSupplier) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacementSupplier));
+    }
+    
+    public default <VALUE> FuncList<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            Supplier<VALUE>          replacementSupplier) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacementSupplier));
+    }
+    
+    public default <VALUE> FuncList<DATA> fillNull(
+            AnyLens<DATA, VALUE> lens, 
+            Func1<DATA, VALUE>   replacementFunction) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacementFunction));
+    }
+    
+    public default <VALUE> FuncList<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            Func1<DATA, VALUE>       replacementFunction) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacementFunction));
+    }
+    
     //--map with condition --
     
     public default FuncList<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
@@ -645,6 +685,11 @@ public interface FuncList<DATA>
     }
     
     //-- mapWithIndex --
+    
+    public default FuncList<Tuple2<Integer, DATA>> mapWithIndex() {
+        val index = new AtomicInteger();
+        return map(each -> Tuple2.of(index.getAndIncrement(), each));
+    }
     
     public default <T> FuncList<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
         val index = new AtomicInteger();

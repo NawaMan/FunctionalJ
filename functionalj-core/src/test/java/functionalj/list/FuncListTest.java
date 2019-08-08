@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
+import functionalj.lens.LensTest;
 import functionalj.stream.IntStreamPlus;
 import lombok.val;
 
@@ -176,6 +177,22 @@ public class FuncListTest {
                         + "{index:6, word:Seven, length:5}"
                     + "]",
                     mapString);
+    }
+    
+    @Test
+    public void testFillNull() {
+        val drivers = FuncList.of(
+                new LensTest.Driver(new LensTest.Car("Red")),
+                new LensTest.Driver(new LensTest.Car(null)),
+                new LensTest.Driver(new LensTest.Car("Blue"))
+                );
+        val driversOfCarsWithColors = drivers.fillNull(LensTest.Driver.theDriver.car.color, "Green");
+        assertEquals("["
+                + "Driver(car=Car(color=Red)), "
+                + "Driver(car=Car(color=Green)), "
+                + "Driver(car=Car(color=Blue))]",
+            driversOfCarsWithColors.toString());
+        
     }
     
 }

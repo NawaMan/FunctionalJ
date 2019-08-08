@@ -68,6 +68,7 @@ import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.functions.StrFuncs;
+import functionalj.lens.lenses.AnyLens;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
@@ -323,6 +324,45 @@ public interface Streamable<DATA> {
         });
     }
     
+    // -- fillNull --
+    
+    public default <VALUE> Streamable<DATA> fillNull(AnyLens<DATA, VALUE> lens, VALUE replacement) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacement));
+    }
+    
+    public default <VALUE> Streamable<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            VALUE                    replacement) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacement));
+    }
+    
+    public default <VALUE> Streamable<DATA> fillNull(
+            AnyLens<DATA, VALUE> lens, 
+            Supplier<VALUE>      replacementSupplier) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacementSupplier));
+    }
+    
+    public default <VALUE> Streamable<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            Supplier<VALUE>          replacementSupplier) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacementSupplier));
+    }
+    
+    public default <VALUE> Streamable<DATA> fillNull(
+            AnyLens<DATA, VALUE> lens, 
+            Func1<DATA, VALUE>   replacementFunction) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacementFunction));
+    }
+    
+    public default <VALUE> Streamable<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            Func1<DATA, VALUE>       replacementFunction) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacementFunction));
+    }
+    
     //--map with condition --
     
     public default Streamable<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
@@ -377,6 +417,11 @@ public interface Streamable<DATA> {
     }
     
     //-- mapWithIndex --
+    
+    public default Streamable<Tuple2<Integer, DATA>> mapWithIndex() {
+        val index = new AtomicInteger();
+        return map(each -> Tuple2.of(index.getAndIncrement(), each));
+    }
     
     public default <T> Streamable<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
         return deriveWith(stream -> {

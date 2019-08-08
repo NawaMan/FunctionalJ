@@ -75,6 +75,8 @@ import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.functions.StrFuncs;
 import functionalj.functions.ThrowFuncs;
+import functionalj.lens.core.WriteLens;
+import functionalj.lens.lenses.AnyLens;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
@@ -604,6 +606,20 @@ public interface StreamPlus<DATA>
         return ImmutableMap.from(theMap);
     }
     
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            Function<? super DATA, ? extends KEY>   classifier,
+            Function<? super FuncList<DATA>, VALUE> aggregate) {
+        val theMap = new HashMap<KEY, VALUE>();
+        stream()
+            .collect(Collectors.groupingBy(classifier))
+            .forEach((key,list) -> {
+                val valueList      = ImmutableList.from(list);
+                val aggregateValue = aggregate.apply(valueList);
+                theMap.put(key, aggregateValue);
+            });
+        return ImmutableMap.from(theMap);
+    }
+    
     @SuppressWarnings("unchecked")
     public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, ? extends KEY> keyMapper) {
         val theMap = stream().collect(Collectors.toMap(keyMapper, data -> data));
@@ -622,9 +638,17 @@ public interface StreamPlus<DATA>
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
                 Function<? super DATA, ? extends KEY>   keyMapper,
                 Function<? super DATA, ? extends VALUE> valueMapper,
-                BinaryOperator<VALUE> mergeFunction) {
+                BinaryOperator<VALUE>                   mergeFunction) {
         val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
         return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <KEY> FuncMap<KEY, DATA> toMap(
+                Function<? super DATA, ? extends KEY> keyMapper,
+                BinaryOperator<DATA>                  mergeFunction) {
+        val theMap = stream().collect(Collectors.toMap(keyMapper, value -> value, mergeFunction));
+        return (FuncMap<KEY, DATA>) ImmutableMap.from(theMap);
     }
     
     //== Plus ==
@@ -916,27 +940,6 @@ public interface StreamPlus<DATA>
         });
     }
     
-    public default <TARGET> StreamPlus<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
-        return deriveWith(stream -> {
-            return stream.flatMap(mapper);
-        });
-    }
-    
-    public default StreamPlus<DATA> filter(Predicate<? super DATA> predicate) {
-        return deriveWith(stream -> {
-            return (predicate == null)
-                ? stream
-                : stream.filter(predicate);
-        });
-    }
-    public default StreamPlus<DATA> peek(Consumer<? super DATA> action) {
-        return deriveWith(stream -> {
-            return (action == null)
-                    ? stream
-                    : stream.peek(action);
-        });
-    }
-    
     //-- Limit/Skip --
     
     @Override
@@ -1089,6 +1092,104 @@ public interface StreamPlus<DATA>
         });
     }
     
+    // -- fillNull --
+    
+    public default <VALUE> StreamPlus<DATA> fillNull(AnyLens<DATA, VALUE> lens, VALUE replacement) {
+        return fillNull(
+                (Func1<DATA, VALUE>)lens, 
+                ((WriteLens<DATA, VALUE>)lens)::apply, 
+                replacement);
+    }
+    
+    public default <VALUE> StreamPlus<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            VALUE                    replacement) {
+        return deriveWith(stream -> {
+            return (Stream<DATA>)stream.map(orgElmt -> {
+                val value   = get.apply(orgElmt);
+                if (value == null) {
+                    val newElmt = set.apply(orgElmt, replacement);
+                    return (DATA)newElmt;
+                }
+                return orgElmt;
+            });
+        });
+    }
+    
+    public default <VALUE> StreamPlus<DATA> fillNull(
+            AnyLens<DATA, VALUE> lens, 
+            Supplier<VALUE>      replacementSupplier) {
+        return fillNull(
+                (Func1<DATA, VALUE>)lens, 
+                ((WriteLens<DATA, VALUE>)lens)::apply, 
+                replacementSupplier);
+    }
+    
+    public default <VALUE> StreamPlus<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            Supplier<VALUE>          replacementSupplier) {
+        return deriveWith(stream -> {
+            return (Stream<DATA>)stream.map(orgElmt -> {
+                val value   = get.apply(orgElmt);
+                if (value == null) {
+                    val replacement = replacementSupplier.get();
+                    val newElmt     = set.apply(orgElmt, replacement);
+                    return (DATA)newElmt;
+                }
+                return orgElmt;
+            });
+        });
+    }
+    
+    public default <VALUE> StreamPlus<DATA> fillNull(
+            AnyLens<DATA, VALUE> lens, 
+            Func1<DATA, VALUE>   replacementSupplier) {
+        return fillNull(
+                (Func1<DATA, VALUE>)lens, 
+                ((WriteLens<DATA, VALUE>)lens)::apply, 
+                replacementSupplier);
+    }
+    
+    public default <VALUE> StreamPlus<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            Func1<DATA, VALUE>       replacementFunction) {
+        return deriveWith(stream -> {
+            return (Stream<DATA>)stream.map(orgElmt -> {
+                val value   = get.apply(orgElmt);
+                if (value == null) {
+                    val replacement = replacementFunction.apply(orgElmt);
+                    val newElmt     = set.apply(orgElmt, replacement);
+                    return (DATA)newElmt;
+                }
+                return orgElmt;
+            });
+        });
+    }
+    
+    public default <TARGET> StreamPlus<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+        return deriveWith(stream -> {
+            return stream.flatMap(mapper);
+        });
+    }
+    
+    public default StreamPlus<DATA> filter(Predicate<? super DATA> predicate) {
+        return deriveWith(stream -> {
+            return (predicate == null)
+                ? stream
+                : stream.filter(predicate);
+        });
+    }
+    public default StreamPlus<DATA> peek(Consumer<? super DATA> action) {
+        return deriveWith(stream -> {
+            return (action == null)
+                    ? stream
+                    : stream.peek(action);
+        });
+    }
+    
     //--map with condition --
     
     public default StreamPlus<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
@@ -1144,6 +1245,11 @@ public interface StreamPlus<DATA>
     }
     
     //-- mapWithIndex --
+    
+    public default StreamPlus<Tuple2<Integer, DATA>> mapWithIndex() {
+        val index = new AtomicInteger();
+        return map(each -> Tuple2.of(index.getAndIncrement(), each));
+    }
     
     public default <T> StreamPlus<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
         val index = new AtomicInteger();
