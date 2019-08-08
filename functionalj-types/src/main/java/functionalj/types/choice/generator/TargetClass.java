@@ -25,7 +25,6 @@ package functionalj.types.choice.generator;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
@@ -51,27 +50,6 @@ public class TargetClass implements Lines {
     public TargetClass(SourceSpec spec) {
         this.spec = spec;
         this.type = new Type(spec.sourceType.packageName(), null, spec.targetName, spec.generics);
-    }
-    
-    // TODO - type can do these.
-    
-    public String genericParams() {
-        return (spec.generics.isEmpty() ? "" : (spec.generics.stream().map(g -> g.name).collect(joining(","))));
-    }
-    public String generics() {
-        return (spec.generics.isEmpty() ? "" : ("<" + genericParams() + ">"));
-    }
-    public String typeWithGenerics() {
-        return type.simpleName() + generics();
-    }
-    public String genericDefParams() {
-        return (spec.generics.isEmpty() ? "" : (spec.generics.stream().map(g -> g.withBound).collect(joining(","))));
-    }
-    public String genericDef() {
-        return (spec.generics.isEmpty() ? "" : ("<" + genericDefParams() + ">"));
-    }
-    public String typeWithGenericDef() {
-        return type.simpleName() + genericDef();
     }
     
     @Override
@@ -183,7 +161,7 @@ public class TargetClass implements Lines {
         
         val choiceLens = new ChoiceLensBuilder(spec).build();
         
-        val typeName     = typeWithGenerics();
+        val typeName     = type.typeWithGenerics();
         val pckgName     = spec.sourceType.packageName();
         val importLines  = imports.stream().map(i -> "import " + i + ";").collect(toList());
         val specConstant = (spec.specObjName == null) ? "    " : "    public static final " + SourceSpec.class.getCanonicalName() + " " + spec.specObjName + " = " + spec.toCode() + ";";
@@ -195,7 +173,7 @@ public class TargetClass implements Lines {
                 asList("// " + spec.sourceType.fullName()),
                 asList(format("")),
                 asList(format("@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})")),
-                asList(format("public abstract class %1$s implements %6$s<%2$s.%2$sFirstSwitch%3$s>, Pipeable<%4$s>%5$s {", typeWithGenericDef(), type.simpleName(), generics(), typeWithGenerics(), selfDef, IChoice.class.getSimpleName())),
+                asList(format("public abstract class %1$s implements %6$s<%2$s.%2$sFirstSwitch%3$s>, Pipeable<%4$s>%5$s {", type.typeWithGenericDef(), type.simpleName(), type.genericsString(), type.typeWithGenerics(), selfDef, IChoice.class.getSimpleName())),
                 asList(format("    ")),
                 subClassConstructors,
                 asList(format("    ")),

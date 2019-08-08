@@ -83,7 +83,7 @@ public class TargetTypeGeneral implements Lines {
     }
     
     private List<String> prepareFirstSwitch(final java.lang.String targetName) {
-        val firstSwitchTypeDef = format("%1$sFirstSwitch%2$s", targetName, targetClass.generics());
+        val firstSwitchTypeDef = format("%1$sFirstSwitch%2$s", targetName, targetClass.getType().genericsString());
         val firstSwitchLines = 
                 asList(format(
                           "private final %1$s __switch = new %1$s(this);\n"

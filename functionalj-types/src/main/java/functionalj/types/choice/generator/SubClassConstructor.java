@@ -47,14 +47,14 @@ public class SubClassConstructor implements Lines {
     public List<String> lines() {
         val sourceName = targetClass.spec.sourceType.simpleName();
         val name       = choice.name;
-        val genericDef = targetClass.genericDef().isEmpty() ? "" : targetClass.genericDef() + " ";
+        val genericDef = targetClass.getType().genericDef().isEmpty() ? "" : targetClass.getType().genericDef() + " ";
         if (!choice.isParameterized()) {
-            val isGeneric = !targetClass.generics().isEmpty();
+            val isGeneric = !targetClass.getType().genericsString().isEmpty();
             val instance  = isGeneric ? "" : "public static final " + name + " " + Utils.toCamelCase(name) + " = " + name + ".instance;";
             return asList(
                 format(instance),
-                format("public static final %1$s%2$s %3$s() {", genericDef, name + targetClass.generics(), name),
-                format("    return %3$s.instance;", targetClass.genericDef(), targetClass.typeWithGenerics(), name),
+                format("public static final %1$s%2$s %3$s() {", genericDef, name + targetClass.getType().genericsString(), name),
+                format("    return %3$s.instance;", targetClass.getType().genericDef(), targetClass.getType().typeWithGenerics(), name),
                 format("}")
             );
         }
@@ -64,9 +64,9 @@ public class SubClassConstructor implements Lines {
         val paramDefs  = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
         val paramCalls = choice.mapJoinParams(p ->                                   p.name, ", ");
         return asList(
-                format      ("public static final %1$s%2$s %3$s(%4$s) {", genericDef, name + targetClass.generics(), name, paramDefs),
+                format      ("public static final %1$s%2$s %3$s(%4$s) {", genericDef, name + targetClass.getType().genericsString(), name, paramDefs),
                 isV ? format("    %1$s.%2$s(%3$s);",                      sourceName, validateName, paramCalls) : null,
-                format      ("    return new %1$s%2$s(%3$s);",            name, targetClass.generics(), paramCalls),
+                format      ("    return new %1$s%2$s(%3$s);",            name, targetClass.getType().genericsString(), paramCalls),
                 format      ("}")
         );
     }
