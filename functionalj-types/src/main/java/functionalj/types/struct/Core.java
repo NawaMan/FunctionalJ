@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.types.struct;
 
-import functionalj.types.struct.generator.Type;
+import functionalj.types.Type;
 
 /**
  * This class purpose is to allow decoupling of the annotation projects and the core project.

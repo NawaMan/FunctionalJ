@@ -37,6 +37,8 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.stream.Stream;
 
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.model.GenClass;
 import functionalj.types.struct.generator.model.GenConstructor;
@@ -73,7 +75,7 @@ public class LensClassBuilder {
                 .encloseName(dataObjClassName)
                 .simpleName (dataObjClassName + "Lens")
                 .packageName(sourceSpec.getPackageName())
-                .generics   (asList(new Type(null, "HOST")))
+                .generics   (asList(new Generic("HOST")))
                 .build();
         val superType = ObjectLensImpl.type();
         
@@ -83,7 +85,7 @@ public class LensClassBuilder {
         val lensSpecType = new Type.TypeBuilder()
                 .packageName(Core.LensSpec.type().packageName())
                 .simpleName (Core.LensSpec.type().simpleName())
-                .generics   (asList(new Type(null, "HOST"), new Type(null, dataObjClassName)))
+                .generics   (asList(new Generic("HOST"), new Generic(dataObjClassName)))
                 .build();
         
         val consParams  = asList(new GenParam("spec", lensSpecType));
@@ -92,7 +94,7 @@ public class LensClassBuilder {
         
         val lensClass = new GenClass(
                 PUBLIC, STATIC, MODIFIABLE, lensType, "HOST",
-                asList   (superType.withGenerics(asList(new Type(null, "HOST"), new Type(null, dataObjClassName)))),
+                asList   (superType.withGenerics(asList(new Generic("HOST"), new Generic(dataObjClassName)))),
                 emptyList(),
                 asList   (constructor),
                 lensFields.collect(toList()),
@@ -111,7 +113,7 @@ public class LensClassBuilder {
         val dataObjClassName = sourceSpec.getTargetClassName();
         val packageName      = sourceSpec.getTargetPackageName();
         val encloseName      = sourceSpec.getEncloseName();
-        val lensType         = sourceSpec.getTargetType().lensType(packageName, encloseName, null).withGenerics(asList(new Type(null, dataObjClassName)));
+        val lensType         = sourceSpec.getTargetType().lensType(packageName, encloseName, null).withGenerics(asList(new Generic(dataObjClassName)));
         val defaultValue     = String.format("new %1$s<>(%2$s.of(%3$s.class))", lensType.simpleName(), Core.LensSpec.simpleName(), dataObjClassName);
         val theField         = new GenField(PUBLIC, FINAL, STATIC, "the"+dataObjClassName, lensType, defaultValue);
         return theField;
@@ -159,19 +161,20 @@ public class LensClassBuilder {
     
     private Type getLensTypeDef(Type orgType, Type lensType) {
         if (lensType.fullName().equals(Core.ObjectLens.type().fullName()))
-            return lensType.withGenerics(asList(new Type(null, "HOST"), orgType));
-        return lensType.withGenerics(asList(new Type(null, "HOST")));
+            return lensType.withGenerics(asList(new Generic("HOST"), new Generic(orgType)));
+        return lensType.withGenerics(asList(new Generic("HOST")));
     }
     
     private GenField createGenListLensField(String dataObjName, String name, Type type, String withName) {
         val packageName  = sourceSpec.getPackageName();
         val encloseName  = sourceSpec.getEncloseName();
         val withLens     = sourceSpec.getTypeWithLens();
-        val paramType    = type.generics().get(0);
+        val paramGeneric = type.generics().get(0);
+        val paramType    = paramGeneric.toType();
         val lensGenerics = asList(
-                                new Type(null, "HOST"), 
-                                paramType, 
-                                getLensTypeDef(paramType, paramType.lensType(packageName, encloseName, withLens)));
+                                new Generic("HOST"), 
+                                paramGeneric, 
+                                new Generic(getLensTypeDef(paramType, paramType.lensType(packageName, encloseName, withLens))));
         val lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
         val isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
         val spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
@@ -184,12 +187,15 @@ public class LensClassBuilder {
         val packageName  = sourceSpec.getPackageName();
         val encloseName  = sourceSpec.getEncloseName();
         val withLens     = sourceSpec.getTypeWithLens();
-        val keyType      = type.generics().get(0);
-        val valueType    = type.generics().get(1);
-        val lensGenerics = asList(new Type(null, "HOST"), 
-                                keyType, valueType,
-                                getLensTypeDef(keyType,   keyType.lensType(packageName, encloseName, withLens)),
-                                getLensTypeDef(valueType, valueType.lensType(packageName, encloseName, withLens)));
+        val keyGeneric   = type.generics().get(0);
+        val valueGeneric = type.generics().get(1);
+        val keyType      = keyGeneric.toType();
+        val valueType    = valueGeneric.toType();
+        val lensGenerics = asList(new Generic("HOST"), 
+                                  keyGeneric,
+                                  valueGeneric,
+                                  new Generic(getLensTypeDef(keyType,   keyType.lensType(packageName, encloseName, withLens))),
+                                  new Generic(getLensTypeDef(valueType, valueType.lensType(packageName, encloseName, withLens))));
         val lensType  = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
         val keySpec   = keyType  .lensType(packageName, encloseName, withLens).isCustomLens() ? keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::new" : keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::of";
         val valueSpec = valueType.lensType(packageName, encloseName, withLens).isCustomLens() ? valueType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : valueType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
@@ -202,11 +208,12 @@ public class LensClassBuilder {
         val packageName  = sourceSpec.getPackageName();
         val encloseName  = sourceSpec.getEncloseName();
         val withLens     = sourceSpec.getTypeWithLens();
-        val paramType    = type.generics().get(0);
+        val paramGeneric = type.generics().get(0);
+        val paramType    = paramGeneric.toType();
         val lensGenerics = asList(
-                            new Type(null, "HOST"), 
-                            paramType, 
-                            getLensTypeDef(paramType, paramType.lensType(packageName, encloseName, withLens)));
+                            new Generic("HOST"), 
+                            paramGeneric, 
+                            new Generic(getLensTypeDef(paramType, paramType.lensType(packageName, encloseName, withLens))));
         val lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
         val isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
         val spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
@@ -219,12 +226,15 @@ public class LensClassBuilder {
         val packageName  = sourceSpec.getPackageName();
         val encloseName  = sourceSpec.getEncloseName();
         val withLens     = sourceSpec.getTypeWithLens();
-        val keyType      = type.generics().get(0);
-        val valueType    = type.generics().get(1);
-        val lensGenerics = asList(new Type(null, "HOST"), 
-                                keyType, valueType,
-                                getLensTypeDef(keyType,   keyType.lensType(packageName, encloseName, withLens)),
-                                getLensTypeDef(valueType, valueType.lensType(packageName, encloseName, withLens)));
+        val keyGeneric   = type.generics().get(0);
+        val valueGeneric = type.generics().get(1);
+        val keyType      = keyGeneric.toType();
+        val valueType    = valueGeneric.toType();
+        val lensGenerics = asList(new Generic("HOST"), 
+                                  keyGeneric,
+                                  valueGeneric,
+                                  new Generic(getLensTypeDef(keyType,   keyType.lensType(packageName, encloseName, withLens))),
+                                  new Generic(getLensTypeDef(valueType, valueType.lensType(packageName, encloseName, withLens))));
         val lensType  = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
         val keySpec   = keyType  .lensType(packageName, encloseName, withLens).isCustomLens() ? keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::new" : keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::of";
         val valueSpec = valueType.lensType(packageName, encloseName, withLens).isCustomLens() ? valueType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : valueType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
@@ -237,8 +247,9 @@ public class LensClassBuilder {
         val packageName  = sourceSpec.getPackageName();
         val encloseName  = sourceSpec.getEncloseName();
         val withLens     = sourceSpec.getTypeWithLens();
-        val paramType    = type.generics().get(0);
-        val lensGenerics = asList(new Type(null, "HOST"), paramType, getLensTypeDef(paramType, paramType.lensType(packageName, encloseName, withLens)));
+        val paramGeneric = type.generics().get(0);
+        val paramType    = paramGeneric.toType();
+        val lensGenerics = asList(new Generic("HOST"), paramGeneric, new Generic(getLensTypeDef(paramType, paramType.lensType(packageName, encloseName, withLens))));
         val lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
         val isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
         val spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
@@ -251,8 +262,9 @@ public class LensClassBuilder {
         val packageName  = sourceSpec.getPackageName();
         val encloseName  = sourceSpec.getEncloseName();
         val withLens     = sourceSpec.getTypeWithLens();
-        val paramType    = type.generics().get(0);
-        val lensGenerics = asList(new Type(null, "HOST"), paramType, getLensTypeDef(paramType, paramType.lensType(packageName, encloseName, withLens)));
+        val paramGeneric = type.generics().get(0);
+        val paramType    = paramGeneric.toType();
+        val lensGenerics = asList(new Generic("HOST"), paramGeneric, new Generic(getLensTypeDef(paramType, paramType.lensType(packageName, encloseName, withLens))));
         val lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
         val isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
         val spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";

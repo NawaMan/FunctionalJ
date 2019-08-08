@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.types.elm.processor;
 
-import functionalj.types.struct.generator.Type;
+import functionalj.types.Type;
 
 /**
  * This class represent data type in Elm.

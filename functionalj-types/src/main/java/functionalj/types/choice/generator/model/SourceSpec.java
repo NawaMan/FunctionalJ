@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import lombok.val;
 
 public class SourceSpec {

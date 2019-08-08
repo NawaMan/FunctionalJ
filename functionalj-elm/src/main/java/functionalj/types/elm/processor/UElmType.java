@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import functionalj.types.struct.generator.Type;
+import functionalj.types.Type;
 import lombok.val;
 
 /**
@@ -126,23 +126,23 @@ public class UElmType {
     }
     
     private static String elmListType(Type type) {
-        val aType   = type.generics().get(0);
+        val aType   = type.generics().get(0).toType();
         val aStrg   = param(aType);
         val elmType = "List " + aStrg;
         return elmType;
     }
     
     private static String elmMapType(Type type) {
-        val kType = type.generics().get(0);
+        val kType = type.generics().get(0).toType();
         val kStrg = param(kType);
-        val vType = type.generics().get(1);
+        val vType = type.generics().get(1).toType();
         val vStrg = param(vType);
         val elmType = "Dict " + kStrg + " " + vStrg;
         return elmType;
     }
     
     public static String elmMayBeType(Type type) {
-        val aType = type.generics().get(0);
+        val aType = type.generics().get(0).toType();
         val aStrg = param(aType);
         val elmType = "Maybe " + aStrg;
         return elmType;
@@ -176,7 +176,7 @@ public class UElmType {
         
         boolean isOptionalType = type.isOptional() || type.isNullable();
         if (isNullable || isOptionalType) {
-            val paramType    = isOptionalType ? type.generics().get(0) : type;
+            val paramType    = isOptionalType ? type.generics().get(0).toType() : type;
             val paramEncoder = encoderNameOf(paramType, name);
             return "Maybe.withDefault Json.Encode.null (Maybe.map " + paramEncoder + ")";
         }
@@ -187,7 +187,7 @@ public class UElmType {
         
         val typeName = toCamelCase(type.simpleName());
         if (type.isList() || type.isFuncList()) {
-            val paramType            = type.generics().get(0);
+            val paramType            = type.generics().get(0).toType();
             val genericPrimitiveType = primitiveTypes.get(paramType);
             if (genericPrimitiveType != null)
                 return "Json.Encode.list Json.Encode." + genericPrimitiveType.toLowerCase() + " " + name;

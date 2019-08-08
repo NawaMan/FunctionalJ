@@ -32,15 +32,13 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import functionalj.types.choice.generator.Generator;
-import functionalj.types.choice.generator.TargetClass;
+import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.Method;
+import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.MethodParam;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.choice.generator.model.Type;
-import functionalj.types.choice.generator.model.Method.Kind;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -259,9 +257,9 @@ public class FullGeneratorTest {
               "            return map;\n" + 
               "        }\n" + 
               "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-              "            .with(\"r\", new functionalj.types.choice.generator.model.CaseParam(\"r\", new functionalj.types.choice.generator.model.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
-              "            .with(\"g\", new functionalj.types.choice.generator.model.CaseParam(\"g\", new functionalj.types.choice.generator.model.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
-              "            .with(\"b\", new functionalj.types.choice.generator.model.CaseParam(\"b\", new functionalj.types.choice.generator.model.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
+              "            .with(\"r\", new functionalj.types.choice.generator.model.CaseParam(\"r\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
+              "            .with(\"g\", new functionalj.types.choice.generator.model.CaseParam(\"g\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
+              "            .with(\"b\", new functionalj.types.choice.generator.model.CaseParam(\"b\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, null))\n" + 
               "            .build();\n" + 
               "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
               "            return __schema__;\n" + 

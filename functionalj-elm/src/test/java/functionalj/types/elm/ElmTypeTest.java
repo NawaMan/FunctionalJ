@@ -7,12 +7,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.elm.processor.ElmType;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
-import functionalj.types.struct.generator.Type;
 
 public class ElmTypeTest {
     
@@ -38,12 +39,12 @@ public class ElmTypeTest {
             asList(
                 new Getter(
                     "firstName", 
-                    new functionalj.types.struct.generator.Type("java.lang", null, "String", emptyList()), 
+                    new Type("java.lang", null, "String", emptyList()), 
                     false, 
                     REQUIRED), 
                 new Getter(
                     "lastName", 
-                    new functionalj.types.struct.generator.Type("java.lang", null, "String", emptyList()), 
+                    new Type("java.lang", null, "String", emptyList()), 
                     false, 
                     REQUIRED)), 
             asList("User"));
@@ -52,7 +53,7 @@ public class ElmTypeTest {
     public static final functionalj.types.choice.generator.model.SourceSpec loginStatusSpec 
             = new functionalj.types.choice.generator.model.SourceSpec(
                     "LoginStatus", 
-                    new functionalj.types.choice.generator.model.Type(
+                    new Type(
                             "example.functionalj.choice", 
                             "ChoiceTypeExamples", 
                             "LoginStatusSpec", 
@@ -66,7 +67,7 @@ public class ElmTypeTest {
                                     asList(
                                             new CaseParam(
                                                     "userName", 
-                                                    new functionalj.types.choice.generator.model.Type(
+                                                    new Type(
                                                             "java.lang", 
                                                             null, 
                                                             "String", 
@@ -83,14 +84,14 @@ public class ElmTypeTest {
         assertEquals("Bool",   "" + new ElmType(Type.BOOL));
         assertEquals("Float",  "" + new ElmType(Type.DOUBLE));
         assertEquals("String", "" + new ElmType(Type.STRING));
-        assertEquals("List String",     "" + new ElmType(Type.LIST.withGenerics(Type.STRING)));
-        assertEquals("Dict Int String", "" + new ElmType(Type.MAP.withGenerics(Type.INT, Type.STRING)));
+        assertEquals("List String",     "" + new ElmType(Type.LIST.withGenerics(new Generic(Type.STRING))));
+        assertEquals("Dict Int String", "" + new ElmType(Type.MAP.withGenerics(new Generic(Type.INT), new Generic(Type.STRING))));
     }
     
     @Test
     public void testComplex() {
-        assertEquals("List (List String)",     "" + new ElmType(Type.LIST.withGenerics(Type.LIST.withGenerics(Type.STRING))));
-        assertEquals("Dict Int (List String)", "" + new ElmType(Type.MAP.withGenerics(Type.INT, Type.LIST.withGenerics(Type.STRING))));
+        assertEquals("List (List String)",     "" + new ElmType(Type.LIST.withGenerics(new Generic(Type.LIST.withGenerics(new Generic(Type.STRING))))));
+        assertEquals("Dict Int (List String)", "" + new ElmType(Type.MAP.withGenerics(new Generic(Type.INT), new Generic(Type.LIST.withGenerics(new Generic(Type.STRING))))));
     }
     
 }

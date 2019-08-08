@@ -82,7 +82,7 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     
     private static Function<CaseParam, String> toParamType = ElmChoiceBuilder::toParamType;
     private static String toParamType(CaseParam caseParam) {
-        val paramType    = caseParam.type.toStructType();
+        val paramType    = caseParam.type;
         val elmParamType = caseParam.isNullable 
                 ? elmParamType(elmMayBeOfType(paramType))
                 : elmParamType(paramType);
@@ -138,7 +138,7 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     private static Function<CaseParam, String> toCaseParam = ElmChoiceBuilder::toCaseParam;
     
     private static String toCaseParam(CaseParam caseParam) {
-        val encoder = encoderNameOf(caseParam.type.toStructType(), caseParam.name, caseParam.isNullable);
+        val encoder = encoderNameOf(caseParam.type, caseParam.name, caseParam.isNullable);
         val name    = caseParam.name;
         return "( \"" + name + "\", " + encoder + " )";
     }
@@ -188,11 +188,11 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     
     private static Function<CaseParam, ILines> toChoiceParamDecoder = ElmChoiceBuilder::toChoiceParamDecoder;
     private static ILines toChoiceParamDecoder(CaseParam caseParam) {
-        val caseType = caseParam.type.toStructType();
+        val caseType = caseParam.type;
         val isList   = caseType.isList()
                     || caseType.isFuncList();
         val bareType = (caseType.isNullable() || caseType.isOptional() || isList)
-                     ? caseType.generics().get(0)
+                     ? caseType.generics().get(0).toType()
                      : caseType;
         val isNullable = caseParam.isNullable
                       || caseType.isNullable()

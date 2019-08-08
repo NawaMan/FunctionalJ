@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import functionalj.types.Type;
 import functionalj.types.struct.generator.model.GenClass;
 import functionalj.types.struct.generator.model.GenMethod;
 import functionalj.types.struct.generator.model.GenParam;

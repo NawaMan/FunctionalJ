@@ -37,7 +37,6 @@ import java.util.Random;
 import java.util.UUID;
 
 import functionalj.types.struct.Core;
-import functionalj.types.struct.generator.Type;
 import lombok.val;
 
 public enum DefaultValue {

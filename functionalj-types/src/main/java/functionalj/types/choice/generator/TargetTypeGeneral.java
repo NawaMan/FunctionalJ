@@ -59,7 +59,7 @@ public class TargetTypeGeneral implements Lines {
     public TargetTypeGeneral(TargetClass targetClass, List<Case> choices) {
         this.targetClass = targetClass;
         this.choices     = choices;
-        this.targetName  = targetClass.type.simpleName;
+        this.targetName  = targetClass.type.simpleName();
     }
     
     @Override

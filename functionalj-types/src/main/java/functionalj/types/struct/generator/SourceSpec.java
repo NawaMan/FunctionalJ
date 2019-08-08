@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.function.Function;
 
+import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
 import lombok.Value;
 import lombok.experimental.Wither;

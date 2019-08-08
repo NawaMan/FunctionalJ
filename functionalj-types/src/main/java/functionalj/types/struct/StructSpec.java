@@ -49,13 +49,14 @@ import javax.tools.Diagnostic;
 
 import functionalj.types.DefaultTo;
 import functionalj.types.DefaultValue;
+import functionalj.types.Generic;
 import functionalj.types.Nullable;
 import functionalj.types.Struct;
+import functionalj.types.Type;
 import functionalj.types.common;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
-import functionalj.types.struct.generator.Type;
 import lombok.val;
 
 public class StructSpec {
@@ -338,6 +339,7 @@ public class StructSpec {
             
             val generics = ((DeclaredType)typeMirror).getTypeArguments().stream()
                     .map(typeArg -> getType(element, (TypeMirror)typeArg))
+                    .map(type    -> new Generic(type))
                     .collect(toList());
             
             val packageName = getPackageName(element, typeElement);

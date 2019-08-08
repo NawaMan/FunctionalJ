@@ -28,6 +28,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import functionalj.types.DefaultValue;
+import functionalj.types.Type;
 import lombok.val;
 
 public class CaseParam {
@@ -48,11 +49,11 @@ public class CaseParam {
     }
     
     public String defaultValueCode() {
-        return (defValue == null) ? "null" : DefaultValue.defaultValueCode(type.toStructType(), defValue);
+        return (defValue == null) ? "null" : DefaultValue.defaultValueCode(type, defValue);
     }
     
     public Object defaultValue() {
-        return (defValue == null) ? "null" : DefaultValue.defaultValue(type.toStructType(), defValue);
+        return (defValue == null) ? "null" : DefaultValue.defaultValue(type, defValue);
     }
     
     public String toCode() {
@@ -60,7 +61,7 @@ public class CaseParam {
                 toStringLiteral(name),
                 type.toCode(),
                 "" + isNullable,
-                (defValue == null) ? "null" : DefaultValue.defaultValueCode(type.toStructType(), defValue)
+                (defValue == null) ? "null" : DefaultValue.defaultValueCode(type, defValue)
         );
         return "new " + this.getClass().getCanonicalName() + "("
                 + params.stream().collect(joining(", "))

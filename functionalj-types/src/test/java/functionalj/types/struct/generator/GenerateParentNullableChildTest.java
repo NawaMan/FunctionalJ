@@ -30,10 +30,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.types.struct.generator.Getter;
-import functionalj.types.struct.generator.SourceSpec;
-import functionalj.types.struct.generator.StructBuilder;
-import functionalj.types.struct.generator.Type;
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -57,12 +55,12 @@ public class GenerateParentNullableChildTest {
     private List<Getter> getters = asList(
             new Getter("nullableName", new Type.TypeBuilder()
                                 .simpleName("Nullable")
-                                .generics(asList(new Type("java.lang", "String")))
+                                .generics(asList(new Generic(new Type("java.lang", "String"))))
                                 .packageName("nullablej.nullable")
                                 .build()),
             new Getter("nullableChild", new Type.TypeBuilder()
                                 .simpleName("Nullable")
-                                .generics(asList(new Type("me.test", "Child")))
+                                .generics(asList(new Generic(new Type("me.test", "Child"))))
                                 .packageName("nullablej.nullable")
                                 .build())
     );
@@ -81,8 +79,8 @@ public class GenerateParentNullableChildTest {
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.types.IPostConstruct;\n" + 
                 "import functionalj.types.IStruct;\n" + 
+                "import functionalj.types.Type;\n" + 
                 "import functionalj.types.struct.generator.Getter;\n" + 
-                "import functionalj.types.struct.generator.Type;\n" + 
                 "import java.lang.Exception;\n" + 
                 "import java.lang.Object;\n" + 
                 "import java.util.HashMap;\n" + 
@@ -165,8 +163,8 @@ public class GenerateParentNullableChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"nullableName\", new functionalj.types.struct.generator.Getter(\"nullableName\", new Type(\"nullablej.nullable\", null, \"Nullable\", java.util.Arrays.asList(new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"nullableChild\", new functionalj.types.struct.generator.Getter(\"nullableChild\", new Type(\"nullablej.nullable\", null, \"Nullable\", java.util.Arrays.asList(new Type(\"me.test\", null, \"Child\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"nullableName\", new functionalj.types.struct.generator.Getter(\"nullableName\", new functionalj.types.Type(\"nullablej.nullable\", null, \"Nullable\", java.util.Arrays.asList(new functionalj.types.Generic(\"java.lang.String\", \"java.lang.String\", java.util.Arrays.asList(new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()))))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"nullableChild\", new functionalj.types.struct.generator.Getter(\"nullableChild\", new functionalj.types.Type(\"nullablej.nullable\", null, \"Nullable\", java.util.Arrays.asList(new functionalj.types.Generic(\"me.test.Child\", \"me.test.Child\", java.util.Arrays.asList(new functionalj.types.Type(\"me.test\", null, \"Child\", java.util.Collections.emptyList()))))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

@@ -3,16 +3,16 @@ package functionalj.types.choice.generator;
 import static functionalj.types.choice.generator.model.Method.Kind.STATIC;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.Method;
-import functionalj.types.choice.generator.model.Type;
 import lombok.val;
 
 public class UnitOfMeasureGeneratorTest {
@@ -167,7 +167,7 @@ public class UnitOfMeasureGeneratorTest {
                 "            return map;\n" + 
                 "        }\n" + 
                 "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "            .with(\"celsius\", new functionalj.types.choice.generator.model.CaseParam(\"celsius\", new functionalj.types.choice.generator.model.Type(null, null, \"double\", java.util.Collections.emptyList()), false, null))\n" + 
+                "            .with(\"celsius\", new functionalj.types.choice.generator.model.CaseParam(\"celsius\", new functionalj.types.Type(null, null, \"double\", java.util.Collections.emptyList()), false, null))\n" + 
                 "            .build();\n" + 
                 "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "            return __schema__;\n" + 
@@ -202,7 +202,7 @@ public class UnitOfMeasureGeneratorTest {
                 "            return map;\n" + 
                 "        }\n" + 
                 "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "            .with(\"fahrenheit\", new functionalj.types.choice.generator.model.CaseParam(\"fahrenheit\", new functionalj.types.choice.generator.model.Type(null, null, \"double\", java.util.Collections.emptyList()), false, null))\n" + 
+                "            .with(\"fahrenheit\", new functionalj.types.choice.generator.model.CaseParam(\"fahrenheit\", new functionalj.types.Type(null, null, \"double\", java.util.Collections.emptyList()), false, null))\n" + 
                 "            .build();\n" + 
                 "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "            return __schema__;\n" + 

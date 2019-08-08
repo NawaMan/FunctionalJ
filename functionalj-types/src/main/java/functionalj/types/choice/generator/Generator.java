@@ -26,11 +26,11 @@ package functionalj.types.choice.generator;
 import java.util.ArrayList;
 import java.util.List;
 
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
-import functionalj.types.choice.generator.model.Generic;
 import functionalj.types.choice.generator.model.Method;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.choice.generator.model.Type;
 import lombok.Value;
 
 

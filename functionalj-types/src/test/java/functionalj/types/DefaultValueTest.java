@@ -1,11 +1,11 @@
 package functionalj.types;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import functionalj.types.struct.Core;
-import functionalj.types.struct.generator.Type;
 
 public class DefaultValueTest {
 

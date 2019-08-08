@@ -25,11 +25,17 @@ package functionalj.lens.lenses;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
+import functionalj.lens.lenses.java.time.InstantAccess;
+import functionalj.lens.lenses.java.time.LocalDateTimeAccess;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 import nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
@@ -39,7 +45,7 @@ public interface LongAccess<HOST>
             NumberAccess<HOST, Long, LongAccess<HOST>>, 
             ToLongFunction<HOST>,
             ConcreteAccess<HOST, Long, LongAccess<HOST>> {
-
+    
     @Override
     public default LongAccess<HOST> newAccess(Function<HOST, Long> accessToValue) {
         return accessToValue::apply;
@@ -49,6 +55,24 @@ public interface LongAccess<HOST>
         return apply(host).longValue();
     }
     
+    public default InstantAccess<HOST> toInstant() {
+        return host -> {
+            long timestampMilliSecond = apply(host);
+            return Instant.ofEpochMilli(timestampMilliSecond);
+        };
+    }
+    
+    public default LocalDateTimeAccess<HOST> toLocalDateTime() {
+        return toLocalDateTime(ZoneId.systemDefault());
+    }
+    
+    public default LocalDateTimeAccess<HOST> toLocalDateTime(ZoneId zone) {
+        return host -> {
+            val timestampMilliSecond = apply(host);
+            val instant = Instant.ofEpochMilli(timestampMilliSecond);
+            return LocalDateTime.ofInstant(instant, zone);
+        };
+    }
     
     public default MathOperators<Long> __mathOperators() {
         return __LongMathOperators;
@@ -69,7 +93,7 @@ public interface LongAccess<HOST>
             return -1L;
         }
         @Override
-        public Integer toInt(Long number) {
+        public Integer toInteger(Long number) {
             return toLong(number).intValue();
         }
         @Override
@@ -119,21 +143,21 @@ public interface LongAccess<HOST>
             long v2 = (number2 == null) ? 0 : number2.longValue();
             return v1 % v2;
         }
-
+        
         @Override
         public Tuple2<Long, Long> divideAndRemainder(Long number1, Long number2) {
             long v1 = (number1 == null) ? 0 : number1.longValue();
             long v2 = (number2 == null) ? 0 : number2.longValue();
             return Tuple.of(v1 / v2, v1 % v2);
         }
-
+        
         @Override
         public Long pow(Long number1, Long number2) {
             long v1 = (number1 == null) ? 0 : number1.longValue();
             long v2 = (number2 == null) ? 0 : number2.longValue();
             return (long)Math.pow(v1, v2);
         }
-
+        
         @Override
         public Long abs(Long number) {
             long v = (number == null) ? 0 : number.longValue();
@@ -149,7 +173,7 @@ public interface LongAccess<HOST>
             long v = (number == null) ? 0 : number.longValue();
             return (long)Math.signum(v);
         }
-
+        
         @Override
         public Long min(Long number1, Long number2) {
             long v1 = (number1 == null) ? 0 : number1.longValue();

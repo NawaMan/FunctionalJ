@@ -50,16 +50,16 @@ import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
 import functionalj.types.DefaultTo;
+import functionalj.types.Generic;
 import functionalj.types.Nullable;
+import functionalj.types.Type;
 import functionalj.types.common;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
-import functionalj.types.choice.generator.model.Generic;
 import functionalj.types.choice.generator.model.Method;
 import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.MethodParam;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.choice.generator.model.Type;
 import lombok.val;
 
 public class ChoiceSpec {
@@ -322,7 +322,7 @@ public class ChoiceSpec {
             val generics     = extractGenericsFromTypeArguments(targetType, ((DeclaredType)typeMirror).getTypeArguments());
             val foundType    = new Type(packageName, encloseClass, typeName, generics);
             if (packageName.equals(Self.class.getPackage().getName()) && typeName.matches("^Self[0-9]?$"))
-                return new Type(targetType.packageName, targetType.encloseName, targetType.simpleName, generics);
+                return new Type(targetType.packageName(), targetType.encloseName(), targetType.simpleName(), generics);
             
             return foundType;
         }

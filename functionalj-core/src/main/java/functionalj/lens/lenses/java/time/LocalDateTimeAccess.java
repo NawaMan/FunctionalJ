@@ -1,5 +1,6 @@
 package functionalj.lens.lenses.java.time;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -303,6 +304,20 @@ public interface LocalDateTimeAccess<HOST>
         return host -> {
             val value = apply(host);
             return value.atZone(zone);
+        };
+    }
+    
+    public default DurationAccess<HOST> durationTo(LocalDateTime endTimeExclusive) {
+        return host -> {
+            val value = apply(host);
+            return Duration.between(value, endTimeExclusive);
+        };
+    }
+    
+    public default DurationAccess<HOST> durationFrom(LocalDateTime startTimeInclusive) {
+        return host -> {
+            val value = apply(host);
+            return Duration.between(startTimeInclusive, value);
         };
     }
     

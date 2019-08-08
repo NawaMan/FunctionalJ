@@ -36,7 +36,6 @@ import functionalj.types.choice.IChoice;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.Getter;
-import functionalj.types.struct.generator.Type;
 import lombok.val;
 
 public interface IData {
@@ -113,8 +112,8 @@ public interface IData {
             Class clzz         = type.toClass();
             val   defaultValue = caseParam.defValue;
             
-            if ((obj instanceof List) && type.toStructType().isList()) {
-                return IStruct.$utils.fromMapValue(obj, type.toStructType(), defaultValue);
+            if ((obj instanceof List) && type.isList()) {
+                return IStruct.$utils.fromMapValue(obj, type, defaultValue);
             }
             
             return (T)IData.$utils.fromMapValue(obj, clzz, defaultValue, ()->caseParam.defaultValue());
@@ -144,8 +143,8 @@ public interface IData {
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
         private static Map fromMapValue(Map obj, Type type) {
-            val keyType = ((type.generics().size() > 0) ? type.generics().get(0) : Type.OBJECT);
-            val valType = ((type.generics().size() > 1) ? type.generics().get(1) : Type.OBJECT);
+            val keyType = ((type.generics().size() > 0) ? type.generics().get(0).toType() : Type.OBJECT);
+            val valType = ((type.generics().size() > 1) ? type.generics().get(1).toType() : Type.OBJECT);
             Map map = new HashMap();
             obj
             .entrySet()
@@ -186,7 +185,7 @@ public interface IData {
                     return IChoice.fromMap((Map<String, Object>)obj, (Class)clazz);
             } else if (isList) {
                 if (obj instanceof List)
-                    return fromListValue((List)obj, type.generics().get(0));
+                    return fromListValue((List)obj, type.generics().get(0).toType());
                 throw new IllegalArgumentException("Invalid list element (" + type + "): " + obj);
             } else if (isMap) {
                 if (obj instanceof Map)
@@ -197,7 +196,7 @@ public interface IData {
         }
         @SuppressWarnings({ "unchecked", "rawtypes" })
         private static List fromListValue(List obj, Type type) {
-            val elementType = ((type.generics().size() > 0) ? type.generics().get(0) : Type.OBJECT);
+            val elementType = ((type.generics().size() > 0) ? type.generics().get(0).toType() : Type.OBJECT);
             List list = (List)(obj).stream()
                     .map(each -> fromValue(each, elementType))
                     .collect(toList());

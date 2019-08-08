@@ -8,11 +8,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.types.Type;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
-import functionalj.types.struct.generator.StructBuilder;
-import functionalj.types.struct.generator.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
+import functionalj.types.struct.generator.StructBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
 
@@ -24,15 +24,14 @@ public class BugThreeNullableBuilder {
         assertEquals(
                 "package ci.server;\n" + 
                 "\n" + 
-                "import ci.server.Brand.BrandLens;\n" + 
                 "import functionalj.lens.core.LensSpec;\n" + 
                 "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
                 "import functionalj.lens.lenses.StringLens;\n" + 
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.types.IPostConstruct;\n" + 
                 "import functionalj.types.IStruct;\n" + 
+                "import functionalj.types.Type;\n" + 
                 "import functionalj.types.struct.generator.Getter;\n" + 
-                "import functionalj.types.struct.generator.Type;\n" + 
                 "import java.lang.Exception;\n" + 
                 "import java.lang.Object;\n" + 
                 "import java.util.HashMap;\n" + 
@@ -193,12 +192,12 @@ public class BugThreeNullableBuilder {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"id\", new functionalj.types.struct.generator.Getter(\"id\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"name\", new functionalj.types.struct.generator.Getter(\"name\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"owner\", new functionalj.types.struct.generator.Getter(\"owner\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
-                "        map.put(\"website\", new functionalj.types.struct.generator.Getter(\"website\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
-                "        map.put(\"country\", new functionalj.types.struct.generator.Getter(\"country\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
-                "        map.put(\"description\", new functionalj.types.struct.generator.Getter(\"description\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"id\", new functionalj.types.struct.generator.Getter(\"id\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"name\", new functionalj.types.struct.generator.Getter(\"name\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"owner\", new functionalj.types.struct.generator.Getter(\"owner\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"website\", new functionalj.types.struct.generator.Getter(\"website\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"country\", new functionalj.types.struct.generator.Getter(\"country\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"description\", new functionalj.types.struct.generator.Getter(\"description\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

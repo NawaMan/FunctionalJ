@@ -38,6 +38,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import functionalj.types.Type;
+import functionalj.types.IRequireTypes;
 import lombok.val;
 
 /**

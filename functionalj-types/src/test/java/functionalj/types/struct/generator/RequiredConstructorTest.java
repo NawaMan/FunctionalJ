@@ -27,9 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.types.struct.generator.SourceSpec;
-import functionalj.types.struct.generator.StructBuilder;
-import functionalj.types.struct.generator.Type;
+import functionalj.types.Type;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
 
@@ -66,16 +64,15 @@ public class RequiredConstructorTest {
     private String expected =
             "package example.functionalj.accesslens;\n" + 
             "\n" + 
-            "import example.functionalj.accesslens.Person.PersonLens;\n" + 
             "import functionalj.lens.core.LensSpec;\n" + 
             "import functionalj.lens.lenses.ObjectLensImpl;\n" + 
             "import functionalj.lens.lenses.StringLens;\n" + 
             "import functionalj.pipeable.Pipeable;\n" + 
             "import functionalj.types.IPostConstruct;\n" + 
             "import functionalj.types.IStruct;\n" + 
+            "import functionalj.types.Type;\n" + 
             "import functionalj.types.struct.generator.Getter;\n" + 
             "import functionalj.types.struct.generator.SourceSpec;\n" + 
-            "import functionalj.types.struct.generator.Type;\n" + 
             "import java.lang.Exception;\n" + 
             "import java.lang.Object;\n" + 
             "import java.util.HashMap;\n" + 
@@ -92,7 +89,7 @@ public class RequiredConstructorTest {
             "    private final String firstName;\n" + 
             "    private final String midName;\n" + 
             "    private final String lastName;\n" + 
-            "    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null, \"example.functionalj.accesslens\", \"StructTypeExample\", \"Person\", \"example.functionalj.accesslens\", null, \"spec\", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, false, \"\"), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter(\"firstName\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter(\"midName\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter(\"lastName\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Arrays.asList(\"Person\"));\n" + 
+            "    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null, \"example.functionalj.accesslens\", \"StructTypeExample\", \"Person\", \"example.functionalj.accesslens\", null, \"spec\", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, false, \"\"), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter(\"firstName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter(\"midName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter(\"lastName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Arrays.asList(\"Person\"));\n" + 
             "    \n" + 
             "    public Person(String firstName, String lastName) {\n" + 
             "        this.firstName = $utils.notNull(firstName);\n" + 
@@ -177,9 +174,9 @@ public class RequiredConstructorTest {
             "    }\n" + 
             "    public static Map<String, Getter> getStructSchema() {\n" + 
             "        Map<String, Getter> map = new HashMap<>();\n" + 
-            "        map.put(\"firstName\", new functionalj.types.struct.generator.Getter(\"firstName\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-            "        map.put(\"midName\", new functionalj.types.struct.generator.Getter(\"midName\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
-            "        map.put(\"lastName\", new functionalj.types.struct.generator.Getter(\"lastName\", new Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+            "        map.put(\"firstName\", new functionalj.types.struct.generator.Getter(\"firstName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+            "        map.put(\"midName\", new functionalj.types.struct.generator.Getter(\"midName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+            "        map.put(\"lastName\", new functionalj.types.struct.generator.Getter(\"lastName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
             "        return map;\n" + 
             "    }\n" + 
             "    public String toString() {\n" + 

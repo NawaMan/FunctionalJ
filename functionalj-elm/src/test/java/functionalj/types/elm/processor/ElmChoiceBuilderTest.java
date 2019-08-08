@@ -5,11 +5,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
-import functionalj.types.choice.generator.model.Generic;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.choice.generator.model.Type;
 import lombok.val;
 
 public class ElmChoiceBuilderTest {

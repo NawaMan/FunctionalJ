@@ -8,10 +8,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import functionalj.types.Type;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
-import functionalj.types.struct.generator.Type;
 import lombok.val;
 
 public class ElmStructTest {

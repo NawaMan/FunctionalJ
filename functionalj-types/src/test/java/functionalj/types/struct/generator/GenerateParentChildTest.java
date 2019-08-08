@@ -30,10 +30,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.types.struct.generator.Getter;
-import functionalj.types.struct.generator.SourceSpec;
-import functionalj.types.struct.generator.StructBuilder;
-import functionalj.types.struct.generator.Type;
+import functionalj.types.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -73,8 +70,8 @@ public class GenerateParentChildTest {
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.types.IPostConstruct;\n" + 
                 "import functionalj.types.IStruct;\n" + 
+                "import functionalj.types.Type;\n" + 
                 "import functionalj.types.struct.generator.Getter;\n" + 
-                "import functionalj.types.struct.generator.Type;\n" + 
                 "import java.lang.Exception;\n" + 
                 "import java.lang.Object;\n" + 
                 "import java.util.HashMap;\n" + 
@@ -137,7 +134,7 @@ public class GenerateParentChildTest {
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"child\", new functionalj.types.struct.generator.Getter(\"child\", new Type(\"me.test\", null, \"Child\", null), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"child\", new functionalj.types.struct.generator.Getter(\"child\", new functionalj.types.Type(\"me.test\", null, \"Child\", null), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

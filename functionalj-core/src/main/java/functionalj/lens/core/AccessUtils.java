@@ -78,6 +78,24 @@ public class AccessUtils {
         };
         return () -> specWithSub;
     }
+    // Result
+    
+    public static <HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> ResultAccess<HOST, TYPE, TYPEACCESS>
+            createSubResultAccess(
+                    AccessParameterized<HOST, Result<TYPE>, TYPE, TYPEACCESS> accessParameterized,
+                    Function<HOST, Result<TYPE>>                              read) {
+        val specWithSub = new AccessParameterized<HOST, Result<TYPE>, TYPE, TYPEACCESS>() {
+            @Override
+            public Result<TYPE> applyUnsafe(HOST host) throws Exception {
+                return read.apply(host);
+            }
+            @Override
+            public TYPEACCESS createSubAccessFromHost(Function<HOST, TYPE> accessToParameter) {
+                return accessParameterized.createSubAccessFromHost(accessToParameter);
+            }
+        };
+        return () -> specWithSub;
+    }
     
     // List 
     

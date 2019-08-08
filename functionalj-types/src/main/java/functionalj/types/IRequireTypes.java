@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,36 +21,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct;
+package functionalj.types;
 
-import static org.junit.Assert.assertEquals;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-
-import functionalj.types.Struct;
-import functionalj.types.struct.DOFromClass;
-import lombok.val;
-
-@SuppressWarnings("javadoc")
-public class DOFromClassTest {
+/**
+ * Classes implementing this interface require other types when generated into code.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
+public interface IRequireTypes {
     
-    @Struct(name="DOFromClass")
-    public abstract static class DOFromClassDef {
-        
-        public abstract String name();
-        public abstract int    count();
-        
-        public String nameUpperCase() {
-            return name().toUpperCase();
-        }
-        
-    }
-    
-    @Test
-    public void testFromClass() {
-        val obj = new DOFromClass("Obj", 5);
-        assertEquals("Obj", obj.name());
-        assertEquals("OBJ", obj.nameUpperCase());
-    }
+    /**
+     * Returns the stream of types that is required.
+     * 
+     * @return  the return types.
+     */
+    public Stream<Type> requiredTypes();
     
 }

@@ -27,9 +27,9 @@ import static functionalj.types.struct.generator.ILines.oneLineOf;
 
 import java.util.stream.Stream;
 
+import functionalj.types.Type;
 import functionalj.types.struct.generator.IGenerateDefinition;
 import functionalj.types.struct.generator.ILines;
-import functionalj.types.struct.generator.Type;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;
@@ -49,7 +49,7 @@ public class GenField implements IGenerateDefinition {
     private Modifiability modifiability;
     private Scope         scope;
     private String        name;
-    private Type          type;
+    private Type  type;
     private String        defaultValue;
     
     @Override

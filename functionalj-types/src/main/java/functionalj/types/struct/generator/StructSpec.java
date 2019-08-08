@@ -30,6 +30,8 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import functionalj.types.struct.generator.model.GenClass;
 import functionalj.types.struct.generator.model.GenConstructor;
 import functionalj.types.struct.generator.model.GenField;
@@ -93,7 +95,7 @@ public class StructSpec {
                 .encloseName(type().simpleName())
                 .simpleName(type().simpleName() + "Lens")
                 .packageName(type().packageName())
-                .generics(asList(new Type(null, "HOST")))
+                .generics(asList(new Generic("HOST")))
                 .build();
     }
     

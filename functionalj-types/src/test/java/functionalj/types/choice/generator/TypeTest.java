@@ -6,7 +6,7 @@ import java.util.HashSet;
 
 import org.junit.Test;
 
-import functionalj.types.choice.generator.model.Type;
+import functionalj.types.Type;
 import lombok.val;
 
 public class TypeTest {

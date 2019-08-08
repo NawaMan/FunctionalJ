@@ -46,7 +46,7 @@ public class SubClassDefinition implements Lines {
     public List<String> lines() {
         val name = choice.name;
         val lens = new CaseLensBuilder(targetClass.spec, choice);
-        val lensInstance = lens.generateTheLensField().toDefinition(targetClass.type.packageName).lines().findFirst().get();
+        val lensInstance = lens.generateTheLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
         val toMapMethod = new ToMapBuilder(targetClass, this.choice);
         if (!choice.isParameterized()) {
             return asList(

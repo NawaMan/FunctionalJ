@@ -27,6 +27,7 @@ import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
+import functionalj.types.Type;
 import lombok.val;
 
 public class MethodParam {

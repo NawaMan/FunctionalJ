@@ -12,8 +12,9 @@ import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.ResultAccess;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
-import functionalj.types.choice.IChoice;
+import functionalj.types.Type;
 import functionalj.types.choice.ChoiceTypeSwitch;
+import functionalj.types.choice.IChoice;
 
 // functionalj.store.Specs.ResultStatusSpec
 
@@ -113,7 +114,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             return map;
         }
         static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()
-            .with("reason", new functionalj.types.choice.generator.model.CaseParam("reason", new functionalj.types.choice.generator.model.Type("functionalj.store", null, "ChangeNotAllowedException", java.util.Collections.emptyList()), true, null))
+            .with("reason", new functionalj.types.choice.generator.model.CaseParam("reason", new Type("functionalj.store", null, "ChangeNotAllowedException", java.util.Collections.emptyList()), true, null))
             .build();
         public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {
             return __schema__;
@@ -148,7 +149,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             return map;
         }
         static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()
-            .with("newData", new functionalj.types.choice.generator.model.CaseParam("newData", new functionalj.types.choice.generator.model.Type(null, null, "D", java.util.Collections.emptyList()), true, null))
+            .with("newData", new functionalj.types.choice.generator.model.CaseParam("newData", new Type(null, null, "D", java.util.Collections.emptyList()), true, null))
             .build();
         public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {
             return __schema__;
@@ -189,8 +190,8 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             return map;
         }
         static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()
-            .with("proposedData", new functionalj.types.choice.generator.model.CaseParam("proposedData", new functionalj.types.choice.generator.model.Type(null, null, "D", java.util.Collections.emptyList()), true, null))
-            .with("adjustedData", new functionalj.types.choice.generator.model.CaseParam("adjustedData", new functionalj.types.choice.generator.model.Type(null, null, "D", java.util.Collections.emptyList()), true, null))
+            .with("proposedData", new functionalj.types.choice.generator.model.CaseParam("proposedData", new Type(null, null, "D", java.util.Collections.emptyList()), true, null))
+            .with("adjustedData", new functionalj.types.choice.generator.model.CaseParam("adjustedData", new Type(null, null, "D", java.util.Collections.emptyList()), true, null))
             .build();
         public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {
             return __schema__;
@@ -238,9 +239,9 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             return map;
         }
         static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()
-            .with("propose", new functionalj.types.choice.generator.model.CaseParam("propose", new functionalj.types.choice.generator.model.Type(null, null, "D", java.util.Collections.emptyList()), true, null))
-            .with("rollback", new functionalj.types.choice.generator.model.CaseParam("rollback", new functionalj.types.choice.generator.model.Type(null, null, "D", java.util.Collections.emptyList()), true, null))
-            .with("reason", new functionalj.types.choice.generator.model.CaseParam("reason", new functionalj.types.choice.generator.model.Type("functionalj.store", null, "ChangeRejectedException", java.util.Collections.emptyList()), true, null))
+            .with("propose", new functionalj.types.choice.generator.model.CaseParam("propose", new Type(null, null, "D", java.util.Collections.emptyList()), true, null))
+            .with("rollback", new functionalj.types.choice.generator.model.CaseParam("rollback", new Type(null, null, "D", java.util.Collections.emptyList()), true, null))
+            .with("reason", new functionalj.types.choice.generator.model.CaseParam("reason", new Type("functionalj.store", null, "ChangeRejectedException", java.util.Collections.emptyList()), true, null))
             .build();
         public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {
             return __schema__;
@@ -277,7 +278,7 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
             return map;
         }
         static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()
-            .with("problem", new functionalj.types.choice.generator.model.CaseParam("problem", new functionalj.types.choice.generator.model.Type("functionalj.store", null, "ChangeFailException", java.util.Collections.emptyList()), true, null))
+            .with("problem", new functionalj.types.choice.generator.model.CaseParam("problem", new Type("functionalj.store", null, "ChangeFailException", java.util.Collections.emptyList()), true, null))
             .build();
         public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {
             return __schema__;
