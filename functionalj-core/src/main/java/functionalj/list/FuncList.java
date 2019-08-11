@@ -429,8 +429,6 @@ public interface FuncList<DATA>
         }));
     }
     
-    // TODO - Sub list with at, From and Between
-    
     @Override
     public default FuncList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
         val length = toIndexExclusive - fromIndexInclusive;
@@ -1221,5 +1219,11 @@ public interface FuncList<DATA>
     
     //-- Plus w/ Self --
     //============================================================================
-
+    
+    public default FuncList<DATA> shrik(Predicate<DATA> conditionToShink, Func2<DATA, DATA, DATA> concatFunc) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream()).shrink(conditionToShink, concatFunc);
+        });
+    }
+    
 }

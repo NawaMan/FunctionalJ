@@ -76,8 +76,6 @@ public class FuncTest {
         } catch (FileNotFoundException e) {
             // Expected
         }
-        
-        // TODO - Test message
     }
     
     @Test

@@ -91,6 +91,13 @@ public class StreamPlusTest {
     }
     
     @Test
+    public void testEquals() {
+        val stream1 = StreamPlus.of("One", "Two", "Three");
+        val stream2 = StreamPlus.of("One", "Two", "Three");
+        assertTrue(StreamPlus.Helper.equals(stream1, stream2));
+    }
+    
+    @Test
     public void testMap() {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings("[3, 3, 5]", stream.map(s -> s.length()).toList());
@@ -188,6 +195,19 @@ public class StreamPlusTest {
         
         val stream2 = StreamPlus.of(1, 2, 3);
         assertEquals(6, stream2.reduce((a, b) -> a + b).get().intValue());
+    }
+    
+    @Test
+    public void testShrink() {
+        val stream1 = StreamPlus.of(1, 2, 3, 4, 5, 6);
+        assertEquals(
+                "1, 5, 4, 11", 
+                stream1.shrink(i -> (i % 3) == 0, (a,b)->a+b).joinToString(", "));
+        
+        val stream2 = StreamPlus.of(1, 2, 3, 4, 5, 6);
+        assertEquals(
+                "1, 2, 7, 5, 6", 
+                stream2.shrink(i -> (i % 3) == 1, (a,b)->a+b).joinToString(", "));
     }
     
     @Test

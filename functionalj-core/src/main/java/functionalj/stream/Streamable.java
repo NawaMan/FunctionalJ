@@ -1584,5 +1584,10 @@ public interface Streamable<DATA> {
         return piper.apply(this);
     }
     
+    public default Streamable<DATA> shrik(Predicate<DATA> conditionToShink, Func2<DATA, DATA, DATA> concatFunc) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream()).shrink(conditionToShink, concatFunc);
+        });
+    }
     
 }

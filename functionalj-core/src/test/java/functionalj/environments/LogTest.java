@@ -23,18 +23,17 @@
 // ============================================================================
 package functionalj.environments;
 
+import static functionalj.list.FuncList.listOf;
 import static functionalj.ref.Run.With;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.list.FuncList;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public class LogTest {
     
-    // TODO - Break this.
     @Test
     public void testLog() {
         val stub = new Console.Stub();
@@ -43,12 +42,18 @@ public class LogTest {
             Log.log("One");
             Log.log("2: ", "Two", " --");
             Log.logEach("Three", "Four");
-            Log.logEach("-->", FuncList.listOf("Three", "Four"), "<--");
+            Log.logEach("-->", listOf("Three", "Four"), "<--");
             Log.logBy(()-> "42");
             
             val outLines = StreamPlus.from(stub.outLines()).toJavaList();
             assertEquals(
-                    "[One, 2: Two --, Three, Four, -->Three<--, -->Four<--, 42]",
+                    "["
+                    + "One, "
+                    + "2: Two --, "
+                    + "Three, Four, "
+                    + "-->Three<--, -->Four<--, "
+                    + "42"
+                    + "]",
                     outLines.toString());
             
             stub.clearOutLines();

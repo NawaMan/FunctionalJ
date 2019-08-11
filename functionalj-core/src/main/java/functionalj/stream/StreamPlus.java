@@ -24,7 +24,9 @@
 package functionalj.stream;
 
 import static functionalj.function.Func.f;
+import static functionalj.functions.ObjFuncs.notEqual;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
+import static java.lang.Boolean.TRUE;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
@@ -331,6 +333,43 @@ public interface StreamPlus<DATA>
             return;
         
         stream().forEachOrdered(action);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default StreamPlus<DATA> shrink(Predicate<DATA> conditionToShink, Func2<DATA, DATA, DATA> concatFunc) {
+        val stream = stream();
+        val iterator = stream.iterator();
+        
+        DATA first = null;
+        try {
+            first = iterator.next();
+        } catch (NoSuchElementException e) {
+            return StreamPlus.empty();
+        }
+        
+        val prev = new AtomicReference<Object>(first);
+        return StreamPlus.generateBy(()->{
+            if (prev.get() == Helper.dummy)
+                throw new NoMoreResultException();
+            
+            while(true) {
+                DATA next;
+                try {
+                    next = iterator.next();
+                } catch (NoSuchElementException e) {
+                    val yield = prev.get();
+                    prev.set(Helper.dummy);
+                    return (DATA)yield;
+                }
+                if (conditionToShink.test(next)) {
+                    prev.set(concatFunc.apply((DATA)prev.get(), next));
+                } else {
+                    val yield = prev.get();
+                    prev.set(next);
+                    return (DATA)yield;
+                }
+            }
+        });
     }
     
     public default DATA reduce(DATA identity, BinaryOperator<DATA> accumulator) {
@@ -1927,7 +1966,14 @@ public interface StreamPlus<DATA>
             return found;
         }
         
-        // TODO - equals, hashCode
+        public static <T> boolean equals(Stream<T> stream1, Stream<T> stream2) {
+            return !from    (stream1)
+                    .combine(from(stream2), AllowUnpaired, notEqual())
+                    .filter (TRUE::equals)
+                    .findAny()
+                    .isPresent();
+        }
+        
         public static <T> int hashCode(Stream<T> stream) {
             return stream
                     .mapToInt(e -> (e == null) ? 0 : e.hashCode())

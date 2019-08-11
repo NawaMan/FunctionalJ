@@ -99,15 +99,11 @@ public class MapTo {
         };
     }
     
-    // TODO - Add more
-    
     // Map
     
     public static <D, K, V> ToMapFunc<D, K, V> toMap(
             K key, Func1<? super D, ? extends V> mapper) {
         return data -> ImmutableMap.of(key, mapper.apply(data));
     }
-    
-    // TODO - Add more
     
 }

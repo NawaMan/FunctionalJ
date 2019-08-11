@@ -173,19 +173,19 @@ public class ImmutableMapTest {
         assertEquals("[1, 2]",         "" + orgMap.keySet());
         assertEquals("[One, Two]",     "" + orgMap.values());
         assertEquals("[1=One, 2=Two]", "" + orgMap.entrySet());
-        assertEquals("[1=One, 2=Two]", "" + orgMap.entries());  // TODO - Think what do to with this.
+        assertEquals("[1=One, 2=Two]", "" + orgMap.entries());
         
         assertEquals("[1, 2, 3]",               "" + newMap.keys());
         assertEquals("[1, 2, 3]",               "" + newMap.keySet());
         assertEquals("[One, Two, Three]",       "" + newMap.values());
         assertEquals("[1=One, 2=Two, 3=Three]", "" + newMap.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).collect(toList()));
-        assertEquals("[1=One, 2=Two, 3=Three]", "" + newMap.entries());  // TODO - Think what do to with this.
+        assertEquals("[1=One, 2=Two, 3=Three]", "" + newMap.entries());
         
         assertEquals("[1, 2]",        "" + repMap.keys());
         assertEquals("[1, 2]",        "" + repMap.keySet());
         assertEquals("[One, Du]",     "" + repMap.values());
         assertEquals("[1=One, 2=Du]", "" + repMap.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).collect(toList()));
-        assertEquals("[1=One, 2=Du]", "" + repMap.entries());  // TODO - Think what do to with this.
+        assertEquals("[1=One, 2=Du]", "" + repMap.entries());
         
         assertEquals("{1:One, 2:Two}",          "" + orgMap.sorted());
         assertEquals("{1:One, 2:Two, 3:Three}", "" + newMap.sorted());
