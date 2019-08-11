@@ -32,6 +32,7 @@ import static functionalj.ref.Run.With;
 import static functionalj.stream.StreamPlus.noMoreElement;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static functionalj.stream.ZipWithOption.RequireBoth;
+import static java.util.Arrays.asList;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -72,6 +74,20 @@ public class StreamPlusTest {
         val stream1 = StreamPlus.of("One", "Two", "Three");
         val stream2 = StreamPlus.from(stream1);
         assertStrings("[One, Two, Three]", stream2.toList());
+    }
+    
+    @Test
+    public void testFromIterator() {
+        val iterator = asList("One", "Two", "Three").iterator();
+        val stream   = StreamPlus.from(iterator);
+        assertStrings("[One, Two, Three]", stream.toList());
+    }
+    
+    @Test
+    public void testFromEnumerator() {
+        val elements = new Vector<>(asList("One", "Two", "Three")).elements();
+        val stream   = StreamPlus.from(elements);
+        assertStrings("[One, Two, Three]", stream.toList());
     }
     
     @Test

@@ -31,10 +31,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -140,6 +142,33 @@ public interface StreamPlus<DATA>
                 : (StreamPlus)(()->stream);
     }
     
+    public static <D> StreamPlus<D> from(Iterator<D> iterator) {
+        return IteratorPlus.of(iterator).stream();
+    }
+    public static <D> StreamPlus<D> from(Enumeration<D> enumeration) {
+        Iterable<D> iterable = new Iterable<D>() {
+            public Iterator<D> iterator() {
+                return new Iterator<D>() {
+                    private D next;
+                    @Override
+                    public boolean hasNext() {
+                        try {
+                            next = enumeration.nextElement();
+                            return true;
+                        } catch (NoSuchElementException e) {
+                            return false;
+                        }
+                    }
+                    @Override
+                    public D next() {
+                        return next;
+                    }
+                };
+            }
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+    }
+    
     @SafeVarargs
     public static <D> StreamPlus<D> of(D ... data) {
         return ArrayBackedStream.from(data);
@@ -238,8 +267,6 @@ public interface StreamPlus<DATA>
             return i;
         });
     }
-    
-    // TODO - Take from Iterator, Enumeration
     
     //== Stream ==
     
