@@ -33,8 +33,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -52,8 +54,7 @@ import lombok.val;
 @SuppressWarnings("javadoc")
 public abstract class FuncMap<KEY, VALUE>
                     implements
-                        ReadOnlyMap<KEY, VALUE>, 
-                        IFuncMap<KEY, VALUE, FuncMap<KEY, VALUE>> {
+                        ReadOnlyMap<KEY, VALUE> {
     
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static enum UnderlineMap {
@@ -358,7 +359,21 @@ public abstract class FuncMap<KEY, VALUE>
         map.put(key10, value10);
         return new ImmutableMap<K, V>(map);
     }
-
+    
+    public <TARGET> FuncMap<KEY, TARGET> map(Function<? super VALUE, ? extends TARGET> mapper) {
+        return mapValue(v->mapper.apply(v));
+    }
+    
+    public <TARGET> FuncMap<KEY, TARGET> map(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
+        return mapEntry((k, v)->mapper.apply(k, v));
+    }
+    
+    public <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, ? extends TARGET> mapper) {
+        return map((k, v)->mapper.apply(v));
+    }
+    
+    public abstract <TARGET> FuncMap<KEY, TARGET> mapEntry(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper);
+    
     public static <K, V> ImmutableMap<K, V> mapOf(
             K key0, V value0) {
         val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
@@ -579,69 +594,48 @@ public abstract class FuncMap<KEY, VALUE>
     @Override
     public abstract boolean isEmpty();
     
-    @Override
     public abstract boolean hasKey(KEY key);
     
-    @Override
     public abstract boolean hasValue(VALUE value);
     
-    @Override
     public abstract boolean hasKey(Predicate<? super KEY> keyCheck);
     
-    @Override
     public abstract boolean hasValue(Predicate<? super VALUE> valueCheck);
     
-    @Override
     public abstract Optional<VALUE> findBy(KEY key);
-
-    @Override
+    
     public abstract FuncList<VALUE> select(Predicate<? super KEY> keyPredicate);
     
-    @Override
     public abstract FuncList<Map.Entry<KEY, VALUE>> selectEntry(Predicate<? super KEY> keyPredicate);
     
-    @Override
     public abstract FuncMap<KEY, VALUE> with(KEY key, VALUE value);
     
-    @Override
     public abstract FuncMap<KEY, VALUE> withAll(Map<? extends KEY, ? extends VALUE> entries);
     
-    @Override
     public abstract FuncMap<KEY, VALUE> exclude(KEY key);
     
-    @Override
     public abstract FuncMap<KEY, VALUE> filter(Predicate<? super KEY> keyCheck);
     
-    @Override
     public abstract FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck);
     
-    @Override
     public abstract FuncMap<KEY, VALUE> filterByEntry(Predicate<? super Map.Entry<? super KEY, ? super VALUE>> entryCheck);
     
-    @Override
     public abstract FuncList<KEY> keys();
     
-    @Override
     public abstract FuncList<VALUE> values();
     
-    @Override
     public abstract Set<Map.Entry<KEY, VALUE>> entrySet();
     
-    @Override
     public abstract FuncList<Map.Entry<KEY, VALUE>> entries();
     
-    @Override
     public abstract Map<KEY, VALUE> toMap();
     
-    @Override
     public abstract ImmutableMap<KEY, VALUE> toImmutableMap();
     
-    @Override
     public Func1<KEY, VALUE> toFunction() {
         return this::get;
     }
     
-    @Override
     public Func1<KEY, VALUE> toFunction(VALUE elseValue) {
         return key -> {
             try {
@@ -653,7 +647,6 @@ public abstract class FuncMap<KEY, VALUE>
         };
     }
     
-    @Override
     public Func1<KEY, VALUE> toFunction(Func0<VALUE> elseSupplier) {
         return key -> {
             try {
@@ -665,7 +658,6 @@ public abstract class FuncMap<KEY, VALUE>
         };
     }
     
-    @Override
     public Func1<KEY, VALUE> toFunction(Func1<KEY, VALUE> elseProvider) {
         return key -> {
             try {
@@ -677,7 +669,6 @@ public abstract class FuncMap<KEY, VALUE>
         };
     }
     
-    @Override
     public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, VALUE elseValue) {
         return key -> {
             try {
@@ -692,7 +683,6 @@ public abstract class FuncMap<KEY, VALUE>
         };
     }
     
-    @Override
     public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, Func0<VALUE> elseSupplier) {
         return key -> {
             try {
@@ -707,7 +697,6 @@ public abstract class FuncMap<KEY, VALUE>
         };
     }
     
-    @Override
     public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, Func1<KEY, VALUE> elseProvider) {
         return key -> {
             try {
@@ -729,16 +718,16 @@ public abstract class FuncMap<KEY, VALUE>
         return toImmutableMap();
     }
     
-    @Override
     public abstract FuncMap<KEY, VALUE> sorted();
     
-    @Override
-    public abstract FuncMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator);
+    public abstract FuncMap<KEY, VALUE> sorted(Comparator<? super Map.Entry<KEY, VALUE>> comparator);
     
-    @Override
+    public abstract FuncMap<KEY, VALUE> sortedByKey(Comparator<? super KEY> comparator);
+    
+    public abstract FuncMap<KEY, VALUE> sortedByValue(Comparator<? super VALUE> comparator);
+    
     public abstract void forEach(BiConsumer<? super KEY, ? super VALUE> action);
     
-    @Override
     public abstract void forEach(Consumer<? super Map.Entry<? super KEY, ? super VALUE>> action);
     
     public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, Func2<VALUE, IN, OUT> merger) {

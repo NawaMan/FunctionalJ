@@ -64,12 +64,12 @@ public interface MapLens<HOST, KEY, VALUE,
     public default AccessParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYLENS, VALUELENS> accessParameterized2() {
         return lensSpecParameterized2();
     }
-
+    
     @Override
     public default LensSpec<HOST, Map<KEY, VALUE>> lensSpec() {
         return lensSpecParameterized2().getSpec();
     }
-
+    
     @Override
     public default Map<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
         return ObjectLens.super.applyUnsafe(host);
@@ -118,7 +118,6 @@ public interface MapLens<HOST, KEY, VALUE,
             return newHost;
         };
     }
-
     
     public default Function<HOST, HOST> changeTo(BiPredicate<KEY, VALUE> checker, Function<VALUE, VALUE> mapper) {
         val mapEntry = Func.from((Map.Entry<KEY, VALUE> each) ->{

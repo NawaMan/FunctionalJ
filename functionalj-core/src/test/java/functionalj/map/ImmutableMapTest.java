@@ -190,9 +190,9 @@ public class ImmutableMapTest {
         assertEquals("{1:One, 2:Two}",          "" + orgMap.sorted());
         assertEquals("{1:One, 2:Two, 3:Three}", "" + newMap.sorted());
         assertEquals("{1:One, 2:Du}",           "" + repMap.sorted());
-        assertEquals("{2:Two, 1:One}",          "" + orgMap.sorted(reverseOrder()));
-        assertEquals("{3:Three, 2:Two, 1:One}", "" + newMap.sorted(reverseOrder()));
-        assertEquals("{2:Du, 1:One}",           "" + repMap.sorted(reverseOrder()));
+        assertEquals("{2:Two, 1:One}",          "" + orgMap.sortedByKey(reverseOrder()));
+        assertEquals("{3:Three, 2:Two, 1:One}", "" + newMap.sortedByKey(reverseOrder()));
+        assertEquals("{2:Du, 1:One}",           "" + repMap.sortedByKey(reverseOrder()));
     }
     
     @Test
@@ -271,8 +271,8 @@ public class ImmutableMapTest {
         
         assertEquals("{1:One, 2:Two, 3:Three}", "" + orgMap.sorted());
         assertEquals("{1:One, 2:Two}",          "" + newMap.sorted());
-        assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sorted(reverseOrder()));
-        assertEquals("{2:Two, 1:One}",          "" + newMap.sorted(reverseOrder()));
+        assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sortedByKey(reverseOrder()));
+        assertEquals("{2:Two, 1:One}",          "" + newMap.sortedByKey(reverseOrder()));
     }
     
     @Test
@@ -388,9 +388,9 @@ public class ImmutableMapTest {
         assertEquals("{1:One, 2:Two, 3:Three}", "" + orgMap.sorted());
         assertEquals("{1:One, 3:Three}",        "" + revMap.sorted());
         assertEquals("{1:One, 2:Two, 3:Three}", "" + newMap.sorted());
-        assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sorted(reverseOrder()));
-        assertEquals("{3:Three, 1:One}",        "" + revMap.sorted(reverseOrder()));
-        assertEquals("{3:Three, 2:Two, 1:One}", "" + newMap.sorted(reverseOrder()));
+        assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sortedByKey(reverseOrder()));
+        assertEquals("{3:Three, 1:One}",        "" + revMap.sortedByKey(reverseOrder()));
+        assertEquals("{3:Three, 2:Two, 1:One}", "" + newMap.sortedByKey(reverseOrder()));
     }
     
     @Test
@@ -461,8 +461,8 @@ public class ImmutableMapTest {
         
         assertEquals("{1:One, 2:Two, 3:Three}", "" + orgMap.sorted());
         assertEquals("{1:One, 2:Du, 3:Three}",  "" + mapMap.sorted());
-        assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sorted(reverseOrder()));
-        assertEquals("{3:Three, 2:Du, 1:One}",  "" + mapMap.sorted(reverseOrder()));
+        assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sortedByKey(reverseOrder()));
+        assertEquals("{3:Three, 2:Du, 1:One}",  "" + mapMap.sortedByKey(reverseOrder()));
     }
     
     @Test
@@ -535,8 +535,8 @@ public class ImmutableMapTest {
         
         assertEquals("{1:One, 2:Two, 3:Three}", "" + orgMap.sorted());
         assertEquals("{2:Du}",                  "" + newMap.sorted());
-        assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sorted(reverseOrder()));
-        assertEquals("{2:Du}",                 "" + newMap.sorted(reverseOrder()));
+        assertEquals("{3:Three, 2:Two, 1:One}", "" + orgMap.sortedByKey(reverseOrder()));
+        assertEquals("{2:Du}",                 "" + newMap.sortedByKey(reverseOrder()));
         
     }
 }

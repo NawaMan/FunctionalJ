@@ -105,6 +105,10 @@ public interface FuncList<DATA>
         return ImmutableList.from(data);
     }
     @SafeVarargs
+    public static <T> ImmutableList<T> ListOf(T ... data) {
+        return ImmutableList.of(data);
+    }
+    @SafeVarargs
     public static <T> ImmutableList<T> listOf(T ... data) {
     	return ImmutableList.of(data);
     }

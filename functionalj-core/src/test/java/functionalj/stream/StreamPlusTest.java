@@ -223,6 +223,9 @@ public class StreamPlusTest {
         
         val stream2 = StreamPlus.of("One", "Two", "Three", "Four");
         assertStrings("Optional[Three]", stream2.max((a, b)-> a.length()-b.length()));
+        
+        val stream3 = StreamPlus.of("One", "Two", "Three", "Four");
+        assertStrings("(Optional[One],Optional[Three])", stream3.minMaxBy(theString.length()));
     }
     
     @Test
@@ -708,6 +711,26 @@ public class StreamPlusTest {
         val streamA = StreamPlus.of("A", "B", "C");
         val streamB = IntStreamPlus.infinite().asStream().map(theInteger.asString());
         assertEquals("A, 0, B, 1, C, 2, 3, 4, 5, 6", streamA.merge(streamB).limit(10).joinToString(", "));
+    }
+    
+    @Test
+    public void testHistogram() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four").map(theString.length());
+        val counts = stream.histogram();
+        assertEquals("{3:2, 4:1, 5:1}", counts.toString());
+    }
+    
+    @Test
+    public void testHistogram_classification() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four").map(theString);
+        val counts = stream.histogram(theString.replaceAll("[^aeiouAEIOU]", "").length());
+        assertEquals("{2:3, 1:1}", counts.toString());
+    }
+    
+    @Test
+    public void testMostFrequence() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four").map(theString);
+        assertEquals("Optional[2=3]", stream.map(theString.replaceAll("[^aeiouAEIOU]", "").length()).mostFrequence().toString());
     }
     
 }

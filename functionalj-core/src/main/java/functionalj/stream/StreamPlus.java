@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -398,6 +399,22 @@ public interface StreamPlus<DATA>
         return stream().collect(collector);
     }
     
+    public default FuncMap<DATA, Integer> histogram() {
+        return histogram(Func.itself());
+    }
+    
+    public default <D> FuncMap<D, Integer> histogram(Func1<DATA, D> mapper) {
+        return groupingBy(mapper)
+                .mapValue(FuncList::size)
+                .sortedByValue((a, b)->Integer.compare(b, a));
+    }
+    
+    public default Optional<Map.Entry<DATA, Integer>> mostFrequence() {
+        return histogram()
+                .entries()
+                .findFirst();
+    }
+    
     public default Optional<DATA> min(Comparator<? super DATA> comparator) {
         return stream().min(comparator);
     }
@@ -406,12 +423,71 @@ public interface StreamPlus<DATA>
         return stream().max(comparator);
     }
     
+    @SuppressWarnings("unchecked")
+    public default Tuple2<Optional<DATA>, Optional<DATA>> minMax(Comparator<? super DATA> comparator) {
+        val minRef = new AtomicReference<Object>(Helper.dummy);
+        val maxRef = new AtomicReference<Object>(Helper.dummy);
+        stream()
+        .sorted(comparator)
+        .forEach(each -> {
+            minRef.compareAndSet(Helper.dummy, each);
+            maxRef.set(each);
+        });
+        val min = minRef.get();
+        val max = maxRef.get();
+        return Tuple2.of(
+                Helper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
+                Helper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
+    }
+    
     public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
         return stream().min((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
     }
     
     public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
         return stream().max((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
+    }
+    
+    public default <D> Optional<DATA> minBy(Func1<DATA, D> mapper, Comparator<? super D> comparator) {
+        return stream().min((a,b)->comparator.compare(mapper.apply(a), mapper.apply(b)));
+    }
+    
+    public default <D> Optional<DATA> maxBy(Func1<DATA, D> mapper, Comparator<? super D> comparator) {
+        return stream().max((a,b)->comparator.compare(mapper.apply(a), mapper.apply(b)));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <D extends Comparable<D>> Tuple2<Optional<DATA>, Optional<DATA>> minMaxBy(Func1<DATA, D> mapper) {
+        val minRef = new AtomicReference<Object>(Helper.dummy);
+        val maxRef = new AtomicReference<Object>(Helper.dummy);
+        sortedBy(mapper)
+        .forEach(each -> {
+            minRef.compareAndSet(Helper.dummy, each);
+            maxRef.set(each);
+        });
+        val min = minRef.get();
+        val max = maxRef.get();
+        return Tuple2.of(
+                Helper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
+                Helper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <D> Tuple2<Optional<DATA>, Optional<DATA>> minMaxBy(
+            Func1<DATA, D>        mapper, 
+            Comparator<? super D> comparator) {
+        val minRef = new AtomicReference<Object>(Helper.dummy);
+        val maxRef = new AtomicReference<Object>(Helper.dummy);
+        sortedBy(mapper, (i1, i2)->comparator.compare(i1, i2))
+        .forEach(each -> {
+            minRef.compareAndSet(Helper.dummy, each);
+            maxRef.set(each);
+        });
+        val min = minRef.get();
+        val max = maxRef.get();
+        return Tuple2.of(
+                Helper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
+                Helper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
     }
     
     public default int sumToInt(ToIntFunction<? super DATA> toInt) {
@@ -664,7 +740,8 @@ public interface StreamPlus<DATA>
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
     
-    public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(Function<? super DATA, ? extends KEY> classifier) {
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(
+            Function<? super DATA, ? extends KEY> classifier) {
         val theMap = new HashMap<KEY, FuncList<DATA>>();
         stream()
             .collect(Collectors.groupingBy(classifier))

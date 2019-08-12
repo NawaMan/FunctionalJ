@@ -60,14 +60,13 @@ public interface Tuple2Lens<HOST, T1, T2, T1LENS extends AnyLens<HOST,T1>, T2LEN
         return ()->spec;
     }
     
-
     public LensSpecParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1LENS, T2LENS> lensSpecParameterized2();
     
     @Override
     public default AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1LENS, T2LENS> accessParameterized2() {
         return lensSpecParameterized2();
     }
-
+    
     @Override
     public default LensSpec<HOST, Tuple2<T1, T2>> lensSpec() {
         return lensSpecParameterized2().getSpec();

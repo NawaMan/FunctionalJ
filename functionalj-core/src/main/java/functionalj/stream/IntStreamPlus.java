@@ -58,6 +58,8 @@ import functionalj.list.ImmutableList;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
+// TODO - shrink, Histogram
+
 @FunctionalInterface
 public interface IntStreamPlus extends IntStream {
     

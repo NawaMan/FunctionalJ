@@ -33,7 +33,6 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func1;
 import functionalj.list.ImmutableList;
-import functionalj.pipeable.Pipeable.__internal;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
