@@ -35,7 +35,11 @@ public class ChangeResult<D> implements Pipeable<ChangeResult<D>> {
     private D originalData;
     private ResultStatus<D> status;
     
-    public ChangeResult(Store<D> store, D originalData, ResultStatus<D> status) {
+    public ChangeResult(D originalData, ResultStatus<D> status) {
+        this(null, originalData, status);
+    }
+    
+    ChangeResult(Store<D> store, D originalData, ResultStatus<D> status) {
         this.store = store;
         this.originalData = originalData;
         this.status = status;

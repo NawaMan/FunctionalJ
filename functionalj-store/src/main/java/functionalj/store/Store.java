@@ -115,10 +115,10 @@ public class Store<DATA> {
     
     @SafeVarargs
     public final ChangeResult<DATA> change(Func1<DATA, DATA> changer, Func1<DATA, DATA> ... moreChangers) {
-        // TODO - Let try at some point to make it ok for any chaner to be null.
         val result = new AtomicReference<>(this.change(changer));
         StreamPlus
         .of(moreChangers)
+        .filterNonNull()
         .forEach(c -> {
             val prevResult = result.get();
             val newResult  = prevResult.change(c);

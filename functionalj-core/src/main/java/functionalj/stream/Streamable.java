@@ -1584,10 +1584,16 @@ public interface Streamable<DATA> {
         return piper.apply(this);
     }
     
-    public default Streamable<DATA> shrik(Predicate<DATA> conditionToShink, Func2<DATA, DATA, DATA> concatFunc) {
+    public default Streamable<DATA> collapse(Predicate<DATA> conditionNotToShink, Func2<DATA, DATA, DATA> concatFunc) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream()).shrink(conditionToShink, concatFunc);
+            return StreamPlus.from(stream()).collapse(conditionNotToShink, concatFunc);
         });
+    }
+    
+    public default Streamable<DATA> spawn() {
+        // TODO - 
+        
+        return null;
     }
     
 }

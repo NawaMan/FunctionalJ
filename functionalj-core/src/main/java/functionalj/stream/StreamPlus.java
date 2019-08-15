@@ -209,15 +209,6 @@ public interface StreamPlus<DATA>
     public static <D> StreamPlus<D> concat(Supplier<Stream<D>> ... streams) {
         return StreamPlus.of(streams).map(Supplier::get).flatMap(Func.themAll());
     }
-    // To avoid name conflict with String.concat
-    @SafeVarargs
-    public static <D> StreamPlus<D> combine(Stream<D> ... streams) {
-        return StreamPlus.of(streams).flatMap(Func.themAll());
-    }
-    @SafeVarargs
-    public static <D> StreamPlus<D> combine(Supplier<Stream<D>> ... streams) {
-        return StreamPlus.of(streams).map(Supplier::get).flatMap(Func.themAll());
-    }
     public static <D> StreamPlus<D> generate(Supplier<D> supplier) {
         return StreamPlus.from(Stream.generate(supplier));
     }
@@ -337,7 +328,7 @@ public interface StreamPlus<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> shrink(Predicate<DATA> conditionToShink, Func2<DATA, DATA, DATA> concatFunc) {
+    public default StreamPlus<DATA> collapse(Predicate<DATA> conditionNotToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
         val stream = stream();
         val iterator = stream.iterator();
         
@@ -362,7 +353,7 @@ public interface StreamPlus<DATA>
                     prev.set(Helper.dummy);
                     return (DATA)yield;
                 }
-                if (conditionToShink.test(next)) {
+                if (!conditionNotToCollapse.test(next)) {
                     prev.set(concatFunc.apply((DATA)prev.get(), next));
                 } else {
                     val yield = prev.get();

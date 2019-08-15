@@ -200,14 +200,29 @@ public class StreamPlusTest {
     @Test
     public void testShrink() {
         val stream1 = StreamPlus.of(1, 2, 3, 4, 5, 6);
+        // Because 3 and 6 do not match the condition not to collapse ... so they are merged with the one before them.
         assertEquals(
                 "1, 5, 4, 11", 
-                stream1.shrink(i -> (i % 3) == 0, (a,b)->a+b).joinToString(", "));
+                stream1.collapse(
+                        i -> (i % 3) != 0,
+                        (a,b)->a+b
+                    ).joinToString(", "));
         
         val stream2 = StreamPlus.of(1, 2, 3, 4, 5, 6);
         assertEquals(
                 "1, 2, 7, 5, 6", 
-                stream2.shrink(i -> (i % 3) == 1, (a,b)->a+b).joinToString(", "));
+                stream2.collapse(
+                        i -> (i % 3) != 1,
+                        (a,b)->a+b
+                    ).joinToString(", "));
+        
+        val stream3 = StreamPlus.of(1, 2, 3, 4, 5, 6);
+        assertEquals(
+                "1, 9, 11", 
+                stream3.collapse(
+                        i -> (i % 3) > 1,
+                        (a,b)->a+b
+                    ).joinToString(", "));
     }
     
     @Test
