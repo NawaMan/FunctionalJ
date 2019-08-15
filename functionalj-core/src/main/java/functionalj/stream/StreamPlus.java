@@ -24,6 +24,7 @@
 package functionalj.stream;
 
 import static functionalj.function.Func.f;
+import static functionalj.function.Func.themAll;
 import static functionalj.functions.ObjFuncs.notEqual;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static java.lang.Boolean.TRUE;
@@ -272,6 +273,15 @@ public interface StreamPlus<DATA>
                         this.stream()));
     }
     
+    @SuppressWarnings("unchecked")
+    public default StreamPlus<DATA> concatWith(Stream<DATA> ... tails) {
+        return concat(
+                StreamPlus.of(this), 
+                StreamPlus.of(tails)
+               )
+               .flatMap(themAll());
+    }
+    
     //== Functionalities ==
     
     @Override
@@ -328,7 +338,7 @@ public interface StreamPlus<DATA>
     }
     
     @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> collapse(Predicate<DATA> conditionNotToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
+    public default StreamPlus<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
         val stream = stream();
         val iterator = stream.iterator();
         
@@ -353,7 +363,7 @@ public interface StreamPlus<DATA>
                     prev.set(Helper.dummy);
                     return (DATA)yield;
                 }
-                if (!conditionNotToCollapse.test(next)) {
+                if (conditionToCollapse.test(next)) {
                     prev.set(concatFunc.apply((DATA)prev.get(), next));
                 } else {
                     val yield = prev.get();

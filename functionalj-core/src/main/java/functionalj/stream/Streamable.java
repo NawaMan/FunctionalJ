@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.function.Func.themAll;
+
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -954,6 +956,15 @@ public interface Streamable<DATA> {
         });
     }
     
+    @SuppressWarnings("unchecked")
+    public default Streamable<DATA> concatWith(Streamable<DATA> ... tails) {
+        return deriveWith(stream -> {
+            return StreamPlus
+                    .concat(StreamPlus.of(stream), StreamPlus.of(tails).map(Streamable::stream))
+                    .flatMap(themAll());
+        });
+    }
+    
     //-- Plus w/ Self --
     //============================================================================
     
@@ -1584,9 +1595,9 @@ public interface Streamable<DATA> {
         return piper.apply(this);
     }
     
-    public default Streamable<DATA> collapse(Predicate<DATA> conditionNotToShink, Func2<DATA, DATA, DATA> concatFunc) {
+    public default Streamable<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream()).collapse(conditionNotToShink, concatFunc);
+            return StreamPlus.from(stream()).collapse(conditionToCollapse, concatFunc);
         });
     }
     

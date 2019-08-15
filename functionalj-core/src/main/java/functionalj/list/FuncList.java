@@ -24,6 +24,7 @@
 package functionalj.list;
    
 import static functionalj.function.Func.alwaysTrue;
+import static functionalj.function.Func.themAll;
 import static functionalj.lens.Access.$I;
 import static java.util.function.Function.identity;
 
@@ -1071,19 +1072,28 @@ public interface FuncList<DATA>
             return StreamPlus.from(stream).choose(anotherStream, selectThisNotAnother);
         });
     }
-   
+    
     public default FuncList<DATA> merge(Stream<DATA> anotherStream) {
         return deriveWith(stream -> {
             return StreamPlus.from(stream).merge(anotherStream);
         });
     }
-   
+    
+    @SuppressWarnings("unchecked")
+    public default FuncList<DATA> concatWith(FuncList<DATA> ... tails) {
+        return deriveWith(stream -> {
+            return StreamPlus
+                    .concat(StreamPlus.of(stream), StreamPlus.of(tails).map(Streamable::stream))
+                    .flatMap(themAll());
+        });
+    }
+    
     // -- Plus w/ Self --
     // ============================================================================
    
-    public default FuncList<DATA> collapse(Predicate<DATA> conditionNotToShink, Func2<DATA, DATA, DATA> concatFunc) {
+    public default FuncList<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
         return deriveWith(stream -> {
-            return StreamPlus.from(stream()).collapse(conditionNotToShink, concatFunc);
+            return StreamPlus.from(stream()).collapse(conditionToCollapse, concatFunc);
         });
     }
 }
