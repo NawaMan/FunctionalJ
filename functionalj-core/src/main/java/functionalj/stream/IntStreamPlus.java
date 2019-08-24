@@ -47,18 +47,16 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import functionalj.function.Func1;
+import functionalj.function.FuncUnit1;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
-
-// TODO - shrink, Histogram
 
 @FunctionalInterface
 public interface IntStreamPlus extends IntStream {
@@ -104,9 +102,9 @@ public interface IntStreamPlus extends IntStream {
     }
     
     public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator f) {
-        AtomicInteger counter = new AtomicInteger(0);
-        AtomicInteger int1    = new AtomicInteger(seed1);
-        AtomicInteger int2    = new AtomicInteger(seed2);
+        val counter = new AtomicInteger(0);
+        val int1    = new AtomicInteger(seed1);
+        val int2    = new AtomicInteger(seed2);
         return IntStreamPlus.generate(()->{
             if (counter.getAndIncrement() == 0)
                 return seed1;
@@ -124,6 +122,25 @@ public interface IntStreamPlus extends IntStream {
     //== Stream ==
     
     public IntStream stream();
+    
+    public default <TARGET> TARGET terminate(Func1<IntStream, TARGET> action) {
+        val stream = stream();
+        try {
+            val result = action.apply(stream);
+            return result;
+        } finally {
+            stream.close();
+        }
+    }
+    
+    public default void terminate(FuncUnit1<IntStream> action) {
+        val stream = stream();
+        try {
+            action.accept(stream);
+        } finally {
+            stream.close();
+        }
+    }
     
     @Override
     public default IntStreamPlus filter(IntPredicate predicate) {
@@ -148,27 +165,33 @@ public interface IntStreamPlus extends IntStream {
     }
     
     public default StreamPlus<Integer> asStream() {
-        return StreamPlus.from(stream()
+        val stream = StreamPlus.from(stream()
                 .mapToObj(i -> Integer.valueOf(i)));
+        stream.onClose(()->{ close(); });
+        return stream;
     }
     
     @Override
     public default <U> StreamPlus<U> mapToObj(IntFunction<? extends U> mapper) {
-        return StreamPlus.from(stream().mapToObj(mapper));
+        StreamPlus<U> stream = StreamPlus.from(stream().mapToObj(mapper));
+        stream.onClose(()->{ close(); });
+        return stream;
     }
     
     public default <TARGET> StreamPlus<TARGET> mapToObj(Supplier<? extends TARGET> supplier) {
-        return StreamPlus.from(stream().mapToObj(e -> supplier.get()));
+        StreamPlus<TARGET> stream = StreamPlus.from(stream().mapToObj(e -> supplier.get()));
+        stream.onClose(()->{ close(); });
+        return stream;
     }
     
     @Override
-    public default LongStream mapToLong(IntToLongFunction mapper) {
-        return stream().mapToLong(mapper);
+    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
+        return LongStreamPlus.from(stream().mapToLong(mapper));
     }
     
     @Override
-    public default DoubleStream mapToDouble(IntToDoubleFunction mapper) {
-        return stream().mapToDouble (mapper);
+    public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
+        return DoubleStreamPlus.from(stream().mapToDouble (mapper));
     }
     
     @Override
@@ -210,99 +233,150 @@ public interface IntStreamPlus extends IntStream {
     
     @Override
     public default void forEach(IntConsumer action) {
-        stream().forEach(action);
+        terminate(stream-> {
+            stream
+            .forEach(action);
+        });
     }
     
     @Override
     public default void forEachOrdered(IntConsumer action) {
-        stream().forEach(action);
+        terminate(stream-> {
+            stream
+            .forEachOrdered(action);
+        });
     }
     
     @Override
     public default int[] toArray() {
-        return stream().toArray();
+        return terminate(stream-> {
+            return stream
+                    .toArray();
+        });
     }
     
     @Override
     public default int reduce(int identity, IntBinaryOperator op) {
-        return stream().reduce(identity, op);
+        return terminate(stream-> {
+            return stream
+                    .reduce(identity, op);
+        });
     }
     
     @Override
     public default OptionalInt reduce(IntBinaryOperator op) {
-        return stream().reduce(op);
+        return terminate(stream-> {
+            return stream
+                    .reduce(op);
+        });
     }
     
     @Override
     public default <R> R collect(Supplier<R> supplier,
                   ObjIntConsumer<R> accumulator,
                   BiConsumer<R, R> combiner) {
-        return stream().collect(supplier, accumulator, combiner);
+        return terminate(stream-> {
+            return stream
+                    .collect(supplier, accumulator, combiner);
+        });
     }
     
     @Override
     public default int sum() {
-        return stream().sum();
+        return terminate(stream-> {
+            return stream
+                    .sum();
+        });
     }
     
     @Override
     public default OptionalInt min() {
-        return stream().min();
+        return terminate(stream-> {
+            return stream
+                    .min();
+        });
     }
     
     @Override
     public default OptionalInt max() {
-        return stream().min();
+        return terminate(stream-> {
+            return stream
+                    .max();
+        });
     }
     
     @Override
     public default long count() {
-        return stream().count();
+        return terminate(stream-> {
+            return stream
+                    .count();
+        });
     }
     
     @Override
     public default OptionalDouble average() {
-        return stream().average();
+        return terminate(stream-> {
+            return stream
+                    .average();
+        });
     }
     
     @Override
     public default IntSummaryStatistics summaryStatistics() {
-        return stream().summaryStatistics();
+        return terminate(stream-> {
+            return stream
+                    .summaryStatistics();
+        });
     }
     
     @Override
     public default boolean anyMatch(IntPredicate predicate) {
-        return stream().anyMatch(predicate);
+        return terminate(stream-> {
+            return stream
+                    .anyMatch(predicate);
+        });
     }
     
     @Override
     public default boolean allMatch(IntPredicate predicate) {
-        return stream().allMatch(predicate);
+        return terminate(stream-> {
+            return stream
+                    .allMatch(predicate);
+        });
     }
     
     @Override
     public default boolean noneMatch(IntPredicate predicate) {
-        return stream().noneMatch(predicate);
+        return terminate(stream-> {
+            return stream
+                    .noneMatch(predicate);
+        });
     }
     
     @Override
     public default OptionalInt findFirst() {
-        return stream().findFirst();
+        return terminate(stream-> {
+            return stream
+                    .findFirst();
+        });
     }
     
     @Override
     public default OptionalInt findAny() {
-        return stream().findAny();
+        return terminate(stream-> {
+            return stream
+                    .findAny();
+        });
     }
     
     @Override
-    public default LongStream asLongStream() {
-        return stream().asLongStream();
+    public default LongStreamPlus asLongStream() {
+        return LongStreamPlus.from(stream().asLongStream());
     }
     
     @Override
-    public default DoubleStream asDoubleStream() {
-        return stream().asDoubleStream();
+    public default DoubleStreamPlus asDoubleStream() {
+        return DoubleStreamPlus.from(stream().asDoubleStream());
     }
     
     @Override
@@ -322,6 +396,7 @@ public interface IntStreamPlus extends IntStream {
     
     @Override
     public default PrimitiveIterator.OfInt iterator() {
+        // TODO - Make sure close is handled properly.
         return stream().iterator();
     }
     
@@ -432,8 +507,6 @@ public interface IntStreamPlus extends IntStream {
         return stream;
     }
     
-    // No Zip - as it seems to give no additional benefit than just changing it to Stream and zip it there.
-    
     public default List<Integer> toList() {
         return asStream().toJavaList();
     }
@@ -461,14 +534,17 @@ public interface IntStreamPlus extends IntStream {
     //== Plus ==
     
     public default String joining() {
-        return stream()
+        return terminate(stream -> {
+            return stream()
                 .mapToObj(StrFuncs::toStr)
                 .collect(Collectors.joining());
+        });
     }
     public default String joining(String delimiter) {
-        return stream()
+        return terminate(stream -> {
+            return stream()
                 .mapToObj(StrFuncs::toStr)
                 .collect(Collectors.joining(delimiter));
+        });
     }
-    
 }

@@ -36,7 +36,7 @@ public class StreamPlusIteratorPlusExamples {
         
         assertEquals(
                 "Player1 score: 2",
-                "Player1 score: " +  player1.combine(player2, Hand::play).sumToInt(Integer::intValue));
+                "Player1 score: " +  player1.combine(player2, Hand::play).mapToInt(Integer::intValue).sum());
     }
     
     @Test

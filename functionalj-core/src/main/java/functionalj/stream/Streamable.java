@@ -1601,10 +1601,4 @@ public interface Streamable<DATA> {
         });
     }
     
-    public default Streamable<DATA> spawn() {
-        // TODO - 
-        
-        return null;
-    }
-    
 }

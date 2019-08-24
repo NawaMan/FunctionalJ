@@ -1090,7 +1090,7 @@ public interface FuncList<DATA>
     
     // -- Plus w/ Self --
     // ============================================================================
-   
+    
     public default FuncList<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
         return deriveWith(stream -> {
             return StreamPlus.from(stream()).collapse(conditionToCollapse, concatFunc);
