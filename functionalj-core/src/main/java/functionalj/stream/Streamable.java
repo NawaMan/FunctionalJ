@@ -1503,4 +1503,10 @@ public interface Streamable<DATA> {
         });
     }
     
+    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompleteAction<T>> mapper) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream()).spawn(mapper);
+        });
+    }
+    
 }
