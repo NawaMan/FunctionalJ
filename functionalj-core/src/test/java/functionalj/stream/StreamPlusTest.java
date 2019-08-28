@@ -805,4 +805,78 @@ public class StreamPlusTest {
                 actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
     }
     
+    @Test
+    public void testGet() {
+        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val sumLength = new StreamProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return total;
+            }
+        };
+        assertEquals(18, stream.get(sumLength).intValue());
+    }
+    
+    @Test
+    public void testGet2() {
+        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val sumLength = new StreamProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return total;
+            }
+        };
+        val avgLength = new StreamProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return (int) ((int)total/count);
+            }
+        };
+        assertEquals("(18,4)", stream.get(sumLength, avgLength).toString());
+    }
+    
+    @Test
+    public void testGet2_combine() {
+        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val minLength = new StreamProcessor<String, Integer>() {
+            int min = Integer.MAX_VALUE;
+            @Override
+            public void processElement(long index, String element) {
+                min = Math.min(min, element.length());
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return min;
+            }
+        };
+        val maxLength = new StreamProcessor<String, Integer>() {
+            int max = Integer.MIN_VALUE;
+            @Override
+            public void processElement(long index, String element) {
+                max = Math.max(max, element.length());
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return max;
+            }
+        };
+        val range = stream.get(maxLength, minLength, (max, min) -> max - min).intValue();
+        assertEquals(3, range);
+    }
+    
 }
