@@ -86,6 +86,8 @@ import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
+import functionalj.promise.DeferAction;
+import functionalj.promise.UncompleteAction;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple;
@@ -421,20 +423,33 @@ public interface StreamPlus<DATA>
                 .findFirst();
     }
     
-    public default StreamPlus<DATA> spawn() {
-        val elements = new ArrayList<DATA>();
-        return StreamPlus
-                .from(stream()
-                    .peek(element -> {
-                        elements.add(element);
-                    })
-                    .onClose(()->{
-                        elements
-                        .forEach(element -> {
-                            System.out.println("Replay: " + element);
-                        });
-                    }))
-                ;
+    public default <T> StreamPlus<Result<T>> spawn(Func1<DATA, ? extends UncompleteAction<T>> mapToAction) {
+        val results = new ArrayList<DeferAction<T>>();
+        val index   = new AtomicInteger(0);
+        
+        val actions 
+            = stream()
+            .map (mapToAction)
+            .peek(action -> results.add(DeferAction.<T>createNew()))
+            .peek(action -> action.getPromise().onComplete(result -> {
+                val thisIndex  = index.getAndIncrement();
+                val thisAction = results.get(thisIndex);
+                if (result.isValue())
+                     thisAction.complete(result.value());
+                else thisAction.fail    (result.exception());
+            }))
+            .peek(action -> action.start())
+            .collect(Collectors.toList())
+            ;
+        
+        val stream 
+            = StreamPlus
+            .from(results.stream().map(action -> action.getResult()))
+            ;
+        stream
+            .onClose(()->actions.forEach(action -> action.abort("Stream closed!")));
+        
+        return stream;
     }
     
     public default Optional<DATA> min(Comparator<? super DATA> comparator) {
@@ -695,7 +710,7 @@ public interface StreamPlus<DATA>
     }
     
     public default ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.from(stream());
+        return ImmutableList.from(this);
     }
     
     public default List<DATA> toMutableList() {
@@ -707,7 +722,7 @@ public interface StreamPlus<DATA>
     }
     
     public default Set<DATA> toSet() {
-        return new HashSet<DATA>(stream().collect(Collectors.toSet()));
+        return new HashSet<DATA>(this.collect(Collectors.toSet()));
     }
     
     public default IteratorPlus<DATA> iterator() {
@@ -2007,6 +2022,8 @@ public interface StreamPlus<DATA>
         };
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
+    
+    // TODO - collapse(IntFunction<DATA> numbersToCollapse, Func2<DATA, DATA, DATA> concatFunc)
     
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {

@@ -35,9 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -76,6 +73,7 @@ import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
+import functionalj.promise.UncompleteAction;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -1059,54 +1057,6 @@ public interface Streamable<DATA> {
         return stream().max((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
     }
     
-    public default int sumToInt(ToIntFunction<? super DATA> toInt) {
-        return mapToInt(toInt).sum();
-    }
-    
-    public default OptionalInt minToInt(ToIntFunction<? super DATA> toInt) {
-        return mapToInt(toInt).min();
-    }
-    
-    public default OptionalInt maxToInt(ToIntFunction<? super DATA> toInt) {
-        return mapToInt(toInt).max();
-    }
-    
-    public default OptionalDouble averageToInt(ToIntFunction<? super DATA> toInt) {
-        return mapToInt(toInt).average();
-    }
-    
-    public default long sumToLong(ToLongFunction<? super DATA> toLong) {
-        return mapToLong(toLong).sum();
-    }
-    
-    public default OptionalLong minToLong(ToLongFunction<? super DATA> toLong) {
-        return mapToLong(toLong).min();
-    }
-    
-    public default OptionalLong maxToLong(ToLongFunction<? super DATA> toLong) {
-        return mapToLong(toLong).max();
-    }
-    
-    public default OptionalDouble averageToLong(ToLongFunction<? super DATA> toLong) {
-        return mapToLong(toLong).average();
-    }
-    
-    public default double sumToDouble(ToDoubleFunction<? super DATA> toDouble) {
-        return mapToDouble(toDouble).sum();
-    }
-    
-    public default OptionalDouble minToDouble(ToDoubleFunction<? super DATA> toDouble) {
-        return mapToDouble(toDouble).min();
-    }
-    
-    public default OptionalDouble maxToDouble(ToDoubleFunction<? super DATA> toDouble) {
-        return mapToDouble(toDouble).max();
-    }
-    
-    public default OptionalDouble averageToDouble(ToDoubleFunction<? super DATA> toDouble) {
-        return mapToDouble(toDouble).average();
-    }
-    
     public default Optional<BigDecimal> sumToBigDecimal(Function<? super DATA, BigDecimal> toBigDecimal) {
         return map(toBigDecimal).reduce(BigDecimal::add);
     }
@@ -1123,54 +1073,6 @@ public interface Streamable<DATA> {
         val countSum = map(each -> Tuple.of(1, toBigDecimal.apply(each)))
         .reduce((a, b)->Tuple.of(a._1 + b._1, a._2.add(b._2)));
         return countSum.map(t -> t._2.divide(new BigDecimal(t._1)));
-    }
-    
-    public default int sum(ToIntFunction<? super DATA> toInt) {
-        return sumToInt(toInt);
-    }
-    
-    public default OptionalInt min(ToIntFunction<? super DATA> toInt) {
-        return minToInt(toInt);
-    }
-    
-    public default OptionalInt max(ToIntFunction<? super DATA> toInt) {
-        return maxToInt(toInt);
-    }
-    
-    public default OptionalDouble average(ToIntFunction<? super DATA> toInt) {
-        return averageToInt(toInt);
-    }
-    
-    public default long sum(ToLongFunction<? super DATA> toLong) {
-        return sumToLong(toLong);
-    }
-    
-    public default OptionalLong min(ToLongFunction<? super DATA> toLong) {
-        return minToLong(toLong);
-    }
-    
-    public default OptionalLong max(ToLongFunction<? super DATA> toLong) {
-        return maxToLong(toLong);
-    }
-    
-    public default OptionalDouble average(ToLongFunction<? super DATA> toLong) {
-        return averageToLong(toLong);
-    }
-    
-    public default double sum(ToDoubleFunction<? super DATA> toDouble) {
-        return sumToDouble(toDouble);
-    }
-    
-    public default OptionalDouble min(ToDoubleFunction<? super DATA> toDouble) {
-        return minToDouble(toDouble);
-    }
-    
-    public default OptionalDouble max(ToDoubleFunction<? super DATA> toDouble) {
-        return maxToDouble(toDouble);
-    }
-    
-    public default OptionalDouble average(ToDoubleFunction<? super DATA> toDouble) {
-        return averageToDouble(toDouble);
     }
     
     public default Optional<BigDecimal> sum(Function<? super DATA, BigDecimal> toBigDecimal) {

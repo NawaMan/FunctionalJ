@@ -54,6 +54,7 @@ import functionalj.lens.lenses.AnyLens;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
+import functionalj.promise.UncompleteAction;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlus.Helper;
@@ -1094,6 +1095,12 @@ public interface FuncList<DATA>
     public default FuncList<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
         return deriveWith(stream -> {
             return StreamPlus.from(stream()).collapse(conditionToCollapse, concatFunc);
+        });
+    }
+    
+    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompleteAction<T>> mapper) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream()).spawn(mapper);
         });
     }
 }

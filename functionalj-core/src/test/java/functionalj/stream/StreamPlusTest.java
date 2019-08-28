@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
@@ -47,8 +48,10 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -57,6 +60,7 @@ import org.junit.Test;
 import functionalj.function.Func0;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
+import functionalj.promise.DeferAction;
 import functionalj.result.NoMoreResultException;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple3;
@@ -315,13 +319,11 @@ public class StreamPlusTest {
         
         val isClosed = new AtomicBoolean(false);
         stream
-        .onClose(()-> 
-            isClosed.set(true));
+        .onClose(()->isClosed.set(true));
         
         assertFalse(isClosed.get());
         assertStrings("[3, 3, 5]", stream.map(theString.length()).toList());
-        // TODO - This is still not work.
-        //assertTrue(isClosed.get());
+        assertTrue(isClosed.get());
         
         try {
             stream.toList();
@@ -746,6 +748,61 @@ public class StreamPlusTest {
     public void testMostFrequence() {
         val stream = StreamPlus.of("One", "Two", "Three", "Four").map(theString);
         assertEquals("Optional[2=3]", stream.map(theString.replaceAll("[^aeiouAEIOU]", "").length()).mostFrequence().toString());
+    }
+    
+    @Test
+    public void testSpawn() {
+        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val first  = new AtomicLong(-1);
+        val logs   = new ArrayList<String>();
+        stream
+        .spawn(str -> {
+            return Sleep(str.length()*50 + 5).thenReturn(str).defer();
+        })
+        .forEach(element -> {
+            first.compareAndSet(-1, System.currentTimeMillis());
+            val start    = first.get();
+            val end      = System.currentTimeMillis();
+            val duration = Math.round((end - start)/50.0)*50;
+            logs.add(element + " -- " + duration);
+        });
+        assertEquals("["
+                + "Result:{ Value: Two } -- 0, "
+                + "Result:{ Value: Four } -- 50, "
+                + "Result:{ Value: Three } -- 100, "
+                + "Result:{ Value: Eleven } -- 150"
+                + "]",
+                logs.toString());
+    }
+    
+    @Test
+    public void testSpawn_limit() {
+        val stream  = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val first   = new AtomicLong(-1);
+        val actions = new ArrayList<DeferAction<String>>();
+        val logs    = new ArrayList<String>();
+        stream
+        .spawn(str -> {
+            val action = Sleep(str.length()*50 + 5).thenReturn(str).defer();
+            actions.add(action);
+            return action;
+        })
+        .limit(1)
+        .forEach(element -> {
+            first.compareAndSet(-1, System.currentTimeMillis());
+            val start    = first.get();
+            val end      = System.currentTimeMillis();
+            val duration = Math.round((end - start)/50.0)*50;
+            logs.add(element + " -- " + duration);
+        });
+        assertEquals("[Result:{ Value: Two } -- 0]",
+                logs.toString());
+        assertEquals(
+                "Result:{ Value: Two }, " + 
+                "Result:{ Cancelled: Stream closed! }, " +
+                "Result:{ Cancelled: Stream closed! }, " + 
+                "Result:{ Cancelled: Stream closed! }",
+                actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
     }
     
 }
