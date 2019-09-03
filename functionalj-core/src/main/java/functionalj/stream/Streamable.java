@@ -1513,7 +1513,7 @@ public interface Streamable<DATA> {
     //== Get ==
     
     @SuppressWarnings("unchecked")
-    public default <T> T get(StreamProcessor<DATA, T> processor) {
+    public default <T> T get(StreamElementProcessor<DATA, T> processor) {
         val counter = new AtomicLong(0);
         for (val each : (Iterable<DATA>)this) {
             val index = counter.getAndIncrement();
@@ -1524,15 +1524,15 @@ public interface Streamable<DATA> {
     }
     
     public default <T1, T2> Tuple2<T1, T2> get(
-                StreamProcessor<DATA, T1> processor1, 
-                StreamProcessor<DATA, T2> processor2) {
+                StreamElementProcessor<DATA, T1> processor1, 
+                StreamElementProcessor<DATA, T2> processor2) {
         return get(processor1, processor2, Tuple2::of);
     }
     
     @SuppressWarnings("unchecked")
     public default <T, T1, T2> T get(
-                StreamProcessor<DATA, T1> processor1, 
-                StreamProcessor<DATA, T2> processor2,
+                StreamElementProcessor<DATA, T1> processor1, 
+                StreamElementProcessor<DATA, T2> processor2,
                 Func2<T1, T2, T>          combiner) {
         val counter = new AtomicLong(0);
         for (val each : (Iterable<DATA>)this) {
@@ -1547,17 +1547,17 @@ public interface Streamable<DATA> {
     }
     
     public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
-                StreamProcessor<DATA, T1> processor1, 
-                StreamProcessor<DATA, T2> processor2, 
-                StreamProcessor<DATA, T3> processor3) {
+                StreamElementProcessor<DATA, T1> processor1, 
+                StreamElementProcessor<DATA, T2> processor2, 
+                StreamElementProcessor<DATA, T3> processor3) {
         return get(processor1, processor2, processor3, Tuple3::of);
     }
     
     @SuppressWarnings("unchecked")
     public default <T1, T2, T3, T> T get(
-            StreamProcessor<DATA, T1> processor1, 
-            StreamProcessor<DATA, T2> processor2, 
-            StreamProcessor<DATA, T3> processor3,
+            StreamElementProcessor<DATA, T1> processor1, 
+            StreamElementProcessor<DATA, T2> processor2, 
+            StreamElementProcessor<DATA, T3> processor3,
             Func3<T1, T2, T3, T>      combiner) {
         val counter = new AtomicLong(0);
         for (val each : (Iterable<DATA>)this) {
@@ -1574,19 +1574,19 @@ public interface Streamable<DATA> {
     }
     
     public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
-                StreamProcessor<DATA, T1> processor1, 
-                StreamProcessor<DATA, T2> processor2, 
-                StreamProcessor<DATA, T3> processor3, 
-                StreamProcessor<DATA, T4> processor4) {
+                StreamElementProcessor<DATA, T1> processor1, 
+                StreamElementProcessor<DATA, T2> processor2, 
+                StreamElementProcessor<DATA, T3> processor3, 
+                StreamElementProcessor<DATA, T4> processor4) {
         return get(processor1, processor2, processor3, processor4, Tuple4::of);
     }
     
     @SuppressWarnings("unchecked")
     public default <T1, T2, T3, T4, T> T get(
-            StreamProcessor<DATA, T1> processor1, 
-            StreamProcessor<DATA, T2> processor2, 
-            StreamProcessor<DATA, T3> processor3,
-            StreamProcessor<DATA, T4> processor4,
+            StreamElementProcessor<DATA, T1> processor1, 
+            StreamElementProcessor<DATA, T2> processor2, 
+            StreamElementProcessor<DATA, T3> processor3,
+            StreamElementProcessor<DATA, T4> processor4,
             Func4<T1, T2, T3, T4, T>  combiner) {
         val counter = new AtomicLong(0);
         for (val each : (Iterable<DATA>)this) {
@@ -1605,21 +1605,21 @@ public interface Streamable<DATA> {
     }
     
     public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
-                StreamProcessor<DATA, T1> processor1, 
-                StreamProcessor<DATA, T2> processor2, 
-                StreamProcessor<DATA, T3> processor3, 
-                StreamProcessor<DATA, T4> processor4, 
-                StreamProcessor<DATA, T5> processor5) {
+                StreamElementProcessor<DATA, T1> processor1, 
+                StreamElementProcessor<DATA, T2> processor2, 
+                StreamElementProcessor<DATA, T3> processor3, 
+                StreamElementProcessor<DATA, T4> processor4, 
+                StreamElementProcessor<DATA, T5> processor5) {
         return get(processor1, processor2, processor3, processor4, processor5, Tuple5::of);
     }
     
     @SuppressWarnings("unchecked")
     public default <T1, T2, T3, T4, T5, T> T get(
-            StreamProcessor<DATA, T1> processor1, 
-            StreamProcessor<DATA, T2> processor2, 
-            StreamProcessor<DATA, T3> processor3,
-            StreamProcessor<DATA, T4> processor4,
-            StreamProcessor<DATA, T5> processor5,
+            StreamElementProcessor<DATA, T1> processor1, 
+            StreamElementProcessor<DATA, T2> processor2, 
+            StreamElementProcessor<DATA, T3> processor3,
+            StreamElementProcessor<DATA, T4> processor4,
+            StreamElementProcessor<DATA, T5> processor5,
             Func5<T1, T2, T3, T4, T5, T>  combiner) {
         val counter = new AtomicLong(0);
         for (val each : (Iterable<DATA>)this) {
@@ -1640,23 +1640,23 @@ public interface Streamable<DATA> {
     }
     
     public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
-                StreamProcessor<DATA, T1> processor1, 
-                StreamProcessor<DATA, T2> processor2, 
-                StreamProcessor<DATA, T3> processor3, 
-                StreamProcessor<DATA, T4> processor4, 
-                StreamProcessor<DATA, T5> processor5, 
-                StreamProcessor<DATA, T6> processor6) {
+                StreamElementProcessor<DATA, T1> processor1, 
+                StreamElementProcessor<DATA, T2> processor2, 
+                StreamElementProcessor<DATA, T3> processor3, 
+                StreamElementProcessor<DATA, T4> processor4, 
+                StreamElementProcessor<DATA, T5> processor5, 
+                StreamElementProcessor<DATA, T6> processor6) {
         return get(processor1, processor2, processor3, processor4, processor5, processor6, Tuple6::of);
     }
     
     @SuppressWarnings("unchecked")
     public default <T1, T2, T3, T4, T5, T6, T> T get(
-            StreamProcessor<DATA, T1> processor1, 
-            StreamProcessor<DATA, T2> processor2, 
-            StreamProcessor<DATA, T3> processor3,
-            StreamProcessor<DATA, T4> processor4,
-            StreamProcessor<DATA, T5> processor5,
-            StreamProcessor<DATA, T6> processor6,
+            StreamElementProcessor<DATA, T1> processor1, 
+            StreamElementProcessor<DATA, T2> processor2, 
+            StreamElementProcessor<DATA, T3> processor3,
+            StreamElementProcessor<DATA, T4> processor4,
+            StreamElementProcessor<DATA, T5> processor5,
+            StreamElementProcessor<DATA, T6> processor6,
             Func6<T1, T2, T3, T4, T5, T6, T>  combiner) {
         val counter = new AtomicLong(0);
         for (val each : (Iterable<DATA>)this) {

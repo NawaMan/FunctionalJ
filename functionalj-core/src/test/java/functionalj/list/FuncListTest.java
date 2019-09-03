@@ -40,7 +40,7 @@ import org.junit.Test;
 import functionalj.lens.LensTest;
 import functionalj.promise.DeferAction;
 import functionalj.stream.IntStreamPlus;
-import functionalj.stream.StreamProcessor;
+import functionalj.stream.StreamElementProcessor;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -258,7 +258,7 @@ public class FuncListTest {
     @Test
     public void testGet() {
         val stream = FuncList.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new StreamProcessor<String, Integer>() {
+        val sumLength = new StreamElementProcessor<String, Integer>() {
             int total = 0;
             @Override
             public void processElement(long index, String element) {
@@ -275,7 +275,7 @@ public class FuncListTest {
     @Test
     public void testGet2() {
         val stream = FuncList.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new StreamProcessor<String, Integer>() {
+        val sumLength = new StreamElementProcessor<String, Integer>() {
             int total = 0;
             @Override
             public void processElement(long index, String element) {
@@ -286,7 +286,7 @@ public class FuncListTest {
                 return total;
             }
         };
-        val avgLength = new StreamProcessor<String, Integer>() {
+        val avgLength = new StreamElementProcessor<String, Integer>() {
             int total = 0;
             @Override
             public void processElement(long index, String element) {

@@ -519,6 +519,7 @@ public interface IntStreamPlus extends IntStream {
     }
     
     // TODO - percentile (multiple percentile value) and percentileRange (invert of percentile)
+    // TODO - segmentAt, segmentAtPercentiles
     
     public default List<Integer> toList() {
         return asStream().toJavaList();
@@ -563,7 +564,7 @@ public interface IntStreamPlus extends IntStream {
     
     //== Get ==
     
-    public default <T> T get(IntStreamProcessor<T> processor) {
+    public default <T> T get(IntStreamElementProcessor<T> processor) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
         while (iterator.hasNext()) {
@@ -576,14 +577,14 @@ public interface IntStreamPlus extends IntStream {
     }
     
     public default <T1, T2> Tuple2<T1, T2> get(
-                IntStreamProcessor<T1> processor1, 
-                IntStreamProcessor<T2> processor2) {
+                IntStreamElementProcessor<T1> processor1, 
+                IntStreamElementProcessor<T2> processor2) {
         return get(processor1, processor2, Tuple2::of);
     }
     
     public default <T, T1, T2> T get(
-                IntStreamProcessor<T1> processor1, 
-                IntStreamProcessor<T2> processor2,
+                IntStreamElementProcessor<T1> processor1, 
+                IntStreamElementProcessor<T2> processor2,
                 Func2<T1, T2, T>          combiner) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
@@ -600,16 +601,16 @@ public interface IntStreamPlus extends IntStream {
     }
     
     public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
-                IntStreamProcessor<T1> processor1, 
-                IntStreamProcessor<T2> processor2, 
-                IntStreamProcessor<T3> processor3) {
+                IntStreamElementProcessor<T1> processor1, 
+                IntStreamElementProcessor<T2> processor2, 
+                IntStreamElementProcessor<T3> processor3) {
         return get(processor1, processor2, processor3, Tuple3::of);
     }
     
     public default <T1, T2, T3, T> T get(
-                IntStreamProcessor<T1> processor1, 
-                IntStreamProcessor<T2> processor2, 
-                IntStreamProcessor<T3> processor3,
+                IntStreamElementProcessor<T1> processor1, 
+                IntStreamElementProcessor<T2> processor2, 
+                IntStreamElementProcessor<T3> processor3,
                 Func3<T1, T2, T3, T>   combiner) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
@@ -628,18 +629,18 @@ public interface IntStreamPlus extends IntStream {
     }
     
     public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
-                IntStreamProcessor<T1> processor1, 
-                IntStreamProcessor<T2> processor2, 
-                IntStreamProcessor<T3> processor3, 
-                IntStreamProcessor<T4> processor4) {
+                IntStreamElementProcessor<T1> processor1, 
+                IntStreamElementProcessor<T2> processor2, 
+                IntStreamElementProcessor<T3> processor3, 
+                IntStreamElementProcessor<T4> processor4) {
         return get(processor1, processor2, processor3, processor4, Tuple4::of);
     }
     
     public default <T1, T2, T3, T4, T> T get(
-                IntStreamProcessor<T1> processor1, 
-                IntStreamProcessor<T2> processor2, 
-                IntStreamProcessor<T3> processor3,
-                IntStreamProcessor<T4> processor4,
+                IntStreamElementProcessor<T1> processor1, 
+                IntStreamElementProcessor<T2> processor2, 
+                IntStreamElementProcessor<T3> processor3,
+                IntStreamElementProcessor<T4> processor4,
                 Func4<T1, T2, T3, T4, T>  combiner) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
@@ -660,20 +661,20 @@ public interface IntStreamPlus extends IntStream {
     }
     
     public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
-                IntStreamProcessor<T1> processor1, 
-                IntStreamProcessor<T2> processor2, 
-                IntStreamProcessor<T3> processor3, 
-                IntStreamProcessor<T4> processor4, 
-                IntStreamProcessor<T5> processor5) {
+                IntStreamElementProcessor<T1> processor1, 
+                IntStreamElementProcessor<T2> processor2, 
+                IntStreamElementProcessor<T3> processor3, 
+                IntStreamElementProcessor<T4> processor4, 
+                IntStreamElementProcessor<T5> processor5) {
         return get(processor1, processor2, processor3, processor4, processor5, Tuple5::of);
     }
     
     public default <T1, T2, T3, T4, T5, T> T get(
-                IntStreamProcessor<T1> processor1, 
-                IntStreamProcessor<T2> processor2, 
-                IntStreamProcessor<T3> processor3,
-                IntStreamProcessor<T4> processor4,
-                IntStreamProcessor<T5> processor5,
+                IntStreamElementProcessor<T1> processor1, 
+                IntStreamElementProcessor<T2> processor2, 
+                IntStreamElementProcessor<T3> processor3,
+                IntStreamElementProcessor<T4> processor4,
+                IntStreamElementProcessor<T5> processor5,
                 Func5<T1, T2, T3, T4, T5, T>  combiner) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
@@ -696,22 +697,22 @@ public interface IntStreamPlus extends IntStream {
     }
     
     public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
-                IntStreamProcessor<T1> processor1, 
-                IntStreamProcessor<T2> processor2, 
-                IntStreamProcessor<T3> processor3, 
-                IntStreamProcessor<T4> processor4, 
-                IntStreamProcessor<T5> processor5, 
-                IntStreamProcessor<T6> processor6) {
+                IntStreamElementProcessor<T1> processor1, 
+                IntStreamElementProcessor<T2> processor2, 
+                IntStreamElementProcessor<T3> processor3, 
+                IntStreamElementProcessor<T4> processor4, 
+                IntStreamElementProcessor<T5> processor5, 
+                IntStreamElementProcessor<T6> processor6) {
         return get(processor1, processor2, processor3, processor4, processor5, processor6, Tuple6::of);
     }
     
     public default <T1, T2, T3, T4, T5, T6, T> T get(
-                IntStreamProcessor<T1> processor1, 
-                IntStreamProcessor<T2> processor2, 
-                IntStreamProcessor<T3> processor3,
-                IntStreamProcessor<T4> processor4,
-                IntStreamProcessor<T5> processor5,
-                IntStreamProcessor<T6> processor6,
+                IntStreamElementProcessor<T1> processor1, 
+                IntStreamElementProcessor<T2> processor2, 
+                IntStreamElementProcessor<T3> processor3,
+                IntStreamElementProcessor<T4> processor4,
+                IntStreamElementProcessor<T5> processor5,
+                IntStreamElementProcessor<T6> processor6,
                 Func6<T1, T2, T3, T4, T5, T6, T>  combiner) {
         val counter = new AtomicLong(0);
         val iterator = iterator();

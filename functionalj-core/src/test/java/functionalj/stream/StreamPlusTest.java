@@ -808,7 +808,7 @@ public class StreamPlusTest {
     @Test
     public void testGet() {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new StreamProcessor<String, Integer>() {
+        val sumLength = new StreamElementProcessor<String, Integer>() {
             int total = 0;
             @Override
             public void processElement(long index, String element) {
@@ -825,7 +825,7 @@ public class StreamPlusTest {
     @Test
     public void testGet2() {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new StreamProcessor<String, Integer>() {
+        val sumLength = new StreamElementProcessor<String, Integer>() {
             int total = 0;
             @Override
             public void processElement(long index, String element) {
@@ -836,7 +836,7 @@ public class StreamPlusTest {
                 return total;
             }
         };
-        val avgLength = new StreamProcessor<String, Integer>() {
+        val avgLength = new StreamElementProcessor<String, Integer>() {
             int total = 0;
             @Override
             public void processElement(long index, String element) {
@@ -853,7 +853,7 @@ public class StreamPlusTest {
     @Test
     public void testGet2_combine() {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val minLength = new StreamProcessor<String, Integer>() {
+        val minLength = new StreamElementProcessor<String, Integer>() {
             int min = Integer.MAX_VALUE;
             @Override
             public void processElement(long index, String element) {
@@ -864,7 +864,7 @@ public class StreamPlusTest {
                 return min;
             }
         };
-        val maxLength = new StreamProcessor<String, Integer>() {
+        val maxLength = new StreamElementProcessor<String, Integer>() {
             int max = Integer.MIN_VALUE;
             @Override
             public void processElement(long index, String element) {
@@ -882,7 +882,7 @@ public class StreamPlusTest {
     @Test
     public void testGet_of() {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sum = new IntStreamProcessor<Integer>() {
+        val sum = new IntStreamElementProcessor<Integer>() {
             int total = 0;
             @Override
             public void processElement(long index, int element) {

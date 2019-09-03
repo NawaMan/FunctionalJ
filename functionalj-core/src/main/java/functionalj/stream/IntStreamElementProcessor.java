@@ -4,20 +4,20 @@ import java.util.function.ToIntFunction;
 
 import lombok.val;
 
-public interface IntStreamProcessor<T> {
+public interface IntStreamElementProcessor<T> {
     void processElement (long index, int element);
     T    processComplete(long count);
     
-    default <S> StreamProcessor<S, T> of(ToIntFunction<S> mapper) {
-        return new StreamProcessor<S, T>() {
+    default <S> StreamElementProcessor<S, T> of(ToIntFunction<S> mapper) {
+        return new StreamElementProcessor<S, T>() {
             @Override
             public void processElement(long index, S source) {
                 val element = mapper.applyAsInt(source);
-                IntStreamProcessor.this.processElement(index, element);
+                IntStreamElementProcessor.this.processElement(index, element);
             }
             @Override
             public T processComplete(long count) {
-                return IntStreamProcessor.this.processComplete(count);
+                return IntStreamElementProcessor.this.processComplete(count);
             }
         };
     }

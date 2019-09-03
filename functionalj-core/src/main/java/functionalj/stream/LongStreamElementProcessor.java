@@ -4,20 +4,20 @@ import java.util.function.ToLongFunction;
 
 import lombok.val;
 
-public interface LongStreamProcessor<T> {
+public interface LongStreamElementProcessor<T> {
     void processElement (long index, long element);
     T    processComplete(long count);
     
-    default <S> StreamProcessor<S, T> of(ToLongFunction<S> mapper) {
-        return new StreamProcessor<S, T>() {
+    default <S> StreamElementProcessor<S, T> of(ToLongFunction<S> mapper) {
+        return new StreamElementProcessor<S, T>() {
             @Override
             public void processElement(long index, S source) {
                 val element = mapper.applyAsLong(source);
-                LongStreamProcessor.this.processElement(index, element);
+                LongStreamElementProcessor.this.processElement(index, element);
             }
             @Override
             public T processComplete(long count) {
-                return LongStreamProcessor.this.processComplete(count);
+                return LongStreamElementProcessor.this.processComplete(count);
             }
         };
     }
