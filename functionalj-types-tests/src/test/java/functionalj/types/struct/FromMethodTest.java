@@ -73,8 +73,8 @@ public class FromMethodTest {
                     + "CarForSale[car: Car[make: WV, year: 2012, color: Black], price: Price[price: 40000, discountPercent: 0]]"
                 + "]]", newInventory.toString());
         
-        assertEquals("90000",                   "" + newInventory.cars().sum    (theCarForSale.price.price));
-        assertEquals("OptionalDouble[30000.0]", "" + newInventory.cars().average(theCarForSale.price.price));
+        assertEquals("90000",                   "" + newInventory.cars().mapToInt(theCarForSale.price.price).sum());
+        assertEquals("OptionalDouble[30000.0]", "" + newInventory.cars().mapToInt(theCarForSale.price.price).average());
         
         assertEquals(
                 "{car={color=Silver, year=2010, make=Subaru}, price={discountPercent=0, price=20000}}",

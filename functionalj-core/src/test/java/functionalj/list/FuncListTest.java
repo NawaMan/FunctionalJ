@@ -40,6 +40,7 @@ import org.junit.Test;
 import functionalj.lens.LensTest;
 import functionalj.promise.DeferAction;
 import functionalj.stream.IntStreamPlus;
+import functionalj.stream.StreamProcessor;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -252,6 +253,51 @@ public class FuncListTest {
                 "Result:{ Cancelled: Stream closed! }, " + 
                 "Result:{ Cancelled: Stream closed! }",
                 actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
+    }
+    
+    @Test
+    public void testGet() {
+        val stream = FuncList.of("Two", "Three", "Four", "Eleven");
+        val sumLength = new StreamProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return total;
+            }
+        };
+        assertEquals(18, stream.get(sumLength).intValue());
+    }
+    
+    @Test
+    public void testGet2() {
+        val stream = FuncList.of("Two", "Three", "Four", "Eleven");
+        val sumLength = new StreamProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return total;
+            }
+        };
+        val avgLength = new StreamProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return (int) ((int)total/count);
+            }
+        };
+        assertEquals("(18,4)", stream.get(sumLength, avgLength).toString());
     }
     
 }

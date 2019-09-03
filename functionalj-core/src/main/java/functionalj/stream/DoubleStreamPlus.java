@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleBinaryOperator;
@@ -27,11 +28,21 @@ import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 import functionalj.function.Func1;
+import functionalj.function.Func2;
+import functionalj.function.Func3;
+import functionalj.function.Func4;
+import functionalj.function.Func5;
+import functionalj.function.Func6;
 import functionalj.function.FuncUnit1;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.pipeable.Pipeable;
+import functionalj.tuple.Tuple2;
+import functionalj.tuple.Tuple3;
+import functionalj.tuple.Tuple4;
+import functionalj.tuple.Tuple5;
+import functionalj.tuple.Tuple6;
 import lombok.val;
 
 @FunctionalInterface
@@ -504,5 +515,179 @@ public interface DoubleStreamPlus extends DoubleStream {
                 .mapToObj(StrFuncs::toStr)
                 .collect(Collectors.joining(delimiter));
         });
+    }
+    
+    //== Get ==
+    
+    public default <T> T get(DoubleStreamProcessor<T> processor) {
+        val counter = new AtomicLong(0);
+        val iterator = iterator();
+        while (iterator.hasNext()) {
+            val each  = iterator.nextDouble();
+            val index = counter.getAndIncrement();
+            processor.processElement(index, each);
+        }
+        val count = counter.get();
+        return processor.processComplete(count);
+    }
+    
+    public default <T1, T2> Tuple2<T1, T2> get(
+                DoubleStreamProcessor<T1> processor1, 
+                DoubleStreamProcessor<T2> processor2) {
+        return get(processor1, processor2, Tuple2::of);
+    }
+    
+    public default <T, T1, T2> T get(
+                DoubleStreamProcessor<T1> processor1, 
+                DoubleStreamProcessor<T2> processor2,
+                Func2<T1, T2, T>          combiner) {
+        val counter = new AtomicLong(0);
+        val iterator = iterator();
+        while (iterator.hasNext()) {
+            val each  = iterator.nextDouble();
+            val index = counter.getAndIncrement();
+            processor1.processElement(index, each);
+            processor2.processElement(index, each);
+        }
+        val count = counter.get();
+        val value1 = processor1.processComplete(count);
+        val value2 = processor2.processComplete(count);
+        return combiner.apply(value1, value2);
+    }
+    
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+                DoubleStreamProcessor<T1> processor1, 
+                DoubleStreamProcessor<T2> processor2, 
+                DoubleStreamProcessor<T3> processor3) {
+        return get(processor1, processor2, processor3, Tuple3::of);
+    }
+    
+    public default <T1, T2, T3, T> T get(
+                DoubleStreamProcessor<T1> processor1, 
+                DoubleStreamProcessor<T2> processor2, 
+                DoubleStreamProcessor<T3> processor3,
+                Func3<T1, T2, T3, T>   combiner) {
+        val counter = new AtomicLong(0);
+        val iterator = iterator();
+        while (iterator.hasNext()) {
+            val each  = iterator.nextDouble();
+            val index = counter.getAndIncrement();
+            processor1.processElement(index, each);
+            processor2.processElement(index, each);
+            processor3.processElement(index, each);
+        }
+        val count = counter.get();
+        val value1 = processor1.processComplete(count);
+        val value2 = processor2.processComplete(count);
+        val value3 = processor3.processComplete(count);
+        return combiner.apply(value1, value2, value3);
+    }
+    
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+                DoubleStreamProcessor<T1> processor1, 
+                DoubleStreamProcessor<T2> processor2, 
+                DoubleStreamProcessor<T3> processor3, 
+                DoubleStreamProcessor<T4> processor4) {
+        return get(processor1, processor2, processor3, processor4, Tuple4::of);
+    }
+    
+    public default <T1, T2, T3, T4, T> T get(
+                DoubleStreamProcessor<T1> processor1, 
+                DoubleStreamProcessor<T2> processor2, 
+                DoubleStreamProcessor<T3> processor3,
+                DoubleStreamProcessor<T4> processor4,
+                Func4<T1, T2, T3, T4, T>  combiner) {
+        val counter = new AtomicLong(0);
+        val iterator = iterator();
+        while (iterator.hasNext()) {
+            val each  = iterator.nextDouble();
+            val index = counter.getAndIncrement();
+            processor1.processElement(index, each);
+            processor2.processElement(index, each);
+            processor3.processElement(index, each);
+            processor4.processElement(index, each);
+        }
+        val count = counter.get();
+        val value1 = processor1.processComplete(count);
+        val value2 = processor2.processComplete(count);
+        val value3 = processor3.processComplete(count);
+        val value4 = processor4.processComplete(count);
+        return combiner.apply(value1, value2, value3, value4);
+    }
+    
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+                DoubleStreamProcessor<T1> processor1, 
+                DoubleStreamProcessor<T2> processor2, 
+                DoubleStreamProcessor<T3> processor3, 
+                DoubleStreamProcessor<T4> processor4, 
+                DoubleStreamProcessor<T5> processor5) {
+        return get(processor1, processor2, processor3, processor4, processor5, Tuple5::of);
+    }
+    
+    public default <T1, T2, T3, T4, T5, T> T get(
+                DoubleStreamProcessor<T1> processor1, 
+                DoubleStreamProcessor<T2> processor2, 
+                DoubleStreamProcessor<T3> processor3,
+                DoubleStreamProcessor<T4> processor4,
+                DoubleStreamProcessor<T5> processor5,
+                Func5<T1, T2, T3, T4, T5, T>  combiner) {
+        val counter = new AtomicLong(0);
+        val iterator = iterator();
+        while (iterator.hasNext()) {
+            val each  = iterator.nextDouble();
+            val index = counter.getAndIncrement();
+            processor1.processElement(index, each);
+            processor2.processElement(index, each);
+            processor3.processElement(index, each);
+            processor4.processElement(index, each);
+            processor5.processElement(index, each);
+        }
+        val count = counter.get();
+        val value1 = processor1.processComplete(count);
+        val value2 = processor2.processComplete(count);
+        val value3 = processor3.processComplete(count);
+        val value4 = processor4.processComplete(count);
+        val value5 = processor5.processComplete(count);
+        return combiner.apply(value1, value2, value3, value4, value5);
+    }
+    
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+                DoubleStreamProcessor<T1> processor1, 
+                DoubleStreamProcessor<T2> processor2, 
+                DoubleStreamProcessor<T3> processor3, 
+                DoubleStreamProcessor<T4> processor4, 
+                DoubleStreamProcessor<T5> processor5, 
+                DoubleStreamProcessor<T6> processor6) {
+        return get(processor1, processor2, processor3, processor4, processor5, processor6, Tuple6::of);
+    }
+    
+    public default <T1, T2, T3, T4, T5, T6, T> T get(
+                DoubleStreamProcessor<T1> processor1, 
+                DoubleStreamProcessor<T2> processor2, 
+                DoubleStreamProcessor<T3> processor3,
+                DoubleStreamProcessor<T4> processor4,
+                DoubleStreamProcessor<T5> processor5,
+                DoubleStreamProcessor<T6> processor6,
+                Func6<T1, T2, T3, T4, T5, T6, T>  combiner) {
+        val counter = new AtomicLong(0);
+        val iterator = iterator();
+        while (iterator.hasNext()) {
+            val each  = iterator.nextDouble();
+            val index = counter.getAndIncrement();
+            processor1.processElement(index, each);
+            processor2.processElement(index, each);
+            processor3.processElement(index, each);
+            processor4.processElement(index, each);
+            processor5.processElement(index, each);
+            processor6.processElement(index, each);
+        }
+        val count = counter.get();
+        val value1 = processor1.processComplete(count);
+        val value2 = processor2.processComplete(count);
+        val value3 = processor3.processComplete(count);
+        val value4 = processor4.processComplete(count);
+        val value5 = processor5.processComplete(count);
+        val value6 = processor6.processComplete(count);
+        return combiner.apply(value1, value2, value3, value4, value5, value6);
     }
 }

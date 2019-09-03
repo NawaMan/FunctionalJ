@@ -879,4 +879,21 @@ public class StreamPlusTest {
         assertEquals(3, range);
     }
     
+    @Test
+    public void testGet_of() {
+        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val sum = new IntStreamProcessor<Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, int element) {
+                total += element;
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return total;
+            }
+        };
+        assertEquals(18, stream.get(sum.of(theString.length())).intValue());
+    }
+    
 }

@@ -2068,10 +2068,10 @@ public interface StreamPlus<DATA>
     
     public default <T> T get(StreamProcessor<DATA, T> processor) {
         val counter = new AtomicLong(0);
-        forEach(each -> {
+        for (val each : (Iterable<DATA>)(()->iterator())) {
             val index = counter.getAndIncrement();
             processor.processElement(index, each);
-        });
+        }
         val count = counter.get();
         return processor.processComplete(count);
     }
@@ -2087,11 +2087,11 @@ public interface StreamPlus<DATA>
                 StreamProcessor<DATA, T2> processor2,
                 Func2<T1, T2, T>          combiner) {
         val counter = new AtomicLong(0);
-        forEach(each -> {
+        for (val each : (Iterable<DATA>)(()->iterator())) {
             val index = counter.getAndIncrement();
             processor1.processElement(index, each);
             processor2.processElement(index, each);
-        });
+        }
         val count = counter.get();
         val value1 = processor1.processComplete(count);
         val value2 = processor2.processComplete(count);
@@ -2111,12 +2111,12 @@ public interface StreamPlus<DATA>
             StreamProcessor<DATA, T3> processor3,
             Func3<T1, T2, T3, T>      combiner) {
         val counter = new AtomicLong(0);
-        forEach(each -> {
+        for (val each : (Iterable<DATA>)(()->iterator())) {
             val index = counter.getAndIncrement();
             processor1.processElement(index, each);
             processor2.processElement(index, each);
             processor3.processElement(index, each);
-        });
+        }
         val count = counter.get();
         val value1 = processor1.processComplete(count);
         val value2 = processor2.processComplete(count);
@@ -2139,13 +2139,13 @@ public interface StreamPlus<DATA>
             StreamProcessor<DATA, T4> processor4,
             Func4<T1, T2, T3, T4, T>  combiner) {
         val counter = new AtomicLong(0);
-        forEach(each -> {
+        for (val each : (Iterable<DATA>)(()->iterator())) {
             val index = counter.getAndIncrement();
             processor1.processElement(index, each);
             processor2.processElement(index, each);
             processor3.processElement(index, each);
             processor4.processElement(index, each);
-        });
+        }
         val count = counter.get();
         val value1 = processor1.processComplete(count);
         val value2 = processor2.processComplete(count);
@@ -2171,14 +2171,14 @@ public interface StreamPlus<DATA>
             StreamProcessor<DATA, T5> processor5,
             Func5<T1, T2, T3, T4, T5, T>  combiner) {
         val counter = new AtomicLong(0);
-        forEach(each -> {
+        for (val each : (Iterable<DATA>)(()->iterator())) {
             val index = counter.getAndIncrement();
             processor1.processElement(index, each);
             processor2.processElement(index, each);
             processor3.processElement(index, each);
             processor4.processElement(index, each);
             processor5.processElement(index, each);
-        });
+        }
         val count = counter.get();
         val value1 = processor1.processComplete(count);
         val value2 = processor2.processComplete(count);
@@ -2207,7 +2207,7 @@ public interface StreamPlus<DATA>
             StreamProcessor<DATA, T6> processor6,
             Func6<T1, T2, T3, T4, T5, T6, T>  combiner) {
         val counter = new AtomicLong(0);
-        forEach(each -> {
+        for (val each : (Iterable<DATA>)(()->iterator())) {
             val index = counter.getAndIncrement();
             processor1.processElement(index, each);
             processor2.processElement(index, each);
@@ -2215,7 +2215,7 @@ public interface StreamPlus<DATA>
             processor4.processElement(index, each);
             processor5.processElement(index, each);
             processor6.processElement(index, each);
-        });
+        }
         val count = counter.get();
         val value1 = processor1.processComplete(count);
         val value2 = processor2.processComplete(count);
