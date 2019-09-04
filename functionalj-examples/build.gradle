@@ -7,7 +7,6 @@ repositories {
 
 dependencies {
     compile             project(':functionalj-all')
-    compile             project(':functionalj-elm')
     annotationProcessor project(':functionalj-types')
     annotationProcessor project(':functionalj-elm')
     
