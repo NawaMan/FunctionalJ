@@ -28,7 +28,6 @@ import java.util.function.Predicate;
 
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
-import functionalj.list.ImmutableList;
 import functionalj.map.ImmutableMap;
 import functionalj.tuple.ToMapFunc;
 import functionalj.tuple.ToTuple2Func;
