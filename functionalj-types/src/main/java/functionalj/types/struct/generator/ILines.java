@@ -31,10 +31,16 @@ import static functionalj.types.struct.generator.utils.toStr;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
+
+import functionalj.types.Type;
+import functionalj.types.IRequireTypes;
+import lombok.val;
 
 /**
  * Classes implementing this interface can turns itself into lines.
@@ -42,6 +48,8 @@ import java.util.stream.Stream;
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface ILines extends IRequireTypes {
+    
+    public static final Function<String, ILines> toLine = string -> ILines.line(string);
 
     /** An empty line */
     public static final ILines emptyLine = ()->Stream.of("");
@@ -63,6 +71,10 @@ public interface ILines extends IRequireTypes {
     @Override
     public default Stream<Type> requiredTypes() {
         return Stream.empty();
+    }
+    
+    public default Stream<ILines> toStream() {
+        return Stream.of(this);
     }
     
     // == Factory methods ==
@@ -189,6 +201,12 @@ public interface ILines extends IRequireTypes {
     public static ILines indent() {
         return indent(Stream.of(line("")));
     }
+    public default ILines indent(int count) {
+        ILines lines = this;
+        for (int i = 0; i < count; i++)
+            lines = indent(lines);
+        return lines;
+    }
     /**
      * Create indented empty lines from the given stream of lines.
      * 
@@ -251,4 +269,26 @@ public interface ILines extends IRequireTypes {
                 .flatMap(delimitWith(()->indent()));
     }
     
+    public default ILines append(String line) {
+        return ILines.linesOf(Stream.concat(this.lines(), Stream.of(line)).map(toLine));
+    }
+    public default ILines append(ILines lines) {
+        return ILines.linesOf(Stream.concat(this.lines(), lines.lines()).map(toLine));
+    }
+    public default ILines containWith(String prefix, String delimiter, String suffix) {
+        val lines     = this.lines().collect(toList());
+        val firstLine = lines.stream().limit(1).map(line -> prefix    + " " + line).collect(toList());
+        val restLines = lines.stream().skip (1).map(line -> delimiter + " " + line).collect(toList());
+        val lastLine  = (suffix == null) ? null : Stream.of(suffix);
+        val stream
+            = Stream.of(
+                firstLine.stream(),
+                restLines.stream(),
+                lastLine)
+            .filter (Objects::nonNull)
+            .flatMap(Function.identity())
+            .map    (String::trim)
+            .map    (ILines::line);
+        return ILines.linesOf(stream);
+    }
 }

@@ -35,6 +35,7 @@ import functionalj.lens.core.LensType;
 import functionalj.lens.core.LensUtils;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.AnyLens;
+import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.BooleanLens;
 import functionalj.lens.lenses.ComparableLens;
 import functionalj.lens.lenses.DoubleLens;
@@ -63,9 +64,11 @@ public interface Access {
     public static final LongLens<Long>          $L = theLong;
     public static final DoubleLens<Double>      $D = theDouble;
     
+    public static final BooleanAccess<Object> True  = any -> true;
+    public static final BooleanAccess<Object> False = any -> false;
+    
     public static final TheListLens   theList   = new TheListLens();
     public static final TheTuple2Lens theTuple2 = new TheTuple2Lens();
-    
     
     public static <T> AnyLens<T, T> theItem() {
         return AnyLens.of(LensSpec.of((T item) -> item, (T host, T newItem) -> newItem));

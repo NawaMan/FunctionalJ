@@ -23,12 +23,14 @@
 // ============================================================================
 package functionalj.pipeable;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import functionalj.functions.ThrowFuncs;
 import functionalj.result.Result;
+import nullablej.nullable.Nullable;
 
 /**
  * Classes extending this class handle the last step in the processing of the Pipeable.
@@ -70,6 +72,42 @@ public abstract class Catch<OUTPUT, FINALOUTPUT, EXCEPTION extends Exception> {
                     return Result.ofException(exception);
                 
                 return Result.valueOf(data);
+            }
+        };
+    }
+    
+    /**
+     * Returns the catch that will returns Optional.
+     * 
+     * @param <OUTPUT>  the output data type.
+     * @return the catch that will returns Optional.
+     */
+    public static <OUTPUT> 
+            Catch<OUTPUT, Optional<OUTPUT>, RuntimeException> toOptional() {
+        return new Catch<OUTPUT, Optional<OUTPUT>, RuntimeException>() {
+            public Optional<OUTPUT> doCatch(OUTPUT data, Exception exception) {
+                if (exception != null)
+                    return Optional.empty();
+                
+                return Optional.ofNullable(data);
+            }
+        };
+    }
+    
+    /**
+     * Returns the catch that will returns Nullable.
+     * 
+     * @param <OUTPUT>  the output data type.
+     * @return the catch that will returns Nullable.
+     */
+    public static <OUTPUT> 
+            Catch<OUTPUT, Nullable<OUTPUT>, RuntimeException> toNullable() {
+        return new Catch<OUTPUT, Nullable<OUTPUT>, RuntimeException>() {
+            public Nullable<OUTPUT> doCatch(OUTPUT data, Exception exception) {
+                if (exception != null)
+                    return Nullable.empty();
+                
+                return Nullable.of(data);
             }
         };
     }

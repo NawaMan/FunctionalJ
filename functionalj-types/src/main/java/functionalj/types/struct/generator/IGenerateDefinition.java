@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.types.struct.generator;
 
+import functionalj.types.IRequireTypes;
+
 /**
  * Classes implementing this interface as a definition in code.
  * 

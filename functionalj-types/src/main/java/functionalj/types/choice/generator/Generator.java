@@ -26,11 +26,11 @@ package functionalj.types.choice.generator;
 import java.util.ArrayList;
 import java.util.List;
 
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
-import functionalj.types.choice.generator.model.Generic;
 import functionalj.types.choice.generator.model.Method;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.choice.generator.model.Type;
 import lombok.Value;
 
 
@@ -44,12 +44,15 @@ public class Generator implements Lines {
     public final SourceSpec  sourceSpec;
     public final TargetClass targetClass;
     
-    public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
-        this.sourceSpec  = new SourceSpec(targetName, sourceType, specObjName, publicFields, tagMapKeyName, generics, choices, methods, localTypeWithLens);
-        this.targetClass = new TargetClass(sourceSpec);
-    }
     public Generator(String targetName, Type sourceType, List<Case> choices) {
         this(targetName, sourceType, null, true, null, new ArrayList<Generic>(), choices, new ArrayList<Method>(), new ArrayList<String>());
+    }
+    public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
+        this(new SourceSpec(targetName, sourceType, specObjName, publicFields, tagMapKeyName, generics, choices, methods, localTypeWithLens));
+    }
+    public Generator(SourceSpec sourceSpec) {
+        this.sourceSpec  = sourceSpec;
+        this.targetClass = new TargetClass(sourceSpec);
     }
     
     @Override

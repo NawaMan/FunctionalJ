@@ -33,6 +33,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import functionalj.function.Func;
 import functionalj.stream.StreamPlus;
 import functionalj.validator.Validator;
 import lombok.val;
@@ -49,6 +50,14 @@ public class ResultTest {
     public void testMap() {
         assertStrings("Result:{ Value: Test }", result);
         assertStrings("Result:{ Value: 4 }",    result.map(str -> str.length()));
+    }
+    
+    @Test
+    public void testMapWith() {
+        result.mapWith(Func.f((a, b) -> a + b), Result.valueOf("-Value")).ifException(e -> {e.printStackTrace(); });
+        assertStrings("Result:{ Value: Test-Value }", result.mapWith(f((a, b) -> a + b), Result.valueOf("-Value")));
+        assertStrings("Result:{ Exception: java.lang.IllegalAccessException }", 
+                result.mapWith(f((a, b) -> a + b), Result.ofException(new IllegalAccessException())));
     }
     
     @Test

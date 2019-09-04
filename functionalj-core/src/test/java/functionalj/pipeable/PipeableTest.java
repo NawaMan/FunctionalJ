@@ -23,7 +23,11 @@
 // ============================================================================
 package functionalj.pipeable;
 
+import static functionalj.function.Func.f;
+import static functionalj.lens.Access.theList;
+import static functionalj.list.FuncList.ListOf;
 import static functionalj.pipeable.Catch.toResult;
+import static functionalj.pipeable.Pipeable.StartBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -110,7 +114,22 @@ public class PipeableTest {
     }
     
     @Test
+    public void testFilter() {
+        assertEquals("Nullable.EMPTY",         "" +  ListOf(1, 2, 3, 4, 5).__nullable().filter(theList.size().thatIs(3)));
+        assertEquals("Optional.empty",         "" +  ListOf(1, 2, 3, 4, 5).__optional().filter(theList.size().thatIs(3)));
+        assertEquals("Result:{ Value: null }", "" +  ListOf(1, 2, 3, 4, 5).__result()  .filter(theList.size().thatIs(3)));
+        assertEquals("Result:{ Value: null }", "" +  ListOf(1, 2, 3, 4, 5).           __filter(theList.size().thatIs(3)));
+    }
+    
+    @Test
     public void testOrElse() {
+        assertEquals("Test",          StartBy(f(()->        "Test"              )).__orElse("This the test"));
+        assertEquals("This the test", StartBy(f(()->(String)null                )).__orElse("This the test"));
+        assertEquals("This the test", StartBy(f(()->{ throw new IOException(); })).__orElse("This the test"));
+    }
+    
+    @Test
+    public void testOrElse_Catch() {
         val str1 = (Pipeable<String>)(()-> "Test");
         assertEquals("4", 
                 str1

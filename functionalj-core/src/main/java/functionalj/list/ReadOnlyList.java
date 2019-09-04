@@ -31,6 +31,7 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -112,6 +113,10 @@ public interface ReadOnlyList<DATA>
     @Override
     public default <T> T[] toArray(T[] a) {
         return StreamPlus.of(stream()).toJavaList().toArray(a);
+    }
+    
+    public default <A> A[] toArray(IntFunction<A[]> generator) {
+        return stream().toArray(generator);
     }
     
     @Override

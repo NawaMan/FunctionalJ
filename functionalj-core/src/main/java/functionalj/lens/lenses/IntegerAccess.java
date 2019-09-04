@@ -79,24 +79,24 @@ public interface IntegerAccess<HOST>
             return -1;
         }
         @Override
-        public Integer toInt(Integer number) {
+        public Integer toInteger(Integer number) {
             return (number == null) ? 0 : number.intValue();
         }
         @Override
         public Long toLong(Integer number) {
-            return (long)toInt(number);
+            return (long)toInteger(number);
         }
         @Override
         public Double toDouble(Integer number) {
-            return (double)toInt(number);
+            return (double)toInteger(number);
         }
         @Override
         public BigInteger toBigInteger(Integer number) {
-            return BigInteger.valueOf(toInt(number));
+            return BigInteger.valueOf(toInteger(number));
         }
         @Override
         public BigDecimal toBigDecimal(Integer number) {
-            return new BigDecimal(toInt(number));
+            return new BigDecimal(toInteger(number));
         }
         
         @Override

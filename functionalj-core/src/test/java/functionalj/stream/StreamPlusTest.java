@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.$S;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
@@ -32,6 +33,7 @@ import static functionalj.ref.Run.With;
 import static functionalj.stream.StreamPlus.noMoreElement;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static functionalj.stream.ZipWithOption.RequireBoth;
+import static java.util.Arrays.asList;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
@@ -43,10 +45,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -55,6 +60,7 @@ import org.junit.Test;
 import functionalj.function.Func0;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
+import functionalj.promise.DeferAction;
 import functionalj.result.NoMoreResultException;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple3;
@@ -72,6 +78,27 @@ public class StreamPlusTest {
         val stream1 = StreamPlus.of("One", "Two", "Three");
         val stream2 = StreamPlus.from(stream1);
         assertStrings("[One, Two, Three]", stream2.toList());
+    }
+    
+    @Test
+    public void testFromIterator() {
+        val iterator = asList("One", "Two", "Three").iterator();
+        val stream   = StreamPlus.from(iterator);
+        assertStrings("[One, Two, Three]", stream.toList());
+    }
+    
+    @Test
+    public void testFromEnumerator() {
+        val elements = new Vector<>(asList("One", "Two", "Three")).elements();
+        val stream   = StreamPlus.from(elements);
+        assertStrings("[One, Two, Three]", stream.toList());
+    }
+    
+    @Test
+    public void testEquals() {
+        val stream1 = StreamPlus.of("One", "Two", "Three");
+        val stream2 = StreamPlus.of("One", "Two", "Three");
+        assertTrue(StreamPlus.Helper.equals(stream1, stream2));
     }
     
     @Test
@@ -175,6 +202,34 @@ public class StreamPlusTest {
     }
     
     @Test
+    public void testCollapse() {
+        val stream1 = StreamPlus.of(1, 2, 3, 4, 5, 6);
+        // Because 3 and 6 do match the condition to collapse ... so they are merged with the one before them.
+        assertEquals(
+                "1, 5, 4, 11", 
+                stream1.collapse(
+                        i -> (i % 3) == 0,
+                        (a,b)->a+b
+                    ).joinToString(", "));
+        
+        val stream2 = StreamPlus.of(1, 2, 3, 4, 5, 6);
+        assertEquals(
+                "1, 2, 7, 5, 6", 
+                stream2.collapse(
+                        i -> (i % 3) == 1,
+                        (a,b)->a+b
+                    ).joinToString(", "));
+        
+        val stream3 = StreamPlus.of(1, 2, 3, 4, 5, 6);
+        assertEquals(
+                "1, 9, 11", 
+                stream3.collapse(
+                        i -> (i % 3) <= 1,
+                        (a,b)->a+b
+                    ).joinToString(", "));
+    }
+    
+    @Test
     public void testCollect() {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings("[One, Two, Three]", stream.collect(toList()));
@@ -187,6 +242,9 @@ public class StreamPlusTest {
         
         val stream2 = StreamPlus.of("One", "Two", "Three", "Four");
         assertStrings("Optional[Three]", stream2.max((a, b)-> a.length()-b.length()));
+        
+        val stream3 = StreamPlus.of("One", "Two", "Three", "Four");
+        assertStrings("(Optional[One],Optional[Three])", stream3.minMaxBy(theString.length()));
     }
     
     @Test
@@ -261,13 +319,11 @@ public class StreamPlusTest {
         
         val isClosed = new AtomicBoolean(false);
         stream
-        .onClose(()-> 
-            isClosed.set(true));
+        .onClose(()->isClosed.set(true));
         
         assertFalse(isClosed.get());
         assertStrings("[3, 3, 5]", stream.map(theString.length()).toList());
-        // TODO - This is still not work.
-        //assertTrue(isClosed.get());
+        assertTrue(isClosed.get());
         
         try {
             stream.toList();
@@ -672,6 +728,172 @@ public class StreamPlusTest {
         val streamA = StreamPlus.of("A", "B", "C");
         val streamB = IntStreamPlus.infinite().asStream().map(theInteger.asString());
         assertEquals("A, 0, B, 1, C, 2, 3, 4, 5, 6", streamA.merge(streamB).limit(10).joinToString(", "));
+    }
+    
+    @Test
+    public void testHistogram() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four").map(theString.length());
+        val counts = stream.histogram();
+        assertEquals("{3:2, 4:1, 5:1}", counts.toString());
+    }
+    
+    @Test
+    public void testHistogram_classification() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four").map(theString);
+        val counts = stream.histogram(theString.replaceAll("[^aeiouAEIOU]", "").length());
+        assertEquals("{2:3, 1:1}", counts.toString());
+    }
+    
+    @Test
+    public void testMostFrequence() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four").map(theString);
+        assertEquals("Optional[2=3]", stream.map(theString.replaceAll("[^aeiouAEIOU]", "").length()).mostFrequence().toString());
+    }
+    
+    @Test
+    public void testSpawn() {
+        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val first  = new AtomicLong(-1);
+        val logs   = new ArrayList<String>();
+        stream
+        .spawn(str -> {
+            return Sleep(str.length()*50 + 5).thenReturn(str).defer();
+        })
+        .forEach(element -> {
+            first.compareAndSet(-1, System.currentTimeMillis());
+            val start    = first.get();
+            val end      = System.currentTimeMillis();
+            val duration = Math.round((end - start)/50.0)*50;
+            logs.add(element + " -- " + duration);
+        });
+        assertEquals("["
+                + "Result:{ Value: Two } -- 0, "
+                + "Result:{ Value: Four } -- 50, "
+                + "Result:{ Value: Three } -- 100, "
+                + "Result:{ Value: Eleven } -- 150"
+                + "]",
+                logs.toString());
+    }
+    
+    @Test
+    public void testSpawn_limit() {
+        val stream  = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val first   = new AtomicLong(-1);
+        val actions = new ArrayList<DeferAction<String>>();
+        val logs    = new ArrayList<String>();
+        stream
+        .spawn(str -> {
+            val action = Sleep(str.length()*50 + 5).thenReturn(str).defer();
+            actions.add(action);
+            return action;
+        })
+        .limit(1)
+        .forEach(element -> {
+            first.compareAndSet(-1, System.currentTimeMillis());
+            val start    = first.get();
+            val end      = System.currentTimeMillis();
+            val duration = Math.round((end - start)/50.0)*50;
+            logs.add(element + " -- " + duration);
+        });
+        assertEquals("[Result:{ Value: Two } -- 0]",
+                logs.toString());
+        assertEquals(
+                "Result:{ Value: Two }, " + 
+                "Result:{ Cancelled: Stream closed! }, " +
+                "Result:{ Cancelled: Stream closed! }, " + 
+                "Result:{ Cancelled: Stream closed! }",
+                actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
+    }
+    
+    @Test
+    public void testGet() {
+        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val sumLength = new StreamElementProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return total;
+            }
+        };
+        assertEquals(18, stream.get(sumLength).intValue());
+    }
+    
+    @Test
+    public void testGet2() {
+        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val sumLength = new StreamElementProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return total;
+            }
+        };
+        val avgLength = new StreamElementProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return (int) ((int)total/count);
+            }
+        };
+        assertEquals("(18,4)", stream.get(sumLength, avgLength).toString());
+    }
+    
+    @Test
+    public void testGet2_combine() {
+        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val minLength = new StreamElementProcessor<String, Integer>() {
+            int min = Integer.MAX_VALUE;
+            @Override
+            public void processElement(long index, String element) {
+                min = Math.min(min, element.length());
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return min;
+            }
+        };
+        val maxLength = new StreamElementProcessor<String, Integer>() {
+            int max = Integer.MIN_VALUE;
+            @Override
+            public void processElement(long index, String element) {
+                max = Math.max(max, element.length());
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return max;
+            }
+        };
+        val range = stream.get(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
+        assertEquals(3, range);
+    }
+    
+    @Test
+    public void testGet_of() {
+        val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
+        val sum = new IntStreamElementProcessor<Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, int element) {
+                total += element;
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return total;
+            }
+        };
+        assertEquals(18, stream.get(sum.of(theString.length())).intValue());
     }
     
 }

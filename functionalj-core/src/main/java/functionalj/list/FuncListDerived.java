@@ -35,7 +35,6 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlus.Helper;
 import functionalj.stream.Streamable;
 
-// TODO - Add Integer length here to help with a few operations.
 @SuppressWarnings("javadoc")
 public class FuncListDerived<SOURCE, DATA> 
                 implements FuncList<DATA> {

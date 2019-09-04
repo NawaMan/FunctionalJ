@@ -16,6 +16,11 @@ subprojects {
         mavenCentral()
     }
     
+    // Gradle
+    task wrapper(type: Wrapper) {
+        gradleVersion = '5.4.1'
+    }
+    
     // IDE
     
     eclipse {

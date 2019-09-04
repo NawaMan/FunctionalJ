@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
+import functionalj.lens.core.AccessUtils;
 import functionalj.result.Result;
 import lombok.val;
 
@@ -37,6 +38,21 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
                     extends
                             ObjectAccess<HOST, Result<TYPE>>,
                             AccessParameterized<HOST, Result<TYPE>, TYPE, SUBACCESS>  {
+    
+    public static <H, T, A extends AnyAccess<H, T>> ResultAccess<H, T, A> of(Function<H, Result<T>> read, Function<Function<H, T>, A> createAccess) {
+        val accessParameterized = new AccessParameterized<H, Result<T>, T, A>() {
+            @Override
+            public Result<T> applyUnsafe(H host) throws Exception {
+                return read.apply(host);
+            }
+            @Override
+            public A createSubAccessFromHost(Function<H, T> accessToParameter) {
+                return createAccess.apply(accessToParameter);
+            }
+        };
+        return AccessUtils.createSubResultAccess(accessParameterized, read);
+    }
+    
     
     public AccessParameterized<HOST, Result<TYPE>, TYPE, SUBACCESS> accessWithSub();
     

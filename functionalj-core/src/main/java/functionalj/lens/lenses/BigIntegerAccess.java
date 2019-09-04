@@ -67,7 +67,7 @@ public interface BigIntegerAccess<HOST>
             return BigIntegerAccessConstants.MINUS_ONE;
         }
         @Override
-        public Integer toInt(BigInteger number) {
+        public Integer toInteger(BigInteger number) {
             return toBigInteger(number).intValue();
         }
         @Override

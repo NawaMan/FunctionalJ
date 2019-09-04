@@ -93,8 +93,17 @@ public interface Tuple3<T1, T2, T3> extends Pipeable<Tuple3<T1, T2, T3>> {
         return ImmutableMap.ofEntries(e1, e2, e3);
     }
     
+    //== mapTo ==
+    
+    public default <T> T mapTo(Func3<? super T1, ? super T2, ? super T3, T> mapper) {
+        val _1 = _1();
+        val _2 = _2();
+        val _3 = _3();
+        return mapper.apply(_1, _2, _3);
+    }
+    
     //== Map ==
-
+    
     public default <NT1> Tuple3<NT1, T2, T3> map1(Function<? super T1, NT1> mapper) {
         return map(mapper, it(), it());
     }

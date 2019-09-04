@@ -23,14 +23,38 @@
 // ============================================================================
 package functionalj.pipeable;
 
+import static functionalj.result.Result.Try;
+
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.function.Func;
 import functionalj.function.Func1;
 import functionalj.functions.ThrowFuncs;
+import functionalj.result.Result;
 import lombok.val;
+import nullablej.nullable.Nullable;
 
-// TODO - Think about splitting Catch to Catch and Finally.
+// TODO - Think about adding Finally.
+
+
+//== Internal use ==
+
+class __internal {
+  
+  public static <I, O> O apply(Func1<I, O> func, I input) throws Exception {
+      if (func == null)
+          return null;
+      if (input == null) {
+          if (!(func instanceof NullSafeOperator))
+              return null;
+      }
+      return Func.applyUnsafe(func, input);
+  }
+  
+}
 
 @SuppressWarnings("javadoc")
 public interface Pipeable<DATA> {
@@ -51,6 +75,85 @@ public interface Pipeable<DATA> {
     
     public DATA __data() throws Exception;
     
+    @SuppressWarnings("unchecked")
+    public default Nullable<DATA> __nullable() {
+        if (this instanceof Result)
+            return ((Result<DATA>)this).toNullable();
+        
+        try {
+            return Nullable.of(this.__data());
+        } catch (Exception e) {
+            return Nullable.empty();
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default Optional<DATA> __optional() {
+        if (this instanceof Result)
+            return ((Result<DATA>)this).toOptional();
+        
+        try {
+            return Optional.ofNullable(this.__data());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default Result<DATA> __result() {
+        if (this instanceof Result)
+            return ((Result<DATA>)this);
+        
+        return Try(this::__data);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <OUTPUT> Result<OUTPUT> __map(Func1<? super DATA, OUTPUT> func) {
+        return ((this instanceof Result) 
+                ? ((Result<DATA>)this) 
+                : Try(this::__data))
+                .map(func);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default Result<DATA> __filter(Predicate<? super DATA> theCondition) {
+        return ((this instanceof Result) 
+                ? ((Result<DATA>)this) 
+                : Try(this::__data))
+                .filter(theCondition);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default Result<DATA> __peek(Consumer<? super DATA> theConsumer) {
+        return ((this instanceof Result) 
+                ? ((Result<DATA>)this) 
+                : Try(this::__data))
+                .peek(theConsumer);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default DATA __orElse(DATA data) {
+        return ((this instanceof Result) 
+                ? ((Result<DATA>)this) 
+                : Try(this::__data))
+                .orElse(data);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default DATA __orGet(Supplier<DATA> dataSupplier) {
+        return ((this instanceof Result) 
+                ? ((Result<DATA>)this) 
+                : Try(this::__data))
+                .orGet(dataSupplier);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default DATA __orApply(Func1<Exception, DATA> dataMapper) {
+        return ((this instanceof Result) 
+                ? ((Result<DATA>)this) 
+                : Try(this::__data))
+                .orApply(dataMapper);
+    }
     
     public default <OUTPUT> 
         OUTPUT pipe(Func1<? super DATA, OUTPUT> func1) {
@@ -992,22 +1095,6 @@ public interface Pipeable<DATA> {
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
         }
-    }
-    
-    //== Internal use ==
-    
-    public static class __internal {
-        
-        public static <I, O> O apply(Func1<I, O> func, I input) throws Exception {
-            if (func == null)
-                return null;
-            if (input == null) {
-                if (!(func instanceof NullSafeOperator))
-                    return null;
-            }
-            return Func.applyUnsafe(func, input);
-        }
-        
     }
     
 }

@@ -27,7 +27,7 @@ public class ChoiceTypes {
     
     private ChoiceTypes() {}
     
-    public static <S> S Match(AbstractChoiceClass<S> choiceType) {
+    public static <S> S Match(IChoice<S> choiceType) {
         return choiceType.match();
     }
     

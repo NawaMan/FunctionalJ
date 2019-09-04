@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.list;
 
+import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.theString;
 import static functionalj.map.FuncMap.underlineMap;
 import static functionalj.map.FuncMap.UnderlineMap.LinkedHashMap;
@@ -31,10 +32,17 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.lens.LensTest;
+import functionalj.promise.DeferAction;
 import functionalj.stream.IntStreamPlus;
+import functionalj.stream.StreamElementProcessor;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamProcessor;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -176,6 +184,128 @@ public class FuncListTest {
                         + "{index:6, word:Seven, length:5}"
                     + "]",
                     mapString);
+    }
+    
+    @Test
+    public void testFillNull() {
+        val drivers = FuncList.of(
+                new LensTest.Driver(new LensTest.Car("Red")),
+                new LensTest.Driver(new LensTest.Car(null)),
+                new LensTest.Driver(new LensTest.Car("Blue"))
+                );
+        val driversOfCarsWithColors = drivers.fillNull(LensTest.Driver.theDriver.car.color, "Green");
+        assertEquals("["
+                + "Driver(car=Car(color=Red)), "
+                + "Driver(car=Car(color=Green)), "
+                + "Driver(car=Car(color=Blue))]",
+            driversOfCarsWithColors.toString());
+        
+    }
+    
+    @Test
+    public void testSpawn() {
+        val list = FuncList.of("Two", "Three", "Four", "Eleven");
+        val first  = new AtomicLong(-1);
+        val logs   = new ArrayList<String>();
+        list
+        .spawn(str -> {
+            return Sleep(str.length()*50 + 5).thenReturn(str).defer();
+        })
+        .forEach(element -> {
+            first.compareAndSet(-1, System.currentTimeMillis());
+            val start    = first.get();
+            val end      = System.currentTimeMillis();
+            val duration = Math.round((end - start)/50.0)*50;
+            logs.add(element + " -- " + duration);
+        });
+        assertEquals("["
+                + "Result:{ Value: Two } -- 0, "
+                + "Result:{ Value: Four } -- 50, "
+                + "Result:{ Value: Three } -- 100, "
+                + "Result:{ Value: Eleven } -- 150"
+                + "]",
+                logs.toString());
+    }
+    
+    @Test
+    public void testSpawn_limit() {
+        val list  = FuncList.of("Two", "Three", "Four", "Eleven");
+        val first   = new AtomicLong(-1);
+        val actions = new ArrayList<DeferAction<String>>();
+        val logs    = new ArrayList<String>();
+        list
+        .spawn(str -> {
+            val action = Sleep(str.length()*50 + 5).thenReturn(str).defer();
+            actions.add(action);
+            return action;
+        })
+        .limit(1)
+        .forEach(element -> {
+            first.compareAndSet(-1, System.currentTimeMillis());
+            val start    = first.get();
+            val end      = System.currentTimeMillis();
+            val duration = Math.round((end - start)/50.0)*50;
+            logs.add(element + " -- " + duration);
+        });
+        assertEquals("[Result:{ Value: Two } -- 0]",
+                logs.toString());
+        assertEquals(
+                "Result:{ Value: Two }, " + 
+                "Result:{ Cancelled: Stream closed! }, " +
+                "Result:{ Cancelled: Stream closed! }, " + 
+                "Result:{ Cancelled: Stream closed! }",
+                actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
+    }
+    
+    @Test
+    public void testGet() {
+        val stream = FuncList.of("Two", "Three", "Four", "Eleven");
+        val sumLength = new StreamElementProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return total;
+            }
+        };
+        assertEquals(18, stream.get(sumLength).intValue());
+    }
+    
+    @Test
+    public void testGet2() {
+        val list = FuncList.of("Two", "Three", "Four", "Eleven");
+        val sumLength = new StreamElementProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return total;
+            }
+        };
+        val avgLength = new StreamElementProcessor<String, Integer>() {
+            int total = 0;
+            @Override
+            public void processElement(long index, String element) {
+                total += element.length();
+            }
+            @Override
+            public Integer processComplete(long count) {
+                return (int) ((int)total/count);
+            }
+        };
+        val concat = new StreamProcessor<String, String>() {
+            @Override
+            public String process(StreamPlus<String> stream) {
+                return stream.joinToString();
+            }
+        };
+        assertEquals("(18,4,TwoThreeFourEleven)", list.get(sumLength, avgLength, concat).toString());
     }
     
 }

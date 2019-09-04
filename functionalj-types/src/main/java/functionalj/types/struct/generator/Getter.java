@@ -30,6 +30,7 @@ import static java.util.stream.Collectors.joining;
 import java.util.List;
 
 import functionalj.types.DefaultValue;
+import functionalj.types.Type;
 import lombok.Value;
 import lombok.experimental.Wither;
 

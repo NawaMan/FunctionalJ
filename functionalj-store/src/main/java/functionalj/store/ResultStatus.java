@@ -12,13 +12,14 @@ import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.ResultAccess;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
-import functionalj.types.choice.AbstractChoiceClass;
+import functionalj.types.Type;
 import functionalj.types.choice.ChoiceTypeSwitch;
+import functionalj.types.choice.IChoice;
 
 // functionalj.store.Specs.ResultStatusSpec
 
 @SuppressWarnings({"javadoc", "rawtypes", "unchecked"})
-public abstract class ResultStatus<D extends Object> extends AbstractChoiceClass<ResultStatus.ResultStatusFirstSwitch<D>> implements Pipeable<ResultStatus<D>> {
+public abstract class ResultStatus<D extends Object> implements IChoice<ResultStatus.ResultStatusFirstSwitch<D>>, Pipeable<ResultStatus<D>> {
     
     public static final <D extends Object> NotAllowed<D> NotAllowed(ChangeNotAllowedException reason) {
         return new NotAllowed<D>(reason);
@@ -45,11 +46,11 @@ public abstract class ResultStatus<D extends Object> extends AbstractChoiceClass
         public final BooleanAccess<ResultStatus> isAdjusted = ResultStatus::isAdjusted;
         public final BooleanAccess<ResultStatus> isRejected = ResultStatus::isRejected;
         public final BooleanAccess<ResultStatus> isFailed = ResultStatus::isFailed;
-        public final ResultAccess<HOST, NotAllowed, NotAllowed.NotAllowedLens<HOST>> asNotAllowed = createSubResultLens(ResultStatus::asNotAllowed, null, NotAllowed.NotAllowedLens::new);
-        public final ResultAccess<HOST, Accepted, Accepted.AcceptedLens<HOST>> asAccepted = createSubResultLens(ResultStatus::asAccepted, null, Accepted.AcceptedLens::new);
-        public final ResultAccess<HOST, Adjusted, Adjusted.AdjustedLens<HOST>> asAdjusted = createSubResultLens(ResultStatus::asAdjusted, null, Adjusted.AdjustedLens::new);
-        public final ResultAccess<HOST, Rejected, Rejected.RejectedLens<HOST>> asRejected = createSubResultLens(ResultStatus::asRejected, null, Rejected.RejectedLens::new);
-        public final ResultAccess<HOST, Failed, Failed.FailedLens<HOST>> asFailed = createSubResultLens(ResultStatus::asFailed, null, Failed.FailedLens::new);
+        public final ResultAccess<HOST, NotAllowed, NotAllowed.NotAllowedLens<HOST>> asNotAllowed = createSubResultLens(ResultStatus::asNotAllowed, null, spec -> new NotAllowed.NotAllowedLens(spec));
+        public final ResultAccess<HOST, Accepted, Accepted.AcceptedLens<HOST>> asAccepted = createSubResultLens(ResultStatus::asAccepted, null, spec -> new Accepted.AcceptedLens(spec));
+        public final ResultAccess<HOST, Adjusted, Adjusted.AdjustedLens<HOST>> asAdjusted = createSubResultLens(ResultStatus::asAdjusted, null, spec -> new Adjusted.AdjustedLens(spec));
+        public final ResultAccess<HOST, Rejected, Rejected.RejectedLens<HOST>> asRejected = createSubResultLens(ResultStatus::asRejected, null, spec -> new Rejected.RejectedLens(spec));
+        public final ResultAccess<HOST, Failed, Failed.FailedLens<HOST>> asFailed = createSubResultLens(ResultStatus::asFailed, null, spec -> new Failed.FailedLens(spec));
         public ResultStatusLens(LensSpec<HOST, ResultStatus> spec) {
             super(spec);
         }
@@ -72,6 +73,10 @@ public abstract class ResultStatus<D extends Object> extends AbstractChoiceClass
         if ("Failed".equals(__tagged))
             return (T)Failed.caseFromMap(map);
         throw new IllegalArgumentException("Tagged value does not represent a valid type: " + __tagged);
+    }
+    
+    public java.util.Map<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {
+        return getChoiceSchema();
     }
     
     static private functionalj.map.FuncMap<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>> __schema__ = functionalj.map.FuncMap.<String, java.util.Map<String, functionalj.types.choice.generator.model.CaseParam>>newMap()
@@ -102,14 +107,14 @@ public abstract class ResultStatus<D extends Object> extends AbstractChoiceClass
             }
             
         }
-        public java.util.Map<String, Object> toMap() {
+        public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("NotAllowed"));
+            map.put("__tagged", functionalj.types.IData.$utils.toMapValueObject("NotAllowed"));
             map.put("reason", this.reason);
             return map;
         }
         static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()
-            .with("reason", new functionalj.types.choice.generator.model.CaseParam("reason", new functionalj.types.choice.generator.model.Type("functionalj.store", null, "ChangeNotAllowedException", java.util.Collections.emptyList()), true, null))
+            .with("reason", new functionalj.types.choice.generator.model.CaseParam("reason", new Type("functionalj.store", null, "ChangeNotAllowedException", java.util.Collections.emptyList()), true, null))
             .build();
         public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {
             return __schema__;
@@ -137,14 +142,14 @@ public abstract class ResultStatus<D extends Object> extends AbstractChoiceClass
             }
             
         }
-        public java.util.Map<String, Object> toMap() {
+        public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Accepted"));
+            map.put("__tagged", functionalj.types.IData.$utils.toMapValueObject("Accepted"));
             map.put("newData", this.newData);
             return map;
         }
         static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()
-            .with("newData", new functionalj.types.choice.generator.model.CaseParam("newData", new functionalj.types.choice.generator.model.Type(null, null, "D", java.util.Collections.emptyList()), true, null))
+            .with("newData", new functionalj.types.choice.generator.model.CaseParam("newData", new Type(null, null, "D", java.util.Collections.emptyList()), true, null))
             .build();
         public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {
             return __schema__;
@@ -177,16 +182,16 @@ public abstract class ResultStatus<D extends Object> extends AbstractChoiceClass
             }
             
         }
-        public java.util.Map<String, Object> toMap() {
+        public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Adjusted"));
+            map.put("__tagged", functionalj.types.IData.$utils.toMapValueObject("Adjusted"));
             map.put("proposedData", this.proposedData);
             map.put("adjustedData", this.adjustedData);
             return map;
         }
         static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()
-            .with("proposedData", new functionalj.types.choice.generator.model.CaseParam("proposedData", new functionalj.types.choice.generator.model.Type(null, null, "D", java.util.Collections.emptyList()), true, null))
-            .with("adjustedData", new functionalj.types.choice.generator.model.CaseParam("adjustedData", new functionalj.types.choice.generator.model.Type(null, null, "D", java.util.Collections.emptyList()), true, null))
+            .with("proposedData", new functionalj.types.choice.generator.model.CaseParam("proposedData", new Type(null, null, "D", java.util.Collections.emptyList()), true, null))
+            .with("adjustedData", new functionalj.types.choice.generator.model.CaseParam("adjustedData", new Type(null, null, "D", java.util.Collections.emptyList()), true, null))
             .build();
         public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {
             return __schema__;
@@ -225,18 +230,18 @@ public abstract class ResultStatus<D extends Object> extends AbstractChoiceClass
             }
             
         }
-        public java.util.Map<String, Object> toMap() {
+        public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Rejected"));
+            map.put("__tagged", functionalj.types.IData.$utils.toMapValueObject("Rejected"));
             map.put("propose", this.propose);
             map.put("rollback", this.rollback);
             map.put("reason", this.reason);
             return map;
         }
         static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()
-            .with("propose", new functionalj.types.choice.generator.model.CaseParam("propose", new functionalj.types.choice.generator.model.Type(null, null, "D", java.util.Collections.emptyList()), true, null))
-            .with("rollback", new functionalj.types.choice.generator.model.CaseParam("rollback", new functionalj.types.choice.generator.model.Type(null, null, "D", java.util.Collections.emptyList()), true, null))
-            .with("reason", new functionalj.types.choice.generator.model.CaseParam("reason", new functionalj.types.choice.generator.model.Type("functionalj.store", null, "ChangeRejectedException", java.util.Collections.emptyList()), true, null))
+            .with("propose", new functionalj.types.choice.generator.model.CaseParam("propose", new Type(null, null, "D", java.util.Collections.emptyList()), true, null))
+            .with("rollback", new functionalj.types.choice.generator.model.CaseParam("rollback", new Type(null, null, "D", java.util.Collections.emptyList()), true, null))
+            .with("reason", new functionalj.types.choice.generator.model.CaseParam("reason", new Type("functionalj.store", null, "ChangeRejectedException", java.util.Collections.emptyList()), true, null))
             .build();
         public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {
             return __schema__;
@@ -266,14 +271,14 @@ public abstract class ResultStatus<D extends Object> extends AbstractChoiceClass
             }
             
         }
-        public java.util.Map<String, Object> toMap() {
+        public java.util.Map<String, Object> __toMap() {
             java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("__tagged", functionalj.types.ICanToMap.toMapValueObject("Failed"));
+            map.put("__tagged", functionalj.types.IData.$utils.toMapValueObject("Failed"));
             map.put("problem", this.problem);
             return map;
         }
         static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()
-            .with("problem", new functionalj.types.choice.generator.model.CaseParam("problem", new functionalj.types.choice.generator.model.Type("functionalj.store", null, "ChangeFailException", java.util.Collections.emptyList()), true, null))
+            .with("problem", new functionalj.types.choice.generator.model.CaseParam("problem", new Type("functionalj.store", null, "ChangeFailException", java.util.Collections.emptyList()), true, null))
             .build();
         public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {
             return __schema__;
@@ -631,7 +636,5 @@ public abstract class ResultStatus<D extends Object> extends AbstractChoiceClass
             return failed(check, d->theValue);
         }
     }
-    
-    
     
 }

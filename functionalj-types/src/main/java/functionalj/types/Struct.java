@@ -67,6 +67,10 @@ public @interface Struct {
     /** @return the flag indicating that the fields should be made public - default to true. */
     public boolean publicFields() default true;
     
+    
+    /** @return the flag indicating that the constructor should be made public - default to true -- or package level accessibility will be used. */
+    public boolean publicConstructor() default true;
+    
     /** @return the flag indicating that the fields should be made public - default to true. */
     public String toStringTemplate() default "";
     

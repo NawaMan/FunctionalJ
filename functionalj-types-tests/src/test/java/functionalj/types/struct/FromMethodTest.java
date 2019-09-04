@@ -29,6 +29,7 @@ import static functionalj.types.DefaultValue.NULL;
 import static functionalj.types.DefaultValue.ZERO;
 import static functionalj.types.struct.Car.theCar;
 import static functionalj.types.struct.CarForSale.theCarForSale;
+//import static functionalj.types.struct.CarForSale.theCarForSale;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
@@ -72,15 +73,15 @@ public class FromMethodTest {
                     + "CarForSale[car: Car[make: WV, year: 2012, color: Black], price: Price[price: 40000, discountPercent: 0]]"
                 + "]]", newInventory.toString());
         
-        assertEquals("90000",                   "" + newInventory.cars().sum    (theCarForSale.price.price));
-        assertEquals("OptionalDouble[30000.0]", "" + newInventory.cars().average(theCarForSale.price.price));
+        assertEquals("90000",                   "" + newInventory.cars().mapToInt(theCarForSale.price.price).sum());
+        assertEquals("OptionalDouble[30000.0]", "" + newInventory.cars().mapToInt(theCarForSale.price.price).average());
         
         assertEquals(
                 "{car={color=Silver, year=2010, make=Subaru}, price={discountPercent=0, price=20000}}",
-                new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000)).toMap().toString());
+                new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000)).__toMap().toString());
         
         val orgCfS = new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000));
-        val mapCfS = orgCfS.toMap();
+        val mapCfS = orgCfS.__toMap();
         val newCfS = CarForSale.fromMap(mapCfS);
         assertEquals("{car={color=Silver, year=2010, make=Subaru}, price={discountPercent=0, price=20000}}", mapCfS.toString());
         assertEquals("CarForSale[car: Car[make: Subaru, year: 2010, color: Silver], price: Price[price: 20000, discountPercent: 0]]", orgCfS.toString());

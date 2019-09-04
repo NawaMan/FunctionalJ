@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func;
 import functionalj.lens.core.AccessCreator;
+import functionalj.result.Result;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -107,7 +108,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         public NUMBER one();
         public NUMBER minusOne();
         
-        public Integer    toInt(NUMBER number);
+        public Integer    toInteger(NUMBER number);
         public Long       toLong(NUMBER number);
         public Double     toDouble(NUMBER number);
         public BigInteger toBigInteger(NUMBER number);
@@ -129,8 +130,8 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         
     }
     
-    public default IntegerAccess<HOST> toInt() {
-        return intAccess(0, __mathOperators()::toInt);
+    public default IntegerAccess<HOST> toInteger() {
+        return intAccess(0, __mathOperators()::toInteger);
     }
     public default LongAccess<HOST> toLong() {
         return longAccess(0L, __mathOperators()::toLong);
@@ -144,6 +145,39 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     public default BigDecimalAccess<HOST> toBigDecimal() {
         return bigDecimalAccess(BigDecimal.ZERO, __mathOperators()::toBigDecimal);
     }
+    
+    public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> asInteger() {
+        return ResultAccess.of(host -> {
+            val value = apply(host);
+            return Result.from(()->__mathOperators().toInteger(value));
+        }, func -> (IntegerAccess<HOST>)(func::apply));
+    }
+    public default ResultAccess<HOST, Long, LongAccess<HOST>> asLong() {
+        return ResultAccess.of(host -> {
+            val value = apply(host);
+            return Result.from(()->__mathOperators().toLong(value));
+        }, func -> (LongAccess<HOST>)(func::apply));
+    }
+    public default ResultAccess<HOST, Double, DoubleAccess<HOST>> asDouble() {
+        return ResultAccess.of(host -> {
+            val value = apply(host);
+            return Result.from(()->__mathOperators().toDouble(value));
+        }, func -> (DoubleAccess<HOST>)(func::apply));
+    }
+    public default ResultAccess<HOST, BigInteger, BigIntegerAccess<HOST>> asBigInteger() {
+        return ResultAccess.of(host -> {
+            val value = apply(host);
+            return Result.from(()->__mathOperators().toBigInteger(value));
+        }, func -> (BigIntegerAccess<HOST>)(func::apply));
+    }
+    public default ResultAccess<HOST, BigDecimal, BigDecimalAccess<HOST>> asBigDecimal() {
+        return ResultAccess.of(host -> {
+            val value = apply(host);
+            return Result.from(()->__mathOperators().toBigDecimal(value));
+        }, func -> (BigDecimalAccess<HOST>)(func::apply));
+    }
+    
+    // TODO -- These __operate should be moved to a util class.
     
     public default NUMACCESS __operate(
             AccessCreator<HOST, TYPE, NUMACCESS> accessCreator,  

@@ -84,7 +84,8 @@ public class MapTo {
     @SafeVarargs
     public static <D, T> Func1<D, T> firstOf(
             Function<? super D, ? extends T> ... mappers) {
-        return firstOf(FuncList.from(mappers));
+        FuncList<Function<? super D, ? extends T>> mappersArray = FuncList.from(mappers);
+        return firstOf(mappersArray);
     }
     
     // Tuple
@@ -99,15 +100,11 @@ public class MapTo {
         };
     }
     
-    // TODO - Add more
-    
     // Map
     
     public static <D, K, V> ToMapFunc<D, K, V> toMap(
             K key, Func1<? super D, ? extends V> mapper) {
         return data -> ImmutableMap.of(key, mapper.apply(data));
     }
-    
-    // TODO - Add more
     
 }

@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.types.choice.generator.model.Type;
+import functionalj.types.Type;
 
 public class TypeTest {
     

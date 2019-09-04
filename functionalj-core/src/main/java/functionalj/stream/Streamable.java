@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.function.Func.themAll;
+
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,9 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -68,11 +67,13 @@ import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.functions.StrFuncs;
+import functionalj.lens.lenses.AnyLens;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
+import functionalj.promise.UncompleteAction;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -84,7 +85,7 @@ import lombok.val;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
-public interface Streamable<DATA> {
+public interface Streamable<DATA> extends StreamableWithGet<DATA> {
     
     @SafeVarargs
     public static <D> Streamable<D> of(D ... data) {
@@ -323,6 +324,45 @@ public interface Streamable<DATA> {
         });
     }
     
+    // -- fillNull --
+    
+    public default <VALUE> Streamable<DATA> fillNull(AnyLens<DATA, VALUE> lens, VALUE replacement) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacement));
+    }
+    
+    public default <VALUE> Streamable<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            VALUE                    replacement) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacement));
+    }
+    
+    public default <VALUE> Streamable<DATA> fillNull(
+            AnyLens<DATA, VALUE> lens, 
+            Supplier<VALUE>      replacementSupplier) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacementSupplier));
+    }
+    
+    public default <VALUE> Streamable<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            Supplier<VALUE>          replacementSupplier) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacementSupplier));
+    }
+    
+    public default <VALUE> Streamable<DATA> fillNull(
+            AnyLens<DATA, VALUE> lens, 
+            Func1<DATA, VALUE>   replacementFunction) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacementFunction));
+    }
+    
+    public default <VALUE> Streamable<DATA> fillNull(
+            Func1<DATA, VALUE>       get, 
+            Func2<DATA, VALUE, DATA> set, 
+            Func1<DATA, VALUE>       replacementFunction) {
+        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacementFunction));
+    }
+    
     //--map with condition --
     
     public default Streamable<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
@@ -377,6 +417,11 @@ public interface Streamable<DATA> {
     }
     
     //-- mapWithIndex --
+    
+    public default Streamable<Tuple2<Integer, DATA>> mapWithIndex() {
+        val index = new AtomicInteger();
+        return map(each -> Tuple2.of(index.getAndIncrement(), each));
+    }
     
     public default <T> Streamable<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
         return deriveWith(stream -> {
@@ -909,6 +954,15 @@ public interface Streamable<DATA> {
         });
     }
     
+    @SuppressWarnings("unchecked")
+    public default Streamable<DATA> concatWith(Streamable<DATA> ... tails) {
+        return deriveWith(stream -> {
+            return StreamPlus
+                    .concat(StreamPlus.of(stream), StreamPlus.of(tails).map(Streamable::stream))
+                    .flatMap(themAll());
+        });
+    }
+    
     //-- Plus w/ Self --
     //============================================================================
     
@@ -1003,54 +1057,6 @@ public interface Streamable<DATA> {
         return stream().max((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
     }
     
-    public default int sumToInt(ToIntFunction<? super DATA> toInt) {
-        return mapToInt(toInt).sum();
-    }
-    
-    public default OptionalInt minToInt(ToIntFunction<? super DATA> toInt) {
-        return mapToInt(toInt).min();
-    }
-    
-    public default OptionalInt maxToInt(ToIntFunction<? super DATA> toInt) {
-        return mapToInt(toInt).max();
-    }
-    
-    public default OptionalDouble averageToInt(ToIntFunction<? super DATA> toInt) {
-        return mapToInt(toInt).average();
-    }
-    
-    public default long sumToLong(ToLongFunction<? super DATA> toLong) {
-        return mapToLong(toLong).sum();
-    }
-    
-    public default OptionalLong minToLong(ToLongFunction<? super DATA> toLong) {
-        return mapToLong(toLong).min();
-    }
-    
-    public default OptionalLong maxToLong(ToLongFunction<? super DATA> toLong) {
-        return mapToLong(toLong).max();
-    }
-    
-    public default OptionalDouble averageToLong(ToLongFunction<? super DATA> toLong) {
-        return mapToLong(toLong).average();
-    }
-    
-    public default double sumToDouble(ToDoubleFunction<? super DATA> toDouble) {
-        return mapToDouble(toDouble).sum();
-    }
-    
-    public default OptionalDouble minToDouble(ToDoubleFunction<? super DATA> toDouble) {
-        return mapToDouble(toDouble).min();
-    }
-    
-    public default OptionalDouble maxToDouble(ToDoubleFunction<? super DATA> toDouble) {
-        return mapToDouble(toDouble).max();
-    }
-    
-    public default OptionalDouble averageToDouble(ToDoubleFunction<? super DATA> toDouble) {
-        return mapToDouble(toDouble).average();
-    }
-    
     public default Optional<BigDecimal> sumToBigDecimal(Function<? super DATA, BigDecimal> toBigDecimal) {
         return map(toBigDecimal).reduce(BigDecimal::add);
     }
@@ -1067,54 +1073,6 @@ public interface Streamable<DATA> {
         val countSum = map(each -> Tuple.of(1, toBigDecimal.apply(each)))
         .reduce((a, b)->Tuple.of(a._1 + b._1, a._2.add(b._2)));
         return countSum.map(t -> t._2.divide(new BigDecimal(t._1)));
-    }
-    
-    public default int sum(ToIntFunction<? super DATA> toInt) {
-        return sumToInt(toInt);
-    }
-    
-    public default OptionalInt min(ToIntFunction<? super DATA> toInt) {
-        return minToInt(toInt);
-    }
-    
-    public default OptionalInt max(ToIntFunction<? super DATA> toInt) {
-        return maxToInt(toInt);
-    }
-    
-    public default OptionalDouble average(ToIntFunction<? super DATA> toInt) {
-        return averageToInt(toInt);
-    }
-    
-    public default long sum(ToLongFunction<? super DATA> toLong) {
-        return sumToLong(toLong);
-    }
-    
-    public default OptionalLong min(ToLongFunction<? super DATA> toLong) {
-        return minToLong(toLong);
-    }
-    
-    public default OptionalLong max(ToLongFunction<? super DATA> toLong) {
-        return maxToLong(toLong);
-    }
-    
-    public default OptionalDouble average(ToLongFunction<? super DATA> toLong) {
-        return averageToLong(toLong);
-    }
-    
-    public default double sum(ToDoubleFunction<? super DATA> toDouble) {
-        return sumToDouble(toDouble);
-    }
-    
-    public default OptionalDouble min(ToDoubleFunction<? super DATA> toDouble) {
-        return minToDouble(toDouble);
-    }
-    
-    public default OptionalDouble max(ToDoubleFunction<? super DATA> toDouble) {
-        return maxToDouble(toDouble);
-    }
-    
-    public default OptionalDouble average(ToDoubleFunction<? super DATA> toDouble) {
-        return averageToDouble(toDouble);
     }
     
     public default Optional<BigDecimal> sum(Function<? super DATA, BigDecimal> toBigDecimal) {
@@ -1181,6 +1139,10 @@ public interface Streamable<DATA> {
     
     public default Object[] toArray() {
         return stream().toArray();
+    }
+    
+    public default <T> T[] toArray(T[] a) {
+        return StreamPlus.of(stream()).toJavaList().toArray(a);
     }
     
     public default <A> A[] toArray(IntFunction<A[]> generator) {
@@ -1539,5 +1501,16 @@ public interface Streamable<DATA> {
         return piper.apply(this);
     }
     
+    public default Streamable<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream()).collapse(conditionToCollapse, concatFunc);
+        });
+    }
+    
+    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompleteAction<T>> mapper) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream()).spawn(mapper);
+        });
+    }
     
 }

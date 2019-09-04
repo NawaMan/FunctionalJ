@@ -30,6 +30,8 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import functionalj.types.struct.generator.model.GenClass;
 import functionalj.types.struct.generator.model.GenConstructor;
 import functionalj.types.struct.generator.model.GenField;
@@ -78,7 +80,7 @@ public class StructSpec {
             List<GenMethod>      methods,
             List<GenClass>       innerClasses,
             List<ILines>         mores) {
-        this.classSpec         = new GenClass(PUBLIC, NONE, MODIFIABLE, new Type(className, packageName), null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
+        this.classSpec         = new GenClass(PUBLIC, NONE, MODIFIABLE, new Type(packageName, className), null, extendeds, implementeds, constructors, fields, methods, innerClasses, mores);
         this.sourceClassName   = sourceName;
         this.sourcePackageName = sourcePackageName;
     }
@@ -93,7 +95,7 @@ public class StructSpec {
                 .encloseName(type().simpleName())
                 .simpleName(type().simpleName() + "Lens")
                 .packageName(type().packageName())
-                .generics(asList(new Type("HOST", null)))
+                .generics(asList(new Generic("HOST")))
                 .build();
     }
     

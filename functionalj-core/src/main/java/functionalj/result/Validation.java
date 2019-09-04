@@ -62,9 +62,9 @@ public abstract class Validation<D extends Object> implements Pipeable<Validatio
         public final BooleanAccess<Validation> isToBoolean = Validation::isToBoolean;
         public final BooleanAccess<Validation> isToMessage = Validation::isToMessage;
         public final BooleanAccess<Validation> isToException = Validation::isToException;
-        public final ResultAccess<HOST, ToBoolean, ToBoolean.ToBooleanLens<HOST>> asToBoolean = createSubResultLens(Validation::asToBoolean, null, ToBoolean.ToBooleanLens::new);
-        public final ResultAccess<HOST, ToMessage, ToMessage.ToMessageLens<HOST>> asToMessage = createSubResultLens(Validation::asToMessage, null, ToMessage.ToMessageLens::new);
-        public final ResultAccess<HOST, ToException, ToException.ToExceptionLens<HOST>> asToException = createSubResultLens(Validation::asToException, null, ToException.ToExceptionLens::new);
+        public final ResultAccess<HOST, ToBoolean, ToBoolean.ToBooleanLens<HOST>> asToBoolean = createSubResultLens(Validation::asToBoolean,           null, spec -> new ToBoolean.ToBooleanLens(spec));
+        public final ResultAccess<HOST, ToMessage, ToMessage.ToMessageLens<HOST>> asToMessage = createSubResultLens(Validation::asToMessage,           null, spec -> new ToMessage.ToMessageLens(spec));
+        public final ResultAccess<HOST, ToException, ToException.ToExceptionLens<HOST>> asToException = createSubResultLens(Validation::asToException, null, spec -> new ToException.ToExceptionLens(spec));
         public ValidationLens(LensSpec<HOST, Validation> spec) {
             super(spec);
         }

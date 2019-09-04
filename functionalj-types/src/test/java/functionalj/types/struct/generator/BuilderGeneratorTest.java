@@ -32,6 +32,7 @@ import java.util.List;
 import org.junit.Test;
 
 import functionalj.types.DefaultValue;
+import functionalj.types.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import lombok.val;
 

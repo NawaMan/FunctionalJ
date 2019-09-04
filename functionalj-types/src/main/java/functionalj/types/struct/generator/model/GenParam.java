@@ -25,8 +25,8 @@ package functionalj.types.struct.generator.model;
 
 import java.util.stream.Stream;
 
+import functionalj.types.Type;
 import functionalj.types.struct.generator.IGenerateTerm;
-import functionalj.types.struct.generator.Type;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.experimental.Wither;

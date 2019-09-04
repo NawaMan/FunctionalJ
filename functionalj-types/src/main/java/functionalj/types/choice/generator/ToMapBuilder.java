@@ -2,9 +2,12 @@ package functionalj.types.choice.generator;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
+import functionalj.types.IData;
 import functionalj.types.choice.generator.model.Case;
 
 public class ToMapBuilder implements Lines {
@@ -26,8 +29,8 @@ public class ToMapBuilder implements Lines {
                 .params.stream()
                 .map(param -> "    map.put(\"" + param.name + "\", this." + param.name + ");");
         return Stream.of(
-                Stream.of("    java.util.Map<String, Object> map = new java.util.HashMap<>();"),
-                Stream.of("    map.put(\"" + targetClass.spec.tagMapKeyName + "\", functionalj.types.ICanToMap.toMapValueObject(\"" + choice.name + "\"));"),
+                Stream.of("    " + Map.class.getCanonicalName() + "<String, Object> map = new " + HashMap.class.getCanonicalName() + "<>();"),
+                Stream.of("    map.put(\"" + targetClass.spec.tagMapKeyName + "\", " + IData.$utils.class.getCanonicalName() + ".toMapValueObject(\"" + choice.name + "\"));"),
                 params,
                 Stream.of("    return map;")
             )
@@ -37,7 +40,7 @@ public class ToMapBuilder implements Lines {
     @Override
     public List<String> lines() {
         return Stream.of(
-                Stream.of("public java.util.Map<String, Object> toMap() {"),
+                Stream.of("public java.util.Map<String, Object> __toMap() {"),
                 body(),
                 Stream.of("}")
             )

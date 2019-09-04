@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.function.Function;
 
+import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
 import lombok.Value;
 import lombok.experimental.Wither;
@@ -74,6 +75,8 @@ public class SourceSpec {
         public boolean generateBuilderClass = true;
         /** Should the fields be made public */
         public boolean publicFields = true;
+        /** Should the constructor be made public (other wise it will be package) */
+        public boolean publicConstructor = true;
         /** Template for toString. null for no toString generated, "" for auto-generate toString, or template */
         public String toStringTemplate = "";
         
@@ -86,6 +89,7 @@ public class SourceSpec {
                 boolean generateLensClass,
                 boolean generateBuilderClass,
                 boolean publicFields,
+                boolean publicConstructor,
                 String toStringTemplate) {
             this.coupleWithDefinition            = coupleWithDefinition;
             this.generateNoArgConstructor        = generateNoArgConstructor;
@@ -94,6 +98,7 @@ public class SourceSpec {
             this.generateLensClass               = generateLensClass;
             this.generateBuilderClass            = generateBuilderClass;
             this.publicFields                    = publicFields;
+            this.publicConstructor               = publicConstructor;
             this.toStringTemplate                = toStringTemplate;
         }
         
@@ -107,6 +112,7 @@ public class SourceSpec {
                     + "generateLensClass="               + generateLensClass + ", "
                     + "generateBuilderClass="            + generateBuilderClass + ","
                     + "publicFields="                    + publicFields
+                    + "publicConstructor="               + publicConstructor
                     + "toStringTemplate="                + toStringTemplate
                     + "]";
         }
@@ -119,6 +125,7 @@ public class SourceSpec {
                     generateLensClass,
                     generateBuilderClass,
                     publicFields,
+                    publicConstructor,
                     Utils.toStringLiteral(toStringTemplate)
             );
             return "new " + Configurations.class.getCanonicalName() + "("
@@ -129,11 +136,11 @@ public class SourceSpec {
     
     /** @return the target type. */
     public Type getTargetType() {
-        return new Type(targetClassName, targetPackageName);
+        return new Type(targetPackageName, targetClassName);
     }
     /** @return the type of this source. */
     public Type toType() {
-        return new Type(specName, packageName);
+        return new Type(packageName, specName);
     }
     public Boolean isClass() {
         return isClass;

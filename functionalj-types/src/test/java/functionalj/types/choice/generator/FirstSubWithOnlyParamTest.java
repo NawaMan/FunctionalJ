@@ -32,12 +32,10 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import functionalj.types.choice.generator.SwitchClass;
-import functionalj.types.choice.generator.TargetClass;
+import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.SourceSpec;
-import functionalj.types.choice.generator.model.Type;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

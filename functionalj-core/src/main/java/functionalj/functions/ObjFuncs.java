@@ -35,6 +35,10 @@ public class ObjFuncs {
     public static <I1, I2> Func2<I1, I2, Boolean> areEqual() {
         return (i1, i2) -> Objects.equals(i1, i2);
     }
+    @SuppressWarnings("unlikely-arg-type")
+    public static <I1, I2> Func2<I1, I2, Boolean> notEqual() {
+        return (i1, i2) -> !Objects.equals(i1, i2);
+    }
     
     public static <I> Func1<I, Boolean> equalsTo(I i1) {
         

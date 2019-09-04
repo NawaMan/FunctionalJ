@@ -27,6 +27,7 @@ import static java.util.stream.Collectors.joining;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -557,11 +558,26 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     }
     
     @Override
-    public FuncMap<KEY, VALUE> sorted(Comparator<? super KEY> comparator) {
+    public FuncMap<KEY, VALUE> sorted(Comparator<? super Map.Entry<KEY, VALUE>> comparator) {
+        val map = new LinkedHashMap<KEY, VALUE>();
+        this
+        .entryStream()
+        .sorted (comparator)
+        .forEach(e -> map.put(e.getKey(), e.getValue()));
+        return FuncMap.from(map);
+    }
+    
+    @Override
+    public FuncMap<KEY, VALUE> sortedByKey(Comparator<? super KEY> comparator) {
         val map = new TreeMap<KEY, VALUE>(comparator);
         entryStream()
-            .forEach(e -> map.put(e.getKey(), e.getValue()));
+        .forEach(e -> map.put(e.getKey(), e.getValue()));
         return new ImmutableMap<KEY, VALUE>(map, isLazy());
+    }
+    
+    @Override
+    public FuncMap<KEY, VALUE> sortedByValue(Comparator<? super VALUE> comparator) {
+        return sorted((e1, e2)->comparator.compare(e1.getValue(), e2.getValue()));
     }
     
     @Override

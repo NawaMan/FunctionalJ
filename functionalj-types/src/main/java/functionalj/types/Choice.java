@@ -45,7 +45,7 @@ public @interface Choice {
     /** @return the name of the static final field for the source spec. */
     public String specField() default "";
     
-    /** @return the name of key in the map when do toMap(). */
+    /** @return the name of key in the map when do __toMap(). */
     public String tagMapKeyName() default SourceSpec.TAG_MAP_KEY_NAME;
     
     /** @return the flag indicating that the fields should be made public - default to true. */

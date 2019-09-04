@@ -2,11 +2,11 @@
 include ":functionalj-core"
 include ":functionalj-store"
 include ":functionalj-types"
+include ":functionalj-elm"
 
 include ":functionalj-all"
 
 include ":functionalj-types-tests"
 include ":functionalj-examples"
 
-
-rootProject.name = theGroup
+rootProject.name = "functionalj"

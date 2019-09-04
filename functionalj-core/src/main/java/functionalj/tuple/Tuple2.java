@@ -29,8 +29,10 @@ import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import functionalj.function.Absent;
+import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
@@ -66,6 +68,80 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
         return ImmutableTuple.of(this);
     }
     
+    public default T1 first() {
+        return _1();
+    }
+    
+    public default T2 second() {
+        return _2();
+    }
+    
+    public default Tuple2<T1, T2> with1(T1 new1) {
+        return new Tuple2<T1, T2>() {
+            @Override public T1 _1() { return new1; }
+            @Override public T2 _2() { return Tuple2.this._2(); }
+        };
+    }
+    
+    public default Tuple2<T1, T2> with1(Supplier<T1> supplier1) {
+        return new Tuple2<T1, T2>() {
+            @Override public T1 _1() { return supplier1.get(); }
+            @Override public T2 _2() { return Tuple2.this._2(); }
+        };
+    }
+    
+    public default Tuple2<T1, T2> with1(Func1<T1, T1> function1) {
+        return new Tuple2<T1, T2>() {
+            @Override public T1 _1() { return function1.apply(Tuple2.this._1()); }
+            @Override public T2 _2() { return Tuple2.this._2(); }
+        };
+    }
+    
+    public default Tuple2<T1, T2> with2(T2 new2) {
+        return new Tuple2<T1, T2>() {
+            @Override public T1 _1() { return Tuple2.this._1(); }
+            @Override public T2 _2() { return new2; }
+        };
+    }
+    
+    public default Tuple2<T1, T2> with2(Supplier<T2> supplier2) {
+        return new Tuple2<T1, T2>() {
+            @Override public T1 _1() { return Tuple2.this._1(); }
+            @Override public T2 _2() { return supplier2.get(); }
+        };
+    }
+    
+    public default Tuple2<T1, T2> with2(Func1<T2, T2> function2) {
+        return new Tuple2<T1, T2>() {
+            @Override public T1 _1() { return Tuple2.this._1(); }
+            @Override public T2 _2() { return function2.apply(Tuple2.this._2()); }
+        };
+    }
+    
+    public default Tuple2<T1, T2> withFirst(T1 new1) {
+        return with1(new1);
+    }
+    
+    public default Tuple2<T1, T2> withFirst(Supplier<T1> supplier1) {
+        return with1(supplier1);
+    }
+    
+    public default Tuple2<T1, T2> withFirst(Func1<T1, T1> function1) {
+        return with1(function1);
+    }
+    
+    public default Tuple2<T1, T2> withSecond(T2 new2) {
+        return with2(new2);
+    }
+    
+    public default Tuple2<T1, T2> withSecond(Supplier<T2> supplier2) {
+        return with2(supplier2);
+    }
+    
+    public default Tuple2<T1, T2> withSecond(Func1<T2, T2> function2) {
+        return with2(function2);
+    }
+    
     public default Object[] toArray() {
         val _1 = _1();
         val _2 = _2();
@@ -93,6 +169,14 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
         val e1 = (k1 != null) ? ImmutableTuple.of(k1, (Object)_1()) : null;
         val e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object)_2()) : null;
         return ImmutableMap.ofEntries(e1, e2);
+    }
+    
+    //== mapTo ==
+    
+    public default <T> T mapTo(BiFunction<? super T1, ? super T2, T> mapper) {
+        val _1 = _1();
+        val _2 = _2();
+        return mapper.apply(_1, _2);
     }
     
     //== Map ==
