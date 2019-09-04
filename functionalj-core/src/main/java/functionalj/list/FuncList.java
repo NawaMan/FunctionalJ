@@ -39,6 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -301,6 +302,10 @@ public interface FuncList<DATA>
     @Override
     public default <T> T[] toArray(T[] a) {
         return toJavaList().toArray(a);
+    }
+    
+    public default <A> A[] toArray(IntFunction<A[]> generator) {
+        return stream().toArray(generator);
     }
     
     public default FuncList<DATA> append(DATA value) {
