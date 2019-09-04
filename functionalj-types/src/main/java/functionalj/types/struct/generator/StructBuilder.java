@@ -24,6 +24,7 @@
 package functionalj.types.struct.generator;
 
 import static functionalj.types.struct.generator.ILines.line;
+import static functionalj.types.struct.generator.model.Accessibility.PACKAGE;
 import static functionalj.types.struct.generator.model.Accessibility.PRIVATE;
 import static functionalj.types.struct.generator.model.Accessibility.PUBLIC;
 import static functionalj.types.struct.generator.model.Modifiability.FINAL;
@@ -319,7 +320,10 @@ public class StructBuilder {
                 .map    (String::valueOf)
                 .collect(joining(", "));
         val body = "this(" + paramString + ");";
-        return new GenConstructor(PUBLIC, name, emptyList(), line(body));
+        
+        val publicConstructor = sourceSpec.getConfigures().publicConstructor;
+        val accessibility     = (publicConstructor ? PUBLIC : PACKAGE);
+        return new GenConstructor(accessibility, name, emptyList(), line(body));
     }
     
     private GenConstructor requiredOnlyConstructor() {
@@ -355,7 +359,9 @@ public class StructBuilder {
                 .filter(Objects::nonNull)
                 .flatMap(Function.identity())
                 .collect(toList());
-        return new GenConstructor(PUBLIC, name, params, ILines.line(assignments));
+        val publicConstructor = sourceSpec.getConfigures().publicConstructor;
+        val accessibility     = (publicConstructor ? PUBLIC : PACKAGE);
+        return new GenConstructor(accessibility, name, params, ILines.line(assignments));
     }
     private GenConstructor allArgConstructor() {
         val allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>)((spec, acc) ->{
@@ -379,9 +385,10 @@ public class StructBuilder {
                     .flatMap(Function.identity());
             return new GenConstructor(acc, name, params, ILines.of(()->body));
         });
+        val publicConstructor = sourceSpec.getConfigures().publicConstructor;
         val allArgsConstAccessibility
                 = sourceSpec.getConfigures().generateAllArgConstructor
-                ? PUBLIC
+                ? (publicConstructor ? PUBLIC : PACKAGE)
                 : PRIVATE;
         return allArgsConstructor.apply(sourceSpec, allArgsConstAccessibility);
     }

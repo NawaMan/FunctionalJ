@@ -35,6 +35,7 @@ public class ElmTypeTest {
                 true, 
                 true, 
                 true, 
+                true, 
                 ""), 
             asList(
                 new Getter(

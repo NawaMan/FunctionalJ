@@ -339,7 +339,7 @@ public class BugThreeNullableBuilder {
                 false,                  // isClass
                 null,
                 null,
-                new Configurations(true, false, true, true, true, true, true, ""),  // Configurations
+                new Configurations(true, false, true, true, true, true, true, true, ""),  // Configurations
                 asList(
                     new Getter("id",          new Type("java.lang", null, "String", emptyList()), false, REQUIRED),
                     new Getter("name",        new Type("java.lang", null, "String", emptyList()), false, REQUIRED),

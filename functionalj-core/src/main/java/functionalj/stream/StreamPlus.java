@@ -1951,7 +1951,7 @@ public interface StreamPlus<DATA>
         return zipWith(anotherStream, ZipWithOption.RequireBoth, Tuple2::of);
     }
     public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, ZipWithOption option) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, Tuple2::of);
+        return zipWith(anotherStream, option, Tuple2::of);
     }
     
     public default <B, C> StreamPlus<C> zipWith(Stream<B> anotherStream, Func2<DATA, B, C> merger) {

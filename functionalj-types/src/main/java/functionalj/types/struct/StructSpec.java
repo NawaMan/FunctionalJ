@@ -283,6 +283,7 @@ public class StructSpec {
         configures.generateLensClass               = struct.generateLensClass();
         configures.generateBuilderClass            = struct.generateBuilderClass();
         configures.publicFields                    = struct.publicFields();
+        configures.publicConstructor               = struct.publicConstructor();
         configures.toStringTemplate                = !struct.generateToString() ? null : struct.toStringTemplate();
         
         if (!configures.generateNoArgConstructor

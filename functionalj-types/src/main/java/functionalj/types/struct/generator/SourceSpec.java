@@ -75,6 +75,8 @@ public class SourceSpec {
         public boolean generateBuilderClass = true;
         /** Should the fields be made public */
         public boolean publicFields = true;
+        /** Should the constructor be made public (other wise it will be package) */
+        public boolean publicConstructor = true;
         /** Template for toString. null for no toString generated, "" for auto-generate toString, or template */
         public String toStringTemplate = "";
         
@@ -87,6 +89,7 @@ public class SourceSpec {
                 boolean generateLensClass,
                 boolean generateBuilderClass,
                 boolean publicFields,
+                boolean publicConstructor,
                 String toStringTemplate) {
             this.coupleWithDefinition            = coupleWithDefinition;
             this.generateNoArgConstructor        = generateNoArgConstructor;
@@ -95,6 +98,7 @@ public class SourceSpec {
             this.generateLensClass               = generateLensClass;
             this.generateBuilderClass            = generateBuilderClass;
             this.publicFields                    = publicFields;
+            this.publicConstructor               = publicConstructor;
             this.toStringTemplate                = toStringTemplate;
         }
         
@@ -108,6 +112,7 @@ public class SourceSpec {
                     + "generateLensClass="               + generateLensClass + ", "
                     + "generateBuilderClass="            + generateBuilderClass + ","
                     + "publicFields="                    + publicFields
+                    + "publicConstructor="               + publicConstructor
                     + "toStringTemplate="                + toStringTemplate
                     + "]";
         }
@@ -120,6 +125,7 @@ public class SourceSpec {
                     generateLensClass,
                     generateBuilderClass,
                     publicFields,
+                    publicConstructor,
                     Utils.toStringLiteral(toStringTemplate)
             );
             return "new " + Configurations.class.getCanonicalName() + "("

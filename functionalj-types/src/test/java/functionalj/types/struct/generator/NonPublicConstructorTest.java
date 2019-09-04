@@ -31,13 +31,13 @@ import functionalj.types.Type;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
 
-public class RequiredConstructorTest {
+public class NonPublicConstructorTest {
 
     public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null,
             "example.functionalj.accesslens", "StructTypeExample", "Person", "example.functionalj.accesslens", null,
             "spec", null,
             new functionalj.types.struct.generator.SourceSpec.Configurations(
-                    true, false, true, true, true, true, false, true, ""),
+                    true, false, true, true, true, true, true, false, ""),
             java.util.Arrays.asList(
                     new functionalj.types.struct.generator.Getter("firstName",
                             new Type("java.lang", null, "String", java.util.Collections.emptyList()), false,
@@ -86,18 +86,18 @@ public class RequiredConstructorTest {
             "public class Person implements IStruct,Pipeable<Person> {\n" + 
             "    \n" + 
             "    public static final Person.PersonLens<Person> thePerson = new Person.PersonLens<>(LensSpec.of(Person.class));\n" + 
-            "    private final String firstName;\n" + 
-            "    private final String midName;\n" + 
-            "    private final String lastName;\n" + 
-            "    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null, \"example.functionalj.accesslens\", \"StructTypeExample\", \"Person\", \"example.functionalj.accesslens\", null, \"spec\", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, false, true, \"\"), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter(\"firstName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter(\"midName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter(\"lastName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Arrays.asList(\"Person\"));\n" + 
+            "    public final String firstName;\n" + 
+            "    public final String midName;\n" + 
+            "    public final String lastName;\n" + 
+            "    public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null, \"example.functionalj.accesslens\", \"StructTypeExample\", \"Person\", \"example.functionalj.accesslens\", null, \"spec\", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, false, \"\"), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter(\"firstName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter(\"midName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL), new functionalj.types.struct.generator.Getter(\"lastName\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Arrays.asList(\"Person\"));\n" + 
             "    \n" + 
-            "    public Person(String firstName, String lastName) {\n" + 
+            "    Person(String firstName, String lastName) {\n" + 
             "        this.firstName = $utils.notNull(firstName);\n" + 
             "        this.midName = null;\n" + 
             "        this.lastName = $utils.notNull(lastName);\n" + 
             "        if (this instanceof IPostConstruct) ((IPostConstruct)this).postConstruct();\n" + 
             "    }\n" + 
-            "    public Person(String firstName, String midName, String lastName) {\n" + 
+            "    Person(String firstName, String midName, String lastName) {\n" + 
             "        this.firstName = $utils.notNull(firstName);\n" + 
             "        this.midName = java.util.Optional.ofNullable(midName).orElseGet(()->null);\n" + 
             "        this.lastName = $utils.notNull(lastName);\n" + 
