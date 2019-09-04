@@ -46,11 +46,11 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
         public final BooleanAccess<ResultStatus> isAdjusted = ResultStatus::isAdjusted;
         public final BooleanAccess<ResultStatus> isRejected = ResultStatus::isRejected;
         public final BooleanAccess<ResultStatus> isFailed = ResultStatus::isFailed;
-        public final ResultAccess<HOST, NotAllowed, NotAllowed.NotAllowedLens<HOST>> asNotAllowed = createSubResultLens(ResultStatus::asNotAllowed, null, NotAllowed.NotAllowedLens::new);
-        public final ResultAccess<HOST, Accepted, Accepted.AcceptedLens<HOST>> asAccepted = createSubResultLens(ResultStatus::asAccepted, null, Accepted.AcceptedLens::new);
-        public final ResultAccess<HOST, Adjusted, Adjusted.AdjustedLens<HOST>> asAdjusted = createSubResultLens(ResultStatus::asAdjusted, null, Adjusted.AdjustedLens::new);
-        public final ResultAccess<HOST, Rejected, Rejected.RejectedLens<HOST>> asRejected = createSubResultLens(ResultStatus::asRejected, null, Rejected.RejectedLens::new);
-        public final ResultAccess<HOST, Failed, Failed.FailedLens<HOST>> asFailed = createSubResultLens(ResultStatus::asFailed, null, Failed.FailedLens::new);
+        public final ResultAccess<HOST, NotAllowed, NotAllowed.NotAllowedLens<HOST>> asNotAllowed = createSubResultLens(ResultStatus::asNotAllowed, null, spec -> new NotAllowed.NotAllowedLens(spec));
+        public final ResultAccess<HOST, Accepted, Accepted.AcceptedLens<HOST>> asAccepted = createSubResultLens(ResultStatus::asAccepted, null, spec -> new Accepted.AcceptedLens(spec));
+        public final ResultAccess<HOST, Adjusted, Adjusted.AdjustedLens<HOST>> asAdjusted = createSubResultLens(ResultStatus::asAdjusted, null, spec -> new Adjusted.AdjustedLens(spec));
+        public final ResultAccess<HOST, Rejected, Rejected.RejectedLens<HOST>> asRejected = createSubResultLens(ResultStatus::asRejected, null, spec -> new Rejected.RejectedLens(spec));
+        public final ResultAccess<HOST, Failed, Failed.FailedLens<HOST>> asFailed = createSubResultLens(ResultStatus::asFailed, null, spec -> new Failed.FailedLens(spec));
         public ResultStatusLens(LensSpec<HOST, ResultStatus> spec) {
             super(spec);
         }
