@@ -115,6 +115,17 @@ public interface Tuple6<T1, T2, T3, T4, T5, T6> extends Pipeable<Tuple6<T1, T2, 
         return ImmutableMap.ofEntries(e1, e2, e3, e4, e5, e6);
     }
     
+    //== mapTo ==
+    
+    public default <T> T mapTo(Func6<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? super T6, T> mapper) {
+        val _1 = _1();
+        val _2 = _2();
+        val _3 = _3();
+        val _4 = _4();
+        val _5 = _5();
+        val _6 = _6();
+        return mapper.apply(_1, _2, _3, _4, _5, _6);
+    }
     
     //== Map ==
     

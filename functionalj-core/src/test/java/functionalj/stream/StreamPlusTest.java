@@ -875,7 +875,7 @@ public class StreamPlusTest {
                 return max;
             }
         };
-        val range = stream.get(maxLength, minLength, (max, min) -> max - min).intValue();
+        val range = stream.get(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
         assertEquals(3, range);
     }
     

@@ -107,9 +107,19 @@ public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, 
         return ImmutableMap.ofEntries(e1, e2, e3, e4, e5);
     }
     
+    //== mapTo ==
+    
+    public default <T> T mapTo(Func5<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, T> mapper) {
+        val _1 = _1();
+        val _2 = _2();
+        val _3 = _3();
+        val _4 = _4();
+        val _5 = _5();
+        return mapper.apply(_1, _2, _3, _4, _5);
+    }
     
     //== Map ==
-
+    
     public default <NT1> Tuple5<NT1, T2, T3, T4, T5> map1(Function<? super T1, NT1> mapper) {
         return map(mapper, it(), it(), it(), it());
     }
@@ -117,11 +127,11 @@ public interface Tuple5<T1, T2, T3, T4, T5> extends Pipeable<Tuple5<T1, T2, T3, 
     public default <NT2> Tuple5<T1, NT2, T3, T4, T5> map2(Function<? super T2, NT2> mapper) {
         return map(it(), mapper, it(), it(), it());
     }
-
+    
     public default <NT3> Tuple5<T1, T2, NT3, T4, T5> map3(Function<? super T3, NT3> mapper) {
         return map(it(), it(), mapper, it(), it());
     }
-
+    
     public default <NT4> Tuple5<T1, T2, T3, NT4, T5> map4(Function<? super T4, NT4> mapper) {
         return map(it(), it(), it(), mapper, it());
     }

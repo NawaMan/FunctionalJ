@@ -171,6 +171,14 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
         return ImmutableMap.ofEntries(e1, e2);
     }
     
+    //== mapTo ==
+    
+    public default <T> T mapTo(BiFunction<? super T1, ? super T2, T> mapper) {
+        val _1 = _1();
+        val _2 = _2();
+        return mapper.apply(_1, _2);
+    }
+    
     //== Map ==
     
     public default <NT1> Tuple2<NT1, T2> map1(Function<? super T1, NT1> mapper) {

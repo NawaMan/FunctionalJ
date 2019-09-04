@@ -48,7 +48,6 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -128,12 +127,11 @@ class StreamPlusMapAddOnHelper {
 }
 
 // TODO - Intersect
-// TODO - Sorted Spread
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface StreamPlus<DATA> 
-        extends Iterable<DATA>, Stream<DATA> {
+        extends Iterable<DATA>, Stream<DATA>, StreamPlusWithGet<DATA> {
     
     public static <D> D noMoreElement() throws NoMoreResultException {
         ThrowFuncs.doThrowFrom(()->new NoMoreResultException());
@@ -265,6 +263,14 @@ public interface StreamPlus<DATA>
             d2.set(i);
             return i;
         });
+    }
+    
+    public static <T1, T2> StreamPlus<Tuple2<T1, T2>> zipOf(StreamPlus<T1> stream1, StreamPlus<T2> stream2) {
+        return stream1.zipWith(stream2);
+    }
+    
+    public static <T1, T2, T> StreamPlus<T> zipOf(StreamPlus<T1> stream1, StreamPlus<T2> stream2, Func2<T1, T2, T> merger) {
+        return stream1.zipWith(stream2, merger);
     }
     
     //== Stream ==
@@ -1942,16 +1948,23 @@ public interface StreamPlus<DATA>
     }
     
     public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth);
+        return zipWith(anotherStream, ZipWithOption.RequireBoth, Tuple2::of);
+    }
+    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, ZipWithOption option) {
+        return zipWith(anotherStream, ZipWithOption.RequireBoth, Tuple2::of);
+    }
+    
+    public default <B, C> StreamPlus<C> zipWith(Stream<B> anotherStream, Func2<DATA, B, C> merger) {
+        return zipWith(anotherStream, ZipWithOption.RequireBoth, merger);
     }
     // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
-    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, ZipWithOption option) {
+    public default <B, C> StreamPlus<C> zipWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, C> merger) {
         val iteratorA = this.iterator();
         val iteratorB = anotherStream.iterator();
-        val iterable = new Iterable<Tuple2<DATA,B>>() {
+        val iterable = new Iterable<C>() {
             @Override
-            public Iterator<Tuple2<DATA, B>> iterator() {
-                return new Iterator<Tuple2<DATA,B>>() {
+            public Iterator<C> iterator() {
+                return new Iterator<C>() {
                     private boolean hasNextA;
                     private boolean hasNextB;
                     
@@ -1962,10 +1975,10 @@ public interface StreamPlus<DATA>
                                 ? (hasNextA && hasNextB)
                                 : (hasNextA || hasNextB);
                     }
-                    public Tuple2<DATA,B> next() {
+                    public C next() {
                         val nextA = hasNextA ? iteratorA.next() : null;
                         val nextB = hasNextB ? iteratorB.next() : null;
-                        return Tuple2.of(nextA, nextB);
+                        return merger.apply(nextA, nextB);
                     }
                 };
             }
@@ -2062,168 +2075,6 @@ public interface StreamPlus<DATA>
                 }
             });
         });
-    }
-    
-    //== Get ==
-    
-    public default <T> T get(StreamElementProcessor<DATA, T> processor) {
-        val counter = new AtomicLong(0);
-        for (val each : (Iterable<DATA>)(()->iterator())) {
-            val index = counter.getAndIncrement();
-            processor.processElement(index, each);
-        }
-        val count = counter.get();
-        return processor.processComplete(count);
-    }
-    
-    public default <T1, T2> Tuple2<T1, T2> get(
-                StreamElementProcessor<DATA, T1> processor1, 
-                StreamElementProcessor<DATA, T2> processor2) {
-        return get(processor1, processor2, Tuple2::of);
-    }
-    
-    public default <T, T1, T2> T get(
-                StreamElementProcessor<DATA, T1> processor1, 
-                StreamElementProcessor<DATA, T2> processor2,
-                Func2<T1, T2, T>          combiner) {
-        val counter = new AtomicLong(0);
-        for (val each : (Iterable<DATA>)(()->iterator())) {
-            val index = counter.getAndIncrement();
-            processor1.processElement(index, each);
-            processor2.processElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processComplete(count);
-        val value2 = processor2.processComplete(count);
-        return combiner.apply(value1, value2);
-    }
-    
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
-                StreamElementProcessor<DATA, T1> processor1, 
-                StreamElementProcessor<DATA, T2> processor2, 
-                StreamElementProcessor<DATA, T3> processor3) {
-        return get(processor1, processor2, processor3, Tuple3::of);
-    }
-    
-    public default <T1, T2, T3, T> T get(
-            StreamElementProcessor<DATA, T1> processor1, 
-            StreamElementProcessor<DATA, T2> processor2, 
-            StreamElementProcessor<DATA, T3> processor3,
-            Func3<T1, T2, T3, T>      combiner) {
-        val counter = new AtomicLong(0);
-        for (val each : (Iterable<DATA>)(()->iterator())) {
-            val index = counter.getAndIncrement();
-            processor1.processElement(index, each);
-            processor2.processElement(index, each);
-            processor3.processElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processComplete(count);
-        val value2 = processor2.processComplete(count);
-        val value3 = processor3.processComplete(count);
-        return combiner.apply(value1, value2, value3);
-    }
-    
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
-                StreamElementProcessor<DATA, T1> processor1, 
-                StreamElementProcessor<DATA, T2> processor2, 
-                StreamElementProcessor<DATA, T3> processor3, 
-                StreamElementProcessor<DATA, T4> processor4) {
-        return get(processor1, processor2, processor3, processor4, Tuple4::of);
-    }
-    
-    public default <T1, T2, T3, T4, T> T get(
-            StreamElementProcessor<DATA, T1> processor1, 
-            StreamElementProcessor<DATA, T2> processor2, 
-            StreamElementProcessor<DATA, T3> processor3,
-            StreamElementProcessor<DATA, T4> processor4,
-            Func4<T1, T2, T3, T4, T>  combiner) {
-        val counter = new AtomicLong(0);
-        for (val each : (Iterable<DATA>)(()->iterator())) {
-            val index = counter.getAndIncrement();
-            processor1.processElement(index, each);
-            processor2.processElement(index, each);
-            processor3.processElement(index, each);
-            processor4.processElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processComplete(count);
-        val value2 = processor2.processComplete(count);
-        val value3 = processor3.processComplete(count);
-        val value4 = processor4.processComplete(count);
-        return combiner.apply(value1, value2, value3, value4);
-    }
-    
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
-                StreamElementProcessor<DATA, T1> processor1, 
-                StreamElementProcessor<DATA, T2> processor2, 
-                StreamElementProcessor<DATA, T3> processor3, 
-                StreamElementProcessor<DATA, T4> processor4, 
-                StreamElementProcessor<DATA, T5> processor5) {
-        return get(processor1, processor2, processor3, processor4, processor5, Tuple5::of);
-    }
-    
-    public default <T1, T2, T3, T4, T5, T> T get(
-            StreamElementProcessor<DATA, T1> processor1, 
-            StreamElementProcessor<DATA, T2> processor2, 
-            StreamElementProcessor<DATA, T3> processor3,
-            StreamElementProcessor<DATA, T4> processor4,
-            StreamElementProcessor<DATA, T5> processor5,
-            Func5<T1, T2, T3, T4, T5, T>  combiner) {
-        val counter = new AtomicLong(0);
-        for (val each : (Iterable<DATA>)(()->iterator())) {
-            val index = counter.getAndIncrement();
-            processor1.processElement(index, each);
-            processor2.processElement(index, each);
-            processor3.processElement(index, each);
-            processor4.processElement(index, each);
-            processor5.processElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processComplete(count);
-        val value2 = processor2.processComplete(count);
-        val value3 = processor3.processComplete(count);
-        val value4 = processor4.processComplete(count);
-        val value5 = processor5.processComplete(count);
-        return combiner.apply(value1, value2, value3, value4, value5);
-    }
-    
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
-                StreamElementProcessor<DATA, T1> processor1, 
-                StreamElementProcessor<DATA, T2> processor2, 
-                StreamElementProcessor<DATA, T3> processor3, 
-                StreamElementProcessor<DATA, T4> processor4, 
-                StreamElementProcessor<DATA, T5> processor5, 
-                StreamElementProcessor<DATA, T6> processor6) {
-        return get(processor1, processor2, processor3, processor4, processor5, processor6, Tuple6::of);
-    }
-    
-    public default <T1, T2, T3, T4, T5, T6, T> T get(
-            StreamElementProcessor<DATA, T1> processor1, 
-            StreamElementProcessor<DATA, T2> processor2, 
-            StreamElementProcessor<DATA, T3> processor3,
-            StreamElementProcessor<DATA, T4> processor4,
-            StreamElementProcessor<DATA, T5> processor5,
-            StreamElementProcessor<DATA, T6> processor6,
-            Func6<T1, T2, T3, T4, T5, T6, T>  combiner) {
-        val counter = new AtomicLong(0);
-        for (val each : (Iterable<DATA>)(()->iterator())) {
-            val index = counter.getAndIncrement();
-            processor1.processElement(index, each);
-            processor2.processElement(index, each);
-            processor3.processElement(index, each);
-            processor4.processElement(index, each);
-            processor5.processElement(index, each);
-            processor6.processElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processComplete(count);
-        val value2 = processor2.processComplete(count);
-        val value3 = processor3.processComplete(count);
-        val value4 = processor4.processComplete(count);
-        val value5 = processor5.processComplete(count);
-        val value6 = processor6.processComplete(count);
-        return combiner.apply(value1, value2, value3, value4, value5, value6);
     }
     
     //-- Plus w/ Self --
