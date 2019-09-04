@@ -6,7 +6,7 @@ include ":functionalj-types"
 include ":functionalj-all"
 
 include ":functionalj-types-tests"
-// include ":functionalj-examples"
+include ":functionalj-examples"
 
 include ":functionalj-elm"
 
