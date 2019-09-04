@@ -8,6 +8,6 @@ include ":functionalj-all"
 include ":functionalj-types-tests"
 // include ":functionalj-examples"
 
-// include ":functionalj-elm"
+include ":functionalj-elm"
 
 rootProject.name = "functionalj"
