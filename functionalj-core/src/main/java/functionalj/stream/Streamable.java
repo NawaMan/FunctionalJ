@@ -1141,6 +1141,10 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         return stream().toArray();
     }
     
+    public default <T> T[] toArray(T[] a) {
+        return StreamPlus.of(stream()).toJavaList().toArray(a);
+    }
+    
     public default <A> A[] toArray(IntFunction<A[]> generator) {
         return stream().toArray(generator);
     }

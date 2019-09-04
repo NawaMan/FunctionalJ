@@ -300,6 +300,11 @@ public interface FuncList<DATA>
     // == Modified methods ==
     
     @Override
+    public default Object[] toArray() {
+        return stream().toArray();
+    }
+    
+    @Override
     public default <T> T[] toArray(T[] a) {
         return toJavaList().toArray(a);
     }

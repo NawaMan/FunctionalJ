@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
 import functionalj.map.ImmutableMap;
 import functionalj.tuple.ToMapFunc;
 import functionalj.tuple.ToTuple2Func;
@@ -84,7 +85,8 @@ public class MapTo {
     @SafeVarargs
     public static <D, T> Func1<D, T> firstOf(
             Function<? super D, ? extends T> ... mappers) {
-        return firstOf(FuncList.from(mappers));
+        FuncList<Function<? super D, ? extends T>> mappersArray = FuncList.from(mappers);
+        return firstOf(mappersArray);
     }
     
     // Tuple
