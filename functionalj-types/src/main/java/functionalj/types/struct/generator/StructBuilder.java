@@ -24,6 +24,7 @@
 package functionalj.types.struct.generator;
 
 import static functionalj.types.struct.generator.ILines.line;
+import static functionalj.types.struct.generator.model.Accessibility.PACKAGE;
 import static functionalj.types.struct.generator.model.Accessibility.PRIVATE;
 import static functionalj.types.struct.generator.model.Accessibility.PUBLIC;
 import static functionalj.types.struct.generator.model.Modifiability.FINAL;
@@ -51,8 +52,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import functionalj.types.DefaultValue;
+import functionalj.types.Generic;
 import functionalj.types.IPostConstruct;
 import functionalj.types.IStruct;
+import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
 import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.model.Accessibility;
@@ -104,8 +107,9 @@ public class StructBuilder {
         val istruct = Type.of(IStruct.class);
         implementeds.add(istruct);
         
-        val targetType = new Type(sourceSpec.getTargetClassName(), sourceSpec.getTargetPackageName());
-        val pipeable   = Core.Pipeable.type().withGenerics(asList(targetType));
+        val targetType    = new Type(sourceSpec.getTargetPackageName(), sourceSpec.getTargetClassName());
+        val targetGeneric = new Generic(targetType);
+        val pipeable      = Core.Pipeable.type().withGenerics(asList(targetGeneric));
         implementeds.add(pipeable);
         
         val pipeMethod = new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, targetType, "__data", emptyList(), ILines.line("return this;"), emptyList(), asList(Type.of(Exception.class)), false);
@@ -198,7 +202,7 @@ public class StructBuilder {
                 Modifiability.MODIFIABLE,
                 sourceSpec.getTargetType(),
                 "fromMap",
-                asList(new GenParam("map", Type.MAP.withGenerics(asList(Type.STRING, Type.OBJECT)))),
+                asList(new GenParam("map", Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.OBJECT))))),
                 ILines.linesOf(
                     line("Map<String, Getter> $schema = getStructSchema();"),
                     getterHasGeneric ? line("@SuppressWarnings(\"unchecked\")") : line(""),
@@ -211,14 +215,14 @@ public class StructBuilder {
         val toMapBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
-                .map(g -> "map.put(\"" + g.getName() + "\", IStruct.toMapValueObject(" + g.getName() + "));")
+                .map(g -> "map.put(\"" + g.getName() + "\", " + IStruct.class.getCanonicalName() + ".$utils.toMapValueObject(" + g.getName() + "));")
                 .collect(Collectors.toList()));
         val toMap = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
-                Type.MAP.withGenerics(asList(Type.STRING, Type.OBJECT)),
-                "toMap",
+                Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.OBJECT))),
+                "__toMap",
                 emptyList(),
                 ILines.linesOf(
                     line("Map<String, Object> map = new HashMap<>();"),
@@ -238,7 +242,7 @@ public class StructBuilder {
                 Accessibility.PUBLIC,
                 Scope.STATIC,
                 Modifiability.MODIFIABLE,
-                Type.MAP.withGenerics(asList(Type.STRING, Type.of(Getter.class))),
+                Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.of(Getter.class)))),
                 "getStructSchema",
                 emptyList(),
                 ILines.linesOf(
@@ -254,8 +258,8 @@ public class StructBuilder {
                 Accessibility.PUBLIC,
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
-                Type.MAP.withGenerics(asList(Type.STRING, Type.of(Getter.class))),
-                "getSchema",
+                Type.MAP.withGenerics(asList(new Generic(Type.STRING), new Generic(Type.of(Getter.class)))),
+                "__getSchema",
                 emptyList(),
                 ILines.linesOf(line("return getStructSchema();")),
                 asList(Type.of(Map.class), Type.of(HashMap.class), Type.of(Type.class), Type.of(Getter.class)),
@@ -316,7 +320,10 @@ public class StructBuilder {
                 .map    (String::valueOf)
                 .collect(joining(", "));
         val body = "this(" + paramString + ");";
-        return new GenConstructor(PUBLIC, name, emptyList(), line(body));
+        
+        val publicConstructor = sourceSpec.getConfigures().publicConstructor;
+        val accessibility     = (publicConstructor ? PUBLIC : PACKAGE);
+        return new GenConstructor(accessibility, name, emptyList(), line(body));
     }
     
     private GenConstructor requiredOnlyConstructor() {
@@ -352,7 +359,9 @@ public class StructBuilder {
                 .filter(Objects::nonNull)
                 .flatMap(Function.identity())
                 .collect(toList());
-        return new GenConstructor(PUBLIC, name, params, ILines.line(assignments));
+        val publicConstructor = sourceSpec.getConfigures().publicConstructor;
+        val accessibility     = (publicConstructor ? PUBLIC : PACKAGE);
+        return new GenConstructor(accessibility, name, params, ILines.line(assignments));
     }
     private GenConstructor allArgConstructor() {
         val allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>)((spec, acc) ->{
@@ -376,9 +385,10 @@ public class StructBuilder {
                     .flatMap(Function.identity());
             return new GenConstructor(acc, name, params, ILines.of(()->body));
         });
+        val publicConstructor = sourceSpec.getConfigures().publicConstructor;
         val allArgsConstAccessibility
                 = sourceSpec.getConfigures().generateAllArgConstructor
-                ? PUBLIC
+                ? (publicConstructor ? PUBLIC : PACKAGE)
                 : PRIVATE;
         return allArgsConstructor.apply(sourceSpec, allArgsConstAccessibility);
     }
@@ -454,9 +464,9 @@ public class StructBuilder {
         val listName = getter.getName(); 
         val name = withMethodName.apply(getter);
         val type = sourceSpec.getTargetType();
-        val params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0)));
+        val params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0).toType()));
         val isFList = getter.getType().isFuncList();
-        val newArray = isFList ? "functionalj.list.ImmutableList.of" : "$utils.asList";
+        val newArray = isFList ? "functionalj.list.ImmutableList.of" : Arrays.class.getCanonicalName() + ".asList";
         val paramCall 
                 = sourceSpec
                 .getGetters()
@@ -484,7 +494,7 @@ public class StructBuilder {
         val type       = sourceSpec.getTargetType();
         val getterName = getter.getName();
         val getterType = getter.getType().declaredType();
-        val params     = asList(new GenParam(getter.getName(), Type.of(Supplier.class, getterType)));
+        val params     = asList(new GenParam(getter.getName(), Type.of(Supplier.class, new Generic(getterType))));
         val paramCall  = sourceSpec.getGetters().stream()
                             .map    (Getter::getName)
                             .map    (gName -> gName.equals(getterName) ? gName + ".get()" : gName)
@@ -498,7 +508,7 @@ public class StructBuilder {
         val type       = sourceSpec.getTargetType();
         val getterName = getter.getName();
         val getterType = getter.getType().declaredType();
-        val params     = asList(new GenParam(getterName, Type.of(Function.class, getterType, getterType)));
+        val params     = asList(new GenParam(getterName, Type.of(Function.class, new Generic(getterType), new Generic(getterType))));
         val paramCall  = sourceSpec.getGetters().stream()
                         .map    (Getter::getName)
                         .map    (gName -> gName.equals(getterName) ? gName + ".apply(this." + gName + ")" : gName)
@@ -512,7 +522,7 @@ public class StructBuilder {
         val type       = sourceSpec.getTargetType();
         val getterName = getter.getName();
         val getterType = getter.getType().declaredType();
-        val params     = asList(new GenParam(getterName, Type.of(BiFunction.class, type, getterType, getterType)));
+        val params     = asList(new GenParam(getterName, Type.of(BiFunction.class, new Generic(type), new Generic(getterType), new Generic(getterType))));
         val paramCall  = sourceSpec.getGetters().stream()
                 .map    (Getter::getName)
                 .map    (gName -> gName.equals(getterName) ? gName + ".apply(this, this." + gName + ")" : gName)

@@ -184,8 +184,6 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return data.listIterator();
     }
     
-    // TODO - Make sure all method from ReadOnlyList is copied here and goes directly to data.
-    
     @Override
     public String toString() {
         return this.data.toString();

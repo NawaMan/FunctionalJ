@@ -60,14 +60,13 @@ public interface Tuple2Lens<HOST, T1, T2, T1LENS extends AnyLens<HOST,T1>, T2LEN
         return ()->spec;
     }
     
-
     public LensSpecParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1LENS, T2LENS> lensSpecParameterized2();
     
     @Override
     public default AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1LENS, T2LENS> accessParameterized2() {
         return lensSpecParameterized2();
     }
-
+    
     @Override
     public default LensSpec<HOST, Tuple2<T1, T2>> lensSpec() {
         return lensSpecParameterized2().getSpec();
@@ -88,6 +87,14 @@ public interface Tuple2Lens<HOST, T1, T2, T1LENS extends AnyLens<HOST,T1>, T2LEN
         WriteLens<Tuple2<T1, T2>, T2> write = (tuple, _2) -> new ImmutableTuple2<T1, T2>(tuple._1(), _2);
         Function<Tuple2<T1, T2>, T2>  read  = Tuple2::_2;
         return LensUtils.createSubLens(this, read, write, lensSpecParameterized2()::createSubLens2);
+    }
+    
+    public default T1LENS first() {
+        return _1();
+    }
+    
+    public default T2LENS second() {
+        return _2();
     }
     
     public default Function<HOST, HOST> change1To(T1 _1value) {
@@ -152,5 +159,37 @@ public interface Tuple2Lens<HOST, T1, T2, T1LENS extends AnyLens<HOST,T1>, T2LEN
             val newTuple = new ImmutableTuple2<>(oldTuple._1(), new_2);
             return apply(host, newTuple);
         };
+    }
+    
+    public default Function<HOST, HOST> changeFirstTo(T1 _1value) {
+        return change1To(_1value);
+    }
+    
+    public default Function<HOST, HOST> changeSecondTo(T2 _2value) {
+        return change2To(_2value);
+    }
+    
+    public default Function<HOST, HOST> changeFirstBy(Supplier<T1> _1valueSupplier) {
+        return change1By(_1valueSupplier);
+    }
+    
+    public default Function<HOST, HOST> changeSecondBy(Supplier<T2> _2valueSupplier) {
+        return change2By(_2valueSupplier);
+    }
+    
+    public default Function<HOST, HOST> changeFirstBy(Function<T1, T1> _1valueTransformer) {
+        return change1By(_1valueTransformer);
+    }
+    
+    public default Function<HOST, HOST> changeSecondBy(Function<T2,T2> _2valueTransformer) {
+        return change2By(_2valueTransformer);
+    }
+    
+    public default Function<HOST, HOST> changeFirstBy(BiFunction<T1,T2,T1> _1valueTransformer) {
+        return change1By(_1valueTransformer);
+    }
+    
+    public default Function<HOST, HOST> changeSecondBy(BiFunction<T1,T2,T2> _2valueTransformer) {
+        return change2By(_2valueTransformer);
     }
 }

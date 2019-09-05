@@ -60,7 +60,7 @@ import lombok.val;
 
 
 // TODO - Find a way to make toString more useful ... like giving this a name.
-// TODO - Should extract important stuff to PromiseBase ... so it is not floored with the less important things.
+// TODO - Should extract important stuff to PromiseBase ... so it is not flooded with the less important things.
 @SuppressWarnings("javadoc")
 public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeable<HasPromise<DATA>> {
     

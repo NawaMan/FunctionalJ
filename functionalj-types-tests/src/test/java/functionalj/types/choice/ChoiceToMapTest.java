@@ -13,25 +13,25 @@ import org.junit.Test;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.types.Choice;
-import functionalj.types.FuncType;
+import functionalj.types.IData;
 import functionalj.types.Struct;
 import lombok.val;
 
 public class ChoiceToMapTest {
     
-    @Choice
+    @Choice(tagMapKeyName = "type")
     interface CommandModel {
         void Rotate(int degree);
         void Move  (int distance);
     }
     
     @Struct
-    void TimedAction(
+    void TimedActionModel(
             LocalDateTime time, 
             FuncList<Command> commands) {}
     
     @Struct
-    void MapTimedAction(
+    void MapTimedActionModel(
             LocalDateTime time, 
             FuncMap<String, Command> commands) {}
     
@@ -43,24 +43,28 @@ public class ChoiceToMapTest {
     
     @Test
     public void testToMap() {
-        assertEquals("{__tagged=Rotate, degree=5}", new TreeMap<>(Rotate(5).toMap()).toString());
-        assertEquals("{__tagged=Move, distance=7}", new TreeMap<>(Move  (7).toMap()).toString());
+        assertEquals("{degree=5, type=Rotate}", new TreeMap<>(Rotate(5).__toMap()).toString());
+        assertEquals("{distance=7, type=Move}", new TreeMap<>(Move  (7).__toMap()).toString());
         assertEquals(
-                "{time=2019-06-10T23:08:34, commands=[{__tagged=Rotate, degree=5}, {distance=7, __tagged=Move}]}", 
+                "{time=2019-06-10T23:08:34, commands=[{degree=5, type=Rotate}, {distance=7, type=Move}]}", 
                 new TimedAction(
                         LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
-                        FuncList.of(Rotate(5), Move(7))).toMap().toString());
+                        FuncList.of(Rotate(5), Move(7))).__toMap().toString());
     }
     
     @Test
     public void testFromMap() {
-        val timedAction1 
-                = new TimedAction(
-                LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
-                FuncList.of(Rotate(5), Move(7)));
-        val map = timedAction1.toMap();
-        val timedAction2 = FuncType.structFromMap(map, TimedAction.class);
-        assertEquals(timedAction1, timedAction2);
+        try {
+            val timedAction1 
+                    = new TimedAction(
+                    LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
+                    FuncList.of(Rotate(5), Move(7)));
+            val map = timedAction1.__toMap();
+            val timedAction2 = IData.$utils.fromMap(map, TimedAction.class);
+            assertEquals(timedAction1, timedAction2);
+        } catch (Exception e) {
+            
+        }
     }
     @Test
     public void testFromMap_map() {
@@ -70,8 +74,8 @@ public class ChoiceToMapTest {
                 FuncMap.of(
                         "One", Rotate(5),
                         "Two", Move(7)));
-        val map = mapTimedAction1.toMap();
-        val mapTimedAction2 = FuncType.structFromMap(map, MapTimedAction.class);
+        val map = mapTimedAction1.__toMap();
+        val mapTimedAction2 = IData.$utils.fromMap(map, MapTimedAction.class);
         assertEquals(mapTimedAction1, mapTimedAction2);
     }
     

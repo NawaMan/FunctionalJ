@@ -29,17 +29,29 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 import functionalj.function.Func;
+import functionalj.function.Func1;
 import functionalj.list.FuncList;
 import functionalj.list.FuncListDerived;
 import functionalj.stream.Streamable;
 import lombok.val;
 
-// TODO - Change this to Peek or Tab
 public final class Log {
     
     private Log() {
     }
     
+    public static <T> Func1<T, T> tab() {
+        return Log::log;
+    }
+    public static <T> Func1<T, T> tab(Object prefix) {
+        return v -> log(prefix, v);
+    }
+    public static <T> Func1<T, T> tabf(String format) {
+        return v -> {
+            log(String.format(format, v));
+            return v;
+        };
+    }
     
     public static <T> T log(T value) {
         return Env.log().log(value);

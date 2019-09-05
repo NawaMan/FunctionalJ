@@ -212,7 +212,6 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         }
     }
     
-    // TODO add memoize strategies.
     public default Func1<INPUT, OUTPUT> memoize() {
         return Func.cacheFor(this);
     }

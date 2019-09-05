@@ -30,10 +30,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.types.struct.generator.Getter;
-import functionalj.types.struct.generator.SourceSpec;
-import functionalj.types.struct.generator.StructBuilder;
-import functionalj.types.struct.generator.Type;
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -57,12 +55,12 @@ public class GenerateParentListChildTest {
     private List<Getter> getters = asList(
             new Getter("names", new Type.TypeBuilder()
                                 .simpleName("List")
-                                .generics(asList(new Type("String", "java.lang")))
+                                .generics(asList(new Generic(new Type("java.lang", "String"))))
                                 .packageName("java.util")
                                 .build()),
             new Getter("children", new Type.TypeBuilder()
                                 .simpleName("List")
-                                .generics(asList(new Type("Child", "me.test")))
+                                .generics(asList(new Generic(new Type("me.test", "Child"))))
                                 .packageName("java.util")
                                 .build())
     );
@@ -82,8 +80,8 @@ public class GenerateParentListChildTest {
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.types.IPostConstruct;\n" + 
                 "import functionalj.types.IStruct;\n" + 
+                "import functionalj.types.Type;\n" + 
                 "import functionalj.types.struct.generator.Getter;\n" + 
-                "import functionalj.types.struct.generator.Type;\n" + 
                 "import java.lang.Exception;\n" + 
                 "import java.lang.Object;\n" + 
                 "import java.util.HashMap;\n" + 
@@ -123,7 +121,7 @@ public class GenerateParentListChildTest {
                 "        return children;\n" + 
                 "    }\n" + 
                 "    public Parent withNames(String ... names) {\n" + 
-                "        return new Parent($utils.asList(names), children);\n" + 
+                "        return new Parent(java.util.Arrays.asList(names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withNames(List<String> names) {\n" + 
                 "        return new Parent(names, children);\n" + 
@@ -138,7 +136,7 @@ public class GenerateParentListChildTest {
                 "        return new Parent(names.apply(this, this.names), children);\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(Child ... children) {\n" + 
-                "        return new Parent(names, $utils.asList(children));\n" + 
+                "        return new Parent(names, java.util.Arrays.asList(children));\n" + 
                 "    }\n" + 
                 "    public Parent withChildren(List<Child> children) {\n" + 
                 "        return new Parent(names, children);\n" + 
@@ -161,19 +159,19 @@ public class GenerateParentListChildTest {
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 
-                "    public Map<String, Object> toMap() {\n" + 
+                "    public Map<String, Object> __toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"names\", IStruct.toMapValueObject(names));\n" + 
-                "        map.put(\"children\", IStruct.toMapValueObject(children));\n" + 
+                "        map.put(\"names\", functionalj.types.IStruct.$utils.toMapValueObject(names));\n" + 
+                "        map.put(\"children\", functionalj.types.IStruct.$utils.toMapValueObject(children));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
-                "    public Map<String, Getter> getSchema() {\n" + 
+                "    public Map<String, Getter> __getSchema() {\n" + 
                 "        return getStructSchema();\n" + 
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"names\", new functionalj.types.struct.generator.Getter(\"names\", new Type(null, \"List\", \"java.util\", java.util.Arrays.asList(new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"children\", new functionalj.types.struct.generator.Getter(\"children\", new Type(null, \"List\", \"java.util\", java.util.Arrays.asList(new Type(null, \"Child\", \"me.test\", java.util.Collections.emptyList()))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"names\", new functionalj.types.struct.generator.Getter(\"names\", new functionalj.types.Type(\"java.util\", null, \"List\", java.util.Arrays.asList(new functionalj.types.Generic(\"java.lang.String\", \"java.lang.String\", java.util.Arrays.asList(new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()))))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"children\", new functionalj.types.struct.generator.Getter(\"children\", new functionalj.types.Type(\"java.util\", null, \"List\", java.util.Arrays.asList(new functionalj.types.Generic(\"me.test.Child\", \"me.test.Child\", java.util.Arrays.asList(new functionalj.types.Type(\"me.test\", null, \"Child\", java.util.Collections.emptyList()))))), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

@@ -6,8 +6,10 @@ repositories {
 }
 
 dependencies {
-    compile 'io.defaultj:defaultj-api:2.0.0.0'
+    compile project(':functionalj-types')
+    
     compile 'io.nullablej:nullablej:4.0.1.0'
+    compile 'io.defaultj:defaultj-api:2.0.0.0'
     
     compileOnly         'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'

@@ -3,16 +3,16 @@ package functionalj.types.choice.generator;
 import static functionalj.types.choice.generator.model.Method.Kind.STATIC;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.Method;
-import functionalj.types.choice.generator.model.Type;
 import lombok.val;
 
 public class UnitOfMeasureGeneratorTest {
@@ -90,9 +90,8 @@ public class UnitOfMeasureGeneratorTest {
                 "import functionalj.lens.lenses.*;\n" + 
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.result.Result;\n" + 
-                "import functionalj.types.choice.AbstractChoiceClass;\n" + 
                 "import functionalj.types.choice.ChoiceTypeSwitch;\n" + 
-                "import functionalj.types.choice.UnitOfMeatureTest.TemperatureSpec;\n" + 
+                "import functionalj.types.choice.IChoice;\n" + 
                 "import java.util.function.Consumer;\n" + 
                 "import java.util.function.Function;\n" + 
                 "import java.util.function.Predicate;\n" + 
@@ -101,7 +100,7 @@ public class UnitOfMeasureGeneratorTest {
                 "// functionalj.types.choice.UnitOfMeatureTest.TemperatureSpec\n" + 
                 "\n" + 
                 "@SuppressWarnings({\"javadoc\", \"rawtypes\", \"unchecked\"})\n" + 
-                "public abstract class Temperature extends AbstractChoiceClass<Temperature.TemperatureFirstSwitch> implements Pipeable<Temperature> {\n" + 
+                "public abstract class Temperature implements IChoice<Temperature.TemperatureFirstSwitch>, Pipeable<Temperature> {\n" + 
                 "    \n" + 
                 "    public static final Celsius Celsius(double celsius) {\n" + 
                 "        return new Celsius(celsius);\n" + 
@@ -161,14 +160,14 @@ public class UnitOfMeasureGeneratorTest {
                 "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public java.util.Map<String, Object> toMap() {\n" + 
+                "        public java.util.Map<String, Object> __toMap() {\n" + 
                 "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
-                "            map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Celsius\"));\n" + 
+                "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Celsius\"));\n" + 
                 "            map.put(\"celsius\", this.celsius);\n" + 
                 "            return map;\n" + 
                 "        }\n" + 
                 "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "            .with(\"celsius\", new functionalj.types.choice.generator.model.CaseParam(\"celsius\", new functionalj.types.choice.generator.model.Type(null, null, \"double\", java.util.Collections.emptyList()), false, null))\n" + 
+                "            .with(\"celsius\", new functionalj.types.choice.generator.model.CaseParam(\"celsius\", new functionalj.types.Type(null, null, \"double\", java.util.Collections.emptyList()), false, null))\n" + 
                 "            .build();\n" + 
                 "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "            return __schema__;\n" + 
@@ -196,14 +195,14 @@ public class UnitOfMeasureGeneratorTest {
                 "            }\n" + 
                 "            \n" + 
                 "        }\n" + 
-                "        public java.util.Map<String, Object> toMap() {\n" + 
+                "        public java.util.Map<String, Object> __toMap() {\n" + 
                 "            java.util.Map<String, Object> map = new java.util.HashMap<>();\n" + 
-                "            map.put(\"__tagged\", functionalj.types.ICanToMap.toMapValueObject(\"Fahrenheit\"));\n" + 
+                "            map.put(\"__tagged\", functionalj.types.IData.$utils.toMapValueObject(\"Fahrenheit\"));\n" + 
                 "            map.put(\"fahrenheit\", this.fahrenheit);\n" + 
                 "            return map;\n" + 
                 "        }\n" + 
                 "        static private functionalj.map.FuncMap<String, functionalj.types.choice.generator.model.CaseParam> __schema__ = functionalj.map.FuncMap.<String, functionalj.types.choice.generator.model.CaseParam>newMap()\n" + 
-                "            .with(\"fahrenheit\", new functionalj.types.choice.generator.model.CaseParam(\"fahrenheit\", new functionalj.types.choice.generator.model.Type(null, null, \"double\", java.util.Collections.emptyList()), false, null))\n" + 
+                "            .with(\"fahrenheit\", new functionalj.types.choice.generator.model.CaseParam(\"fahrenheit\", new functionalj.types.Type(null, null, \"double\", java.util.Collections.emptyList()), false, null))\n" + 
                 "            .build();\n" + 
                 "        public static java.util.Map<String, functionalj.types.choice.generator.model.CaseParam> getCaseSchema() {\n" + 
                 "            return __schema__;\n" + 
@@ -213,6 +212,10 @@ public class UnitOfMeasureGeneratorTest {
                 "                $utils.propertyFromMap(map, __schema__, \"fahrenheit\")\n" + 
                 "            );\n" + 
                 "        }\n" + 
+                "    }\n" + 
+                "    \n" + 
+                "    public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
+                "        return getChoiceSchema();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    private final TemperatureFirstSwitch __switch = new TemperatureFirstSwitch(this);\n" + 
@@ -255,10 +258,10 @@ public class UnitOfMeasureGeneratorTest {
                 "    }\n" + 
                 "    \n" + 
                 "    public static functionalj.types.choice.Temperature toTemperature() {\n" + 
-                "        return functionalj.types.choice.Self.unwrap(TemperatureSpec.toTemperature());\n" + 
+                "        return functionalj.types.choice.Self.unwrap(functionalj.types.choice.UnitOfMeatureTest.TemperatureSpec.toTemperature());\n" + 
                 "    }\n" + 
                 "    public static functionalj.types.choice.Temperature.Fahrenheit toFahrenheit() {\n" + 
-                "        return TemperatureSpec.toFahrenheit();\n" + 
+                "        return functionalj.types.choice.UnitOfMeatureTest.TemperatureSpec.toFahrenheit();\n" + 
                 "    }\n" + 
                 "    \n" + 
                 "    public boolean isCelsius() { return this instanceof Celsius; }\n" + 

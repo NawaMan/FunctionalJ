@@ -34,6 +34,13 @@ public interface LocalDateAccess<HOST>
         return host -> accessToValue.apply(host);
     }
     
+    public default PeriodAccess<HOST> periodTo(LocalDate endDateExclusive) {
+        return host -> {
+            val value = apply(host);
+            return Period.between(value, endDateExclusive);
+        };
+    }
+    
     public default PeriodAccess<HOST> periodFrom(LocalDate startDateInclusive) {
         return host -> {
             val value = apply(host);

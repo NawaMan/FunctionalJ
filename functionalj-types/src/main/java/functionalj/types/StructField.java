@@ -23,8 +23,6 @@
 // ============================================================================
 package functionalj.types;
 
-import functionalj.types.struct.generator.Type;
-
 public class StructField {
     
     public final String       name;

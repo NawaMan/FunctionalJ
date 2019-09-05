@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,22 +21,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.types.struct.generator;
+package functionalj.result;
 
-import java.util.stream.Stream;
-
-/**
- * Classes implementing this interface require other types when generated into code.
- * 
- * @author NawaMan -- nawa@nawaman.net
- */
-public interface IRequireTypes {
+public class ValueException extends RuntimeException {
     
-    /**
-     * Returns the stream of types that is required.
-     * 
-     * @return  the return types.
-     */
-    public Stream<Type> requiredTypes();
+    private static final long serialVersionUID = -3889275875120914601L;
+    
+    private final Object errorValue;
+    
+    ValueException(Object errorValue) {
+        super("Value: " + errorValue);
+        this.errorValue = errorValue;
+    }
+    
+    public Object getErrorValue() {
+        return errorValue;
+    }
     
 }

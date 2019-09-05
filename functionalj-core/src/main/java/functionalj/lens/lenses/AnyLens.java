@@ -25,6 +25,7 @@ package functionalj.lens.lenses;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.function.Func1;
@@ -68,6 +69,7 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
     default DATA read(HOST host) {
         return apply(host);
     }
+    
     default Func1<HOST, HOST> changeTo(DATA data) {
         return host -> {
             return apply(host, data);
@@ -91,6 +93,51 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
             val oldValue = read(host);
             val newValue = mapper.apply(host, oldValue);
             return apply(host, newValue);
+        };
+    }
+    
+    default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, DATA data) {
+        return host -> {
+            val originalData = apply(host);
+            val shouldChange = check.test(originalData);
+            if (!shouldChange)
+                return host;
+            
+            val newData = data;
+            return apply(host, newData);
+        };
+    }
+    default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, Supplier<DATA> dataSupplier) {
+        return host -> {
+            val originalData = apply(host);
+            val shouldChange = check.test(originalData);
+            if (!shouldChange)
+                return host;
+            
+            val newData = dataSupplier.get();
+            return apply(host, newData);
+        };
+    }
+    default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, Function<DATA, DATA> dataMapper) {
+        return host -> {
+            val originalData = apply(host);
+            val shouldChange = check.test(originalData);
+            if (!shouldChange)
+                return host;
+            
+            val newData = dataMapper.apply(originalData);
+            return apply(host, newData);
+        };
+    }
+    default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, BiFunction<HOST, DATA, DATA> mapper) {
+        return host -> {
+            val originalData = apply(host);
+            val shouldChange = check.test(originalData);
+            if (!shouldChange)
+                return host;
+            
+            val newData = mapper.apply(host, originalData);
+            return apply(host, newData);
         };
     }
     

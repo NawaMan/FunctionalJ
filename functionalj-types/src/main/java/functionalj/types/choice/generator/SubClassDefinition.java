@@ -46,14 +46,16 @@ public class SubClassDefinition implements Lines {
     public List<String> lines() {
         val name = choice.name;
         val lens = new CaseLensBuilder(targetClass.spec, choice);
-        val lensInstance = lens.generateTheLensField().toDefinition(targetClass.type.pckg).lines().findFirst().get();
+        val lensInstance = lens.generateTheLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
+        val toMapMethod = new ToMapBuilder(targetClass, this.choice);
         if (!choice.isParameterized()) {
             return asList(
-                    asList(format("public static final class %1$s%2$s extends %3$s {",    name, targetClass.genericDef(), targetClass.typeWithGenerics())),
+                    asList(format("public static final class %1$s%2$s extends %3$s {",    name, targetClass.getType().genericDef(), targetClass.getType().typeWithGenerics())),
                     asList(format("    " + lensInstance)),
                     asList(format("    private static final %1$s instance = new %1$s();", name)),
                     asList(format("    private %1$s() {}",                                name)),
                     lens.build().stream().map(l -> "    " + l).collect(Collectors.toList()),
+                    toMapMethod.lines().stream().map(line -> "    " + line).collect(toList()),
                     new SubSchemaBuilder(choice) .lines().stream().map(line -> "    " + line).collect(toList()),
                     new SubFromMapBuilder(choice).lines().stream().map(line -> "    " + line).collect(toList()),
                     asList(format("}"))
@@ -65,9 +67,8 @@ public class SubClassDefinition implements Lines {
         val paramDefs   = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
         val paramCalls  = choice.mapJoinParams(p ->                                   p.name, ", ");
         val fieldAccss  = targetClass.spec.publicFields ? "public" : "private";
-        val toMapMethod = new ToMapBuilder(targetClass, this.choice);
         return asList(
-                asList(               format("public static final class %1$s%2$s extends %3$s {", name, targetClass.genericDef(), targetClass.typeWithGenerics())),
+                asList(               format("public static final class %1$s%2$s extends %3$s {", name, targetClass.getType().genericDef(), targetClass.getType().typeWithGenerics())),
                 asList(               format("    " + lensInstance)),
                 choice.mapParams(p -> format("    %1$s %2$s %3$s;",                               fieldAccss, p.type.typeWithGenerics(), p.name)),
                 asList(               format("    private %1$s(%2$s) {",                          name, paramDefs)),
@@ -75,7 +76,7 @@ public class SubClassDefinition implements Lines {
                 asList(               format("    }")),
                 choice.mapParams(p -> format("    public %1$s %2$s() { return %2$s; }",           p.type.typeWithGenerics(), p.name)),
                 choice.mapParams(p -> format("    public %1$s with%2$s(%3$s %4$s) { return new %5$s(%6$s); }",
-                                                      name + targetClass.generics(), toTitleCase(p.name), p.type.typeWithGenerics(), p.name, name + targetClass.generics(), paramCalls)),
+                                                      name + targetClass.getType().genericsString(), toTitleCase(p.name), p.type.typeWithGenerics(), p.name, name + targetClass.getType().genericsString(), paramCalls)),
                 lens       .build().stream().map(line -> "    " + line).collect(toList()),
                 toMapMethod.lines().stream().map(line -> "    " + line).collect(toList()),
                 new SubSchemaBuilder(choice) .lines().stream().map(line -> "    " + line).collect(toList()),

@@ -68,7 +68,7 @@ public interface BigDecimalAccess<HOST>
             return BigDecimalAccessConstants.MINUS_ONE;
         }
         @Override
-        public Integer toInt(BigDecimal number) {
+        public Integer toInteger(BigDecimal number) {
             return toBigDecimal(number).intValue();
         }
         @Override

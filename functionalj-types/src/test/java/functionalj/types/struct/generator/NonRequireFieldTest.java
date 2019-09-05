@@ -32,10 +32,7 @@ import java.util.List;
 import org.junit.Test;
 
 import functionalj.types.DefaultValue;
-import functionalj.types.struct.generator.Getter;
-import functionalj.types.struct.generator.SourceSpec;
-import functionalj.types.struct.generator.StructBuilder;
-import functionalj.types.struct.generator.Type;
+import functionalj.types.Type;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import functionalj.types.struct.generator.model.GenStruct;
 import lombok.val;
@@ -77,8 +74,8 @@ public class NonRequireFieldTest {
                 "import functionalj.pipeable.Pipeable;\n" + 
                 "import functionalj.types.IPostConstruct;\n" + 
                 "import functionalj.types.IStruct;\n" + 
+                "import functionalj.types.Type;\n" + 
                 "import functionalj.types.struct.generator.Getter;\n" + 
-                "import functionalj.types.struct.generator.Type;\n" + 
                 "import java.lang.Exception;\n" + 
                 "import java.lang.Object;\n" + 
                 "import java.util.HashMap;\n" + 
@@ -209,25 +206,25 @@ public class NonRequireFieldTest {
                 "                );\n" + 
                 "        return obj;\n" + 
                 "    }\n" + 
-                "    public Map<String, Object> toMap() {\n" + 
+                "    public Map<String, Object> __toMap() {\n" + 
                 "        Map<String, Object> map = new HashMap<>();\n" + 
-                "        map.put(\"a\", IStruct.toMapValueObject(a));\n" + 
-                "        map.put(\"b\", IStruct.toMapValueObject(b));\n" + 
-                "        map.put(\"c\", IStruct.toMapValueObject(c));\n" + 
-                "        map.put(\"d\", IStruct.toMapValueObject(d));\n" + 
-                "        map.put(\"e\", IStruct.toMapValueObject(e));\n" + 
+                "        map.put(\"a\", functionalj.types.IStruct.$utils.toMapValueObject(a));\n" + 
+                "        map.put(\"b\", functionalj.types.IStruct.$utils.toMapValueObject(b));\n" + 
+                "        map.put(\"c\", functionalj.types.IStruct.$utils.toMapValueObject(c));\n" + 
+                "        map.put(\"d\", functionalj.types.IStruct.$utils.toMapValueObject(d));\n" + 
+                "        map.put(\"e\", functionalj.types.IStruct.$utils.toMapValueObject(e));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
-                "    public Map<String, Getter> getSchema() {\n" + 
+                "    public Map<String, Getter> __getSchema() {\n" + 
                 "        return getStructSchema();\n" + 
                 "    }\n" + 
                 "    public static Map<String, Getter> getStructSchema() {\n" + 
                 "        Map<String, Getter> map = new HashMap<>();\n" + 
-                "        map.put(\"a\", new functionalj.types.struct.generator.Getter(\"a\", new Type(null, \"int\", \"\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"b\", new functionalj.types.struct.generator.Getter(\"b\", new Type(null, \"boolean\", \"\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"c\", new functionalj.types.struct.generator.Getter(\"c\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
-                "        map.put(\"d\", new functionalj.types.struct.generator.Getter(\"d\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
-                "        map.put(\"e\", new functionalj.types.struct.generator.Getter(\"e\", new Type(null, \"String\", \"java.lang\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"a\", new functionalj.types.struct.generator.Getter(\"a\", new functionalj.types.Type(null, null, \"int\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"b\", new functionalj.types.struct.generator.Getter(\"b\", new functionalj.types.Type(null, null, \"boolean\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"c\", new functionalj.types.struct.generator.Getter(\"c\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
+                "        map.put(\"d\", new functionalj.types.struct.generator.Getter(\"d\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED));\n" + 
+                "        map.put(\"e\", new functionalj.types.struct.generator.Getter(\"e\", new functionalj.types.Type(\"java.lang\", null, \"String\", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.NULL));\n" + 
                 "        return map;\n" + 
                 "    }\n" + 
                 "    public String toString() {\n" + 

@@ -70,7 +70,7 @@ public interface DoubleAccess<HOST>
             return -1.0;
         }
         @Override
-        public Integer toInt(Double number) {
+        public Integer toInteger(Double number) {
             return toDouble(number).intValue();
         }
         @Override

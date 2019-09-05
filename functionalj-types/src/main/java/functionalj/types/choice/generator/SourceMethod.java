@@ -64,11 +64,11 @@ public class SourceMethod implements Lines {
                         "<" + m.generics.stream()
                                .map(g -> g.withBound.replaceAll(" extends Object$", ""))
                                .collect(joining(", ")) + "> ";
-        val returnSelf = Objects.equals(m.returnType.pckg,            targetClass.type.pckg)
-                      && Objects.equals(m.returnType.encloseClass,    targetClass.type.encloseClass)
-                      && Objects.equals(m.returnType.name,            targetClass.type.name)
-                      && Objects.equals(m.returnType.generics.size(), targetClass.type.generics.size());
-        val genericCount = targetClass.type.generics.size();
+        val returnSelf = Objects.equals(m.returnType.packageName(),     targetClass.type.packageName())
+                      && Objects.equals(m.returnType.encloseName(),     targetClass.type.encloseName())
+                      && Objects.equals(m.returnType.simpleName(),      targetClass.type.simpleName())
+                      && Objects.equals(m.returnType.generics().size(), targetClass.type.generics().size());
+        val genericCount = targetClass.type.generics().size();
         val returnPrefix = returnSelf ? Self.class.getCanonicalName() + (genericCount == 0 ? "" : genericCount) + ".unwrap(" : "";
         val returnSuffix = returnSelf ? ")"                            : "";
         if (DEFAULT.equals(m.kind)) {
@@ -93,7 +93,7 @@ public class SourceMethod implements Lines {
                   genericsDef,
                   m.definition(),
                   returnPrefix,
-                  targetClass.spec.sourceType.name,
+                  targetClass.spec.sourceType.fullName(),
                   m.call(),
                   returnSuffix)
                   .split("\n"));

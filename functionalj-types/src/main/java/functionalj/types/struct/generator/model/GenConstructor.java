@@ -33,10 +33,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import functionalj.types.Type;
 import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.IGenerateDefinition;
 import functionalj.types.struct.generator.ILines;
-import functionalj.types.struct.generator.Type;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;

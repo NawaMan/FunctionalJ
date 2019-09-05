@@ -25,6 +25,7 @@ package functionalj.environments;
 
 import static functionalj.function.Func.f;
 import static functionalj.ref.Run.With;
+import static java.lang.String.format;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -54,6 +55,12 @@ import lombok.val;
 public final class Console {
     
     private Console() {
+    }
+    
+    public static FuncUnit1<Object> print   = Console::print;
+    public static FuncUnit1<Object> println = Console::println;
+    public static FuncUnit1<Object> printf(String format) {
+        return obj -> print(format(format, obj));
     }
     
     public static Console.Instance print(Object text) {

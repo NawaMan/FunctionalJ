@@ -83,7 +83,7 @@ public class EffectExamples {
     
     @Test
     public void storeExample() {
-        val apppend = f((String str) -> f((ImmutableList<String> list)-> list.append(str).toImmutableList()));
+        val apppend = f((String str, ImmutableList<String> list)-> list.append(str).toImmutableList());
         
         val list = FuncList.of("One", "Two");
         val store = new Store<>(list);
@@ -92,10 +92,10 @@ public class EffectExamples {
         
         store
         .change(
-            apppend.apply("Three"),
-            apppend.apply("Four"),
-            apppend.apply("Five"),
-            apppend.apply("Six")
+            apppend.applyTo("Three"),
+            apppend.applyTo("Four"),
+            apppend.applyTo("Five"),
+            apppend.applyTo("Six")
         );
         assertEquals("[One, Two, Three, Four, Five, Six]", store.value().toString());
     }

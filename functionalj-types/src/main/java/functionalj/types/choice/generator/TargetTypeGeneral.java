@@ -59,17 +59,19 @@ public class TargetTypeGeneral implements Lines {
     public TargetTypeGeneral(TargetClass targetClass, List<Case> choices) {
         this.targetClass = targetClass;
         this.choices     = choices;
-        this.targetName  = targetClass.type.name;
+        this.targetName  = targetClass.type.simpleName();
     }
     
     @Override
     public List<String> lines() {
-        val emptyLine = asList("");
+        val emptyLine   = asList("");
+        val getSchema   = new GetSchemaBuilder().lines();
         val firstSwitch = prepareFirstSwitch(targetName);
         val toString    = prepareToStringMethod();
         val hashCode    = prepareHashCode();
         val equals      = prepareEquals(targetName);
         return asList(
+    		getSchema,   emptyLine,
             firstSwitch, emptyLine,
             toString,    emptyLine,
             hashCode,    emptyLine,
@@ -81,7 +83,7 @@ public class TargetTypeGeneral implements Lines {
     }
     
     private List<String> prepareFirstSwitch(final java.lang.String targetName) {
-        val firstSwitchTypeDef = format("%1$sFirstSwitch%2$s", targetName, targetClass.generics());
+        val firstSwitchTypeDef = format("%1$sFirstSwitch%2$s", targetName, targetClass.getType().genericsString());
         val firstSwitchLines = 
                 asList(format(
                           "private final %1$s __switch = new %1$s(this);\n"

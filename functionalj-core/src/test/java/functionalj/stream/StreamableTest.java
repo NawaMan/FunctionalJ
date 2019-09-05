@@ -60,6 +60,13 @@ public class StreamableTest {
     }
     
     @Test
+    public void testMapWithPrev_each_prior() {
+        // Check if mapWithPrev is "Each-Prior" adverb in Q
+        val stream = Streamable.infiniteInt().limit(5).mapWithPrev((prev, element) -> element - prev.orElse(0));
+        assertEquals("0, 1, 1, 1, 1", stream.joinToString(", "));
+    }
+    
+    @Test
     public void testAccumulate() {
         val stream = Streamable.of(1, 2, 3, 4, 5);
         assertEquals("1, 3, 6, 10, 15", stream.accumulate((a, b)->a+b).joinToString(", "));

@@ -35,6 +35,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
+import functionalj.types.Generic;
+import functionalj.types.Type;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Accessors;
@@ -95,7 +97,7 @@ public class Method {
     }
     public String callForThis(Type type) {
         val isFirst      = new AtomicBoolean(true);
-        val genericCount = type.generics.size();
+        val genericCount = type.generics().size();
         val firstStr     = "this";
         return toString(param ->  {
             val isFirstCall = isFirst.get();

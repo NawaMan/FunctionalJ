@@ -37,11 +37,11 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import functionalj.types.IPostConstruct;
+import functionalj.types.Type;
 import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.ILines;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.StructSpec;
-import functionalj.types.struct.generator.Type;
 import lombok.val;
 
 /**

@@ -33,11 +33,12 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.types.Absent;
-import functionalj.types.choice.AbstractChoiceClass;
 import functionalj.types.choice.ChoiceTypeSwitch;
+import functionalj.types.choice.IChoice;
+import functionalj.types.choice.generator.model.CaseParam;
 
 @SuppressWarnings("javadoc")
-public abstract class BasicColor extends AbstractChoiceClass<BasicColor.BasicColorFirstSwitch> {
+public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSwitch> {
     
     public static final BasicColor White() { return White.instance; }
     public static final BasicColor Black() { return Black.instance; }
@@ -52,16 +53,24 @@ public abstract class BasicColor extends AbstractChoiceClass<BasicColor.BasicCol
         private static final White instance = new White();
         private White() {}
         @Override
-        public Map<String, Object> toMap() {
+        public Map<String, Object> __toMap() {
             return new HashMap<String, Object>();
+        }
+        @Override
+        public Map<String, Map<String, CaseParam>> __getSchema() {
+        	return new HashMap<String, Map<String, CaseParam>>();
         }
     }
     public static final class Black extends BasicColor {
         private static final Black instance = new Black();
         private Black() {}
         @Override
-        public Map<String, Object> toMap() {
+        public Map<String, Object> __toMap() {
             return new HashMap<String, Object>();
+        }
+        @Override
+        public Map<String, Map<String, CaseParam>> __getSchema() {
+        	return new HashMap<String, Map<String, CaseParam>>();
         }
     }
     public static final class RGB extends BasicColor {
@@ -80,12 +89,16 @@ public abstract class BasicColor extends AbstractChoiceClass<BasicColor.BasicCol
         public RGB withG(int g) { return new RGB(r, g, b); }
         public RGB withB(int b) { return new RGB(r, g, b); }
         @Override
-        public Map<String, Object> toMap() {
+        public Map<String, Object> __toMap() {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("r", r);
             map.put("g", g);
             map.put("b", b);
             return map;
+        }
+        @Override
+        public Map<String, Map<String, CaseParam>> __getSchema() {
+        	return new HashMap<String, Map<String, CaseParam>>();
         }
     }
     

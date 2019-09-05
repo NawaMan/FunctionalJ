@@ -293,13 +293,6 @@ public abstract class Result<DATA>
         return new ImmutableResult<D>(value, (Exception)null);
     }
     
-//    public static <D> Result<D> from(Optional<? extends D> optional) {
-//        return Result.value(optional.orElse(null));
-//    }
-//    public static <D> Result<D> from(Nullable<? extends D> nullable) {
-//        return Result.value(nullable.orElse(null));
-//    }
-    
     public static <D> Result<D> from(Supplier<? extends D> supplier) {
         return of(Func0.of(supplier::get));
     }
@@ -734,6 +727,16 @@ public abstract class Result<DATA>
         );
     }
     
+    public final <OPERANT, TARGET> Result<TARGET> mapWith(
+            Func2<? super DATA, ? super OPERANT, ? extends TARGET> func, 
+            Result<OPERANT> operantResult) {
+        return flatMap(data -> { 
+            return operantResult.map(operant -> {
+                return func.apply(data, operant);
+            });
+        });
+    }
+    
     @SuppressWarnings("unchecked")
     public final <TARGET> Result<TARGET> flatMap(Func1<? super DATA, ? extends Result<TARGET>> mapper) {
         return mapValue(
@@ -741,8 +744,8 @@ public abstract class Result<DATA>
                     if (value == null)
                         return (Result<TARGET>)this;
                     
-                    val monad = (Nullable<TARGET>)mapper.applyUnsafe(value);
-                    return Result.valueOf(monad.orElse(null));
+                    val monad = (Result<TARGET>)mapper.applyUnsafe(value);
+                    return monad;
                 }
         );
     }

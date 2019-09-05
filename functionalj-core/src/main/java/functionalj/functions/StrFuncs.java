@@ -25,12 +25,17 @@ package functionalj.functions;
 
 import static functionalj.function.Absent.__;
 
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
@@ -43,6 +48,8 @@ import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.stream.StreamPlus;
 import lombok.val;
+
+// TODO - Should only contains methods that return functions or constance of functions
 
 @SuppressWarnings("javadoc")
 public class StrFuncs {
@@ -176,6 +183,63 @@ public class StrFuncs {
         return (Func1<I, String>)concat3().bind("", __, suffix);
     }
     
+    public static <I> Func1<I, String> withPrefix(String prefix) {
+        return input -> prefix + input;
+    }
+    
+    public static <I> Func1<I, String> withSuffix(String suffix) {
+        return input -> input + suffix;
+    }
+    
+    public static <I> Func1<I, String> withWrap(String prefix, String suffix) {
+        return input -> prefix + input + suffix;
+    }
+    
+    public static <I> Func1<I, String> withFormat(String format) {
+        return input -> String.format(format, input);
+    }
+    
+    public static <I> Func1<I, String> withFormat(MessageFormat format) {
+        return input -> format.format(input);
+    }
+    
+    public static <I> Func1<I, String> withPattern(Pattern pattern, String defaultValue) {
+        return input -> {
+            val inputStr = String.valueOf(input);
+            val matcher  = pattern.matcher(inputStr);
+            return matcher.find()
+                    ? matcher.group()
+                    : defaultValue;
+        };
+    }
+    public static <I> Func1<I, String> withPattern(Pattern pattern, Supplier<String> defaultValueSupplier) {
+        return input -> {
+            val inputStr = String.valueOf(input);
+            val matcher  = pattern.matcher(inputStr);
+            return matcher.find()
+                    ? matcher.group()
+                    : defaultValueSupplier.get();
+        };
+    }
+    public static <I> Func1<I, String> withPattern(Pattern pattern, Function<String, String> defaultValueFunction) {
+        return input -> {
+            val inputStr = String.valueOf(input);
+            val matcher  = pattern.matcher(inputStr);
+            return matcher.find()
+                    ? matcher.group()
+                    : defaultValueFunction.apply(inputStr);
+        };
+    }
+    public static <I> Func1<I, String> withPath(Pattern pattern, BiFunction<String, Matcher, String> defaultValueFunction) {
+        return input -> {
+            val inputStr = String.valueOf(input);
+            val matcher  = pattern.matcher(inputStr);
+            return matcher.find()
+                    ? matcher.group()
+                    : defaultValueFunction.apply(inputStr, matcher);
+        };
+    }
+    
     public static <I1> Func1<I1, String> formatWith1(String template) {
         return (i1) -> String.format(template, i1);
     }
@@ -244,7 +308,7 @@ public class StrFuncs {
             buffer.append(str);
         return buffer.toString();
     }
-
+    
     public static StreamPlus<String> split(String str, String regexDelimiter) {
         return split((CharSequence)str, regexDelimiter, -1);
     }
