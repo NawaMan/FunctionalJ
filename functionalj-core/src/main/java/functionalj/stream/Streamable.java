@@ -83,6 +83,43 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
+class Helper {
+    static <D> FuncList<FuncList<D>> segmentByPercentiles(FuncList<D> list, FuncList<Double> percentiles) {
+        val size    = list.size();
+        val indexes = percentiles.sorted().map(d -> (int)Math.round(d*size/100)).toArrayList();
+        if (indexes.get(indexes.size() - 1) != size) {
+            indexes.add(size);
+        }
+        val lists   = new ArrayList<List<D>>();
+        for (int i = 0; i < indexes.size(); i++) {
+            lists.add(new ArrayList<D>());
+        }
+        int idx = 0;
+        for (int i = 0; i < size; i++) {
+            if (i >= indexes.get(idx)) {
+                idx++;
+            }
+            val l = lists.get(idx);
+            val element = list.get(i);
+            l.add(element);
+        }
+        return FuncList.from(
+                lists
+                .stream()
+                .map(each -> (FuncList<D>)StreamPlus.from(each.stream()).toImmutableList()));
+    }
+//    
+//    static <D> FuncList<Tuple2<D, Double>> toPercentilesOf(int size, FuncList<Tuple2<Integer, D>> list) {
+//        val sorted
+//                = list
+//                .mapWithIndex((index, tuper) -> Tuple.of(tuper._1(), tuper._2(), index*100.0/size))
+//                .sortedBy(tuple -> tuple._1());
+//        FuncList<Tuple2<D, Double>> results = sorted
+//                .map(tuple -> Tuple.of(tuple._2(), tuple._3()));
+//        return results;
+//    }
+}
+
 @SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface Streamable<DATA> extends StreamableWithGet<DATA> {
@@ -918,6 +955,67 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
             return StreamPlus.from(stream).segment(startCondition, endCondition, includeLast);
         });
     }
+    
+    public default <T> Streamable<FuncList<DATA>> segmentByPercentiles(int ... percentiles) {
+        val percentileList = IntStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
+        return segmentByPercentiles(percentileList);
+    }
+    
+    public default <T> Streamable<FuncList<DATA>> segmentByPercentiles(double ... percentiles) {
+        val percentileList = DoubleStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
+        return segmentByPercentiles(percentileList);
+    }
+    
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(FuncList<Double> percentiles) {
+        val list = sorted().toImmutableList();
+        return Helper.segmentByPercentiles(list, percentiles);
+    }
+    
+    public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(Function<? super DATA, T> mapper, int ... percentiles) {
+        val percentileList = IntStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
+        return segmentByPercentiles(mapper, percentileList);
+    }
+    
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(Function<? super DATA, T> mapper, Comparator<T> comparator, int ... percentiles) {
+        val percentileList = IntStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
+        return segmentByPercentiles(mapper, comparator, percentileList);
+    }
+    
+    public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(Function<? super DATA, T> mapper, double ... percentiles) {
+        val percentileList = DoubleStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
+        return segmentByPercentiles(mapper, percentileList);
+    }
+    
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(Function<? super DATA, T> mapper, Comparator<T> comparator, double ... percentiles) {
+        val percentileList = DoubleStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
+        return segmentByPercentiles(mapper, comparator, percentileList);
+    }
+    
+    public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(Function<? super DATA, T> mapper, FuncList<Double> percentiles) {
+        val list = sortedBy(mapper).toImmutableList();
+        return Helper.segmentByPercentiles(list, percentiles);
+    }
+    
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(Function<? super DATA, T> mapper, Comparator<T> comparator, FuncList<Double> percentiles) {
+        val list = sortedBy(mapper, comparator).toImmutableList();
+        return Helper.segmentByPercentiles(list, percentiles);
+    }
+//    
+//    public default <T extends Comparable<? super T>> FuncList<Tuple2<DATA, Double>> toPercentilesOf(Function<? super DATA, T> mapper) {
+//        FuncList<Tuple2<Integer, DATA>> list 
+//                = mapWithIndex(Tuple2::of)
+//                .sortedBy(tuple -> mapper.apply(tuple._2()))
+//                .toImmutableList();
+//        return Helper.toPercentilesOf(size() - 1, list);
+//    }
+//    
+//    public default <T> FuncList<Tuple2<DATA, Double>> toPercentilesOf(Function<? super DATA, T> mapper, Comparator<T> comparator) {
+//        FuncList<Tuple2<Integer, DATA>> list 
+//                = mapWithIndex(Tuple2::of)
+//                .sortedBy(tuple -> mapper.apply(tuple._2()), comparator)
+//                .toImmutableList();
+//        return Helper.toPercentilesOf(size() - 1, list);
+//    }
     
     //-- Zip --
     

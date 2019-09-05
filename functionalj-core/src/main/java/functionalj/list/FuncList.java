@@ -28,6 +28,7 @@ import static functionalj.function.Func.themAll;
 import static functionalj.lens.Access.$I;
 import static java.util.function.Function.identity;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -304,9 +305,16 @@ public interface FuncList<DATA>
         return stream().toArray();
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public default <T> T[] toArray(T[] a) {
-        return toJavaList().toArray(a);
+        int count = size();
+        if (a.length != count) {
+            a = (T[])Array.newInstance(a.getClass().getComponentType(), count);
+        }
+        val array = a;
+        forEachWithIndex((index, element) -> array[index] = (T)element);
+        return array;
     }
     
     public default <A> A[] toArray(IntFunction<A[]> generator) {
