@@ -76,6 +76,14 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
         return _2();
     }
     
+    public default <T3> Tuple3<T1, T2, T3> with(T3 new3) {
+        return new Tuple3<T1, T2, T3>() {
+            @Override public T1 _1() { return Tuple2.this._1(); }
+            @Override public T2 _2() { return Tuple2.this._2(); }
+            @Override public T3 _3() { return new3; }
+        };
+    }
+    
     public default Tuple2<T1, T2> with1(T1 new1) {
         return new Tuple2<T1, T2>() {
             @Override public T1 _1() { return new1; }
