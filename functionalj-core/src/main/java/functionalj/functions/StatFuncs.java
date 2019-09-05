@@ -1,9 +1,14 @@
 package functionalj.functions;
 
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
+
 import functionalj.function.Func1;
 import functionalj.stream.DoubleStreamElementProcessor;
 import functionalj.stream.IntStreamElementProcessor;
 import functionalj.stream.LongStreamElementProcessor;
+import functionalj.stream.StreamElementProcessor;
 import functionalj.tuple.Tuple2;
 
 public class StatFuncs {
@@ -26,7 +31,19 @@ public class StatFuncs {
     
     // == Min ==
     
-    public static IntStreamElementProcessor<Integer> minInt() {
+    public static <T> StreamElementProcessor<T, Integer> minOf(ToIntFunction<T> mapper) {
+        return minAsInt().of(mapper);
+    }
+    
+    public static <T> StreamElementProcessor<T, Long> minOf(ToLongFunction<T> mapper) {
+        return minAsLong().of(mapper);
+    }
+    
+    public static <T> StreamElementProcessor<T, Double> minOf(ToDoubleFunction<T> mapper) {
+        return minAsDouble().of(mapper);
+    }
+    
+    public static IntStreamElementProcessor<Integer> minAsInt() {
         return new IntStreamElementProcessor<Integer>() {
             private Integer minValue = null;
             @Override
@@ -42,7 +59,7 @@ public class StatFuncs {
         };
     }
     
-    public static LongStreamElementProcessor<Long> minLong() {
+    public static LongStreamElementProcessor<Long> minAsLong() {
         return new LongStreamElementProcessor<Long>() {
             private Long minValue = Long.MAX_VALUE;
             @Override
@@ -58,7 +75,7 @@ public class StatFuncs {
         };
     }
     
-    public static DoubleStreamElementProcessor<Double> minDouble() {
+    public static DoubleStreamElementProcessor<Double> minAsDouble() {
         return new DoubleStreamElementProcessor<Double>() {
             private Double minValue = Double.MAX_VALUE;
             @Override
@@ -76,14 +93,26 @@ public class StatFuncs {
     
     // == Max ==
     
-    public static IntStreamElementProcessor<Integer> maxInt() {
+    public static <T> StreamElementProcessor<T, Integer> maxOf(ToIntFunction<T> mapper) {
+        return maxAsInt().of(mapper);
+    }
+    
+    public static <T> StreamElementProcessor<T, Long> maxOf(ToLongFunction<T> mapper) {
+        return maxAsLong().of(mapper);
+    }
+    
+    public static <T> StreamElementProcessor<T, Double> maxOf(ToDoubleFunction<T> mapper) {
+        return maxAsDouble().of(mapper);
+    }
+    
+    public static IntStreamElementProcessor<Integer> maxAsInt() {
         return new IntStreamElementProcessor<Integer>() {
             private Integer maxValue = null;
             @Override
             public void processElement(long index, int element) {
                 if (maxValue == null)
                     maxValue = Integer.MIN_VALUE;
-                maxValue = (maxValue < element) ? maxValue : element;
+                maxValue = (maxValue > element) ? maxValue : element;
             }
             @Override
             public Integer processComplete(long count) {
@@ -92,14 +121,14 @@ public class StatFuncs {
         };
     }
     
-    public static LongStreamElementProcessor<Long> maxLong() {
+    public static LongStreamElementProcessor<Long> maxAsLong() {
         return new LongStreamElementProcessor<Long>() {
-            private Long maxValue = Long.MIN_VALUE;
+            private Long maxValue = null;
             @Override
             public void processElement(long index, long element) {
                 if (maxValue == null)
-                    maxValue = Long.MAX_VALUE;
-                maxValue = (maxValue < element) ? maxValue : element;
+                    maxValue = Long.MIN_VALUE;
+                maxValue = (maxValue > element) ? maxValue : element;
             }
             @Override
             public Long processComplete(long count) {
@@ -108,14 +137,14 @@ public class StatFuncs {
         };
     }
     
-    public static DoubleStreamElementProcessor<Double> maxDouble() {
+    public static DoubleStreamElementProcessor<Double> maxAsDouble() {
         return new DoubleStreamElementProcessor<Double>() {
-            private Double maxValue = -Double.MAX_VALUE;
+            private Double maxValue = null;
             @Override
             public void processElement(long index, double element) {
                 if (maxValue == null)
-                    maxValue = Double.MAX_VALUE;
-                maxValue = (maxValue < element) ? maxValue : element;
+                    maxValue = -Double.MAX_VALUE;
+                maxValue = (maxValue > element) ? maxValue : element;
             }
             @Override
             public Double processComplete(long count) {

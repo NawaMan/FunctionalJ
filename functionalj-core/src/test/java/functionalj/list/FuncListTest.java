@@ -23,9 +23,6 @@
 // ============================================================================
 package functionalj.list;
 
-import static functionalj.functions.StatFuncs.toIntPercentiles;
-import static functionalj.functions.StatFuncs.toPercentileElements;
-import static functionalj.functions.StatFuncs.toPercentileIntValues;
 import static functionalj.functions.TimeFuncs.Sleep;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
@@ -354,38 +351,45 @@ public class FuncListTest {
         
         assertStrings("[[, 1, 22, 333, 4444], [55555, 666666, 7777777, 88888888, 999999999]]", 
                 FuncList.of("", "1", "22", "333", "4444", "55555", "666666", "7777777", "88888888", "999999999")
+                .reverse()
                 .segmentByPercentiles(String::length, 50, 100));
     }
-    
-    @Test
-    public void testToPercentile() {
-        assertStrings(
-                "[(0,0.0), (1,25.0), (2,50.0), (3,75.0), (4,100.0)]", 
-                FuncList.of(0, 1, 2, 3, 4).toPercentilesOf(theInteger));
-        
-        assertStrings("["
-                + "(0,0), (1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), "
-                + "(11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (18,36), (19,38), (20,40), "
-                + "(21,42), (22,44), (23,46), (24,48), (25,51), (26,53), (27,55), (28,57), (29,59), (30,61), "
-                + "(31,63), (32,65), (33,67), (34,69), (35,71), (36,73), (37,75), (38,77), (39,79), (40,81), "
-                + "(41,83), (42,85), (43,87), (44,89), (45,91), (46,93), (47,95), (48,97), (49,100)]", 
-                infiniteInt().limit(50).toImmutableList().toPercentilesOf(theInteger).map(tuple -> tuple.map2(Double::intValue)));
-        
-        assertStrings("["
-                + "(0,0), (1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), "
-                + "(11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (18,36), (19,38), (20,40), "
-                + "(21,42), (22,44), (23,46), (24,48), (25,51), (26,53), (27,55), (28,57), (29,59), (30,61), "
-                + "(31,63), (32,65), (33,67), (34,69), (35,71), (36,73), (37,75), (38,77), (39,79), (40,81), "
-                + "(41,83), (42,85), (43,87), (44,89), (45,91), (46,93), (47,95), (48,97), (49,100)]", 
-                infiniteInt().limit(50).toImmutableList().toPercentilesOf(theInteger).map(toIntPercentiles()));
-        
-        assertStrings("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
-                infiniteInt().limit(10).toImmutableList().toPercentilesOf(theInteger).map(toPercentileElements()));
-        
-        assertStrings("[(0,0), (1,11), (2,22), (3,33), (4,44), (5,55), (6,66), (7,77), (8,88), (9,100)]", 
-                infiniteInt().limit(10).toImmutableList().toPercentilesOf(theInteger).map(toIntPercentiles()));
-        assertStrings("[0, 11, 22, 33, 44, 55, 66, 77, 88, 100]", 
-                infiniteInt().limit(10).toImmutableList().toPercentilesOf(theInteger).map(toPercentileIntValues()));
-    }
+//    
+//    @Test
+//    public void testToPercentile() {
+//        assertStrings(
+//                "[(0,0.0), (1,25.0), (2,50.0), (3,75.0), (4,100.0)]", 
+//                FuncList.of(0, 1, 2, 3, 4).toPercentilesOf(theInteger));
+//        
+//        assertStrings("["
+//                + "(0,0), (1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), "
+//                + "(11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (18,36), (19,38), (20,40), "
+//                + "(21,42), (22,44), (23,46), (24,48), (25,51), (26,53), (27,55), (28,57), (29,59), (30,61), "
+//                + "(31,63), (32,65), (33,67), (34,69), (35,71), (36,73), (37,75), (38,77), (39,79), (40,81), "
+//                + "(41,83), (42,85), (43,87), (44,89), (45,91), (46,93), (47,95), (48,97), (49,100)]", 
+//                infiniteInt().limit(50).toImmutableList().toPercentilesOf(theInteger).map(tuple -> tuple.map2(Double::intValue)));
+//        
+//        assertStrings("["
+//                + "(0,0), (1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), "
+//                + "(11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (18,36), (19,38), (20,40), "
+//                + "(21,42), (22,44), (23,46), (24,48), (25,51), (26,53), (27,55), (28,57), (29,59), (30,61), "
+//                + "(31,63), (32,65), (33,67), (34,69), (35,71), (36,73), (37,75), (38,77), (39,79), (40,81), "
+//                + "(41,83), (42,85), (43,87), (44,89), (45,91), (46,93), (47,95), (48,97), (49,100)]", 
+//                infiniteInt().limit(50).toImmutableList().toPercentilesOf(theInteger).map(toIntPercentiles()));
+//        
+//        assertStrings("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
+//                infiniteInt().limit(10).toImmutableList().toPercentilesOf(theInteger).map(toPercentileElements()));
+//        
+//        assertStrings("[(0,0), (1,11), (2,22), (3,33), (4,44), (5,55), (6,66), (7,77), (8,88), (9,100)]", 
+//                infiniteInt().limit(10).toImmutableList().toPercentilesOf(theInteger).map(toIntPercentiles()));
+//        assertStrings("[0, 11, 22, 33, 44, 55, 66, 77, 88, 100]", 
+//                infiniteInt().limit(10).toImmutableList().toPercentilesOf(theInteger).map(toPercentileIntValues()));
+//        
+//        
+//        // WRONG!!!
+//        assertStrings(
+//                "[(0,0.0), (0,25.0), (0,50.0), (0,75.0), (0,100.0)]", 
+//                FuncList.of(0, 0, 0, 0, 0).toPercentilesOf(theInteger));
+//    }
     
 }

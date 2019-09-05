@@ -108,16 +108,16 @@ class Helper {
                 .stream()
                 .map(each -> (FuncList<D>)StreamPlus.from(each.stream()).toImmutableList()));
     }
-    
-    static <D> FuncList<Tuple2<D, Double>> toPercentilesOf(int size, FuncList<Tuple2<Integer, D>> list) {
-        val sorted
-                = list
-                .mapWithIndex((index, tuper) -> Tuple.of(tuper._1(), tuper._2(), index*100.0/size))
-                .sortedBy(tuple -> tuple._1());
-        FuncList<Tuple2<D, Double>> results = sorted
-                .map(tuple -> Tuple.of(tuple._2(), tuple._3()));
-        return results;
-    }
+//    
+//    static <D> FuncList<Tuple2<D, Double>> toPercentilesOf(int size, FuncList<Tuple2<Integer, D>> list) {
+//        val sorted
+//                = list
+//                .mapWithIndex((index, tuper) -> Tuple.of(tuper._1(), tuper._2(), index*100.0/size))
+//                .sortedBy(tuple -> tuple._1());
+//        FuncList<Tuple2<D, Double>> results = sorted
+//                .map(tuple -> Tuple.of(tuple._2(), tuple._3()));
+//        return results;
+//    }
 }
 
 @SuppressWarnings("javadoc")
@@ -1000,22 +1000,22 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         val list = sortedBy(mapper, comparator).toImmutableList();
         return Helper.segmentByPercentiles(list, percentiles);
     }
-    
-    public default <T extends Comparable<? super T>> FuncList<Tuple2<DATA, Double>> toPercentilesOf(Function<? super DATA, T> mapper) {
-        FuncList<Tuple2<Integer, DATA>> list 
-                = mapWithIndex(Tuple2::of)
-                .sortedBy(tuple -> mapper.apply(tuple._2()))
-                .toImmutableList();
-        return Helper.toPercentilesOf(size() - 1, list);
-    }
-    
-    public default <T> FuncList<Tuple2<DATA, Double>> toPercentilesOf(Function<? super DATA, T> mapper, Comparator<T> comparator) {
-        FuncList<Tuple2<Integer, DATA>> list 
-                = mapWithIndex(Tuple2::of)
-                .sortedBy(tuple -> mapper.apply(tuple._2()), comparator)
-                .toImmutableList();
-        return Helper.toPercentilesOf(size() - 1, list);
-    }
+//    
+//    public default <T extends Comparable<? super T>> FuncList<Tuple2<DATA, Double>> toPercentilesOf(Function<? super DATA, T> mapper) {
+//        FuncList<Tuple2<Integer, DATA>> list 
+//                = mapWithIndex(Tuple2::of)
+//                .sortedBy(tuple -> mapper.apply(tuple._2()))
+//                .toImmutableList();
+//        return Helper.toPercentilesOf(size() - 1, list);
+//    }
+//    
+//    public default <T> FuncList<Tuple2<DATA, Double>> toPercentilesOf(Function<? super DATA, T> mapper, Comparator<T> comparator) {
+//        FuncList<Tuple2<Integer, DATA>> list 
+//                = mapWithIndex(Tuple2::of)
+//                .sortedBy(tuple -> mapper.apply(tuple._2()), comparator)
+//                .toImmutableList();
+//        return Helper.toPercentilesOf(size() - 1, list);
+//    }
     
     //-- Zip --
     
