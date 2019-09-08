@@ -9,4 +9,4 @@ include ":functionalj-all"
 include ":functionalj-types-tests"
 include ":functionalj-examples"
 
-rootProject.name = "functionalj"
+rootProject.name = "io.functionalj"
