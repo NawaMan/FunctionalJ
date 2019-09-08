@@ -52,6 +52,18 @@ public interface BooleanAccess<HOST>
     public default BooleanAccess<HOST> and(boolean anotherBoolean) {
         return booleanAccess(false, bool -> bool && anotherBoolean);
     }
+    public default BooleanAccess<HOST> or(Predicate<? super HOST> anotherPredicate) {
+        return host -> {
+            boolean bool1 = test(host);
+            return bool1 || anotherPredicate.test(host);
+        };
+    }
+    public default BooleanAccess<HOST> and(Predicate<? super HOST> anotherPredicate) {
+        return host -> {
+            boolean bool1 = test(host);
+            return bool1 && anotherPredicate.test(host);
+        };
+    }
     
 }
 
