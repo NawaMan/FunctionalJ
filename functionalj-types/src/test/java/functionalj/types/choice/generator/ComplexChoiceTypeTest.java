@@ -78,8 +78,8 @@ public class ComplexChoiceTypeTest {
             "\n" + 
             "        public final BooleanAccess<LoginStatus> isLoggined = LoginStatus::isLoggined;\n" + 
             "        public final BooleanAccess<LoginStatus> isLoggedOut = LoginStatus::isLoggedOut;\n" + 
-            "        public final ResultAccess<HOST, Loggined, Loggined.LogginedLens<HOST>> asLoggined = createSubResultLens(LoginStatus::asLoggined, null, Loggined.LogginedLens::new);\n" + 
-            "        public final ResultAccess<HOST, LoggedOut, LoggedOut.LoggedOutLens<HOST>> asLoggedOut = createSubResultLens(LoginStatus::asLoggedOut, null, LoggedOut.LoggedOutLens::new);\n" + 
+            "        public final ResultAccess<HOST, Loggined, Loggined.LogginedLens<HOST>> asLoggined = createSubResultLens(LoginStatus::asLoggined, (functionalj.lens.core.WriteLens<LoginStatus,Result<Loggined>>)null, Loggined.LogginedLens::new);\n" + 
+            "        public final ResultAccess<HOST, LoggedOut, LoggedOut.LoggedOutLens<HOST>> asLoggedOut = createSubResultLens(LoginStatus::asLoggedOut, (functionalj.lens.core.WriteLens<LoginStatus,Result<LoggedOut>>)null, LoggedOut.LoggedOutLens::new);\n" + 
             "        public LoginStatusLens(LensSpec<HOST, LoginStatus> spec) {\n" + 
             "            super(spec);\n" + 
             "        }\n" + 

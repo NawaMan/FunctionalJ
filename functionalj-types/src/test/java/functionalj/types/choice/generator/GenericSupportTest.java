@@ -95,8 +95,8 @@ public class GenericSupportTest {
             "\n" + 
             "        public final BooleanAccess<Option> isNone = Option::isNone;\n" + 
             "        public final BooleanAccess<Option> isSome = Option::isSome;\n" + 
-            "        public final ResultAccess<HOST, None, None.NoneLens<HOST>> asNone = createSubResultLens(Option::asNone, null, None.NoneLens::new);\n" + 
-            "        public final ResultAccess<HOST, Some, Some.SomeLens<HOST>> asSome = createSubResultLens(Option::asSome, null, Some.SomeLens::new);\n" + 
+            "        public final ResultAccess<HOST, None, None.NoneLens<HOST>> asNone = createSubResultLens(Option::asNone, (functionalj.lens.core.WriteLens<Option,Result<None>>)null, None.NoneLens::new);\n" + 
+            "        public final ResultAccess<HOST, Some, Some.SomeLens<HOST>> asSome = createSubResultLens(Option::asSome, (functionalj.lens.core.WriteLens<Option,Result<Some>>)null, Some.SomeLens::new);\n" + 
             "        public OptionLens(LensSpec<HOST, Option> spec) {\n" + 
             "            super(spec);\n" + 
             "        }\n" + 

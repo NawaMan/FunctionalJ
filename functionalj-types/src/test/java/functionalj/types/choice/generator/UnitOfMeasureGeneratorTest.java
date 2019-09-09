@@ -115,8 +115,8 @@ public class UnitOfMeasureGeneratorTest {
                 "\n" + 
                 "        public final BooleanAccess<Temperature> isCelsius = Temperature::isCelsius;\n" + 
                 "        public final BooleanAccess<Temperature> isFahrenheit = Temperature::isFahrenheit;\n" + 
-                "        public final ResultAccess<HOST, Celsius, Celsius.CelsiusLens<HOST>> asCelsius = createSubResultLens(Temperature::asCelsius, null, Celsius.CelsiusLens::new);\n" + 
-                "        public final ResultAccess<HOST, Fahrenheit, Fahrenheit.FahrenheitLens<HOST>> asFahrenheit = createSubResultLens(Temperature::asFahrenheit, null, Fahrenheit.FahrenheitLens::new);\n" + 
+                "        public final ResultAccess<HOST, Celsius, Celsius.CelsiusLens<HOST>> asCelsius = createSubResultLens(Temperature::asCelsius, (functionalj.lens.core.WriteLens<Temperature,Result<Celsius>>)null, Celsius.CelsiusLens::new);\n" + 
+                "        public final ResultAccess<HOST, Fahrenheit, Fahrenheit.FahrenheitLens<HOST>> asFahrenheit = createSubResultLens(Temperature::asFahrenheit, (functionalj.lens.core.WriteLens<Temperature,Result<Fahrenheit>>)null, Fahrenheit.FahrenheitLens::new);\n" + 
                 "        public TemperatureLens(LensSpec<HOST, Temperature> spec) {\n" + 
                 "            super(spec);\n" + 
                 "        }\n" + 
