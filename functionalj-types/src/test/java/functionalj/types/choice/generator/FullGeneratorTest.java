@@ -143,9 +143,9 @@ public class FullGeneratorTest {
               "        public final BooleanAccess<BasicColor> isWhite = BasicColor::isWhite;\n" + 
               "        public final BooleanAccess<BasicColor> isBlack = BasicColor::isBlack;\n" + 
               "        public final BooleanAccess<BasicColor> isRGB = BasicColor::isRGB;\n" + 
-              "        public final ResultAccess<HOST, White, White.WhiteLens<HOST>> asWhite = createSubResultLens(BasicColor::asWhite, null, White.WhiteLens::new);\n" + 
-              "        public final ResultAccess<HOST, Black, Black.BlackLens<HOST>> asBlack = createSubResultLens(BasicColor::asBlack, null, Black.BlackLens::new);\n" + 
-              "        public final ResultAccess<HOST, RGB, RGB.RGBLens<HOST>> asRGB = createSubResultLens(BasicColor::asRGB, null, RGB.RGBLens::new);\n" + 
+              "        public final ResultAccess<HOST, White, White.WhiteLens<HOST>> asWhite = createSubResultLens(BasicColor::asWhite, (functionalj.lens.core.WriteLens<BasicColor,Result<White>>)null, White.WhiteLens::new);\n" + 
+              "        public final ResultAccess<HOST, Black, Black.BlackLens<HOST>> asBlack = createSubResultLens(BasicColor::asBlack, (functionalj.lens.core.WriteLens<BasicColor,Result<Black>>)null, Black.BlackLens::new);\n" + 
+              "        public final ResultAccess<HOST, RGB, RGB.RGBLens<HOST>> asRGB = createSubResultLens(BasicColor::asRGB, (functionalj.lens.core.WriteLens<BasicColor,Result<RGB>>)null, RGB.RGBLens::new);\n" + 
               "        public BasicColorLens(LensSpec<HOST, BasicColor> spec) {\n" + 
               "            super(spec);\n" + 
               "        }\n" + 

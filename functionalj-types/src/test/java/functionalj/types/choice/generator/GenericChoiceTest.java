@@ -92,8 +92,8 @@ public class GenericChoiceTest {
                 "\n" + 
                 "        public final BooleanAccess<MayBe> isNill = MayBe::isNill;\n" + 
                 "        public final BooleanAccess<MayBe> isJust = MayBe::isJust;\n" + 
-                "        public final ResultAccess<HOST, Nill, Nill.NillLens<HOST>> asNill = createSubResultLens(MayBe::asNill, null, Nill.NillLens::new);\n" + 
-                "        public final ResultAccess<HOST, Just, Just.JustLens<HOST>> asJust = createSubResultLens(MayBe::asJust, null, Just.JustLens::new);\n" + 
+                "        public final ResultAccess<HOST, Nill, Nill.NillLens<HOST>> asNill = createSubResultLens(MayBe::asNill, (functionalj.lens.core.WriteLens<MayBe,Result<Nill>>)null, Nill.NillLens::new);\n" + 
+                "        public final ResultAccess<HOST, Just, Just.JustLens<HOST>> asJust = createSubResultLens(MayBe::asJust, (functionalj.lens.core.WriteLens<MayBe,Result<Just>>)null, Just.JustLens::new);\n" + 
                 "        public MayBeLens(LensSpec<HOST, MayBe> spec) {\n" + 
                 "            super(spec);\n" + 
                 "        }\n" + 
