@@ -62,7 +62,7 @@ public class ChoiceLensBuilder {
                 .collect(toList());
         val asMethods = sourceSpec
                 .choices.stream()
-                .map(choice -> "ResultAccess<HOST, " + choice.name + ", " + choice.name + "."+ choice.name + "Lens<HOST>> as" + choice.name + " = createSubResultLens(" + targetName +"::as" + choice.name + ", null, " + choice.name + "."+ choice.name + "Lens::new);")
+                .map(choice -> "ResultAccess<HOST, " + choice.name + ", " + choice.name + "."+ choice.name + "Lens<HOST>> as" + choice.name + " = createSubResultLens(" + targetName +"::as" + choice.name + ", (functionalj.lens.core.WriteLens<" + targetName + ",Result<" + choice.name + ">>)null, " + choice.name + "."+ choice.name + "Lens::new);")
                 .map(each   -> "    public final " + each)
                 .collect(toList());
         

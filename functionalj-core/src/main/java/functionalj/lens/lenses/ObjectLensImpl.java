@@ -102,10 +102,10 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
     }
     
     protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
-            ResultLens<HOST, SUB, SUBLENS> createSubResultLens(
-                Function<DATA,  Result<SUB>>         readSub,
-                WriteLens<DATA, Result<SUB>>         writeSub,
-                Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
+            ResultLens<HOST, SUB, SUBLENS>         createSubResultLens(
+            Function<DATA,  Result<SUB>>           readSub,
+            WriteLens<DATA, Result<SUB>>           writeSub,
+            Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
         val readThis   = this.lensSpec().getRead();
         val writeThis  = this.lensSpec().getWrite();
         val subRead    = (Function<HOST, Result<SUB>>) LensUtils.createSubRead(readThis,  readSub,             this.lensSpec().getIsNullSafe());
@@ -116,9 +116,9 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
     }
     
     protected <SUB, SUBACCESSS extends AnyAccess<HOST, SUB>> 
-            ResultAccess<HOST, SUB, SUBACCESSS> createSubResultAccess(
-                Function<DATA,  Result<SUB>>              readSub,
-                Function<Function<HOST, SUB>, SUBACCESSS> subCreator) {
+            ResultAccess<HOST, SUB, SUBACCESSS>       createSubResultAccess(
+            Function<DATA,  Result<SUB>>              readSub,
+            Function<Function<HOST, SUB>, SUBACCESSS> subCreator) {
         val readThis = this.lensSpec().getRead();
         val subRead  = (Function<HOST, Result<SUB>>) LensUtils.createSubRead(readThis, readSub, this.lensSpec().getIsNullSafe());
         return AccessUtils.createResultAccess(subRead, subCreator);
