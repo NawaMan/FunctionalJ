@@ -97,7 +97,7 @@ public class DoubleStep implements Streamable<Double>, DoubleUnaryOperator {
         return start + (Math.round(1.0 * (operand - start) / size) * size);
     }
     
-    public Func1<Double, Double> asRange() {
+    public Func1<Double, Double> function() {
         return i -> applyAsDouble(i);
     }
     

@@ -97,7 +97,7 @@ public class IntStep implements Streamable<Integer>, IntUnaryOperator {
         return start + (int)(Math.round(1.0 * (operand - start) / size) * size);
     }
     
-    public Func1<Integer, Integer> asRange() {
+    public Func1<Integer, Integer> function() {
         return i -> applyAsInt(i);
     }
     

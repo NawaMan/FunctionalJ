@@ -393,27 +393,27 @@ public class StrFuncs {
         return repeat(prefix, width - str.length()) + str;
     }
     
-    public static <T extends CharSequence> Func1<T, FuncList<String>> grep(String regex) {
-        return strValue -> grep(strValue, regex, 0);
+    public static <T extends CharSequence> Func1<T, FuncList<String>> grab(String regex) {
+        return strValue -> grab(strValue, regex, 0);
     }
     
-    public static <T extends CharSequence> Func1<T, FuncList<String>> grep(String regex, RegExFlag flags) {
-        return strValue -> grep(strValue, regex, flags);
+    public static <T extends CharSequence> Func1<T, FuncList<String>> grab(String regex, RegExFlag flags) {
+        return strValue -> grab(strValue, regex, flags);
     }
     
-    public static <T extends CharSequence> Func1<T, FuncList<String>> grep(String regex, int patternFlags) {
-        return strValue -> grep(strValue, regex, patternFlags);
+    public static <T extends CharSequence> Func1<T, FuncList<String>> grab(String regex, int patternFlags) {
+        return strValue -> grab(strValue, regex, patternFlags);
     }
     
-    public static FuncList<String> grep(CharSequence strValue, String regex) {
+    public static FuncList<String> grab(CharSequence strValue, String regex) {
         return grep(strValue, regex, 0);
     }
     
-    public static FuncList<String> grep(CharSequence strValue, String regex, RegExFlag flags) {
+    public static FuncList<String> grab(CharSequence strValue, String regex, RegExFlag flags) {
         return grep(strValue, regex, flags.getIntValue());
     }
     
-    public static FuncList<String> grep(CharSequence strValue, String regex, int patternFlags) {
+    public static FuncList<String> grab(CharSequence strValue, String regex, int patternFlags) {
         val pattern  = Pattern.compile(regex, patternFlags);
         return FuncList.from(Streamable.from(()->{
             val matcher  = pattern.matcher(strValue);

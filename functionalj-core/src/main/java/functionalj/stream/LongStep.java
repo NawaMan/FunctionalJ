@@ -97,7 +97,7 @@ public class LongStep implements Streamable<Long>, LongUnaryOperator {
         return start + (Math.round(1.0 * (operand - start) / size) * size);
     }
     
-    public Func1<Long, Long> asRange() {
+    public Func1<Long, Long> function() {
         return i -> applyAsLong(i);
     }
     

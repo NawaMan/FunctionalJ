@@ -128,6 +128,8 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                 });
     }
     
+    // TODO - Make select
+    
     public default Func1<HOST, HOST> changeEachTo(Function<TYPE, TYPE> mapper) {
         return host -> {
             val newList = apply(host).map(each -> mapper.apply(each));
