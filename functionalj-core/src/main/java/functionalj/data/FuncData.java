@@ -94,4 +94,14 @@ public class FuncData {
         return Result.from(()->Streamable.from(()->Files.lines(path, charset)));
     }
     
+    // TODO - Write text file
+    
+    // TODO - Read CSV
+    
+    // TODO - Write CSV
+    
+    // TODO - Read SQL
+    
+    // TODO - Write SQL
+    
 }

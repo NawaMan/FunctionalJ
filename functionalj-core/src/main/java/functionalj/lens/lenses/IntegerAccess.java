@@ -40,6 +40,8 @@ public interface IntegerAccess<HOST>
                         ToIntFunction<HOST>,
                         ConcreteAccess<HOST, Integer, IntegerAccess<HOST>> {
     
+    // TODO - applyAsInt should be used first if the function from primitive ... find a way to do this.
+    
     @Override
     public default IntegerAccess<HOST> newAccess(Function<HOST, Integer> accessToValue) {
         return accessToValue::apply;
