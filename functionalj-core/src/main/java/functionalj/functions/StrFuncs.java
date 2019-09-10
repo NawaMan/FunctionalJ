@@ -46,7 +46,10 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import functionalj.list.FuncList;
+import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.Streamable;
 import lombok.val;
 
 // TODO - Should only contains methods that return functions or constance of functions
@@ -390,11 +393,54 @@ public class StrFuncs {
         return repeat(prefix, width - str.length()) + str;
     }
     
+    public static <T extends CharSequence> Func1<T, FuncList<String>> grep(String regex) {
+        return strValue -> grep(strValue, regex, 0);
+    }
+    
+    public static <T extends CharSequence> Func1<T, FuncList<String>> grep(String regex, RegExFlag flags) {
+        return strValue -> grep(strValue, regex, flags);
+    }
+    
+    public static <T extends CharSequence> Func1<T, FuncList<String>> grep(String regex, int patternFlags) {
+        return strValue -> grep(strValue, regex, patternFlags);
+    }
+    
+    public static FuncList<String> grep(CharSequence strValue, String regex) {
+        return grep(strValue, regex, 0);
+    }
+    
+    public static FuncList<String> grep(CharSequence strValue, String regex, RegExFlag flags) {
+        return grep(strValue, regex, flags.getIntValue());
+    }
+    
+    public static FuncList<String> grep(CharSequence strValue, String regex, int patternFlags) {
+        val pattern  = Pattern.compile(regex, patternFlags);
+        return FuncList.from(Streamable.from(()->{
+            val matcher  = pattern.matcher(strValue);
+            val iterator = new IteratorPlus<String>() {
+                @Override
+                public Iterator<String> asIterator() {
+                    return new Iterator<String>() {
+                        @Override
+                        public boolean hasNext() {
+                            return matcher.find();
+                        }
+                        @Override
+                        public String next() {
+                            return matcher.group();
+                        }
+                    };
+                }
+            };
+            return iterator.stream();
+        }));
+    }
+    
     public static Func1<CharSequence, RegExMatchResultStream> matches(String regex) {
         return str -> matches(str, regex, -1);
     }
     public static Func1<CharSequence, RegExMatchResultStream> matches(String regex, RegExFlag flags) {
-        return str -> matches(str, regex, flags);
+        return str -> matches(str, regex, flags.getIntValue());
     }
     public static Func1<CharSequence, RegExMatchResultStream> matches(String regex, int flags) {
         return str -> matches(str, regex, flags);
@@ -403,7 +449,7 @@ public class StrFuncs {
         return matches(str, regex, -1);
     }
     public static RegExMatchResultStream matches(CharSequence str, String regex, RegExFlag flags) {
-        return matches(str, regex, flags);
+        return matches(str, regex, flags.getIntValue());
     }
     public static RegExMatchResultStream matches(CharSequence str, String regex, int flags) {
         if (str == null || (str.length() == 0))
