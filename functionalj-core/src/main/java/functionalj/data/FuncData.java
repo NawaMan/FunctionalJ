@@ -51,7 +51,7 @@ public class FuncData {
      *          the path to the text file.
      * @return  the streamable containing the lines of text from the class.
      */
-    public static Streamable<String> readLines(String path) {
+    public static Result<Streamable<String>> readLines(String path) {
         return readLines(Paths.get(path), StandardCharsets.UTF_8);
     }
     
@@ -64,7 +64,7 @@ public class FuncData {
      *          the path to the text file.
      * @return  the streamable containing the lines of text from the class.
      */
-    public static Streamable<String> readLines(String path, Charset charset) {
+    public static Result<Streamable<String>> readLines(String path, Charset charset) {
         return readLines(Paths.get(path), charset);
     }
     
@@ -77,7 +77,7 @@ public class FuncData {
      *          the path to the text file.
      * @return  the streamable containing the lines of text from the class.
      */
-    public static Streamable<String> readLines(Path path) {
+    public static Result<Streamable<String>> readLines(Path path) {
         return readLines(path, StandardCharsets.UTF_8);
     }
     
@@ -90,8 +90,8 @@ public class FuncData {
      *          the path to the text file.
      * @return  the streamable containing the lines of text from the class.
      */
-    public static Streamable<String> readLines(Path path, Charset charset) {
-        return Streamable.from(()->Files.lines(path, charset));
+    public static Result<Streamable<String>> readLines(Path path, Charset charset) {
+        return Result.from(()->Streamable.from(()->Files.lines(path, charset)));
     }
     
 }
