@@ -1273,6 +1273,10 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         return toImmutableList();
     }
     
+    public default FuncList<DATA> toLazyList() {
+        return FuncList.from(this);
+    }
+    
     public default String toListString() {
         return "[" + map(String::valueOf).collect(Collectors.joining(", ")) + "]";
     }

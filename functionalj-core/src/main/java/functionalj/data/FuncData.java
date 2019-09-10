@@ -23,16 +23,75 @@
 // ============================================================================
 package functionalj.data;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import functionalj.result.Result;
+import functionalj.stream.Streamable;
 import functionalj.types.IData;
 
 public class FuncData {
     
-    
     public static <D extends IData> Result<D> fromMap(Map<String, Object> map, Class<D> clazz) {
         return Result.from(()->IData.$utils.fromMap(map, clazz));
+    }
+    
+    // == Read text file ==
+    
+    /**
+     * Read lines from file. This method will read lines in lazily and ensure the file is closed.
+     * 
+     * This has been tested with 2GB text file.
+     * 
+     * @param path
+     *          the path to the text file.
+     * @return  the streamable containing the lines of text from the class.
+     */
+    public static Streamable<String> readLines(String path) {
+        return readLines(Paths.get(path), StandardCharsets.UTF_8);
+    }
+    
+    /**
+     * Read lines from file. This method will read lines in lazily and ensure the file is closed.
+     * 
+     * This has been tested with 2GB text file.
+     * 
+     * @param path
+     *          the path to the text file.
+     * @return  the streamable containing the lines of text from the class.
+     */
+    public static Streamable<String> readLines(String path, Charset charset) {
+        return readLines(Paths.get(path), charset);
+    }
+    
+    /**
+     * Read lines from file. This method will read lines in lazily and ensure the file is closed.
+     * 
+     * This has been tested with 2GB text file.
+     * 
+     * @param path
+     *          the path to the text file.
+     * @return  the streamable containing the lines of text from the class.
+     */
+    public static Streamable<String> readLines(Path path) {
+        return readLines(path, StandardCharsets.UTF_8);
+    }
+    
+    /**
+     * Read lines from file. This method will read lines in lazily and ensure the file is closed.
+     * 
+     * This has been tested with 2GB text file.
+     * 
+     * @param path
+     *          the path to the text file.
+     * @return  the streamable containing the lines of text from the class.
+     */
+    public static Streamable<String> readLines(Path path, Charset charset) {
+        return Streamable.from(()->Files.lines(path, charset));
     }
     
 }
