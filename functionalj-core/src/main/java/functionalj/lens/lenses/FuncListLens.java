@@ -26,6 +26,7 @@ package functionalj.lens.lenses;
 import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
@@ -127,7 +128,31 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                 });
     }
     
-    public default Func1<HOST, HOST> changeTo(Predicate<TYPE> checker, Function<TYPE, TYPE> mapper) {
+    public default Func1<HOST, HOST> changeEachTo(Function<TYPE, TYPE> mapper) {
+        return host -> {
+            val newList = apply(host).map(each -> mapper.apply(each));
+            val newHost = FuncListLens.this.apply(host, newList);
+            return newHost;
+        };
+    }
+    
+    public default Func1<HOST, HOST> changeEachOnly(Predicate<TYPE> checker, TYPE newValue) {
+        return host -> {
+            val newList = apply(host).map(each -> checker.test(each) ? newValue : each);
+            val newHost = FuncListLens.this.apply(host, newList);
+            return newHost;
+        };
+    }
+    
+    public default Func1<HOST, HOST> changeEachOnly(Predicate<TYPE> checker, Supplier<TYPE> newValueSupplier) {
+        return host -> {
+            val newList = apply(host).map(each -> checker.test(each) ? newValueSupplier.get() : each);
+            val newHost = FuncListLens.this.apply(host, newList);
+            return newHost;
+        };
+    }
+    
+    public default Func1<HOST, HOST> changeEachOnly(Predicate<TYPE> checker, Function<TYPE, TYPE> mapper) {
         return host -> {
             val newList = apply(host).map(each -> checker.test(each) ? mapper.apply(each) : each);
             val newHost = FuncListLens.this.apply(host, newList);
