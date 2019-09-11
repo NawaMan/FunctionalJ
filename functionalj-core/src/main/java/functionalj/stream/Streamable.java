@@ -24,6 +24,8 @@
 package functionalj.stream;
 
 import static functionalj.function.Func.themAll;
+import static functionalj.lens.Access.theLong;
+import static functionalj.stream.Aggregators.counts;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
@@ -33,11 +35,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -59,6 +63,7 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import functionalj.function.Func;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
@@ -1305,12 +1310,39 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
     
+    // Eager
     public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(Function<? super DATA, ? extends KEY> classifier) {
         val theMap = new HashMap<KEY, FuncList<DATA>>();
         stream()
             .collect(Collectors.groupingBy(classifier))
             .forEach((key,list)->theMap.put(key, ImmutableList.from(list)));
         return ImmutableMap.from(theMap);
+    }
+    
+    // Eager
+    public default <KEY, ACCUMULATOR, TARGET> FuncMap<KEY, TARGET> groupingBy(
+            Function<? super DATA, ? extends KEY> classifier,
+            Aggregator<DATA, ACCUMULATOR, TARGET> aggregator) {
+        val theMap      = new ConcurrentHashMap<KEY, ACCUMULATOR>();
+        val initializer = Objects.requireNonNull(aggregator.initializer());
+        val accumulator = Objects.requireNonNull(aggregator.accumulator());
+        val finalizer   = Objects.requireNonNull(aggregator.finalizer());
+        stream()
+            .forEach(each-> {
+                val key = classifier.apply(each);
+                val accValue = theMap.computeIfAbsent(key, __->initializer.get());
+                val newValue = accumulator.apply(each, accValue);
+                theMap.put(key, newValue);
+            });
+        
+        val mapBuilder = FuncMap.<KEY, TARGET>newBuilder();
+        theMap
+            .forEach((key, accValue) -> {
+                val target = finalizer.apply(accValue);
+                mapBuilder.with(key, target);
+            });
+        val map = mapBuilder.build();
+        return map;
     }
     
     @SuppressWarnings("unchecked")
@@ -1607,6 +1639,24 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         return deriveWith(stream -> { 
             return StreamPlus.from(stream()).collapse(conditionToCollapse, concatFunc);
         });
+    }
+    
+    // TODO - Remove duplicate.
+    
+    public default FuncMap<DATA, Integer> histogram() {
+        return histogram(Func.itself());
+    }
+    
+    public default <D> FuncMap<D, Integer> histogram(Func1<DATA, D> mapper) {
+        return groupingBy     (mapper, counts())
+                .mapValue     (theLong.toInteger())
+                .sortedByValue((a,b) -> Integer.compare(b, a));
+    }
+    
+    public default Optional<Map.Entry<DATA, Integer>> mostFrequence() {
+        return histogram()
+                .entries()
+                .findFirst();
     }
     
     public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompleteAction<T>> mapper) {

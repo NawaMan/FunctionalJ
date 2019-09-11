@@ -26,6 +26,7 @@ package functionalj.stream;
 import static functionalj.function.Func.f;
 import static functionalj.function.Func.themAll;
 import static functionalj.functions.ObjFuncs.notEqual;
+import static functionalj.lens.Access.theLong;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static java.lang.Boolean.TRUE;
 
@@ -46,6 +47,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -419,9 +421,9 @@ public interface StreamPlus<DATA>
     }
     
     public default <D> FuncMap<D, Integer> histogram(Func1<DATA, D> mapper) {
-        return groupingBy(mapper)
-                .mapValue(FuncList::size)
-                .sortedByValue((a, b)->Integer.compare(b, a));
+        return groupingBy     (mapper, Aggregators.counts())
+                .mapValue     (theLong.toInteger())
+                .sortedByValue((a,b) -> Integer.compare(b, a));
     }
     
     public default Optional<Map.Entry<DATA, Integer>> mostFrequence() {
@@ -753,6 +755,7 @@ public interface StreamPlus<DATA>
         });
     }
     
+    // Eager
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             Function<? super DATA, ? extends KEY>   classifier,
             Function<? super FuncList<DATA>, VALUE> aggregate) {
@@ -767,6 +770,32 @@ public interface StreamPlus<DATA>
                 });
             return ImmutableMap.from(theMap);
         });
+    }
+    
+    // Eager
+    public default <KEY, ACCUMULATOR, TARGET> FuncMap<KEY, TARGET> groupingBy(
+            Function<? super DATA, ? extends KEY> classifier,
+            Aggregator<DATA, ACCUMULATOR, TARGET> aggregator) {
+        val theMap      = new ConcurrentHashMap<KEY, ACCUMULATOR>();
+        val initializer = Objects.requireNonNull(aggregator.initializer());
+        val accumulator = Objects.requireNonNull(aggregator.accumulator());
+        val finalizer   = Objects.requireNonNull(aggregator.finalizer());
+        stream()
+            .forEach(each-> {
+                val key = classifier.apply(each);
+                val accValue = theMap.computeIfAbsent(key, __->initializer.get());
+                val newValue = accumulator.apply(each, accValue);
+                theMap.put(key, newValue);
+            });
+        
+        val mapBuilder = FuncMap.<KEY, TARGET>newBuilder();
+        theMap
+            .forEach((key, accValue) -> {
+                val target = finalizer.apply(accValue);
+                mapBuilder.with(key, target);
+            });
+        val map = mapBuilder.build();
+        return map;
     }
     
     @SuppressWarnings("unchecked")

@@ -406,11 +406,11 @@ public class StrFuncs {
     }
     
     public static FuncList<String> grab(CharSequence strValue, String regex) {
-        return grep(strValue, regex, 0);
+        return grab(strValue, regex, 0);
     }
     
     public static FuncList<String> grab(CharSequence strValue, String regex, RegExFlag flags) {
-        return grep(strValue, regex, flags.getIntValue());
+        return grab(strValue, regex, flags.getIntValue());
     }
     
     public static FuncList<String> grab(CharSequence strValue, String regex, int patternFlags) {

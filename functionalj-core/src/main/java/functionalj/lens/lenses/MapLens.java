@@ -88,7 +88,7 @@ public interface MapLens<HOST, KEY, VALUE,
         return LensUtils.createSubLens(this, read, write, lensSpecParameterized2()::createSubLens2);
     }
     
-    public default Function<HOST, HOST> changeEachOnly(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {
+    public default Function<HOST, HOST> changeEach(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {
         val mapEntry = Func.from((Map.Entry<KEY, VALUE> each) ->{
             val key   = each.getKey();
             val value = each.getValue();
@@ -119,7 +119,7 @@ public interface MapLens<HOST, KEY, VALUE,
         };
     }
     
-    public default Function<HOST, HOST> changeEachOnly(BiPredicate<KEY, VALUE> checker, Function<VALUE, VALUE> mapper) {
+    public default Function<HOST, HOST> changeEach(BiPredicate<KEY, VALUE> checker, Function<VALUE, VALUE> mapper) {
         val mapEntry = Func.from((Map.Entry<KEY, VALUE> each) ->{
             val key   = each.getKey();
             val value = each.getValue();

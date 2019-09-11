@@ -23,12 +23,12 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static functionalj.function.Func.alwaysTrue;
+
 import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
-import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
@@ -128,38 +128,12 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                 });
     }
     
-    // TODO - Make select
-    
-    public default Func1<HOST, HOST> changeEachTo(Function<TYPE, TYPE> mapper) {
-        return host -> {
-            val newList = apply(host).map(each -> mapper.apply(each));
-            val newHost = FuncListLens.this.apply(host, newList);
-            return newHost;
-        };
+    public default ListLensEach<HOST, TYPE, TYPELENS> each() {
+        return new ListLensEach<>(this, alwaysTrue());
     }
     
-    public default Func1<HOST, HOST> changeEachOnly(Predicate<TYPE> checker, TYPE newValue) {
-        return host -> {
-            val newList = apply(host).map(each -> checker.test(each) ? newValue : each);
-            val newHost = FuncListLens.this.apply(host, newList);
-            return newHost;
-        };
-    }
-    
-    public default Func1<HOST, HOST> changeEachOnly(Predicate<TYPE> checker, Supplier<TYPE> newValueSupplier) {
-        return host -> {
-            val newList = apply(host).map(each -> checker.test(each) ? newValueSupplier.get() : each);
-            val newHost = FuncListLens.this.apply(host, newList);
-            return newHost;
-        };
-    }
-    
-    public default Func1<HOST, HOST> changeEachOnly(Predicate<TYPE> checker, Function<TYPE, TYPE> mapper) {
-        return host -> {
-            val newList = apply(host).map(each -> checker.test(each) ? mapper.apply(each) : each);
-            val newHost = FuncListLens.this.apply(host, newList);
-            return newHost;
-        };
+    public default ListLensEach<HOST, TYPE, TYPELENS> eachOf(Predicate<TYPE> checker) {
+        return new ListLensEach<>(this, checker);
     }
     
 }
