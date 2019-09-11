@@ -618,6 +618,11 @@ public abstract class FuncMap<KEY, VALUE>
     
     public abstract FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck);
     
+    @SuppressWarnings("unchecked")
+    public FuncMap<KEY, VALUE> filterByValue(Predicate<? super VALUE> valueCheck) {
+        return filterByEntry(entry -> valueCheck.test((VALUE)entry.getValue()));
+    }
+    
     public abstract FuncMap<KEY, VALUE> filterByEntry(Predicate<? super Map.Entry<? super KEY, ? super VALUE>> entryCheck);
     
     public abstract FuncList<KEY> keys();
