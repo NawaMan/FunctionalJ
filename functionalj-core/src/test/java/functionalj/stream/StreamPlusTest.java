@@ -819,7 +819,7 @@ public class StreamPlusTest {
                 return total;
             }
         };
-        assertEquals(18, stream.get(sumLength).intValue());
+        assertEquals(18, stream.calculate(sumLength).intValue());
     }
     
     @Test
@@ -847,7 +847,7 @@ public class StreamPlusTest {
                 return (int) ((int)total/count);
             }
         };
-        assertEquals("(18,4)", stream.get(sumLength, avgLength).toString());
+        assertEquals("(18,4)", stream.calculate(sumLength, avgLength).toString());
     }
     
     @Test
@@ -875,7 +875,7 @@ public class StreamPlusTest {
                 return max;
             }
         };
-        val range = stream.get(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
+        val range = stream.calculate(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
         assertEquals(3, range);
     }
     
@@ -893,7 +893,7 @@ public class StreamPlusTest {
                 return total;
             }
         };
-        assertEquals(18, stream.get(sum.of(theString.length())).intValue());
+        assertEquals(18, stream.calculate(sum.of(theString.length())).intValue());
     }
     
 }

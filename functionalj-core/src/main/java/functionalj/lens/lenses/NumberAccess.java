@@ -243,7 +243,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
             return operator.apply(v, value);
         });
     }
-
+    
     public default NUMACCESS toZero() {
         return __operate(this::newAccess, __mathOperators()::zero);
     }
@@ -270,7 +270,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::add);
     }
     
-
+    
     @SuppressWarnings("unchecked")
     public default NUMACCESS subtract(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::subtract);
@@ -306,7 +306,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::multiply);
     }
     
-
+    
     @SuppressWarnings("unchecked")
     public default NUMACCESS divide(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::divide);
@@ -360,7 +360,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     
     
 //  public BigDecimal[] divideAndRemainder(BigDecimal divisor); --  Tuple
-
+    
     @SuppressWarnings("unchecked")
     public default NUMACCESS pow(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::pow);
@@ -402,7 +402,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
             return __mathOperators().signum(v);
         });
     }
-
+    
     @SuppressWarnings("unchecked")
     public default NUMACCESS min(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::min);
@@ -419,7 +419,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     public default NUMACCESS min(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::min);
     }
-
+    
     @SuppressWarnings("unchecked")
     public default NUMACCESS max(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::max);
