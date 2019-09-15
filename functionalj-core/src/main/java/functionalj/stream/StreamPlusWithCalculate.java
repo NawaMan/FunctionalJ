@@ -11,8 +11,9 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 public interface StreamPlusWithCalculate<DATA> {
-
+    
     public IteratorPlus<DATA> iterator();
+    
     
     //== Calculate ==
     

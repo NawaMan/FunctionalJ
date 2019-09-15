@@ -92,7 +92,7 @@ public class Store<DATA> {
         }
         val newResult = changer
                 .applySafely(originalData)
-                .pipe(
+                .pipeTo(
                     accepter.applyTo(originalData),
                     this::ensureStore
                 );

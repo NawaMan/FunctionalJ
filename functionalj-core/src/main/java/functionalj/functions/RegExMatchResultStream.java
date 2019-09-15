@@ -30,7 +30,7 @@ public interface RegExMatchResultStream extends StreamPlus<RegExMatchResult> {
     
     
     public default StreamPlus<String> toTexts() {
-        return pipe(theResults.texts);
+        return pipeTo(theResults.texts);
     }
     
     

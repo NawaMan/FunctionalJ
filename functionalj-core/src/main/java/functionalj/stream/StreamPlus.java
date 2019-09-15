@@ -24,29 +24,22 @@
 package functionalj.stream;
 
 import static functionalj.function.Func.themAll;
-import static functionalj.stream.ZipWithOption.AllowUnpaired;
-import static functionalj.tuple.Tuple.tuple2;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -72,12 +65,8 @@ import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
 import functionalj.functions.StrFuncs;
 import functionalj.functions.ThrowFuncs;
-import functionalj.lens.core.WriteLens;
-import functionalj.lens.lenses.AnyLens;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
-import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
@@ -87,7 +76,6 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 // TODO - Intersect
-
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
@@ -100,7 +88,12 @@ public interface StreamPlus<DATA>
             StreamPlusWithMapFirst<DATA>,
             StreamPlusWithMapTuple<DATA>,
             StreamPlusWithMapThen<DATA>,
-            StreamPlusWithSplit<DATA>
+            StreamPlusWithSplit<DATA>,
+            StreamPlusWithFillNull<DATA>,
+            StreamPlusWithSegment<DATA>,
+            StreamPlusWithZip<DATA>,
+            StreamPlusAddtionalOperators<DATA>,
+            StreamPlusAdditionalTerminalOperators<DATA>
         {
     
     public static <D> D noMoreElement() throws NoMoreResultException {
@@ -285,7 +278,8 @@ public interface StreamPlus<DATA>
     public Stream<DATA> stream();
     
     
-    public default <TARGET> TARGET terminate(Func1<Stream<DATA>, TARGET> action) {
+    public default <TARGET> TARGET terminate(
+            Func1<Stream<DATA>, TARGET> action) {
         val stream = stream();
         try {
             val result = action.apply(stream);
@@ -295,7 +289,8 @@ public interface StreamPlus<DATA>
         }
     }
     
-    public default void terminate(FuncUnit1<Stream<DATA>> action) {
+    public default void terminate(
+            FuncUnit1<Stream<DATA>> action) {
         val stream = stream();
         try {
             action.accept(stream);
@@ -304,14 +299,16 @@ public interface StreamPlus<DATA>
         }
     }
     
-    public default <TARGET> StreamPlus<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action) {
+    public default <TARGET> StreamPlus<TARGET> deriveWith(
+            Function<Stream<DATA>, Stream<TARGET>> action) {
         return StreamPlus.from(
                 action.apply(
                         this.stream()));
     }
     
     @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> concatWith(Stream<DATA> ... tails) {
+    public default StreamPlus<DATA> concatWith(
+            Stream<DATA> ... tails) {
         return concat(
                 StreamPlus.of(this), 
                 StreamPlus.of(tails)
@@ -322,7 +319,8 @@ public interface StreamPlus<DATA>
     //== Functionalities ==
     
     @Override
-    public default IntStreamPlus mapToInt(ToIntFunction<? super DATA> mapper) {
+    public default IntStreamPlus mapToInt(
+            ToIntFunction<? super DATA> mapper) {
         val intStreamPlus = IntStreamPlus.from(stream().mapToInt(mapper));
         intStreamPlus.onClose(()->{
             close();
@@ -331,7 +329,8 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
+    public default LongStreamPlus mapToLong(
+            ToLongFunction<? super DATA> mapper) {
         return LongStreamPlus
                 .from(
                     stream()
@@ -339,7 +338,8 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+    public default DoubleStreamPlus mapToDouble(
+            ToDoubleFunction<? super DATA> mapper) {
         return DoubleStreamPlus
                 .from(
                     stream()
@@ -347,7 +347,8 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default IntStreamPlus flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
+    public default IntStreamPlus flatMapToInt(
+            Function<? super DATA, ? extends IntStream> mapper) {
         return IntStreamPlus
                 .from(
                     stream()
@@ -355,7 +356,8 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
+    public default LongStreamPlus flatMapToLong(
+            Function<? super DATA, ? extends LongStream> mapper) {
         return LongStreamPlus
                 .from(
                     stream()
@@ -363,14 +365,17 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
+    public default DoubleStreamPlus flatMapToDouble(
+            Function<? super DATA, ? extends DoubleStream> mapper) {
         return DoubleStreamPlus
                 .from(
                     stream()
                     .flatMapToDouble(mapper));
     }
     
-    public default void forEach(Consumer<? super DATA> action) {
+    @Override
+    public default void forEach(
+            Consumer<? super DATA> action) {
         terminate(stream -> {
             if (action == null)
                 return;
@@ -380,18 +385,9 @@ public interface StreamPlus<DATA>
         });
     }
     
-    public default void forEachWithIndex(BiConsumer<? super Integer, ? super DATA> action) {
-        terminate(stream -> {
-            if (action == null)
-                return;
-            
-            val index = new AtomicInteger();
-            stream
-            .forEach(each -> action.accept(index.getAndIncrement(), each));
-        });
-    }
-    
-    public default void forEachOrdered(Consumer<? super DATA> action) {
+    @Override
+    public default void forEachOrdered(
+            Consumer<? super DATA> action) {
         terminate(stream -> {
             if (action == null)
                 return;
@@ -401,148 +397,75 @@ public interface StreamPlus<DATA>
         });
     }
     
-    public default DATA reduce(DATA identity, BinaryOperator<DATA> accumulator) {
+    @Override
+    public default DATA reduce(
+            DATA identity, 
+            BinaryOperator<DATA> accumulator) {
         return terminate(stream -> {
             return stream
                     .reduce(identity, accumulator);
         });
     }
     
-    public default Optional<DATA> reduce(BinaryOperator<DATA> accumulator) {
+    @Override
+    public default Optional<DATA> reduce(
+            BinaryOperator<DATA> accumulator) {
         return terminate(stream -> {
             return stream
                     .reduce(accumulator);
         });
     }
     
+    @Override
     public default <U> U reduce(
-                    U                              identity,
-                    BiFunction<U, ? super DATA, U> accumulator,
-                    BinaryOperator<U>              combiner) {
+            U                              identity,
+            BiFunction<U, ? super DATA, U> accumulator,
+            BinaryOperator<U>              combiner) {
         return terminate(stream -> {
             return stream
                     .reduce(identity, accumulator, combiner);
         });
     }
     
+    @Override
     public default <R> R collect(
-                    Supplier<R>                 supplier,
-                    BiConsumer<R, ? super DATA> accumulator,
-                    BiConsumer<R, R>            combiner) {
+            Supplier<R>                 supplier,
+            BiConsumer<R, ? super DATA> accumulator,
+            BiConsumer<R, R>            combiner) {
         return terminate(stream -> {
             return stream
                     .collect(supplier, accumulator, combiner);
         });
     }
     
-    public default <R, A> R collect(Collector<? super DATA, A, R> collector) {
+    @Override
+    public default <R, A> R collect(
+            Collector<? super DATA, A, R> collector) {
         return terminate(stream -> {
             return stream
                     .collect(collector);
         });
     }
     
-    public default Optional<DATA> min(Comparator<? super DATA> comparator) {
+    @Override
+    public default Optional<DATA> min(
+            Comparator<? super DATA> comparator) {
         return terminate(stream -> {
             return stream
                     .min(comparator);
         });
     }
     
-    public default Optional<DATA> max(Comparator<? super DATA> comparator) {
+    @Override
+    public default Optional<DATA> max(
+            Comparator<? super DATA> comparator) {
         return terminate(stream -> {
             return stream
                     .max(comparator);
         });
     }
     
-    @SuppressWarnings("unchecked")
-    public default Tuple2<Optional<DATA>, Optional<DATA>> minMax(Comparator<? super DATA> comparator) {
-        return terminate(stream -> {
-            val minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-            val maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-            stream
-                .sorted(comparator)
-                .forEach(each -> {
-                    minRef.compareAndSet(StreamPlusHelper.dummy, each);
-                    maxRef.set(each);
-                });
-            val min = minRef.get();
-            val max = maxRef.get();
-            return Tuple2.of(
-                    StreamPlusHelper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
-                    StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
-        });
-    }
-    
-    public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
-        return terminate(stream -> {
-            return stream
-                    .min((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
-        });
-    }
-    
-    public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
-        return terminate(stream -> {
-            return stream
-                    .max((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
-        });
-    }
-    
-    public default <D> Optional<DATA> minBy(Func1<DATA, D> mapper, Comparator<? super D> comparator) {
-        return terminate(stream -> {
-            return stream
-                    .min((a,b)->comparator.compare(mapper.apply(a), mapper.apply(b)));
-        });
-    }
-    
-    public default <D> Optional<DATA> maxBy(Func1<DATA, D> mapper, Comparator<? super D> comparator) {
-        return terminate(stream -> {
-            return stream
-                    .max((a,b)->comparator.compare(mapper.apply(a), mapper.apply(b)));
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <D extends Comparable<D>> Tuple2<Optional<DATA>, Optional<DATA>> minMaxBy(Func1<DATA, D> mapper) {
-        return terminate(stream -> {
-            val minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-            val maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-            StreamPlus.from(stream)
-                .sortedBy(mapper)
-                .forEach(each -> {
-                    minRef.compareAndSet(StreamPlusHelper.dummy, each);
-                    maxRef.set(each);
-                });
-            val min = minRef.get();
-            val max = maxRef.get();
-            return tuple2(
-                    StreamPlusHelper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
-                    StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <D> Tuple2<Optional<DATA>, Optional<DATA>> minMaxBy(
-            Func1<DATA, D>        mapper, 
-            Comparator<? super D> comparator) {
-        return terminate(stream -> {
-            val minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-            val maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-            StreamPlus.from(stream)
-                .sortedBy(mapper, (i1, i2)->comparator.compare(i1, i2))
-                .forEach(each -> {
-                    minRef.compareAndSet(StreamPlusHelper.dummy, each);
-                    maxRef.set(each);
-                });
-            val min = minRef.get();
-            val max = maxRef.get();
-            return tuple2(
-                    StreamPlusHelper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
-                    StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
-        });
-    }
-    
+    @Override
     public default long count() {
         return terminate(stream -> {
             return stream
@@ -557,53 +480,34 @@ public interface StreamPlus<DATA>
         });
     }
     
-    public default boolean anyMatch(Predicate<? super DATA> predicate) {
+    @Override
+    public default boolean anyMatch(
+            Predicate<? super DATA> predicate) {
         return terminate(stream -> {
             return stream
                     .anyMatch(predicate);
         });
     }
     
-    public default boolean allMatch(Predicate<? super DATA> predicate) {
+    @Override
+    public default boolean allMatch(
+            Predicate<? super DATA> predicate) {
         return terminate(stream -> {
             return stream
                     .allMatch(predicate);
         });
     }
     
-    public default boolean noneMatch(Predicate<? super DATA> predicate) {
+    @Override
+    public default boolean noneMatch(
+            Predicate<? super DATA> predicate) {
         return terminate(stream -> {
             return stream
                     .noneMatch(predicate);
         });
     }
     
-    public default Optional<DATA> findFirst(Predicate<? super DATA> predicate) {
-        return terminate(stream -> {
-            return stream
-                    .filter(predicate)
-                    .findFirst();
-        });
-    }
-    
-    public default Optional<DATA> findAny(Predicate<? super DATA> predicate) {
-        return terminate(stream -> {
-            return stream
-                    .filter(predicate)
-                    .findAny();
-        });
-    }
-    
-    public default <T> Optional<DATA> findFirst(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        return filter(mapper, theCondition)
-                .findFirst();
-    }
-    
-    public default <T>  Optional<DATA> findAny(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        return filter(mapper, theCondition)
-                .findAny();
-    }
-    
+    @Override
     public default Optional<DATA> findFirst() {
         return terminate(stream -> {
             return stream
@@ -611,6 +515,7 @@ public interface StreamPlus<DATA>
         });
     }
     
+    @Override
     public default Optional<DATA> findAny() {
         return terminate(stream -> {
             return stream
@@ -692,7 +597,9 @@ public interface StreamPlus<DATA>
     }
     
     public default ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.from(this);
+        return terminate(stream -> {
+            return ImmutableList.from(this);
+        });
     }
     
     public default List<DATA> toMutableList() {
@@ -707,6 +614,8 @@ public interface StreamPlus<DATA>
         return new HashSet<DATA>(this.collect(Collectors.toSet()));
     }
     
+    //-- Iterator --
+    
     public default IteratorPlus<DATA> iterator() {
         // TODO - Make sure close is handled properly.
         return IteratorPlus.from(stream());
@@ -716,134 +625,6 @@ public interface StreamPlus<DATA>
         // TODO - Make sure close is handled properly.
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
-    
-    // Eager
-    public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(
-            Function<? super DATA, ? extends KEY> classifier) {
-        return terminate(stream -> {
-            val theMap = new HashMap<KEY, FuncList<DATA>>();
-            stream
-                .collect(Collectors.groupingBy(classifier))
-                .forEach((key,list)->theMap.put(key, ImmutableList.from(list)));
-            return ImmutableMap.from(theMap);
-        });
-    }
-    
-    // Eager
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            Function<? super DATA, ? extends KEY>   classifier,
-            Function<? super FuncList<DATA>, VALUE> aggregate) {
-        return terminate(stream -> {
-            val theMap = new HashMap<KEY, VALUE>();
-            stream
-                .collect(Collectors.groupingBy(classifier))
-                .forEach((key,list) -> {
-                    val valueList      = ImmutableList.from(list);
-                    val aggregateValue = aggregate.apply(valueList);
-                    theMap.put(key, aggregateValue);
-                });
-            return ImmutableMap.from(theMap);
-        });
-    }
-    
-    // Eager
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            Function<? super DATA, ? extends KEY> classifier,
-            StreamProcessor<? super DATA, VALUE>  processor) {
-        Function<? super FuncList<DATA>, VALUE> aggregate = (FuncList<DATA> list) -> {
-            return (VALUE)processor.process((StreamPlus)list.stream());
-        };
-        return groupingBy(classifier, aggregate);
-    }
-    
-    // Eager
-    public default <KEY, TARGET> FuncMap<KEY, TARGET> groupingBy(
-            Function<? super DATA, ? extends KEY> classifier,
-            Supplier<StreamElementProcessor<? super DATA, TARGET>> processorSupplier) {
-        val theMap   = new ConcurrentHashMap<KEY, Tuple2<StreamElementProcessor<? super DATA, TARGET>, LongAdder>>();
-        val supplier = Objects.requireNonNull(processorSupplier);
-        forEachWithIndex((index, each)->{
-            val key  = classifier.apply(each);
-            val pair = theMap.computeIfAbsent(key, __-> Tuple2.of(supplier.get(), new LongAdder()));
-            
-            val processor = pair._1();
-            processor.processElement(index, each);
-            
-            val counter = pair._2();
-            counter.increment();
-        });
-        
-        val mapBuilder = FuncMap.<KEY, TARGET>newBuilder();
-        theMap
-            .forEach((key, pair) -> {
-                val processor = pair._1();
-                val counter   = pair._2();
-                val count     = counter.longValue();
-                val target    = processor.processComplete(count);
-                mapBuilder.with(key, target);
-            });
-        val map = mapBuilder.build();
-        return map;
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, ? extends KEY> keyMapper) {
-        return terminate(stream -> {
-            val theMap = stream.collect(Collectors.toMap(keyMapper, data -> data));
-            return (FuncMap<KEY, DATA>)ImmutableMap.from(theMap);
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-                Function<? super DATA, ? extends KEY>  keyMapper,
-                Function<? super DATA, ? extends VALUE> valueMapper) {
-        return terminate(stream -> {
-            val theMap = stream.collect(Collectors.toMap(keyMapper, valueMapper));
-            return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-                Function<? super DATA, ? extends KEY>   keyMapper,
-                Function<? super DATA, ? extends VALUE> valueMapper,
-                BinaryOperator<VALUE>                   mergeFunction) {
-        return terminate(stream -> {
-            val theMap = stream.collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
-            return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <KEY> FuncMap<KEY, DATA> toMap(
-                Function<? super DATA, ? extends KEY> keyMapper,
-                BinaryOperator<DATA>                  mergeFunction) {
-        return terminate(stream -> {
-            val theMap = stream.collect(Collectors.toMap(keyMapper, value -> value, mergeFunction));
-            return (FuncMap<KEY, DATA>) ImmutableMap.from(theMap);
-        });
-    }
-    
-    //== Plus ==
-    
-    public default String joinToString() {
-        return terminate(stream -> {
-            return stream
-                    .map(StrFuncs::toStr)
-                    .collect(Collectors.joining());
-        });
-    }
-    public default String joinToString(String delimiter) {
-        return terminate(stream -> {
-            return stream
-                    .map(StrFuncs::toStr)
-                    .collect(Collectors.joining(delimiter));
-        });
-    }
-    
-    //++ Plus w/ Self ++
     
     @Override
     public default StreamPlus<DATA> sequential() {
@@ -877,18 +658,75 @@ public interface StreamPlus<DATA>
         });
     }
     
+    //== Plus ==
+    
+    public default String joinToString() {
+        return terminate(stream -> {
+            return stream
+                    .map(StrFuncs::toStr)
+                    .collect(Collectors.joining());
+        });
+    }
+    public default String joinToString(String delimiter) {
+        return terminate(stream -> {
+            return stream
+                    .map(StrFuncs::toStr)
+                    .collect(Collectors.joining(delimiter));
+        });
+    }
+    
     public default <T> Pipeable<? extends StreamPlus<DATA>> pipable() {
         return Pipeable.of(this);
     }
     
-    public default <T> T pipe(Function<? super StreamPlus<DATA>, T> piper) {
+    public default <T> T pipeTo(Function<? super StreamPlus<DATA>, T> piper) {
         return piper.apply(this);
     }
     
-    public default <TARGET> StreamPlus<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+    @Override
+    public default <TARGET> StreamPlus<TARGET> map(
+            Function<? super DATA, ? extends TARGET> mapper) {
         return deriveWith(stream -> {
             return stream
                     .map(mapper);
+        });
+    }
+    
+    @Override
+    public default <TARGET> StreamPlus<TARGET> flatMap(
+            Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+        return deriveWith(stream -> {
+            return stream
+                    .flatMap(mapper);
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> filter(
+            Predicate<? super DATA> predicate) {
+        return deriveWith(stream -> {
+            return (predicate == null)
+                ? stream
+                : stream.filter(predicate);
+        });
+    }
+    
+    @Override
+    public default <T> StreamPlus<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
+        return filter(value -> {
+            val target = mapper.apply(value);
+            val isPass = theCondition.test(target);
+            return isPass;
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> peek(
+            Consumer<? super DATA> action) {
+        return deriveWith(stream -> {
+            return (action == null)
+                    ? stream
+                    : stream.peek(action);
         });
     }
     
@@ -907,6 +745,22 @@ public interface StreamPlus<DATA>
         return deriveWith(stream -> {
             return stream
                     .skip(n);
+        });
+    }
+    
+    public default StreamPlus<DATA> limit(Long maxSize) {
+        return deriveWith(stream -> {
+            return ((maxSize == null) || (maxSize.longValue() < 0))
+                    ? stream
+                    : stream.limit(maxSize);
+        });
+    }
+    
+    public default StreamPlus<DATA> skip(Long startAt) {
+        return deriveWith(stream -> {
+            return ((startAt == null) || (startAt.longValue() < 0))
+                    ? stream
+                    : stream.skip(startAt);
         });
     }
     
@@ -1002,203 +856,12 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default StreamPlus<DATA> sorted(Comparator<? super DATA> comparator) {
+    public default StreamPlus<DATA> sorted(
+            Comparator<? super DATA> comparator) {
         return deriveWith(stream -> {
             return (comparator == null)
                     ? stream.sorted()
                     : stream.sorted(comparator);
-        });
-    }
-    
-    public default StreamPlus<DATA> limit(Long maxSize) {
-        return deriveWith(stream -> {
-            return ((maxSize == null) || (maxSize.longValue() < 0))
-                    ? stream
-                    : stream.limit(maxSize);
-        });
-    }
-    
-    public default StreamPlus<DATA> skip(Long startAt) {
-        return deriveWith(stream -> {
-            return ((startAt == null) || (startAt.longValue() < 0))
-                    ? stream
-                    : stream.skip(startAt);
-        });
-    }
-    
-    //-- Sorted --
-    
-    public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper) {
-        return deriveWith(stream -> {
-            return stream
-                    .sorted((a, b) -> {
-                        T vA = mapper.apply(a);
-                        T vB = mapper.apply(b);
-                        return vA.compareTo(vB);
-                    });
-        });
-    }
-    
-    public default <T> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper, Comparator<T> comparator) {
-        return deriveWith(stream -> {
-            return stream
-                    .sorted((a, b) -> {
-                        T vA = mapper.apply(a);
-                        T vB = mapper.apply(b);
-                        return Objects.compare(vA,  vB, comparator);
-                    });
-        });
-    }
-    
-    // -- fillNull --
-    
-    public default <VALUE> StreamPlus<DATA> fillNull(
-            AnyLens<DATA, VALUE> lens, 
-            VALUE                replacement) {
-        return fillNull(
-                (Func1<DATA, VALUE>)lens, 
-                ((WriteLens<DATA, VALUE>)lens)::apply, 
-                replacement);
-    }
-    
-    public default <VALUE> StreamPlus<DATA> fillNull(
-            Func1<DATA, VALUE>       get, 
-            Func2<DATA, VALUE, DATA> set, 
-            VALUE                    replacement) {
-        return deriveWith(stream -> {
-            return (Stream<DATA>)stream
-                    .map(orgElmt -> {
-                        val value   = get.apply(orgElmt);
-                        if (value == null) {
-                            val newElmt = set.apply(orgElmt, replacement);
-                            return (DATA)newElmt;
-                        }
-                        return orgElmt;
-                    });
-        });
-    }
-    
-    public default <VALUE> StreamPlus<DATA> fillNull(
-            AnyLens<DATA, VALUE> lens, 
-            Supplier<VALUE>      replacementSupplier) {
-        return fillNull(
-                (Func1<DATA, VALUE>)lens, 
-                ((WriteLens<DATA, VALUE>)lens)::apply, 
-                replacementSupplier);
-    }
-    
-    public default <VALUE> StreamPlus<DATA> fillNull(
-            Func1<DATA, VALUE>       get, 
-            Func2<DATA, VALUE, DATA> set, 
-            Supplier<VALUE>          replacementSupplier) {
-        return deriveWith(stream -> {
-            return (Stream<DATA>)stream
-                    .map(orgElmt -> {
-                        val value   = get.apply(orgElmt);
-                        if (value == null) {
-                            val replacement = replacementSupplier.get();
-                            val newElmt     = set.apply(orgElmt, replacement);
-                            return (DATA)newElmt;
-                        }
-                        return orgElmt;
-                    });
-        });
-    }
-    
-    public default <VALUE> StreamPlus<DATA> fillNull(
-            AnyLens<DATA, VALUE> lens, 
-            Func1<DATA, VALUE>   replacementSupplier) {
-        return fillNull(
-                (Func1<DATA, VALUE>)lens, 
-                ((WriteLens<DATA, VALUE>)lens)::apply, 
-                replacementSupplier);
-    }
-    
-    public default <VALUE> StreamPlus<DATA> fillNull(
-            Func1<DATA, VALUE>       get, 
-            Func2<DATA, VALUE, DATA> set, 
-            Func1<DATA, VALUE>       replacementFunction) {
-        return deriveWith(stream -> {
-            return (Stream<DATA>)stream
-                    .map(orgElmt -> {
-                        val value = get.apply(orgElmt);
-                        if (value == null) {
-                            val replacement = replacementFunction.apply(orgElmt);
-                            val newElmt     = set.apply(orgElmt, replacement);
-                            return (DATA)newElmt;
-                        }
-                        return orgElmt;
-                    });
-        });
-    }
-    
-    public default <TARGET> StreamPlus<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
-        return deriveWith(stream -> {
-            return stream
-                    .flatMap(mapper);
-        });
-    }
-    
-    public default StreamPlus<DATA> filter(Predicate<? super DATA> predicate) {
-        return deriveWith(stream -> {
-            return (predicate == null)
-                ? stream
-                : stream.filter(predicate);
-        });
-    }
-    public default StreamPlus<DATA> peek(Consumer<? super DATA> action) {
-        return deriveWith(stream -> {
-            return (action == null)
-                    ? stream
-                    : stream.peek(action);
-        });
-    }
-    
-    //--map with condition --
-    
-    public default StreamPlus<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
-        return map(d -> checker.test(d) ? mapper.apply(d) : d);
-    }
-    public default <T> StreamPlus<T> mapIf(
-            Predicate<? super DATA>   checker, 
-            Function<? super DATA, T> mapper, 
-            Function<? super DATA, T> elseMapper) {
-        return map(d -> {
-            return checker.test(d) 
-                    ? mapper.apply(d) 
-                    : elseMapper.apply(d);
-        });
-    }
-    
-    //-- mapWithIndex --
-    
-    public default StreamPlus<Tuple2<Integer, DATA>> mapWithIndex() {
-        val index = new AtomicInteger();
-        return map(each -> tuple2(index.getAndIncrement(), each));
-    }
-    
-    public default <T> StreamPlus<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
-        val index = new AtomicInteger();
-        return map(each -> mapper.apply(index.getAndIncrement(), each));
-    }
-    
-    public default <T1, T> StreamPlus<T> mapWithIndex(
-                Function<? super DATA, ? extends T1>       mapper1,
-                BiFunction<? super Integer, ? super T1, T> mapper) {
-        val index = new AtomicInteger();
-        return map(each -> mapper.apply(
-                                index.getAndIncrement(),
-                                mapper1.apply(each)));
-    }
-    
-    //-- mapWithPrev --
-    
-    public default <TARGET> StreamPlus<TARGET> mapWithPrev(BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> mapper) {
-        val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
-        return map(element -> {
-            val newValue = mapper.apply(prev.get(), element);
-            prev.set(Result.valueOf(element));
-            return newValue;
         });
     }
     
@@ -1314,326 +977,6 @@ public interface StreamPlus<DATA>
             .skip(1)
             .map(t -> t._1());
         return endStream;
-    }
-    
-    //-- Filter --
-    
-    public default StreamPlus<DATA> filterNonNull() {
-        return deriveWith(stream -> stream.filter(Objects::nonNull));
-    }
-    
-    public default StreamPlus<DATA> filterIn(Collection<? super DATA> collection) {
-        return deriveWith(stream -> {
-            return (collection == null)
-                ? Stream.empty()
-                : stream.filter(data -> collection.contains(data));
-        });
-    }
-    
-    public default StreamPlus<DATA> exclude(Predicate<? super DATA> predicate) {
-        return deriveWith(stream -> {
-            return (predicate == null)
-                ? stream
-                : stream.filter(data -> !predicate.test(data));
-        });
-    }
-    
-    public default StreamPlus<DATA> excludeIn(Collection<? super DATA> collection) {
-        return deriveWith(stream -> {
-            return (collection == null)
-                ? stream
-                : stream.filter(data -> !collection.contains(data));
-        });
-    }
-    
-    public default <T> StreamPlus<DATA> filter(Class<T> clzz) {
-        return filter(clzz::isInstance);
-    }
-    
-    public default <T> StreamPlus<DATA> filter(Class<T> clzz, Predicate<? super T> theCondition) {
-        return filter(value -> {
-            if (!clzz.isInstance(value))
-                return false;
-            
-            val target = clzz.cast(value);
-            val isPass = theCondition.test(target);
-            return isPass;
-        });
-    }
-    
-    public default <T> StreamPlus<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        return filter(value -> {
-            val target = mapper.apply(value);
-            val isPass = theCondition.test(target);
-            return isPass;
-        });
-    }
-    
-    public default StreamPlus<DATA> filterWithIndex(BiFunction<? super Integer, ? super DATA, Boolean> predicate) {
-        val index = new AtomicInteger();
-        return filter(each -> {
-                    return (predicate != null) 
-                            && predicate.apply(index.getAndIncrement(), each);
-        });
-    }
-    
-    //-- Peek --
-    
-    public default <T extends DATA> StreamPlus<DATA> peek(Class<T> clzz, Consumer<? super T> theConsumer) {
-        return peek(value -> {
-            if (!clzz.isInstance(value))
-                return;
-            
-            val target = clzz.cast(value);
-            theConsumer.accept(target);
-        });
-    }
-    public default StreamPlus<DATA> peek(Predicate<? super DATA> selector, Consumer<? super DATA> theConsumer) {
-        return peek(value -> {
-            if (!selector.test(value))
-                return;
-            
-            theConsumer.accept(value);
-        });
-    }
-    public default <T> StreamPlus<DATA> peek(Function<? super DATA, T> mapper, Consumer<? super T> theConsumer) {
-        return peek(value -> {
-            val target = mapper.apply(value);
-            theConsumer.accept(target);
-        });
-    }
-    
-    public default <T> StreamPlus<DATA> peek(Function<? super DATA, T> mapper, Predicate<? super T> selector, Consumer<? super T> theConsumer) {
-        return peek(value -> {
-            val target = mapper.apply(value);
-            if (selector.test(target))
-                theConsumer.accept(target);
-        });
-    }
-    
-    //-- FlatMap --
-    
-    public default StreamPlus<DATA> flatMapOnly(Predicate<? super DATA> checker, Function<? super DATA, ? extends Stream<DATA>> mapper) {
-        return flatMap(d -> checker.test(d) ? mapper.apply(d) : StreamPlus.of(d));
-    }
-    public default <T> StreamPlus<T> flatMapIf(
-            Predicate<? super DATA> checker, 
-            Function<? super DATA, Stream<T>> mapper, 
-            Function<? super DATA, Stream<T>> elseMapper) {
-        return flatMap(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
-    }
-    
-    
-    //-- segment --
-    
-    public default StreamPlus<StreamPlus<DATA>> segment(int count) {
-        return segment(count, true);
-    }
-    public default StreamPlus<StreamPlus<DATA>> segment(int count, boolean includeTail) {
-        val index = new AtomicInteger(0);
-        return segment(data -> (index.getAndIncrement() % count) == 0, includeTail);
-    }
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition) {
-        return segment(startCondition, true);
-    }
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, boolean includeTail) {
-        val list = new AtomicReference<>(new ArrayList<DATA>());
-        val adding = new AtomicBoolean(false);
-        
-        val streamOrNull = (Function<DATA, StreamPlus<DATA>>)((DATA data) ->{
-            if (startCondition.test(data)) {
-                adding.set(true);
-                val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
-                list.get().add(data);
-                return retList.isEmpty()
-                        ? null
-                        : StreamPlus.from(retList.stream());
-            }
-            if (adding.get()) list.get().add(data);
-            return null;
-        });
-        val mainStream = StreamPlus.from(map(streamOrNull)).filterNonNull();
-        if (!includeTail)
-            return mainStream;
-        
-        val mainSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->mainStream;
-        val tailSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->{
-            return StreamPlus.of(
-                    StreamPlus.from(
-                            list.get()
-                            .stream()));
-        };
-        val resultStream
-                = StreamPlus.of(mainSupplier, tailSupplier)
-                .flatMap(Supplier::get);
-        return resultStream;
-    }
-    
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition) {
-        return segment(startCondition, endCondition, true);
-    }
-    
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition, boolean includeTail) {
-        val list = new AtomicReference<>(new ArrayList<DATA>());
-        val adding = new AtomicBoolean(false);
-        
-        return StreamPlus.from(
-                map(i ->{
-                    if (startCondition.test(i)) {
-                        adding.set(true);
-                    }
-                    if (includeTail && adding.get()) list.get().add(i);
-                    if (endCondition.test(i)) {
-                        adding.set(false);
-                        val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
-                        return StreamPlus.from(retList.stream());
-                    }
-                    
-                    if (!includeTail && adding.get()) list.get().add(i);
-                    return null;
-                }))
-            .filterNonNull();
-    }
-    
-    //-- Zip --
-    
-    public default <B, TARGET> StreamPlus<TARGET> combine(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth)
-                .map(combinator::applyTo);
-    }
-    public default <B, TARGET> StreamPlus<TARGET> combine(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
-        return zipWith(anotherStream, option)
-                .map(combinator::applyTo);
-    }
-    
-    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, Tuple2::of);
-    }
-    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, ZipWithOption option) {
-        return zipWith(anotherStream, option, Tuple2::of);
-    }
-    
-    public default <B, C> StreamPlus<C> zipWith(Stream<B> anotherStream, Func2<DATA, B, C> merger) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, merger);
-    }
-    // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
-    public default <B, C> StreamPlus<C> zipWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, C> merger) {
-        val iteratorA = this.iterator();
-        val iteratorB = anotherStream.iterator();
-        val iterable = new Iterable<C>() {
-            @Override
-            public Iterator<C> iterator() {
-                return new Iterator<C>() {
-                    private boolean hasNextA;
-                    private boolean hasNextB;
-                    
-                    public boolean hasNext() {
-                        hasNextA = iteratorA.hasNext();
-                        hasNextB = iteratorB.hasNext();
-                        return (option == ZipWithOption.RequireBoth)
-                                ? (hasNextA && hasNextB)
-                                : (hasNextA || hasNextB);
-                    }
-                    public C next() {
-                        val nextA = hasNextA ? iteratorA.next() : null;
-                        val nextB = hasNextB ? iteratorB.next() : null;
-                        return merger.apply(nextA, nextB);
-                    }
-                };
-            }
-            
-        };
-        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
-    }
-    
-    public default StreamPlus<DATA> choose(Stream<DATA> anotherStream, Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return zipWith(anotherStream, AllowUnpaired)
-                .map(t -> {
-                    val _1 = t._1();
-                    val _2 = t._2();
-                    if ((_1 != null) && _2 == null)
-                        return _1;
-                    if ((_1 == null) && _2 != null)
-                        return _2;
-                    if ((_1 == null) && _2 == null)
-                        return null;
-                    val which = selectThisNotAnother.applyTo(t);
-                    return which ? _1 : _2;
-                })
-                .filterNonNull();
-    }
-    public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
-        val iteratorA = this.iterator();
-        val iteratorB = anotherStream.iterator();
-        val iterable = new Iterable<DATA>() {
-            @Override
-            public Iterator<DATA> iterator() {
-                return new Iterator<DATA>() {
-                    private boolean isA = true;
-                    
-                    public boolean hasNext() {
-                        if (isA) {
-                            if (iteratorA.hasNext()) return true;
-                            isA = false;
-                            if (iteratorB.hasNext()) return true;
-                            return false;
-                        }
-                        
-                        if (iteratorB.hasNext()) return true;
-                        isA = true;
-                        if (iteratorA.hasNext()) return true;
-                        return false;
-                    }
-                    public DATA next() {
-                        val next = isA ? iteratorA.next() : iteratorB.next();
-                        isA = !isA;
-                        return next;
-                    }
-                };
-            }
-            
-        };
-        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
-    }
-    
-    // TODO - collapse(IntFunction<DATA> numbersToCollapse, Func2<DATA, DATA, DATA> concatFunc)
-    
-    @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
-        return terminate(stream -> {
-            val iterator = stream.iterator();
-            
-            DATA first = null;
-            try {
-                first = iterator.next();
-            } catch (NoSuchElementException e) {
-                return StreamPlus.empty();
-            }
-            
-            val prev = new AtomicReference<Object>(first);
-            return StreamPlus.generateBy(()->{
-                if (prev.get() == StreamPlusHelper.dummy)
-                    throw new NoMoreResultException();
-                
-                while(true) {
-                    DATA next;
-                    try {
-                        next = iterator.next();
-                    } catch (NoSuchElementException e) {
-                        val yield = prev.get();
-                        prev.set(StreamPlusHelper.dummy);
-                        return (DATA)yield;
-                    }
-                    if (conditionToCollapse.test(next)) {
-                        prev.set(concatFunc.apply((DATA)prev.get(), next));
-                    } else {
-                        val yield = prev.get();
-                        prev.set(next);
-                        return (DATA)yield;
-                    }
-                }
-            });
-        });
     }
     
 }

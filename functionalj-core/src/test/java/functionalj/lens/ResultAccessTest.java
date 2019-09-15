@@ -144,15 +144,19 @@ public class ResultAccessTest {
     @Test
     public void testResultAccessMap() {
         val logs = new ArrayList<String>();
+        
         theDriver.secondCar.thenMap(Car::color)
         .apply(new Driver(new Car("Black"), Result.valueOf(new Car("White"))))
-        .pipe(me -> logs.add(me.toString()));
+        .pipeTo(me -> logs.add(me.toString()));
+        
         theDriver.secondCar.thenMap(Car::color)
         .apply(new Driver(new Car("Black"), Result.ofNull()))
-        .pipe(me -> logs.add(me.toString()));
+        .pipeTo(me -> logs.add(me.toString()));
+        
         theDriver.secondCar.thenMap(Car::color)
-        .apply(new Driver(new Car("Black"), null))
-        .pipe(me -> logs.add(me.toString()));
+        .apply (new Driver(new Car("Black"), null))
+        .pipeTo(me -> logs.add(me.toString()));
+        
         assertEquals("[Result:{ Value: White }, Result:{ Value: null }, Result:{ Value: null }]", logs.toString());
     }
 
