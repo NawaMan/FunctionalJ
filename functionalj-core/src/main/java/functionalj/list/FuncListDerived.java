@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamPlus.Helper;
+import functionalj.stream.StreamPlusHelper;
 import functionalj.stream.Streamable;
 
 @SuppressWarnings("javadoc")
@@ -130,7 +130,7 @@ public class FuncListDerived<SOURCE, DATA>
     
     @Override
     public int hashCode() {
-        return Helper.hashCode(this.stream());
+        return StreamPlusHelper.hashCode(this.stream());
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -146,7 +146,7 @@ public class FuncListDerived<SOURCE, DATA>
     
     @Override
     public String toString() {
-        return Helper.toString(this.stream());
+        return StreamPlusHelper.toString(this.stream());
     }
     
 }

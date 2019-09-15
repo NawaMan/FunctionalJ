@@ -10,11 +10,11 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
-public interface StreamPlusWithGet<DATA> {
+public interface StreamPlusWithCalculate<DATA> {
 
     public IteratorPlus<DATA> iterator();
     
-    //== Get ==
+    //== Calculate ==
     
     public default <T> T calculate(StreamElementProcessor<DATA, T> processor) {
         val counter = new AtomicLong(0);

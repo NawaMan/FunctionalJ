@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.ToDoubleFunction;
+
 import functionalj.lens.core.LensSpec;
 
 @SuppressWarnings("javadoc")
@@ -30,6 +32,7 @@ import functionalj.lens.core.LensSpec;
 public interface DoubleLens<HOST>
         extends
             DoubleAccess<HOST>,
+            ToDoubleFunction<HOST>,
             ComparableLens<HOST, Double> {
     
     public static <HOST> DoubleLens<HOST> of(LensSpec<HOST, Double> spec) {

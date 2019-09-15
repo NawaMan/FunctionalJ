@@ -1,5 +1,7 @@
 package functionalj.stream;
 
+import static functionalj.lens.Access.theInteger;
+
 import java.util.function.ToIntFunction;
 
 import lombok.val;
@@ -8,6 +10,10 @@ public interface IntStreamProcessor<TARGET> {
     
     public TARGET process(IntStreamPlus stream);
     
+    
+    default StreamProcessor<Integer, TARGET> ofInteger() {
+        return of(theInteger);
+    }
     default <SOURCE> StreamProcessor<SOURCE, TARGET> of(ToIntFunction<SOURCE> mapper) {
         return new StreamProcessor<SOURCE, TARGET>() {
             @Override
