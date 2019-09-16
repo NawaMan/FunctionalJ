@@ -44,7 +44,7 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
             ObjectLens<HOST, List<TYPE>>,
             ListAccess<HOST, TYPE, TYPELENS> {
     
-
+    
     public static <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>> 
             ListLens<HOST, TYPE, TYPELENS> of(
                 Function<HOST, List<TYPE>>               read,

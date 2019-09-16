@@ -112,6 +112,11 @@ public interface StreamPlus<DATA>
                 .from(data);
     }
     
+    @SafeVarargs
+    public static <D> StreamPlus<D> steamOf(D ... data) {
+        return of(data);
+    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> StreamPlus<D> from(Stream<D> stream) {
         if (stream == null)
@@ -147,6 +152,15 @@ public interface StreamPlus<DATA>
             }
         };
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <D> StreamPlus<D> repeat(D ... data) {
+        return cycle(data);
+    }
+    
+    public static <D> StreamPlus<D> repeat(FuncList<D> data) {
+        return cycle(data);
     }
     
     @SafeVarargs
@@ -195,6 +209,7 @@ public interface StreamPlus<DATA>
                 .of     (streams)
                 .flatMap(themAll());
     }
+    
     @SafeVarargs
     public static <D> StreamPlus<D> concat(Supplier<Stream<D>> ... streams) {
         return StreamPlus
@@ -202,10 +217,12 @@ public interface StreamPlus<DATA>
                 .map    (Supplier::get)
                 .flatMap(themAll());
     }
+    
     public static <D> StreamPlus<D> generate(Supplier<D> supplier) {
         return StreamPlus
                 .from(Stream.generate(supplier));
     }
+    
     public static <D> StreamPlus<D> generateBy(Supplier<D> supplier) {
         Iterable<D> iterable = new Iterable<D>() {
             public Iterator<D> iterator() {
@@ -306,12 +323,11 @@ public interface StreamPlus<DATA>
                         this.stream()));
     }
     
-    @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> concatWith(
-            Stream<DATA> ... tails) {
+            Stream<DATA> tail) {
         return concat(
                 StreamPlus.of(this), 
-                StreamPlus.of(tails)
+                StreamPlus.of(tail)
                )
                .flatMap(themAll());
     }
@@ -616,11 +632,13 @@ public interface StreamPlus<DATA>
     
     //-- Iterator --
     
+    @Override
     public default IteratorPlus<DATA> iterator() {
         // TODO - Make sure close is handled properly.
         return IteratorPlus.from(stream());
     }
     
+    @Override
     public default Spliterator<DATA> spliterator() {
         // TODO - Make sure close is handled properly.
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
