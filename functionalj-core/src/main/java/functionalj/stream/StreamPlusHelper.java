@@ -4,9 +4,12 @@ import static functionalj.functions.ObjFuncs.notEqual;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static java.lang.Boolean.TRUE;
 
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import functionalj.function.Func2;
 import lombok.val;
 
 public class StreamPlusHelper {
@@ -55,6 +58,71 @@ public class StreamPlusHelper {
     
     public static <T> String toString(Stream<T> stream) {
         return "[" + StreamPlus.from(stream).joinToString(", ") + "]";
+    }
+    
+    public static <DATA, C, B> StreamPlus<C> doZipWith(
+            ZipWithOption      option, 
+            Func2<DATA, B, C>  merger,
+            IteratorPlus<DATA> iteratorA, 
+            IteratorPlus<B>    iteratorB) {
+        val iterable = new Iterable<C>() {
+            @Override
+            public Iterator<C> iterator() {
+                return new Iterator<C>() {
+                    private boolean hasNextA;
+                    private boolean hasNextB;
+                    
+                    public boolean hasNext() {
+                        hasNextA = iteratorA.hasNext();
+                        hasNextB = iteratorB.hasNext();
+                        return (option == ZipWithOption.RequireBoth)
+                                ? (hasNextA && hasNextB)
+                                : (hasNextA || hasNextB);
+                    }
+                    public C next() {
+                        val nextA = hasNextA ? iteratorA.next() : null;
+                        val nextB = hasNextB ? iteratorB.next() : null;
+                        return merger.apply(nextA, nextB);
+                    }
+                };
+            }
+          
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+    }
+    
+    public static <DATA> StreamPlus<DATA> doMerge(
+            IteratorPlus<DATA> iteratorA, 
+            IteratorPlus<DATA> iteratorB) {
+        val iterable = new Iterable<DATA>() {
+            @Override
+            public Iterator<DATA> iterator() {
+                return new Iterator<DATA>() {
+                    private boolean isA = true;
+                    
+                    public boolean hasNext() {
+                        if (isA) {
+                            if (iteratorA.hasNext()) return true;
+                            isA = false;
+                            if (iteratorB.hasNext()) return true;
+                            return false;
+                        }
+                        
+                        if (iteratorB.hasNext()) return true;
+                        isA = true;
+                        if (iteratorA.hasNext()) return true;
+                        return false;
+                    }
+                    public DATA next() {
+                        val next = isA ? iteratorA.next() : iteratorB.next();
+                        isA = !isA;
+                        return next;
+                    }
+                };
+            }
+            
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
 }

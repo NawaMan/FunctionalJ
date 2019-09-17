@@ -112,7 +112,7 @@ public interface StreamPlusWithSegment<DATA> {
             }
             
             val prev = new AtomicReference<Object>(first);
-            return StreamPlus.generateBy(()->{
+            return StreamPlus.generateWith(()->{
                 if (prev.get() == StreamPlusHelper.dummy)
                     throw new NoMoreResultException();
                 

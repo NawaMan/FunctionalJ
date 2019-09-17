@@ -648,7 +648,7 @@ public class StreamPlusTest {
     @Test
     public void testGenerate() {
         val counter = new AtomicInteger();
-        val stream  = StreamPlus.generateBy(()->{
+        val stream  = StreamPlus.generateWith(()->{
             int count = counter.getAndIncrement();
             if (count < 5)
                 return count;
@@ -656,7 +656,7 @@ public class StreamPlusTest {
         });
         assertStrings("[0, 1, 2, 3, 4]", stream.toListString());
         
-        val stream2 = StreamPlus.generateBy(Func0.from(i -> i < 5 ? i : noMoreElement()));
+        val stream2 = StreamPlus.generateWith(Func0.from(i -> i < 5 ? i : noMoreElement()));
         assertStrings("[0, 1, 2, 3, 4]", stream2.toListString());
     }
     
@@ -666,6 +666,12 @@ public class StreamPlusTest {
     public void testCompound() {
         val stream = StreamPlus.compound(1, a -> a * 2);
         assertStrings("[1, 2, 4, 8, 16]", stream.limit(5).toListString());
+    }
+    
+    @Test
+    public void testCompound2() {
+        val stream = StreamPlus.compound(1, 1, (a, b) -> a + b);
+        assertStrings("[1, 1, 2, 3, 5, 8]", stream.limit(6).toListString());
     }
     
     //-- Segmentation --

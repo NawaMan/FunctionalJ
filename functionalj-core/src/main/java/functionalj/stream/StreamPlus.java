@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.function.Func.f;
 import static functionalj.function.Func.themAll;
 
 import java.io.ByteArrayOutputStream;
@@ -96,27 +97,37 @@ public interface StreamPlus<DATA>
             StreamPlusAdditionalTerminalOperators<DATA>
         {
     
+    /**
+     * Throw a no more element exception. This is used for generter.
+     * This is done in the way that it can be overriden.
+     **/
     public static <D> D noMoreElement() throws NoMoreResultException {
         ThrowFuncs.doThrowFrom(()->new NoMoreResultException());
         return (D)null;
     }
     
+    /**
+     * Returns an empty StreamPlus.
+     */
     public static <D> StreamPlus<D> empty() {
         return StreamPlus
                 .from(Stream.empty());
     }
     
+    /** Create a StreamPlus from the given data. */
     @SafeVarargs
     public static <D> StreamPlus<D> of(D ... data) {
         return ArrayBackedStream
                 .from(data);
     }
     
+    /** Create a StreamPlus from the given data */
     @SafeVarargs
     public static <D> StreamPlus<D> steamOf(D ... data) {
         return of(data);
     }
     
+    /** Create a StreamPlus from the given stream. */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> StreamPlus<D> from(Stream<D> stream) {
         if (stream == null)
@@ -127,9 +138,12 @@ public interface StreamPlus<DATA>
                 : (StreamPlus)(()->stream);
     }
     
+    /** Create a StreamPlus from the given iterator. */
     public static <D> StreamPlus<D> from(Iterator<D> iterator) {
         return IteratorPlus.of(iterator).stream();
     }
+    
+    /** Create a StreamPlus from the given enumeration. */
     public static <D> StreamPlus<D> from(Enumeration<D> enumeration) {
         Iterable<D> iterable = new Iterable<D>() {
             public Iterator<D> iterator() {
@@ -154,15 +168,18 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
+    /** Create a StreamPlus that is the repeat of the given array of data. */
     @SuppressWarnings("unchecked")
     public static <D> StreamPlus<D> repeat(D ... data) {
         return cycle(data);
     }
     
+    /** Create a StreamPlus that is the repeat of the given list of data. */
     public static <D> StreamPlus<D> repeat(FuncList<D> data) {
         return cycle(data);
     }
     
+    /** Create a StreamPlus that is the repeat of the given array of data. */
     @SafeVarargs
     public static <D> StreamPlus<D> cycle(D ... data) {
         val size = data.length;
@@ -171,6 +188,8 @@ public interface StreamPlus<DATA>
                 .iterate(0, i -> i + 1)
                 .mapToObj(i -> data[i % size]));
     }
+    
+    /** Create a StreamPlus that is the repeat of the given list of data. */
     public static <D> StreamPlus<D> cycle(FuncList<D> data) {
         val size = data.size();
         return StreamPlus.from(
@@ -179,16 +198,20 @@ public interface StreamPlus<DATA>
                 .mapToObj(i -> data.get(i % size)));
     }
     
+    /** Create a StreamPlus that for a loop with the number of time given - the value is the index of the loop. */
     public static StreamPlus<Integer> loop(int time) {
         return StreamPlus
                 .infiniteInt()
                 .limit(time);
     }
+    
+    /** Create a StreamPlus that for an infinite loop - the value is the index of the loop. */
     public static StreamPlus<Integer> loop() {
         return StreamPlus
                 .infiniteInt();
     }
     
+    /** Create a StreamPlus that for an infinite loop - the value is the index of the loop. */
     public static StreamPlus<Integer> infiniteInt() {
         return IntStreamPlus
                 .from(
@@ -196,12 +219,15 @@ public interface StreamPlus<DATA>
                     .iterate(0, i -> i + 1))
                     .mapToObj(i -> i);
     }
+    
+    /** Create a StreamPlus that for a loop from the start value inclusively to the end value exclusively. */
     public static StreamPlus<Integer> range(int startInclusive, int endExclusive) {
         return IntStreamPlus
                 .range(startInclusive, endExclusive)
                 .mapToObj(i -> i);
     }
     
+    /** Concatenate all the given streams. */
     // Because people know this.
     @SafeVarargs
     public static <D> StreamPlus<D> concat(Stream<D> ... streams) {
@@ -210,6 +236,7 @@ public interface StreamPlus<DATA>
                 .flatMap(themAll());
     }
     
+    /** Concatenate all streams supplied by the given supplied. */
     @SafeVarargs
     public static <D> StreamPlus<D> concat(Supplier<Stream<D>> ... streams) {
         return StreamPlus
@@ -218,12 +245,20 @@ public interface StreamPlus<DATA>
                 .flatMap(themAll());
     }
     
+    /**
+     * Create a StreamPlus from the supplier. 
+     * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
+     **/
     public static <D> StreamPlus<D> generate(Supplier<D> supplier) {
         return StreamPlus
                 .from(Stream.generate(supplier));
     }
     
-    public static <D> StreamPlus<D> generateBy(Supplier<D> supplier) {
+    /**
+     * Create a StreamPlus from the supplier. 
+     * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
+     **/
+    public static <D> StreamPlus<D> generateWith(Supplier<D> supplier) {
         Iterable<D> iterable = new Iterable<D>() {
             public Iterator<D> iterator() {
                 return new Iterator<D>() {
@@ -248,15 +283,58 @@ public interface StreamPlus<DATA>
                 .from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
+    /**
+     * Create a StreamPlus by apply the function to the seed over and over.
+     * 
+     * For example: let say seed = 1 and f(x) = x*2.
+     * The result stream will be:
+     *      1 <- seed, 
+     *      2 <- (1*2), 
+     *      4 <- ((1*2)*2), 
+     *      8 <- (((1*2)*2)*2), 
+     *      16 <- ((((1*2)*2)*2)*2)
+     *      ...
+     * 
+     * Note: this is an alias of compound()
+     **/
     public static <D> StreamPlus<D> iterate(D seed, UnaryOperator<D> f) {
         return StreamPlus
                 .from(Stream.iterate(seed, f));
     }
     
+    /**
+     * Create a StreamPlus by apply the function to the seed over and over.
+     * 
+     * For example: let say seed = 1 and f(x) = x*2.
+     * The result stream will be:
+     *      1 <- seed, 
+     *      2 <- (1*2), 
+     *      4 <- ((1*2)*2), 
+     *      8 <- (((1*2)*2)*2), 
+     *      16 <- ((((1*2)*2)*2)*2)
+     *      ...
+     *      
+     * Note: this is an alias of iterate()
+     **/
     public static <D> StreamPlus<D> compound(D seed, UnaryOperator<D> f) {
         return iterate(seed, f);
     }
     
+    /**
+     * Create a StreamPlus by apply the function to the seeds over and over.
+     * 
+     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
+     * The result stream will be:
+     *      1 <- seed1, 
+     *      1 <- seed2, 
+     *      2 <- (1+1), 
+     *      3 <- (1+2), 
+     *      5 <- (2+3), 
+     *      8 <- (5+8)
+     *      ...
+     * 
+     * Note: this is an alias of compound()
+     **/
     public static <D> StreamPlus<D> iterate(D seed1, D seed2, BinaryOperator<D> f) {
         AtomicInteger      counter = new AtomicInteger(0);
         AtomicReference<D> d1      = new AtomicReference<D>(seed1);
@@ -275,6 +353,35 @@ public interface StreamPlus<DATA>
         });
     }
     
+    /**
+     * Create a StreamPlus by apply the function to the seeds over and over.
+     * 
+     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
+     * The result stream will be:
+     *      1 <- seed1, 
+     *      1 <- seed2, 
+     *      2 <- (1+1), 
+     *      3 <- (1+2), 
+     *      5 <- (2+3), 
+     *      8 <- (5+8)
+     *      ...
+     * 
+     * Note: this is an alias of iterate()
+     **/
+    public static <D> StreamPlus<D> compound(D seed1, D seed2, BinaryOperator<D> f) {
+        return iterate(seed1, seed2, f);
+    }
+    
+    /**
+     * Create a StreamPlus by combining elements together into a StreamPlus of tuples.
+     * Only elements with pair will be combined. If this is not desirable, use stream1.zip(stream2).
+     * 
+     * For example:
+     *     stream1 = [A, B, C, D, E]
+     *     stream2 = [1, 2, 3, 4]
+     *     
+     * The result stream = [(A,1), (B,2), (C,3), (D,4)].
+     **/
     public static <T1, T2> StreamPlus<Tuple2<T1, T2>> zipOf(
             StreamPlus<T1> stream1, 
             StreamPlus<T2> stream2) {
@@ -282,6 +389,17 @@ public interface StreamPlus<DATA>
                 .zipWith(stream2, ZipWithOption.RequireBoth);
     }
     
+    /**
+     * Create a StreamPlus by combining elements together using the merger function and collected into the result stream.
+     * Only elements with pair will be combined. If this is not desirable, use stream1.zip(stream2).
+     * 
+     * For example:
+     *     stream1 = [A, B, C, D, E]
+     *     stream2 = [1, 2, 3, 4]
+     *     merger  = a + "+" + b 
+     *     
+     * The result stream = ["A+1", "B+2", "C+3", "D+4"].
+     **/
     public static <T1, T2, T> StreamPlus<T> zipOf(
             StreamPlus<T1> stream1, 
             StreamPlus<T2> stream2, 
@@ -634,14 +752,40 @@ public interface StreamPlus<DATA>
     
     @Override
     public default IteratorPlus<DATA> iterator() {
-        // TODO - Make sure close is handled properly.
-        return IteratorPlus.from(stream());
+        return terminate(s -> {
+            return IteratorPlus.from(stream());
+        });
     }
     
     @Override
     public default Spliterator<DATA> spliterator() {
-        // TODO - Make sure close is handled properly.
-        return Spliterators.spliteratorUnknownSize(iterator(), 0);
+        return terminate(s -> {
+            return Spliterators.spliteratorUnknownSize(iterator(), 0);
+        });
+    }
+    
+    /**
+     * Use iterator of this stream without terminating the stream.
+     */
+    public default <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action) {
+        StreamPlus<T> result = null;
+        try {
+            val stream   = stream();
+            val iterator = IteratorPlus.from(stream);
+            result = action.apply(iterator);
+            return result;
+        } finally {
+            if (result == null) {
+                f(()->close())
+                .runCarelessly();
+            } else {
+                result
+                .onClose(()->{
+                    f(()->close())
+                    .runCarelessly();
+                });
+            }
+        }
     }
     
     @Override
@@ -944,20 +1088,21 @@ public interface StreamPlus<DATA>
      *     ...
      */
     public default StreamPlus<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-        val iterator = this.iterator();
-        if (!iterator.hasNext())
-            return StreamPlus.empty();
-        
-        val prev = new AtomicReference<DATA>(iterator.next());
-        return StreamPlus
-                .concat(
-                    StreamPlus.of(prev.get()),
-                    iterator.stream().map(n -> {
-                        val next = accumulator.apply(n, prev.get());
-                        prev.set(next);
-                        return next;
-                    })
-                );
+        return useIterator(iterator -> {
+            if (!iterator.hasNext())
+                return StreamPlus.empty();
+            
+            val prev = new AtomicReference<DATA>(iterator.next());
+            return StreamPlus
+                    .concat(
+                        StreamPlus.of(prev.get()),
+                        iterator.stream().map(n -> {
+                            val next = accumulator.apply(n, prev.get());
+                            prev.set(next);
+                            return next;
+                        })
+                    );
+        });
     }
     
     /**
@@ -977,16 +1122,28 @@ public interface StreamPlus<DATA>
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
      **/
+    @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> restate(BiFunction<? super DATA, StreamPlus<DATA>, StreamPlus<DATA>> restater) {
+        //IteratorPlus.from(stream());
         val func = (UnaryOperator<Tuple2<DATA, StreamPlus<DATA>>>)((Tuple2<DATA, StreamPlus<DATA>> pair) -> {
-            val stream   = pair._2();
-            val iterator = stream.iterator();
-            if (!iterator.hasNext())
+            val stream = pair._2();
+            if (stream == null)
                 return null;
             
-            val head = iterator.next();
-            val tail = restater.apply(head, iterator.stream());
-            return Tuple2.of(head, tail);
+            Object[]         head = new Object[] { null };
+            StreamPlus<DATA> tail = stream
+                .useIterator(iterator -> {
+                    if (!iterator.hasNext())
+                        return null;
+                    
+                    head[0]        = iterator.next();
+                    val tailStream = restater.apply((DATA)head[0], iterator.stream());
+                    return tailStream;
+                });
+            if (tail == null)
+                return null;
+            
+            return Tuple2.of((DATA)head[0], tail);
         });
         val seed = Tuple2.of((DATA)null, this);
         val endStream 
