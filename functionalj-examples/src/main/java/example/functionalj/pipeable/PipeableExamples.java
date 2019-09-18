@@ -17,10 +17,11 @@ public class PipeableExamples {
     
     @Test
     public void testPipeable() {
-        val str = Pipeable.of("Hello world.").pipe(
-                String::toUpperCase,
-                replaceAll("\\.", "!!")
-        );
+        val str = Pipeable.of("Hello world.")
+                .pipeTo(
+                    String::toUpperCase,
+                    replaceAll("\\.", "!!")
+                );
         assertEquals("HELLO WORLD!!", str);
     }
     
@@ -50,7 +51,7 @@ public class PipeableExamples {
     @Test
     public void testPipeableClass() {
         val user = new User("root");
-        assertEquals("User name: root", user.pipe(User::name, "User name: "::concat));
+        assertEquals("User name: root", user.pipeTo(User::name, "User name: "::concat));
     }
     
 }

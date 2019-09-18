@@ -201,9 +201,10 @@ public class ResultTest {
     public void testResultPeek() {
         assertStrings("Result:{ Value: 3 }", 
                 Result.valueOf("One")
-                .pipe(
+                .pipeTo(
                     r -> r.map(String::length),
-                    String::valueOf));
+                    String::valueOf)
+                );
     }
     
     @Test

@@ -18,7 +18,7 @@ public interface StreamableWithGet<DATA> {
     //-- 1 --
     
     @SuppressWarnings("unchecked")
-    public default <T> T get(StreamElementProcessor<DATA, T> processor) {
+    public default <T> T calculate(StreamElementProcessor<DATA, T> processor) {
         val counter = new AtomicLong(0);
         for (val each : (Iterable<DATA>)this) {
             val index = counter.getAndIncrement();
@@ -28,7 +28,7 @@ public interface StreamableWithGet<DATA> {
         return processor.processComplete(count);
     }
     
-    public default <T> T get(StreamProcessor<DATA, T> processor) {
+    public default <T> T calculate(StreamProcessor<DATA, T> processor) {
         val stream = this.stream();
         val target = processor.process(stream);
         return target;
@@ -37,7 +37,7 @@ public interface StreamableWithGet<DATA> {
     //-- 2 --
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2> Tuple2<T1, T2> get(
+    public default <T1, T2> Tuple2<T1, T2> calculate(
                 StreamElementProcessor<DATA, T1> processor1, 
                 StreamElementProcessor<DATA, T2> processor2) {
         val counter = new AtomicLong(0);
@@ -53,7 +53,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2> Tuple2<T1, T2> get(
+    public default <T1, T2> Tuple2<T1, T2> calculate(
                 StreamElementProcessor<DATA, T1> processor1, 
                 StreamProcessor<DATA, T2>        processor2) {
         val counter = new AtomicLong(0);
@@ -68,7 +68,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2> Tuple2<T1, T2> get(
+    public default <T1, T2> Tuple2<T1, T2> calculate(
             StreamProcessor<DATA, T1>        processor1,
             StreamElementProcessor<DATA, T2> processor2) {
         val counter = new AtomicLong(0);
@@ -82,7 +82,7 @@ public interface StreamableWithGet<DATA> {
         return Tuple.of(value1, value2);
     }
     
-    public default <T1, T2> Tuple2<T1, T2> get(
+    public default <T1, T2> Tuple2<T1, T2> calculate(
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2) {
         val value1 = processor1.process(stream());
@@ -93,7 +93,7 @@ public interface StreamableWithGet<DATA> {
     //-- 3 --
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3) {
@@ -111,7 +111,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3) {
@@ -129,7 +129,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3) {
@@ -147,7 +147,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3) {
@@ -164,7 +164,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3) {
@@ -182,7 +182,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3) {
@@ -199,7 +199,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3) {
@@ -215,7 +215,7 @@ public interface StreamableWithGet<DATA> {
         return Tuple.of(value1, value2, value3);
     }
     
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
             StreamProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3> processor3) {
@@ -228,7 +228,7 @@ public interface StreamableWithGet<DATA> {
     //-- 4 --
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -250,7 +250,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -271,7 +271,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -292,7 +292,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -312,7 +312,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -333,7 +333,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -353,7 +353,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3> processor3, 
@@ -373,7 +373,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3> processor3, 
@@ -392,7 +392,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -413,7 +413,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -433,7 +433,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -453,7 +453,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -472,7 +472,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -492,7 +492,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -511,7 +511,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -529,7 +529,7 @@ public interface StreamableWithGet<DATA> {
         return Tuple.of(value1, value2, value3, value4);
     }
     
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3> processor3, 
@@ -544,7 +544,7 @@ public interface StreamableWithGet<DATA> {
     //-- 5 --
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -569,7 +569,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -593,7 +593,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -617,7 +617,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -640,7 +640,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -664,7 +664,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -687,7 +687,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -710,7 +710,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -732,7 +732,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -756,7 +756,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -779,7 +779,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -802,7 +802,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -824,7 +824,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -847,7 +847,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -869,7 +869,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -891,7 +891,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -912,7 +912,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -936,7 +936,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -959,7 +959,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -982,7 +982,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1004,7 +1004,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1027,7 +1027,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1049,7 +1049,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1071,7 +1071,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1092,7 +1092,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1115,7 +1115,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1137,7 +1137,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1159,7 +1159,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1180,7 +1180,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1202,7 +1202,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1223,7 +1223,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3> processor3, 
@@ -1243,7 +1243,7 @@ public interface StreamableWithGet<DATA> {
         return Tuple.of(value1, value2, value3, value4, value5);
     }
     
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3> processor3, 
@@ -1260,7 +1260,7 @@ public interface StreamableWithGet<DATA> {
     //-- 6 --
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1288,7 +1288,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1315,7 +1315,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1342,7 +1342,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1368,7 +1368,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1395,7 +1395,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1421,7 +1421,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1447,7 +1447,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1472,7 +1472,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1499,7 +1499,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1525,7 +1525,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1551,7 +1551,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1576,7 +1576,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1602,7 +1602,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1627,7 +1627,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1652,7 +1652,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1676,7 +1676,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1703,7 +1703,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1729,7 +1729,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1755,7 +1755,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1780,7 +1780,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1806,7 +1806,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1831,7 +1831,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1856,7 +1856,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -1880,7 +1880,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1906,7 +1906,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1931,7 +1931,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1956,7 +1956,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -1980,7 +1980,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2005,7 +2005,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2029,7 +2029,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2053,7 +2053,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2076,7 +2076,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2103,7 +2103,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2129,7 +2129,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2155,7 +2155,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2180,7 +2180,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2206,7 +2206,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2231,7 +2231,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2256,7 +2256,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2280,7 +2280,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2306,7 +2306,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2331,7 +2331,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2356,7 +2356,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2380,7 +2380,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2405,7 +2405,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2429,7 +2429,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2453,7 +2453,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2476,7 +2476,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2502,7 +2502,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2527,7 +2527,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2552,7 +2552,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2576,7 +2576,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2601,7 +2601,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2625,7 +2625,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2649,7 +2649,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2672,7 +2672,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2697,7 +2697,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2721,7 +2721,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2745,7 +2745,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1>        processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamElementProcessor<DATA, T3> processor3, 
@@ -2768,7 +2768,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2792,7 +2792,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1> processor1, 
             StreamElementProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2815,7 +2815,7 @@ public interface StreamableWithGet<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamElementProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2>        processor2, 
             StreamProcessor<DATA, T3>        processor3, 
@@ -2837,7 +2837,7 @@ public interface StreamableWithGet<DATA> {
         return Tuple.of(value1, value2, value3, value4, value5, value6);
     }
     
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1> processor1, 
             StreamProcessor<DATA, T2> processor2, 
             StreamProcessor<DATA, T3> processor3, 

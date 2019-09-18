@@ -23,11 +23,12 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static functionalj.function.Func.alwaysTrue;
+
 import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
@@ -127,12 +128,12 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                 });
     }
     
-    public default Func1<HOST, HOST> changeTo(Predicate<TYPE> checker, Function<TYPE, TYPE> mapper) {
-        return host -> {
-            val newList = apply(host).map(each -> checker.test(each) ? mapper.apply(each) : each);
-            val newHost = FuncListLens.this.apply(host, newList);
-            return newHost;
-        };
+    public default ListLensEach<HOST, TYPE, TYPELENS> each() {
+        return new ListLensEach<>(this, alwaysTrue());
+    }
+    
+    public default ListLensEach<HOST, TYPE, TYPELENS> eachOf(Predicate<TYPE> checker) {
+        return new ListLensEach<>(this, checker);
     }
     
 }

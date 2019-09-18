@@ -41,16 +41,16 @@ public class StreamableHelperTest {
         val list     = Arrays.asList("One", "Two", "Three");
         val valueRef = new AtomicReference<String>();
         
-        assertTrue(StreamPlus.Helper.hasAt(list.stream(), 0, valueRef));
+        assertTrue(StreamPlusHelper.hasAt(list.stream(), 0, valueRef));
         assertEquals("One", valueRef.get());
         
-        assertTrue(StreamPlus.Helper.hasAt(list.stream(), 1, valueRef));
+        assertTrue(StreamPlusHelper.hasAt(list.stream(), 1, valueRef));
         assertEquals("Two", valueRef.get());
         
-        assertTrue(StreamPlus.Helper.hasAt(list.stream(), 2, valueRef));
+        assertTrue(StreamPlusHelper.hasAt(list.stream(), 2, valueRef));
         assertEquals("Three", valueRef.get());
         
-        assertFalse(StreamPlus.Helper.hasAt(list.stream(), 3, valueRef));
+        assertFalse(StreamPlusHelper.hasAt(list.stream(), 3, valueRef));
         assertEquals(null, valueRef.get());
     }
     

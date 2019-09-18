@@ -502,10 +502,11 @@ public class PromiseTest {
 //        val r3 = add
 //                .then(mul.elevateWith(c)) // This does not work as c is a promise.
 //                .apply(a, b);
-        val r4 = a.pipe(
-                add.elevateWith(b),
-                mul.elevateWith(c)
-            );
+        val r4 = a
+                .pipeTo(
+                    add.elevateWith(b),
+                    mul.elevateWith(c)
+                );
         val f5 = add.elevateWith(b).andThen(mul.elevateWith(c));
         val r5 = f5.apply(a);
         

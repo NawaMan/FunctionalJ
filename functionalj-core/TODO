@@ -1,37 +1,22 @@
 
-- Access Date, LocalDate, LocalTime
-- Prism -> Multiple Promise combine to one. create an obj from supplier/function of each fields.
 - StoreRef, StoreList, StoreMap
-
 - List lens should has similar interface as FunctionalListLens
-- Builder
-- ExhaughBuilder
 - MapBasedDataObject
-- List each
-- remove the compose package.
 
 Need to organize this and prioritize!!!
 
 - Find a way to specify what lens for a type.
-- Serialization
-- Organize predefine functions
 - Reflection 
-
-- Transvable of DataObject
-- A way to add annotation to DataObject generated class or fields -- so that something like JSON conversion can be done
-     easily.
 
 Need code clean up!!!!! The code is so shitty :-(
 
--- UnionType
-  -- Access to spec
-  -- xxxOf to access to each parameter directly. -- justOf(value -> value ...)
-
-- Defer Loop, Fork Join ... so that there is no need to have DefaultAction in a pure function.
 - Env.
 
 
+TODO
+- Fix iterator()
+- tripple check if all terminal operation is handled.
+- Calculate -- use Collector instead or make StreamElementProcessor create evertime and not statefull
 
--- Not an Expert ... just my journey.
--- Church encoding
--- Make illegal states unrepresentable -- Yaron Minsky - https://blog.janestreet.com/effective-ml-revisited/
+
+

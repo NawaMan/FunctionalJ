@@ -50,7 +50,7 @@ import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class DeferAction<DATA> extends UncompleteAction<DATA> implements Pipeable<HasPromise<DATA>> {
+public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeable<HasPromise<DATA>> {
     
     public static <D> DeferAction<D> createNew() {
         return of((Class<D>)null);

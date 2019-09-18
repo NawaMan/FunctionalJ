@@ -34,7 +34,7 @@ import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public class PendingAction<DATA> extends UncompleteAction<DATA> implements Pipeable<HasPromise<DATA>> {
+public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipeable<HasPromise<DATA>> {
     
     PendingAction(Promise<DATA> promise) {
         super(promise);

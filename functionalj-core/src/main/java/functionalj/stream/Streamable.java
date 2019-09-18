@@ -26,11 +26,9 @@ package functionalj.stream;
 import static functionalj.function.Func.themAll;
 
 import java.io.ByteArrayOutputStream;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -73,7 +71,7 @@ import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
-import functionalj.promise.UncompleteAction;
+import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -1019,14 +1017,14 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
     
     //-- Zip --
     
-    public default <B, TARGET> Streamable<TARGET> combine(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> Streamable<TARGET> combineWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream).combine(anotherStream, combinator);
+            return StreamPlus.from(stream).combineWith(anotherStream, combinator);
         });
     }
-    public default <B, TARGET> Streamable<TARGET> combine(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> Streamable<TARGET> combineWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream).combine(anotherStream, option, combinator);
+            return StreamPlus.from(stream).combineWith(anotherStream, option, combinator);
         });
     }
     
@@ -1070,23 +1068,23 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         return IntStreamPlus.from(stream().mapToInt(mapper));
     }
     
-    public default LongStream mapToLong(ToLongFunction<? super DATA> mapper) {
+    public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
         return stream().mapToLong(mapper);
     }
     
-    public default DoubleStream mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+    public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
         return stream().mapToDouble(mapper);
     }
     
-    public default IntStream flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
+    public default IntStreamPlus flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
         return IntStreamPlus.from(stream().flatMapToInt(mapper));
     }
     
-    public default LongStream flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
+    public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
         return stream().flatMapToLong(mapper);
     }
     
-    public default DoubleStream flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
+    public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
         return stream().flatMapToDouble(mapper);
     }
     
@@ -1153,40 +1151,6 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
     
     public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
         return stream().max((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
-    }
-    
-    public default Optional<BigDecimal> sumToBigDecimal(Function<? super DATA, BigDecimal> toBigDecimal) {
-        return map(toBigDecimal).reduce(BigDecimal::add);
-    }
-    
-    public default Optional<BigDecimal> minToBigDecimal(Function<? super DATA, BigDecimal> toBigDecimal) {
-        return map(toBigDecimal).reduce((a, b) -> a.compareTo(b) <= 0 ? a : b);
-    }
-    
-    public default Optional<BigDecimal> maxToBigDecimal(Function<? super DATA, BigDecimal> toBigDecimal) {
-        return map(toBigDecimal).reduce((a, b) -> a.compareTo(b) <= 0 ? b : a);
-    }
-    
-    public default Optional<BigDecimal> averageToBigDecimal(Function<? super DATA, BigDecimal> toBigDecimal) {
-        val countSum = map(each -> Tuple.of(1, toBigDecimal.apply(each)))
-        .reduce((a, b)->Tuple.of(a._1 + b._1, a._2.add(b._2)));
-        return countSum.map(t -> t._2.divide(new BigDecimal(t._1)));
-    }
-    
-    public default Optional<BigDecimal> sum(Function<? super DATA, BigDecimal> toBigDecimal) {
-        return sumToBigDecimal(toBigDecimal);
-    }
-    
-    public default Optional<BigDecimal> min(Function<? super DATA, BigDecimal> toBigDecimal) {
-        return minToBigDecimal(toBigDecimal);
-    }
-    
-    public default Optional<BigDecimal> max(Function<? super DATA, BigDecimal> toBigDecimal) {
-        return maxToBigDecimal(toBigDecimal);
-    }
-    
-    public default Optional<BigDecimal> average(Function<? super DATA, BigDecimal> toBigDecimal) {
-        return averageToBigDecimal(toBigDecimal);
     }
     
     public default long count() {
@@ -1273,6 +1237,10 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         return toImmutableList();
     }
     
+    public default FuncList<DATA> toLazyList() {
+        return FuncList.from(this);
+    }
+    
     public default String toListString() {
         return "[" + map(String::valueOf).collect(Collectors.joining(", ")) + "]";
     }
@@ -1301,12 +1269,26 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
     
+    // Eager
     public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(Function<? super DATA, ? extends KEY> classifier) {
-        val theMap = new HashMap<KEY, FuncList<DATA>>();
-        stream()
-            .collect(Collectors.groupingBy(classifier))
-            .forEach((key,list)->theMap.put(key, ImmutableList.from(list)));
-        return ImmutableMap.from(theMap);
+        return stream()
+                .groupingBy(classifier);
+    }
+    
+    // Eager
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            Function<? super DATA, ? extends KEY> classifier,
+            StreamProcessor<? super DATA, VALUE>  processor) {
+        return stream()
+                .groupingBy(classifier, processor);
+    }
+    
+    // Eager
+    public default <KEY, TARGET> FuncMap<KEY, TARGET> groupingBy(
+            Function<? super DATA, ? extends KEY> classifier,
+            Supplier<StreamElementProcessor<? super DATA, TARGET>> processorSupplier) {
+        return stream()
+                .groupingBy(classifier, processorSupplier);
     }
     
     @SuppressWarnings("unchecked")
@@ -1605,7 +1587,7 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         });
     }
     
-    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompleteAction<T>> mapper) {
+    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
         return deriveWith(stream -> {
             return StreamPlus.from(stream()).spawn(mapper);
         });

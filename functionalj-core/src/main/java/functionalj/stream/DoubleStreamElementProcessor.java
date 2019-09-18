@@ -1,23 +1,29 @@
 package functionalj.stream;
 
+import static functionalj.lens.Access.theDouble;
+
 import java.util.function.ToDoubleFunction;
 
 import lombok.val;
 
-public interface DoubleStreamElementProcessor<T> {
-    void processElement (long index, double element);
-    T    processComplete(long count);
+public interface DoubleStreamElementProcessor<TARGET> {
+    void   processDoubleElement (long index, double element);
+    TARGET processDoubleComplete(long count);
     
-    default <S> StreamElementProcessor<S, T> of(ToDoubleFunction<S> mapper) {
-        return new StreamElementProcessor<S, T>() {
+    
+    default StreamElementProcessor<Double, TARGET> ofDouble() {
+        return of(theDouble);
+    }
+    default <S> StreamElementProcessor<S, TARGET> of(ToDoubleFunction<S> mapper) {
+        return new StreamElementProcessor<S, TARGET>() {
             @Override
             public void processElement(long index, S source) {
                 val element = mapper.applyAsDouble(source);
-                DoubleStreamElementProcessor.this.processElement(index, element);
+                DoubleStreamElementProcessor.this.processDoubleElement(index, element);
             }
             @Override
-            public T processComplete(long count) {
-                return DoubleStreamElementProcessor.this.processComplete(count);
+            public TARGET processComplete(long count) {
+                return DoubleStreamElementProcessor.this.processDoubleComplete(count);
             }
         };
     }

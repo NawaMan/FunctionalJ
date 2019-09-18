@@ -98,7 +98,7 @@ public class StreamPlusTest {
     public void testEquals() {
         val stream1 = StreamPlus.of("One", "Two", "Three");
         val stream2 = StreamPlus.of("One", "Two", "Three");
-        assertTrue(StreamPlus.Helper.equals(stream1, stream2));
+        assertTrue(StreamPlusHelper.equals(stream1, stream2));
     }
     
     @Test
@@ -158,13 +158,39 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testAccumulate() {
+    public void testAccumulate1() {
         val stream = StreamPlus.of(1, 2, 3, 4, 5);
-        assertStrings("1, 3, 6, 10, 15", stream.accumulate((a, b)->a+b).joinToString(", "));
+        assertStrings(
+                "1, 3, 6, 10, 15", 
+                stream
+                    .accumulate((a, b)->a+b)
+                    .joinToString(", "));
     }
     
     @Test
-    public void testRestate() {
+    public void testAccumulate2() {
+        val stream = StreamPlus.of(1, 2, 3, 4, 5);
+        assertStrings(
+                "1, 12, 123, 1234, 12345", 
+                stream
+                    .accumulate((a, b)->a+b*10)
+                    .joinToString(", "));
+    }
+    
+    // remove duplicate
+    @Test
+    public void testRestate1() {
+        val stream = StreamPlus.infiniteInt().map(i -> i % 5).limit(20);
+        assertStrings(
+                "0, 1, 2, 3, 4",
+              stream
+                  .restate((a, s)->s.filter(x -> x != a))
+                  .joinToString(", "));
+    }
+    
+    // sieve of eratosthenes
+    @Test
+    public void testRestate2() {
         val stream = StreamPlus.infiniteInt().skip(2);
         assertStrings(
                 "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, "
@@ -173,7 +199,10 @@ public class StreamPlusTest {
               + "127, 131, 137, 139, 149, 151, 157, 163, 167, 173, "
               + "179, 181, 191, 193, 197, 199, 211, 223, 227, 229, "
               + "233, 239, 241, 251, 257, 263, 269, 271, 277, 281",
-              stream.restate((a, s)->s.filter(x -> x % a != 0)).limit(60).joinToString(", "));
+              stream
+                  .restate((a, s)->s.filter(x -> x % a != 0))
+                  .limit(60)
+                  .joinToString(", "));
     }
     
     @Test
@@ -226,6 +255,25 @@ public class StreamPlusTest {
                 stream3.collapse(
                         i -> (i % 3) <= 1,
                         (a,b)->a+b
+                    ).joinToString(", "));
+    }
+    @Test
+    public void testCollapseSize() {
+        val stream1 = StreamPlus.infiniteInt().limit(20);
+        assertEquals(
+                "1, 5, 22, 92, 70", 
+                stream1.collapseSize(
+                        i -> i,
+                        (a,b)->a+b
+                    ).joinToString(", "));
+        
+        val stream2 = StreamPlus.infiniteInt().limit(20);
+        assertEquals(
+                "1, 2-3, 4-5-6-7, 8-9-10-11-12-13-14-15, 16-17-18-19", 
+                stream2.collapseSize(
+                        i -> i,
+                        i -> "" + i,
+                        (a,b)->a + "-" + b
                     ).joinToString(", "));
     }
     
@@ -619,7 +667,7 @@ public class StreamPlusTest {
     @Test
     public void testGenerate() {
         val counter = new AtomicInteger();
-        val stream  = StreamPlus.generateBy(()->{
+        val stream  = StreamPlus.generateWith(()->{
             int count = counter.getAndIncrement();
             if (count < 5)
                 return count;
@@ -627,7 +675,7 @@ public class StreamPlusTest {
         });
         assertStrings("[0, 1, 2, 3, 4]", stream.toListString());
         
-        val stream2 = StreamPlus.generateBy(Func0.from(i -> i < 5 ? i : noMoreElement()));
+        val stream2 = StreamPlus.generateWith(Func0.from(i -> i < 5 ? i : noMoreElement()));
         assertStrings("[0, 1, 2, 3, 4]", stream2.toListString());
     }
     
@@ -637,6 +685,12 @@ public class StreamPlusTest {
     public void testCompound() {
         val stream = StreamPlus.compound(1, a -> a * 2);
         assertStrings("[1, 2, 4, 8, 16]", stream.limit(5).toListString());
+    }
+    
+    @Test
+    public void testCompound2() {
+        val stream = StreamPlus.compound(1, 1, (a, b) -> a + b);
+        assertStrings("[1, 1, 2, 3, 5, 8]", stream.limit(6).toListString());
     }
     
     //-- Segmentation --
@@ -692,6 +746,23 @@ public class StreamPlusTest {
         assertEquals("[A, B], [C]",  StreamPlus.of("A", "B", "C").segment(2       ).map(s -> s.toList().toString()).joinToString(", "));
         assertEquals("[A, B]",       StreamPlus.of("A", "B", "C").segment(2, false).map(s -> s.toList().toString()).joinToString(", "));
     }
+    @Test
+    public void testSegmentSize() {
+        assertEquals(
+                "[], " + 
+                "[1], " + 
+                "[2, 3], " + 
+                "[4, 5, 6, 7], " + 
+                "[8, 9, 10, 11, 12, 13, 14, 15], " + 
+                "[16, 17, 18, 19]",
+                StreamPlus
+                .infiniteInt ()
+                .limit       (20)
+                .segmentSize (i -> i)
+                .map         (s -> s.toList())
+                .joinToString(", ")
+        );
+    }
     
     @Test
     public void testZipWith() {
@@ -728,26 +799,6 @@ public class StreamPlusTest {
         val streamA = StreamPlus.of("A", "B", "C");
         val streamB = IntStreamPlus.infinite().asStream().map(theInteger.asString());
         assertEquals("A, 0, B, 1, C, 2, 3, 4, 5, 6", streamA.merge(streamB).limit(10).joinToString(", "));
-    }
-    
-    @Test
-    public void testHistogram() {
-        val stream = StreamPlus.of("One", "Two", "Three", "Four").map(theString.length());
-        val counts = stream.histogram();
-        assertEquals("{3:2, 4:1, 5:1}", counts.toString());
-    }
-    
-    @Test
-    public void testHistogram_classification() {
-        val stream = StreamPlus.of("One", "Two", "Three", "Four").map(theString);
-        val counts = stream.histogram(theString.replaceAll("[^aeiouAEIOU]", "").length());
-        assertEquals("{2:3, 1:1}", counts.toString());
-    }
-    
-    @Test
-    public void testMostFrequence() {
-        val stream = StreamPlus.of("One", "Two", "Three", "Four").map(theString);
-        assertEquals("Optional[2=3]", stream.map(theString.replaceAll("[^aeiouAEIOU]", "").length()).mostFrequence().toString());
     }
     
     @Test
@@ -819,7 +870,7 @@ public class StreamPlusTest {
                 return total;
             }
         };
-        assertEquals(18, stream.get(sumLength).intValue());
+        assertEquals(18, stream.calculate(sumLength).intValue());
     }
     
     @Test
@@ -847,7 +898,7 @@ public class StreamPlusTest {
                 return (int) ((int)total/count);
             }
         };
-        assertEquals("(18,4)", stream.get(sumLength, avgLength).toString());
+        assertEquals("(18,4)", stream.calculate(sumLength, avgLength).toString());
     }
     
     @Test
@@ -875,7 +926,7 @@ public class StreamPlusTest {
                 return max;
             }
         };
-        val range = stream.get(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
+        val range = stream.calculate(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
         assertEquals(3, range);
     }
     
@@ -885,15 +936,15 @@ public class StreamPlusTest {
         val sum = new IntStreamElementProcessor<Integer>() {
             int total = 0;
             @Override
-            public void processElement(long index, int element) {
+            public void processIntElement(long index, int element) {
                 total += element;
             }
             @Override
-            public Integer processComplete(long count) {
+            public Integer processIntComplete(long count) {
                 return total;
             }
         };
-        assertEquals(18, stream.get(sum.of(theString.length())).intValue());
+        assertEquals(18, stream.calculate(sum.of(theString.length())).intValue());
     }
     
 }

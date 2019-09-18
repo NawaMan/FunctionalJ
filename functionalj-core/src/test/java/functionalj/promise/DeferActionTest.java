@@ -210,7 +210,7 @@ public class DeferActionTest {
         }).start();
         
         action.getResult();
-        assertTrue((System.currentTimeMillis() - start) < 100);
+        assertTrue((System.currentTimeMillis() - start) < 150);
         assertStrings("Result:{ Exception: java.lang.InterruptedException: sleep interrupted }", action.getResult());
     }
     
