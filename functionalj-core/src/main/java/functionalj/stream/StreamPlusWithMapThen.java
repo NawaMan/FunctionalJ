@@ -14,6 +14,7 @@ public interface StreamPlusWithMapThen<DATA> {
     public <TARGET> StreamPlus<TARGET> map(
             Function<? super DATA, ? extends TARGET> mapper);
     
+    //== mapThen ==
     
     public default <T1, T2, T> 
         StreamPlus<T> mapThen(

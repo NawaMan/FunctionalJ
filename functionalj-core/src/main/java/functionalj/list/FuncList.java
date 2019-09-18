@@ -1071,16 +1071,16 @@ public interface FuncList<DATA>
     
     // -- Zip --
     
-    public default <B, TARGET> FuncList<TARGET> combine(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> FuncList<TARGET> combineWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> {
-            return StreamPlus.from(stream).combine(anotherStream, combinator);
+            return StreamPlus.from(stream).combineWith(anotherStream, combinator);
         });
     }
     
-    public default <B, TARGET> FuncList<TARGET> combine(Stream<B> anotherStream, ZipWithOption option,
+    public default <B, TARGET> FuncList<TARGET> combineWith(Stream<B> anotherStream, ZipWithOption option,
             Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> {
-            return StreamPlus.from(stream).combine(anotherStream, option, combinator);
+            return StreamPlus.from(stream).combineWith(anotherStream, option, combinator);
         });
     }
     

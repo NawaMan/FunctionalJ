@@ -1017,14 +1017,14 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
     
     //-- Zip --
     
-    public default <B, TARGET> Streamable<TARGET> combine(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> Streamable<TARGET> combineWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream).combine(anotherStream, combinator);
+            return StreamPlus.from(stream).combineWith(anotherStream, combinator);
         });
     }
-    public default <B, TARGET> Streamable<TARGET> combine(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> Streamable<TARGET> combineWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> { 
-            return StreamPlus.from(stream).combine(anotherStream, option, combinator);
+            return StreamPlus.from(stream).combineWith(anotherStream, option, combinator);
         });
     }
     

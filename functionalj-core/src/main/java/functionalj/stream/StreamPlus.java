@@ -82,17 +82,17 @@ import lombok.val;
 @FunctionalInterface
 public interface StreamPlus<DATA> 
         extends 
-            Iterable<DATA>, 
-            Stream<DATA>, 
-            StreamPlusWithCalculate<DATA>,
-            StreamPlusWithMapToMap<DATA>,
+            Stream<DATA>,
+            Iterable<DATA>,
             StreamPlusWithMapFirst<DATA>,
             StreamPlusWithMapTuple<DATA>,
+            StreamPlusWithMapToMap<DATA>,
             StreamPlusWithMapThen<DATA>,
             StreamPlusWithSplit<DATA>,
             StreamPlusWithFillNull<DATA>,
             StreamPlusWithSegment<DATA>,
-            StreamPlusWithZip<DATA>,
+            StreamPlusWithCombine<DATA>,
+            StreamPlusWithCalculate<DATA>,
             StreamPlusAddtionalOperators<DATA>,
             StreamPlusAdditionalTerminalOperators<DATA>
         {
@@ -342,7 +342,7 @@ public interface StreamPlus<DATA>
         return StreamPlus.generate(()->{
             if (counter.getAndIncrement() == 0)
                 return seed1;
-            if (counter.getAndIncrement() == 2)
+            if (counter.getAndIncrement() == 2) // Because, 1 is the second time of the first check.
                 return seed2;
             
             D i2 = d2.get();
@@ -412,6 +412,7 @@ public interface StreamPlus<DATA>
     
     public Stream<DATA> stream();
     
+    //== Helper functions ==
     
     public default <TARGET> TARGET terminate(
             Func1<Stream<DATA>, TARGET> action) {
@@ -441,13 +442,50 @@ public interface StreamPlus<DATA>
                         this.stream()));
     }
     
-    public default StreamPlus<DATA> concatWith(
-            Stream<DATA> tail) {
-        return concat(
-                StreamPlus.of(this), 
-                StreamPlus.of(tail)
-               )
-               .flatMap(themAll());
+    //== Stream sepecific ==
+    
+    @Override
+    public default StreamPlus<DATA> sequential() {
+        return deriveWith(stream -> { 
+            return stream
+                    .sequential();
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> parallel() {
+        return deriveWith(stream -> { 
+            return stream
+                    .parallel();
+        });
+    } 
+    
+    @Override
+    public default StreamPlus<DATA> unordered() {
+        return deriveWith(stream -> { 
+            return stream
+                    .unordered();
+        });
+    }
+    
+    @Override
+    public default boolean isParallel() {
+        return stream()
+                .isParallel();
+    }
+    
+    @Override
+    public default void close() {
+        stream()
+        .close();
+    }
+    
+    @Override
+    public default StreamPlus<DATA> onClose(Runnable closeHandler) {
+        return deriveWith(stream -> { 
+            return stream
+                    .onClose(closeHandler);
+        });
     }
     
     //== Functionalities ==
@@ -505,6 +543,179 @@ public interface StreamPlus<DATA>
                 .from(
                     stream()
                     .flatMapToDouble(mapper));
+    }
+    
+    @Override
+    public default <TARGET> StreamPlus<TARGET> map(
+            Function<? super DATA, ? extends TARGET> mapper) {
+        return deriveWith(stream -> {
+            return stream
+                    .map(mapper);
+        });
+    }
+    
+    @Override
+    public default <TARGET> StreamPlus<TARGET> flatMap(
+            Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+        return deriveWith(stream -> {
+            return stream
+                    .flatMap(mapper);
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> filter(
+            Predicate<? super DATA> predicate) {
+        return deriveWith(stream -> {
+            return (predicate == null)
+                ? stream
+                : stream.filter(predicate);
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> peek(
+            Consumer<? super DATA> action) {
+        return deriveWith(stream -> {
+            return (action == null)
+                    ? stream
+                    : stream.peek(action);
+        });
+    }
+    
+    //-- Limit/Skip --
+    
+    @Override
+    public default StreamPlus<DATA> limit(long maxSize) {
+        return deriveWith(stream -> {
+            return stream
+                    .limit(maxSize);
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> skip(long n) {
+        return deriveWith(stream -> {
+            return stream
+                    .skip(n);
+        });
+    }
+    
+    public default StreamPlus<DATA> limit(Long maxSize) {
+        return deriveWith(stream -> {
+            return ((maxSize == null) || (maxSize.longValue() < 0))
+                    ? stream
+                    : stream.limit(maxSize);
+        });
+    }
+    
+    public default StreamPlus<DATA> skip(Long startAt) {
+        return deriveWith(stream -> {
+            return ((startAt == null) || (startAt.longValue() < 0))
+                    ? stream
+                    : stream.skip(startAt);
+        });
+    }
+    
+    public default StreamPlus<DATA> skipWhile(Predicate<? super DATA> condition) {
+        val isStillTrue = new AtomicBoolean(true);
+        return deriveWith(stream -> {
+            return stream.filter(e -> {
+                if (!isStillTrue.get())
+                    return true;
+                if (!condition.test(e))
+                    isStillTrue.set(false);
+                return !isStillTrue.get();
+            });
+        });
+    }
+    
+    public default StreamPlus<DATA> skipUntil(Predicate<? super DATA> condition) {
+        val isStillTrue = new AtomicBoolean(true);
+        return deriveWith(stream -> {
+            return stream.filter(e -> {
+                if (!isStillTrue.get())
+                    return true;
+                if (condition.test(e))
+                    isStillTrue.set(false);
+                return !isStillTrue.get();
+            });
+        });
+    }
+    
+    public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
+        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
+        return deriveWith(stream -> {
+            val splitr = stream.spliterator();
+            return StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                
+                @Override
+                public boolean tryAdvance(final Consumer<? super DATA> consumer) {
+                    if (stillGoing) {
+                        final boolean hadNext = splitr.tryAdvance(elem -> {
+                            if (condition.test(elem)) {
+                                consumer.accept(elem);
+                            } else {
+                                stillGoing = false;
+                            }
+                        });
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+        });
+    }
+    
+    public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
+        return deriveWith(stream -> {
+            val splitr = stream.spliterator();
+            return StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                
+                @Override
+                public boolean tryAdvance(final Consumer<? super DATA> consumer) {
+                    if (stillGoing) {
+                        final boolean hadNext = splitr.tryAdvance(elem -> {
+                            if (!condition.test(elem)) {
+                                consumer.accept(elem);
+                            } else {
+                                stillGoing = false;
+                            }
+                        });
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> distinct() {
+        return deriveWith(stream -> {
+            return stream
+                    .distinct();
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> sorted() {
+        return deriveWith(stream -> {
+            return stream
+                    .sorted();
+        });
+    }
+    
+    @Override
+    public default StreamPlus<DATA> sorted(
+            Comparator<? super DATA> comparator) {
+        return deriveWith(stream -> {
+            return (comparator == null)
+                    ? stream.sorted()
+                    : stream.sorted(comparator);
+        });
     }
     
     @Override
@@ -657,18 +868,6 @@ public interface StreamPlus<DATA>
         });
     }
     
-    @Override
-    public default boolean isParallel() {
-        return stream()
-                .isParallel();
-    }
-    
-    @Override
-    public default void close() {
-        stream()
-        .close();
-    }
-    
     //== toXXX ===
     
     @Override
@@ -788,39 +987,16 @@ public interface StreamPlus<DATA>
         }
     }
     
-    @Override
-    public default StreamPlus<DATA> sequential() {
-        return deriveWith(stream -> { 
-            return stream
-                    .sequential();
-        });
-    }
-    
-    @Override
-    public default StreamPlus<DATA> parallel() {
-        return deriveWith(stream -> { 
-            return stream
-                    .parallel();
-        });
-    } 
-    
-    @Override
-    public default StreamPlus<DATA> unordered() {
-        return deriveWith(stream -> { 
-            return stream
-                    .unordered();
-        });
-    }
-    
-    @Override
-    public default StreamPlus<DATA> onClose(Runnable closeHandler) {
-        return deriveWith(stream -> { 
-            return stream
-                    .onClose(closeHandler);
-        });
-    }
-    
     //== Plus ==
+    
+    @Override
+    public default <T> StreamPlus<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
+        return filter(value -> {
+            val target = mapper.apply(value);
+            val isPass = theCondition.test(target);
+            return isPass;
+        });
+    }
     
     public default String joinToString() {
         return terminate(stream -> {
@@ -837,6 +1013,8 @@ public interface StreamPlus<DATA>
         });
     }
     
+    //== Pipe ==
+    
     public default <T> Pipeable<? extends StreamPlus<DATA>> pipable() {
         return Pipeable.of(this);
     }
@@ -845,189 +1023,7 @@ public interface StreamPlus<DATA>
         return piper.apply(this);
     }
     
-    @Override
-    public default <TARGET> StreamPlus<TARGET> map(
-            Function<? super DATA, ? extends TARGET> mapper) {
-        return deriveWith(stream -> {
-            return stream
-                    .map(mapper);
-        });
-    }
-    
-    @Override
-    public default <TARGET> StreamPlus<TARGET> flatMap(
-            Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
-        return deriveWith(stream -> {
-            return stream
-                    .flatMap(mapper);
-        });
-    }
-    
-    @Override
-    public default StreamPlus<DATA> filter(
-            Predicate<? super DATA> predicate) {
-        return deriveWith(stream -> {
-            return (predicate == null)
-                ? stream
-                : stream.filter(predicate);
-        });
-    }
-    
-    @Override
-    public default <T> StreamPlus<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        return filter(value -> {
-            val target = mapper.apply(value);
-            val isPass = theCondition.test(target);
-            return isPass;
-        });
-    }
-    
-    @Override
-    public default StreamPlus<DATA> peek(
-            Consumer<? super DATA> action) {
-        return deriveWith(stream -> {
-            return (action == null)
-                    ? stream
-                    : stream.peek(action);
-        });
-    }
-    
-    //-- Limit/Skip --
-    
-    @Override
-    public default StreamPlus<DATA> limit(long maxSize) {
-        return deriveWith(stream -> {
-            return stream
-                    .limit(maxSize);
-        });
-    }
-    
-    @Override
-    public default StreamPlus<DATA> skip(long n) {
-        return deriveWith(stream -> {
-            return stream
-                    .skip(n);
-        });
-    }
-    
-    public default StreamPlus<DATA> limit(Long maxSize) {
-        return deriveWith(stream -> {
-            return ((maxSize == null) || (maxSize.longValue() < 0))
-                    ? stream
-                    : stream.limit(maxSize);
-        });
-    }
-    
-    public default StreamPlus<DATA> skip(Long startAt) {
-        return deriveWith(stream -> {
-            return ((startAt == null) || (startAt.longValue() < 0))
-                    ? stream
-                    : stream.skip(startAt);
-        });
-    }
-    
-    public default StreamPlus<DATA> skipWhile(Predicate<? super DATA> condition) {
-        val isStillTrue = new AtomicBoolean(true);
-        return deriveWith(stream -> {
-            return stream.filter(e -> {
-                if (!isStillTrue.get())
-                    return true;
-                if (!condition.test(e))
-                    isStillTrue.set(false);
-                return !isStillTrue.get();
-            });
-        });
-    }
-    
-    public default StreamPlus<DATA> skipUntil(Predicate<? super DATA> condition) {
-        val isStillTrue = new AtomicBoolean(true);
-        return deriveWith(stream -> {
-            return stream.filter(e -> {
-                if (!isStillTrue.get())
-                    return true;
-                if (condition.test(e))
-                    isStillTrue.set(false);
-                return !isStillTrue.get();
-            });
-        });
-    }
-    
-    public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
-        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
-        return deriveWith(stream -> {
-            val splitr = stream.spliterator();
-            return StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
-                boolean stillGoing = true;
-                
-                @Override
-                public boolean tryAdvance(final Consumer<? super DATA> consumer) {
-                    if (stillGoing) {
-                        final boolean hadNext = splitr.tryAdvance(elem -> {
-                            if (condition.test(elem)) {
-                                consumer.accept(elem);
-                            } else {
-                                stillGoing = false;
-                            }
-                        });
-                        return hadNext && stillGoing;
-                    }
-                    return false;
-                }
-            }, false);
-        });
-    }
-    
-    public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
-        return deriveWith(stream -> {
-            val splitr = stream.spliterator();
-            return StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
-                boolean stillGoing = true;
-                
-                @Override
-                public boolean tryAdvance(final Consumer<? super DATA> consumer) {
-                    if (stillGoing) {
-                        final boolean hadNext = splitr.tryAdvance(elem -> {
-                            if (!condition.test(elem)) {
-                                consumer.accept(elem);
-                            } else {
-                                stillGoing = false;
-                            }
-                        });
-                        return hadNext && stillGoing;
-                    }
-                    return false;
-                }
-            }, false);
-        });
-    }
-    
-    @Override
-    public default StreamPlus<DATA> distinct() {
-        return deriveWith(stream -> {
-            return stream
-                    .distinct();
-        });
-    }
-    
-    @Override
-    public default StreamPlus<DATA> sorted() {
-        return deriveWith(stream -> {
-            return stream
-                    .sorted();
-        });
-    }
-    
-    @Override
-    public default StreamPlus<DATA> sorted(
-            Comparator<? super DATA> comparator) {
-        return deriveWith(stream -> {
-            return (comparator == null)
-                    ? stream.sorted()
-                    : stream.sorted(comparator);
-        });
-    }
-    
-    //-- Spawn --
+    //== Spawn ==
     
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.
@@ -1068,7 +1064,7 @@ public interface StreamPlus<DATA>
         return stream;
     }
     
-    // -- accumulate --
+    //== accumulate + restate ==
     
     /**
      * Accumulate the previous to the next element.

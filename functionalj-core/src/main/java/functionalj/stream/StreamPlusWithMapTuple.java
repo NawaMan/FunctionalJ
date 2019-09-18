@@ -14,6 +14,7 @@ public interface StreamPlusWithMapTuple<DATA>
     public <TARGET> StreamPlus<TARGET> map(
             Function<? super DATA, ? extends TARGET> mapper);
     
+    //== mapTuple ==
     
     public default <T1, T2> 
         StreamPlus<Tuple2<T1, T2>> mapTuple(

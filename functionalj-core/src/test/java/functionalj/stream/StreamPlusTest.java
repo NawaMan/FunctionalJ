@@ -257,6 +257,25 @@ public class StreamPlusTest {
                         (a,b)->a+b
                     ).joinToString(", "));
     }
+    @Test
+    public void testCollapseSize() {
+        val stream1 = StreamPlus.infiniteInt().limit(20);
+        assertEquals(
+                "1, 5, 22, 92, 70", 
+                stream1.collapseSize(
+                        i -> i,
+                        (a,b)->a+b
+                    ).joinToString(", "));
+        
+        val stream2 = StreamPlus.infiniteInt().limit(20);
+        assertEquals(
+                "1, 2-3, 4-5-6-7, 8-9-10-11-12-13-14-15, 16-17-18-19", 
+                stream2.collapseSize(
+                        i -> i,
+                        i -> "" + i,
+                        (a,b)->a + "-" + b
+                    ).joinToString(", "));
+    }
     
     @Test
     public void testCollect() {
@@ -726,6 +745,23 @@ public class StreamPlusTest {
     public void testSegment2() {
         assertEquals("[A, B], [C]",  StreamPlus.of("A", "B", "C").segment(2       ).map(s -> s.toList().toString()).joinToString(", "));
         assertEquals("[A, B]",       StreamPlus.of("A", "B", "C").segment(2, false).map(s -> s.toList().toString()).joinToString(", "));
+    }
+    @Test
+    public void testSegmentSize() {
+        assertEquals(
+                "[], " + 
+                "[1], " + 
+                "[2, 3], " + 
+                "[4, 5, 6, 7], " + 
+                "[8, 9, 10, 11, 12, 13, 14, 15], " + 
+                "[16, 17, 18, 19]",
+                StreamPlus
+                .infiniteInt ()
+                .limit       (20)
+                .segmentSize (i -> i)
+                .map         (s -> s.toList())
+                .joinToString(", ")
+        );
     }
     
     @Test

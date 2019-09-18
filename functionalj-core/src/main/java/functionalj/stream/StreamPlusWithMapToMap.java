@@ -12,6 +12,7 @@ public interface StreamPlusWithMapToMap<DATA> {
     public <TARGET> StreamPlus<TARGET> map(
             Function<? super DATA, ? extends TARGET> mapper);
     
+    //== mapToMap ==
     
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, Function<? super DATA, ? extends VALUE> mapper) {

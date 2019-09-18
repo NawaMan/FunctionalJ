@@ -15,6 +15,7 @@ import lombok.val;
 public interface StreamPlusWithSplit<DATA>
         extends StreamPlusWithMapTuple<DATA> {
     
+    //== split ==
     
     public default Tuple2<FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate) {

@@ -43,11 +43,11 @@ public class StreamPlusHelper {
     
     public static <T> boolean equals(Stream<T> stream1, Stream<T> stream2) {
         return !StreamPlus
-                .from   (stream1)
-                .combine(StreamPlus.from(stream2), AllowUnpaired, notEqual())
-                .filter (TRUE::equals)
-                .findAny()
-                .isPresent();
+                .from       (stream1)
+                .combineWith(StreamPlus.from(stream2), AllowUnpaired, notEqual())
+                .filter     (TRUE::equals)
+                .findAny    ()
+                .isPresent  ();
     }
     
     public static <T> int hashCode(Stream<T> stream) {

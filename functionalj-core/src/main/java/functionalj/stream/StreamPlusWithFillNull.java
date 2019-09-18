@@ -14,6 +14,7 @@ public interface StreamPlusWithFillNull<DATA> {
     
     public <TARGET> StreamPlus<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action);
     
+    //== fillNull ==
     
     public default <VALUE> StreamPlus<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 

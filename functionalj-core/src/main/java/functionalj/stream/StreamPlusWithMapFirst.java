@@ -42,6 +42,7 @@ public interface StreamPlusWithMapFirst<DATA> {
     public <TARGET> StreamPlus<TARGET> map(
             Function<? super DATA, ? extends TARGET> mapper);
     
+    //== mapFirst ==
     
     public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,

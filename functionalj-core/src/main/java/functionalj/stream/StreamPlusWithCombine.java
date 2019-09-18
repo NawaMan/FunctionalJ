@@ -9,17 +9,38 @@ import functionalj.function.Func2;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-public interface StreamPlusWithZip<DATA> {
+public interface StreamPlusWithCombine<DATA> {
     
     public <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action);
     
+    
+    @SuppressWarnings("unchecked")
+    public default StreamPlus<DATA> concatWith(
+            Stream<DATA> tail) {
+        return StreamPlus.concat(
+                StreamPlus.of(this), 
+                StreamPlus.of(tail)
+               )
+               .flatMap(s -> (StreamPlus<DATA>)s);
+    }
+    
+    
+    public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
+        return useIterator(iteratorA -> {
+            return StreamPlus.from(anotherStream)
+            .useIterator(iteratorB -> {
+                return StreamPlusHelper.doMerge(iteratorA, iteratorB);
+            });
+        });
+    }
+    
     //-- Zip --
     
-    public default <B, TARGET> StreamPlus<TARGET> combine(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> StreamPlus<TARGET> combineWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
         return zipWith(anotherStream, ZipWithOption.RequireBoth)
                 .map(combinator::applyTo);
     }
-    public default <B, TARGET> StreamPlus<TARGET> combine(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> StreamPlus<TARGET> combineWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
         return zipWith(anotherStream, option)
                 .map(combinator::applyTo);
     }
@@ -59,14 +80,6 @@ public interface StreamPlusWithZip<DATA> {
                     return which ? _1 : _2;
                 })
                 .filterNonNull();
-    }
-    public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
-        return useIterator(iteratorA -> {
-            return StreamPlus.from(anotherStream)
-            .useIterator(iteratorB -> {
-                return StreamPlusHelper.doMerge(iteratorA, iteratorB);
-            });
-        });
     }
     
 }
