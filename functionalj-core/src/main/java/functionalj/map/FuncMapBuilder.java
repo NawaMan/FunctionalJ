@@ -10,15 +10,12 @@ import lombok.val;
 
 public class FuncMapBuilder<K, V> {
     private final List<Tuple2<K, V>> entries;
-    private final int count;
     
     public FuncMapBuilder() {
         this.entries = new ArrayList<Tuple2<K,V>>();
-        this.count = 0;
     }
     private FuncMapBuilder(List<Tuple2<K,V>> entries) {
         this.entries = entries;
-        this.count = this.entries.size();
     }
     
     public FuncMapBuilder<K, V> with(K key, V value) {
@@ -28,8 +25,7 @@ public class FuncMapBuilder<K, V> {
     
     public ImmutableMap<K, V> build() {
         val map = FuncMap.underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
-        for (int i = 0; i < count; i++) {
-            Tuple2<K, V> entry = entries.get(i);
+        for (Tuple2<K, V> entry : this.entries) {
             K key   = entry._1();
             V value = entry._2();
             map.put(key, value);

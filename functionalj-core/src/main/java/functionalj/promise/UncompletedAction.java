@@ -29,18 +29,18 @@ import functionalj.result.Result;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-public abstract class UncompleteAction<DATA> extends StartableAction<DATA> implements HasPromise<DATA> {
+public abstract class UncompletedAction<DATA> extends StartableAction<DATA> implements HasPromise<DATA> {
     
     protected final Promise<DATA> promise;
     
-    UncompleteAction(OnStart onStart) {
+    UncompletedAction(OnStart onStart) {
         if (onStart != null) {
             this.promise = new Promise<DATA>(onStart);
         } else {
             this.promise = new Promise<DATA>(this);
         }
     }
-    UncompleteAction(Promise<DATA> promise) {
+    UncompletedAction(Promise<DATA> promise) {
         this.promise = promise;
     }
     

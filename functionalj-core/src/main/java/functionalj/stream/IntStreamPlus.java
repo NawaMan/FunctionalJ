@@ -52,16 +52,12 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import functionalj.function.Func1;
-import functionalj.function.Func2;
-import functionalj.function.Func3;
-import functionalj.function.Func4;
-import functionalj.function.Func5;
-import functionalj.function.Func6;
 import functionalj.function.FuncUnit1;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.pipeable.Pipeable;
+import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
@@ -562,177 +558,132 @@ public interface IntStreamPlus extends IntStream {
         });
     }
     
-    //== Get ==
+    //== Calculate ==
     
-    public default <T> T get(IntStreamElementProcessor<T> processor) {
+    public default <T> T calculate(IntStreamElementProcessor<T> processor) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
         while (iterator.hasNext()) {
             val each  = iterator.nextInt();
             val index = counter.getAndIncrement();
-            processor.processElement(index, each);
+            processor.processIntElement(index, each);
         }
         val count = counter.get();
-        return processor.processComplete(count);
+        return processor.processIntComplete(count);
     }
     
-    public default <T1, T2> Tuple2<T1, T2> get(
+    public default <T1, T2> Tuple2<T1, T2> calculate(
                 IntStreamElementProcessor<T1> processor1, 
                 IntStreamElementProcessor<T2> processor2) {
-        return get(processor1, processor2, Tuple2::of);
-    }
-    
-    public default <T, T1, T2> T get(
-                IntStreamElementProcessor<T1> processor1, 
-                IntStreamElementProcessor<T2> processor2,
-                Func2<T1, T2, T>          combiner) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
         while (iterator.hasNext()) {
             val each  = iterator.nextInt();
             val index = counter.getAndIncrement();
-            processor1.processElement(index, each);
-            processor2.processElement(index, each);
+            processor1.processIntElement(index, each);
+            processor2.processIntElement(index, each);
         }
         val count = counter.get();
-        val value1 = processor1.processComplete(count);
-        val value2 = processor2.processComplete(count);
-        return combiner.apply(value1, value2);
+        val value1 = processor1.processIntComplete(count);
+        val value2 = processor2.processIntComplete(count);
+        return Tuple.of(value1, value2);
     }
     
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
                 IntStreamElementProcessor<T1> processor1, 
                 IntStreamElementProcessor<T2> processor2, 
                 IntStreamElementProcessor<T3> processor3) {
-        return get(processor1, processor2, processor3, Tuple3::of);
-    }
-    
-    public default <T1, T2, T3, T> T get(
-                IntStreamElementProcessor<T1> processor1, 
-                IntStreamElementProcessor<T2> processor2, 
-                IntStreamElementProcessor<T3> processor3,
-                Func3<T1, T2, T3, T>   combiner) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
         while (iterator.hasNext()) {
             val each  = iterator.nextInt();
             val index = counter.getAndIncrement();
-            processor1.processElement(index, each);
-            processor2.processElement(index, each);
-            processor3.processElement(index, each);
+            processor1.processIntElement(index, each);
+            processor2.processIntElement(index, each);
+            processor3.processIntElement(index, each);
         }
         val count = counter.get();
-        val value1 = processor1.processComplete(count);
-        val value2 = processor2.processComplete(count);
-        val value3 = processor3.processComplete(count);
-        return combiner.apply(value1, value2, value3);
+        val value1 = processor1.processIntComplete(count);
+        val value2 = processor2.processIntComplete(count);
+        val value3 = processor3.processIntComplete(count);
+        return Tuple.of(value1, value2, value3);
     }
     
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
                 IntStreamElementProcessor<T1> processor1, 
                 IntStreamElementProcessor<T2> processor2, 
                 IntStreamElementProcessor<T3> processor3, 
                 IntStreamElementProcessor<T4> processor4) {
-        return get(processor1, processor2, processor3, processor4, Tuple4::of);
-    }
-    
-    public default <T1, T2, T3, T4, T> T get(
-                IntStreamElementProcessor<T1> processor1, 
-                IntStreamElementProcessor<T2> processor2, 
-                IntStreamElementProcessor<T3> processor3,
-                IntStreamElementProcessor<T4> processor4,
-                Func4<T1, T2, T3, T4, T>  combiner) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
         while (iterator.hasNext()) {
             val each  = iterator.nextInt();
             val index = counter.getAndIncrement();
-            processor1.processElement(index, each);
-            processor2.processElement(index, each);
-            processor3.processElement(index, each);
-            processor4.processElement(index, each);
+            processor1.processIntElement(index, each);
+            processor2.processIntElement(index, each);
+            processor3.processIntElement(index, each);
+            processor4.processIntElement(index, each);
         }
         val count = counter.get();
-        val value1 = processor1.processComplete(count);
-        val value2 = processor2.processComplete(count);
-        val value3 = processor3.processComplete(count);
-        val value4 = processor4.processComplete(count);
-        return combiner.apply(value1, value2, value3, value4);
+        val value1 = processor1.processIntComplete(count);
+        val value2 = processor2.processIntComplete(count);
+        val value3 = processor3.processIntComplete(count);
+        val value4 = processor4.processIntComplete(count);
+        return Tuple.of(value1, value2, value3, value4);
     }
     
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
                 IntStreamElementProcessor<T1> processor1, 
                 IntStreamElementProcessor<T2> processor2, 
                 IntStreamElementProcessor<T3> processor3, 
                 IntStreamElementProcessor<T4> processor4, 
                 IntStreamElementProcessor<T5> processor5) {
-        return get(processor1, processor2, processor3, processor4, processor5, Tuple5::of);
-    }
-    
-    public default <T1, T2, T3, T4, T5, T> T get(
-                IntStreamElementProcessor<T1> processor1, 
-                IntStreamElementProcessor<T2> processor2, 
-                IntStreamElementProcessor<T3> processor3,
-                IntStreamElementProcessor<T4> processor4,
-                IntStreamElementProcessor<T5> processor5,
-                Func5<T1, T2, T3, T4, T5, T>  combiner) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
         while (iterator.hasNext()) {
             val each  = iterator.nextInt();
             val index = counter.getAndIncrement();
-            processor1.processElement(index, each);
-            processor2.processElement(index, each);
-            processor3.processElement(index, each);
-            processor4.processElement(index, each);
-            processor5.processElement(index, each);
+            processor1.processIntElement(index, each);
+            processor2.processIntElement(index, each);
+            processor3.processIntElement(index, each);
+            processor4.processIntElement(index, each);
+            processor5.processIntElement(index, each);
         }
         val count = counter.get();
-        val value1 = processor1.processComplete(count);
-        val value2 = processor2.processComplete(count);
-        val value3 = processor3.processComplete(count);
-        val value4 = processor4.processComplete(count);
-        val value5 = processor5.processComplete(count);
-        return combiner.apply(value1, value2, value3, value4, value5);
+        val value1 = processor1.processIntComplete(count);
+        val value2 = processor2.processIntComplete(count);
+        val value3 = processor3.processIntComplete(count);
+        val value4 = processor4.processIntComplete(count);
+        val value5 = processor5.processIntComplete(count);
+        return Tuple.of(value1, value2, value3, value4, value5);
     }
     
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
                 IntStreamElementProcessor<T1> processor1, 
                 IntStreamElementProcessor<T2> processor2, 
                 IntStreamElementProcessor<T3> processor3, 
                 IntStreamElementProcessor<T4> processor4, 
                 IntStreamElementProcessor<T5> processor5, 
                 IntStreamElementProcessor<T6> processor6) {
-        return get(processor1, processor2, processor3, processor4, processor5, processor6, Tuple6::of);
-    }
-    
-    public default <T1, T2, T3, T4, T5, T6, T> T get(
-                IntStreamElementProcessor<T1> processor1, 
-                IntStreamElementProcessor<T2> processor2, 
-                IntStreamElementProcessor<T3> processor3,
-                IntStreamElementProcessor<T4> processor4,
-                IntStreamElementProcessor<T5> processor5,
-                IntStreamElementProcessor<T6> processor6,
-                Func6<T1, T2, T3, T4, T5, T6, T>  combiner) {
         val counter = new AtomicLong(0);
         val iterator = iterator();
         while (iterator.hasNext()) {
             val each  = iterator.nextInt();
             val index = counter.getAndIncrement();
-            processor1.processElement(index, each);
-            processor2.processElement(index, each);
-            processor3.processElement(index, each);
-            processor4.processElement(index, each);
-            processor5.processElement(index, each);
-            processor6.processElement(index, each);
+            processor1.processIntElement(index, each);
+            processor2.processIntElement(index, each);
+            processor3.processIntElement(index, each);
+            processor4.processIntElement(index, each);
+            processor5.processIntElement(index, each);
+            processor6.processIntElement(index, each);
         }
         val count = counter.get();
-        val value1 = processor1.processComplete(count);
-        val value2 = processor2.processComplete(count);
-        val value3 = processor3.processComplete(count);
-        val value4 = processor4.processComplete(count);
-        val value5 = processor5.processComplete(count);
-        val value6 = processor6.processComplete(count);
-        return combiner.apply(value1, value2, value3, value4, value5, value6);
+        val value1 = processor1.processIntComplete(count);
+        val value2 = processor2.processIntComplete(count);
+        val value3 = processor3.processIntComplete(count);
+        val value4 = processor4.processIntComplete(count);
+        val value5 = processor5.processIntComplete(count);
+        val value6 = processor6.processIntComplete(count);
+        return Tuple.of(value1, value2, value3, value4, value5, value6);
     }
 }

@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamPlus.Helper;
+import functionalj.stream.StreamPlusHelper;
 import functionalj.stream.Streamable;
 import lombok.val;
 
@@ -90,12 +90,12 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default boolean isEmpty() {
-        return !Helper.hasAt(stream(), 0);
+        return !StreamPlusHelper.hasAt(stream(), 0);
     }
     
     @Override
     public default boolean contains(Object o) {
-        return Helper.hasAt(stream().filter(each -> Objects.equals(each, o)), 0);
+        return StreamPlusHelper.hasAt(stream().filter(each -> Objects.equals(each, o)), 0);
     }
     
     @Override
@@ -122,7 +122,7 @@ public interface ReadOnlyList<DATA>
     @Override
     public default DATA get(int index) {
         val ref   = new AtomicReference<DATA>();
-        val found = Helper.hasAt(this.stream(), index, ref);
+        val found = StreamPlusHelper.hasAt(this.stream(), index, ref);
         if (!found)
             throw new IndexOutOfBoundsException("" + index);
         

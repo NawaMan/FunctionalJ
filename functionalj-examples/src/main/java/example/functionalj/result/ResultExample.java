@@ -13,7 +13,7 @@ import functionalj.result.Result;
 import lombok.val;
 
 public class ResultExample {
-
+    
     @Test
     public void testHandleException() {
         val wordCount

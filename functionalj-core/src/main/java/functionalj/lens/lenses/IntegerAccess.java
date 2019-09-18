@@ -40,6 +40,8 @@ public interface IntegerAccess<HOST>
                         ToIntFunction<HOST>,
                         ConcreteAccess<HOST, Integer, IntegerAccess<HOST>> {
     
+    // TODO - applyAsInt should be used first if the function from primitive ... find a way to do this.
+    
     @Override
     public default IntegerAccess<HOST> newAccess(Function<HOST, Integer> accessToValue) {
         return accessToValue::apply;
@@ -129,21 +131,21 @@ public interface IntegerAccess<HOST>
             int v2 = (number2 == null) ? 0 : number2.intValue();
             return v1 % v2;
         }
-
+        
         @Override
         public Tuple2<Integer, Integer> divideAndRemainder(Integer number1, Integer number2) {
             int v1 = (number1 == null) ? 0 : number1.intValue();
             int v2 = (number2 == null) ? 0 : number2.intValue();
             return Tuple.of(v1 / v2, v1 % v2);
         }
-
+        
         @Override
         public Integer pow(Integer number1, Integer number2) {
             int v1 = (number1 == null) ? 0 : number1.intValue();
             int v2 = (number2 == null) ? 0 : number2.intValue();
             return (int)Math.pow(v1, v2);
         }
-
+        
         @Override
         public Integer abs(Integer number) {
             int v = (number == null) ? 0 : number.intValue();
@@ -159,7 +161,7 @@ public interface IntegerAccess<HOST>
             int v = (number == null) ? 0 : number.intValue();
             return (int)Math.signum(v);
         }
-
+        
         @Override
         public Integer min(Integer number1, Integer number2) {
             int v1 = (number1 == null) ? 0 : number1.intValue();
@@ -172,7 +174,7 @@ public interface IntegerAccess<HOST>
             int v2 = (number2 == null) ? 0 : number2.intValue();
             return Math.max(v1, v2);
         }
-
+        
     };
     
 }

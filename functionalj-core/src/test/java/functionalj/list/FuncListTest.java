@@ -282,7 +282,7 @@ public class FuncListTest {
                 return total;
             }
         };
-        assertEquals(18, stream.get(sumLength).intValue());
+        assertEquals(18, stream.calculate(sumLength).intValue());
     }
     
     @Test
@@ -316,7 +316,7 @@ public class FuncListTest {
                 return stream.joinToString();
             }
         };
-        assertEquals("(18,4,TwoThreeFourEleven)", list.get(sumLength, avgLength, concat).toString());
+        assertEquals("(18,4,TwoThreeFourEleven)", list.calculate(sumLength, avgLength, concat).toString());
     }
     
     @Test

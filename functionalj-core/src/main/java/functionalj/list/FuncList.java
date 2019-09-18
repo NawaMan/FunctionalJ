@@ -56,10 +56,10 @@ import functionalj.lens.lenses.AnyLens;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
-import functionalj.promise.UncompleteAction;
+import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamPlus.Helper;
+import functionalj.stream.StreamPlusHelper;
 import functionalj.stream.Streamable;
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.IntTuple2;
@@ -218,7 +218,7 @@ public interface FuncList<DATA>
     
     public default Optional<DATA> first() {
         val valueRef = new AtomicReference<DATA>();
-        if (!Helper.hasAt(stream(), 0, valueRef))
+        if (!StreamPlusHelper.hasAt(stream(), 0, valueRef))
             return Optional.empty();
     
         return Optional.ofNullable(valueRef.get());
@@ -244,7 +244,7 @@ public interface FuncList<DATA>
     
     public default Optional<DATA> at(int index) {
         val ref = new AtomicReference<DATA>();
-        val found = Helper.hasAt(this.stream(), index, ref);
+        val found = StreamPlusHelper.hasAt(this.stream(), index, ref);
         if (!found)
             Optional.empty();
     
@@ -1071,16 +1071,16 @@ public interface FuncList<DATA>
     
     // -- Zip --
     
-    public default <B, TARGET> FuncList<TARGET> combine(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
+    public default <B, TARGET> FuncList<TARGET> combineWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> {
-            return StreamPlus.from(stream).combine(anotherStream, combinator);
+            return StreamPlus.from(stream).combineWith(anotherStream, combinator);
         });
     }
     
-    public default <B, TARGET> FuncList<TARGET> combine(Stream<B> anotherStream, ZipWithOption option,
+    public default <B, TARGET> FuncList<TARGET> combineWith(Stream<B> anotherStream, ZipWithOption option,
             Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> {
-            return StreamPlus.from(stream).combine(anotherStream, option, combinator);
+            return StreamPlus.from(stream).combineWith(anotherStream, option, combinator);
         });
     }
     
@@ -1128,7 +1128,7 @@ public interface FuncList<DATA>
         });
     }
     
-    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompleteAction<T>> mapper) {
+    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
         return deriveWith(stream -> {
             return StreamPlus.from(stream()).spawn(mapper);
         });

@@ -57,7 +57,7 @@ public class MapLensTest {
         
         assertEquals("{name1=5, name2=42}", mapLens.get("name1").changeTo("5").apply(map) + "");
         
-        assertEquals("{name1=2, name2=24}", mapLens.changeTo(theString.thatEndsWith("2"), __->"24").apply(map) + "");
+        assertEquals("{name1=2, name2=24}", mapLens.changeEach(theString.thatEndsWith("2"), __->"24").apply(map) + "");
     }
     
 }

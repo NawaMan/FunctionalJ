@@ -10,13 +10,14 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
-public interface StreamPlusWithGet<DATA> {
-
+public interface StreamPlusWithCalculate<DATA> {
+    
     public IteratorPlus<DATA> iterator();
     
-    //== Get ==
     
-    public default <T> T get(StreamElementProcessor<DATA, T> processor) {
+    //== Calculate ==
+    
+    public default <T> T calculate(StreamElementProcessor<DATA, T> processor) {
         val counter = new AtomicLong(0);
         for (val each : (Iterable<DATA>)(()->iterator())) {
             val index = counter.getAndIncrement();
@@ -26,7 +27,7 @@ public interface StreamPlusWithGet<DATA> {
         return processor.processComplete(count);
     }
     
-    public default <T1, T2> Tuple2<T1, T2> get(
+    public default <T1, T2> Tuple2<T1, T2> calculate(
                 StreamElementProcessor<DATA, T1> processor1, 
                 StreamElementProcessor<DATA, T2> processor2) {
         val counter = new AtomicLong(0);
@@ -41,7 +42,7 @@ public interface StreamPlusWithGet<DATA> {
         return Tuple.of(value1, value2);
     }
     
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> get(
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
                 StreamElementProcessor<DATA, T1> processor1, 
                 StreamElementProcessor<DATA, T2> processor2, 
                 StreamElementProcessor<DATA, T3> processor3) {
@@ -59,7 +60,7 @@ public interface StreamPlusWithGet<DATA> {
         return Tuple.of(value1, value2, value3);
     }
     
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> get(
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
                 StreamElementProcessor<DATA, T1> processor1, 
                 StreamElementProcessor<DATA, T2> processor2, 
                 StreamElementProcessor<DATA, T3> processor3, 
@@ -80,7 +81,7 @@ public interface StreamPlusWithGet<DATA> {
         return Tuple.of(value1, value2, value3, value4);
     }
     
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> get(
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
                 StreamElementProcessor<DATA, T1> processor1, 
                 StreamElementProcessor<DATA, T2> processor2, 
                 StreamElementProcessor<DATA, T3> processor3, 
@@ -104,7 +105,7 @@ public interface StreamPlusWithGet<DATA> {
         return Tuple.of(value1, value2, value3, value4, value5);
     }
     
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> get(
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
                 StreamElementProcessor<DATA, T1> processor1, 
                 StreamElementProcessor<DATA, T2> processor2, 
                 StreamElementProcessor<DATA, T3> processor3, 

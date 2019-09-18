@@ -47,7 +47,8 @@ public class Func1Test {
         val appendSpace       = concat.elevateWith(" ");
         val appendWorld       = concat.elevateWith("World");
         val appendExclamation = concat.bind(__, "!");
-        val str = StartWtih("Hello").pipe(
+        val str = StartWtih("Hello")
+                .pipeTo(
                     appendSpace,
                     appendWorld,
                     appendExclamation
