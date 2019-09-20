@@ -54,8 +54,11 @@ import nullablej.nullable.Nullable;
  */
 @FunctionalInterface
 public interface Func5<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, OUTPUT> {
-
+    
     public static <I1, I2, I3, I4, I5, O> Func5<I1, I2, I3, I4, I5, O> of(Func5<I1, I2, I3, I4, I5, O> func) {
+        return func;
+    }
+    public static <I1, I2, I3, I4, I5, O> Func5<I1, I2, I3, I4, I5, O> func5(Func5<I1, I2, I3, I4, I5, O> func) {
         return func;
     }
     

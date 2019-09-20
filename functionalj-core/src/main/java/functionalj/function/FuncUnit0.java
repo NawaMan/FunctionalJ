@@ -35,6 +35,9 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     public static FuncUnit0 of(FuncUnit0 runnable) {
         return runnable;
     }
+    public static FuncUnit0 funcUnit0(FuncUnit0 runnable) {
+        return runnable;
+    }
     public static FuncUnit0 from(Runnable runnable) {
         return runnable::run;
     }

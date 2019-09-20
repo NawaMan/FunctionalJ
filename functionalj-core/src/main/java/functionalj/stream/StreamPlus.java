@@ -1029,6 +1029,7 @@ public interface StreamPlus<DATA>
     
     //-- Iterator --
     
+    /** DO NOT USE THIS METHOD OR YOUR STREAM WILL NOT BE CLOSED. */
     public default IteratorPlus<DATA> __iterator() {
         return IteratorPlus.from(stream());
     }

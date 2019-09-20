@@ -1,6 +1,6 @@
 package functionalj.stream;
 
-import static functionalj.function.Func.f;
+import static functionalj.function.FuncUnit0.funcUnit0;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 
 import java.util.stream.Stream;
@@ -26,7 +26,6 @@ public interface StreamPlusWithCombine<DATA> {
                .flatMap(s -> (StreamPlus<DATA>)s);
     }
     
-    
     public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
         val thisStream = stream();
         val iteratorA  = StreamPlusHelper.rawIterator(thisStream);
@@ -38,8 +37,8 @@ public interface StreamPlusWithCombine<DATA> {
         
         resultStream
                 .onClose(()->{
-                    f(()->thisStream   .close()).runCarelessly();
-                    f(()->anotherStream.close()).runCarelessly();
+                    funcUnit0(()->thisStream   .close()).runCarelessly();
+                    funcUnit0(()->anotherStream.close()).runCarelessly();
                 });
         return resultStream;
     }

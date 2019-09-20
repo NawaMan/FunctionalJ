@@ -62,6 +62,9 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public static <I1, I2, O> Func2<I1, I2, O> of(Func2<I1, I2, O> func) {
         return func;
     }
+    public static <I1, I2, O> Func2<I1, I2, O> func2(Func2<I1, I2, O> func) {
+        return func;
+    }
     
     public static <I1, I2, O> Func2<I1, I2, O> from(BiFunction<I1, I2, O> func) {
         return func::apply;
