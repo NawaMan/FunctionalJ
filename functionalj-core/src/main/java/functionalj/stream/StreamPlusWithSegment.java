@@ -18,10 +18,8 @@ import lombok.val;
 
 public interface StreamPlusWithSegment<DATA> {
     
-    public <TARGET> StreamPlus<TARGET> map(
-            Function<? super DATA, ? extends TARGET> mapper);
-    
     public <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action);
+    public <T> StreamPlus<T> sequential(Func1<StreamPlus<DATA>, StreamPlus<T>> action);
     
     public void close();
     
@@ -39,40 +37,42 @@ public interface StreamPlusWithSegment<DATA> {
         return segment(startCondition, true);
     }
     public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, boolean includeTail) {
-        val list = new AtomicReference<>(new ArrayList<DATA>());
-        val adding = new AtomicBoolean(false);
-        
-        val streamOrNull = (Function<DATA, StreamPlus<DATA>>)((DATA data) ->{
-            if (startCondition.test(data)) {
-                adding.set(true);
-                val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
-                list.get().add(data);
-                return retList.isEmpty()
-                        ? null
-                        : StreamPlus.from(retList.stream());
-            }
-            if (adding.get()) list.get().add(data);
-            return null;
+        return sequential(stream -> {
+            val list = new AtomicReference<>(new ArrayList<DATA>());
+            val adding = new AtomicBoolean(false);
+            
+            val streamOrNull = (Function<DATA, StreamPlus<DATA>>)((DATA data) ->{
+                if (startCondition.test(data)) {
+                    adding.set(true);
+                    val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
+                    list.get().add(data);
+                    return retList.isEmpty()
+                            ? null
+                            : StreamPlus.from(retList.stream());
+                }
+                if (adding.get()) list.get().add(data);
+                return null;
+            });
+            val mainStream = StreamPlus.from(stream.map(streamOrNull)).filterNonNull();
+            if (!includeTail)
+                return mainStream;
+            
+            val mainSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->mainStream;
+            val tailSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->{
+                return StreamPlus.of(
+                        StreamPlus.from(
+                                list.get()
+                                .stream()));
+            };
+            val resultStream
+                    = StreamPlus.of(mainSupplier, tailSupplier)
+                    .flatMap(Supplier::get);
+            
+            resultStream
+            .onClose(()->StreamPlusWithSegment.this.close());
+            
+            return resultStream;
         });
-        val mainStream = StreamPlus.from(map(streamOrNull)).filterNonNull();
-        if (!includeTail)
-            return mainStream;
-        
-        val mainSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->mainStream;
-        val tailSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->{
-            return StreamPlus.of(
-                    StreamPlus.from(
-                            list.get()
-                            .stream()));
-        };
-        val resultStream
-                = StreamPlus.of(mainSupplier, tailSupplier)
-                .flatMap(Supplier::get);
-        
-        resultStream
-        .onClose(()->StreamPlusWithSegment.this.close());
-        
-        return resultStream;
     }
     
     public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition) {
@@ -80,84 +80,87 @@ public interface StreamPlusWithSegment<DATA> {
     }
     
     public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition, boolean includeTail) {
-        val list = new AtomicReference<>(new ArrayList<DATA>());
-        val adding = new AtomicBoolean(false);
-        
-        StreamPlus<StreamPlus<DATA>> resultStream 
-            = StreamPlus.from(
-                map(i ->{
-                    if (startCondition.test(i)) {
-                        adding.set(true);
-                    }
-                    if (includeTail && adding.get()) list.get().add(i);
-                    if (endCondition.test(i)) {
-                        adding.set(false);
-                        val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
-                        return StreamPlus.from(retList.stream());
-                    }
-                    
-                    if (!includeTail && adding.get()) list.get().add(i);
-                    return null;
-                }))
-            .filterNonNull();
-        
-        resultStream
-        .onClose(()->StreamPlusWithSegment.this.close());
-        
-        return resultStream;
+        return sequential(stream -> {
+            val list = new AtomicReference<>(new ArrayList<DATA>());
+            val adding = new AtomicBoolean(false);
+            
+            StreamPlus<StreamPlus<DATA>> resultStream 
+                = StreamPlus.from(
+                    stream.map(i ->{
+                        if (startCondition.test(i)) {
+                            adding.set(true);
+                        }
+                        if (includeTail && adding.get()) list.get().add(i);
+                        if (endCondition.test(i)) {
+                            adding.set(false);
+                            val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
+                            return StreamPlus.from(retList.stream());
+                        }
+                        
+                        if (!includeTail && adding.get()) list.get().add(i);
+                        return null;
+                    }))
+                .filterNonNull();
+            
+            resultStream
+            .onClose(()->StreamPlusWithSegment.this.close());
+            
+            return resultStream;
+        });
     }
     
     @SuppressWarnings("unchecked")
     public default StreamPlus<StreamPlus<DATA>> segmentSize(Func1<DATA, Integer> segmentSize) {
-        val listRef = new AtomicReference<List<DATA>>(new ArrayList<DATA>());
-        val leftRef = new AtomicInteger(-1);
-        
-        val head 
-            = map(each -> {
-                int left = leftRef.get();
-                if (left == -1) {
-                    Integer newSize = segmentSize.apply(each);
-                    if ((newSize == null) || (newSize == 0)) {
-                        return StreamPlus.empty();
-                    } else if (newSize == 1) {
-                        return StreamPlus.of(each);
+        return sequential(stream -> {
+            val listRef = new AtomicReference<List<DATA>>(new ArrayList<DATA>());
+            val leftRef = new AtomicInteger(-1);
+            
+            val head 
+                = stream
+                .map(each -> {
+                    int left = leftRef.get();
+                    if (left == -1) {
+                        Integer newSize = segmentSize.apply(each);
+                        if ((newSize == null) || (newSize == 0)) {
+                            return StreamPlus.empty();
+                        } else if (newSize == 1) {
+                            return StreamPlus.of(each);
+                        } else {
+                            val list = listRef.get();
+                            list.add(each);
+                            leftRef.set(newSize - 1);
+                        }
+                    } else if (left == 1) {
+                        val list = listRef.getAndSet(new ArrayList<DATA>());
+                        list.add(each);
+                        
+                        leftRef.set(-1);
+                        
+                        return StreamPlus.from(list.stream());
+                        
                     } else {
                         val list = listRef.get();
                         list.add(each);
-                        leftRef.set(newSize - 1);
+                        leftRef.decrementAndGet();
                     }
-                } else if (left == 1) {
-                    val list = listRef.getAndSet(new ArrayList<DATA>());
-                    list.add(each);
-                    
-                    leftRef.set(-1);
-                    
-                    return StreamPlus.from(list.stream());
-                    
-                } else {
-                    val list = listRef.get();
-                    list.add(each);
-                    leftRef.decrementAndGet();
-                }
-                return null;
-            })
-            .filterNonNull()
-            ;
-        
-        StreamPlus<StreamPlus<DATA>> resultStream 
-            = (StreamPlus<StreamPlus<DATA>>)StreamPlus.of(
-                Func.f(()-> head),
-                Func.f(()-> StreamPlus.of(StreamPlus.from(listRef.get().stream())))
-            )
-            .flatMap(s -> (StreamPlus<DATA>)s.get());
-        
-        resultStream
-        .onClose(()->StreamPlusWithSegment.this.close());
-        
-        return resultStream;
+                    return null;
+                })
+                .filterNonNull()
+                ;
+            
+            StreamPlus<StreamPlus<DATA>> resultStream 
+                = (StreamPlus<StreamPlus<DATA>>)StreamPlus.of(
+                    Func.f(()-> head),
+                    Func.f(()-> StreamPlus.of(StreamPlus.from(listRef.get().stream())))
+                )
+                .flatMap(s -> (StreamPlus<DATA>)s.get());
+            
+            resultStream
+            .onClose(()->StreamPlusWithSegment.this.close());
+            
+            return resultStream;
+        });
     }
-    
-    // TODO - collapse(IntFunction<DATA> numbersToCollapse, Func2<DATA, DATA, DATA> concatFunc)
     
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {

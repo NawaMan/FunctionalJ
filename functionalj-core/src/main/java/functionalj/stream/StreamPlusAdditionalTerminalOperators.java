@@ -253,22 +253,6 @@ public interface StreamPlusAdditionalTerminalOperators<DATA> {
     
     //-- Find --
     
-    public default Optional<DATA> findFirst(Predicate<? super DATA> predicate) {
-        return terminate(stream -> {
-            return stream
-                    .filter(predicate)
-                    .findFirst();
-        });
-    }
-    
-    public default Optional<DATA> findAny(Predicate<? super DATA> predicate) {
-        return terminate(stream -> {
-            return stream
-                    .filter(predicate)
-                    .findAny();
-        });
-    }
-    
     public default <T> Optional<DATA> findFirst(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
         return filter(mapper, theCondition)
                 .findFirst();

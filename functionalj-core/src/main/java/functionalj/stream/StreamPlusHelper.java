@@ -41,7 +41,7 @@ public class StreamPlusHelper {
         return found;
     }
     
-    public static <T> boolean equals(Stream<T> stream1, Stream<T> stream2) {
+    static <T> boolean equals(Stream<T> stream1, Stream<T> stream2) {
         return !StreamPlus
                 .from       (stream1)
                 .combineWith(StreamPlus.from(stream2), AllowUnpaired, notEqual())
@@ -60,69 +60,77 @@ public class StreamPlusHelper {
         return "[" + StreamPlus.from(stream).joinToString(", ") + "]";
     }
     
-    public static <DATA, C, B> StreamPlus<C> doZipWith(
+    static <DATA, C, B> StreamPlus<C> doZipWith(
             ZipWithOption      option, 
             Func2<DATA, B, C>  merger,
             IteratorPlus<DATA> iteratorA, 
             IteratorPlus<B>    iteratorB) {
+        
+        val iterator = new Iterator<C>() {
+            private boolean hasNextA;
+            private boolean hasNextB;
+            
+            public boolean hasNext() {
+                hasNextA = iteratorA.hasNext();
+                hasNextB = iteratorB.hasNext();
+                return (option == ZipWithOption.RequireBoth)
+                        ? (hasNextA && hasNextB)
+                        : (hasNextA || hasNextB);
+            }
+            public C next() {
+                val nextA = hasNextA ? iteratorA.next() : null;
+                val nextB = hasNextB ? iteratorB.next() : null;
+                return merger.apply(nextA, nextB);
+            }
+        };
         val iterable = new Iterable<C>() {
             @Override
             public Iterator<C> iterator() {
-                return new Iterator<C>() {
-                    private boolean hasNextA;
-                    private boolean hasNextB;
-                    
-                    public boolean hasNext() {
-                        hasNextA = iteratorA.hasNext();
-                        hasNextB = iteratorB.hasNext();
-                        return (option == ZipWithOption.RequireBoth)
-                                ? (hasNextA && hasNextB)
-                                : (hasNextA || hasNextB);
-                    }
-                    public C next() {
-                        val nextA = hasNextA ? iteratorA.next() : null;
-                        val nextB = hasNextB ? iteratorB.next() : null;
-                        return merger.apply(nextA, nextB);
-                    }
-                };
+                return iterator;
             }
           
         };
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
-    public static <DATA> StreamPlus<DATA> doMerge(
-            IteratorPlus<DATA> iteratorA, 
-            IteratorPlus<DATA> iteratorB) {
+    static <DATA> StreamPlus<DATA> doMerge(
+            Iterator<DATA> iteratorA, 
+            Iterator<DATA> iteratorB) {
         val iterable = new Iterable<DATA>() {
-            @Override
-            public Iterator<DATA> iterator() {
-                return new Iterator<DATA>() {
-                    private boolean isA = true;
-                    
-                    public boolean hasNext() {
-                        if (isA) {
-                            if (iteratorA.hasNext()) return true;
-                            isA = false;
-                            if (iteratorB.hasNext()) return true;
-                            return false;
-                        }
-                        
-                        if (iteratorB.hasNext()) return true;
-                        isA = true;
+            private final Iterator<DATA> iterator = new Iterator<DATA>() {
+                private boolean isA = true;
+                
+                public boolean hasNext() {
+                    if (isA) {
                         if (iteratorA.hasNext()) return true;
+                        isA = false;
+                        if (iteratorB.hasNext()) return true;
                         return false;
                     }
-                    public DATA next() {
-                        val next = isA ? iteratorA.next() : iteratorB.next();
-                        isA = !isA;
-                        return next;
-                    }
-                };
+                    
+                    if (iteratorB.hasNext()) return true;
+                    isA = true;
+                    if (iteratorA.hasNext()) return true;
+                    return false;
+                }
+                public DATA next() {
+                    val next = isA ? iteratorA.next() : iteratorB.next();
+                    isA = !isA;
+                    return next;
+                }
+            };
+            @Override
+            public Iterator<DATA> iterator() {
+                return iterator;
             }
-            
         };
-        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+        val spliterator = iterable.spliterator();
+        val stream      = StreamSupport.stream(spliterator, false);
+        return StreamPlus.from(stream);
+    }
+    
+    static <DATA> IteratorPlus<DATA> rawIterator(Stream<DATA> stream) {
+        return IteratorPlus.from(stream);
     }
     
 }

@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
@@ -113,6 +114,14 @@ public interface StreamPlus<DATA>
         return StreamPlus
                 .from(Stream.empty());
     }
+
+    /**
+     * Returns an empty StreamPlus.
+     */
+    public static <D> StreamPlus<D> emptyStreamPlus() {
+        return StreamPlus
+                .from(Stream.empty());
+    }
     
     /** Create a StreamPlus from the given data. */
     @SafeVarargs
@@ -140,7 +149,7 @@ public interface StreamPlus<DATA>
     
     /** Create a StreamPlus from the given iterator. */
     public static <D> StreamPlus<D> from(Iterator<D> iterator) {
-        return IteratorPlus.of(iterator).stream();
+        return IteratorPlus.from(iterator).stream();
     }
     
     /** Create a StreamPlus from the given enumeration. */
@@ -435,6 +444,21 @@ public interface StreamPlus<DATA>
         }
     }
     
+    public default <TARGET> StreamPlus<TARGET> sequential(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action) {
+        return deriveWith(stream -> {
+            val isParallel = stream.isParallel();
+            if (!isParallel) {
+                return action.apply(StreamPlus.from(stream));
+            }
+            
+            val resultStream = action.apply(StreamPlus.from(stream.sequential()));
+            if (resultStream.isParallel())
+                return resultStream;
+            
+            return resultStream.parallel();
+        });
+    }
+    
     public default <TARGET> StreamPlus<TARGET> deriveWith(
             Function<Stream<DATA>, Stream<TARGET>> action) {
         return StreamPlus.from(
@@ -618,8 +642,8 @@ public interface StreamPlus<DATA>
     }
     
     public default StreamPlus<DATA> skipWhile(Predicate<? super DATA> condition) {
-        val isStillTrue = new AtomicBoolean(true);
-        return deriveWith(stream -> {
+        return sequential(stream -> {
+            val isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
@@ -631,8 +655,8 @@ public interface StreamPlus<DATA>
     }
     
     public default StreamPlus<DATA> skipUntil(Predicate<? super DATA> condition) {
-        val isStillTrue = new AtomicBoolean(true);
-        return deriveWith(stream -> {
+        return sequential(stream -> {
+            val isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
@@ -645,33 +669,35 @@ public interface StreamPlus<DATA>
     
     public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
         // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
-        return deriveWith(stream -> {
+        return sequential(stream -> {
             val splitr = stream.spliterator();
-            return StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
-                boolean stillGoing = true;
-                
-                @Override
-                public boolean tryAdvance(final Consumer<? super DATA> consumer) {
-                    if (stillGoing) {
-                        final boolean hadNext = splitr.tryAdvance(elem -> {
-                            if (condition.test(elem)) {
-                                consumer.accept(elem);
-                            } else {
-                                stillGoing = false;
+            return StreamPlus.from(
+                    StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+                        boolean stillGoing = true;
+                        
+                        @Override
+                        public boolean tryAdvance(final Consumer<? super DATA> consumer) {
+                            if (stillGoing) {
+                                final boolean hadNext = splitr.tryAdvance(elem -> {
+                                    if (condition.test(elem)) {
+                                        consumer.accept(elem);
+                                    } else {
+                                        stillGoing = false;
+                                    }
+                                });
+                                return hadNext && stillGoing;
                             }
-                        });
-                        return hadNext && stillGoing;
-                    }
-                    return false;
-                }
-            }, false);
+                            return false;
+                        }
+                    }, false)
+                );
         });
     }
     
     public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
-        return deriveWith(stream -> {
+        return sequential(stream -> {
             val splitr = stream.spliterator();
-            return StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
                 boolean stillGoing = true;
                 
                 @Override
@@ -689,6 +715,7 @@ public interface StreamPlus<DATA>
                     return false;
                 }
             }, false);
+            return StreamPlus.from(resultStream);
         });
     }
     
@@ -699,6 +726,8 @@ public interface StreamPlus<DATA>
                     .distinct();
         });
     }
+    
+    //-- Sorted --
     
     @Override
     public default StreamPlus<DATA> sorted() {
@@ -717,6 +746,31 @@ public interface StreamPlus<DATA>
                     : stream.sorted(comparator);
         });
     }
+    
+    public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(
+            Function<? super DATA, T> mapper) {
+        return deriveWith(stream -> {
+            return stream.sorted((a, b) -> {
+                        T vA = mapper.apply(a);
+                        T vB = mapper.apply(b);
+                        return vA.compareTo(vB);
+                    });
+        });
+    }
+    
+    public default <T> StreamPlus<DATA> sortedBy(
+            Function<? super DATA, T> mapper, 
+            Comparator<T>             comparator) {
+        return deriveWith(stream -> {
+            return stream.sorted((a, b) -> {
+                    T vA = mapper.apply(a);
+                    T vB = mapper.apply(b);
+                    return Objects.compare(vA,  vB, comparator);
+                });
+        });
+    }
+    
+    //-- Terminate --
     
     @Override
     public default void forEach(
@@ -811,6 +865,16 @@ public interface StreamPlus<DATA>
     }
     
     @Override
+    public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
+        return min((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
+    }
+    
+    @Override
+    public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
+        return max((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
+    }
+    
+    @Override
     public default long count() {
         return terminate(stream -> {
             return stream
@@ -852,22 +916,29 @@ public interface StreamPlus<DATA>
         });
     }
     
-    @Override
-    public default Optional<DATA> findFirst() {
+    public default Optional<DATA> findFirst(Predicate<? super DATA> predicate) {
         return terminate(stream -> {
             return stream
+                    .filter(predicate)
                     .findFirst();
         });
     }
     
-    @Override
-    public default Optional<DATA> findAny() {
+    public default Optional<DATA> findAny(Predicate<? super DATA> predicate) {
         return terminate(stream -> {
             return stream
+                    .filter(predicate)
                     .findAny();
         });
     }
     
+    public default Optional<DATA> findFirst() {
+        return stream().findFirst();
+    }
+    
+    public default Optional<DATA> findAny() {
+        return stream().findAny();
+    }
     //== toXXX ===
     
     @Override
@@ -875,6 +946,15 @@ public interface StreamPlus<DATA>
         return terminate(stream -> {
             return stream
                     .toArray();
+        });
+    }
+    
+    public default <T> T[] toArray(T[] a) {
+        return terminate(stream -> {
+            T[] array 
+                    = toJavaList()
+                    .toArray(a);
+            return array;
         });
     }
     
@@ -949,17 +1029,23 @@ public interface StreamPlus<DATA>
     
     //-- Iterator --
     
+    public default IteratorPlus<DATA> __iterator() {
+        return IteratorPlus.from(stream());
+    }
+    
     @Override
     public default IteratorPlus<DATA> iterator() {
         return terminate(s -> {
-            return IteratorPlus.from(stream());
+            val iterator = __iterator();
+            return iterator;
         });
     }
     
     @Override
     public default Spliterator<DATA> spliterator() {
         return terminate(s -> {
-            return Spliterators.spliteratorUnknownSize(iterator(), 0);
+            val iterator = __iterator();
+            return Spliterators.spliteratorUnknownSize(iterator, 0);
         });
     }
     
@@ -967,24 +1053,25 @@ public interface StreamPlus<DATA>
      * Use iterator of this stream without terminating the stream.
      */
     public default <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action) {
-        StreamPlus<T> result = null;
-        try {
-            val stream   = stream();
-            val iterator = IteratorPlus.from(stream);
-            result = action.apply(iterator);
-            return result;
-        } finally {
-            if (result == null) {
-                f(()->close())
-                .runCarelessly();
-            } else {
-                result
-                .onClose(()->{
+        return sequential(stream -> {
+            StreamPlus<T> result = null;
+            try {
+                val iterator = StreamPlus.from(stream).__iterator();
+                result = action.apply(iterator);
+                return result;
+            } finally {
+                if (result == null) {
                     f(()->close())
                     .runCarelessly();
-                });
+                } else {
+                    result
+                    .onClose(()->{
+                        f(()->close())
+                        .runCarelessly();
+                    });
+                }
             }
-        }
+        });
     }
     
     //== Plus ==
@@ -1033,35 +1120,37 @@ public interface StreamPlus<DATA>
      *   the unfinished actions will be canceled.
      */
     public default <T> StreamPlus<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapToAction) {
-        val results = new ArrayList<DeferAction<T>>();
-        val index   = new AtomicInteger(0);
-        
-        val actions 
-            = stream()
-            .map (mapToAction)
-            .peek(action -> results.add(DeferAction.<T>createNew()))
-            .peek(action -> action
-                .getPromise()
-                .onComplete(result -> {
-                    val thisIndex  = index.getAndIncrement();
-                    val thisAction = results.get(thisIndex);
-                    if (result.isValue())
-                         thisAction.complete(result.value());
-                    else thisAction.fail    (result.exception());
-                })
-            )
-            .peek(action -> action.start())
-            .collect(Collectors.toList())
-            ;
-        
-        val stream 
-            = StreamPlus
-            .from(results.stream().map(action -> action.getResult()))
-            ;
-        stream
-            .onClose(()->actions.forEach(action -> action.abort("Stream closed!")));
-        
-        return stream;
+        return sequential(stream -> {
+            val results = new ArrayList<DeferAction<T>>();
+            val index   = new AtomicInteger(0);
+            
+            val actions 
+                = stream()
+                .map (mapToAction)
+                .peek(action -> results.add(DeferAction.<T>createNew()))
+                .peek(action -> action
+                    .getPromise()
+                    .onComplete(result -> {
+                        val thisIndex  = index.getAndIncrement();
+                        val thisAction = results.get(thisIndex);
+                        if (result.isValue())
+                             thisAction.complete(result.value());
+                        else thisAction.fail    (result.exception());
+                    })
+                )
+                .peek(action -> action.start())
+                .collect(Collectors.toList())
+                ;
+            
+            val resultStream 
+                = StreamPlus
+                .from(results.stream().map(action -> action.getResult()))
+                ;
+            resultStream
+                .onClose(()->actions.forEach(action -> action.abort("Stream closed!")));
+            
+            return resultStream;
+        });
     }
     
     //== accumulate + restate ==
@@ -1120,22 +1209,18 @@ public interface StreamPlus<DATA>
      **/
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> restate(BiFunction<? super DATA, StreamPlus<DATA>, StreamPlus<DATA>> restater) {
-        //IteratorPlus.from(stream());
         val func = (UnaryOperator<Tuple2<DATA, StreamPlus<DATA>>>)((Tuple2<DATA, StreamPlus<DATA>> pair) -> {
             val stream = pair._2();
             if (stream == null)
                 return null;
             
-            Object[]         head = new Object[] { null };
-            StreamPlus<DATA> tail = stream
-                .useIterator(iterator -> {
-                    if (!iterator.hasNext())
-                        return null;
-                    
-                    head[0]        = iterator.next();
-                    val tailStream = restater.apply((DATA)head[0], iterator.stream());
-                    return tailStream;
-                });
+            Object[] head     = new Object[] { null };
+            val      iterator = stream.__iterator();
+            if (!iterator.hasNext())
+                return null;
+            
+            head[0]  = iterator.next();
+            val tail = restater.apply((DATA)head[0], iterator.stream());
             if (tail == null)
                 return null;
             

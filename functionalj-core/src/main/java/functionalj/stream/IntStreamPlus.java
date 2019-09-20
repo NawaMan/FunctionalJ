@@ -403,7 +403,6 @@ public interface IntStreamPlus extends IntStream {
     
     @Override
     public default PrimitiveIterator.OfInt iterator() {
-        // TODO - Make sure close is handled properly.
         return stream().iterator();
     }
     

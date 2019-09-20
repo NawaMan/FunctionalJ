@@ -120,18 +120,43 @@ class Helper {
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
-public interface Streamable<DATA> extends StreamableWithGet<DATA> {
+public interface Streamable<DATA> 
+        extends
+            StreamableWithCalculate<DATA> {
+    
+    public static <D> Streamable<D> empty() {
+        return ()->StreamPlus.empty();
+    }
+    
+    public static <D> Streamable<D> emptyStreamable() {
+        return ()->StreamPlus.empty();
+    }
     
     @SafeVarargs
     public static <D> Streamable<D> of(D ... data) {
         return ()->StreamPlus.from(Stream.of(data));
     }
     
+    @SafeVarargs
+    public static <D> Streamable<D> steamableOf(D ... data) {
+        return ()->StreamPlus.from(Stream.of(data));
+    }
+    
     public static <D> Streamable<D> from(Collection<D> collection) {
         return ()->StreamPlus.from(collection.stream());
     }
+    
     public static <D> Streamable<D> from(Func0<Stream<D>> supplier) {
         return ()->StreamPlus.from(supplier.get());
+    }
+    
+    @SafeVarargs
+    public static <D> Streamable<D> repeat(D ... data) {
+        return ()->StreamPlus.repeat(data);
+    }
+    
+    public static <D> StreamPlus<D> repeat(FuncList<D> data) {
+        return ()->StreamPlus.repeat(data);
     }
     
     @SafeVarargs
@@ -139,9 +164,14 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         return ()->StreamPlus.cycle(data);
     }
     
+    public static <D> StreamPlus<D> cycle(FuncList<D> data) {
+        return ()->StreamPlus.cycle(data);
+    }
+    
     public static Streamable<Integer> loop(int time) {
         return ()->StreamPlus.loop(time);
     }
+    
     public static Streamable<Integer> loop() {
         return ()->StreamPlus.loop();
     }
@@ -149,12 +179,9 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
     public static Streamable<Integer> infiniteInt() {
         return ()->StreamPlus.infiniteInt();
     }
+    
     public static Streamable<Integer> range(int startInclusive, int endExclusive) {
         return ()->StreamPlus.range(startInclusive, endExclusive);
-    }
-    
-    public static <D> Streamable<D> empty() {
-        return ()->StreamPlus.empty();
     }
     
     // Because people know this.
@@ -162,15 +189,18 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
     public static <D> Streamable<D> concat(Streamable<D> ... streams) {
         return ()->StreamPlus.of(streams).flatMap(s -> s.stream());
     }
+    
     // To avoid name conflict with String.concat
     @SafeVarargs
     public static <D> Streamable<D> combine(Streamable<D> ... streams) {
         return ()->StreamPlus.of(streams).flatMap(s -> s.stream());
     }
+    
     public static <D> Streamable<D> generate(Supplier<Supplier<D>> supplier) {
         return ()->StreamPlus.generate(supplier.get());
     }
-    public static <D> Streamable<D> generateBy(Supplier<Supplier<D>> supplier) {
+    
+    public static <D> Streamable<D> generateWith(Supplier<Supplier<D>> supplier) {
         return ()->StreamPlus.generate(supplier.get());
     }
     
@@ -183,26 +213,38 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
     }
     
     public static <D> Streamable<D> iterate(D seed1, D seed2, BinaryOperator<D> f) {
+        return ()->StreamPlus.iterate(seed1, seed2, f);
+    }
+    
+    public static <D> Streamable<D> compound(D seed1, D seed2, BinaryOperator<D> f) {
+        return ()->StreamPlus.compound(seed1, seed2, f);
+    }
+    
+    public static <T1, T2> Streamable<Tuple2<T1, T2>> zipOf(
+            Streamable<T1> stream1, 
+            Streamable<T2> stream2) {
         return ()->{
-            AtomicInteger      counter = new AtomicInteger(0);
-            AtomicReference<D> d1      = new AtomicReference<D>(seed1);
-            AtomicReference<D> d2      = new AtomicReference<D>(seed2);
-            return StreamPlus.generate(()->{
-                if (counter.getAndIncrement() == 0)
-                    return seed1;
-                if (counter.getAndIncrement() == 2)
-                    return seed2;
-                
-                D i2 = d2.get();
-                D i1 = d1.getAndSet(i2);
-                D i  = f.apply(i1, i2);
-                d2.set(i);
-                return i;
-            });
+            return StreamPlus.zipOf(
+                    stream1.stream(),
+                    stream2.stream());
         };
     }
     
-    public static <D, T> Streamable<T> with(Streamable<D> source, Function<Stream<D>, Stream<T>> action) {
+    public static <T1, T2, T> Streamable<T> zipOf(
+            Streamable<T1>   stream1, 
+            Streamable<T2>   stream2,
+            Func2<T1, T2, T> merger) {
+        return ()->{
+            return StreamPlus.zipOf(
+                    stream1.stream(),
+                    stream2.stream(),
+                    merger);
+        };
+    }
+    
+    public static <D, T> Streamable<T> with(
+            Streamable<D>                  source, 
+            Function<Stream<D>, Stream<T>> action) {
         return new Streamable<T>() {
             @Override
             public StreamPlus<T> stream() {
@@ -212,7 +254,9 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
             }
         };
     }
-    public static <D, T> Streamable<T> from(Streamable<D> source, Function<Streamable<D>, Stream<T>> action) {
+    public static <D, T> Streamable<T> from(
+            Streamable<D>                      source, 
+            Function<Streamable<D>, Stream<T>> action) {
         return new Streamable<T>() {
             @Override
             public StreamPlus<T> stream() {
@@ -222,7 +266,11 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         };
     }
     
+    //== Stream ==
+    
     public StreamPlus<DATA> stream();
+    
+    //== Helper functions ==
     
     public default <TARGET> Streamable<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action) {
         return Streamable.with(this, action);
@@ -234,6 +282,52 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
     
     public default <T> Pipeable<Streamable<DATA>> pipable() {
         return Pipeable.of(this);
+    }
+    
+    //== Stream sepecific ==
+    
+    public default Streamable<DATA> sequential() {
+        return deriveWith(stream -> { 
+            return stream.sequential();
+        });
+    }
+    
+    public default Streamable<DATA> parallel() {
+        return deriveWith(stream -> { 
+            return stream.parallel();
+        });
+    } 
+    
+    public default Streamable<DATA> unordered() {
+        return deriveWith(stream -> { 
+            return stream.unordered();
+        });
+    }
+    
+    //== Functionalities ==
+    
+    public default IntStreamPlus mapToInt(ToIntFunction<? super DATA> mapper) {
+        return IntStreamPlus.from(stream().mapToInt(mapper));
+    }
+    
+    public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
+        return stream().mapToLong(mapper);
+    }
+    
+    public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+        return stream().mapToDouble(mapper);
+    }
+    
+    public default IntStreamPlus flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
+        return IntStreamPlus.from(stream().flatMapToInt(mapper));
+    }
+    
+    public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
+        return stream().flatMapToLong(mapper);
+    }
+    
+    public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
+        return stream().flatMapToDouble(mapper);
     }
     
     public default <TARGET> Streamable<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
@@ -255,6 +349,7 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
                 : stream.filter(predicate);
         });
     }
+    
     public default Streamable<DATA> peek(Consumer<? super DATA> action) {
         return deriveWith(stream -> {
             return (action == null)
@@ -274,6 +369,22 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
     public default Streamable<DATA> skip(long n) {
         return deriveWith(stream -> {
             return stream.skip(n);
+        });
+    }
+    
+    public default Streamable<DATA> limit(Long maxSize) {
+        return deriveWith(stream -> {
+            return ((maxSize == null) || (maxSize.longValue() < 0))
+                    ? stream
+                    : stream.limit(maxSize);
+        });
+    }
+    
+    public default Streamable<DATA> skip(Long startAt) {
+        return deriveWith(stream -> {
+            return ((startAt == null) || (startAt.longValue() < 0))
+                    ? stream
+                    : stream.skip(startAt);
         });
     }
     
@@ -307,6 +418,8 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         });
     }
     
+    //-- Sorted --
+    
     public default Streamable<DATA> sorted() {
         return deriveWith(stream -> {
             return stream.sorted();
@@ -321,25 +434,8 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         });
     }
     
-    public default Streamable<DATA> limit(Long maxSize) {
-        return deriveWith(stream -> {
-            return ((maxSize == null) || (maxSize.longValue() < 0))
-                    ? stream
-                    : stream.limit(maxSize);
-        });
-    }
-    
-    public default Streamable<DATA> skip(Long startAt) {
-        return deriveWith(stream -> {
-            return ((startAt == null) || (startAt.longValue() < 0))
-                    ? stream
-                    : stream.skip(startAt);
-        });
-    }
-    
-    //-- Sorted --
-    
-    public default <T extends Comparable<? super T>> Streamable<DATA> sortedBy(Function<? super DATA, T> mapper) {
+    public default <T extends Comparable<? super T>> Streamable<DATA> sortedBy(
+            Function<? super DATA, T> mapper) {
         return deriveWith(stream -> {
             return stream.sorted((a, b) -> {
                         T vA = mapper.apply(a);
@@ -349,7 +445,9 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         });
     }
     
-    public default <T> Streamable<DATA> sortedBy(Function<? super DATA, T> mapper, Comparator<T> comparator) {
+    public default <T> Streamable<DATA> sortedBy(
+            Function<? super DATA, T> mapper, 
+            Comparator<T>             comparator) {
         return deriveWith(stream -> {
             return stream.sorted((a, b) -> {
                     T vA = mapper.apply(a);
@@ -358,7 +456,508 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
                 });
         });
     }
+
+    //-- Terminate --
     
+    public default void forEach(Consumer<? super DATA> action) {
+        if (action == null)
+            return;
+        
+        stream().forEach(action);
+    }
+    
+    public default void forEachOrdered(Consumer<? super DATA> action) {
+        if (action == null)
+            return;
+        
+        stream().forEachOrdered(action);
+    }
+    
+    public default DATA reduce(DATA identity, BinaryOperator<DATA> accumulator) {
+        return stream().reduce(identity, accumulator);
+    }
+    
+    public default Optional<DATA> reduce(BinaryOperator<DATA> accumulator) {
+        return stream().reduce(accumulator);
+    }
+    
+    public default <U> U reduce(
+                    U                              identity,
+                    BiFunction<U, ? super DATA, U> accumulator,
+                    BinaryOperator<U>              combiner) {
+        return stream().reduce(identity, accumulator, combiner);
+    }
+    
+    public default <R, A> R collect(
+            Collector<? super DATA, A, R> collector) {
+        return stream().collect(collector);
+    }
+    
+    public default <R> R collect(
+            Supplier<R>                 supplier,
+            BiConsumer<R, ? super DATA> accumulator,
+            BiConsumer<R, R>            combiner) {
+        return stream().collect(supplier, accumulator, combiner);
+    }
+    
+    public default Optional<DATA> min(Comparator<? super DATA> comparator) {
+        return stream().min(comparator);
+    }
+    
+    public default Optional<DATA> max(Comparator<? super DATA> comparator) {
+        return stream().max(comparator);
+    }
+    
+    public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
+        return stream().min((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
+    }
+    
+    public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
+        return stream().max((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
+    }
+    
+    public default long count() {
+        return stream().count();
+    }
+    
+    public default int size() {
+        return (int)stream().count();
+    }
+    
+    public default boolean anyMatch(Predicate<? super DATA> predicate) {
+        return stream().anyMatch(predicate);
+    }
+    
+    public default boolean allMatch(Predicate<? super DATA> predicate) {
+        return stream().allMatch(predicate);
+    }
+    
+    public default boolean noneMatch(Predicate<? super DATA> predicate) {
+        return stream().noneMatch(predicate);
+    }
+    
+    public default Optional<DATA> findFirst(Predicate<? super DATA> predicate) {
+        return stream().filter(predicate).findFirst();
+    }
+    
+    public default Optional<DATA> findAny(Predicate<? super DATA> predicate) {
+        return stream().filter(predicate).findAny();
+    }
+    
+    public default <T> Optional<DATA> findFirst(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
+        return filter(mapper, theCondition).findFirst();
+    }
+    
+    public default <T>  Optional<DATA> findAny(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
+        return filter(mapper, theCondition).findAny();
+    }
+    
+    public default Optional<DATA> findFirst() {
+        return stream().findFirst();
+    }
+    
+    public default Optional<DATA> findAny() {
+        return stream().findAny();
+    }
+    
+    //== toXXX ===
+    
+    public default Object[] toArray() {
+        return stream().toArray();
+    }
+    
+    public default <T> T[] toArray(T[] a) {
+        return StreamPlus.of(stream()).toJavaList().toArray(a);
+    }
+    
+    public default <A> A[] toArray(IntFunction<A[]> generator) {
+        return stream().toArray(generator);
+    }
+    
+    public default List<DATA> toJavaList() {
+        return stream().collect(Collectors.toList());
+    }
+    
+    public default byte[] toByteArray(Func1<DATA, Byte> toByte) {
+        val byteArray = new ByteArrayOutputStream();
+        stream().forEach(d -> byteArray.write(toByte.apply(d)));
+        return byteArray.toByteArray();
+    }
+    
+    public default int[] toIntArray(ToIntFunction<DATA> toInt) {
+        return mapToInt(toInt).toArray();
+    }
+    
+    public default long[] toLongArray(ToLongFunction<DATA> toLong) {
+        return mapToLong(toLong).toArray();
+    }
+    
+    public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
+        return mapToDouble(toDouble).toArray();
+    }
+    
+    public default FuncList<DATA> toList() {
+        return toImmutableList();
+    }
+    
+    public default FuncList<DATA> toLazyList() {
+        return FuncList.from(this);
+    }
+    
+    public default String toListString() {
+        return "[" + map(String::valueOf).collect(Collectors.joining(", ")) + "]";
+    }
+    
+    public default ImmutableList<DATA> toImmutableList() {
+        return ImmutableList.from(stream());
+    }
+    
+    public default List<DATA> toMutableList() {
+        return toArrayList();
+    }
+    
+    public default ArrayList<DATA> toArrayList() {
+        return new ArrayList<DATA>(toJavaList());
+    }
+    
+    public default Set<DATA> toSet() {
+        return new HashSet<DATA>(stream().collect(Collectors.toSet()));
+    }
+    
+    //-- Iterator --
+    
+    public default IteratorPlus<DATA> iterator() {
+        return IteratorPlus.from(stream());
+    }
+    
+    public default Spliterator<DATA> spliterator() {
+        return Spliterators.spliteratorUnknownSize(iterator(), 0);
+    }
+    
+    // Eager
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(Function<? super DATA, ? extends KEY> classifier) {
+        return stream()
+                .groupingBy(classifier);
+    }
+    
+    // Eager
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            Function<? super DATA, ? extends KEY> classifier,
+            StreamProcessor<? super DATA, VALUE>  processor) {
+        return stream()
+                .groupingBy(classifier, processor);
+    }
+    
+    // Eager
+    public default <KEY, TARGET> FuncMap<KEY, TARGET> groupingBy(
+            Function<? super DATA, ? extends KEY> classifier,
+            Supplier<StreamElementProcessor<? super DATA, TARGET>> processorSupplier) {
+        return stream()
+                .groupingBy(classifier, processorSupplier);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, ? extends KEY> keyMapper) {
+        val theMap = stream().collect(Collectors.toMap(keyMapper, data -> data));
+        return (FuncMap<KEY, DATA>)ImmutableMap.from(theMap);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+                Function<? super DATA, ? extends KEY>  keyMapper,
+                Function<? super DATA, ? extends VALUE> valueMapper) {
+        val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper));
+        return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+                Function<? super DATA, ? extends KEY>   keyMapper,
+                Function<? super DATA, ? extends VALUE> valueMapper,
+                BinaryOperator<VALUE> mergeFunction) {
+        val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
+        return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
+    }
+    
+    //== Plus ==
+    
+    public default String joinToString() {
+        return map(StrFuncs::toStr)
+                .collect(Collectors.joining());
+    }
+    public default String joinToString(String delimiter) {
+        return map(StrFuncs::toStr)
+                .collect(Collectors.joining(delimiter));
+    }
+    
+    //-- Split --
+    
+    public default Tuple2<FuncList<DATA>, FuncList<DATA>> split(
+            Predicate<? super DATA> predicate) {
+        val temp = this.mapTuple(
+                it -> predicate.test(it) ? 0 : 1,
+                it -> it
+        ).toList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        return Tuple.of(
+                list1,
+                list2
+        );
+    }
+    
+    public default Tuple3<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    :                       2,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        return Tuple.of(
+                list1,
+                list2,
+                list3
+        );
+    }
+    
+    public default Tuple4<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    :                       3,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
+        return Tuple.of(
+                list1,
+                list2,
+                list3,
+                list4
+        );
+    }
+    
+    public default Tuple5<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3,
+            Predicate<? super DATA> predicate4) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    : predicate4.test(it) ? 3
+                    :                       4,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
+        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
+        return Tuple.of(
+                list1,
+                list2,
+                list3,
+                list4,
+                list5
+        );
+    }
+    
+    public default Tuple6<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
+            Predicate<? super DATA> predicate1,
+            Predicate<? super DATA> predicate2,
+            Predicate<? super DATA> predicate3,
+            Predicate<? super DATA> predicate4,
+            Predicate<? super DATA> predicate5) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    : predicate4.test(it) ? 3
+                    : predicate5.test(it) ? 4
+                    :                       5,
+                it -> it
+        ).toImmutableList();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
+        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
+        val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2());
+        return Tuple.of(
+                list1,
+                list2,
+                list3,
+                list4,
+                list5,
+                list6
+        );
+    }
+    
+    //-- SplitToMap --
+    
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate,
+            KEY key2) {
+        val temp = this.mapTuple(
+                it -> predicate.test(it) ? 0 : 1,
+                it -> it
+        ).toList();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        return FuncMap.of(
+                key1, list1, 
+                key2, list2);
+    }
+    
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    :                       2,
+                it -> it
+        ).toImmutableList();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        return FuncMap.of(
+                key1, list1, 
+                key2, list2, 
+                key3, list3);
+    }
+    
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3, Predicate<? super DATA> predicate3,
+            KEY key4) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    :                       3,
+                it -> it
+        ).toImmutableList();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        return FuncMap.of(
+                key1, list1, 
+                key2, list2, 
+                key3, list3, 
+                key4, list4);
+    }
+    
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3, Predicate<? super DATA> predicate3,
+            KEY key4, Predicate<? super DATA> predicate4,
+            KEY key5) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    : predicate4.test(it) ? 3
+                    :                       4,
+                it -> it
+        ).toImmutableList();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
+        return FuncMap.of(
+                key1, list1, 
+                key2, list2, 
+                key3, list3, 
+                key4, list4, 
+                key5, list5);
+    }
+    
+    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
+            KEY key1, Predicate<? super DATA> predicate1,
+            KEY key2, Predicate<? super DATA> predicate2,
+            KEY key3, Predicate<? super DATA> predicate3,
+            KEY key4, Predicate<? super DATA> predicate4,
+            KEY key5, Predicate<? super DATA> predicate5,
+            KEY key6) {
+        val temp = this.mapTuple(
+                it -> predicate1.test(it) ? 0
+                    : predicate2.test(it) ? 1
+                    : predicate3.test(it) ? 2
+                    : predicate4.test(it) ? 3
+                    : predicate5.test(it) ? 4
+                    :                       5,
+                it -> it
+        ).toImmutableList();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).map(it -> it._2()) : FuncList.<DATA>empty();
+        return FuncMap.of(
+                key1, list1, 
+                key2, list2, 
+                key3, list3, 
+                key4, list4, 
+                key5, list5,
+                key6, list6);
+    }
+    
+    //++ Plus w/ Self ++
+    
+    public default <T> T pipe(Function<? super Streamable<DATA>, T> piper) {
+        return piper.apply(this);
+    }
+    
+    public default Streamable<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
+        return deriveWith(stream -> { 
+            return StreamPlus.from(stream()).collapse(conditionToCollapse, concatFunc);
+        });
+    }
+    
+    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
+        return deriveWith(stream -> {
+            return StreamPlus.from(stream()).spawn(mapper);
+        });
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
     // -- fillNull --
     
     public default <VALUE> Streamable<DATA> fillNull(AnyLens<DATA, VALUE> lens, VALUE replacement) {
@@ -1062,39 +1661,6 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
     //-- Plus w/ Self --
     //============================================================================
     
-    //== Functionalities ==
-    
-    public default IntStreamPlus mapToInt(ToIntFunction<? super DATA> mapper) {
-        return IntStreamPlus.from(stream().mapToInt(mapper));
-    }
-    
-    public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
-        return stream().mapToLong(mapper);
-    }
-    
-    public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
-        return stream().mapToDouble(mapper);
-    }
-    
-    public default IntStreamPlus flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
-        return IntStreamPlus.from(stream().flatMapToInt(mapper));
-    }
-    
-    public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
-        return stream().flatMapToLong(mapper);
-    }
-    
-    public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
-        return stream().flatMapToDouble(mapper);
-    }
-    
-    public default void forEach(Consumer<? super DATA> action) {
-        if (action == null)
-            return;
-        
-        stream().forEach(action);
-    }
-    
     public default void forEachWithIndex(BiConsumer<? super Integer, ? super DATA> action) {
         if (action == null)
             return;
@@ -1103,494 +1669,4 @@ public interface Streamable<DATA> extends StreamableWithGet<DATA> {
         stream().forEach(each ->
                     action.accept(index.getAndIncrement(), each));
     }
-    
-    public default void forEachOrdered(Consumer<? super DATA> action) {
-        if (action == null)
-            return;
-        
-        stream().forEachOrdered(action);
-    }
-    
-    public default DATA reduce(DATA identity, BinaryOperator<DATA> accumulator) {
-        return stream().reduce(identity, accumulator);
-    }
-    
-    public default Optional<DATA> reduce(BinaryOperator<DATA> accumulator) {
-        return stream().reduce(accumulator);
-    }
-    
-    public default <U> U reduce(
-                    U                              identity,
-                    BiFunction<U, ? super DATA, U> accumulator,
-                    BinaryOperator<U>              combiner) {
-        return stream().reduce(identity, accumulator, combiner);
-    }
-    
-    public default <R> R collect(
-                    Supplier<R>                 supplier,
-                    BiConsumer<R, ? super DATA> accumulator,
-                    BiConsumer<R, R>            combiner) {
-        return stream().collect(supplier, accumulator, combiner);
-    }
-    
-    public default <R, A> R collect(Collector<? super DATA, A, R> collector) {
-        return stream().collect(collector);
-    }
-    
-    public default Optional<DATA> min(Comparator<? super DATA> comparator) {
-        return stream().min(comparator);
-    }
-    
-    public default Optional<DATA> max(Comparator<? super DATA> comparator) {
-        return stream().max(comparator);
-    }
-    
-    public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
-        return stream().min((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
-    }
-    
-    public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
-        return stream().max((a,b)->mapper.apply(a).compareTo(mapper.apply(b)));
-    }
-    
-    public default long count() {
-        return stream().count();
-    }
-    
-    public default int size() {
-        return (int)stream().count();
-    }
-    
-    public default boolean anyMatch(Predicate<? super DATA> predicate) {
-        return stream().anyMatch(predicate);
-    }
-    
-    public default boolean allMatch(Predicate<? super DATA> predicate) {
-        return stream().allMatch(predicate);
-    }
-    
-    public default boolean noneMatch(Predicate<? super DATA> predicate) {
-        return stream().noneMatch(predicate);
-    }
-    
-    public default Optional<DATA> findFirst(Predicate<? super DATA> predicate) {
-        return stream().filter(predicate).findFirst();
-    }
-    
-    public default Optional<DATA> findAny(Predicate<? super DATA> predicate) {
-        return stream().filter(predicate).findAny();
-    }
-    
-    public default <T> Optional<DATA> findFirst(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        return filter(mapper, theCondition).findFirst();
-    }
-    
-    public default <T>  Optional<DATA> findAny(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        return filter(mapper, theCondition).findAny();
-    }
-    
-    public default Optional<DATA> findFirst() {
-        return stream().findFirst();
-    }
-    
-    public default Optional<DATA> findAny() {
-        return stream().findAny();
-    }
-    
-    //== toXXX ===
-    
-    public default Object[] toArray() {
-        return stream().toArray();
-    }
-    
-    public default <T> T[] toArray(T[] a) {
-        return StreamPlus.of(stream()).toJavaList().toArray(a);
-    }
-    
-    public default <A> A[] toArray(IntFunction<A[]> generator) {
-        return stream().toArray(generator);
-    }
-    
-    public default List<DATA> toJavaList() {
-        return stream().collect(Collectors.toList());
-    }
-    
-    public default byte[] toByteArray(Func1<DATA, Byte> toByte) {
-        val byteArray = new ByteArrayOutputStream();
-        stream().forEach(d -> byteArray.write(toByte.apply(d)));
-        return byteArray.toByteArray();
-    }
-    
-    public default int[] toIntArray(ToIntFunction<DATA> toInt) {
-        return mapToInt(toInt).toArray();
-    }
-    
-    public default long[] toLongArray(ToLongFunction<DATA> toLong) {
-        return mapToLong(toLong).toArray();
-    }
-    
-    public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
-        return mapToDouble(toDouble).toArray();
-    }
-    
-    public default FuncList<DATA> toList() {
-        return toImmutableList();
-    }
-    
-    public default FuncList<DATA> toLazyList() {
-        return FuncList.from(this);
-    }
-    
-    public default String toListString() {
-        return "[" + map(String::valueOf).collect(Collectors.joining(", ")) + "]";
-    }
-    
-    public default ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.from(stream());
-    }
-    
-    public default List<DATA> toMutableList() {
-        return toArrayList();
-    }
-    
-    public default ArrayList<DATA> toArrayList() {
-        return new ArrayList<DATA>(toJavaList());
-    }
-    
-    public default Set<DATA> toSet() {
-        return new HashSet<DATA>(stream().collect(Collectors.toSet()));
-    }
-    
-    public default IteratorPlus<DATA> iterator() {
-        return IteratorPlus.from(stream());
-    }
-    
-    public default Spliterator<DATA> spliterator() {
-        return Spliterators.spliteratorUnknownSize(iterator(), 0);
-    }
-    
-    // Eager
-    public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(Function<? super DATA, ? extends KEY> classifier) {
-        return stream()
-                .groupingBy(classifier);
-    }
-    
-    // Eager
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            Function<? super DATA, ? extends KEY> classifier,
-            StreamProcessor<? super DATA, VALUE>  processor) {
-        return stream()
-                .groupingBy(classifier, processor);
-    }
-    
-    // Eager
-    public default <KEY, TARGET> FuncMap<KEY, TARGET> groupingBy(
-            Function<? super DATA, ? extends KEY> classifier,
-            Supplier<StreamElementProcessor<? super DATA, TARGET>> processorSupplier) {
-        return stream()
-                .groupingBy(classifier, processorSupplier);
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, ? extends KEY> keyMapper) {
-        val theMap = stream().collect(Collectors.toMap(keyMapper, data -> data));
-        return (FuncMap<KEY, DATA>)ImmutableMap.from(theMap);
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-                Function<? super DATA, ? extends KEY>  keyMapper,
-                Function<? super DATA, ? extends VALUE> valueMapper) {
-        val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper));
-        return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-                Function<? super DATA, ? extends KEY>   keyMapper,
-                Function<? super DATA, ? extends VALUE> valueMapper,
-                BinaryOperator<VALUE> mergeFunction) {
-        val theMap = stream().collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
-        return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
-    }
-    
-    //== Plus ==
-    
-    public default String joinToString() {
-        return map(StrFuncs::toStr)
-                .collect(Collectors.joining());
-    }
-    public default String joinToString(String delimiter) {
-        return map(StrFuncs::toStr)
-                .collect(Collectors.joining(delimiter));
-    }
-    
-    //-- Split --
-    
-    public default Tuple2<FuncList<DATA>, FuncList<DATA>> split(
-            Predicate<? super DATA> predicate) {
-        val temp = this.mapTuple(
-                it -> predicate.test(it) ? 0 : 1,
-                it -> it
-        ).toList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2
-        );
-    }
-    
-    public default Tuple3<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2) {
-        val temp = this.mapTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    :                       2,
-                it -> it
-        ).toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3
-        );
-    }
-    
-    public default Tuple4<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2,
-            Predicate<? super DATA> predicate3) {
-        val temp = this.mapTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    :                       3,
-                it -> it
-        ).toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4
-        );
-    }
-    
-    public default Tuple5<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2,
-            Predicate<? super DATA> predicate3,
-            Predicate<? super DATA> predicate4) {
-        val temp = this.mapTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    :                       4,
-                it -> it
-        ).toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
-        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4,
-                list5
-        );
-    }
-    
-    public default Tuple6<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
-            Predicate<? super DATA> predicate1,
-            Predicate<? super DATA> predicate2,
-            Predicate<? super DATA> predicate3,
-            Predicate<? super DATA> predicate4,
-            Predicate<? super DATA> predicate5) {
-        val temp = this.mapTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    : predicate5.test(it) ? 4
-                    :                       5,
-                it -> it
-        ).toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
-        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
-        val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2());
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4,
-                list5,
-                list6
-        );
-    }
-    
-    //-- SplitToMap --
-    
-    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate,
-            KEY key2) {
-        val temp = this.mapTuple(
-                it -> predicate.test(it) ? 0 : 1,
-                it -> it
-        ).toList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        return FuncMap.of(
-                key1, list1, 
-                key2, list2);
-    }
-    
-    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate1,
-            KEY key2, Predicate<? super DATA> predicate2,
-            KEY key3) {
-        val temp = this.mapTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    :                       2,
-                it -> it
-        ).toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3);
-    }
-    
-    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate1,
-            KEY key2, Predicate<? super DATA> predicate2,
-            KEY key3, Predicate<? super DATA> predicate3,
-            KEY key4) {
-        val temp = this.mapTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    :                       3,
-                it -> it
-        ).toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
-        return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3, 
-                key4, list4);
-    }
-    
-    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate1,
-            KEY key2, Predicate<? super DATA> predicate2,
-            KEY key3, Predicate<? super DATA> predicate3,
-            KEY key4, Predicate<? super DATA> predicate4,
-            KEY key5) {
-        val temp = this.mapTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    :                       4,
-                it -> it
-        ).toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
-        return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3, 
-                key4, list4, 
-                key5, list5);
-    }
-    
-    public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
-            KEY key1, Predicate<? super DATA> predicate1,
-            KEY key2, Predicate<? super DATA> predicate2,
-            KEY key3, Predicate<? super DATA> predicate3,
-            KEY key4, Predicate<? super DATA> predicate4,
-            KEY key5, Predicate<? super DATA> predicate5,
-            KEY key6) {
-        val temp = this.mapTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    : predicate5.test(it) ? 4
-                    :                       5,
-                it -> it
-        ).toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).map(it -> it._2()) : FuncList.<DATA>empty();
-        return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3, 
-                key4, list4, 
-                key5, list5,
-                key6, list6);
-    }
-    
-    //++ Plus w/ Self ++
-    
-    public default Streamable<DATA> sequential() {
-        return deriveWith(stream -> { 
-            return stream.sequential();
-        });
-    }
-    
-    public default Streamable<DATA> parallel() {
-        return deriveWith(stream -> { 
-            return stream.parallel();
-        });
-    } 
-    
-    public default Streamable<DATA> unordered() {
-        return deriveWith(stream -> { 
-            return stream.unordered();
-        });
-    }
-    
-    public default <T> T pipe(Function<? super Streamable<DATA>, T> piper) {
-        return piper.apply(this);
-    }
-    
-    public default Streamable<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
-        return deriveWith(stream -> { 
-            return StreamPlus.from(stream()).collapse(conditionToCollapse, concatFunc);
-        });
-    }
-    
-    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream()).spawn(mapper);
-        });
-    }
-    
 }

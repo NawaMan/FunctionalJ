@@ -37,7 +37,7 @@ public class IteratorPlusTest {
     
     @Test
     public void testPullNext() {
-        val iterator = IteratorPlus.of(IntStreamPlus.infinite().limit(5).iterator());
+        val iterator = IteratorPlus.from(IntStreamPlus.infinite().limit(5).iterator());
         val logs     = new ArrayList<String>();
         Result<Integer> result;
         while ((result = iterator.pullNext()).isValue()) {
@@ -59,7 +59,7 @@ public class IteratorPlusTest {
     
     @Test
     public void testPullNext_multiple() {
-        val iterator = IteratorPlus.of(IntStreamPlus.infinite().limit(10).iterator());
+        val iterator = IteratorPlus.from(IntStreamPlus.infinite().limit(10).iterator());
         assertEquals("[0, 1, 2, 3, 4]", iterator.pullNext(5).get().toList().toString());
         assertEquals("[5]",             iterator.pullNext(1).get().toList().toString());
         assertEquals("[6, 7]",          iterator.pullNext(2).get().toList().toString());

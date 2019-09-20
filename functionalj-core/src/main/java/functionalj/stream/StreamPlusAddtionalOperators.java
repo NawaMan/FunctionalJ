@@ -19,6 +19,9 @@ import lombok.val;
 public interface StreamPlusAddtionalOperators<DATA> {
     
     
+    //Also add Faialble to Functon
+    
+    
     public <TARGET> StreamPlus<TARGET> deriveWith(
             Function<Stream<DATA>, Stream<TARGET>> action);
     
