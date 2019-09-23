@@ -539,7 +539,7 @@ public interface DoubleStreamPlus extends DoubleStream {
     
     public default <A, T> T calculate(
             DoubleCollectorPlus<A, T> processor) {
-        val collected = Collected.of(processor);
+        val collected = Collected.ofDouble(processor);
         forEach(each -> {
             collected.accumulate(each);
         });
@@ -550,8 +550,8 @@ public interface DoubleStreamPlus extends DoubleStream {
     public default <A1, A2, T1, T2> Tuple2<T1, T2> calculate(
             DoubleCollectorPlus<A1, T1> processor1, 
             DoubleCollectorPlus<A2, T2> processor2) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
+        val collected1 = Collected.ofDouble(processor1);
+        val collected2 = Collected.ofDouble(processor2);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -565,9 +565,9 @@ public interface DoubleStreamPlus extends DoubleStream {
             DoubleCollectorPlus<A1, T1> processor1, 
             DoubleCollectorPlus<A2, T2> processor2, 
             DoubleCollectorPlus<A3, T3> processor3) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
+        val collected1 = Collected.ofDouble(processor1);
+        val collected2 = Collected.ofDouble(processor2);
+        val collected3 = Collected.ofDouble(processor3);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -584,10 +584,10 @@ public interface DoubleStreamPlus extends DoubleStream {
             DoubleCollectorPlus<A2, T2> processor2, 
             DoubleCollectorPlus<A3, T3> processor3, 
             DoubleCollectorPlus<A4, T4> processor4) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
-        val collected4 = Collected.of(processor4);
+        val collected1 = Collected.ofDouble(processor1);
+        val collected2 = Collected.ofDouble(processor2);
+        val collected3 = Collected.ofDouble(processor3);
+        val collected4 = Collected.ofDouble(processor4);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -607,11 +607,11 @@ public interface DoubleStreamPlus extends DoubleStream {
             DoubleCollectorPlus<A3, T3> processor3, 
             DoubleCollectorPlus<A4, T4> processor4, 
             DoubleCollectorPlus<A5, T5> processor5) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
-        val collected4 = Collected.of(processor4);
-        val collected5 = Collected.of(processor5);
+        val collected1 = Collected.ofDouble(processor1);
+        val collected2 = Collected.ofDouble(processor2);
+        val collected3 = Collected.ofDouble(processor3);
+        val collected4 = Collected.ofDouble(processor4);
+        val collected5 = Collected.ofDouble(processor5);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -634,12 +634,12 @@ public interface DoubleStreamPlus extends DoubleStream {
             DoubleCollectorPlus<A4, T4> processor4, 
             DoubleCollectorPlus<A5, T5> processor5, 
             DoubleCollectorPlus<A6, T6> processor6) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
-        val collected4 = Collected.of(processor4);
-        val collected5 = Collected.of(processor5);
-        val collected6 = Collected.of(processor6);
+        val collected1 = Collected.ofDouble(processor1);
+        val collected2 = Collected.ofDouble(processor2);
+        val collected3 = Collected.ofDouble(processor3);
+        val collected4 = Collected.ofDouble(processor4);
+        val collected5 = Collected.ofDouble(processor5);
+        val collected6 = Collected.ofDouble(processor6);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);

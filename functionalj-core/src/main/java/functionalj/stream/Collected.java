@@ -48,13 +48,13 @@ interface Collected<DATA, ACCUMULATED, RESULT> {
     public RESULT finish();
     
     
-    static <A, R> CollectedInt<A, R> of(IntCollectorPlus<A, R> collector) {
+    static <A, R> CollectedInt<A, R> ofInt(IntCollectorPlus<A, R> collector) {
         return new CollectedInt<A, R>(collector);
     }
-    static <A, R> CollectedLong<A, R> of(LongCollectorPlus<A, R> collector) {
+    static <A, R> CollectedLong<A, R> ofLong(LongCollectorPlus<A, R> collector) {
         return new CollectedLong<A, R>(collector);
     }
-    static <A, R> CollectedDouble<A, R> of(DoubleCollectorPlus<A, R> collector) {
+    static <A, R> CollectedDouble<A, R> ofDouble(DoubleCollectorPlus<A, R> collector) {
         return new CollectedDouble<A, R>(collector);
     }
     

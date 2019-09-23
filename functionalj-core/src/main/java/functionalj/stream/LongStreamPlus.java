@@ -554,7 +554,7 @@ public interface LongStreamPlus extends LongStream {
     
     public default <A, T> T calculate(
             LongCollectorPlus<A, T> processor) {
-        val collected = Collected.of(processor);
+        val collected = Collected.ofLong(processor);
         forEach(each -> {
             collected.accumulate(each);
         });
@@ -565,8 +565,8 @@ public interface LongStreamPlus extends LongStream {
     public default <A1, A2, T1, T2> Tuple2<T1, T2> calculate(
             LongCollectorPlus<A1, T1> processor1, 
             LongCollectorPlus<A2, T2> processor2) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
+        val collected1 = Collected.ofLong(processor1);
+        val collected2 = Collected.ofLong(processor2);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -580,9 +580,9 @@ public interface LongStreamPlus extends LongStream {
             LongCollectorPlus<A1, T1> processor1, 
             LongCollectorPlus<A2, T2> processor2, 
             LongCollectorPlus<A3, T3> processor3) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
+        val collected1 = Collected.ofLong(processor1);
+        val collected2 = Collected.ofLong(processor2);
+        val collected3 = Collected.ofLong(processor3);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -599,10 +599,10 @@ public interface LongStreamPlus extends LongStream {
             LongCollectorPlus<A2, T2> processor2, 
             LongCollectorPlus<A3, T3> processor3, 
             LongCollectorPlus<A4, T4> processor4) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
-        val collected4 = Collected.of(processor4);
+        val collected1 = Collected.ofLong(processor1);
+        val collected2 = Collected.ofLong(processor2);
+        val collected3 = Collected.ofLong(processor3);
+        val collected4 = Collected.ofLong(processor4);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -622,11 +622,11 @@ public interface LongStreamPlus extends LongStream {
             LongCollectorPlus<A3, T3> processor3, 
             LongCollectorPlus<A4, T4> processor4, 
             LongCollectorPlus<A5, T5> processor5) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
-        val collected4 = Collected.of(processor4);
-        val collected5 = Collected.of(processor5);
+        val collected1 = Collected.ofLong(processor1);
+        val collected2 = Collected.ofLong(processor2);
+        val collected3 = Collected.ofLong(processor3);
+        val collected4 = Collected.ofLong(processor4);
+        val collected5 = Collected.ofLong(processor5);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -649,12 +649,12 @@ public interface LongStreamPlus extends LongStream {
             LongCollectorPlus<A4, T4> processor4, 
             LongCollectorPlus<A5, T5> processor5, 
             LongCollectorPlus<A6, T6> processor6) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
-        val collected4 = Collected.of(processor4);
-        val collected5 = Collected.of(processor5);
-        val collected6 = Collected.of(processor6);
+        val collected1 = Collected.ofLong(processor1);
+        val collected2 = Collected.ofLong(processor2);
+        val collected3 = Collected.ofLong(processor3);
+        val collected4 = Collected.ofLong(processor4);
+        val collected5 = Collected.ofLong(processor5);
+        val collected6 = Collected.ofLong(processor6);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);

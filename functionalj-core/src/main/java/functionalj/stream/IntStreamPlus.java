@@ -560,7 +560,7 @@ public interface IntStreamPlus extends IntStream {
     
     public default <A, T> T calculate(
             IntCollectorPlus<A, T> processor) {
-        val collected = Collected.of(processor);
+        val collected = Collected.ofInt(processor);
         forEach(each -> {
             collected.accumulate(each);
         });
@@ -571,8 +571,8 @@ public interface IntStreamPlus extends IntStream {
     public default <A1, A2, T1, T2> Tuple2<T1, T2> calculate(
             IntCollectorPlus<A1, T1> processor1, 
             IntCollectorPlus<A2, T2> processor2) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
+        val collected1 = Collected.ofInt(processor1);
+        val collected2 = Collected.ofInt(processor2);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -586,9 +586,9 @@ public interface IntStreamPlus extends IntStream {
             IntCollectorPlus<A1, T1> processor1, 
             IntCollectorPlus<A2, T2> processor2, 
             IntCollectorPlus<A3, T3> processor3) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
+        val collected1 = Collected.ofInt(processor1);
+        val collected2 = Collected.ofInt(processor2);
+        val collected3 = Collected.ofInt(processor3);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -605,10 +605,10 @@ public interface IntStreamPlus extends IntStream {
             IntCollectorPlus<A2, T2> processor2, 
             IntCollectorPlus<A3, T3> processor3, 
             IntCollectorPlus<A4, T4> processor4) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
-        val collected4 = Collected.of(processor4);
+        val collected1 = Collected.ofInt(processor1);
+        val collected2 = Collected.ofInt(processor2);
+        val collected3 = Collected.ofInt(processor3);
+        val collected4 = Collected.ofInt(processor4);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -628,11 +628,11 @@ public interface IntStreamPlus extends IntStream {
             IntCollectorPlus<A3, T3> processor3, 
             IntCollectorPlus<A4, T4> processor4, 
             IntCollectorPlus<A5, T5> processor5) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
-        val collected4 = Collected.of(processor4);
-        val collected5 = Collected.of(processor5);
+        val collected1 = Collected.ofInt(processor1);
+        val collected2 = Collected.ofInt(processor2);
+        val collected3 = Collected.ofInt(processor3);
+        val collected4 = Collected.ofInt(processor4);
+        val collected5 = Collected.ofInt(processor5);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
@@ -655,12 +655,12 @@ public interface IntStreamPlus extends IntStream {
             IntCollectorPlus<A4, T4> processor4, 
             IntCollectorPlus<A5, T5> processor5, 
             IntCollectorPlus<A6, T6> processor6) {
-        val collected1 = Collected.of(processor1);
-        val collected2 = Collected.of(processor2);
-        val collected3 = Collected.of(processor3);
-        val collected4 = Collected.of(processor4);
-        val collected5 = Collected.of(processor5);
-        val collected6 = Collected.of(processor6);
+        val collected1 = Collected.ofInt(processor1);
+        val collected2 = Collected.ofInt(processor2);
+        val collected3 = Collected.ofInt(processor3);
+        val collected4 = Collected.ofInt(processor4);
+        val collected5 = Collected.ofInt(processor5);
+        val collected6 = Collected.ofInt(processor6);
         forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
