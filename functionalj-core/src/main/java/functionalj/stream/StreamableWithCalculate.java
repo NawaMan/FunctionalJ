@@ -38,8 +38,8 @@ public interface StreamableWithCalculate<DATA> {
     
     public default <A, T> T calculate(
             StreamProcessor<DATA, T> processor) {
-        val streamble  = Streamable.from(()->stream());
-        val collected = Collected.of(processor, ()->stream());
+        val streamble = Streamable.from(()->stream());
+        val collected = Collected.of(processor, streamble);
         streamble
         .forEach(each -> {
             collected.accumulate(each);
