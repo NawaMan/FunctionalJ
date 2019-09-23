@@ -36,20 +36,27 @@ import lombok.val;
 @FunctionalInterface
 public interface IteratorPlus<DATA> extends Iterator<DATA> {
     
-    public static <D> IteratorPlus<D> of(Iterator<D> iterator) {
-        if (iterator instanceof IteratorPlus)
-            return (IteratorPlus<D>)iterator;
-        
-        return (IteratorPlus<D>)(()->iterator);
+    @SuppressWarnings("unchecked")
+    public static <D> IteratorPlus<D> of(D ... ds) {
+        return IteratorPlus.from(StreamPlus.of(ds));
     }
     public static <D> IteratorPlus<D> from(Stream<D> stream) {
-        return of(stream.iterator());
+        val iterator 
+                = (stream instanceof StreamPlus) 
+                ? ((StreamPlus<D>)stream).__iterator()
+                : stream.iterator();
+        return from(iterator);
+    }
+    public static <D> IteratorPlus<D> from(Iterator<D> iterator) {
+        if (iterator instanceof IteratorPlus)
+             return (IteratorPlus<D>)iterator;
+        else return (IteratorPlus<D>)(()->iterator);
     }
     
     public Iterator<DATA> asIterator();
     
     public default IteratorPlus<DATA> iterator() {
-        return IteratorPlus.of(iterator());
+        return IteratorPlus.from(asIterator());
     }
     
     @Override

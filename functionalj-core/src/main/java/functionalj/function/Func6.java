@@ -58,7 +58,9 @@ public interface Func6<INPUT1, INPUT2, INPUT3, INPUT4, INPUT5, INPUT6, OUTPUT> {
     public static <I1, I2, I3, I4, I5, I6, O> Func6<I1, I2, I3, I4, I5, I6, O> of(Func6<I1, I2, I3, I4, I5, I6, O> func) {
         return func;
     }
-    
+    public static <I1, I2, I3, I4, I5, I6, O> Func6<I1, I2, I3, I4, I5, I6, O> func6(Func6<I1, I2, I3, I4, I5, I6, O> func) {
+        return func;
+    }
     
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4, INPUT5 input5, INPUT6 input6) throws Exception;
     

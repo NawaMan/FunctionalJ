@@ -1,3 +1,26 @@
+// ============================================================================
+// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream;
 
 import java.util.ArrayList;
@@ -9,7 +32,6 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleBinaryOperator;
@@ -514,132 +536,124 @@ public interface DoubleStreamPlus extends DoubleStream {
     }
     
     //== Calculate ==
-    // NOTE: This is unfortunately NOT parallelizable.
     
-    public default <T> T calculate(DoubleStreamElementProcessor<T> processor) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextDouble();
-            val index = counter.getAndIncrement();
-            processor.processDoubleElement(index, each);
-        }
-        val count = counter.get();
-        return processor.processDoubleComplete(count);
+    public default <A, T> T calculate(
+            DoubleCollectorPlus<A, T> processor) {
+        val collected = Collected.ofDouble(processor);
+        forEach(each -> {
+            collected.accumulate(each);
+        });
+        val value = collected.finish();
+        return value;
     }
     
-    public default <T1, T2> Tuple2<T1, T2> calculate(
-                DoubleStreamElementProcessor<T1> processor1, 
-                DoubleStreamElementProcessor<T2> processor2) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextDouble();
-            val index = counter.getAndIncrement();
-            processor1.processDoubleElement(index, each);
-            processor2.processDoubleElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processDoubleComplete(count);
-        val value2 = processor2.processDoubleComplete(count);
+    public default <A1, A2, T1, T2> Tuple2<T1, T2> calculate(
+            DoubleCollectorPlus<A1, T1> processor1, 
+            DoubleCollectorPlus<A2, T2> processor2) {
+        val collected1 = Collected.ofDouble(processor1);
+        val collected2 = Collected.ofDouble(processor2);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
         return Tuple.of(value1, value2);
     }
     
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
-                DoubleStreamElementProcessor<T1> processor1, 
-                DoubleStreamElementProcessor<T2> processor2, 
-                DoubleStreamElementProcessor<T3> processor3) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextDouble();
-            val index = counter.getAndIncrement();
-            processor1.processDoubleElement(index, each);
-            processor2.processDoubleElement(index, each);
-            processor3.processDoubleElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processDoubleComplete(count);
-        val value2 = processor2.processDoubleComplete(count);
-        val value3 = processor3.processDoubleComplete(count);
+    public default <A1, A2, A3, T1, T2, T3> Tuple3<T1, T2, T3> calculate(
+            DoubleCollectorPlus<A1, T1> processor1, 
+            DoubleCollectorPlus<A2, T2> processor2, 
+            DoubleCollectorPlus<A3, T3> processor3) {
+        val collected1 = Collected.ofDouble(processor1);
+        val collected2 = Collected.ofDouble(processor2);
+        val collected3 = Collected.ofDouble(processor3);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
         return Tuple.of(value1, value2, value3);
     }
     
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
-                DoubleStreamElementProcessor<T1> processor1, 
-                DoubleStreamElementProcessor<T2> processor2, 
-                DoubleStreamElementProcessor<T3> processor3, 
-                DoubleStreamElementProcessor<T4> processor4) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextDouble();
-            val index = counter.getAndIncrement();
-            processor1.processDoubleElement(index, each);
-            processor2.processDoubleElement(index, each);
-            processor3.processDoubleElement(index, each);
-            processor4.processDoubleElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processDoubleComplete(count);
-        val value2 = processor2.processDoubleComplete(count);
-        val value3 = processor3.processDoubleComplete(count);
-        val value4 = processor4.processDoubleComplete(count);
+    public default <A1, A2, A3, A4, T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
+            DoubleCollectorPlus<A1, T1> processor1, 
+            DoubleCollectorPlus<A2, T2> processor2, 
+            DoubleCollectorPlus<A3, T3> processor3, 
+            DoubleCollectorPlus<A4, T4> processor4) {
+        val collected1 = Collected.ofDouble(processor1);
+        val collected2 = Collected.ofDouble(processor2);
+        val collected3 = Collected.ofDouble(processor3);
+        val collected4 = Collected.ofDouble(processor4);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
         return Tuple.of(value1, value2, value3, value4);
     }
     
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
-                DoubleStreamElementProcessor<T1> processor1, 
-                DoubleStreamElementProcessor<T2> processor2, 
-                DoubleStreamElementProcessor<T3> processor3, 
-                DoubleStreamElementProcessor<T4> processor4, 
-                DoubleStreamElementProcessor<T5> processor5) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextDouble();
-            val index = counter.getAndIncrement();
-            processor1.processDoubleElement(index, each);
-            processor2.processDoubleElement(index, each);
-            processor3.processDoubleElement(index, each);
-            processor4.processDoubleElement(index, each);
-            processor5.processDoubleElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processDoubleComplete(count);
-        val value2 = processor2.processDoubleComplete(count);
-        val value3 = processor3.processDoubleComplete(count);
-        val value4 = processor4.processDoubleComplete(count);
-        val value5 = processor5.processDoubleComplete(count);
+    public default <A1, A2, A3, A4, A5, T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
+            DoubleCollectorPlus<A1, T1> processor1, 
+            DoubleCollectorPlus<A2, T2> processor2, 
+            DoubleCollectorPlus<A3, T3> processor3, 
+            DoubleCollectorPlus<A4, T4> processor4, 
+            DoubleCollectorPlus<A5, T5> processor5) {
+        val collected1 = Collected.ofDouble(processor1);
+        val collected2 = Collected.ofDouble(processor2);
+        val collected3 = Collected.ofDouble(processor3);
+        val collected4 = Collected.ofDouble(processor4);
+        val collected5 = Collected.ofDouble(processor5);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
+        val value5 = collected5.finish();
         return Tuple.of(value1, value2, value3, value4, value5);
     }
     
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
-                DoubleStreamElementProcessor<T1> processor1, 
-                DoubleStreamElementProcessor<T2> processor2, 
-                DoubleStreamElementProcessor<T3> processor3, 
-                DoubleStreamElementProcessor<T4> processor4, 
-                DoubleStreamElementProcessor<T5> processor5, 
-                DoubleStreamElementProcessor<T6> processor6) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextDouble();
-            val index = counter.getAndIncrement();
-            processor1.processDoubleElement(index, each);
-            processor2.processDoubleElement(index, each);
-            processor3.processDoubleElement(index, each);
-            processor4.processDoubleElement(index, each);
-            processor5.processDoubleElement(index, each);
-            processor6.processDoubleElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processDoubleComplete(count);
-        val value2 = processor2.processDoubleComplete(count);
-        val value3 = processor3.processDoubleComplete(count);
-        val value4 = processor4.processDoubleComplete(count);
-        val value5 = processor5.processDoubleComplete(count);
-        val value6 = processor6.processDoubleComplete(count);
+    public default <A1, A2, A3, A4, A5, A6, T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
+            DoubleCollectorPlus<A1, T1> processor1, 
+            DoubleCollectorPlus<A2, T2> processor2, 
+            DoubleCollectorPlus<A3, T3> processor3, 
+            DoubleCollectorPlus<A4, T4> processor4, 
+            DoubleCollectorPlus<A5, T5> processor5, 
+            DoubleCollectorPlus<A6, T6> processor6) {
+        val collected1 = Collected.ofDouble(processor1);
+        val collected2 = Collected.ofDouble(processor2);
+        val collected3 = Collected.ofDouble(processor3);
+        val collected4 = Collected.ofDouble(processor4);
+        val collected5 = Collected.ofDouble(processor5);
+        val collected6 = Collected.ofDouble(processor6);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+            collected6.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
+        val value5 = collected5.finish();
+        val value6 = collected6.finish();
         return Tuple.of(value1, value2, value3, value4, value5, value6);
     }
 }

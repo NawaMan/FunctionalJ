@@ -1,3 +1,26 @@
+// ============================================================================
+// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream;
 
 import static functionalj.tuple.Tuple.tuple2;
@@ -9,12 +32,12 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,7 +70,8 @@ public interface StreamPlusAdditionalTerminalOperators<DATA> {
     
     //-- Functionalities --
     
-    public default void forEachWithIndex(BiConsumer<? super Integer, ? super DATA> action) {
+    public default void forEachWithIndex(
+            BiConsumer<? super Integer, ? super DATA> action) {
         terminate(stream -> {
             if (action == null)
                 return;
@@ -55,30 +79,6 @@ public interface StreamPlusAdditionalTerminalOperators<DATA> {
             val index = new AtomicInteger();
             stream
             .forEach(each -> action.accept(index.getAndIncrement(), each));
-        });
-    }
-    
-    //-- Sorted --
-    
-    public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper) {
-        return deriveWith(stream -> {
-            return stream
-                    .sorted((a, b) -> {
-                        T vA = mapper.apply(a);
-                        T vB = mapper.apply(b);
-                        return vA.compareTo(vB);
-                    });
-        });
-    }
-    
-    public default <T> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper, Comparator<T> comparator) {
-        return deriveWith(stream -> {
-            return stream
-                    .sorted((a, b) -> {
-                        T vA = mapper.apply(a);
-                        T vB = mapper.apply(b);
-                        return Objects.compare(vA,  vB, comparator);
-                    });
         });
     }
     
@@ -125,31 +125,30 @@ public interface StreamPlusAdditionalTerminalOperators<DATA> {
     }
     
     // Eager
-    public default <KEY, TARGET> FuncMap<KEY, TARGET> groupingBy(
-            Function<? super DATA, ? extends KEY> classifier,
-            Supplier<StreamElementProcessor<? super DATA, TARGET>> processorSupplier) {
-        val theMap   = new ConcurrentHashMap<KEY, Tuple2<StreamElementProcessor<? super DATA, TARGET>, LongAdder>>();
-        val supplier = Objects.requireNonNull(processorSupplier);
-        forEachWithIndex((index, each)->{
-            val key  = classifier.apply(each);
-            val pair = theMap.computeIfAbsent(key, __-> tuple2(supplier.get(), new LongAdder()));
+    public default <KEY, ACCUMULATED, TARGET> FuncMap<KEY, TARGET> groupingBy(
+            Function<? super DATA, ? extends KEY>                  classifier,
+            Supplier<Collector<? super DATA, ACCUMULATED, TARGET>> collectorSupplier) {
+        Objects.requireNonNull(collectorSupplier);
+        
+        val theMap = new ConcurrentHashMap<KEY, Collected<? super DATA, ACCUMULATED, TARGET>>();
+        stream()
+        .forEach(each -> {
+            val key       = classifier.apply(each);
+            val collected = theMap.computeIfAbsent(key, __ -> {
+                val collector = collectorSupplier.get();
+                return new Collected.ByCollector<>(collector);
+            });
             
-            val processor = pair._1();
-            processor.processElement(index, each);
-            
-            val counter = pair._2();
-            counter.increment();
+            collected.accumulate(each);
         });
         
         val mapBuilder = FuncMap.<KEY, TARGET>newBuilder();
         theMap
-            .forEach((key, pair) -> {
-                val processor = pair._1();
-                val counter   = pair._2();
-                val count     = counter.longValue();
-                val target    = processor.processComplete(count);
-                mapBuilder.with(key, target);
-            });
+        .forEach((key, collected) -> {
+            val target = collected.finish();
+            mapBuilder.with(key, target);
+        });
+        
         val map = mapBuilder.build();
         return map;
     }
@@ -253,7 +252,22 @@ public interface StreamPlusAdditionalTerminalOperators<DATA> {
     
     //-- Find --
     
-    public default Optional<DATA> findFirst(Predicate<? super DATA> predicate) {
+    public default <T> Optional<DATA> findFirst(
+            Function<? super DATA, T> mapper, 
+            Predicate<? super T>      theCondition) {
+        return filter(mapper, theCondition)
+                .findFirst();
+    }
+    
+    public default <T>  Optional<DATA> findAny(
+            Function<? super DATA, T> mapper, 
+            Predicate<? super T>      theCondition) {
+        return filter(mapper, theCondition)
+                .findAny();
+    }
+    
+    public default Optional<DATA> findFirst(
+            Predicate<? super DATA> predicate) {
         return terminate(stream -> {
             return stream
                     .filter(predicate)
@@ -261,22 +275,13 @@ public interface StreamPlusAdditionalTerminalOperators<DATA> {
         });
     }
     
-    public default Optional<DATA> findAny(Predicate<? super DATA> predicate) {
+    public default Optional<DATA> findAny(
+            Predicate<? super DATA> predicate) {
         return terminate(stream -> {
             return stream
                     .filter(predicate)
                     .findAny();
         });
-    }
-    
-    public default <T> Optional<DATA> findFirst(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        return filter(mapper, theCondition)
-                .findFirst();
-    }
-    
-    public default <T>  Optional<DATA> findAny(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        return filter(mapper, theCondition)
-                .findAny();
     }
     
     //-- toMap --

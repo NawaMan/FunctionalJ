@@ -1020,13 +1020,16 @@ public interface FuncList<DATA>
     
     // -- FlatMap --
     
-    public default FuncList<DATA> flatMapOnly(Predicate<? super DATA> checker,
+    public default FuncList<DATA> flatMapOnly(
+            Predicate<? super DATA>                            checker,
             Function<? super DATA, ? extends Streamable<DATA>> mapper) {
         return flatMap(d -> checker.test(d) ? mapper.apply(d) : () -> StreamPlus.of(d));
     }
     
-    public default <T> FuncList<T> flatMapIf(Predicate<? super DATA> checker,
-            Function<? super DATA, Streamable<T>> mapper, Function<? super DATA, Streamable<T>> elseMapper) {
+    public default <T> FuncList<T> flatMapIf(
+            Predicate<? super DATA>                         checker,
+            Function<? super DATA, ? extends Streamable<T>> mapper, 
+            Function<? super DATA, ? extends Streamable<T>> elseMapper) {
         return flatMap(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
     }
     

@@ -37,6 +37,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> of(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
         return consumer;
     }
+    public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> funcUnit3(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
+        return consumer;
+    }
     public static <INPUT1, INPUT2, INPUT3> FuncUnit3<INPUT1, INPUT2, INPUT3> from(FuncUnit3<INPUT1, INPUT2, INPUT3> consumer) {
         return consumer::accept;
     }
