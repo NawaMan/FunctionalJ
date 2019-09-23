@@ -12,7 +12,7 @@ import lombok.val;
 
 public interface StreamPlusWithCombine<DATA> {
     
-    public Stream<DATA> stream();
+    public Stream<DATA>      stream();
     public <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action);
     
     

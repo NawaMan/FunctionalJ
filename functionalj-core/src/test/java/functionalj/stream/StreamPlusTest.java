@@ -33,6 +33,8 @@ import static functionalj.ref.Run.With;
 import static functionalj.stream.StreamPlus.noMoreElement;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collector.Characteristics.CONCURRENT;
+import static java.util.stream.Collector.Characteristics.UNORDERED;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -42,14 +44,20 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -864,94 +872,80 @@ public class StreamPlusTest {
                 actions.stream().map(DeferAction::getResult).map(String::valueOf).collect(Collectors.joining(", ")));
     }
     
+    static class SumLength implements CollectorPlus<String, int[], Integer> {
+        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        @Override public Supplier<int[]>           supplier()          { return ()->new int[] { 0 }; }
+        @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] += s.length(); }; }
+        @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
+        @Override public Function<int[], Integer>  finisher()          { return a -> a[0]; }
+        @Override public Set<Characteristics>      characteristics()   { return characteristics; }
+        @Override public Collector<String, int[], Integer> collector() { return this; }
+    }
+    static class AvgLength implements CollectorPlus<String, int[], Integer> {
+        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        @Override public Supplier<int[]>           supplier()          { return ()->new int[] { 0, 0 }; }
+        @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] += s.length(); a[1]++; }; }
+        @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { a1[0] + a2[0], a1[1] + a2[1] }; }
+        @Override public Function<int[], Integer>  finisher()          { return a -> a[0]/a[1]; }
+        @Override public Set<Characteristics>      characteristics()   { return characteristics; }
+        @Override public Collector<String, int[], Integer> collector() { return this; }
+    }
+    static class MinLength implements CollectorPlus<String, int[], Integer> {
+        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        @Override public Supplier<int[]>           supplier()          { return ()->new int[] { Integer.MAX_VALUE }; }
+        @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] = Math.min(a[0], s.length()); }; }
+        @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { Math.min(a1[0], a2[0]) }; }
+        @Override public Function<int[], Integer>  finisher()          { return a -> a[0]; }
+        @Override public Set<Characteristics>      characteristics()   { return characteristics; }
+        @Override public Collector<String, int[], Integer> collector() { return this; }
+    }
+    static class MaxLength implements CollectorPlus<String, int[], Integer> {
+        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        @Override public Supplier<int[]>           supplier()          { return ()->new int[] { Integer.MIN_VALUE }; }
+        @Override public BiConsumer<int[], String> accumulator()       { return (a, s)->{ a[0] = Math.max(a[0], s.length()); }; }
+        @Override public BinaryOperator<int[]>     combiner()          { return (a1, a2) -> new int[] { Math.max(a1[0], a2[0]) }; }
+        @Override public Function<int[], Integer>  finisher()          { return a -> a[0]; }
+        @Override public Set<Characteristics>      characteristics()   { return characteristics; }
+        @Override public Collector<String, int[], Integer> collector() { return this; }
+    }
+    static class Sum implements CollectorPlus<Integer, int[], Integer> {
+        private Set<Characteristics> characteristics = EnumSet.of(CONCURRENT, UNORDERED);
+        @Override public Supplier<int[]>            supplier()          { return ()->new int[] { 0 }; }
+        @Override public BiConsumer<int[], Integer> accumulator()       { return (a, e)->{ a[0] += e.intValue(); }; }
+        @Override public BinaryOperator<int[]>      combiner()          { return (a1, a2) -> new int[] { a1[0] + a1[1] }; }
+        @Override public Function<int[], Integer>   finisher()          { return a -> a[0]; }
+        @Override public Set<Characteristics>       characteristics()   { return characteristics; }
+        @Override public Collector<Integer, int[], Integer> collector() { return this; }
+    }
+    
     @Test
-    public void testGet() {
+    public void testCalculate() {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new StreamElementProcessor<String, Integer>() {
-            int total = 0;
-            @Override
-            public void processElement(long index, String element) {
-                total += element.length();
-            }
-            @Override
-            public Integer processComplete(long count) {
-                return total;
-            }
-        };
+        Collector<String, int[], Integer> sumLength = new SumLength();
         assertEquals(18, stream.calculate(sumLength).intValue());
     }
     
     @Test
-    public void testGet2() {
+    public void testCalculate2() {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new StreamElementProcessor<String, Integer>() {
-            int total = 0;
-            @Override
-            public void processElement(long index, String element) {
-                total += element.length();
-            }
-            @Override
-            public Integer processComplete(long count) {
-                return total;
-            }
-        };
-        val avgLength = new StreamElementProcessor<String, Integer>() {
-            int total = 0;
-            @Override
-            public void processElement(long index, String element) {
-                total += element.length();
-            }
-            @Override
-            public Integer processComplete(long count) {
-                return (int) ((int)total/count);
-            }
-        };
+        val sumLength = new SumLength();
+        val avgLength = new AvgLength();
         assertEquals("(18,4)", stream.calculate(sumLength, avgLength).toString());
     }
     
     @Test
-    public void testGet2_combine() {
+    public void testCalculate2_combine() {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val minLength = new StreamElementProcessor<String, Integer>() {
-            int min = Integer.MAX_VALUE;
-            @Override
-            public void processElement(long index, String element) {
-                min = Math.min(min, element.length());
-            }
-            @Override
-            public Integer processComplete(long count) {
-                return min;
-            }
-        };
-        val maxLength = new StreamElementProcessor<String, Integer>() {
-            int max = Integer.MIN_VALUE;
-            @Override
-            public void processElement(long index, String element) {
-                max = Math.max(max, element.length());
-            }
-            @Override
-            public Integer processComplete(long count) {
-                return max;
-            }
-        };
+        val minLength = new MinLength();
+        val maxLength = new MaxLength();
         val range = stream.calculate(maxLength, minLength).mapTo((max, min) -> max - min).intValue();
         assertEquals(3, range);
     }
     
     @Test
-    public void testGet_of() {
+    public void testCalculate_of() {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
-        val sum = new IntStreamElementProcessor<Integer>() {
-            int total = 0;
-            @Override
-            public void processIntElement(long index, int element) {
-                total += element;
-            }
-            @Override
-            public Integer processIntComplete(long count) {
-                return total;
-            }
-        };
+        val sum = new Sum();
         assertEquals(18, stream.calculate(sum.of(theString.length())).intValue());
     }
     

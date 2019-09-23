@@ -33,7 +33,6 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -559,130 +558,123 @@ public interface IntStreamPlus extends IntStream {
     
     //== Calculate ==
     
-    public default <T> T calculate(IntStreamElementProcessor<T> processor) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextInt();
-            val index = counter.getAndIncrement();
-            processor.processIntElement(index, each);
-        }
-        val count = counter.get();
-        return processor.processIntComplete(count);
+    public default <A, T> T calculate(
+            IntCollectorPlus<A, T> processor) {
+        val collected = Collected.of(processor);
+        forEach(each -> {
+            collected.accumulate(each);
+        });
+        val value = collected.finish();
+        return value;
     }
     
-    public default <T1, T2> Tuple2<T1, T2> calculate(
-                IntStreamElementProcessor<T1> processor1, 
-                IntStreamElementProcessor<T2> processor2) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextInt();
-            val index = counter.getAndIncrement();
-            processor1.processIntElement(index, each);
-            processor2.processIntElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processIntComplete(count);
-        val value2 = processor2.processIntComplete(count);
+    public default <A1, A2, T1, T2> Tuple2<T1, T2> calculate(
+            IntCollectorPlus<A1, T1> processor1, 
+            IntCollectorPlus<A2, T2> processor2) {
+        val collected1 = Collected.of(processor1);
+        val collected2 = Collected.of(processor2);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
         return Tuple.of(value1, value2);
     }
     
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
-                IntStreamElementProcessor<T1> processor1, 
-                IntStreamElementProcessor<T2> processor2, 
-                IntStreamElementProcessor<T3> processor3) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextInt();
-            val index = counter.getAndIncrement();
-            processor1.processIntElement(index, each);
-            processor2.processIntElement(index, each);
-            processor3.processIntElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processIntComplete(count);
-        val value2 = processor2.processIntComplete(count);
-        val value3 = processor3.processIntComplete(count);
+    public default <A1, A2, A3, T1, T2, T3> Tuple3<T1, T2, T3> calculate(
+            IntCollectorPlus<A1, T1> processor1, 
+            IntCollectorPlus<A2, T2> processor2, 
+            IntCollectorPlus<A3, T3> processor3) {
+        val collected1 = Collected.of(processor1);
+        val collected2 = Collected.of(processor2);
+        val collected3 = Collected.of(processor3);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
         return Tuple.of(value1, value2, value3);
     }
     
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
-                IntStreamElementProcessor<T1> processor1, 
-                IntStreamElementProcessor<T2> processor2, 
-                IntStreamElementProcessor<T3> processor3, 
-                IntStreamElementProcessor<T4> processor4) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextInt();
-            val index = counter.getAndIncrement();
-            processor1.processIntElement(index, each);
-            processor2.processIntElement(index, each);
-            processor3.processIntElement(index, each);
-            processor4.processIntElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processIntComplete(count);
-        val value2 = processor2.processIntComplete(count);
-        val value3 = processor3.processIntComplete(count);
-        val value4 = processor4.processIntComplete(count);
+    public default <A1, A2, A3, A4, T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
+            IntCollectorPlus<A1, T1> processor1, 
+            IntCollectorPlus<A2, T2> processor2, 
+            IntCollectorPlus<A3, T3> processor3, 
+            IntCollectorPlus<A4, T4> processor4) {
+        val collected1 = Collected.of(processor1);
+        val collected2 = Collected.of(processor2);
+        val collected3 = Collected.of(processor3);
+        val collected4 = Collected.of(processor4);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
         return Tuple.of(value1, value2, value3, value4);
     }
     
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
-                IntStreamElementProcessor<T1> processor1, 
-                IntStreamElementProcessor<T2> processor2, 
-                IntStreamElementProcessor<T3> processor3, 
-                IntStreamElementProcessor<T4> processor4, 
-                IntStreamElementProcessor<T5> processor5) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextInt();
-            val index = counter.getAndIncrement();
-            processor1.processIntElement(index, each);
-            processor2.processIntElement(index, each);
-            processor3.processIntElement(index, each);
-            processor4.processIntElement(index, each);
-            processor5.processIntElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processIntComplete(count);
-        val value2 = processor2.processIntComplete(count);
-        val value3 = processor3.processIntComplete(count);
-        val value4 = processor4.processIntComplete(count);
-        val value5 = processor5.processIntComplete(count);
+    public default <A1, A2, A3, A4, A5, T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
+            IntCollectorPlus<A1, T1> processor1, 
+            IntCollectorPlus<A2, T2> processor2, 
+            IntCollectorPlus<A3, T3> processor3, 
+            IntCollectorPlus<A4, T4> processor4, 
+            IntCollectorPlus<A5, T5> processor5) {
+        val collected1 = Collected.of(processor1);
+        val collected2 = Collected.of(processor2);
+        val collected3 = Collected.of(processor3);
+        val collected4 = Collected.of(processor4);
+        val collected5 = Collected.of(processor5);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
+        val value5 = collected5.finish();
         return Tuple.of(value1, value2, value3, value4, value5);
     }
     
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
-                IntStreamElementProcessor<T1> processor1, 
-                IntStreamElementProcessor<T2> processor2, 
-                IntStreamElementProcessor<T3> processor3, 
-                IntStreamElementProcessor<T4> processor4, 
-                IntStreamElementProcessor<T5> processor5, 
-                IntStreamElementProcessor<T6> processor6) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextInt();
-            val index = counter.getAndIncrement();
-            processor1.processIntElement(index, each);
-            processor2.processIntElement(index, each);
-            processor3.processIntElement(index, each);
-            processor4.processIntElement(index, each);
-            processor5.processIntElement(index, each);
-            processor6.processIntElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processIntComplete(count);
-        val value2 = processor2.processIntComplete(count);
-        val value3 = processor3.processIntComplete(count);
-        val value4 = processor4.processIntComplete(count);
-        val value5 = processor5.processIntComplete(count);
-        val value6 = processor6.processIntComplete(count);
+    public default <A1, A2, A3, A4, A5, A6, T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
+            IntCollectorPlus<A1, T1> processor1, 
+            IntCollectorPlus<A2, T2> processor2, 
+            IntCollectorPlus<A3, T3> processor3, 
+            IntCollectorPlus<A4, T4> processor4, 
+            IntCollectorPlus<A5, T5> processor5, 
+            IntCollectorPlus<A6, T6> processor6) {
+        val collected1 = Collected.of(processor1);
+        val collected2 = Collected.of(processor2);
+        val collected3 = Collected.of(processor3);
+        val collected4 = Collected.of(processor4);
+        val collected5 = Collected.of(processor5);
+        val collected6 = Collected.of(processor6);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+            collected6.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
+        val value5 = collected5.finish();
+        val value6 = collected6.finish();
         return Tuple.of(value1, value2, value3, value4, value5, value6);
     }
 }

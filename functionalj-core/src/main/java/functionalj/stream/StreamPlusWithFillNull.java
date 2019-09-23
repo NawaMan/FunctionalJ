@@ -71,11 +71,11 @@ public interface StreamPlusWithFillNull<DATA> {
     
     public default <VALUE> StreamPlus<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
-            Func1<DATA, VALUE>   replacementSupplier) {
+            Func1<DATA, VALUE>   replacementFunction) {
         return fillNull(
                 (Func1<DATA, VALUE>)lens, 
                 ((WriteLens<DATA, VALUE>)lens)::apply, 
-                replacementSupplier);
+                replacementFunction);
     }
     
     public default <VALUE> StreamPlus<DATA> fillNull(

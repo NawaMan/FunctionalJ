@@ -86,9 +86,9 @@ public interface StreamPlus<DATA>
             Stream<DATA>,
             Iterable<DATA>,
             StreamPlusWithMapFirst<DATA>,
+            StreamPlusWithMapThen<DATA>,
             StreamPlusWithMapTuple<DATA>,
             StreamPlusWithMapToMap<DATA>,
-            StreamPlusWithMapThen<DATA>,
             StreamPlusWithSplit<DATA>,
             StreamPlusWithFillNull<DATA>,
             StreamPlusWithSegment<DATA>,
@@ -598,6 +598,17 @@ public interface StreamPlus<DATA>
     }
     
     @Override
+    public default <T> StreamPlus<DATA> filter(
+            Function<? super DATA, T> mapper, 
+            Predicate<? super T>      theCondition) {
+        return filter(value -> {
+            val target = mapper.apply(value);
+            val isPass = theCondition.test(target);
+            return isPass;
+        });
+    }
+    
+    @Override
     public default StreamPlus<DATA> peek(
             Consumer<? super DATA> action) {
         return deriveWith(stream -> {
@@ -916,22 +927,6 @@ public interface StreamPlus<DATA>
         });
     }
     
-    public default Optional<DATA> findFirst(Predicate<? super DATA> predicate) {
-        return terminate(stream -> {
-            return stream
-                    .filter(predicate)
-                    .findFirst();
-        });
-    }
-    
-    public default Optional<DATA> findAny(Predicate<? super DATA> predicate) {
-        return terminate(stream -> {
-            return stream
-                    .filter(predicate)
-                    .findAny();
-        });
-    }
-    
     public default Optional<DATA> findFirst() {
         return stream().findFirst();
     }
@@ -939,6 +934,7 @@ public interface StreamPlus<DATA>
     public default Optional<DATA> findAny() {
         return stream().findAny();
     }
+    
     //== toXXX ===
     
     @Override
@@ -1076,15 +1072,6 @@ public interface StreamPlus<DATA>
     }
     
     //== Plus ==
-    
-    @Override
-    public default <T> StreamPlus<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        return filter(value -> {
-            val target = mapper.apply(value);
-            val isPass = theCondition.test(target);
-            return isPass;
-        });
-    }
     
     public default String joinToString() {
         return terminate(stream -> {

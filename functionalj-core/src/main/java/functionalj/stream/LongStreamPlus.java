@@ -1,3 +1,26 @@
+// ============================================================================
+// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream;
 
 import java.util.ArrayList;
@@ -529,130 +552,123 @@ public interface LongStreamPlus extends LongStream {
     
     //== Calculate ==
     
-    public default <T> T calculate(LongStreamElementProcessor<T> processor) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextLong();
-            val index = counter.getAndIncrement();
-            processor.processLongElement(index, each);
-        }
-        val count = counter.get();
-        return processor.processLongComplete(count);
+    public default <A, T> T calculate(
+            LongCollectorPlus<A, T> processor) {
+        val collected = Collected.of(processor);
+        forEach(each -> {
+            collected.accumulate(each);
+        });
+        val value = collected.finish();
+        return value;
     }
     
-    public default <T1, T2> Tuple2<T1, T2> calculate(
-                LongStreamElementProcessor<T1> processor1, 
-                LongStreamElementProcessor<T2> processor2) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextLong();
-            val index = counter.getAndIncrement();
-            processor1.processLongElement(index, each);
-            processor2.processLongElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processLongComplete(count);
-        val value2 = processor2.processLongComplete(count);
+    public default <A1, A2, T1, T2> Tuple2<T1, T2> calculate(
+            LongCollectorPlus<A1, T1> processor1, 
+            LongCollectorPlus<A2, T2> processor2) {
+        val collected1 = Collected.of(processor1);
+        val collected2 = Collected.of(processor2);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
         return Tuple.of(value1, value2);
     }
     
-    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
-                LongStreamElementProcessor<T1> processor1, 
-                LongStreamElementProcessor<T2> processor2, 
-                LongStreamElementProcessor<T3> processor3) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextLong();
-            val index = counter.getAndIncrement();
-            processor1.processLongElement(index, each);
-            processor2.processLongElement(index, each);
-            processor3.processLongElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processLongComplete(count);
-        val value2 = processor2.processLongComplete(count);
-        val value3 = processor3.processLongComplete(count);
+    public default <A1, A2, A3, T1, T2, T3> Tuple3<T1, T2, T3> calculate(
+            LongCollectorPlus<A1, T1> processor1, 
+            LongCollectorPlus<A2, T2> processor2, 
+            LongCollectorPlus<A3, T3> processor3) {
+        val collected1 = Collected.of(processor1);
+        val collected2 = Collected.of(processor2);
+        val collected3 = Collected.of(processor3);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
         return Tuple.of(value1, value2, value3);
     }
     
-    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
-                LongStreamElementProcessor<T1> processor1, 
-                LongStreamElementProcessor<T2> processor2, 
-                LongStreamElementProcessor<T3> processor3, 
-                LongStreamElementProcessor<T4> processor4) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextLong();
-            val index = counter.getAndIncrement();
-            processor1.processLongElement(index, each);
-            processor2.processLongElement(index, each);
-            processor3.processLongElement(index, each);
-            processor4.processLongElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processLongComplete(count);
-        val value2 = processor2.processLongComplete(count);
-        val value3 = processor3.processLongComplete(count);
-        val value4 = processor4.processLongComplete(count);
+    public default <A1, A2, A3, A4, T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
+            LongCollectorPlus<A1, T1> processor1, 
+            LongCollectorPlus<A2, T2> processor2, 
+            LongCollectorPlus<A3, T3> processor3, 
+            LongCollectorPlus<A4, T4> processor4) {
+        val collected1 = Collected.of(processor1);
+        val collected2 = Collected.of(processor2);
+        val collected3 = Collected.of(processor3);
+        val collected4 = Collected.of(processor4);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
         return Tuple.of(value1, value2, value3, value4);
     }
     
-    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
-                LongStreamElementProcessor<T1> processor1, 
-                LongStreamElementProcessor<T2> processor2, 
-                LongStreamElementProcessor<T3> processor3, 
-                LongStreamElementProcessor<T4> processor4, 
-                LongStreamElementProcessor<T5> processor5) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextLong();
-            val index = counter.getAndIncrement();
-            processor1.processLongElement(index, each);
-            processor2.processLongElement(index, each);
-            processor3.processLongElement(index, each);
-            processor4.processLongElement(index, each);
-            processor5.processLongElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processLongComplete(count);
-        val value2 = processor2.processLongComplete(count);
-        val value3 = processor3.processLongComplete(count);
-        val value4 = processor4.processLongComplete(count);
-        val value5 = processor5.processLongComplete(count);
+    public default <A1, A2, A3, A4, A5, T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
+            LongCollectorPlus<A1, T1> processor1, 
+            LongCollectorPlus<A2, T2> processor2, 
+            LongCollectorPlus<A3, T3> processor3, 
+            LongCollectorPlus<A4, T4> processor4, 
+            LongCollectorPlus<A5, T5> processor5) {
+        val collected1 = Collected.of(processor1);
+        val collected2 = Collected.of(processor2);
+        val collected3 = Collected.of(processor3);
+        val collected4 = Collected.of(processor4);
+        val collected5 = Collected.of(processor5);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
+        val value5 = collected5.finish();
         return Tuple.of(value1, value2, value3, value4, value5);
     }
     
-    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
-                LongStreamElementProcessor<T1> processor1, 
-                LongStreamElementProcessor<T2> processor2, 
-                LongStreamElementProcessor<T3> processor3, 
-                LongStreamElementProcessor<T4> processor4, 
-                LongStreamElementProcessor<T5> processor5, 
-                LongStreamElementProcessor<T6> processor6) {
-        val counter = new AtomicLong(0);
-        val iterator = iterator();
-        while (iterator.hasNext()) {
-            val each  = iterator.nextLong();
-            val index = counter.getAndIncrement();
-            processor1.processLongElement(index, each);
-            processor2.processLongElement(index, each);
-            processor3.processLongElement(index, each);
-            processor4.processLongElement(index, each);
-            processor5.processLongElement(index, each);
-            processor6.processLongElement(index, each);
-        }
-        val count = counter.get();
-        val value1 = processor1.processLongComplete(count);
-        val value2 = processor2.processLongComplete(count);
-        val value3 = processor3.processLongComplete(count);
-        val value4 = processor4.processLongComplete(count);
-        val value5 = processor5.processLongComplete(count);
-        val value6 = processor6.processLongComplete(count);
+    public default <A1, A2, A3, A4, A5, A6, T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
+            LongCollectorPlus<A1, T1> processor1, 
+            LongCollectorPlus<A2, T2> processor2, 
+            LongCollectorPlus<A3, T3> processor3, 
+            LongCollectorPlus<A4, T4> processor4, 
+            LongCollectorPlus<A5, T5> processor5, 
+            LongCollectorPlus<A6, T6> processor6) {
+        val collected1 = Collected.of(processor1);
+        val collected2 = Collected.of(processor2);
+        val collected3 = Collected.of(processor3);
+        val collected4 = Collected.of(processor4);
+        val collected5 = Collected.of(processor5);
+        val collected6 = Collected.of(processor6);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+            collected6.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
+        val value5 = collected5.finish();
+        val value6 = collected6.finish();
         return Tuple.of(value1, value2, value3, value4, value5, value6);
     }
 }

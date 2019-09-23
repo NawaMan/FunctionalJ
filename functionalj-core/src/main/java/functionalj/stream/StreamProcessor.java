@@ -5,6 +5,11 @@ import lombok.val;
 
 public interface StreamProcessor<DATA, TARGET> {
     
+    public static <D, T> StreamProcessor<D, T> from(Func1<StreamPlus<D>, T> mapper) {
+        return s -> mapper.apply(s);
+    }
+    
+    
     public TARGET process(StreamPlus<DATA> stream);
     
     
