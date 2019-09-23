@@ -1,5 +1,6 @@
 package functionalj.stream;
 
+import static functionalj.function.FuncUnit0.funcUnit0;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 
 import java.util.stream.Stream;
@@ -11,6 +12,7 @@ import lombok.val;
 
 public interface StreamPlusWithCombine<DATA> {
     
+    public Stream<DATA>      stream();
     public <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action);
     
     
@@ -24,14 +26,21 @@ public interface StreamPlusWithCombine<DATA> {
                .flatMap(s -> (StreamPlus<DATA>)s);
     }
     
-    
     public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
-        return useIterator(iteratorA -> {
-            return StreamPlus.from(anotherStream)
-            .useIterator(iteratorB -> {
-                return StreamPlusHelper.doMerge(iteratorA, iteratorB);
-            });
-        });
+        val thisStream = stream();
+        val iteratorA  = StreamPlusHelper.rawIterator(thisStream);
+        val iteratorB  = StreamPlusHelper.rawIterator(anotherStream);
+        
+        val resultStream 
+                = StreamPlusHelper
+                .doMerge(iteratorA, iteratorB);
+        
+        resultStream
+                .onClose(()->{
+                    funcUnit0(()->thisStream   .close()).runCarelessly();
+                    funcUnit0(()->anotherStream.close()).runCarelessly();
+                });
+        return resultStream;
     }
     
     //-- Zip --
@@ -58,10 +67,11 @@ public interface StreamPlusWithCombine<DATA> {
     // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
     public default <B, C> StreamPlus<C> zipWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, C> merger) {
         return useIterator(iteratorA -> {
-            return StreamPlus.from(anotherStream)
-            .useIterator(iteratorB -> {
-                return StreamPlusHelper.doZipWith(option, merger, iteratorA, iteratorB);
-            });
+            return StreamPlus
+                    .from(anotherStream)
+                    .useIterator(iteratorB -> {
+                        return StreamPlusHelper.doZipWith(option, merger, iteratorA, iteratorB);
+                    });
         });
     }
     

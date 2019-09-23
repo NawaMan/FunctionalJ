@@ -39,6 +39,9 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> of(FuncUnit2<INPUT1, INPUT2> consumer) {
         return consumer;
     }
+    public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> funcUnit2(FuncUnit2<INPUT1, INPUT2> consumer) {
+        return consumer;
+    }
     public static <INPUT1, INPUT2> FuncUnit2<INPUT1, INPUT2> from(BiConsumer<INPUT1, INPUT2> consumer) {
         return consumer::accept;
     }

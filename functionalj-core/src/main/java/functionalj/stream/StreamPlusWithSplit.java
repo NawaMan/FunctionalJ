@@ -16,6 +16,7 @@ public interface StreamPlusWithSplit<DATA>
         extends StreamPlusWithMapTuple<DATA> {
     
     //== split ==
+    // Lazy
     
     public default Tuple2<FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate) {

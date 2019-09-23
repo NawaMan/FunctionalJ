@@ -69,6 +69,10 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             Func1<INPUT, OUTPUT> of(Func1<INPUT, OUTPUT> function) {
         return function;
     }
+    public static <INPUT, OUTPUT> 
+            Func1<INPUT, OUTPUT> func1(Func1<INPUT, OUTPUT> function) {
+        return function;
+    }
     
     public static <I1, O> Func1<I1, O> from(Function<I1, O> func) {
         return func::apply;

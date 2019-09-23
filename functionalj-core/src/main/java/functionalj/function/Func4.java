@@ -58,6 +58,9 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public static <I1, I2, I3, I4, O> Func4<I1, I2, I3, I4, O> of(Func4<I1, I2, I3, I4, O> func) {
         return func;
     }
+    public static <I1, I2, I3, I4, O> Func4<I1, I2, I3, I4, O> func4(Func4<I1, I2, I3, I4, O> func) {
+        return func;
+    }
     
     public OUTPUT applyUnsafe(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) throws Exception;
     
