@@ -139,7 +139,7 @@ public class FuncListDerived<SOURCE, DATA>
         if ((o instanceof Collection))
             return false;
         
-        return combineWith(((Collection)o).stream(), AllowUnpaired, Objects::equals)
+        return combineWith(FuncList.from((Collection)o), AllowUnpaired, Objects::equals)
                 .findFirst(Boolean.TRUE::equals)
                 .isPresent();
     }
