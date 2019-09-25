@@ -21,86 +21,91 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.list;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import functionalj.tuple.Tuple2;
-import functionalj.tuple.Tuple3;
-import functionalj.tuple.Tuple4;
-import functionalj.tuple.Tuple5;
-import functionalj.tuple.Tuple6;
+import functionalj.function.Func3;
+import functionalj.function.Func4;
+import functionalj.function.Func5;
+import functionalj.function.Func6;
+import functionalj.stream.Streamable;
+import functionalj.stream.StreamableWithMapThen;
 
-public interface StreamableWithMapTuple<DATA>
-    extends StreamableWithMapThen<DATA> {
+public interface FuncListWithMapThen<DATA>
+        extends StreamableWithMapThen<DATA> {
     
-    public <TARGET> Streamable<TARGET> deriveWith(
-            Function<Stream<DATA>, Stream<TARGET>> action);
+    public <TARGET> FuncList<TARGET> deriveFrom(Function<Streamable<DATA>, Stream<TARGET>> action);
     
-    //== mapTuple ==
     
-    public default <T1, T2> 
-        Streamable<Tuple2<T1, T2>> mapTuple(
-                Function<? super DATA, T1> mapper1,
-                Function<? super DATA, T2> mapper2) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapTuple(mapper1, mapper2);
-        });
-    }
+    //== mapThen ==
     
-    public default <T1, T2, T3> 
-        Streamable<Tuple3<T1, T2, T3>> mapTuple(
+    public default <T1, T2, T> 
+        FuncList<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
-                Function<? super DATA, T3> mapper3) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapTuple(mapper1, mapper2, mapper3);
+                BiFunction<T1, T2, T> function) {
+        return deriveFrom(streamable -> {
+            return streamable
+                    .mapThen(mapper1, mapper2, function)
+                    .stream();
         });
     }
-    
-    public default <T1, T2, T3, T4> 
-        Streamable<Tuple4<T1, T2, T3, T4>> mapTuple(
+    public default <T1, T2, T3, T> 
+        FuncList<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
-                Function<? super DATA, T4> mapper4) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapTuple(mapper1, mapper2, mapper3, mapper4);
+                Func3<T1, T2, T3, T> function) {
+        return deriveFrom(streamable -> {
+            return streamable
+                    .mapThen(mapper1, mapper2, mapper3, function)
+                    .stream();
         });
     }
-    
-    public default <T1, T2, T3, T4, T5> 
-        Streamable<Tuple5<T1, T2, T3, T4, T5>> mapTuple(
+    public default <T1, T2, T3, T4, T> 
+        FuncList<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
                 Function<? super DATA, T4> mapper4,
-                Function<? super DATA, T5> mapper5) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapTuple(mapper1, mapper2, mapper3, mapper4, mapper5);
+                Func4<T1, T2, T3, T4, T> function) {
+        return deriveFrom(streamable -> {
+            return streamable
+                    .mapThen(mapper1, mapper2, mapper3, mapper4, function)
+                    .stream();
         });
     }
-    public default <T1, T2, T3, T4, T5, T6> 
-        Streamable<Tuple6<T1, T2, T3, T4, T5, T6>> mapTuple(
+    public default <T1, T2, T3, T4, T5, T> 
+        FuncList<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
                 Function<? super DATA, T4> mapper4,
                 Function<? super DATA, T5> mapper5,
-                Function<? super DATA, T6> mapper6) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
+                Func5<T1, T2, T3, T4, T5, T> function) {
+        return deriveFrom(streamable -> {
+            return streamable
+                    .mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, function)
+                    .stream();
         });
     }
+    public default <T1, T2, T3, T4, T5, T6, T> 
+        FuncList<T> mapThen(
+                Function<? super DATA, T1> mapper1,
+                Function<? super DATA, T2> mapper2,
+                Function<? super DATA, T3> mapper3,
+                Function<? super DATA, T4> mapper4,
+                Function<? super DATA, T5> mapper5,
+                Function<? super DATA, T6> mapper6,
+                Func6<T1, T2, T3, T4, T5, T6, T> function) {
+        return deriveFrom(streamable -> {
+            return streamable
+                    .mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, function)
+                    .stream();
+        });
+    }
+
 }

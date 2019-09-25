@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 public class ParentWithMap implements WithMapTest.IParent4,IStruct,Pipeable<ParentWithMap> {
     
     public static final ParentWithMap.ParentWithMapLens<ParentWithMap> theParentWithMap = new ParentWithMap.ParentWithMapLens<>(LensSpec.of(ParentWithMap.class));
+    public static final ParentWithMap.ParentWithMapLens<ParentWithMap> eachParentWithMap = theParentWithMap;
     public final Map<String, Child> children;
     
     public ParentWithMap(Map<String, Child> children) {

@@ -88,6 +88,7 @@ public class GenerateParentChildTest {
                 "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
                 "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n" + 
+                "    public static final Parent.ParentLens<Parent> eachParent = theParent;\n" + 
                 "    public final Child child;\n" + 
                 "    \n" + 
                 "    public Parent() {\n" + 

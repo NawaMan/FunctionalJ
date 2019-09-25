@@ -187,7 +187,7 @@ public class FuncListTest {
         val index   = new AtomicInteger();
         val theList = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
         val theMap  = theList.mapToMap(
-                        "index",   __ -> index.getAndIncrement(), 
+                        "index",   __ -> "" + index.getAndIncrement(), 
                         "word",   theString, 
                         "length", theString.length().asString());
         

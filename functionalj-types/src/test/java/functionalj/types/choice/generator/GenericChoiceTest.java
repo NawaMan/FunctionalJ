@@ -88,6 +88,7 @@ public class GenericChoiceTest {
                 "    \n" + 
                 "    \n" + 
                 "    public static final MayBeLens<MayBe> theMayBe = new MayBeLens<>(LensSpec.of(MayBe.class));\n" + 
+                "    public static final MayBeLens<MayBe> eachMayBe = theMayBe;\n" + 
                 "    public static class MayBeLens<HOST> extends ObjectLensImpl<HOST, MayBe> {\n" + 
                 "\n" + 
                 "        public final BooleanAccess<MayBe> isNill = MayBe::isNill;\n" + 
@@ -122,6 +123,7 @@ public class GenericChoiceTest {
                 "    \n" + 
                 "    public static final class Nill extends MayBe {\n" + 
                 "        public static final Nill.NillLens<Nill> theNill = new Nill.NillLens<>(LensSpec.of(Nill.class));\n" + 
+                "        public static final Nill.NillLens<Nill> eachNill = theNill;\n" + 
                 "        private static final Nill instance = new Nill();\n" + 
                 "        private Nill() {}\n" + 
                 "        public static class NillLens<HOST> extends ObjectLensImpl<HOST, MayBe.Nill> {\n" + 
@@ -145,6 +147,7 @@ public class GenericChoiceTest {
                 "    }\n" + 
                 "    public static final class Just extends MayBe {\n" + 
                 "        public static final Just.JustLens<Just> theJust = new Just.JustLens<>(LensSpec.of(Just.class));\n" + 
+                "        public static final Just.JustLens<Just> eachJust = theJust;\n" + 
                 "        private T data;\n" + 
                 "        private Just(T data) {\n" + 
                 "            this.data = $utils.notNull(data);\n" + 

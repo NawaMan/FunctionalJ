@@ -25,6 +25,7 @@ import nullablej.nullable.Nullable;
 public class ParentWithNullableOptional implements WithNullableOptionalTest.IParent3,IStruct,Pipeable<ParentWithNullableOptional> {
     
     public static final ParentWithNullableOptional.ParentWithNullableOptionalLens<ParentWithNullableOptional> theParentWithNullableOptional = new ParentWithNullableOptional.ParentWithNullableOptionalLens<>(LensSpec.of(ParentWithNullableOptional.class));
+    public static final ParentWithNullableOptional.ParentWithNullableOptionalLens<ParentWithNullableOptional> eachParentWithNullableOptional = theParentWithNullableOptional;
     public final Nullable<String> nullableName;
     public final Optional<String> optionalName;
     

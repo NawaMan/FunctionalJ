@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 public class PersonWithDefault implements IStruct,Pipeable<PersonWithDefault> {
     
     public static final PersonWithDefault.PersonWithDefaultLens<PersonWithDefault> thePersonWithDefault = new PersonWithDefault.PersonWithDefaultLens<>(LensSpec.of(PersonWithDefault.class));
+    public static final PersonWithDefault.PersonWithDefaultLens<PersonWithDefault> eachPersonWithDefault = thePersonWithDefault;
     public final String firstName;
     public final String middleName;
     public final String lastName;

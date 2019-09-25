@@ -63,6 +63,7 @@ public class DateTimeLens {
                 "public class Person implements Definitions.PersonDef,IStruct,Pipeable<Person> {\n" + 
                 "    \n" + 
                 "    public static final Person.PersonLens<Person> thePerson = new Person.PersonLens<>(LensSpec.of(Person.class));\n" + 
+                "    public static final Person.PersonLens<Person> eachPerson = thePerson;\n" + 
                 "    public final LocalDate child;\n" + 
                 "    \n" + 
                 "    public Person() {\n" + 

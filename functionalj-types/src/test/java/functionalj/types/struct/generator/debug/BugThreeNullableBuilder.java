@@ -45,6 +45,7 @@ public class BugThreeNullableBuilder {
                 "public class Brand implements DataModels.BrandSpec,IStruct,Pipeable<Brand> {\n" + 
                 "    \n" + 
                 "    public static final Brand.BrandLens<Brand> theBrand = new Brand.BrandLens<>(LensSpec.of(Brand.class));\n" + 
+                "    public static final Brand.BrandLens<Brand> eachBrand = theBrand;\n" + 
                 "    public final String id;\n" + 
                 "    public final String name;\n" + 
                 "    public final String owner;\n" + 

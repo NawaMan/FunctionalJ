@@ -21,23 +21,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.list;
 
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import functionalj.function.Func2;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.ZipWithOption;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-public interface StreamableWithCombine<DATA> {
+public interface FuncListWithCombine<DATA> {
     
-    public <TARGET> Streamable<TARGET> deriveWith(
-            Function<Stream<DATA>, Stream<TARGET>> action);
+    public <TARGET> FuncList<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action);
     
-    
-    public default Streamable<DATA> concatWith(
-            Streamable<DATA> tail) {
+    public default FuncList<DATA> concatWith(
+            FuncList<DATA> tail) {
         return deriveWith(stream -> {
             return StreamPlus
                     .from      (stream)
@@ -45,10 +45,10 @@ public interface StreamableWithCombine<DATA> {
         });
     }
     
-    public default Streamable<DATA> merge(
-            Streamable<DATA>        anotherStreamable) {
+    public default FuncList<DATA> merge(
+            FuncList<DATA> anotherFuncList) {
         return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
+            val anotherStream = anotherFuncList.stream();
             return StreamPlus
                     .from      (stream)
                     .concatWith(anotherStream);
@@ -57,79 +57,78 @@ public interface StreamableWithCombine<DATA> {
     
     //-- Zip --
     
-    public default <B, TARGET> Streamable<TARGET> combineWith(
-            Streamable<B>          anotherStreamable, 
+    public default <B, TARGET> FuncList<TARGET> combineWith(
+            FuncList<B>            anotherFuncList, 
             Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
+            val anotherStream = anotherFuncList.stream();
             return StreamPlus
                     .from       (stream)
                     .combineWith(anotherStream, combinator);
         });
     }
-    public default <B, TARGET> Streamable<TARGET> combineWith(
-            Streamable<B>          anotherStreamable, 
+    public default <B, TARGET> FuncList<TARGET> combineWith(
+            FuncList<B>            anotherFuncList, 
             ZipWithOption          option, 
             Func2<DATA, B, TARGET> combinator) {
         return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
+            val anotherStream = anotherFuncList.stream();
             return StreamPlus
                     .from       (stream)
                     .combineWith(anotherStream, option, combinator);
         });
     }
     
-    public default <B> Streamable<Tuple2<DATA,B>> zipWith(
-            Streamable<B> anotherStreamable) {
+    public default <B> FuncList<Tuple2<DATA,B>> zipWith(
+            FuncList<B> anotherFuncList) {
         return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
+            val anotherStream = anotherFuncList.stream();
             return StreamPlus
                     .from   (stream)
                     .zipWith(anotherStream);
         });
     }
-    public default <B> Streamable<Tuple2<DATA,B>> zipWith(
-            Streamable<B> anotherStreamable, 
+    public default <B> FuncList<Tuple2<DATA,B>> zipWith(
+            FuncList<B>   anotherFuncList, 
             ZipWithOption option) {
         return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
+            val anotherStream = anotherFuncList.stream();
             return StreamPlus
                     .from   (stream)
                     .zipWith(anotherStream, option);
         });
     }
     
-    public default <B, C> Streamable<C> zipWith(
-            Streamable<B>     anotherStreamable, 
+    public default <B, C> FuncList<C> zipWith(
+            FuncList<B>       anotherFuncList, 
             Func2<DATA, B, C> merger) {
         return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
+            val anotherStream = anotherFuncList.stream();
             return StreamPlus
                     .from   (stream)
                     .zipWith(anotherStream, merger);
         });
     }
-    public default <B, C> Streamable<C> zipWith(
-            Streamable<B>     anotherStreamable, 
+    public default <B, C> FuncList<C> zipWith(
+            FuncList<B>       anotherFuncList, 
             ZipWithOption     option, 
             Func2<DATA, B, C> merger) {
         return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
+            val anotherStream = anotherFuncList.stream();
             return StreamPlus
                     .from   (stream)
                     .zipWith(anotherStream, option, merger);
         });
     }
     
-    public default Streamable<DATA> choose(
-            Streamable<DATA>           anotherStreamable, 
+    public default FuncList<DATA> choose(
+            FuncList<DATA>             anotherFuncList, 
             Func2<DATA, DATA, Boolean> selectThisNotAnother) {
         return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
+            val anotherStream = anotherFuncList.stream();
             return StreamPlus
                     .from  (stream)
                     .choose(anotherStream, selectThisNotAnother);
         });
     }
-    
 }

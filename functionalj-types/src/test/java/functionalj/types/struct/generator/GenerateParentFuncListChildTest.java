@@ -99,6 +99,7 @@ public class GenerateParentFuncListChildTest {
                 "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
                 "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n" + 
+                "    public static final Parent.ParentLens<Parent> eachParent = theParent;\n" +
                 "    public final FuncList<String> names;\n" + 
                 "    public final FuncList<Child> children;\n" + 
                 "    \n" + 

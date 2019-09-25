@@ -138,6 +138,7 @@ public class FullGeneratorTest {
               "    \n" + 
               "    \n" + 
               "    public static final BasicColorLens<BasicColor> theBasicColor = new BasicColorLens<>(LensSpec.of(BasicColor.class));\n" + 
+              "    public static final BasicColorLens<BasicColor> eachBasicColor = theBasicColor;\n" + 
               "    public static class BasicColorLens<HOST> extends ObjectLensImpl<HOST, BasicColor> {\n" + 
               "\n" + 
               "        public final BooleanAccess<BasicColor> isWhite = BasicColor::isWhite;\n" + 
@@ -177,6 +178,7 @@ public class FullGeneratorTest {
               "    \n" + 
               "    public static final class White extends BasicColor {\n" + 
               "        public static final White.WhiteLens<White> theWhite = new White.WhiteLens<>(LensSpec.of(White.class));\n" + 
+              "        public static final White.WhiteLens<White> eachWhite = theWhite;\n" + 
               "        private static final White instance = new White();\n" + 
               "        private White() {}\n" + 
               "        public static class WhiteLens<HOST> extends ObjectLensImpl<HOST, BasicColor.White> {\n" + 
@@ -200,6 +202,7 @@ public class FullGeneratorTest {
               "    }\n" + 
               "    public static final class Black extends BasicColor {\n" + 
               "        public static final Black.BlackLens<Black> theBlack = new Black.BlackLens<>(LensSpec.of(Black.class));\n" + 
+              "        public static final Black.BlackLens<Black> eachBlack = theBlack;\n" + 
               "        private static final Black instance = new Black();\n" + 
               "        private Black() {}\n" + 
               "        public static class BlackLens<HOST> extends ObjectLensImpl<HOST, BasicColor.Black> {\n" + 
@@ -223,6 +226,7 @@ public class FullGeneratorTest {
               "    }\n" + 
               "    public static final class RGB extends BasicColor {\n" + 
               "        public static final RGB.RGBLens<RGB> theRGB = new RGB.RGBLens<>(LensSpec.of(RGB.class));\n" + 
+              "        public static final RGB.RGBLens<RGB> eachRGB = theRGB;\n" + 
               "        private int r;\n" + 
               "        private int g;\n" + 
               "        private int b;\n" + 

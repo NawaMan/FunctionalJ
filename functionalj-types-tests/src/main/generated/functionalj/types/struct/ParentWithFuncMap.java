@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 public class ParentWithFuncMap implements WithFuncMapTest.IParent4,IStruct,Pipeable<ParentWithFuncMap> {
     
     public static final ParentWithFuncMap.ParentWithFuncMapLens<ParentWithFuncMap> theParentWithFuncMap = new ParentWithFuncMap.ParentWithFuncMapLens<>(LensSpec.of(ParentWithFuncMap.class));
+    public static final ParentWithFuncMap.ParentWithFuncMapLens<ParentWithFuncMap> eachParentWithFuncMap = theParentWithFuncMap;
     public final FuncMap<String, Child> children;
     
     public ParentWithFuncMap(FuncMap<String, Child> children) {

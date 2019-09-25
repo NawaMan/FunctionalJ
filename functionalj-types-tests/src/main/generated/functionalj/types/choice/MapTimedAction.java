@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 public class MapTimedAction implements IStruct,Pipeable<MapTimedAction> {
     
     public static final MapTimedAction.MapTimedActionLens<MapTimedAction> theMapTimedAction = new MapTimedAction.MapTimedActionLens<>(LensSpec.of(MapTimedAction.class));
+    public static final MapTimedAction.MapTimedActionLens<MapTimedAction> eachMapTimedAction = theMapTimedAction;
     public final LocalDateTime time;
     public final FuncMap<String, Command> commands;
     

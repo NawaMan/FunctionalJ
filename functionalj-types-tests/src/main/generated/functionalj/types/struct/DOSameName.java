@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 public class DOSameName implements DOWithSameClassName.DOSameName,IStruct,Pipeable<DOSameName> {
     
     public static final DOSameName.DOSameNameLens<DOSameName> theDOSameName = new DOSameName.DOSameNameLens<>(LensSpec.of(DOSameName.class));
+    public static final DOSameName.DOSameNameLens<DOSameName> eachDOSameName = theDOSameName;
     public final String name;
     
     public DOSameName(String name) {

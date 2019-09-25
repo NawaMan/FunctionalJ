@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 public class ParentWithList implements WithListTest.IParent2,IStruct,Pipeable<ParentWithList> {
     
     public static final ParentWithList.ParentWithListLens<ParentWithList> theParentWithList = new ParentWithList.ParentWithListLens<>(LensSpec.of(ParentWithList.class));
+    public static final ParentWithList.ParentWithListLens<ParentWithList> eachParentWithList = theParentWithList;
     public final List<String> names;
     public final List<Child> children;
     

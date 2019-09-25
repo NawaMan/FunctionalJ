@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 public class Price implements IStruct,Pipeable<Price> {
     
     public static final Price.PriceLens<Price> thePrice = new Price.PriceLens<>(LensSpec.of(Price.class));
+    public static final Price.PriceLens<Price> eachPrice = thePrice;
     public final int price;
     public final int discountPercent;
     public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null, "functionalj.types.struct", "FromMethodTest", "Price", "functionalj.types.struct", null, "spec", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, true, ""), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter("price", new functionalj.types.Type(null, null, "int", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter("discountPercent", new functionalj.types.Type(null, null, "int", java.util.Collections.emptyList()), true, functionalj.types.DefaultValue.ZERO)), java.util.Arrays.asList("Car", "Inventory", "Price", "CarForSale"));

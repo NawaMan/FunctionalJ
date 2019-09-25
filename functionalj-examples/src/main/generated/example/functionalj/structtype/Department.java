@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 public class Department implements IStruct,Pipeable<Department> {
     
     public static final Department.DepartmentLens<Department> theDepartment = new Department.DepartmentLens<>(LensSpec.of(Department.class));
+    public static final Department.DepartmentLens<Department> eachDepartment = theDepartment;
     public final String name;
     public final Employee manager;
     
