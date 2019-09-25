@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 public class Person implements IStruct,Pipeable<Person> {
     
     public static final Person.PersonLens<Person> thePerson = new Person.PersonLens<>(LensSpec.of(Person.class));
+    public static final Person.PersonLens<Person> eachPerson = thePerson;
     public final String firstName;
     public final String middleName;
     public final String lastName;

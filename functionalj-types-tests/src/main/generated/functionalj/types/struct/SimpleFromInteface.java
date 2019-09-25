@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 public class SimpleFromInteface implements SimpleStructTest.SimpleDOInterface,IStruct,Pipeable<SimpleFromInteface> {
     
     public static final SimpleFromInteface.SimpleFromIntefaceLens<SimpleFromInteface> theSimpleFromInteface = new SimpleFromInteface.SimpleFromIntefaceLens<>(LensSpec.of(SimpleFromInteface.class));
+    public static final SimpleFromInteface.SimpleFromIntefaceLens<SimpleFromInteface> eachSimpleFromInteface = theSimpleFromInteface;
     public final String name;
     
     public SimpleFromInteface() {

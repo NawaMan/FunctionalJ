@@ -98,6 +98,7 @@ public class GenerateParentNullableChildTest {
                 "public class Parent implements Definitions.ParentDef,IStruct,Pipeable<Parent> {\n" + 
                 "    \n" + 
                 "    public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));\n" + 
+                "    public static final Parent.ParentLens<Parent> eachParent = theParent;\n" + 
                 "    public final Nullable<String> nullableName;\n" + 
                 "    public final Nullable<Child> nullableChild;\n" + 
                 "    \n" + 

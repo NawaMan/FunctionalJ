@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 public class DOFromClass extends DOFromClassTest.DOFromClassDef implements IStruct,Pipeable<DOFromClass> {
     
     public static final DOFromClass.DOFromClassLens<DOFromClass> theDOFromClass = new DOFromClass.DOFromClassLens<>(LensSpec.of(DOFromClass.class));
+    public static final DOFromClass.DOFromClassLens<DOFromClass> eachDOFromClass = theDOFromClass;
     public final String name;
     public final int count;
     

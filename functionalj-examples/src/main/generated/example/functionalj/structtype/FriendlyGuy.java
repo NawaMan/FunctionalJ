@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 public class FriendlyGuy extends StructExtendFormTest.FriendlyGuySpec implements IStruct,Pipeable<FriendlyGuy> {
     
     public static final FriendlyGuy.FriendlyGuyLens<FriendlyGuy> theFriendlyGuy = new FriendlyGuy.FriendlyGuyLens<>(LensSpec.of(FriendlyGuy.class));
+    public static final FriendlyGuy.FriendlyGuyLens<FriendlyGuy> eachFriendlyGuy = theFriendlyGuy;
     public final String greetWord;
     
     public FriendlyGuy(String greetWord) {

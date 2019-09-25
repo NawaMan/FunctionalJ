@@ -24,7 +24,6 @@
 package functionalj.list;
    
 import static functionalj.function.Func.alwaysTrue;
-import static functionalj.function.Func.themAll;
 import static functionalj.lens.Access.$I;
 import static java.util.function.Function.identity;
 
@@ -48,32 +47,30 @@ import java.util.stream.Stream;
 
 import functionalj.function.Func1;
 import functionalj.function.Func2;
-import functionalj.function.Func3;
-import functionalj.function.Func4;
-import functionalj.function.Func5;
-import functionalj.function.Func6;
-import functionalj.lens.lenses.AnyLens;
-import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusHelper;
 import functionalj.stream.Streamable;
-import functionalj.stream.ZipWithOption;
 import functionalj.tuple.IntTuple2;
 import functionalj.tuple.Tuple;
-import functionalj.tuple.Tuple2;
-import functionalj.tuple.Tuple3;
-import functionalj.tuple.Tuple4;
-import functionalj.tuple.Tuple5;
-import functionalj.tuple.Tuple6;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
 public interface FuncList<DATA>
-        extends ReadOnlyList<DATA>, Streamable<DATA>, Pipeable<FuncList<DATA>>, Predicate<DATA> {
+        extends 
+            ReadOnlyList<DATA>, 
+            Streamable<DATA>, 
+            Pipeable<FuncList<DATA>>, 
+            Predicate<DATA>,
+            FuncListWithMapFirst<DATA>,
+            FuncListWithMapThen<DATA>,
+            FuncListWithMapTuple<DATA>,
+            FuncListWithMapToMap<DATA>,
+            FuncListWithFillNull<DATA>,
+            FuncListWithCombine<DATA>,
+            FuncListAdditionalOperations<DATA> {
     
     public static <T> ImmutableList<T> empty() {
         return ImmutableList.empty();
@@ -599,106 +596,6 @@ public interface FuncList<DATA>
         });
     }
     
-    // -- fillNull --
-    
-    public default <VALUE> FuncList<DATA> fillNull(AnyLens<DATA, VALUE> lens, VALUE replacement) {
-        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacement));
-    }
-    
-    public default <VALUE> FuncList<DATA> fillNull(Func1<DATA, VALUE> get, Func2<DATA, VALUE, DATA> set,
-            VALUE replacement) {
-        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacement));
-    }
-    
-    public default <VALUE> FuncList<DATA> fillNull(AnyLens<DATA, VALUE> lens, Supplier<VALUE> replacementSupplier) {
-        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacementSupplier));
-    }
-    
-    public default <VALUE> FuncList<DATA> fillNull(Func1<DATA, VALUE> get, Func2<DATA, VALUE, DATA> set,
-            Supplier<VALUE> replacementSupplier) {
-        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacementSupplier));
-    }
-    
-    public default <VALUE> FuncList<DATA> fillNull(AnyLens<DATA, VALUE> lens, Func1<DATA, VALUE> replacementFunction) {
-        return deriveWith(stream -> StreamPlus.from(stream).fillNull(lens, replacementFunction));
-    }
-    
-    public default <VALUE> FuncList<DATA> fillNull(Func1<DATA, VALUE> get, Func2<DATA, VALUE, DATA> set,
-            Func1<DATA, VALUE> replacementFunction) {
-        return deriveWith(stream -> StreamPlus.from(stream).fillNull(get, set, replacementFunction));
-    }
-    
-    // --map with condition --
-    
-    public default FuncList<DATA> mapOnly(Predicate<? super DATA> checker, Function<? super DATA, DATA> mapper) {
-        return map(d -> checker.test(d) ? mapper.apply(d) : d);
-    }
-   
-    public default <T> FuncList<T> mapIf(Predicate<? super DATA> checker, Function<? super DATA, T> mapper,
-            Function<? super DATA, T> elseMapper) {
-        return deriveWith(stream -> StreamPlus.from(stream).mapIf(checker, mapper, elseMapper));
-    }
-    
-    public default <T> FuncList<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2) {
-        return deriveWith(stream -> StreamPlus.from(stream).mapFirst(mapper1, mapper2));
-    }
-    
-    public default <T> FuncList<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2,
-            Function<? super DATA, T> mapper3) {
-        return deriveWith(stream -> StreamPlus.from(stream).mapFirst(mapper1, mapper2, mapper3));
-    }
-    
-    public default <T> FuncList<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2,
-            Function<? super DATA, T> mapper3, Function<? super DATA, T> mapper4) {
-        return deriveWith(stream -> StreamPlus.from(stream).mapFirst(mapper1, mapper2, mapper3, mapper4));
-    }
-    
-    public default <T> FuncList<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2,
-            Function<? super DATA, T> mapper3, Function<? super DATA, T> mapper4, Function<? super DATA, T> mapper5) {
-        return deriveWith(stream -> StreamPlus.from(stream).mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5));
-    }
-    
-    public default <T> FuncList<T> mapFirst(Function<? super DATA, T> mapper1, Function<? super DATA, T> mapper2,
-            Function<? super DATA, T> mapper3, Function<? super DATA, T> mapper4, Function<? super DATA, T> mapper5,
-            Function<? super DATA, T> mapper6) {
-        return deriveWith(
-                stream -> StreamPlus.from(stream).mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
-    }
-    
-    // -- mapWithIndex --
-    
-    public default FuncList<Tuple2<Integer, DATA>> mapWithIndex() {
-        val index = new AtomicInteger();
-        return map(each -> Tuple2.of(index.getAndIncrement(), each));
-    }
-    
-    public default <T> FuncList<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
-        val index = new AtomicInteger();
-        return map(each -> mapper.apply(index.getAndIncrement(), each));
-    }
-    
-    public default <T1, T> FuncList<T> mapWithIndex(Function<? super DATA, ? extends T1> mapper1,
-            BiFunction<? super Integer, ? super T1, T> mapper) {
-        return deriveWith(stream -> {
-            val index = new AtomicInteger();
-            return stream.map(each -> mapper.apply(index.getAndIncrement(), mapper1.apply(each)));
-        });
-    }
-    
-    // -- mapWithPrev --
-    
-    public default <TARGET> FuncList<TARGET> mapWithPrev(
-            BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> mapper) {
-        return deriveWith(stream -> {
-            val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
-            return stream.map(element -> {
-                val newValue = mapper.apply(prev.get(), element);
-                prev.set(Result.valueOf(element));
-                return newValue;
-            });
-        });
-    }
-    
     // -- accumulate --
     
     public default FuncList<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
@@ -706,7 +603,7 @@ public interface FuncList<DATA>
             val iterator = StreamPlus.from(stream).iterator();
             if (!iterator.hasNext())
                 return StreamPlus.empty();
-    
+            
             val prev = new AtomicReference<DATA>(iterator.next());
             return StreamPlus.concat(StreamPlus.of(prev.get()), iterator.stream().map(n -> {
                 val next = accumulator.apply(n, prev.get());
@@ -716,226 +613,10 @@ public interface FuncList<DATA>
         });
     }
     
-    // == Map to tuple. ==
-    // ++ Generated with: GeneratorFunctorMapToTupleToObject ++
-    
-    public default <T1, T2> FuncList<Tuple2<T1, T2>> mapTuple(Function<? super DATA, ? extends T1> mapper1,
-            Function<? super DATA, ? extends T2> mapper2) {
-        return mapThen(mapper1, mapper2, (v1, v2) -> Tuple2.of(v1, v2));
-    }
-    
-    public default <T1, T2, T3> FuncList<Tuple3<T1, T2, T3>> mapTuple(Function<? super DATA, ? extends T1> mapper1,
-            Function<? super DATA, ? extends T2> mapper2, Function<? super DATA, ? extends T3> mapper3) {
-        return mapThen(mapper1, mapper2, mapper3, (v1, v2, v3) -> Tuple3.of(v1, v2, v3));
-    }
-    
-    public default <T1, T2, T3, T4> FuncList<Tuple4<T1, T2, T3, T4>> mapTuple(
-            Function<? super DATA, ? extends T1> mapper1, Function<? super DATA, ? extends T2> mapper2,
-            Function<? super DATA, ? extends T3> mapper3, Function<? super DATA, ? extends T4> mapper4) {
-        return mapThen(mapper1, mapper2, mapper3, mapper4, (v1, v2, v3, v4) -> Tuple4.of(v1, v2, v3, v4));
-    }
-    
-    public default <T1, T2, T3, T4, T5> FuncList<Tuple5<T1, T2, T3, T4, T5>> mapTuple(
-            Function<? super DATA, ? extends T1> mapper1, Function<? super DATA, ? extends T2> mapper2,
-            Function<? super DATA, ? extends T3> mapper3, Function<? super DATA, ? extends T4> mapper4,
-            Function<? super DATA, ? extends T5> mapper5) {
-        return mapThen(mapper1, mapper2, mapper3, mapper4, mapper5,
-                (v1, v2, v3, v4, v5) -> Tuple5.of(v1, v2, v3, v4, v5));
-    }
-    
-    public default <T1, T2, T3, T4, T5, T6> FuncList<Tuple6<T1, T2, T3, T4, T5, T6>> mapTuple(
-            Function<? super DATA, ? extends T1> mapper1, Function<? super DATA, ? extends T2> mapper2,
-            Function<? super DATA, ? extends T3> mapper3, Function<? super DATA, ? extends T4> mapper4,
-            Function<? super DATA, ? extends T5> mapper5, Function<? super DATA, ? extends T6> mapper6) {
-        return mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6,
-                (v1, v2, v3, v4, v5, v6) -> Tuple6.of(v1, v2, v3, v4, v5, v6));
-    }
-    
-    // -- Map and combine --
-    
-    public default <T1, T2, T> FuncList<T> mapThen(Function<? super DATA, ? extends T1> mapper1,
-            Function<? super DATA, ? extends T2> mapper2, BiFunction<T1, T2, T> function) {
-        return map(each -> {
-            val v1 = mapper1.apply(each);
-            val v2 = mapper2.apply(each);
-            val v = function.apply(v1, v2);
-            return v;
-        });
-    }
-    
-    public default <T1, T2, T3, T> FuncList<T> mapThen(Function<? super DATA, ? extends T1> mapper1,
-            Function<? super DATA, ? extends T2> mapper2, Function<? super DATA, ? extends T3> mapper3,
-            Func3<T1, T2, T3, T> function) {
-        return map(each -> {
-            val v1 = mapper1.apply(each);
-            val v2 = mapper2.apply(each);
-            val v3 = mapper3.apply(each);
-            val v = function.apply(v1, v2, v3);
-            return v;
-        });
-    }
-    
-    public default <T1, T2, T3, T4, T> FuncList<T> mapThen(Function<? super DATA, ? extends T1> mapper1,
-            Function<? super DATA, ? extends T2> mapper2, Function<? super DATA, ? extends T3> mapper3,
-            Function<? super DATA, ? extends T4> mapper4, Func4<T1, T2, T3, T4, T> function) {
-        return map(each -> {
-            val v1 = mapper1.apply(each);
-            val v2 = mapper2.apply(each);
-            val v3 = mapper3.apply(each);
-            val v4 = mapper4.apply(each);
-            val v = function.apply(v1, v2, v3, v4);
-            return v;
-        });
-    }
-    
-    public default <T1, T2, T3, T4, T5, T> FuncList<T> mapThen(Function<? super DATA, ? extends T1> mapper1,
-            Function<? super DATA, ? extends T2> mapper2, Function<? super DATA, ? extends T3> mapper3,
-            Function<? super DATA, ? extends T4> mapper4, Function<? super DATA, ? extends T5> mapper5,
-            Func5<T1, T2, T3, T4, T5, T> function) {
-        return map(each -> {
-            val v1 = mapper1.apply(each);
-            val v2 = mapper2.apply(each);
-            val v3 = mapper3.apply(each);
-            val v4 = mapper4.apply(each);
-            val v5 = mapper5.apply(each);
-            val v = function.apply(v1, v2, v3, v4, v5);
-            return v;
-        });
-    }
-    
-    public default <T1, T2, T3, T4, T5, T6, T> FuncList<T> mapThen(Function<? super DATA, ? extends T1> mapper1,
-            Function<? super DATA, ? extends T2> mapper2, Function<? super DATA, ? extends T3> mapper3,
-            Function<? super DATA, ? extends T4> mapper4, Function<? super DATA, ? extends T5> mapper5,
-            Function<? super DATA, ? extends T6> mapper6, Func6<T1, T2, T3, T4, T5, T6, T> function) {
-        return map(each -> {
-            val v1 = mapper1.apply(each);
-            val v2 = mapper2.apply(each);
-            val v3 = mapper3.apply(each);
-            val v4 = mapper4.apply(each);
-            val v5 = mapper5.apply(each);
-            val v6 = mapper6.apply(each);
-            val v = function.apply(v1, v2, v3, v4, v5, v6);
-            return v;
-        });
-    }
-    
-    // -- Generated with: GeneratorFunctorMapToTupleToObject --
-    
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key,
-            Function<? super DATA, ? extends VALUE> mapper) {
-        return map(data -> ImmutableMap.of(key, mapper.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1,
-            Function<? super DATA, ? extends VALUE> mapper1, KEY key2,
-            Function<? super DATA, ? extends VALUE> mapper2) {
-        return map(data -> ImmutableMap.of(key1, mapper1.apply(data), key2, mapper2.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1,
-            Function<? super DATA, ? extends VALUE> mapper1, KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3) {
-        return map(data -> ImmutableMap.of(key1, mapper1.apply(data), key2, mapper2.apply(data), key3,
-                mapper3.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1,
-            Function<? super DATA, ? extends VALUE> mapper1, KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3, KEY key4,
-            Function<? super DATA, ? extends VALUE> mapper4) {
-        return map(data -> ImmutableMap.of(key1, mapper1.apply(data), key2, mapper2.apply(data), key3,
-                mapper3.apply(data), key4, mapper4.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1,
-            Function<? super DATA, ? extends VALUE> mapper1, KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3, KEY key4,
-            Function<? super DATA, ? extends VALUE> mapper4, KEY key5,
-            Function<? super DATA, ? extends VALUE> mapper5) {
-        return map(data -> ImmutableMap.of(key1, mapper1.apply(data), key2, mapper2.apply(data), key3,
-                mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1,
-            Function<? super DATA, ? extends VALUE> mapper1, KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3, KEY key4,
-            Function<? super DATA, ? extends VALUE> mapper4, KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
-            KEY key6, Function<? super DATA, ? extends VALUE> mapper6) {
-        return map(data -> ImmutableMap.of(key1, mapper1.apply(data), key2, mapper2.apply(data), key3,
-                mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data), key6, mapper6.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1,
-            Function<? super DATA, ? extends VALUE> mapper1, KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3, KEY key4,
-            Function<? super DATA, ? extends VALUE> mapper4, KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
-            KEY key6, Function<? super DATA, ? extends VALUE> mapper6, KEY key7,
-            Function<? super DATA, ? extends VALUE> mapper7) {
-        return map(data -> ImmutableMap.of(key1, mapper1.apply(data), key2, mapper2.apply(data), key3,
-                mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data), key6, mapper6.apply(data),
-                key7, mapper7.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1,
-            Function<? super DATA, ? extends VALUE> mapper1, KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3, KEY key4,
-            Function<? super DATA, ? extends VALUE> mapper4, KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
-            KEY key6, Function<? super DATA, ? extends VALUE> mapper6, KEY key7,
-            Function<? super DATA, ? extends VALUE> mapper7, KEY key8,
-            Function<? super DATA, ? extends VALUE> mapper8) {
-        return map(data -> ImmutableMap.of(key1, mapper1.apply(data), key2, mapper2.apply(data), key3,
-                mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data), key6, mapper6.apply(data),
-                key7, mapper7.apply(data), key8, mapper8.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1,
-            Function<? super DATA, ? extends VALUE> mapper1, KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3, KEY key4,
-            Function<? super DATA, ? extends VALUE> mapper4, KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
-            KEY key6, Function<? super DATA, ? extends VALUE> mapper6, KEY key7,
-            Function<? super DATA, ? extends VALUE> mapper7, KEY key8, Function<? super DATA, ? extends VALUE> mapper8,
-            KEY key9, Function<? super DATA, ? extends VALUE> mapper9) {
-        return map(data -> ImmutableMap.of(key1, mapper1.apply(data), key2, mapper2.apply(data), key3,
-                mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data), key6, mapper6.apply(data),
-                key7, mapper7.apply(data), key8, mapper8.apply(data), key9, mapper9.apply(data)));
-    }
-    
-    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(KEY key1,
-            Function<? super DATA, ? extends VALUE> mapper1, KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
-            KEY key3, Function<? super DATA, ? extends VALUE> mapper3, KEY key4,
-            Function<? super DATA, ? extends VALUE> mapper4, KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
-            KEY key6, Function<? super DATA, ? extends VALUE> mapper6, KEY key7,
-            Function<? super DATA, ? extends VALUE> mapper7, KEY key8, Function<? super DATA, ? extends VALUE> mapper8,
-            KEY key9, Function<? super DATA, ? extends VALUE> mapper9, KEY key10,
-            Function<? super DATA, ? extends VALUE> mapper10) {
-        return map(data -> ImmutableMap.of(key1, mapper1.apply(data), key2, mapper2.apply(data), key3,
-                mapper3.apply(data), key4, mapper4.apply(data), key5, mapper5.apply(data), key6, mapper6.apply(data),
-                key7, mapper7.apply(data), key8, mapper8.apply(data), key9, mapper9.apply(data), key10,
-                mapper10.apply(data)));
-    }
-    
     // -- Filter --
     
     public default FuncList<DATA> filterNonNull() {
         return deriveWith(stream -> stream.filter(Objects::nonNull));
-    }
-    
-    public default FuncList<DATA> filterIn(Collection<? super DATA> collection) {
-        return deriveWith(stream -> {
-            return (collection == null) ? Stream.empty() : stream.filter(data -> collection.contains(data));
-        });
-    }
-    
-    public default FuncList<DATA> exclude(Predicate<? super DATA> predicate) {
-        return deriveWith(stream -> {
-            return (predicate == null) ? stream : stream.filter(data -> !predicate.test(data));
-        });
-    }
-    
-    public default FuncList<DATA> excludeIn(Collection<? super DATA> collection) {
-        return deriveWith(stream -> {
-            return (collection == null) ? stream : stream.filter(data -> !collection.contains(data));
-        });
     }
     
     public default FuncList<DATA> exclude(DATA value) {
@@ -948,175 +629,6 @@ public interface FuncList<DATA>
         val dataList = FuncList.of(datas);
         return deriveWith(stream -> {
             return (datas == null) ? stream : stream.filter(data -> !dataList.contains(data));
-        });
-    }
-    
-    public default <T> FuncList<DATA> filter(Class<T> clzz) {
-        return filter(clzz::isInstance);
-    }
-    
-    public default <T> FuncList<DATA> filter(Class<T> clzz, Predicate<? super T> theCondition) {
-        return filter(value -> {
-            if (!clzz.isInstance(value))
-                return false;
-    
-            val target = clzz.cast(value);
-            val isPass = theCondition.test(target);
-            return isPass;
-        });
-    }
-    
-    public default <T> FuncList<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition) {
-        return filter(value -> {
-            val target = mapper.apply(value);
-            val isPass = theCondition.test(target);
-            return isPass;
-        });
-    }
-    
-    public default FuncList<DATA> filterWithIndex(BiFunction<? super Integer, ? super DATA, Boolean> predicate) {
-        val index = new AtomicInteger();
-        return filter(each -> {
-            return (predicate != null) && predicate.apply(index.getAndIncrement(), each);
-        });
-    }
-    
-    // -- Peek --
-    
-    public default <T extends DATA> FuncList<DATA> peek(Class<T> clzz, Consumer<? super T> theConsumer) {
-        return peek(value -> {
-            if (!clzz.isInstance(value))
-                return;
-    
-            val target = clzz.cast(value);
-            theConsumer.accept(target);
-        });
-    }
-    
-    public default FuncList<DATA> peek(Predicate<? super DATA> selector, Consumer<? super DATA> theConsumer) {
-        return peek(value -> {
-            if (!selector.test(value))
-                return;
-    
-            theConsumer.accept(value);
-        });
-    }
-    
-    public default <T> FuncList<DATA> peek(Function<? super DATA, T> mapper, Consumer<? super T> theConsumer) {
-        return peek(value -> {
-            val target = mapper.apply(value);
-            theConsumer.accept(target);
-        });
-    }
-    
-    public default <T> FuncList<DATA> peek(Function<? super DATA, T> mapper, Predicate<? super T> selector,
-            Consumer<? super T> theConsumer) {
-        return peek(value -> {
-            val target = mapper.apply(value);
-            if (selector.test(target))
-                theConsumer.accept(target);
-        });
-    }
-    
-    // -- FlatMap --
-    
-    public default FuncList<DATA> flatMapOnly(
-            Predicate<? super DATA>                            checker,
-            Function<? super DATA, ? extends Streamable<DATA>> mapper) {
-        return flatMap(d -> checker.test(d) ? mapper.apply(d) : () -> StreamPlus.of(d));
-    }
-    
-    public default <T> FuncList<T> flatMapIf(
-            Predicate<? super DATA>                         checker,
-            Function<? super DATA, ? extends Streamable<T>> mapper, 
-            Function<? super DATA, ? extends Streamable<T>> elseMapper) {
-        return flatMap(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
-    }
-    
-    // -- segment --
-    
-    public default FuncList<StreamPlus<DATA>> segment(int count) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).segment(count);
-        });
-    }
-    
-    public default FuncList<StreamPlus<DATA>> segment(int count, boolean includeTail) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).segment(count, includeTail);
-        });
-    }
-    
-    public default FuncList<StreamPlus<DATA>> segment(Predicate<DATA> startCondition) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).segment(startCondition);
-        });
-    }
-    
-    public default FuncList<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, boolean includeTail) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).segment(startCondition);
-        });
-    }
-    
-    public default FuncList<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).segment(startCondition, endCondition);
-        });
-    }
-    
-    public default FuncList<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition,
-            boolean includeLast) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).segment(startCondition, endCondition, includeLast);
-        });
-    }
-    
-    // -- Zip --
-    
-    public default <B, TARGET> FuncList<TARGET> combineWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).combineWith(anotherStream, combinator);
-        });
-    }
-    
-    public default <B, TARGET> FuncList<TARGET> combineWith(Stream<B> anotherStream, ZipWithOption option,
-            Func2<DATA, B, TARGET> combinator) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).combineWith(anotherStream, option, combinator);
-        });
-    }
-    
-    public default <B> FuncList<Tuple2<DATA, B>> zipWith(Stream<B> anotherStream) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).zipWith(anotherStream);
-        });
-    }
-    
-    public default <B> FuncList<Tuple2<DATA, B>> zipWith(Stream<B> anotherStream, ZipWithOption option) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).zipWith(anotherStream, option);
-        });
-    }
-    
-    public default FuncList<DATA> choose(Stream<DATA> anotherStream, Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).choose(anotherStream, selectThisNotAnother);
-        });
-    }
-    
-    public default FuncList<DATA> merge(Stream<DATA> anotherStream) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).merge(anotherStream);
-        });
-    }
-    
-    @SuppressWarnings("unchecked")
-    public default FuncList<DATA> concatWith(FuncList<DATA> ... tails) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .concat(StreamPlus.of(stream), StreamPlus.of(tails).map(Streamable::stream))
-                    .flatMap(themAll());
         });
     }
     

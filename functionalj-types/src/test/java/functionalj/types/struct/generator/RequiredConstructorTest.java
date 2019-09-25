@@ -86,6 +86,7 @@ public class RequiredConstructorTest {
             "public class Person implements IStruct,Pipeable<Person> {\n" + 
             "    \n" + 
             "    public static final Person.PersonLens<Person> thePerson = new Person.PersonLens<>(LensSpec.of(Person.class));\n" + 
+            "    public static final Person.PersonLens<Person> eachPerson = thePerson;\n" + 
             "    private final String firstName;\n" + 
             "    private final String midName;\n" + 
             "    private final String lastName;\n" + 

@@ -46,12 +46,14 @@ public class SubClassDefinition implements Lines {
     public List<String> lines() {
         val name = choice.name;
         val lens = new CaseLensBuilder(targetClass.spec, choice);
-        val lensInstance = lens.generateTheLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
-        val toMapMethod = new ToMapBuilder(targetClass, this.choice);
+        val lensTheInstance  = lens.generateTheLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
+        val lensEachInstance = lens.generateEachLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
+        val toMapMethod  = new ToMapBuilder(targetClass, this.choice);
         if (!choice.isParameterized()) {
             return asList(
                     asList(format("public static final class %1$s%2$s extends %3$s {",    name, targetClass.getType().genericDef(), targetClass.getType().typeWithGenerics())),
-                    asList(format("    " + lensInstance)),
+                    asList(format("    " + lensTheInstance)),
+                    asList(format("    " + lensEachInstance)),
                     asList(format("    private static final %1$s instance = new %1$s();", name)),
                     asList(format("    private %1$s() {}",                                name)),
                     lens.build().stream().map(l -> "    " + l).collect(Collectors.toList()),
@@ -69,7 +71,8 @@ public class SubClassDefinition implements Lines {
         val fieldAccss  = targetClass.spec.publicFields ? "public" : "private";
         return asList(
                 asList(               format("public static final class %1$s%2$s extends %3$s {", name, targetClass.getType().genericDef(), targetClass.getType().typeWithGenerics())),
-                asList(               format("    " + lensInstance)),
+                asList(               format("    " + lensTheInstance)),
+                asList(               format("    " + lensEachInstance)),
                 choice.mapParams(p -> format("    %1$s %2$s %3$s;",                               fieldAccss, p.type.typeWithGenerics(), p.name)),
                 asList(               format("    private %1$s(%2$s) {",                          name, paramDefs)),
                 choice.mapParams(this::fieldAssignment),

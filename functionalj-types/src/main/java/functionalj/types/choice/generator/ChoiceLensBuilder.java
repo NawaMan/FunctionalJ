@@ -46,6 +46,7 @@ public class ChoiceLensBuilder {
         val lensClassName = targetName + "Lens";
         val lensClassDef = asList(
                 "public static final " + lensClassName + "<" + targetName + "> the" + targetName + " = new " + lensClassName + "<>(LensSpec.of(" + targetName + ".class));",
+                "public static final " + lensClassName + "<" + targetName + "> each" + targetName + " = the" + targetName + ";",
                 "public static class " + lensClassName + "<HOST> extends ObjectLensImpl<HOST, " + targetName + "> {\n"
                 );
         

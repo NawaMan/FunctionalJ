@@ -25,12 +25,13 @@ public abstract class Command implements IChoice<Command.CommandFirstSwitch>, Pi
     
     
     public static final CommandLens<Command> theCommand = new CommandLens<>(LensSpec.of(Command.class));
+    public static final CommandLens<Command> eachCommand = theCommand;
     public static class CommandLens<HOST> extends ObjectLensImpl<HOST, Command> {
 
         public final BooleanAccess<Command> isRotate = Command::isRotate;
         public final BooleanAccess<Command> isMove = Command::isMove;
-        public final ResultAccess<HOST, Rotate, Rotate.RotateLens<HOST>> asRotate = createSubResultLens(Command::asRotate, null, Rotate.RotateLens::new);
-        public final ResultAccess<HOST, Move, Move.MoveLens<HOST>> asMove = createSubResultLens(Command::asMove, null, Move.MoveLens::new);
+        public final ResultAccess<HOST, Rotate, Rotate.RotateLens<HOST>> asRotate = createSubResultLens(Command::asRotate, (functionalj.lens.core.WriteLens<Command,Result<Rotate>>)null, Rotate.RotateLens::new);
+        public final ResultAccess<HOST, Move, Move.MoveLens<HOST>> asMove = createSubResultLens(Command::asMove, (functionalj.lens.core.WriteLens<Command,Result<Move>>)null, Move.MoveLens::new);
         public CommandLens(LensSpec<HOST, Command> spec) {
             super(spec);
         }
@@ -59,6 +60,7 @@ public abstract class Command implements IChoice<Command.CommandFirstSwitch>, Pi
     
     public static final class Rotate extends Command {
         public static final Rotate.RotateLens<Rotate> theRotate = new Rotate.RotateLens<>(LensSpec.of(Rotate.class));
+        public static final Rotate.RotateLens<Rotate> eachRotate = theRotate;
         private int degree;
         private Rotate(int degree) {
             this.degree = degree;
@@ -94,6 +96,7 @@ public abstract class Command implements IChoice<Command.CommandFirstSwitch>, Pi
     }
     public static final class Move extends Command {
         public static final Move.MoveLens<Move> theMove = new Move.MoveLens<>(LensSpec.of(Move.class));
+        public static final Move.MoveLens<Move> eachMove = theMove;
         private int distance;
         private Move(int distance) {
             this.distance = distance;

@@ -113,6 +113,15 @@ public class CaseLensBuilder {
         return theField;
     }
     
+    public GenField generateEachLensField() {
+        val theField     = generateTheLensField();
+        val choiceName   = theField.getName().replaceFirst("^the", "each");
+        val lensType     = theField.getType();
+        val defaultValue = theField.getName();
+        val eachField    = new GenField(PUBLIC, FINAL, STATIC, choiceName, lensType, defaultValue);
+        return eachField;
+    }
+    
     static String withMethodName(CaseParam choiceCase) {
         val name = choiceCase.name;
         return "with" + name.substring(0,1).toUpperCase() + name.substring(1);

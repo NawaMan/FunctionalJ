@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 public class SimpleWithPostReConstruct implements WithPostConstruct.SimpleDOWithPostReConstruct,IStruct,Pipeable<SimpleWithPostReConstruct> {
     
     public static final SimpleWithPostReConstruct.SimpleWithPostReConstructLens<SimpleWithPostReConstruct> theSimpleWithPostReConstruct = new SimpleWithPostReConstruct.SimpleWithPostReConstructLens<>(LensSpec.of(SimpleWithPostReConstruct.class));
+    public static final SimpleWithPostReConstruct.SimpleWithPostReConstructLens<SimpleWithPostReConstruct> eachSimpleWithPostReConstruct = theSimpleWithPostReConstruct;
     public final String name;
     
     public SimpleWithPostReConstruct(String name) {

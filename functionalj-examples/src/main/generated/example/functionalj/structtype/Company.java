@@ -27,6 +27,7 @@ import java.util.function.Supplier;
 public class Company implements IStruct,Pipeable<Company> {
     
     public static final Company.CompanyLens<Company> theCompany = new Company.CompanyLens<>(LensSpec.of(Company.class));
+    public static final Company.CompanyLens<Company> eachCompany = theCompany;
     public final String name;
     public final FuncMap<Integer, Personel> employees;
     

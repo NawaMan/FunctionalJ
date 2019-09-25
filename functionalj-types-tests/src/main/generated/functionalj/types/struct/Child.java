@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 public class Child implements SubDOTest.IChild,IStruct,Pipeable<Child> {
     
     public static final Child.ChildLens<Child> theChild = new Child.ChildLens<>(LensSpec.of(Child.class));
+    public static final Child.ChildLens<Child> eachChild = theChild;
     public final String name;
     
     public Child(String name) {
