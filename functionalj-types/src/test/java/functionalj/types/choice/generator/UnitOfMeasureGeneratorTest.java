@@ -111,6 +111,7 @@ public class UnitOfMeasureGeneratorTest {
                 "    \n" + 
                 "    \n" + 
                 "    public static final TemperatureLens<Temperature> theTemperature = new TemperatureLens<>(LensSpec.of(Temperature.class));\n" + 
+                "    public static final TemperatureLens<Temperature> eachTemperature = theTemperature;\n" + 
                 "    public static class TemperatureLens<HOST> extends ObjectLensImpl<HOST, Temperature> {\n" + 
                 "\n" + 
                 "        public final BooleanAccess<Temperature> isCelsius = Temperature::isCelsius;\n" + 
@@ -145,6 +146,7 @@ public class UnitOfMeasureGeneratorTest {
                 "    \n" + 
                 "    public static final class Celsius extends Temperature {\n" + 
                 "        public static final Celsius.CelsiusLens<Celsius> theCelsius = new Celsius.CelsiusLens<>(LensSpec.of(Celsius.class));\n" + 
+                "        public static final Celsius.CelsiusLens<Celsius> eachCelsius = theCelsius;\n" + 
                 "        private double celsius;\n" + 
                 "        private Celsius(double celsius) {\n" + 
                 "            this.celsius = celsius;\n" + 
@@ -180,6 +182,7 @@ public class UnitOfMeasureGeneratorTest {
                 "    }\n" + 
                 "    public static final class Fahrenheit extends Temperature {\n" + 
                 "        public static final Fahrenheit.FahrenheitLens<Fahrenheit> theFahrenheit = new Fahrenheit.FahrenheitLens<>(LensSpec.of(Fahrenheit.class));\n" + 
+                "        public static final Fahrenheit.FahrenheitLens<Fahrenheit> eachFahrenheit = theFahrenheit;\n" + 
                 "        private double fahrenheit;\n" + 
                 "        private Fahrenheit(double fahrenheit) {\n" + 
                 "            this.fahrenheit = fahrenheit;\n" + 

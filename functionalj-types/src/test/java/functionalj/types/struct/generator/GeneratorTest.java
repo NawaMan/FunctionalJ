@@ -91,6 +91,7 @@ public class GeneratorTest {
                 "public class Car implements Definitions.CarDef,IStruct,Pipeable<Car> {\n" + 
                 "    \n" + 
                 "    public static final Car.CarLens<Car> theCar = new Car.CarLens<>(LensSpec.of(Car.class));\n" + 
+                "    public static final Car.CarLens<Car> eachCar = theCar;\n" + 
                 "    public final int anint;\n" + 
                 "    public final boolean anbool;\n" + 
                 "    public final String anstring;\n" + 

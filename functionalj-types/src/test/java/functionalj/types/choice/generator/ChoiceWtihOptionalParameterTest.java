@@ -73,6 +73,7 @@ public class ChoiceWtihOptionalParameterTest {
             "    \n" + 
             "    \n" + 
             "    public static final LoginStatusLens<LoginStatus> theLoginStatus = new LoginStatusLens<>(LensSpec.of(LoginStatus.class));\n" + 
+            "    public static final LoginStatusLens<LoginStatus> eachLoginStatus = theLoginStatus;\n" + 
             "    public static class LoginStatusLens<HOST> extends ObjectLensImpl<HOST, LoginStatus> {\n" + 
             "\n" + 
             "        public final BooleanAccess<LoginStatus> isLoggined = LoginStatus::isLoggined;\n" + 
@@ -107,6 +108,7 @@ public class ChoiceWtihOptionalParameterTest {
             "    \n" + 
             "    public static final class Loggined extends LoginStatus {\n" + 
             "        public static final Loggined.LogginedLens<Loggined> theLoggined = new Loggined.LogginedLens<>(LensSpec.of(Loggined.class));\n" + 
+            "        public static final Loggined.LogginedLens<Loggined> eachLoggined = theLoggined;\n" + 
             "        private Optional<java.lang.Double> wealth;\n" + 
             "        private Loggined(Optional<java.lang.Double> wealth) {\n" + 
             "            this.wealth = wealth;\n" + 
@@ -142,6 +144,7 @@ public class ChoiceWtihOptionalParameterTest {
             "    }\n" + 
             "    public static final class LoggedOut extends LoginStatus {\n" + 
             "        public static final LoggedOut.LoggedOutLens<LoggedOut> theLoggedOut = new LoggedOut.LoggedOutLens<>(LensSpec.of(LoggedOut.class));\n" + 
+            "        public static final LoggedOut.LoggedOutLens<LoggedOut> eachLoggedOut = theLoggedOut;\n" + 
             "        private static final LoggedOut instance = new LoggedOut();\n" + 
             "        private LoggedOut() {}\n" + 
             "        public static class LoggedOutLens<HOST> extends ObjectLensImpl<HOST, LoginStatus.LoggedOut> {\n" + 

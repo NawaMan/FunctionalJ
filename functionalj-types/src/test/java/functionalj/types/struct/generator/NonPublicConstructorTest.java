@@ -86,6 +86,7 @@ public class NonPublicConstructorTest {
             "public class Person implements IStruct,Pipeable<Person> {\n" + 
             "    \n" + 
             "    public static final Person.PersonLens<Person> thePerson = new Person.PersonLens<>(LensSpec.of(Person.class));\n" + 
+            "    public static final Person.PersonLens<Person> eachPerson = thePerson;\n" + 
             "    public final String firstName;\n" + 
             "    public final String midName;\n" + 
             "    public final String lastName;\n" + 

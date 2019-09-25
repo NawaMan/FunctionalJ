@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 public class Parent implements SubDOTest.IParent,IStruct,Pipeable<Parent> {
     
     public static final Parent.ParentLens<Parent> theParent = new Parent.ParentLens<>(LensSpec.of(Parent.class));
+    public static final Parent.ParentLens<Parent> eachParent = theParent;
     public final String name;
     public final Child child;
     public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec("SubDOTest.IParent", "functionalj.types.struct", "SubDOTest", "Parent", "functionalj.types.struct", false, "spec", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, true, ""), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter("name", new functionalj.types.Type("java.lang", null, "String", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter("child", new functionalj.types.Type("functionalj.types.struct", null, "Child", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Arrays.asList("Child", "Parent"));

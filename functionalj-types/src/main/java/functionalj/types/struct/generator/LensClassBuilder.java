@@ -119,6 +119,15 @@ public class LensClassBuilder {
         return theField;
     }
     
+    public GenField generateEachLensField() {
+        val theField     = generateTheLensField();
+        val choiceName   = theField.getName().replaceFirst("^the", "each");
+        val lensType     = theField.getType();
+        val defaultValue = theField.getName();
+        val eachField    = new GenField(PUBLIC, FINAL, STATIC, choiceName, lensType, defaultValue);
+        return eachField;
+    }
+    
     private GenField getterToLensField(Getter getter, String recordClassName, SourceSpec sourceSpec) {
         val recordName = recordClassName;
         val name       = getter.getName();

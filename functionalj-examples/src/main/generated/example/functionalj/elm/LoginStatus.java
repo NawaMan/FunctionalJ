@@ -30,12 +30,13 @@ public abstract class LoginStatus implements IChoice<LoginStatus.LoginStatusFirs
     
     
     public static final LoginStatusLens<LoginStatus> theLoginStatus = new LoginStatusLens<>(LensSpec.of(LoginStatus.class));
+    public static final LoginStatusLens<LoginStatus> eachLoginStatus = theLoginStatus;
     public static class LoginStatusLens<HOST> extends ObjectLensImpl<HOST, LoginStatus> {
 
         public final BooleanAccess<LoginStatus> isLoggined = LoginStatus::isLoggined;
         public final BooleanAccess<LoginStatus> isLoggedOut = LoginStatus::isLoggedOut;
-        public final ResultAccess<HOST, Loggined, Loggined.LogginedLens<HOST>> asLoggined = createSubResultLens(LoginStatus::asLoggined, null, Loggined.LogginedLens::new);
-        public final ResultAccess<HOST, LoggedOut, LoggedOut.LoggedOutLens<HOST>> asLoggedOut = createSubResultLens(LoginStatus::asLoggedOut, null, LoggedOut.LoggedOutLens::new);
+        public final ResultAccess<HOST, Loggined, Loggined.LogginedLens<HOST>> asLoggined = createSubResultLens(LoginStatus::asLoggined, (functionalj.lens.core.WriteLens<LoginStatus,Result<Loggined>>)null, Loggined.LogginedLens::new);
+        public final ResultAccess<HOST, LoggedOut, LoggedOut.LoggedOutLens<HOST>> asLoggedOut = createSubResultLens(LoginStatus::asLoggedOut, (functionalj.lens.core.WriteLens<LoginStatus,Result<LoggedOut>>)null, LoggedOut.LoggedOutLens::new);
         public LoginStatusLens(LensSpec<HOST, LoginStatus> spec) {
             super(spec);
         }
@@ -64,6 +65,7 @@ public abstract class LoginStatus implements IChoice<LoginStatus.LoginStatusFirs
     
     public static final class Loggined extends LoginStatus {
         public static final Loggined.LogginedLens<Loggined> theLoggined = new Loggined.LogginedLens<>(LensSpec.of(Loggined.class));
+        public static final Loggined.LogginedLens<Loggined> eachLoggined = theLoggined;
         private String name;
         private int age;
         private FuncList<java.lang.Integer> years;
@@ -131,6 +133,7 @@ public abstract class LoginStatus implements IChoice<LoginStatus.LoginStatusFirs
     }
     public static final class LoggedOut extends LoginStatus {
         public static final LoggedOut.LoggedOutLens<LoggedOut> theLoggedOut = new LoggedOut.LoggedOutLens<>(LensSpec.of(LoggedOut.class));
+        public static final LoggedOut.LoggedOutLens<LoggedOut> eachLoggedOut = theLoggedOut;
         private static final LoggedOut instance = new LoggedOut();
         private LoggedOut() {}
         public static class LoggedOutLens<HOST> extends ObjectLensImpl<HOST, LoginStatus.LoggedOut> {

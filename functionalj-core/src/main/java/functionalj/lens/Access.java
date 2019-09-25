@@ -23,18 +23,11 @@
 // ============================================================================
 package functionalj.lens;
 
-import static functionalj.lens.core.LensSpec.selfRead;
-import static functionalj.lens.core.LensSpec.selfWrite;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
 
 import functionalj.lens.core.LensSpec;
-import functionalj.lens.core.LensSpecParameterized;
-import functionalj.lens.core.LensSpecParameterized2;
 import functionalj.lens.core.LensType;
-import functionalj.lens.core.LensUtils;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.BigDecimalLens;
@@ -44,7 +37,6 @@ import functionalj.lens.lenses.BooleanLens;
 import functionalj.lens.lenses.ComparableLens;
 import functionalj.lens.lenses.DoubleLens;
 import functionalj.lens.lenses.IntegerLens;
-import functionalj.lens.lenses.ListLens;
 import functionalj.lens.lenses.LongLens;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.StringLens;
@@ -76,8 +68,8 @@ public interface Access {
     public static final BooleanAccess<Object> True  = any -> true;
     public static final BooleanAccess<Object> False = any -> false;
     
-    public static final TheListLens   theList   = new TheListLens();
-    public static final TheTuple2Lens theTuple2 = new TheTuple2Lens();
+    public static final Accesses.TheListLens   theList   = new Accesses.TheListLens();
+    public static final Accesses.TheTuple2Lens theTuple2 = new Accesses.TheTuple2Lens();
     
     public static <T> AnyLens<T, T> theItem() {
         return AnyLens.of(LensSpec.of((T item) -> item, (T host, T newItem) -> newItem));
@@ -97,71 +89,33 @@ public interface Access {
         return theTuple2.of(t1Type, t2Type);
     }
     
+    //-- Each --
     
+    public static final AnyLens<Object, Object> eachObject  = theObject;
+    public static final BooleanLens<Boolean>    eachBoolean = theBoolean;
+    public static final StringLens<String>      eachString  = theString;
+    public static final IntegerLens<Integer>    eachInteger = theInteger;
+    public static final LongLens<Long>          eachLong    = theLong;
+    public static final DoubleLens<Double>      eachDouble  = theDouble;
     
+    public static final BigIntegerLens<BigInteger> eachBigInteger = theBigInteger;
+    public static final BigDecimalLens<BigDecimal> eachBigDecimal = theBigDecimal;
     
-    //== Internal use only ==
+    public static final Accesses.TheListLens   eachList   = theList;
+    public static final Accesses.TheTuple2Lens eachTuple2 = theTuple2;
     
-    public static class TheListLens implements ListLens<List<?>, Object, ObjectLens<List<?>, Object>> {
-        
-        private static final LensSpecParameterized<List<?>, List<?>, Object, ObjectLens<List<?>, Object>> 
-                common = LensUtils.createLensSpecParameterized(selfRead(), selfWrite(), ObjectLens::of);
-        
-        public <T, SA extends AnyAccess<List<T>, T>, SL extends AnyLens<List<T>, T>> 
-                ListLens<List<T>, T, SL> of(LensType<List<T>, T, SA, SL> type) {
-            LensSpecParameterized<List<T>, List<T>, T, SL> spec
-                    = LensUtils.createLensSpecParameterized(LensSpec.selfRead(), LensSpec.selfWrite(), s -> type.newLens(s));
-            ListLens<List<T>, T, SL> listLens = ListLens.of(spec);
-            return listLens;
-        }
-        
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        @Override
-        public LensSpecParameterized<List<?>, List<Object>, Object, ObjectLens<List<?>, Object>> lensSpecParameterized() {
-            return (LensSpecParameterized)common;
-        }
+    public static <T> AnyLens<T, T>    eachItem()   { return theItem(); }
+    public static <T> ObjectLens<T, T> eachObject() { return theObject(); }
+    
+    public static <T extends Comparable<T>> ComparableLens<T, T> eachComparable() {
+        return theComparable();
     }
-    
-    //-- Tuple2 --
-    
-    public static class TheTuple2Lens implements Tuple2Lens<Tuple2<Object,Object>, Object, Object, 
-            ObjectLens<Tuple2<Object,Object>, Object>, ObjectLens<Tuple2<Object,Object>, Object>> {
-        
-        // I am tired .... just goes with this.
-        private static final LensSpecParameterized2<Tuple2<Object, Object>, Tuple2<Object, Object>, Object, Object, ObjectLens<Tuple2<Object, Object>, Object>, ObjectLens<Tuple2<Object, Object>, Object>> 
-                common = new LensSpecParameterized2<Tuple2<Object,Object>, Tuple2<Object,Object>, Object, Object, ObjectLens<Tuple2<Object,Object>,Object>, ObjectLens<Tuple2<Object,Object>,Object>>() {
-                    @Override
-                    public LensSpec<Tuple2<Object, Object>, Tuple2<Object, Object>> getSpec() {
-                        return LensSpec.of(selfRead(), selfWrite());
-                    }
-                    @Override
-                    public ObjectLens<Tuple2<Object, Object>, Object> createSubLens1(
-                            LensSpec<Tuple2<Object, Object>, Object> subSpec) {
-                        return ObjectLens.of(subSpec);
-                    }
-                    @Override
-                    public ObjectLens<Tuple2<Object, Object>, Object> createSubLens2(
-                            LensSpec<Tuple2<Object, Object>, Object> subSpec) {
-                        return ObjectLens.of(subSpec);
-                    }
-                };
-        
-        public <T1, T2, 
-                       T1ACCESS extends AnyAccess<Tuple2<T1, T2>, T1>, T2ACCESS extends AnyAccess<Tuple2<T1, T2>, T2>, 
-                       T1LENS   extends AnyLens<Tuple2<T1, T2>, T1>,   T2LENS   extends AnyLens<Tuple2<T1, T2>, T2>>
-                Tuple2Lens<Tuple2<T1,T2>, T1, T2, T1LENS, T2LENS> of(
-                        LensType<Tuple2<T1, T2>, T1, T1ACCESS, T1LENS> t1Type,
-                        LensType<Tuple2<T1, T2>, T2, T2ACCESS, T2LENS> t2Type) {
-            return Tuple2Lens.of(selfRead(), selfWrite(), t1Type, t2Type);
-        }
-        
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        @Override
-        public LensSpecParameterized2<Tuple2<Object, Object>, Tuple2<Object, Object>, Object, Object, 
-            ObjectLens<Tuple2<Object, Object>, Object>, ObjectLens<Tuple2<Object, Object>, Object>> lensSpecParameterized2() {
-            return (LensSpecParameterized2)common;
-        }
-        
+    public static <T1, T2, 
+            T1ACCESS extends AnyAccess<Tuple2<T1, T2>, T1>, T2ACCESS extends AnyAccess<Tuple2<T1, T2>, T2>, 
+            T1LENS   extends AnyLens<Tuple2<T1, T2>, T1>,   T2LENS   extends AnyLens<Tuple2<T1, T2>, T2>>
+        Tuple2Lens<Tuple2<T1,T2>, T1, T2, T1LENS, T2LENS> eachTupleOf(
+             LensType<Tuple2<T1, T2>, T1, T1ACCESS, T1LENS> t1Type,
+             LensType<Tuple2<T1, T2>, T2, T2ACCESS, T2LENS> t2Type) {
+        return theTupleOf(t1Type, t2Type);
     }
-    
 }

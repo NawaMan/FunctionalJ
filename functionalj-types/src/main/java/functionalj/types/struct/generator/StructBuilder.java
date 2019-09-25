@@ -121,11 +121,13 @@ public class StructBuilder {
         val witherMethods  = getters.stream().flatMap(getter -> getterToWitherMethods(sourceSpec, withMethodName, getter));
         
         GenField theField = null;
+        GenField eachField = null;
         GenClass lensClass = null;
         if (sourceSpec.getConfigures().generateLensClass) {
             val lensClassBuilder = new LensClassBuilder(sourceSpec);
             lensClass            = lensClassBuilder.build();
             theField             = lensClassBuilder.generateTheLensField();
+            eachField            = lensClassBuilder.generateEachLensField();
         }
         GenClass builderClass = null;
         if (sourceSpec.getConfigures().generateBuilderClass) {
@@ -177,7 +179,7 @@ public class StructBuilder {
                 line("return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));"));
                 
         val fields = listOf(
-                    Stream.of(theField),
+                    Stream.of(theField, eachField),
                     getterFields,
                     specField
                  );

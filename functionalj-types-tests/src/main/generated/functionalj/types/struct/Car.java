@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 public class Car implements IStruct,Pipeable<Car> {
     
     public static final Car.CarLens<Car> theCar = new Car.CarLens<>(LensSpec.of(Car.class));
+    public static final Car.CarLens<Car> eachCar = theCar;
     public final String make;
     public final int year;
     public final String color;

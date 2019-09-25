@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 public class DONoAllArgsConstructor implements DOConstructorTest.DONoAllArgsConstructorDef,IStruct,Pipeable<DONoAllArgsConstructor> {
     
     public static final DONoAllArgsConstructor.DONoAllArgsConstructorLens<DONoAllArgsConstructor> theDONoAllArgsConstructor = new DONoAllArgsConstructor.DONoAllArgsConstructorLens<>(LensSpec.of(DONoAllArgsConstructor.class));
+    public static final DONoAllArgsConstructor.DONoAllArgsConstructorLens<DONoAllArgsConstructor> eachDONoAllArgsConstructor = theDONoAllArgsConstructor;
     public final String name;
     
     public DONoAllArgsConstructor() {

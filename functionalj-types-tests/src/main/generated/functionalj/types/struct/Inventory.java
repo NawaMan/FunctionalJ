@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 public class Inventory implements IStruct,Pipeable<Inventory> {
     
     public static final Inventory.InventoryLens<Inventory> theInventory = new Inventory.InventoryLens<>(LensSpec.of(Inventory.class));
+    public static final Inventory.InventoryLens<Inventory> eachInventory = theInventory;
     public final FuncList<CarForSale> cars;
     
     public Inventory() {

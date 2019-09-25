@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 public class CarForSale implements IStruct,Pipeable<CarForSale> {
     
     public static final CarForSale.CarForSaleLens<CarForSale> theCarForSale = new CarForSale.CarForSaleLens<>(LensSpec.of(CarForSale.class));
+    public static final CarForSale.CarForSaleLens<CarForSale> eachCarForSale = theCarForSale;
     public final Car car;
     public final Price price;
     public static final SourceSpec spec = new functionalj.types.struct.generator.SourceSpec(null, "functionalj.types.struct", "FromMethodTest", "CarForSale", "functionalj.types.struct", null, "spec", null, new functionalj.types.struct.generator.SourceSpec.Configurations(true, false, true, true, true, true, true, true, ""), java.util.Arrays.asList(new functionalj.types.struct.generator.Getter("car", new functionalj.types.Type("functionalj.types.struct", null, "Car", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED), new functionalj.types.struct.generator.Getter("price", new functionalj.types.Type("functionalj.types.struct", null, "Price", java.util.Collections.emptyList()), false, functionalj.types.DefaultValue.REQUIRED)), java.util.Arrays.asList("Car", "Inventory", "Price", "CarForSale"));

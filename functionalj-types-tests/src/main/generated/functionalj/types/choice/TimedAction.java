@@ -27,6 +27,7 @@ import java.util.function.Supplier;
 public class TimedAction implements IStruct,Pipeable<TimedAction> {
     
     public static final TimedAction.TimedActionLens<TimedAction> theTimedAction = new TimedAction.TimedActionLens<>(LensSpec.of(TimedAction.class));
+    public static final TimedAction.TimedActionLens<TimedAction> eachTimedAction = theTimedAction;
     public final LocalDateTime time;
     public final FuncList<Command> commands;
     

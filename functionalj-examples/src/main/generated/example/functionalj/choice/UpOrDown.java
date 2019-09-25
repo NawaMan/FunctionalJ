@@ -27,12 +27,13 @@ public abstract class UpOrDown implements IChoice<UpOrDown.UpOrDownFirstSwitch>,
     
     
     public static final UpOrDownLens<UpOrDown> theUpOrDown = new UpOrDownLens<>(LensSpec.of(UpOrDown.class));
+    public static final UpOrDownLens<UpOrDown> eachUpOrDown = theUpOrDown;
     public static class UpOrDownLens<HOST> extends ObjectLensImpl<HOST, UpOrDown> {
 
         public final BooleanAccess<UpOrDown> isUp = UpOrDown::isUp;
         public final BooleanAccess<UpOrDown> isDown = UpOrDown::isDown;
-        public final ResultAccess<HOST, Up, Up.UpLens<HOST>> asUp = createSubResultLens(UpOrDown::asUp, null, Up.UpLens::new);
-        public final ResultAccess<HOST, Down, Down.DownLens<HOST>> asDown = createSubResultLens(UpOrDown::asDown, null, Down.DownLens::new);
+        public final ResultAccess<HOST, Up, Up.UpLens<HOST>> asUp = createSubResultLens(UpOrDown::asUp, (functionalj.lens.core.WriteLens<UpOrDown,Result<Up>>)null, Up.UpLens::new);
+        public final ResultAccess<HOST, Down, Down.DownLens<HOST>> asDown = createSubResultLens(UpOrDown::asDown, (functionalj.lens.core.WriteLens<UpOrDown,Result<Down>>)null, Down.DownLens::new);
         public UpOrDownLens(LensSpec<HOST, UpOrDown> spec) {
             super(spec);
         }
@@ -61,6 +62,7 @@ public abstract class UpOrDown implements IChoice<UpOrDown.UpOrDownFirstSwitch>,
     
     public static final class Up extends UpOrDown {
         public static final Up.UpLens<Up> theUp = new Up.UpLens<>(LensSpec.of(Up.class));
+        public static final Up.UpLens<Up> eachUp = theUp;
         private static final Up instance = new Up();
         private Up() {}
         public static class UpLens<HOST> extends ObjectLensImpl<HOST, UpOrDown.Up> {
@@ -84,6 +86,7 @@ public abstract class UpOrDown implements IChoice<UpOrDown.UpOrDownFirstSwitch>,
     }
     public static final class Down extends UpOrDown {
         public static final Down.DownLens<Down> theDown = new Down.DownLens<>(LensSpec.of(Down.class));
+        public static final Down.DownLens<Down> eachDown = theDown;
         private static final Down instance = new Down();
         private Down() {}
         public static class DownLens<HOST> extends ObjectLensImpl<HOST, UpOrDown.Down> {

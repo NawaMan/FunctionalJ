@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 public class Circle1 implements IStruct,Pipeable<Circle1> {
     
     public static final Circle1.Circle1Lens<Circle1> theCircle1 = new Circle1.Circle1Lens<>(LensSpec.of(Circle1.class));
+    public static final Circle1.Circle1Lens<Circle1> eachCircle1 = theCircle1;
     public final int x;
     public final int y;
     public final int radius;

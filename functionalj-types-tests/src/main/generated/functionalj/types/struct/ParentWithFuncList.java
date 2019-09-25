@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 public class ParentWithFuncList implements WithFuncListTest.IParent2,IStruct,Pipeable<ParentWithFuncList> {
     
     public static final ParentWithFuncList.ParentWithFuncListLens<ParentWithFuncList> theParentWithFuncList = new ParentWithFuncList.ParentWithFuncListLens<>(LensSpec.of(ParentWithFuncList.class));
+    public static final ParentWithFuncList.ParentWithFuncListLens<ParentWithFuncList> eachParentWithFuncList = theParentWithFuncList;
     public final FuncList<String> names;
     public final FuncList<Child> children;
     
