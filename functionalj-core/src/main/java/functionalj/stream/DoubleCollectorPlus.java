@@ -46,7 +46,7 @@ public interface DoubleCollectorPlus<ACCUMULATED, RESULT>
     
     
     default BiConsumer<ACCUMULATED, Double> accumulator() {
-        return collector().accumulator();
+        return doubleAccumulator();
     }
     
     

@@ -45,7 +45,7 @@ public interface LongCollectorPlus<ACCUMULATED, RESULT>
     
     
     default BiConsumer<ACCUMULATED, Long> accumulator() {
-        return collector().accumulator();
+        return longAccumulator();
     }
     
     

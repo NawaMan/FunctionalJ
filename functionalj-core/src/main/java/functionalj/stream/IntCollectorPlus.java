@@ -45,7 +45,7 @@ public interface IntCollectorPlus<ACCUMULATED, RESULT>
     
     
     default BiConsumer<ACCUMULATED, Integer> accumulator() {
-        return collector().accumulator();
+        return intAccumulator();
     }
     
     
