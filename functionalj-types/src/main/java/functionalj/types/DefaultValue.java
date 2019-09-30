@@ -60,8 +60,8 @@ public enum DefaultValue {
     NOW,
     DEFAULT;
     
-    private static Random RAND = new Random();
-    private static String RANDSTR = DefaultValue.class.getCanonicalName() + ".RAND";
+    public static final Random RAND    = new Random();
+    public static final String RANDSTR = DefaultValue.class.getCanonicalName() + ".RAND";
     
     public static byte randomByte() {
         byte[] bytes = new byte[1];

@@ -16,6 +16,10 @@ Need code clean up!!!!! The code is so shitty :-(
 TODO
 - Struct with Generic
 - Check why Elm does not work
+- Mutable builder
+- Int,Long,Double Streamable (char?)
+- Int,Long,Double FuncList (char)
+- Fix IntAccess to use applyAsIntFirst
 
 
 
