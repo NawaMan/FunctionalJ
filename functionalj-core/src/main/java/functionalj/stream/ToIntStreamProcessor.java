@@ -8,4 +8,9 @@ public interface ToIntStreamProcessor<DATA> extends StreamProcessor<DATA, Intege
     public default Integer applyUnsafe(StreamPlus<DATA> input) throws Exception {
         return process(input);
     }
+ 
+    @Override
+    public default int applyAsInt(StreamPlus<DATA> host) {
+        return apply(host);
+    }
 }

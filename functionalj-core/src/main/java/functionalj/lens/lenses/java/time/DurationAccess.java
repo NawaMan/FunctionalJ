@@ -8,7 +8,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccess;
 import lombok.val;
 
@@ -44,7 +44,7 @@ public interface DurationAccess<HOST>
             return value.getSeconds();
         };
     }
-    public default IntegerAccess<HOST> getNano() {
+    public default IntegerAccessPrimitive<HOST> getNano() {
         return host -> {
             val value = apply(host);
             return value.getNano();
@@ -225,7 +225,7 @@ public interface DurationAccess<HOST>
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(Duration other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(Duration other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

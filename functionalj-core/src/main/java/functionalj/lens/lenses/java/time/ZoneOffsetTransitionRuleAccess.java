@@ -6,7 +6,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
 
 public interface ZoneOffsetTransitionRuleAccess<HOST>
@@ -27,7 +27,7 @@ public interface ZoneOffsetTransitionRuleAccess<HOST>
             return value.getMonth();
         };
     }
-    public default IntegerAccess<HOST> getDayOfMonthIndicator() {
+    public default IntegerAccessPrimitive<HOST> getDayOfMonthIndicator() {
         return host -> {
             val value = apply(host);
             return value.getDayOfMonthIndicator();

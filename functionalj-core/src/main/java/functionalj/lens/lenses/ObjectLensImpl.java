@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 import functionalj.lens.core.AccessUtils;
 import functionalj.lens.core.LensSpec;
@@ -57,6 +58,12 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
             WriteLens<DATA, SUB>                   writeSub,
             Function<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
         return LensUtils.createSubLens(this, readSub, writeSub, subLensCreator);
+    }
+    
+    protected IntegerLens<HOST> createSubLensPrimitive(
+            ToIntFunction<DATA>         readSubInt,
+            WriteLens.PrimitveInt<DATA> writeSubInt) {
+        return LensUtils.createSubLens(this, readSubInt, writeSubInt);
     }
     
     protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 

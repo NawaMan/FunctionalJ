@@ -23,43 +23,78 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static java.util.Objects.requireNonNull;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
+import functionalj.function.Func1;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
-@FunctionalInterface
 public interface IntegerAccess<HOST> 
                     extends 
                         NumberAccess<HOST, Integer, IntegerAccess<HOST>>,
                         ToIntFunction<HOST>,
                         ConcreteAccess<HOST, Integer, IntegerAccess<HOST>> {
     
-    // TODO - applyAsInt should be used first if the function from primitive ... find a way to do this.
+    public static <H> IntegerAccess<H> of(Function<H, Integer> accessToValue) {
+        requireNonNull(accessToValue);
+        
+        if (accessToValue instanceof IntegerAccess) {
+            return (IntegerAccess<H>)accessToValue;
+        }
+        
+        if (accessToValue instanceof ToIntFunction) {
+            @SuppressWarnings("unchecked")
+            val func1  = (ToIntFunction<H>)accessToValue;
+            val access = ofPrimitive(func1);
+            return access;
+        }
+        
+        if (accessToValue instanceof Func1) {
+            val func1  = (Func1<H, Integer>)accessToValue;
+            val access = (IntegerAccessBoxed<H>)func1::applyUnsafe;
+            return access;
+        }
+
+        val func   = (Function<H, Integer>)accessToValue;
+        val access = (IntegerAccessBoxed<H>)(host -> func.apply(host));
+        return access;
+    }
+    
+    public static <H> IntegerAccess<H> ofPrimitive(ToIntFunction<H> accessToValue) {
+        requireNonNull(accessToValue);
+        val access = (IntegerAccessPrimitive<H>)accessToValue::applyAsInt;
+        return access;
+    }
+    
+    
+    
+    public int applyAsInt(HOST host);
+    
+    public Integer applyUnsafe(HOST host) throws Exception;
+
     
     @Override
     public default IntegerAccess<HOST> newAccess(Function<HOST, Integer> accessToValue) {
-        return accessToValue::apply;
+        return of(accessToValue);
     }
     
-    public default int applyAsInt(HOST host) {
-        return apply(host).intValue();
-    }
     
     public default MathOperators<Integer> __mathOperators() {
         return __IntMathOperators;
     }
     
     public default IntegerAccess<HOST> bitAnd(int value) {
-        return intAccess(0, i -> i & value);
+        return intPrimitiveAccess(0, i -> i & value);
     }
     public default IntegerAccess<HOST> bitOr(int value) {
-        return intAccess(0, i -> i | value);
+        return intPrimitiveAccess(0, i -> i | value);
     }
     public default BooleanAccess<HOST> bitAt(int bitIndex) {
         val p = (int)Math.pow(2, bitIndex);

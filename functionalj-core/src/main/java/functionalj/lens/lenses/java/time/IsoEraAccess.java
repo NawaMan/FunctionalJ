@@ -6,7 +6,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
 
 @FunctionalInterface
@@ -23,7 +23,7 @@ public interface IsoEraAccess<HOST>
         return accessToValue::apply;
     }
     
-    public default IntegerAccess<HOST> getValue() {
+    public default IntegerAccessPrimitive<HOST> getValue() {
         return host -> {
             val value = apply(host);
             return value.getValue();

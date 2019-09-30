@@ -7,7 +7,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccess;
 import lombok.val;
 
@@ -77,7 +77,7 @@ public interface ValueRangeAccess<HOST>
                     .checkValidValue(value, field);
         };
     }
-    public default IntegerAccess<HOST> checkValidIntValue(long value, TemporalField field) {
+    public default IntegerAccessPrimitive<HOST> checkValidIntValue(long value, TemporalField field) {
         return host -> {
             return apply(host)
                     .checkValidIntValue(value, field);

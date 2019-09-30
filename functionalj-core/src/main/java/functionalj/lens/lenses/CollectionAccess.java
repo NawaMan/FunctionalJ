@@ -51,7 +51,7 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
     }
     
     public default IntegerAccess<HOST> size() {
-        return intAccess(0, collection -> collection.size());
+        return intPrimitiveAccess(0, collection -> collection.size());
     }
     
     public default BooleanAccess<HOST> thatIsEmpty() {

@@ -60,7 +60,7 @@ public class MapAccessTest {
                     @Override
                     public IntegerAccess<Map<String, Integer>> createSubAccess2(
                             Function<Map<String, Integer>, Integer> accessToParameter) {
-                        return map -> accessToParameter.apply(map);
+                        return IntegerAccess.of(accessToParameter);
                     }
                     @Override
                     public StringAccess<Map<String, Integer>> createSubAccessFromHost1(
@@ -70,7 +70,7 @@ public class MapAccessTest {
                     @Override
                     public IntegerAccess<Map<String, Integer>> createSubAccessFromHost2(
                             Function<Map<String, Integer>, Integer> accessToParameter) {
-                        return accessToParameter::apply;
+                        return IntegerAccess.of(accessToParameter);
                     }
                 };
             }

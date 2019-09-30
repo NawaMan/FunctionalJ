@@ -40,7 +40,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         extends ComparableAccess<HOST, TYPE> {
     
     public default IntegerAccess<HOST> compareTo(TYPE anotherValue) {
-        return intAccess(Integer.MIN_VALUE, any -> any.compareTo(anotherValue));
+        return intPrimitiveAccess(Integer.MIN_VALUE, any -> any.compareTo(anotherValue));
     }
     public default BooleanAccess<HOST> thatGreaterThan(TYPE anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) > 0);
@@ -131,7 +131,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     }
     
     public default IntegerAccess<HOST> toInteger() {
-        return intAccess(0, __mathOperators()::toInteger);
+        return intPrimitiveAccess(0, __mathOperators()::toInteger);
     }
     public default LongAccess<HOST> toLong() {
         return longAccess(0L, __mathOperators()::toLong);
@@ -150,7 +150,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return ResultAccess.of(host -> {
             val value = apply(host);
             return Result.from(()->__mathOperators().toInteger(value));
-        }, func -> (IntegerAccess<HOST>)(func::apply));
+        }, func -> (IntegerAccessBoxed<HOST>)(func::apply));
     }
     public default ResultAccess<HOST, Long, LongAccess<HOST>> asLong() {
         return ResultAccess.of(host -> {

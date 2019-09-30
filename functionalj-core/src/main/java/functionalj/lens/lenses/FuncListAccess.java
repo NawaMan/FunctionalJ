@@ -88,10 +88,10 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         return at(index);
     }
     public default IntegerAccess<HOST> indexOf(Object o) {
-        return intAccess(-1, list -> list.indexOf(o));
+        return intPrimitiveAccess(-1, list -> list.indexOf(o));
     }
     public default IntegerAccess<HOST> lastIndexOf(Object o) {
-        return intAccess(-1, list -> list.lastIndexOf(o));
+        return intPrimitiveAccess(-1, list -> list.lastIndexOf(o));
     }
     
     public default FuncListAccess<HOST, Integer, IntegerAccess<HOST>> indexesOf(Predicate<? super TYPE> check) {
@@ -102,7 +102,7 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
             }
             @Override
             public IntegerAccess<HOST> createSubAccessFromHost(Function<HOST, Integer> accessToParameter) {
-                return host -> accessToParameter.apply(host);
+                return IntegerAccess.of(accessToParameter);
             }
         };
         return () -> access;

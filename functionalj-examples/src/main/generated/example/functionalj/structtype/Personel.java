@@ -121,7 +121,7 @@ public class Personel implements IStruct,Pipeable<Personel> {
     
     public static class PersonelLens<HOST> extends ObjectLensImpl<HOST, Personel> {
         
-        public final IntegerLens<HOST> id = createSubLens(Personel::id, Personel::withId, IntegerLens::of);
+        public final IntegerLens<HOST> id = createSubLensPrimitive(Personel::id, Personel::withId);
         public final StringLens<HOST> firstName = createSubLens(Personel::firstName, Personel::withFirstName, StringLens::of);
         public final StringLens<HOST> lastName = createSubLens(Personel::lastName, Personel::withLastName, StringLens::of);
         

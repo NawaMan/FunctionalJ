@@ -59,6 +59,9 @@ public class FromMethodTest {
     
     @Test
     public void tests() {
+        
+        
+        
         val inventory    = new Inventory();
         val newInventory = inventory
                 .withCars(list -> list

@@ -24,6 +24,7 @@
 package functionalj.lens.lenses;
 
 import functionalj.lens.core.LensSpec;
+import lombok.val;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
@@ -39,7 +40,28 @@ public interface IntegerLens<HOST>
     
     @Override
     default Integer apply(HOST host) {
-        return lensSpec().getRead().apply(host);
+        LensSpec<HOST, Integer> lensSpec = lensSpec();
+        return lensSpec.getRead().apply(host);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public default int applyAsInt(HOST host) {
+        LensSpec<HOST, Integer> lensSpec = lensSpec();
+        if (lensSpec instanceof PrimitiveLensSpecs.IntegerLensSpecPrimitive) {
+            val spec  = (PrimitiveLensSpecs.IntegerLensSpecPrimitive)lensSpec;
+            val value = spec.applyAsInt(host);
+            return value;
+        }
+        
+        val value = lensSpec.apply(host);
+        return value;
+    }
+
+    @Override
+    public default Integer applyUnsafe(HOST host) throws Exception {
+        LensSpec<HOST, Integer> lensSpec = lensSpec();
+        return lensSpec.apply(host);
     }
     
 }

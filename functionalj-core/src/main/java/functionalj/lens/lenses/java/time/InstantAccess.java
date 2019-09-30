@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccess;
 import lombok.val;
 
@@ -35,7 +35,7 @@ public interface InstantAccess<HOST>
             return value.getEpochSecond();
         };
     }
-    public default IntegerAccess<HOST> getNano() {
+    public default IntegerAccessPrimitive<HOST> getNano() {
         return host -> {
             val value = apply(host);
             return value.getNano();
@@ -144,7 +144,7 @@ public interface InstantAccess<HOST>
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(Instant other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(Instant other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

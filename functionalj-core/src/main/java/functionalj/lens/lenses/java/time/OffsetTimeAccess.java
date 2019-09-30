@@ -13,7 +13,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
@@ -56,25 +56,25 @@ public interface OffsetTimeAccess<HOST>
             return value.toLocalTime();
         };
     }
-    public default IntegerAccess<HOST> getHour() {
+    public default IntegerAccessPrimitive<HOST> getHour() {
         return host -> {
             val value = apply(host);
             return value.getHour();
         };
     }
-    public default IntegerAccess<HOST> getMinute() {
+    public default IntegerAccessPrimitive<HOST> getMinute() {
         return host -> {
             val value = apply(host);
             return value.getMinute();
         };
     }
-    public default IntegerAccess<HOST> getSecond() {
+    public default IntegerAccessPrimitive<HOST> getSecond() {
         return host -> {
             val value = apply(host);
             return value.getSecond();
         };
     }
-    public default IntegerAccess<HOST> getNano() {
+    public default IntegerAccessPrimitive<HOST> getNano() {
         return host -> {
             val value = apply(host);
             return value.getNano();
@@ -213,7 +213,7 @@ public interface OffsetTimeAccess<HOST>
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(OffsetTime other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(OffsetTime other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

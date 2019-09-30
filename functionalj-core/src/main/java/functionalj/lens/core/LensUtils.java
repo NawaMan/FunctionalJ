@@ -29,9 +29,11 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.FuncListLens;
+import functionalj.lens.lenses.IntegerLens;
 import functionalj.lens.lenses.ListLens;
 import functionalj.lens.lenses.MapLens;
 import functionalj.lens.lenses.NullableLens;
@@ -55,6 +57,15 @@ public class LensUtils {
         val lensSpec    = dataLens.lensSpec();
         val hostSubSpec = lensSpec.then(LensSpec.of(readSub, writeSub, lensSpec.isNullSafe()));
         return subLensCreator.apply(hostSubSpec);
+    }
+
+    public static <HOST, DATA> IntegerLens<HOST> createSubLens(
+            ObjectLens<HOST, DATA>      dataLens,
+            ToIntFunction<DATA>         readSubInt,
+            WriteLens.PrimitveInt<DATA> writeSubInt) {
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubInt, writeSubInt));
+        return (IntegerLens<HOST>)()->hostSubSpec;
     }
     
     public static <DATA, SUB, HOST> Function<HOST, SUB> createSubRead(
@@ -86,6 +97,32 @@ public class LensUtils {
             BooleanSupplier       isNullSafe) {
         return (host, newSubValue)->{
             return performWrite(readValue, writeValue, writeSub, isNullSafe, host, newSubValue);
+        };
+    }
+    
+    //== Primitive ==
+    
+    //-- Int --
+    
+    public static <HOST, DATA> ToIntFunction<HOST> createSubReadInt(
+            Function<HOST, DATA> readValue,
+            ToIntFunction<DATA>  readSub) {
+        return host ->{
+            val value    = readValue.apply(host);
+            val subValue = readSub.applyAsInt(value);
+            return subValue;
+        };
+    }
+    
+    public static <HOST, DATA> WriteLens.PrimitveInt<HOST> createSubWriteInt(
+            Function<HOST, DATA>        readValue,
+            WriteLens<HOST, DATA>       writeValue,
+            WriteLens.PrimitveInt<DATA> writeSub) {
+        return (host, newSubValue)->{
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
+            return newHost;
         };
     }
     

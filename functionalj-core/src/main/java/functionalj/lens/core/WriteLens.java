@@ -45,4 +45,15 @@ public interface WriteLens<HOST, DATA> {
         return this::apply;
     }
     
+    
+    public static interface PrimitveInt<HOST> extends WriteLens<HOST, Integer> {
+        
+        public HOST applyWithInt(HOST host, int newValue);
+        
+        public default HOST apply(HOST host, Integer newValue) {
+            return applyWithInt(host, newValue);
+        }
+        
+    }
+    
 }

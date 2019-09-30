@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccess;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
@@ -50,13 +50,13 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
             return value.isLeapYear();
         };
     }
-    public default IntegerAccess<HOST> lengthOfMonth() {
+    public default IntegerAccessPrimitive<HOST> lengthOfMonth() {
         return host -> {
             val value = apply(host);
             return value.lengthOfMonth();
         };
     }
-    public default IntegerAccess<HOST> lengthOfYear() {
+    public default IntegerAccessPrimitive<HOST> lengthOfYear() {
         return host -> {
             val value = apply(host);
             return value.lengthOfYear();
@@ -134,7 +134,7 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(ChronoLocalDate other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(ChronoLocalDate other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

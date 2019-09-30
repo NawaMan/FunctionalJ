@@ -7,7 +7,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccess;
 import lombok.val;
 
@@ -85,7 +85,7 @@ public interface ZoneOffsetTransitionAccess<HOST>
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(ZoneOffsetTransition other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(ZoneOffsetTransition other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

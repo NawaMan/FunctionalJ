@@ -9,7 +9,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccess;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
@@ -102,7 +102,7 @@ public interface MonthAccess<HOST>
         };
     }
     
-    public default IntegerAccess<HOST> getValue() {
+    public default IntegerAccessPrimitive<HOST> getValue() {
         return host -> {
             val value = apply(host);
             return value.getValue();
@@ -126,7 +126,7 @@ public interface MonthAccess<HOST>
             return value.range(field);
         };
     }
-    public default IntegerAccess<HOST> get(TemporalField field) {
+    public default IntegerAccessPrimitive<HOST> get(TemporalField field) {
         return host -> {
             val value = apply(host);
             return value.get(field);
@@ -150,25 +150,25 @@ public interface MonthAccess<HOST>
             return value.minus(months);
         };
     }
-    public default IntegerAccess<HOST> length(boolean leapYear) {
+    public default IntegerAccessPrimitive<HOST> length(boolean leapYear) {
         return host -> {
             val value = apply(host);
             return value.length(leapYear);
         };
     }
-    public default IntegerAccess<HOST> minLength() {
+    public default IntegerAccessPrimitive<HOST> minLength() {
         return host -> {
             val value = apply(host);
             return value.minLength();
         };
     }
-    public default IntegerAccess<HOST> maxLength() {
+    public default IntegerAccessPrimitive<HOST> maxLength() {
         return host -> {
             val value = apply(host);
             return value.maxLength();
         };
     }
-    public default IntegerAccess<HOST> firstDayOfYear(boolean leapYear) {
+    public default IntegerAccessPrimitive<HOST> firstDayOfYear(boolean leapYear) {
         return host -> {
             val value = apply(host);
             return value.firstDayOfYear(leapYear);
@@ -181,7 +181,7 @@ public interface MonthAccess<HOST>
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(Month other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(Month other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

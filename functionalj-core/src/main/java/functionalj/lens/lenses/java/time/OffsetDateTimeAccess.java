@@ -12,7 +12,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccess;
 import lombok.val;
 
@@ -61,13 +61,13 @@ public interface OffsetDateTimeAccess<HOST>
             return value.toLocalDate();
         };
     }
-    public default IntegerAccess<HOST> getYear() {
+    public default IntegerAccessPrimitive<HOST> getYear() {
         return host -> {
             val value = apply(host);
             return value.getYear();
         };
     }
-    public default IntegerAccess<HOST> getMonthValue() {
+    public default IntegerAccessPrimitive<HOST> getMonthValue() {
         return host -> {
             val value = apply(host);
             return value.getMonthValue();
@@ -79,13 +79,13 @@ public interface OffsetDateTimeAccess<HOST>
             return value.getMonth();
         };
     }
-    public default IntegerAccess<HOST> getDayOfMonth() {
+    public default IntegerAccessPrimitive<HOST> getDayOfMonth() {
         return host -> {
             val value = apply(host);
             return value.getDayOfMonth();
         };
     }
-    public default IntegerAccess<HOST> getDayOfYear() {
+    public default IntegerAccessPrimitive<HOST> getDayOfYear() {
         return host -> {
             val value = apply(host);
             return value.getDayOfYear();
@@ -103,25 +103,25 @@ public interface OffsetDateTimeAccess<HOST>
             return value.toLocalTime();
         };
     }
-    public default IntegerAccess<HOST> getHour() {
+    public default IntegerAccessPrimitive<HOST> getHour() {
         return host -> {
             val value = apply(host);
             return value.getHour();
         };
     }
-    public default IntegerAccess<HOST> getMinute() {
+    public default IntegerAccessPrimitive<HOST> getMinute() {
         return host -> {
             val value = apply(host);
             return value.getMinute();
         };
     }
-    public default IntegerAccess<HOST> getSecond() {
+    public default IntegerAccessPrimitive<HOST> getSecond() {
         return host -> {
             val value = apply(host);
             return value.getSecond();
         };
     }
-    public default IntegerAccess<HOST> getNano() {
+    public default IntegerAccessPrimitive<HOST> getNano() {
         return host -> {
             val value = apply(host);
             return value.getNano();
@@ -350,7 +350,7 @@ public interface OffsetDateTimeAccess<HOST>
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(OffsetDateTime other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(OffsetDateTime other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

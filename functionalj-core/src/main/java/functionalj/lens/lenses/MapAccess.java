@@ -88,7 +88,7 @@ public interface MapAccess<HOST, KEY, VALUE,
     }
     
     public default IntegerAccess<HOST> size() {
-        return intAccess(0, map -> map.size());
+        return intPrimitiveAccess(0, map -> map.size());
     }
     
     public default BooleanAccess<HOST> isEmpty() {

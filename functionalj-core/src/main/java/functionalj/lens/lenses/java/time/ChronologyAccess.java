@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
-import functionalj.lens.lenses.IntegerAccess;
+import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
@@ -128,7 +128,7 @@ public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
             return value.isLeapYear(prolepticYear);
         };
     }
-    public default IntegerAccess<HOST> prolepticYear(Era era, int yearOfEra) {
+    public default IntegerAccessPrimitive<HOST> prolepticYear(Era era, int yearOfEra) {
         return host -> {
             val value = apply(host);
             return value.prolepticYear(era, yearOfEra);
@@ -168,7 +168,7 @@ public interface ChronologyAccess<HOST, CHRONOLOGY extends Chronology>
         };
     }
     
-    public default IntegerAccess<HOST> compareTo(Chronology other) {
+    public default IntegerAccessPrimitive<HOST> compareTo(Chronology other) {
         return host -> {
             val value = apply(host);
             return value.compareTo(other);

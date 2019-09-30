@@ -24,14 +24,15 @@
 package example.functionalj.structtype;
 
 import static example.functionalj.structtype.Company.theCompany;
+import static example.functionalj.structtype.Personel.eachPersonel;
 import static example.functionalj.structtype.Personel.thePersonel;
 import static functionalj.list.FuncList.listOf;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.types.Struct;
 import functionalj.map.FuncMap;
+import functionalj.types.Struct;
 import lombok.val;
 
 public class StructLensExample {
@@ -72,6 +73,18 @@ public class StructLensExample {
                 + "}"
                 + "]", 
                 changeJaneFamilyName.apply(company).toString());
+    }
+    
+    @Test
+    public void testPrimitiveField() {
+        System.out.println(
+                listOf(
+                    new Personel(1000, "John", "Doe"),
+                    new Personel(2000, "Jane", "Smith")
+                )
+                .mapToInt(eachPersonel.id)
+                .toImmutableList()
+                .toString());
     }
 
 }

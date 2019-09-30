@@ -68,7 +68,7 @@ public interface StringAccess<HOST>
     // java.lang.String
     
     public default IntegerAccess<HOST> compareToIgnoreCase(String anotherString) {
-        return intAccess(-1, str->str.compareToIgnoreCase(anotherString));
+        return intPrimitiveAccess(-1, str->str.compareToIgnoreCase(anotherString));
     }
     
     public default StringAccess<HOST> concat(Object ... suffixes) {
@@ -137,19 +137,19 @@ public interface StringAccess<HOST>
     }
     
     public default IntegerAccess<HOST> indexOf(int ch) {
-        return intAccess(-1, str->str.indexOf(ch));
+        return intPrimitiveAccess(-1, str->str.indexOf(ch));
     }
     
     public default IntegerAccess<HOST> indexOf(int ch, int fromIndex) {
-        return intAccess(-1, str->str.indexOf(ch, fromIndex));
+        return intPrimitiveAccess(-1, str->str.indexOf(ch, fromIndex));
     }
     
     public default IntegerAccess<HOST> indexOf(String needle) {
-        return intAccess(-1, str->str.indexOf(needle));
+        return intPrimitiveAccess(-1, str->str.indexOf(needle));
     }
     
     public default IntegerAccess<HOST> indexOf(String needle, int fromIndex) {
-        return intAccess(-1, str->str.indexOf(needle, fromIndex));
+        return intPrimitiveAccess(-1, str->str.indexOf(needle, fromIndex));
     }
     
     public default BooleanAccess<HOST> thatIsEmpty() {
@@ -160,23 +160,23 @@ public interface StringAccess<HOST>
     }
     
     public default IntegerAccess<HOST> lastIndexOf(int ch) {
-        return intAccess(-1, str->str.lastIndexOf(ch));
+        return intPrimitiveAccess(-1, str->str.lastIndexOf(ch));
     }
     
     public default IntegerAccess<HOST> lastIndexOf(int ch, int fromIndex) {
-        return intAccess(-1, str->str.lastIndexOf(ch, fromIndex));
+        return intPrimitiveAccess(-1, str->str.lastIndexOf(ch, fromIndex));
     }
     
     public default IntegerAccess<HOST> lastIndexOf(String needle) {
-        return intAccess(-1, str->str.lastIndexOf(needle));
+        return intPrimitiveAccess(-1, str->str.lastIndexOf(needle));
     }
     
     public default IntegerAccess<HOST> lastIndexOf(String needle, int fromIndex) {
-        return intAccess(-1, str->str.lastIndexOf(needle, fromIndex));
+        return intPrimitiveAccess(-1, str->str.lastIndexOf(needle, fromIndex));
     }
     
     public default IntegerAccess<HOST> length() {
-        return intAccess(0, str->str.length());
+        return intPrimitiveAccess(0, str->str.length());
     }
     
     public default BooleanAccess<HOST> thatMatches(String regex) {
@@ -245,7 +245,7 @@ public interface StringAccess<HOST>
         return stringAccess(null, str->str.trim());
     }
     
-    public default IntegerAccess<HOST> toInteger() {
+    public default IntegerAccessPrimitive<HOST> toInteger() {
         return host -> {
             val valueStr = apply(host);
             return Integer.parseInt(valueStr);
@@ -256,10 +256,10 @@ public interface StringAccess<HOST>
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(()->Integer.parseInt(valueStr));
-        }, func -> (IntegerAccess<HOST>)(func::apply));
+        }, func -> (IntegerAccessBoxed<HOST>)(func::apply));
     }
     
-    public default IntegerAccess<HOST> toInteger(int radix) {
+    public default IntegerAccessPrimitive<HOST> toInteger(int radix) {
         return host -> {
             val valueStr = apply(host);
             return Integer.parseInt(valueStr, radix);
@@ -270,7 +270,7 @@ public interface StringAccess<HOST>
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(()->Integer.parseInt(valueStr, radix));
-        }, func -> (IntegerAccess<HOST>)(func::apply));
+        }, func -> (IntegerAccessBoxed<HOST>)(func::apply));
     }
     
     public default LongAccess<HOST> toLong() {

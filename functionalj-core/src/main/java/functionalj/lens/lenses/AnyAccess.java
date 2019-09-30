@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 
 import functionalj.function.Func1;
 import lombok.val;
@@ -108,7 +109,7 @@ public interface AnyAccess<HOST, DATA>
                 });
     }
     public default IntegerAccess<HOST> getHashCode() {
-        return intAccess(
+        return intPrimitiveAccess(
                 Integer.MIN_VALUE,
                 any -> {
                     return any.hashCode();
@@ -122,9 +123,15 @@ public interface AnyAccess<HOST, DATA>
                 });
     }
     
-    public default IntegerAccess<HOST> intAccess(int defaultValue, Function<DATA, Integer> function) {
+    public default IntegerAccessBoxed<HOST> intBoxedAccess(int defaultValue, Function<DATA, Integer> function) {
         return host -> {
             val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
+        };
+    }
+    public default IntegerAccessPrimitive<HOST> intPrimitiveAccess(int defaultValue, ToIntFunction<DATA> function) {
+        return host -> {
+            val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
         };
     }
@@ -196,6 +203,23 @@ public interface AnyAccess<HOST, DATA>
                 return defaultValue;
             
             val newValue = function.apply(value);
+            return newValue;
+        }
+        
+        public static <HOST, DATA> int processValuePrimitive(
+                AnyAccess<HOST, DATA> access, 
+                HOST                  host, 
+                int                   defaultValue, 
+                ToIntFunction<DATA>   function) {
+            
+            if (host == null)
+                return defaultValue;
+            
+            val value = access.apply(host);
+            if (value == null)
+                return defaultValue;
+            
+            val newValue = function.applyAsInt(value);
             return newValue;
         }
         
