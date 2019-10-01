@@ -155,7 +155,7 @@ public class UnitOfMeasureGeneratorTest {
                 "        public Celsius withCelsius(double celsius) { return new Celsius(celsius); }\n" + 
                 "        public static class CelsiusLens<HOST> extends ObjectLensImpl<HOST, Temperature.Celsius> {\n" + 
                 "            \n" + 
-                "            public final DoubleLens<HOST> celsius = (DoubleLens)createSubLens(Temperature.Celsius::celsius, Temperature.Celsius::withCelsius, DoubleLens::of);\n" + 
+                "            public final DoubleLens<HOST> celsius = createSubLensPrimitive(Temperature.Celsius::celsius, Temperature.Celsius::withCelsius);\n" + 
                 "            \n" + 
                 "            public CelsiusLens(LensSpec<HOST, Temperature.Celsius> spec) {\n" + 
                 "                super(spec);\n" + 
@@ -191,7 +191,7 @@ public class UnitOfMeasureGeneratorTest {
                 "        public Fahrenheit withFahrenheit(double fahrenheit) { return new Fahrenheit(fahrenheit); }\n" + 
                 "        public static class FahrenheitLens<HOST> extends ObjectLensImpl<HOST, Temperature.Fahrenheit> {\n" + 
                 "            \n" + 
-                "            public final DoubleLens<HOST> fahrenheit = (DoubleLens)createSubLens(Temperature.Fahrenheit::fahrenheit, Temperature.Fahrenheit::withFahrenheit, DoubleLens::of);\n" + 
+                "            public final DoubleLens<HOST> fahrenheit = createSubLensPrimitive(Temperature.Fahrenheit::fahrenheit, Temperature.Fahrenheit::withFahrenheit);\n" + 
                 "            \n" + 
                 "            public FahrenheitLens(LensSpec<HOST, Temperature.Fahrenheit> spec) {\n" + 
                 "                super(spec);\n" + 

@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
@@ -144,9 +145,9 @@ public interface AnyAccess<HOST, DATA>
         };
     }
     
-    public default DoubleAccess<HOST> doubleAccess(double defaultValue, Function<DATA, Double> function) {
+    public default DoubleAccessPrimitive<HOST> doubleAccess(double defaultValue, ToDoubleFunction<DATA> function) {
         return host -> {
-            val value = __internal__.processValue(this, host, defaultValue, function);
+            val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
         };
     }
@@ -240,6 +241,24 @@ public interface AnyAccess<HOST, DATA>
             val newValue = function.applyAsLong(value);
             return newValue;
         }
+        
+        public static <HOST, DATA> double processValuePrimitive(
+                AnyAccess<HOST, DATA>  access, 
+                HOST                   host, 
+                double                 defaultValue, 
+                ToDoubleFunction<DATA> function) {
+            
+            if (host == null)
+                return defaultValue;
+            
+            val value = access.apply(host);
+            if (value == null)
+                return defaultValue;
+            
+            val newValue = function.applyAsDouble(value);
+            return newValue;
+        }
+        
         
         public static <HOST, DATA> Function<HOST, DATA> orDefaultTo(Function<HOST, DATA> access, DATA fallbackValue) {
             return host -> {

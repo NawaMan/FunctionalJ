@@ -300,7 +300,7 @@ public interface StringAccess<HOST>
         }, func -> (LongAccessBoxed<HOST>)(func::apply));
     }
     
-    public default DoubleAccess<HOST> toDouble() {
+    public default DoubleAccessPrimitive<HOST> toDouble() {
         return host -> {
             val valueStr = apply(host);
             return Double.parseDouble(valueStr);
@@ -311,7 +311,7 @@ public interface StringAccess<HOST>
         return ResultAccess.of(host -> {
             val valueStr = apply(host);
             return Result.from(()->Double.parseDouble(valueStr));
-        }, func -> (DoubleAccess<HOST>)(func::apply));
+        }, func -> (DoubleAccessBoxed<HOST>)(func::apply));
     }
     
     public default BigIntegerAccess<HOST> toBigInteger() {

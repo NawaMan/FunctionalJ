@@ -131,7 +131,7 @@ public class ComplexChoiceTypeTest {
             "        public static class LogginedLens<HOST> extends ObjectLensImpl<HOST, LoginStatus.Loggined> {\n" + 
             "            \n" + 
             "            public final StringLens<HOST> name = (StringLens)createSubLens(LoginStatus.Loggined::name, LoginStatus.Loggined::withName, StringLens::of);\n" + 
-            "            public final IntegerLens<HOST> age = (IntegerLens)createSubLens(LoginStatus.Loggined::age, LoginStatus.Loggined::withAge, IntegerLens::of);\n" + 
+            "            public final IntegerLens<HOST> age = createSubLensPrimitive(LoginStatus.Loggined::age, LoginStatus.Loggined::withAge);\n" + 
             "            public final OptionalLens<HOST, java.lang.Double, DoubleLens<HOST>> wealth = createSubOptionalLens(LoginStatus.Loggined::wealth, LoginStatus.Loggined::withWealth, DoubleLens::of);\n" + 
             "            public final User.UserLens<HOST> user = (User.UserLens)createSubLens(LoginStatus.Loggined::user, LoginStatus.Loggined::withUser, User.UserLens::new);\n" + 
             "            \n" + 

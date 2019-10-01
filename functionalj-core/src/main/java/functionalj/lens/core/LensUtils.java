@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
@@ -153,6 +154,30 @@ public class LensUtils {
             Function<HOST, DATA>          readValue,
             WriteLens<HOST, DATA>         writeValue,
             WriteLens.PrimitiveLong<DATA> writeSub) {
+        return (host, newSubValue)->{
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
+            return newHost;
+        };
+    }
+    
+    //-- Double --
+    
+    public static <HOST, DATA> ToDoubleFunction<HOST> createSubReadDouble(
+            Function<HOST, DATA>   readValue,
+            ToDoubleFunction<DATA> readSub) {
+        return host ->{
+            val value    = readValue.apply(host);
+            val subValue = readSub.applyAsDouble(value);
+            return subValue;
+        };
+    }
+    
+    public static <HOST, DATA> WriteLens.PrimitiveDouble<HOST> createSubWriteDouble(
+            Function<HOST, DATA>            readValue,
+            WriteLens<HOST, DATA>           writeValue,
+            WriteLens.PrimitiveDouble<DATA> writeSub) {
         return (host, newSubValue)->{
             val oldValue = readValue.apply(host);
             val newValue = writeSub.apply(oldValue, newSubValue);

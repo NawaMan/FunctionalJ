@@ -8,4 +8,9 @@ public interface ToDoubleStreamProcessor<DATA> extends StreamProcessor<DATA, Dou
     public default Double applyUnsafe(StreamPlus<DATA> input) throws Exception {
         return process(input);
     }
+ 
+    @Override
+    public default double applyAsDouble(StreamPlus<DATA> host) {
+        return apply(host);
+    }
 }

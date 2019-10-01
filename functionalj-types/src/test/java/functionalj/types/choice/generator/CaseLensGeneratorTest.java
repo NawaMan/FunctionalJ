@@ -73,9 +73,9 @@ public class CaseLensGeneratorTest {
         assertEquals(
                 "public static class RGBLens<HOST> extends ObjectLensImpl<HOST, BasicColor.RGB> {\n" + 
                 "    \n" + 
-                "    public final IntegerLens<HOST> r = (IntegerLens)createSubLens(BasicColor.RGB::r, BasicColor.RGB::withR, IntegerLens::of);\n" + 
-                "    public final IntegerLens<HOST> g = (IntegerLens)createSubLens(BasicColor.RGB::g, BasicColor.RGB::withG, IntegerLens::of);\n" + 
-                "    public final IntegerLens<HOST> b = (IntegerLens)createSubLens(BasicColor.RGB::b, BasicColor.RGB::withB, IntegerLens::of);\n" + 
+                "    public final IntegerLens<HOST> r = createSubLensPrimitive(BasicColor.RGB::r, BasicColor.RGB::withR);\n" + 
+                "    public final IntegerLens<HOST> g = createSubLensPrimitive(BasicColor.RGB::g, BasicColor.RGB::withG);\n" + 
+                "    public final IntegerLens<HOST> b = createSubLensPrimitive(BasicColor.RGB::b, BasicColor.RGB::withB);\n" + 
                 "    \n" + 
                 "    public RGBLens(LensSpec<HOST, BasicColor.RGB> spec) {\n" + 
                 "        super(spec);\n" + 

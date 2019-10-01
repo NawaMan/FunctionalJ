@@ -1,5 +1,6 @@
 package functionalj.lens.lenses;
 
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
@@ -56,6 +57,31 @@ public class PrimitiveLensSpecs {
         public HOST applyWithLong(HOST host, long newValue) {
             val writePrimitive = (WriteLens.PrimitiveLong<HOST>)getWrite();
             return writePrimitive.applyWithLong(host, newValue);
+        }
+    }
+    
+    public static class DoubleLensSpecPrimitive<HOST> extends LensSpec<HOST, Double> {
+        private final ToDoubleFunction<HOST> readDouble;
+
+        public DoubleLensSpecPrimitive(ToDoubleFunction<HOST> readDouble, WriteLens.PrimitiveDouble<HOST> writeDouble) {
+            super(host -> readDouble.applyAsDouble(host), writeDouble);
+            this.readDouble = readDouble;
+        }
+        
+        public ToDoubleFunction<HOST> getReadDouble() {
+            return readDouble;
+        }
+        
+        public WriteLens.PrimitiveDouble<HOST> getWriteDouble() {
+            return (WriteLens.PrimitiveDouble<HOST>)getWrite();
+        }
+        
+        public double applyAsDouble(HOST value) {
+            return readDouble.applyAsDouble(value);
+        }
+        public HOST applyWithDouble(HOST host, double newValue) {
+            val writePrimitive = (WriteLens.PrimitiveDouble<HOST>)getWrite();
+            return writePrimitive.applyWithDouble(host, newValue);
         }
     }
     

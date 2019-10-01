@@ -168,7 +168,7 @@ public class LensClassBuilder {
         return field;
     }
 
-    private java.lang.String lensFieldValue(
+    private String lensFieldValue(
             String  dataObjName, 
             String  name, 
             String  withName, 
@@ -178,7 +178,11 @@ public class LensClassBuilder {
             boolean isCustomLens) {
         if (isPrimitive) {
             if (type.equals(Type.INTEGER)
-             || type.equals(Type.LONG)) {
+             || type.equals(Type.LONG)
+             || type.equals(Type.DOUBLE)
+             || type.equals(Type.INT)
+             || type.equals(Type.LNG)
+             || type.equals(Type.DBL)) {
                 val value = format("createSubLensPrimitive(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
                 return value;
             }

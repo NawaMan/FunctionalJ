@@ -162,7 +162,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return ResultAccess.of(host -> {
             val value = apply(host);
             return Result.from(()->__mathOperators().toDouble(value));
-        }, func -> (DoubleAccess<HOST>)(func::apply));
+        }, func -> (DoubleAccessBoxed<HOST>)(func::apply));
     }
     public default ResultAccess<HOST, BigInteger, BigIntegerAccess<HOST>> asBigInteger() {
         return ResultAccess.of(host -> {

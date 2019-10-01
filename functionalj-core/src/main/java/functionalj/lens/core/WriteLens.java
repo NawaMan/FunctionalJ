@@ -66,4 +66,14 @@ public interface WriteLens<HOST, DATA> {
         
     }
     
+    public static interface PrimitiveDouble<HOST> extends WriteLens<HOST, Double> {
+        
+        public HOST applyWithDouble(HOST host, double newValue);
+        
+        public default HOST apply(HOST host, Double newValue) {
+            return applyWithDouble(host, newValue);
+        }
+        
+    }
+    
 }
