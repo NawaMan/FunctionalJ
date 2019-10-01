@@ -132,7 +132,7 @@ public class Car implements IStruct,Pipeable<Car> {
     public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {
         
         public final StringLens<HOST> make = createSubLens(Car::make, Car::withMake, StringLens::of);
-        public final IntegerLens<HOST> year = createSubLens(Car::year, Car::withYear, IntegerLens::of);
+        public final IntegerLens<HOST> year = createSubLensPrimitive(Car::year, Car::withYear);
         public final StringLens<HOST> color = createSubLens(Car::color, Car::withColor, StringLens::of);
         
         public CarLens(LensSpec<HOST, Car> spec) {

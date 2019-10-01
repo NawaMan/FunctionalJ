@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import functionalj.lens.core.LensSpec;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ObjectLens;
 import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.ResultAccess;
@@ -41,11 +41,11 @@ public abstract class ResultStatus<D extends Object> implements IChoice<ResultSt
     public static final ResultStatusLens<ResultStatus> theResultStatus = new ResultStatusLens<>(LensSpec.of(ResultStatus.class));
     public static class ResultStatusLens<HOST> extends ObjectLensImpl<HOST, ResultStatus> {
 
-        public final BooleanAccess<ResultStatus> isNotAllowed = ResultStatus::isNotAllowed;
-        public final BooleanAccess<ResultStatus> isAccepted = ResultStatus::isAccepted;
-        public final BooleanAccess<ResultStatus> isAdjusted = ResultStatus::isAdjusted;
-        public final BooleanAccess<ResultStatus> isRejected = ResultStatus::isRejected;
-        public final BooleanAccess<ResultStatus> isFailed = ResultStatus::isFailed;
+        public final BooleanAccessPrimitive<ResultStatus> isNotAllowed = ResultStatus::isNotAllowed;
+        public final BooleanAccessPrimitive<ResultStatus> isAccepted = ResultStatus::isAccepted;
+        public final BooleanAccessPrimitive<ResultStatus> isAdjusted = ResultStatus::isAdjusted;
+        public final BooleanAccessPrimitive<ResultStatus> isRejected = ResultStatus::isRejected;
+        public final BooleanAccessPrimitive<ResultStatus> isFailed = ResultStatus::isFailed;
         public final ResultAccess<HOST, NotAllowed, NotAllowed.NotAllowedLens<HOST>> asNotAllowed = createSubResultLens(ResultStatus::asNotAllowed, null, spec -> new NotAllowed.NotAllowedLens(spec));
         public final ResultAccess<HOST, Accepted, Accepted.AcceptedLens<HOST>> asAccepted = createSubResultLens(ResultStatus::asAccepted, null, spec -> new Accepted.AcceptedLens(spec));
         public final ResultAccess<HOST, Adjusted, Adjusted.AdjustedLens<HOST>> asAdjusted = createSubResultLens(ResultStatus::asAdjusted, null, spec -> new Adjusted.AdjustedLens(spec));

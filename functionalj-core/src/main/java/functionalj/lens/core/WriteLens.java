@@ -73,7 +73,15 @@ public interface WriteLens<HOST, DATA> {
         public default HOST apply(HOST host, Double newValue) {
             return applyWithDouble(host, newValue);
         }
+    }
+    
+    public static interface PrimitiveBoolean<HOST> extends WriteLens<HOST, Boolean> {
         
+        public HOST applyWithBoolean(HOST host, boolean newValue);
+        
+        public default HOST apply(HOST host, Boolean newValue) {
+            return applyWithBoolean(host, newValue);
+        }
     }
     
 }

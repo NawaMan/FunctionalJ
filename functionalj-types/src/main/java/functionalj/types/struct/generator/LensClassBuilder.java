@@ -180,9 +180,11 @@ public class LensClassBuilder {
             if (type.equals(Type.INTEGER)
              || type.equals(Type.LONG)
              || type.equals(Type.DOUBLE)
+             || type.equals(Type.BOOLEAN)
              || type.equals(Type.INT)
              || type.equals(Type.LNG)
-             || type.equals(Type.DBL)) {
+             || type.equals(Type.DBL)
+             || type.equals(Type.BOOL)) {
                 val value = format("createSubLensPrimitive(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
                 return value;
             }

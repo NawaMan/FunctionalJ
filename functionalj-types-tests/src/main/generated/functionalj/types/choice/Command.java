@@ -28,8 +28,8 @@ public abstract class Command implements IChoice<Command.CommandFirstSwitch>, Pi
     public static final CommandLens<Command> eachCommand = theCommand;
     public static class CommandLens<HOST> extends ObjectLensImpl<HOST, Command> {
 
-        public final BooleanAccess<Command> isRotate = Command::isRotate;
-        public final BooleanAccess<Command> isMove = Command::isMove;
+        public final BooleanAccessPrimitive<Command> isRotate = Command::isRotate;
+        public final BooleanAccessPrimitive<Command> isMove = Command::isMove;
         public final ResultAccess<HOST, Rotate, Rotate.RotateLens<HOST>> asRotate = createSubResultLens(Command::asRotate, (functionalj.lens.core.WriteLens<Command,Result<Rotate>>)null, Rotate.RotateLens::new);
         public final ResultAccess<HOST, Move, Move.MoveLens<HOST>> asMove = createSubResultLens(Command::asMove, (functionalj.lens.core.WriteLens<Command,Result<Move>>)null, Move.MoveLens::new);
         public CommandLens(LensSpec<HOST, Command> spec) {
@@ -69,7 +69,7 @@ public abstract class Command implements IChoice<Command.CommandFirstSwitch>, Pi
         public Rotate withDegree(int degree) { return new Rotate(degree); }
         public static class RotateLens<HOST> extends ObjectLensImpl<HOST, Command.Rotate> {
             
-            public final IntegerLens<HOST> degree = (IntegerLens)createSubLens(Command.Rotate::degree, Command.Rotate::withDegree, IntegerLens::of);
+            public final IntegerLens<HOST> degree = createSubLensPrimitive(Command.Rotate::degree, Command.Rotate::withDegree);
             
             public RotateLens(LensSpec<HOST, Command.Rotate> spec) {
                 super(spec);
@@ -105,7 +105,7 @@ public abstract class Command implements IChoice<Command.CommandFirstSwitch>, Pi
         public Move withDistance(int distance) { return new Move(distance); }
         public static class MoveLens<HOST> extends ObjectLensImpl<HOST, Command.Move> {
             
-            public final IntegerLens<HOST> distance = (IntegerLens)createSubLens(Command.Move::distance, Command.Move::withDistance, IntegerLens::of);
+            public final IntegerLens<HOST> distance = createSubLensPrimitive(Command.Move::distance, Command.Move::withDistance);
             
             public MoveLens(LensSpec<HOST, Command.Move> spec) {
                 super(spec);

@@ -3,7 +3,6 @@ package functionalj.lens.lenses;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import functionalj.lens.lenses.NumberAccess.MathOperators;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 

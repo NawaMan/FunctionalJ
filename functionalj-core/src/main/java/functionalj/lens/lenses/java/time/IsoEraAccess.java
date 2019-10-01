@@ -4,7 +4,7 @@ import java.time.chrono.IsoEra;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
@@ -30,13 +30,13 @@ public interface IsoEraAccess<HOST>
         };
     }
     
-    public default BooleanAccess<HOST> isBce() {
+    public default BooleanAccessPrimitive<HOST> isBce() {
         return host -> {
             val value = apply(host);
             return value == IsoEra.BCE;
         };
     }
-    public default BooleanAccess<HOST> isCe() {
+    public default BooleanAccessPrimitive<HOST> isCe() {
         return host -> {
             val value = apply(host);
             return value == IsoEra.CE;

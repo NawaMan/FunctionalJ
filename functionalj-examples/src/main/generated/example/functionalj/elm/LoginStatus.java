@@ -33,8 +33,8 @@ public abstract class LoginStatus implements IChoice<LoginStatus.LoginStatusFirs
     public static final LoginStatusLens<LoginStatus> eachLoginStatus = theLoginStatus;
     public static class LoginStatusLens<HOST> extends ObjectLensImpl<HOST, LoginStatus> {
 
-        public final BooleanAccess<LoginStatus> isLoggined = LoginStatus::isLoggined;
-        public final BooleanAccess<LoginStatus> isLoggedOut = LoginStatus::isLoggedOut;
+        public final BooleanAccessPrimitive<LoginStatus> isLoggined = LoginStatus::isLoggined;
+        public final BooleanAccessPrimitive<LoginStatus> isLoggedOut = LoginStatus::isLoggedOut;
         public final ResultAccess<HOST, Loggined, Loggined.LogginedLens<HOST>> asLoggined = createSubResultLens(LoginStatus::asLoggined, (functionalj.lens.core.WriteLens<LoginStatus,Result<Loggined>>)null, Loggined.LogginedLens::new);
         public final ResultAccess<HOST, LoggedOut, LoggedOut.LoggedOutLens<HOST>> asLoggedOut = createSubResultLens(LoginStatus::asLoggedOut, (functionalj.lens.core.WriteLens<LoginStatus,Result<LoggedOut>>)null, LoggedOut.LoggedOutLens::new);
         public LoginStatusLens(LensSpec<HOST, LoginStatus> spec) {
@@ -91,7 +91,7 @@ public abstract class LoginStatus implements IChoice<LoginStatus.LoginStatusFirs
         public static class LogginedLens<HOST> extends ObjectLensImpl<HOST, LoginStatus.Loggined> {
             
             public final StringLens<HOST> name = (StringLens)createSubLens(LoginStatus.Loggined::name, LoginStatus.Loggined::withName, StringLens::of);
-            public final IntegerLens<HOST> age = (IntegerLens)createSubLens(LoginStatus.Loggined::age, LoginStatus.Loggined::withAge, IntegerLens::of);
+            public final IntegerLens<HOST> age = createSubLensPrimitive(LoginStatus.Loggined::age, LoginStatus.Loggined::withAge);
             public final FuncListLens<HOST, java.lang.Integer, IntegerLens<HOST>> years = createSubFuncListLens(LoginStatus.Loggined::years, LoginStatus.Loggined::withYears, IntegerLens::of);
             public final OptionalLens<HOST, java.lang.Double, DoubleLens<HOST>> wealth = createSubOptionalLens(LoginStatus.Loggined::wealth, LoginStatus.Loggined::withWealth, DoubleLens::of);
             public final User.UserLens<HOST> user = (User.UserLens)createSubLens(LoginStatus.Loggined::user, LoginStatus.Loggined::withUser, User.UserLens::new);

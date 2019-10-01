@@ -138,19 +138,33 @@ public interface AnyAccess<HOST, DATA>
         };
     }
     
-    public default LongAccessPrimitive<HOST> longAccess(long defaultValue, ToLongFunction<DATA> function) {
+    public default LongAccessBoxed<HOST> longAccess(long defaultValue, Function<DATA, Long> function) {
+        return host -> {
+            val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
+        };
+    }
+    
+    public default LongAccessPrimitive<HOST> longPrimitiveAccess(long defaultValue, ToLongFunction<DATA> function) {
         return host -> {
             val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
         };
     }
     
-    public default DoubleAccessPrimitive<HOST> doubleAccess(double defaultValue, ToDoubleFunction<DATA> function) {
+    public default DoubleAccessBoxed<HOST> doubleAccess(double defaultValue, Function<DATA, Double> function) {
+        return host -> {
+            val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
+        };
+    }
+    public default DoubleAccessPrimitive<HOST> doublePrimitiveAccess(double defaultValue, ToDoubleFunction<DATA> function) {
         return host -> {
             val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
         };
     }
+    
     public default BigIntegerAccess<HOST> bigIntegerAccess(BigInteger defaultValue, Function<DATA, BigInteger> function) {
         return host -> {
             val value = __internal__.processValue(this, host, defaultValue, function);
@@ -171,9 +185,16 @@ public interface AnyAccess<HOST, DATA>
         };
     }
     
-    public default BooleanAccess<HOST> booleanAccess(boolean defaultValue, Function<DATA, Boolean> function) {
+    public default BooleanAccessBoxed<HOST> booleanAccess(boolean defaultValue, Function<DATA, Boolean> function) {
         return host -> {
             val value = __internal__.processValue(this, host, defaultValue, function);
+            return value;
+        };
+    }
+    
+    public default BooleanAccessPrimitive<HOST> booleanPrimitiveAccess(boolean defaultValue, Predicate<DATA> function) {
+        return host -> {
+            val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
         };
     }
@@ -256,6 +277,23 @@ public interface AnyAccess<HOST, DATA>
                 return defaultValue;
             
             val newValue = function.applyAsDouble(value);
+            return newValue;
+        }
+        
+        public static <HOST, DATA> boolean processValuePrimitive(
+                AnyAccess<HOST, DATA>  access, 
+                HOST                   host, 
+                boolean                defaultValue, 
+                Predicate<DATA>        function) {
+            
+            if (host == null)
+                return defaultValue;
+            
+            val value = access.apply(host);
+            if (value == null)
+                return defaultValue;
+            
+            val newValue = function.test(value);
             return newValue;
         }
         

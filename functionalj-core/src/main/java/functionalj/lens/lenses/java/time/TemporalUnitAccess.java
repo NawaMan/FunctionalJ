@@ -5,7 +5,7 @@ import java.time.temporal.TemporalUnit;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
@@ -23,25 +23,25 @@ public interface TemporalUnitAccess<HOST, TEMPORAL_UNIT extends TemporalUnit>
             return value.getDuration();
         };
     }
-    public default BooleanAccess<HOST> isDurationEstimated() {
+    public default BooleanAccessPrimitive<HOST> isDurationEstimated() {
         return host -> {
             val value = apply(host);
             return value.isDurationEstimated();
         };
     }
-    public default BooleanAccess<HOST> isDateBased() {
+    public default BooleanAccessPrimitive<HOST> isDateBased() {
         return host -> {
             val value = apply(host);
             return value.isDateBased();
         };
     }
-    public default BooleanAccess<HOST> isTimeBased() {
+    public default BooleanAccessPrimitive<HOST> isTimeBased() {
         return host -> {
             val value = apply(host);
             return value.isTimeBased();
         };
     }
-    public default BooleanAccess<HOST> isSupportedBy(Temporal temporal) {
+    public default BooleanAccessPrimitive<HOST> isSupportedBy(Temporal temporal) {
         return host -> {
             val value = apply(host);
             return value.isSupportedBy(temporal);

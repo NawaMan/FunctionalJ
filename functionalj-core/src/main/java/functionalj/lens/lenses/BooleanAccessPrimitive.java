@@ -24,10 +24,10 @@
 package functionalj.lens.lenses;
 
 @FunctionalInterface
-public interface DoubleAccessPrimitive<HOST> extends DoubleAccess<HOST> {
+public interface BooleanAccessPrimitive<HOST> extends BooleanAccess<HOST> {
     
-    public default Double applyUnsafe(HOST host) throws Exception {
-        return applyAsDouble(host);
+    public default Boolean applyUnsafe(HOST host) throws Exception {
+        return test(host);
     }
     
 }

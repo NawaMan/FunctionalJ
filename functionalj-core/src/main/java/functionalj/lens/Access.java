@@ -32,7 +32,7 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.BigDecimalLens;
 import functionalj.lens.lenses.BigIntegerLens;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.BooleanLens;
 import functionalj.lens.lenses.ComparableLens;
 import functionalj.lens.lenses.DoubleLens;
@@ -65,8 +65,8 @@ public interface Access {
     public static final BigIntegerLens<BigInteger> $BI = theBigInteger;
     public static final BigDecimalLens<BigDecimal> $BD = theBigDecimal;
     
-    public static final BooleanAccess<Object> True  = any -> true;
-    public static final BooleanAccess<Object> False = any -> false;
+    public static final BooleanAccessPrimitive<Object> True  = any -> true;
+    public static final BooleanAccessPrimitive<Object> False = any -> false;
     
     public static final Accesses.TheListLens   theList   = new Accesses.TheListLens();
     public static final Accesses.TheTuple2Lens theTuple2 = new Accesses.TheTuple2Lens();

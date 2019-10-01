@@ -15,6 +15,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
@@ -44,7 +45,7 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
             return value.getEra();
         };
     }
-    public default BooleanAccess<HOST> thatIsLeapYear() {
+    public default BooleanAccessPrimitive<HOST> thatIsLeapYear() {
         return host -> {
             val value = apply(host);
             return value.isLeapYear();
@@ -153,19 +154,19 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(ChronoLocalDate other) {
+    public default BooleanAccessPrimitive<HOST> thatIsAfter(ChronoLocalDate other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(ChronoLocalDate other) {
+    public default BooleanAccessPrimitive<HOST> thatIsBefore(ChronoLocalDate other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsEqual(ChronoLocalDate other) {
+    public default BooleanAccessPrimitive<HOST> thatIsEqual(ChronoLocalDate other) {
         return host -> {
             val value = apply(host);
             return value.isEqual(other);

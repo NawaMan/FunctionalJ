@@ -58,7 +58,7 @@ public class ChoiceLensBuilder {
         
         val isMethods = sourceSpec
                 .choices.stream()
-                .map(choice -> "BooleanAccess<" + targetName + "> is" + choice.name + " = " + targetName + "::is" + choice.name + ";")
+                .map(choice -> "BooleanAccessPrimitive<" + targetName + "> is" + choice.name + " = " + targetName + "::is" + choice.name + ";")
                 .map(each   -> "    public final " + each)
                 .collect(toList());
         val asMethods = sourceSpec

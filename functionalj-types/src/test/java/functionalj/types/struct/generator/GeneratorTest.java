@@ -194,7 +194,7 @@ public class GeneratorTest {
                 "    public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {\n" + 
                 "        \n" + 
                 "        public final IntegerLens<HOST> anint = createSubLensPrimitive(Car::anint, Car::withAnint);\n" + 
-                "        public final BooleanLens<HOST> anbool = createSubLens(Car::anbool, Car::withAnbool, BooleanLens::of);\n" + 
+                "        public final BooleanLens<HOST> anbool = createSubLensPrimitive(Car::anbool, Car::withAnbool);\n" + 
                 "        public final StringLens<HOST> anstring = createSubLens(Car::anstring, Car::withAnstring, StringLens::of);\n" + 
                 "        \n" + 
                 "        public CarLens(LensSpec<HOST, Car> spec) {\n" + 

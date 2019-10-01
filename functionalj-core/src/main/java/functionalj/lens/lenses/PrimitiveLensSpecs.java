@@ -1,5 +1,6 @@
 package functionalj.lens.lenses;
 
+import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -82,6 +83,31 @@ public class PrimitiveLensSpecs {
         public HOST applyWithDouble(HOST host, double newValue) {
             val writePrimitive = (WriteLens.PrimitiveDouble<HOST>)getWrite();
             return writePrimitive.applyWithDouble(host, newValue);
+        }
+    }
+    
+    public static class BooleanLensSpecPrimitive<HOST> extends LensSpec<HOST, Boolean> {
+        private final Predicate<HOST> readBoolean;
+        
+        public BooleanLensSpecPrimitive(Predicate<HOST> readBoolean, WriteLens.PrimitiveBoolean<HOST> writeBoolean) {
+            super(host -> readBoolean.test(host), writeBoolean);
+            this.readBoolean = readBoolean;
+        }
+        
+        public Predicate<HOST> getReadBoolean() {
+            return readBoolean;
+        }
+        
+        public WriteLens.PrimitiveBoolean<HOST> getWriteBoolean() {
+            return (WriteLens.PrimitiveBoolean<HOST>)getWrite();
+        }
+        
+        public boolean test(HOST value) {
+            return readBoolean.test(value);
+        }
+        public HOST applyWithBoolean(HOST host, boolean newValue) {
+            val writePrimitive = (WriteLens.PrimitiveBoolean<HOST>)getWrite();
+            return writePrimitive.applyWithBoolean(host, newValue);
         }
     }
     

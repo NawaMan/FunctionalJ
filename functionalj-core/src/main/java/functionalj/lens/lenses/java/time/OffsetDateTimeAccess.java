@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
@@ -369,19 +370,19 @@ public interface OffsetDateTimeAccess<HOST>
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(OffsetDateTime other) {
+    public default BooleanAccessPrimitive<HOST> thatIsAfter(OffsetDateTime other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(OffsetDateTime other) {
+    public default BooleanAccessPrimitive<HOST> thatIsBefore(OffsetDateTime other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsEqual(OffsetDateTime other) {
+    public default BooleanAccessPrimitive<HOST> thatIsEqual(OffsetDateTime other) {
         return host -> {
             val value = apply(host);
             return value.isEqual(other);

@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
@@ -66,19 +67,19 @@ public interface ZoneOffsetTransitionAccess<HOST>
             return value.getDuration();
         };
     }
-    public default BooleanAccess<HOST> isGap() {
+    public default BooleanAccessPrimitive<HOST> isGap() {
         return host -> {
             val value = apply(host);
             return value.isGap();
         };
     }
-    public default BooleanAccess<HOST> isOverlap() {
+    public default BooleanAccessPrimitive<HOST> isOverlap() {
         return host -> {
             val value = apply(host);
             return value.isOverlap();
         };
     }
-    public default BooleanAccess<HOST> isValidOffset(ZoneOffset offset) {
+    public default BooleanAccessPrimitive<HOST> isValidOffset(ZoneOffset offset) {
         return host -> {
             val value = apply(host);
             return value.isValidOffset(offset);

@@ -5,7 +5,7 @@ import java.time.temporal.ValueRange;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
@@ -23,7 +23,7 @@ public interface ValueRangeAccess<HOST>
         return host -> accessToValue.apply(host);
     }
     
-    public default BooleanAccess<HOST> isFixed() {
+    public default BooleanAccessPrimitive<HOST> isFixed() {
         return host -> {
             val value = apply(host);
             return value.isFixed();
@@ -53,19 +53,19 @@ public interface ValueRangeAccess<HOST>
             return value.getMaximum();
         };
     }
-    public default BooleanAccess<HOST> isIntValue() {
+    public default BooleanAccessPrimitive<HOST> isIntValue() {
         return host -> {
             val value = apply(host);
             return value.isIntValue();
         };
     }
-    public default BooleanAccess<HOST> isValidValue(long value) {
+    public default BooleanAccessPrimitive<HOST> isValidValue(long value) {
         return host -> {
             return apply(host)
                     .isValidValue(value);
         };
     }
-    public default BooleanAccess<HOST> isValidIntValue(long value) {
+    public default BooleanAccessPrimitive<HOST> isValidIntValue(long value) {
         return host -> {
             return apply(host)
                     .isValidIntValue(value);

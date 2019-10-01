@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.ListAccess;
@@ -105,7 +105,7 @@ public interface IsoChronologyAccess<HOST>
             return value.dateNow(clock);
         };
     }
-    public default BooleanAccess<HOST> isLeapYear(long prolepticYear) {
+    public default BooleanAccessPrimitive<HOST> isLeapYear(long prolepticYear) {
         return host -> {
             val value = apply(host);
             return value.isLeapYear(prolepticYear);

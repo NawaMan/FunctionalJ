@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
@@ -213,13 +214,13 @@ public interface LocalTimeAccess<HOST>
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(LocalTime other) {
+    public default BooleanAccessPrimitive<HOST> thatIsAfter(LocalTime other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(LocalTime other) {
+    public default BooleanAccessPrimitive<HOST> thatIsBefore(LocalTime other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);

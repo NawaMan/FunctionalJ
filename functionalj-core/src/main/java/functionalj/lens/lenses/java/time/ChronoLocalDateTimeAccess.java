@@ -17,6 +17,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
@@ -143,19 +144,19 @@ public interface ChronoLocalDateTimeAccess<HOST,
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(CHRONO_LOCAL_DATE_TIME other) {
+    public default BooleanAccessPrimitive<HOST> thatIsAfter(CHRONO_LOCAL_DATE_TIME other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(CHRONO_LOCAL_DATE_TIME other) {
+    public default BooleanAccessPrimitive<HOST> thatIsBefore(CHRONO_LOCAL_DATE_TIME other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsEqual(CHRONO_LOCAL_DATE_TIME other) {
+    public default BooleanAccessPrimitive<HOST> thatIsEqual(CHRONO_LOCAL_DATE_TIME other) {
         return host -> {
             val value = apply(host);
             return value.isEqual(other);

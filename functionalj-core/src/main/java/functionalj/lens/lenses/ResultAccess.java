@@ -115,17 +115,17 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
     }
     
     // TODO - Add more of these.
-    public default BooleanAccess<HOST> isPresent() {
+    public default BooleanAccessPrimitive<HOST> isPresent() {
         return host -> {
             return ResultAccess.this.apply(host).isPresent();
         };
     }
-    public default BooleanAccess<HOST> isNull() {
+    public default BooleanAccessPrimitive<HOST> isNull() {
         return host -> {
             return ResultAccess.this.apply(host).isNull();
         };
     }
-    public default BooleanAccess<HOST> isValue() {
+    public default BooleanAccessPrimitive<HOST> isValue() {
         return host -> {
             return ResultAccess.this.apply(host).isValue();
         };

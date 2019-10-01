@@ -29,8 +29,8 @@ public abstract class LoginStatus implements IChoice<LoginStatus.LoginStatusFirs
     public static final LoginStatusLens<LoginStatus> eachLoginStatus = theLoginStatus;
     public static class LoginStatusLens<HOST> extends ObjectLensImpl<HOST, LoginStatus> {
 
-        public final BooleanAccess<LoginStatus> isLogin = LoginStatus::isLogin;
-        public final BooleanAccess<LoginStatus> isLogout = LoginStatus::isLogout;
+        public final BooleanAccessPrimitive<LoginStatus> isLogin = LoginStatus::isLogin;
+        public final BooleanAccessPrimitive<LoginStatus> isLogout = LoginStatus::isLogout;
         public final ResultAccess<HOST, Login, Login.LoginLens<HOST>> asLogin = createSubResultLens(LoginStatus::asLogin, (functionalj.lens.core.WriteLens<LoginStatus,Result<Login>>)null, Login.LoginLens::new);
         public final ResultAccess<HOST, Logout, Logout.LogoutLens<HOST>> asLogout = createSubResultLens(LoginStatus::asLogout, (functionalj.lens.core.WriteLens<LoginStatus,Result<Logout>>)null, Logout.LogoutLens::new);
         public LoginStatusLens(LensSpec<HOST, LoginStatus> spec) {

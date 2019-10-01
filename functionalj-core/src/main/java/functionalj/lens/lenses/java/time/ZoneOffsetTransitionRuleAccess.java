@@ -4,7 +4,7 @@ import java.time.zone.ZoneOffsetTransitionRule;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
@@ -45,7 +45,7 @@ public interface ZoneOffsetTransitionRuleAccess<HOST>
             return value.getLocalTime();
         };
     }
-    public default BooleanAccess<HOST> isMidnightEndOfDay() {
+    public default BooleanAccessPrimitive<HOST> isMidnightEndOfDay() {
         return host -> {
             val value = apply(host);
             return value.isMidnightEndOfDay();

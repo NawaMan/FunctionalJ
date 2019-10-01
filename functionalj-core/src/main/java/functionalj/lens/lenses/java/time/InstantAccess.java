@@ -10,6 +10,7 @@ import java.time.temporal.TemporalUnit;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
@@ -163,13 +164,13 @@ public interface InstantAccess<HOST>
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
     
-    public default BooleanAccess<HOST> thatIsAfter(Instant other) {
+    public default BooleanAccessPrimitive<HOST> thatIsAfter(Instant other) {
         return host -> {
             val value = apply(host);
             return value.isAfter(other);
         };
     }
-    public default BooleanAccess<HOST> thatIsBefore(Instant other) {
+    public default BooleanAccessPrimitive<HOST> thatIsBefore(Instant other) {
         return host -> {
             val value = apply(host);
             return value.isBefore(other);

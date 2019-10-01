@@ -23,11 +23,21 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import functionalj.functions.ThrowFuncs;
+import lombok.val;
+
 @FunctionalInterface
-public interface DoubleAccessPrimitive<HOST> extends DoubleAccess<HOST> {
+public interface BooleanAccessBoxed<HOST> extends BooleanAccess<HOST> {
     
-    public default Double applyUnsafe(HOST host) throws Exception {
-        return applyAsDouble(host);
+    public default boolean test(HOST host) {
+        try {
+            val value = applyUnsafe(host);
+            return value.booleanValue();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw ThrowFuncs.exceptionTransformer.value().apply(e);
+        }
     }
     
 }

@@ -25,6 +25,7 @@ package functionalj.lens.core;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -106,6 +107,11 @@ public class LensSpec<HOST, DATA>
             ToDoubleFunction<HOST>          readDouble, 
             WriteLens.PrimitiveDouble<HOST> writeDouble) {
         return new PrimitiveLensSpecs.DoubleLensSpecPrimitive<HOST>(readDouble, writeDouble);
+    }
+    public static <HOST> PrimitiveLensSpecs.BooleanLensSpecPrimitive<HOST> ofPrimitive(
+            Predicate<HOST>                  readBoolean, 
+            WriteLens.PrimitiveBoolean<HOST> writeBoolean) {
+        return new PrimitiveLensSpecs.BooleanLensSpecPrimitive<HOST>(readBoolean, writeBoolean);
     }
     
     public LensSpec(Function<HOST, DATA> read, WriteLens<HOST, DATA> write) {

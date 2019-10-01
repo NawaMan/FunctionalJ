@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
@@ -29,73 +30,73 @@ public interface MonthAccess<HOST>
         return host -> accessToValue.apply(host);
     }
     
-    public default BooleanAccess<HOST> isJanuary() {
+    public default BooleanAccessPrimitive<HOST> isJanuary() {
         return host -> {
             val value = apply(host);
             return value == Month.JANUARY;
         };
     }
-    public default BooleanAccess<HOST> isFebruary() {
+    public default BooleanAccessPrimitive<HOST> isFebruary() {
         return host -> {
             val value = apply(host);
             return value == Month.FEBRUARY;
         };
     }
-    public default BooleanAccess<HOST> isMarch() {
+    public default BooleanAccessPrimitive<HOST> isMarch() {
         return host -> {
             val value = apply(host);
             return value == Month.MARCH;
         };
     }
-    public default BooleanAccess<HOST> isApril() {
+    public default BooleanAccessPrimitive<HOST> isApril() {
         return host -> {
             val value = apply(host);
             return value == Month.APRIL;
         };
     }
-    public default BooleanAccess<HOST> isMay() {
+    public default BooleanAccessPrimitive<HOST> isMay() {
         return host -> {
             val value = apply(host);
             return value == Month.MAY;
         };
     }
-    public default BooleanAccess<HOST> isJune() {
+    public default BooleanAccessPrimitive<HOST> isJune() {
         return host -> {
             val value = apply(host);
             return value == Month.JUNE;
         };
     }
-    public default BooleanAccess<HOST> isJuly() {
+    public default BooleanAccessPrimitive<HOST> isJuly() {
         return host -> {
             val value = apply(host);
             return value == Month.JULY;
         };
     }
-    public default BooleanAccess<HOST> isAugust() {
+    public default BooleanAccessPrimitive<HOST> isAugust() {
         return host -> {
             val value = apply(host);
             return value == Month.AUGUST;
         };
     }
-    public default BooleanAccess<HOST> isSeptember() {
+    public default BooleanAccessPrimitive<HOST> isSeptember() {
         return host -> {
             val value = apply(host);
             return value == Month.SEPTEMBER;
         };
     }
-    public default BooleanAccess<HOST> isOctober() {
+    public default BooleanAccessPrimitive<HOST> isOctober() {
         return host -> {
             val value = apply(host);
             return value == Month.OCTOBER;
         };
     }
-    public default BooleanAccess<HOST> isNovember() {
+    public default BooleanAccessPrimitive<HOST> isNovember() {
         return host -> {
             val value = apply(host);
             return value == Month.NOVEMBER;
         };
     }
-    public default BooleanAccess<HOST> isDecember() {
+    public default BooleanAccessPrimitive<HOST> isDecember() {
         return host -> {
             val value = apply(host);
             return value == Month.DECEMBER;
@@ -114,7 +115,7 @@ public interface MonthAccess<HOST>
             return value.getDisplayName(style, locale);
         };
     }
-    public default BooleanAccess<HOST> thatIsSupported(TemporalField field) {
+    public default BooleanAccessPrimitive<HOST> thatIsSupported(TemporalField field) {
         return host -> {
             val value = apply(host);
             return value.isSupported(field);

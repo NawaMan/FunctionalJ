@@ -32,7 +32,6 @@ import java.util.function.Supplier;
 import functionalj.function.Func;
 import functionalj.lens.core.AccessCreator;
 import functionalj.result.Result;
-import functionalj.tuple.Tuple2;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
@@ -54,43 +53,43 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     public default BooleanAccess<HOST> thatLessThanOrEqualsTo(TYPE anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
     }
-    public default BooleanAccess<HOST> thatIsZero() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsZero() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) == 0;
         });
     }
-    public default BooleanAccess<HOST> thatIsNotZero() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsNotZero() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) != 0;
         });
     }
-    public default BooleanAccess<HOST> thatIsPositive() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsPositive() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) > 0;
         });
     }
-    public default BooleanAccess<HOST> thatIsNegative() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsNegative() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) < 0;
         });
     }
-    public default BooleanAccess<HOST> thatIsNotPositive() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsNotPositive() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) <= 0;
         });
     }
-    public default BooleanAccess<HOST> thatIsNotNegative() {
-        return (BooleanAccess<HOST>)(host -> {
+    public default BooleanAccessPrimitive<HOST> thatIsNotNegative() {
+        return (BooleanAccessPrimitive<HOST>)(host -> {
             val value = apply(host);
             val zero  = toZero().apply(host);
             return value.compareTo(zero) >= 0;
@@ -101,34 +100,6 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     
     public MathOperators<TYPE> __mathOperators();
     
-    
-    public static interface MathOperators<NUMBER> {
-        
-        public NUMBER zero();
-        public NUMBER one();
-        public NUMBER minusOne();
-        
-        public Integer    toInteger(NUMBER number);
-        public Long       toLong(NUMBER number);
-        public Double     toDouble(NUMBER number);
-        public BigInteger toBigInteger(NUMBER number);
-        public BigDecimal toBigDecimal(NUMBER number);
-        
-        public NUMBER add(NUMBER number1, NUMBER number2);
-        public NUMBER subtract(NUMBER number1, NUMBER number2);
-        public NUMBER multiply(NUMBER number1, NUMBER number2);
-        public NUMBER divide(NUMBER number1, NUMBER number2);
-        public NUMBER remainder(NUMBER number1, NUMBER number2);
-        public Tuple2<NUMBER, NUMBER> divideAndRemainder(NUMBER number, NUMBER divisor);
-        
-        public NUMBER pow(NUMBER number, NUMBER n);
-        public NUMBER abs(NUMBER number);
-        public NUMBER negate(NUMBER number);
-        public NUMBER signum(NUMBER number);
-        public NUMBER min(NUMBER number1, NUMBER number2);
-        public NUMBER max(NUMBER number1, NUMBER number2);
-        
-    }
     
     public default IntegerAccess<HOST> toInteger() {
         return intPrimitiveAccess(0, __mathOperators()::toInteger);

@@ -112,7 +112,7 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
         };
     }
     
-    public default BooleanAccess<HOST> isPresent() {
+    public default BooleanAccessPrimitive<HOST> isPresent() {
         return host -> {
             return OptionalAccess.this.apply(host).isPresent();
         };

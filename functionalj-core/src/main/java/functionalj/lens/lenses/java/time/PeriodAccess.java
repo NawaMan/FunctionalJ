@@ -6,7 +6,7 @@ import java.time.temporal.TemporalUnit;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
-import functionalj.lens.lenses.BooleanAccess;
+import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.ListAccess;
@@ -44,13 +44,13 @@ public interface PeriodAccess<HOST>
             return value.getChronology();
         };
     }
-    public default BooleanAccess<HOST> isZero() {
+    public default BooleanAccessPrimitive<HOST> isZero() {
         return host -> {
             val value = apply(host);
             return value.isZero();
         };
     }
-    public default BooleanAccess<HOST> isNegative() {
+    public default BooleanAccessPrimitive<HOST> isNegative() {
         return host -> {
             val value = apply(host);
             return value.isNegative();

@@ -107,8 +107,8 @@ public class Price implements IStruct,Pipeable<Price> {
     
     public static class PriceLens<HOST> extends ObjectLensImpl<HOST, Price> {
         
-        public final IntegerLens<HOST> price = createSubLens(Price::price, Price::withPrice, IntegerLens::of);
-        public final IntegerLens<HOST> discountPercent = createSubLens(Price::discountPercent, Price::withDiscountPercent, IntegerLens::of);
+        public final IntegerLens<HOST> price = createSubLensPrimitive(Price::price, Price::withPrice);
+        public final IntegerLens<HOST> discountPercent = createSubLensPrimitive(Price::discountPercent, Price::withDiscountPercent);
         
         public PriceLens(LensSpec<HOST, Price> spec) {
             super(spec);

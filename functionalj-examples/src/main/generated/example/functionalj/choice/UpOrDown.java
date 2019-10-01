@@ -30,8 +30,8 @@ public abstract class UpOrDown implements IChoice<UpOrDown.UpOrDownFirstSwitch>,
     public static final UpOrDownLens<UpOrDown> eachUpOrDown = theUpOrDown;
     public static class UpOrDownLens<HOST> extends ObjectLensImpl<HOST, UpOrDown> {
 
-        public final BooleanAccess<UpOrDown> isUp = UpOrDown::isUp;
-        public final BooleanAccess<UpOrDown> isDown = UpOrDown::isDown;
+        public final BooleanAccessPrimitive<UpOrDown> isUp = UpOrDown::isUp;
+        public final BooleanAccessPrimitive<UpOrDown> isDown = UpOrDown::isDown;
         public final ResultAccess<HOST, Up, Up.UpLens<HOST>> asUp = createSubResultLens(UpOrDown::asUp, (functionalj.lens.core.WriteLens<UpOrDown,Result<Up>>)null, Up.UpLens::new);
         public final ResultAccess<HOST, Down, Down.DownLens<HOST>> asDown = createSubResultLens(UpOrDown::asDown, (functionalj.lens.core.WriteLens<UpOrDown,Result<Down>>)null, Down.DownLens::new);
         public UpOrDownLens(LensSpec<HOST, UpOrDown> spec) {
