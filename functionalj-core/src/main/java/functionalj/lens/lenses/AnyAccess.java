@@ -34,6 +34,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import functionalj.function.Func1;
 import lombok.val;
@@ -136,9 +137,9 @@ public interface AnyAccess<HOST, DATA>
         };
     }
     
-    public default LongAccess<HOST> longAccess(long defaultValue, Function<DATA, Long> function) {
+    public default LongAccessPrimitive<HOST> longAccess(long defaultValue, ToLongFunction<DATA> function) {
         return host -> {
-            val value = __internal__.processValue(this, host, defaultValue, function);
+            val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
         };
     }
@@ -220,6 +221,23 @@ public interface AnyAccess<HOST, DATA>
                 return defaultValue;
             
             val newValue = function.applyAsInt(value);
+            return newValue;
+        }
+        
+        public static <HOST, DATA> long processValuePrimitive(
+                AnyAccess<HOST, DATA> access, 
+                HOST                  host, 
+                long                  defaultValue, 
+                ToLongFunction<DATA>  function) {
+            
+            if (host == null)
+                return defaultValue;
+            
+            val value = access.apply(host);
+            if (value == null)
+                return defaultValue;
+            
+            val newValue = function.applyAsLong(value);
             return newValue;
         }
         

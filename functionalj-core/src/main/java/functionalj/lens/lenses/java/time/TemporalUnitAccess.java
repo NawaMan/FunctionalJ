@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
 @FunctionalInterface
@@ -53,7 +53,7 @@ public interface TemporalUnitAccess<HOST, TEMPORAL_UNIT extends TemporalUnit>
             return value.addTo(temporal, amount);
         };
     }
-    public default LongAccess<HOST> between(Temporal temporal1Inclusive, Temporal temporal2Exclusive) {
+    public default LongAccessPrimitive<HOST> between(Temporal temporal1Inclusive, Temporal temporal2Exclusive) {
         return host -> {
             val value = apply(host);
             return value.between(temporal1Inclusive, temporal2Exclusive);

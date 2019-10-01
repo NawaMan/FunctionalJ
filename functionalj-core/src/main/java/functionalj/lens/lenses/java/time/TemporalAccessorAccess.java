@@ -8,7 +8,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
 public interface TemporalAccessorAccess<HOST, TEMPORAL_ACCESSOR extends TemporalAccessor>
@@ -37,7 +37,7 @@ public interface TemporalAccessorAccess<HOST, TEMPORAL_ACCESSOR extends Temporal
             return value.get(field);
         };
     }
-    public default LongAccess<HOST> getLong(TemporalField field) {
+    public default LongAccessPrimitive<HOST> getLong(TemporalField field) {
         return host -> {
             val value = apply(host);
             return value.getLong(field);

@@ -8,7 +8,7 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
 public interface ValueRangeAccess<HOST>
@@ -29,25 +29,25 @@ public interface ValueRangeAccess<HOST>
             return value.isFixed();
         };
     }
-    public default LongAccess<HOST> getMinimum() {
+    public default LongAccessPrimitive<HOST> getMinimum() {
         return host -> {
             val value = apply(host);
             return value.getMinimum();
         };
     }
-    public default LongAccess<HOST> getLargestMinimum() {
+    public default LongAccessPrimitive<HOST> getLargestMinimum() {
         return host -> {
             val value = apply(host);
             return value.getLargestMinimum();
         };
     }
-    public default LongAccess<HOST> getSmallestMaximum() {
+    public default LongAccessPrimitive<HOST> getSmallestMaximum() {
         return host -> {
             val value = apply(host);
             return value.getSmallestMaximum();
         };
     }
-    public default LongAccess<HOST> getMaximum() {
+    public default LongAccessPrimitive<HOST> getMaximum() {
         return host -> {
             val value = apply(host);
             return value.getMaximum();
@@ -71,7 +71,7 @@ public interface ValueRangeAccess<HOST>
                     .isValidIntValue(value);
         };
     }
-    public default LongAccess<HOST> checkValidValue(long value, TemporalField field) {
+    public default LongAccessPrimitive<HOST> checkValidValue(long value, TemporalField field) {
         return host -> {
             return apply(host)
                     .checkValidValue(value, field);

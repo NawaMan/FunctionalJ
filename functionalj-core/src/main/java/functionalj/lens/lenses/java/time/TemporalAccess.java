@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
 @FunctionalInterface
@@ -64,7 +64,7 @@ public interface TemporalAccess<HOST, TEMPORAL extends Temporal>
         };
     }
     
-    public default LongAccess<HOST> until(Temporal endExclusive, TemporalUnit unit) {
+    public default LongAccessPrimitive<HOST> until(Temporal endExclusive, TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return value.until(endExclusive, unit);

@@ -9,7 +9,7 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
 @FunctionalInterface
@@ -38,7 +38,7 @@ public interface DurationAccess<HOST>
             return value.isNegative();
         };
     }
-    public default LongAccess<HOST> getSeconds() {
+    public default LongAccessPrimitive<HOST> getSeconds() {
         return host -> {
             val value = apply(host);
             return value.getSeconds();
@@ -194,31 +194,31 @@ public interface DurationAccess<HOST>
             return value.subtractFrom(temporal);
         };
     }
-    public default LongAccess<HOST> toDays() {
+    public default LongAccessPrimitive<HOST> toDays() {
         return host -> {
             val value = apply(host);
             return value.toDays();
         };
     }
-    public default LongAccess<HOST> toHours() {
+    public default LongAccessPrimitive<HOST> toHours() {
         return host -> {
             val value = apply(host);
             return value.toHours();
         };
     }
-    public default LongAccess<HOST> toMinutes() {
+    public default LongAccessPrimitive<HOST> toMinutes() {
         return host -> {
             val value = apply(host);
             return value.toMinutes();
         };
     }
-    public default LongAccess<HOST> toMillis() {
+    public default LongAccessPrimitive<HOST> toMillis() {
         return host -> {
             val value = apply(host);
             return value.toMillis();
         };
     }
-    public default LongAccess<HOST> toNanos() {
+    public default LongAccessPrimitive<HOST> toNanos() {
         return host -> {
             val value = apply(host);
             return value.toNanos();

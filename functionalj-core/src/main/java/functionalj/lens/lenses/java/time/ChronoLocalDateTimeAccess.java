@@ -18,16 +18,16 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
 @FunctionalInterface
 public interface ChronoLocalDateTimeAccess<HOST,
                             CHRONO_LOCAL_DATE_TIME extends ChronoLocalDateTime<? extends ChronoLocalDate>>
-                        extends AnyAccess             <HOST, CHRONO_LOCAL_DATE_TIME>
-                        ,       TemporalAccess        <HOST, CHRONO_LOCAL_DATE_TIME>
-                        ,       TemporalAdjusterAccess<HOST, CHRONO_LOCAL_DATE_TIME> {
+                                extends AnyAccess             <HOST, CHRONO_LOCAL_DATE_TIME>
+                                ,       TemporalAccess        <HOST, CHRONO_LOCAL_DATE_TIME>
+                                ,       TemporalAdjusterAccess<HOST, CHRONO_LOCAL_DATE_TIME> {
     
     public static <H, DT extends ChronoLocalDateTime<? extends ChronoLocalDate>>
                 ChronoLocalDateTimeAccess<H, DT> of(Function<H, DT> func) {
@@ -117,7 +117,7 @@ public interface ChronoLocalDateTimeAccess<HOST,
             return value.toInstant(offset);
         };
     }
-    public default LongAccess<HOST> toEpochSecond(ZoneOffset offset) {
+    public default LongAccessPrimitive<HOST> toEpochSecond(ZoneOffset offset) {
         return host -> {
             val value = apply(host);
             return value.toEpochSecond(offset);

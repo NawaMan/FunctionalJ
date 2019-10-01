@@ -13,7 +13,7 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
 public interface LocalTimeAccess<HOST>
@@ -187,7 +187,7 @@ public interface LocalTimeAccess<HOST>
             return value.toSecondOfDay();
         };
     }
-    public default LongAccess<HOST> toNanoOfDay() {
+    public default LongAccessPrimitive<HOST> toNanoOfDay() {
         return host -> {
             val value = apply(host);
             return value.toNanoOfDay();

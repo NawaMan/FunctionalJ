@@ -30,11 +30,13 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.FuncListLens;
 import functionalj.lens.lenses.IntegerLens;
 import functionalj.lens.lenses.ListLens;
+import functionalj.lens.lenses.LongLens;
 import functionalj.lens.lenses.MapLens;
 import functionalj.lens.lenses.NullableLens;
 import functionalj.lens.lenses.ObjectLens;
@@ -58,14 +60,23 @@ public class LensUtils {
         val hostSubSpec = lensSpec.then(LensSpec.of(readSub, writeSub, lensSpec.isNullSafe()));
         return subLensCreator.apply(hostSubSpec);
     }
-
+    
     public static <HOST, DATA> IntegerLens<HOST> createSubLens(
-            ObjectLens<HOST, DATA>      dataLens,
-            ToIntFunction<DATA>         readSubInt,
-            WriteLens.PrimitveInt<DATA> writeSubInt) {
+            ObjectLens<HOST, DATA>       dataLens,
+            ToIntFunction<DATA>          readSubInt,
+            WriteLens.PrimitiveInt<DATA> writeSubInt) {
         val lensSpec    = dataLens.lensSpec();
         val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubInt, writeSubInt));
         return (IntegerLens<HOST>)()->hostSubSpec;
+    }
+    
+    public static <HOST, DATA> LongLens<HOST> createSubLens(
+            ObjectLens<HOST, DATA>        dataLens,
+            ToLongFunction<DATA>          readSubLong,
+            WriteLens.PrimitiveLong<DATA> writeSubLong) {
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubLong, writeSubLong));
+        return (LongLens<HOST>)()->hostSubSpec;
     }
     
     public static <DATA, SUB, HOST> Function<HOST, SUB> createSubRead(
@@ -114,10 +125,34 @@ public class LensUtils {
         };
     }
     
-    public static <HOST, DATA> WriteLens.PrimitveInt<HOST> createSubWriteInt(
-            Function<HOST, DATA>        readValue,
-            WriteLens<HOST, DATA>       writeValue,
-            WriteLens.PrimitveInt<DATA> writeSub) {
+    public static <HOST, DATA> WriteLens.PrimitiveInt<HOST> createSubWriteInt(
+            Function<HOST, DATA>         readValue,
+            WriteLens<HOST, DATA>        writeValue,
+            WriteLens.PrimitiveInt<DATA> writeSub) {
+        return (host, newSubValue)->{
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
+            return newHost;
+        };
+    }
+    
+    //-- Long --
+    
+    public static <HOST, DATA> ToLongFunction<HOST> createSubReadLong(
+            Function<HOST, DATA> readValue,
+            ToLongFunction<DATA> readSub) {
+        return host ->{
+            val value    = readValue.apply(host);
+            val subValue = readSub.applyAsLong(value);
+            return subValue;
+        };
+    }
+    
+    public static <HOST, DATA> WriteLens.PrimitiveLong<HOST> createSubWriteLong(
+            Function<HOST, DATA>          readValue,
+            WriteLens<HOST, DATA>         writeValue,
+            WriteLens.PrimitiveLong<DATA> writeSub) {
         return (host, newSubValue)->{
             val oldValue = readValue.apply(host);
             val newValue = writeSub.apply(oldValue, newSubValue);

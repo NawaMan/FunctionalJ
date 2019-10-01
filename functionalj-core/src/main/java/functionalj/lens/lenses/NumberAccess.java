@@ -156,7 +156,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return ResultAccess.of(host -> {
             val value = apply(host);
             return Result.from(()->__mathOperators().toLong(value));
-        }, func -> (LongAccess<HOST>)(func::apply));
+        }, func -> (LongAccessBoxed<HOST>)(func::apply));
     }
     public default ResultAccess<HOST, Double, DoubleAccess<HOST>> asDouble() {
         return ResultAccess.of(host -> {

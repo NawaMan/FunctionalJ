@@ -10,7 +10,7 @@ import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.ListAccess;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
 @FunctionalInterface
@@ -27,7 +27,7 @@ public interface PeriodAccess<HOST>
         return host -> accessToValue.apply(host);
     }
     
-    public default LongAccess<HOST> get(TemporalUnit unit) {
+    public default LongAccessPrimitive<HOST> get(TemporalUnit unit) {
         return host -> {
             val value = apply(host);
             return value.get(unit);
@@ -158,7 +158,7 @@ public interface PeriodAccess<HOST>
             return value.normalized();
         };
     }
-    public default LongAccess<HOST> toTotalMonths() {
+    public default LongAccessPrimitive<HOST> toTotalMonths() {
         return host -> {
             val value = apply(host);
             return value.toTotalMonths();

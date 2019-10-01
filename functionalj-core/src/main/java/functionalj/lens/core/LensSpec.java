@@ -26,6 +26,7 @@ package functionalj.lens.core;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import functionalj.lens.lenses.PrimitiveLensSpecs;
 
@@ -82,8 +83,12 @@ public class LensSpec<HOST, DATA>
         return new LensSpec<HOST, DATA>(read::apply, write::apply, isNullSafe);
     }
     
-    public static <HOST> PrimitiveLensSpecs.IntegerLensSpecPrimitive<HOST> ofPrimitive(ToIntFunction<HOST> readInt, WriteLens.PrimitveInt<HOST> writeInt) {
+    public static <HOST> PrimitiveLensSpecs.IntegerLensSpecPrimitive<HOST> ofPrimitive(ToIntFunction<HOST> readInt, WriteLens.PrimitiveInt<HOST> writeInt) {
         return new PrimitiveLensSpecs.IntegerLensSpecPrimitive<HOST>(readInt, writeInt);
+    }
+    
+    public static <HOST> PrimitiveLensSpecs.LongLensSpecPrimitive<HOST> ofPrimitive(ToLongFunction<HOST> readLong, WriteLens.PrimitiveLong<HOST> writeLong) {
+        return new PrimitiveLensSpecs.LongLensSpecPrimitive<HOST>(readLong, writeLong);
     }
     
     public LensSpec(Function<HOST, DATA> read, WriteLens<HOST, DATA> write) {
@@ -124,12 +129,19 @@ public class LensSpec<HOST, DATA>
     }
     
     public PrimitiveLensSpecs.IntegerLensSpecPrimitive<HOST> thenPrimitive(PrimitiveLensSpecs.IntegerLensSpecPrimitive<DATA> sub) {
-        ToIntFunction<DATA>         subReadInt  = sub.getReadInt();
-        WriteLens.PrimitveInt<DATA> subWriteInt = sub.getWriteInt();
-        ToIntFunction<HOST>         readInt     = LensUtils.createSubReadInt (read, subReadInt);
-        WriteLens.PrimitveInt<HOST> writeInt    = LensUtils.createSubWriteInt(read, write, subWriteInt);
+        ToIntFunction<DATA>          subReadInt  = sub.getReadInt();
+        WriteLens.PrimitiveInt<DATA> subWriteInt = sub.getWriteInt();
+        ToIntFunction<HOST>          readInt     = LensUtils.createSubReadInt (read, subReadInt);
+        WriteLens.PrimitiveInt<HOST> writeInt    = LensUtils.createSubWriteInt(read, write, subWriteInt);
         return LensSpec.ofPrimitive(readInt, writeInt);
-        
+    }
+    
+    public PrimitiveLensSpecs.LongLensSpecPrimitive<HOST> thenPrimitive(PrimitiveLensSpecs.LongLensSpecPrimitive<DATA> sub) {
+        ToLongFunction<DATA>          subReadLong  = sub.getReadLong();
+        WriteLens.PrimitiveLong<DATA> subWriteLong = sub.getWriteLong();
+        ToLongFunction<HOST>          readLong     = LensUtils.createSubReadLong (read, subReadLong);
+        WriteLens.PrimitiveLong<HOST> writeLong    = LensUtils.createSubWriteLong(read, write, subWriteLong);
+        return LensSpec.ofPrimitive(readLong, writeLong);
     }
     
 }

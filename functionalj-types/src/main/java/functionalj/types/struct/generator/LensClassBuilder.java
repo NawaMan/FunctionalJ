@@ -176,9 +176,12 @@ public class LensClassBuilder {
             boolean isPrimitive,
             Type    lensTypeDef, 
             boolean isCustomLens) {
-        if (isPrimitive && type.equals(Type.INTEGER)) {
-            val value = format("createSubLensPrimitive(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
-            return value;
+        if (isPrimitive) {
+            if (type.equals(Type.INTEGER)
+             || type.equals(Type.LONG)) {
+                val value = format("createSubLensPrimitive(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
+                return value;
+            }
         }
         
         val spec  = isCustomLens ? lensTypeDef.simpleName() + "::new" : lensTypeDef.simpleName() + "::of";

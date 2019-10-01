@@ -24,6 +24,7 @@
 package functionalj.lens.lenses;
 
 import functionalj.lens.core.LensSpec;
+import lombok.val;
 
 @SuppressWarnings("javadoc")
 @FunctionalInterface
@@ -39,6 +40,26 @@ public interface LongLens<HOST>
     @Override
     default Long apply(HOST host) {
         return lensSpec().getRead().apply(host);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public default long applyAsLong(HOST host) {
+        LensSpec<HOST, Long> lensSpec = lensSpec();
+        if (lensSpec instanceof PrimitiveLensSpecs.IntegerLensSpecPrimitive) {
+            val spec  = (PrimitiveLensSpecs.IntegerLensSpecPrimitive)lensSpec;
+            val value = spec.applyAsInt(host);
+            return value;
+        }
+        
+        val value = lensSpec.apply(host);
+        return value;
+    }
+
+    @Override
+    public default Long applyUnsafe(HOST host) throws Exception {
+        LensSpec<HOST, Long> lensSpec = lensSpec();
+        return lensSpec.apply(host);
     }
     
 }

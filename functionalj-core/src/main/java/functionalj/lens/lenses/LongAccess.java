@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import static java.util.Objects.requireNonNull;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -31,6 +33,7 @@ import java.time.ZoneId;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
+import functionalj.function.Func1;
 import functionalj.lens.lenses.java.time.InstantAccess;
 import functionalj.lens.lenses.java.time.LocalDateTimeAccess;
 import functionalj.tuple.Tuple;
@@ -39,20 +42,55 @@ import lombok.val;
 import nullablej.nullable.Nullable;
 
 @SuppressWarnings("javadoc")
-@FunctionalInterface
 public interface LongAccess<HOST> 
         extends 
             NumberAccess<HOST, Long, LongAccess<HOST>>, 
             ToLongFunction<HOST>,
             ConcreteAccess<HOST, Long, LongAccess<HOST>> {
     
-    @Override
-    public default LongAccess<HOST> newAccess(Function<HOST, Long> accessToValue) {
-        return accessToValue::apply;
+    
+    public static <H> LongAccess<H> of(Function<H, Long> accessToValue) {
+        requireNonNull(accessToValue);
+        
+        if (accessToValue instanceof LongAccess) {
+            return (LongAccess<H>)accessToValue;
+        }
+        
+        if (accessToValue instanceof ToLongFunction) {
+            @SuppressWarnings("unchecked")
+            val func1  = (ToLongFunction<H>)accessToValue;
+            val access = ofPrimitive(func1);
+            return access;
+        }
+        
+        if (accessToValue instanceof Func1) {
+            val func1  = (Func1<H, Long>)accessToValue;
+            val access = (LongAccessBoxed<H>)func1::applyUnsafe;
+            return access;
+        }
+
+        val func   = (Function<H, Long>)accessToValue;
+        val access = (LongAccessBoxed<H>)(host -> func.apply(host));
+        return access;
     }
     
-    public default long applyAsLong(HOST host) {
-        return apply(host).longValue();
+    public static <H> LongAccess<H> ofPrimitive(ToLongFunction<H> accessToValue) {
+        requireNonNull(accessToValue);
+        val access = (LongAccessPrimitive<H>)accessToValue::applyAsLong;
+        return access;
+    }
+    
+    
+    
+    
+    public long applyAsLong(HOST host);
+    
+    public Long applyUnsafe(HOST host) throws Exception;
+    
+    
+    @Override
+    public default LongAccess<HOST> newAccess(Function<HOST, Long> accessToValue) {
+        return of(accessToValue);
     }
     
     public default InstantAccess<HOST> toInstant() {

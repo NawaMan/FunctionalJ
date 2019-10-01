@@ -12,7 +12,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
 @FunctionalInterface
@@ -29,7 +29,7 @@ public interface InstantAccess<HOST>
         return accessToValue::apply;
     }
     
-    public default LongAccess<HOST> getEpochSecond() {
+    public default LongAccessPrimitive<HOST> getEpochSecond() {
         return host -> {
             val value = apply(host);
             return value.getEpochSecond();
@@ -137,7 +137,7 @@ public interface InstantAccess<HOST>
         };
     }
     
-    public default LongAccess<HOST> toEpochMilli() {
+    public default LongAccessPrimitive<HOST> toEpochMilli() {
         return host -> {
             val value = apply(host);
             return value.toEpochMilli();

@@ -8,4 +8,9 @@ public interface ToLongStreamProcessor<DATA> extends StreamProcessor<DATA, Long>
     public default Long applyUnsafe(StreamPlus<DATA> input) throws Exception {
         return process(input);
     }
+ 
+    @Override
+    public default long applyAsLong(StreamPlus<DATA> host) {
+        return apply(host);
+    }
 }

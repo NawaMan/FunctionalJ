@@ -16,7 +16,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
@@ -127,7 +127,7 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
         };
     }
     
-    public default LongAccess<HOST> toEpochDay() {
+    public default LongAccessPrimitive<HOST> toEpochDay() {
         return host -> {
             val value = apply(host);
             return value.toEpochDay();

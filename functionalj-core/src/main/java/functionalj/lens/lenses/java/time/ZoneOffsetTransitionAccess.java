@@ -8,7 +8,7 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
-import functionalj.lens.lenses.LongAccess;
+import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
 @FunctionalInterface
@@ -30,7 +30,7 @@ public interface ZoneOffsetTransitionAccess<HOST>
             return value.getInstant();
         };
     }
-    public default LongAccess<HOST> toEpochSecond() {
+    public default LongAccessPrimitive<HOST> toEpochSecond() {
         return host -> {
             val value = apply(host);
             return value.toEpochSecond();

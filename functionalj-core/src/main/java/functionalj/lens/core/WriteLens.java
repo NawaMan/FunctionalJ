@@ -46,12 +46,22 @@ public interface WriteLens<HOST, DATA> {
     }
     
     
-    public static interface PrimitveInt<HOST> extends WriteLens<HOST, Integer> {
+    public static interface PrimitiveInt<HOST> extends WriteLens<HOST, Integer> {
         
         public HOST applyWithInt(HOST host, int newValue);
         
         public default HOST apply(HOST host, Integer newValue) {
             return applyWithInt(host, newValue);
+        }
+        
+    }
+    
+    public static interface PrimitiveLong<HOST> extends WriteLens<HOST, Long> {
+        
+        public HOST applyWithLong(HOST host, long newValue);
+        
+        public default HOST apply(HOST host, Long newValue) {
+            return applyWithLong(host, newValue);
         }
         
     }

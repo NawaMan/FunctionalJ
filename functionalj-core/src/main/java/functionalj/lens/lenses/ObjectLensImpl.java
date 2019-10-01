@@ -61,8 +61,8 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
     }
     
     protected IntegerLens<HOST> createSubLensPrimitive(
-            ToIntFunction<DATA>         readSubInt,
-            WriteLens.PrimitveInt<DATA> writeSubInt) {
+            ToIntFunction<DATA>          readSubInt,
+            WriteLens.PrimitiveInt<DATA> writeSubInt) {
         return LensUtils.createSubLens(this, readSubInt, writeSubInt);
     }
     
