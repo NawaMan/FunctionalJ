@@ -121,9 +121,9 @@ public class Circle1 implements IStruct,Pipeable<Circle1> {
     
     public static class Circle1Lens<HOST> extends ObjectLensImpl<HOST, Circle1> {
         
-        public final IntegerLens<HOST> x = createSubLensPrimitive(Circle1::x, Circle1::withX);
-        public final IntegerLens<HOST> y = createSubLensPrimitive(Circle1::y, Circle1::withY);
-        public final IntegerLens<HOST> radius = createSubLensPrimitive(Circle1::radius, Circle1::withRadius);
+        public final IntegerLens<HOST> x = createSubLensInt(Circle1::x, Circle1::withX);
+        public final IntegerLens<HOST> y = createSubLensInt(Circle1::y, Circle1::withY);
+        public final IntegerLens<HOST> radius = createSubLensInt(Circle1::radius, Circle1::withRadius);
         
         public Circle1Lens(LensSpec<HOST, Circle1> spec) {
             super(spec);

@@ -39,16 +39,17 @@ public interface LongLens<HOST>
     
     @Override
     default Long apply(HOST host) {
-        return lensSpec().getRead().apply(host);
+        LensSpec<HOST, Long> lensSpec = lensSpec();
+        return lensSpec.getRead().apply(host);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public default long applyAsLong(HOST host) {
         LensSpec<HOST, Long> lensSpec = lensSpec();
-        if (lensSpec instanceof PrimitiveLensSpecs.IntegerLensSpecPrimitive) {
-            val spec  = (PrimitiveLensSpecs.IntegerLensSpecPrimitive)lensSpec;
-            val value = spec.applyAsInt(host);
+        if (lensSpec instanceof PrimitiveLensSpecs.LongLensSpecPrimitive) {
+            val spec  = (PrimitiveLensSpecs.LongLensSpecPrimitive)lensSpec;
+            val value = spec.applyAsLong(host);
             return value;
         }
         

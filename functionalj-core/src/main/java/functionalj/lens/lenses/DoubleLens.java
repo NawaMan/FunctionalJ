@@ -42,7 +42,8 @@ public interface DoubleLens<HOST>
     
     @Override
     default Double apply(HOST host) {
-        return lensSpec().getRead().apply(host);
+        LensSpec<HOST, Double> lensSpec = lensSpec();
+        return lensSpec.getRead().apply(host);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

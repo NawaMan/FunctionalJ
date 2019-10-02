@@ -184,14 +184,23 @@ public class CaseLensBuilder {
             boolean isCustomLens) {
         if (isPrimitive) {
             if (type.equals(Type.INTEGER)
-             || type.equals(Type.LONG)
-             || type.equals(Type.DOUBLE)
-             || type.equals(Type.BOOLEAN)
-             || type.equals(Type.INT)
-             || type.equals(Type.LNG)
-             || type.equals(Type.DBL)
+             || type.equals(Type.INT)) {
+                val value = format("createSubLensInt(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
+                return value;
+            }
+            if (type.equals(Type.LONG)
+             || type.equals(Type.LNG)) {
+                val value = format("createSubLensLong(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
+                return value;
+            }
+            if (type.equals(Type.DOUBLE)
+             || type.equals(Type.DBL)) {
+                val value = format("createSubLensDouble(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
+                return value;
+            }
+            if (type.equals(Type.BOOLEAN)
              || type.equals(Type.BOOL)) {
-                val value = format("createSubLensPrimitive(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
+                val value = format("createSubLensBoolean(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
                 return value;
             }
         }

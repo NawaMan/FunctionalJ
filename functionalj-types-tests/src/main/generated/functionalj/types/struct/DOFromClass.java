@@ -102,7 +102,7 @@ public class DOFromClass extends DOFromClassTest.DOFromClassDef implements IStru
     public static class DOFromClassLens<HOST> extends ObjectLensImpl<HOST, DOFromClass> {
         
         public final StringLens<HOST> name = createSubLens(DOFromClass::name, DOFromClass::withName, StringLens::of);
-        public final IntegerLens<HOST> count = createSubLensPrimitive(DOFromClass::count, DOFromClass::withCount);
+        public final IntegerLens<HOST> count = createSubLensInt(DOFromClass::count, DOFromClass::withCount);
         
         public DOFromClassLens(LensSpec<HOST, DOFromClass> spec) {
             super(spec);

@@ -217,7 +217,11 @@ public interface AnyAccess<HOST, DATA>
     
     public static class __internal__ {
         
-        public static <HOST, DATA, TARGET> TARGET processValue(AnyAccess<HOST, DATA> access, HOST host, TARGET defaultValue, Function<DATA, TARGET> function) {
+        public static <HOST, DATA, TARGET> TARGET processValue(
+                AnyAccess<HOST, DATA>  access, 
+                HOST                   host, 
+                TARGET                 defaultValue, 
+                Function<DATA, TARGET> function) {
             if (host == null)
                 return defaultValue;
             

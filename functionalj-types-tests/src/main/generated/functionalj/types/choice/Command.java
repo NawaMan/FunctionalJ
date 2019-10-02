@@ -69,7 +69,7 @@ public abstract class Command implements IChoice<Command.CommandFirstSwitch>, Pi
         public Rotate withDegree(int degree) { return new Rotate(degree); }
         public static class RotateLens<HOST> extends ObjectLensImpl<HOST, Command.Rotate> {
             
-            public final IntegerLens<HOST> degree = createSubLensPrimitive(Command.Rotate::degree, Command.Rotate::withDegree);
+            public final IntegerLens<HOST> degree = createSubLensInt(Command.Rotate::degree, Command.Rotate::withDegree);
             
             public RotateLens(LensSpec<HOST, Command.Rotate> spec) {
                 super(spec);
@@ -105,7 +105,7 @@ public abstract class Command implements IChoice<Command.CommandFirstSwitch>, Pi
         public Move withDistance(int distance) { return new Move(distance); }
         public static class MoveLens<HOST> extends ObjectLensImpl<HOST, Command.Move> {
             
-            public final IntegerLens<HOST> distance = createSubLensPrimitive(Command.Move::distance, Command.Move::withDistance);
+            public final IntegerLens<HOST> distance = createSubLensInt(Command.Move::distance, Command.Move::withDistance);
             
             public MoveLens(LensSpec<HOST, Command.Move> spec) {
                 super(spec);

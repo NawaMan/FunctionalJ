@@ -81,24 +81,33 @@ public interface BooleanAccess<HOST>
     }
     
     public default BooleanAccessPrimitive<HOST> nagate() {
-        return booleanPrimitiveAccess(false, bool -> !bool);
+        return host -> {
+            val boolValue = test(host);
+            return !boolValue;
+        };
     }
     public default BooleanAccessPrimitive<HOST> or(boolean anotherBoolean) {
-        return booleanPrimitiveAccess(false, bool -> bool || anotherBoolean);
+        return host -> {
+            val boolValue = test(host);
+            return boolValue || anotherBoolean;
+        };
     }
     public default BooleanAccessPrimitive<HOST> and(boolean anotherBoolean) {
-        return booleanPrimitiveAccess(false, bool -> bool && anotherBoolean);
+        return host -> {
+            val boolValue = test(host);
+            return boolValue && anotherBoolean;
+        };
     }
     public default BooleanAccessPrimitive<HOST> or(Predicate<? super HOST> anotherPredicate) {
         return host -> {
-            boolean bool1 = test(host);
-            return bool1 || anotherPredicate.test(host);
+            val boolValue = test(host);
+            return boolValue || anotherPredicate.test(host);
         };
     }
     public default BooleanAccessPrimitive<HOST> and(Predicate<? super HOST> anotherPredicate) {
         return host -> {
-            boolean bool1 = test(host);
-            return bool1 && anotherPredicate.test(host);
+            val boolValue = test(host);
+            return boolValue && anotherPredicate.test(host);
         };
     }
     

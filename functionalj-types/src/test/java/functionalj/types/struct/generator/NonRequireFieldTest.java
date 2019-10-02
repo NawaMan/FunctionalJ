@@ -240,8 +240,8 @@ public class NonRequireFieldTest {
                 "    \n" + 
                 "    public static class DataLens<HOST> extends ObjectLensImpl<HOST, Data> {\n" + 
                 "        \n" + 
-                "        public final IntegerLens<HOST> a = createSubLensPrimitive(Data::a, Data::withA);\n" + 
-                "        public final BooleanLens<HOST> b = createSubLensPrimitive(Data::b, Data::withB);\n" + 
+                "        public final IntegerLens<HOST> a = createSubLensInt(Data::a, Data::withA);\n" + 
+                "        public final BooleanLens<HOST> b = createSubLensBoolean(Data::b, Data::withB);\n" + 
                 "        public final StringLens<HOST> c = createSubLens(Data::c, Data::withC, StringLens::of);\n" + 
                 "        public final StringLens<HOST> d = createSubLens(Data::d, Data::withD, StringLens::of);\n" + 
                 "        public final StringLens<HOST> e = createSubLens(Data::e, Data::withE, StringLens::of);\n" + 

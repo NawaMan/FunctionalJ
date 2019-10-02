@@ -177,4 +177,12 @@ public class LensSpec<HOST, DATA>
         return LensSpec.ofPrimitive(readDouble, writeDouble);
     }
     
+    public PrimitiveLensSpecs.BooleanLensSpecPrimitive<HOST> thenPrimitive(PrimitiveLensSpecs.BooleanLensSpecPrimitive<DATA> sub) {
+        Predicate<DATA>                  subReadBoolean  = sub.getReadBoolean();
+        WriteLens.PrimitiveBoolean<DATA> subWriteBoolean = sub.getWriteBoolean();
+        Predicate<HOST>                  readBoolean     = LensUtils.createSubReadBoolean (read, subReadBoolean);
+        WriteLens.PrimitiveBoolean<HOST> writeBoolean    = LensUtils.createSubWriteBoolean(read, write, subWriteBoolean);
+        return LensSpec.ofPrimitive(readBoolean, writeBoolean);
+    }
+    
 }

@@ -38,7 +38,7 @@ import lombok.val;
 public class StructLensExample {
     
     @Struct
-    void Personel(int id, String firstName, String lastName) {}
+    void Personel(int id, String firstName, String lastName, double salary, boolean isOnSite) {}
     
     @Struct
     void Company(String name, FuncMap<Integer, Personel> employees) {}
@@ -46,8 +46,8 @@ public class StructLensExample {
     @Test
     public void testLensToMap() {
         val company = new Company("HighProfitCorp", listOf(
-                    new Personel(1, "John", "Doe"),
-                    new Personel(2, "Jane", "Smith")
+                    new Personel(1, "John", "Doe", 100_000, true),
+                    new Personel(2, "Jane", "Smith", 150_000, false)
                 ).toMap(thePersonel.id));
         assertEquals(
                 "Company["
@@ -79,9 +79,11 @@ public class StructLensExample {
     public void testPrimitiveField() {
         System.out.println(
                 listOf(
-                    new Personel(1000, "John", "Doe"),
-                    new Personel(2000, "Jane", "Smith")
+                        new Personel(1, "John", "Doe", 100_000, true),
+                        new Personel(2, "Jane", "Smith", 150_000, false)
                 )
+                .filter(eachPersonel.isOnSite)
+                .filter(eachPersonel.salary.thatGreaterThan(120_000.0))
                 .mapToInt(eachPersonel.id)
                 .toImmutableList()
                 .toString());

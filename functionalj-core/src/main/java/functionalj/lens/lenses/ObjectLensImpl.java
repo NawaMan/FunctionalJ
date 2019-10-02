@@ -27,7 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import functionalj.lens.core.AccessUtils;
 import functionalj.lens.core.LensSpec;
@@ -60,10 +63,28 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
         return LensUtils.createSubLens(this, readSub, writeSub, subLensCreator);
     }
     
-    protected IntegerLens<HOST> createSubLensPrimitive(
+    protected IntegerLens<HOST> createSubLensInt(
             ToIntFunction<DATA>          readSubInt,
             WriteLens.PrimitiveInt<DATA> writeSubInt) {
         return LensUtils.createSubLens(this, readSubInt, writeSubInt);
+    }
+    
+    protected LongLens<HOST> createSubLensLong(
+            ToLongFunction<DATA>          readSubLong,
+            WriteLens.PrimitiveLong<DATA> writeSubLong) {
+        return LensUtils.createSubLens(this, readSubLong, writeSubLong);
+    }
+    
+    protected DoubleLens<HOST> createSubLensDouble(
+            ToDoubleFunction<DATA>          readSubDouble,
+            WriteLens.PrimitiveDouble<DATA> writeSubDouble) {
+        return LensUtils.createSubLens(this, readSubDouble, writeSubDouble);
+    }
+    
+    protected BooleanLens<HOST> createSubLensBoolean(
+            Predicate<DATA>                  readSubBoolean,
+            WriteLens.PrimitiveBoolean<DATA> writeSubBoolean) {
+        return LensUtils.createSubLens(this, readSubBoolean, writeSubBoolean);
     }
     
     protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
@@ -82,8 +103,8 @@ public class ObjectLensImpl<HOST, DATA> implements ObjectLens<HOST, DATA> {
     
     protected <SUB, SUBLENS extends AnyLens<HOST, SUB>> 
             FuncListLens<HOST, SUB, SUBLENS> createSubFuncListLens(
-                Function<DATA, FuncList<SUB>>                   readSub,
-                WriteLens<DATA, FuncList<SUB>>                  writeSub,
+                Function<DATA, FuncList<SUB>>          readSub,
+                WriteLens<DATA, FuncList<SUB>>         writeSub,
                 Function<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
         val readThis   = this.lensSpec().getRead();
         val writeThis  = this.lensSpec().getWrite();

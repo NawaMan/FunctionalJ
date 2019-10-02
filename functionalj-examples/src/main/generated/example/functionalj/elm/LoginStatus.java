@@ -91,7 +91,7 @@ public abstract class LoginStatus implements IChoice<LoginStatus.LoginStatusFirs
         public static class LogginedLens<HOST> extends ObjectLensImpl<HOST, LoginStatus.Loggined> {
             
             public final StringLens<HOST> name = (StringLens)createSubLens(LoginStatus.Loggined::name, LoginStatus.Loggined::withName, StringLens::of);
-            public final IntegerLens<HOST> age = createSubLensPrimitive(LoginStatus.Loggined::age, LoginStatus.Loggined::withAge);
+            public final IntegerLens<HOST> age = createSubLensInt(LoginStatus.Loggined::age, LoginStatus.Loggined::withAge);
             public final FuncListLens<HOST, java.lang.Integer, IntegerLens<HOST>> years = createSubFuncListLens(LoginStatus.Loggined::years, LoginStatus.Loggined::withYears, IntegerLens::of);
             public final OptionalLens<HOST, java.lang.Double, DoubleLens<HOST>> wealth = createSubOptionalLens(LoginStatus.Loggined::wealth, LoginStatus.Loggined::withWealth, DoubleLens::of);
             public final User.UserLens<HOST> user = (User.UserLens)createSubLens(LoginStatus.Loggined::user, LoginStatus.Loggined::withUser, User.UserLens::new);

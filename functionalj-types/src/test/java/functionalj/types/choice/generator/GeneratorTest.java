@@ -232,9 +232,9 @@ public class GeneratorTest {
                 "    public RGB withB(int b) { return new RGB(r, g, b); }\n" + 
                 "    public static class RGBLens<HOST> extends ObjectLensImpl<HOST, Color.RGB> {\n" + 
                 "        \n" + 
-                "        public final IntegerLens<HOST> r = createSubLensPrimitive(Color.RGB::r, Color.RGB::withR);\n" + 
-                "        public final IntegerLens<HOST> g = createSubLensPrimitive(Color.RGB::g, Color.RGB::withG);\n" + 
-                "        public final IntegerLens<HOST> b = createSubLensPrimitive(Color.RGB::b, Color.RGB::withB);\n" + 
+                "        public final IntegerLens<HOST> r = createSubLensInt(Color.RGB::r, Color.RGB::withR);\n" + 
+                "        public final IntegerLens<HOST> g = createSubLensInt(Color.RGB::g, Color.RGB::withG);\n" + 
+                "        public final IntegerLens<HOST> b = createSubLensInt(Color.RGB::b, Color.RGB::withB);\n" + 
                 "        \n" + 
                 "        public RGBLens(LensSpec<HOST, Color.RGB> spec) {\n" + 
                 "            super(spec);\n" + 
