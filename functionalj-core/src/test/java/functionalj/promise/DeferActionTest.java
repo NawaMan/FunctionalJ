@@ -80,7 +80,7 @@ public class DeferActionTest {
         assertEquals("Result:{ NotReady }", action .getCurrentResult().toString());
         assertEquals("Result:{ NotReady }", promise.getCurrentResult().toString());
         
-        val add1 = theInteger.add(1);
+        val add1 = theInteger.plus(1);
         val answer = add1.applyTo(promise);
         assertEquals("Result:{ NotReady }", action .getCurrentResult().toString());
         assertEquals("Result:{ NotReady }", promise.getCurrentResult().toString());

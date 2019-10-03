@@ -265,6 +265,7 @@ public interface Streamable<DATA>
     
     public StreamPlus<DATA> stream();
     
+    
     //== Helper functions ==
     
     public default <TARGET> Streamable<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action) {
@@ -275,7 +276,7 @@ public interface Streamable<DATA>
         return Streamable.from(this, action);
     }
     
-    //== Stream sepecific ==
+    //== Stream specific ==
     
     public default Streamable<DATA> sequential() {
         return deriveWith(stream -> { 
@@ -302,11 +303,13 @@ public interface Streamable<DATA>
     }
     
     public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
-        return stream().mapToLong(mapper);
+        return stream()
+                .mapToLong(mapper);
     }
     
     public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
-        return stream().mapToDouble(mapper);
+        return stream()
+                .mapToDouble(mapper);
     }
     
     public default IntStreamPlus flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
@@ -314,11 +317,13 @@ public interface Streamable<DATA>
     }
     
     public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
-        return stream().flatMapToLong(mapper);
+        return stream()
+                .flatMapToLong(mapper);
     }
     
     public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
-        return stream().flatMapToDouble(mapper);
+        return stream()
+                .flatMapToDouble(mapper);
     }
     
     public default <TARGET> Streamable<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
@@ -633,7 +638,7 @@ public interface Streamable<DATA>
     
     public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
         return deriveWith(stream -> {
-            return StreamPlus.from(stream()).spawn(mapper);
+            return stream().spawn(mapper);
         });
     }
     

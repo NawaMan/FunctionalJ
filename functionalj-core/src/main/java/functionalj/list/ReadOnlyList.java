@@ -131,22 +131,22 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default int indexOf(Object o) {
-        return StreamPlus.from(stream()).toJavaList().indexOf(o);
+        return stream().toJavaList().indexOf(o);
     }
     
     @Override
     public default int lastIndexOf(Object o) {
-        return StreamPlus.from(stream()).toJavaList().lastIndexOf(o);
+        return stream().toJavaList().lastIndexOf(o);
     }
     
     @Override
     public default ListIterator<DATA> listIterator() {
-        return StreamPlus.from(stream()).toJavaList().listIterator();
+        return stream().toJavaList().listIterator();
     }
     
     @Override
     public default ListIterator<DATA> listIterator(int index) {
-        return StreamPlus.from(stream()).toJavaList().listIterator(index);
+        return stream().toJavaList().listIterator(index);
     }
     
     @Override

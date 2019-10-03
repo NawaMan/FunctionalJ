@@ -21,31 +21,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens;
+package functionalj.lens.lenses;
 
-import static functionalj.lens.Access.$I;
-import static functionalj.lens.Access.theInteger;
-import static functionalj.lens.Access.theString;
-import static org.junit.Assert.assertEquals;
+import lombok.val;
 
-import org.junit.Test;
 
-import functionalj.list.ImmutableList;
-
-public class NumberAccessTest {
+@FunctionalInterface
+public interface DoubleBiFunctionPrimitive extends ToDoubleBiDoubleFunction<Double> {
     
-    @Test
-    public void testAdd() {
-        assertEquals(15,  (int)theInteger.plus(5).apply(10));
-        
-        assertEquals(
-                "[(One,3,true,9.0), (Two,3,true,9.0), (Three,5,false,15.0), (Four,4,false,12.0)]",
-                "" + ImmutableList.of("One", "Two", "Three", "Four")
-                    .mapTuple(
-                         theString, 
-                         theString.length(),
-                         theString.length().thatLessThan(4),
-                         theString.length().plus($I.time(2)).toDouble()));
+    public double applyAsDoubleAndDouble(double data, double doubleValue);
+    
+    public default double applyAsDouble(Double data, double doubleValue) {
+        return applyAsDoubleAndDouble(data, doubleValue);
     }
     
+    
+    public static double apply(ToDoubleBiDoubleFunction<Double> function, double value, double anotherValue) {
+        val resValue 
+            = (function instanceof DoubleBiFunctionPrimitive)
+            ? ((DoubleBiFunctionPrimitive)function).applyAsDoubleAndDouble(value, anotherValue)
+            : function.applyAsDouble(value, anotherValue);
+        return resValue;
+    }
 }

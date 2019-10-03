@@ -41,7 +41,7 @@ public class PipeLineTest {
     public void testBasic() {
         val pipeLine = PipeLine
                 .from(theString.length())
-                .then(theInteger.multiply(2))
+                .then(theInteger.time(2))
                 .then(theInteger.asString())
                 .thenReturn();
         val pipeLine2 = PipeLine
@@ -67,7 +67,7 @@ public class PipeLineTest {
     public void testHandlingNull() {
         val pipeLine = PipeLine.ofNullable(String.class)
                 .then(theString.length())
-                .then(theInteger.multiply(2))
+                .then(theInteger.time(2))
                 .then(theInteger.asString())
                 .thenReturnOrElse("<none>");
         val pipeLine2 = PipeLine
@@ -87,7 +87,7 @@ public class PipeLineTest {
     public void testHandlingNullCombine() {
         val pipeLine = PipeLine.ofNullable(String.class)
                 .then($S.length())
-                .then($I.multiply(2))
+                .then($I.time(2))
                 .then($I.asString())
                 .then(defaultTo("<none>"))
                 .then($S.toUpperCase())

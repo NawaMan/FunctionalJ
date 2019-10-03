@@ -29,6 +29,7 @@ import static functionalj.store.ResultStatus.NotAllowed;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
@@ -39,7 +40,7 @@ import lombok.val;
 // TODO - Generate Store that immitate an immutable type and have the changes store inside.
 // TODO - Must mention that this is not thread safe.
 
-public class Store<DATA> {
+public class Store<DATA> implements Func0<DATA> {
     
     private final AtomicReference<DATA>                                     dataRef = new AtomicReference<DATA>();
     private final Func2<DATA, Func1<DATA, DATA>, ChangeNotAllowedException> approver;
@@ -136,6 +137,10 @@ public class Store<DATA> {
         return this;
     }
     
+    @Override
+    public DATA applyUnsafe() throws Exception {
+        return dataRef.get();
+    }
     public DATA value() {
         return dataRef.get();
     }

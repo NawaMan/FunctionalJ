@@ -32,7 +32,8 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 public interface StreamableWithCalculate<DATA> {
-
+    
+    
     public StreamPlus<DATA> stream();
     
     

@@ -392,9 +392,9 @@ public interface StreamPlus<DATA>
      * The result stream = [(A,1), (B,2), (C,3), (D,4)].
      **/
     public static <T1, T2> StreamPlus<Tuple2<T1, T2>> zipOf(
-            StreamPlus<T1> stream1, 
-            StreamPlus<T2> stream2) {
-        return stream1
+            Stream<T1> stream1, 
+            Stream<T2> stream2) {
+        return StreamPlus.from(stream1)
                 .zipWith(stream2, ZipWithOption.RequireBoth);
     }
     
@@ -410,10 +410,10 @@ public interface StreamPlus<DATA>
      * The result stream = ["A+1", "B+2", "C+3", "D+4"].
      **/
     public static <T1, T2, T> StreamPlus<T> zipOf(
-            StreamPlus<T1> stream1, 
-            StreamPlus<T2> stream2, 
+            Stream<T1> stream1, 
+            Stream<T2> stream2, 
             Func2<T1, T2, T> merger) {
-        return stream1
+        return StreamPlus.from(stream1)
                 .zipWith(stream2, ZipWithOption.RequireBoth, merger);
     }
     

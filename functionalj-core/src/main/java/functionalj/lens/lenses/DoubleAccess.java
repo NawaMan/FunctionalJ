@@ -182,48 +182,48 @@ public interface DoubleAccess<HOST>
         };
     }
     
-    public default DoubleAccessPrimitive<HOST> compareTo(double anotherValue) {
+    public default IntegerAccessPrimitive<HOST> compareTo(double anotherValue) {
         return host -> {
             double doubleValue = applyAsDouble(host);
-            double compare     = Double.compare(doubleValue, anotherValue);
+            int    compare     = Double.compare(doubleValue, anotherValue);
             return compare;
         };
     }
-    public default DoubleAccessPrimitive<HOST> compareTo(DoubleSupplier anotherSupplier) {
+    public default IntegerAccessPrimitive<HOST> compareTo(DoubleSupplier anotherSupplier) {
         return host -> {
             double doubleValue  = applyAsDouble(host);
             double anotherValue = anotherSupplier.getAsDouble();
-            double compare      = Double.compare(doubleValue, anotherValue);
+            int    compare      = Double.compare(doubleValue, anotherValue);
             return compare;
         };
     }
-    public default DoubleAccessPrimitive<HOST> compareTo(DoubleAccess<HOST> anotherAccess) {
+    public default IntegerAccessPrimitive<HOST> compareTo(DoubleAccess<HOST> anotherAccess) {
         return host -> {
             double doubleValue  = applyAsDouble(host);
             double anotherValue = anotherAccess.applyAsDouble(host);
-            double compare      = Double.compare(doubleValue, anotherValue);
+            int    compare      = Double.compare(doubleValue, anotherValue);
             return compare;
         };
     }
-    public default DoubleAccessPrimitive<HOST> compareTo(ToDoubleBiDoubleFunction<HOST> anotherFunction) {
+    public default IntegerAccessPrimitive<HOST> compareTo(ToDoubleBiDoubleFunction<HOST> anotherFunction) {
         return host -> {
             double doubleValue  = applyAsDouble(host);
             double anotherValue = anotherFunction.applyAsDouble(host, doubleValue);
-            double compare      = Double.compare(doubleValue, anotherValue);
+            int    compare      = Double.compare(doubleValue, anotherValue);
             return compare;
         };
     }
     
-    public default DoubleAccessPrimitive<HOST> cmp(double anotherValue) {
+    public default IntegerAccessPrimitive<HOST> cmp(double anotherValue) {
         return compareTo(anotherValue);
     }
-    public default DoubleAccessPrimitive<HOST> cmp(DoubleSupplier anotherSupplier) {
+    public default IntegerAccessPrimitive<HOST> cmp(DoubleSupplier anotherSupplier) {
         return compareTo(anotherSupplier);
     }
-    public default DoubleAccessPrimitive<HOST> cmp(DoubleAccess<HOST> anotherAccess) {
+    public default IntegerAccessPrimitive<HOST> cmp(DoubleAccess<HOST> anotherAccess) {
         return compareTo(anotherAccess);
     }
-    public default DoubleAccessPrimitive<HOST> cmp(ToDoubleBiDoubleFunction<HOST> anotherFunction) {
+    public default IntegerAccessPrimitive<HOST> cmp(ToDoubleBiDoubleFunction<HOST> anotherFunction) {
         return compareTo(anotherFunction);
     }
     
@@ -531,28 +531,28 @@ public interface DoubleAccess<HOST>
         };
     }
     
-    public default DoubleAccessPrimitive<HOST> times(double value) {
+    public default DoubleAccessPrimitive<HOST> time(double value) {
         return host -> {
             double doubleValue     = applyAsDouble(host);
             double anotherValue = value;
             return doubleValue * anotherValue;
         };
     }
-    public default DoubleAccessPrimitive<HOST> times(DoubleSupplier valueSupplier) {
+    public default DoubleAccessPrimitive<HOST> time(DoubleSupplier valueSupplier) {
         return host -> {
             double doubleValue     = applyAsDouble(host);
             double anotherValue = valueSupplier.getAsDouble();
             return doubleValue * anotherValue;
         };
     }
-    public default DoubleAccessPrimitive<HOST> times(DoubleAccess<HOST> valueFunction) {
+    public default DoubleAccessPrimitive<HOST> time(DoubleAccess<HOST> valueFunction) {
         return host -> {
             double doubleValue     = applyAsDouble(host);
             double anotherValue = valueFunction.applyAsDouble(host);
             return doubleValue * anotherValue;
         };
     }
-    public default DoubleAccessPrimitive<HOST> times(ToDoubleBiDoubleFunction<HOST> valueFunction) {
+    public default DoubleAccessPrimitive<HOST> time(ToDoubleBiDoubleFunction<HOST> valueFunction) {
         return host -> {
             double doubleValue     = applyAsDouble(host);
             double anotherValue = valueFunction.applyAsDouble(host, doubleValue);

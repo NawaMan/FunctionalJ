@@ -73,6 +73,7 @@ public interface IntegerAccess<HOST>
     
     public int applyAsInt(HOST host);
     
+    
     public Integer applyUnsafe(HOST host) throws Exception;
     
     
@@ -622,28 +623,28 @@ public interface IntegerAccess<HOST>
         };
     }
     
-    public default IntegerAccessPrimitive<HOST> times(int value) {
+    public default IntegerAccessPrimitive<HOST> time(int value) {
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = value;
             return intValue * anotherValue;
         };
     }
-    public default IntegerAccessPrimitive<HOST> times(IntSupplier valueSupplier) {
+    public default IntegerAccessPrimitive<HOST> time(IntSupplier valueSupplier) {
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = valueSupplier.getAsInt();
             return intValue * anotherValue;
         };
     }
-    public default IntegerAccessPrimitive<HOST> times(IntegerAccess<HOST> valueFunction) {
+    public default IntegerAccessPrimitive<HOST> time(IntegerAccess<HOST> valueFunction) {
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = valueFunction.applyAsInt(host);
             return intValue * anotherValue;
         };
     }
-    public default IntegerAccessPrimitive<HOST> times(ToIntBiIntFunction<HOST> valueFunction) {
+    public default IntegerAccessPrimitive<HOST> time(ToIntBiIntFunction<HOST> valueFunction) {
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = valueFunction.applyAsInt(host, intValue);
@@ -651,32 +652,32 @@ public interface IntegerAccess<HOST>
         };
     }
     
-    public default IntegerAccessPrimitive<HOST> dividedBy(int value) {
+    public default DoubleAccessPrimitive<HOST> dividedBy(int value) {
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = value;
-            return intValue / anotherValue;
+            return 1.0 * intValue / anotherValue;
         };
     }
-    public default IntegerAccessPrimitive<HOST> dividedBy(IntSupplier valueSupplier) {
+    public default DoubleAccessPrimitive<HOST> dividedBy(IntSupplier valueSupplier) {
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = valueSupplier.getAsInt();
-            return intValue / anotherValue;
+            return 1.0*intValue / anotherValue;
         };
     }
-    public default IntegerAccessPrimitive<HOST> dividedBy(IntegerAccess<HOST> valueFunction) {
+    public default DoubleAccessPrimitive<HOST> dividedBy(IntegerAccess<HOST> valueFunction) {
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = valueFunction.applyAsInt(host);
-            return intValue / anotherValue;
+            return 1.0*intValue / anotherValue;
         };
     }
-    public default IntegerAccessPrimitive<HOST> dividedBy(ToIntBiIntFunction<HOST> valueFunction) {
+    public default DoubleAccessPrimitive<HOST> dividedBy(ToIntBiIntFunction<HOST> valueFunction) {
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = valueFunction.applyAsInt(host, intValue);
-            return intValue / anotherValue;
+            return 1.0*intValue / anotherValue;
         };
     }
     

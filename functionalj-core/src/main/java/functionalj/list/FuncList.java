@@ -639,13 +639,13 @@ public interface FuncList<DATA>
     
     public default FuncList<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
         return deriveWith(stream -> {
-            return StreamPlus.from(stream()).collapse(conditionToCollapse, concatFunc);
+            return stream().collapse(conditionToCollapse, concatFunc);
         });
     }
     
     public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
         return deriveWith(stream -> {
-            return StreamPlus.from(stream()).spawn(mapper);
+            return stream().spawn(mapper);
         });
     }
 }

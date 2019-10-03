@@ -122,9 +122,9 @@ public class FromMethodTest {
         assertEquals("Car[make: BMW, year: 2010, color: Black]", car4.toString());
         
         val cars = FuncList.of(car4);
-        assertEquals("Car[make: BMW, year: 2009, color: Black]",  theCar.year.changeTo($I.subtract(1)).apply(car4).toString());
+        assertEquals("Car[make: BMW, year: 2009, color: Black]",  theCar.year.changeTo($I.less(1)).apply(car4).toString());
         assertEquals("Car[make: Benz, year: 2010, color: Black]", theCar.make.changeTo("Benz").apply(car4).toString());
-        assertEquals("[Car[make: BMW, year: 2009, color: Black]]", "" + cars.mapOnly(theCar.year.thatEquals(2010), theCar.year.changeTo($I.subtract(1))));
+        assertEquals("[Car[make: BMW, year: 2009, color: Black]]", "" + cars.mapOnly(theCar.year.thatEquals(2010), theCar.year.changeTo($I.less(1))));
     }
     
 }

@@ -269,48 +269,48 @@ public interface LongAccess<HOST>
     }
     
     
-    public default LongAccessPrimitive<HOST> compareTo(long anotherValue) {
+    public default IntegerAccessPrimitive<HOST> compareTo(long anotherValue) {
         return host -> {
             long longValue = applyAsLong(host);
-            long compare   = Long.compare(longValue, anotherValue);
+            int  compare   = Long.compare(longValue, anotherValue);
             return compare;
         };
     }
-    public default LongAccessPrimitive<HOST> compareTo(LongSupplier anotherSupplier) {
+    public default IntegerAccessPrimitive<HOST> compareTo(LongSupplier anotherSupplier) {
         return host -> {
             long longValue    = applyAsLong(host);
             long anotherValue = anotherSupplier.getAsLong();
-            long compare      = Long.compare(longValue, anotherValue);
+            int  compare      = Long.compare(longValue, anotherValue);
             return compare;
         };
     }
-    public default LongAccessPrimitive<HOST> compareTo(LongAccess<HOST> anotherAccess) {
+    public default IntegerAccessPrimitive<HOST> compareTo(LongAccess<HOST> anotherAccess) {
         return host -> {
             long longValue    = applyAsLong(host);
             long anotherValue = anotherAccess.applyAsLong(host);
-            long compare      = Long.compare(longValue, anotherValue);
+            int  compare      = Long.compare(longValue, anotherValue);
             return compare;
         };
     }
-    public default LongAccessPrimitive<HOST> compareTo(ToLongBiLongFunction<HOST> anotherFunction) {
+    public default IntegerAccessPrimitive<HOST> compareTo(ToLongBiLongFunction<HOST> anotherFunction) {
         return host -> {
             long longValue    = applyAsLong(host);
             long anotherValue = anotherFunction.applyAsLong(host, longValue);
-            long compare      = Long.compare(longValue, anotherValue);
+            int  compare      = Long.compare(longValue, anotherValue);
             return compare;
         };
     }
     
-    public default LongAccessPrimitive<HOST> cmp(long anotherValue) {
+    public default IntegerAccessPrimitive<HOST> cmp(long anotherValue) {
         return compareTo(anotherValue);
     }
-    public default LongAccessPrimitive<HOST> cmp(LongSupplier anotherSupplier) {
+    public default IntegerAccessPrimitive<HOST> cmp(LongSupplier anotherSupplier) {
         return compareTo(anotherSupplier);
     }
-    public default LongAccessPrimitive<HOST> cmp(LongAccess<HOST> anotherAccess) {
+    public default IntegerAccessPrimitive<HOST> cmp(LongAccess<HOST> anotherAccess) {
         return compareTo(anotherAccess);
     }
-    public default LongAccessPrimitive<HOST> cmp(ToLongBiLongFunction<HOST> anotherFunction) {
+    public default IntegerAccessPrimitive<HOST> cmp(ToLongBiLongFunction<HOST> anotherFunction) {
         return compareTo(anotherFunction);
     }
     
@@ -618,28 +618,28 @@ public interface LongAccess<HOST>
         };
     }
     
-    public default LongAccessPrimitive<HOST> times(long value) {
+    public default LongAccessPrimitive<HOST> time(long value) {
         return host -> {
             long longValue     = applyAsLong(host);
             long anotherValue = value;
             return longValue * anotherValue;
         };
     }
-    public default LongAccessPrimitive<HOST> times(LongSupplier valueSupplier) {
+    public default LongAccessPrimitive<HOST> time(LongSupplier valueSupplier) {
         return host -> {
             long longValue     = applyAsLong(host);
             long anotherValue = valueSupplier.getAsLong();
             return longValue * anotherValue;
         };
     }
-    public default LongAccessPrimitive<HOST> times(LongAccess<HOST> valueFunction) {
+    public default LongAccessPrimitive<HOST> time(LongAccess<HOST> valueFunction) {
         return host -> {
             long longValue     = applyAsLong(host);
             long anotherValue = valueFunction.applyAsLong(host);
             return longValue * anotherValue;
         };
     }
-    public default LongAccessPrimitive<HOST> times(ToLongBiLongFunction<HOST> valueFunction) {
+    public default LongAccessPrimitive<HOST> time(ToLongBiLongFunction<HOST> valueFunction) {
         return host -> {
             long longValue     = applyAsLong(host);
             long anotherValue = valueFunction.applyAsLong(host, longValue);
@@ -647,32 +647,32 @@ public interface LongAccess<HOST>
         };
     }
     
-    public default LongAccessPrimitive<HOST> dividedBy(long value) {
+    public default DoubleAccessPrimitive<HOST> dividedBy(long value) {
         return host -> {
             long longValue     = applyAsLong(host);
             long anotherValue = value;
-            return longValue / anotherValue;
+            return 1.0*longValue / anotherValue;
         };
     }
-    public default LongAccessPrimitive<HOST> dividedBy(LongSupplier valueSupplier) {
+    public default DoubleAccessPrimitive<HOST> dividedBy(LongSupplier valueSupplier) {
         return host -> {
             long longValue     = applyAsLong(host);
             long anotherValue = valueSupplier.getAsLong();
-            return longValue / anotherValue;
+            return 1.0*longValue / anotherValue;
         };
     }
-    public default LongAccessPrimitive<HOST> dividedBy(LongAccess<HOST> valueFunction) {
+    public default DoubleAccessPrimitive<HOST> dividedBy(LongAccess<HOST> valueFunction) {
         return host -> {
             long longValue     = applyAsLong(host);
             long anotherValue = valueFunction.applyAsLong(host);
-            return longValue / anotherValue;
+            return 1.0*longValue / anotherValue;
         };
     }
-    public default LongAccessPrimitive<HOST> dividedBy(ToLongBiLongFunction<HOST> valueFunction) {
+    public default DoubleAccessPrimitive<HOST> dividedBy(ToLongBiLongFunction<HOST> valueFunction) {
         return host -> {
             long longValue     = applyAsLong(host);
             long anotherValue = valueFunction.applyAsLong(host, longValue);
-            return longValue / anotherValue;
+            return 1.0*longValue / anotherValue;
         };
     }
     

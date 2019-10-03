@@ -21,6 +21,7 @@ TODO
 - Int,Long,Double FuncList (char)
 - Fix IntAccess to use applyAsIntFirst
 
-
+- IntegerAccess's method that return int should have IntegerToIntegerAccess be primitive to primitive
+- Fix IntegerLens .... for primitive to primitive
 
 

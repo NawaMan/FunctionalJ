@@ -263,19 +263,19 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     
     
     @SuppressWarnings("unchecked")
-    public default NUMACCESS times(TYPE value) {
+    public default NUMACCESS time(TYPE value) {
         return __operate(value, (NUMACCESS)this, this::newAccess, __mathOperators()::multiply);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS times(Supplier<TYPE> valueSupplier) {
+    public default NUMACCESS time(Supplier<TYPE> valueSupplier) {
         return __operate(__mathOperators().zero(), valueSupplier, (NUMACCESS)this, this::newAccess, __mathOperators()::multiply);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS times(Function<TYPE, TYPE> valueFunction) {
+    public default NUMACCESS time(Function<TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::multiply);
     }
     @SuppressWarnings("unchecked")
-    public default NUMACCESS times(BiFunction<HOST, TYPE, TYPE> valueFunction) {
+    public default NUMACCESS time(BiFunction<HOST, TYPE, TYPE> valueFunction) {
         return __operate(__mathOperators().zero(), valueFunction, (NUMACCESS)this, this::newAccess, __mathOperators()::multiply);
     }
     

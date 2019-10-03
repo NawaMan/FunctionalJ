@@ -21,31 +21,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens;
+package functionalj.lens.lenses;
 
-import static functionalj.lens.Access.$I;
-import static functionalj.lens.Access.theInteger;
-import static functionalj.lens.Access.theString;
-import static org.junit.Assert.assertEquals;
+import lombok.val;
 
-import org.junit.Test;
-
-import functionalj.list.ImmutableList;
-
-public class NumberAccessTest {
+@FunctionalInterface
+public interface LongBiFunctionPrimitive extends ToLongBiLongFunction<Long> {
     
-    @Test
-    public void testAdd() {
-        assertEquals(15,  (int)theInteger.plus(5).apply(10));
-        
-        assertEquals(
-                "[(One,3,true,9.0), (Two,3,true,9.0), (Three,5,false,15.0), (Four,4,false,12.0)]",
-                "" + ImmutableList.of("One", "Two", "Three", "Four")
-                    .mapTuple(
-                         theString, 
-                         theString.length(),
-                         theString.length().thatLessThan(4),
-                         theString.length().plus($I.time(2)).toDouble()));
+    public long applyAsLongAndLong(long data, long longValue);
+    
+    public default long applyAsLong(Long data, long longValue) {
+        return applyAsLongAndLong(data, longValue);
     }
     
+    
+    public static long apply(ToLongBiLongFunction<Long> function, long value, long anotherValue) {
+        val resValue 
+            = (function instanceof LongBiFunctionPrimitive)
+            ? ((LongBiFunctionPrimitive)function).applyAsLongAndLong(value, anotherValue)
+            : function.applyAsLong(value, anotherValue);
+        return resValue;
+    }
 }

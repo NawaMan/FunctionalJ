@@ -17,7 +17,7 @@ public class StoreTest {
     public void testBasic() {
         val store = new Store<>(0);
         assertEquals("Store [data=0]", store.toString());
-        ChangeResult<Integer> result = store.change(theInteger.add(1));
+        ChangeResult<Integer> result = store.change(theInteger.plus(1));
         assertEquals("Store [data=1]", store.toString());
         assertEquals("ChangeResult [store=Store [data=1], originalData=0, status=Accepted(1)]",  result.toString());
     }
@@ -27,8 +27,8 @@ public class StoreTest {
         val store = new Store<>(0);
         assertEquals("Store [data=0]", store.toString());
         store
-            .change(theInteger.add(1))
-            .change(theInteger.add(1));
+            .change(theInteger.plus(1))
+            .change(theInteger.plus(1));
         assertEquals("Store [data=2]", store.toString());
     }
     @Test
@@ -40,9 +40,9 @@ public class StoreTest {
         val store = new Store<>(0, positiveNumberAcceptor);
         assertEquals("Store [data=0]", store.toString());
         store
-            .change(theInteger.add(1))
-            .change(theInteger.add(-5))
-            .change(theInteger.add(1));
+            .change(theInteger.plus(1))
+            .change(theInteger.plus(-5))
+            .change(theInteger.plus(1));
         assertEquals("Store [data=1]", store.toString());
     }
     @Test
@@ -53,11 +53,11 @@ public class StoreTest {
         
         val store = new Store<>(0, positiveNumberAcceptor);
         assertEquals("Store [data=0]", store.toString());
-        store.change(theInteger.add(1));
+        store.change(theInteger.plus(1));
         assertEquals("Store [data=1]", store.toString());
-        store.change(theInteger.add(-5));
+        store.change(theInteger.plus(-5));
         assertEquals("Store [data=1]", store.toString());
-        store.change(theInteger.add(1));
+        store.change(theInteger.plus(1));
         assertEquals("Store [data=2]", store.toString());
     }
     
@@ -72,7 +72,7 @@ public class StoreTest {
     	val log   = new ArrayList<String>();
         val store = new Store<>(0);
         assertEquals("Store [data=0]", store.toString());
-        store   .change(theInteger.add(1))
+        store   .change(theInteger.plus(1))
         .store().use   (value -> log.add("" + value));
         assertEquals("Store [data=1]", store.toString());
     }
