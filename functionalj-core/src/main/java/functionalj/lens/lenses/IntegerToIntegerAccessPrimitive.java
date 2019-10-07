@@ -50,6 +50,12 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         return resValue;
     }
     
+    public default IntegerToIntegerAccessBoxed boxed() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue;
+        };
+    }
     
     //-- Compare --
     

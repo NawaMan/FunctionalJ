@@ -1,13 +1,45 @@
 package functionalj.stream;
 
+import static functionalj.lens.Access.theInteger;
+
+import java.util.ArrayList;
+import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.PrimitiveIterator;
+import java.util.Set;
+import java.util.Spliterator;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
+import java.util.function.IntConsumer;
+import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
+import java.util.function.IntToDoubleFunction;
+import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
+import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import functionalj.functions.StrFuncs;
+import functionalj.lens.Access;
+import functionalj.list.FuncList;
+import functionalj.list.ImmutableList;
+import functionalj.pipeable.Pipeable;
+import functionalj.tuple.Tuple;
+import functionalj.tuple.Tuple2;
+import functionalj.tuple.Tuple3;
+import functionalj.tuple.Tuple4;
+import functionalj.tuple.Tuple5;
+import functionalj.tuple.Tuple6;
 import lombok.val;
 
 
@@ -141,6 +173,10 @@ public interface IntStreamable {
     
     public IntStream stream();
     
+    public default IntStreamable streamable() {
+        return this;
+    }
+    
 //    
 //    //== Helper functions ==
 //    
@@ -151,115 +187,459 @@ public interface IntStreamable {
 //    public default <TARGET> Streamable<TARGET> deriveFrom(Function<Streamable<DATA>, Stream<TARGET>> action) {
 //        return Streamable.from(this, action);
 //    }
+
+    
+//    @Override
+//    public default LongStreamable asLongStream() {
+//        return LongStreamPlus.from(stream().asLongStream());
+//    }
+    
+//    @Override
+//    public default DoubleStreamable asDoubleStream() {
+//        return DoubleStreamPlus.from(stream().asDoubleStream());
+//    }
+    
+    public default Streamable<Integer> boxed() {
+        return ()->StreamPlus.from(stream().mapToObj(theInteger.boxed()));
+    }
+    
+    public default PrimitiveIterator.OfInt iterator() {
+        return stream().iterator();
+    }
+    
+    public default Spliterator.OfInt spliterator() {
+        return stream().spliterator();
+    }
     
     //== Stream specific ==
     
     public default IntStreamable sequential() {
-        return IntStreamable.from(this, IntStream::sequential);
+        return from(this, IntStream::sequential);
     }
     
     public default IntStreamable parallel() {
-        return IntStreamable.from(this, IntStream::parallel);
-    } 
-    
-    public default IntStreamable unordered() {
-        return IntStreamable.from(this, IntStream::unordered);
+        return from(this, IntStream::parallel);
     }
     
-//    //== Functionalities ==
+    public default boolean isParallel() {
+        return stream().isParallel();
+    }
+    
+    public default IntStreamable unordered() {
+        return from(this, IntStream::unordered);
+    }
+    
+    public default IntStreamable filter(IntPredicate predicate) {
+        return from(this, stream -> stream.filter(predicate));
+    }
+    
+    public default IntStreamable map(IntUnaryOperator mapper) {
+        return from(this, stream -> stream.map(mapper));
+    }
+    
+    public default IntStreamable flatMap(IntFunction<? extends IntStream> mapper) {
+        return from(this, intStream -> intStream.flatMap(mapper));
+    }
+    
+    public default <T> Pipeable<IntStreamable> pipable() {
+        return Pipeable.of(this);
+    }
+    
+    public default <T> T pipe(Function<? super IntStreamable, T> piper) {
+        return piper.apply(this);
+    }
+    
+    //== Functionalities ==
+    
+    public default <TARGET> Streamable<TARGET> mapToObj(IntFunction<? extends TARGET> mapper) {
+        return with(this, intStream -> intStream.mapToObj(mapper));
+    }
+    
+    public default IntStreamable mapToInt(IntUnaryOperator mapper) {
+        return from(this, stream -> stream.map(mapper));
+    }
 //    
-//    public default IntStreamPlus mapToInt(ToIntFunction<? super DATA> mapper) {
-//        return IntStreamPlus.from(stream().mapToInt(mapper));
+//    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
+//        return LongStreamPlus.from(stream().mapToLong(mapper));
 //    }
 //    
-//    public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
-//        return stream()
-//                .mapToLong(mapper);
+//    public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
+//        return DoubleStreamPlus.from(stream().mapToDouble (mapper));
 //    }
+    
+    public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends Stream<TARGET>> mapper) {
+        return with(
+                this, 
+                intStream 
+                    -> intStream
+                    .mapToObj(mapper)
+                    .flatMap (stream -> stream));
+    }
+    
+    public default IntStreamable flatMapToInt(IntFunction<? extends IntStream> mapper) {
+        return from(this, intStream -> intStream.flatMap(mapper));
+    }
+    
+//  public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
+//      return stream()
+//              .flatMapToLong(mapper);
+//  }
+//  
+//  public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
+//      return stream()
+//              .flatMapToDouble(mapper);
+//  }
+    
+    public default IntStreamable distinct() {
+        return from(this, stream -> stream.distinct());
+    }
+    
+    public default IntStreamable sorted() {
+        return from(this, stream -> stream.sorted());
+    }
+    
+    public default IntStreamable peek(IntConsumer action) {
+        return from(this, stream -> stream.peek(action));
+    }
+    
+    public default IntStreamable limit(long maxSize) {
+        return from(this, stream -> stream.limit(maxSize));
+    }
+    
+    public default IntStreamable skip(long offset) {
+        return from(this, stream -> stream.skip(offset));
+    }
+    
+    public default void forEach(IntConsumer action) {
+        stream()
+        .forEach(action);
+    }
+    
+    public default void forEachOrdered(IntConsumer action) {
+        stream()
+        .forEachOrdered(action);
+    }
+    
+    public default int[] toArray() {
+        return stream()
+                .toArray();
+    }
+    
+    public default int reduce(int identity, IntBinaryOperator reducer) {
+        return stream()
+                .reduce(identity, reducer);
+    }
+    
+    public default OptionalInt reduce(IntBinaryOperator reducer) {
+        return stream()
+                .reduce(reducer);
+    }
+    
+    public default <R> R collect(
+                    Supplier<R>       supplier,
+                    ObjIntConsumer<R> accumulator,
+                    BiConsumer<R, R>  combiner) {
+        return stream()
+                .collect(supplier, accumulator, combiner);
+    }
+    
+    public default int sum() {
+        return stream().sum();
+    }
+    
+    public default OptionalInt min() {
+        return stream().min();
+    }
+    
+    public default OptionalInt max() {
+        return stream().max();
+    }
+    
+    public default long count() {
+        return stream().count();
+    }
+    
+    public default OptionalDouble average() {
+        return stream().average();
+    }
+    
+    public default IntSummaryStatistics summaryStatistics() {
+        return stream().summaryStatistics();
+    }
+    
+    public default boolean anyMatch(IntPredicate predicate) {
+        return stream().anyMatch(predicate);
+    }
+    
+    public default boolean allMatch(IntPredicate predicate) {
+        return stream().allMatch(predicate);
+    }
+    
+    public default boolean noneMatch(IntPredicate predicate) {
+        return stream().noneMatch(predicate);
+    }
+    
+    public default OptionalInt findFirst() {
+        return stream().findFirst();
+    }
+    
+    public default OptionalInt findAny() {
+        return stream().findAny();
+    }
+    
+    public default OptionalInt findFirst(IntPredicate predicate) {
+        return stream()
+                .filter(predicate)
+                .findFirst();
+    }
+    
+    public default OptionalInt findAny(IntPredicate predicate) {
+        return stream()
+                .filter(predicate)
+                .findAny();
+    }
+    
+    //== Additional functionalities
 //    
-//    public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
-//        return stream()
-//                .mapToDouble(mapper);
+//    public default Streamable<IntStreamPlus> segment(
+//                    int count) {
+//        return with(
+//                this, 
+//                stream 
+//                    -> IntStreamPlus
+//                    .from(stream)
+//                    .segment(count));
 //    }
-//    
-//    public default IntStreamPlus flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
-//        return IntStreamPlus.from(stream().flatMapToInt(mapper));
+//    public default Streamable<IntStreamPlus> segment(
+//                    int     count, 
+//                    boolean includeTail) {
+//        return with(
+//                this, 
+//                stream 
+//                    -> IntStreamPlus
+//                    .from(stream)
+//                    .segment(count, includeTail));
 //    }
-//    
-//    public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
-//        return stream()
-//                .flatMapToLong(mapper);
+//    public default Streamable<IntStreamPlus> segment(
+//                    IntPredicate startCondition) {
+//        return with(
+//                this, 
+//                stream 
+//                    -> IntStreamPlus
+//                    .from(stream)
+//                    .segment(startCondition));
 //    }
-//    
-//    public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
-//        return stream()
-//                .flatMapToDouble(mapper);
+//    public default Streamable<IntStreamPlus> segment(
+//                    IntPredicate startCondition, 
+//                    boolean      includeTail) {
+//        return with(
+//                this, 
+//                stream 
+//                    -> IntStreamPlus
+//                    .from(stream)
+//                    .segment(startCondition, includeTail));
 //    }
-//    
-//    public default <TARGET> Streamable<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
-//        return deriveWith(stream -> {
-//            return stream.map(mapper);
-//        });
+//    public default Streamable<IntStreamPlus> segment(
+//                    IntPredicate startCondition, 
+//                    IntPredicate endCondition) {
+//        return with(
+//                this, 
+//                stream 
+//                    -> IntStreamPlus
+//                    .from(stream)
+//                    .segment(startCondition, endCondition));
 //    }
-//    
-//    public default <TARGET> Streamable<TARGET> flatMap(Function<? super DATA, ? extends Streamable<? extends TARGET>> mapper) {
-//        return deriveWith(stream -> {
-//            return stream.flatMap(e -> mapper.apply(e).stream());
-//        });
+//    public default Streamable<IntStreamPlus> segment(
+//                    IntPredicate startCondition, 
+//                    IntPredicate endCondition, 
+//                    boolean      includeTail) {
+//        return with(
+//                this, 
+//                stream 
+//                    -> IntStreamPlus
+//                    .from(stream)
+//                    .segment(startCondition, endCondition, includeTail));
 //    }
-//    
-//    public default Streamable<DATA> filter(Predicate<? super DATA> predicate) {
-//        return deriveWith(stream -> {
-//            return (predicate == null)
-//                ? stream
-//                : stream.filter(predicate);
-//        });
+    
+    public default List<Integer> toList() {
+        return boxed()
+                .toJavaList();
+    }
+    
+    public default FuncList<Integer> toFuncList() {
+        return boxed()
+                .toImmutableList();
+    }
+    
+    public default ImmutableList<Integer> toImmutableList() {
+        return boxed()
+                .toImmutableList();
+    }
+    
+    public default List<Integer> toMutableList() {
+        return boxed()
+                .toMutableList();
+    }
+    
+    public default ArrayList<Integer> toArrayList() {
+        return boxed()
+                .toArrayList();
+    }
+    
+    public default Set<Integer> toSet() {
+        return boxed()
+                .toSet();
+    }
+    
+    //== Plus ==
+    
+    public default String joining() {
+        return stream()
+                .mapToObj(StrFuncs::toStr)
+                .collect(Collectors.joining());
+    }
+    public default String joining(String delimiter) {
+        return stream()
+                .mapToObj(StrFuncs::toStr)
+                .collect(Collectors.joining(delimiter));
+    }
+    
+    //== Calculate ==
+    
+    public default <T> T calculate(
+            IntStreamProcessor<T> processor) {
+        val streamable = streamable();
+        val collected  = Collected.ofInt(processor, streamable);
+        forEach(each -> {
+            collected.accumulate(each);
+        });
+        val value = collected.finish();
+        return value;
+    }
+    
+    public default <T1, T2> Tuple2<T1, T2> calculate(
+            IntStreamProcessor<T1> processor1, 
+            IntStreamProcessor<T2> processor2) {
+        val streamable = streamable();
+        val collected1 = Collected.ofInt(processor1, streamable);
+        val collected2 = Collected.ofInt(processor2, streamable);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        return Tuple.of(value1, value2);
+    }
+    
+    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
+            IntStreamProcessor<T1> processor1, 
+            IntStreamProcessor<T2> processor2, 
+            IntStreamProcessor<T3> processor3) {
+        val streamable = streamable();
+        val collected1 = Collected.ofInt(processor1, streamable);
+        val collected2 = Collected.ofInt(processor2, streamable);
+        val collected3 = Collected.ofInt(processor3, streamable);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        return Tuple.of(value1, value2, value3);
+    }
+    
+    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
+            IntStreamProcessor<T1> processor1, 
+            IntStreamProcessor<T2> processor2, 
+            IntStreamProcessor<T3> processor3, 
+            IntStreamProcessor<T4> processor4) {
+        val streamable = streamable();
+        val collected1 = Collected.ofInt(processor1, streamable);
+        val collected2 = Collected.ofInt(processor2, streamable);
+        val collected3 = Collected.ofInt(processor3, streamable);
+        val collected4 = Collected.ofInt(processor4, streamable);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
+        return Tuple.of(value1, value2, value3, value4);
+    }
+    
+    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
+            IntStreamProcessor<T1> processor1, 
+            IntStreamProcessor<T2> processor2, 
+            IntStreamProcessor<T3> processor3, 
+            IntStreamProcessor<T4> processor4, 
+            IntStreamProcessor<T5> processor5) {
+        val streamable = streamable();
+        val collected1 = Collected.ofInt(processor1, streamable);
+        val collected2 = Collected.ofInt(processor2, streamable);
+        val collected3 = Collected.ofInt(processor3, streamable);
+        val collected4 = Collected.ofInt(processor4, streamable);
+        val collected5 = Collected.ofInt(processor5, streamable);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
+        val value5 = collected5.finish();
+        return Tuple.of(value1, value2, value3, value4, value5);
+    }
+    
+    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
+            IntStreamProcessor<T1> processor1, 
+            IntStreamProcessor<T2> processor2, 
+            IntStreamProcessor<T3> processor3, 
+            IntStreamProcessor<T4> processor4, 
+            IntStreamProcessor<T5> processor5, 
+            IntStreamProcessor<T6> processor6) {
+        val streamable = streamable();
+        val collected1 = Collected.ofInt(processor1, streamable);
+        val collected2 = Collected.ofInt(processor2, streamable);
+        val collected3 = Collected.ofInt(processor3, streamable);
+        val collected4 = Collected.ofInt(processor4, streamable);
+        val collected5 = Collected.ofInt(processor5, streamable);
+        val collected6 = Collected.ofInt(processor6, streamable);
+        forEach(each -> {
+            collected1.accumulate(each);
+            collected2.accumulate(each);
+            collected3.accumulate(each);
+            collected4.accumulate(each);
+            collected5.accumulate(each);
+            collected6.accumulate(each);
+        });
+        val value1 = collected1.finish();
+        val value2 = collected2.finish();
+        val value3 = collected3.finish();
+        val value4 = collected4.finish();
+        val value5 = collected5.finish();
+        val value6 = collected6.finish();
+        return Tuple.of(value1, value2, value3, value4, value5, value6);
+    }
+    
+//    public default IntStreamable skipWhile(IntPredicate condition) {
+//        return with(
+//                this,
+//                stream
+//                -> stream
+//                .skipWhile(condition));
 //    }
-//    
-//    public default Streamable<DATA> peek(Consumer<? super DATA> action) {
-//        return deriveWith(stream -> {
-//            return (action == null)
-//                    ? stream
-//                    : stream.peek(action);
-//        });
-//    }
-//    
-//    //-- Limit/Skip --
-//    
-//    public default Streamable<DATA> limit(long maxSize) {
-//        return deriveWith(stream -> {
-//            return stream.limit(maxSize);
-//        });
-//    }
-//    
-//    public default Streamable<DATA> skip(long n) {
-//        return deriveWith(stream -> {
-//            return stream.skip(n);
-//        });
-//    }
-//    
-//    public default Streamable<DATA> limit(Long maxSize) {
-//        return deriveWith(stream -> {
-//            return ((maxSize == null) || (maxSize.longValue() < 0))
-//                    ? stream
-//                    : stream.limit(maxSize);
-//        });
-//    }
-//    
-//    public default Streamable<DATA> skip(Long startAt) {
-//        return deriveWith(stream -> {
-//            return ((startAt == null) || (startAt.longValue() < 0))
-//                    ? stream
-//                    : stream.skip(startAt);
-//        });
-//    }
-//    
-//    public default Streamable<DATA> skipWhile(Predicate<? super DATA> condition) {
-//        return deriveWith(stream -> {
-//            return StreamPlus.from(stream).skipWhile(condition);
-//        });
-//    }
-//    
+    
 //    public default Streamable<DATA> skipUntil(Predicate<? super DATA> condition) {
 //        return deriveWith(stream -> {
 //            return StreamPlus.from(stream).skipUntil(condition);
@@ -278,28 +658,7 @@ public interface IntStreamable {
 //        });
 //    }
 //    
-//    public default Streamable<DATA> distinct() {
-//        return deriveWith(stream -> {
-//            return stream.distinct();
-//        });
-//    }
-//    
 //    //-- Sorted --
-//    
-//    public default Streamable<DATA> sorted() {
-//        return deriveWith(stream -> {
-//            return stream.sorted();
-//        });
-//    }
-//    
-//    public default Streamable<DATA> sorted(
-//            Comparator<? super DATA> comparator) {
-//        return deriveWith(stream -> {
-//            return (comparator == null)
-//                    ? stream.sorted()
-//                    : stream.sorted(comparator);
-//        });
-//    }
 //    
 //    public default <T extends Comparable<? super T>> Streamable<DATA> sortedBy(
 //            Function<? super DATA, T> mapper) {
@@ -324,37 +683,6 @@ public interface IntStreamable {
 //        });
 //    }
 //    
-//    //-- Terminate --
-//    
-//    public default void forEach(Consumer<? super DATA> action) {
-//        if (action == null)
-//            return;
-//        
-//        stream().forEach(action);
-//    }
-//    
-//    public default void forEachOrdered(Consumer<? super DATA> action) {
-//        if (action == null)
-//            return;
-//        
-//        stream().forEachOrdered(action);
-//    }
-//    
-//    public default DATA reduce(DATA identity, BinaryOperator<DATA> accumulator) {
-//        return stream().reduce(identity, accumulator);
-//    }
-//    
-//    public default Optional<DATA> reduce(BinaryOperator<DATA> accumulator) {
-//        return stream().reduce(accumulator);
-//    }
-//    
-//    public default <U> U reduce(
-//                    U                              identity,
-//                    BiFunction<U, ? super DATA, U> accumulator,
-//                    BinaryOperator<U>              combiner) {
-//        return stream().reduce(identity, accumulator, combiner);
-//    }
-//    
 //    public default <R, A> R collect(
 //            Collector<? super DATA, A, R> collector) {
 //        return stream().collect(collector);
@@ -367,52 +695,7 @@ public interface IntStreamable {
 //        return stream().collect(supplier, accumulator, combiner);
 //    }
 //    
-//    public default Optional<DATA> min(
-//            Comparator<? super DATA> comparator) {
-//        return stream().min(comparator);
-//    }
-//    
-//    public default Optional<DATA> max(
-//            Comparator<? super DATA> comparator) {
-//        return stream().max(comparator);
-//    }
-//    
-//    public default long count() {
-//        return stream().count();
-//    }
-//    
-//    public default int size() {
-//        return (int)stream().count();
-//    }
-//    
-//    public default boolean anyMatch(
-//            Predicate<? super DATA> predicate) {
-//        return stream().anyMatch(predicate);
-//    }
-//    
-//    public default boolean allMatch(
-//            Predicate<? super DATA> predicate) {
-//        return stream().allMatch(predicate);
-//    }
-//    
-//    public default boolean noneMatch(
-//            Predicate<? super DATA> predicate) {
-//        return stream().noneMatch(predicate);
-//    }
-//    
-//    public default Optional<DATA> findFirst() {
-//        return stream().findFirst();
-//    }
-//    
-//    public default Optional<DATA> findAny() {
-//        return stream().findAny();
-//    }
-//    
 //    //== toXXX ===
-//    
-//    public default Object[] toArray() {
-//        return stream().toArray();
-//    }
 //    
 //    public default <T> T[] toArray(T[] a) {
 //        return StreamPlus.of(stream()).toJavaList().toArray(a);
@@ -420,10 +703,6 @@ public interface IntStreamable {
 //    
 //    public default <A> A[] toArray(IntFunction<A[]> generator) {
 //        return stream().toArray(generator);
-//    }
-//    
-//    public default List<DATA> toJavaList() {
-//        return stream().collect(Collectors.toList());
 //    }
 //    
 //    public default byte[] toByteArray(Func1<DATA, Byte> toByte) {
@@ -444,42 +723,8 @@ public interface IntStreamable {
 //        return mapToDouble(toDouble).toArray();
 //    }
 //    
-//    public default FuncList<DATA> toList() {
-//        return toImmutableList();
-//    }
-//    
-//    public default FuncList<DATA> toLazyList() {
-//        return FuncList.from(this);
-//    }
-//    
 //    public default String toListString() {
 //        return "[" + map(String::valueOf).collect(Collectors.joining(", ")) + "]";
-//    }
-//    
-//    public default ImmutableList<DATA> toImmutableList() {
-//        return ImmutableList.from(stream());
-//    }
-//    
-//    public default List<DATA> toMutableList() {
-//        return toArrayList();
-//    }
-//    
-//    public default ArrayList<DATA> toArrayList() {
-//        return new ArrayList<DATA>(toJavaList());
-//    }
-//    
-//    public default Set<DATA> toSet() {
-//        return new HashSet<DATA>(stream().collect(Collectors.toSet()));
-//    }
-//    
-//    //-- Iterator --
-//    
-//    public default IteratorPlus<DATA> iterator() {
-//        return IteratorPlus.from(stream());
-//    }
-//    
-//    public default Spliterator<DATA> spliterator() {
-//        return Spliterators.spliteratorUnknownSize(iterator(), 0);
 //    }
 //    
 //    //== Plus ==
@@ -491,16 +736,6 @@ public interface IntStreamable {
 //    public default String joinToString(String delimiter) {
 //        return map(StrFuncs::toStr)
 //                .collect(Collectors.joining(delimiter));
-//    }
-//    
-//    //++ Plus w/ Self ++
-//    
-//    public default <T> Pipeable<Streamable<DATA>> pipable() {
-//        return Pipeable.of(this);
-//    }
-//    
-//    public default <T> T pipe(Function<? super Streamable<DATA>, T> piper) {
-//        return piper.apply(this);
 //    }
 //    
 //    //== Spawn ==

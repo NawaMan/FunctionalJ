@@ -35,7 +35,8 @@ import lombok.val;
 
 public interface IntCollectorPlus<ACCUMULATED, RESULT> 
         extends
-            CollectorPlus<Integer, ACCUMULATED, RESULT> {
+            CollectorPlus<Integer, ACCUMULATED, RESULT>,
+            IntStreamProcessor<RESULT> {
     
     Supplier<ACCUMULATED>         supplier();
     IntAccumulator<ACCUMULATED>   intAccumulator();

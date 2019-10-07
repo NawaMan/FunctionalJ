@@ -99,8 +99,8 @@ public interface StreamPlus<DATA>
         {
     
     /**
-     * Throw a no more element exception. This is used for generter.
-     * This is done in the way that it can be overriden.
+     * Throw a no more element exception. This is used for generater.
+     * This is done in the way that it can be overridden.
      **/
     public static <D> D noMoreElement() throws NoMoreResultException {
         ThrowFuncs.doThrowFrom(()->new NoMoreResultException());
@@ -118,7 +118,7 @@ public interface StreamPlus<DATA>
     /**
      * Returns an empty StreamPlus.
      */
-    public static <D> StreamPlus<D> emptyStreamPlus() {
+    public static <D> StreamPlus<D> emptyStream() {
         return StreamPlus
                 .from(Stream.empty());
     }

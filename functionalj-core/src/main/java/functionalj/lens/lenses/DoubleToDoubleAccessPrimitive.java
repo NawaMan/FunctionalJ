@@ -49,6 +49,13 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
         return resValue;
     }
     
+    public default DoubleAccessBoxed<Double> boxed() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return doubleValue;
+        };
+    }
+    
     
     //-- Compare --
     

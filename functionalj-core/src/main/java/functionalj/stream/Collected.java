@@ -48,15 +48,37 @@ interface Collected<DATA, ACCUMULATED, RESULT> {
     public RESULT finish();
     
     
-    static <A, R> CollectedInt<A, R> ofInt(IntCollectorPlus<A, R> collector) {
-        return new CollectedInt<A, R>(collector);
+    @SuppressWarnings("unchecked")
+    static <A, R> CollectedInt<A, R> ofInt(
+            IntStreamProcessor<R> processor, 
+            IntStreamable         streamable) {
+        Objects.requireNonNull(processor);
+        if (processor instanceof Collector)
+            return new ByCollectedInt<>(((IntCollectorPlus<A, R>)processor));
+        
+        Objects.requireNonNull(streamable);
+        return new ByIntStreamProcessor<>(processor, streamable);
     }
-    static <A, R> CollectedLong<A, R> ofLong(LongCollectorPlus<A, R> collector) {
-        return new CollectedLong<A, R>(collector);
-    }
-    static <A, R> CollectedDouble<A, R> ofDouble(DoubleCollectorPlus<A, R> collector) {
-        return new CollectedDouble<A, R>(collector);
-    }
+//    static <A, R> CollectedLong<A, R> ofLong(
+//            LongStreamProcessor<R> processor, 
+//            LongStreamable         streamable) {
+//        Objects.requireNonNull(processor);
+//        if (processor instanceof Collector)
+//            return new ByCollectedLong<>(((LongCollectorPlus<A, R>)processor));
+//        
+//        Objects.requireNonNull(streamable);
+//        return new ByLongStreamProcessor<>(processor, streamable);
+//    }
+//    static <A, R> CollectedDouble<A, R> ofDouble(
+//            DoubleCollectorPlus<A, R> collector, 
+//            DoubleStreamable          streamable) {
+//        Objects.requireNonNull(processor);
+//        if (processor instanceof Collector)
+//            return new ByCollectedDouble<>(((DoubleCollectorPlus<A, R>)processor));
+//        
+//        Objects.requireNonNull(streamable);
+//        return new ByDoubleStreamProcessor<>(processor, streamable);
+//    }
     
     
     static class ByCollector<DATA, ACCUMULATED, RESULT> 
@@ -111,13 +133,19 @@ interface Collected<DATA, ACCUMULATED, RESULT> {
         }
     }
     
-    static class CollectedInt<ACCUMULATED, RESULT> {
+    static interface CollectedInt<ACCUMULATED, RESULT> {
+        public void   accumulate(int each);
+        public RESULT finish();
+    }
+    
+    static class ByCollectedInt<ACCUMULATED, RESULT>
+                    implements CollectedInt<ACCUMULATED, RESULT> {
         
         private final IntCollectorPlus<ACCUMULATED, RESULT> collector;
         private final IntAccumulator<ACCUMULATED>           accumulator;
         private final ACCUMULATED                           accumulated;
         
-        CollectedInt(IntCollectorPlus<ACCUMULATED, RESULT> collector) {
+        ByCollectedInt(IntCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.intAccumulator();
@@ -134,13 +162,41 @@ interface Collected<DATA, ACCUMULATED, RESULT> {
         
     }
     
-    static class CollectedLong<ACCUMULATED, RESULT> {
+    static class ByIntStreamProcessor<ACCUMULATED, RESULT>
+                    implements CollectedInt<ACCUMULATED, RESULT> {
+        
+        private final IntStreamProcessor<RESULT> processor;
+        private final IntStreamable              streamable;
+        
+        ByIntStreamProcessor(
+                IntStreamProcessor<RESULT> processor, 
+                IntStreamable              stream) {
+            this.processor  = processor;
+            this.streamable = stream;
+        }
+        
+        public void accumulate(int each) {
+        }
+        
+        public RESULT finish() {
+            val stream    = streamable.stream();
+            val intStream = IntStreamPlus.from(stream);
+            return processor.process(intStream);
+        }
+    }
+    
+    static interface CollectedLong<ACCUMULATED, RESULT> {
+        public void   accumulate(int each);
+        public RESULT finish();
+    }
+    
+    static class ByCollectedLong<ACCUMULATED, RESULT> {
         
         private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
         private final LongAccumulator<ACCUMULATED>           accumulator;
         private final ACCUMULATED                            accumulated;
         
-        CollectedLong(LongCollectorPlus<ACCUMULATED, RESULT> collector) {
+        ByCollectedLong(LongCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.longAccumulator();
@@ -156,14 +212,42 @@ interface Collected<DATA, ACCUMULATED, RESULT> {
         }
         
     }
+//    
+//    static class ByLongStreamProcessor<ACCUMULATED, RESULT>
+//                    implements CollectedLong<ACCUMULATED, RESULT> {
+//        
+//        private final LongStreamProcessor<RESULT> processor;
+//        private final LongStreamable              streamable;
+//        
+//        ByLongStreamProcessor(
+//                LongStreamProcessor<RESULT> processor, 
+//                LongStreamable              stream) {
+//            this.processor  = processor;
+//            this.streamable = stream;
+//        }
+//        
+//        public void accumulate(long each) {
+//        }
+//        
+//        public RESULT finish() {
+//            val stream    = streamable.stream();
+//            val longStream = LongStreamPlus.from(stream);
+//            return processor.process(longStream);
+//        }
+//    }
     
-    static class CollectedDouble<ACCUMULATED, RESULT> {
+    static interface CollectedDouble<ACCUMULATED, RESULT> {
+        public void   accumulate(int each);
+        public RESULT finish();
+    }
+    
+    static class ByCollectedDouble<ACCUMULATED, RESULT> {
         
         private final DoubleCollectorPlus<ACCUMULATED, RESULT> collector;
         private final DoubleAccumulator<ACCUMULATED>           accumulator;
         private final ACCUMULATED                              accumulated;
         
-        CollectedDouble(DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {
+        ByCollectedDouble(DoubleCollectorPlus<ACCUMULATED, RESULT> collector) {
             this.collector   = collector;
             this.accumulated = collector.supplier().get();
             this.accumulator = collector.doubleAccumulator();
@@ -179,6 +263,29 @@ interface Collected<DATA, ACCUMULATED, RESULT> {
         }
         
     }
+//  
+//  static class ByDoubleStreamProcessor<ACCUMULATED, RESULT>
+//                  implements CollectedDouble<ACCUMULATED, RESULT> {
+//      
+//      private final DoubleStreamProcessor<RESULT> processor;
+//      private final DoubleStreamable              streamable;
+//      
+//      ByDoubleStreamProcessor(
+//              DoubleStreamProcessor<RESULT> processor, 
+//              DoubleStreamable              stream) {
+//          this.processor  = processor;
+//          this.streamable = stream;
+//      }
+//      
+//      public void accumulate(double each) {
+//      }
+//      
+//      public RESULT finish() {
+//          val stream       = streamable.stream();
+//          val doubleStream = DoubleStreamPlus.from(stream);
+//          return processor.process(doubleStream);
+//      }
+//  }
     
 }
 

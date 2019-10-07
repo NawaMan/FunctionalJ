@@ -339,7 +339,7 @@ public class RefTest {
             .limit(5)
             .peek (i -> Time.sleep(20))
             .map  (i -> ref.value())
-            .joining(" - ");
+            .joinToString(" - ");
         })
         .onComplete(r -> resultRef.set(r));
         
@@ -353,7 +353,7 @@ public class RefTest {
         }
         Time.sleep(200);
         
-        assertEquals("2 - 2 - 2 - 2 - 2", resultRef.get().value());
+        assertEquals("[2 - 2 - 2 - 2 - 2]", resultRef.get().value());
     }
     
     @Test
