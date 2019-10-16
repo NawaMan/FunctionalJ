@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,11 +21,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens.lenses;
+package functionalj.function;
 
-@FunctionalInterface
-public interface ToLongBiLongFunction<DATA> {
+import java.util.function.BiFunction;
+
+public interface IntObjBiFunction<DATA, TARGET> extends Func2<Integer, DATA, TARGET> {
     
-    public long applyAsLong(DATA data, long intValue);
+    public TARGET applyAsInt(int input1, DATA input2);
+    
+    public default TARGET applyUnsafe(Integer input1, DATA input2) throws Exception {
+        return applyAsInt(input1, input2);
+    }
+    
+    public static <D, T> T apply(BiFunction<Integer, D, T> function, int input1, D input2) {
+        if (function instanceof IntObjBiPredicate) {
+            return ((IntObjBiFunction<D, T>)function).applyAsInt(input1, input2);
+        } else {
+            return function.apply(input1, input2);
+        }
+    }
     
 }
+

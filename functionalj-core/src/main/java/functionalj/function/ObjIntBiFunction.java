@@ -21,27 +21,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens.lenses;
+package functionalj.function;
 
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
-import functionalj.function.FuncUnit2;
-
-public interface IntObjBiConsumer<DATA> extends FuncUnit2<Integer, DATA> {
+public interface ObjIntBiFunction<DATA, TARGET> extends Func2<DATA, Integer, TARGET> {
     
-    public void acceptAsInt(int input1, DATA input2);
+    public TARGET applyAsInt(DATA input1, int input2);
     
-    public default void acceptUnsafe(Integer input1, DATA input2) throws Exception {
-        acceptAsInt(input1, input2);
+    public default TARGET applyUnsafe(DATA input1, Integer input2) throws Exception {
+        return applyAsInt(input1, input2);
     }
     
-    
-    public static <D> void accept(BiConsumer<Integer, D> function, int input1, D input2) {
-        if (function instanceof IntObjBiPredicate) {
-            ((IntObjBiConsumer<D>)function).acceptAsInt(input1, input2);
+    public static <D, T> T apply(BiFunction<D, Integer, T> function, D input1, int input2) {
+        if (function instanceof ObjIntBiFunction) {
+            return ((ObjIntBiFunction<D, T>)function).applyAsInt(input1, input2);
         } else {
-            function.accept(input1, input2);
+            return function.apply(input1, input2);
         }
     }
     
 }
+

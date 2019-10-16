@@ -25,10 +25,9 @@ package functionalj.stream;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.function.IntPredicate;
-
 import org.junit.Test;
 
+import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public class IntStreamPlusTest {

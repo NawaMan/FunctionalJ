@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.list.FuncList;
+import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public interface StreamableWithSegment<DATA> {

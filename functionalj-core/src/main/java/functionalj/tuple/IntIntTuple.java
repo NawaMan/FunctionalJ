@@ -21,11 +21,68 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens.lenses;
+package functionalj.tuple;
 
-@FunctionalInterface
-public interface ToIntBiIntFunction<DATA> {
+import java.util.Map;
+
+@SuppressWarnings("javadoc")
+public class IntIntTuple implements Tuple2<Integer, Integer>, Map.Entry<Integer, Integer> {
     
-    public int applyAsInt(DATA data, int intValue);
+    public static  IntIntTuple of(int i1, int i2) {
+        return new IntIntTuple(i1, i2);
+    }
+    public static  IntIntTuple intTuple(int i1, int i2) {
+        return new IntIntTuple(i1, i2);
+    }
+    
+    public final int _1;
+    public final int _2;
+    
+    public IntIntTuple(int _1, int _2) {
+        this._1 = _1;
+        this._2 = _2;
+    }
+    
+    public int _int1() {
+        return _1;
+    }
+    public int _int2() {
+        return _2;
+    }
+    
+    public Integer _1() {
+        return _1;
+    }
+    public Integer _2() {
+        return _2;
+    }
+    
+    @Override
+    public Integer getKey() {
+        return _1();
+    }
+    
+    @Override
+    public Integer getValue() {
+        return _2();
+    }
+    
+    @Override
+    public Integer setValue(Integer value) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public String toString() {
+        return Tuple.toString(this);
+    }
+    @Override
+    public int hashCode() {
+        return Tuple.hashCode(this);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        return Tuple.equals(this, obj);
+    }
     
 }

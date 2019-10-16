@@ -32,6 +32,7 @@ import java.util.stream.StreamSupport;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.result.Result;
+import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 @FunctionalInterface

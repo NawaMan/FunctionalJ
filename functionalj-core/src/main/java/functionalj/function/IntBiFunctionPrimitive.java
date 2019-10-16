@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,28 +21,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens.lenses;
+package functionalj.function;
 
 import java.util.function.BiFunction;
 
-import functionalj.function.Func2;
+import lombok.val;
 
-public interface IntObjBiFunction<DATA, TARGET> extends Func2<Integer, DATA, TARGET> {
+@FunctionalInterface
+public interface IntBiFunctionPrimitive extends ToIntBiIntFunction<Integer> {
     
-    public TARGET applyAsInt(int input1, DATA input2);
-    
-    public default TARGET applyUnsafe(Integer input1, DATA input2) throws Exception {
-        return applyAsInt(input1, input2);
+    public static IntBiFunctionPrimitive of(BiFunction<Integer, Integer, Integer> function) {
+        if (function instanceof IntBiFunctionPrimitive)
+            return (IntBiFunctionPrimitive)function;
+        
+        return (i, j) -> function.apply(i, j);
+    }
+    public static IntBiFunctionPrimitive intFunction(BiFunction<Integer, Integer, Integer> function) {
+        if (function instanceof IntBiFunctionPrimitive)
+            return (IntBiFunctionPrimitive)function;
+        
+        return (i, j) -> function.apply(i, j);
     }
     
     
-    public static <D, T> T apply(BiFunction<Integer, D, T> function, int input1, D input2) {
-        if (function instanceof IntObjBiPredicate) {
-            return ((IntObjBiFunction<D, T>)function).applyAsInt(input1, input2);
-        } else {
-            return function.apply(input1, input2);
-        }
+    public int applyAsIntAndInt(int data, int intValue);
+    
+    public default int applyAsInt(Integer data, int intValue) {
+        return applyAsIntAndInt(data, intValue);
     }
     
+    
+    public static int apply(ToIntBiIntFunction<Integer> function, int value, int anotherValue) {
+        val resValue 
+            = (function instanceof IntBiFunctionPrimitive)
+            ? ((IntBiFunctionPrimitive)function).applyAsIntAndInt(value, anotherValue)
+            : function.applyAsInt(value, anotherValue);
+        return resValue;
+    }
 }
-

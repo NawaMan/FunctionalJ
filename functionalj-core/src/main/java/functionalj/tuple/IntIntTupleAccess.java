@@ -21,11 +21,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens.lenses;
+package functionalj.tuple;
+
+import functionalj.lens.lenses.AnyAccess;
+import functionalj.lens.lenses.IntegerAccess;
 
 @FunctionalInterface
-public interface ToDoubleBiDoubleFunction<DATA> {
+public interface IntIntTupleAccess<HOST>
+        extends AnyAccess<HOST, IntIntTuple> {
     
-    public double applyAsDouble(DATA data, double intValue);
+    @Override
+    public IntIntTuple applyUnsafe(HOST host) throws Exception;
+    
+    public default IntegerAccess<HOST> _1() {
+        return intPrimitiveAccess(0, IntIntTuple::_1);
+    }
+    public default IntegerAccess<HOST> _2() {
+        return intPrimitiveAccess(0, IntIntTuple::_2);
+    }
     
 }

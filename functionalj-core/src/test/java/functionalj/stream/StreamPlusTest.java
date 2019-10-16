@@ -69,6 +69,7 @@ import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.promise.DeferAction;
 import functionalj.result.NoMoreResultException;
+import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple3;
 import lombok.val;

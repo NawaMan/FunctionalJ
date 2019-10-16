@@ -26,6 +26,8 @@ package functionalj.lens.lenses;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 
+import functionalj.function.IntBiFunctionPrimitive;
+import functionalj.function.ToIntBiIntFunction;
 import lombok.val;
 
 @FunctionalInterface

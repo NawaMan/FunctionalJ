@@ -61,7 +61,7 @@ public interface StreamPlusAdditionalTerminalOperators<DATA> {
     
     public StreamPlus<DATA> filter(Predicate<? super DATA> predicate);
     
-    public <T> StreamPlus<DATA> filter(Function<? super DATA, T> mapper, Predicate<? super T> theCondition);
+    public <TARGET> StreamPlus<DATA> filter(Function<? super DATA, TARGET> mapper, Predicate<? super TARGET> theCondition);
     
     public <TARGET> TARGET terminate(Func1<Stream<DATA>, TARGET> action);
     

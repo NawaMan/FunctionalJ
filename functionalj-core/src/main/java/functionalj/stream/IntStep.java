@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntUnaryOperator;
 
 import functionalj.function.Func1;
+import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public class IntStep implements Streamable<Integer>, IntUnaryOperator {

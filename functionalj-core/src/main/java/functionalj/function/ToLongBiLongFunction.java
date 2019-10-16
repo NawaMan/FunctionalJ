@@ -21,25 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens.lenses;
-
-import lombok.val;
+package functionalj.function;
 
 @FunctionalInterface
-public interface LongBiFunctionPrimitive extends ToLongBiLongFunction<Long> {
+public interface ToLongBiLongFunction<DATA> {
     
-    public long applyAsLongAndLong(long data, long longValue);
+    public long applyAsLong(DATA data, long intValue);
     
-    public default long applyAsLong(Long data, long longValue) {
-        return applyAsLongAndLong(data, longValue);
-    }
-    
-    
-    public static long apply(ToLongBiLongFunction<Long> function, long value, long anotherValue) {
-        val resValue 
-            = (function instanceof LongBiFunctionPrimitive)
-            ? ((LongBiFunctionPrimitive)function).applyAsLongAndLong(value, anotherValue)
-            : function.applyAsLong(value, anotherValue);
-        return resValue;
-    }
 }

@@ -1,11 +1,12 @@
 package functionalj.lens.lenses;
 
 import static functionalj.lens.Access.$I;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import functionalj.stream.IntStreamPlus;
+import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public class IntegerAccessTest {
@@ -71,8 +72,8 @@ public class IntegerAccessTest {
 //        System.out.println(str4);
 //        System.out.println(str5);
         assertTrue(delta3 < delta4);
-        assertTrue(delta2 == delta3);
-        assertTrue(delta4 == delta5);
+        assertEquals(delta2, delta3);
+        assertEquals(delta4, delta5);
     }
 
 }

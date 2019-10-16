@@ -36,7 +36,7 @@ import org.junit.Test;
 
 import functionalj.environments.Time;
 import functionalj.result.Result;
-import functionalj.stream.IntStreamPlus;
+import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public class RefTest {

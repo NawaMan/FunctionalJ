@@ -4,6 +4,7 @@ import static functionalj.lens.Access.theInteger;
 
 import java.util.function.ToIntFunction;
 
+import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public interface IntStreamProcessor<TARGET> {

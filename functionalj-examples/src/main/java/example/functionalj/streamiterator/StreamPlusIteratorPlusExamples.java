@@ -7,8 +7,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import functionalj.stream.IntStreamPlus;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 public class StreamPlusIteratorPlusExamples {

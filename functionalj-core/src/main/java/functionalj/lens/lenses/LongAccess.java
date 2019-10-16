@@ -33,6 +33,7 @@ import java.util.function.LongSupplier;
 import java.util.function.ToLongFunction;
 
 import functionalj.function.Func1;
+import functionalj.function.ToLongBiLongFunction;
 import functionalj.lens.lenses.java.time.InstantAccess;
 import functionalj.lens.lenses.java.time.LocalDateTimeAccess;
 import lombok.val;

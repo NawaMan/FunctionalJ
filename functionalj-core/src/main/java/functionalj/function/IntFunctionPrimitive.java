@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,26 +21,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens.lenses;
+package functionalj.function;
 
-import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 
-import functionalj.function.Func2;
-
-public interface IntObjBiPredicate<DATA> extends Func2<Integer, DATA, Boolean>, BiPredicate<Integer, DATA> {
+public interface IntFunctionPrimitive<TARGET> extends IntFunction<TARGET>, Func1<Integer, TARGET> {
     
-    public boolean testAsInt(int input1, DATA input2);
-    
-    public default Boolean applyUnsafe(Integer input1, DATA input2) throws Exception {
-        return testAsInt(input1, input2);
+    public static <T> IntFunctionPrimitive<T> of(Function<Integer, T> function) {
+        if (function instanceof IntFunctionPrimitive)
+            return (IntFunctionPrimitive<T>)function;
+        
+        return i -> function.apply(i);
+    }
+    public static <T> IntFunctionPrimitive<T> intFunction(Function<Integer, T> function) {
+        if (function instanceof IntFunctionPrimitive)
+            return (IntFunctionPrimitive<T>)function;
+        
+        return i -> function.apply(i);
     }
     
     
-    public static <D> boolean test(BiPredicate<Integer, D> function, int input1, D input2) {
-        if (function instanceof IntObjBiPredicate) {
-            return ((IntObjBiPredicate<D>)function).testAsInt(input1, input2);
-        }
-        return function.test(input1, input2);
+    public TARGET applyInt(int value);
+    
+    @Override
+    public default TARGET apply(int value) {
+        return applyInt(value);
+    }
+    
+    @Override
+    public default TARGET applyUnsafe(Integer input) throws Exception {
+        return applyInt(input);
     }
     
 }

@@ -30,6 +30,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.ToDoubleFunction;
 
 import functionalj.function.Func1;
+import functionalj.function.ToDoubleBiDoubleFunction;
 import lombok.val;
 
 @SuppressWarnings("javadoc")

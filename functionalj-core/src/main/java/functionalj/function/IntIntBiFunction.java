@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,25 +21,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.lens.lenses;
-
-import lombok.val;
+package functionalj.function;
 
 @FunctionalInterface
-public interface IntBiFunctionPrimitive extends ToIntBiIntFunction<Integer> {
+public interface IntIntBiFunction<TARGET> extends Func2<Integer, Integer, TARGET> {
     
-    public int applyAsIntAndInt(int data, int intValue);
+    public TARGET applyInt(int input1, int input2);
     
-    public default int applyAsInt(Integer data, int intValue) {
-        return applyAsIntAndInt(data, intValue);
-    }
-    
-    
-    public static int apply(ToIntBiIntFunction<Integer> function, int value, int anotherValue) {
-        val resValue 
-            = (function instanceof IntBiFunctionPrimitive)
-            ? ((IntBiFunctionPrimitive)function).applyAsIntAndInt(value, anotherValue)
-            : function.applyAsInt(value, anotherValue);
-        return resValue;
+    @Override
+    public default TARGET applyUnsafe(Integer input1, Integer input2) throws Exception {
+        return applyInt(input1, input2);
     }
 }

@@ -26,6 +26,8 @@ package functionalj.lens.lenses;
 import java.util.function.LongSupplier;
 import java.util.function.LongUnaryOperator;
 
+import functionalj.function.LongBiFunctionPrimitive;
+import functionalj.function.ToLongBiLongFunction;
 import lombok.val;
 
 @FunctionalInterface

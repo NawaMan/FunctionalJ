@@ -30,6 +30,7 @@ import java.util.function.IntSupplier;
 import java.util.function.ToIntFunction;
 
 import functionalj.function.Func1;
+import functionalj.function.ToIntBiIntFunction;
 import lombok.val;
 
 @SuppressWarnings("javadoc")
