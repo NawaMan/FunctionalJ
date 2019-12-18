@@ -16,6 +16,13 @@ public interface StreamPlusWithFillNull<DATA> {
     
     //== fillNull ==
     
+    public default StreamPlus<DATA> fillNull(
+            DATA replacement) {
+        return deriveWith(stream ->  {
+            return stream.map(value -> value == null ? replacement : value);
+        });
+    }
+    
     public default <VALUE> StreamPlus<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             VALUE                replacement) {

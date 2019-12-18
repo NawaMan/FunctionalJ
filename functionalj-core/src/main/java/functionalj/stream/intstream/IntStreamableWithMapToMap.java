@@ -10,14 +10,14 @@ import functionalj.stream.Streamable;
 
 public interface IntStreamableWithMapToMap {
     
-    public <TARGET> Streamable<TARGET> deriveWith(Function<IntStream, Stream<TARGET>> action);
+    public <TARGET> Streamable<TARGET> deriveFrom(Function<IntStream, Stream<TARGET>> action);
     
     
     //== mapToMap ==
     
     public default <KEY, VALUE> Streamable<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, IntFunction<? extends VALUE> mapper) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToMap(key, mapper));
@@ -26,7 +26,7 @@ public interface IntStreamableWithMapToMap {
     public default <KEY, VALUE> Streamable<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, IntFunction<? extends VALUE> mapper1,
             KEY key2, IntFunction<? extends VALUE> mapper2) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToMap(
@@ -38,7 +38,7 @@ public interface IntStreamableWithMapToMap {
             KEY key1, IntFunction<? extends VALUE> mapper1,
             KEY key2, IntFunction<? extends VALUE> mapper2,
             KEY key3, IntFunction<? extends VALUE> mapper3) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToMap(
@@ -52,7 +52,7 @@ public interface IntStreamableWithMapToMap {
             KEY key2, IntFunction<? extends VALUE> mapper2,
             KEY key3, IntFunction<? extends VALUE> mapper3,
             KEY key4, IntFunction<? extends VALUE> mapper4) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToMap(
@@ -68,7 +68,7 @@ public interface IntStreamableWithMapToMap {
             KEY key3, IntFunction<? extends VALUE> mapper3,
             KEY key4, IntFunction<? extends VALUE> mapper4,
             KEY key5, IntFunction<? extends VALUE> mapper5) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToMap(
@@ -86,7 +86,7 @@ public interface IntStreamableWithMapToMap {
             KEY key4, IntFunction<? extends VALUE> mapper4,
             KEY key5, IntFunction<? extends VALUE> mapper5,
             KEY key6, IntFunction<? extends VALUE> mapper6) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToMap(
@@ -106,7 +106,7 @@ public interface IntStreamableWithMapToMap {
             KEY key5, IntFunction<? extends VALUE> mapper5,
             KEY key6, IntFunction<? extends VALUE> mapper6,
             KEY key7, IntFunction<? extends VALUE> mapper7) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToMap(
@@ -128,7 +128,7 @@ public interface IntStreamableWithMapToMap {
             KEY key6, IntFunction<? extends VALUE> mapper6,
             KEY key7, IntFunction<? extends VALUE> mapper7,
             KEY key8, IntFunction<? extends VALUE> mapper8) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToMap(
@@ -152,7 +152,7 @@ public interface IntStreamableWithMapToMap {
             KEY key7, IntFunction<? extends VALUE> mapper7,
             KEY key8, IntFunction<? extends VALUE> mapper8,
             KEY key9, IntFunction<? extends VALUE> mapper9) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToMap(
@@ -178,7 +178,7 @@ public interface IntStreamableWithMapToMap {
             KEY key8, IntFunction<? extends VALUE> mapper8,
             KEY key9, IntFunction<? extends VALUE> mapper9,
             KEY key10, IntFunction<? extends VALUE> mapper10) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToMap(

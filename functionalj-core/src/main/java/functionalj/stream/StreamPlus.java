@@ -65,6 +65,7 @@ import java.util.stream.StreamSupport;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
+import functionalj.function.ToByteFunction;
 import functionalj.functions.StrFuncs;
 import functionalj.functions.ThrowFuncs;
 import functionalj.list.FuncList;
@@ -970,7 +971,7 @@ public interface StreamPlus<DATA>
         });
     }
     
-    public default byte[] toByteArray(Func1<DATA, Byte> toByte) {
+    public default byte[] toByteArray(ToByteFunction<DATA> toByte) {
         return terminate(stream -> {
             val byteArray = new ByteArrayOutputStream();
             stream.forEach(d -> byteArray.write(toByte.apply(d)));
@@ -1033,10 +1034,10 @@ public interface StreamPlus<DATA>
     
     @Override
     public default IteratorPlus<DATA> iterator() {
-        return terminate(s -> {
+//        return terminate(s -> {
             val iterator = __iterator();
             return iterator;
-        });
+//        });
     }
     
     @Override

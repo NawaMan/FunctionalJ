@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
@@ -45,9 +46,9 @@ import functionalj.tuple.ObjIntTuple;
 
 public interface IntStreamableAddtionalOperators {
     
-    public IntStreamable deriveFrom(Function<IntStream, IntStream> action);
+    public IntStreamable deriveWith(Function<IntStream, IntStream> action);
     
-    public <TARGET> Streamable<TARGET> deriveWith(Function<IntStream, Stream<TARGET>> action);
+    public <TARGET> Streamable<TARGET> deriveFrom(Function<IntStream, Stream<TARGET>> action);
     
     
     //--map with condition --
@@ -55,7 +56,7 @@ public interface IntStreamableAddtionalOperators {
     public default IntStreamable mapOnly(
             IntPredicate     checker, 
             IntUnaryOperator mapper) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapOnly(checker, mapper));
@@ -65,7 +66,7 @@ public interface IntStreamableAddtionalOperators {
             IntPredicate     checker, 
             IntUnaryOperator mapper, 
             IntUnaryOperator elseMapper) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapIf(checker, mapper, elseMapper));
@@ -75,7 +76,7 @@ public interface IntStreamableAddtionalOperators {
             IntPredicate   checker, 
             IntFunction<T> mapper, 
             IntFunction<T> elseMapper) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapToObjIf(checker, mapper, elseMapper));
@@ -83,34 +84,43 @@ public interface IntStreamableAddtionalOperators {
     
     //-- mapWithIndex --
     
-    public default Streamable<IntIntTuple> mapWithIndex() {
-        return deriveWith(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .mapWithIndex());
-    }
     
-    public default <T> Streamable<T> mapWithIndex(
-            IntIntBiFunction<T> mapper) {
+    public default IntStreamable mapWithIndex(
+            IntBinaryOperator mapper) {
         return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapWithIndex(mapper));
     }
     
-    public default <T1, T> Streamable<T> mapWithIndex(
-                IntFunction<? extends T1>       valueMapper,
-                IntObjBiFunction<? super T1, T> combiner) {
-        return deriveWith(stream -> 
+    public default Streamable<IntIntTuple> mapWithIndex() {
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
-                    .mapWithIndex(valueMapper, combiner));
+                    .mapWithIndex());
+    }
+    
+    public default <T> Streamable<T> mapToObjWithIndex(
+            IntIntBiFunction<T> mapper) {
+        return deriveFrom(stream -> 
+                IntStreamPlus
+                    .from(stream)
+                    .mapToObjWithIndex(mapper));
+    }
+    
+    public default <T1, T> Streamable<T> mapToObjWithIndex(
+                IntFunction<? extends T1>       valueMapper,
+                IntObjBiFunction<? super T1, T> combiner) {
+        return deriveFrom(stream -> 
+                IntStreamPlus
+                    .from(stream)
+                    .mapToObjWithIndex(valueMapper, combiner));
     }
     
     //-- mapWithPrev --
     
     public default Streamable<ObjIntTuple<OptionalInt>> mapWithPrev() {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapWithPrev());
@@ -118,7 +128,7 @@ public interface IntStreamableAddtionalOperators {
     
     public default <TARGET> Streamable<TARGET> mapWithPrev(
             ObjIntBiFunction<OptionalInt, ? extends TARGET> mapper) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapWithPrev(mapper));
@@ -129,7 +139,7 @@ public interface IntStreamableAddtionalOperators {
     public default IntStreamable filter(
             IntUnaryOperator mapper, 
             IntPredicate     predicate) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .filter(mapper, predicate));
@@ -138,42 +148,42 @@ public interface IntStreamableAddtionalOperators {
     public default <T> IntStreamable filter(
             IntFunction<T>       mapper, 
             Predicate<? super T> theCondition) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .filter(mapper, theCondition));
     }
     
     public default IntStreamable filterIn(int[] array) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .filterIn(array));
     }
     
     public default IntStreamable filterIn(Collection<Integer> collection) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .filterIn(collection));
     }
     
     public default IntStreamable exclude(IntPredicate predicate) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .exclude(predicate));
     }
     
     public default IntStreamable excludeIn(int[] array) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .excludeIn(array));
     }
     
     public default IntStreamable excludeIn(Collection<Integer> collection) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .excludeIn(collection));
@@ -181,7 +191,7 @@ public interface IntStreamableAddtionalOperators {
     
     public default IntStreamable filterWithIndex(
             IntBiPredicatePrimitive predicate) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .filterWithIndex(predicate));
@@ -192,7 +202,7 @@ public interface IntStreamableAddtionalOperators {
     public default IntStreamable peek(
             IntPredicate selector, 
             IntConsumer  theConsumer) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .peek(selector, theConsumer));
@@ -200,7 +210,7 @@ public interface IntStreamableAddtionalOperators {
     public default <T> IntStreamable peek(
             IntFunction<T>      mapper, 
             Consumer<? super T> theConsumer) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .peek(mapper, theConsumer));
@@ -210,7 +220,7 @@ public interface IntStreamableAddtionalOperators {
             IntFunction<T>       mapper, 
             Predicate<? super T> selector, 
             Consumer<? super T>  theConsumer) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .peek(mapper, selector, theConsumer));
@@ -221,7 +231,7 @@ public interface IntStreamableAddtionalOperators {
     public default IntStreamable flatMapOnly(
             IntPredicate                     checker, 
             IntFunction<? extends IntStream> mapper) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .flatMapOnly(checker, mapper));
@@ -230,7 +240,7 @@ public interface IntStreamableAddtionalOperators {
             IntPredicate                     checker, 
             IntFunction<? extends IntStream> mapper, 
             IntFunction<? extends IntStream> elseMapper) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .flatMapIf(checker, mapper, elseMapper));
@@ -240,7 +250,7 @@ public interface IntStreamableAddtionalOperators {
             IntPredicate                     checker, 
             IntFunction<? extends Stream<T>> mapper, 
             IntFunction<? extends Stream<T>> elseMapper) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .flatMapToObjIf(checker, mapper, elseMapper));

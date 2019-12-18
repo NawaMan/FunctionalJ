@@ -49,7 +49,7 @@ public class EffectExamples {
         latch.await();
         
         // Notice the error is sent in the same channel
-        assertEquals("[Result:{ Exception: java.nio.file.NoSuchFileException: path1 }]", logs.toString());
+        assertEquals("[Result:{ Exception: java.nio.file.NoSuchFileException: fileNotFound.txt }]", logs.toString());
     }
     
     @Test

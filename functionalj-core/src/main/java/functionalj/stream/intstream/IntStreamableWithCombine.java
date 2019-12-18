@@ -38,14 +38,14 @@ import functionalj.tuple.IntTuple2;
 
 public interface IntStreamableWithCombine {
     
-    public IntStreamable deriveFrom(Function<IntStream, IntStream> action);
+    public IntStreamable deriveWith(Function<IntStream, IntStream> action);
     
-    public <TARGET> Streamable<TARGET> deriveWith(Function<IntStream, Stream<TARGET>> action);
+    public <TARGET> Streamable<TARGET> deriveFrom(Function<IntStream, Stream<TARGET>> action);
     
     
     public default IntStreamable concatWith(
             IntStream tail) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .concatWith(tail));
@@ -53,7 +53,7 @@ public interface IntStreamableWithCombine {
     
     public default IntStreamable merge(
             IntStream anotherStream) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .merge(anotherStream));
@@ -65,7 +65,7 @@ public interface IntStreamableWithCombine {
     public default <ANOTHER, TARGET> Streamable<TARGET> combineWith(
             Stream<ANOTHER>                   anotherStream, 
             IntObjBiFunction<ANOTHER, TARGET> combinator) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .combineWith(anotherStream, combinator));
@@ -74,7 +74,7 @@ public interface IntStreamableWithCombine {
             Stream<ANOTHER>                   anotherStream, 
             ZipWithOption                     option, 
             IntObjBiFunction<ANOTHER, TARGET> combinator) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .combineWith(anotherStream, option, combinator));
@@ -82,7 +82,7 @@ public interface IntStreamableWithCombine {
     
     public default <ANOTHER> Streamable<IntTuple2<ANOTHER>> zipWith(
             Stream<ANOTHER> anotherStream) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .zipWith(anotherStream));
@@ -90,7 +90,7 @@ public interface IntStreamableWithCombine {
     public default <ANOTHER> Streamable<IntTuple2<ANOTHER>> zipWith(
             Stream<ANOTHER> anotherStream, 
             ZipWithOption   option) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .zipWith(anotherStream, option));
@@ -99,7 +99,7 @@ public interface IntStreamableWithCombine {
     public default <ANOTHER, TARGET> Streamable<TARGET> zipWith(
             Stream<ANOTHER>                   anotherStream, 
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .zipWith(anotherStream, merger));
@@ -109,7 +109,7 @@ public interface IntStreamableWithCombine {
             Stream<ANOTHER>                   anotherStream, 
             ZipWithOption                     option,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .zipWith(anotherStream, option, merger));
@@ -117,7 +117,7 @@ public interface IntStreamableWithCombine {
     
     public default Streamable<IntIntTuple> zipWith(
             IntStream anotherStream) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .zipWith(anotherStream));
@@ -125,7 +125,7 @@ public interface IntStreamableWithCombine {
     public default Streamable<IntIntTuple> zipWith(
             IntStream anotherStream,
             int       defaultValue) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .zipWith(anotherStream, defaultValue));
@@ -134,7 +134,7 @@ public interface IntStreamableWithCombine {
     public default IntStreamable zipWith(
             IntStream              anotherStream, 
             IntBiFunctionPrimitive merger) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .zipWith(anotherStream, merger));
@@ -143,7 +143,7 @@ public interface IntStreamableWithCombine {
             IntStream              anotherStream, 
             IntBiFunctionPrimitive merger,
             int                    defaultValue) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .zipWith(anotherStream, merger, defaultValue));
@@ -152,7 +152,7 @@ public interface IntStreamableWithCombine {
     public default <T> Streamable<T> zipToObjWith(
             IntStream           anotherStream, 
             IntIntBiFunction<T> merger) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .zipToObjWith(anotherStream, merger));
@@ -161,7 +161,7 @@ public interface IntStreamableWithCombine {
             IntStream           anotherStream, 
             IntIntBiFunction<T> merger,
             int                 defaultValue) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .zipToObjWith(anotherStream, merger, defaultValue));
@@ -170,7 +170,7 @@ public interface IntStreamableWithCombine {
     public default IntStreamable choose(
             IntStreamPlus           anotherStream, 
             IntBiPredicatePrimitive selectThisNotAnother) {
-        return deriveFrom(stream -> 
+        return deriveWith(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .choose(anotherStream, selectThisNotAnother));

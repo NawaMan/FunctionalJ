@@ -31,6 +31,7 @@ import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
@@ -93,6 +94,16 @@ public interface IntStreamPlusAddtionalOperators {
     
     //-- mapWithIndex --
     
+    public default IntStreamPlus mapWithIndex(
+            IntBinaryOperator mapper) {
+        val index = new AtomicInteger();
+        return map(each -> {
+            val i = index.getAndIncrement();
+            val target = mapper.applyAsInt(i, each);
+            return target;
+        });
+    }
+    
     public default StreamPlus<IntIntTuple> mapWithIndex() {
         val index = new AtomicInteger();
         return mapToObj(each -> {
@@ -102,7 +113,7 @@ public interface IntStreamPlusAddtionalOperators {
         });
     }
     
-    public default <T> StreamPlus<T> mapWithIndex(
+    public default <T> StreamPlus<T> mapToObjWithIndex(
             IntIntBiFunction<T> mapper) {
         val index = new AtomicInteger();
         return mapToObj(each -> {
@@ -112,7 +123,7 @@ public interface IntStreamPlusAddtionalOperators {
         });
     }
     
-    public default <T1, T> StreamPlus<T> mapWithIndex(
+    public default <T1, T> StreamPlus<T> mapToObjWithIndex(
                 IntFunction<? extends T1>       valueMapper,
                 IntObjBiFunction<? super T1, T> combiner) {
         val index = new AtomicInteger();

@@ -190,6 +190,7 @@ public interface IntStreamPlusWithSegment {
     }
     
     public default IntStreamPlus collapse(IntPredicate conditionToCollapse, IntBinaryOperator concatFunc) {
+        // TODO - Consider immitating what takeUntil() does.
         return useIterator(iterator -> {
             int first;
             try {
@@ -199,9 +200,12 @@ public interface IntStreamPlusWithSegment {
             }
             
             val prev = new int[][] { new int[] { first }};
+            val isDone = new boolean[] { false };
             IntStreamPlus resultStream = IntStreamPlus.generate(()->{
-                if (prev[0] == null)
-                    throw new NoMoreResultException();
+                if (prev[0] == null) {
+                    isDone[0] = true;
+                    return Integer.MIN_VALUE;
+                }
                 
                 while(true) {
                     int next;
@@ -220,7 +224,8 @@ public interface IntStreamPlusWithSegment {
                         return yield;
                     }
                 }
-            });
+            })
+            .takeUntil(i -> isDone[0]);
             
             return resultStream;
         });

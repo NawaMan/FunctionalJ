@@ -204,7 +204,7 @@ public interface IntStreamPlusAdditionalTerminalOperators {
         });
     }
     
-    public default <D> OptionalInt min(
+    public default <D> OptionalInt minOf(
             IntUnaryOperator mapper) {
         return terminate((IntStream stream) -> {
             val result 
@@ -218,7 +218,7 @@ public interface IntStreamPlusAdditionalTerminalOperators {
         });
     }
     
-    public default <D> OptionalInt max(
+    public default <D> OptionalInt maxOf(
             IntUnaryOperator mapper) {
         return terminate((IntStream stream) -> {
             Optional<Object> result 
@@ -254,7 +254,7 @@ public interface IntStreamPlusAdditionalTerminalOperators {
         });
     }
     
-    public default <D extends Comparable<D>> Optional<IntIntTuple> minMax(
+    public default <D extends Comparable<D>> Optional<IntIntTuple> minMaxOf(
             IntUnaryOperator mapper) {
         return terminate(stream -> {
             val minRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);

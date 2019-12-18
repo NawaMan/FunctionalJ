@@ -337,19 +337,19 @@ public class RefTest {
             state.set(42);
             return IntStreamPlus.infinite()
             .limit(5)
-            .peek (i -> Time.sleep(20))
+            .peek (i -> Time.sleep(40))
             .map  (i -> ref.value())
             .joinToString(" - ");
         })
         .onComplete(r -> resultRef.set(r));
         
-        Time.sleep(50);
+        Time.sleep(100);
         
         for (int i = 0; i < 5; i++) {
-            Time.sleep(5);
+            Time.sleep(10);
             state.set(state.get() + 1);
             assertEquals(44 + i, state.get().intValue());
-            assertEquals(3 + i, ref.value().intValue());
+            assertEquals( 3 + i, ref.value().intValue());
         }
         Time.sleep(200);
         

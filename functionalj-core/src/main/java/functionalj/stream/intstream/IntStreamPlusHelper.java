@@ -20,6 +20,26 @@ public class IntStreamPlusHelper {
     
     static final Object dummy = new Object();
     
+    public static <T> boolean hasAt(IntStream stream, long index) {
+        return hasAt(stream, index, null);
+    }
+    
+    public static <T> boolean hasAt(IntStream stream, long index, int[][] valueRef) {
+        // Note: It is done this way to avoid interpreting 'null' as no-value
+        
+        val ref = new int[1][];
+        stream
+            .skip(index)
+            .peek(value -> { ref[0] = new int[] { value }; })
+            .findFirst()
+            .orElse(-1);
+        
+        val found = ref[0] != null;
+        valueRef[0] = ref[0];
+        
+        return found;
+    }
+    
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipIntWith(
             ZipWithOption               option, 
             IntObjBiFunction<B, TARGET> merger,

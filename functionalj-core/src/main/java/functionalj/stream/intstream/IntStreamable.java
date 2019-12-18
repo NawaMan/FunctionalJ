@@ -24,6 +24,10 @@ import java.util.stream.Stream;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
+import functionalj.list.FuncList;
+import functionalj.list.intlist.ImmutableIntList;
+import functionalj.list.intlist.IntFuncList;
+import functionalj.list.intlist.IntFunctListDerivedFromIntStreamable;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
@@ -220,11 +224,11 @@ public interface IntStreamable
     
     //== Helper functions ==
     
-    public default IntStreamable deriveFrom(Function<IntStream, IntStream> action) {
+    public default IntStreamable deriveWith(Function<IntStream, IntStream> action) {
         return IntStreamable.from(this, action);
     }
     
-    public default <TARGET> Streamable<TARGET> deriveWith(Function<IntStream, Stream<TARGET>> action) {
+    public default <TARGET> Streamable<TARGET> deriveFrom(Function<IntStream, Stream<TARGET>> action) {
         return IntStreamable.with(this, action);
     }
     
@@ -337,25 +341,25 @@ public interface IntStreamable
     }
     
     public default IntStreamable skipWhile(IntPredicate condition) {
-        return deriveFrom(stream -> {
+        return deriveWith(stream -> {
             return IntStreamPlus.from(stream).skipWhile(condition);
         });
     }
     
     public default IntStreamable skipUntil(IntPredicate condition) {
-        return deriveFrom(stream -> {
+        return deriveWith(stream -> {
             return IntStreamPlus.from(stream).skipUntil(condition);
         });
     }
     
     public default IntStreamable takeWhile(IntPredicate condition) {
-        return deriveFrom(stream -> {
+        return deriveWith(stream -> {
             return IntStreamPlus.from(stream).takeWhile(condition);
         });
     }
     
     public default IntStreamable takeUntil(IntPredicate condition) {
-        return deriveFrom(stream -> {
+        return deriveWith(stream -> {
             return IntStreamPlus.from(stream).takeUntil(condition);
         });
     }
@@ -372,7 +376,7 @@ public interface IntStreamable
     
     public default IntStreamable sortedBy(
             IntUnaryOperator mapper) {
-        return deriveFrom(stream -> {
+        return deriveWith(stream -> {
             return IntStreamPlus.from(stream)
                     .sortedBy(mapper);
         });
@@ -381,7 +385,7 @@ public interface IntStreamable
     public default IntStreamable sortedBy(
             IntUnaryOperator       mapper,
             IntBiFunctionPrimitive comparator) {
-        return deriveFrom(stream -> {
+        return deriveWith(stream -> {
             return IntStreamPlus.from(stream)
                     .sortedBy(mapper, comparator);
         });
@@ -389,7 +393,7 @@ public interface IntStreamable
     
     public default <T extends Comparable<? super T>> IntStreamable sortedByObj(
             IntFunction<T> mapper) {
-        return deriveFrom(stream -> {
+        return deriveWith(stream -> {
             return IntStreamPlus.from(stream)
                     .sortedByObj(mapper);
         });
@@ -398,7 +402,7 @@ public interface IntStreamable
     public default <T> IntStreamable sortedByObj(
             IntFunction<T> mapper, 
             Comparator<T>  comparator) {
-        return deriveFrom(stream -> {
+        return deriveWith(stream -> {
             return IntStreamPlus.from(stream)
                     .sortedByObj(mapper, comparator);
         });
@@ -505,66 +509,19 @@ public interface IntStreamable
         return stream()
                 .toListString();
     }
-//    public default ImmutableList<Integer> toImmutableList() {
-//        return stream()
-//                .toImmutableList();
-//    }
     
-//    //-- Iterator --
-//    
-//    /** DO NOT USE THIS METHOD OR YOUR STREAM WILL NOT BE CLOSED. */
-//    public default PrimitiveIterator.OfInt __iterator() {
-//        return IntIteratorPlus.from(this);
-//    }
-//    
-//    /**
-//     * Use iterator of this stream without terminating the stream.
-//     */
-//    public default IntStreamPlus useIterator(Function<IntIteratorPlus, IntStreamPlus> action) {
-//        return sequential(stream -> {
-//            IntStreamPlus result = null;
-//            try {
-//                val iterator = IntIteratorPlus.from(stream).iterator();
-//                result = action.apply(iterator);
-//                return result;
-//            } finally {
-//                if (result == null) {
-//                    f(()->close())
-//                    .runCarelessly();
-//                } else {
-//                    result
-//                    .onClose(()->{
-//                        f(()->close())
-//                        .runCarelessly();
-//                    });
-//                }
-//            }
-//        });
-//    }
-//    
-//    @Override
-//    public default <TARGET> StreamPlus<TARGET> useIteratorToObj(
-//            Function<IntIteratorPlus, StreamPlus<TARGET>> action) {
-//        return sequentialToObj(stream -> {
-//            StreamPlus<TARGET> result = null;
-//            try {
-//                val iterator = IntIteratorPlus.from(stream).iterator();
-//                result = action.apply(iterator);
-//                return result;
-//            } finally {
-//                if (result == null) {
-//                    f(()->close())
-//                    .runCarelessly();
-//                } else {
-//                    result
-//                    .onClose(()->{
-//                        f(()->close())
-//                        .runCarelessly();
-//                    });
-//                }
-//            }
-//        });
-//    }
+    public default IntFuncList toList() {
+        return new IntFunctListDerivedFromIntStreamable(this, streamable -> streamable.stream());
+    }
+    
+    public default FuncList<Integer> toBoxedList() {
+        return FuncList.from(this.boxed());
+    }
+    
+    public default ImmutableIntList toImmutableList() {
+        return stream()
+                .toImmutableList();
+    }
     
     //== Plus ==
     
@@ -590,19 +547,22 @@ public interface IntStreamable
     
     //== Spawn ==
     
-    public default <T> StreamPlus<Result<T>> spawn(
+    public default <T> Streamable<Result<T>> spawn(
             IntFunction<? extends UncompletedAction<T>> mapToAction) {
-        return stream()
+        return ()->
+                stream()
                 .spawn(mapToAction);
     }
     
-    public default IntStreamPlus accumulate(IntBiFunctionPrimitive accumulator) {
-        return stream()
+    public default IntStreamable accumulate(IntBiFunctionPrimitive accumulator) {
+        return ()->
+                stream()
                 .accumulate(accumulator);
     }
     
-    public default IntStreamPlus restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
-        return stream()
+    public default IntStreamable restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
+        return ()->
+                stream()
                 .restate(restater);
     }
     

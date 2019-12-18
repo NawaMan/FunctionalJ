@@ -409,6 +409,34 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
         return thatLessThanOrEqualsTo(anotherFunction);
     }
     
+    public default DoubleToLongAccessPrimitive round() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return Math.round(doubleValue);
+        };
+    }
+    
+    public default DoubleToLongAccessPrimitive ceil() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return (long)Math.ceil(doubleValue);
+        };
+    }
+    
+    public default DoubleToLongAccessPrimitive floor() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return (long)Math.floor(doubleValue);
+        };
+    }
+    
+    public default DoubleToBooleanAccessPrimitive thatIsRound() {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            return 1.0*Math.round(doubleValue) == doubleValue;
+        };
+    }
+    
     public default DoubleToDoubleAccessPrimitive plus(double value) {
         return host -> {
             double doubleValue    = applyAsDouble(host);

@@ -27,6 +27,7 @@ import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
+import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.Func1;
@@ -41,7 +42,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt {
     public static IntIteratorPlus of(int ... ds) {
         return IntIteratorPlus.from(IntStreamPlus.of(ds));
     }
-    public static IntIteratorPlus from(IntStreamPlus stream) {
+    public static IntIteratorPlus from(IntStream stream) {
         val iterator 
                 = (stream instanceof IntStreamPlus) 
                 ? ((IntStreamPlus)stream).__iterator()

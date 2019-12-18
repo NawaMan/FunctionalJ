@@ -250,10 +250,24 @@ public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccess
         return compareTo(anotherFunction);
     }
     
+    public default LongToBooleanAccessPrimitive thatIsOdd() {
+        return host -> {
+            long theValue = applyAsLong(host);
+            return theValue % 2 != 1;
+        };
+    }
+    
+    public default LongToBooleanAccessPrimitive thatIsEven() {
+        return host -> {
+            long theValue = applyAsLong(host);
+            return theValue % 2 == 0;
+        };
+    }
+    
     public default LongToBooleanAccessPrimitive thatEquals(long anotherValue) {
         return host -> {
-            long longValue = applyAsLong(host);
-            return longValue == anotherValue;
+            long theValue = applyAsLong(host);
+            return theValue == anotherValue;
         };
     }
     public default LongToBooleanAccessPrimitive thatEquals(LongSupplier anotherSupplier) {
@@ -609,6 +623,35 @@ public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccess
             long longValue    = applyAsLong(host);
             long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
             return 1.0*longValue / anotherValue;
+        };
+    }
+    
+    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(long value) {
+        return host -> {
+            long intValue     = applyAsLong(host);
+            long anotherValue = value;
+            return intValue % anotherValue == 0;
+        };
+    }
+    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(LongSupplier anotherAccess) {
+        return host -> {
+            long intValue     = applyAsLong(host);
+            long anotherValue = anotherAccess.getAsLong();
+            return intValue % anotherValue == 0;
+        };
+    }
+    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(LongAccess<Long> anotherAccess) {
+        return host -> {
+            long intValue     = applyAsLong(host);
+            long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
+            return intValue % anotherValue == 0;
+        };
+    }
+    public default LongToBooleanAccessPrimitive thatIsDivisibleBy(ToLongBiLongFunction<Long> anotherFunction) {
+        return host -> {
+            long intValue     = applyAsLong(host);
+            long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, intValue);
+            return intValue % anotherValue == 0;
         };
     }
     

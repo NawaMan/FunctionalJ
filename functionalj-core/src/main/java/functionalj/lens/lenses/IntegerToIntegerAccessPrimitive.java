@@ -250,6 +250,20 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         return compareTo(anotherFunction);
     }
     
+    public default IntegerToBooleanAccessPrimitive thatIsOdd() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue % 2 != 0;
+        };
+    }
+    
+    public default IntegerToBooleanAccessPrimitive thatIsEven() {
+        return host -> {
+            int intValue = applyAsInt(host);
+            return intValue % 2 == 0;
+        };
+    }
+    
     public default IntegerToBooleanAccessPrimitive thatEquals(int anotherValue) {
         return host -> {
             int intValue = applyAsInt(host);
@@ -609,6 +623,35 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
             int intValue     = applyAsInt(host);
             int anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, intValue);
             return 1.0*intValue / anotherValue;
+        };
+    }
+    
+    public default IntegerToBooleanAccessPrimitive thatIsDivisibleBy(int value) {
+        return host -> {
+            int intValue     = applyAsInt(host);
+            int anotherValue = value;
+            return intValue % anotherValue == 0;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive thatIsDivisibleBy(IntSupplier anotherAccess) {
+        return host -> {
+            int intValue     = applyAsInt(host);
+            int anotherValue = anotherAccess.getAsInt();
+            return intValue % anotherValue == 0;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive thatIsDivisibleBy(IntegerAccess<Integer> anotherAccess) {
+        return host -> {
+            int intValue     = applyAsInt(host);
+            int anotherValue = IntegerToIntegerAccessPrimitive.apply(anotherAccess, host);
+            return intValue % anotherValue == 0;
+        };
+    }
+    public default IntegerToBooleanAccessPrimitive thatIsDivisibleBy(ToIntBiIntFunction<Integer> anotherFunction) {
+        return host -> {
+            int intValue     = applyAsInt(host);
+            int anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, intValue);
+            return intValue % anotherValue == 0;
         };
     }
     

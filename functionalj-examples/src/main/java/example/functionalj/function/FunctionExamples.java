@@ -121,13 +121,13 @@ public class FunctionExamples {
     @Test
     public void example06_ToString_Stack() {
         val toInt = F(this::toInt);
-        assertEquals("F1@example.functionalj.function.FunctionExamples#100", toInt.toString());
+        assertEquals("F1@example.functionalj.function.FunctionExamples#123", toInt.toString());
     }
     
     @Test
     public void example07_ToString_StackName() {
         val toInt = F("Str2Int", this::toInt);
-        assertEquals("F1::Str2Int@example.functionalj.function.FunctionExamples#106", toInt.toString());
+        assertEquals("F1::Str2Int@example.functionalj.function.FunctionExamples#129", toInt.toString());
     }
     
     @Test

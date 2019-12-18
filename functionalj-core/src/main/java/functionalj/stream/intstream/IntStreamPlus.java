@@ -59,6 +59,7 @@ import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
+import functionalj.list.intlist.ImmutableIntList;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
@@ -104,6 +105,9 @@ public interface IntStreamPlus
     }
     
     public static IntStreamPlus from(IntStream intStream) {
+        if (intStream instanceof IntStreamPlus)
+            return (IntStreamPlus)intStream;
+            
         return ()->intStream;
     }
     
@@ -307,7 +311,8 @@ public interface IntStreamPlus
     // TODO - Think about terminate
     @Override
     public default PrimitiveIterator.OfInt iterator() {
-        return stream().iterator();
+        return stream()
+                .iterator();
     }
     
     @Override
@@ -429,13 +434,16 @@ public interface IntStreamPlus
     public default IntStreamPlus skipUntil(IntPredicate condition) {
         return sequential(stream -> {
             val isStillTrue = new AtomicBoolean(true);
-            return stream.filter(e -> {
-                if (!isStillTrue.get())
-                    return true;
-                if (condition.test(e))
-                    isStillTrue.set(false);
-                return !isStillTrue.get();
-            });
+            return stream
+                    .filter(e -> {
+                        if (!isStillTrue.get())
+                            return true;
+                        
+                        if (condition.test(e))
+                            isStillTrue.set(false);
+                        
+                        return !isStillTrue.get();
+                    });
         });
     }
     
@@ -744,17 +752,17 @@ public interface IntStreamPlus
         return "[" + strValue + "]";
     }
     
-//    public default ImmutableList<DATA> toImmutableList() {
-//        return terminate(stream -> {
-//            return ImmutableList.from(this);
-//        });
-//    }
+    public default ImmutableIntList toImmutableList() {
+        return terminate(stream -> {
+            return ImmutableIntList.from(this);
+        });
+    }
     
     //-- Iterator --
     
     /** DO NOT USE THIS METHOD OR YOUR STREAM WILL NOT BE CLOSED. */
     public default PrimitiveIterator.OfInt __iterator() {
-        return IntIteratorPlus.from(this);
+        return IntIteratorPlus.from(stream());
     }
     
     /**

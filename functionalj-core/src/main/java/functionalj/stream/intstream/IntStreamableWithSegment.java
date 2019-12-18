@@ -34,16 +34,16 @@ import functionalj.stream.Streamable;
 
 public interface IntStreamableWithSegment {
     
-    public IntStreamable deriveFrom(Function<IntStream, IntStream> action);
+    public IntStreamable deriveWith(Function<IntStream, IntStream> action);
     
-    public <TARGET> Streamable<TARGET> deriveWith(Function<IntStream, Stream<TARGET>> action);
+    public <TARGET> Streamable<TARGET> deriveFrom(Function<IntStream, Stream<TARGET>> action);
     
     
     //== segment ==
     
     public default Streamable<IntStreamPlus> segment(
             int count) {
-        return deriveWith(stream ->
+        return deriveFrom(stream ->
                 IntStreamPlus
                     .from(stream)
                     .segment(count));
@@ -51,14 +51,14 @@ public interface IntStreamableWithSegment {
     public default Streamable<IntStreamPlus> segment(
             int     count, 
             boolean includeTail) {
-        return deriveWith(stream ->
+        return deriveFrom(stream ->
                 IntStreamPlus
                     .from(stream)
                     .segment(count, includeTail));
     }
     public default Streamable<IntStreamPlus> segment(
             IntPredicate startCondition) {
-        return deriveWith(stream ->
+        return deriveFrom(stream ->
                 IntStreamPlus
                     .from(stream)
                     .segment(startCondition));
@@ -66,7 +66,7 @@ public interface IntStreamableWithSegment {
     public default Streamable<IntStreamPlus> segment(
             IntPredicate startCondition, 
             boolean      includeTail) {
-        return deriveWith(stream ->
+        return deriveFrom(stream ->
                 IntStreamPlus
                     .from(stream)
                     .segment(startCondition, includeTail));
@@ -75,7 +75,7 @@ public interface IntStreamableWithSegment {
     public default Streamable<IntStreamPlus> segment(
             IntPredicate startCondition, 
             IntPredicate endCondition) {
-        return deriveWith(stream ->
+        return deriveFrom(stream ->
                 IntStreamPlus
                     .from(stream)
                     .segment(startCondition, endCondition));
@@ -85,14 +85,14 @@ public interface IntStreamableWithSegment {
             IntPredicate startCondition, 
             IntPredicate endCondition, 
             boolean      includeTail) {
-        return deriveWith(stream ->
+        return deriveFrom(stream ->
                 IntStreamPlus
                     .from(stream)
                     .segment(startCondition, endCondition, includeTail));
     }
     
     public default Streamable<IntStreamPlus> segmentSize(IntUnaryOperator segmentSize) {
-        return deriveWith(stream ->
+        return deriveFrom(stream ->
                 IntStreamPlus
                     .from(stream)
                     .segmentSize(segmentSize));
@@ -101,7 +101,7 @@ public interface IntStreamableWithSegment {
     public default IntStreamable collapse(
             IntPredicate      conditionToCollapse, 
             IntBinaryOperator concatFunc) {
-        return deriveFrom(stream ->
+        return deriveWith(stream ->
                 IntStreamPlus
                     .from(stream)
                     .collapse(conditionToCollapse, concatFunc));
@@ -110,7 +110,7 @@ public interface IntStreamableWithSegment {
     public default IntStreamable collapseSize(
             IntUnaryOperator  segmentSize, 
             IntBinaryOperator concatFunc) {
-        return deriveFrom(stream ->
+        return deriveWith(stream ->
                 IntStreamPlus
                     .from(stream)
                     .collapseSize(segmentSize, concatFunc));

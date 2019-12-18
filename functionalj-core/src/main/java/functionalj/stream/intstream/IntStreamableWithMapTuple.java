@@ -15,7 +15,7 @@ import functionalj.tuple.Tuple6;
 public interface IntStreamableWithMapTuple 
         extends IntStreamableWithMapThen {
     
-    public <TARGET> Streamable<TARGET> deriveWith(Function<IntStream, Stream<TARGET>> action);
+    public <TARGET> Streamable<TARGET> deriveFrom(Function<IntStream, Stream<TARGET>> action);
     
     
     //== mapTuple ==
@@ -24,7 +24,7 @@ public interface IntStreamableWithMapTuple
         Streamable<Tuple2<T1, T2>> mapTuple(
                 IntFunction<? extends T1> mapper1,
                 IntFunction<? extends T2> mapper2) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapTuple(mapper1, mapper2));
@@ -35,7 +35,7 @@ public interface IntStreamableWithMapTuple
                 IntFunction<? extends T1> mapper1,
                 IntFunction<? extends T2> mapper2,
                 IntFunction<? extends T3> mapper3) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapTuple(mapper1, mapper2, mapper3));
@@ -47,7 +47,7 @@ public interface IntStreamableWithMapTuple
                 IntFunction<? extends T2> mapper2,
                 IntFunction<? extends T3> mapper3,
                 IntFunction<? extends T4> mapper4) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapTuple(mapper1, mapper2, mapper3, mapper4));
@@ -60,7 +60,7 @@ public interface IntStreamableWithMapTuple
                 IntFunction<? extends T3> mapper3,
                 IntFunction<? extends T4> mapper4,
                 IntFunction<? extends T5> mapper5) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapTuple(mapper1, mapper2, mapper3, mapper4, mapper5));
@@ -73,7 +73,7 @@ public interface IntStreamableWithMapTuple
                 IntFunction<? extends T4> mapper4,
                 IntFunction<? extends T5> mapper5,
                 IntFunction<? extends T6> mapper6) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));

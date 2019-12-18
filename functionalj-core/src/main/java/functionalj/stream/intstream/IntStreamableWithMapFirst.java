@@ -9,7 +9,7 @@ import functionalj.stream.Streamable;
 
 public interface IntStreamableWithMapFirst {
     
-    public <TARGET> Streamable<TARGET> deriveWith(Function<IntStream, Stream<TARGET>> action);
+    public <TARGET> Streamable<TARGET> deriveFrom(Function<IntStream, Stream<TARGET>> action);
     
     
     //== mapFirst ==
@@ -17,7 +17,7 @@ public interface IntStreamableWithMapFirst {
     public default <T> Streamable<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapFirst(mapper1, mapper2));
@@ -27,7 +27,7 @@ public interface IntStreamableWithMapFirst {
             IntFunction<T> mapper1,
             IntFunction<T> mapper2,
             IntFunction<T> mapper3) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapFirst(mapper1, mapper2));
@@ -38,7 +38,7 @@ public interface IntStreamableWithMapFirst {
             IntFunction<T> mapper2,
             IntFunction<T> mapper3,
             IntFunction<T> mapper4) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapFirst(mapper1, mapper2));
@@ -50,7 +50,7 @@ public interface IntStreamableWithMapFirst {
             IntFunction<T> mapper3,
             IntFunction<T> mapper4,
             IntFunction<T> mapper5) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapFirst(mapper1, mapper2));
@@ -63,7 +63,7 @@ public interface IntStreamableWithMapFirst {
             IntFunction<T> mapper4,
             IntFunction<T> mapper5,
             IntFunction<T> mapper6) {
-        return deriveWith(stream -> 
+        return deriveFrom(stream -> 
                 IntStreamPlus
                     .from(stream)
                     .mapFirst(mapper1, mapper2));

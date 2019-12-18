@@ -46,24 +46,24 @@ import functionalj.tuple.Tuple2;
 @SuppressWarnings("javadoc")
 public interface Access {
     
-    public static final AnyLens<Object, Object>         theObject  = AnyLens    .of(LensSpec.of(Object.class));
-    public static final BooleanLens<Boolean>            theBoolean = BooleanLens.of(LensSpec.of(Boolean.class));
-    public static final StringLens<String>              theString  = StringLens .of(LensSpec.of(String.class));
-    public static final IntegerToIntegerAccessPrimitive theInteger = i -> i;
-    public static final LongToLongAccessPrimitive       theLong    = l -> l;
-    public static final DoubleToDoubleAccessPrimitive   theDouble  = d -> d;
+    public static final AnyLens<Object, Object> theObject  = AnyLens    .of(LensSpec.of(Object.class));
+    public static final BooleanLens<Boolean>    theBoolean = BooleanLens.of(LensSpec.of(Boolean.class));
+    public static final StringLens<String>      theString  = StringLens .of(LensSpec.of(String.class));
+    public static final TheInteger              theInteger = TheInteger.theInteger;
+    public static final TheLong                 theLong    = TheLong.theLong;
+    public static final TheDouble               theDouble  = TheDouble.theDouble;
     
     public static final BigIntegerLens<BigInteger> theBigInteger = BigIntegerLens.of(LensSpec.of(BigInteger.class));
     public static final BigDecimalLens<BigDecimal> theBigDecimal = BigDecimalLens.of(LensSpec.of(BigDecimal.class));
     
-    public static final AnyLens<Object, Object>         $O = theObject;
-    public static final BooleanLens<Boolean>            $B = theBoolean;
-    public static final StringLens<String>              $S = theString;
-    public static final IntegerToIntegerAccessPrimitive $I = theInteger;
-    public static final LongToLongAccessPrimitive       $L = theLong;
-    public static final DoubleToDoubleAccessPrimitive   $D = theDouble;
-    public static final BigIntegerLens<BigInteger>      $BI = theBigInteger;
-    public static final BigDecimalLens<BigDecimal>      $BD = theBigDecimal;
+    public static final AnyLens<Object, Object>    $O = theObject;
+    public static final BooleanLens<Boolean>       $B = theBoolean;
+    public static final StringLens<String>         $S = theString;
+    public static final TheInteger                 $I = theInteger;
+    public static final TheLong                    $L = theLong;
+    public static final TheDouble                  $D = theDouble;
+    public static final BigIntegerLens<BigInteger> $BI = theBigInteger;
+    public static final BigDecimalLens<BigDecimal> $BD = theBigDecimal;
     
     public static final BooleanAccessPrimitive<Object> True  = any -> true;
     public static final BooleanAccessPrimitive<Object> False = any -> false;

@@ -146,16 +146,16 @@ public interface IntStreamableAdditionalTerminalOperators {
                 .maxBy(mapper, comparator);
     }
     
-    public default <D> OptionalInt min(
+    public default <D> OptionalInt minOf(
             IntUnaryOperator mapper) {
         return stream()
-                .min(mapper);
+                .minOf(mapper);
     }
     
-    public default <D> OptionalInt max(
+    public default <D> OptionalInt maxOf(
             IntUnaryOperator mapper) {
         return stream()
-                .max(mapper);
+                .maxOf(mapper);
     }
     
     public default Optional<IntIntTuple> minMax() {
@@ -163,10 +163,10 @@ public interface IntStreamableAdditionalTerminalOperators {
                 .minMax();
     }
     
-    public default <D extends Comparable<D>> Optional<IntIntTuple> minMax(
+    public default <D extends Comparable<D>> Optional<IntIntTuple> minMaxOf(
             IntUnaryOperator mapper) {
         return stream()
-                .minMax(mapper);
+                .minMaxOf(mapper);
     }
     
     public default <D extends Comparable<D>> Optional<IntIntTuple> minMaxBy(
