@@ -79,7 +79,7 @@ public interface AnyAccess<HOST, DATA>
         return booleanAccess(
                 collection == null,
                 any -> {
-                    return collection.contains(any);
+                    return !collection.contains(any);
                 });
     }
     public default BooleanAccess<HOST> thatEquals(DATA value) {

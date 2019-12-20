@@ -10,7 +10,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import lombok.val;
 
-public class IntFunctListDerivedFromIntStreamable
+public class IntFuncListDerivedFromIntStreamable
                 implements IntFuncList {
     
     private static final IntBiFunctionPrimitive zeroForEquals = (i1, i2) -> i1 == i2 ? 0 : 1;
@@ -19,7 +19,7 @@ public class IntFunctListDerivedFromIntStreamable
     private IntStreamable source;
     private Function<IntStreamable, IntStream> action;
     
-    public IntFunctListDerivedFromIntStreamable(IntStreamable souce, Function<IntStreamable, IntStream> action) {
+    public IntFuncListDerivedFromIntStreamable(IntStreamable souce, Function<IntStreamable, IntStream> action) {
         this.action = Objects.requireNonNull(action);
         this.source = Objects.requireNonNull(souce);
     }

@@ -21,75 +21,79 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.list;
 
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public interface StreamableWithMapFirst<DATA> {
+import functionalj.stream.Streamable;
+import functionalj.stream.StreamableWithMapCase;
+
+public interface FuncListWithMapCase<DATA>
+        extends StreamableWithMapCase<DATA> {
     
-    public <TARGET> Streamable<TARGET> deriveWith(
-            Function<Stream<DATA>, Stream<TARGET>> action);
+    public <TARGET> FuncList<TARGET> deriveFrom(Function<Streamable<DATA>, Stream<TARGET>> action);
     
-    //== mapFirst ==
     
-    public default <T> Streamable<T> mapFirst(
+    //== mapCase ==
+    
+    public default <T> FuncList<T> mapCase(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapFirst(mapper1, mapper2);
+        return deriveFrom(streamable -> {
+            return streamable
+                    .stream()
+                    .mapCase(mapper1, mapper2);
         });
     }
     
-    public default <T> Streamable<T> mapFirst(
+    public default <T> FuncList<T> mapCase(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapFirst(mapper1, mapper2, mapper3);
+        return deriveFrom(streamable -> {
+            return streamable
+                    .stream()
+                    .mapCase(mapper1, mapper2, mapper3);
         });
     }
     
-    public default <T> Streamable<T> mapFirst(
+    public default <T> FuncList<T> mapCase(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4);
+        return deriveFrom(streamable -> {
+            return streamable
+                    .stream()
+                    .mapCase(mapper1, mapper2, mapper3, mapper4);
         });
     }
     
-    public default <T> Streamable<T> mapFirst(
+    public default <T> FuncList<T> mapCase(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5);
+        return deriveFrom(streamable -> {
+            return streamable
+                    .stream()
+                    .mapCase(mapper1, mapper2, mapper3, mapper4, mapper5);
         });
     }
     
-    public default <T> Streamable<T> mapFirst(
+    public default <T> FuncList<T> mapCase(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5,
             Function<? super DATA, T> mapper6) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
+        return deriveFrom(streamable -> {
+            return streamable
+                    .stream()
+                    .mapCase(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
         });
     }
 }

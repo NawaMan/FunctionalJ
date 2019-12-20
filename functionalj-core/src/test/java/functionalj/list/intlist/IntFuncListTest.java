@@ -617,4 +617,34 @@ public class IntFuncListTest {
                 "[12, 8, 13]",
                 intList.collapse($I.thatLessThan(6), theInteger::sum).toString());
     }
+    
+    @Test
+    public void testMapFirst() {
+        assertEquals(
+                "[1, 1, 2, 3, 5, -8, -13]", 
+                intList
+                .mapFirst(
+                    i -> i < 6 ? i : null,
+                    i -> -i)
+                .toString());
+        assertEquals(
+                "[1, 1, 2, 3, 5, 64, -13]", 
+                intList
+                .mapFirst(
+                    i -> i < 7 ? i   : null,
+                    i -> i < 9 ? i*i : null,
+                    i -> -i)
+                .toString());
+        assertEquals(
+                "[1, 1, 4, 27, 625, 32768, 4826809]", 
+                intList
+                .mapFirst(
+                    i -> i == 1 ? i : null,
+                    i -> i == 2 ? i*i : null,
+                    i -> i == 3 ? i*i*i : null,
+                    i -> i == 5 ? i*i*i*i : null,
+                    i -> i == 8 ? i*i*i*i*i : null,
+                    i -> i*i*i*i*i*i)
+                .toString());
+    }
 }

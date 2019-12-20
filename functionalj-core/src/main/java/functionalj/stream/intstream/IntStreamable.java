@@ -27,7 +27,7 @@ import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.list.intlist.ImmutableIntList;
 import functionalj.list.intlist.IntFuncList;
-import functionalj.list.intlist.IntFunctListDerivedFromIntStreamable;
+import functionalj.list.intlist.IntFuncListDerivedFromIntStreamable;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
@@ -511,7 +511,7 @@ public interface IntStreamable
     }
     
     public default IntFuncList toList() {
-        return new IntFunctListDerivedFromIntStreamable(this, streamable -> streamable.stream());
+        return new IntFuncListDerivedFromIntStreamable(this, streamable -> streamable.stream());
     }
     
     public default FuncList<Integer> toBoxedList() {

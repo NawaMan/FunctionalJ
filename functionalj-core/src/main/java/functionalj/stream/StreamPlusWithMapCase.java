@@ -21,79 +21,94 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.list;
+package functionalj.stream;
+
+import static functionalj.function.Func.f;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
-import functionalj.stream.Streamable;
-import functionalj.stream.StreamableWithMapFirst;
+import lombok.val;
 
-public interface FuncListWithMapFirst<DATA>
-        extends StreamableWithMapFirst<DATA> {
+
+class StreamPlusMapAddOnHelper {
     
-    public <TARGET> FuncList<TARGET> deriveFrom(Function<Streamable<DATA>, Stream<TARGET>> action);
-    
-    
-    //== mapFirst ==
-    
-    public default <T> FuncList<T> mapFirst(
-            Function<? super DATA, T> mapper1,
-            Function<? super DATA, T> mapper2) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapFirst(mapper1, mapper2);
-        });
+    @SafeVarargs
+    static final <D, T> StreamPlus<T> mapCase(
+            StreamPlusWithMapCase<D>  stream,
+            Function<? super D, T> ... mappers) {
+        return stream
+                .map(f(d -> {
+                    Exception exception = null;
+                    boolean hasNull = false;
+                    for(val mapper : mappers) {
+                        try {
+                            val res = mapper.apply(d);
+                            if (res == null)
+                                 hasNull = true;
+                            else return (T)res;
+                        } catch (Exception e) {
+                            if (exception == null)
+                                exception = e;
+                        }
+                    }
+                    if (hasNull)
+                        return (T)null;
+                    
+                    throw exception;
+                }));
     }
     
-    public default <T> FuncList<T> mapFirst(
+}
+
+public interface StreamPlusWithMapCase<DATA> {
+    
+    public <TARGET> StreamPlus<TARGET> map(
+            Function<? super DATA, ? extends TARGET> mapper);
+    
+    //== mapCase ==
+    
+    public default <T> StreamPlus<T> mapCase(
+            Function<? super DATA, T> mapper1,
+            Function<? super DATA, T> mapper2) {
+        return StreamPlusMapAddOnHelper
+                .mapCase(this, mapper1, mapper2);
+    }
+    
+    public default <T> StreamPlus<T> mapCase(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapFirst(mapper1, mapper2, mapper3);
-        });
+        return StreamPlusMapAddOnHelper
+                .mapCase(this, mapper1, mapper2, mapper3);
     }
     
-    public default <T> FuncList<T> mapFirst(
+    public default <T> StreamPlus<T> mapCase(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4);
-        });
+        return StreamPlusMapAddOnHelper
+                .mapCase(this, mapper1, mapper2, mapper3, mapper4);
     }
     
-    public default <T> FuncList<T> mapFirst(
+    public default <T> StreamPlus<T> mapCase(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5);
-        });
+        return StreamPlusMapAddOnHelper
+                .mapCase(this, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
     
-    public default <T> FuncList<T> mapFirst(
+    public default <T> StreamPlus<T> mapCase(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5,
             Function<? super DATA, T> mapper6) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
-        });
+        return StreamPlusMapAddOnHelper
+                .mapCase(this, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
 }

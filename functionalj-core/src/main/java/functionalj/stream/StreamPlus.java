@@ -87,7 +87,7 @@ public interface StreamPlus<DATA>
         extends 
             Stream<DATA>,
             Iterable<DATA>,
-            StreamPlusWithMapFirst<DATA>,
+            StreamPlusWithMapCase<DATA>,
             StreamPlusWithMapThen<DATA>,
             StreamPlusWithMapTuple<DATA>,
             StreamPlusWithMapToMap<DATA>,

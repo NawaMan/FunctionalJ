@@ -37,10 +37,9 @@ public interface IntFuncList
         extends 
 //            ReadOnlyList<DATA>, 
             IntStreamable, 
-            Pipeable<IntFuncList>
-//            ,
-//            FuncListWithMapFirst<DATA>,
-//            FuncListWithMapThen<DATA>,
+            Pipeable<IntFuncList>,
+            IntFuncListWithMapFirst//,
+//            IntFuncListWithMapThen//,
 //            FuncListWithMapTuple<DATA>,
 //            FuncListWithMapToMap<DATA>,
 //            FuncListWithFillNull<DATA>,
@@ -100,7 +99,7 @@ public interface IntFuncList
     }
     
     public static IntFuncList from(IntStreamable streamable) {
-        return new IntFunctListDerivedFromIntStreamable(streamable, i -> i.stream());
+        return new IntFuncListDerivedFromIntStreamable(streamable, i -> i.stream());
     }
     
     public static IntFuncList from(IntStream stream) {
@@ -122,7 +121,7 @@ public interface IntFuncList
     // == Override ==
     
     public default IntFuncList derive(Function<IntStreamable, IntStream> action) {
-        val list = new IntFunctListDerivedFromIntStreamable((IntStreamable)()->this.stream(), action);
+        val list = new IntFuncListDerivedFromIntStreamable((IntStreamable)()->this.stream(), action);
         val isLazy = isLazy();
         return isLazy ? list : new ImmutableIntList(list, false);
     }

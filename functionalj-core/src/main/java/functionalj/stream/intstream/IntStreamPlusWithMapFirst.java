@@ -36,6 +36,7 @@ class IntStreamPlusMapAddOnHelper {
     }
     
 }
+
 public interface IntStreamPlusWithMapFirst {
     
     public <TARGET> StreamPlus<TARGET> mapToObj(
