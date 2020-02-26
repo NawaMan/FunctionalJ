@@ -38,12 +38,11 @@ public interface IntFuncList
 //            ReadOnlyList<DATA>, 
             IntStreamable, 
             Pipeable<IntFuncList>,
-            IntFuncListWithMapFirst//,
-//            IntFuncListWithMapThen//,
-//            FuncListWithMapTuple<DATA>,
-//            FuncListWithMapToMap<DATA>,
-//            FuncListWithFillNull<DATA>,
-//            FuncListWithCombine<DATA>,
+            IntFuncListWithMapFirst,
+            IntFuncListWithMapThen,
+            IntFuncListWithMapTuple,
+            IntFuncListWithMapToMap,
+            IntFuncListWithCombine//,
 //            FuncListAdditionalOperations<DATA>
                 {
     
@@ -105,6 +104,15 @@ public interface IntFuncList
     public static IntFuncList from(IntStream stream) {
         return ImmutableIntList.from(stream);
     }
+    
+    public static IntFuncList zeroes(int count) {
+        return IntFuncList.from(IntStreamable.zeroes(count));
+    }
+    
+    public static IntFuncList ones(int count) {
+        return IntFuncList.from(IntStreamable.ones(count));
+    }
+    
 //    
 //    public static <T> FuncListBuilder<T> newFuncList() {
 //        return new FuncListBuilder<T>();
@@ -188,30 +196,30 @@ public interface IntFuncList
                 .findFirst()
                 ;
     }
-    
-    public default IntFuncList indexesOf(IntPredicate check) {
-        return derive(streamable -> {
-            return streamable.mapWithIndex((index, data) -> check.test(data) ? index : -1)
-                    .filter(i -> i != -1)
-                    .stream();
-        });
-    }
-    
-    public default IntFuncList indexesOf(int value) {
-        return derive(streamable -> {
-            return streamable.mapWithIndex((index, data) -> (data == value) ? index : -1)
-                    .filter(i -> i != -1)
-                    .stream();
-        });
-    }
-    
-    public default int indexOf(int o) {
-        return indexesOf(each -> Objects.equals(o, each)).findFirst().orElse(-1);
-    }
-    
-    public default int lastIndexOf(int o){
-        return indexesOf(each -> Objects.equals(o, each)).last().orElse(-1);
-    }
+//    
+//    public default IntFuncList indexesOf(IntPredicate check) {
+//        return derive(streamable -> {
+//            return streamable.mapWithIndex((index, data) -> check.test(data) ? index : -1)
+//                    .filter(i -> i != -1)
+//                    .stream();
+//        });
+//    }
+//    
+//    public default IntFuncList indexesOf(int value) {
+//        return derive(streamable -> {
+//            return streamable.mapWithIndex((index, data) -> (data == value) ? index : -1)
+//                    .filter(i -> i != -1)
+//                    .stream();
+//        });
+//    }
+//    
+//    public default int indexOf(int o) {
+//        return indexesOf(each -> Objects.equals(o, each)).findFirst().orElse(-1);
+//    }
+//    
+//    public default int lastIndexOf(int o){
+//        return indexesOf(each -> Objects.equals(o, each)).last().orElse(-1);
+//    }
     
     public default IntFuncList subList(int fromIndexInclusive, int toIndexExclusive) {
         val length = toIndexExclusive - fromIndexInclusive;
@@ -743,10 +751,10 @@ public interface IntFuncList
     // -- Plus w/ Self --
     // ============================================================================
     
-    public default IntFuncList collapse(IntPredicate conditionToCollapse, IntBinaryOperator concatFunc) {
+    public default IntFuncList collapseWhen(IntPredicate conditionToCollapse, IntBinaryOperator concatFunc) {
         return derive(streamable -> {
             return stream()
-                    .collapse(conditionToCollapse, concatFunc);
+                    .collapseWhen(conditionToCollapse, concatFunc);
         });
     }
     

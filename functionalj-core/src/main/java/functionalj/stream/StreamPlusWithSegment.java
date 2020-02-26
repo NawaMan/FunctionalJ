@@ -186,7 +186,7 @@ public interface StreamPlusWithSegment<DATA> {
     }
     
     @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
+    public default StreamPlus<DATA> collapseWhen(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
         return useIterator(iterator -> {
             DATA first = null;
             try {

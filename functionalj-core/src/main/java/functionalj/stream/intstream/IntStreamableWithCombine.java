@@ -28,152 +28,199 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import functionalj.function.IntBiFunctionPrimitive;
-import functionalj.function.IntBiPredicatePrimitive;
-import functionalj.function.IntIntBiFunction;
-import functionalj.function.IntObjBiFunction;
 import functionalj.stream.Streamable;
-import functionalj.stream.ZipWithOption;
-import functionalj.tuple.IntIntTuple;
-import functionalj.tuple.IntTuple2;
+import lombok.val;
 
 public interface IntStreamableWithCombine {
     
-    public IntStreamable deriveWith(Function<IntStream, IntStream> action);
+    public IntStreamable derive(Function<IntStreamable, IntStream> action);
     
-    public <TARGET> Streamable<TARGET> deriveFrom(Function<IntStream, Stream<TARGET>> action);
+    public <TARGET> Streamable<TARGET> deriveToStreamable(
+            IntStreamable                           source, 
+            Function<IntStreamable, Stream<TARGET>> action);
     
     
-    public default IntStreamable concatWith(
-            IntStream tail) {
-        return deriveWith(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .concatWith(tail));
-    }
-    
-    public default IntStreamable merge(
-            IntStream anotherStream) {
-        return deriveWith(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .merge(anotherStream));
-    }
-    
-    // TODO - Allow mapping before combiner, selecting
-    //-- Zip --
-    
-    public default <ANOTHER, TARGET> Streamable<TARGET> combineWith(
-            Stream<ANOTHER>                   anotherStream, 
-            IntObjBiFunction<ANOTHER, TARGET> combinator) {
-        return deriveFrom(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .combineWith(anotherStream, combinator));
-    }
-    public default <ANOTHER, TARGET> Streamable<TARGET> combineWith(
-            Stream<ANOTHER>                   anotherStream, 
-            ZipWithOption                     option, 
-            IntObjBiFunction<ANOTHER, TARGET> combinator) {
-        return deriveFrom(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .combineWith(anotherStream, option, combinator));
-    }
-    
-    public default <ANOTHER> Streamable<IntTuple2<ANOTHER>> zipWith(
-            Stream<ANOTHER> anotherStream) {
-        return deriveFrom(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .zipWith(anotherStream));
-    }
-    public default <ANOTHER> Streamable<IntTuple2<ANOTHER>> zipWith(
-            Stream<ANOTHER> anotherStream, 
-            ZipWithOption   option) {
-        return deriveFrom(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .zipWith(anotherStream, option));
-    }
-    
-    public default <ANOTHER, TARGET> Streamable<TARGET> zipWith(
-            Stream<ANOTHER>                   anotherStream, 
-            IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return deriveFrom(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .zipWith(anotherStream, merger));
-    }
-    // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
-    public default <ANOTHER, TARGET> Streamable<TARGET> zipWith(
-            Stream<ANOTHER>                   anotherStream, 
-            ZipWithOption                     option,
-            IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return deriveFrom(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .zipWith(anotherStream, option, merger));
-    }
-    
-    public default Streamable<IntIntTuple> zipWith(
-            IntStream anotherStream) {
-        return deriveFrom(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .zipWith(anotherStream));
-    }
-    public default Streamable<IntIntTuple> zipWith(
-            IntStream anotherStream,
-            int       defaultValue) {
-        return deriveFrom(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .zipWith(anotherStream, defaultValue));
-    }
+//    public default IntStreamable concatWith(
+//            IntStreamable tail) {
+//        return deriveWith(stream -> {
+//            val tailStream = tail.stream();
+//            return IntStreamPlus
+//                .from(stream)
+//                .concatWith(tailStream);
+//        });
+//    }
+//    
+//    public default IntStreamable concatWith(
+//            int ... tail) {
+//        return deriveWith(stream -> {
+//            val tailStream = IntStream.of(tail);
+//            return IntStreamPlus
+//                .from(stream)
+//                .concatWith(tailStream);
+//        });
+//    }
+//    
+//    public default IntStreamable merge(
+//            IntStreamable anotherStreamable) {
+//        return deriveWith(stream -> {
+//            val anotherStream = anotherStreamable.stream();
+//            return IntStreamPlus
+//                .from(stream)
+//                .merge(anotherStream);
+//        });
+//    }
+//    
+//    public default IntStreamable merge(
+//            int ... anothers) {
+//        return deriveWith(stream -> {
+//            val anotherStream = IntStream.of(anothers);
+//            return IntStreamPlus
+//                .from(stream)
+//                .merge(anotherStream);
+//        });
+//    }
+//    
+//    // TODO - Allow mapping before combiner, selecting
+//    //-- Zip --
+//    
+//    public default <ANOTHER, TARGET> Streamable<TARGET> combineWith(
+//            Streamable<ANOTHER>               anotherStreamable, 
+//            IntObjBiFunction<ANOTHER, TARGET> combinator) {
+//        return deriveFrom(stream -> {
+//            val anotherStream = anotherStreamable.stream();
+//            return IntStreamPlus
+//                .from(stream)
+//                .combineWith(anotherStream, combinator);
+//        });
+//    }
+//    public default <ANOTHER, TARGET> Streamable<TARGET> combineWith(
+//            Streamable<ANOTHER>               anotherStreamable, 
+//            ZipWithOption                     option, 
+//            IntObjBiFunction<ANOTHER, TARGET> combinator) {
+//        return deriveFrom(stream -> {
+//            val anotherStream = anotherStreamable.stream();
+//            return IntStreamPlus
+//                .from(stream)
+//                .combineWith(anotherStream, option, combinator);
+//        });
+//    }
+//    
+//    public default <ANOTHER> Streamable<IntTuple2<ANOTHER>> zipWith(
+//            Streamable<ANOTHER> anotherStreamable) {
+//        return deriveToStreamable(streamable -> {
+//            val anotherStream = anotherStreamable.stream();
+//            return streamable
+//                .stream()
+//                .zipWith(anotherStream);
+//        });
+//    }
+//    public default <ANOTHER> Streamable<IntTuple2<ANOTHER>> zipWith(
+//            Streamable<ANOTHER> anotherStreamable, 
+//            ZipWithOption   option) {
+//        return deriveToStreamable(stream -> {
+//            val anotherStream = anotherStreamable.stream();
+//            return IntStreamPlus
+//                .from(stream)
+//                .zipWith(anotherStream, option);
+//        });
+//    }
+//    
+//    public default <ANOTHER, TARGET> Streamable<TARGET> zipWith(
+//            Streamable<ANOTHER>               anotherStreamable, 
+//            IntObjBiFunction<ANOTHER, TARGET> merger) {
+//        return derive(stream -> {
+//            val anotherStream = anotherStreamable.stream();
+//            return IntStreamPlus
+//                .from(stream)
+//                .zipWith(anotherStream, merger);
+//        });
+//    }
+//    // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
+//    public default <ANOTHER, TARGET> Streamable<TARGET> zipWith(
+//            Streamable<ANOTHER>               anotherStreamable, 
+//            ZipWithOption                     option,
+//            IntObjBiFunction<ANOTHER, TARGET> merger) {
+//        return derive(stream -> {
+//            val anotherStream = anotherStreamable.stream();
+//            return IntStreamPlus
+//                .from(stream)
+//                .zipWith(anotherStream, option, merger);
+//        });
+//   }
+//    
+//    public default Streamable<IntIntTuple> zipWith(
+//            IntStreamable anotherStreamable) {
+//        return derive(streamble -> {
+//            val anotherStream = IntStreamPlus.from(anotherStreamable.stream());
+//            return streamble
+//                    .stream()
+//                    .zipWith(anotherStream);
+//        });
+//    }
+//    public default Streamable<IntIntTuple> zipWith(
+//            IntStreamable anotherStreamable,
+//            int           defaultValue) {
+//        return derive(stream ->  {
+//            val anotherStream = IntStreamPlus.from(anotherStreamable.stream());
+//            return IntStreamPlus
+//                    .from(stream)
+//                    .zipWith(anotherStream, defaultValue);
+//        });
+//    }
     
     public default IntStreamable zipWith(
-            IntStream              anotherStream, 
+            IntStreamable          anotherStreamable, 
             IntBiFunctionPrimitive merger) {
-        return deriveWith(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .zipWith(anotherStream, merger));
+        return derive(streamble ->  {
+            val anotherStream = IntStreamPlus.from(anotherStreamable.stream());
+            return streamble
+                    .stream()
+                    .zipWith(anotherStream, merger);
+        });
     }
     public default IntStreamable zipWith(
-            IntStream              anotherStream, 
+            IntStreamable          anotherStreamable, 
             IntBiFunctionPrimitive merger,
             int                    defaultValue) {
-        return deriveWith(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .zipWith(anotherStream, merger, defaultValue));
+        return derive(streamble ->  {
+            val anotherStream = IntStreamPlus.from(anotherStreamable.stream());
+            return streamble
+                    .stream()
+                    .zipWith(anotherStream, merger, defaultValue);
+        });
     }
     
-    public default <T> Streamable<T> zipToObjWith(
-            IntStream           anotherStream, 
-            IntIntBiFunction<T> merger) {
-        return deriveFrom(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .zipToObjWith(anotherStream, merger));
-    }
-    public default <T> Streamable<T> zipToObjWith(
-            IntStream           anotherStream, 
-            IntIntBiFunction<T> merger,
-            int                 defaultValue) {
-        return deriveFrom(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .zipToObjWith(anotherStream, merger, defaultValue));
-    }
-    
-    public default IntStreamable choose(
-            IntStreamPlus           anotherStream, 
-            IntBiPredicatePrimitive selectThisNotAnother) {
-        return deriveWith(stream -> 
-                IntStreamPlus
-                    .from(stream)
-                    .choose(anotherStream, selectThisNotAnother));
-    }
+//    public default <T> Streamable<T> zipToObjWith(
+//            IntStreamable       anotherStreamable, 
+//            IntIntBiFunction<T> merger) {
+//        return deriveFrom(stream ->  {
+//            val anotherStream = IntStreamPlus.from(anotherStreamable.stream());
+//            return IntStreamPlus
+//                    .from(stream)
+//                    .zipToObjWith(anotherStream, merger);
+//        });
+//    }
+//    public default <T> Streamable<T> zipToObjWith(
+//            IntStreamable       anotherStreamable, 
+//            IntIntBiFunction<T> merger,
+//            int                 defaultValue) {
+//        return deriveFrom(stream ->  {
+//            val anotherStream = IntStreamPlus.from(anotherStreamable.stream());
+//            return IntStreamPlus
+//                    .from(stream)
+//                    .zipToObjWith(anotherStream, merger, defaultValue);
+//        });
+//    }
+//    
+//    public default IntStreamable choose(
+//            IntStreamable           anotherStreamable, 
+//            IntBiPredicatePrimitive selectThisNotAnother) {
+//        return deriveWith(stream -> {
+//            val anotherStream = IntStreamPlus.from(anotherStreamable.stream());
+//            return IntStreamPlus
+//                .from(stream)
+//                .choose(anotherStream, selectThisNotAnother);
+//        });
+//    }
     
 }

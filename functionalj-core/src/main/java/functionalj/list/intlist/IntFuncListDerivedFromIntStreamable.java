@@ -60,7 +60,7 @@ public class IntFuncListDerivedFromIntStreamable
         if (size() != anotherList.size())
             return false;
         
-        return zipWith(anotherList.stream(), zeroForEquals)
+        return zipWith(anotherList, zeroForEquals)
                 .allMatch(toZero);
     }
 

@@ -24,8 +24,10 @@
 package functionalj.stream.intstream;
 
 import static functionalj.function.Func.themAll;
+import static java.lang.System.arraycopy;
+import static java.util.Arrays.binarySearch;
+import static java.util.Arrays.sort;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -162,15 +164,19 @@ public interface IntStreamPlusAddtionalOperators {
     
     //-- Filter --
     
-    public default IntStreamPlus filterIn(int[] array) {
+    public default IntStreamPlus filterIn(int ... array) {
         if ((array == null) || (array.length == 0))
             return IntStreamPlus.empty();
         
         val length = array.length;
         val ints   = new int[length];
-        System.arraycopy(array, 0, ints, 0, length);
-        Arrays.sort(ints);
-        return filter(intValue -> -1 != Arrays.binarySearch(ints, intValue));
+        arraycopy(array, 0, ints, 0, length);
+        sort(ints);
+        return filter(intValue -> {
+            int index = binarySearch(ints, intValue);
+            boolean included = (index >= 0);
+            return included;
+        });
     }
     
     public default IntStreamPlus filterIn(Collection<Integer> collection) {
@@ -184,15 +190,19 @@ public interface IntStreamPlusAddtionalOperators {
         return filter(data -> !predicate.test(data));
     }
     
-    public default IntStreamPlus excludeIn(int[] array) {
+    public default IntStreamPlus excludeIn(int... array) {
         if ((array == null) || (array.length == 0))
             return IntStreamPlus.empty();
         
         val length = array.length;
         val ints   = new int[length];
-        System.arraycopy(array, 0, ints, 0, length);
-        Arrays.sort(ints);
-        return filter(intValue -> -1 == Arrays.binarySearch(ints, intValue));
+        arraycopy(array, 0, ints, 0, length);
+        sort(ints);
+        return filter(intValue -> {
+            int index = binarySearch(ints, intValue);
+            boolean included = (index < 0);
+            return included;
+        });
     }
     
     public default IntStreamPlus excludeIn(Collection<Integer> collection) {

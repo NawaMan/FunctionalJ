@@ -117,13 +117,13 @@ public interface StreamableWithSegment<DATA> {
         });
     }
     
-    public default Streamable<DATA> collapse(
+    public default Streamable<DATA> collapseWhen(
             Predicate<DATA>         conditionToCollapse, 
             Func2<DATA, DATA, DATA> concatFunc) {
         return deriveWith(stream -> {
             return StreamPlus
                     .from    (stream)
-                    .collapse(conditionToCollapse, concatFunc);
+                    .collapseWhen(conditionToCollapse, concatFunc);
         });
     }
     

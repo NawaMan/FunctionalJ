@@ -57,7 +57,6 @@ import java.util.stream.StreamSupport;
 
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
-import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.intlist.ImmutableIntList;
 import functionalj.pipeable.Pipeable;
@@ -81,7 +80,7 @@ public interface IntStreamPlus
             IntStreamPlusWithMapThen,
             IntStreamPlusWithMapTuple,
             IntStreamPlusWithMapToMap,
-            // StreamPlusWithSplit,
+            IntStreamPlusWithSplit,
             IntStreamPlusWithSegment,
             IntStreamPlusWithCombine,
             IntStreamPlusWithCalculate,
@@ -104,11 +103,33 @@ public interface IntStreamPlus
         return IntStreamPlus.from(IntStream.of(Arrays.copyOf(ints, ints.length)));
     }
     
+    public static IntStreamPlus ints(int ... ints) {
+        return IntStreamPlus.of(ints);
+    }
+    
+    // TODO - from-to, from almostTo, stepping.
+    
     public static IntStreamPlus from(IntStream intStream) {
         if (intStream instanceof IntStreamPlus)
             return (IntStreamPlus)intStream;
             
         return ()->intStream;
+    }
+    
+    public static IntStreamPlus zeroes() {
+        return IntStreamPlus.generate(()->0);
+    }
+    
+    public static IntStreamPlus zeroes(int count) {
+        return IntStreamPlus.generate(()->0).limit(count);
+    }
+    
+    public static IntStreamPlus ones() {
+        return IntStreamPlus.generate(()->1);
+    }
+    
+    public static IntStreamPlus ones(int count) {
+        return IntStreamPlus.generate(()->1).limit(count);
     }
     
     public static IntStreamPlus repeat(int ... data) {
@@ -124,27 +145,39 @@ public interface IntStreamPlus
                 .map(i -> data[i % size]));
     }
     
+    public static IntStreamPlus loop() {
+        return IntStreamPlus
+                .infinite();
+    }
+    
     public static IntStreamPlus loop(int time) {
         return IntStreamPlus
                 .infinite()
                 .limit(time);
     }
     
-    public static IntStreamPlus loop() {
-        return IntStreamPlus
-                .infinite();
+    public static IntStreamPlus infinite() {
+        return IntStreamPlus.from(IntStream.range(0, Integer.MAX_VALUE));
     }
     
-    public static IntStreamPlus infinite() {
-        return IntStreamPlus.from(IntStream.iterate(0, i -> i + 1));
+    public static IntStreamPlus naturalNumbers() {
+        return IntStreamPlus.from(IntStream.range(1, Integer.MAX_VALUE));
+    }
+    
+    public static IntStreamPlus naturalNumbers(int count) {
+        return naturalNumbers().limit(count);
+    }
+    
+    public static IntStreamPlus wholeNumbers() {
+        return IntStreamPlus.from(IntStream.range(0, Integer.MAX_VALUE));
+    }
+    
+    public static IntStreamPlus wholeNumbers(int count) {
+        return wholeNumbers().limit(count);
     }
     
     public static IntStreamPlus range(int startInclusive, int endExclusive) {
         return IntStreamPlus.from(IntStream.range(startInclusive, endExclusive));
-    }
-    
-    public static IntStreamPlus rangeClosed(int startInclusive, int endInclusive) {
-        return IntStreamPlus.from(IntStream.rangeClosed(startInclusive, endInclusive));
     }
     
     public static IntStreamPlus concat(IntStreamPlus ... streams) {
@@ -155,12 +188,16 @@ public interface IntStreamPlus
         return IntStreamPlus.from(IntStream.generate(s));
     }
     
+    public static IntStreamPlus compound(int seed, IntUnaryOperator f) {
+        return IntStreamPlus.from(IntStream.iterate(seed, f));
+    }
+    
     public static IntStreamPlus iterate(int seed, IntUnaryOperator f) {
         return IntStreamPlus.from(IntStream.iterate(seed, f));
     }
     
-    public static IntStreamPlus compound(int seed, IntUnaryOperator f) {
-        return IntStreamPlus.from(IntStream.iterate(seed, f));
+    public static IntStreamPlus compound(int seed1, int seed2, IntBinaryOperator f) {
+        return IntStreamPlus.from(IntStreamPlus.iterate(seed1, seed2, f));
     }
     
     public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator f) {
@@ -181,10 +218,12 @@ public interface IntStreamPlus
         });
     }
     
-    public static IntStreamPlus compound(int seed1, int seed2, IntBinaryOperator f) {
-        return IntStreamPlus.from(IntStreamPlus.iterate(seed1, seed2, f));
+    public static StreamPlus<IntIntTuple> zipOf(
+            IntStream stream1, 
+            IntStream stream2) {
+        return IntStreamPlus.from(stream1)
+                .zipWith(stream2);
     }
-    
     public static StreamPlus<IntIntTuple> zipOf(
             IntStream stream1, 
             IntStream stream2,
@@ -193,32 +232,42 @@ public interface IntStreamPlus
                 .zipWith(stream2, defaultValue);
     }
     public static StreamPlus<IntIntTuple> zipOf(
-            IntStream stream1, 
-            IntStream stream2) {
+            IntStream stream1, int defaultValue1,
+            IntStream stream2, int defaultValue2) {
         return IntStreamPlus.from(stream1)
-                .zipWith(stream2);
+                .zipWith(stream2, defaultValue1, defaultValue2);
     }
     
-    public static <T> StreamPlus<T> zipToObjOf(
-            IntStream stream1, 
-            IntStream stream2, 
-            IntIntBiFunction<T> merger) {
+    public static IntStreamPlus zipOf(
+            IntStream              stream1, 
+            IntStream              stream2,
+            IntBiFunctionPrimitive merger) {
         return IntStreamPlus.from(stream1)
-                .zipToObjWith(stream2, merger);
+                .zipWith(stream2, merger);
     }
-    
-    public static <T> StreamPlus<T> zipToObjOf(
-            IntStream           stream1, 
-            IntStream           stream2, 
-            IntIntBiFunction<T> merger,
-            int                 defaultValue) {
+    public static IntStreamPlus zipOf(
+            IntStream              stream1, 
+            IntStream              stream2,
+            int                    defaultValue,
+            IntBiFunctionPrimitive merger) {
         return IntStreamPlus.from(stream1)
-                .zipToObjWith(stream2, merger, defaultValue);
+                .zipWith(stream2, merger, defaultValue);
+    }
+    public static IntStreamPlus zipOf(
+            IntStream stream1, int defaultValue1,
+            IntStream stream2, int defaultValue2,
+            IntBiFunctionPrimitive merger) {
+        return IntStreamPlus.from(stream1)
+                .zipWith(stream2, merger, defaultValue1, defaultValue2);
     }
     
     //== Stream ==
     
     public IntStream stream();
+    
+    public default IntStreamPlus asIntStreamPlus() {
+        return this;
+    }
     
     //== Helper functions ==
     
@@ -274,14 +323,14 @@ public interface IntStreamPlus
         return resultStream.parallel();
     }
     
-    public default IntStreamPlus deriveWith(
-            Function<IntStreamPlus, IntStreamPlus> action) {
+    public default IntStreamPlus derive(
+            Function<IntStream, IntStream> action) {
         return IntStreamPlus
                 .from(action.apply(this));
     }
     
-    public default <TARGET> StreamPlus<TARGET> deriveToObjWith(
-            Function<IntStreamPlus, Stream<TARGET>> action) {
+    public default <TARGET> StreamPlus<TARGET> deriveToStream(
+            Function<IntStream, Stream<TARGET>> action) {
         return StreamPlus
                 .from(action.apply(this));
     }
@@ -317,13 +366,15 @@ public interface IntStreamPlus
     
     @Override
     public default Spliterator.OfInt spliterator() {
-        return stream().spliterator();
+        return stream()
+                .spliterator();
     }
     
     @Override
     public default IntStreamPlus onClose(Runnable closeHandler) {
         return IntStreamPlus
-                .from(stream().onClose(closeHandler));
+                .from(stream()
+                .onClose(closeHandler));
     }
     
     @Override
@@ -355,12 +406,6 @@ public interface IntStreamPlus
         return stream;
     }
     
-    public default <TARGET> StreamPlus<TARGET> mapToObj(Supplier<? extends TARGET> supplier) {
-        StreamPlus<TARGET> stream = StreamPlus.from(stream().mapToObj(e -> supplier.get()));
-        stream.onClose(()->{ close(); });
-        return stream;
-    }
-    
     @Override
     public default IntStreamPlus map(IntUnaryOperator mapper) {
         return IntStreamPlus.from(stream().map(mapper));
@@ -372,12 +417,21 @@ public interface IntStreamPlus
         return IntStreamPlus.from(stream().flatMap(mapper));
     }
     
+    public default <T> StreamPlus<T> flatMapToObj(
+            IntFunction<? extends Stream<T>> mapper) {
+        return StreamPlus.from(
+                stream()
+                .mapToObj(mapper)
+                .flatMap(stream -> stream));
+    }
+    
     @Override
     public default IntStreamPlus filter(
             IntPredicate predicate) {
         return IntStreamPlus.from(stream().filter(predicate));
     }
     
+    // TODO - Rename all filter with map to filter
     public default IntStreamPlus filter(
             IntUnaryOperator mapper, 
             IntPredicate     predicate) {
@@ -388,8 +442,18 @@ public interface IntStreamPlus
         }));
     }
     
-    public default <T> IntStreamPlus filter(
+    public default <T> IntStreamPlus filterAsObject(
             IntFunction<? extends T> mapper,
+            Predicate<? super T>     theCondition) {
+        return filter(value -> {
+            val target = mapper.apply(value);
+            val isPass = theCondition.test(target);
+            return isPass;
+        });
+    }
+    
+    public default <T> IntStreamPlus filterAsObject(
+            Function<Integer, ? extends T> mapper,
             Predicate<? super T>     theCondition) {
         return filter(value -> {
             val target = mapper.apply(value);
@@ -530,6 +594,7 @@ public interface IntStreamPlus
                 .mapToInt(t     -> t._1));
     }
     
+    // TODO - This should be changed to sortedAs
     public default <T extends Comparable<? super T>> IntStreamPlus sortedByObj(
             IntFunction<T> mapper) {
         return IntStreamPlus.from(
@@ -608,28 +673,6 @@ public interface IntStreamPlus
             return stream
                     .max();
         });
-    }
-    
-    public default <T extends Comparable<T>> OptionalInt minBy(IntFunction<T> mapper) {
-        val optional 
-                = stream()
-                .mapToObj(i     -> new IntTuple2<>(i, mapper.apply(i)))
-                .min     ((a,b) -> a._2.compareTo(b._2))
-                .map     (t     -> t._1);
-        return optional.isPresent()
-                ? OptionalInt.empty()
-                : OptionalInt.of(optional.get());
-    }
-    
-    public default <T extends Comparable<T>> OptionalInt maxBy(IntFunction<T> mapper) {
-        val optional 
-                = stream()
-                .mapToObj(i     -> new IntTuple2<>(i, mapper.apply(i)))
-                .max     ((a,b) -> a._2.compareTo(b._2))
-                .map     (t     -> t._1);
-        return optional.isPresent()
-                ? OptionalInt.empty()
-                : OptionalInt.of(optional.get());
     }
     
     @Override
@@ -746,6 +789,7 @@ public interface IntStreamPlus
     }
     
     public default String toListString() {
+        // TODO - There must be a faster way
         val strValue 
             = mapToObj(String::valueOf)
             .collect(Collectors.joining(", "));
@@ -820,18 +864,18 @@ public interface IntStreamPlus
         val strValue 
             = mapToObj(String::valueOf)
             .collect  (Collectors.joining());
-        return "[" + strValue + "]";
+        return strValue;
     }
     public default String joinToString(String delimiter) {
         val strValue 
             = mapToObj(String::valueOf)
             .collect  (Collectors.joining(delimiter));
-        return "[" + strValue + "]";
+        return strValue;
     }
     
     //== Pipe ==
     
-    public default <T> Pipeable<IntStreamPlus> pipable() {
+    public default Pipeable<IntStreamPlus> pipable() {
         return Pipeable.of(this);
     }
     

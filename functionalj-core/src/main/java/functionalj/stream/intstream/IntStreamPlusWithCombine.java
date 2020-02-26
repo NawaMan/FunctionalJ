@@ -55,7 +55,7 @@ public interface IntStreamPlusWithCombine {
         );
     }
     
-    public default IntStreamPlus merge(IntStream anotherStream) {
+    public default IntStreamPlus mergeWith(IntStream anotherStream) {
         val thisStream = stream();
         val iteratorA  = IntStreamPlusHelper.rawIterator(thisStream);
         val iteratorB  = IntStreamPlusHelper.rawIterator(anotherStream);
@@ -70,21 +70,6 @@ public interface IntStreamPlusWithCombine {
                     funcUnit0(()->anotherStream.close()).runCarelessly();
                 });
         return resultStream;
-    }
-    
-    // TODO - Allow mapping before combiner, selecting
-    //-- Zip --
-    
-    public default <ANOTHER, TARGET> StreamPlus<TARGET> combineWith(
-            Stream<ANOTHER>                   anotherStream, 
-            IntObjBiFunction<ANOTHER, TARGET> combinator) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, combinator);
-    }
-    public default <ANOTHER, TARGET> StreamPlus<TARGET> combineWith(
-            Stream<ANOTHER>                   anotherStream, 
-            ZipWithOption                     option, 
-            IntObjBiFunction<ANOTHER, TARGET> combinator) {
-        return zipWith(anotherStream, option, combinator);
     }
     
     public default <ANOTHER> StreamPlus<IntTuple2<ANOTHER>> zipWith(
@@ -137,6 +122,18 @@ public interface IntStreamPlusWithCombine {
                     });
         });
     }
+    public default StreamPlus<IntIntTuple> zipWith(
+            IntStream anotherStream,
+            int       defaultValue1,
+            int       defaultValue2) {
+        return useIteratorToObj(iteratorA -> {
+            return IntStreamPlus
+                    .from(anotherStream)
+                    .useIteratorToObj(iteratorB -> {
+                        return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB, defaultValue1, defaultValue2);
+                    });
+        });
+    }
     
     public default IntStreamPlus zipWith(
             IntStream              anotherStream, 
@@ -161,6 +158,19 @@ public interface IntStreamPlusWithCombine {
                     });
         });
     }
+    public default IntStreamPlus zipWith(
+            IntStream              anotherStream, 
+            IntBiFunctionPrimitive merger,
+            int                    defaultValue1,
+            int                    defaultValue2) {
+        return useIterator(iteratorA -> {
+            return IntStreamPlus
+                    .from(anotherStream)
+                    .useIterator(iteratorB -> {
+                        return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
+                    });
+        });
+    }
     
     public default <T> StreamPlus<T> zipToObjWith(
             IntStream           anotherStream, 
@@ -182,6 +192,19 @@ public interface IntStreamPlusWithCombine {
                     .from(anotherStream)
                     .useIteratorToObj(iteratorB -> {
                         return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB, defaultValue);
+                    });
+        });
+    }
+    public default <T> StreamPlus<T> zipToObjWith(
+            IntStream           anotherStream, 
+            IntIntBiFunction<T> merger,
+            int                 defaultValue1,
+            int                 defaultValue2) {
+        return useIteratorToObj(iteratorA -> {
+            return IntStreamPlus
+                    .from(anotherStream)
+                    .useIteratorToObj(iteratorB -> {
+                        return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
                     });
         });
     }

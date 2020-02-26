@@ -64,6 +64,7 @@ import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.IntStreamable;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -144,6 +145,10 @@ public interface Streamable<DATA>
     
     public static <D> Streamable<D> from(Func0<Stream<D>> supplier) {
         return ()->StreamPlus.from(supplier.get());
+    }
+    
+    public static <D> StreamPlus<D> fromInts(IntStreamable source, Function<IntStreamable, Stream<D>> action) {
+        return ()->action.apply(source);
     }
     
     @SafeVarargs
@@ -253,6 +258,17 @@ public interface Streamable<DATA>
     public static <D, T> Streamable<T> from(
             Streamable<D>                      source, 
             Function<Streamable<D>, Stream<T>> action) {
+        return new Streamable<T>() {
+            @Override
+            public StreamPlus<T> stream() {
+                val targetStream = action.apply(source);
+                return StreamPlus.from(targetStream);
+            }
+        };
+    }
+    public static <T> Streamable<T> from(
+            IntStreamable                      source, 
+            Function<IntStreamable, Stream<T>> action) {
         return new Streamable<T>() {
             @Override
             public StreamPlus<T> stream() {

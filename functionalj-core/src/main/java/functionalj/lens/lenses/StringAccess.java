@@ -131,6 +131,12 @@ public interface StringAccess<HOST>
         });
     }
     
+    public default StringAccess<HOST> formatedBy(String format) {
+        return stringAccess(null, str->{
+            return String.format(format, str);
+        });
+    }
+    
     public default BooleanAccess<HOST> thatEqualsIgnoreCase(String anotherString) {
         boolean isAnotherStringEmpty = (anotherString == null) || anotherString.isEmpty();
         return booleanAccess(isAnotherStringEmpty, str->str.equalsIgnoreCase(anotherString));

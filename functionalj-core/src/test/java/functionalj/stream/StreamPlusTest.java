@@ -244,7 +244,7 @@ public class StreamPlusTest {
         // Because 3 and 6 do match the condition to collapse ... so they are merged with the one before them.
         assertEquals(
                 "1, 5, 4, 11", 
-                stream1.collapse(
+                stream1.collapseWhen(
                         i -> (i % 3) == 0,
                         (a,b)->a+b
                     ).joinToString(", "));
@@ -252,7 +252,7 @@ public class StreamPlusTest {
         val stream2 = StreamPlus.of(1, 2, 3, 4, 5, 6);
         assertEquals(
                 "1, 2, 7, 5, 6", 
-                stream2.collapse(
+                stream2.collapseWhen(
                         i -> (i % 3) == 1,
                         (a,b)->a+b
                     ).joinToString(", "));
@@ -260,7 +260,7 @@ public class StreamPlusTest {
         val stream3 = StreamPlus.of(1, 2, 3, 4, 5, 6);
         assertEquals(
                 "1, 9, 11", 
-                stream3.collapse(
+                stream3.collapseWhen(
                         i -> (i % 3) <= 1,
                         (a,b)->a+b
                     ).joinToString(", "));

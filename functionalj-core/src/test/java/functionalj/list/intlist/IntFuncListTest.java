@@ -5,6 +5,8 @@ import static functionalj.lens.Access.theInteger;
 import static functionalj.list.intlist.IntFuncList.emptyIntList;
 import static functionalj.list.intlist.IntFuncList.ints;
 import static functionalj.stream.intstream.IntStreamPlus.cycle;
+import static functionalj.stream.intstream.IntStreamable.repeat;
+import static functionalj.stream.intstream.IntStreamable.zeroes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -118,23 +120,23 @@ public class IntFuncListTest {
         assertEquals(OptionalInt.of(13),  intList.at(6));
         assertEquals(OptionalInt.empty(), intList.at(7));
     }
-    
-    @Test
-    public void testIndexOf() {
-        assertEquals(3, intList.indexOf(3));
-    }
-    
-    @Test
-    public void testLastIndexOf() {
-        assertEquals(1, intList.lastIndexOf(1));
-    }
-    
-    @Test
-    public void testIndexesOf() {
-        assertEquals(ints(0, 1), intList.indexesOf(1));
-        assertEquals(ints(3),    intList.indexesOf(3));
-        assertEquals(ints(),     intList.indexesOf(23));
-    }
+//    
+//    @Test
+//    public void testIndexOf() {
+//        assertEquals(3, intList.indexOf(3));
+//    }
+//    
+//    @Test
+//    public void testLastIndexOf() {
+//        assertEquals(1, intList.lastIndexOf(1));
+//    }
+//    
+//    @Test
+//    public void testIndexesOf() {
+//        assertEquals(ints(0, 1), intList.indexesOf(1));
+//        assertEquals(ints(3),    intList.indexesOf(3));
+//        assertEquals(ints(),     intList.indexesOf(23));
+//    }
     
     @Test
     public void testSub() {
@@ -598,7 +600,7 @@ public class IntFuncListTest {
         //    #5 + #6      = 8 + 13    = 21
         assertEquals(
                 "[2, 10, 21]",
-                intList.collapse($I.thatIsOdd(), (a,b)->a+b).toString());
+                intList.collapseWhen($I.thatIsOdd(), (a,b)->a+b).toString());
         
         // Explain
         // The original : [1, 1, 2, 3, 5, 8, 13]
@@ -615,7 +617,7 @@ public class IntFuncListTest {
         //    #6                     = 13                = 13
         assertEquals(
                 "[12, 8, 13]",
-                intList.collapse($I.thatLessThan(6), theInteger::sum).toString());
+                intList.collapseWhen($I.thatLessThan(6), theInteger::sum).toString());
     }
     
     @Test
@@ -647,4 +649,126 @@ public class IntFuncListTest {
                     i -> i*i*i*i*i*i)
                 .toString());
     }
+    
+    @Test
+    public void testMapThen() {
+        assertEquals(
+                "[1:-1, 1:-1, 2:-2, 3:-3, 5:-5, 8:-8, 13:-13]", 
+                intList
+                .mapThen(
+                    i -> i, i -> -i,
+                    (a, b) -> a + ":" + b)
+                .toString());
+        assertEquals(
+                "[1:-1:1:-1:1:-1, 1:-1:1:-1:1:-1, 2:-2:4:-4:8:-8, 3:-3:9:-9:27:-27, "
+                + "5:-5:25:-25:125:-125, 8:-8:64:-64:512:-512, 13:-13:169:-169:2197:-2197]", 
+                intList
+                .mapThen(
+                    i -> i,     i -> -i,
+                    i -> i*i,   i -> -i*i,
+                    i -> i*i*i, i -> -i*i*i,
+                    (a, b, c, d, e, f) -> a + ":" + b + ":" + c + ":" + d + ":" + e + ":" + f)
+                .toString());
+    }
+    
+    @Test
+    public void testMapTuple() {
+        assertEquals(
+                "[(1,-1), (1,-1), (2,-2), (3,-3), (5,-5), (8,-8), (13,-13)]", 
+                intList
+                .mapTuple(
+                    i -> i,
+                    i -> -i)
+                .toString());
+    }
+    
+    @Test
+    public void testMapToMap() {
+        assertEquals(
+                "["
+                + "{num:1, word:word-1}, "
+                + "{num:1, word:word-1}, "
+                + "{num:2, word:word-2}, "
+                + "{num:3, word:word-3}, "
+                + "{num:5, word:word-5}, "
+                + "{num:8, word:word-8}, "
+                + "{num:13, word:word-13}"
+                + "]", 
+                intList
+                .mapToMap(
+                        "num", i -> "" + i,
+                        "word", i -> "word-" + i)
+                .toString());
+    }
+//    
+//    @Test
+//    public void testConcatWith() {
+//        assertEquals(
+//                "["
+//                + "1, 1, 2, 3, 5, 8, 13, "
+//                + "0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
+//                + "]", 
+//                intList
+//                .concatWith(zeros(10))
+//                .toString());
+//        assertEquals(
+//                "["
+//                + "1, 1, 2, 3, 5, 8, 13, "
+//                + "0, 0, 0, 0, 0"
+//                + "]", 
+//                intList
+//                .concatWith(0, 0, 0, 0, 0)
+//                .toString());
+//    }
+//    
+//    @Test
+//    public void testMerge() {
+//        assertEquals(
+//                "[1, 0, 1, 0, 2, 0, 3, 0, 5, 0, 8, 0, 13, 0, 0, 0, 0]", 
+//                intList
+//                .merge(zeros(10))
+//                .toString());
+//        assertEquals(
+//                "[1, 0, 1, 0, 2, 0, 3, 0, 5, 0, 8, 13]", 
+//                intList
+//                .merge(0, 0, 0, 0, 0)
+//                .toString());
+//    }
+//    
+//    @Test
+//    public void testChoose() {
+//        assertEquals(
+//                "[5, 5, 5, 5, 5, 8, 13]", 
+//                intList
+//                .choose(repeat(5).limit(10), (a,b)-> a >= b)
+//                .toString());
+//    }
+//    
+//    @Test
+//    public void testCombineWith() {
+//        assertEquals(
+//                "[5, 5, 5, 5, 5, 8, 13]", 
+//                intList
+//                .combineWith(repeat(5).limit(10).boxed(), (a,b)-> a + b)
+//                .toString());
+//    }
+//    
+//    @Test
+//    public void testZipWith() {
+//        assertEquals(
+//                "[5, 5, 5, 5, 5, 8, 13]", 
+//                intList
+//                .zipWith(repeat(5).limit(10), (a,b)-> a >= b ? a : b)
+//                .toString());
+//        assertEquals(
+//                "[5, 5, 5, 5, 5, 8, 13, 5, 5, 5]", 
+//                intList
+//                .zipWith(repeat(5).limit(10), (a,b)-> a >= b ? a : b, Integer.MIN_VALUE)
+//                .toString());
+//        assertEquals(
+//                "[5, 5, 5, 5, 5, 8, 13, 20, 20, 20]", 
+//                intList
+//                .zipWith(repeat(5).limit(10), (a,b)-> a >= b ? a : b, 20)
+//                .toString());
+//    }
 }

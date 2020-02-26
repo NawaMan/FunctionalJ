@@ -50,9 +50,9 @@ public interface IntStreamPlusAdditionalTerminalOperators {
     
     public IntStreamPlus filter(IntPredicate predicate);
     
-    public <T> IntStreamPlus filter(IntFunction<? extends T> mapper, Predicate<? super T> theCondition);
+    public IntStreamPlus filter(IntUnaryOperator mapper, IntPredicate theCondition);
     
-    public <T> IntStreamPlus filter(IntUnaryOperator mapper, IntPredicate theCondition);
+    public <T> IntStreamPlus filterAsObject(IntFunction<? extends T> mapper, Predicate<? super T> theCondition);
     
     public <T> T terminate(Function<IntStream, T> action);
     
@@ -273,7 +273,7 @@ public interface IntStreamPlusAdditionalTerminalOperators {
              || IntStreamPlusHelper.dummy.equals(max))
                 return Optional.empty();
             
-            val intTuple = intTuple((int)min, (int)max);
+            val intTuple = intTuple(((IntIntTuple)min)._1, ((IntIntTuple)max)._1);
             return Optional.of(intTuple);
         });
     }
@@ -297,7 +297,8 @@ public interface IntStreamPlusAdditionalTerminalOperators {
              || IntStreamPlusHelper.dummy.equals(max))
                 return Optional.empty();
             
-            val intTuple = intTuple((int)min, (int)max);
+            @SuppressWarnings("unchecked")
+            val intTuple = intTuple(((IntTuple2<D>)min)._1, ((IntTuple2<D>)max)._1);
             return Optional.of(intTuple);
         });
     }
@@ -322,7 +323,8 @@ public interface IntStreamPlusAdditionalTerminalOperators {
              || IntStreamPlusHelper.dummy.equals(max))
                 return Optional.empty();
             
-            val intTuple = intTuple((int)min, (int)max);
+            @SuppressWarnings("unchecked")
+            val intTuple = intTuple(((IntTuple2<D>)min)._1, ((IntTuple2<D>)max)._1);
             return Optional.of(intTuple);
         });
     }
@@ -364,14 +366,14 @@ public interface IntStreamPlusAdditionalTerminalOperators {
     public default <T> OptionalInt findFirstBy(
             IntFunction<? extends T> mapper, 
             Predicate<? super T>     theCondition) {
-        return filter(mapper, theCondition)
+        return filterAsObject(mapper, theCondition)
                 .findFirst();
     }
     
     public default <T> OptionalInt findAnyBy(
             IntFunction<? extends T> mapper, 
             Predicate<? super T>      theCondition) {
-        return filter(mapper, theCondition)
+        return filterAsObject(mapper, theCondition)
                 .findAny();
     }
     

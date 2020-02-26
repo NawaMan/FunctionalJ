@@ -381,6 +381,14 @@ public interface LongStreamPlus extends LongStream {
         return StreamPlus.from(stream().boxed());
     }
     
+    public default String toListString() {
+        // TODO - There must be a faster way
+        val strValue 
+            = mapToObj(String::valueOf)
+            .collect(Collectors.joining(", "));
+        return "[" + strValue + "]";
+    }
+    
     @Override
     public default LongStreamPlus sequential() {
         return LongStreamPlus.from(stream().sequential());

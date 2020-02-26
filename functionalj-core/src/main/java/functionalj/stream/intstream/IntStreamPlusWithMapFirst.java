@@ -7,7 +7,7 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 
-class IntStreamPlusMapAddOnHelper {
+class IntStreamPlusMapFirstAddOnHelper {
     
     @SafeVarargs
     static final <T> StreamPlus<T> mapFirst(
@@ -45,9 +45,15 @@ public interface IntStreamPlusWithMapFirst {
     //== mapFirst ==
     
     public default <T> StreamPlus<T> mapFirst(
+            IntFunction<T> mapper) {
+        return IntStreamPlusMapFirstAddOnHelper
+                .mapFirst(this, mapper);
+    }
+    
+    public default <T> StreamPlus<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2) {
-        return IntStreamPlusMapAddOnHelper
+        return IntStreamPlusMapFirstAddOnHelper
                 .mapFirst(this, mapper1, mapper2);
     }
     
@@ -55,7 +61,7 @@ public interface IntStreamPlusWithMapFirst {
             IntFunction<T> mapper1,
             IntFunction<T> mapper2,
             IntFunction<T> mapper3) {
-        return IntStreamPlusMapAddOnHelper
+        return IntStreamPlusMapFirstAddOnHelper
                 .mapFirst(this, mapper1, mapper2, mapper3);
     }
     
@@ -64,7 +70,7 @@ public interface IntStreamPlusWithMapFirst {
             IntFunction<T> mapper2,
             IntFunction<T> mapper3,
             IntFunction<T> mapper4) {
-        return IntStreamPlusMapAddOnHelper
+        return IntStreamPlusMapFirstAddOnHelper
                 .mapFirst(this, mapper1, mapper2, mapper3, mapper4);
     }
     
@@ -74,7 +80,7 @@ public interface IntStreamPlusWithMapFirst {
             IntFunction<T> mapper3,
             IntFunction<T> mapper4,
             IntFunction<T> mapper5) {
-        return IntStreamPlusMapAddOnHelper
+        return IntStreamPlusMapFirstAddOnHelper
                 .mapFirst(this, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
     
@@ -85,7 +91,7 @@ public interface IntStreamPlusWithMapFirst {
             IntFunction<T> mapper4,
             IntFunction<T> mapper5,
             IntFunction<T> mapper6) {
-        return IntStreamPlusMapAddOnHelper
+        return IntStreamPlusMapFirstAddOnHelper
                 .mapFirst(this, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
 }

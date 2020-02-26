@@ -353,7 +353,7 @@ public class RefTest {
         }
         Time.sleep(200);
         
-        assertEquals("[2 - 2 - 2 - 2 - 2]", resultRef.get().value());
+        assertEquals("2 - 2 - 2 - 2 - 2", resultRef.get().value());
     }
     
     @Test

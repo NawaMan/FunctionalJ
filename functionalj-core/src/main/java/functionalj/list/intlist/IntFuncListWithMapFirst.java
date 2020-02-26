@@ -2,7 +2,6 @@ package functionalj.list.intlist;
 
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import functionalj.list.FuncList;
@@ -11,8 +10,6 @@ import functionalj.stream.intstream.IntStreamableWithMapFirst;
 
 
 public interface IntFuncListWithMapFirst extends IntStreamableWithMapFirst {
-    
-    public IntFuncList derive(Function<IntStreamable, IntStream> action);
     
     public <TARGET> FuncList<TARGET> deriveToList(Function<IntStreamable, Stream<TARGET>> action);
     

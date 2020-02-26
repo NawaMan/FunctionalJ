@@ -366,6 +366,14 @@ public interface DoubleStreamPlus extends DoubleStream {
         return StreamPlus.from(stream().boxed());
     }
     
+    public default String toListString() {
+        // TODO - There must be a faster way
+        val strValue 
+            = mapToObj(String::valueOf)
+            .collect(Collectors.joining(", "));
+        return "[" + strValue + "]";
+    }
+    
     @Override
     public default DoubleStreamPlus sequential() {
         return DoubleStreamPlus.from(stream().sequential());

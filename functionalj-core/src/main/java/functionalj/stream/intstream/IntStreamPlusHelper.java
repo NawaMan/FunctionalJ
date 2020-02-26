@@ -238,6 +238,100 @@ public class IntStreamPlusHelper {
         return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
     }
     
+    static <TARGET> StreamPlus<TARGET> doZipIntIntObjWith(
+            IntIntBiFunction<TARGET> merger,
+            IntIteratorPlus          iteratorA, 
+            IntIteratorPlus          iteratorB,
+            int                      defaultValueA,
+            int                      defaultValueB) {
+        
+        val iterator = new Iterator<TARGET>() {
+            private boolean hasNextA;
+            private boolean hasNextB;
+            
+            public boolean hasNext() {
+                hasNextA = iteratorA.hasNext();
+                hasNextB = iteratorB.hasNext();
+                return (hasNextA || hasNextB);
+            }
+            public TARGET next() {
+                if (hasNextA && hasNextB) {
+                    int    nextA  = iteratorA.nextInt();
+                    int    nextB  = iteratorB.nextInt();
+                    TARGET choice = merger.applyInt(nextA, nextB);
+                    return choice;
+                }
+                if (hasNextA) {
+                    int    nextA = iteratorA.nextInt();
+                    TARGET choice = merger.applyInt(nextA, defaultValueB);
+                    return choice;
+                }
+                if (hasNextB) {
+                    int    nextB = iteratorB.nextInt();
+                    TARGET choice = merger.applyInt(defaultValueA, nextB);
+                    return choice;
+                }
+                throw new NoSuchElementException();
+            }
+        };
+        val intIterator = IteratorPlus.from(iterator);
+        val iterable = new Iterable<TARGET>() {
+            @Override
+            public IteratorPlus<TARGET> iterator() {
+                return intIterator;
+            }
+            
+        };
+        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+    }
+    
+    static IntStreamPlus doZipIntIntWith(
+            IntBiFunctionPrimitive merger,
+            IntIteratorPlus        iteratorA, 
+            IntIteratorPlus        iteratorB,
+            int                    defaultValueA,
+            int                    defaultValueB) {
+        
+        val iterator = new PrimitiveIterator.OfInt() {
+            private boolean hasNextA;
+            private boolean hasNextB;
+            
+            public boolean hasNext() {
+                hasNextA = iteratorA.hasNext();
+                hasNextB = iteratorB.hasNext();
+                return (hasNextA || hasNextB);
+            }
+            public int nextInt() {
+                if (hasNextA && hasNextB) {
+                    int nextA  = iteratorA.nextInt();
+                    int nextB  = iteratorB.nextInt();
+                    int choice = merger.applyAsIntAndInt(nextA, nextB);
+                    return choice;
+                }
+                if (hasNextA) {
+                    int nextA = iteratorA.nextInt();
+                    int choice = merger.applyAsIntAndInt(nextA, defaultValueB);
+                    return choice;
+                }
+                if (hasNextB) {
+                    int nextB = iteratorB.nextInt();
+                    int choice = merger.applyAsIntAndInt(defaultValueA, nextB);
+                    return choice;
+                }
+                throw new NoSuchElementException();
+            }
+        };
+        val intIterator = IntIteratorPlus.from(iterator);
+        val iterable = new IntIterable() {
+            @Override
+            public IntIteratorPlus iterator() {
+                return intIterator;
+            }
+            
+        };
+        return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
+    }
+    
     static IntStreamPlus doMergeInt(
             IntIteratorPlus iteratorA, 
             IntIteratorPlus iteratorB) {

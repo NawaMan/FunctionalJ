@@ -65,6 +65,8 @@ import java.util.stream.StreamSupport;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
+import functionalj.function.IntIntBiFunction;
+import functionalj.function.IntObjBiFunction;
 import functionalj.function.ToByteFunction;
 import functionalj.functions.StrFuncs;
 import functionalj.functions.ThrowFuncs;
@@ -417,6 +419,50 @@ public interface StreamPlus<DATA>
             Func2<T1, T2, T> merger) {
         return StreamPlus.from(stream1)
                 .zipWith(stream2, ZipWithOption.RequireBoth, merger);
+    }
+    
+    public static <TARGET> StreamPlus<TARGET> zipOf(
+            IntStream stream1, 
+            IntStream stream2, 
+            IntIntBiFunction<TARGET> merger) {
+        return IntStreamPlus.from(stream1)
+                .zipToObjWith(stream2, merger);
+    }
+    
+    public static <TARGET> StreamPlus<TARGET> zipOf(
+            IntStream                stream1, 
+            IntStream                stream2, 
+            IntIntBiFunction<TARGET> merger,
+            int                      defaultValue) {
+        return IntStreamPlus.from(stream1)
+                .zipToObjWith(stream2, merger, defaultValue);
+    }
+    
+    public static <TARGET> StreamPlus<TARGET> zipOf(
+            IntStream                stream1, 
+            IntStream                stream2, 
+            IntIntBiFunction<TARGET> merger,
+            int                      defaultValue1,
+            int                      defaultValue2) {
+        return IntStreamPlus.from(stream1)
+                .zipToObjWith(stream2, merger, defaultValue1, defaultValue2);
+    }
+    
+    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
+            IntStream                         stream1, 
+            Stream<ANOTHER>                   stream2, 
+            IntObjBiFunction<ANOTHER, TARGET> merger) {
+        return IntStreamPlus.from(stream1)
+                .zipWith(stream2, merger);
+    }
+    
+    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
+            IntStream                         stream1, 
+            Stream<ANOTHER>                   stream2, 
+            ZipWithOption                     option, 
+            IntObjBiFunction<ANOTHER, TARGET> merger) {
+        return IntStreamPlus.from(stream1)
+                .zipWith(stream2, option, merger);
     }
     
     //== Stream ==

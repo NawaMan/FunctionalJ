@@ -642,9 +642,9 @@ public interface FuncList<DATA>
     // -- Plus w/ Self --
     // ============================================================================
     
-    public default FuncList<DATA> collapse(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
+    public default FuncList<DATA> collapseWhen(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
         return deriveWith(stream -> {
-            return stream().collapse(conditionToCollapse, concatFunc);
+            return stream().collapseWhen(conditionToCollapse, concatFunc);
         });
     }
     

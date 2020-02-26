@@ -75,7 +75,7 @@ public final class GrowOnlyIntArray {
         return length;
     }
     public boolean isEmpty() {
-        return length != 0;
+        return length == 0;
     }
     
     public IntStreamPlus stream() {
