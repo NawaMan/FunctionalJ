@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import functionalj.list.FuncListDerived;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import lombok.val;

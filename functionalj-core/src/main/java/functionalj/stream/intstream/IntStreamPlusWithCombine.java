@@ -148,8 +148,8 @@ public interface IntStreamPlusWithCombine {
     }
     public default IntStreamPlus zipWith(
             IntStream              anotherStream, 
-            IntBiFunctionPrimitive merger,
-            int                    defaultValue) {
+            int                    defaultValue,
+            IntBiFunctionPrimitive merger) {
         return useIterator(iteratorA -> {
             return IntStreamPlus
                     .from(anotherStream)
@@ -160,9 +160,9 @@ public interface IntStreamPlusWithCombine {
     }
     public default IntStreamPlus zipWith(
             IntStream              anotherStream, 
-            IntBiFunctionPrimitive merger,
             int                    defaultValue1,
-            int                    defaultValue2) {
+            int                    defaultValue2,
+            IntBiFunctionPrimitive merger) {
         return useIterator(iteratorA -> {
             return IntStreamPlus
                     .from(anotherStream)
@@ -185,8 +185,8 @@ public interface IntStreamPlusWithCombine {
     }
     public default <T> StreamPlus<T> zipToObjWith(
             IntStream           anotherStream, 
-            IntIntBiFunction<T> merger,
-            int                 defaultValue) {
+            int                 defaultValue,
+            IntIntBiFunction<T> merger) {
         return useIteratorToObj(iteratorA -> {
             return IntStreamPlus
                     .from(anotherStream)
@@ -197,9 +197,9 @@ public interface IntStreamPlusWithCombine {
     }
     public default <T> StreamPlus<T> zipToObjWith(
             IntStream           anotherStream, 
-            IntIntBiFunction<T> merger,
             int                 defaultValue1,
-            int                 defaultValue2) {
+            int                 defaultValue2,
+            IntIntBiFunction<T> merger) {
         return useIteratorToObj(iteratorA -> {
             return IntStreamPlus
                     .from(anotherStream)

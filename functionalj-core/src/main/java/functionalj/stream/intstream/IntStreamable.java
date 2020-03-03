@@ -15,16 +15,14 @@ import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
-import java.util.function.IntToDoubleFunction;
-import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ObjIntConsumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import functionalj.function.IntBiFunctionPrimitive;
-import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.list.intlist.ImmutableIntList;
@@ -33,8 +31,6 @@ import functionalj.list.intlist.IntFuncListDerivedFromIntStreamable;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.DoubleStreamPlus;
-import functionalj.stream.LongStreamPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import functionalj.tuple.IntIntTuple;
@@ -63,8 +59,12 @@ public interface IntStreamable
     }
     
     public static IntStreamable of(int ... data) {
+        if (data == null) {
+            return empty();
+        }
+        
         val length = data.length;
-        val ints   = new int[data.length];
+        val ints   = new int[length];
         System.arraycopy(data, 0, ints, 0, length);
         return ()->IntStreamPlus.of(ints);
     }
@@ -75,10 +75,6 @@ public interface IntStreamable
     
     public static IntStreamable ints(int ... data) {
         return of(data);
-    }
-    
-    public static IntStreamable from(IntSupplier supplier) {
-        return ()->IntStreamPlus.generate(supplier);
     }
     
     public static IntStreamable zeroes() {
@@ -150,16 +146,10 @@ public interface IntStreamable
         return ()->IntStreamPlus.range(startInclusive, endExclusive);
     }
     
-    public static IntStreamable concat(IntStream ... streams) {
-        return ()->StreamPlus.of(streams).flatMapToInt(s -> s);
-    }
-    public static IntStreamable combine(IntStream ... streams) {
-        return ()->StreamPlus.of(streams).flatMapToInt(s -> s);
-    }
-    
     public static IntStreamable generate(IntSupplier intSupplier) {
         return ()->IntStreamPlus.generate(intSupplier);
     }
+    
     public static IntStreamable generateWith(Supplier<IntStream> streamSupplier) {
         return ()->StreamPlus.of(streamSupplier).flatMapToInt(s -> s.get());
     }
@@ -168,12 +158,16 @@ public interface IntStreamable
         return ()->IntStreamPlus.iterate(seed, f);
     }
     
-    public static IntStreamable compound(int seed, IntUnaryOperator f) {
-        return ()->IntStreamPlus.compound(seed, f);
-    }
-    
     public static IntStreamable iterate(int seed1, int seed2, IntBinaryOperator f) {
         return ()->IntStreamPlus.iterate(seed1, seed2, f);
+    }
+    
+    public static IntStreamable concat(IntStreamable ... streamables) {
+        return ()->StreamPlus.of(streamables).flatMapToInt(s -> s.stream());
+    }
+    
+    public static IntStreamable compound(int seed, IntUnaryOperator f) {
+        return ()->IntStreamPlus.compound(seed, f);
     }
     
     public static IntStreamable compound(int seed1, int seed2, IntBinaryOperator f) {
@@ -181,38 +175,68 @@ public interface IntStreamable
     }
     
     public static Streamable<IntIntTuple> zipOf(
-            IntStreamable stream1, 
-            IntStreamable stream2) {
+            IntStreamable streamable1, 
+            IntStreamable streamable2) {
         return ()->{
             return IntStreamPlus.zipOf(
-                    stream1.stream(),
-                    stream2.stream());
+                    streamable1.stream(),
+                    streamable2.stream());
         };
     }
-    
-    public static Streamable<IntIntTuple> zipOf(
-            IntStreamable stream1, 
-            IntStreamable stream2,
+    public static StreamPlus<IntIntTuple> zipOf(
+            IntStreamable streamable1, 
+            IntStreamable streamable2,
             int           defaultValue) {
         return ()->{
             return IntStreamPlus.zipOf(
-                    stream1.stream(),
-                    stream2.stream(),
+                    streamable1.stream(),
+                    streamable2.stream(),
                     defaultValue);
         };
     }
-    
-    public static <T> Streamable<T> zipToObjOf(
-            IntStreamable       stream1, 
-            IntStreamable       stream2,
-            IntIntBiFunction<T> merger,
-            int                 defaultValue) {
+    public static StreamPlus<IntIntTuple> zipOf(
+            IntStreamable streamable1, int defaultValue1,
+            IntStreamable streamable2, int defaultValue2) {
         return ()->{
-            return StreamPlus.zipOf(
-                    stream1.stream(),
-                    stream2.stream(),
-                    merger,
-                    defaultValue);
+            return IntStreamPlus.zipOf(
+                    streamable1.stream(), defaultValue1,
+                    streamable2.stream(), defaultValue2);
+        };
+    }
+    
+    public static IntStreamable zipOf(
+            IntStreamable          streamable1, 
+            IntStreamable          streamable2,
+            IntBiFunctionPrimitive merger) {
+        return ()->{
+            return IntStreamPlus.zipOf(
+                    streamable1.stream(),
+                    streamable2.stream(),
+                    merger);
+        };
+    }
+    public static IntStreamPlus zipOf(
+            IntStreamable          streamable1, 
+            IntStreamable          streamable2,
+            int                    defaultValue,
+            IntBiFunctionPrimitive merger) {
+        return ()->{
+            return IntStreamPlus.zipOf(
+                    streamable1.stream(),
+                    streamable2.stream(),
+                    defaultValue,
+                    merger);
+        };
+    }
+    public static IntStreamPlus zipOf(
+            IntStreamable streamable1, int defaultValue1,
+            IntStreamable streamable2, int defaultValue2,
+            IntBiFunctionPrimitive merger) {
+        return ()->{
+            return IntStreamPlus.zipOf(
+                    streamable1.stream(), defaultValue1,
+                    streamable2.stream(), defaultValue2,
+                    merger);
         };
     }
     
@@ -262,9 +286,6 @@ public interface IntStreamable
         };
     }
     
-//    IntStreamable                  source, 
-//    Function<IntStream, Stream<D>> action) {
-    
 //    @Override
 //    public default LongStreamable asLongStream() {
 //        return LongStreamPlus.from(stream().asLongStream());
@@ -311,13 +332,13 @@ public interface IntStreamable
         return from(this, streamble -> streamble.stream().map(mapper));
     }
     
-    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
-        return LongStreamPlus.from(stream().mapToLong(mapper));
-    }
-  
-    public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
-        return DoubleStreamPlus.from(stream().mapToDouble (mapper));
-    }
+//    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
+//        return LongStreamPlus.from(stream().mapToLong(mapper));
+//    }
+//  
+//    public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
+//        return DoubleStreamPlus.from(stream().mapToDouble (mapper));
+//    }
     
     public default <TARGET> Streamable<TARGET> mapToObj(IntFunction<? extends TARGET> mapper) {
         return Streamable.from(this, 
@@ -331,18 +352,18 @@ public interface IntStreamable
         return map(mapper);
     }
     
-    public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends Stream<TARGET>> mapper) {
+    public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends Streamable<TARGET>> mapper) {
         return Streamable.from(this, 
                 streamable -> 
                     streamable
                     .stream()
-                    .flatMapToObj(mapper));
+                    .flatMapToObj(each -> mapper.apply(each).stream()));
     }
     
-    public default IntStreamable flatMapToInt(IntFunction<? extends IntStream> mapper) {
+    public default IntStreamable flatMapToInt(IntFunction<? extends IntStreamable> mapper) {
         return flatMap(mapper);
     }
-//    
+    
 //    public default LongStreamable flatMapToLong(IntFunction<? extends LongStream> mapper) {
 //        return stream()
 //                .flatMapToLong(mapper);
@@ -353,12 +374,12 @@ public interface IntStreamable
 //                .flatMapToDouble(mapper);
 //    }
     
-    public default IntStreamable flatMap(IntFunction<? extends IntStream> mapper) {
+    public default IntStreamable flatMap(IntFunction<? extends IntStreamable> mapper) {
         return from(this, 
                 streamable -> 
                     streamable
                     .stream()
-                    .flatMap(mapper));
+                    .flatMap(each -> mapper.apply(each).stream()));
     }
     
     public default IntStreamable filter(IntPredicate predicate) {
@@ -367,6 +388,37 @@ public interface IntStreamable
                     streamable
                     .stream()
                     .filter(predicate));
+    }
+    
+    // TODO - Rename all filter with map to filter
+    public default IntStreamable filter(
+            IntUnaryOperator mapper, 
+            IntPredicate     predicate) {
+        return from(this, 
+                streamable -> 
+                    streamable
+                    .stream()
+                    .filter(mapper, predicate));
+    }
+    
+    public default <T> IntStreamable filterAsObject(
+            IntFunction<? extends T> mapper,
+            Predicate<? super T>     theCondition) {
+        return from(this, 
+                streamable -> 
+                    streamable
+                    .stream()
+                    .filterAsObject(mapper, theCondition));
+    }
+    
+    public default <T> IntStreamable filterAsObject(
+            Function<Integer, ? extends T> mapper,
+            Predicate<? super T>     theCondition) {
+        return from(this, 
+                streamable -> 
+                    streamable
+                    .stream()
+                    .filterAsObject(mapper, theCondition));
     }
     
     public default IntStreamable peek(IntConsumer action) {
@@ -509,7 +561,7 @@ public interface IntStreamable
                 .reduce(accumulator);
     }
     
-    public default <R> R reduce(
+    public default <R> R collect(
             Supplier<R>       supplier,
             ObjIntConsumer<R> accumulator,
             BiConsumer<R, R>  combiner) {
@@ -642,388 +694,4 @@ public interface IntStreamable
                 stream()
                 .restate(restater);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    //== Additional functionalities
-////    
-////    public default Streamable<IntStreamPlus> segment(
-////                    int count) {
-////        return with(
-////                this, 
-////                stream 
-////                    -> IntStreamPlus
-////                    .from(stream)
-////                    .segment(count));
-////    }
-////    public default Streamable<IntStreamPlus> segment(
-////                    int     count, 
-////                    boolean includeTail) {
-////        return with(
-////                this, 
-////                stream 
-////                    -> IntStreamPlus
-////                    .from(stream)
-////                    .segment(count, includeTail));
-////    }
-////    public default Streamable<IntStreamPlus> segment(
-////                    IntPredicate startCondition) {
-////        return with(
-////                this, 
-////                stream 
-////                    -> IntStreamPlus
-////                    .from(stream)
-////                    .segment(startCondition));
-////    }
-////    public default Streamable<IntStreamPlus> segment(
-////                    IntPredicate startCondition, 
-////                    boolean      includeTail) {
-////        return with(
-////                this, 
-////                stream 
-////                    -> IntStreamPlus
-////                    .from(stream)
-////                    .segment(startCondition, includeTail));
-////    }
-////    public default Streamable<IntStreamPlus> segment(
-////                    IntPredicate startCondition, 
-////                    IntPredicate endCondition) {
-////        return with(
-////                this, 
-////                stream 
-////                    -> IntStreamPlus
-////                    .from(stream)
-////                    .segment(startCondition, endCondition));
-////    }
-////    public default Streamable<IntStreamPlus> segment(
-////                    IntPredicate startCondition, 
-////                    IntPredicate endCondition, 
-////                    boolean      includeTail) {
-////        return with(
-////                this, 
-////                stream 
-////                    -> IntStreamPlus
-////                    .from(stream)
-////                    .segment(startCondition, endCondition, includeTail));
-////    }
-//    
-//    public default List<Integer> toList() {
-//        return boxed()
-//                .toJavaList();
-//    }
-//    
-//    public default FuncList<Integer> toFuncList() {
-//        return boxed()
-//                .toImmutableList();
-//    }
-//    public default List<Integer> toMutableList() {
-//        return boxed()
-//                .toMutableList();
-//    }
-//    
-//    public default ArrayList<Integer> toArrayList() {
-//        return boxed()
-//                .toArrayList();
-//    }
-//    
-//    public default Set<Integer> toSet() {
-//        return boxed()
-//                .toSet();
-//    }
-//    
-//    //== Plus ==
-//    
-//    public default String joining() {
-//        return stream()
-//                .mapToObj(StrFuncs::toStr)
-//                .collect(Collectors.joining());
-//    }
-//    public default String joining(String delimiter) {
-//        return stream()
-//                .mapToObj(StrFuncs::toStr)
-//                .collect(Collectors.joining(delimiter));
-//    }
-//    
-//    //== Calculate ==
-//    
-//    public default <T> T calculate(
-//            IntStreamProcessor<T> processor) {
-//        val streamable = streamable();
-//        val collected  = Collected.ofInt(processor, streamable);
-//        forEach(each -> {
-//            collected.accumulate(each);
-//        });
-//        val value = collected.finish();
-//        return value;
-//    }
-//    
-//    public default <T1, T2> Tuple2<T1, T2> calculate(
-//            IntStreamProcessor<T1> processor1, 
-//            IntStreamProcessor<T2> processor2) {
-//        val streamable = streamable();
-//        val collected1 = Collected.ofInt(processor1, streamable);
-//        val collected2 = Collected.ofInt(processor2, streamable);
-//        forEach(each -> {
-//            collected1.accumulate(each);
-//            collected2.accumulate(each);
-//        });
-//        val value1 = collected1.finish();
-//        val value2 = collected2.finish();
-//        return Tuple.of(value1, value2);
-//    }
-//    
-//    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
-//            IntStreamProcessor<T1> processor1, 
-//            IntStreamProcessor<T2> processor2, 
-//            IntStreamProcessor<T3> processor3) {
-//        val streamable = streamable();
-//        val collected1 = Collected.ofInt(processor1, streamable);
-//        val collected2 = Collected.ofInt(processor2, streamable);
-//        val collected3 = Collected.ofInt(processor3, streamable);
-//        forEach(each -> {
-//            collected1.accumulate(each);
-//            collected2.accumulate(each);
-//            collected3.accumulate(each);
-//        });
-//        val value1 = collected1.finish();
-//        val value2 = collected2.finish();
-//        val value3 = collected3.finish();
-//        return Tuple.of(value1, value2, value3);
-//    }
-//    
-//    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
-//            IntStreamProcessor<T1> processor1, 
-//            IntStreamProcessor<T2> processor2, 
-//            IntStreamProcessor<T3> processor3, 
-//            IntStreamProcessor<T4> processor4) {
-//        val streamable = streamable();
-//        val collected1 = Collected.ofInt(processor1, streamable);
-//        val collected2 = Collected.ofInt(processor2, streamable);
-//        val collected3 = Collected.ofInt(processor3, streamable);
-//        val collected4 = Collected.ofInt(processor4, streamable);
-//        forEach(each -> {
-//            collected1.accumulate(each);
-//            collected2.accumulate(each);
-//            collected3.accumulate(each);
-//            collected4.accumulate(each);
-//        });
-//        val value1 = collected1.finish();
-//        val value2 = collected2.finish();
-//        val value3 = collected3.finish();
-//        val value4 = collected4.finish();
-//        return Tuple.of(value1, value2, value3, value4);
-//    }
-//    
-//    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
-//            IntStreamProcessor<T1> processor1, 
-//            IntStreamProcessor<T2> processor2, 
-//            IntStreamProcessor<T3> processor3, 
-//            IntStreamProcessor<T4> processor4, 
-//            IntStreamProcessor<T5> processor5) {
-//        val streamable = streamable();
-//        val collected1 = Collected.ofInt(processor1, streamable);
-//        val collected2 = Collected.ofInt(processor2, streamable);
-//        val collected3 = Collected.ofInt(processor3, streamable);
-//        val collected4 = Collected.ofInt(processor4, streamable);
-//        val collected5 = Collected.ofInt(processor5, streamable);
-//        forEach(each -> {
-//            collected1.accumulate(each);
-//            collected2.accumulate(each);
-//            collected3.accumulate(each);
-//            collected4.accumulate(each);
-//            collected5.accumulate(each);
-//        });
-//        val value1 = collected1.finish();
-//        val value2 = collected2.finish();
-//        val value3 = collected3.finish();
-//        val value4 = collected4.finish();
-//        val value5 = collected5.finish();
-//        return Tuple.of(value1, value2, value3, value4, value5);
-//    }
-//    
-//    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
-//            IntStreamProcessor<T1> processor1, 
-//            IntStreamProcessor<T2> processor2, 
-//            IntStreamProcessor<T3> processor3, 
-//            IntStreamProcessor<T4> processor4, 
-//            IntStreamProcessor<T5> processor5, 
-//            IntStreamProcessor<T6> processor6) {
-//        val streamable = streamable();
-//        val collected1 = Collected.ofInt(processor1, streamable);
-//        val collected2 = Collected.ofInt(processor2, streamable);
-//        val collected3 = Collected.ofInt(processor3, streamable);
-//        val collected4 = Collected.ofInt(processor4, streamable);
-//        val collected5 = Collected.ofInt(processor5, streamable);
-//        val collected6 = Collected.ofInt(processor6, streamable);
-//        forEach(each -> {
-//            collected1.accumulate(each);
-//            collected2.accumulate(each);
-//            collected3.accumulate(each);
-//            collected4.accumulate(each);
-//            collected5.accumulate(each);
-//            collected6.accumulate(each);
-//        });
-//        val value1 = collected1.finish();
-//        val value2 = collected2.finish();
-//        val value3 = collected3.finish();
-//        val value4 = collected4.finish();
-//        val value5 = collected5.finish();
-//        val value6 = collected6.finish();
-//        return Tuple.of(value1, value2, value3, value4, value5, value6);
-//    }
-//    
-////    
-////    public default <R, A> R collect(
-////            Collector<? super DATA, A, R> collector) {
-////        return stream().collect(collector);
-////    }
-////    
-////    public default <R> R collect(
-////            Supplier<R>                 supplier,
-////            BiConsumer<R, ? super DATA> accumulator,
-////            BiConsumer<R, R>            combiner) {
-////        return stream().collect(supplier, accumulator, combiner);
-////    }
-////    
-////    //== toXXX ===
-////    
-////    public default <T> T[] toArray(T[] a) {
-////        return StreamPlus.of(stream()).toJavaList().toArray(a);
-////    }
-////    
-////    public default <A> A[] toArray(IntFunction<A[]> generator) {
-////        return stream().toArray(generator);
-////    }
-////    
-////    public default byte[] toByteArray(Func1<DATA, Byte> toByte) {
-////        val byteArray = new ByteArrayOutputStream();
-////        stream().forEach(d -> byteArray.write(toByte.apply(d)));
-////        return byteArray.toByteArray();
-////    }
-////    
-////    public default int[] toIntArray(ToIntFunction<DATA> toInt) {
-////        return mapToInt(toInt).toArray();
-////    }
-////    
-////    public default long[] toLongArray(ToLongFunction<DATA> toLong) {
-////        return mapToLong(toLong).toArray();
-////    }
-////    
-////    public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
-////        return mapToDouble(toDouble).toArray();
-////    }
-////    //== Plus ==
-////    
-////    public default String joinToString() {
-////        return map(StrFuncs::toStr)
-////                .collect(Collectors.joining());
-////    }
-////    public default String joinToString(String delimiter) {
-////        return map(StrFuncs::toStr)
-////                .collect(Collectors.joining(delimiter));
-////    }
-////    
-////    //== Spawn ==
-////    
-////    
-////    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
-////        return deriveWith(stream -> {
-////            return stream().spawn(mapper);
-////        });
-////    }
-////    
-////    //== accumulate + restate ==
-////    
-////    public default Streamable<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-////        return deriveWith(stream -> {
-////            val iterator = StreamPlus.from(stream).iterator();
-////            if (!iterator.hasNext())
-////                return StreamPlus.empty();
-////            
-////            val prev = new AtomicReference<DATA>(iterator.next());
-////            return StreamPlus.concat(
-////                        StreamPlus.of(prev.get()),
-////                        iterator.stream().map(n -> {
-////                            val next = accumulator.apply(n, prev.get());
-////                            prev.set(next);
-////                            return next;
-////                        })
-////                    );
-////        });
-////    }
-////    
-////    public default Streamable<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
-////        val func = (UnaryOperator<Tuple2<DATA, Streamable<DATA>>>)((Tuple2<DATA, Streamable<DATA>> pair) -> {
-////            val stream   = pair._2();
-////            val iterator = stream.iterator();
-////            if (!iterator.hasNext())
-////                return null;
-////            
-////            val head = iterator.next();
-////            val tail =restater.apply(head, ()->iterator.stream());
-////            return Tuple2.of(head, tail);
-////        });
-////        val seed = Tuple2.of((DATA)null, this);
-////        val endStream = (Streamable<DATA>)(()->StreamPlus.iterate(seed, func).takeUntil(t -> t == null).skip(1).map(t -> t._1()));
-////        return endStream;
-////    }
-////    
-//////    
-//////    public default <T extends Comparable<? super T>> FuncList<Tuple2<DATA, Double>> toPercentilesOf(Function<? super DATA, T> mapper) {
-//////        FuncList<Tuple2<Integer, DATA>> list 
-//////                = mapWithIndex(Tuple2::of)
-//////                .sortedBy(tuple -> mapper.apply(tuple._2()))
-//////                .toImmutableList();
-//////        return Helper.toPercentilesOf(size() - 1, list);
-//////    }
-//////    
-//////    public default <T> FuncList<Tuple2<DATA, Double>> toPercentilesOf(Function<? super DATA, T> mapper, Comparator<T> comparator) {
-//////        FuncList<Tuple2<Integer, DATA>> list 
-//////                = mapWithIndex(Tuple2::of)
-//////                .sortedBy(tuple -> mapper.apply(tuple._2()), comparator)
-//////                .toImmutableList();
-//////        return Helper.toPercentilesOf(size() - 1, list);
-//////    }
-////    
 }

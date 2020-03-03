@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.lens.lenses.StringLens;
-import functionalj.tuple.IntTuple2;
-import functionalj.tuple.IntTuple2Lens;
 import lombok.val;
 
 public class IntTuple2Test {

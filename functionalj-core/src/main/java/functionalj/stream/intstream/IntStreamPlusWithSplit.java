@@ -1,18 +1,5 @@
 package functionalj.stream.intstream;
 
-import java.util.function.Predicate;
-
-import functionalj.list.FuncList;
-import functionalj.map.FuncMap;
-import functionalj.stream.StreamPlusWithMapTuple;
-import functionalj.tuple.Tuple;
-import functionalj.tuple.Tuple2;
-import functionalj.tuple.Tuple3;
-import functionalj.tuple.Tuple4;
-import functionalj.tuple.Tuple5;
-import functionalj.tuple.Tuple6;
-import lombok.val;
-
 public interface IntStreamPlusWithSplit
             extends IntStreamPlusWithMapTuple {
     

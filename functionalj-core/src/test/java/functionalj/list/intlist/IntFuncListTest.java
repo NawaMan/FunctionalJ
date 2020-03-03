@@ -5,8 +5,6 @@ import static functionalj.lens.Access.theInteger;
 import static functionalj.list.intlist.IntFuncList.emptyIntList;
 import static functionalj.list.intlist.IntFuncList.ints;
 import static functionalj.stream.intstream.IntStreamPlus.cycle;
-import static functionalj.stream.intstream.IntStreamable.repeat;
-import static functionalj.stream.intstream.IntStreamable.zeroes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -170,7 +168,7 @@ public class IntFuncListTest {
     public void testFlatMap() {
         assertEquals(
                 intList.sum(), 
-                intList.flatMap(i -> cycle(1).limit(i))
+                intList.flatMap(i -> () -> cycle(1).limit(i))
                 .size());
     }
     

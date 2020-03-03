@@ -25,8 +25,8 @@ package functionalj.lens.lenses;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.function.Function;
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 
 import functionalj.function.Func1;

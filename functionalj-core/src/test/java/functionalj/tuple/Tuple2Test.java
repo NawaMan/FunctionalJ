@@ -34,8 +34,6 @@ import org.junit.Test;
 import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
 import functionalj.list.ImmutableList;
-import functionalj.tuple.ImmutableTuple2;
-import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public class Tuple2Test {

@@ -10,7 +10,6 @@ import java.util.OptionalInt;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
@@ -572,9 +571,9 @@ public interface IntFuncList
     }
     
     public default IntFuncList flatMap(
-            IntFunction<? extends IntStream> mapper) {
+            IntFunction<? extends IntStreamable> mapper) {
         return derive(streamable -> {
-            return streamable.stream().flatMap(e -> mapper.apply(e));
+            return streamable.stream().flatMap(e -> mapper.apply(e).stream());
         });
     }
     
@@ -751,11 +750,12 @@ public interface IntFuncList
     // -- Plus w/ Self --
     // ============================================================================
     
-    public default IntFuncList collapseWhen(IntPredicate conditionToCollapse, IntBinaryOperator concatFunc) {
-        return derive(streamable -> {
-            return stream()
-                    .collapseWhen(conditionToCollapse, concatFunc);
-        });
-    }
+    // TODO - Uncomment.
+//    public default IntFuncList collapseWhen(IntPredicate conditionToCollapse, IntBinaryOperator concatFunc) {
+//        return derive(streamable -> {
+//            return stream()
+//                    .collapseWhen(conditionToCollapse, concatFunc);
+//        });
+//    }
     
 }

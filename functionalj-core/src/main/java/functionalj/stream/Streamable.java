@@ -57,6 +57,7 @@ import java.util.stream.Stream;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
+import functionalj.function.IntIntBiFunction;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
@@ -222,23 +223,63 @@ public interface Streamable<DATA>
     }
     
     public static <T1, T2> Streamable<Tuple2<T1, T2>> zipOf(
-            Streamable<T1> stream1, 
-            Streamable<T2> stream2) {
+            Streamable<T1> streamable1, 
+            Streamable<T2> streamable2) {
         return ()->{
             return StreamPlus.zipOf(
-                    stream1.stream(),
-                    stream2.stream());
+                    streamable1.stream(),
+                    streamable2.stream());
         };
     }
     
     public static <T1, T2, T> Streamable<T> zipOf(
-            Streamable<T1>   stream1, 
-            Streamable<T2>   stream2,
+            Streamable<T1>   streamable1, 
+            Streamable<T2>   streamable2,
             Func2<T1, T2, T> merger) {
         return ()->{
             return StreamPlus.zipOf(
-                    stream1.stream(),
-                    stream2.stream(),
+                    streamable1.stream(),
+                    streamable2.stream(),
+                    merger);
+        };
+    }
+    
+    public static <T1, T2, T> Streamable<T> zipOf(
+            IntStreamable       streamable1, 
+            IntStreamable       streamable2,
+            IntIntBiFunction<T> merger) {
+        return ()->{
+            return StreamPlus.zipOf(
+                    streamable1.stream(),
+                    streamable2.stream(),
+                    merger);
+        };
+    }
+    
+    public static <T1, T2, T> Streamable<T> zipOf(
+            IntStreamable       streamable1, 
+            IntStreamable       streamable2,
+            int                 defaultValue,
+            IntIntBiFunction<T> merger) {
+        return ()->{
+            return StreamPlus.zipOf(
+                    streamable1.stream(),
+                    streamable2.stream(),
+                    defaultValue,
+                    merger);
+        };
+    }
+    
+    public static <T1, T2, T> Streamable<T> zipOf(
+            IntStreamable       streamable1, 
+            int                 defaultValue1,
+            IntStreamable       streamable2,
+            int                 defaultValue2,
+            IntIntBiFunction<T> merger) {
+        return ()->{
+            return StreamPlus.zipOf(
+                    streamable1.stream(), defaultValue1,
+                    streamable2.stream(), defaultValue2,
                     merger);
         };
     }

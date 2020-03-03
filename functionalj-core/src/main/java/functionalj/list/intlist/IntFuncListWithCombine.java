@@ -5,18 +5,9 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import functionalj.function.IntBiFunctionPrimitive;
-import functionalj.function.IntBiPredicatePrimitive;
-import functionalj.function.IntIntBiFunction;
-import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
-import functionalj.stream.Streamable;
-import functionalj.stream.ZipWithOption;
-import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import functionalj.stream.intstream.IntStreamableWithCombine;
-import functionalj.tuple.IntIntTuple;
-import functionalj.tuple.IntTuple2;
-import lombok.val;
 
 public interface IntFuncListWithCombine extends IntStreamableWithCombine {
         
@@ -160,11 +151,11 @@ public interface IntFuncListWithCombine extends IntStreamableWithCombine {
     
     public default IntFuncList zipWith(
             IntStreamable          anotherStreamable, 
-            IntBiFunctionPrimitive merger,
-            int                    defaultValue) {
+            int                    defaultValue,
+            IntBiFunctionPrimitive merger) {
         return derive(streamable ->  {
             return streamable
-                    .zipWith(anotherStreamable, merger, defaultValue)
+                    .zipWith(anotherStreamable, defaultValue, merger)
                     .stream();
         });
     }

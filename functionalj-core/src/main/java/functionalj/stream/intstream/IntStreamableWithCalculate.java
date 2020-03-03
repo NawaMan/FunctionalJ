@@ -23,154 +23,116 @@
 // ============================================================================
 package functionalj.stream.intstream;
 
-import functionalj.stream.Collected;
-import functionalj.stream.IntStreamProcessor;
-import functionalj.tuple.Tuple;
+import functionalj.stream.IntCollectorPlus;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
-import lombok.val;
 
 public interface IntStreamableWithCalculate {
-////    
-////    
-////    public IntStreamPlus stream();
-////    
-////    public IntStreamable streamable();
-////    
-////    
-//    public default <A, T> T calculate(
-//            IntStreamProcessor<T> processor) {
-//        val streamble = streamable();
-//        val collected = Collected.ofInt(processor, streamble);
-//        streamble
-//        .forEach(each -> {
-//            collected.accumulate(each);
-//        });
-//        val value = collected.finish();
-//        return value;
-//    }
-//    
-//    public default <T1, T2> Tuple2<T1, T2> calculate(
-//            IntStreamProcessor<T1> processor1,
-//            IntStreamProcessor<T2> processor2) {
-//        val streamble = streamable();
-//        val collected1 = Collected.ofInt(processor1, streamble);
-//        val collected2 = Collected.ofInt(processor2, streamble);
-//        streamble
-//        .forEach(each -> {
-//            collected1.accumulate(each);
-//            collected2.accumulate(each);
-//        });
-//        val value1 = collected1.finish();
-//        val value2 = collected2.finish();
-//        return Tuple.of(value1, value2);
-//    }
-//    
-//    public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
-//            IntStreamProcessor<T1> processor1,
-//            IntStreamProcessor<T2> processor2,
-//            IntStreamProcessor<T3> processor3) {
-//        val streamble = streamable();
-//        val collected1 = Collected.ofInt(processor1, streamble);
-//        val collected2 = Collected.ofInt(processor2, streamble);
-//        val collected3 = Collected.ofInt(processor3, streamble);
-//        streamble
-//        .forEach(each -> {
-//            collected1.accumulate(each);
-//            collected2.accumulate(each);
-//            collected3.accumulate(each);
-//        });
-//        val value1 = collected1.finish();
-//        val value2 = collected2.finish();
-//        val value3 = collected3.finish();
-//        return Tuple.of(value1, value2, value3);
-//    }
-//    
-//    public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
-//            IntStreamProcessor<T1> processor1,
-//            IntStreamProcessor<T2> processor2,
-//            IntStreamProcessor<T3> processor3,
-//            IntStreamProcessor<T4> processor4) {
-//        val streamble = streamable();
-//        val collected1 = Collected.ofInt(processor1, streamble);
-//        val collected2 = Collected.ofInt(processor2, streamble);
-//        val collected3 = Collected.ofInt(processor3, streamble);
-//        val collected4 = Collected.ofInt(processor4, streamble);
-//        streamble
-//        .forEach(each -> {
-//            collected1.accumulate(each);
-//            collected2.accumulate(each);
-//            collected3.accumulate(each);
-//            collected4.accumulate(each);
-//        });
-//        val value1 = collected1.finish();
-//        val value2 = collected2.finish();
-//        val value3 = collected3.finish();
-//        val value4 = collected4.finish();
-//        return Tuple.of(value1, value2, value3, value4);
-//    }
-//    
-//    public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
-//            IntStreamProcessor<T1> processor1,
-//            IntStreamProcessor<T2> processor2,
-//            IntStreamProcessor<T3> processor3,
-//            IntStreamProcessor<T4> processor4,
-//            IntStreamProcessor<T5> processor5) {
-//        val streamble = streamable();
-//        val collected1 = Collected.ofInt(processor1, streamble);
-//        val collected2 = Collected.ofInt(processor2, streamble);
-//        val collected3 = Collected.ofInt(processor3, streamble);
-//        val collected4 = Collected.ofInt(processor4, streamble);
-//        val collected5 = Collected.ofInt(processor5, streamble);
-//        streamble
-//        .forEach(each -> {
-//            collected1.accumulate(each);
-//            collected2.accumulate(each);
-//            collected3.accumulate(each);
-//            collected4.accumulate(each);
-//            collected5.accumulate(each);
-//        });
-//        val value1 = collected1.finish();
-//        val value2 = collected2.finish();
-//        val value3 = collected3.finish();
-//        val value4 = collected4.finish();
-//        val value5 = collected5.finish();
-//        return Tuple.of(value1, value2, value3, value4, value5);
-//    }
-//    
-//    public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
-//            IntStreamProcessor<T1> processor1,
-//            IntStreamProcessor<T2> processor2,
-//            IntStreamProcessor<T3> processor3,
-//            IntStreamProcessor<T4> processor4,
-//            IntStreamProcessor<T5> processor5,
-//            IntStreamProcessor<T6> processor6) {
-//        val streamble = streamable();
-//        val collected1 = Collected.ofInt(processor1, streamble);
-//        val collected2 = Collected.ofInt(processor2, streamble);
-//        val collected3 = Collected.ofInt(processor3, streamble);
-//        val collected4 = Collected.ofInt(processor4, streamble);
-//        val collected5 = Collected.ofInt(processor5, streamble);
-//        val collected6 = Collected.ofInt(processor6, streamble);
-//        streamble
-//        .forEach(each -> {
-//            collected1.accumulate(each);
-//            collected2.accumulate(each);
-//            collected3.accumulate(each);
-//            collected4.accumulate(each);
-//            collected5.accumulate(each);
-//            collected6.accumulate(each);
-//        });
-//        val value1 = collected1.finish();
-//        val value2 = collected2.finish();
-//        val value3 = collected3.finish();
-//        val value4 = collected4.finish();
-//        val value5 = collected5.finish();
-//        val value6 = collected6.finish();
-//        return Tuple.of(value1, value2, value3, value4, value5, value6);
-//    }
-//    
+    
+    public IntStreamPlus stream();
+    
+    
+    //== Calculate ==
+    
+    // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
+    
+    public default <RESULT, ACCUMULATED> RESULT calculate(
+            IntCollectorPlus<ACCUMULATED, RESULT> collector) {
+        return stream()
+                .calculate(collector);
+    }
+    
+    public default <ACCUMULATED1, RESULT1, 
+                    ACCUMULATED2, RESULT2>
+                        Tuple2<RESULT1, RESULT2> 
+                        calculate(
+                            IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
+                            IntCollectorPlus<ACCUMULATED2, RESULT2> collector2) {
+        return stream()
+                .calculate(
+                        collector1,
+                        collector2);
+    }
+    
+    public default <ACCUMULATED1, RESULT1, 
+                    ACCUMULATED2, RESULT2, 
+                    ACCUMULATED3, RESULT3>
+                        Tuple3<RESULT1, RESULT2, RESULT3> 
+                        calculate(
+                            IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
+                            IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
+                            IntCollectorPlus<ACCUMULATED3, RESULT3> collector3) {
+        return stream()
+                .calculate(
+                        collector1,
+                        collector2,
+                        collector3);
+    }
+    
+    public default <ACCUMULATED1, RESULT1, 
+                    ACCUMULATED2, RESULT2, 
+                    ACCUMULATED3, RESULT3, 
+                    ACCUMULATED4, RESULT4>
+                        Tuple4<RESULT1, RESULT2, RESULT3, RESULT4> 
+                        calculate(
+                            IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
+                            IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
+                            IntCollectorPlus<ACCUMULATED3, RESULT3> collector3,
+                            IntCollectorPlus<ACCUMULATED4, RESULT4> collector4) {
+        return stream()
+                .calculate(
+                        collector1,
+                        collector2,
+                        collector3,
+                        collector4);
+    }
+    
+    public default <ACCUMULATED1, RESULT1, 
+                    ACCUMULATED2, RESULT2, 
+                    ACCUMULATED3, RESULT3, 
+                    ACCUMULATED4, RESULT4, 
+                    ACCUMULATED5, RESULT5>
+                        Tuple5<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5> 
+                        calculate(
+                            IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
+                            IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
+                            IntCollectorPlus<ACCUMULATED3, RESULT3> collector3,
+                            IntCollectorPlus<ACCUMULATED4, RESULT4> collector4,
+                            IntCollectorPlus<ACCUMULATED5, RESULT5> collector5) {
+        return stream()
+                .calculate(
+                        collector1,
+                        collector2,
+                        collector3,
+                        collector4,
+                        collector5);
+    }
+    
+    public default <ACCUMULATED1, RESULT1, 
+                    ACCUMULATED2, RESULT2, 
+                    ACCUMULATED3, RESULT3, 
+                    ACCUMULATED4, RESULT4, 
+                    ACCUMULATED5, RESULT5, 
+                    ACCUMULATED6, RESULT6>
+                        Tuple6<RESULT1, RESULT2, RESULT3, RESULT4, RESULT5, RESULT6> 
+                        calculate(
+                            IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
+                            IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
+                            IntCollectorPlus<ACCUMULATED3, RESULT3> collector3,
+                            IntCollectorPlus<ACCUMULATED4, RESULT4> collector4,
+                            IntCollectorPlus<ACCUMULATED5, RESULT5> collector5,
+                            IntCollectorPlus<ACCUMULATED6, RESULT6> collector6) {
+        return stream()
+                .calculate(
+                        collector1,
+                        collector2,
+                        collector3,
+                        collector4,
+                        collector5,
+                        collector6);
+    }
+    
 }

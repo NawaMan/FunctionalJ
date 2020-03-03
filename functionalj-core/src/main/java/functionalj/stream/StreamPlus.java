@@ -432,20 +432,20 @@ public interface StreamPlus<DATA>
     public static <TARGET> StreamPlus<TARGET> zipOf(
             IntStream                stream1, 
             IntStream                stream2, 
-            IntIntBiFunction<TARGET> merger,
-            int                      defaultValue) {
+            int                      defaultValue,
+            IntIntBiFunction<TARGET> merger) {
         return IntStreamPlus.from(stream1)
-                .zipToObjWith(stream2, merger, defaultValue);
+                .zipToObjWith(stream2, defaultValue, merger);
     }
     
     public static <TARGET> StreamPlus<TARGET> zipOf(
             IntStream                stream1, 
-            IntStream                stream2, 
-            IntIntBiFunction<TARGET> merger,
-            int                      defaultValue1,
-            int                      defaultValue2) {
+            int                      defaultValue1, 
+            IntStream                stream2,
+            int                      defaultValue2,
+            IntIntBiFunction<TARGET> merger) {
         return IntStreamPlus.from(stream1)
-                .zipToObjWith(stream2, merger, defaultValue1, defaultValue2);
+                .zipToObjWith(stream2, defaultValue1, defaultValue2, merger);
     }
     
     public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(

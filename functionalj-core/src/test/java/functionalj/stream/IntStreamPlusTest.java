@@ -201,15 +201,15 @@ public class IntStreamPlusTest {
                 .toListString());
         assertEquals(
                 "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, 0-9, 0-10, 0-11]", 
-                StreamPlus.zipOf(range(5, 12), range(2, 12), (a, b) -> a + "-" + b, 0)
+                StreamPlus.zipOf(range(5, 12), range(2, 12), 0, (a, b) -> a + "-" + b)
                 .toListString());
         assertEquals(
                 "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, -1-9, -1-10, -1-11]", 
-                StreamPlus.zipOf(range(5, 12), range(2, 12), (a, b) -> a + "-" + b, -1, 1)
+                StreamPlus.zipOf(range(5, 12), -1, range(2, 12), 1, (a, b) -> a + "-" + b)
                 .toListString());
         assertEquals(
                 "[5-8, 6-9, 7-10, 8-11, 9-1, 10-1, 11-1]", 
-                StreamPlus.zipOf(range(5, 12), range(8, 12), (a, b) -> a + "-" + b, -1, 1)
+                StreamPlus.zipOf(range(5, 12), -1, range(8, 12), 1, (a, b) -> a + "-" + b)
                 .toListString());
         
         

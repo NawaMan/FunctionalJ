@@ -251,14 +251,14 @@ public interface IntStreamPlus
             int                    defaultValue,
             IntBiFunctionPrimitive merger) {
         return IntStreamPlus.from(stream1)
-                .zipWith(stream2, merger, defaultValue);
+                .zipWith(stream2, defaultValue, merger);
     }
     public static IntStreamPlus zipOf(
             IntStream stream1, int defaultValue1,
             IntStream stream2, int defaultValue2,
             IntBiFunctionPrimitive merger) {
         return IntStreamPlus.from(stream1)
-                .zipWith(stream2, merger, defaultValue1, defaultValue2);
+                .zipWith(stream2, defaultValue1, defaultValue2, merger);
     }
     
     //== Stream ==

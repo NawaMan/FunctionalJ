@@ -23,13 +23,11 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 
 import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.function.ToDoubleBiDoubleFunction;
-
-import java.util.function.DoubleSupplier;
-
 import lombok.val;
 
 @FunctionalInterface

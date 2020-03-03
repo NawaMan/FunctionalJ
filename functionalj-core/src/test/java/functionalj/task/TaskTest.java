@@ -37,7 +37,6 @@ import functionalj.function.Func;
 import functionalj.promise.DeferAction;
 import functionalj.promise.DeferActionBuilder;
 import functionalj.result.Result;
-import functionalj.task.Task;
 import lombok.val;
 
 //@Ignore("Still has problems")

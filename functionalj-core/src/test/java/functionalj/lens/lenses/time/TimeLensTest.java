@@ -1,7 +1,7 @@
 package functionalj.lens.lenses.time;
 
 import static functionalj.lens.lenses.java.time.LocalDateLens.theLocalDate;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 

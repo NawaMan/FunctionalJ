@@ -1,7 +1,7 @@
 package functionalj.map;
 
 import static functionalj.map.FuncMap.newMap;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 

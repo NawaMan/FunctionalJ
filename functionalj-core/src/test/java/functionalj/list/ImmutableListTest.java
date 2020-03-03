@@ -30,7 +30,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import functionalj.list.ImmutableList;
 import lombok.val;
 
 public class ImmutableListTest {

@@ -23,10 +23,10 @@
 // ============================================================================
 package functionalj.ref;
 
+import defaultj.api.IProvideDefault;
 import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
-import defaultj.api.IProvideDefault;
 
 public class RefTo<DATA> extends Ref<DATA> {
     

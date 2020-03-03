@@ -28,10 +28,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import lombok.val;
 import defaultj.core.Bindings;
 import defaultj.core.DefaultProvider;
 import defaultj.core.bindings.TypeBinding;
+import lombok.val;
 
 public class RefToTest {
 
