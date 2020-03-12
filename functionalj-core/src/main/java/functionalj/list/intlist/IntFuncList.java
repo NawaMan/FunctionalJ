@@ -1,22 +1,29 @@
 package functionalj.list.intlist;
 
 import static functionalj.lens.Access.$I;
+import static functionalj.lens.Access.theInteger;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Objects;
+import java.util.OptionalDouble;
 import java.util.OptionalInt;
+import java.util.PrimitiveIterator;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
+import java.util.function.ObjIntConsumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
@@ -25,83 +32,88 @@ import functionalj.list.FuncListDerived;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
+import functionalj.stream.HasStreamable;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.Streamable;
+import functionalj.stream.intstream.HasIntStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamPlusHelper;
 import functionalj.stream.intstream.IntStreamable;
-import functionalj.tuple.IntIntTuple;
+import functionalj.stream.intstream.IntStreamableAdditionalTerminalOperators;
+import functionalj.stream.intstream.IntStreamableWithCalculate;
 import lombok.val;
 
 public interface IntFuncList
         extends 
-//            ReadOnlyList<DATA>, 
-            IntStreamable, 
-            Pipeable<IntFuncList>,
+            HasIntStreamable,
             IntFuncListWithMapFirst,
             IntFuncListWithMapThen,
             IntFuncListWithMapTuple,
             IntFuncListWithMapToMap,
-            IntFuncListWithCombine//,
-//            FuncListAdditionalOperations<DATA>
-                {
+//          IntFuncListWithSplit,
+            IntFuncListWithSegment,
+            IntFuncListWithCombine,
+            IntStreamableWithCalculate,
+            IntFuncListAdditionalOperations,
+            IntStreamableAdditionalTerminalOperators {
     
-    public static ImmutableIntList empty() {
-        return ImmutableIntList.empty();
+    public static ImmutableIntFuncList empty() {
+        return ImmutableIntFuncList.empty();
     }
     
-    public static ImmutableIntList emptyList() {
-        return ImmutableIntList.empty();
+    public static ImmutableIntFuncList emptyList() {
+        return ImmutableIntFuncList.empty();
     }
     
-    public static ImmutableIntList emptyIntList() {
-        return ImmutableIntList.empty();
+    public static ImmutableIntFuncList emptyIntList() {
+        return ImmutableIntFuncList.empty();
     }
     
-    public static ImmutableIntList of(int ... data) {
-        return ImmutableIntList.of(data);
+    public static ImmutableIntFuncList of(int ... data) {
+        return ImmutableIntFuncList.of(data);
     }
     
-    public static ImmutableIntList AllOf(int... data) {
-        return ImmutableIntList.of(data);
+    public static ImmutableIntFuncList AllOf(int... data) {
+        return ImmutableIntFuncList.of(data);
     }
     
-    public static ImmutableIntList ints(int... data) {
-        return ImmutableIntList.of(data);
+    public static ImmutableIntFuncList ints(int... data) {
+        return ImmutableIntFuncList.of(data);
     }
     
-    public static ImmutableIntList intList(int... data) {
-        return ImmutableIntList.of(data);
+    public static ImmutableIntFuncList intList(int... data) {
+        return ImmutableIntFuncList.of(data);
     }
     
     // TODO - Function to create FuncList from function of Array
     
-    public static ImmutableIntList from(int[] datas) {
-        return ImmutableIntList.of(datas);
+    public static ImmutableIntFuncList from(int[] datas) {
+        return ImmutableIntFuncList.of(datas);
     }
     
-    public static ImmutableIntList from(Collection<Integer> data, int valueForNull) {
+    public static ImmutableIntFuncList from(Collection<Integer> data, int valueForNull) {
         IntStream intStream = StreamPlus.from(data.stream())
                 .fillNull((Integer)valueForNull)
                 .mapToInt($I);
-        return ImmutableIntList.from(intStream);
+        return ImmutableIntFuncList.from(intStream);
     }
     
     @SafeVarargs
-    public static ImmutableIntList ListOf(int ... data) {
-        return ImmutableIntList.of(data);
+    public static ImmutableIntFuncList ListOf(int ... data) {
+        return ImmutableIntFuncList.of(data);
     }
     
     @SafeVarargs
-    public static ImmutableIntList listOf(int... data) {
-        return ImmutableIntList.of(data);
+    public static ImmutableIntFuncList listOf(int... data) {
+        return ImmutableIntFuncList.of(data);
     }
     
     public static IntFuncList from(IntStreamable streamable) {
-        return new IntFuncListDerivedFromIntStreamable(streamable, i -> i.stream());
+        return new IntFuncListDerivedFromIntStreamable(streamable);
     }
     
     public static IntFuncList from(IntStream stream) {
-        return ImmutableIntList.from(stream);
+        return ImmutableIntFuncList.from(stream);
     }
     
     public static IntFuncList zeroes(int count) {
@@ -112,7 +124,18 @@ public interface IntFuncList
         return IntFuncList.from(IntStreamable.ones(count));
     }
     
-//    
+    public static IntFuncList naturalNumbers(int count) {
+        return IntFuncList.from(IntStreamable.naturalNumbers().limit(count));
+    }
+    
+    public static IntFuncList wholeNumbers(int count) {
+        return IntFuncList.from(IntStreamable.wholeNumbers().limit(count));
+    }
+    
+    public static IntFuncList range(int startInclusive, int endExclusive) {
+        return IntFuncList.from(IntStreamable.range(startInclusive, endExclusive));
+    }
+    
 //    public static <T> FuncListBuilder<T> newFuncList() {
 //        return new FuncListBuilder<T>();
 //    }
@@ -125,106 +148,38 @@ public interface IntFuncList
 //        return new FuncListBuilder<T>();
 //    }
     
-    // == Override ==
+    // == Stream ==
     
-    public default IntFuncList derive(Function<IntStreamable, IntStream> action) {
-        val list = new IntFuncListDerivedFromIntStreamable((IntStreamable)()->this.stream(), action);
+    public IntStreamable intStreamable();
+    
+    public default Streamable<Integer> streamable() {
+        return boxed();
+    }
+    
+    public default IntStreamPlus intStream() {
+        return intStreamable().intStream();
+    }
+    
+    public default StreamPlus<Integer> stream() {
+        return intStream().boxed();
+    }
+    
+    //== Pipeable ==
+    
+    public default Pipeable<IntFuncList> pipeable() {
+        return Pipeable.of(this);
+    }
+    
+    //== Derive ==
+    
+    public default IntFuncList derive(IntStreamable streamable) {
+        val list = new IntFuncListDerivedFromIntStreamable(streamable);
         val isLazy = isLazy();
-        return isLazy ? list : new ImmutableIntList(list, false);
+        return isLazy ? list : list.toImmutableList();
     }
     
-    public default <TARGET> FuncList<TARGET> deriveToList(Function<IntStreamable, Stream<TARGET>> action) {
-        return FuncListDerived.from(()->action.apply(this));
-    }
-    
-    @Override
-    public default IntFuncList __data() throws Exception {
-        return this;
-    }
-    
-    public default boolean isEmpty() {
-        return size() == 0;
-    }
-    
-    public default boolean contains(int o) {
-        return stream().anyMatch(i -> i == o);
-    }
-    
-    public default boolean containsAllOf(int ... c) {
-        return IntStreamPlus
-                .of(c)
-                .allMatch(each -> stream()
-                                    .anyMatch(o -> Objects.equals(each, o)));
-    }
-    
-    public default boolean containsSomeOf(int ... c) {
-        return IntStreamPlus
-                .of(c)
-                .anyMatch(each -> stream()
-                        .anyMatch(o -> Objects.equals(each, o)));
-    }
-    
-    public default boolean containsAllOf(Collection<Integer> c) {
-        return c.stream()
-                .allMatch(each -> stream()
-                                    .anyMatch(o -> Objects.equals(each, o)));
-    }
-    
-    public default boolean containsSomeOf(Collection<Integer> c) {
-        return c.stream()
-                .anyMatch(each -> stream()
-                        .anyMatch(o -> Objects.equals(each, o)));
-    }
-    
-    public default IntStreamPlus parallelStream() {
-        return stream().parallel();
-    }
-    
-    public default int get(int index) {
-        val ref   = new int[1][];
-        val found = IntStreamPlusHelper.hasAt(this.stream(), index, ref);
-        if (!found)
-            throw new IndexOutOfBoundsException("" + index);
-        
-        return ref[0][0];
-    }
-    
-    public default OptionalInt at(int index){
-        return skip(index)
-                .limit(1)
-                .findFirst()
-                ;
-    }
-//    
-//    public default IntFuncList indexesOf(IntPredicate check) {
-//        return derive(streamable -> {
-//            return streamable.mapWithIndex((index, data) -> check.test(data) ? index : -1)
-//                    .filter(i -> i != -1)
-//                    .stream();
-//        });
-//    }
-//    
-//    public default IntFuncList indexesOf(int value) {
-//        return derive(streamable -> {
-//            return streamable.mapWithIndex((index, data) -> (data == value) ? index : -1)
-//                    .filter(i -> i != -1)
-//                    .stream();
-//        });
-//    }
-//    
-//    public default int indexOf(int o) {
-//        return indexesOf(each -> Objects.equals(o, each)).findFirst().orElse(-1);
-//    }
-//    
-//    public default int lastIndexOf(int o){
-//        return indexesOf(each -> Objects.equals(o, each)).last().orElse(-1);
-//    }
-    
-    public default IntFuncList subList(int fromIndexInclusive, int toIndexExclusive) {
-        val length = toIndexExclusive - fromIndexInclusive;
-        return derive(streamable -> {
-            return streamable.stream().skip(fromIndexInclusive).limit(length);
-        });
+    public default <TARGET> FuncList<TARGET> deriveToList(Streamable<TARGET> streamable) {
+        return FuncListDerived.from(streamable);
     }
     
     public default boolean isLazy() {
@@ -239,7 +194,7 @@ public interface IntFuncList
     
     public IntFuncList eager();
     
-    public default ImmutableIntList freeze() {
+    public default ImmutableIntFuncList freeze() {
         return toImmutableList();
     }
     
@@ -247,31 +202,126 @@ public interface IntFuncList
         return FuncList.from(this.boxed());
     }
     
-    public default ImmutableIntList toImmutableList() {
-        return ImmutableIntList.from(this);
+    public default ImmutableIntFuncList toImmutableList() {
+        return ImmutableIntFuncList.from(this);
     }
     
-    @Override
     public default int[] toArray() {
-        return stream().toArray();
+        return intStream().toArray();
+    }
+    
+    public default String toListString() {
+        return intStream()
+                .toListString();
+    }
+    
+    public default PrimitiveIterator.OfInt iterator() {
+        return intStream().iterator();
+    }
+    
+    
+    public default FuncList<Integer> boxed() {
+        return FuncListDerived.from(()->StreamPlus.from(intStream().mapToObj(theInteger.boxed())));
+    }
+    
+    public default FuncList<Integer> toBoxedList() {
+        return FuncList.from(this.boxed());
+    }
+    
+    
+    public default boolean isEmpty() {
+        return ! iterator().hasNext();
+    }
+    
+    public default boolean contains(int o) {
+        return intStream().anyMatch(i -> i == o);
+    }
+    
+    public default boolean containsAllOf(int ... c) {
+        return IntStreamPlus
+                .of(c)
+                .allMatch(each -> intStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsSomeOf(int ... c) {
+        return IntStreamPlus
+                .of(c)
+                .anyMatch(each -> intStream()
+                        .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsAllOf(Collection<Integer> c) {
+        return c.stream()
+                .allMatch(each -> intStream()
+                                    .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default boolean containsSomeOf(Collection<Integer> c) {
+        return c.stream()
+                .anyMatch(each -> intStream()
+                        .anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    public default int get(int index) {
+        val ref   = new int[1][];
+        val found = IntStreamPlusHelper.hasAt(this.intStream(), index, ref);
+        if (!found)
+            throw new IndexOutOfBoundsException("" + index);
+        
+        return ref[0][0];
+    }
+    
+    public default OptionalInt at(int index){
+        return skip(index)
+                .limit(1)
+                .findFirst()
+                ;
+    }
+    
+    public default IntFuncList indexesOf(IntPredicate check) {
+        return derive(() -> {
+            return intStream()
+                    .mapWithIndex((index, data) -> check.test(data) ? index : -1)
+                    .filter(i -> i != -1)
+                    ;
+        });
+    }
+    
+    public default IntFuncList indexesOf(int value) {
+        return derive(() -> {
+            return intStream()
+                    .mapWithIndex((index, data) -> (data == value) ? index : -1)
+                    .filter(i -> i != -1);
+        });
+    }
+    
+    public default int indexOf(int o) {
+        return indexesOf(each -> Objects.equals(o, each)).findFirst().orElse(-1);
+    }
+    
+    public default int lastIndexOf(int o){
+        return indexesOf(each -> Objects.equals(o, each)).last().orElse(-1);
+    }
+    
+    public default IntFuncList subList(int fromIndexInclusive, int toIndexExclusive) {
+        val length = toIndexExclusive - fromIndexInclusive;
+        return skip(fromIndexInclusive)
+                .limit(length);
     }
     
     // -- List specific --
     
     public default OptionalInt first() {
-        return stream()
+        return intStream()
                 .limit(1)
                 .findFirst()
                 ;
     }
     
     public default IntFuncList first(int count) {
-        return derive(streamable -> {
-            return streamable
-                    .limit(count)
-                    .stream()
-                    ;
-        });
+        val streamable = limit(count).intStreamable();
+        return derive(streamable);
     }
     
     public default OptionalInt last() {
@@ -283,23 +333,16 @@ public interface IntFuncList
     public default IntFuncList last(int count) {
         val size   = this.size();
         val offset = Math.max(0, size - count);
-        return derive(streamble -> {
-            return streamble
-                    .skip(offset)
-                    .stream()
-                    ;
-        });
+        return skip(offset);
     }
     
     
     public default IntFuncList rest() {
-        return derive(streamble 
-                -> streamble
-                .stream()
-                .skip(1));
+        return skip(1);
     }
     
     // Note - Eager
+    // We can make it not eager but it will be slow.
     public default IntFuncList reverse() {
         val length = size();
         if (length <= 1)
@@ -313,10 +356,11 @@ public interface IntFuncList
             array[i] = array[j];
             array[j] = temp;
         }
-        return new ImmutableIntList(array, isLazy());
+        return new ImmutableIntFuncList(array, isLazy());
     }
     
-//    // Note - Eager
+    // Note - Eager
+    // We can make it not eager but it will be slow.
     public default IntFuncList shuffle() {
         val length = size();
         if (length <= 1)
@@ -330,39 +374,43 @@ public interface IntFuncList
             array[i] = array[j];
             array[j] = temp;
         }
-        return new ImmutableIntList(array, isLazy());
+        return new ImmutableIntFuncList(array, isLazy());
     }
-    
-    public default FuncList<IntIntTuple> query(IntPredicate check) {
-        // TODO - Implement this.
-//        return this.mapToObjWithIndex((index, data) -> check.test(data) ? IntIntTuple.of(index, data) : null)
-//                .filterNonNull();
-        return null;
-    }
+////    
+////    public default FuncList<IntIntTuple> query(IntPredicate check) {
+////        return deriveToList(streamble -> {
+////            return streamble
+////                    .mapToObjWithIndex((index, data) -> check.test(data) ? IntIntTuple.of(index, data) : null)
+////                    .filterNonNull()
+////                    .stream();
+////        });
+////    }
     
     //== Min/Max ==
-//    
-//    public default <D extends Comparable<D>> OptionalInt minIndexOf(
-//            IntPredicate   filter,
-//            IntUnaryOperator mapper) {
-//        return stream()
-//                .mapWithIndex(mapper) ()
-//                .filter(t -> filter.test(t._2))
-//                .minBy (t -> mapper.apply(t._2))
-//                .map   (t -> OptionalInt.of(t._1))
-//                .orElse(OptionalInt.empty());
-//    }
-//    
-//    public default <D extends Comparable<D>> OptionalInt maxIndexOf(
-//            IntPredicate   filter,
-//            IntFunction<D> mapper) {
-//        return stream()
-//                .mapWithIndex()
-//                .filter(t -> filter.test(t._2))
-//                .maxBy (t -> mapper.apply(t._2))
-//                .map   (t -> OptionalInt.of(t._1))
-//                .orElse(OptionalInt.empty());
-//    }
+    
+    public default <D extends Comparable<D>> OptionalInt minIndexOf(
+            IntPredicate   filter,
+            IntUnaryOperator mapper) {
+        return intStream()
+                .mapWithIndex()
+                .map   (t -> t.map2ToInt(mapper))
+                .filter(t -> filter.test(t._2))
+                .minBy (t -> mapper.applyAsInt(t._2))
+                .map   (t -> OptionalInt.of(t._1))
+                .orElse(OptionalInt.empty())
+                ;
+    }
+    
+    public default <D extends Comparable<D>> OptionalInt maxIndexOf(
+            IntPredicate   filter,
+            IntFunction<D> mapper) {
+        return intStream()
+                .mapWithIndex()
+                .filter(t -> filter.test(t._2))
+                .maxBy (t -> mapper.apply(t._2))
+                .map   (t -> OptionalInt.of(t._1))
+                .orElse(OptionalInt.empty());
+    }
     
     public default <D extends Comparable<D>> OptionalInt minIndex() {
         return minIndexBy(i -> true, i -> i);
@@ -383,7 +431,7 @@ public interface IntFuncList
     public default <D extends Comparable<D>> OptionalInt minIndexBy(
             IntPredicate   filter,
             IntFunction<D> mapper) {
-        return stream()
+        return intStream()
                 .mapWithIndex()
                 .filter(t -> filter.test(t._2))
                 .minBy (t -> mapper.apply(t._2))
@@ -394,7 +442,7 @@ public interface IntFuncList
     public default <D extends Comparable<D>> OptionalInt maxIndexBy(
             IntPredicate   filter,
             IntFunction<D> mapper) {
-        return stream()
+        return intStream()
                 .mapWithIndex()
                 .filter(t -> filter.test(t._2))
                 .maxBy (t -> mapper.apply(t._2))
@@ -405,42 +453,42 @@ public interface IntFuncList
     // == Modified methods ==
     
     public default IntFuncList append(int value) {
-        return derive(streamable -> IntStreamPlus.concat(streamable.stream(), IntStreamPlus.of(value)));
+        return derive(() -> IntStreamPlus.concat(intStream(), IntStreamPlus.of(value)));
     }
     
     public default IntFuncList appendAll(int ... values) {
-        return derive(streamable -> IntStreamPlus.concat(streamable.stream(), IntStreamPlus.of(values)));
+        return derive(() -> IntStreamPlus.concat(intStream(), IntStreamPlus.of(values)));
     }
     public default IntFuncList appendAll(IntStreamable values) {
         return (values == null) 
                 ? this 
-                : derive(streamable -> IntStreamPlus.concat(streamable.stream(), IntStreamPlus.from(values.stream())));
+                : derive(() -> IntStreamPlus.concat(intStream(), IntStreamPlus.from(values.intStream())));
     }
     
     public default IntFuncList appendAll(Supplier<IntStream> supplier) {
         return (supplier == null) 
                 ? this 
-                : derive(streamable -> IntStreamPlus.concat(streamable.stream(), IntStreamPlus.from(supplier.get())));
+                : derive(() -> IntStreamPlus.concat(intStream(), IntStreamPlus.from(supplier.get())));
     }
     
     public default IntFuncList prepend(int value) {
-        return derive(streamable -> IntStreamPlus.concat(IntStreamPlus.of(value), streamable.stream()));
+        return derive(() -> IntStreamPlus.concat(IntStreamPlus.of(value), intStream()));
     }
     
     public default IntFuncList prependAll(int ... values) {
-        return derive(streamable -> IntStreamPlus.concat(IntStreamPlus.of(values), streamable.stream()));
+        return derive(() -> IntStreamPlus.concat(IntStreamPlus.of(values), intStream()));
     }
     
     public default IntFuncList prependAll(IntStreamable prefixStreamable) {
         return (prefixStreamable == null) 
                 ? this 
-                : derive(streamable -> IntStreamPlus.concat(prefixStreamable.stream(), streamable.stream()));
+                : derive(() -> IntStreamPlus.concat(prefixStreamable.intStream(), intStream()));
     }
     
     public default IntFuncList prependAll(Supplier<IntStream> supplier) {
         return (supplier == null) 
                 ? this 
-                : derive(streamable -> IntStreamPlus.concat(IntStreamPlus.from(supplier.get()), streamable.stream()));
+                : derive(() -> IntStreamPlus.concat(IntStreamPlus.from(supplier.get()), intStream()));
     }
     
     public default IntFuncList with(int index, int value) {
@@ -449,11 +497,10 @@ public interface IntFuncList
         if (index >= size())
             throw new IndexOutOfBoundsException(index + " vs " + size());
         
-        return derive(streamable -> {
+        return derive(() -> {
             val i = new AtomicInteger();
-            return streamable
-                    .map(each -> (i.getAndIncrement() == index) ? value : each)
-                    .stream(); 
+            return map(each -> (i.getAndIncrement() == index) ? value : each)
+                    .intStream(); 
         });
     }
     
@@ -463,11 +510,10 @@ public interface IntFuncList
         if (index >= size())
             throw new IndexOutOfBoundsException(index + " vs " + size());
         
-        return derive(streamable -> {
+        return derive(() -> {
             val i = new AtomicInteger();
-            return streamable
-                    .map(each -> (i.getAndIncrement() == index) ? mapper.applyAsInt(each) : each)
-                    .stream(); 
+            return map(each -> (i.getAndIncrement() == index) ? mapper.applyAsInt(each) : each)
+                    .intStream(); 
         });
     }
     
@@ -475,11 +521,11 @@ public interface IntFuncList
         if ((elements == null) || (elements.length == 0))
             return this;
         
-        return derive((IntStreamable streamable) -> {
+        return derive(() -> {
                     return IntStreamPlus.concat(
-                            streamable.stream().limit(index),
+                            intStream().limit(index),
                             IntStreamPlus.of(elements), 
-                            streamable.stream().skip(index));
+                            intStream().skip(index));
                 });
     }
     
@@ -487,11 +533,11 @@ public interface IntFuncList
         if ((elements == null) || (elements.size() == 0))
             return this;
         
-        return derive((IntStreamable streamable) -> {
+        return derive(() -> {
                     return IntStreamPlus.concat(
-                            streamable.stream().limit(index),
-                            elements.stream(), 
-                            streamable.stream().skip(index));
+                            intStream().limit(index),
+                            elements.intStream(), 
+                            intStream().skip(index));
                 });
     }
     
@@ -499,10 +545,10 @@ public interface IntFuncList
         if (index < 0)
             throw new IndexOutOfBoundsException("index: " + index);
         
-        return derive((IntStreamable streamable) -> {
+        return derive(() -> {
             return IntStreamPlus.concat(
-                    streamable.stream().limit(index), 
-                    streamable.stream().skip(index + 1));
+                    intStream().limit(index), 
+                    intStream().skip(index + 1));
         });
     }
     
@@ -512,10 +558,10 @@ public interface IntFuncList
         if (count <= 0)
             throw new IndexOutOfBoundsException("count: " + count);
         
-        return derive((IntStreamable streamable) -> {
+        return derive(() -> {
             return IntStreamPlus.concat(
-                    stream().limit(fromIndexInclusive), 
-                    stream().skip(fromIndexInclusive + count));
+                    intStream().limit(fromIndexInclusive), 
+                    intStream().skip(fromIndexInclusive + count));
         });
     }
     
@@ -530,232 +576,302 @@ public interface IntFuncList
         if (fromIndexInclusive == toIndexExclusive)
             return this;
         
-        return derive((IntStreamable streamable) -> {
+        return derive(() -> {
             return IntStreamPlus.concat(
-                    stream().limit(fromIndexInclusive), 
-                    stream().skip(toIndexExclusive + 1));
-        });
-    }
-    
-    // ============================================================================
-    // NOTE: The following part of the code was copied from StreamPlus
-    // We will write a program to do the copy and replace ...
-    // in the mean time, change this in StreamPlus.
-    // ++ Plus w/ Self ++
-    
-    @Override
-    public default IntFuncList sequential() {
-        return derive(streamable -> {
-            return streamable.stream().sequential();
-        });
-    }
-    
-    @Override
-    public default IntFuncList parallel() {
-        return derive(streamable -> {
-            return streamable.stream().parallel();
-        });
-    }
-    
-    @Override
-    public default IntFuncList unordered() {
-        return derive(streamable -> {
-            return streamable.stream().unordered();
+                    intStream().limit(fromIndexInclusive), 
+                    intStream().skip(toIndexExclusive + 1));
         });
     }
     
     public default IntFuncList map(IntUnaryOperator mapper) {
-        return derive(streamable -> {
-            return streamable.stream().map(mapper);
+        return derive(() -> {
+            return intStream().map(mapper);
         });
     }
     
     public default IntFuncList flatMap(
-            IntFunction<? extends IntStreamable> mapper) {
-        return derive(streamable -> {
-            return streamable.stream().flatMap(e -> mapper.apply(e).stream());
+            IntFunction<? extends HasIntStreamable> mapper) {
+        return derive(() -> {
+            return intStream().flatMap(item -> mapper.apply(item).intStream());
         });
     }
     
     public default IntFuncList filter(IntPredicate predicate) {
-        return derive(streamable -> {
-            return (predicate == null) 
-                    ? streamable.stream() 
-                    : streamable.stream().filter(predicate);
+        return derive(() -> {
+            return intStream().filter(predicate);
         });
     }
    
     public default IntFuncList peek(IntConsumer action) {
-        return derive(streamable -> {
-            return (action == null) 
-                    ? streamable.stream()
-                    : streamable.stream().peek(action);
+        return derive(() -> {
+            return intStream().peek(action);
         });
     }
-//    
-//    // -- Limit/Skip --
     
-    @Override
+    // == Functionalities ==
+//  public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
+//      return LongStreamPlus.from(stream().mapToLong(mapper));
+//  }
+//
+//  public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
+//      return DoubleStreamPlus.from(stream().mapToDouble (mapper));
+//  }
+    
+    public default <TARGET> FuncList<TARGET> mapToObj(IntFunction<? extends TARGET> mapper) {
+        return deriveToList(intStreamable().mapToObj(mapper));
+    }
+    
+    public default IntFuncList mapToInt(IntUnaryOperator mapper) {
+        return map(mapper);
+    }
+    
+    public default <TARGET> FuncList<TARGET> flatMapToObj(IntFunction<? extends HasStreamable<TARGET>> mapper) {
+        return deriveToList(intStreamable().flatMapToObj(mapper));
+    }
+    
+    public default IntFuncList flatMapToInt(IntFunction<? extends HasIntStreamable> mapper) {
+        return flatMap(mapper);
+    }
+    
+//  public default LongStreamable flatMapToLong(IntFunction<? extends LongStream> mapper) {
+//      return stream()
+//              .flatMapToLong(mapper);
+//  }
+//  
+//  public default DoubleStreamable flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {
+//      return stream()
+//              .flatMapToDouble(mapper);
+//  }
+    
+    public default IntFuncList filter(IntUnaryOperator mapper, IntPredicate predicate) {
+        return derive(intStreamable().filter(mapper, predicate));
+    }
+    
+    public default <T> IntFuncList filterAsObject(IntFunction<? extends T> mapper,
+            Predicate<? super T> theCondition) {
+        return derive(intStreamable().filterAsObject(mapper, theCondition));
+    }
+    
+    public default <T> IntFuncList filterAsObject(Function<Integer, ? extends T> mapper,
+            Predicate<? super T> theCondition) {
+        return derive(intStreamable().filterAsObject(mapper, theCondition));
+    }
+    
+    // -- Terminate --
+    
+    public default void forEach(IntConsumer action) {
+        if (action == null)
+            return;
+        
+        intStream().forEach(action);
+    }
+    
+    public default void forEachOrdered(IntConsumer action) {
+        if (action == null)
+            return;
+        
+        intStream().forEachOrdered(action);
+    }
+    
+    public default int reduce(int identity, IntBinaryOperator accumulator) {
+        return intStream().reduce(identity, accumulator);
+    }
+    
+    public default OptionalInt reduce(IntBinaryOperator accumulator) {
+        return intStream().reduce(accumulator);
+    }
+    
+    public default <R> R collect(Supplier<R> supplier, ObjIntConsumer<R> accumulator, BiConsumer<R, R> combiner) {
+        return intStream().collect(supplier, accumulator, combiner);
+    }
+    
+    public default OptionalInt min() {
+        return intStream().min();
+    }
+    
+    public default OptionalInt max() {
+        return intStream().max();
+    }
+    
+    public default long count() {
+        return intStream().count();
+    }
+    
+    public default int size() {
+        return (int) intStream().count();
+    }
+    
+    public default boolean anyMatch(IntPredicate predicate) {
+        return intStream().anyMatch(predicate);
+    }
+    
+    public default boolean allMatch(IntPredicate predicate) {
+        return intStream().allMatch(predicate);
+    }
+    
+    public default boolean noneMatch(IntPredicate predicate) {
+        return intStream().noneMatch(predicate);
+    }
+    
+    public default OptionalInt findFirst() {
+        return intStream().findFirst();
+    }
+    
+    public default OptionalInt findAny() {
+        return intStream().findAny();
+    }
+    
+    public default int sum() {
+        return intStream().sum();
+    }
+    
+    public default OptionalDouble average() {
+        return intStream().average();
+    }
+    
+    public default IntSummaryStatistics summaryStatistics() {
+        return intStream().summaryStatistics();
+    }
+    
+    // == Plus ==
+    
+    public default String joinToString() {
+        return intStream().joinToString();
+    }
+    
+    public default String joinToString(String delimiter) {
+        return intStream().joinToString(delimiter);
+    }
+    
+    // -- Limit/Skip --
+    
     public default IntFuncList limit(long maxSize) {
-        return derive(streamable -> {
-            return streamable.stream().limit(maxSize);
-        });
+        return derive(() -> intStream().limit(maxSize));
     }
     
-    @Override
     public default IntFuncList skip(long n) {
-        return derive(streamable -> {
-            return streamable.stream().skip(n);
-        });
+        return derive(() -> intStream().skip(n));
     }
     
     public default IntFuncList skipWhile(IntPredicate condition) {
-        return derive(streamable -> {
-            return streamable.stream().skipWhile(condition);
-        });
+        return derive(() -> intStream().skipWhile(condition));
     }
     
     public default IntFuncList skipUntil(IntPredicate condition) {
-        return derive(streamable -> {
-            return streamable.stream().skipUntil(condition);
-        });
+        return derive(() -> intStream().skipUntil(condition));
     }
     
     public default IntFuncList takeWhile(IntPredicate condition) {
-        return derive(streamable -> {
-            return streamable.stream().takeWhile(condition);
-        });
+        return derive(() -> intStream().takeWhile(condition));
     }
     
     public default IntFuncList takeUntil(IntPredicate condition) {
-        return derive(streamable -> {
-            return streamable.stream().takeUntil(condition);
-        });
+        return derive(() -> intStream().takeUntil(condition));
     }
     
-    @Override
     public default IntFuncList distinct() {
-        return derive(streamable -> {
-            return streamable.stream().distinct();
-        });
+        return derive(() -> intStream().distinct());
     }
     
-    @Override
     public default IntFuncList sorted() {
-        return derive(streamable -> {
-            return streamable.stream().sorted();
-        });
+        return derive(() -> intStream().sorted());
     }
     
     public default IntFuncList limit(Long maxSize) {
         if (maxSize == null)
             return this;
         
-        return derive(streamable -> {
-            return streamable.stream().limit(maxSize);
-        });
+        return derive(() -> intStream().limit(maxSize));
     }
     
     public default IntFuncList skip(Long startAt) {
         if (startAt == null)
             return this;
         
-        return derive(streamable -> {
-            return streamable.stream().skip(startAt);
-        });
+        return derive(() -> intStream().skip(startAt));
     }
     
     // -- Sorted --
     
     public default IntFuncList sortedBy(
             IntUnaryOperator mapper) {
-        return derive(streamable -> {
-            return streamable
-                    .stream()
-                    .sortedBy(mapper);
-        });
+        return derive(() -> intStream().sortedBy(mapper));
     }
     
     public default IntFuncList sortedBy(
             IntUnaryOperator       mapper,
             IntBiFunctionPrimitive comparator) {
-        return derive(streamable -> {
-            return streamable
-                    .stream()
-                    .sortedBy(mapper, comparator);
-        });
+        return derive(() -> intStream().sortedBy(mapper, comparator));
     }
     
     public default <T extends Comparable<? super T>> IntFuncList sortedByObj(IntFunction<T> mapper) {
-        return derive(streamable -> {
-            return streamable
-                    .stream()
-                    .sortedByObj(mapper);
-        });
+        return derive(() -> intStream().sortedByObj(mapper));
     }
     
     public default <T> IntFuncList sortedByObj(IntFunction<T> mapper, Comparator<T> comparator) {
-        return derive(streamable -> {
-            return streamable
-                    .stream()
-                    .sortedByObj(mapper, comparator);
-        });
+        return derive(() -> intStream().sortedByObj(mapper, comparator));
     }
     
-    // -- accumulate --
+    //== Spawn ==
     
     public default <T> FuncList<Result<T>> spawn(
             IntFunction<? extends UncompletedAction<T>> mapToAction) {
-        return deriveToList(streamable -> {
-            return streamable.spawn(mapToAction).stream();
+        return deriveToList(() -> {
+            return intStream().spawn(mapToAction);
         });
     }
     
     public default IntFuncList accumulate(IntBiFunctionPrimitive accumulator) {
-        return derive(streamable -> {
-            return streamable.stream()
-                    .accumulate(accumulator)
-                    .stream();
-        });
+        return derive(() -> intStream().accumulate(accumulator));
     }
     
-    public default IntStreamable restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
-        return derive(streamable -> {
-            return streamable.stream()
-                    .restate(restater)
-                    .stream();
-        });
+    public default IntFuncList restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
+        return derive(() -> intStream().restate(restater));
     }
     
     // -- Filter --
     
     public default IntFuncList exclude(int value) {
-        return derive(streamable -> {
-            return streamable.stream().filter(data -> !Objects.equals(value, data));
-        });
+        return derive(() -> intStream().filter(data -> !Objects.equals(value, data)));
     }
     
     public default IntFuncList excludeAll(int ... datas) {
         if ((datas == null) || (datas.length == 0))
             return this;
         
-        return derive(streamable -> {
+        return derive(() -> {
             val dataList = IntFuncList.of(datas);
-            return streamable.stream().filter(data -> !dataList.contains(data));
+            return intStream().filter(data -> !dataList.contains(data));
         });
     }
     
-    // TODO Join
+    @Override
+    default IntFuncList exclude(IntPredicate predicate) {
+        return derive(() -> {
+            return intStream().filter(data -> !predicate.test(data));
+        });
+    }
     
-    // -- Plus w/ Self --
-    // ============================================================================
+    @Override
+    default IntFuncList mapOnly(IntPredicate checker, IntUnaryOperator mapper) {
+        return IntFuncListAdditionalOperations.super.mapOnly(checker, mapper);
+    }
     
-    // TODO - Uncomment.
-//    public default IntFuncList collapseWhen(IntPredicate conditionToCollapse, IntBinaryOperator concatFunc) {
-//        return derive(streamable -> {
-//            return stream()
-//                    .collapseWhen(conditionToCollapse, concatFunc);
-//        });
-//    }
+    @Override
+    default IntFuncList mapIf(IntPredicate checker, IntUnaryOperator mapper, IntUnaryOperator elseMapper) {
+        return derive(() -> {
+            return intStream().mapIf(checker, mapper, elseMapper);
+        });
+    }
+    
+    @Override
+    default <T> FuncList<T> mapToObjIf(IntPredicate checker, IntFunction<T> mapper, IntFunction<T> elseMapper) {
+        return IntFuncListAdditionalOperations.super.mapToObjIf(checker, mapper, elseMapper);
+    }
+
+    @Override
+    default IntFuncList peek(IntPredicate selector, IntConsumer theConsumer) {
+        return IntFuncListAdditionalOperations.super.peek(selector, theConsumer);
+    }
     
 }

@@ -46,7 +46,7 @@ import java.util.stream.Collector;
 import org.junit.Test;
 
 import functionalj.function.FuncUnit0;
-import functionalj.list.intlist.ImmutableIntList;
+import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.promise.DeferAction;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
@@ -977,7 +977,7 @@ public class IntStreamableTest {
         run(()->{
             assertEquals(
                     StreamPlus.of(1, 1, 2, 3, 5, 8, 13, 21, 34).toListString(),
-                    streamable.stream().toListString());
+                    streamable.intStream().toListString());
         });
     }
     
@@ -1036,7 +1036,7 @@ public class IntStreamableTest {
         val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21, 34);
         run(()->{
             assertEquals(
-                    ImmutableIntList.of(1, 1, 2, 3, 5, 8, 13, 21, 34),
+                    ImmutableIntFuncList.of(1, 1, 2, 3, 5, 8, 13, 21, 34),
                     streamable.toImmutableList());
         });
     }
@@ -1063,7 +1063,7 @@ public class IntStreamableTest {
                     streamable.pipable().pipeTo(i -> "-" + i.toListString() + "-").toString());
             assertEquals(
                     "-[1, 1, 2, 3, 5, 8, 13, 21, 34]-",
-                    streamable.pipe(i -> "-" + i.toListString() + "-").toString());
+                    streamable.pipable().pipeTo(i -> "-" + i.toListString() + "-").toString());
         });
     }
     

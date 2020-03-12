@@ -36,14 +36,14 @@ import functionalj.tuple.IntIntTuple;
 
 public interface IntStreamableAdditionalTerminalOperators {
     
-    public IntStreamPlus stream();
+    public IntStreamPlus intStream();
     
     
     //-- Functionalities --
     
     public default void forEachWithIndex(
             IntBiConsumer action) {
-        stream()
+        intStream()
             .forEachWithIndex(action);
     }
     
@@ -122,63 +122,63 @@ public interface IntStreamableAdditionalTerminalOperators {
     
     public default <D extends Comparable<D>> OptionalInt minBy(
             IntFunction<D> mapper) {
-        return stream()
+        return intStream()
                 .minBy(mapper);
     }
     
     public default <D extends Comparable<D>> OptionalInt maxBy(
             IntFunction<D> mapper) {
-        return stream()
+        return intStream()
                 .maxBy(mapper);
     }
     
     public default <D> OptionalInt minBy(
             IntFunction<D>        mapper, 
             Comparator<? super D> comparator) {
-        return stream()
+        return intStream()
                 .minBy(mapper, comparator);
     }
     
     public default <D> OptionalInt maxBy(
             IntFunction<D>        mapper, 
             Comparator<? super D> comparator) {
-        return stream()
+        return intStream()
                 .maxBy(mapper, comparator);
     }
     
     public default <D> OptionalInt minOf(
             IntUnaryOperator mapper) {
-        return stream()
+        return intStream()
                 .minOf(mapper);
     }
     
     public default <D> OptionalInt maxOf(
             IntUnaryOperator mapper) {
-        return stream()
+        return intStream()
                 .maxOf(mapper);
     }
     
     public default Optional<IntIntTuple> minMax() {
-        return stream()
+        return intStream()
                 .minMax();
     }
     
     public default <D extends Comparable<D>> Optional<IntIntTuple> minMaxOf(
             IntUnaryOperator mapper) {
-        return stream()
+        return intStream()
                 .minMaxOf(mapper);
     }
     
     public default <D extends Comparable<D>> Optional<IntIntTuple> minMaxBy(
             IntFunction<D> mapper) {
-        return stream()
+        return intStream()
                 .minMaxBy(mapper);
     }
     
     public default <D> Optional<IntIntTuple> minMaxBy(
             IntFunction<D>        mapper, 
             Comparator<? super D> comparator) {
-        return stream()
+        return intStream()
                 .minMaxBy(mapper, comparator);
     }
     
@@ -186,41 +186,41 @@ public interface IntStreamableAdditionalTerminalOperators {
     
     public default OptionalInt findFirst(
             IntPredicate predicate) {
-        return stream()
+        return intStream()
                 .findFirst(predicate);
     }
     
     public default OptionalInt findAny(
             IntPredicate predicate) {
-        return stream()
+        return intStream()
                 .findAny(predicate);
     }
     
     public default OptionalInt findFirst(
             IntUnaryOperator mapper, 
             IntPredicate     theCondition) {
-        return stream()
+        return intStream()
                 .findFirst(mapper, theCondition);
     }
     
     public default <T> OptionalInt findAny(
             IntUnaryOperator mapper, 
             IntPredicate     theCondition) {
-        return stream()
+        return intStream()
                 .findAny(mapper, theCondition);
     }
     
     public default <T> OptionalInt findFirstBy(
             IntFunction<? extends T> mapper, 
             Predicate<? super T>     theCondition) {
-        return stream()
+        return intStream()
                 .findFirstBy(mapper, theCondition);
     }
     
     public default <T> OptionalInt findAnyBy(
             IntFunction<? extends T> mapper, 
             Predicate<? super T>     theCondition) {
-        return stream()
+        return intStream()
                 .findAnyBy(mapper, theCondition);
     }
     

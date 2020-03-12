@@ -387,7 +387,7 @@ public class TaskTest {
         val counter1 = new AtomicInteger(0);
         val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             // Action1 will start a little late.
-            Thread.sleep(50);
+            Thread.sleep(70);
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s);

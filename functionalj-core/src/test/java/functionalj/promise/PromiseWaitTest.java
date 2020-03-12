@@ -101,7 +101,7 @@ public class PromiseWaitTest {
         .forEach(tuple -> {
             val list   = new ArrayList<String>();
             val action = DeferAction.of(String.class)
-                    .use(promise -> promise.onComplete(Wait.forMilliseconds(100, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
+                    .use(promise -> promise.onComplete(Wait.forMilliseconds(150, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
                     .start();
             
             try {

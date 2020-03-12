@@ -11,7 +11,7 @@ import functionalj.tuple.Tuple6;
 
 public interface IntStreamableWithMapTuple {
     
-    public IntStreamPlus stream();
+    public IntStreamPlus intStream();
     
     //== mapTuple ==
     
@@ -20,7 +20,7 @@ public interface IntStreamableWithMapTuple {
                 IntFunction<? extends T1> mapper1,
                 IntFunction<? extends T2> mapper2) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapTuple(mapper1, mapper2);
         };
     }
@@ -31,7 +31,7 @@ public interface IntStreamableWithMapTuple {
                 IntFunction<? extends T2> mapper2,
                 IntFunction<? extends T3> mapper3) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapTuple(mapper1, mapper2, mapper3);
         };
     }
@@ -43,7 +43,7 @@ public interface IntStreamableWithMapTuple {
                 IntFunction<? extends T3> mapper3,
                 IntFunction<? extends T4> mapper4) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapTuple(mapper1, mapper2, mapper3, mapper4);
         };
     }
@@ -56,7 +56,7 @@ public interface IntStreamableWithMapTuple {
                 IntFunction<? extends T4> mapper4,
                 IntFunction<? extends T5> mapper5) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapTuple(mapper1, mapper2, mapper3, mapper4, mapper5);
         };
     }
@@ -69,7 +69,7 @@ public interface IntStreamableWithMapTuple {
                 IntFunction<? extends T5> mapper5,
                 IntFunction<? extends T6> mapper6) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
         };
     }

@@ -25,12 +25,12 @@ import java.util.stream.Stream;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
-import functionalj.list.intlist.ImmutableIntList;
+import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
-import functionalj.list.intlist.IntFuncListDerivedFromIntStreamable;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
+import functionalj.stream.HasStreamable;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import functionalj.tuple.IntIntTuple;
@@ -39,6 +39,7 @@ import lombok.val;
 
 public interface IntStreamable 
         extends
+            HasIntStreamable,
             IntStreamableWithMapFirst,
             IntStreamableWithMapThen,
             IntStreamableWithMapTuple,
@@ -163,7 +164,7 @@ public interface IntStreamable
     }
     
     public static IntStreamable concat(IntStreamable ... streamables) {
-        return ()->StreamPlus.of(streamables).flatMapToInt(s -> s.stream());
+        return ()->StreamPlus.of(streamables).flatMapToInt(s -> s.intStream());
     }
     
     public static IntStreamable compound(int seed, IntUnaryOperator f) {
@@ -179,8 +180,8 @@ public interface IntStreamable
             IntStreamable streamable2) {
         return ()->{
             return IntStreamPlus.zipOf(
-                    streamable1.stream(),
-                    streamable2.stream());
+                    streamable1.intStream(),
+                    streamable2.intStream());
         };
     }
     public static StreamPlus<IntIntTuple> zipOf(
@@ -189,8 +190,8 @@ public interface IntStreamable
             int           defaultValue) {
         return ()->{
             return IntStreamPlus.zipOf(
-                    streamable1.stream(),
-                    streamable2.stream(),
+                    streamable1.intStream(),
+                    streamable2.intStream(),
                     defaultValue);
         };
     }
@@ -199,8 +200,8 @@ public interface IntStreamable
             IntStreamable streamable2, int defaultValue2) {
         return ()->{
             return IntStreamPlus.zipOf(
-                    streamable1.stream(), defaultValue1,
-                    streamable2.stream(), defaultValue2);
+                    streamable1.intStream(), defaultValue1,
+                    streamable2.intStream(), defaultValue2);
         };
     }
     
@@ -210,8 +211,8 @@ public interface IntStreamable
             IntBiFunctionPrimitive merger) {
         return ()->{
             return IntStreamPlus.zipOf(
-                    streamable1.stream(),
-                    streamable2.stream(),
+                    streamable1.intStream(),
+                    streamable2.intStream(),
                     merger);
         };
     }
@@ -222,8 +223,8 @@ public interface IntStreamable
             IntBiFunctionPrimitive merger) {
         return ()->{
             return IntStreamPlus.zipOf(
-                    streamable1.stream(),
-                    streamable2.stream(),
+                    streamable1.intStream(),
+                    streamable2.intStream(),
                     defaultValue,
                     merger);
         };
@@ -234,8 +235,8 @@ public interface IntStreamable
             IntBiFunctionPrimitive merger) {
         return ()->{
             return IntStreamPlus.zipOf(
-                    streamable1.stream(), defaultValue1,
-                    streamable2.stream(), defaultValue2,
+                    streamable1.intStream(), defaultValue1,
+                    streamable2.intStream(), defaultValue2,
                     merger);
         };
     }
@@ -245,7 +246,7 @@ public interface IntStreamable
             Function<IntStreamable, IntStream> action) {
         return new IntStreamable() {
             @Override
-            public IntStreamPlus stream() {
+            public IntStreamPlus intStream() {
                 val targetStream = action.apply(source);
                 return IntStreamPlus.from(targetStream);
             }
@@ -254,12 +255,25 @@ public interface IntStreamable
     
     //== Stream ==
     
-    public IntStreamPlus stream();
-    
-    public default IntStreamable streamable() {
+    public default IntStreamable intStreamable() {
         return this;
     }
     
+    public default Streamable<Integer> streamable() {
+        return boxed();
+    }
+    
+    public IntStreamPlus intStream();
+    
+    public default StreamPlus<Integer> stream() {
+        return intStream().boxed();
+    }
+    
+    //== Pipeable ==
+    
+    public default Pipeable<? extends IntStreamable> pipeable() {
+        return Pipeable.of(this);
+    }
     
     //== Helper functions ==
     
@@ -267,7 +281,7 @@ public interface IntStreamable
                 Function<IntStreamable, IntStream> action) {
         return new IntStreamable() {
             @Override
-            public IntStreamPlus stream() {
+            public IntStreamPlus intStream() {
                 val targetStream = action.apply(IntStreamable.this);
                 return IntStreamPlus.from(targetStream);
             }
@@ -297,39 +311,39 @@ public interface IntStreamable
 //    }
     
     public default Streamable<Integer> boxed() {
-        return ()->StreamPlus.from(stream().mapToObj(theInteger.boxed()));
+        return ()->StreamPlus.from(intStream().mapToObj(theInteger.boxed()));
     }
     
     public default PrimitiveIterator.OfInt iterator() {
-        return stream().iterator();
+        return intStream().iterator();
     }
     
     public default Spliterator.OfInt spliterator() {
-        return stream().spliterator();
+        return intStream().spliterator();
     }
     
     //== Stream specific ==
     
     public default IntStreamable sequential() {
-        return from(this, streamble -> streamble.stream().sequential());
+        return from(this, streamble -> streamble.intStream().sequential());
     }
     
     public default IntStreamable parallel() {
-        return from(this, streamble -> streamble.stream().parallel());
+        return from(this, streamble -> streamble.intStream().parallel());
     }
     
     public default IntStreamable unordered() {
-        return from(this, streamble -> streamble.stream().unordered());
+        return from(this, streamble -> streamble.intStream().unordered());
     }
     
     public default boolean isParallel() {
-        return stream().isParallel();
+        return intStream().isParallel();
     }
     
     //== Functionalities ==
     
     public default IntStreamable map(IntUnaryOperator mapper) {
-        return from(this, streamble -> streamble.stream().map(mapper));
+        return from(this, streamble -> streamble.intStream().map(mapper));
     }
     
 //    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
@@ -344,7 +358,7 @@ public interface IntStreamable
         return Streamable.from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .mapToObj(mapper));
     }
     
@@ -352,15 +366,15 @@ public interface IntStreamable
         return map(mapper);
     }
     
-    public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends Streamable<TARGET>> mapper) {
+    public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends HasStreamable<TARGET>> mapper) {
         return Streamable.from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .flatMapToObj(each -> mapper.apply(each).stream()));
     }
     
-    public default IntStreamable flatMapToInt(IntFunction<? extends IntStreamable> mapper) {
+    public default IntStreamable flatMapToInt(IntFunction<? extends HasIntStreamable> mapper) {
         return flatMap(mapper);
     }
     
@@ -374,19 +388,19 @@ public interface IntStreamable
 //                .flatMapToDouble(mapper);
 //    }
     
-    public default IntStreamable flatMap(IntFunction<? extends IntStreamable> mapper) {
+    public default IntStreamable flatMap(IntFunction<? extends HasIntStreamable> mapper) {
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
-                    .flatMap(each -> mapper.apply(each).stream()));
+                    .intStream()
+                    .flatMap(each -> mapper.apply(each).intStream()));
     }
     
     public default IntStreamable filter(IntPredicate predicate) {
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .filter(predicate));
     }
     
@@ -397,7 +411,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .filter(mapper, predicate));
     }
     
@@ -407,7 +421,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .filterAsObject(mapper, theCondition));
     }
     
@@ -417,7 +431,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .filterAsObject(mapper, theCondition));
     }
     
@@ -425,7 +439,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .peek(action));
     }
     
@@ -433,7 +447,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .limit(maxSize));
     }
     
@@ -441,7 +455,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .skip(offset));
     }
     
@@ -449,7 +463,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .skipWhile(condition));
     }
     
@@ -457,7 +471,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .skipUntil(condition));
     }
     
@@ -465,7 +479,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .takeWhile(condition));
     }
     
@@ -473,7 +487,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .takeUntil(condition));
     }
     
@@ -481,7 +495,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .distinct());
     }
     
@@ -491,7 +505,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .sorted());
     }
     
@@ -500,7 +514,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .sortedBy(mapper));
     }
     
@@ -510,7 +524,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .sortedBy(mapper, comparator));
     }
     
@@ -519,7 +533,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .sortedByObj(mapper));
     }
     
@@ -529,7 +543,7 @@ public interface IntStreamable
         return from(this, 
                 streamable -> 
                     streamable
-                    .stream()
+                    .intStream()
                     .sortedByObj(mapper, comparator));
     }
     
@@ -539,7 +553,7 @@ public interface IntStreamable
         if (action == null)
             return;
         
-        stream()
+        intStream()
         .forEach(action);
     }
     
@@ -547,17 +561,17 @@ public interface IntStreamable
         if (action == null)
             return;
         
-        stream()
+        intStream()
         .forEachOrdered(action);
     }
     
     public default int reduce(int identity, IntBinaryOperator accumulator) {
-        return stream()
+        return intStream()
                 .reduce(identity, accumulator);
     }
     
     public default OptionalInt reduce(IntBinaryOperator accumulator) {
-        return stream()
+        return intStream()
                 .reduce(accumulator);
     }
     
@@ -565,113 +579,101 @@ public interface IntStreamable
             Supplier<R>       supplier,
             ObjIntConsumer<R> accumulator,
             BiConsumer<R, R>  combiner) {
-        return stream()
+        return intStream()
                 .collect(supplier, accumulator, combiner);
     }
     
     public default OptionalInt min() {
-        return stream()
+        return intStream()
                 .min();
     }
     
     public default OptionalInt max() {
-        return stream()
+        return intStream()
                 .max();
     }
     
     public default long count() {
-        return stream().count();
+        return intStream().count();
     }
     
     public default int size() {
-        return (int)stream().count();
+        return (int)intStream().count();
     }
     
     public default boolean anyMatch(IntPredicate predicate) {
-        return stream().anyMatch(predicate);
+        return intStream().anyMatch(predicate);
     }
     
     public default boolean allMatch(IntPredicate predicate) {
-        return stream().allMatch(predicate);
+        return intStream().allMatch(predicate);
     }
     
     public default boolean noneMatch(IntPredicate predicate) {
-        return stream().noneMatch(predicate);
+        return intStream().noneMatch(predicate);
     }
     
     public default OptionalInt findFirst() {
-        return stream().findFirst();
+        return intStream().findFirst();
     }
     
     public default OptionalInt findAny() {
-        return stream().findAny();
+        return intStream().findAny();
     }
     
     //== toXXX ==
     
-    public default IntStreamable intStreamable() {
-        return this;
-    }
-    
-    public default Streamable<Integer> asStreamable() {
-        return boxed();
-    }
-    
     public default int[] toArray() {
-        return stream()
+        return intStream()
                 .toArray();
     }
     
     public default int sum() {
-        return stream().sum();
+        return intStream().sum();
     }
     
     public default OptionalDouble average() {
-        return stream().average();
+        return intStream().average();
     }
     
     public default IntSummaryStatistics summaryStatistics() {
-        return stream().summaryStatistics();
+        return intStream().summaryStatistics();
     }
     
     public default String toListString() {
-        return stream()
+        return intStream()
                 .toListString();
     }
     
     public default IntFuncList toList() {
-        return new IntFuncListDerivedFromIntStreamable(this, streamable -> streamable.stream());
+        return IntFuncList.from(this);
     }
     
     public default FuncList<Integer> toBoxedList() {
         return FuncList.from(this.boxed());
     }
     
-    public default ImmutableIntList toImmutableList() {
-        return stream()
+    public default ImmutableIntFuncList toImmutableList() {
+        return intStream()
                 .toImmutableList();
     }
     
     //== Plus ==
     
     public default String joinToString() {
-        return stream()
+        return intStream()
                 .joinToString();
     }
     
     public default String joinToString(String delimiter) {
-        return stream()
+        return intStream()
                 .joinToString(delimiter);
     }
     
     //== Pipe ==
     
-    public default <T> Pipeable<IntStreamable> pipable() {
+    public default <T> Pipeable<? extends IntStreamable> pipable() {
         return Pipeable.of(this);
-    }
-    
-    public default <T> T pipe(Function<? super IntStreamable, T> piper) {
-        return piper.apply(this);
     }
     
     //== Spawn ==
@@ -679,19 +681,19 @@ public interface IntStreamable
     public default <T> Streamable<Result<T>> spawn(
             IntFunction<? extends UncompletedAction<T>> mapToAction) {
         return ()->
-                stream()
+                intStream()
                 .spawn(mapToAction);
     }
     
     public default IntStreamable accumulate(IntBiFunctionPrimitive accumulator) {
         return ()->
-                stream()
+                intStream()
                 .accumulate(accumulator);
     }
     
     public default IntStreamable restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
         return ()->
-                stream()
+                intStream()
                 .restate(restater);
     }
 }

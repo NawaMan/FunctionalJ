@@ -58,7 +58,7 @@ import java.util.stream.StreamSupport;
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
-import functionalj.list.intlist.ImmutableIntList;
+import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
@@ -796,9 +796,9 @@ public interface IntStreamPlus
         return "[" + strValue + "]";
     }
     
-    public default ImmutableIntList toImmutableList() {
+    public default ImmutableIntFuncList toImmutableList() {
         return terminate(stream -> {
-            return ImmutableIntList.from(this);
+            return ImmutableIntFuncList.from(this);
         });
     }
     

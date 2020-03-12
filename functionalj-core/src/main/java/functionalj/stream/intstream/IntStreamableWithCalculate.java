@@ -32,7 +32,7 @@ import functionalj.tuple.Tuple6;
 
 public interface IntStreamableWithCalculate {
     
-    public IntStreamPlus stream();
+    public IntStreamPlus intStream();
     
     
     //== Calculate ==
@@ -41,7 +41,7 @@ public interface IntStreamableWithCalculate {
     
     public default <RESULT, ACCUMULATED> RESULT calculate(
             IntCollectorPlus<ACCUMULATED, RESULT> collector) {
-        return stream()
+        return intStream()
                 .calculate(collector);
     }
     
@@ -51,7 +51,7 @@ public interface IntStreamableWithCalculate {
                         calculate(
                             IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
                             IntCollectorPlus<ACCUMULATED2, RESULT2> collector2) {
-        return stream()
+        return intStream()
                 .calculate(
                         collector1,
                         collector2);
@@ -65,7 +65,7 @@ public interface IntStreamableWithCalculate {
                             IntCollectorPlus<ACCUMULATED1, RESULT1> collector1,
                             IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
                             IntCollectorPlus<ACCUMULATED3, RESULT3> collector3) {
-        return stream()
+        return intStream()
                 .calculate(
                         collector1,
                         collector2,
@@ -82,7 +82,7 @@ public interface IntStreamableWithCalculate {
                             IntCollectorPlus<ACCUMULATED2, RESULT2> collector2,
                             IntCollectorPlus<ACCUMULATED3, RESULT3> collector3,
                             IntCollectorPlus<ACCUMULATED4, RESULT4> collector4) {
-        return stream()
+        return intStream()
                 .calculate(
                         collector1,
                         collector2,
@@ -102,7 +102,7 @@ public interface IntStreamableWithCalculate {
                             IntCollectorPlus<ACCUMULATED3, RESULT3> collector3,
                             IntCollectorPlus<ACCUMULATED4, RESULT4> collector4,
                             IntCollectorPlus<ACCUMULATED5, RESULT5> collector5) {
-        return stream()
+        return intStream()
                 .calculate(
                         collector1,
                         collector2,
@@ -125,7 +125,7 @@ public interface IntStreamableWithCalculate {
                             IntCollectorPlus<ACCUMULATED4, RESULT4> collector4,
                             IntCollectorPlus<ACCUMULATED5, RESULT5> collector5,
                             IntCollectorPlus<ACCUMULATED6, RESULT6> collector6) {
-        return stream()
+        return intStream()
                 .calculate(
                         collector1,
                         collector2,

@@ -57,7 +57,7 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import functionalj.list.intlist.ImmutableIntList;
+import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.promise.DeferAction;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
@@ -640,7 +640,7 @@ public class IntStreamPlusTest {
     @Test
     public void testToImmutableList() {
         assertEquals(
-                ImmutableIntList.of(1, 1, 2, 3, 5, 8, 13, 21, 34),
+                ImmutableIntFuncList.of(1, 1, 2, 3, 5, 8, 13, 21, 34),
                 ints(1, 1, 2, 3, 5, 8, 13, 21, 34).toImmutableList());
     }
     

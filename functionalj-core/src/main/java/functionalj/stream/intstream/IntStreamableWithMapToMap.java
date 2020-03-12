@@ -7,14 +7,14 @@ import functionalj.stream.Streamable;
 
 public interface IntStreamableWithMapToMap {
     
-    public IntStreamPlus stream();
+    public IntStreamPlus intStream();
     
     //== mapToMap ==
     
     public default <KEY, VALUE> Streamable<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, IntFunction<? extends VALUE> mapper) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapToMap(
                             key, mapper);
         };
@@ -24,7 +24,7 @@ public interface IntStreamableWithMapToMap {
             KEY key1, IntFunction<? extends VALUE> mapper1,
             KEY key2, IntFunction<? extends VALUE> mapper2) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapToMap(
                             key1, mapper1,
                             key2, mapper2);
@@ -36,7 +36,7 @@ public interface IntStreamableWithMapToMap {
             KEY key2, IntFunction<? extends VALUE> mapper2,
             KEY key3, IntFunction<? extends VALUE> mapper3) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapToMap(
                             key1, mapper1,
                             key2, mapper2,
@@ -50,7 +50,7 @@ public interface IntStreamableWithMapToMap {
             KEY key3, IntFunction<? extends VALUE> mapper3,
             KEY key4, IntFunction<? extends VALUE> mapper4) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapToMap(
                             key1, mapper1,
                             key2, mapper2,
@@ -66,7 +66,7 @@ public interface IntStreamableWithMapToMap {
             KEY key4, IntFunction<? extends VALUE> mapper4,
             KEY key5, IntFunction<? extends VALUE> mapper5) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapToMap(
                             key1, mapper1,
                             key2, mapper2,
@@ -84,7 +84,7 @@ public interface IntStreamableWithMapToMap {
             KEY key5, IntFunction<? extends VALUE> mapper5,
             KEY key6, IntFunction<? extends VALUE> mapper6) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapToMap(
                             key1, mapper1,
                             key2, mapper2,
@@ -104,7 +104,7 @@ public interface IntStreamableWithMapToMap {
             KEY key6, IntFunction<? extends VALUE> mapper6,
             KEY key7, IntFunction<? extends VALUE> mapper7) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapToMap(
                             key1, mapper1,
                             key2, mapper2,
@@ -126,7 +126,7 @@ public interface IntStreamableWithMapToMap {
             KEY key7, IntFunction<? extends VALUE> mapper7,
             KEY key8, IntFunction<? extends VALUE> mapper8) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapToMap(
                             key1, mapper1,
                             key2, mapper2,
@@ -150,7 +150,7 @@ public interface IntStreamableWithMapToMap {
             KEY key8, IntFunction<? extends VALUE> mapper8,
             KEY key9, IntFunction<? extends VALUE> mapper9) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapToMap(
                             key1, mapper1,
                             key2, mapper2,
@@ -176,7 +176,7 @@ public interface IntStreamableWithMapToMap {
             KEY key9, IntFunction<? extends VALUE> mapper9,
             KEY key10, IntFunction<? extends VALUE> mapper10) {
         return ()->{
-            return stream()
+            return intStream()
                     .mapToMap(
                             key1, mapper1,
                             key2, mapper2,

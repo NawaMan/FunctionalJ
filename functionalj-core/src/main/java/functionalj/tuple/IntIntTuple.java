@@ -24,6 +24,7 @@
 package functionalj.tuple;
 
 import java.util.Map;
+import java.util.function.IntUnaryOperator;
 
 @SuppressWarnings("javadoc")
 public class IntIntTuple implements Tuple2<Integer, Integer>, Map.Entry<Integer, Integer> {
@@ -65,6 +66,26 @@ public class IntIntTuple implements Tuple2<Integer, Integer>, Map.Entry<Integer,
     @Override
     public Integer getValue() {
         return _2();
+    }
+    
+    public IntIntTuple mapToInt(IntUnaryOperator mapper1, IntUnaryOperator mapper2) {
+        return IntIntTuple.of(mapper1.applyAsInt(_1), mapper2.applyAsInt(_2));
+    }
+    
+    public IntIntTuple map1ToInt(IntUnaryOperator mapper) {
+        return IntIntTuple.of(mapper.applyAsInt(_1), _2);
+    }
+    
+    public IntIntTuple map2ToInt(IntUnaryOperator mapper) {
+        return IntIntTuple.of(_1, mapper.applyAsInt(_2));
+    }
+    
+    public IntIntTuple mapKeyToInt(IntUnaryOperator mapper) {
+        return IntIntTuple.of(mapper.applyAsInt(_1), _2);
+    }
+    
+    public IntIntTuple mapValueToInt(IntUnaryOperator mapper) {
+        return IntIntTuple.of(_1, mapper.applyAsInt(_2));
     }
     
     @Override

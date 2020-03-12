@@ -47,7 +47,7 @@ import java.util.stream.Stream;
 
 import functionalj.function.Func1;
 import functionalj.function.Func2;
-import functionalj.list.intlist.ImmutableIntList;
+import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
@@ -105,8 +105,8 @@ public interface FuncList<DATA>
         return ImmutableList.from(datas);
     }
     
-    public static ImmutableIntList from(int[] datas) {
-        return ImmutableIntList.from(datas);
+    public static ImmutableIntFuncList from(int[] datas) {
+        return ImmutableIntFuncList.from(datas);
     }
     
     public static <T> ImmutableList<T> from(Collection<T> data) {

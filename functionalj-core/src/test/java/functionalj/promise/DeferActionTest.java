@@ -820,7 +820,7 @@ public class DeferActionTest {
         
         val action = builder.build().start();
         
-        Thread.sleep(70);
+        Thread.sleep(50);
         action.abort("Can't wait.");
         
         assertStrings("Result:{ Cancelled: Can't wait. }", action.getResult());

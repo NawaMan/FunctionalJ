@@ -21,169 +21,176 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream.intstream;
+package functionalj.list.intlist;
 
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
+import functionalj.list.FuncList;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.Streamable;
+import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.IntStreamable;
 
-public interface IntStreamableWithSegment {
+public interface IntFuncListWithSegment {
     
     public IntStreamPlus intStream();
     
+    public IntFuncList derive(IntStreamable streamable);
+    
+    public <TARGET> FuncList<TARGET> deriveToList(Streamable<TARGET> streamable);
+    
     //== segment ==
     
-    public default Streamable<IntStreamPlus> segment(int count) {
-        return ()->{
+    public default FuncList<IntStreamPlus> segment(int count) {
+        return deriveToList(()->{
             return intStream()
                     .segment(count);
-        };
+        });
     }
-    public default Streamable<IntStreamPlus> segment(
+    public default FuncList<IntStreamPlus> segment(
             int count, 
             IncompletedSegment incompletedSegment) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segment(count, incompletedSegment);
-        };
+        });
     }
-    public default Streamable<IntStreamPlus> segment(
+    public default FuncList<IntStreamPlus> segment(
             int count, 
             boolean includeIncompletedSegment) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segment(count, includeIncompletedSegment);
-        };
+        });
     }
-    public default Streamable<IntStreamPlus> segment(
+    public default FuncList<IntStreamPlus> segment(
             IntPredicate startCondition) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segment(startCondition);
-        };
+        });
     }
-    public default Streamable<IntStreamPlus> segment(
+    public default FuncList<IntStreamPlus> segment(
             IntPredicate startCondition, 
             IncompletedSegment incompletedSegment) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segment(startCondition, incompletedSegment);
-        };
+        });
     }
-    public default Streamable<IntStreamPlus> segment(
+    public default FuncList<IntStreamPlus> segment(
             IntPredicate startCondition, 
             boolean includeIncompletedSegment) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segment(startCondition, includeIncompletedSegment);
-        };
+        });
     }
     
-    public default Streamable<IntStreamPlus> segment(
+    public default FuncList<IntStreamPlus> segment(
             IntPredicate startCondition, 
             IntPredicate endCondition) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segment(startCondition, endCondition);
-        };
+        });
     }
     
-    public default Streamable<IntStreamPlus> segment(
+    public default FuncList<IntStreamPlus> segment(
             IntPredicate startCondition, 
             IntPredicate endCondition, 
             IncompletedSegment incompletedSegment) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segment(startCondition, endCondition, incompletedSegment);
-        };
+        });
     }
     
-    public default Streamable<IntStreamPlus> segment(
+    public default FuncList<IntStreamPlus> segment(
             IntPredicate startCondition, 
             IntPredicate endCondition, 
             boolean includeIncompletedSegment) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segment(startCondition, endCondition, includeIncompletedSegment);
-        };
+        });
     }
     
-    public default Streamable<IntStreamPlus> segmentSize(
+    public default FuncList<IntStreamPlus> segmentSize(
             IntUnaryOperator segmentSize) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segmentSize(segmentSize);
-        };
+        });
     }
     
-    public default Streamable<IntStreamPlus> segmentSize(
+    public default FuncList<IntStreamPlus> segmentSize(
             IntUnaryOperator segmentSize, 
             IncompletedSegment incompletedSegment) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segmentSize(segmentSize, incompletedSegment);
-        };
+        });
     }
     
-    public default Streamable<IntStreamPlus> segmentSize(
+    public default FuncList<IntStreamPlus> segmentSize(
             IntUnaryOperator segmentSize, 
             boolean includeTail) {
-        return ()->{
+        return deriveToList(()->{
             return intStream()
                     .segmentSize(segmentSize, includeTail);
-        };
+        });
     }
     
     //== Collapse ==
     
-    public default IntStreamable collapseWhen(
+    public default IntFuncList collapseWhen(
             IntPredicate conditionToCollapse, 
             IntBinaryOperator concatFunc) {
-        return ()->{
+        return derive(()->{
             return intStream()
                     .collapseWhen(conditionToCollapse, concatFunc);
-        };
+        });
     }
     
-    public default IntStreamable collapseAfter(
+    public default IntFuncList collapseAfter(
             IntPredicate conditionToCollapseNext, 
             IntBinaryOperator concatFunc) {
-        return ()->{
+        return derive(()->{
             return intStream()
                     .collapseAfter(conditionToCollapseNext, concatFunc);
-        };
+        });
     }
     
-    public default IntStreamable collapseSize(
+    public default IntFuncList collapseSize(
             IntUnaryOperator  segmentSize, 
             IntBinaryOperator concatFunc) {
-        return ()->{
+        return derive(()->{
             return intStream()
                     .collapseSize(segmentSize, concatFunc);
-        };
+        });
     }
     
-    public default IntStreamable collapseSize(
+    public default IntFuncList collapseSize(
             IntUnaryOperator  segmentSize, 
             IntBinaryOperator concatFunc,
             IncompletedSegment incompletedSegment) {
-        return ()->{
+        return derive(()->{
             return intStream()
                     .collapseSize(segmentSize, concatFunc, incompletedSegment);
-        };
+        });
     }
     
-    public default IntStreamable collapseSize(
+    public default IntFuncList collapseSize(
             IntUnaryOperator  segmentSize, 
             IntBinaryOperator concatFunc,
             boolean includeTail) {
-        return ()->{
+        return derive(()->{
             return intStream()
                     .collapseSize(segmentSize, concatFunc, includeTail);
-        };
+        });
     }
 }
 

@@ -63,8 +63,8 @@ public class IntegerAccessTest {
         long delta5 = Math.round((afterUsedMem5 - beforeUsedMem - actualUsedMem) / 1000000.0);
         
 //        System.out.println("Mem2: " + delta2);
-//        System.out.println("Mem3: " + delta3);
-//        System.out.println("Mem4: " + delta4);
+        System.out.println("Mem3: " + delta3);
+        System.out.println("Mem4: " + delta4);
 //        System.out.println("Mem5: " + delta5);
 //        
 //        System.out.println(str2);

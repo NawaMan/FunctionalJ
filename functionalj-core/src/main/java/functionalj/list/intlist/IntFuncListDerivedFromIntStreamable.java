@@ -1,34 +1,33 @@
 package functionalj.list.intlist;
 
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.IntPredicate;
-import java.util.stream.IntStream;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import lombok.val;
 
-public class IntFuncListDerivedFromIntStreamable
+class IntFuncListDerivedFromIntStreamable
                 implements IntFuncList {
     
-    private static final IntBiFunctionPrimitive zeroForEquals = (i1, i2) -> i1 == i2 ? 0 : 1;
-    private static final IntPredicate toZero = i -> i == 0;
+    private static final IntBiFunctionPrimitive zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
+    private static final IntPredicate           toZero        = (int i)          -> i  == 0;
     
     private IntStreamable source;
-    private Function<IntStreamable, IntStream> action;
     
-    public IntFuncListDerivedFromIntStreamable(IntStreamable souce, Function<IntStreamable, IntStream> action) {
-        this.action = Objects.requireNonNull(action);
+    public IntFuncListDerivedFromIntStreamable(IntStreamable souce) {
         this.source = Objects.requireNonNull(souce);
     }
     
     @Override
-    public IntStreamPlus stream() {
-        val newStream = action.apply(source);
-        return IntStreamPlus
-                .from(newStream);
+    public IntStreamable intStreamable() {
+        return source;
+    }
+    
+    @Override
+    public IntStreamPlus intStream() {
+        return source.intStream();
     }
     
     @Override
@@ -38,7 +37,8 @@ public class IntFuncListDerivedFromIntStreamable
     
     @Override
     public IntFuncList eager() {
-        return new ImmutableIntList(this, false);
+        val data = this.toArray();
+        return new ImmutableIntFuncList(data, false);
     }
     
     public String toString() {
@@ -60,7 +60,7 @@ public class IntFuncListDerivedFromIntStreamable
         if (size() != anotherList.size())
             return false;
         
-        return zipWith(anotherList, zeroForEquals)
+        return zipWith   (anotherList, zeroForEquals)
                 .allMatch(toZero);
     }
 

@@ -24,6 +24,7 @@
 package functionalj.stream;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -174,6 +175,12 @@ public interface StreamableAddtionalOperators<DATA> {
             return StreamPlus
                     .from(stream)
                     .filterWithIndex(predicate);
+        });
+    }
+    
+    public default Streamable<DATA> filterNonNull() {
+        return deriveWith(stream -> {
+            return stream.filter(Objects::nonNull);
         });
     }
     

@@ -181,7 +181,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         }
         
         public RESULT finish() {
-            val stream    = streamable.stream();
+            val stream    = streamable.intStream();
             val intStream = IntStreamPlus.from(stream);
             return processor.process(intStream);
         }

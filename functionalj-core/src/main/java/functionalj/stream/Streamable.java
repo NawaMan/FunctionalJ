@@ -110,6 +110,7 @@ class Helper {
 @FunctionalInterface
 public interface Streamable<DATA> 
         extends
+            HasStreamable<DATA>,
             StreamableWithMapCase<DATA>,
             StreamableWithMapThen<DATA>,
             StreamableWithMapTuple<DATA>,
@@ -250,8 +251,8 @@ public interface Streamable<DATA>
             IntIntBiFunction<T> merger) {
         return ()->{
             return StreamPlus.zipOf(
-                    streamable1.stream(),
-                    streamable2.stream(),
+                    streamable1.intStream(),
+                    streamable2.intStream(),
                     merger);
         };
     }
@@ -263,8 +264,8 @@ public interface Streamable<DATA>
             IntIntBiFunction<T> merger) {
         return ()->{
             return StreamPlus.zipOf(
-                    streamable1.stream(),
-                    streamable2.stream(),
+                    streamable1.intStream(),
+                    streamable2.intStream(),
                     defaultValue,
                     merger);
         };
@@ -278,8 +279,8 @@ public interface Streamable<DATA>
             IntIntBiFunction<T> merger) {
         return ()->{
             return StreamPlus.zipOf(
-                    streamable1.stream(), defaultValue1,
-                    streamable2.stream(), defaultValue2,
+                    streamable1.intStream(), defaultValue1,
+                    streamable2.intStream(), defaultValue2,
                     merger);
         };
     }
@@ -317,6 +318,12 @@ public interface Streamable<DATA>
                 return StreamPlus.from(targetStream);
             }
         };
+    }
+    
+    //== Streamable ==
+    
+    public default Streamable<DATA> streamable() {
+        return this;
     }
     
     //== Stream ==

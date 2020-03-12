@@ -9,66 +9,83 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import lombok.val;
 
-public class ImmutableIntList implements IntFuncList {
+public class ImmutableIntFuncList implements IntFuncList {
     
-    private static final IntBiFunctionPrimitive zeroForEquals = (i1, i2) -> i1 == i2 ? 0 : 1;
-    private static final IntPredicate toZero = i -> i == 0;
+    private static final IntBiFunctionPrimitive zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
+    private static final IntPredicate           toZero        = (int i)          -> i  == 0;
     
-    private final int[] data;
+    private final int[]   data;
     private final boolean isLazy;
     
     private volatile String  toStringCache = null;
     private volatile Integer hashcodeCache = null;
     
-    private static ImmutableIntList emptyList = new ImmutableIntList(new int[0], true);
+    private static ImmutableIntFuncList emptyList = new ImmutableIntFuncList(new int[0], true);
     
-    public static ImmutableIntList empty() {
+    
+    public static ImmutableIntFuncList empty() {
         return emptyList;
     }
     
-    public static ImmutableIntList of(int ... source) {
+    public static ImmutableIntFuncList of(int ... source) {
         if ((source == null) || source.length == 0)
             return emptyList;
         
         val newArray = source.clone();
-        return new ImmutableIntList(newArray, true);
+        return new ImmutableIntFuncList(newArray, true);
     }
     
-    public static ImmutableIntList from(int[] data) {
+    public static ImmutableIntFuncList from(IntFuncList list) {
+        if (list == null)
+            return emptyList;
+        if (list instanceof ImmutableIntFuncList)
+            return (ImmutableIntFuncList)list;
+        
+        val data = list.toArray();
+        val isLazy = list.isLazy();
+        return new ImmutableIntFuncList(data, isLazy);
+    }
+    
+    public static ImmutableIntFuncList from(int[] data) {
         if ((data == null) || data.length == 0)
             return emptyList;
         
-        return new ImmutableIntList(data.clone(), true);
+        return new ImmutableIntFuncList(data.clone(), true);
     }
     
-    public static ImmutableIntList from(IntStream source) {
+    public static ImmutableIntFuncList from(IntStream source) {
         if ((source == null))
             return emptyList;
         
-        return new ImmutableIntList(source.toArray(), true);
+        return new ImmutableIntFuncList(source.toArray(), true);
     }
     
-    public static ImmutableIntList from(IntStreamable source) {
+    public static ImmutableIntFuncList from(IntStreamable source) {
         if ((source == null))
             return emptyList;
         
-        if (source instanceof ImmutableIntList)
-            return (ImmutableIntList)source;
+        if (source instanceof ImmutableIntFuncList)
+            return (ImmutableIntFuncList)source;
         
-        return new ImmutableIntList(source, true);
+        return new ImmutableIntFuncList(source, true);
     }
     
-    ImmutableIntList(int[] data, boolean isLazy) {
+    ImmutableIntFuncList(int[] data, boolean isLazy) {
         this.data = Objects.requireNonNull(data);
         this.isLazy = isLazy;
     }
     
-    ImmutableIntList(IntStreamable source, boolean isLazy) {
+    ImmutableIntFuncList(IntStreamable source, boolean isLazy) {
         this(source.toArray(), isLazy);
     }
     
     @Override
-    public IntStreamPlus stream() {
+    public IntStreamable intStreamable() {
+        return ()->intStream();
+    }
+    
+    @Override
+    public IntStreamPlus intStream() {
         return IntStreamPlus.of(data);
     }
     
@@ -77,7 +94,7 @@ public class ImmutableIntList implements IntFuncList {
         if (isLazy)
             return this;
         
-        return new ImmutableIntList(this, true);
+        return new ImmutableIntFuncList(this.data, true);
     }
     
     @Override
@@ -85,7 +102,7 @@ public class ImmutableIntList implements IntFuncList {
         if (!isLazy)
             return this;
         
-        return new ImmutableIntList(this, false);
+        return new ImmutableIntFuncList(this.data, false);
     }
     
     @Override
@@ -130,7 +147,7 @@ public class ImmutableIntList implements IntFuncList {
         if (size() != anotherList.size())
             return false;
         
-        return zipWith(anotherList, zeroForEquals)
+        return zipWith   (anotherList, zeroForEquals)
                 .allMatch(toZero);
     }
     
