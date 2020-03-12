@@ -32,10 +32,10 @@ import functionalj.list.FuncListDerived;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.HasStreamable;
+import functionalj.stream.AsStreamable;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
-import functionalj.stream.intstream.HasIntStreamable;
+import functionalj.stream.intstream.AsIntStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamPlusHelper;
 import functionalj.stream.intstream.IntStreamable;
@@ -45,7 +45,7 @@ import lombok.val;
 
 public interface IntFuncList
         extends 
-            HasIntStreamable,
+            AsIntStreamable,
             IntFuncListWithMapFirst,
             IntFuncListWithMapThen,
             IntFuncListWithMapTuple,
@@ -590,7 +590,7 @@ public interface IntFuncList
     }
     
     public default IntFuncList flatMap(
-            IntFunction<? extends HasIntStreamable> mapper) {
+            IntFunction<? extends AsIntStreamable> mapper) {
         return derive(() -> {
             return intStream().flatMap(item -> mapper.apply(item).intStream());
         });
@@ -625,11 +625,11 @@ public interface IntFuncList
         return map(mapper);
     }
     
-    public default <TARGET> FuncList<TARGET> flatMapToObj(IntFunction<? extends HasStreamable<TARGET>> mapper) {
+    public default <TARGET> FuncList<TARGET> flatMapToObj(IntFunction<? extends AsStreamable<TARGET>> mapper) {
         return deriveToList(intStreamable().flatMapToObj(mapper));
     }
     
-    public default IntFuncList flatMapToInt(IntFunction<? extends HasIntStreamable> mapper) {
+    public default IntFuncList flatMapToInt(IntFunction<? extends AsIntStreamable> mapper) {
         return flatMap(mapper);
     }
     

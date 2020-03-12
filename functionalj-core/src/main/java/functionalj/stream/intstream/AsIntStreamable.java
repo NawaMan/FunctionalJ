@@ -1,8 +1,8 @@
 package functionalj.stream.intstream;
 
-import functionalj.stream.HasStreamable;
+import functionalj.stream.AsStreamable;
 
-public interface HasIntStreamable extends HasStreamable<Integer> {
+public interface AsIntStreamable extends AsStreamable<Integer> {
     
     public default IntStreamable intStreamable() {
         return ()->intStream();

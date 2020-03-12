@@ -110,7 +110,7 @@ class Helper {
 @FunctionalInterface
 public interface Streamable<DATA> 
         extends
-            HasStreamable<DATA>,
+            AsStreamable<DATA>,
             StreamableWithMapCase<DATA>,
             StreamableWithMapThen<DATA>,
             StreamableWithMapTuple<DATA>,

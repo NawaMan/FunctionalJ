@@ -30,7 +30,7 @@ import functionalj.list.intlist.IntFuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.HasStreamable;
+import functionalj.stream.AsStreamable;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import functionalj.tuple.IntIntTuple;
@@ -39,7 +39,7 @@ import lombok.val;
 
 public interface IntStreamable 
         extends
-            HasIntStreamable,
+            AsIntStreamable,
             IntStreamableWithMapFirst,
             IntStreamableWithMapThen,
             IntStreamableWithMapTuple,
@@ -366,7 +366,7 @@ public interface IntStreamable
         return map(mapper);
     }
     
-    public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends HasStreamable<TARGET>> mapper) {
+    public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends AsStreamable<TARGET>> mapper) {
         return Streamable.from(this, 
                 streamable -> 
                     streamable
@@ -374,7 +374,7 @@ public interface IntStreamable
                     .flatMapToObj(each -> mapper.apply(each).stream()));
     }
     
-    public default IntStreamable flatMapToInt(IntFunction<? extends HasIntStreamable> mapper) {
+    public default IntStreamable flatMapToInt(IntFunction<? extends AsIntStreamable> mapper) {
         return flatMap(mapper);
     }
     
@@ -388,7 +388,7 @@ public interface IntStreamable
 //                .flatMapToDouble(mapper);
 //    }
     
-    public default IntStreamable flatMap(IntFunction<? extends HasIntStreamable> mapper) {
+    public default IntStreamable flatMap(IntFunction<? extends AsIntStreamable> mapper) {
         return from(this, 
                 streamable -> 
                     streamable

@@ -37,7 +37,7 @@ import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.ObjIntBiFunction;
-import functionalj.stream.HasStreamable;
+import functionalj.stream.AsStreamable;
 import functionalj.stream.Streamable;
 import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.ObjIntTuple;
@@ -203,7 +203,7 @@ public interface IntStreamableAddtionalOperators {
     
     public default IntStreamable flatMapOnly(
             IntPredicate                         checker, 
-            IntFunction<? extends HasIntStreamable> mapper) {
+            IntFunction<? extends AsIntStreamable> mapper) {
         return ()->{
             return intStream()
                     .flatMapOnly(
@@ -213,8 +213,8 @@ public interface IntStreamableAddtionalOperators {
     }
     public default IntStreamable flatMapIf(
             IntPredicate                         checker, 
-            IntFunction<? extends HasIntStreamable> mapper, 
-            IntFunction<? extends HasIntStreamable> elseMapper) {
+            IntFunction<? extends AsIntStreamable> mapper, 
+            IntFunction<? extends AsIntStreamable> elseMapper) {
         return ()->{
             return intStream()
                     .flatMapIf(
@@ -226,8 +226,8 @@ public interface IntStreamableAddtionalOperators {
     
     public default <T> Streamable<T> flatMapToObjIf(
             IntPredicate                         checker, 
-            IntFunction<? extends HasStreamable<T>> mapper, 
-            IntFunction<? extends HasStreamable<T>> elseMapper) {
+            IntFunction<? extends AsStreamable<T>> mapper, 
+            IntFunction<? extends AsStreamable<T>> elseMapper) {
         return ()->{
             return intStream()
                     .flatMapToObjIf(

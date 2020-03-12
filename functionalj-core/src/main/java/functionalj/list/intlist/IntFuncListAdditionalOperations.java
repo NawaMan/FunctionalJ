@@ -16,7 +16,7 @@ import functionalj.function.IntObjBiFunction;
 import functionalj.function.ObjIntBiFunction;
 import functionalj.list.FuncList;
 import functionalj.stream.Streamable;
-import functionalj.stream.intstream.HasIntStreamable;
+import functionalj.stream.intstream.AsIntStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import functionalj.tuple.IntIntTuple;
@@ -187,7 +187,7 @@ public interface IntFuncListAdditionalOperations {
     
     public default IntFuncList flatMapOnly(
             IntPredicate                         checker, 
-            IntFunction<? extends HasIntStreamable> mapper) {
+            IntFunction<? extends AsIntStreamable> mapper) {
         return derive(()->{
             return intStream()
                     .flatMapOnly(
@@ -197,8 +197,8 @@ public interface IntFuncListAdditionalOperations {
     }
     public default IntFuncList flatMapIf(
             IntPredicate                            checker, 
-            IntFunction<? extends HasIntStreamable> mapper, 
-            IntFunction<? extends HasIntStreamable> elseMapper) {
+            IntFunction<? extends AsIntStreamable> mapper, 
+            IntFunction<? extends AsIntStreamable> elseMapper) {
         return derive(()->{
             return intStream()
                     .flatMapIf(
