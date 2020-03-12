@@ -27,9 +27,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleUnaryOperator;
 
 import functionalj.function.Func1;
+import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.doublestream.DoubleStreamable;
 import lombok.val;
 
-public class DoubleStep implements Streamable<Double>, DoubleUnaryOperator {
+public class DoubleStep implements DoubleUnaryOperator, DoubleStreamable, Streamable<Double> {
     
     private final double size;
     private final double start;
@@ -122,6 +124,11 @@ public class DoubleStep implements Streamable<Double>, DoubleUnaryOperator {
     
     public Func1<Double, Double> function() {
         return i -> applyAsDouble(i);
+    }
+    
+    @Override
+    public Streamable<Double> streamable() {
+        return DoubleStreamable.super.streamable();
     }
     
 }

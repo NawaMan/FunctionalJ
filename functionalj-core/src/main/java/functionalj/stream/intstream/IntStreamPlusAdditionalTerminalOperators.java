@@ -45,9 +45,6 @@ import lombok.val;
 
 public interface IntStreamPlusAdditionalTerminalOperators {
     
-    public IntStream stream();
-    
-    
     public IntStreamPlus filter(IntPredicate predicate);
     
     public IntStreamPlus filter(IntUnaryOperator mapper, IntPredicate theCondition);

@@ -33,6 +33,7 @@ import functionalj.result.Result;
 import functionalj.stream.AsStreamable;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
+import functionalj.stream.longstream.LongStreamable;
 import functionalj.tuple.IntIntTuple;
 import lombok.val;
 
@@ -300,10 +301,9 @@ public interface IntStreamable
         };
     }
     
-//    @Override
-//    public default LongStreamable asLongStream() {
-//        return LongStreamPlus.from(stream().asLongStream());
-//    }
+    public default LongStreamable asLongStreamable() {
+        return LongStreamable.from(stream().mapToLong(i -> (long)i));
+    }
     
 //    @Override
 //    public default DoubleStreamable asDoubleStream() {

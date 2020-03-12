@@ -4,6 +4,7 @@ import static functionalj.lens.Access.theDouble;
 
 import java.util.function.ToDoubleFunction;
 
+import functionalj.stream.doublestream.DoubleStreamPlus;
 import lombok.val;
 
 public interface DoubleStreamProcessor<TARGET> {

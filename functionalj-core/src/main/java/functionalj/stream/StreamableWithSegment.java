@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.list.FuncList;
+import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
@@ -156,7 +157,8 @@ public interface StreamableWithSegment<DATA> {
     }
     
     public default <T> Streamable<FuncList<DATA>> segmentByPercentiles(double ... percentiles) {
-        val percentileList = DoubleStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
+        // TODO - Make it lazy
+        val percentileList = DoubleStreamPlus.of(percentiles).boxed().toImmutableList();
         return segmentByPercentiles(percentileList);
     }
     
@@ -176,12 +178,12 @@ public interface StreamableWithSegment<DATA> {
     }
     
     public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(Function<? super DATA, T> mapper, double ... percentiles) {
-        val percentileList = DoubleStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
+        val percentileList = DoubleStreamPlus.of(percentiles).boxed().toImmutableList();
         return segmentByPercentiles(mapper, percentileList);
     }
     
     public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(Function<? super DATA, T> mapper, Comparator<T> comparator, double ... percentiles) {
-        val percentileList = DoubleStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
+        val percentileList = DoubleStreamPlus.of(percentiles).boxed().toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
     }
     

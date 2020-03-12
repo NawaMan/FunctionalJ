@@ -5,9 +5,10 @@ import java.util.function.IntUnaryOperator;
 
 import functionalj.function.Func1;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.IntStreamable;
 import lombok.val;
 
-public class IntStep implements Streamable<Integer>, IntUnaryOperator {
+public class IntStep implements IntUnaryOperator, IntStreamable, AsStreamable<Integer> {
     
     private final int size;
     private final int start;
@@ -100,6 +101,11 @@ public class IntStep implements Streamable<Integer>, IntUnaryOperator {
     
     public Func1<Integer, Integer> function() {
         return i -> applyAsInt(i);
+    }
+    
+    @Override
+    public Streamable<Integer> streamable() {
+        return IntStreamable.super.streamable();
     }
     
 }

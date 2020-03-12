@@ -64,8 +64,10 @@ import functionalj.list.ImmutableList;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
+import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
+import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 

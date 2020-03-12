@@ -42,7 +42,7 @@ import lombok.val;
 
 public interface IntStreamPlusWithCombine {
     
-    public IntStream     stream();
+    public IntStream     intStream();
     public IntStreamPlus useIterator(Function<IntIteratorPlus, IntStreamPlus> action);
     
     public <TARGET> StreamPlus<TARGET> useIteratorToObj(Function<IntIteratorPlus, StreamPlus<TARGET>> action);
@@ -50,13 +50,13 @@ public interface IntStreamPlusWithCombine {
     
     public default IntStreamPlus concatWith(IntStream tail) {
         return IntStreamPlus.concat(
-            IntStreamPlus.from(this.stream()),
+            IntStreamPlus.from(intStream()),
             IntStreamPlus.from(tail)
         );
     }
     
     public default IntStreamPlus mergeWith(IntStream anotherStream) {
-        val thisStream = stream();
+        val thisStream = intStream();
         val iteratorA  = IntStreamPlusHelper.rawIterator(thisStream);
         val iteratorB  = IntStreamPlusHelper.rawIterator(anotherStream);
         

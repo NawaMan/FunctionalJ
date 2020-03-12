@@ -37,6 +37,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import functionalj.stream.GrowOnlyIntArray;
@@ -67,7 +68,7 @@ public interface IntStreamPlusWithSegment {
     public <T> StreamPlus<T> sequentialToObj (Function<IntStreamPlus,   StreamPlus<T>> action);
     public     IntStreamPlus sequential      (Function<IntStreamPlus,   IntStreamPlus> action);
     
-    public IntStreamPlus asIntStreamPlus();
+    public IntStream intStream();
     
     public void close();
     

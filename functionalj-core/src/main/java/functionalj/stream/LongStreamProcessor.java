@@ -4,6 +4,7 @@ import static functionalj.lens.Access.theLong;
 
 import java.util.function.ToLongFunction;
 
+import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
 public interface LongStreamProcessor<TARGET> {

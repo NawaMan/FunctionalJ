@@ -4,9 +4,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongUnaryOperator;
 
 import functionalj.function.Func1;
+import functionalj.stream.longstream.LongStreamPlus;
+import functionalj.stream.longstream.LongStreamable;
 import lombok.val;
 
-public class LongStep implements Streamable<Long>, LongUnaryOperator {
+public class LongStep implements LongUnaryOperator, LongStreamable, AsStreamable<Long> {
     
     private final long size;
     private final long start;
@@ -99,6 +101,11 @@ public class LongStep implements Streamable<Long>, LongUnaryOperator {
     
     public Func1<Long, Long> function() {
         return i -> applyAsLong(i);
+    }
+    
+    @Override
+    public Streamable<Long> streamable() {
+        return LongStreamable.super.streamable();
     }
     
 }
