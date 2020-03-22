@@ -253,7 +253,7 @@ public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccess
     public default LongToBooleanAccessPrimitive thatIsOdd() {
         return host -> {
             long theValue = applyAsLong(host);
-            return theValue % 2 != 1;
+            return theValue % 2 == 1;
         };
     }
     

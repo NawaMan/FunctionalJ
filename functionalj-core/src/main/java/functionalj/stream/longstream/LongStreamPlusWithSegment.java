@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream.intstream;
+package functionalj.stream.longstream;
 
 import static functionalj.function.Func.f;
 
@@ -29,27 +29,30 @@ import java.util.NoSuchElementException;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
-import java.util.function.IntFunction;
-import java.util.function.IntPredicate;
-import java.util.function.IntUnaryOperator;
+import java.util.function.LongBinaryOperator;
+import java.util.function.LongConsumer;
+import java.util.function.LongFunction;
+import java.util.function.LongPredicate;
+import java.util.function.LongToIntFunction;
+import java.util.function.LongUnaryOperator;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
-import functionalj.stream.GrowOnlyIntArray;
+import functionalj.stream.GrowOnlyLongArray;
 import functionalj.stream.IncompletedSegment;
-import functionalj.stream.IntIteratorPlus;
+import functionalj.stream.LongIteratorPlus;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
-interface IntAdvancer {
+interface LongAdvancer {
     boolean advance(IntConsumer intConsumer, int i);
 }
 
-class IntStreamPlusWithSegmentHelper {
+class LongStreamPlusWithSegmentHelper {
     
     static final Object dummy = new Object();
     
@@ -60,48 +63,48 @@ class IntStreamPlusWithSegmentHelper {
 // TODO - Segment and Collapse should mirror each other
 //        Umm ... not sure should rethink
 
-public interface IntStreamPlusWithSegment {
+public interface LongStreamPlusWithSegment {
     
-    public     IntStreamPlus useIterator     (Function<IntIteratorPlus, IntStreamPlus> action);
-    public <T> StreamPlus<T> useIteratorToObj(Function<IntIteratorPlus, StreamPlus<T>> action);
-    public <T> StreamPlus<T> sequentialToObj (Function<IntStreamPlus,   StreamPlus<T>> action);
-    public     IntStreamPlus sequential      (Function<IntStreamPlus,   IntStreamPlus> action);
+    public     LongStreamPlus useIterator     (Function<LongIteratorPlus, LongStreamPlus> action);
+    public <T> StreamPlus<T>  useIteratorToObj(Function<LongIteratorPlus, StreamPlus<T>> action);
+    public <T> StreamPlus<T>  sequentialToObj (Function<LongStreamPlus,   StreamPlus<T>> action);
+    public     LongStreamPlus sequential      (Function<LongStreamPlus,   LongStreamPlus> action);
     
     public void close();
     
     
     //== segment ==
     
-    public default StreamPlus<IntStreamPlus> segment(int count) {
+    public default StreamPlus<LongStreamPlus> segment(int count) {
         return segment(count, true);
     }
-    public default StreamPlus<IntStreamPlus> segment(int count, IncompletedSegment incompletedSegment) {
+    public default StreamPlus<LongStreamPlus> segment(int count, IncompletedSegment incompletedSegment) {
         return segment(count, (incompletedSegment == IncompletedSegment.included));
     }
-    public default StreamPlus<IntStreamPlus> segment(int count, boolean includeIncompletedSegment) {
+    public default StreamPlus<LongStreamPlus> segment(int count, boolean includeIncompletedSegment) {
         val index = new AtomicInteger(0);
         return segment(data -> (index.getAndIncrement() % count) == 0, includeIncompletedSegment);
     }
-    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition) {
+    public default StreamPlus<LongStreamPlus> segment(LongPredicate startCondition) {
         return segment(startCondition, true);
     }
-    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition, IncompletedSegment incompletedSegment) {
+    public default StreamPlus<LongStreamPlus> segment(LongPredicate startCondition, IncompletedSegment incompletedSegment) {
         return segment(startCondition, (incompletedSegment == IncompletedSegment.included));
     }
-    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition, boolean includeIncompletedSegment) {
+    public default StreamPlus<LongStreamPlus> segment(LongPredicate startCondition, boolean includeIncompletedSegment) {
         return sequentialToObj(stream -> {
             // TODO - Find a way to make it fully lazy. Try tryAdvance.
-            val list = new AtomicReference<>(new GrowOnlyIntArray());
+            val list = new AtomicReference<>(new GrowOnlyLongArray());
             val adding = new AtomicBoolean(false);
             
-            val streamOrNull = (IntFunction<IntStreamPlus>)((int data) ->{
+            val streamOrNull = (LongFunction<LongStreamPlus>)((long data) ->{
                 if (startCondition.test(data)) {
                     adding.set(true);
-                    val retList = list.getAndUpdate(l -> new GrowOnlyIntArray());
+                    val retList = list.getAndUpdate(l -> new GrowOnlyLongArray());
                     list.get().add(data);
                     return retList.isEmpty()
                             ? null
-                            : IntStreamPlus.from(retList.stream());
+                            : LongStreamPlus.from(retList.stream());
                 }
                 if (adding.get()) 
                     list.get().add(data);
@@ -111,10 +114,10 @@ public interface IntStreamPlusWithSegment {
             if (!includeIncompletedSegment)
                 return mainStream;
             
-            val mainSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->mainStream;
-            val tailSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->{
+            val mainSupplier = (Supplier<StreamPlus<LongStreamPlus>>)()->mainStream;
+            val tailSupplier = (Supplier<StreamPlus<LongStreamPlus>>)()->{
                 return StreamPlus.of(
-                        IntStreamPlus.from(
+                        LongStreamPlus.from(
                                 list
                                 .get()
                                 .stream())
@@ -125,27 +128,27 @@ public interface IntStreamPlusWithSegment {
                     .flatMap(Supplier::get);
             
             resultStream
-            .onClose(()->IntStreamPlusWithSegment.this.close());
+            .onClose(()->LongStreamPlusWithSegment.this.close());
             
             return resultStream;
         });
     }
     
-    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition, IntPredicate endCondition) {
+    public default StreamPlus<LongStreamPlus> segment(LongPredicate startCondition, LongPredicate endCondition) {
         return segment(startCondition, endCondition, true);
     }
     
-    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition, IntPredicate endCondition, IncompletedSegment incompletedSegment) {
+    public default StreamPlus<LongStreamPlus> segment(LongPredicate startCondition, LongPredicate endCondition, IncompletedSegment incompletedSegment) {
         return segment(startCondition, endCondition, incompletedSegment == IncompletedSegment.included);
     }
     
-    public default StreamPlus<IntStreamPlus> segment(IntPredicate startCondition, IntPredicate endCondition, boolean includeIncompletedSegment) {
+    public default StreamPlus<LongStreamPlus> segment(LongPredicate startCondition, LongPredicate endCondition, boolean includeIncompletedSegment) {
         return sequentialToObj(stream -> {
             // TODO - Find a way to make it fully lazy. Try tryAdvance.
-            val list = new AtomicReference<>(new GrowOnlyIntArray());
+            val list = new AtomicReference<>(new GrowOnlyLongArray());
             val adding = new AtomicBoolean(false);
             
-            StreamPlus<IntStreamPlus> mainStream 
+            StreamPlus<LongStreamPlus> mainStream 
                 = StreamPlus.from(
                     stream
                     .mapToObj(i -> {
@@ -158,10 +161,10 @@ public interface IntStreamPlusWithSegment {
                         
                         if (endCondition.test(i)) {
                             adding.set(false);
-                            val retList = list.getAndUpdate(l -> new GrowOnlyIntArray());
+                            val retList = list.getAndUpdate(l -> new GrowOnlyLongArray());
                             return retList.stream();
                         }
-                        return (IntStreamPlus)null;
+                        return (LongStreamPlus)null;
                     })
                     .filterNonNull()
                 );
@@ -169,10 +172,10 @@ public interface IntStreamPlusWithSegment {
             if (!includeIncompletedSegment)
                 return mainStream;
             
-            val mainSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->mainStream;
-            val tailSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->{
+            val mainSupplier = (Supplier<StreamPlus<LongStreamPlus>>)()->mainStream;
+            val tailSupplier = (Supplier<StreamPlus<LongStreamPlus>>)()->{
                 return StreamPlus.of(
-                        IntStreamPlus.from(
+                        LongStreamPlus.from(
                                 list
                                 .get()
                                 .stream())
@@ -183,43 +186,43 @@ public interface IntStreamPlusWithSegment {
                     .flatMap(Supplier::get);
             
             resultStream
-            .onClose(()->IntStreamPlusWithSegment.this.close());
+            .onClose(()->LongStreamPlusWithSegment.this.close());
             
             return resultStream;
         });
     }
     
-    public default StreamPlus<IntStreamPlus> segmentSize(IntUnaryOperator segmentSize) {
+    public default StreamPlus<LongStreamPlus> segmentSize(LongToIntFunction segmentSize) {
         return segmentSize(segmentSize, true);
     }
     
-    public default StreamPlus<IntStreamPlus> segmentSize(IntUnaryOperator segmentSize, IncompletedSegment incompletedSegment) {
+    public default StreamPlus<LongStreamPlus> segmentSize(LongToIntFunction segmentSize, IncompletedSegment incompletedSegment) {
         return segmentSize(segmentSize, incompletedSegment == IncompletedSegment.included);
     }
     
-    public default StreamPlus<IntStreamPlus> segmentSize(IntUnaryOperator segmentSize, boolean includeTail) {
+    public default StreamPlus<LongStreamPlus> segmentSize(LongToIntFunction segmentSize, boolean includeTail) {
         return sequentialToObj(stream -> {
             // TODO - Find a way to make it fully lazy. Try tryAdvance.
-            val listRef = new AtomicReference<>(new GrowOnlyIntArray());
-            val leftRef = new AtomicInteger(-1);
+            val listRef = new AtomicReference<>(new GrowOnlyLongArray());
+            val leftRef = new AtomicLong(-1);
             
             val head 
                 = stream
                 .mapToObj(each -> {
-                    int left = leftRef.get();
+                    long left = leftRef.get();
                     if (left == -1) {
                         int newSize = segmentSize.applyAsInt(each);
                         if (newSize == 0) {
-                            return IntStreamPlus.empty();
+                            return LongStreamPlus.empty();
                         } else if (newSize == 1) {
-                            return IntStreamPlus.of(each);
+                            return LongStreamPlus.of(each);
                         } else {
                             val list = listRef.get();
                             list.add(each);
                             leftRef.set(newSize - 1);
                         }
                     } else if (left == 1) {
-                        val list = listRef.getAndSet(new GrowOnlyIntArray());
+                        val list = listRef.getAndSet(new GrowOnlyLongArray());
                         list.add(each);
                         
                         leftRef.set(-1);
@@ -234,8 +237,8 @@ public interface IntStreamPlusWithSegment {
                 .filterNonNull()
                 ;
             
-            StreamPlus<IntStreamPlus> resultStream 
-                = (StreamPlus<IntStreamPlus>)StreamPlus.of(
+            StreamPlus<LongStreamPlus> resultStream 
+                = (StreamPlus<LongStreamPlus>)StreamPlus.of(
                     f(()-> head),
                     f(()-> includeTail ? StreamPlus.of(listRef.get().stream()) : null)
                 )
@@ -243,7 +246,7 @@ public interface IntStreamPlusWithSegment {
                 .flatMap(s -> s.get());
             
             resultStream
-            .onClose(()->IntStreamPlusWithSegment.this.close());
+            .onClose(()->LongStreamPlusWithSegment.this.close());
             
             return resultStream;
         });
@@ -251,34 +254,34 @@ public interface IntStreamPlusWithSegment {
     
     //== Collapse ==
     
-    public default IntStreamPlus collapseWhen(IntPredicate conditionToCollapse, IntBinaryOperator concatFunc) {
+    public default LongStreamPlus collapseWhen(LongPredicate conditionToCollapse, LongBinaryOperator concatFunc) {
         return useIterator(iterator -> {
-            int first;
+            long first;
             try {
                 first = iterator.next();
             } catch (NoSuchElementException e) {
-                return IntStreamPlus.empty();
+                return LongStreamPlus.empty();
             }
             
-            val prev = new int[][] { new int[] { first }};
+            val prev = new long[][] { new long[] { first }};
             val isDone = new boolean[] { false };
-            IntStreamPlus resultStream = IntStreamPlus.generate(()->{
+            LongStreamPlus resultStream = LongStreamPlus.generate(()->{
                 if (prev[0] == null) {
                     isDone[0] = true;
                     return Integer.MIN_VALUE;
                 }
                 
                 while(true) {
-                    int next;
+                    long next;
                     try {
-                        next = iterator.nextInt();
+                        next = iterator.nextLong();
                     } catch (NoSuchElementException e) {
                         val yield = prev[0][0];
                         prev[0] = null;
                         return yield;
                     }
                     if (conditionToCollapse.test(next)) {
-                        prev[0][0] = concatFunc.applyAsInt(prev[0][0], next);
+                        prev[0][0] = concatFunc.applyAsLong(prev[0][0], next);
                     } else {
                         val yield = prev[0][0];
                         prev[0][0] = next;
@@ -292,28 +295,28 @@ public interface IntStreamPlusWithSegment {
         });
     }
     
-    public default IntStreamPlus collapseAfter(IntPredicate conditionToCollapseNext, IntBinaryOperator concatFunc) {
+    public default LongStreamPlus collapseAfter(LongPredicate conditionToCollapseNext, LongBinaryOperator concatFunc) {
         return useIterator(iterator -> {
-            int first;
+            long first;
             try {
                 first = iterator.next();
             } catch (NoSuchElementException e) {
-                return IntStreamPlus.empty();
+                return LongStreamPlus.empty();
             }
             
-            val prev = new int[][] { new int[] { first }};
+            val prev = new long[][] { new long[] { first }};
             val isDone = new boolean[] { false };
             val collapseNext = new boolean[] { conditionToCollapseNext.test(first) };
-            IntStreamPlus resultStream = IntStreamPlus.generate(()->{
+            LongStreamPlus resultStream = LongStreamPlus.generate(()->{
                 if (prev[0] == null) {
                     isDone[0] = true;
                     return Integer.MIN_VALUE;
                 }
                 
                 while(true) {
-                    int next;
+                    long next;
                     try {
-                        next = iterator.nextInt();
+                        next = iterator.nextLong();
                     } catch (NoSuchElementException e) {
                         val yield = prev[0][0];
                         prev[0] = null;
@@ -322,7 +325,7 @@ public interface IntStreamPlusWithSegment {
                     boolean collapseNow = collapseNext[0];
                     collapseNext[0] = conditionToCollapseNext.test(next);
                     if (collapseNow) {
-                        prev[0][0] = concatFunc.applyAsInt(prev[0][0], next);
+                        prev[0][0] = concatFunc.applyAsLong(prev[0][0], next);
                     } else {
                         val yield = prev[0][0];
                         prev[0][0] = next;
@@ -336,44 +339,44 @@ public interface IntStreamPlusWithSegment {
         });
     }
     
-    public default IntStreamPlus collapseSize(
-            IntUnaryOperator  segmentSize, 
-            IntBinaryOperator concatFunc) {
+    public default LongStreamPlus collapseSize(
+            LongUnaryOperator  segmentSize, 
+            LongBinaryOperator concatFunc) {
         return collapseSize(segmentSize, concatFunc, true);
     }
     
-    public default IntStreamPlus collapseSize(
-            IntUnaryOperator  segmentSize, 
-            IntBinaryOperator concatFunc,
+    public default LongStreamPlus collapseSize(
+            LongUnaryOperator  segmentSize, 
+            LongBinaryOperator concatFunc,
             IncompletedSegment incompletedSegment) {
         return collapseSize(segmentSize, concatFunc, incompletedSegment == IncompletedSegment.included);
     }
     
-    public default IntStreamPlus collapseSize(
-            IntUnaryOperator  segmentSize, 
-            IntBinaryOperator concatFunc,
+    public default LongStreamPlus collapseSize(
+            LongUnaryOperator  segmentSize, 
+            LongBinaryOperator concatFunc,
             boolean includeTail) {
         return sequential(stream -> {
             val splitr = stream.spliterator();
-            val value = new AtomicReference<AtomicInteger>(null);
-            IntStreamPlus head = IntStreamPlus.from(StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+            val value = new AtomicReference<AtomicLong>(null);
+            LongStreamPlus head = LongStreamPlus.from(StreamSupport.longStream(new Spliterators.AbstractLongSpliterator(splitr.estimateSize(), 0) {
                 @Override
-                public boolean tryAdvance(IntConsumer consumer) {
-                    val count = new AtomicInteger(0);
+                public boolean tryAdvance(LongConsumer consumer) {
+                    val count = new AtomicLong(0);
                     val hasNext = new AtomicBoolean();
                     do {
-                        hasNext.set(splitr.tryAdvance((int next) -> {
+                        hasNext.set(splitr.tryAdvance((long next) -> {
                             if (count.get() == 0) {
-                                int newSize = segmentSize.applyAsInt(next);
+                                long newSize = segmentSize.applyAsLong(next);
                                 if (newSize <= 0) {
                                     count.set(1);
                                     value.set(null);
                                 } else {
                                     count.set(newSize);
-                                    value.set(new AtomicInteger(next));
+                                    value.set(new AtomicLong(next));
                                 }
                             } else {
-                                int newValue = concatFunc.applyAsInt(value.get().get(), next);
+                                long newValue = concatFunc.applyAsLong(value.get().get(), next);
                                 value.get().set(newValue);
                             }
                         }));
@@ -389,9 +392,9 @@ public interface IntStreamPlusWithSegment {
                 }
             }, false));
             
-            IntStreamPlus tail = (includeTail && (value.get() != null))
-                     ? IntStreamPlus.of(value.get().get()) 
-                     : IntStreamPlus.empty();
+            LongStreamPlus tail = (includeTail && (value.get() != null))
+                     ? LongStreamPlus.of(value.get().get()) 
+                     : LongStreamPlus.empty();
             val resultStream 
                 = StreamPlus.of(
                     f(()-> head),
@@ -399,14 +402,14 @@ public interface IntStreamPlusWithSegment {
                 )
                 .map(each -> each.get())
                 .filterNonNull()
-                .reduce(IntStreamPlus::concat)
+                .reduce(LongStreamPlus::concat)
                 .get();
             
             resultStream
             .onClose(()->{
                 f(()->head.close()).runCarelessly();
                 f(()->tail.close()).runCarelessly();
-                IntStreamPlusWithSegment.this.close();
+                LongStreamPlusWithSegment.this.close();
             });
             
             return resultStream;

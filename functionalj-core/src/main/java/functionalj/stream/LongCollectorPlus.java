@@ -35,7 +35,8 @@ import lombok.val;
 
 public interface LongCollectorPlus<ACCUMULATED, RESULT> 
         extends
-            CollectorPlus<Long, ACCUMULATED, RESULT> {
+            CollectorPlus<Long, ACCUMULATED, RESULT>,
+            LongStreamProcessor<RESULT> {
     
     Supplier<ACCUMULATED>         supplier();
     LongAccumulator<ACCUMULATED>  longAccumulator();
