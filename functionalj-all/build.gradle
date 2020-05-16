@@ -18,7 +18,7 @@ dependencies {
     
     testCompile 'junit:junit:4.12'
     
-    testCompile             'org.projectlombok:lombok:1.18.8'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+    testCompile             'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     
 }

@@ -22,7 +22,7 @@ dependencies {
     testAnnotationProcessor project(':functionalj-types')
     testAnnotationProcessor project(':functionalj-elm')
     
-    testCompile             'org.projectlombok:lombok:1.18.8'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+    testCompile             'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     
 }
