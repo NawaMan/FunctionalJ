@@ -58,6 +58,7 @@ import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.IntIntBiFunction;
+import functionalj.function.LongLongBiFunction;
 import functionalj.functions.StrFuncs;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
@@ -68,6 +69,7 @@ import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import functionalj.stream.longstream.LongStreamPlus;
+import functionalj.stream.longstream.LongStreamable;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -287,6 +289,46 @@ public interface Streamable<DATA>
         };
     }
     
+    public static <T1, T2, T> Streamable<T> zipOf(
+            LongStreamable       streamable1, 
+            LongStreamable       streamable2,
+            LongLongBiFunction<T> merger) {
+        return ()->{
+            return StreamPlus.zipOf(
+                    streamable1.longStream(),
+                    streamable2.longStream(),
+                    merger);
+        };
+    }
+    
+    public static <T1, T2, T> Streamable<T> zipOf(
+            LongStreamable       streamable1, 
+            LongStreamable       streamable2,
+            int                 defaultValue,
+            LongLongBiFunction<T> merger) {
+        return ()->{
+            return StreamPlus.zipOf(
+                    streamable1.longStream(),
+                    streamable2.longStream(),
+                    defaultValue,
+                    merger);
+        };
+    }
+    
+    public static <T1, T2, T> Streamable<T> zipOf(
+            LongStreamable       streamable1, 
+            long                 defaultValue1,
+            LongStreamable       streamable2,
+            long                 defaultValue2,
+            LongLongBiFunction<T> merger) {
+        return ()->{
+            return StreamPlus.zipOf(
+                    streamable1.longStream(), defaultValue1,
+                    streamable2.longStream(), defaultValue2,
+                    merger);
+        };
+    }
+    
     public static <D, T> Streamable<T> with(
             Streamable<D>                  source, 
             Function<Stream<D>, Stream<T>> action) {
@@ -365,33 +407,29 @@ public interface Streamable<DATA>
     
     //== Functionalities ==
     
-    public default IntStreamPlus mapToInt(ToIntFunction<? super DATA> mapper) {
-        return IntStreamPlus.from(stream().mapToInt(mapper));
+    public default IntStreamable mapToInt(ToIntFunction<? super DATA> mapper) {
+        return () -> IntStreamPlus.from(stream().mapToInt(mapper));
     }
     
-    public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
-        return stream()
-                .mapToLong(mapper);
+    public default LongStreamable mapToLong(ToLongFunction<? super DATA> mapper) {
+        return () -> stream().mapToLong(mapper);
+    }
+//    
+//    public default DoubleStreamable mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+//        return () -> stream().mapToDouble(mapper);
+//    }
+    
+    public default IntStreamable flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
+        return ()->IntStreamPlus.from(stream().flatMapToInt(mapper));
     }
     
-    public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
-        return stream()
-                .mapToDouble(mapper);
+    public default LongStreamable flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
+        return () -> stream().flatMapToLong(mapper);
     }
-    
-    public default IntStreamPlus flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
-        return IntStreamPlus.from(stream().flatMapToInt(mapper));
-    }
-    
-    public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
-        return stream()
-                .flatMapToLong(mapper);
-    }
-    
-    public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
-        return stream()
-                .flatMapToDouble(mapper);
-    }
+//    
+//    public default DoubleStreamable flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
+//        return () -> stream().flatMapToDouble(mapper);
+//    }
     
     public default <TARGET> Streamable<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         return deriveWith(stream -> {
@@ -632,14 +670,14 @@ public interface Streamable<DATA>
     public default int[] toIntArray(ToIntFunction<DATA> toInt) {
         return mapToInt(toInt).toArray();
     }
-    
-    public default long[] toLongArray(ToLongFunction<DATA> toLong) {
-        return mapToLong(toLong).toArray();
-    }
-    
-    public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
-        return mapToDouble(toDouble).toArray();
-    }
+//    
+//    public default long[] toLongArray(ToLongFunction<DATA> toLong) {
+//        return mapToLong(toLong).toArray();
+//    }
+//    
+//    public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
+//        return mapToDouble(toDouble).toArray();
+//    }
     
     public default FuncList<DATA> toList() {
         return toImmutableList();

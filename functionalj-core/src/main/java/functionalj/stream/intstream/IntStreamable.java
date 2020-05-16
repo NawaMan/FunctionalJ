@@ -33,6 +33,9 @@ import functionalj.result.Result;
 import functionalj.stream.AsStreamable;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
+import functionalj.stream.doublestream.AsDoubleStreamable;
+import functionalj.stream.doublestream.DoubleStreamable;
+import functionalj.stream.longstream.AsLongStreamable;
 import functionalj.stream.longstream.LongStreamable;
 import functionalj.tuple.IntIntTuple;
 import lombok.val;
@@ -217,7 +220,7 @@ public interface IntStreamable
                     merger);
         };
     }
-    public static IntStreamPlus zipOf(
+    public static IntStreamable zipOf(
             IntStreamable          streamable1, 
             IntStreamable          streamable2,
             int                    defaultValue,
@@ -230,7 +233,7 @@ public interface IntStreamable
                     merger);
         };
     }
-    public static IntStreamPlus zipOf(
+    public static IntStreamable zipOf(
             IntStreamable streamable1, int defaultValue1,
             IntStreamable streamable2, int defaultValue2,
             IntBiFunctionPrimitive merger) {
@@ -302,7 +305,7 @@ public interface IntStreamable
     }
     
     public default LongStreamable asLongStreamable() {
-        return LongStreamable.from(stream().mapToLong(i -> (long)i));
+        return LongStreamable.from(()->stream().mapToLong(i -> (long)i));
     }
     
 //    @Override
@@ -378,15 +381,13 @@ public interface IntStreamable
         return flatMap(mapper);
     }
     
-//    public default LongStreamable flatMapToLong(IntFunction<? extends LongStream> mapper) {
-//        return stream()
-//                .flatMapToLong(mapper);
-//    }
-//    
-//    public default DoubleStreamable flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {
-//        return stream()
-//                .flatMapToDouble(mapper);
-//    }
+    public default LongStreamable flatMapToLong(IntFunction<? extends AsLongStreamable> mapper) {
+        return (LongStreamable)()->intStream().flatMapToLong(i -> mapper.apply(i).longStream());
+    }
+    
+    public default DoubleStreamable flatMapToDouble(IntFunction<? extends AsDoubleStreamable> mapper) {
+        return (DoubleStreamable)()->intStream().flatMapToDouble(i -> mapper.apply(i).doubleStream());
+    }
     
     public default IntStreamable flatMap(IntFunction<? extends AsIntStreamable> mapper) {
         return from(this, 

@@ -113,7 +113,7 @@ public interface LongStreamPlusWithCombine {
     }
     public default StreamPlus<LongLongTuple> zipWith(
             LongStream anotherStream,
-            int       defaultValue) {
+            long      defaultValue) {
         return useIteratorToObj(iteratorA -> {
             return LongStreamPlus
                     .from(anotherStream)

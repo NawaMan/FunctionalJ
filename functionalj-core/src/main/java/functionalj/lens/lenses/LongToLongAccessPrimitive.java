@@ -51,7 +51,7 @@ public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccess
         return resValue;
     }
     
-    public default LongAccessBoxed<Long> boxed() {
+    public default LongToLongAccessBoxed boxed() {
         return host -> {
             long longValue = applyAsLong(host);
             return longValue;

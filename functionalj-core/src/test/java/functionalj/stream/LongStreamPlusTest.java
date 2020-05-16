@@ -41,6 +41,7 @@ import static functionalj.stream.longstream.LongStreamPlus.range;
 import static functionalj.stream.longstream.LongStreamPlus.repeat;
 import static functionalj.stream.longstream.LongStreamPlus.wholeNumbers;
 import static functionalj.stream.longstream.LongStreamPlus.zeroes;
+import static functionalj.stream.longstream.LongStreamPlus.zipOf;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertArrayEquals;
@@ -185,60 +186,60 @@ public class LongStreamPlusTest {
         assertEquals("[1, 1, 2, 3, 5, 8, 13]", longStream2.limit(7).toListString());
     }
     
-//    @Test
-//    public void testZipOf() {
-//        assertEquals(
-//                "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8)]", 
-//                zipOf(range(5, 12), range(2, 12))
-//                .toListString());
-//        assertEquals(
-//                "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8), (0,9), (0,10), (0,11)]", 
-//                zipOf(range(5, 12), range(2, 12), 0)
-//                .toListString());
-//        assertEquals(
-//                "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8), (-1,9), (-1,10), (-1,11)]", 
-//                zipOf(range(5, 12), -1, range(2, 12), 1)
-//                .toListString());
-//        assertEquals(
-//                "[(5,8), (6,9), (7,10), (8,11), (9,1), (10,1), (11,1)]", 
-//                zipOf(range(5, 12), -1, range(8, 12), 1)
-//                .toListString());
-//        
-//        
-//        assertEquals(
-//                "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8]", 
-//                StreamPlus.zipOf(range(5, 12), range(2, 12), (a, b) -> a + "-" + b)
-//                .toListString());
-//        assertEquals(
-//                "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, 0-9, 0-10, 0-11]", 
-//                StreamPlus.zipOf(range(5, 12), range(2, 12), 0, (a, b) -> a + "-" + b)
-//                .toListString());
-//        assertEquals(
-//                "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, -1-9, -1-10, -1-11]", 
-//                StreamPlus.zipOf(range(5, 12), -1, range(2, 12), 1, (a, b) -> a + "-" + b)
-//                .toListString());
-//        assertEquals(
-//                "[5-8, 6-9, 7-10, 8-11, 9-1, 10-1, 11-1]", 
-//                StreamPlus.zipOf(range(5, 12), -1, range(8, 12), 1, (a, b) -> a + "-" + b)
-//                .toListString());
-//        
-//        
-//        assertEquals("[7, 9, 11, 13, 15]", 
-//                zipOf(range(5, 10), range(2, 12), (a, b) -> a + b)
-//                .toListString());
-//        assertEquals(
-//                "[7, 9, 11, 13, 15, 7, 8, 9, 10, 11]", 
-//                zipOf(range(5, 10), range(2, 12), 0, (a, b) -> a + b)
-//                .toListString());
-//        assertEquals(
-//                "[7, 9, 11, 13, 15, 6, 7, 8, 9, 10]", 
-//                zipOf(range(5, 10), -1, range(2, 12), 1, (a, b) -> a + b)
-//                .toListString());
-//        assertEquals(
-//                "[13, 15, 17, 19, 10, 11, 12]", 
-//                zipOf(range(5, 12), -1, range(8, 12), 1, (a, b) -> a + b)
-//                .toListString());
-//    }
+    @Test
+    public void testZipOf() {
+        assertEquals(
+                "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8)]", 
+                zipOf(range(5, 12), range(2, 12))
+                .toListString());
+        assertEquals(
+                "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8), (0,9), (0,10), (0,11)]", 
+                zipOf(range(5, 12), range(2, 12), 0)
+                .toListString());
+        assertEquals(
+                "[(5,2), (6,3), (7,4), (8,5), (9,6), (10,7), (11,8), (-1,9), (-1,10), (-1,11)]", 
+                zipOf(range(5, 12), -1, range(2, 12), 1)
+                .toListString());
+        assertEquals(
+                "[(5,8), (6,9), (7,10), (8,11), (9,1), (10,1), (11,1)]", 
+                zipOf(range(5, 12), -1, range(8, 12), 1)
+                .toListString());
+        
+        
+        assertEquals(
+                "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8]", 
+                StreamPlus.zipOf(range(5, 12), range(2, 12), (a, b) -> a + "-" + b)
+                .toListString());
+        assertEquals(
+                "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, 0-9, 0-10, 0-11]", 
+                StreamPlus.zipOf(range(5, 12), range(2, 12), 0, (a, b) -> a + "-" + b)
+                .toListString());
+        assertEquals(
+                "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, -1-9, -1-10, -1-11]", 
+                StreamPlus.zipOf(range(5, 12), -1, range(2, 12), 1, (a, b) -> a + "-" + b)
+                .toListString());
+        assertEquals(
+                "[5-8, 6-9, 7-10, 8-11, 9-1, 10-1, 11-1]", 
+                StreamPlus.zipOf(range(5, 12), -1, range(8, 12), 1, (a, b) -> a + "-" + b)
+                .toListString());
+        
+        
+        assertEquals("[7, 9, 11, 13, 15]", 
+                zipOf(range(5, 10), range(2, 12), (a, b) -> a + b)
+                .toListString());
+        assertEquals(
+                "[7, 9, 11, 13, 15, 7, 8, 9, 10, 11]", 
+                zipOf(range(5, 10), range(2, 12), 0, (a, b) -> a + b)
+                .toListString());
+        assertEquals(
+                "[7, 9, 11, 13, 15, 6, 7, 8, 9, 10]", 
+                zipOf(range(5, 10), -1, range(2, 12), 1, (a, b) -> a + b)
+                .toListString());
+        assertEquals(
+                "[13, 15, 17, 19, 10, 11, 12]", 
+                zipOf(range(5, 12), -1, range(8, 12), 1, (a, b) -> a + b)
+                .toListString());
+    }
     
     @Test
     public void testMap() {

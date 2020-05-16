@@ -24,6 +24,7 @@
 package functionalj.stream.intstream;
 
 import static functionalj.function.Func.f;
+import static functionalj.function.Func.itself;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -429,6 +432,21 @@ public interface IntStreamPlus
                 intStream()
                 .mapToObj(mapper)
                 .flatMap(stream -> stream));
+    }
+    
+    public default IntStreamPlus flatMapToInt(
+            IntFunction<? extends IntStream> mapper) {
+        return mapToObj(mapper).flatMapToInt(itself());
+    }
+    
+    public default LongStreamPlus flatMapToLong(
+            IntFunction<? extends LongStream> mapper) {
+        return mapToObj(mapper).flatMapToLong(itself());
+    }
+    
+    public default DoubleStreamPlus flatMapToDouble(
+            IntFunction<? extends DoubleStream> mapper) {
+        return mapToObj(mapper).flatMapToDouble(itself());
     }
     
     @Override

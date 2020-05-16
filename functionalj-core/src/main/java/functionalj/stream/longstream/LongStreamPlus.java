@@ -1,6 +1,7 @@
 package functionalj.stream.longstream;
 
 import static functionalj.function.Func.f;
+import static functionalj.function.Func.itself;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -195,50 +198,50 @@ public interface LongStreamPlus
             return l;
         });
     }
-//    
-//    public static StreamPlus<IntIntTuple> zipOf(
-//            LongStream stream1, 
-//            LongStream stream2) {
-//        return LongStreamPlus.from(stream1)
-//                .zipWith(stream2);
-//    }
-//    public static StreamPlus<IntIntTuple> zipOf(
-//            LongStream stream1, 
-//            LongStream stream2,
-//            int       defaultValue) {
-//        return LongStreamPlus.from(stream1)
-//                .zipWith(stream2, defaultValue);
-//    }
-//    public static StreamPlus<IntIntTuple> zipOf(
-//            LongStream stream1, int defaultValue1,
-//            LongStream stream2, int defaultValue2) {
-//        return LongStreamPlus.from(stream1)
-//                .zipWith(stream2, defaultValue1, defaultValue2);
-//    }
-//    
-//    public static LongStreamPlus zipOf(
-//            LongStream              stream1, 
-//            LongStream              stream2,
-//            IntBiFunctionPrimitive merger) {
-//        return LongStreamPlus.from(stream1)
-//                .zipWith(stream2, merger);
-//    }
-//    public static LongStreamPlus zipOf(
-//            LongStream              stream1, 
-//            LongStream              stream2,
-//            int                    defaultValue,
-//            IntBiFunctionPrimitive merger) {
-//        return LongStreamPlus.from(stream1)
-//                .zipWith(stream2, defaultValue, merger);
-//    }
-//    public static LongStreamPlus zipOf(
-//            LongStream stream1, int defaultValue1,
-//            LongStream stream2, int defaultValue2,
-//            IntBiFunctionPrimitive merger) {
-//        return LongStreamPlus.from(stream1)
-//                .zipWith(stream2, defaultValue1, defaultValue2, merger);
-//    }
-//    
+    
+    public static StreamPlus<LongLongTuple> zipOf(
+            LongStream stream1, 
+            LongStream stream2) {
+        return LongStreamPlus.from(stream1)
+                .zipWith(stream2);
+    }
+    public static StreamPlus<LongLongTuple> zipOf(
+            LongStream stream1, 
+            LongStream stream2,
+            long       defaultValue) {
+        return LongStreamPlus.from(stream1)
+                .zipWith(stream2, defaultValue);
+    }
+    public static StreamPlus<LongLongTuple> zipOf(
+            LongStream stream1, long defaultValue1,
+            LongStream stream2, long defaultValue2) {
+        return LongStreamPlus.from(stream1)
+                .zipWith(stream2, defaultValue1, defaultValue2);
+    }
+    
+    public static LongStreamPlus zipOf(
+            LongStream              stream1, 
+            LongStream              stream2,
+            LongBiFunctionPrimitive merger) {
+        return LongStreamPlus.from(stream1)
+                .zipWith(stream2, merger);
+    }
+    public static LongStreamPlus zipOf(
+            LongStream              stream1, 
+            LongStream              stream2,
+            long                    defaultValue,
+            LongBiFunctionPrimitive merger) {
+        return LongStreamPlus.from(stream1)
+                .zipWith(stream2, defaultValue, merger);
+    }
+    public static LongStreamPlus zipOf(
+            LongStream stream1, long defaultValue1,
+            LongStream stream2, long defaultValue2,
+            LongBiFunctionPrimitive merger) {
+        return LongStreamPlus.from(stream1)
+                .zipWith(stream2, defaultValue1, defaultValue2, merger);
+    }
+    
     //== Core ==
     
     public LongStream longStream();
@@ -414,6 +417,21 @@ public interface LongStreamPlus
                 longStream()
                 .mapToObj(mapper)
                 .flatMap(stream -> stream));
+    }
+    
+    public default IntStreamPlus flatMapToInt(
+            LongFunction<? extends IntStream> mapper) {
+        return mapToObj(mapper).flatMapToInt(itself());
+    }
+    
+    public default LongStreamPlus flatMapToLong(
+            LongFunction<? extends LongStream> mapper) {
+        return mapToObj(mapper).flatMapToLong(itself());
+    }
+    
+    public default DoubleStreamPlus flatMapToDouble(
+            LongFunction<? extends DoubleStream> mapper) {
+        return mapToObj(mapper).flatMapToDouble(itself());
     }
     
     @Override

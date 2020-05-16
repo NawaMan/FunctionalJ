@@ -67,6 +67,8 @@ import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
+import functionalj.function.LongLongBiFunction;
+import functionalj.function.LongObjBiFunction;
 import functionalj.function.ToByteFunction;
 import functionalj.functions.StrFuncs;
 import functionalj.functions.ThrowFuncs;
@@ -464,6 +466,50 @@ public interface StreamPlus<DATA>
             ZipWithOption                     option, 
             IntObjBiFunction<ANOTHER, TARGET> merger) {
         return IntStreamPlus.from(stream1)
+                .zipWith(stream2, option, merger);
+    }
+    
+    public static <TARGET> StreamPlus<TARGET> zipOf(
+            LongStream stream1, 
+            LongStream stream2, 
+            LongLongBiFunction<TARGET> merger) {
+        return LongStreamPlus.from(stream1)
+                .zipToObjWith(stream2, merger);
+    }
+    
+    public static <TARGET> StreamPlus<TARGET> zipOf(
+            LongStream                 stream1, 
+            LongStream                 stream2, 
+            long                       defaultValue,
+            LongLongBiFunction<TARGET> merger) {
+        return LongStreamPlus.from(stream1)
+                .zipToObjWith(stream2, defaultValue, merger);
+    }
+    
+    public static <TARGET> StreamPlus<TARGET> zipOf(
+            LongStream                stream1, 
+            long                      defaultValue1, 
+            LongStream                stream2,
+            long                      defaultValue2,
+            LongLongBiFunction<TARGET> merger) {
+        return LongStreamPlus.from(stream1)
+                .zipToObjWith(stream2, defaultValue1, defaultValue2, merger);
+    }
+    
+    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
+            LongStream                         stream1, 
+            Stream<ANOTHER>                    stream2, 
+            LongObjBiFunction<ANOTHER, TARGET> merger) {
+        return LongStreamPlus.from(stream1)
+                .zipWith(stream2, merger);
+    }
+    
+    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
+            LongStream                         stream1, 
+            Stream<ANOTHER>                    stream2, 
+            ZipWithOption                      option, 
+            LongObjBiFunction<ANOTHER, TARGET> merger) {
+        return LongStreamPlus.from(stream1)
                 .zipWith(stream2, option, merger);
     }
     
