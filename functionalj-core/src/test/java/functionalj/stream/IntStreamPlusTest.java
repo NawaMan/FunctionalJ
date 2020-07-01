@@ -30,6 +30,7 @@ import static functionalj.stream.ZipWithOption.RequireBoth;
 import static functionalj.stream.intstream.IntStreamPlus.cycle;
 import static functionalj.stream.intstream.IntStreamPlus.ints;
 import static functionalj.stream.intstream.IntStreamPlus.loop;
+import static functionalj.stream.intstream.IntStreamPlus.naturalNumbers;
 import static functionalj.stream.intstream.IntStreamPlus.range;
 import static functionalj.stream.intstream.IntStreamPlus.wholeNumbers;
 import static functionalj.stream.intstream.IntStreamPlus.zipOf;
@@ -58,8 +59,10 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import functionalj.list.intlist.ImmutableIntFuncList;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.promise.DeferAction;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.IntStreamable;
 import lombok.val;
 
 public class IntStreamPlusTest {
@@ -1097,6 +1100,181 @@ public class IntStreamPlusTest {
                             "9", i -> "########" + i,
                             "10", i -> "#########" + i)
                     .toListString());
+    }
+    
+    @Test
+    public void testSplit() {
+        Function<IntStreamable, IntFuncList> streamableToList = s -> s.toList();
+        assertEquals(
+                "([1, 3, 5, 7, 9, 11],[2, 4, 6, 8, 10, 12])",
+                naturalNumbers(12)
+                .split(theInteger.thatIsOdd())
+                .map(
+                    streamableToList,
+                    streamableToList)
+                .toString());
+        
+        assertEquals(
+                "([2, 4, 6, 8, 10, 12],[3, 9],[1, 5, 7, 11])",
+                naturalNumbers(12)
+                .split(
+                    theInteger.thatIsDivisibleBy(2),
+                    theInteger.thatIsDivisibleBy(3))
+                .map(
+                    streamableToList,
+                    streamableToList,
+                    streamableToList)
+                .toString());
+        
+        assertEquals(
+                "([2, 4, 6, 8, 10, 12],[3, 9],[5],[1, 7, 11])",
+                naturalNumbers(12)
+                .split(
+                    theInteger.thatIsDivisibleBy(2),
+                    theInteger.thatIsDivisibleBy(3),
+                    theInteger.thatIsDivisibleBy(5))
+                .map(
+                    streamableToList,
+                    streamableToList,
+                    streamableToList,
+                    streamableToList)
+                .toString());
+        
+        assertEquals(
+                "([2, 4, 6, 8, 10, 12],[3, 9],[5],[7],[1, 11])",
+                naturalNumbers(12)
+                .split(
+                    theInteger.thatIsDivisibleBy(2),
+                    theInteger.thatIsDivisibleBy(3),
+                    theInteger.thatIsDivisibleBy(5),
+                    theInteger.thatIsDivisibleBy(7))
+                .map(
+                    streamableToList,
+                    streamableToList,
+                    streamableToList,
+                    streamableToList,
+                    streamableToList)
+                .toString());
+        
+        assertEquals(
+                "([2, 4, 6, 8, 10, 12],[3, 9],[5],[7],[11],[1])",
+                naturalNumbers(12)
+                .split(
+                    theInteger.thatIsDivisibleBy(2),
+                    theInteger.thatIsDivisibleBy(3),
+                    theInteger.thatIsDivisibleBy(5),
+                    theInteger.thatIsDivisibleBy(7),
+                    theInteger.thatIsDivisibleBy(11))
+                .map(
+                    streamableToList,
+                    streamableToList,
+                    streamableToList,
+                    streamableToList,
+                    streamableToList,
+                    streamableToList)
+                .toString());
+    }
+    
+    @Test
+    public void testSplit_FizzBuzz() {
+        Function<IntStreamable, IntFuncList> streamableToList = s -> s.toList();
+        assertEquals(
+                "([15],[3, 6, 9, 12, 18],[5, 10, 20],[1, 2, 4, 7, 8, 11, 13, 14, 16, 17, 19])",
+                naturalNumbers(20)
+                .split(
+                    theInteger.thatIsDivisibleBy(15),
+                    theInteger.thatIsDivisibleBy(3),
+                    theInteger.thatIsDivisibleBy(5))
+                .map(
+                    streamableToList,
+                    streamableToList,
+                    streamableToList,
+                    streamableToList)
+                .toString());
+    }
+    
+    @Test
+    public void testSplitToMap() {
+        Function<IntStreamable, IntFuncList> streamableToList = s -> s.toList();
+        assertEquals(
+                "{"
+                + "Even:[2, 4, 6, 8, 10, 12], "
+                + "Odd:[1, 3, 5, 7, 9, 11]"
+                + "}",
+                naturalNumbers(12)
+                .split(
+                    "Odd", theInteger.thatIsOdd(),
+                    "Even")
+                .mapValue(streamableToList)
+                .toString());
+        
+        assertEquals(
+                "{"
+                + "Others:[1, 5, 7, 11], "
+                + "Two:[2, 4, 6, 8, 10, 12], "
+                + "Three:[3, 9]"
+                + "}",
+                naturalNumbers(12)
+                .split(
+                    "Two",   theInteger.thatIsDivisibleBy(2),
+                    "Three", theInteger.thatIsDivisibleBy(3),
+                    "Others")
+                .mapValue(streamableToList)
+                .toString());
+        
+        assertEquals(
+                "{"
+                + "Others:[1, 7, 11], "
+                + "Five:[5], "
+                + "Two:[2, 4, 6, 8, 10, 12], "
+                + "Three:[3, 9]"
+                + "}",
+                naturalNumbers(12)
+                .split(
+                    "Two",   theInteger.thatIsDivisibleBy(2),
+                    "Three", theInteger.thatIsDivisibleBy(3),
+                    "Five",  theInteger.thatIsDivisibleBy(5),
+                    "Others")
+                .mapValue(streamableToList)
+                .toString());
+        
+        assertEquals(
+                "{"
+                + "Others:[1, 11], "
+                + "Five:[5], "
+                + "Seven:[7], "
+                + "Two:[2, 4, 6, 8, 10, 12], "
+                + "Three:[3, 9]"
+                + "}",
+                naturalNumbers(12)
+                .split(
+                    "Two",   theInteger.thatIsDivisibleBy(2),
+                    "Three", theInteger.thatIsDivisibleBy(3),
+                    "Five",  theInteger.thatIsDivisibleBy(5),
+                    "Seven", theInteger.thatIsDivisibleBy(7),
+                    "Others")
+                .mapValue(streamableToList)
+                .toString());
+        
+        assertEquals(
+                "{"
+                + "Others:[1], "
+                + "Five:[5], "
+                + "Seven:[7], "
+                + "Two:[2, 4, 6, 8, 10, 12], "
+                + "Three:[3, 9], "
+                + "Eleven:[11]"
+                + "}",
+                naturalNumbers(12)
+                .split(
+                    "Two",    theInteger.thatIsDivisibleBy(2),
+                    "Three",  theInteger.thatIsDivisibleBy(3),
+                    "Five",   theInteger.thatIsDivisibleBy(5),
+                    "Seven",  theInteger.thatIsDivisibleBy(7),
+                    "Eleven", theInteger.thatIsDivisibleBy(11),
+                    "Others")
+                .mapValue(streamableToList)
+                .toString());
     }
     
     @Test

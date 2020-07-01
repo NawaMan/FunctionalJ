@@ -25,6 +25,7 @@ package functionalj.stream.intstream;
 
 import static functionalj.function.Func.f;
 import static functionalj.function.Func.itself;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -491,7 +492,7 @@ public interface IntStreamPlus
     
     public default <T> IntStreamPlus filterAsObject(
             Function<Integer, ? extends T> mapper,
-            Predicate<? super T>     theCondition) {
+            Predicate<? super T>           theCondition) {
         return filter(value -> {
             val target = mapper.apply(value);
             val isPass = theCondition.test(target);
@@ -937,7 +938,7 @@ public interface IntStreamPlus
                     })
                 )
                 .peek   (action -> action.start())
-                .collect(Collectors.toList())
+                .collect(toList())
                 ;
             
             val resultStream 

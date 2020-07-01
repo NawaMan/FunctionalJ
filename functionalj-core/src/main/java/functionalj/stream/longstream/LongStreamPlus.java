@@ -1,3 +1,26 @@
+// ============================================================================
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream.longstream;
 
 import static functionalj.function.Func.f;
@@ -141,7 +164,8 @@ public interface LongStreamPlus
     }
     
     public static LongStreamPlus infinite() {
-        return LongStreamPlus.from(LongStream.range(0, Long.MAX_VALUE));
+        return LongStreamPlus
+                .from(LongStream.range(0, Long.MAX_VALUE));
     }
     
     public static LongStreamPlus naturalNumbers() {
@@ -256,14 +280,6 @@ public interface LongStreamPlus
     @Override
     public default StreamPlus<Long> boxed() {
         return StreamPlus.from(longStream().boxed());
-    }
-    
-    public default String toListString() {
-        // TODO - There must be a faster way
-        val strValue 
-            = mapToObj(String::valueOf)
-            .collect(Collectors.joining(", "));
-        return "[" + strValue + "]";
     }
     
     //== Helper functions ==
@@ -791,7 +807,15 @@ public interface LongStreamPlus
     public default DoubleStreamPlus asDoubleStream() {
         return DoubleStreamPlus.from(longStream().asDoubleStream());
     }
-//    
+    
+    public default String toListString() {
+        // TODO - There must be a faster way
+        val strValue 
+            = mapToObj(String::valueOf)
+            .collect(Collectors.joining(", "));
+        return "[" + strValue + "]";
+    }
+    
 //    public default ImmutableLongFuncList toImmutableList() {
 //        return terminate(stream -> {
 //            return ImmutableIntFuncList.from(this);
@@ -953,7 +977,7 @@ public interface LongStreamPlus
         LongStreamPlus endStream 
             = StreamPlus.iterate(seed, func)
             .takeUntil(t -> t == null)
-            .skip(1)
+            .skip     (1)
             .mapToLong(t -> t._1());
         return endStream;
     }
