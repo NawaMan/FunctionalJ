@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,7 +35,6 @@ import functionalj.function.Func1;
 import functionalj.list.ImmutableList;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     
     private static final boolean NULL_SAFE   = true;

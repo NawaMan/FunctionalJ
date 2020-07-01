@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -34,7 +34,6 @@ import functionalj.lens.core.WriteLens;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
                     extends 

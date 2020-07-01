@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -87,7 +87,6 @@ import lombok.val;
 
 // TODO - Intersect
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface StreamPlus<DATA> 
         extends 
@@ -1208,7 +1207,7 @@ public interface StreamPlus<DATA>
             val results = new ArrayList<DeferAction<T>>();
             val index   = new AtomicInteger(0);
             
-            val actions 
+            List<? extends UncompletedAction<T>> actions 
                 = stream()
                 .map (mapToAction)
                 .peek(action -> results.add(DeferAction.<T>createNew()))

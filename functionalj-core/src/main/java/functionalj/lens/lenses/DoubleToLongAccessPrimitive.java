@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -23,7 +23,9 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
-public interface DoubleToLongAccessPrimitive extends LongAccessPrimitive<Double> {
+import java.util.function.DoubleToLongFunction;
+
+public interface DoubleToLongAccessPrimitive extends LongAccessPrimitive<Double>, DoubleToLongFunction {
     
     public long applyDoubleToLong(double host);
     

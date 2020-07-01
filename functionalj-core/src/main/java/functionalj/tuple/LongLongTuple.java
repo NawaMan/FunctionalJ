@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,7 +26,6 @@ package functionalj.tuple;
 import java.util.Map;
 import java.util.function.LongUnaryOperator;
 
-@SuppressWarnings("javadoc")
 public class LongLongTuple implements Tuple2<Long, Long>, Map.Entry<Long, Long> {
     
     public static  LongLongTuple of(long i1, long i2) {

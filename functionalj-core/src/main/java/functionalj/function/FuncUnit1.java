@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -118,7 +118,6 @@ public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
         };
     }
     
-    @SuppressWarnings("javadoc")
     public default FuncUnit0 bind(INPUT i) {
         return () -> this.acceptUnsafe(i);
     }

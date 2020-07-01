@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,7 +28,6 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
 
-@SuppressWarnings("javadoc")
 public class IntLongTuple implements Tuple2<Integer, Long>, Map.Entry<Integer, Long> {
     
     public static  IntLongTuple of(int i1, long i2) {

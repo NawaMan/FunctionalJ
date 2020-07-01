@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.IntSummaryStatistics;
+import java.util.List;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
@@ -157,6 +158,18 @@ public interface IntStreamPlus
     public static IntStreamPlus loop(int time) {
         return IntStreamPlus
                 .infinite()
+                .limit(time);
+    }
+    
+    public static IntStreamPlus loopBy(int step) {
+        return IntStreamPlus
+                .infinite()
+                .map(i -> i * step);
+    }
+    
+    public static IntStreamPlus loopBy(int step, int time) {
+        return IntStreamPlus
+                .loopBy(step)
                 .limit(time);
     }
     
@@ -344,7 +357,7 @@ public interface IntStreamPlus
                 .from(action.apply(this));
     }
     
-    //== Stream sepecific ==
+    //== Stream specific ==
     
     @Override
     public default IntStreamPlus sequential() {
@@ -823,6 +836,7 @@ public interface IntStreamPlus
     //-- Iterator --
     
     /** DO NOT USE THIS METHOD OR YOUR STREAM WILL NOT BE CLOSED. */
+    // TODO - We should move this to an external function
     public default PrimitiveIterator.OfInt __iterator() {
         return IntIteratorPlus.from(intStream());
     }
@@ -908,7 +922,7 @@ public interface IntStreamPlus
             val results = new ArrayList<DeferAction<T>>();
             val index   = new AtomicInteger(0);
             
-            val actions 
+            List<? extends UncompletedAction<T>> actions 
                 = intStream()
                 .mapToObj(mapToAction)
                 .peek    (action -> results.add(DeferAction.<T>createNew()))
@@ -974,10 +988,11 @@ public interface IntStreamPlus
         });
         val seed = IntTuple2.<IntStreamPlus>of(0, this);
         IntStreamPlus endStream 
-            = StreamPlus.iterate(seed, func)
+            = StreamPlus
+            .iterate  (seed, func)
             .takeUntil(t -> t == null)
-            .skip(1)
-            .mapToInt(t -> t._1());
+            .skip     (1)
+            .mapToInt (t -> t._1());
         return endStream;
     }
     

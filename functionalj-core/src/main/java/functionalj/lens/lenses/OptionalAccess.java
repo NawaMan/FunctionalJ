@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,7 +31,6 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
             extends

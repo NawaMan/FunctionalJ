@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -38,7 +38,6 @@ import lombok.Value;
 // - Proper import - when params requires extra type.
 
 @Value
-@SuppressWarnings("javadoc")
 public class Generator implements Lines {
     
     public final SourceSpec  sourceSpec;

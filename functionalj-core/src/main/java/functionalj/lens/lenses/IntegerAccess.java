@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,7 +33,6 @@ import functionalj.function.Func1;
 import functionalj.function.ToIntBiIntFunction;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public interface IntegerAccess<HOST> 
                     extends 
                         NumberAccess<HOST, Integer, IntegerAccess<HOST>>,

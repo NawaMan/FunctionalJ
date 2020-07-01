@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -51,7 +51,6 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     final Map<KEY, SOURCE> map;

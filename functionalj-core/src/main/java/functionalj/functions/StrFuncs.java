@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -54,7 +54,6 @@ import lombok.val;
 
 // TODO - Should only contains methods that return functions or constance of functions
 
-@SuppressWarnings("javadoc")
 public class StrFuncs {
     
     @SuppressWarnings("unused")

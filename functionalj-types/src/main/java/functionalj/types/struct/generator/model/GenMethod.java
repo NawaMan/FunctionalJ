@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -40,8 +40,8 @@ import functionalj.types.struct.generator.ILines;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import lombok.With;
 import lombok.val;
-import lombok.experimental.Wither;
 
 /**
  * Representation of generated method.
@@ -49,7 +49,7 @@ import lombok.experimental.Wither;
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
-@Wither
+@With
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 public class GenMethod implements IGenerateDefinition {

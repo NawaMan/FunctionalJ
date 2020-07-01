@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,7 +26,6 @@ package functionalj.result;
 import functionalj.list.FuncList;
 import functionalj.validator.Validator;
 
-@SuppressWarnings("javadoc")
 public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
     
     protected Acceptable(DATA data, Validation<DATA> validating) {

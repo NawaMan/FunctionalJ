@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -34,7 +34,6 @@ import functionalj.types.Struct;
 import functionalj.types.struct.Child;
 import functionalj.types.struct.ParentWithFuncList;
 
-@SuppressWarnings("javadoc")
 public class WithFuncListTest {
 
     @Struct(name="ParentWithFuncList")

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -37,7 +37,6 @@ import functionalj.types.choice.ChoiceTypeSwitch;
 import functionalj.types.choice.IChoice;
 import functionalj.types.choice.generator.model.CaseParam;
 
-@SuppressWarnings("javadoc")
 public abstract class BasicColor implements IChoice<BasicColor.BasicColorFirstSwitch> {
     
     public static final BasicColor White() { return White.instance; }

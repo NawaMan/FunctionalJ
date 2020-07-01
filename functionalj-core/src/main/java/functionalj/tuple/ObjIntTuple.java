@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.tuple;
 
 import java.util.Map;
 
-@SuppressWarnings("javadoc")
 public class ObjIntTuple<T1> implements Tuple2<T1, Integer>, Map.Entry<T1, Integer> {
     
     public static <T1> ObjIntTuple<T1> of(T1 t1, int i) {

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,7 +28,6 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public interface AccessParameterized2<HOST, TYPE, PARAMETER1, PARAMETER2,
                                         PARAMETERACCESS1 extends AnyAccess<HOST, PARAMETER1>,
                                         PARAMETERACCESS2 extends AnyAccess<HOST, PARAMETER2>>

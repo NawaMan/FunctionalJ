@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -37,7 +37,6 @@ import functionalj.list.FuncList;
 import functionalj.tuple.Tuple;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public class PromiseWaitTest {
     
     private void assertStrings(String str, Object obj) {

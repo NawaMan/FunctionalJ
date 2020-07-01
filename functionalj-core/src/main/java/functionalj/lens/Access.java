@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -43,7 +43,6 @@ import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
 import functionalj.tuple.Tuple2;
 
-@SuppressWarnings("javadoc")
 public interface Access {
     
     public static final AnyLens<Object, Object> theObject  = AnyLens    .of(LensSpec.of(Object.class));

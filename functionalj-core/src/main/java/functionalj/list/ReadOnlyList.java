@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -41,7 +41,6 @@ import functionalj.stream.StreamPlusHelper;
 import functionalj.stream.Streamable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface ReadOnlyList<DATA> 
                     extends List<DATA>, Streamable<DATA> {

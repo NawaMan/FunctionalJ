@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -56,7 +56,6 @@ class __internal {
   
 }
 
-@SuppressWarnings("javadoc")
 public interface Pipeable<DATA> {
     
     public static <D> Pipeable<D> of(D data) {

@@ -18,7 +18,7 @@ import functionalj.types.choice.IChoice;
 
 // functionalj.store.Specs.ResultStatusSpec
 
-@SuppressWarnings({"javadoc", "rawtypes", "unchecked"})
+@SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class ResultStatus<D extends Object> implements IChoice<ResultStatus.ResultStatusFirstSwitch<D>>, Pipeable<ResultStatus<D>> {
     
     public static final <D extends Object> NotAllowed<D> NotAllowed(ChangeNotAllowedException reason) {

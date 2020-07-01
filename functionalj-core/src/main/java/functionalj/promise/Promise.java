@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -61,7 +61,6 @@ import lombok.val;
 
 // TODO - Find a way to make toString more useful ... like giving this a name.
 // TODO - Should extract important stuff to PromiseBase ... so it is not flooded with the less important things.
-@SuppressWarnings("javadoc")
 public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeable<HasPromise<DATA>> {
     
     private static final int INITIAL_CAPACITY = 2;
@@ -402,7 +401,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         abortWhenNoSubscription();
     }
     void unsubscribe(Promise<DATA> promise) {
-        val entry = consumers.entrySet().stream().filter(e -> Objects.equals(e.getValue(), promise)).findFirst();
+        val entry = consumers.entrySet().stream().filter(e -> Objects.equals(e.getKey().getPromise(), promise)).findFirst();
         if (entry.isPresent())
             consumers.remove(entry.get().getKey());
         abortWhenNoSubscription();

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -63,9 +63,8 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
     private Messager messager;
     private boolean  hasError;
     
-    @SuppressWarnings("unused")
     private List<String> logs = new ArrayList<String>();
-
+    
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         elementUtils = processingEnv.getElementUtils();

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.tuple;
 
 import java.util.Map;
 
-@SuppressWarnings("javadoc")
 public class LongTuple2<T2> implements Tuple2<Long, T2>, Map.Entry<Long, T2> {
     
     public static <T2> LongTuple2<T2> of(long i1, T2 i2) {

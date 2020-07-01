@@ -17,7 +17,6 @@ import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface LocalDateAccess<HOST>
                     extends AnyAccess             <HOST, LocalDate>

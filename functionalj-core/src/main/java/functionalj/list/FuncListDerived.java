@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,7 +35,6 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusHelper;
 import functionalj.stream.Streamable;
 
-@SuppressWarnings("javadoc")
 public class FuncListDerived<SOURCE, DATA> 
                 implements FuncList<DATA> {
     

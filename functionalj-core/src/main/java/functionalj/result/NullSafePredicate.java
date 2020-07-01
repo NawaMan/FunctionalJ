@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.result;
 
 import java.util.function.Predicate;
 
-@SuppressWarnings("javadoc")
 public interface NullSafePredicate<DATA> extends Predicate<DATA> {
 
     public boolean test(DATA data);

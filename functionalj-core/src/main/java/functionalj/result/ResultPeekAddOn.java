@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,7 +30,6 @@ import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public interface ResultPeekAddOn<DATA> {
     
     public Result<DATA> peek(Consumer<? super DATA> consumer);

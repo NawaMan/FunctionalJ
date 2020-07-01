@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,8 +32,8 @@ import functionalj.types.struct.generator.IGenerateDefinition;
 import functionalj.types.struct.generator.ILines;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import lombok.With;
 import lombok.val;
-import lombok.experimental.Wither;
 
 /**
  * Representation of a generated field.
@@ -41,7 +41,7 @@ import lombok.experimental.Wither;
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
-@Wither
+@With
 @EqualsAndHashCode(callSuper=false)
 public class GenField implements IGenerateDefinition {
     

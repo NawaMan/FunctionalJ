@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,7 +35,7 @@ import java.util.function.Function;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.Utils;
 import lombok.Value;
-import lombok.experimental.Wither;
+import lombok.With;
 
 /**
  * Source specification of the data object.
@@ -43,7 +43,7 @@ import lombok.experimental.Wither;
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
-@Wither
+@With
 public class SourceSpec {
     
     private String         specName;

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -56,9 +56,9 @@ import functionalj.promise.DeferAction;
 import functionalj.stream.CollectorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamProcessor;
+import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public class FuncListTest {
     
     private void assertStrings(String str, Object obj) {
@@ -72,40 +72,40 @@ public class FuncListTest {
     }
     
     // TODO Must uncomment that.
-//    
-//    @Test
-//    public void testLazy() {
-//        val counter = new AtomicInteger(0);
-//        val value   = IntStreamPlus.range(0, 10).toFuncList().map(i -> counter.getAndIncrement()).limit(4).joinToString(", ");
-//        assertStrings("0, 1, 2, 3", value);
-//        assertStrings("4",          counter.get());
-//    }
-//    
-//    @Test
-//    public void testEager() {
-//        val counter = new AtomicInteger(0);
-//        val value   = IntStreamPlus.range(0, 10)
-//                .toFuncList()
-//                .eager()
-//                .map(i -> counter.getAndIncrement())
-//                .limit(4)
-//                .joinToString(", ");
-//        assertStrings("0, 1, 2, 3", value);
-//        assertStrings("10",          counter.get());
-//    }
-//    
-//    @Test
-//    public void testEager2() {
-//        val counter = new AtomicInteger(0);
-//        val value   = IntStreamPlus.range(0, 10)
-//                .toFuncList()
-//                .eager()
-//                .limit(4)
-//                .map(i -> counter.getAndIncrement())
-//                .joinToString(", ");
-//        assertStrings("0, 1, 2, 3", value);
-//        assertStrings("4",          counter.get());
-//    }
+    
+    @Test
+    public void testLazy() {
+        val counter = new AtomicInteger(0);
+        val value   = IntStreamPlus.range(0, 10).toImmutableList().map(i -> counter.getAndIncrement()).limit(4).joinToString(", ");
+        assertStrings("0, 1, 2, 3", value);
+        assertStrings("4",          counter.get());
+    }
+    
+    @Test
+    public void testEager() {
+        val counter = new AtomicInteger(0);
+        val value   = IntStreamPlus.range(0, 10)
+                .toImmutableList()
+                .eager()
+                .map(i -> counter.getAndIncrement())
+                .limit(4)
+                .joinToString(", ");
+        assertStrings("0, 1, 2, 3", value);
+        assertStrings("10",          counter.get());
+    }
+    
+    @Test
+    public void testEager2() {
+        val counter = new AtomicInteger(0);
+        val value   = IntStreamPlus.range(0, 10)
+                .toImmutableList()
+                .eager()
+                .limit(4)
+                .map(i -> counter.getAndIncrement())
+                .joinToString(", ");
+        assertStrings("0, 1, 2, 3", value);
+        assertStrings("4",          counter.get());
+    }
     
     @Test
     public void testSkipWhile() {
@@ -230,20 +230,20 @@ public class FuncListTest {
         val logs   = new ArrayList<String>();
         list
         .spawn(str -> {
-            return Sleep(str.length()*50 + 5).thenReturn(str).defer();
+            return Sleep(str.length()*100 + 5).thenReturn(str).defer();
         })
         .forEach(element -> {
             first.compareAndSet(-1, System.currentTimeMillis());
             val start    = first.get();
             val end      = System.currentTimeMillis();
-            val duration = Math.round((end - start)/50.0)*50;
+            val duration = Math.round((end - start)/100.0)*100;
             logs.add(element + " -- " + duration);
         });
         assertEquals("["
                 + "Result:{ Value: Two } -- 0, "
-                + "Result:{ Value: Four } -- 50, "
-                + "Result:{ Value: Three } -- 100, "
-                + "Result:{ Value: Eleven } -- 150"
+                + "Result:{ Value: Four } -- 100, "
+                + "Result:{ Value: Three } -- 200, "
+                + "Result:{ Value: Eleven } -- 300"
                 + "]",
                 logs.toString());
     }

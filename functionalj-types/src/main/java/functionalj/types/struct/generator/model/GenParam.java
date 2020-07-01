@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,7 +29,7 @@ import functionalj.types.Type;
 import functionalj.types.struct.generator.IGenerateTerm;
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import lombok.experimental.Wither;
+import lombok.With;
 
 /**
  * Representation of generated term.
@@ -37,7 +37,7 @@ import lombok.experimental.Wither;
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
-@Wither
+@With
 @AllArgsConstructor
 public class GenParam implements IGenerateTerm {
     private String name;

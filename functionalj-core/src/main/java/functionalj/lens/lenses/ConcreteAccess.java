@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,9 +33,6 @@ This is (unexpected) work around for the reusability problems for these common m
 This way, we just need to duplicate these methods here and AnyAccess.
 All concrete access still have to implement this interface and the newAccess method.
  */
-
-
-@SuppressWarnings("javadoc")
 public interface ConcreteAccess<HOST, DATA, ACCESS extends AnyAccess<HOST, DATA>> 
         extends 
             AnyAccess<HOST, DATA>,

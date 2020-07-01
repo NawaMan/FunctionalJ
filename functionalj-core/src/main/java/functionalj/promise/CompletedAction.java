@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -29,7 +29,6 @@ import java.util.function.Consumer;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 
-@SuppressWarnings("javadoc")
 public class CompletedAction<DATA> implements HasPromise<DATA>, Pipeable<HasPromise<DATA>> {
     
     protected final Promise<DATA> promise;

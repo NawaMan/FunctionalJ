@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.pipeable;
 
 import functionalj.function.Func1;
 
-@SuppressWarnings("javadoc")
 public interface NullSafeOperator<INPUT, OUTPUT> extends Func1<INPUT, OUTPUT> {
 
     public OUTPUT applyUnsafe(INPUT input) throws Exception;

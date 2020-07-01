@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,57 +35,10 @@ import org.junit.Test;
 import functionalj.types.Type;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
-import functionalj.types.choice.generator.model.Method;
-import functionalj.types.choice.generator.model.Method.Kind;
-import functionalj.types.choice.generator.model.MethodParam;
 import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public class FullGeneratorTest {
-
-//  public static interface ChohiceType1TypeSpec {
-//      void White();
-//      void Black();
-//      void RGB(int r, int g, int b);
-//      
-//      static void __validateRGB(int r, int g, int b) {
-//          if ((r < 0) || (r > 255)) throw new IllegalArgumentException("r: " + r);
-//          if ((g < 0) || (g > 255)) throw new IllegalArgumentException("g: " + g);
-//          if ((b < 0) || (b > 255)) throw new IllegalArgumentException("b: " + b);
-//      }
-//  }
-  
-  public static void main(String[] args) {
-      val generator = new Generator(
-              "BasicColor",
-              new Type(FullGeneratorTest.class.getPackage().getName(), "ChoiceTypeExampleTest", "ChoiceType1TypeSpec"),
-              "spec",
-              true,
-              null,
-              asList(),
-              asList(
-                  new Case("White", emptyList()),
-                  new Case("Black", emptyList()),
-                  new Case("RGB", "__validateRGB", asList(
-                      new CaseParam("r", new Type("int"), false),
-                      new CaseParam("g", new Type("int"), false),
-                      new CaseParam("b", new Type("int"), false)
-                  ))),
-              asList(
-                  new Method(Kind.DEFAULT, "equals", Type.BOOLEAN, 
-                      asList(
-                          new MethodParam("c", new Type("functionalj.types.choice.generator", "BasicColor")),
-                          new MethodParam("obj", Type.OBJECT)
-                      )
-                  ),
-                  new Method(Kind.STATIC, "toRGBString", Type.BOOLEAN, 
-                      asList(new MethodParam("c", new Type("functionalj.types.sealed.generator", "BasicColor"))
-                  )
-              )),
-              emptyList());
-      generator.lines().forEach(System.out::println);
-  }
   
   @Test
   public void testGenerator() {

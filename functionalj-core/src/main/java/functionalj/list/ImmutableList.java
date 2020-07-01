@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -38,7 +38,6 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public final class ImmutableList<DATA> implements FuncList<DATA> {
     
     private final static ImmutableList<?> EMPTY = new ImmutableList<>(Collections.emptyList());

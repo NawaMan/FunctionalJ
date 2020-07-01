@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -28,7 +28,6 @@ import java.util.Objects;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 
-@SuppressWarnings("javadoc")
 public class ObjFuncs {
     
     @SuppressWarnings("unlikely-arg-type")

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -69,7 +69,6 @@ class ResultMapAddOnHelper {
     }
 }
 
-@SuppressWarnings("javadoc")
 public interface ResultMapAddOn<DATA> {
     
     public <TARGET> Result<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper);

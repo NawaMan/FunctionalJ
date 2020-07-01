@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -48,7 +48,6 @@ import lombok.experimental.ExtensionMethod;
 
 
 @ExtensionMethod(functionalj.types.choice.generator.Utils.class)
-@SuppressWarnings("javadoc")
 public class GeneratorTest {
     
     @Test

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -43,7 +43,6 @@ import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface StringAccess<HOST> 
         extends 

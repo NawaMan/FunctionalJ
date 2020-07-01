@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -37,7 +37,6 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessParameterized2;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface MapAccess<HOST, KEY, VALUE, 
                             KEYACCESS extends AnyAccess<HOST,KEY>, 

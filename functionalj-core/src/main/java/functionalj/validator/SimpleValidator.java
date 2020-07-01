@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,7 +30,6 @@ import functionalj.result.Result;
 import functionalj.result.ValidationException;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public interface SimpleValidator<DATA> extends Validator<DATA> {
     
     public static <D> 

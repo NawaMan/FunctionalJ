@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -25,7 +25,6 @@ package functionalj.result;
 
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public class ValidationException extends RuntimeException {
     
     private static final long serialVersionUID = 2317758566674598943L;

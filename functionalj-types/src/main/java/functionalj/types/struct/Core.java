@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -46,7 +46,6 @@ import functionalj.types.Type;
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
-@SuppressWarnings("javadoc")
 public enum Core {
     
     BigDecimalLens("BigDecimalLens"),

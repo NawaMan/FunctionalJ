@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -26,7 +26,6 @@ package functionalj.tuple;
 import java.util.Map;
 import java.util.function.IntUnaryOperator;
 
-@SuppressWarnings("javadoc")
 public class IntIntTuple implements Tuple2<Integer, Integer>, Map.Entry<Integer, Integer> {
     
     public static  IntIntTuple of(int i1, int i2) {

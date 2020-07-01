@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,7 +30,6 @@ import functionalj.function.Func2;
 import functionalj.result.Result;
 import functionalj.result.ValidationException;
 
-@SuppressWarnings("javadoc")
 public interface Validator<DATA> extends Predicate<DATA>, Func1<DATA, Boolean> {
 
     

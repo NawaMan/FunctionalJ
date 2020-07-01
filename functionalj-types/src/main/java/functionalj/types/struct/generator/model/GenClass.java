@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -43,9 +43,9 @@ import functionalj.types.Type;
 import functionalj.types.struct.generator.IGenerateDefinition;
 import functionalj.types.struct.generator.ILines;
 import lombok.Value;
+import lombok.With;
 import lombok.val;
 import lombok.experimental.Accessors;
-import lombok.experimental.Wither;
 
 /**
  * Representation of a generated class.
@@ -53,7 +53,7 @@ import lombok.experimental.Wither;
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
-@Wither
+@With
 @Accessors(fluent=true)
 public class GenClass implements IGenerateDefinition {
     

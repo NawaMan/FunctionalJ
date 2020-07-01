@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -466,25 +466,20 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     
     //== Partially apply functions ==
     
-    @SuppressWarnings("javadoc")
     public default Func0<OUTPUT> bind(INPUT1 i1, INPUT2 i2) {
         return () -> this.applyUnsafe(i1, i2);
     }
-    @SuppressWarnings("javadoc")
     public default Func1<INPUT2, OUTPUT> bind1(INPUT1 i1) {
         return i2 -> this.applyUnsafe(i1, i2);
     }
     
-    @SuppressWarnings("javadoc")
     public default Func1<INPUT1, OUTPUT> bind2(INPUT2 i2) {
         return i1 -> this.applyUnsafe(i1, i2);
     }
     
-    @SuppressWarnings("javadoc")
     public default Func1<INPUT1, OUTPUT> bind(Absent a1, INPUT2 i2) {
         return i1 -> this.applyUnsafe(i1, i2);
     }
-    @SuppressWarnings("javadoc")
     public default Func1<INPUT2, OUTPUT> bind(INPUT1 i1, Absent a2) {
         return i2 -> this.applyUnsafe(i1, i2);
     }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,10 +35,8 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public class FuncListStreamTest {
     
-    @SuppressWarnings("resource")
     @Test
     public void testStream() {
         val rawList    = (List<String>)asList("One", "Two", "Three");
@@ -47,7 +45,6 @@ public class FuncListStreamTest {
         assertEquals("[3, 3, 5]", newList.stream().collect(toList()).toString());
     }
     
-    @SuppressWarnings("resource")
     @Test
     public void testAppend() {
         val rawList    = (List<String>)asList("One", "Two", "Three");
@@ -56,7 +53,6 @@ public class FuncListStreamTest {
         assertEquals("[3, 3, 5, 6]", newList.append(6).toString());
     }
     
-    @SuppressWarnings("resource")
     @Test
     public void testSet() {
         val rawList    = (List<String>)asList("One", "Two", "Three");

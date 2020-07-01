@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -31,7 +31,6 @@ import functionalj.types.Struct;
 import functionalj.types.struct.DOFromClass;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public class DOFromClassTest {
     
     @Struct(name="DOFromClass")

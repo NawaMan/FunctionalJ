@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -41,7 +41,6 @@ import functionalj.map.FuncMap;
 import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public interface FuncMapLens<HOST, KEY, VALUE, 
                             KEYLENS   extends AnyLens<HOST,KEY>, 
                             VALUELENS extends AnyLens<HOST,VALUE>>

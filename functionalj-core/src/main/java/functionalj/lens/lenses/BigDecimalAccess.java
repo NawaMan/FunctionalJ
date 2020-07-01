@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -36,7 +36,6 @@ class BigDecimalAccessConstants {
 }
 
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BigDecimalAccess<HOST> 
                     extends 

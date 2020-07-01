@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -30,7 +30,6 @@ import java.util.TreeMap;
 
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public final class ImmutableMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, VALUE> {
     
     @SuppressWarnings("unchecked")

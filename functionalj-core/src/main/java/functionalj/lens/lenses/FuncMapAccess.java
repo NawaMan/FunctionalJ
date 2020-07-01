@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -34,25 +34,24 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface FuncMapAccess<HOST, KEY, VALUE, 
                             KEYACCESS extends AnyAccess<HOST,KEY>, 
                             VALUEACCESS extends AnyAccess<HOST,VALUE>>
                     extends AccessParameterized2<HOST, FuncMap<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> {
-
+    
     public AccessParameterized2<HOST, FuncMap<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2();
     
     @Override
     public default FuncMap<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
         return accessParameterized2().apply(host);
     }
-
+    
     @Override
     public default KEYACCESS createSubAccess1(Function<FuncMap<KEY, VALUE>, KEY> accessToParameter) {
         return keyAccess(accessToParameter);
     }
-
+    
     @Override
     public default VALUEACCESS createSubAccess2(Function<FuncMap<KEY, VALUE>, VALUE> accessToParameter) {
         return valueAccess(accessToParameter);
@@ -68,11 +67,11 @@ public interface FuncMapAccess<HOST, KEY, VALUE,
         return accessParameterized2().createSubAccessFromHost2(accessToParameter);
     }
     
-
+    
     public default KEYACCESS keyAccess(Function<FuncMap<KEY, VALUE>, KEY> accessToParameter) {
         return accessParameterized2().createSubAccess1(accessToParameter);
     }
-
+    
     public default VALUEACCESS valueAccess(Function<FuncMap<KEY, VALUE>, VALUE> accessToParameter) {
         return accessParameterized2().createSubAccess2(accessToParameter);
     }
@@ -240,7 +239,7 @@ public interface FuncMapAccess<HOST, KEY, VALUE,
                         };
             return access;
         }
-
+        
         public static <HOST, KEY, VALUE, KEYACCESS extends AnyAccess<HOST,KEY>, VALUEACCESS extends AnyAccess<HOST,VALUE>>
             AccessParameterized2<HOST, FuncMap.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> createEntrySpec(
                 AccessParameterized2<HOST, FuncMap<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> mapAccessSpec,

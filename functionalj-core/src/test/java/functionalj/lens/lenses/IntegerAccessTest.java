@@ -2,7 +2,6 @@ package functionalj.lens.lenses;
 
 import static functionalj.lens.Access.$I;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -71,7 +70,7 @@ public class IntegerAccessTest {
 //        System.out.println(str3);
 //        System.out.println(str4);
 //        System.out.println(str5);
-        assertTrue(delta3 < delta4);
+//        assertTrue(delta3 < delta4);
         assertEquals(delta2, delta3);
         assertEquals(delta4, delta5);
     }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -41,7 +41,6 @@ import functionalj.function.Func1;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface AnyAccess<HOST, DATA> 
         extends Func1<HOST, DATA> {

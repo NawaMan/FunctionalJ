@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -40,7 +40,6 @@ import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     
     public static <T1, T2> Tuple2<T1, T2> of(Map.Entry<? extends T1, ? extends T2> entry) {

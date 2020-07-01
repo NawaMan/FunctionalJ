@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -33,7 +33,6 @@ import functionalj.function.Func1;
 import functionalj.function.ToDoubleBiDoubleFunction;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public interface DoubleAccess<HOST> 
                     extends 
                         NumberAccess<HOST, Double, DoubleAccess<HOST>>, 
@@ -130,15 +129,61 @@ public interface DoubleAccess<HOST>
     }
     
     public default IntegerAccessPrimitive<HOST> toInteger() {
+        return toInteger(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+    
+    public default LongAccessPrimitive<HOST> toLong() {
+        return toLong(Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+    
+    public default IntegerAccessPrimitive<HOST> toInteger(int overflowValue) {
+        return toInteger(overflowValue, overflowValue);
+    }
+    
+    public default LongAccessPrimitive<HOST> toLong(long overflowValue) {
+        return toLong(overflowValue, overflowValue);
+    }
+    
+    public default IntegerAccessPrimitive<HOST> toInteger(int negativeOverflowValue, int positiveOverflowValue) {
         return host -> {
             double doubleValue = applyAsDouble(host);
+            if (doubleValue < Integer.MIN_VALUE)
+                return negativeOverflowValue;
+            if (doubleValue > Integer.MIN_VALUE)
+                return positiveOverflowValue;
             return (int)doubleValue;
         };
     }
     
-    public default LongAccessPrimitive<HOST> toLong() {
+    public default LongAccessPrimitive<HOST> toLong(long negativeOverflowValue, long positiveOverflowValue) {
         return host -> {
             double doubleValue = applyAsDouble(host);
+            if (doubleValue < Long.MIN_VALUE)
+                return negativeOverflowValue;
+            if (doubleValue > Long.MIN_VALUE)
+                return positiveOverflowValue;
+            return (long)doubleValue;
+        };
+    }
+    
+    public default IntegerAccessBoxed<HOST> toIntegerOrNull(Integer negativeOverflowValue, Integer positiveOverflowValue) {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            if (doubleValue < Integer.MIN_VALUE)
+                return negativeOverflowValue;
+            if (doubleValue > Integer.MIN_VALUE)
+                return positiveOverflowValue;
+            return (int)doubleValue;
+        };
+    }
+    
+    public default LongAccessBoxed<HOST> toLong(Long negativeOverflowValue, Long positiveOverflowValue) {
+        return host -> {
+            double doubleValue = applyAsDouble(host);
+            if (doubleValue < Long.MIN_VALUE)
+                return negativeOverflowValue;
+            if (doubleValue > Long.MIN_VALUE)
+                return positiveOverflowValue;
             return (long)doubleValue;
         };
     }

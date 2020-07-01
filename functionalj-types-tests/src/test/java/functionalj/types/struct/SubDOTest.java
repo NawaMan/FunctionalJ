@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -32,7 +32,6 @@ import functionalj.types.struct.Child;
 import functionalj.types.struct.Parent;
 import lombok.val;
 
-@SuppressWarnings("javadoc")
 public class SubDOTest {
     
     @Struct(name="Child")

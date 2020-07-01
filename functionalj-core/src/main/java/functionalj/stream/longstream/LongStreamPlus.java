@@ -2,10 +2,13 @@ package functionalj.stream.longstream;
 
 import static functionalj.function.Func.f;
 import static functionalj.function.Func.itself;
+import static functionalj.lens.Access.theLong;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.OptionalDouble;
 import java.util.OptionalLong;
@@ -780,6 +783,10 @@ public interface LongStreamPlus
         });
     }
     
+    public default IntStreamPlus asIntegerStream() {
+        return mapToInt((LongToIntFunction)theLong.toInteger()::apply);
+    }
+    
     @Override
     public default DoubleStreamPlus asDoubleStream() {
         return DoubleStreamPlus.from(longStream().asDoubleStream());
@@ -878,7 +885,7 @@ public interface LongStreamPlus
             val results = new ArrayList<DeferAction<T>>();
             val index   = new AtomicInteger(0);
             
-            val actions 
+            List<? extends UncompletedAction<T>> actions 
                 = longStream()
                 .mapToObj(mapToAction)
                 .peek    (action -> results.add(DeferAction.<T>createNew()))
@@ -893,7 +900,7 @@ public interface LongStreamPlus
                     })
                 )
                 .peek   (action -> action.start())
-                .collect(Collectors.toList())
+                .collect(toList())
                 ;
             
             val resultStream 

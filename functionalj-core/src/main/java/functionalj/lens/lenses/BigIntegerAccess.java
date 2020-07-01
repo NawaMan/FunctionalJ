@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright (c) 2017-2019 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -35,7 +35,6 @@ class BigIntegerAccessConstants {
     public static final BigInteger MINUS_ONE = BigInteger.ZERO.subtract(BigInteger.ONE);
 }
 
-@SuppressWarnings("javadoc")
 @FunctionalInterface
 public interface BigIntegerAccess<HOST> 
         extends 
