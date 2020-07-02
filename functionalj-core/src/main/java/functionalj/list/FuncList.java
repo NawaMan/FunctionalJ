@@ -154,6 +154,11 @@ public interface FuncList<DATA>
         return new FuncListBuilder<T>();
     }
     
+    // Abstract method
+    
+    @Override
+    public StreamPlus<DATA> stream();
+    
     // == Override ==
     
     @Override
@@ -489,7 +494,7 @@ public interface FuncList<DATA>
     public default <TARGET> FuncList<TARGET> flatMap(
             Function<? super DATA, ? extends Streamable<? extends TARGET>> mapper) {
         return deriveWith(stream -> {
-            return stream.flatMap(e -> mapper.apply(e).stream());
+            return stream.flatMap(e -> ((Streamable<? extends TARGET>)mapper.apply(e)).stream());
         });
     }
     

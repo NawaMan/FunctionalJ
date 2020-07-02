@@ -62,7 +62,6 @@ import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.promise.DeferAction;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamable;
 import lombok.val;
 
 public class IntStreamPlusTest {
@@ -1104,14 +1103,14 @@ public class IntStreamPlusTest {
     
     @Test
     public void testSplit() {
-        Function<IntStreamable, IntFuncList> streamableToList = s -> s.toList();
+        Function<IntStreamPlus, IntFuncList> streamPlusToList = s -> s.toImmutableList();
         assertEquals(
                 "([1, 3, 5, 7, 9, 11],[2, 4, 6, 8, 10, 12])",
                 naturalNumbers(12)
                 .split(theInteger.thatIsOdd())
                 .map(
-                    streamableToList,
-                    streamableToList)
+                    streamPlusToList,
+                    streamPlusToList)
                 .toString());
         
         assertEquals(
@@ -1121,9 +1120,9 @@ public class IntStreamPlusTest {
                     theInteger.thatIsDivisibleBy(2),
                     theInteger.thatIsDivisibleBy(3))
                 .map(
-                    streamableToList,
-                    streamableToList,
-                    streamableToList)
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList)
                 .toString());
         
         assertEquals(
@@ -1134,10 +1133,10 @@ public class IntStreamPlusTest {
                     theInteger.thatIsDivisibleBy(3),
                     theInteger.thatIsDivisibleBy(5))
                 .map(
-                    streamableToList,
-                    streamableToList,
-                    streamableToList,
-                    streamableToList)
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList)
                 .toString());
         
         assertEquals(
@@ -1149,11 +1148,11 @@ public class IntStreamPlusTest {
                     theInteger.thatIsDivisibleBy(5),
                     theInteger.thatIsDivisibleBy(7))
                 .map(
-                    streamableToList,
-                    streamableToList,
-                    streamableToList,
-                    streamableToList,
-                    streamableToList)
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList)
                 .toString());
         
         assertEquals(
@@ -1166,18 +1165,18 @@ public class IntStreamPlusTest {
                     theInteger.thatIsDivisibleBy(7),
                     theInteger.thatIsDivisibleBy(11))
                 .map(
-                    streamableToList,
-                    streamableToList,
-                    streamableToList,
-                    streamableToList,
-                    streamableToList,
-                    streamableToList)
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList)
                 .toString());
     }
     
     @Test
     public void testSplit_FizzBuzz() {
-        Function<IntStreamable, IntFuncList> streamableToList = s -> s.toList();
+        Function<IntStreamPlus, IntFuncList> streamPlusToList = s -> s.toImmutableList();
         assertEquals(
                 "([15],[3, 6, 9, 12, 18],[5, 10, 20],[1, 2, 4, 7, 8, 11, 13, 14, 16, 17, 19])",
                 naturalNumbers(20)
@@ -1186,16 +1185,16 @@ public class IntStreamPlusTest {
                     theInteger.thatIsDivisibleBy(3),
                     theInteger.thatIsDivisibleBy(5))
                 .map(
-                    streamableToList,
-                    streamableToList,
-                    streamableToList,
-                    streamableToList)
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList)
                 .toString());
     }
     
     @Test
     public void testSplitToMap() {
-        Function<IntStreamable, IntFuncList> streamableToList = s -> s.toList();
+        Function<IntStreamPlus, IntFuncList> streamPlusToList = s -> s.toImmutableList();
         assertEquals(
                 "{"
                 + "Even:[2, 4, 6, 8, 10, 12], "
@@ -1205,7 +1204,7 @@ public class IntStreamPlusTest {
                 .split(
                     "Odd", theInteger.thatIsOdd(),
                     "Even")
-                .mapValue(streamableToList)
+                .mapValue(streamPlusToList)
                 .toString());
         
         assertEquals(
@@ -1219,7 +1218,7 @@ public class IntStreamPlusTest {
                     "Two",   theInteger.thatIsDivisibleBy(2),
                     "Three", theInteger.thatIsDivisibleBy(3),
                     "Others")
-                .mapValue(streamableToList)
+                .mapValue(streamPlusToList)
                 .toString());
         
         assertEquals(
@@ -1235,7 +1234,7 @@ public class IntStreamPlusTest {
                     "Three", theInteger.thatIsDivisibleBy(3),
                     "Five",  theInteger.thatIsDivisibleBy(5),
                     "Others")
-                .mapValue(streamableToList)
+                .mapValue(streamPlusToList)
                 .toString());
         
         assertEquals(
@@ -1253,7 +1252,7 @@ public class IntStreamPlusTest {
                     "Five",  theInteger.thatIsDivisibleBy(5),
                     "Seven", theInteger.thatIsDivisibleBy(7),
                     "Others")
-                .mapValue(streamableToList)
+                .mapValue(streamPlusToList)
                 .toString());
         
         assertEquals(
@@ -1273,7 +1272,7 @@ public class IntStreamPlusTest {
                     "Seven",  theInteger.thatIsDivisibleBy(7),
                     "Eleven", theInteger.thatIsDivisibleBy(11),
                     "Others")
-                .mapValue(streamableToList)
+                .mapValue(streamPlusToList)
                 .toString());
     }
     

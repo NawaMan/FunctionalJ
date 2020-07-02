@@ -434,7 +434,7 @@ public interface Streamable<DATA>
     
     public default <TARGET> Streamable<TARGET> flatMap(Function<? super DATA, ? extends Streamable<? extends TARGET>> mapper) {
         return deriveWith(stream -> {
-            return stream.flatMap(e -> mapper.apply(e).stream());
+            return stream.flatMap(e -> ((Streamable<? extends TARGET>)mapper.apply(e)).stream());
         });
     }
     

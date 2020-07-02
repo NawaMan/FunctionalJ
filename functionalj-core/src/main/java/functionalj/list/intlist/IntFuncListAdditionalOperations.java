@@ -216,8 +216,8 @@ public interface IntFuncListAdditionalOperations {
             return intStream()
                     .flatMapToObjIf(
                             checker,
-                            item -> mapper.apply(item).stream(),
-                            item -> elseMapper.apply(item).stream());
+                            item -> ((Streamable<T>)mapper    .apply(item)).stream(),
+                            item -> ((Streamable<T>)elseMapper.apply(item)).stream());
         });
     }
     

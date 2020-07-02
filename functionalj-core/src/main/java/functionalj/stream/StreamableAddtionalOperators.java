@@ -235,7 +235,7 @@ public interface StreamableAddtionalOperators<DATA> {
                     .from(stream)
                     .flatMapOnly(
                             checker, 
-                            d -> mapper.apply(d).stream());
+                            d -> ((Streamable<DATA>)mapper.apply(d)).stream());
         });
     }
     public default <T> Streamable<T> flatMapIf(
@@ -247,8 +247,8 @@ public interface StreamableAddtionalOperators<DATA> {
                     .from(stream)
                     .flatMapIf(
                             checker, 
-                            d -> mapper    .apply(d).stream(), 
-                            d -> elseMapper.apply(d).stream());
+                            d -> ((Streamable<T>)mapper    .apply(d)).stream(), 
+                            d -> ((Streamable<T>)elseMapper.apply(d)).stream());
         });
     }
     

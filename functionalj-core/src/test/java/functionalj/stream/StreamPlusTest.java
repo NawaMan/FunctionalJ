@@ -507,17 +507,25 @@ public class StreamPlusTest {
     
     @Test
     public void testSplit() {
+        Function<StreamPlus<String>, FuncList<String>> streamPlusToList = s -> s.toImmutableList();
         val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
         assertStrings("([One, Two, Six],"
                      + "[Four, Five],"
                      + "[Three])", 
-                stream.split(
-                        s -> s.length() == 3,
-                        s -> s.length() == 4));
+                stream
+                .split(
+                    s -> s.length() == 3,
+                    s -> s.length() == 4)
+                .map(
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList)
+                .toString());
     }
     
     @Test
     public void testFizzBuzz() {
+        Function<StreamPlus<Integer>, FuncList<Integer>> streamPlusToList = s -> s.toImmutableList();
         val stream  = StreamPlus.infiniteInt().limit(20);
         val toString = 
                 With(underlineMap.butWith(LinkedHashMap))
@@ -529,7 +537,9 @@ public class StreamPlusTest {
                                 "Buzz",     i -> i % 5     == 0,
                                 "Fizz",     i -> i % 3     == 0,
                                 null);
-                    return splited.toString();
+                    return splited
+                            .mapValue(streamPlusToList)
+                            .toString();
                 });
         assertEquals("{"
                 + "FizzBuzz:[0, 15], "
