@@ -377,7 +377,11 @@ public class StreamPlusTest {
         .onClose(()->isClosed.set(true));
         
         assertFalse(isClosed.get());
-        assertStrings("[3, 3, 5]", stream.map(theString.length()).toList());
+        assertStrings(
+                "[3, 3, 5]", 
+                stream
+                .map(theString.length())
+                .toList());
         assertTrue(isClosed.get());
         
         try {
@@ -455,13 +459,17 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testToIterator() {
-        val stream   = StreamPlus.of("One", "Two", "Three");
-        val list     = new ArrayList<String>();
-        val iterator = stream.iterator();
-        while (iterator.hasNext())
-            list.add(iterator.next());
-        assertStrings("[One, Two, Three]", list);
+    public void testToIterator() throws Exception {
+        val stream  = StreamPlus.of("One", "Two", "Three");
+        val list    = new ArrayList<String>();
+        val isClose = new AtomicBoolean(false);
+        stream.onClose(()->isClose.set(true));
+        try(val iterator = stream.iterator()) {
+            while (iterator.hasNext())
+                list.add(iterator.next());
+            assertStrings("[One, Two, Three]", list);
+        }
+        assertTrue(isClose.get());
     }
     
     @Test
@@ -829,25 +837,26 @@ public class StreamPlusTest {
     
     @Test
     public void testSpawn() {
+        val timePrecision = 100;
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
         val first  = new AtomicLong(-1);
         val logs   = new ArrayList<String>();
         stream
         .spawn(str -> {
-            return Sleep(str.length()*50 + 5).thenReturn(str).defer();
+            return Sleep(str.length()*timePrecision + 5).thenReturn(str).defer();
         })
         .forEach(element -> {
             first.compareAndSet(-1, System.currentTimeMillis());
             val start    = first.get();
             val end      = System.currentTimeMillis();
-            val duration = Math.round((end - start)/50.0)*50;
+            val duration = Math.round((end - start)/(1.0 * timePrecision))*timePrecision;
             logs.add(element + " -- " + duration);
         });
         assertEquals("["
                 + "Result:{ Value: Two } -- 0, "
-                + "Result:{ Value: Four } -- 50, "
-                + "Result:{ Value: Three } -- 100, "
-                + "Result:{ Value: Eleven } -- 150"
+                + "Result:{ Value: Four } -- " + (1*timePrecision) + ", "
+                + "Result:{ Value: Three } -- " + (2*timePrecision) + ", "
+                + "Result:{ Value: Eleven } -- " + (3*timePrecision) + ""
                 + "]",
                 logs.toString());
     }

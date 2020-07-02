@@ -132,7 +132,7 @@ public interface StreamPlus<DATA>
     /** Create a StreamPlus from the given data. */
     @SafeVarargs
     public static <D> StreamPlus<D> of(D ... data) {
-        return ArrayBackedStream
+        return ArrayBackedStreamPlus
                 .from(data);
     }
     
@@ -1118,23 +1118,15 @@ public interface StreamPlus<DATA>
     }
     
     //-- Iterator --
-    
-    // TODO - Move this out to a helper class
-    /** DO NOT USE THIS METHOD OR YOUR STREAM WILL NOT BE CLOSED. */
-    public default IteratorPlus<DATA> __iterator() {
-        return IteratorPlus.from(stream());
-    }
-    
     @Override
     public default IteratorPlus<DATA> iterator() {
-        val iterator = __iterator();
-        return iterator;
+        return IteratorPlus.from(stream());
     }
     
     @Override
     public default Spliterator<DATA> spliterator() {
         return terminate(s -> {
-            val iterator = __iterator();
+            val iterator = iterator();
             return Spliterators.spliteratorUnknownSize(iterator, 0);
         });
     }
@@ -1146,7 +1138,7 @@ public interface StreamPlus<DATA>
         return sequential(stream -> {
             StreamPlus<T> result = null;
             try {
-                val iterator = StreamPlus.from(stream).__iterator();
+                val iterator = StreamPlus.from(stream).iterator();
                 result = action.apply(iterator);
                 return result;
             } finally {
@@ -1296,7 +1288,7 @@ public interface StreamPlus<DATA>
                 return null;
             
             Object[] head     = new Object[] { null };
-            val      iterator = stream.__iterator();
+            val      iterator = stream.iterator();
             if (!iterator.hasNext())
                 return null;
             

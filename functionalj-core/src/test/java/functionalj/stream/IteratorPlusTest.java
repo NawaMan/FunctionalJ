@@ -69,7 +69,12 @@ public class IteratorPlusTest {
         assertEquals("[8, 9]",          iterator.pullNext(2).get().toList().toString());
         
         try {
-            iterator.pullNext(2).get().stream().toList().toString();
+            iterator
+            .pullNext(2)
+            .get()
+            .stream()
+            .toList()
+            .toString();
             fail("Exception is expected.");
         } catch (NoMoreResultException e) {
         }
@@ -123,5 +128,25 @@ public class IteratorPlusTest {
         
         
         assertEquals("[[One, Two, null], [Three]]", logs.toString());
+    }
+    
+    @Test
+    public void testUseNext_thenStream() {
+        // 5 is pulled out and then used to divide the rest of the value.
+        val stream = StreamPlus.of(5, 10, 15, 20, 25, 30);
+        val firstNumber = stream.iterator().pullNext().value();
+        assertEquals(
+                "[2, 3, 4, 5, 6]",
+                stream.map(i -> i / firstNumber).toListString());
+    }
+    
+    @Test
+    public void testUseNext_thenStream_empty() {
+        // 5 is pulled out and then used to divide the rest of the value.
+        val stream = StreamPlus.<Integer>of();
+        val firstNumber = stream.iterator().pullNext().orElse(1);
+        assertEquals(
+                "[]",
+                stream.map(i -> i / firstNumber).toListString());
     }
 }

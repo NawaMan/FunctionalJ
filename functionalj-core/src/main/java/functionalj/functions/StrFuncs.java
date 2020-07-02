@@ -416,23 +416,28 @@ public class StrFuncs {
         val pattern  = Pattern.compile(regex, patternFlags);
         return FuncList.from(Streamable.from(()->{
             val matcher  = pattern.matcher(strValue);
-            val iterator = new IteratorPlus<String>() {
-                @Override
-                public Iterator<String> asIterator() {
-                    return new Iterator<String>() {
-                        @Override
-                        public boolean hasNext() {
-                            return matcher.find();
-                        }
-                        @Override
-                        public String next() {
-                            return matcher.group();
-                        }
-                    };
-                }
-            };
-            return iterator.stream();
+            try (val iterator = createMatchIterator(matcher)) {
+                return iterator.stream();
+            }
         }));
+    }
+    
+    private static IteratorPlus<String> createMatchIterator(final java.util.regex.Matcher matcher) {
+        return new IteratorPlus<String>() {
+            @Override
+            public Iterator<String> asIterator() {
+                return new Iterator<String>() {
+                    @Override
+                    public boolean hasNext() {
+                        return matcher.find();
+                    }
+                    @Override
+                    public String next() {
+                        return matcher.group();
+                    }
+                };
+            }
+        };
     }
     
     public static Func1<CharSequence, RegExMatchResultStream> matches(String regex) {

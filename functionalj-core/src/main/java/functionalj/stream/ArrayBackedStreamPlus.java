@@ -31,30 +31,30 @@ import lombok.val;
 
 // This class along with ArrayBackedIteratorPlus helps improve performance when do pullNext, useNext and mapNext 
 //   with multiple value to run faster.
-public class ArrayBackedStream<DATA> implements StreamPlus<DATA> {
+public class ArrayBackedStreamPlus<DATA> implements StreamPlus<DATA> {
     
     private final ArrayBackedIteratorPlus<DATA> iterator;
     private final StreamPlus<DATA>              stream;
     
     @SafeVarargs
-    public static <DATA> ArrayBackedStream<DATA> of(DATA ... array) {
+    public static <DATA> StreamPlus<DATA> of(DATA ... array) {
         val iterator = ArrayBackedIteratorPlus.of(array);
-        val stream   = new ArrayBackedStream<DATA>(iterator);
+        val stream   = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
-    public static <DATA> ArrayBackedStream<DATA> from(DATA[] array) {
+    public static <DATA> StreamPlus<DATA> from(DATA[] array) {
         val iterator = ArrayBackedIteratorPlus.of(array);
-        val stream   = new ArrayBackedStream<DATA>(iterator);
+        val stream   = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
-    public static <DATA> ArrayBackedStream<DATA> from(DATA[] array, int start, int length) {
+    public static <DATA> StreamPlus<DATA> from(DATA[] array, int start, int length) {
         @SuppressWarnings("unchecked")
         val iterator = (ArrayBackedIteratorPlus<DATA>)ArrayBackedIteratorPlus.of(array, start, length);
-        val stream   = new ArrayBackedStream<DATA>(iterator);
+        val stream   = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
     
-    ArrayBackedStream(ArrayBackedIteratorPlus<DATA> iterator) {
+    ArrayBackedStreamPlus(ArrayBackedIteratorPlus<DATA> iterator) {
         this.iterator = iterator;
         
         val iterable = (Iterable<DATA>)()->iterator;
@@ -63,6 +63,22 @@ public class ArrayBackedStream<DATA> implements StreamPlus<DATA> {
     
     public Stream<DATA> stream() {
         return stream;
+    }
+    
+    @Override
+    public void close() {
+        iterator.close();
+        stream.close();
+    }
+    
+    @Override
+    public StreamPlus<DATA> onClose(Runnable closeHandler) {
+        iterator.onClose(closeHandler);
+        stream.onClose(closeHandler);
+        return deriveWith(stream -> { 
+            return stream
+                    .onClose(closeHandler);
+        });
     }
     
     public IteratorPlus<DATA> iterator() {

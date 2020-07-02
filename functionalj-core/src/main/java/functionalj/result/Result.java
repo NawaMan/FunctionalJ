@@ -312,6 +312,7 @@ public abstract class Result<DATA>
             return Result.ofException(e);
         }
     }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> Result<D> Try(Func0<? extends D> supplier) {
         try {
