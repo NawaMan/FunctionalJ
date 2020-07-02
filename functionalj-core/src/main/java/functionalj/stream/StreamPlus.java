@@ -91,7 +91,6 @@ import lombok.val;
 public interface StreamPlus<DATA> 
         extends 
             Stream<DATA>,
-            Iterable<DATA>,
             StreamPlusWithMapCase<DATA>,
             StreamPlusWithMapThen<DATA>,
             StreamPlusWithMapTuple<DATA>,
@@ -1120,6 +1119,7 @@ public interface StreamPlus<DATA>
     
     //-- Iterator --
     
+    // TODO - Move this out to a helper class
     /** DO NOT USE THIS METHOD OR YOUR STREAM WILL NOT BE CLOSED. */
     public default IteratorPlus<DATA> __iterator() {
         return IteratorPlus.from(stream());
@@ -1127,10 +1127,8 @@ public interface StreamPlus<DATA>
     
     @Override
     public default IteratorPlus<DATA> iterator() {
-//        return terminate(s -> {
-            val iterator = __iterator();
-            return iterator;
-//        });
+        val iterator = __iterator();
+        return iterator;
     }
     
     @Override

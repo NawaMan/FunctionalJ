@@ -32,6 +32,7 @@ import java.util.stream.StreamSupport;
 
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.result.Result;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
@@ -81,10 +82,9 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt {
         return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
     }
     
-    // TODO - When we have IntFunc ....
-//    public default FuncList<DATA> toList() {
-//        return stream().toList();
-//    }
+    public default IntFuncList toList() {
+        return stream().toImmutableList();
+    }
     
     public default OptionalInt pullNext() {
         if (hasNext())

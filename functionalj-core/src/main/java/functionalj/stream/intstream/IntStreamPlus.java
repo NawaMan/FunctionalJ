@@ -68,6 +68,7 @@ import functionalj.pipeable.Pipeable;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
+import functionalj.stream.IntIterable;
 import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
@@ -81,6 +82,7 @@ import lombok.val;
 public interface IntStreamPlus 
         extends 
             IntStream,
+            IntIterable,
             IntStreamPlusWithMapFirst,
             IntStreamPlusWithMapThen,
             IntStreamPlusWithMapTuple,
@@ -380,11 +382,12 @@ public interface IntStreamPlus
                 .isParallel();
     }
     
-    // TODO - Think about terminate
     @Override
-    public default PrimitiveIterator.OfInt iterator() {
-        return intStream()
-                .iterator();
+    public default IntIteratorPlus iterator() {
+        return IntIteratorPlus
+                .from(
+                    intStream()
+                    .iterator());
     }
     
     @Override

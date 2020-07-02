@@ -33,6 +33,8 @@ import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
 
+// TODO - Add AutoCloseable
+
 @FunctionalInterface
 public interface IteratorPlus<DATA> extends Iterator<DATA> {
     

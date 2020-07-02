@@ -13,7 +13,7 @@ import lombok.val;
 
 public interface IntStreamableWithSplit extends IntStreamableWithMapTuple {
         
-    public IntStreamable stream();
+    public IntStreamPlus intStream();
     
     // The most important thing here is to only evaluate the value once.
     // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.

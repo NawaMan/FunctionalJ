@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.IntSummaryStatistics;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
-import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -31,6 +30,8 @@ import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.AsStreamable;
+import functionalj.stream.IntIterable;
+import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import functionalj.stream.doublestream.AsDoubleStreamable;
@@ -44,11 +45,12 @@ import lombok.val;
 public interface IntStreamable 
         extends
             AsIntStreamable,
+            IntIterable,
             IntStreamableWithMapFirst,
             IntStreamableWithMapThen,
             IntStreamableWithMapTuple,
             IntStreamableWithMapToMap,
-//            StreamPlusWithSplit,
+            IntStreamableWithSplit,
             IntStreamableWithSegment,
             IntStreamableWithCombine,
             IntStreamableWithCalculate,
@@ -317,7 +319,8 @@ public interface IntStreamable
         return ()->StreamPlus.from(intStream().mapToObj(theInteger.boxed()));
     }
     
-    public default PrimitiveIterator.OfInt iterator() {
+    @Override
+    public default IntIteratorPlus iterator() {
         return intStream().iterator();
     }
     

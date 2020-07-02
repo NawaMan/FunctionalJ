@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
-import java.util.PrimitiveIterator;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -33,6 +32,8 @@ import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.AsStreamable;
+import functionalj.stream.IntIterable;
+import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import functionalj.stream.intstream.AsIntStreamable;
@@ -46,6 +47,7 @@ import lombok.val;
 public interface IntFuncList
         extends 
             AsIntStreamable,
+            IntIterable,
             IntFuncListWithMapFirst,
             IntFuncListWithMapThen,
             IntFuncListWithMapTuple,
@@ -215,10 +217,10 @@ public interface IntFuncList
                 .toListString();
     }
     
-    public default PrimitiveIterator.OfInt iterator() {
+    @Override
+    public default IntIteratorPlus iterator() {
         return intStream().iterator();
     }
-    
     
     public default FuncList<Integer> boxed() {
         return FuncListDerived.from(()->StreamPlus.from(intStream().mapToObj(theInteger.boxed())));
