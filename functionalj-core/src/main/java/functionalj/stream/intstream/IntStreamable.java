@@ -540,7 +540,7 @@ public interface IntStreamable
                 streamable -> 
                     streamable
                     .intStream()
-                    .sortedByObj(mapper));
+                    .sortedAs(mapper));
     }
     
     public default <T> IntStreamable sortedByObj(
@@ -550,7 +550,7 @@ public interface IntStreamable
                 streamable -> 
                     streamable
                     .intStream()
-                    .sortedByObj(mapper, comparator));
+                    .sortedAs(mapper, comparator));
     }
     
     //-- Terminate --

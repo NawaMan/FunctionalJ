@@ -53,7 +53,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -218,14 +217,6 @@ public class StreamPlusTest {
         val logs   = new ArrayList<String>();
         stream.forEach(s -> logs.add(s));
         assertStrings("[One, Two, Three]", logs);
-    }
-    
-    @Test
-    public void testForEachNull() {
-        val stream = StreamPlus.of("One", "Two", "Three");
-        val logs   = new ArrayList<String>();
-        stream.forEach((Consumer<String>)null);
-        assertStrings("[]", logs);
     }
     
     @Test

@@ -34,6 +34,10 @@ import lombok.val;
 
 public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     
+    public static <D> FuncUnit1<D> doNothing() {
+        return (item) -> {};
+        
+    }
     public static <INPUT> FuncUnit1<INPUT> of(FuncUnit1<INPUT> consumer) {
         return consumer;
     }

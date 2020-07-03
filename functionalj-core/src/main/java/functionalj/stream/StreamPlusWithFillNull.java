@@ -12,13 +12,13 @@ import lombok.val;
 
 public interface StreamPlusWithFillNull<DATA> {
     
-    public <TARGET> StreamPlus<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action);
+    public <TARGET> StreamPlus<TARGET> derive(Function<Stream<DATA>, Stream<TARGET>> action);
     
     //== fillNull ==
     
     public default StreamPlus<DATA> fillNull(
             DATA replacement) {
-        return deriveWith(stream ->  {
+        return derive(stream ->  {
             return stream.map(value -> value == null ? replacement : value);
         });
     }
@@ -36,7 +36,7 @@ public interface StreamPlusWithFillNull<DATA> {
             Func1<DATA, VALUE>       get, 
             Func2<DATA, VALUE, DATA> set, 
             VALUE                    replacement) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return (Stream<DATA>)stream
                     .map(orgElmt -> {
                         val value   = get.apply(orgElmt);
@@ -62,7 +62,7 @@ public interface StreamPlusWithFillNull<DATA> {
             Func1<DATA, VALUE>       get, 
             Func2<DATA, VALUE, DATA> set, 
             Supplier<VALUE>          replacementSupplier) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return (Stream<DATA>)stream
                     .map(orgElmt -> {
                         val value   = get.apply(orgElmt);
@@ -89,7 +89,7 @@ public interface StreamPlusWithFillNull<DATA> {
             Func1<DATA, VALUE>       get, 
             Func2<DATA, VALUE, DATA> set, 
             Func1<DATA, VALUE>       replacementFunction) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return (Stream<DATA>)stream
                     .map(orgElmt -> {
                         val value = get.apply(orgElmt);

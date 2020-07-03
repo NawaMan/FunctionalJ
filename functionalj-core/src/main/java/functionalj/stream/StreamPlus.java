@@ -30,7 +30,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -104,26 +103,21 @@ public interface StreamPlus<DATA>
             StreamPlusAdditionalTerminalOperators<DATA>
         {
     
-    /**
-     * Throw a no more element exception. This is used for generater.
-     * This is done in the way that it can be overridden.
-     **/
+    /** Throw a no more element exception. This is used for generator. */
     public static <D> D noMoreElement() throws NoMoreResultException {
         ThrowFuncs.doThrowFrom(()->new NoMoreResultException());
         return (D)null;
     }
     
-    /**
-     * Returns an empty StreamPlus.
-     */
+    //== Constructor ==
+    
+    /** Returns an empty StreamPlus. */
     public static <D> StreamPlus<D> empty() {
         return StreamPlus
                 .from(Stream.empty());
     }
-
-    /**
-     * Returns an empty StreamPlus.
-     */
+    
+    /** Returns an empty StreamPlus. */
     public static <D> StreamPlus<D> emptyStream() {
         return StreamPlus
                 .from(Stream.empty());
@@ -213,17 +207,17 @@ public interface StreamPlus<DATA>
                 .mapToObj(i -> data.get(i % size)));
     }
     
+    /** Create a StreamPlus that for an infinite loop - the value is the index of the loop. */
+    public static StreamPlus<Integer> loop() {
+        return StreamPlus
+                .infiniteInt();
+    }
+    
     /** Create a StreamPlus that for a loop with the number of time given - the value is the index of the loop. */
     public static StreamPlus<Integer> loop(int time) {
         return StreamPlus
                 .infiniteInt()
                 .limit(time);
-    }
-    
-    /** Create a StreamPlus that for an infinite loop - the value is the index of the loop. */
-    public static StreamPlus<Integer> loop() {
-        return StreamPlus
-                .infiniteInt();
     }
     
     /** Create a StreamPlus that for an infinite loop - the value is the index of the loop. */
@@ -243,7 +237,6 @@ public interface StreamPlus<DATA>
     }
     
     /** Concatenate all the given streams. */
-    // Because people know this.
     @SafeVarargs
     public static <D> StreamPlus<D> concat(Stream<D> ... streams) {
         return StreamPlus
@@ -511,7 +504,7 @@ public interface StreamPlus<DATA>
                 .zipWith(stream2, option, merger);
     }
     
-    //== Stream ==
+    //== Core ==
     
     public Stream<DATA> stream();
     
@@ -538,8 +531,9 @@ public interface StreamPlus<DATA>
         }
     }
     
-    public default <TARGET> StreamPlus<TARGET> sequential(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action) {
-        return deriveWith(stream -> {
+    public default <TARGET> StreamPlus<TARGET> sequential(
+            Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action) {
+        return derive(stream -> {
             val isParallel = stream.isParallel();
             if (!isParallel) {
                 return action.apply(StreamPlus.from(stream));
@@ -553,18 +547,18 @@ public interface StreamPlus<DATA>
         });
     }
     
-    public default <TARGET> StreamPlus<TARGET> deriveWith(
+    public default <TARGET> StreamPlus<TARGET> derive(
             Function<Stream<DATA>, Stream<TARGET>> action) {
         return StreamPlus.from(
                 action.apply(
                         this.stream()));
     }
     
-    //== Stream sepecific ==
+    //== Stream specific ==
     
     @Override
     public default StreamPlus<DATA> sequential() {
-        return deriveWith(stream -> { 
+        return derive(stream -> { 
             return stream
                     .sequential();
         });
@@ -572,7 +566,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> parallel() {
-        return deriveWith(stream -> { 
+        return derive(stream -> { 
             return stream
                     .parallel();
         });
@@ -580,7 +574,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> unordered() {
-        return deriveWith(stream -> { 
+        return derive(stream -> { 
             return stream
                     .unordered();
         });
@@ -600,13 +594,65 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> onClose(Runnable closeHandler) {
-        return deriveWith(stream -> { 
+        return derive(stream -> { 
             return stream
                     .onClose(closeHandler);
         });
     }
     
+    //-- Iterator --
+    
+    @Override
+    public default IteratorPlus<DATA> iterator() {
+        return IteratorPlus
+                .from(stream());
+    }
+    
+    @Override
+    public default Spliterator<DATA> spliterator() {
+        return terminate(s -> {
+            val iterator = iterator();
+            return Spliterators.spliteratorUnknownSize(iterator, 0);
+        });
+    }
+    
+    // TODO: Is this still needed?
+    // The recent change has make iterator unterminate action, let try out.
+    /** Use iterator of this stream without terminating the stream. */
+    public default <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action) {
+        return sequential(stream -> {
+            StreamPlus<T> result = null;
+            try {
+                val iterator = StreamPlus.from(stream).iterator();
+                result = action.apply(iterator);
+                return result;
+            } finally {
+                if (result == null) {
+                    f(()->close())
+                    .runCarelessly();
+                } else {
+                    result
+                    .onClose(()->{
+                        f(()->close())
+                        .runCarelessly();
+                    });
+                }
+            }
+        });
+    }
+    
     //== Functionalities ==
+    
+    //-- Map --
+    
+    @Override
+    public default <TARGET> StreamPlus<TARGET> map(
+            Function<? super DATA, ? extends TARGET> mapper) {
+        return derive(stream -> {
+            return stream
+                    .map(mapper);
+        });
+    }
     
     @Override
     public default IntStreamPlus mapToInt(
@@ -636,6 +682,17 @@ public interface StreamPlus<DATA>
                     .mapToDouble(mapper));
     }
     
+    //-- FlatMap --
+    
+    @Override
+    public default <TARGET> StreamPlus<TARGET> flatMap(
+            Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
+        return derive(stream -> {
+            return stream
+                    .flatMap(mapper);
+        });
+    }
+    
     @Override
     public default IntStreamPlus flatMapToInt(
             Function<? super DATA, ? extends IntStream> mapper) {
@@ -663,28 +720,12 @@ public interface StreamPlus<DATA>
                     .flatMapToDouble(mapper));
     }
     
-    @Override
-    public default <TARGET> StreamPlus<TARGET> map(
-            Function<? super DATA, ? extends TARGET> mapper) {
-        return deriveWith(stream -> {
-            return stream
-                    .map(mapper);
-        });
-    }
-    
-    @Override
-    public default <TARGET> StreamPlus<TARGET> flatMap(
-            Function<? super DATA, ? extends Stream<? extends TARGET>> mapper) {
-        return deriveWith(stream -> {
-            return stream
-                    .flatMap(mapper);
-        });
-    }
+    //-- Filter --
     
     @Override
     public default StreamPlus<DATA> filter(
             Predicate<? super DATA> predicate) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return (predicate == null)
                 ? stream
                 : stream.filter(predicate);
@@ -702,10 +743,12 @@ public interface StreamPlus<DATA>
         });
     }
     
+    //-- Peek --
+    
     @Override
     public default StreamPlus<DATA> peek(
             Consumer<? super DATA> action) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return (action == null)
                     ? stream
                     : stream.peek(action);
@@ -716,30 +759,30 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> limit(long maxSize) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return stream
                     .limit(maxSize);
         });
     }
     
-    @Override
-    public default StreamPlus<DATA> skip(long n) {
-        return deriveWith(stream -> {
-            return stream
-                    .skip(n);
-        });
-    }
-    
     public default StreamPlus<DATA> limit(Long maxSize) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return ((maxSize == null) || (maxSize.longValue() < 0))
                     ? stream
                     : stream.limit(maxSize);
         });
     }
     
+    @Override
+    public default StreamPlus<DATA> skip(long n) {
+        return derive(stream -> {
+            return stream
+                    .skip(n);
+        });
+    }
+    
     public default StreamPlus<DATA> skip(Long startAt) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return ((startAt == null) || (startAt.longValue() < 0))
                     ? stream
                     : stream.skip(startAt);
@@ -779,7 +822,6 @@ public interface StreamPlus<DATA>
             return StreamPlus.from(
                     StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
                         boolean stillGoing = true;
-                        
                         @Override
                         public boolean tryAdvance(final Consumer<? super DATA> consumer) {
                             if (stillGoing) {
@@ -826,7 +868,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> distinct() {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return stream
                     .distinct();
         });
@@ -836,7 +878,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> sorted() {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return stream
                     .sorted();
         });
@@ -845,7 +887,7 @@ public interface StreamPlus<DATA>
     @Override
     public default StreamPlus<DATA> sorted(
             Comparator<? super DATA> comparator) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return (comparator == null)
                     ? stream.sorted()
                     : stream.sorted(comparator);
@@ -854,7 +896,7 @@ public interface StreamPlus<DATA>
     
     public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(
             Function<? super DATA, T> mapper) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return stream.sorted((a, b) -> {
                         T vA = mapper.apply(a);
                         T vB = mapper.apply(b);
@@ -866,7 +908,7 @@ public interface StreamPlus<DATA>
     public default <T> StreamPlus<DATA> sortedBy(
             Function<? super DATA, T> mapper, 
             Comparator<T>             comparator) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return stream.sorted((a, b) -> {
                     T vA = mapper.apply(a);
                     T vB = mapper.apply(b);
@@ -881,11 +923,8 @@ public interface StreamPlus<DATA>
     public default void forEach(
             Consumer<? super DATA> action) {
         terminate(stream -> {
-            if (action == null)
-                return;
-            
             stream
-            .forEach(action);
+                .forEach(action);
         });
     }
     
@@ -893,9 +932,6 @@ public interface StreamPlus<DATA>
     public default void forEachOrdered(
             Consumer<? super DATA> action) {
         terminate(stream -> {
-            if (action == null)
-                return;
-            
             stream
             .forEachOrdered(action);
         });
@@ -904,19 +940,19 @@ public interface StreamPlus<DATA>
     @Override
     public default DATA reduce(
             DATA identity, 
-            BinaryOperator<DATA> accumulator) {
+            BinaryOperator<DATA> reducer) {
         return terminate(stream -> {
             return stream
-                    .reduce(identity, accumulator);
+                    .reduce(identity, reducer);
         });
     }
     
     @Override
     public default Optional<DATA> reduce(
-            BinaryOperator<DATA> accumulator) {
+            BinaryOperator<DATA> reducer) {
         return terminate(stream -> {
             return stream
-                    .reduce(accumulator);
+                    .reduce(reducer);
         });
     }
     
@@ -950,6 +986,8 @@ public interface StreamPlus<DATA>
                     .collect(collector);
         });
     }
+    
+    //-- statistics --
     
     @Override
     public default Optional<DATA> min(
@@ -994,6 +1032,8 @@ public interface StreamPlus<DATA>
         });
     }
     
+    //== Match ==
+    
     @Override
     public default boolean anyMatch(
             Predicate<? super DATA> predicate) {
@@ -1021,15 +1061,23 @@ public interface StreamPlus<DATA>
         });
     }
     
+    @Override
     public default Optional<DATA> findFirst() {
-        return stream().findFirst();
+        return terminate(stream -> {
+            return stream
+                    .findFirst();
+        });
     }
     
+    @Override
     public default Optional<DATA> findAny() {
-        return stream().findAny();
+        return terminate(stream -> {
+            return stream
+                    .findAny();
+        });
     }
     
-    //== toXXX ===
+    //== toXXX ==
     
     @Override
     public default Object[] toArray() {
@@ -1053,13 +1101,6 @@ public interface StreamPlus<DATA>
         return terminate(stream -> {
             return stream
                     .toArray(generator);
-        });
-    }
-    
-    public default List<DATA> toJavaList() {
-        return terminate(stream -> {
-            return stream
-                    .collect(Collectors.toList());
         });
     }
     
@@ -1087,16 +1128,19 @@ public interface StreamPlus<DATA>
                 .toArray();
     }
     
+    public default List<DATA> toJavaList() {
+        return terminate(stream -> {
+            return stream
+                    .collect(Collectors.toList());
+        });
+    }
+    
     public default FuncList<DATA> toList() {
         return toImmutableList();
     }
     
     public default FuncList<DATA> toFuncList() {
         return toImmutableList();
-    }
-    
-    public default String toListString() {
-        return "[" + map(String::valueOf).collect(Collectors.joining(", ")) + "]";
     }
     
     public default ImmutableList<DATA> toImmutableList() {
@@ -1110,50 +1154,22 @@ public interface StreamPlus<DATA>
     }
     
     public default ArrayList<DATA> toArrayList() {
+        return terminate(stream -> {
+        // TODO - This is not efficient but without knowing the size, it is not so easy to do efficiently
         return new ArrayList<DATA>(toJavaList());
+        });
     }
     
     public default Set<DATA> toSet() {
-        return new HashSet<DATA>(this.collect(Collectors.toSet()));
+        return this.collect(Collectors.toSet());
     }
     
-    //-- Iterator --
-    @Override
-    public default IteratorPlus<DATA> iterator() {
-        return IteratorPlus.from(stream());
-    }
-    
-    @Override
-    public default Spliterator<DATA> spliterator() {
-        return terminate(s -> {
-            val iterator = iterator();
-            return Spliterators.spliteratorUnknownSize(iterator, 0);
-        });
-    }
-    
-    /**
-     * Use iterator of this stream without terminating the stream.
-     */
-    public default <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action) {
-        return sequential(stream -> {
-            StreamPlus<T> result = null;
-            try {
-                val iterator = StreamPlus.from(stream).iterator();
-                result = action.apply(iterator);
-                return result;
-            } finally {
-                if (result == null) {
-                    f(()->close())
-                    .runCarelessly();
-                } else {
-                    result
-                    .onClose(()->{
-                        f(()->close())
-                        .runCarelessly();
-                    });
-                }
-            }
-        });
+    public default String toListString() {
+        // TODO - There must be a faster way
+        val strValue 
+                = map(String::valueOf)
+                .collect(Collectors.joining(", "));
+        return "[" + strValue + "]";
     }
     
     //== Plus ==
@@ -1201,7 +1217,8 @@ public interface StreamPlus<DATA>
                 = stream()
                 .map (mapToAction)
                 .peek(action -> results.add(DeferAction.<T>createNew()))
-                .peek(action -> action
+                .peek(action -> 
+                    action
                     .getPromise()
                     .onComplete(result -> {
                         val thisIndex  = index.getAndIncrement();
@@ -1211,7 +1228,7 @@ public interface StreamPlus<DATA>
                         else thisAction.fail    (result.exception());
                     })
                 )
-                .peek(action -> action.start())
+                .peek   (action -> action.start())
                 .collect(Collectors.toList())
                 ;
             
@@ -1301,10 +1318,10 @@ public interface StreamPlus<DATA>
         });
         val seed = Tuple2.of((DATA)null, this);
         val endStream 
-            = iterate(seed, func)
+            = iterate (seed, func)
             .takeUntil(t -> t == null)
-            .skip(1)
-            .map(t -> t._1());
+            .skip     (1)
+            .map      (t -> t._1());
         return endStream;
     }
     

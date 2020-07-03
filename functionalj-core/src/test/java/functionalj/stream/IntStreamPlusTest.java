@@ -482,7 +482,7 @@ public class IntStreamPlusTest {
         assertEquals(
                 "[1, 1, 13, 2, 21, 3, 34, 5, 55, 8, 89]", 
                 ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89)
-                .sortedByObj(i -> "" + i)
+                .sortedAs(i -> "" + i)
                 .toListString());
     }
     
@@ -491,7 +491,7 @@ public class IntStreamPlusTest {
         assertEquals(
                 "[13, 21, 34, 55, 89, 1, 1, 2, 3, 5, 8]", 
                 ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89)
-                .sortedByObj(i -> "" + i, (a, b) -> b.length() - a.length())
+                .sortedAs(i -> "" + i, (a, b) -> b.length() - a.length())
                 .toListString());
     }
     

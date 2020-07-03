@@ -55,7 +55,7 @@ public interface StreamPlusAdditionalTerminalOperators<DATA> {
     public Stream<DATA> stream();
     
     
-    public <TARGET> StreamPlus<TARGET> deriveWith(
+    public <TARGET> StreamPlus<TARGET> derive(
             Function<Stream<DATA>, Stream<TARGET>> action);
     
     

@@ -32,6 +32,8 @@ import lombok.val;
 
 public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     
+    public static FuncUnit0 doNothing = () -> {};
+    
     public static FuncUnit0 of(FuncUnit0 runnable) {
         return runnable;
     }

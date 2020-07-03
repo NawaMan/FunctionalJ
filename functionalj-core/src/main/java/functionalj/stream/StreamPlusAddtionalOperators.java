@@ -43,7 +43,7 @@ import lombok.val;
 public interface StreamPlusAddtionalOperators<DATA> {
     
     
-    public <TARGET> StreamPlus<TARGET> deriveWith(
+    public <TARGET> StreamPlus<TARGET> derive(
             Function<Stream<DATA>, Stream<TARGET>> action);
     
     public <TARGET> StreamPlus<TARGET> map(
@@ -124,11 +124,11 @@ public interface StreamPlusAddtionalOperators<DATA> {
     //-- Filter --
     
     public default StreamPlus<DATA> filterNonNull() {
-        return deriveWith(stream -> stream.filter(Objects::nonNull));
+        return derive(stream -> stream.filter(Objects::nonNull));
     }
     
     public default StreamPlus<DATA> filterIn(Collection<? super DATA> collection) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return (collection == null)
                 ? Stream.empty()
                 : stream.filter(data -> collection.contains(data));
@@ -136,7 +136,7 @@ public interface StreamPlusAddtionalOperators<DATA> {
     }
     
     public default StreamPlus<DATA> exclude(Predicate<? super DATA> predicate) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return (predicate == null)
                 ? stream
                 : stream.filter(data -> !predicate.test(data));
@@ -144,7 +144,7 @@ public interface StreamPlusAddtionalOperators<DATA> {
     }
     
     public default StreamPlus<DATA> excludeIn(Collection<? super DATA> collection) {
-        return deriveWith(stream -> {
+        return derive(stream -> {
             return (collection == null)
                 ? stream
                 : stream.filter(data -> !collection.contains(data));

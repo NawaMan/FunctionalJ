@@ -810,11 +810,11 @@ public interface IntFuncList
     }
     
     public default <T extends Comparable<? super T>> IntFuncList sortedByObj(IntFunction<T> mapper) {
-        return derive(() -> intStream().sortedByObj(mapper));
+        return derive(() -> intStream().sortedAs(mapper));
     }
     
     public default <T> IntFuncList sortedByObj(IntFunction<T> mapper, Comparator<T> comparator) {
-        return derive(() -> intStream().sortedByObj(mapper, comparator));
+        return derive(() -> intStream().sortedAs(mapper, comparator));
     }
     
     //== Spawn ==
