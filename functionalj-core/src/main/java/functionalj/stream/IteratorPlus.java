@@ -69,7 +69,11 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable {
     
     @Override
     public default boolean hasNext() {
-        return asIterator().hasNext();
+        val hasNext = asIterator().hasNext();
+        if (!hasNext) {
+            close();
+        }
+        return hasNext;
     }
     
     @Override

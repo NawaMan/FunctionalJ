@@ -558,26 +558,20 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> sequential() {
-        return derive(stream -> { 
-            return stream
-                    .sequential();
-        });
+        return StreamPlus
+                .from(stream().sequential());
     }
     
     @Override
     public default StreamPlus<DATA> parallel() {
-        return derive(stream -> { 
-            return stream
-                    .parallel();
-        });
+        return StreamPlus
+                .from(stream().parallel());
     } 
     
     @Override
     public default StreamPlus<DATA> unordered() {
-        return derive(stream -> { 
-            return stream
-                    .unordered();
-        });
+        return StreamPlus
+                .from(stream().unordered());
     }
     
     @Override
@@ -594,10 +588,9 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> onClose(Runnable closeHandler) {
-        return derive(stream -> { 
-            return stream
-                    .onClose(closeHandler);
-        });
+        return StreamPlus
+                .from(stream()
+                .onClose(closeHandler));
     }
     
     //-- Iterator --
@@ -605,7 +598,7 @@ public interface StreamPlus<DATA>
     @Override
     public default IteratorPlus<DATA> iterator() {
         return IteratorPlus
-                .from(stream());
+                .from(stream().iterator());
     }
     
     @Override
@@ -617,7 +610,7 @@ public interface StreamPlus<DATA>
     }
     
     // TODO: Is this still needed?
-    // The recent change has make iterator unterminate action, let try out.
+    // The recent change has make iterator non-terminate action, let try out.
     /** Use iterator of this stream without terminating the stream. */
     public default <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action) {
         return sequential(stream -> {

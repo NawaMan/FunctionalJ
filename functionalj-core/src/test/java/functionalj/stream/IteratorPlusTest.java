@@ -24,10 +24,12 @@
 package functionalj.stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 
@@ -148,5 +150,35 @@ public class IteratorPlusTest {
         assertEquals(
                 "[]",
                 stream.map(i -> i / firstNumber).toListString());
+    }
+    
+    @Test
+    public void testIteratorClose() {
+        val iterator = IteratorPlus.of(2, 3, 5);
+        val isClosed = new AtomicBoolean(false);
+        iterator.onClose(()->isClosed.set(true));
+        
+        assertEquals("[2, 3, 5]", iterator.pullNext(3).map(IteratorPlus::stream).map(StreamPlus::toListString).get());
+        assertFalse(isClosed.get());
+        
+        assertFalse(iterator.hasNext());
+        assertTrue(isClosed.get());
+    }
+    
+    @Test
+    public void testIteratorFromStreamClose() {
+        val stream = StreamPlus.of(2, 3, 5);
+        val isClosed = new AtomicBoolean(false);
+        stream.onClose(()->isClosed.set(true));
+        assertFalse(isClosed.get());
+        
+        val iterator = stream.iterator();
+        assertFalse(isClosed.get());
+        
+        assertEquals("[2, 3, 5]", iterator.pullNext(3).map(IteratorPlus::stream).map(StreamPlus::toListString).get());
+        assertFalse(isClosed.get());
+        
+        assertFalse(iterator.hasNext());
+        assertTrue(isClosed.get());
     }
 }

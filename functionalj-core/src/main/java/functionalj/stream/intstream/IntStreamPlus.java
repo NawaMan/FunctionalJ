@@ -491,7 +491,7 @@ public interface IntStreamPlus
     @Override
     public default IntStreamPlus parallel() {
         return IntStreamPlus
-                .from(intStream().sequential());
+                .from(intStream().parallel());
     }
     
     @Override
@@ -537,7 +537,7 @@ public interface IntStreamPlus
     }
     
     // TODO: Is this still needed?
-    // The recent change has make iterator unterminate action, let try out.
+    // The recent change has make iterator non-terminate action, let try out.
     /** Use iterator of this stream without terminating the stream. */
     public default IntStreamPlus useIterator(Function<IntIteratorPlus, IntStreamPlus> action) {
         return sequential(stream -> {

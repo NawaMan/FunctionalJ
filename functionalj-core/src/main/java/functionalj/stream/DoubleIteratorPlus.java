@@ -63,7 +63,11 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble {
     
     @Override
     public default boolean hasNext() {
-        return asIterator().hasNext();
+        val hasNext = asIterator().hasNext();
+//        if (!hasNext) {
+//            close();
+//        }
+        return hasNext;
     }
     
     @Override
