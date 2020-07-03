@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.Spliterator;
@@ -39,6 +40,7 @@ import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
@@ -48,6 +50,7 @@ import java.util.function.IntSupplier;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
+import java.util.function.LongPredicate;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -59,10 +62,12 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
 import functionalj.function.IntToByteFunction;
+import functionalj.functions.StrFuncs;
 import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.pipeable.Pipeable;
@@ -250,8 +255,7 @@ public interface IntStreamPlus
      * Note: this is an alias of compound()
      **/
     public static IntStreamPlus iterate(int seed, IntUnaryOperator f) {
-        return IntStreamPlus
-                .from(IntStream.iterate(seed, f));
+        return IntStreamPlus.from(IntStream.iterate(seed, f));
     }
     
     /**
@@ -269,7 +273,7 @@ public interface IntStreamPlus
      * Note: this is an alias of iterate()
      **/
     public static IntStreamPlus compound(int seed, IntUnaryOperator f) {
-        return IntStreamPlus.from(IntStream.iterate(seed, f));
+        return iterate(seed, f);
     }
     
     /**
@@ -337,8 +341,7 @@ public interface IntStreamPlus
     public static StreamPlus<IntIntTuple> zipOf(
             IntStream stream1, 
             IntStream stream2) {
-        return IntStreamPlus.from(stream1)
-                .zipWith(stream2);
+        return IntStreamPlus.from(stream1).zipWith(stream2);
     }
     
     /**
@@ -356,43 +359,42 @@ public interface IntStreamPlus
             IntStream stream1, 
             IntStream stream2,
             int       defaultValue) {
-        return IntStreamPlus.from(stream1)
-                .zipWith(stream2, defaultValue);
+        return IntStreamPlus.from(stream1).zipWith(stream2, defaultValue);
     }
     
     public static StreamPlus<IntIntTuple> zipOf(
             IntStream stream1, int defaultValue1,
             IntStream stream2, int defaultValue2) {
-        return IntStreamPlus.from(stream1)
-                .zipWith(stream2, defaultValue1, defaultValue2);
+        return IntStreamPlus.from(stream1).zipWith(stream2, defaultValue1, defaultValue2);
     }
     
     public static IntStreamPlus zipOf(
             IntStream              stream1, 
             IntStream              stream2,
             IntBiFunctionPrimitive merger) {
-        return IntStreamPlus.from(stream1)
-                .zipWith(stream2, merger);
+        return IntStreamPlus.from(stream1).zipWith(stream2, merger);
     }
     public static IntStreamPlus zipOf(
             IntStream              stream1, 
             IntStream              stream2,
             int                    defaultValue,
             IntBiFunctionPrimitive merger) {
-        return IntStreamPlus.from(stream1)
-                .zipWith(stream2, defaultValue, merger);
+        return IntStreamPlus.from(stream1).zipWith(stream2, defaultValue, merger);
     }
     public static IntStreamPlus zipOf(
             IntStream stream1, int defaultValue1,
             IntStream stream2, int defaultValue2,
             IntBiFunctionPrimitive merger) {
-        return IntStreamPlus.from(stream1)
-                .zipWith(stream2, defaultValue1, defaultValue2, merger);
+        return IntStreamPlus.from(stream1).zipWith(stream2, defaultValue1, defaultValue2, merger);
     }
     
     //== Core ==
     
     public IntStream intStream();
+    
+    public default IntStream stream() {
+        return intStream();
+    }
     
     public default IntStreamPlus intStreamPlus() {
         return this;
@@ -400,22 +402,24 @@ public interface IntStreamPlus
     
     @Override
     public default StreamPlus<Integer> boxed() {
-        return StreamPlus.from(intStream().boxed());
+        return StreamPlus.from(stream().boxed());
     }
     
-    public default StreamPlus<Integer> asStream() {
-        val stream 
-                = StreamPlus.from(intStream()
-                .mapToObj(i -> Integer.valueOf(i)));
-        stream.onClose(() -> { close(); });
-        return stream;
+    @Override
+    public default LongStreamPlus asLongStream() {
+        return LongStreamPlus.from(intStream().asLongStream());
+    }
+    
+    @Override
+    public default DoubleStreamPlus asDoubleStream() {
+        return DoubleStreamPlus.from(intStream().asDoubleStream());
     }
     
     //== Helper functions ==
     
     public default <TARGET> TARGET terminate(
             Function<IntStream, TARGET> action) {
-        val stream = intStream();
+        val stream = stream();
         try {
             val result = action.apply(stream);
             return result;
@@ -424,9 +428,8 @@ public interface IntStreamPlus
         }
     }
     
-    public default void terminate(
-            FuncUnit1<IntStream> action) {
-        val stream = intStream();
+    public default void terminate(FuncUnit1<IntStream> action) {
+        val stream = stream();
         try {
             action.accept(stream);
         } finally {
@@ -434,98 +437,77 @@ public interface IntStreamPlus
         }
     }
     
-    public default IntStreamPlus sequential(
-            Function<IntStreamPlus, IntStreamPlus> action) {
-        val stream = intStream();
-        
-        val isParallel = stream.isParallel();
-        if (!isParallel) {
-            val orgIntStreamPlus = IntStreamPlus.from(stream);
-            val newIntStreamPlus = action.apply(orgIntStreamPlus);
-            return newIntStreamPlus;
-        }
-        
-        val orgIntStreamPlus = IntStreamPlus.from(stream.sequential());
+    public default IntStreamPlus sequential(Func1<IntStreamPlus, IntStreamPlus> action) {
+        val isParallel = isParallel();
+        val orgIntStreamPlus = sequential();
         val newIntStreamPlus = action.apply(orgIntStreamPlus);
-        if (newIntStreamPlus.isParallel())
+        if (newIntStreamPlus.isParallel() == isParallel)
             return newIntStreamPlus;
         
-        return newIntStreamPlus.parallel();
+        if (isParallel)
+            return newIntStreamPlus.parallel();
+        
+        return newIntStreamPlus.sequential();
     }
     
-    public default <TARGET> StreamPlus<TARGET> sequentialToObj(Function<IntStreamPlus, StreamPlus<TARGET>> action) {
-        val stream = intStream();
+    public default <T> StreamPlus<T> sequentialToObj(Func1<IntStreamPlus, StreamPlus<T>> action) {
+        val isParallel = isParallel();
+        val orgIntStreamPlus = sequential();
+        val newIntStreamPlus = action.apply(orgIntStreamPlus);
+        if (newIntStreamPlus.isParallel() == isParallel)
+            return newIntStreamPlus;
         
-        val isParallel = stream.isParallel();
-        if (!isParallel) {
-            return action.apply(IntStreamPlus.from(stream));
-        }
+        if (isParallel)
+            return newIntStreamPlus.parallel();
         
-        val resultStream = action.apply(IntStreamPlus.from(stream.sequential()));
-        if (resultStream.isParallel())
-            return resultStream;
-        
-        return resultStream.parallel();
+        return newIntStreamPlus.sequential();
     }
     
-    public default IntStreamPlus derive(
-            Function<IntStream, IntStream> action) {
-        return IntStreamPlus
-                .from(action.apply(this));
+    public default IntStreamPlus derive(Function<IntStream, IntStream> action) {
+        return from(action.apply(this));
     }
     
-    public default <TARGET> StreamPlus<TARGET> deriveToStream(
-            Function<IntStream, Stream<TARGET>> action) {
-        return StreamPlus
-                .from(action.apply(this));
+    public default <T> StreamPlus<T> deriveAsObject(Function<IntStream, Stream<T>> action) {
+        return StreamPlus.from(action.apply(this));
     }
     
     //== Stream specific ==
     
     @Override
     public default IntStreamPlus sequential() {
-        return IntStreamPlus
-                .from(intStream().sequential());
+        return from(stream().sequential());
     }
     
     @Override
     public default IntStreamPlus parallel() {
-        return IntStreamPlus
-                .from(intStream().parallel());
+        return from(stream().parallel());
     }
     
     @Override
     public default IntStreamPlus unordered() {
-        return IntStreamPlus
-                .from(intStream().unordered());
+        return from(stream().unordered());
     }
     
+    @Override
     public default boolean isParallel() {
-        return intStream()
-                .isParallel();
+        return stream().isParallel();
     }
     
     @Override
     public default void close() {
-        intStream()
-        .close();
+        stream().close();
     }
     
     @Override
     public default IntStreamPlus onClose(Runnable closeHandler) {
-        return IntStreamPlus
-                .from(intStream()
-                .onClose(closeHandler));
+        return from(stream().onClose(closeHandler));
     }
     
     //-- Iterator --
     
     @Override
     public default IntIteratorPlus iterator() {
-        return IntIteratorPlus
-                .from(
-                    intStream()
-                    .iterator());
+        return IntIteratorPlus.from(stream().iterator());
     }
     
     @Override
@@ -539,11 +521,11 @@ public interface IntStreamPlus
     // TODO: Is this still needed?
     // The recent change has make iterator non-terminate action, let try out.
     /** Use iterator of this stream without terminating the stream. */
-    public default IntStreamPlus useIterator(Function<IntIteratorPlus, IntStreamPlus> action) {
+    public default IntStreamPlus useIterator(Func1<IntIteratorPlus, IntStreamPlus> action) {
         return sequential(stream -> {
             IntStreamPlus result = null;
             try {
-                val iterator = IntIteratorPlus.from(stream).iterator();
+                val iterator = iterator();
                 result = action.apply(iterator);
                 return result;
             } finally {
@@ -563,7 +545,7 @@ public interface IntStreamPlus
     
     @Override
     public default <TARGET> StreamPlus<TARGET> useIteratorToObj(
-            Function<IntIteratorPlus, StreamPlus<TARGET>> action) {
+            Func1<IntIteratorPlus, StreamPlus<TARGET>> action) {
         return sequentialToObj(stream -> {
             StreamPlus<TARGET> result = null;
             try {
@@ -591,40 +573,45 @@ public interface IntStreamPlus
     
     @Override
     public default IntStreamPlus map(IntUnaryOperator mapper) {
-        return IntStreamPlus
-                .from(intStream().map(mapper));
+        return from(stream().map(mapper));
     }
     
     public default IntStreamPlus mapToInt(IntUnaryOperator mapper) {
-        return IntStreamPlus
-                .from(intStream().map(mapper));
+        return from(stream().map(mapper));
     }
     
     @Override
     public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
-        return LongStreamPlus
-                .from(intStream().mapToLong(mapper));
+        return LongStreamPlus.from(stream().mapToLong(mapper));
     }
     
     @Override
     public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
-        return DoubleStreamPlus
-                .from(intStream().mapToDouble (mapper));
+        return DoubleStreamPlus.from(stream().mapToDouble(mapper));
     }
     
     @Override
     public default <T> StreamPlus<T> mapToObj(IntFunction<? extends T> mapper) {
-        StreamPlus<T> stream = StreamPlus.from(intStream().mapToObj(mapper));
-        stream.onClose(()->{ close(); });
-        return stream;
+        return StreamPlus.from(stream().mapToObj(mapper));
     }
     
     //-- FlatMap --
     
     @Override
-    public default IntStreamPlus flatMap(
-            IntFunction<? extends IntStream> mapper) {
-        return IntStreamPlus.from(intStream().flatMap(mapper));
+    public default IntStreamPlus flatMap(IntFunction<? extends IntStream> mapper) {
+        return from(stream().flatMap(mapper));
+    }
+    
+    public default IntStreamPlus flatMapToInt(IntFunction<? extends IntStream> mapper) {
+        return flatMap(mapper);
+    }
+    
+    public default LongStreamPlus flatMapToLong(IntFunction<? extends LongStream> mapper) {
+        return mapToObj(mapper).flatMapToLong(itself());
+    }
+    
+    public default DoubleStreamPlus flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {
+        return mapToObj(mapper).flatMapToDouble(itself());
     }
     
     public default <T> StreamPlus<T> flatMapToObj(
@@ -635,59 +622,65 @@ public interface IntStreamPlus
                 .flatMap(stream -> stream));
     }
     
-    public default IntStreamPlus flatMapToInt(
-            IntFunction<? extends IntStream> mapper) {
-        return mapToObj(mapper)
-                .flatMapToInt(itself());
-    }
-    
-    public default LongStreamPlus flatMapToLong(
-            IntFunction<? extends LongStream> mapper) {
-        return mapToObj(mapper)
-                .flatMapToLong(itself());
-    }
-    
-    public default DoubleStreamPlus flatMapToDouble(
-            IntFunction<? extends DoubleStream> mapper) {
-        return mapToObj(mapper)
-                .flatMapToDouble(itself());
-    }
-    
     //-- Filter --
     
     @Override
-    public default IntStreamPlus filter(
-            IntPredicate predicate) {
-        return IntStreamPlus
-                .from(intStream().filter(predicate));
+    public default IntStreamPlus filter(IntPredicate predicate) {
+        return from(stream().filter(predicate));
     }
     
     public default IntStreamPlus filter(
             IntUnaryOperator mapper, 
             IntPredicate     predicate) {
-        return IntStreamPlus.from(intStream().filter(i -> {
-            val v = mapper.applyAsInt(i);
-            val b = predicate.test(v);
-            return b;
-        }));
+        return filter(i -> {
+            val target = mapper.applyAsInt(i);
+            val isPass = predicate.test(target);
+            return isPass;
+        });
+    }
+    
+    public default IntStreamPlus filterAsInt(
+            IntUnaryOperator mapper, 
+            IntPredicate     predicate) {
+        return filter(mapper, predicate);
+    }
+    
+    public default IntStreamPlus filterAsLong(
+            IntToLongFunction mapper, 
+            LongPredicate     predicate) {
+        return filter(value -> {
+            val target = mapper.applyAsLong(value);
+            val isPass = predicate.test(target);
+            return isPass;
+        });
+    }
+    
+    public default IntStreamPlus filterAsDouble(
+            IntToDoubleFunction mapper, 
+            DoublePredicate     predicate) {
+        return filter(value -> {
+            val target = mapper.applyAsDouble(value);
+            val isPass = predicate.test(target);
+            return isPass;
+        });
     }
     
     public default <T> IntStreamPlus filterAsObject(
             IntFunction<? extends T> mapper,
-            Predicate<? super T>     theCondition) {
+            Predicate<? super T>     predicate) {
         return filter(value -> {
             val target = mapper.apply(value);
-            val isPass = theCondition.test(target);
+            val isPass = predicate.test(target);
             return isPass;
         });
     }
     
     public default <T> IntStreamPlus filterAsObject(
             Function<Integer, ? extends T> mapper,
-            Predicate<? super T>           theCondition) {
+            Predicate<? super T>           predicate) {
         return filter(value -> {
             val target = mapper.apply(value);
-            val isPass = theCondition.test(target);
+            val isPass = predicate.test(target);
             return isPass;
         });
     }
@@ -696,52 +689,60 @@ public interface IntStreamPlus
     
     @Override
     public default IntStreamPlus peek(IntConsumer action) {
-        return IntStreamPlus
-                .from(intStream().peek(action));
+        return from(stream().peek(action));
     }
     
     //-- Limit/Skip --
     
     @Override
     public default IntStreamPlus limit(long maxSize) {
-        return IntStreamPlus
-                .from(intStream().limit(maxSize));
+        return from(stream().limit(maxSize));
+    }
+    
+    public default IntStreamPlus limit(Long maxSize) {
+        return ((maxSize == null) || (maxSize.longValue() < 0))
+                ? this
+                : from(stream().limit(maxSize));
     }
     
     @Override
     public default IntStreamPlus skip(long offset) {
-        return IntStreamPlus.from(intStream().skip(offset));
+        return from(stream().skip(offset));
+    }
+    
+    public default IntStreamPlus skip(Long offset) {
+        return ((offset == null) || (offset.longValue() < 0))
+                ? this
+                : from(stream().skip(offset));
     }
     
     public default IntStreamPlus skipWhile(IntPredicate condition) {
         return sequential(stream -> {
             val isStillTrue = new AtomicBoolean(true);
-            return stream
-                    .filter(e -> {
-                        if (!isStillTrue.get())
-                            return true;
-                        
-                        if (!condition.test(e))
-                            isStillTrue.set(false);
-                        
-                        return !isStillTrue.get();
-                    });
+            return stream.filter(e -> {
+                if (!isStillTrue.get())
+                    return true;
+                
+                if (!condition.test(e))
+                    isStillTrue.set(false);
+                
+                return !isStillTrue.get();
+            });
         });
     }
     
     public default IntStreamPlus skipUntil(IntPredicate condition) {
         return sequential(stream -> {
             val isStillTrue = new AtomicBoolean(true);
-            return stream
-                    .filter(e -> {
-                        if (!isStillTrue.get())
-                            return true;
-                        
-                        if (condition.test(e))
-                            isStillTrue.set(false);
-                        
-                        return !isStillTrue.get();
-                    });
+            return stream.filter(e -> {
+                if (!isStillTrue.get())
+                    return true;
+                
+                if (condition.test(e))
+                    isStillTrue.set(false);
+                
+                return !isStillTrue.get();
+            });
         });
     }
     
@@ -755,7 +756,7 @@ public interface IntStreamPlus
                         @Override
                         public boolean tryAdvance(IntConsumer consumer) {
                             if (stillGoing) {
-                                final boolean hadNext = splitr.tryAdvance((int elem) -> {
+                                boolean hadNext = splitr.tryAdvance((int elem) -> {
                                     if (condition.test(elem)) {
                                         consumer.accept(elem);
                                     } else {
@@ -792,44 +793,49 @@ public interface IntStreamPlus
                     return false;
                 }
             }, false);
-            return IntStreamPlus.from(resultStream);
+            return from(resultStream);
         });
     }
     
     @Override
     public default IntStreamPlus distinct() {
-        return IntStreamPlus
-                .from(intStream().distinct());
+        return from(stream().distinct());
     }
     
     //-- Sorted --
     
     @Override
     public default IntStreamPlus sorted() {
-        return IntStreamPlus.from(intStream().sorted());
+        return from(stream().sorted());
     }
     
-    public default IntStreamPlus sortedBy(
-            IntUnaryOperator mapper) {
-        return IntStreamPlus.from(
-                intStream()
-                .mapToObj(i     -> new IntIntTuple(i, mapper.applyAsInt(i)))
-                .sorted  ((a,b) -> Integer.compare(a._2, b._2))
-                .mapToInt(t     -> t._1));
+    public default IntStreamPlus sorted(IntBiFunctionPrimitive comparator) {
+        return from(
+                stream()
+                .boxed   ()
+                .sorted  ((a,b) -> comparator.applyAsIntAndInt(a, b))
+                .mapToInt(i -> i));
+    }
+    
+    public default IntStreamPlus sortedBy(IntUnaryOperator mapper) {
+        return sorted((a, b) -> {
+            int vA = mapper.applyAsInt(a);
+            int vB = mapper.applyAsInt(b);
+            return Integer.compare(vA, vB);
+        });
     }
     
     public default IntStreamPlus sortedBy(
             IntUnaryOperator       mapper,
             IntBiFunctionPrimitive comparator) {
-        return IntStreamPlus.from(
-                intStream()
-                .mapToObj(i     -> new IntTuple2<>(i, mapper.applyAsInt(i)))
-                .sorted  ((a,b) -> comparator.applyAsIntAndInt(a._2, b._2))
-                .mapToInt(t     -> t._1));
+        return sorted((a, b) -> {
+            int vA = mapper.applyAsInt(a);
+            int vB = mapper.applyAsInt(b);
+            return comparator.applyAsIntAndInt(vA, vB);
+        });
     }
     
-    public default <T extends Comparable<? super T>> IntStreamPlus sortedAs(
-            IntFunction<T> mapper) {
+    public default <T extends Comparable<? super T>> IntStreamPlus sortedAs(IntFunction<T> mapper) {
         return IntStreamPlus.from(
                 intStream()
                 .mapToObj(i     -> new IntTuple2<>(i, mapper.apply(i)))
@@ -837,9 +843,7 @@ public interface IntStreamPlus
                 .mapToInt(t     -> t._1));
     }
     
-    public default <T> IntStreamPlus sortedAs(
-            IntFunction<T> mapper, 
-            Comparator<T>  comparator) {
+    public default <T> IntStreamPlus sortedAs(IntFunction<T> mapper, Comparator<T>  comparator) {
         return IntStreamPlus.from(
                 intStream()
                 .mapToObj(i     -> new IntTuple2<>(i, mapper.apply(i)))
@@ -850,8 +854,7 @@ public interface IntStreamPlus
     //-- Terminate --
     
     @Override
-    public default void forEach(
-            IntConsumer action) {
+    public default void forEach(IntConsumer action) {
         terminate(stream -> {
             stream
             .forEach(action);
@@ -859,18 +862,15 @@ public interface IntStreamPlus
     }
     
     @Override
-    public default void forEachOrdered(
-            IntConsumer action) {
-        terminate(stream-> {
+    public default void forEachOrdered(IntConsumer action) {
+        terminate(stream -> {
             stream
             .forEachOrdered(action);
         });
     }
     
     @Override
-    public default int reduce(
-            int identity,
-            IntBinaryOperator reducer) {
+    public default int reduce(int identity, IntBinaryOperator reducer) {
         return terminate(stream -> {
             return stream
                     .reduce(identity, reducer);
@@ -878,8 +878,7 @@ public interface IntStreamPlus
     }
     
     @Override
-    public default OptionalInt reduce(
-            IntBinaryOperator reducer) {
+    public default OptionalInt reduce(IntBinaryOperator reducer) {
         return terminate(stream -> {
             return stream
                     .reduce(reducer);
@@ -902,32 +901,49 @@ public interface IntStreamPlus
     @Override
     public default OptionalInt min() {
         return terminate(stream -> {
-            return stream
-                    .min();
+            return stream.min();
         });
     }
     
     @Override
     public default OptionalInt max() {
         return terminate(stream -> {
-            return stream
-                    .max();
+            return stream.max();
         });
+    }
+    
+    public default <D extends Comparable<D>> OptionalInt minBy(IntFunction<D> mapper) {
+        Optional<Integer> index 
+                = mapToObj(i -> IntTuple2.of(i, mapper.apply(i)))
+                .minBy (t -> t._2)
+                .map   (t -> t._1);
+        return index.isPresent()
+                ? OptionalInt.of(index.get())
+                : OptionalInt.empty();
+    }
+    
+    @Override
+    public default <D extends Comparable<D>> OptionalInt maxBy(IntFunction<D> mapper) {
+        Optional<Integer> index 
+                = mapToObj(i -> IntTuple2.of(i, mapper.apply(i)))
+                .maxBy (t -> t._2)
+                .map   (t -> t._1);
+        return index.isPresent()
+                ? OptionalInt.of(index.get())
+                : OptionalInt.empty();
     }
     
     @Override
     public default int sum() {
         return terminate(stream -> {
-            return stream
-                    .sum();
+            return stream.sum();
         });
     }
     
     @Override
     public default OptionalDouble average() {
         return terminate(stream -> {
-            return stream
-                    .average();
+            return stream.average();
         });
     }
     
@@ -937,16 +953,6 @@ public interface IntStreamPlus
             return stream
                     .summaryStatistics();
         });
-    }
-    
-    @Override
-    public default LongStreamPlus asLongStream() {
-        return LongStreamPlus.from(intStream().asLongStream());
-    }
-    
-    @Override
-    public default DoubleStreamPlus asDoubleStream() {
-        return DoubleStreamPlus.from(intStream().asDoubleStream());
     }
     
     @Override
@@ -967,8 +973,7 @@ public interface IntStreamPlus
     //== Match ==
     
     @Override
-    public default boolean anyMatch(
-            IntPredicate predicate) {
+    public default boolean anyMatch(IntPredicate predicate) {
         return terminate(stream -> {
             return stream
                     .anyMatch(predicate);
@@ -976,8 +981,7 @@ public interface IntStreamPlus
     }
     
     @Override
-    public default boolean allMatch(
-            IntPredicate predicate) {
+    public default boolean allMatch(IntPredicate predicate) {
         return terminate(stream -> {
             return stream
                     .allMatch(predicate);
@@ -985,8 +989,7 @@ public interface IntStreamPlus
     }
     
     @Override
-    public default boolean noneMatch(
-            IntPredicate predicate) {
+    public default boolean noneMatch(IntPredicate predicate) {
         return terminate(stream -> {
             return stream
                     .noneMatch(predicate);
@@ -1048,6 +1051,22 @@ public interface IntStreamPlus
         return toArray();
     }
     
+    public default long[] toLongArray() {
+        return toLongArray(i -> i);
+    }
+    
+    public default double[] toDoubleArray() {
+        return toDoubleArray(i -> i);
+    }
+    
+    public default long[] toLongArray(IntToLongFunction toLong) {
+        return mapToLong(toLong).toArray();
+    }
+    
+    public default double[] toDoubleArray(IntToDoubleFunction toDouble) {
+        return mapToDouble(toDouble).toArray();
+    }
+    
     public default List<Integer> toJavaList() {
         return terminate(stream -> {
             return stream
@@ -1082,24 +1101,20 @@ public interface IntStreamPlus
     public default String toListString() {
         // TODO - There must be a faster way
         val strValue 
-            = mapToObj(String::valueOf)
-            .collect(Collectors.joining(", "));
+                = mapToObj(String::valueOf)
+                .collect(Collectors.joining(", "));
         return "[" + strValue + "]";
     }
     
     //== Plus ==
     
     public default String joinToString() {
-        val strValue 
-                = mapToObj(String::valueOf)
-                .collect  (Collectors.joining());
-        return strValue;
+        return mapToObj(StrFuncs::toStr)
+                .collect(Collectors.joining());
     }
     public default String joinToString(String delimiter) {
-        val strValue 
-                = mapToObj(String::valueOf)
-                .collect  (Collectors.joining(delimiter));
-        return strValue;
+        return mapToObj(StrFuncs::toStr)
+                .collect(Collectors.joining(delimiter));
     }
     
     //== Pipe ==
@@ -1108,7 +1123,7 @@ public interface IntStreamPlus
         return Pipeable.of(this);
     }
     
-    public default <T> T pipe(Function<? super IntStreamPlus, T> piper) {
+    public default <T> T pipeTo(Function<? super IntStreamPlus, T> piper) {
         return piper.apply(this);
     }
     
@@ -1126,23 +1141,23 @@ public interface IntStreamPlus
             val results = new ArrayList<DeferAction<T>>();
             val index   = new AtomicInteger(0);
             
+            FuncUnit1<UncompletedAction<T>> setOnComplete = action -> 
+                action
+                .getPromise()
+                .onComplete(result -> {
+                    val thisIndex  = index.getAndIncrement();
+                    val thisAction = results.get(thisIndex);
+                    if (result.isValue())
+                         thisAction.complete(result.value());
+                    else thisAction.fail    (result.exception());
+                });
+            
             List<? extends UncompletedAction<T>> actions 
-                = intStream()
-                .mapToObj(mapToAction)
+                = mapToObj(mapToAction)
                 .peek    (action -> results.add(DeferAction.<T>createNew()))
-                .peek    (action -> 
-                    action
-                    .getPromise()
-                    .onComplete(result -> {
-                        val thisIndex  = index.getAndIncrement();
-                        val thisAction = results.get(thisIndex);
-                        if (result.isValue())
-                             thisAction.complete(result.value());
-                        else thisAction.fail    (result.exception());
-                    })
-                )
-                .peek   (action -> action.start())
-                .collect(Collectors.toList())
+                .peek    (action -> setOnComplete.accept(action))
+                .peek    (action -> action.start())
+                .collect (Collectors.toList())
                 ;
             
             val resultStream 

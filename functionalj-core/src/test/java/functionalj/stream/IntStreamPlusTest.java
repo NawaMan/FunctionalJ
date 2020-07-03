@@ -25,6 +25,7 @@ package functionalj.stream;
 
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
+import static functionalj.promise.DeferAction.defer;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static functionalj.stream.ZipWithOption.RequireBoth;
 import static functionalj.stream.intstream.IntStreamPlus.cycle;
@@ -60,7 +61,6 @@ import org.junit.Test;
 
 import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
-import functionalj.promise.DeferAction;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
@@ -601,7 +601,7 @@ public class IntStreamPlusTest {
     public void testAsStream() {
         assertEquals(
                 StreamPlus.of(1, 1, 2, 3, 5, 8, 13, 21, 34).toList(),
-                ints(1, 1, 2, 3, 5, 8, 13, 21, 34).asStream().toList());
+                ints(1, 1, 2, 3, 5, 8, 13, 21, 34).boxed().toList());
     }
     
     @Test
@@ -663,7 +663,7 @@ public class IntStreamPlusTest {
                 ints(1, 1, 2, 3, 5, 8, 13, 21, 34).pipable().pipeTo(i -> "-" + i.toListString() + "-").toString());
         assertEquals(
                 "-[1, 1, 2, 3, 5, 8, 13, 21, 34]-",
-                ints(1, 1, 2, 3, 5, 8, 13, 21, 34).pipe(i -> "-" + i.toListString() + "-").toString());
+                ints(1, 1, 2, 3, 5, 8, 13, 21, 34).pipeTo(i -> "-" + i.toListString() + "-").toString());
     }
     
     @Test
@@ -675,7 +675,7 @@ public class IntStreamPlusTest {
                 +   "Result:{ Value: 8 }"
                 + "]",
                 ints(1, 1, 2, 3, 5, 8, 13, 21, 34)
-                    .spawn(i -> DeferAction.from(()->{ Thread.sleep(100*Math.abs(i - 15)); return i; }))
+                    .spawn(i -> defer(()->{ Thread.sleep(100*Math.abs(i - 15)); return i; }))
                     .limit(3)
                     .toListString());
     }

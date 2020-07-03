@@ -70,6 +70,16 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return action;
     }
     
+    public static DeferAction<Object> defer(FuncUnit0 runnable) {
+        return from(runnable);
+    }
+    public static <D> DeferAction<D> defer(Func0<D> supplier) {
+        return from(supplier);
+    }
+    public static <D> DeferAction<D> defer(CompletableFuture<D> completableFucture) {
+        return from(completableFucture);
+    }
+    
     public static DeferAction<Object> from(FuncUnit0 runnable) {
         return DeferActionConfig.current.value().createBuilder(runnable).build();
     }

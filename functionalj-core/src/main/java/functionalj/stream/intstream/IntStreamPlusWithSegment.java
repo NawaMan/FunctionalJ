@@ -30,7 +30,6 @@ import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
@@ -39,6 +38,7 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
+import functionalj.function.Func1;
 import functionalj.stream.GrowOnlyIntArray;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.IntIteratorPlus;
@@ -62,10 +62,10 @@ class IntStreamPlusWithSegmentHelper {
 
 public interface IntStreamPlusWithSegment {
     
-    public     IntStreamPlus useIterator     (Function<IntIteratorPlus, IntStreamPlus> action);
-    public <T> StreamPlus<T> useIteratorToObj(Function<IntIteratorPlus, StreamPlus<T>> action);
-    public <T> StreamPlus<T> sequentialToObj (Function<IntStreamPlus,   StreamPlus<T>> action);
-    public     IntStreamPlus sequential      (Function<IntStreamPlus,   IntStreamPlus> action);
+    public     IntStreamPlus useIterator     (Func1<IntIteratorPlus, IntStreamPlus> action);
+    public <T> StreamPlus<T> useIteratorToObj(Func1<IntIteratorPlus, StreamPlus<T>> action);
+    public <T> StreamPlus<T> sequentialToObj (Func1<IntStreamPlus,   StreamPlus<T>> action);
+    public     IntStreamPlus sequential      (Func1<IntStreamPlus,   IntStreamPlus> action);
     
     public void close();
     

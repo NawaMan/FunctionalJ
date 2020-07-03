@@ -41,7 +41,7 @@ public class StreamPlusIteratorPlusExamples {
     
     @Test
     public void testVariantRead() {
-        val bytes = IntStreamPlus.of(78, 97, 119, 97, 0, 2, 0, 1).asStream().iterator();
+        val bytes = IntStreamPlus.of(78, 97, 119, 97, 0, 2, 0, 1).boxed().iterator();
         val magicNumber = bytes.mapNext(4, bs -> new String(bs.toByteArray(Integer::byteValue)));
         val majorVersion = bytes.pullNext(2).get().toList().toString();
         val minorVersion = bytes.pullNext(2).get().toList().toString();

@@ -43,7 +43,6 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.Vector;
@@ -131,12 +130,6 @@ public class StreamPlusTest {
         val logs   = new ArrayList<String>();
         assertStrings("[One, Two, Three]", stream.peek(s -> logs.add(s)).toList());
         assertStrings("[One, Two, Three]", logs);
-    }
-    
-    @Test
-    public void testPeekNull() {
-        val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, Two, Three]", stream.peek(null).toList());
     }
     
     @Test
@@ -324,12 +317,6 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testFilterNull() {
-        val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, Two, Three]", stream.filter((Predicate<String>)null).toList());
-    }
-    
-    @Test
     public void testSkipLimit() {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings("[Two]", stream.skip(1).limit(1).toList());
@@ -354,12 +341,6 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testSortedComparatorNull() {
-        val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[One, Three, Two]", stream.sorted((Comparator<String>)null).toList());
-    }
-    
-    @Test
     public void testClosed() {
         val stream = StreamPlus.of("One", "Two", "Three");
         
@@ -373,6 +354,31 @@ public class StreamPlusTest {
                 stream
                 .map(theString.length())
                 .toList());
+        assertTrue(isClosed.get());
+        
+        try {
+            stream.toList();
+            fail("Stream should be closed now.");
+        } catch (IllegalStateException e) {
+            // Expected!!
+        }
+    }
+    
+    @Test
+    public void testMapToIntClosed() {
+        val stream = StreamPlus.of("3", "5", "7");
+        
+        val isClosed = new AtomicBoolean(false);
+        stream
+        .onClose(()->isClosed.set(true));
+        
+        assertFalse(isClosed.get());
+        assertStrings(
+                "[3, 5, 7]", 
+                stream
+                .mapToInt(Integer::parseInt)
+                .toList()
+                .toString());
         assertTrue(isClosed.get());
         
         try {
@@ -750,11 +756,13 @@ public class StreamPlusTest {
                       "[63, 64, 65, 66, 67, 68, 69, 70, 71, 72], " + 
                       "[73, 74, 75, 76, 77, 78, 79, 80, 81, 82], " + 
                       "[83, 84, 85]]",
-                IntStreamPlus.infinite().asStream()
-                .skip(50)
-                .limit(36)
-                .segment(startCondition)
-                .map    (StreamPlus::toListString)
+                IntStreamPlus
+                .infinite()
+                .boxed   ()
+                .skip    (50)
+                .limit   (36)
+                .segment (startCondition)
+                .map     (StreamPlus::toListString)
                 .toListString());
     }
     @Test
@@ -784,7 +792,7 @@ public class StreamPlusTest {
     public void testZipWith() {
         {
             val streamA = StreamPlus.of("A", "B", "C");
-            val streamB = IntStreamPlus.infinite().limit(10).asStream();
+            val streamB = IntStreamPlus.infinite().limit(10).boxed();
             assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB).joinToString(", "));
         }
 //        {
@@ -802,7 +810,7 @@ public class StreamPlusTest {
     @Test
     public void testChoose() {
         val streamA = StreamPlus.of("A", "B", "C");
-        val streamB = IntStreamPlus.infinite().asStream().map(theInteger.asString());
+        val streamB = IntStreamPlus.infinite().boxed().map(theInteger.asString());
         val bool    = new AtomicBoolean(true);
         assertEquals("A, 1, C, 3, 4", streamA.choose(streamB, (a, b) -> {
             boolean curValue = bool.get();
@@ -816,8 +824,8 @@ public class StreamPlusTest {
         val streamB 
                 = IntStreamPlus
                 .infinite()
-                .asStream()
-                 .map(theInteger.asString());
+                .boxed()
+                .map(theInteger.asString());
         assertEquals(
                 "A, 0, B, 1, C, 2, 3, 4, 5, 6", 
                 streamA
@@ -961,7 +969,7 @@ public class StreamPlusTest {
     
     @Test
     public void testSequential() {
-        val stream = IntStreamPlus.infinite().limit(1000).asStream();
+        val stream = IntStreamPlus.infinite().limit(1000).boxed();
         
         val s1 = stream.parallel();
         assertTrue(s1.isParallel());

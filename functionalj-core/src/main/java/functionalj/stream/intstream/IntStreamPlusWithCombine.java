@@ -25,10 +25,10 @@ package functionalj.stream.intstream;
 
 import static functionalj.function.FuncUnit0.funcUnit0;
 
-import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import functionalj.function.Func1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.function.IntIntBiFunction;
@@ -43,9 +43,9 @@ import lombok.val;
 public interface IntStreamPlusWithCombine {
     
     public IntStream     intStream();
-    public IntStreamPlus useIterator(Function<IntIteratorPlus, IntStreamPlus> action);
+    public IntStreamPlus useIterator(Func1<IntIteratorPlus, IntStreamPlus> action);
     
-    public <TARGET> StreamPlus<TARGET> useIteratorToObj(Function<IntIteratorPlus, StreamPlus<TARGET>> action);
+    public <TARGET> StreamPlus<TARGET> useIteratorToObj(Func1<IntIteratorPlus, StreamPlus<TARGET>> action);
     
     
     public default IntStreamPlus concatWith(IntStream tail) {

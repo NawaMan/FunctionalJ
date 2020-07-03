@@ -461,11 +461,7 @@ public class IntFuncListTest {
         assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.limit(100L).toString());
         
         assertEquals("[1, 1, 2, 3, 5]", intList.limit((Long) 5L).toString());
-        try {
-            intList.limit(Long.valueOf(-1L)).toString();
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        
         assertEquals("[1, 1, 2, 3, 5, 8, 13]", intList.limit((Long) 100L).toString());
     }
     
@@ -480,11 +476,7 @@ public class IntFuncListTest {
         assertEquals("[]", intList.skip(100L).toString());
         
         assertEquals("[8, 13]", intList.skip((Long) 5L).toString());
-        try {
-            intList.skip(Long.valueOf(-1L)).toString();
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        
         assertEquals("[]", intList.skip((Long) 100L).toString());
     }
     
