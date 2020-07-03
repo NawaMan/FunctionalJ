@@ -68,7 +68,6 @@ import functionalj.pipeable.Pipeable;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.IntIterable;
 import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
@@ -77,12 +76,12 @@ import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.IntTuple2;
 import lombok.val;
 
+// TODO - Use this for byte, short and char
 
 @FunctionalInterface
 public interface IntStreamPlus 
         extends 
             IntStream,
-            IntIterable,
             IntStreamPlusWithMapFirst,
             IntStreamPlusWithMapThen,
             IntStreamPlusWithMapTuple,
@@ -392,8 +391,16 @@ public interface IntStreamPlus
     
     @Override
     public default Spliterator.OfInt spliterator() {
-        return intStream()
-                .spliterator();
+        return terminate(s -> {
+            val iterator = iterator();
+            return Spliterators.spliteratorUnknownSize(iterator, 0);
+        });
+    }
+    
+    @Override
+    public default void close() {
+        intStream()
+        .close();
     }
     
     @Override
@@ -401,12 +408,6 @@ public interface IntStreamPlus
         return IntStreamPlus
                 .from(intStream()
                 .onClose(closeHandler));
-    }
-    
-    @Override
-    public default void close() {
-        intStream()
-        .close();
     }
     
     //== Functionalities ==

@@ -44,6 +44,9 @@ import functionalj.stream.intstream.IntStreamableAdditionalTerminalOperators;
 import functionalj.stream.intstream.IntStreamableWithCalculate;
 import lombok.val;
 
+
+//TODO - Use this for byte, short and char
+
 public interface IntFuncList
         extends 
             AsIntStreamable,

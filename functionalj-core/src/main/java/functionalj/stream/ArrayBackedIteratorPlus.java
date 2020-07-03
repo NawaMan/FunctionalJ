@@ -64,7 +64,16 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
         this.array = array;
         this.start = Math.max(0, Math.min(array.length - 1, start));
         this.end   = Math.max(0, Math.min(array.length    , start + length));
-        this.iterator = new Iterator<DATA>() {
+        this.iterator = createIterator(array);
+        this.current.set(this.start - 1);
+    }
+    
+    ArrayBackedIteratorPlus(DATA[] array) {
+        this(array, 0, array.length);
+    }
+    
+    private Iterator<DATA> createIterator(DATA[] array) {
+        return new Iterator<DATA>() {
             @Override
             public boolean hasNext() {
                 return current.incrementAndGet() < ArrayBackedIteratorPlus.this.end;
@@ -80,10 +89,6 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
                 return array[index];
             }
         };
-        this.current.set(this.start - 1);
-    }
-    ArrayBackedIteratorPlus(DATA[] array) {
-        this(array, 0, array.length);
     }
     
     public IteratorPlus<DATA> newIterator() {

@@ -42,6 +42,8 @@ import functionalj.tuple.IntIntTuple;
 import lombok.val;
 
 
+//TODO - Use this for byte, short and char
+
 public interface IntStreamable 
         extends
             AsIntStreamable,
