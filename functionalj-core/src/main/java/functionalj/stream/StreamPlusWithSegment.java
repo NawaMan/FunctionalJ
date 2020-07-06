@@ -23,6 +23,10 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.function.Func.f;
+import static functionalj.stream.StreamPlus.empty;
+import static functionalj.stream.StreamPlus.from;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,7 +37,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import functionalj.function.Func;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.result.NoMoreResultException;
@@ -59,8 +62,9 @@ public interface StreamPlusWithSegment<DATA> {
     public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition) {
         return segment(startCondition, true);
     }
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, boolean includeTail) {
+    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, boolean includeIncompletedSegment) {
         return sequential(stream -> {
+            // TODO - Find a way to make it fully lazy. Try tryAdvance.
             val list = new AtomicReference<>(new ArrayList<DATA>());
             val adding = new AtomicBoolean(false);
             
@@ -71,21 +75,20 @@ public interface StreamPlusWithSegment<DATA> {
                     list.get().add(data);
                     return retList.isEmpty()
                             ? null
-                            : StreamPlus.from(retList.stream());
+                            : from(retList.stream());
                 }
-                if (adding.get()) list.get().add(data);
+                if (adding.get()) {
+                    list.get().add(data);
+                }
                 return null;
             });
-            val mainStream = StreamPlus.from(stream.map(streamOrNull)).filterNonNull();
-            if (!includeTail)
+            val mainStream = StreamPlus.from(stream.mapToObj(streamOrNull)).filterNonNull();
+            if (!includeIncompletedSegment)
                 return mainStream;
             
             val mainSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->mainStream;
             val tailSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->{
-                return StreamPlus.of(
-                        StreamPlus.from(
-                                list.get()
-                                .stream()));
+                return StreamPlus.of(from(list.get().stream()));
             };
             val resultStream
                     = StreamPlus.of(mainSupplier, tailSupplier)
@@ -102,28 +105,35 @@ public interface StreamPlusWithSegment<DATA> {
         return segment(startCondition, endCondition, true);
     }
     
-    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition, boolean includeTail) {
+    public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition, boolean includeIncompletedSegment) {
         return sequential(stream -> {
+         // TODO - Find a way to make it fully lazy. Try tryAdvance.
             val list = new AtomicReference<>(new ArrayList<DATA>());
             val adding = new AtomicBoolean(false);
             
             StreamPlus<StreamPlus<DATA>> resultStream 
                 = StreamPlus.from(
-                    stream.map(i ->{
+                    stream
+                    .mapToObj(i -> {
                         if (startCondition.test(i)) {
                             adding.set(true);
                         }
-                        if (includeTail && adding.get()) list.get().add(i);
+                        if (includeIncompletedSegment && adding.get()) {
+                            list.get().add(i);
+                        }
+                        
                         if (endCondition.test(i)) {
                             adding.set(false);
                             val retList = list.getAndUpdate(l -> new ArrayList<DATA>());
                             return StreamPlus.from(retList.stream());
                         }
                         
-                        if (!includeTail && adding.get()) list.get().add(i);
+                        if (!includeIncompletedSegment && adding.get()) {
+                            list.get().add(i);
+                        }
                         return null;
                     }))
-                .filterNonNull();
+                    .filterNonNull();
             
             resultStream
             .onClose(()->StreamPlusWithSegment.this.close());
@@ -158,7 +168,6 @@ public interface StreamPlusWithSegment<DATA> {
                         list.add(each);
                         
                         leftRef.set(-1);
-                        
                         return StreamPlus.from(list.stream());
                         
                     } else {
@@ -173,8 +182,8 @@ public interface StreamPlusWithSegment<DATA> {
             
             StreamPlus<StreamPlus<DATA>> resultStream 
                 = (StreamPlus<StreamPlus<DATA>>)StreamPlus.of(
-                    Func.f(()-> head),
-                    Func.f(()-> StreamPlus.of(StreamPlus.from(listRef.get().stream())))
+                    f(()-> head),
+                    f(()-> StreamPlus.of(StreamPlus.from(listRef.get().stream())))
                 )
                 .flatMap(s -> (StreamPlus<DATA>)s.get());
             
@@ -192,7 +201,7 @@ public interface StreamPlusWithSegment<DATA> {
             try {
                 first = iterator.next();
             } catch (NoSuchElementException e) {
-                return StreamPlus.empty();
+                return empty();
             }
             
             val prev = new AtomicReference<Object>(first);

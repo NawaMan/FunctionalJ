@@ -81,10 +81,12 @@ public interface IntFuncListAdditionalOperations {
     
     public default <T> FuncList<T> mapToObjWithIndex(
             IntIntBiFunction<T> mapper) {
-        return deriveToList(()->{
-            return intStream()
-                    .mapToObjWithIndex(mapper);
-        });
+//        return deriveToList(()->{
+//            return intStream()
+//                    .mapToObjWithIndex(mapper);
+//        });
+        // TODO - Fix this.
+        return null;
     }
     
     public default <T1, T> FuncList<T> mapToObjWithIndex(

@@ -34,7 +34,7 @@ import lombok.val;
 
 public interface StreamPlusWithMapThen<DATA> {
     
-    public <TARGET> StreamPlus<TARGET> map(
+    public <TARGET> StreamPlus<TARGET> mapToObj(
             Function<? super DATA, ? extends TARGET> mapper);
     
     //== mapThen ==
@@ -44,7 +44,7 @@ public interface StreamPlusWithMapThen<DATA> {
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 BiFunction<T1, T2, T> function) {
-        return map(each -> {
+        return mapToObj(each -> {
             val v1 = mapper1.apply(each);
             val v2 = mapper2.apply(each);
             val v  = function.apply(v1, v2);
@@ -57,7 +57,7 @@ public interface StreamPlusWithMapThen<DATA> {
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
                 Func3<T1, T2, T3, T> function) {
-        return map(each -> {
+        return mapToObj(each -> {
             val v1 = mapper1.apply(each);
             val v2 = mapper2.apply(each);
             val v3 = mapper3.apply(each);
@@ -72,7 +72,7 @@ public interface StreamPlusWithMapThen<DATA> {
                 Function<? super DATA, ? extends T3> mapper3,
                 Function<? super DATA, ? extends T4> mapper4,
                 Func4<T1, T2, T3, T4, T> function) {
-        return map(each -> {
+        return mapToObj(each -> {
             val v1 = mapper1.apply(each);
             val v2 = mapper2.apply(each);
             val v3 = mapper3.apply(each);
@@ -89,7 +89,7 @@ public interface StreamPlusWithMapThen<DATA> {
                 Function<? super DATA, ? extends T4> mapper4,
                 Function<? super DATA, ? extends T5> mapper5,
                 Func5<T1, T2, T3, T4, T5, T> function) {
-        return map(each -> {
+        return mapToObj(each -> {
             val v1 = mapper1.apply(each);
             val v2 = mapper2.apply(each);
             val v3 = mapper3.apply(each);
@@ -108,7 +108,7 @@ public interface StreamPlusWithMapThen<DATA> {
                 Function<? super DATA, ? extends T5> mapper5,
                 Function<? super DATA, ? extends T6> mapper6,
                 Func6<T1, T2, T3, T4, T5, T6, T> function) {
-        return map(each -> {
+        return mapToObj(each -> {
             val v1 = mapper1.apply(each);
             val v2 = mapper2.apply(each);
             val v3 = mapper3.apply(each);

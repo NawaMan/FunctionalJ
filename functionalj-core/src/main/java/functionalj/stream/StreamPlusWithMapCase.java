@@ -36,26 +36,27 @@ class StreamPlusMapAddOnHelper {
     static final <D, T> StreamPlus<T> mapCase(
             StreamPlusWithMapCase<D>  stream,
             Function<? super D, T> ... mappers) {
-        return stream
-                .map(f(d -> {
-                    Exception exception = null;
-                    boolean hasNull = false;
-                    for(val mapper : mappers) {
-                        try {
-                            val res = mapper.apply(d);
-                            if (res == null)
-                                 hasNull = true;
-                            else return (T)res;
-                        } catch (Exception e) {
-                            if (exception == null)
-                                exception = e;
-                        }
-                    }
-                    if (hasNull)
-                        return (T)null;
-                    
-                    throw exception;
-                }));
+        return stream.map(f((D data) -> eachMapCase(data, mappers)));
+    }
+    
+    private static <T, D> T eachMapCase(D d, Function<? super D, T>[] mappers) throws Exception {
+        Exception exception = null;
+        boolean hasNull = false;
+        for(val mapper : mappers) {
+            try {
+                val res = mapper.apply(d);
+                if (res == null)
+                     hasNull = true;
+                else return (T)res;
+            } catch (Exception e) {
+                if (exception == null)
+                    exception = e;
+            }
+        }
+        if (hasNull)
+            return (T)null;
+        
+        throw exception;
     }
     
 }

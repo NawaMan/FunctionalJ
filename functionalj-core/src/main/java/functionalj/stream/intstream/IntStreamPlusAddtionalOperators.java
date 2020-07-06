@@ -24,6 +24,7 @@
 package functionalj.stream.intstream;
 
 import static functionalj.function.Func.themAll;
+import static functionalj.tuple.IntIntTuple.intTuple;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.binarySearch;
 import static java.util.Arrays.sort;
@@ -96,8 +97,12 @@ public interface IntStreamPlusAddtionalOperators {
     
     //-- mapWithIndex --
     
-    public default IntStreamPlus mapWithIndex(
-            IntBinaryOperator mapper) {
+    public default StreamPlus<IntIntTuple> mapWithIndex() {
+        val index = new AtomicInteger();
+        return mapToObj(each -> intTuple(index.getAndIncrement(), each));
+    }
+    
+    public default IntStreamPlus mapWithIndex(IntBinaryOperator mapper) {
         val index = new AtomicInteger();
         return map(each -> {
             val i = index.getAndIncrement();
@@ -106,21 +111,23 @@ public interface IntStreamPlusAddtionalOperators {
         });
     }
     
-    public default StreamPlus<IntIntTuple> mapWithIndex() {
-        val index = new AtomicInteger();
-        return mapToObj(each -> {
-            val i = index.getAndIncrement();
-            val intTuple = IntIntTuple.of(i, each);
-            return intTuple;
-        });
-    }
-    
-    public default <T> StreamPlus<T> mapToObjWithIndex(
-            IntIntBiFunction<T> mapper) {
+    public default <T> StreamPlus<T> mapWithIndexToObj(IntIntBiFunction<T> mapper) {
         val index = new AtomicInteger();
         return mapToObj(each -> {
             val i = index.getAndIncrement();
             val target = mapper.applyInt(i, each);
+            return target;
+        });
+    }
+    
+    public default <T1, T> StreamPlus<T> mapWithIndex(
+                IntUnaryOperator    valueMapper,
+                IntIntBiFunction<T> combiner) {
+        val index = new AtomicInteger();
+        return mapToObj(each -> {
+            val i      = index.getAndIncrement();
+            val value  = valueMapper.applyAsInt(each);
+            val target = combiner.apply(i, value);
             return target;
         });
     }
@@ -143,9 +150,8 @@ public interface IntStreamPlusAddtionalOperators {
         val prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
         return mapToObj(element -> {
             val prevValue = prev.get();
-            val next      = OptionalInt.of(element);
-            val result    = ObjIntTuple.of(prevValue, element);
-            prev.set(next);
+            prev.set(OptionalInt.of(element));
+            val result = ObjIntTuple.of(prevValue, element);
             return result;
         });
     }
@@ -156,8 +162,7 @@ public interface IntStreamPlusAddtionalOperators {
         return mapToObj(element -> {
             val prevValue = prev.get();
             val newValue  = mapper.apply(prevValue, element);
-            val next      = OptionalInt.of(element);
-            prev.set(next);
+            prev.set(OptionalInt.of(element));
             return newValue;
         });
     }

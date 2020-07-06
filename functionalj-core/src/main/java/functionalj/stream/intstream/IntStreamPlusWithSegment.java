@@ -24,6 +24,8 @@
 package functionalj.stream.intstream;
 
 import static functionalj.function.Func.f;
+import static functionalj.stream.intstream.IntStreamPlus.empty;
+import static functionalj.stream.intstream.IntStreamPlus.from;
 
 import java.util.NoSuchElementException;
 import java.util.Spliterators;
@@ -101,10 +103,11 @@ public interface IntStreamPlusWithSegment {
                     list.get().add(data);
                     return retList.isEmpty()
                             ? null
-                            : IntStreamPlus.from(retList.stream());
+                            : from(retList.stream());
                 }
-                if (adding.get()) 
+                if (adding.get()) {
                     list.get().add(data);
+                }
                 return null;
             });
             val mainStream = StreamPlus.from(stream.mapToObj(streamOrNull)).filterNonNull();
@@ -113,12 +116,7 @@ public interface IntStreamPlusWithSegment {
             
             val mainSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->mainStream;
             val tailSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->{
-                return StreamPlus.of(
-                        IntStreamPlus.from(
-                                list
-                                .get()
-                                .stream())
-                );
+                return StreamPlus.of(from(list.get().stream()));
             };
             val resultStream
                     = StreamPlus.of(mainSupplier, tailSupplier)
@@ -171,12 +169,7 @@ public interface IntStreamPlusWithSegment {
             
             val mainSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->mainStream;
             val tailSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->{
-                return StreamPlus.of(
-                        IntStreamPlus.from(
-                                list
-                                .get()
-                                .stream())
-                );
+                return StreamPlus.of(from(list.get().stream()));
             };
             val resultStream
                     = StreamPlus.of(mainSupplier, tailSupplier)
@@ -224,6 +217,7 @@ public interface IntStreamPlusWithSegment {
                         
                         leftRef.set(-1);
                         return list.stream();
+                        
                     } else {
                         val list = listRef.get();
                         list.add(each);
@@ -257,7 +251,7 @@ public interface IntStreamPlusWithSegment {
             try {
                 first = iterator.next();
             } catch (NoSuchElementException e) {
-                return IntStreamPlus.empty();
+                return empty();
             }
             
             val prev = new int[][] { new int[] { first }};

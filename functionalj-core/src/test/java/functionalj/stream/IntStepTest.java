@@ -25,16 +25,26 @@ public class IntStepTest {
     @Test
     public void testAsRange() {
         val step = step(10);
-//        assertEquals(
-//                "[0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]", 
-//                IntStreamPlus.infinite().limit(25).map(step).toList().toString());
-//        
+        assertEquals(
+                "[0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]", 
+                Streamable
+                .infiniteInt()
+                .limit(25)
+                .map(step)
+                .toList()
+                .toString());
+        
         assertEquals("{"
                 + "0:[0, 1, 2, 3, 4], "
                 + "10:[5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "
                 + "20:[15, 16, 17, 18, 19, 20, 21, 22, 23, 24]"
                 + "}",
-                Streamable.infiniteInt().limit(25).groupingBy(step.function()).sorted().toString());
+                Streamable
+                .infiniteInt()
+                .limit(25)
+                .groupingBy(step.function())
+                .sorted()
+                .mapValue(stream -> stream.toList()).toString());
     }
     
 }

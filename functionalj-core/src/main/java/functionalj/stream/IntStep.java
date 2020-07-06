@@ -1,6 +1,8 @@
 package functionalj.stream;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 
 import functionalj.function.Func1;
@@ -8,7 +10,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import lombok.val;
 
-public class IntStep implements IntUnaryOperator, IntStreamable, AsStreamable<Integer> {
+public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntStreamable, AsStreamable<Integer> {
     
     private final int size;
     private final int start;
@@ -97,6 +99,16 @@ public class IntStep implements IntUnaryOperator, IntStreamable, AsStreamable<In
     @Override
     public int applyAsInt(int operand) {
         return start + (int)(Math.round(1.0 * (operand - start) / size) * size);
+    }
+    
+    @Override
+    public Integer apply(int operand) {
+        return applyAsInt(operand);
+    }
+
+    @Override
+    public Integer apply(Integer operand) {
+        return applyAsInt(operand);
     }
     
     public Func1<Integer, Integer> function() {

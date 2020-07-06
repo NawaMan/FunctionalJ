@@ -72,6 +72,9 @@ public interface IntStreamPlusWithCombine {
         return resultStream;
     }
     
+    //-- Zip --
+    
+    
     public default <ANOTHER> StreamPlus<IntTuple2<ANOTHER>> zipWith(
             Stream<ANOTHER> anotherStream) {
         return zipWith(anotherStream, ZipWithOption.RequireBoth, IntTuple2::of);

@@ -23,7 +23,10 @@
 // ============================================================================
 package functionalj.stream;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -33,9 +36,10 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 import functionalj.function.Func1;
-import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
+import functionalj.map.ImmutableMap;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 
 public interface StreamableAdditionalTerminalOperators<DATA> {
     
@@ -53,34 +57,59 @@ public interface StreamableAdditionalTerminalOperators<DATA> {
     //-- groupingBy --
     
     // Eager
-    public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(
-            Function<? super DATA, ? extends KEY> classifier) {
-        return stream()
-                .groupingBy(classifier);
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public default <KEY> FuncMap<KEY, Streamable<? super DATA>> groupingBy(
+            Function<? super DATA, KEY> keyMapper) {
+        Supplier  <Map<KEY, ArrayList<? super DATA>>>                                    supplier;
+        BiConsumer<Map<KEY, ArrayList<? super DATA>>, ? super DATA>                      accumulator;
+        BiConsumer<Map<KEY, ArrayList<? super DATA>>, Map<KEY, ArrayList<? super DATA>>> combiner;
+        
+        Supplier<ArrayList<? super DATA>> collectorSupplier = ArrayList::new;
+        Function<ArrayList<? super DATA>, Streamable<? super DATA>> toStreamable 
+                = array -> (Streamable)(()->StreamPlus.from(array.stream()));
+        
+        supplier = LinkedHashMap::new;
+        accumulator = (map, each) -> {
+            val key = keyMapper.apply(each);
+            map.compute(key, (k, a)->{
+                if (a == null) {
+                    a = collectorSupplier.get();
+                }
+                a.add(each);
+                return a;
+            });
+        };
+        combiner = (map1, map2) -> map1.putAll(map2);
+        val theMap = stream().collect(supplier, accumulator, combiner);
+        return ImmutableMap
+                    .from    (theMap)
+                    .mapValue(toStreamable);
     }
     
     // Eager
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            Function<? super DATA, ? extends KEY>   classifier,
-            Function<? super FuncList<DATA>, VALUE> aggregate) {
-        return stream()
-                .groupingBy(classifier, aggregate);
+            Function<? super DATA, KEY>               keyMapper,
+            Function<Streamable<? super DATA>, VALUE> aggregate) {
+        return groupingBy(keyMapper)
+                .mapValue(aggregate);
     }
     
     // Eager
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            Function<? super DATA, ? extends KEY> classifier,
-            StreamProcessor<? super DATA, VALUE>  processor) {
-        return stream()
-                .groupingBy(classifier, processor);
+            Function<? super DATA, KEY>          keyMapper,
+            StreamProcessor<? super DATA, VALUE> processor) {
+        return groupingBy(keyMapper)
+                .mapValue(stream -> (VALUE)stream.calculate((StreamProcessor)processor));
     }
     
     // Eager
-    public default <KEY, ACCUMULATED, TARGET> FuncMap<KEY, TARGET> groupingBy(
-            Function<? super DATA, ? extends KEY>                  classifier,
-            Supplier<Collector<? super DATA, ACCUMULATED, TARGET>> collectorSupplier) {
-        return stream()
-                .groupingBy(classifier, collectorSupplier);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public default <KEY, ACCUMULATED, VALUE> FuncMap<? extends KEY, VALUE> groupingBy(
+            Function<? super DATA, ? extends KEY>                 keyMapper,
+            Supplier<Collector<? super DATA, ACCUMULATED, VALUE>> collectorSupplier) {
+        return groupingBy(keyMapper)
+                .mapValue(stream -> (VALUE)stream.collect((Collector)collectorSupplier.get()));
     }
     
     //-- min-max --

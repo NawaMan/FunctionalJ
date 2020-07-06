@@ -24,6 +24,7 @@
 package functionalj.stream;
 
 import static functionalj.tuple.Tuple.tuple2;
+import static java.util.Arrays.asList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -42,21 +43,17 @@ import lombok.val;
 
 public interface StreamPlusAddtionalOperators<DATA> {
     
+    public <TARGET> StreamPlus<TARGET> derive(Function<Stream<DATA>, Stream<TARGET>> action);
     
-    public <TARGET> StreamPlus<TARGET> derive(
-            Function<Stream<DATA>, Stream<TARGET>> action);
+    public <TARGET> StreamPlus<TARGET> map(Function<? super DATA, ? extends TARGET> mapper);
     
-    public <TARGET> StreamPlus<TARGET> map(
-            Function<? super DATA, ? extends TARGET> mapper);
+    public <TARGET> StreamPlus<TARGET> mapToObj(Function<? super DATA, ? extends TARGET> mapper);
     
-    public <TARGET> StreamPlus<TARGET> flatMap(
-            Function<? super DATA, ? extends Stream<? extends TARGET>> mapper);
+    public <TARGET> StreamPlus<TARGET> flatMap(Function<? super DATA, ? extends Stream<? extends TARGET>> mapper);
     
-    public StreamPlus<DATA> filter(
-            Predicate<? super DATA> predicate);
+    public StreamPlus<DATA> filter(Predicate<? super DATA> predicate);
     
-    public StreamPlus<DATA> peek(
-            Consumer<? super DATA> action);
+    public StreamPlus<DATA> peek(Consumer<? super DATA> action);
     
     
     //--map with condition --
@@ -73,6 +70,17 @@ public interface StreamPlusAddtionalOperators<DATA> {
             Function<? super DATA, T> elseMapper) {
         return map(d -> {
             return checker.test(d) 
+                    ? mapper    .apply(d) 
+                    : elseMapper.apply(d);
+        });
+    }
+    
+    public default <T> StreamPlus<T> mapToObjIf(
+            Predicate<? super DATA>   checker, 
+            Function<? super DATA, T> mapper, 
+            Function<? super DATA, T> elseMapper) {
+        return mapToObj(d -> {
+            return checker.test(d) 
                     ? mapper.apply(d) 
                     : elseMapper.apply(d);
         });
@@ -82,40 +90,63 @@ public interface StreamPlusAddtionalOperators<DATA> {
     
     public default StreamPlus<Tuple2<Integer, DATA>> mapWithIndex() {
         val index = new AtomicInteger();
-        return map(each -> tuple2(index.getAndIncrement(), each));
+        return mapToObj(each -> tuple2(index.getAndIncrement(), each));
     }
     
-    public default <T> StreamPlus<T> mapWithIndex(
-            BiFunction<? super Integer, ? super DATA, T> mapper) {
+    public default <T> StreamPlus<T> mapWithIndex(BiFunction<? super Integer, ? super DATA, T> mapper) {
         val index = new AtomicInteger();
-        return map(each -> mapper.apply(index.getAndIncrement(), each));
+        return mapToObj(each -> {
+            val i = index.getAndIncrement();
+            val target = mapper.apply(i, each);
+            return target;
+        });
+    }
+    
+    public default <T> StreamPlus<T> mapWithIndexToObj(BiFunction<? super Integer, ? super DATA, T> mapper) {
+        val index = new AtomicInteger();
+        return mapToObj(each -> {
+            val i = index.getAndIncrement();
+            val target = mapper.apply(i, each);
+            return target;
+        });
     }
     
     public default <T1, T> StreamPlus<T> mapWithIndex(
+                Function<? super DATA, ? extends T1>       valueMapper,
+                BiFunction<? super Integer, ? super T1, T> combiner) {
+        val index = new AtomicInteger();
+        return mapToObj(each -> {
+            val i      = index.getAndIncrement();
+            val value  = valueMapper.apply(each);
+            val target = combiner.apply(i, value);
+            return target;
+        });
+    }
+    
+    public default <T1, T> StreamPlus<T> mapToObjWithIndex(
                 Function<? super DATA, ? extends T1>       mapper1,
                 BiFunction<? super Integer, ? super T1, T> mapper) {
-        val index = new AtomicInteger();
-        return map(each -> mapper.apply(
-                                index.getAndIncrement(),
-                                mapper1.apply(each)));
+        return mapWithIndex(mapper1, mapper);
     }
     
     //-- mapWithPrev --
     
     public default StreamPlus<Tuple2<? super Result<DATA>, ? super DATA>> mapWithPrev() {
         val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
-        return map(element -> {
+        return mapToObj(element -> {
             val prevValue = prev.get();
             prev.set(Result.valueOf(element));
-            return Tuple.of(prevValue, element);
+            val result = Tuple.of(prevValue, element);
+            return result;
         });
     }
     
     public default <TARGET> StreamPlus<TARGET> mapWithPrev(
             BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> mapper) {
         val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
-        return map(element -> {
-            val newValue = mapper.apply(prev.get(), element);
+        return mapToObj(element -> {
+            val prevValue = prev.get();
+            val newValue  = mapper.apply(prevValue, element);
             prev.set(Result.valueOf(element));
             return newValue;
         });
@@ -125,6 +156,11 @@ public interface StreamPlusAddtionalOperators<DATA> {
     
     public default StreamPlus<DATA> filterNonNull() {
         return derive(stream -> stream.filter(Objects::nonNull));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default StreamPlus<DATA> filterIn(DATA ... items) {
+        return filterIn(asList((DATA[])items));
     }
     
     public default StreamPlus<DATA> filterIn(Collection<? super DATA> collection) {
@@ -141,6 +177,11 @@ public interface StreamPlusAddtionalOperators<DATA> {
                 ? stream
                 : stream.filter(data -> !predicate.test(data));
         });
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default StreamPlus<DATA> excludeIn(DATA ... items) {
+        return excludeIn(asList((DATA[])items));
     }
     
     public default StreamPlus<DATA> excludeIn(Collection<? super DATA> collection) {
@@ -228,6 +269,12 @@ public interface StreamPlusAddtionalOperators<DATA> {
             Function<? super DATA, Stream<T>> mapper, 
             Function<? super DATA, Stream<T>> elseMapper) {
         return flatMap(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
+    }
+    public default <T> StreamPlus<T> flatMapToObjIf(
+            Predicate<? super DATA> checker, 
+            Function<? super DATA, Stream<T>> mapper, 
+            Function<? super DATA, Stream<T>> elseMapper) {
+        return flatMapIf(checker, mapper, elseMapper);
     }
     
 }

@@ -34,9 +34,6 @@ import functionalj.tuple.Tuple6;
 public interface StreamPlusWithMapTuple<DATA>
         extends StreamPlusWithMapThen<DATA> {
     
-    public <TARGET> StreamPlus<TARGET> map(
-            Function<? super DATA, ? extends TARGET> mapper);
-    
     //== mapTuple ==
     
     public default <T1, T2> 

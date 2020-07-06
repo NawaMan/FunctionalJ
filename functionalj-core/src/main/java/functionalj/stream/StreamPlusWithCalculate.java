@@ -68,9 +68,9 @@ public interface StreamPlusWithCalculate<DATA> {
             collected2.accumulate(each);
         });
         return Tuple.of(
-                collected1.finish(),
-                collected2.finish()
-            );
+            collected1.finish(),
+            collected2.finish()
+        );
     }
     
     public default <ACCUMULATED1, RESULT1, 
@@ -90,10 +90,10 @@ public interface StreamPlusWithCalculate<DATA> {
             collected3.accumulate(each);
         });
         return Tuple.of(
-                collected1.finish(),
-                collected2.finish(),
-                collected3.finish()
-            );
+            collected1.finish(),
+            collected2.finish(),
+            collected3.finish()
+        );
     }
     
     public default <ACCUMULATED1, RESULT1, 
@@ -117,11 +117,11 @@ public interface StreamPlusWithCalculate<DATA> {
             collected4.accumulate(each);
         });
         return Tuple.of(
-                collected1.finish(),
-                collected2.finish(),
-                collected3.finish(),
-                collected4.finish()
-            );
+            collected1.finish(),
+            collected2.finish(),
+            collected3.finish(),
+            collected4.finish()
+        );
     }
     
     public default <ACCUMULATED1, RESULT1, 
@@ -149,12 +149,12 @@ public interface StreamPlusWithCalculate<DATA> {
             collected5.accumulate(each);
         });
         return Tuple.of(
-                collected1.finish(),
-                collected2.finish(),
-                collected3.finish(),
-                collected4.finish(),
-                collected5.finish()
-            );
+            collected1.finish(),
+            collected2.finish(),
+            collected3.finish(),
+            collected4.finish(),
+            collected5.finish()
+        );
     }
     
     public default <ACCUMULATED1, RESULT1, 
@@ -186,13 +186,13 @@ public interface StreamPlusWithCalculate<DATA> {
             collected6.accumulate(each);
         });
         return Tuple.of(
-                collected1.finish(),
-                collected2.finish(),
-                collected3.finish(),
-                collected4.finish(),
-                collected5.finish(),
-                collected6.finish()
-            );
+            collected1.finish(),
+            collected2.finish(),
+            collected3.finish(),
+            collected4.finish(),
+            collected5.finish(),
+            collected6.finish()
+        );
     }
     
 }

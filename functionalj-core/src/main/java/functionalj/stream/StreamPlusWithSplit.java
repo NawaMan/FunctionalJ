@@ -12,10 +12,16 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 public interface StreamPlusWithSplit<DATA>
-        extends StreamPlusWithMapTuple<DATA> {
+            extends StreamPlusWithMapTuple<DATA> {
+    
+    // The most important thing here is to only evaluate the value once.
+    // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.
     
     //== split ==
-    // Lazy
+    
+    // TODO - Try to make it lazy 
+    // It is not easy as it seems as there has to be buffer for one branch when go through with another branch.
+    // We may need a dynamic collection of all branch as we goes along.
     
     public default Tuple2<StreamPlus<DATA>, StreamPlus<DATA>> split(
             Predicate<? super DATA> predicate) {
@@ -25,12 +31,11 @@ public interface StreamPlusWithSplit<DATA>
                     it -> it
             )
             .toImmutableList();
-        StreamPlus<DATA> list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).stream();
-        StreamPlus<DATA> list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).stream();
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).stream();
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).stream();
         return Tuple.of(
                 list1,
-                list2
-        );
+                list2);
     }
     
     public default Tuple3<StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>> split(
@@ -50,8 +55,7 @@ public interface StreamPlusWithSplit<DATA>
         return Tuple.of(
                 list1,
                 list2,
-                list3
-        );
+                list3);
     }
     
     public default Tuple4<StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>> split(
@@ -75,8 +79,7 @@ public interface StreamPlusWithSplit<DATA>
                 list1,
                 list2,
                 list3,
-                list4
-        );
+                list4);
     }
     
     public default Tuple5<StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>> split(
@@ -104,8 +107,7 @@ public interface StreamPlusWithSplit<DATA>
                 list2,
                 list3,
                 list4,
-                list5
-        );
+                list5);
     }
     
     public default Tuple6<StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>> split(
@@ -137,8 +139,7 @@ public interface StreamPlusWithSplit<DATA>
                 list3,
                 list4,
                 list5,
-                list6
-        );
+                list6);
     }
     
     public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(

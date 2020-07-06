@@ -25,20 +25,32 @@ package functionalj.stream.intstream;
 
 import static functionalj.tuple.IntIntTuple.intTuple;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
+import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiConsumer;
+import functionalj.map.FuncMap;
+import functionalj.map.ImmutableMap;
+import functionalj.stream.GrowOnlyIntArray;
+import functionalj.stream.IntStreamProcessor;
 import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.IntTuple2;
 import lombok.val;
@@ -58,88 +70,67 @@ public interface IntStreamPlusAdditionalTerminalOperators {
     
     //-- Functionalities --
     
-    public default void forEachWithIndex(
-            IntBiConsumer action) {
+    public default void forEachWithIndex(IntBiConsumer action) {
         terminate(stream -> {
             if (action == null)
                 return;
             
             val index = new AtomicInteger();
-            stream
-            .forEach(each -> action.acceptAsIntInt(index.getAndIncrement(), each));
+            stream.forEach(each -> action.acceptAsIntInt(index.getAndIncrement(), each));
         });
     }
     
     //-- groupingBy --
     
-//    // Eager
-//    public default <KEY> FuncMap<KEY, FuncList<DATA>> groupingBy(
-//            Function<? super DATA, ? extends KEY> classifier) {
-//        return terminate(stream -> {
-//            val theMap = new HashMap<KEY, FuncList<DATA>>();
-//            stream
-//                .collect(Collectors.groupingBy(classifier))
-//                .forEach((key,list)->theMap.put(key, ImmutableList.from(list)));
-//            return ImmutableMap.from(theMap);
-//        });
-//    }
-//    
-//    // Eager
-//    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-//            Function<? super DATA, ? extends KEY>   classifier,
-//            Function<? super FuncList<DATA>, VALUE> aggregate) {
-//        return terminate(stream -> {
-//            val theMap = new HashMap<KEY, VALUE>();
-//            stream
-//                .collect(Collectors.groupingBy(classifier))
-//                .forEach((key,list) -> {
-//                    val valueList      = ImmutableList.from(list);
-//                    val aggregateValue = aggregate.apply(valueList);
-//                    theMap.put(key, aggregateValue);
-//                });
-//            return ImmutableMap.from(theMap);
-//        });
-//    }
-//    
-//    // Eager
-//    @SuppressWarnings({ "unchecked", "rawtypes" })
-//    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-//            Function<? super DATA, ? extends KEY> classifier,
-//            StreamProcessor<? super DATA, VALUE>  processor) {
-//        Function<? super FuncList<DATA>, VALUE> aggregate = (FuncList<DATA> list) -> {
-//            return (VALUE)processor.process((StreamPlus)list.stream());
-//        };
-//        return groupingBy(classifier, aggregate);
-//    }
-//    
-//    // Eager
-//    public default <KEY, ACCUMULATED, TARGET> FuncMap<KEY, TARGET> groupingBy(
-//            Function<? super DATA, ? extends KEY>                  classifier,
-//            Supplier<Collector<? super DATA, ACCUMULATED, TARGET>> collectorSupplier) {
-//        Objects.requireNonNull(collectorSupplier);
-//        
-//        val theMap = new ConcurrentHashMap<KEY, Collected<? super DATA, ACCUMULATED, TARGET>>();
-//        stream()
-//        .forEach(each -> {
-//            val key       = classifier.apply(each);
-//            val collected = theMap.computeIfAbsent(key, __ -> {
-//                val collector = collectorSupplier.get();
-//                return new Collected.ByCollector<>(collector);
-//            });
-//            
-//            collected.accumulate(each);
-//        });
-//        
-//        val mapBuilder = FuncMap.<KEY, TARGET>newBuilder();
-//        theMap
-//        .forEach((key, collected) -> {
-//            val target = collected.finish();
-//            mapBuilder.with(key, target);
-//        });
-//        
-//        val map = mapBuilder.build();
-//        return map;
-//    }
+    // Eager
+    public default <KEY> FuncMap<KEY, IntStreamPlus> groupingBy(
+            IntFunction<? extends KEY> keyMapper) {
+        Supplier      <Map<KEY, GrowOnlyIntArray>>                             supplier;
+        ObjIntConsumer<Map<KEY, GrowOnlyIntArray>>                             accumulator;
+        BiConsumer    <Map<KEY, GrowOnlyIntArray>, Map<KEY, GrowOnlyIntArray>> combiner;
+        
+        Supplier<GrowOnlyIntArray>                collectorSupplier = GrowOnlyIntArray::new;
+        Function<GrowOnlyIntArray, IntStreamPlus> toStreamPlus      = GrowOnlyIntArray::stream;
+        
+        supplier = LinkedHashMap::new;
+        accumulator = (map, each) -> {
+            val key = keyMapper.apply(each);
+            map.compute(key, (k, a)->{
+                if (a == null) {
+                    a = collectorSupplier.get();
+                }
+                a.add(each);
+                return a;
+            });
+        };
+        combiner = (map1, map2) -> map1.putAll(map2);
+        return terminate(stream -> {
+            val theMap = stream.collect(supplier, accumulator, combiner);
+            return ImmutableMap
+                    .from    (theMap)
+                    .mapValue(toStreamPlus);
+        });
+    }
+    
+    // Eager
+    @SuppressWarnings("unchecked")
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            IntFunction<? extends KEY>     keyMapper,
+            Function<IntStreamPlus, VALUE> aggregate) {
+        val groupingBy = groupingBy(keyMapper);
+        val mapValue = groupingBy.mapValue(aggregate);
+        return (FuncMap<KEY, VALUE>)mapValue;
+    }
+    
+    // Eager
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            IntFunction<? extends KEY> keyMapper,
+            IntStreamProcessor<VALUE>  processor) {
+        Function<IntStreamPlus, VALUE> aggregate = (IntStreamPlus stream) -> {
+            return (VALUE)processor.process((IntStreamPlus)stream);
+        };
+        return groupingBy(keyMapper, aggregate);
+    }
     
     //-- min-max --
     
@@ -374,45 +365,62 @@ public interface IntStreamPlusAdditionalTerminalOperators {
                 .findAny();
     }
     
-//    //-- toMap --
-//    
-//    @SuppressWarnings("unchecked")
-//    public default <KEY> FuncMap<KEY, DATA> toMap(
-//            Function<? super DATA, ? extends KEY> keyMapper) {
-//        return terminate(stream -> {
-//            val theMap = stream.collect(Collectors.toMap(keyMapper, data -> data));
-//            return (FuncMap<KEY, DATA>)ImmutableMap.from(theMap);
-//        });
-//    }
-//    
-//    @SuppressWarnings("unchecked")
-//    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-//            Function<? super DATA, ? extends KEY>  keyMapper,
-//            Function<? super DATA, ? extends VALUE> valueMapper) {
-//        return terminate(stream -> {
-//            val theMap = stream.collect(Collectors.toMap(keyMapper, valueMapper));
-//            return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
-//        });
-//    }
-//    
-//    @SuppressWarnings("unchecked")
-//    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-//            Function<? super DATA, ? extends KEY>   keyMapper,
-//            Function<? super DATA, ? extends VALUE> valueMapper,
-//            BinaryOperator<VALUE>                   mergeFunction) {
-//        return terminate(stream -> {
-//            val theMap = stream.collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
-//            return (FuncMap<KEY, VALUE>) ImmutableMap.from(theMap);
-//        });
-//    }
-//    
-//    @SuppressWarnings("unchecked")
-//    public default <KEY> FuncMap<KEY, DATA> toMap(
-//            Function<? super DATA, ? extends KEY> keyMapper,
-//            BinaryOperator<DATA>                  mergeFunction) {
-//        return terminate(stream -> {
-//            val theMap = stream.collect(Collectors.toMap(keyMapper, value -> value, mergeFunction));
-//            return (FuncMap<KEY, DATA>) ImmutableMap.from(theMap);
-//        });
-//    }
+    //-- toMap --
+    
+    public default <KEY> FuncMap<KEY, Integer> toMap(
+            IntFunction<? extends KEY> keyMapper) {
+        return toMap(keyMapper, i -> i);
+    }
+    
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            IntFunction<? extends KEY>   keyMapper,
+            IntFunction<? extends VALUE> valueMapper) {
+        Supplier<Map<KEY, VALUE>> supplier = ()-> new LinkedHashMap<KEY, VALUE>();
+        ObjIntConsumer<Map<KEY, VALUE>> accumulator = (map, i) -> {
+            val key = keyMapper.apply(i);
+            map.compute(key, (k, a)->{
+                if (a != null)
+                    throw new IllegalStateException("Duplicate key for value=" + i + ": " + key);
+                return valueMapper.apply(i);
+            });
+        };
+        BiConsumer<Map<KEY, VALUE>, Map<KEY, VALUE>>  combiner = (map1, map2) -> {
+            val mapKeys = new ArrayList<>(map1.keySet());
+            mapKeys.retainAll(map2.keySet());
+            if (mapKeys.isEmpty()) {
+                map1.putAll(map2);
+            } else {
+                val firstDuplicateKey = mapKeys.get(0);
+                val i = map1.get(firstDuplicateKey);
+                throw new IllegalStateException("Duplicate key for value=" + i + ": " + firstDuplicateKey);
+            }
+        };
+        return (FuncMap<KEY, VALUE>) terminate(stream -> {
+            val theMap = stream.collect(supplier, accumulator, combiner);
+            return ImmutableMap
+                    .from(theMap);
+        });
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public default <KEY> FuncMap<KEY, Integer> toMap(
+            IntFunction<? extends KEY> keyMapper,
+            IntBinaryOperator          mergeFunction) {
+        return (FuncMap)
+                groupingBy(keyMapper)
+                .mapValue(stream -> stream.reduce(mergeFunction));
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
+            IntFunction<KEY>      keyMapper,
+            IntFunction<VALUE>    valueMapper,
+            BinaryOperator<VALUE> mergeFunction) {
+        return (FuncMap)groupingBy(keyMapper)
+                .mapValue(stream -> {
+                    return stream
+                            .mapToObj(valueMapper)
+                            .reduce((a, b) -> mergeFunction.apply(a, b));
+                });
+    }
 }
