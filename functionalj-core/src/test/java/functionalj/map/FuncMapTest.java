@@ -41,7 +41,7 @@ public class FuncMapTest {
     }
     
     @Test
-    public void test() {
+    public void testMap() {
         val map1 = FuncMap.of(
                 1, "One",
                 2, "Two",

@@ -136,11 +136,12 @@ public class StreamPlusHelper {
     }
     
     public static <DATA, TARGET> TARGET terminate(
-            AsStreamPlus<DATA>          stream,
+            AsStreamPlus<DATA>          asStreamPlus,
             Func1<Stream<DATA>, TARGET> action) {
-        val streamPlus = stream.streamPlus();
+        val streamPlus = asStreamPlus.streamPlus();
         try {
-            val result = action.apply(streamPlus);
+            val stream = streamPlus.stream();
+            val result = action.apply(stream);
             return result;
         } finally {
             streamPlus.close();
@@ -148,14 +149,40 @@ public class StreamPlusHelper {
     }
     
     public static <DATA> void terminate(
-            AsStreamPlus<DATA>      stream,
+            AsStreamPlus<DATA>      asStreamPlus,
             FuncUnit1<Stream<DATA>> action) {
-        val streamPlus = stream.streamPlus();
+        val streamPlus = asStreamPlus.streamPlus();
         try {
-            action.accept(streamPlus);
+            val stream = streamPlus.stream();
+            action.accept(stream);
         } finally {
             streamPlus.close();
         }
+    }
+    
+    /** Run the given action sequentially, make sure to set the parallelity of the result back. */
+    public static <D, T> StreamPlus<T> sequential(
+            AsStreamPlus<D>      stream,
+            Func1<StreamPlus<D>, StreamPlus<T>> action) {
+        val streamPlus = stream.streamPlus();
+        val isParallel = streamPlus.isParallel();
+        
+        val orgIntStreamPlus = streamPlus.sequential();
+        val newIntStreamPlus = action.apply(orgIntStreamPlus);
+        if (newIntStreamPlus.isParallel() == isParallel)
+            return newIntStreamPlus;
+        
+        if (isParallel)
+            return newIntStreamPlus.parallel();
+        
+        return newIntStreamPlus.sequential();
+    }
+    
+    /** Run the given action sequentially, make sure to set the parallelity of the result back. */
+    public static <D, T> StreamPlus<T> sequentialToObj(
+            AsStreamPlus<D>                     stream,
+            Func1<StreamPlus<D>, StreamPlus<T>> action) {
+        return sequential(stream, action);
     }
     
 }

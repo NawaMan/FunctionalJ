@@ -26,6 +26,7 @@ package functionalj.stream;
 import static functionalj.function.Func.f;
 import static functionalj.stream.StreamPlus.empty;
 import static functionalj.stream.StreamPlus.from;
+import static functionalj.stream.StreamPlusHelper.sequential;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +43,9 @@ import functionalj.function.Func2;
 import functionalj.result.NoMoreResultException;
 import lombok.val;
 
-public interface StreamPlusWithSegment<DATA> {
+public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
     
     public <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action);
-    public <T> StreamPlus<T> sequential(Func1<StreamPlus<DATA>, StreamPlus<T>> action);
     
     public void close();
     
@@ -63,7 +63,7 @@ public interface StreamPlusWithSegment<DATA> {
         return segment(startCondition, true);
     }
     public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, boolean includeIncompletedSegment) {
-        return sequential(stream -> {
+        return sequential(this, stream -> {
             // TODO - Find a way to make it fully lazy. Try tryAdvance.
             val list = new AtomicReference<>(new ArrayList<DATA>());
             val adding = new AtomicBoolean(false);
@@ -106,7 +106,7 @@ public interface StreamPlusWithSegment<DATA> {
     }
     
     public default StreamPlus<StreamPlus<DATA>> segment(Predicate<DATA> startCondition, Predicate<DATA> endCondition, boolean includeIncompletedSegment) {
-        return sequential(stream -> {
+        return sequential(this, stream -> {
          // TODO - Find a way to make it fully lazy. Try tryAdvance.
             val list = new AtomicReference<>(new ArrayList<DATA>());
             val adding = new AtomicBoolean(false);
@@ -144,7 +144,7 @@ public interface StreamPlusWithSegment<DATA> {
     
     @SuppressWarnings("unchecked")
     public default StreamPlus<StreamPlus<DATA>> segmentSize(Func1<DATA, Integer> segmentSize) {
-        return sequential(stream -> {
+        return sequential(this, stream -> {
             val listRef = new AtomicReference<List<DATA>>(new ArrayList<DATA>());
             val leftRef = new AtomicInteger(-1);
             

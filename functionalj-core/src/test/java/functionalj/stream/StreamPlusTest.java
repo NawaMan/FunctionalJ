@@ -49,7 +49,6 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -109,7 +108,10 @@ public class StreamPlusTest {
     @Test
     public void testMap() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("[3, 3, 5]", stream.map(s -> s.length()).toList());
+        assertStrings("[3, 3, 5]", 
+                stream
+                .map(s -> s.length())
+                .toList());
     }
     
     @Test
@@ -965,25 +967,6 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
         val sum = new Sum();
         assertEquals(18, stream.calculate(sum.of(theString.length())).intValue());
-    }
-    
-    @Test
-    public void testSequential() {
-        val stream = IntStreamPlus.infinite().limit(1000).boxed();
-        
-        val s1 = stream.parallel();
-        assertTrue(s1.isParallel());
-        
-        val ss = new AtomicReference<Stream<Integer>>();
-        val s2 = stream.sequential(s -> {
-            ss.set(s);
-            assertFalse(s.isParallel());
-            return s;
-        });
-        
-        assertTrue(s2.isParallel());
-        
-        s2.close();
     }
     
 }

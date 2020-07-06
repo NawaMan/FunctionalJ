@@ -524,28 +524,6 @@ public interface StreamPlus<DATA>
     
     //== Helper functions ==
     
-    // TODO - Extract to a utility class
-    // TODO - Run the given action sequentially, make sure to set the parallelity of the result back.
-    public default <T> StreamPlus<T> sequential(Func1<StreamPlus<DATA>, StreamPlus<T>> action) {
-        val isParallel = isParallel();
-        
-        val orgIntStreamPlus = sequential();
-        val newIntStreamPlus = action.apply(orgIntStreamPlus);
-        if (newIntStreamPlus.isParallel() == isParallel)
-            return newIntStreamPlus;
-        
-        if (isParallel)
-            return newIntStreamPlus.parallel();
-        
-        return newIntStreamPlus.sequential();
-    }
-    
-    // TODO - Extract to a utility class
-    // TODO - Run the given action sequentially, make sure to set the parallelity of the result back.
-    public default <T> StreamPlus<T> sequentialToObj(Func1<StreamPlus<DATA>, StreamPlus<T>> action) {
-        return sequential(action);
-    }
-    
     public default <T> StreamPlus<T> derive(Function<Stream<DATA>, Stream<T>> action) {
         return from(action.apply(stream()));
     }
@@ -605,7 +583,7 @@ public interface StreamPlus<DATA>
     // The recent change has make iterator non-terminate action, let try out.
     /** Use iterator of this stream without terminating the stream. */
     public default <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action) {
-        return sequential(stream -> {
+        return StreamPlusHelper.sequential(this, stream -> {
             StreamPlus<T> result = null;
             try {
                 val iterator = StreamPlus.from(stream).iterator();
@@ -766,7 +744,7 @@ public interface StreamPlus<DATA>
     }
     
     public default StreamPlus<DATA> skipWhile(Predicate<? super DATA> condition) {
-        return sequential(stream -> {
+        return StreamPlusHelper.sequential(this, stream -> {
             val isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
@@ -781,7 +759,7 @@ public interface StreamPlus<DATA>
     }
     
     public default StreamPlus<DATA> skipUntil(Predicate<? super DATA> condition) {
-        return sequential(stream -> {
+        return StreamPlusHelper.sequential(this, stream -> {
             val isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
@@ -797,7 +775,7 @@ public interface StreamPlus<DATA>
     
     public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
         // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
-        return sequential(stream -> {
+        return StreamPlusHelper.sequential(this, stream -> {
             val splitr = stream.spliterator();
             return StreamPlus.from(
                     StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
@@ -822,7 +800,7 @@ public interface StreamPlus<DATA>
     }
     
     public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
-        return sequential(stream -> {
+        return StreamPlusHelper.sequential(this, stream -> {
             val splitr = stream.spliterator();
             val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
                 boolean stillGoing = true;
@@ -1155,7 +1133,7 @@ public interface StreamPlus<DATA>
      *   the unfinished actions will be canceled.
      */
     public default <T> StreamPlus<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapToAction) {
-        return sequential(stream -> {
+        return StreamPlusHelper.sequential(this, stream -> {
             val results = new ArrayList<DeferAction<T>>();
             val index   = new AtomicInteger(0);
             
