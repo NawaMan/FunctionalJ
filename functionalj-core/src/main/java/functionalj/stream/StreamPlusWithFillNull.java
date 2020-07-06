@@ -1,6 +1,7 @@
 package functionalj.stream;
 
-import java.util.function.Function;
+import static functionalj.stream.StreamPlusHelper.derive;
+
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -10,15 +11,13 @@ import functionalj.lens.core.WriteLens;
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
-public interface StreamPlusWithFillNull<DATA> {
-    
-    public <TARGET> StreamPlus<TARGET> derive(Function<Stream<DATA>, Stream<TARGET>> action);
+public interface StreamPlusWithFillNull<DATA> extends AsStreamPlus<DATA> {
     
     //== fillNull ==
     
-    public default StreamPlus<DATA> fillNull(
-            DATA replacement) {
-        return derive(stream ->  {
+    public default StreamPlus<DATA> fillNull(DATA replacement) {
+        val streamPlus = streamPlus();
+        return derive(streamPlus, stream ->  {
             return stream.map(value -> value == null ? replacement : value);
         });
     }
@@ -36,7 +35,8 @@ public interface StreamPlusWithFillNull<DATA> {
             Func1<DATA, VALUE>       get, 
             Func2<DATA, VALUE, DATA> set, 
             VALUE                    replacement) {
-        return derive(stream -> {
+        val streamPlus = streamPlus();
+        return derive(streamPlus, stream ->  {
             return (Stream<DATA>)stream
                     .map(orgElmt -> {
                         val value   = get.apply(orgElmt);
@@ -62,7 +62,8 @@ public interface StreamPlusWithFillNull<DATA> {
             Func1<DATA, VALUE>       get, 
             Func2<DATA, VALUE, DATA> set, 
             Supplier<VALUE>          replacementSupplier) {
-        return derive(stream -> {
+        val streamPlus = streamPlus();
+        return derive(streamPlus, stream ->  {
             return (Stream<DATA>)stream
                     .map(orgElmt -> {
                         val value   = get.apply(orgElmt);
@@ -89,7 +90,8 @@ public interface StreamPlusWithFillNull<DATA> {
             Func1<DATA, VALUE>       get, 
             Func2<DATA, VALUE, DATA> set, 
             Func1<DATA, VALUE>       replacementFunction) {
-        return derive(stream -> {
+        val streamPlus = streamPlus();
+        return derive(streamPlus, stream ->  {
             return (Stream<DATA>)stream
                     .map(orgElmt -> {
                         val value = get.apply(orgElmt);

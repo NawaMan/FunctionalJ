@@ -24,6 +24,7 @@
 package functionalj.stream;
 
 import static functionalj.function.Func.themAll;
+import static functionalj.stream.StreamPlusHelper.derive;
 import static functionalj.stream.StreamPlusHelper.terminate;
 
 import java.io.ByteArrayOutputStream;
@@ -521,16 +522,6 @@ public interface StreamPlus<DATA>
         return this;
     }
     
-    //== Helper functions ==
-    
-    public default <T> StreamPlus<T> derive(Function<Stream<DATA>, Stream<T>> action) {
-        return from(action.apply(stream()));
-    }
-    
-    public default <T> StreamPlus<T> deriveAsObject(Function<Stream<DATA>, Stream<T>> action) {
-        return derive(action);
-    }
-    
     //== Stream specific ==
     
     @Override
@@ -826,7 +817,7 @@ public interface StreamPlus<DATA>
     public default <T> StreamPlus<DATA> sortedBy(
             Function<? super DATA, T> mapper, 
             Comparator<T>             comparator) {
-        return derive(stream -> {
+        return derive(this, stream -> {
             return stream.sorted((a, b) -> {
                     T vA = mapper.apply(a);
                     T vB = mapper.apply(b);

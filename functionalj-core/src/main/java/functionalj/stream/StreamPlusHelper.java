@@ -6,6 +6,7 @@ import static java.lang.Boolean.TRUE;
 
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -183,6 +184,21 @@ public class StreamPlusHelper {
             AsStreamPlus<D>                     asStreamPlus,
             Func1<StreamPlus<D>, StreamPlus<T>> action) {
         return sequential(asStreamPlus, action);
+    }
+    
+    public static <D, T> StreamPlus<T> derive(
+            AsStreamPlus<D>     asStreamPlus,
+            Function<Stream<D>, Stream<T>> action) {
+        val streamPlus = asStreamPlus.streamPlus();
+        val orgStream  = streamPlus.stream();
+        val newStream  = action.apply(orgStream);
+        return StreamPlus.from(newStream);
+    }
+    
+    public static <D, T> StreamPlus<T> deriveAsObject(
+            AsStreamPlus<D>                asStreamPlus,
+            Function<Stream<D>, Stream<T>> action) {
+        return derive(asStreamPlus, action);
     }
     
 }

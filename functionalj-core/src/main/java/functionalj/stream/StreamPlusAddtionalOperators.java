@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.stream.StreamPlusHelper.derive;
 import static functionalj.tuple.Tuple.tuple2;
 import static java.util.Arrays.asList;
 
@@ -41,9 +42,7 @@ import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-public interface StreamPlusAddtionalOperators<DATA> {
-    
-    public <TARGET> StreamPlus<TARGET> derive(Function<Stream<DATA>, Stream<TARGET>> action);
+public interface StreamPlusAddtionalOperators<DATA> extends AsStreamPlus<DATA> {
     
     public <TARGET> StreamPlus<TARGET> map(Function<? super DATA, ? extends TARGET> mapper);
     
@@ -155,7 +154,7 @@ public interface StreamPlusAddtionalOperators<DATA> {
     //-- Filter --
     
     public default StreamPlus<DATA> filterNonNull() {
-        return derive(stream -> stream.filter(Objects::nonNull));
+        return derive(this, stream -> stream.filter(Objects::nonNull));
     }
     
     @SuppressWarnings("unchecked")
@@ -164,7 +163,7 @@ public interface StreamPlusAddtionalOperators<DATA> {
     }
     
     public default StreamPlus<DATA> filterIn(Collection<? super DATA> collection) {
-        return derive(stream -> {
+        return derive(this, stream -> {
             return (collection == null)
                 ? Stream.empty()
                 : stream.filter(data -> collection.contains(data));
@@ -172,7 +171,7 @@ public interface StreamPlusAddtionalOperators<DATA> {
     }
     
     public default StreamPlus<DATA> exclude(Predicate<? super DATA> predicate) {
-        return derive(stream -> {
+        return derive(this, stream -> {
             return (predicate == null)
                 ? stream
                 : stream.filter(data -> !predicate.test(data));
@@ -185,7 +184,7 @@ public interface StreamPlusAddtionalOperators<DATA> {
     }
     
     public default StreamPlus<DATA> excludeIn(Collection<? super DATA> collection) {
-        return derive(stream -> {
+        return derive(this, stream -> {
             return (collection == null)
                 ? stream
                 : stream.filter(data -> !collection.contains(data));

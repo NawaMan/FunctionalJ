@@ -39,7 +39,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import functionalj.function.Func1;
 import functionalj.map.FuncMap;
@@ -48,10 +47,6 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface StreamPlusAdditionalTerminalOperators<DATA> extends AsStreamPlus<DATA> {
-    
-    
-    public <TARGET> StreamPlus<TARGET> derive(
-            Function<Stream<DATA>, Stream<TARGET>> action);
     
     
     public StreamPlus<DATA> filter(Predicate<? super DATA> predicate);
