@@ -27,7 +27,6 @@ import static functionalj.function.Func.f;
 import static functionalj.stream.StreamPlus.empty;
 import static functionalj.stream.StreamPlus.from;
 import static functionalj.stream.StreamPlusHelper.sequential;
-import static functionalj.stream.StreamPlusHelper.useIterator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,40 +194,49 @@ public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
     
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> collapseWhen(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
-        return useIterator(this, iterator -> {
-            DATA first = null;
-            try {
-                first = iterator.next();
-            } catch (NoSuchElementException e) {
-                return empty();
-            }
+        val iterator = streamPlus().iterator();
+        DATA first = null;
+        
+        if (!iterator.hasNext()) {
+            return empty();
+        }
+        try {
+            first = iterator.next();
+        } catch (NoSuchElementException e) {
+            return empty();
+        }
+        
+        val prev = new AtomicReference<Object>(first);
+        StreamPlus<DATA> resultStream = StreamPlus.generateWith(()->{
+            if (prev.get() == StreamPlusHelper.dummy)
+                throw new NoMoreResultException();
             
-            val prev = new AtomicReference<Object>(first);
-            StreamPlus<DATA> resultStream = StreamPlus.generateWith(()->{
-                if (prev.get() == StreamPlusHelper.dummy)
-                    throw new NoMoreResultException();
-                
-                while(true) {
-                    DATA next;
-                    try {
-                        next = iterator.next();
-                    } catch (NoSuchElementException e) {
-                        val yield = prev.get();
-                        prev.set(StreamPlusHelper.dummy);
-                        return (DATA)yield;
-                    }
-                    if (conditionToCollapse.test(next)) {
-                        prev.set(concatFunc.apply((DATA)prev.get(), next));
-                    } else {
-                        val yield = prev.get();
-                        prev.set(next);
-                        return (DATA)yield;
-                    }
+            while(true) {
+                DATA next;
+                if (!iterator.hasNext()) {
+                    val yield = prev.get();
+                    prev.set(StreamPlusHelper.dummy);
+                    return (DATA)yield;
                 }
-            });
-            
-            return resultStream;
+                
+                try {
+                    next = iterator.next();
+                } catch (NoSuchElementException e) {
+                    val yield = prev.get();
+                    prev.set(StreamPlusHelper.dummy);
+                    return (DATA)yield;
+                }
+                if (conditionToCollapse.test(next)) {
+                    prev.set(concatFunc.apply((DATA)prev.get(), next));
+                } else {
+                    val yield = prev.get();
+                    prev.set(next);
+                    return (DATA)yield;
+                }
+            }
         });
+        
+        return resultStream;
     }
     
     @SuppressWarnings("unchecked")
@@ -236,54 +244,53 @@ public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
             Func1<DATA, Integer>    segmentSize, 
             Func2<DATA, DATA, DATA> concatFunc) {
         val firstObj = new Object();
-        return useIterator(this, iterator -> {
-            val prev = new AtomicReference<Object>(firstObj);
-            StreamPlus<DATA> resultStream = StreamPlus.generateWith(()->{
-                if (prev.get() == StreamPlusHelper.dummy)
-                    throw new NoMoreResultException();
+        val iterator = streamPlus().iterator();
+        val prev = new AtomicReference<Object>(firstObj);
+        StreamPlus<DATA> resultStream = StreamPlus.generateWith(()->{
+            if (prev.get() == StreamPlusHelper.dummy)
+                throw new NoMoreResultException();
+            
+            while(true) {
+                DATA next;
+                try {
+                    next = iterator.next();
+                } catch (NoSuchElementException e) {
+                    if (prev.get() == firstObj)
+                        throw new NoMoreResultException();
+                    
+                    val yield = prev.get();
+                    prev.set(StreamPlusHelper.dummy);
+                    return (DATA)yield;
+                }
                 
-                while(true) {
-                    DATA next;
+                Integer newSize = segmentSize.apply(next);
+                if ((newSize == null) || (newSize == 0)) {
+                    continue;
+                }
+                
+                if (newSize == 1) {
+                    return (DATA)next;
+                }
+                
+                prev.set(next);
+                for (int i = 0; i < (newSize - 1); i++) {
                     try {
                         next = iterator.next();
+                        prev.set(concatFunc.apply((DATA)prev.get(), next));
                     } catch (NoSuchElementException e) {
-                        if (prev.get() == firstObj)
-                            throw new NoMoreResultException();
-                        
                         val yield = prev.get();
                         prev.set(StreamPlusHelper.dummy);
                         return (DATA)yield;
                     }
-                    
-                    Integer newSize = segmentSize.apply(next);
-                    if ((newSize == null) || (newSize == 0)) {
-                        continue;
-                    }
-                    
-                    if (newSize == 1) {
-                        return (DATA)next;
-                    }
-                    
-                    prev.set(next);
-                    for (int i = 0; i < (newSize - 1); i++) {
-                        try {
-                            next = iterator.next();
-                            prev.set(concatFunc.apply((DATA)prev.get(), next));
-                        } catch (NoSuchElementException e) {
-                            val yield = prev.get();
-                            prev.set(StreamPlusHelper.dummy);
-                            return (DATA)yield;
-                        }
-                    }
-                    
-                    val yield = prev.get();
-                    prev.set(firstObj);
-                    return (DATA)yield;
                 }
-            });
-            
-            return resultStream;
+                
+                val yield = prev.get();
+                prev.set(firstObj);
+                return (DATA)yield;
+            }
         });
+        
+        return resultStream;
     }
     
     @SuppressWarnings("unchecked")
@@ -292,58 +299,57 @@ public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
             Func1<DATA, TARGET>           mapper, 
             Func2<TARGET, TARGET, TARGET> concatFunc) {
         val firstObj = new Object();
-        return useIterator(this, iterator -> {
-            val prev = new AtomicReference<Object>(firstObj);
-            StreamPlus<TARGET> resultStream = StreamPlus.generateWith(()->{
-                if (prev.get() == StreamPlusHelper.dummy)
-                    throw new NoMoreResultException();
+        val iterator = streamPlus().iterator();
+        val prev = new AtomicReference<Object>(firstObj);
+        StreamPlus<TARGET> resultStream = StreamPlus.generateWith(()->{
+            if (prev.get() == StreamPlusHelper.dummy)
+                throw new NoMoreResultException();
+            
+            while(true) {
+                DATA next;
+                try {
+                    next = iterator.next();
+                } catch (NoSuchElementException e) {
+                    if (prev.get() == firstObj)
+                        throw new NoMoreResultException();
+                    
+                    val yield = prev.get();
+                    prev.set(StreamPlusHelper.dummy);
+                    return (TARGET)yield;
+                }
                 
-                while(true) {
-                    DATA next;
+                Integer newSize = segmentSize.apply(next);
+                if ((newSize == null) || (newSize == 0)) {
+                    continue;
+                }
+                
+                if (newSize == 1) {
+                    val target = (TARGET)mapper.apply((DATA)next);
+                    return target;
+                }
+                
+                TARGET target = (TARGET)mapper.apply((DATA)next);
+                prev.set(target);
+                for (int i = 0; i < (newSize - 1); i++) {
                     try {
-                        next = iterator.next();
+                        next   = iterator.next();
+                        target = (TARGET)mapper.apply((DATA)next);
+                        val prevValue = (TARGET)prev.get();
+                        val newValue  = concatFunc.apply(prevValue, target);
+                        prev.set(newValue);
                     } catch (NoSuchElementException e) {
-                        if (prev.get() == firstObj)
-                            throw new NoMoreResultException();
-                        
                         val yield = prev.get();
                         prev.set(StreamPlusHelper.dummy);
                         return (TARGET)yield;
                     }
-                    
-                    Integer newSize = segmentSize.apply(next);
-                    if ((newSize == null) || (newSize == 0)) {
-                        continue;
-                    }
-                    
-                    if (newSize == 1) {
-                        val target = (TARGET)mapper.apply((DATA)next);
-                        return target;
-                    }
-                    
-                    TARGET target = (TARGET)mapper.apply((DATA)next);
-                    prev.set(target);
-                    for (int i = 0; i < (newSize - 1); i++) {
-                        try {
-                            next   = iterator.next();
-                            target = (TARGET)mapper.apply((DATA)next);
-                            val prevValue = (TARGET)prev.get();
-                            val newValue  = concatFunc.apply(prevValue, target);
-                            prev.set(newValue);
-                        } catch (NoSuchElementException e) {
-                            val yield = prev.get();
-                            prev.set(StreamPlusHelper.dummy);
-                            return (TARGET)yield;
-                        }
-                    }
-                    
-                    val yield = prev.get();
-                    prev.set(firstObj);
-                    return (TARGET)yield;
                 }
-            });
-            
-            return resultStream;
+                
+                val yield = prev.get();
+                prev.set(firstObj);
+                return (TARGET)yield;
+            }
         });
+        
+        return resultStream;
     }
 }

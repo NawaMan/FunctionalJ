@@ -35,7 +35,6 @@ import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamPlusHelper;
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.IntTuple2;
@@ -97,9 +96,8 @@ public interface IntStreamPlusWithCombine {
             ZipWithOption                     option,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
         return useIteratorToObj(iteratorA -> {
-            return StreamPlusHelper.useIterator(StreamPlus.from(anotherStream), iteratorB -> {
-                return IntStreamPlusHelper.doZipIntWith(option, merger, iteratorA, iteratorB);
-            });
+            val iteratorB = StreamPlus.from(anotherStream).iterator();
+            return IntStreamPlusHelper.doZipIntWith(option, merger, iteratorA, iteratorB);
         });
     }
     

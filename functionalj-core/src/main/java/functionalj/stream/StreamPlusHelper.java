@@ -1,6 +1,5 @@
 package functionalj.stream;
 
-import static functionalj.function.Func.f;
 import static functionalj.functions.ObjFuncs.notEqual;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 import static java.lang.Boolean.TRUE;
@@ -184,34 +183,6 @@ public class StreamPlusHelper {
             AsStreamPlus<D>                     asStreamPlus,
             Func1<StreamPlus<D>, StreamPlus<T>> action) {
         return sequential(asStreamPlus, action);
-    }
-    
-    // TODO: Is this still needed?
-    // The recent change has make iterator non-terminate action, let try out.
-    /** Use iterator of this stream without terminating the stream. */
-    public static <D, T> StreamPlus<T> useIterator(
-            AsStreamPlus<D>                       asStreamPlus,
-            Func1<IteratorPlus<D>, StreamPlus<T>> action) {
-        val streamPlus = asStreamPlus.streamPlus();
-        return sequential(streamPlus, stream -> {
-            StreamPlus<T> result = null;
-            try {
-                val iterator = StreamPlus.from(stream).iterator();
-                result = action.apply(iterator);
-                return result;
-            } finally {
-                if (result == null) {
-                    f(()->streamPlus.close())
-                    .runCarelessly();
-                } else {
-                    result
-                    .onClose(()->{
-                        f(()->streamPlus.close())
-                        .runCarelessly();
-                    });
-                }
-            }
-        });
     }
     
 }

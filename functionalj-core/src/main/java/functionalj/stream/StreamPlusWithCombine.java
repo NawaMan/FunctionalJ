@@ -24,7 +24,6 @@
 package functionalj.stream;
 
 import static functionalj.function.FuncUnit0.funcUnit0;
-import static functionalj.stream.StreamPlusHelper.useIterator;
 import static functionalj.stream.ZipWithOption.AllowUnpaired;
 
 import java.util.stream.Stream;
@@ -85,12 +84,13 @@ public interface StreamPlusWithCombine<DATA> extends AsStreamPlus<DATA> {
         return zipWith(anotherStream, ZipWithOption.RequireBoth, merger);
     }
     // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
-    public default <B, C> StreamPlus<C> zipWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, C> merger) {
-        return useIterator(this, iteratorA -> {
-            return useIterator(StreamPlus.from(anotherStream), iteratorB -> {
-                return StreamPlusHelper.doZipWith(option, merger, iteratorA, iteratorB);
-            });
-        });
+    public default <B, C> StreamPlus<C> zipWith(
+            Stream<B>         anotherStream, 
+            ZipWithOption     option,
+            Func2<DATA, B, C> merger) {
+        val iteratorA = streamPlus().iterator();
+        val iteratorB = StreamPlus.from(anotherStream).iterator();
+        return StreamPlusHelper.doZipWith(option, merger, iteratorA, iteratorB);
     }
     
     public default StreamPlus<DATA> choose(Stream<DATA> anotherStream, Func2<DATA, DATA, Boolean> selectThisNotAnother) {

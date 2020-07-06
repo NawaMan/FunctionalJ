@@ -25,7 +25,6 @@ package functionalj.stream;
 
 import static functionalj.function.Func.themAll;
 import static functionalj.stream.StreamPlusHelper.terminate;
-import static functionalj.stream.StreamPlusHelper.useIterator;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -1162,21 +1161,20 @@ public interface StreamPlus<DATA>
      *     ...
      */
     public default StreamPlus<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-        return useIterator(this, iterator -> {
-            if (!iterator.hasNext())
-                return StreamPlus.empty();
-            
-            val prev = new AtomicReference<DATA>(iterator.next());
-            return StreamPlus
-                    .concat(
-                        StreamPlus.of(prev.get()),
-                        iterator.stream().map(n -> {
-                            val next = accumulator.apply(n, prev.get());
-                            prev.set(next);
-                            return next;
-                        })
-                    );
-        });
+        val iterator = iterator();
+        if (!iterator.hasNext())
+            return StreamPlus.empty();
+        
+        val prev = new AtomicReference<DATA>(iterator.next());
+        return StreamPlus
+                .concat(
+                    StreamPlus.of(prev.get()),
+                    iterator.stream().map(n -> {
+                        val next = accumulator.apply(n, prev.get());
+                        prev.set(next);
+                        return next;
+                    })
+                );
     }
     
     /**
