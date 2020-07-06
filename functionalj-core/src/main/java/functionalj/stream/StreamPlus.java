@@ -789,6 +789,8 @@ public interface StreamPlus<DATA>
         });
     }
     
+    //-- Distinct --
+    
     @Override
     public default StreamPlus<DATA> distinct() {
         return from(stream().distinct());
@@ -1060,7 +1062,6 @@ public interface StreamPlus<DATA>
     }
     
     public default String toListString() {
-        // TODO - There must be a faster way
         val strValue 
                 = mapToObj(String::valueOf)
                 .collect(Collectors.joining(", "));

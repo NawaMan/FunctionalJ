@@ -195,10 +195,4 @@ public class StreamPlusHelper {
         return StreamPlus.from(newStream);
     }
     
-    public static <D, T> StreamPlus<T> deriveAsObject(
-            AsStreamPlus<D>                asStreamPlus,
-            Function<Stream<D>, Stream<T>> action) {
-        return derive(asStreamPlus, action);
-    }
-    
 }
