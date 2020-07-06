@@ -35,6 +35,7 @@ import functionalj.function.LongLongBiFunction;
 import functionalj.function.LongObjBiFunction;
 import functionalj.stream.LongIteratorPlus;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamPlusHelper;
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.LongLongTuple;
 import functionalj.tuple.LongTuple2;
@@ -93,11 +94,9 @@ public interface LongStreamPlusWithCombine {
             ZipWithOption                      option,
             LongObjBiFunction<ANOTHER, TARGET> merger) {
         return useIteratorToObj(iteratorA -> {
-            return StreamPlus
-                    .from(anotherStream)
-                    .useIterator(iteratorB -> {
-                        return LongStreamPlusHelper.doZipLongWith(option, merger, iteratorA, iteratorB);
-                    });
+            return StreamPlusHelper.useIterator(StreamPlus.from(anotherStream), iteratorB -> {
+                return LongStreamPlusHelper.doZipLongWith(option, merger, iteratorA, iteratorB);
+            });
         });
     }
     

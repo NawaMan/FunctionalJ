@@ -27,6 +27,7 @@ import static functionalj.function.Func.f;
 import static functionalj.stream.StreamPlus.empty;
 import static functionalj.stream.StreamPlus.from;
 import static functionalj.stream.StreamPlusHelper.sequential;
+import static functionalj.stream.StreamPlusHelper.useIterator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +45,6 @@ import functionalj.result.NoMoreResultException;
 import lombok.val;
 
 public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
-    
-    public <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action);
     
     public void close();
     
@@ -196,7 +195,7 @@ public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
     
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> collapseWhen(Predicate<DATA> conditionToCollapse, Func2<DATA, DATA, DATA> concatFunc) {
-        return useIterator(iterator -> {
+        return useIterator(this, iterator -> {
             DATA first = null;
             try {
                 first = iterator.next();
@@ -237,7 +236,7 @@ public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
             Func1<DATA, Integer>    segmentSize, 
             Func2<DATA, DATA, DATA> concatFunc) {
         val firstObj = new Object();
-        return useIterator(iterator -> {
+        return useIterator(this, iterator -> {
             val prev = new AtomicReference<Object>(firstObj);
             StreamPlus<DATA> resultStream = StreamPlus.generateWith(()->{
                 if (prev.get() == StreamPlusHelper.dummy)
@@ -293,7 +292,7 @@ public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
             Func1<DATA, TARGET>           mapper, 
             Func2<TARGET, TARGET, TARGET> concatFunc) {
         val firstObj = new Object();
-        return useIterator(iterator -> {
+        return useIterator(this, iterator -> {
             val prev = new AtomicReference<Object>(firstObj);
             StreamPlus<TARGET> resultStream = StreamPlus.generateWith(()->{
                 if (prev.get() == StreamPlusHelper.dummy)

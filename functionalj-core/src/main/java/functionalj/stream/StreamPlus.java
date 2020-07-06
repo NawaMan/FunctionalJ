@@ -23,9 +23,9 @@
 // ============================================================================
 package functionalj.stream;
 
-import static functionalj.function.Func.f;
 import static functionalj.function.Func.themAll;
 import static functionalj.stream.StreamPlusHelper.terminate;
+import static functionalj.stream.StreamPlusHelper.useIterator;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -576,31 +576,6 @@ public interface StreamPlus<DATA>
         return StreamPlusHelper.terminate(this, s -> {
             val iterator = iterator();
             return Spliterators.spliteratorUnknownSize(iterator, 0);
-        });
-    }
-    
-    // TODO: Is this still needed?
-    // The recent change has make iterator non-terminate action, let try out.
-    /** Use iterator of this stream without terminating the stream. */
-    public default <T> StreamPlus<T> useIterator(Func1<IteratorPlus<DATA>, StreamPlus<T>> action) {
-        return StreamPlusHelper.sequential(this, stream -> {
-            StreamPlus<T> result = null;
-            try {
-                val iterator = StreamPlus.from(stream).iterator();
-                result = action.apply(iterator);
-                return result;
-            } finally {
-                if (result == null) {
-                    f(()->close())
-                    .runCarelessly();
-                } else {
-                    result
-                    .onClose(()->{
-                        f(()->close())
-                        .runCarelessly();
-                    });
-                }
-            }
         });
     }
     
@@ -1187,7 +1162,7 @@ public interface StreamPlus<DATA>
      *     ...
      */
     public default StreamPlus<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-        return useIterator(iterator -> {
+        return useIterator(this, iterator -> {
             if (!iterator.hasNext())
                 return StreamPlus.empty();
             
