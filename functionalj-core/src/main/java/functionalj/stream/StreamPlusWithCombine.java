@@ -50,6 +50,7 @@ public interface StreamPlusWithCombine<DATA> {
     }
     
     public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
+        // TODO - Check to see if rawIterator is still needed.
         val thisStream = stream();
         val iteratorA  = StreamPlusHelper.rawIterator(thisStream);
         val iteratorB  = StreamPlusHelper.rawIterator(anotherStream);

@@ -231,6 +231,11 @@ public interface IntStreamPlus
                 .mapToInt    (i -> i);
     }
     
+    /** Concatenate all the given streams. */
+    public static IntStreamPlus combine(IntStreamPlus ... streams) {
+        return concat(streams);
+    }
+    
     /**
      * Create a StreamPlus from the supplier. 
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.

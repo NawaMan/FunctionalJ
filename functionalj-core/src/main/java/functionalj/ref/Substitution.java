@@ -52,7 +52,8 @@ public abstract class Substitution<DATA> {
     public static FuncList<Substitution<?>> getCurrentSubstitutionOf(List<Ref<?>> refs) {
         return Ref
                 .getSubstitutions()
-                .filter(Substitution::ref, refs::contains);
+                .filter(Substitution::ref, refs::contains)
+                .toFuncList();
     }
     
     

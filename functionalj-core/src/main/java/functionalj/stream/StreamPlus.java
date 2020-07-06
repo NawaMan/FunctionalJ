@@ -25,6 +25,7 @@ package functionalj.stream;
 
 import static functionalj.function.Func.f;
 import static functionalj.function.Func.themAll;
+import static functionalj.stream.StreamPlusHelper.terminate;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -93,6 +94,7 @@ import lombok.val;
 public interface StreamPlus<DATA> 
         extends 
             Stream<DATA>,
+            AsStreamPlus<DATA>,
             StreamPlusWithMapCase<DATA>,
             StreamPlusWithMapThen<DATA>,
             StreamPlusWithMapTuple<DATA>,
@@ -250,6 +252,23 @@ public interface StreamPlus<DATA>
     /** Concatenate all streams supplied by the given supplied. */
     @SafeVarargs
     public static <D> StreamPlus<D> concat(Supplier<Stream<D>> ... streams) {
+        return StreamPlus
+                .of     (streams)
+                .map    (Supplier::get)
+                .flatMap(themAll());
+    }
+    
+    /** Concatenate all the given streams. */
+    @SafeVarargs
+    public static <D> StreamPlus<D> combine(Stream<D> ... streams) {
+        return StreamPlus
+                .of     (streams)
+                .flatMap(themAll());
+    }
+    
+    /** Concatenate all streams supplied by the given supplied. */
+    @SafeVarargs
+    public static <D> StreamPlus<D> combine(Supplier<Stream<D>> ... streams) {
         return StreamPlus
                 .of     (streams)
                 .map    (Supplier::get)
@@ -499,28 +518,11 @@ public interface StreamPlus<DATA>
     
     public Stream<DATA> stream();
     
+    public default StreamPlus<DATA> streamPlus() {
+        return this;
+    }
+    
     //== Helper functions ==
-    
-    // TODO - 
-    public default <TARGET> TARGET terminate(
-            Func1<Stream<DATA>, TARGET> action) {
-        val stream = stream();
-        try {
-            val result = action.apply(stream);
-            return result;
-        } finally {
-            stream.close();
-        }
-    }
-    
-    public default void terminate(FuncUnit1<Stream<DATA>> action) {
-        val stream = stream();
-        try {
-            action.accept(stream);
-        } finally {
-            stream.close();
-        }
-    }
     
     // TODO - Extract to a utility class
     // TODO - Run the given action sequentially, make sure to set the parallelity of the result back.
@@ -593,7 +595,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default Spliterator<DATA> spliterator() {
-        return terminate(s -> {
+        return StreamPlusHelper.terminate(this, s -> {
             val iterator = iterator();
             return Spliterators.spliteratorUnknownSize(iterator, 0);
         });
@@ -885,7 +887,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default void forEach(Consumer<? super DATA> action) {
-        terminate(stream -> {
+        terminate(this, stream -> {
             stream
             .forEach(action);
         });
@@ -893,7 +895,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default void forEachOrdered(Consumer<? super DATA> action) {
-        terminate(stream -> {
+        terminate(this, stream -> {
             stream
             .forEachOrdered(action);
         });
@@ -901,7 +903,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default DATA reduce(DATA identity, BinaryOperator<DATA> reducer) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .reduce(identity, reducer);
         });
@@ -909,7 +911,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default Optional<DATA> reduce(BinaryOperator<DATA> reducer) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .reduce(reducer);
         });
@@ -920,7 +922,7 @@ public interface StreamPlus<DATA>
             U                              identity,
             BiFunction<U, ? super DATA, U> accumulator,
             BinaryOperator<U>              combiner) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .reduce(identity, accumulator, combiner);
         });
@@ -931,7 +933,7 @@ public interface StreamPlus<DATA>
             Supplier<R>                 supplier,
             BiConsumer<R, ? super DATA> accumulator,
             BiConsumer<R, R>            combiner) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .collect(supplier, accumulator, combiner);
         });
@@ -940,7 +942,7 @@ public interface StreamPlus<DATA>
     @Override
     public default <R, A> R collect(
             Collector<? super DATA, A, R> collector) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .collect(collector);
         });
@@ -951,7 +953,7 @@ public interface StreamPlus<DATA>
     @Override
     public default Optional<DATA> min(
             Comparator<? super DATA> comparator) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.min(comparator);
         });
     }
@@ -959,7 +961,7 @@ public interface StreamPlus<DATA>
     @Override
     public default Optional<DATA> max(
             Comparator<? super DATA> comparator) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.max(comparator);
         });
     }
@@ -976,14 +978,14 @@ public interface StreamPlus<DATA>
     
     @Override
     public default long count() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .count();
         });
     }
     
     public default int size() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return (int)stream
                     .count();
         });
@@ -993,7 +995,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default boolean anyMatch(Predicate<? super DATA> predicate) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .anyMatch(predicate);
         });
@@ -1001,7 +1003,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default boolean allMatch(Predicate<? super DATA> predicate) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .allMatch(predicate);
         });
@@ -1009,7 +1011,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default boolean noneMatch(Predicate<? super DATA> predicate) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .noneMatch(predicate);
         });
@@ -1017,7 +1019,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default Optional<DATA> findFirst() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .findFirst();
         });
@@ -1025,7 +1027,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default Optional<DATA> findAny() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .findAny();
         });
@@ -1035,14 +1037,14 @@ public interface StreamPlus<DATA>
     
     @Override
     public default Object[] toArray() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .toArray();
         });
     }
     
     public default <T> T[] toArray(T[] a) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             T[] array 
                     = toJavaList()
                     .toArray(a);
@@ -1052,14 +1054,14 @@ public interface StreamPlus<DATA>
     
     @Override
     public default <A> A[] toArray(IntFunction<A[]> generator) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream
                     .toArray(generator);
         });
     }
     
     public default byte[] toByteArray(ToByteFunction<DATA> toByte) {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             val byteArray = new ByteArrayOutputStream();
             stream.forEach(d -> byteArray.write(toByte.apply(d)));
             return byteArray
@@ -1080,7 +1082,7 @@ public interface StreamPlus<DATA>
     }
     
     public default List<DATA> toJavaList() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return stream.collect(Collectors.toList());
         });
     }
@@ -1094,7 +1096,7 @@ public interface StreamPlus<DATA>
     }
     
     public default ImmutableList<DATA> toImmutableList() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
             return ImmutableList.from(this);
         });
     }
@@ -1104,7 +1106,7 @@ public interface StreamPlus<DATA>
     }
     
     public default ArrayList<DATA> toArrayList() {
-        return terminate(stream -> {
+        return terminate(this, stream -> {
         // TODO - This is not efficient but without knowing the size, it is not so easy to do efficiently
         return new ArrayList<DATA>(toJavaList());
         });

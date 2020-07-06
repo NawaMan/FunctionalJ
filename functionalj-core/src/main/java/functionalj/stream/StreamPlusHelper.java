@@ -9,7 +9,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import functionalj.function.Func1;
 import functionalj.function.Func2;
+import functionalj.function.FuncUnit1;
 import lombok.val;
 
 public class StreamPlusHelper {
@@ -131,6 +133,29 @@ public class StreamPlusHelper {
     
     static <DATA> IteratorPlus<DATA> rawIterator(Stream<DATA> stream) {
         return IteratorPlus.from(stream);
+    }
+    
+    public static <DATA, TARGET> TARGET terminate(
+            AsStreamPlus<DATA>          stream,
+            Func1<Stream<DATA>, TARGET> action) {
+        val streamPlus = stream.streamPlus();
+        try {
+            val result = action.apply(streamPlus);
+            return result;
+        } finally {
+            streamPlus.close();
+        }
+    }
+    
+    public static <DATA> void terminate(
+            AsStreamPlus<DATA>      stream,
+            FuncUnit1<Stream<DATA>> action) {
+        val streamPlus = stream.streamPlus();
+        try {
+            action.accept(streamPlus);
+        } finally {
+            streamPlus.close();
+        }
     }
     
 }

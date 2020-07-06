@@ -39,10 +39,14 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
+import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
+import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
@@ -62,6 +66,7 @@ import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
+import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
@@ -122,106 +127,205 @@ public interface Streamable<DATA>
             StreamableAddtionalOperators<DATA>,
             StreamableAdditionalTerminalOperators<DATA> {
     
+    /** Throw a no more element exception. This is used for generator. */
+    public static <D> D noMoreElement() throws NoMoreResultException {
+        return StreamPlus.noMoreElement();
+    }
+    
+    //== Constructor ==
+    
+    /** Returns an empty Streamable. */
     public static <D> Streamable<D> empty() {
         return ()->StreamPlus.empty();
     }
     
+    /** Returns an empty Streamable. */
     public static <D> Streamable<D> emptyStreamable() {
         return ()->StreamPlus.empty();
     }
     
+    /** Create a Streamable from the given data. */
     @SafeVarargs
     public static <D> Streamable<D> of(D ... data) {
         return ()->StreamPlus.from(Stream.of(data));
     }
     
+    /** Create a Streamable from the given data. */
     @SafeVarargs
     public static <D> Streamable<D> steamableOf(D ... data) {
         return ()->StreamPlus.from(Stream.of(data));
     }
     
+    /** Create a Streamable from the given collection. */
     public static <D> Streamable<D> from(Collection<D> collection) {
         return ()->StreamPlus.from(collection.stream());
     }
     
+    /** Create a Streamable from the given supplier of stream. */
     public static <D> Streamable<D> from(Func0<Stream<D>> supplier) {
         return ()->StreamPlus.from(supplier.get());
     }
     
+    /** Create a Streamable from the given IntStreamable. */
     public static <D> StreamPlus<D> fromInts(IntStreamable source, Function<IntStreamable, Stream<D>> action) {
         return ()->action.apply(source);
     }
     
+    /** Create a Streamable that is the repeat of the given array of data. */
     @SafeVarargs
     public static <D> Streamable<D> repeat(D ... data) {
         return ()->StreamPlus.repeat(data);
     }
     
+    /** Create a Streamable that is the repeat of the given list of data. */
     public static <D> StreamPlus<D> repeat(FuncList<D> data) {
         return ()->StreamPlus.repeat(data);
     }
     
+    /** Create a Streamable that is the repeat of the given array of data. */
     @SafeVarargs
     public static <D> Streamable<D> cycle(D ... data) {
         return ()->StreamPlus.cycle(data);
     }
     
+    /** Create a Streamable that is the repeat of the given list of data. */
     public static <D> StreamPlus<D> cycle(FuncList<D> data) {
         return ()->StreamPlus.cycle(data);
     }
     
-    public static Streamable<Integer> loop(int time) {
-        return ()->StreamPlus.loop(time);
-    }
-    
+    /** Create a Streamable that for an infinite loop - the value is the index of the loop. */
     public static Streamable<Integer> loop() {
         return ()->StreamPlus.loop();
     }
     
+    /** Create a Streamable that for a loop with the number of time given - the value is the index of the loop. */
+    public static Streamable<Integer> loop(int time) {
+        return ()->StreamPlus.loop(time);
+    }
+    
+    /** Create a Streamable that for an infinite loop - the value is the index of the loop. */
     public static Streamable<Integer> infiniteInt() {
         return ()->StreamPlus.infiniteInt();
     }
     
+    /** Create a Streamable that for a loop from the start value inclusively to the end value exclusively. */
     public static Streamable<Integer> range(int startInclusive, int endExclusive) {
         return ()->StreamPlus.range(startInclusive, endExclusive);
     }
     
-    // Because people know this.
+    /** Concatenate all the given streams. */
     @SafeVarargs
     public static <D> Streamable<D> concat(Streamable<D> ... streams) {
         return ()->StreamPlus.of(streams).flatMap(s -> s.stream());
     }
     
+    /** Concatenate all the given streams. */
     // To avoid name conflict with String.concat
     @SafeVarargs
     public static <D> Streamable<D> combine(Streamable<D> ... streams) {
         return ()->StreamPlus.of(streams).flatMap(s -> s.stream());
     }
     
+    /**
+     * Create a StreamPlus from the supplier. 
+     * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
+     **/
     public static <D> Streamable<D> generate(Supplier<Supplier<D>> supplier) {
         return ()->StreamPlus.generate(supplier.get());
     }
     
+    /**
+     * Create a StreamPlus from the supplier. 
+     * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
+     **/
     public static <D> Streamable<D> generateWith(Supplier<Supplier<D>> supplier) {
         return ()->StreamPlus.generate(supplier.get());
     }
     
+    /**
+     * Create a StreamPlus by apply the function to the seed over and over.
+     * 
+     * For example: let say seed = 1 and f(x) = x*2.
+     * The result stream will be:
+     *      1 <- seed, 
+     *      2 <- (1*2), 
+     *      4 <- ((1*2)*2), 
+     *      8 <- (((1*2)*2)*2), 
+     *      16 <- ((((1*2)*2)*2)*2)
+     *      ...
+     * 
+     * Note: this is an alias of compound()
+     **/
     public static <D> Streamable<D> iterate(D seed, UnaryOperator<D> f) {
         return ()->StreamPlus.iterate(seed, f);
     }
     
+    /**
+     * Create a StreamPlus by apply the function to the seed over and over.
+     * 
+     * For example: let say seed = 1 and f(x) = x*2.
+     * The result stream will be:
+     *      1 <- seed, 
+     *      2 <- (1*2), 
+     *      4 <- ((1*2)*2), 
+     *      8 <- (((1*2)*2)*2), 
+     *      16 <- ((((1*2)*2)*2)*2)
+     *      ...
+     *      
+     * Note: this is an alias of iterate()
+     **/
     public static <D> Streamable<D> compound(D seed, UnaryOperator<D> f) {
         return ()->StreamPlus.compound(seed, f);
     }
     
+    /**
+     * Create a StreamPlus by apply the function to the seeds over and over.
+     * 
+     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
+     * The result stream will be:
+     *      1 <- seed1, 
+     *      1 <- seed2, 
+     *      2 <- (1+1), 
+     *      3 <- (1+2), 
+     *      5 <- (2+3), 
+     *      8 <- (5+8)
+     *      ...
+     * 
+     * Note: this is an alias of compound()
+     **/
     public static <D> Streamable<D> iterate(D seed1, D seed2, BinaryOperator<D> f) {
         return ()->StreamPlus.iterate(seed1, seed2, f);
     }
     
+    /**
+     * Create a StreamPlus by apply the function to the seeds over and over.
+     * 
+     * For example: let say seed1 = 1, seed2 = 1 and f(a,b) = a+b.
+     * The result stream will be:
+     *      1 <- seed1, 
+     *      1 <- seed2, 
+     *      2 <- (1+1), 
+     *      3 <- (1+2), 
+     *      5 <- (2+3), 
+     *      8 <- (5+8)
+     *      ...
+     * 
+     * Note: this is an alias of iterate()
+     **/
     public static <D> Streamable<D> compound(D seed1, D seed2, BinaryOperator<D> f) {
         return ()->StreamPlus.compound(seed1, seed2, f);
     }
     
+    /**
+     * Create a StreamPlus by combining elements together into a StreamPlus of tuples.
+     * Only elements with pair will be combined. If this is not desirable, use stream1.zip(stream2).
+     * 
+     * For example:
+     *     stream1 = [A, B, C, D, E]
+     *     stream2 = [1, 2, 3, 4]
+     *     
+     * The result stream = [(A,1), (B,2), (C,3), (D,4)].
+     **/
     public static <T1, T2> Streamable<Tuple2<T1, T2>> zipOf(
             Streamable<T1> streamable1, 
             Streamable<T2> streamable2) {
@@ -232,6 +336,17 @@ public interface Streamable<DATA>
         };
     }
     
+    /**
+     * Create a StreamPlus by combining elements together using the merger function and collected into the result stream.
+     * Only elements with pair will be combined. If this is not desirable, use stream1.zip(stream2).
+     * 
+     * For example:
+     *     stream1 = [A, B, C, D, E]
+     *     stream2 = [1, 2, 3, 4]
+     *     merger  = a + "+" + b 
+     *     
+     * The result stream = ["A+1", "B+2", "C+3", "D+4"].
+     **/
     public static <T1, T2, T> Streamable<T> zipOf(
             Streamable<T1>   streamable1, 
             Streamable<T2>   streamable2,
@@ -324,6 +439,18 @@ public interface Streamable<DATA>
         };
     }
     
+    //== Core ==
+    
+    public default Streamable<DATA> streamable() {
+        return this;
+    }
+    
+    public StreamPlus<DATA> stream();
+    
+    
+    //== Helper functions ==
+    // TODO - Move this out to a helper class
+    
     public static <D, T> Streamable<T> with(
             Streamable<D>                  source, 
             Function<Stream<D>, Stream<T>> action) {
@@ -359,19 +486,6 @@ public interface Streamable<DATA>
         };
     }
     
-    //== Streamable ==
-    
-    public default Streamable<DATA> streamable() {
-        return this;
-    }
-    
-    //== Stream ==
-    
-    public StreamPlus<DATA> stream();
-    
-    
-    //== Helper functions ==
-    
     public default <TARGET> Streamable<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action) {
         return Streamable.with(this, action);
     }
@@ -400,7 +514,25 @@ public interface Streamable<DATA>
         });
     }
     
+    //-- Iterator --
+    
+    public default IteratorPlus<DATA> iterator() {
+        return IteratorPlus.from(stream());
+    }
+    
+    public default Spliterator<DATA> spliterator() {
+        return Spliterators.spliteratorUnknownSize(iterator(), 0);
+    }
+    
     //== Functionalities ==
+    
+    //-- Map --
+    
+    public default <TARGET> Streamable<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+        return deriveWith(stream -> {
+            return stream.map(mapper);
+        });
+    }
     
     public default IntStreamable mapToInt(ToIntFunction<? super DATA> mapper) {
         return () -> IntStreamPlus.from(stream().mapToInt(mapper));
@@ -414,6 +546,18 @@ public interface Streamable<DATA>
 //        return () -> stream().mapToDouble(mapper);
 //    }
     
+    public default <T> Streamable<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
+        return map(mapper);
+    }
+    
+    //-- FlatMap --
+    
+    public default <TARGET> Streamable<TARGET> flatMap(Function<? super DATA, ? extends Streamable<? extends TARGET>> mapper) {
+        return deriveWith(stream -> {
+            return stream.flatMap(e -> ((Streamable<? extends TARGET>)mapper.apply(e)).stream());
+        });
+    }
+    
     public default IntStreamable flatMapToInt(Function<? super DATA, ? extends IntStream> mapper) {
         return ()->IntStreamPlus.from(stream().flatMapToInt(mapper));
     }
@@ -426,17 +570,11 @@ public interface Streamable<DATA>
 //        return () -> stream().flatMapToDouble(mapper);
 //    }
     
-    public default <TARGET> Streamable<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
-        return deriveWith(stream -> {
-            return stream.map(mapper);
-        });
+    public default <T> Streamable<T> flatMapToObj(Function<? super DATA, ? extends Streamable<? extends T>> mapper) {
+        return flatMap(mapper);
     }
     
-    public default <TARGET> Streamable<TARGET> flatMap(Function<? super DATA, ? extends Streamable<? extends TARGET>> mapper) {
-        return deriveWith(stream -> {
-            return stream.flatMap(e -> ((Streamable<? extends TARGET>)mapper.apply(e)).stream());
-        });
-    }
+    //-- Filter --
     
     public default Streamable<DATA> filter(Predicate<? super DATA> predicate) {
         return deriveWith(stream -> {
@@ -445,6 +583,55 @@ public interface Streamable<DATA>
                 : stream.filter(predicate);
         });
     }
+    
+    @Override
+    public default <T> Streamable<DATA> filter(
+            Function<? super DATA, T> mapper, 
+            Predicate<? super T>      predicate) {
+        return filter(value -> {
+            val target = mapper.apply(value);
+            val isPass = predicate.test(target);
+            return isPass;
+        });
+    }
+    
+    public default Streamable<DATA> filterAsInt(
+            ToIntFunction<? super DATA> mapper, 
+            IntPredicate                predicate) {
+        return filter(value -> {
+            val target = mapper.applyAsInt(value);
+            val isPass = predicate.test(target);
+            return isPass;
+        });
+    }
+    
+    public default Streamable<DATA> filterAsLong(
+            ToLongFunction<? super DATA> mapper, 
+            LongPredicate                predicate) {
+        return filter(value -> {
+            val target = mapper.applyAsLong(value);
+            val isPass = predicate.test(target);
+            return isPass;
+        });
+    }
+    
+    public default Streamable<DATA> filterAsDouble(
+            ToDoubleFunction<? super DATA> mapper, 
+            DoublePredicate                predicate) {
+        return filter(value -> {
+            val target = mapper.applyAsDouble(value);
+            val isPass = predicate.test(target);
+            return isPass;
+        });
+    }
+    
+    public default <T> Streamable<DATA> filterAsObject(
+            Function<? super DATA, T> mapper, 
+            Predicate<? super T>      predicate) {
+        return filter(mapper, predicate);
+    }
+    
+    //-- Peek --
     
     public default Streamable<DATA> peek(Consumer<? super DATA> action) {
         return deriveWith(stream -> {
@@ -678,6 +865,10 @@ public interface Streamable<DATA>
         return toImmutableList();
     }
     
+    public default FuncList<DATA> toFuncList() {
+        return toImmutableList();
+    }
+    
     public default FuncList<DATA> toLazyList() {
         return FuncList.from(this);
     }
@@ -700,16 +891,6 @@ public interface Streamable<DATA>
     
     public default Set<DATA> toSet() {
         return new HashSet<DATA>(stream().collect(Collectors.toSet()));
-    }
-    
-    //-- Iterator --
-    
-    public default IteratorPlus<DATA> iterator() {
-        return IteratorPlus.from(stream());
-    }
-    
-    public default Spliterator<DATA> spliterator() {
-        return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
     
     //== Plus ==
