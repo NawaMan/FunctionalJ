@@ -28,12 +28,17 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
 
+import functionalj.pipeable.Pipeable;
 import lombok.val;
 
 @FunctionalInterface
-public interface IntIterable {
+public interface IntIterable extends Pipeable<IntIterable> {
     
     public IntIteratorPlus iterator();
+    
+    public default IntIterable __data() throws Exception {
+        return this;
+    }
     
     default void forEach(IntConsumer action) {
         Objects.requireNonNull(action);

@@ -30,12 +30,13 @@ import java.util.stream.StreamSupport;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.list.FuncList;
+import functionalj.pipeable.Pipeable;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
 import lombok.val;
 
 @FunctionalInterface
-public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable {
+public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipeable<IteratorPlus<DATA>> {
     
     @SuppressWarnings("unchecked")
     public static <D> IteratorPlus<D> of(D ... ds) {
@@ -51,6 +52,10 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable {
         if (iterator instanceof IteratorPlus)
              return (IteratorPlus<D>)iterator;
         else return (IteratorPlus<D>)(()->iterator);
+    }
+    
+    public default IteratorPlus<DATA> __data() throws Exception {
+        return this;
     }
     
     public default void close() {

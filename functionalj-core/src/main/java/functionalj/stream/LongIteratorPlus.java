@@ -32,12 +32,13 @@ import java.util.stream.StreamSupport;
 
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
+import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface LongIteratorPlus extends PrimitiveIterator.OfLong {
+public interface LongIteratorPlus extends PrimitiveIterator.OfLong, Pipeable<LongIteratorPlus> {
     
     public static LongIteratorPlus of(long ... ds) {
         return LongIteratorPlus.from(LongStreamPlus.of(ds));
@@ -53,6 +54,10 @@ public interface LongIteratorPlus extends PrimitiveIterator.OfLong {
         if (iterator instanceof LongIteratorPlus)
              return (LongIteratorPlus)iterator;
         else return (LongIteratorPlus)(()->iterator);
+    }
+    
+    public default LongIteratorPlus __data() throws Exception {
+        return this;
     }
     
     public PrimitiveIterator.OfLong asIterator();

@@ -43,20 +43,20 @@ import lombok.val;
 @FunctionalInterface
 public interface AsyncRunner extends FuncUnit1<Runnable> {
     
-    public static <E extends Exception> Promise<Object> run(RunBody<E> runnable) {
+    public static <EXCEPTION extends Exception> Promise<Object> run(RunBody<EXCEPTION> runnable) {
         return run(null, runnable);
     }
-    public static <D, E extends Exception> Promise<D> run(ComputeBody<D, E> body) {
+    public static <DATA, EXCEPTION extends Exception> Promise<DATA> run(ComputeBody<DATA, EXCEPTION> body) {
         return run(null, body);
     }
-    public static <E extends Exception> Promise<Object> run(AsyncRunner runner, RunBody<E> runnable) {
+    public static <EXCEPTION extends Exception> Promise<Object> run(AsyncRunner runner, RunBody<EXCEPTION> runnable) {
         return run(runner, ()->{
             runnable.run();
             return null;
         });
     }
-    public static <D, E extends Exception>  Promise<D> run(AsyncRunner runner, ComputeBody<D, E> body) {
-        val action = DeferAction.of((Class<D>)null).start();
+    public static <DATA, EXCEPTION extends Exception>  Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
+        val action = DeferAction.of((Class<DATA>)null).start();
         
         val theRunner     = (runner != null) ? runner : Env.async();
         val substitutions = Substitution.getCurrentSubstitutions().exclude(Substitution::isThreadLocal);
@@ -68,7 +68,7 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
                     body.prepared();
                     latch.countDown();
                     
-                    val value = body.compute();
+                    DATA value = body.compute();
                     action.complete(value);
                 });
             } catch (Exception exception) {

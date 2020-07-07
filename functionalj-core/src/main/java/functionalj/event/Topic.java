@@ -76,8 +76,8 @@ public class Topic<DATA> {
             });
     }
     
-    private <T> Topic<T> newSubTopic(FuncUnit2<Result<DATA>, Topic<T>> resultConsumer) {
-        val topic = new SubTopic<T>(this, resultConsumer);
+    private <TOPIC> Topic<TOPIC> newSubTopic(FuncUnit2<Result<DATA>, Topic<TOPIC>> resultConsumer) {
+        val topic = new SubTopic<TOPIC>(this, resultConsumer);
         return topic;
     }
     

@@ -33,13 +33,14 @@ import java.util.stream.StreamSupport;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.list.intlist.IntFuncList;
+import functionalj.pipeable.Pipeable;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable {
+public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable, Pipeable<IntIteratorPlus>  {
     
     public static IntIteratorPlus of(int ... ds) {
         return IntIteratorPlus.from(IntStreamPlus.of(ds));
@@ -54,6 +55,10 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable 
         if (iterator instanceof IntIteratorPlus)
              return (IntIteratorPlus)iterator;
         else return (IntIteratorPlus)(()->iterator);
+    }
+    
+    public default IntIteratorPlus __data() throws Exception {
+        return this;
     }
     
     public default void close() {

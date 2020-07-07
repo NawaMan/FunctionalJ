@@ -31,13 +31,14 @@ import java.util.stream.DoubleStream;
 
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
+import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 @FunctionalInterface
-public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble {
+public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, Pipeable<DoubleIteratorPlus> {
     
     public static DoubleIteratorPlus of(double ... ds) {
         return DoubleIteratorPlus.from(DoubleStreamPlus.of(ds));
@@ -53,6 +54,10 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble {
         if (iterator instanceof DoubleIteratorPlus)
              return (DoubleIteratorPlus)iterator;
         else return (DoubleIteratorPlus)(()->iterator);
+    }
+    
+    public default DoubleIteratorPlus __data() throws Exception {
+        return this;
     }
     
     public PrimitiveIterator.OfDouble asIterator();

@@ -36,7 +36,7 @@ import functionalj.types.IData;
 
 public class FuncData {
     
-    public static <D extends IData> Result<D> fromMap(Map<String, Object> map, Class<D> clazz) {
+    public static <DATA extends IData> Result<DATA> fromMap(Map<String, Object> map, Class<DATA> clazz) {
         return Result.from(()->IData.$utils.fromMap(map, clazz));
     }
     

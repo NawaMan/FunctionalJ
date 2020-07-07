@@ -28,12 +28,17 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.LongConsumer;
 
+import functionalj.pipeable.Pipeable;
 import lombok.val;
 
 @FunctionalInterface
-public interface LongIterable {
+public interface LongIterable extends Pipeable<LongIterable> {
     
     public LongIteratorPlus iterator();
+    
+    public default LongIterable __data() throws Exception {
+        return this;
+    }
     
     default void forEach(LongConsumer action) {
         Objects.requireNonNull(action);

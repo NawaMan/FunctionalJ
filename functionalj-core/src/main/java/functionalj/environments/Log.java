@@ -40,52 +40,52 @@ public final class Log {
     private Log() {
     }
     
-    public static <T> Func1<T, T> tab() {
+    public static <DATA> Func1<DATA, DATA> tab() {
         return Log::log;
     }
-    public static <T> Func1<T, T> tab(Object prefix) {
+    public static <DATA> Func1<DATA, DATA> tab(Object prefix) {
         return v -> log(prefix, v);
     }
-    public static <T> Func1<T, T> tabf(String format) {
+    public static <DATA> Func1<DATA, DATA> tabf(String format) {
         return v -> {
             log(String.format(format, v));
             return v;
         };
     }
     
-    public static <T> T log(T value) {
+    public static <DATA> DATA log(DATA value) {
         return Env.log().log(value);
     }
     
-    public static <T> T log(Object prefix, T value) {
+    public static <DATA> DATA log(Object prefix, DATA value) {
         return Env.log().log(prefix, value);
     }
-    public static <T> T log(Object prefix, T value, Object suffix) {
+    public static <DATA> DATA log(Object prefix, DATA value, Object suffix) {
         return Env.log().log(prefix, value, suffix);
     }
     
     @SuppressWarnings("unchecked")
-    public static <T> FuncList<T> logEach(T ... values) {
+    public static <DATA> FuncList<DATA> logEach(DATA ... values) {
         return Env.log().logEach(values);
     }
     
-    public static <T> FuncList<T> logEach(String prefix, Collection<T> values) {
+    public static <DATA> FuncList<DATA> logEach(String prefix, Collection<DATA> values) {
         return Env.log().logEach(prefix, values);
     }
-    public static <T> FuncList<T> logEach(String prefix, Collection<T> values, String suffix) {
+    public static <DATA> FuncList<DATA> logEach(String prefix, Collection<DATA> values, String suffix) {
         return Env.log().logEach(prefix, values, suffix);
     }
     
-    public static <T> T logBy(Supplier<T> supplier) {
+    public static <DATA> DATA logBy(Supplier<DATA> supplier) {
         return Env.log().logBy(supplier);
     }
-    public static <T extends Throwable> T logErr(T throwable) {
+    public static <THROWABLE extends Throwable> THROWABLE logErr(THROWABLE throwable) {
         return Env.log().logErr(throwable);
     }
-    public static <T extends Throwable> T logErr(Object prefix, T throwable) {
+    public static <THROWABLE extends Throwable> THROWABLE logErr(Object prefix, THROWABLE throwable) {
         return Env.log().logErr(prefix, throwable);
     }
-    public static <T extends Throwable> T logErr(Object prefix, T throwable, Object suffix) {
+    public static <THROWABLE extends Throwable> THROWABLE logErr(Object prefix, THROWABLE throwable, Object suffix) {
         return Env.log().logErr(prefix, throwable, suffix);
     }
     
@@ -94,15 +94,15 @@ public final class Log {
         
         public static final Instance instance = new Instance();
         
-        public <T> T log(T value) {
+        public <DATA> DATA log(DATA value) {
             Env.console().println(value);
             return value;
         }
         
-        public <T> T log(Object prefix, T value) {
+        public <DATA> DATA log(Object prefix, DATA value) {
             return log(prefix, value, null);
         }
-        public <T> T log(Object prefix, T value, Object suffix) {
+        public <DATA> DATA log(Object prefix, DATA value, Object suffix) {
             val prefixStr = (prefix != null) ? String.valueOf(prefix) : "";
             val suffixStr = (suffix != null) ? String.valueOf(suffix) : "";
             val line      = prefixStr + value + suffixStr;
@@ -111,34 +111,34 @@ public final class Log {
         }
         
         @SuppressWarnings("unchecked")
-        public <T> FuncList<T> logEach(T ... values) {
-            val streamable = Streamable.of((T[])values);
+        public <DATA> FuncList<DATA> logEach(DATA ... values) {
+            val streamable = Streamable.of((DATA[])values);
             val list       = FuncListDerived.from(streamable);
             list.forEach(value -> this.log(value));
             return list;
         }
         
-        public <T> FuncList<T> logEach(String prefix, Collection<T> values) {
+        public <DATA> FuncList<DATA> logEach(String prefix, Collection<DATA> values) {
             return logEach(prefix, values, null);
         }
-        public <T> FuncList<T> logEach(String prefix, Collection<T> values, String suffix) {
+        public <DATA> FuncList<DATA> logEach(String prefix, Collection<DATA> values, String suffix) {
             val list = FuncListDerived.from(values);
             list.forEach(value -> this.log(prefix, value, suffix));
             return list;
         }
         
-        public <T> T logBy(Supplier<T> supplier) {
-            val value = Func.getOrElse(supplier, null);
+        public <DATA> DATA logBy(Supplier<DATA> supplier) {
+            DATA value = Func.getOrElse(supplier, null);
             return log(value);
         }
         
-        public <T extends Throwable> T logErr(T throwable) {
+        public <THROWABLE extends Throwable> THROWABLE logErr(THROWABLE throwable) {
             return logErr(null, throwable, null);
         }
-        public <T extends Throwable> T logErr(Object prefix, T throwable) {
+        public <THROWABLE extends Throwable> THROWABLE logErr(Object prefix, THROWABLE throwable) {
             return logErr(prefix, throwable, null);
         }
-        public <T extends Throwable> T logErr(Object prefix, T throwable, Object suffix) {
+        public <THROWABLE extends Throwable> THROWABLE logErr(Object prefix, THROWABLE throwable, Object suffix) {
             val prefixStr = (prefix != null) ? String.valueOf(prefix) + "\n" : "";
             val suffixStr = (suffix != null) ? String.valueOf(suffix) : "";
             val buffer = new ByteArrayOutputStream();
