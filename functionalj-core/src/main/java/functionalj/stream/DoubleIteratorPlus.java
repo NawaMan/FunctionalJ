@@ -48,7 +48,7 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, Pipeable
                 = (stream instanceof DoubleStreamPlus) 
                 ? ((DoubleStreamPlus)stream).__iterator()
                 : stream.iterator();
-        return from(iterator);
+        return DoubleIteratorPlus.from(iterator);
     }
     public static DoubleIteratorPlus from(PrimitiveIterator.OfDouble iterator) {
         if (iterator instanceof DoubleIteratorPlus)

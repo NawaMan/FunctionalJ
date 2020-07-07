@@ -9,7 +9,6 @@ public interface StreamProcessor<DATA, TARGET> {
         return s -> mapper.apply(s);
     }
     
-    
     public TARGET process(StreamPlus<DATA> stream);
     
     

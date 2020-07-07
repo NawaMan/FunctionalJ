@@ -333,15 +333,15 @@ public interface IntStreamable
     //== Stream specific ==
     
     public default IntStreamable sequential() {
-        return from(this, streamble -> streamble.intStream().sequential());
+        return IntStreamable.from(this, streamble -> streamble.intStream().sequential());
     }
     
     public default IntStreamable parallel() {
-        return from(this, streamble -> streamble.intStream().parallel());
+        return IntStreamable.from(this, streamble -> streamble.intStream().parallel());
     }
     
     public default IntStreamable unordered() {
-        return from(this, streamble -> streamble.intStream().unordered());
+        return IntStreamable.from(this, streamble -> streamble.intStream().unordered());
     }
     
     public default boolean isParallel() {
@@ -351,7 +351,7 @@ public interface IntStreamable
     //== Functionalities ==
     
     public default IntStreamable map(IntUnaryOperator mapper) {
-        return from(this, streamble -> streamble.intStream().map(mapper));
+        return IntStreamable.from(this, streamble -> streamble.intStream().map(mapper));
     }
     
 //    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
@@ -395,7 +395,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable flatMap(IntFunction<? extends AsIntStreamable> mapper) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -403,7 +403,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable filter(IntPredicate predicate) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -414,7 +414,7 @@ public interface IntStreamable
     public default IntStreamable filter(
             IntUnaryOperator mapper, 
             IntPredicate     predicate) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -424,7 +424,7 @@ public interface IntStreamable
     public default <T> IntStreamable filterAsObject(
             IntFunction<? extends T> mapper,
             Predicate<? super T>     theCondition) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -434,7 +434,7 @@ public interface IntStreamable
     public default <T> IntStreamable filterAsObject(
             Function<Integer, ? extends T> mapper,
             Predicate<? super T>     theCondition) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -442,7 +442,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable peek(IntConsumer action) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -450,7 +450,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable limit(long maxSize) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -458,7 +458,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable skip(long offset) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -466,7 +466,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable skipWhile(IntPredicate condition) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -474,7 +474,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable skipUntil(IntPredicate condition) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -482,7 +482,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable takeWhile(IntPredicate condition) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -490,7 +490,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable takeUntil(IntPredicate condition) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -498,7 +498,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable distinct() {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -508,7 +508,7 @@ public interface IntStreamable
     //-- Sorted --
     
     public default IntStreamable sorted() {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -517,7 +517,7 @@ public interface IntStreamable
     
     public default IntStreamable sortedBy(
             IntUnaryOperator mapper) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -527,7 +527,7 @@ public interface IntStreamable
     public default IntStreamable sortedBy(
             IntUnaryOperator       mapper,
             IntBiFunctionPrimitive comparator) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -536,7 +536,7 @@ public interface IntStreamable
     
     public default <T extends Comparable<? super T>> IntStreamable sortedByObj(
             IntFunction<T> mapper) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -546,7 +546,7 @@ public interface IntStreamable
     public default <T> IntStreamable sortedByObj(
             IntFunction<T> mapper, 
             Comparator<T>  comparator) {
-        return from(this, 
+        return IntStreamable.from(this, 
                 streamable -> 
                     streamable
                     .intStream()

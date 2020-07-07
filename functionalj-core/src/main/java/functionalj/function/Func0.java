@@ -58,7 +58,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return supplier::get;
     }
     public static <T> Func0<T> from(IntFunction<T> generatorFunction) {
-        return from(0, generatorFunction);
+        return Func0.from(0, generatorFunction);
     }
     public static <T> Func0<T> from(int start, IntFunction<T> generatorFunction) {
         val counter = new AtomicInteger(start);

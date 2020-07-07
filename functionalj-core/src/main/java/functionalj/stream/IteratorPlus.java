@@ -46,7 +46,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
         if (stream instanceof StreamPlus) {
             return new StreamBackedIteratorPlus<>(((StreamPlus<D>)stream).stream());
         }
-        return from(stream.iterator());
+        return IteratorPlus.from(stream.iterator());
     }
     public static <D> IteratorPlus<D> from(Iterator<D> iterator) {
         if (iterator instanceof IteratorPlus)

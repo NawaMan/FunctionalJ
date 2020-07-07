@@ -469,7 +469,7 @@ public interface IntStreamPlus
     }
     
     public default IntStreamPlus derive(Function<IntStream, IntStream> action) {
-        return from(action.apply(this));
+        return IntStreamPlus.from(action.apply(this));
     }
     
     public default <T> StreamPlus<T> deriveAsObject(Function<IntStream, Stream<T>> action) {
@@ -480,17 +480,17 @@ public interface IntStreamPlus
     
     @Override
     public default IntStreamPlus sequential() {
-        return from(stream().sequential());
+        return IntStreamPlus.from(stream().sequential());
     }
     
     @Override
     public default IntStreamPlus parallel() {
-        return from(stream().parallel());
+        return IntStreamPlus.from(stream().parallel());
     }
     
     @Override
     public default IntStreamPlus unordered() {
-        return from(stream().unordered());
+        return IntStreamPlus.from(stream().unordered());
     }
     
     @Override
@@ -505,7 +505,7 @@ public interface IntStreamPlus
     
     @Override
     public default IntStreamPlus onClose(Runnable closeHandler) {
-        return from(stream().onClose(closeHandler));
+        return IntStreamPlus.from(stream().onClose(closeHandler));
     }
     
     //-- Iterator --
@@ -578,11 +578,11 @@ public interface IntStreamPlus
     
     @Override
     public default IntStreamPlus map(IntUnaryOperator mapper) {
-        return from(stream().map(mapper));
+        return IntStreamPlus.from(stream().map(mapper));
     }
     
     public default IntStreamPlus mapToInt(IntUnaryOperator mapper) {
-        return from(stream().map(mapper));
+        return IntStreamPlus.from(stream().map(mapper));
     }
     
     @Override
@@ -604,7 +604,7 @@ public interface IntStreamPlus
     
     @Override
     public default IntStreamPlus flatMap(IntFunction<? extends IntStream> mapper) {
-        return from(stream().flatMap(mapper));
+        return IntStreamPlus.from(stream().flatMap(mapper));
     }
     
     public default IntStreamPlus flatMapToInt(IntFunction<? extends IntStream> mapper) {
@@ -694,31 +694,31 @@ public interface IntStreamPlus
     
     @Override
     public default IntStreamPlus peek(IntConsumer action) {
-        return from(stream().peek(action));
+        return IntStreamPlus.from(stream().peek(action));
     }
     
     //-- Limit/Skip --
     
     @Override
     public default IntStreamPlus limit(long maxSize) {
-        return from(stream().limit(maxSize));
+        return IntStreamPlus.from(stream().limit(maxSize));
     }
     
     public default IntStreamPlus limit(Long maxSize) {
         return ((maxSize == null) || (maxSize.longValue() < 0))
                 ? this
-                : from(stream().limit(maxSize));
+                : IntStreamPlus.from(stream().limit(maxSize));
     }
     
     @Override
     public default IntStreamPlus skip(long offset) {
-        return from(stream().skip(offset));
+        return IntStreamPlus.from(stream().skip(offset));
     }
     
     public default IntStreamPlus skip(Long offset) {
         return ((offset == null) || (offset.longValue() < 0))
                 ? this
-                : from(stream().skip(offset));
+                : IntStreamPlus.from(stream().skip(offset));
     }
     
     public default IntStreamPlus skipWhile(IntPredicate condition) {
@@ -798,24 +798,24 @@ public interface IntStreamPlus
                     return false;
                 }
             }, false);
-            return from(resultStream);
+            return IntStreamPlus.from(resultStream);
         });
     }
     
     @Override
     public default IntStreamPlus distinct() {
-        return from(stream().distinct());
+        return IntStreamPlus.from(stream().distinct());
     }
     
     //-- Sorted --
     
     @Override
     public default IntStreamPlus sorted() {
-        return from(stream().sorted());
+        return IntStreamPlus.from(stream().sorted());
     }
     
     public default IntStreamPlus sorted(IntBiFunctionPrimitive comparator) {
-        return from(
+        return IntStreamPlus.from(
                 stream()
                 .boxed   ()
                 .sorted  ((a,b) -> comparator.applyAsIntAndInt(a, b))

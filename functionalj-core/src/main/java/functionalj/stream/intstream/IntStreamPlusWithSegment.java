@@ -103,7 +103,7 @@ public interface IntStreamPlusWithSegment {
                     list.get().add(data);
                     return retList.isEmpty()
                             ? null
-                            : from(retList.stream());
+                            : IntStreamPlus.from(retList.stream());
                 }
                 if (adding.get()) {
                     list.get().add(data);

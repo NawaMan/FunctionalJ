@@ -71,13 +71,13 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     }
     
     public static DeferAction<Object> defer(FuncUnit0 runnable) {
-        return from(runnable);
+        return DeferAction.from(runnable);
     }
     public static <D> DeferAction<D> defer(Func0<D> supplier) {
-        return from(supplier);
+        return DeferAction.from(supplier);
     }
     public static <D> DeferAction<D> defer(CompletableFuture<D> completableFucture) {
-        return from(completableFucture);
+        return DeferAction.from(completableFucture);
     }
     
     public static DeferAction<Object> from(FuncUnit0 runnable) {
@@ -105,11 +105,11 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     }
     
     public static PendingAction<Object> run(FuncUnit0 runnable) {
-        return from(runnable)
+        return DeferAction.from(runnable)
                 .start();
     }
     public static <D> PendingAction<D> run(Func0<D> supplier) {
-        return from(supplier)
+        return DeferAction.from(supplier)
                 .start();
     }
     

@@ -49,7 +49,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
         if (stream instanceof IntStreamPlus) {
             return new StreamBackedIntIteratorPlus(((IntStreamPlus)stream).intStream());
         }
-        return from(stream.iterator());
+        return IntIteratorPlus.from(stream.iterator());
     }
     public static IntIteratorPlus from(PrimitiveIterator.OfInt iterator) {
         if (iterator instanceof IntIteratorPlus)

@@ -48,7 +48,7 @@ public interface LongIteratorPlus extends PrimitiveIterator.OfLong, Pipeable<Lon
                 = (stream instanceof LongStreamPlus) 
                 ? ((LongStreamPlus)stream).__iterator()
                 : stream.iterator();
-        return from(iterator);
+        return LongIteratorPlus.from(iterator);
     }
     public static LongIteratorPlus from(PrimitiveIterator.OfLong iterator) {
         if (iterator instanceof LongIteratorPlus)

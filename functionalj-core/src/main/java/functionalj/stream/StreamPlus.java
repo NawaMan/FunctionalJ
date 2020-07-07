@@ -526,17 +526,17 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> sequential() {
-        return from(stream().sequential());
+        return StreamPlus.from(stream().sequential());
     }
     
     @Override
     public default StreamPlus<DATA> parallel() {
-        return from(stream().parallel());
+        return StreamPlus.from(stream().parallel());
     } 
     
     @Override
     public default StreamPlus<DATA> unordered() {
-        return from(stream().unordered());
+        return StreamPlus.from(stream().unordered());
     }
     
     @Override
@@ -551,7 +551,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> onClose(Runnable closeHandler) {
-        return from(stream().onClose(closeHandler));
+        return StreamPlus.from(stream().onClose(closeHandler));
     }
     
     //-- Iterator --
@@ -575,7 +575,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default <T> StreamPlus<T> map(Function<? super DATA, ? extends T> mapper) {
-        return from(stream().map(mapper));
+        return StreamPlus.from(stream().map(mapper));
     }
     
     @Override
@@ -601,7 +601,7 @@ public interface StreamPlus<DATA>
     
     @Override
     public default <T> StreamPlus<T> flatMap(Function<? super DATA, ? extends Stream<? extends T>> mapper) {
-        return from(stream().flatMap(mapper));
+        return StreamPlus.from(stream().flatMap(mapper));
     }
     
     @Override
@@ -681,31 +681,31 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> peek(Consumer<? super DATA> action) {
-        return from(stream().peek(action));
+        return StreamPlus.from(stream().peek(action));
     }
     
     //-- Limit/Skip --
     
     @Override
     public default StreamPlus<DATA> limit(long maxSize) {
-        return from(stream().limit(maxSize));
+        return StreamPlus.from(stream().limit(maxSize));
     }
     
     public default StreamPlus<DATA> limit(Long maxSize) {
         return ((maxSize == null) || (maxSize.longValue() < 0))
                 ? this
-                : from(stream().limit(maxSize));
+                : StreamPlus.from(stream().limit(maxSize));
     }
     
     @Override
     public default StreamPlus<DATA> skip(long offset) {
-        return from(stream().skip(offset));
+        return StreamPlus.from(stream().skip(offset));
     }
     
     public default StreamPlus<DATA> skip(Long offset) {
         return ((offset == null) || (offset.longValue() < 0))
                 ? this
-                : from(stream().skip(offset));
+                : StreamPlus.from(stream().skip(offset));
     }
     
     public default StreamPlus<DATA> skipWhile(Predicate<? super DATA> condition) {
@@ -785,7 +785,7 @@ public interface StreamPlus<DATA>
                     return false;
                 }
             }, false);
-            return from(resultStream);
+            return StreamPlus.from(resultStream);
         });
     }
     
@@ -793,19 +793,19 @@ public interface StreamPlus<DATA>
     
     @Override
     public default StreamPlus<DATA> distinct() {
-        return from(stream().distinct());
+        return StreamPlus.from(stream().distinct());
     }
     
     //-- Sorted --
     
     @Override
     public default StreamPlus<DATA> sorted() {
-        return from(stream().sorted());
+        return StreamPlus.from(stream().sorted());
     }
     
     @Override
     public default StreamPlus<DATA> sorted(Comparator<? super DATA> comparator) {
-        return from(stream().sorted(comparator));
+        return StreamPlus.from(stream().sorted(comparator));
     }
     
     public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper) {

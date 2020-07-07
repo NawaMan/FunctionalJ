@@ -73,7 +73,7 @@ public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
                     list.get().add(data);
                     return retList.isEmpty()
                             ? null
-                            : from(retList.stream());
+                            : StreamPlus.from(retList.stream());
                 }
                 if (adding.get()) {
                     list.get().add(data);

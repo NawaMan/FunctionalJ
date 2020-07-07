@@ -1,3 +1,22 @@
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream.longstream;
 
 import static functionalj.function.Func.itself;
@@ -316,15 +335,15 @@ public interface LongStreamable
     //== Stream specific ==
     
     public default LongStreamable sequential() {
-        return from(this, streamble -> streamble.longStream().sequential());
+        return LongStreamable.from(this, streamble -> streamble.longStream().sequential());
     }
     
     public default LongStreamable parallel() {
-        return from(this, streamble -> streamble.longStream().parallel());
+        return LongStreamable.from(this, streamble -> streamble.longStream().parallel());
     }
     
     public default LongStreamable unordered() {
-        return from(this, streamble -> streamble.longStream().unordered());
+        return LongStreamable.from(this, streamble -> streamble.longStream().unordered());
     }
     
     public default boolean isParallel() {
@@ -334,7 +353,7 @@ public interface LongStreamable
     //== Functionalities ==
     
     public default LongStreamable map(LongUnaryOperator mapper) {
-        return from(this, streamble -> streamble.longStream().map(mapper));
+        return LongStreamable.from(this, streamble -> streamble.longStream().map(mapper));
     }
     
     public default LongStreamable mapToLong(LongUnaryOperator mapper) {
@@ -430,7 +449,7 @@ public interface LongStreamable
 //    }
     
     public default LongStreamable limit(long maxSize) {
-        return from(this, 
+        return LongStreamable.from(this, 
                 streamable -> 
                     streamable
                     .longStream()
@@ -438,7 +457,7 @@ public interface LongStreamable
     }
     
     public default LongStreamable skip(long offset) {
-        return from(this, 
+        return LongStreamable.from(this, 
                 streamable -> 
                     streamable
                     .longStream()
