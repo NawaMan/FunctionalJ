@@ -64,7 +64,7 @@ public interface FuncList<DATA>
             Streamable<DATA>, 
             Pipeable<FuncList<DATA>>, 
             Predicate<DATA>,
-            FuncListWithMapCase<DATA>,
+            FuncListWithMapFirst<DATA>,
             FuncListWithMapThen<DATA>,
             FuncListWithMapTuple<DATA>,
             FuncListWithMapToMap<DATA>,

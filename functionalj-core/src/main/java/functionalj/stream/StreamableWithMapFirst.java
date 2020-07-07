@@ -26,35 +26,62 @@ package functionalj.stream;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public interface StreamableWithMapCase<DATA> {
+public interface StreamableWithMapFirst<DATA> {
     
     public <TARGET> Streamable<TARGET> deriveWith(
             Function<Stream<DATA>, Stream<TARGET>> action);
     
-    //== mapCase ==
-    
-    public default <T> Streamable<T> mapCase(
+    //== mapFirst ==
+
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     * 
+     * @param <T>      the target type.
+     * @param mapper1  the first mapper.
+     * @param mapper2  the second mapper.
+     * @return         the result of the first map result that is not null.
+     */
+    public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2) {
         return deriveWith(stream -> {
             return StreamPlus
                     .from    (stream)
-                    .mapCase(mapper1, mapper2);
+                    .mapFirst(mapper1, mapper2);
         });
     }
     
-    public default <T> Streamable<T> mapCase(
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     * 
+     * @param <T>      the target type.
+     * @param mapper1  the first mapper.
+     * @param mapper2  the second mapper.
+     * @param mapper3  the third mapper.
+     * @return         the result of the first map result that is not null.
+     */
+    public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3) {
         return deriveWith(stream -> {
             return StreamPlus
                     .from    (stream)
-                    .mapCase(mapper1, mapper2, mapper3);
+                    .mapFirst(mapper1, mapper2, mapper3);
         });
     }
     
-    public default <T> Streamable<T> mapCase(
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     * 
+     * @param <T>      the target type.
+     * @param mapper1  the first mapper.
+     * @param mapper2  the second mapper.
+     * @param mapper3  the third mapper.
+     * @param mapper4  the forth mapper.
+     * @return         the result of the first map result that is not null.
+     */
+    public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
@@ -62,11 +89,23 @@ public interface StreamableWithMapCase<DATA> {
         return deriveWith(stream -> {
             return StreamPlus
                     .from    (stream)
-                    .mapCase(mapper1, mapper2, mapper3, mapper4);
+                    .mapFirst(mapper1, mapper2, mapper3, mapper4);
         });
     }
     
-    public default <T> Streamable<T> mapCase(
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     * 
+     * @param <T>      the target type.
+     * @param mapper1  the first mapper.
+     * @param mapper2  the second mapper.
+     * @param mapper3  the third mapper.
+     * @param mapper4  the forth mapper.
+     * @param mapper5  the fifth mapper.
+     * @param mapper6  the sixth mapper.
+     * @return         the result of the first map result that is not null.
+     */
+    public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
@@ -75,11 +114,23 @@ public interface StreamableWithMapCase<DATA> {
         return deriveWith(stream -> {
             return StreamPlus
                     .from    (stream)
-                    .mapCase(mapper1, mapper2, mapper3, mapper4, mapper5);
+                    .mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5);
         });
     }
     
-    public default <T> Streamable<T> mapCase(
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     * 
+     * @param <T>      the target type.
+     * @param mapper1  the first mapper.
+     * @param mapper2  the second mapper.
+     * @param mapper3  the third mapper.
+     * @param mapper4  the forth mapper.
+     * @param mapper5  the fifth mapper.
+     * @param mapper6  the sixth mapper.
+     * @return         the result of the first map result that is not null.
+     */
+    public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
@@ -89,7 +140,7 @@ public interface StreamableWithMapCase<DATA> {
         return deriveWith(stream -> {
             return StreamPlus
                     .from    (stream)
-                    .mapCase(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
+                    .mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
         });
     }
 }

@@ -115,7 +115,7 @@ class Helper {
 public interface Streamable<DATA> 
         extends
             AsStreamable<DATA>,
-            StreamableWithMapCase<DATA>,
+            StreamableWithMapFirst<DATA>,
             StreamableWithMapThen<DATA>,
             StreamableWithMapTuple<DATA>,
             StreamableWithMapToMap<DATA>,

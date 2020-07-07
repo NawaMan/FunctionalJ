@@ -44,7 +44,7 @@ import lombok.val;
 class ResultMapAddOnHelper {
     
     @SafeVarargs
-    public static final <D, T> Result<T> mapCase(
+    public static final <D, T> Result<T> mapFirst(
             ResultMapAddOn<D>                    result,
             Function<? super D, ? extends T> ... mappers) {
         return result.map(d -> {
@@ -88,45 +88,45 @@ public interface ResultMapAddOn<DATA> {
         return map(d -> checker.test(d) ? mapper.apply(d) : elseMapper.apply(d));
     }
     
-    // TODO - Find a better name  --- mapCaseOf, mapOneOf, tryMap
-    public default <T> Result<T> mapCase(
+    // TODO - Find a better name  --- mapFirstOf, mapOneOf, tryMap
+    public default <T> Result<T> mapFirst(
             Function<? super DATA, ? extends T> mapper1,
             Function<? super DATA, ? extends T> mapper2) {
-        return ResultMapAddOnHelper.mapCase(this, mapper1, mapper2);
+        return ResultMapAddOnHelper.mapFirst(this, mapper1, mapper2);
     }
     
-    public default <T> Result<T> mapCase(
+    public default <T> Result<T> mapFirst(
             Function<? super DATA, ? extends T> mapper1,
             Function<? super DATA, ? extends T> mapper2,
             Function<? super DATA, ? extends T> mapper3) {
-        return ResultMapAddOnHelper.mapCase(this, mapper1, mapper2, mapper3);
+        return ResultMapAddOnHelper.mapFirst(this, mapper1, mapper2, mapper3);
     }
     
-    public default <T> Result<T> mapCase(
+    public default <T> Result<T> mapFirst(
             Function<? super DATA, ? extends T> mapper1,
             Function<? super DATA, ? extends T> mapper2,
             Function<? super DATA, ? extends T> mapper3,
             Function<? super DATA, ? extends T> mapper4) {
-        return ResultMapAddOnHelper.mapCase(this, mapper1, mapper2, mapper3, mapper4);
+        return ResultMapAddOnHelper.mapFirst(this, mapper1, mapper2, mapper3, mapper4);
     }
     
-    public default <T> Result<T> mapCase(
+    public default <T> Result<T> mapFirst(
             Function<? super DATA, ? extends T> mapper1,
             Function<? super DATA, ? extends T> mapper2,
             Function<? super DATA, ? extends T> mapper3,
             Function<? super DATA, ? extends T> mapper4,
             Function<? super DATA, ? extends T> mapper5) {
-        return ResultMapAddOnHelper.mapCase(this, mapper1, mapper2, mapper3, mapper4, mapper5);
+        return ResultMapAddOnHelper.mapFirst(this, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
     
-    public default <T> Result<T> mapCase(
+    public default <T> Result<T> mapFirst(
             Function<? super DATA, ? extends T> mapper1,
             Function<? super DATA, ? extends T> mapper2,
             Function<? super DATA, ? extends T> mapper3,
             Function<? super DATA, ? extends T> mapper4,
             Function<? super DATA, ? extends T> mapper5,
             Function<? super DATA, ? extends T> mapper6) {
-        return ResultMapAddOnHelper.mapCase(this, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
+        return ResultMapAddOnHelper.mapFirst(this, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
     
     //== Map to tuple. ==

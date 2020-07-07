@@ -95,7 +95,7 @@ public interface StreamPlus<DATA>
         extends 
             Stream<DATA>,
             AsStreamPlus<DATA>,
-            StreamPlusWithMapCase<DATA>,
+            StreamPlusWithMapFirst<DATA>,
             StreamPlusWithMapThen<DATA>,
             StreamPlusWithMapTuple<DATA>,
             StreamPlusWithMapToMap<DATA>,

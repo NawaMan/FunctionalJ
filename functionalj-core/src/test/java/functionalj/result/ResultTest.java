@@ -234,12 +234,12 @@ public class ResultTest {
     }
     
     @Test
-    public void testResultmapCase() {
+    public void testResultMapFirst() {
         val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
-                    .mapCase(
+                    .mapFirst(
                         i -> ((i < 10)   ? (i + " ONES")    : null),
                         i -> ((i < 100)  ? (i + " TENS")    : null),
                         i -> ((i < 1000) ? (i + " HUNDRED") : (i + " THOUSANDS"))
@@ -255,12 +255,12 @@ public class ResultTest {
     }
     
     @Test
-    public void testResultmapCase_Exception() {
+    public void testResultMapFirst_Exception() {
         val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
-                    .mapCase(
+                    .mapFirst(
                         i -> ((i < 10)   ? (i + " ONES")    : null),
                         i -> { if (i < 100) return (i + " TENS"); throw new NullPointerException(); },
                         i -> ((i < 1000) ? (i + " HUNDRED") : (i + " THOUSANDS"))
@@ -276,12 +276,12 @@ public class ResultTest {
     }
     
     @Test
-    public void testResultmapCase_AllNull() {
+    public void testResultMapFirst_AllNull() {
         val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
-                    .mapCase(
+                    .mapFirst(
                         i -> null,
                         i -> null,
                         i -> null
@@ -293,12 +293,12 @@ public class ResultTest {
     }
     
     @Test
-    public void testResultmapCase_AllException() {
+    public void testResultMapFirst_AllException() {
         val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
-                    .mapCase(
+                    .mapFirst(
                         i -> { throw new ArrayIndexOutOfBoundsException(-1); },
                         i -> { throw new NullPointerException(); },
                         i -> { throw new NumberFormatException(); }
@@ -324,11 +324,11 @@ public class ResultTest {
     }
     
     @Test
-    public void testResultmapCase_OneNullAllException() {
+    public void testResultMapFirst_OneNullAllException() {
         val nums  = StreamPlus.loop(13).map(i -> i*i*i).toList();
         val guess = nums
         .map(num -> (String)Result.valueOf(num)
-                    .mapCase(
+                    .mapFirst(
                         i -> null,
                         i -> { throw new NullPointerException(); },
                         i -> null
@@ -341,12 +341,12 @@ public class ResultTest {
     
     // TODO - Fail gradle build - Put this back.
 //    @Test
-//    public void testResultmapCase_Mix() {
+//    public void testResultMapFirst_Mix() {
 //        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
 //        val guess
 //                = nums
 //                .map(num -> Result.value(num)
-//                    .mapCase(
+//                    .mapFirst(
 //                        i -> ((i < 10)   ? i             : null),
 //                        i -> ((i < 100)  ? (i + " TENS") : null)
 //                    ).orElse("UNKNOWN"))

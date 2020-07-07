@@ -33,13 +33,13 @@ import lombok.val;
 class StreamPlusMapAddOnHelper {
     
     @SafeVarargs
-    static final <D, T> StreamPlus<T> mapCase(
-            StreamPlusWithMapCase<D>  stream,
+    static final <D, T> StreamPlus<T> mapFirst(
+            StreamPlusWithMapFirst<D>  stream,
             Function<? super D, T> ... mappers) {
-        return stream.map(f((D data) -> eachMapCase(data, mappers)));
+        return stream.map(f((D data) -> eachMapFirst(data, mappers)));
     }
     
-    private static <T, D> T eachMapCase(D d, Function<? super D, T>[] mappers) throws Exception {
+    private static <T, D> T eachMapFirst(D d, Function<? super D, T>[] mappers) throws Exception {
         Exception exception = null;
         boolean hasNull = false;
         for(val mapper : mappers) {
@@ -61,48 +61,98 @@ class StreamPlusMapAddOnHelper {
     
 }
 
-public interface StreamPlusWithMapCase<DATA> {
+public interface StreamPlusWithMapFirst<DATA> {
     
     public <TARGET> StreamPlus<TARGET> map(
             Function<? super DATA, ? extends TARGET> mapper);
     
-    //== mapCase ==
+    //== mapFirst ==
     
-    public default <T> StreamPlus<T> mapCase(
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     * 
+     * @param <T>      the target type.
+     * @param mapper1  the first mapper.
+     * @param mapper2  the second mapper.
+     * @return         the result of the first map result that is not null.
+     */
+    public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2) {
         return StreamPlusMapAddOnHelper
-                .mapCase(this, mapper1, mapper2);
+                .mapFirst(this, mapper1, mapper2);
     }
     
-    public default <T> StreamPlus<T> mapCase(
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     * 
+     * @param <T>      the target type.
+     * @param mapper1  the first mapper.
+     * @param mapper2  the second mapper.
+     * @param mapper3  the third mapper.
+     * @return         the result of the first map result that is not null.
+     */
+    public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3) {
         return StreamPlusMapAddOnHelper
-                .mapCase(this, mapper1, mapper2, mapper3);
+                .mapFirst(this, mapper1, mapper2, mapper3);
     }
     
-    public default <T> StreamPlus<T> mapCase(
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     * 
+     * @param <T>      the target type.
+     * @param mapper1  the first mapper.
+     * @param mapper2  the second mapper.
+     * @param mapper3  the third mapper.
+     * @param mapper4  the forth mapper.
+     * @return         the result of the first map result that is not null.
+     */
+    public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4) {
         return StreamPlusMapAddOnHelper
-                .mapCase(this, mapper1, mapper2, mapper3, mapper4);
+                .mapFirst(this, mapper1, mapper2, mapper3, mapper4);
     }
     
-    public default <T> StreamPlus<T> mapCase(
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     * 
+     * @param <T>      the target type.
+     * @param mapper1  the first mapper.
+     * @param mapper2  the second mapper.
+     * @param mapper3  the third mapper.
+     * @param mapper4  the forth mapper.
+     * @param mapper5  the fifth mapper.
+     * @return         the result of the first map result that is not null.
+     */
+    public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5) {
         return StreamPlusMapAddOnHelper
-                .mapCase(this, mapper1, mapper2, mapper3, mapper4, mapper5);
+                .mapFirst(this, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
     
-    public default <T> StreamPlus<T> mapCase(
+    /**
+     * Map the value by applying each mapper one by one and use the first one that does not return null.
+     * 
+     * @param <T>      the target type.
+     * @param mapper1  the first mapper.
+     * @param mapper2  the second mapper.
+     * @param mapper3  the third mapper.
+     * @param mapper4  the forth mapper.
+     * @param mapper5  the fifth mapper.
+     * @param mapper6  the sixth mapper.
+     * @return         the result of the first map result that is not null.
+     */
+    public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
@@ -110,6 +160,6 @@ public interface StreamPlusWithMapCase<DATA> {
             Function<? super DATA, T> mapper5,
             Function<? super DATA, T> mapper6) {
         return StreamPlusMapAddOnHelper
-                .mapCase(this, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
+                .mapFirst(this, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
 }
