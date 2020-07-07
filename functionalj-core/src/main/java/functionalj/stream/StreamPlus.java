@@ -182,65 +182,6 @@ public interface StreamPlus<DATA>
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
-    /** Create a StreamPlus that is the repeat of the given array of data. */
-    @SuppressWarnings("unchecked")
-    public static <D> StreamPlus<D> repeat(D ... data) {
-        return cycle(data);
-    }
-    
-    /** Create a StreamPlus that is the repeat of the given list of data. */
-    public static <D> StreamPlus<D> repeat(FuncList<D> data) {
-        return cycle(data);
-    }
-    
-    /** Create a StreamPlus that is the repeat of the given array of data. */
-    @SafeVarargs
-    public static <D> StreamPlus<D> cycle(D ... data) {
-        val size = data.length;
-        return StreamPlus.from(
-                IntStream
-                .iterate(0, i -> i + 1)
-                .mapToObj(i -> data[i % size]));
-    }
-    
-    /** Create a StreamPlus that is the repeat of the given list of data. */
-    public static <D> StreamPlus<D> cycle(FuncList<D> data) {
-        val size = data.size();
-        return StreamPlus.from(
-                IntStream
-                .iterate(0, i -> i + 1)
-                .mapToObj(i -> data.get(i % size)));
-    }
-    
-    /** Create a StreamPlus that for an infinite loop - the value is the index of the loop. */
-    public static StreamPlus<Integer> loop() {
-        return StreamPlus
-                .infiniteInt();
-    }
-    
-    /** Create a StreamPlus that for a loop with the number of time given - the value is the index of the loop. */
-    public static StreamPlus<Integer> loop(int time) {
-        return StreamPlus
-                .infiniteInt()
-                .limit(time);
-    }
-    
-    /** Create a StreamPlus that for an infinite loop - the value is the index of the loop. */
-    public static StreamPlus<Integer> infiniteInt() {
-        return IntStreamPlus
-                .from(
-                    IntStream
-                    .iterate(0, i -> i + 1))
-                    .mapToObj(i -> i);
-    }
-    
-    /** Create a StreamPlus that for a loop from the start value inclusively to the end value exclusively. */
-    public static StreamPlus<Integer> range(int startInclusive, int endExclusive) {
-        return IntStreamPlus
-                .range(startInclusive, endExclusive)
-                .mapToObj(i -> i);
-    }
-    
     /** Concatenate all the given streams. */
     @SafeVarargs
     public static <D> StreamPlus<D> concat(Stream<D> ... streams) {

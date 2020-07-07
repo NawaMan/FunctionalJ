@@ -30,7 +30,6 @@ import static functionalj.list.FuncList.listOf;
 import static functionalj.map.FuncMap.underlineMap;
 import static functionalj.map.FuncMap.UnderlineMap.LinkedHashMap;
 import static functionalj.ref.Run.With;
-import static functionalj.stream.StreamPlus.infiniteInt;
 import static java.util.Comparator.reverseOrder;
 import static java.util.stream.Collector.Characteristics.CONCURRENT;
 import static java.util.stream.Collector.Characteristics.UNORDERED;
@@ -56,6 +55,7 @@ import functionalj.promise.DeferAction;
 import functionalj.stream.CollectorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamProcessor;
+import functionalj.stream.Streamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
@@ -357,7 +357,8 @@ public class FuncListTest {
                 + "[50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74], "
                 + "[75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]"
                 + "]", 
-                infiniteInt().limit(100).toImmutableList().segmentByPercentiles(25, 50, 75, 100));
+                Streamable.infiniteInt().limit(100).toImmutableList()
+                .segmentByPercentiles(25, 50, 75, 100));
         
         assertStrings("["
                 + "[99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75], "
@@ -365,7 +366,8 @@ public class FuncListTest {
                 + "[49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25], "
                 + "[24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]"
                 + "]", 
-                infiniteInt().limit(100).toImmutableList().segmentByPercentiles(theInteger, reverseOrder(), 25, 50, 75, 100));
+                Streamable.infiniteInt().limit(100).toImmutableList()
+                .segmentByPercentiles(theInteger, reverseOrder(), 25, 50, 75, 100));
         
         assertStrings("["
                 + "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24], "
@@ -373,7 +375,8 @@ public class FuncListTest {
                 + "[50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74], "
                 + "[75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]"
                 + "]", 
-                infiniteInt().limit(100).toImmutableList().segmentByPercentiles(listOf(25, 50, 75).map(Double::valueOf)));
+                Streamable.infiniteInt().limit(100).toImmutableList()
+                .limit(100).toImmutableList().segmentByPercentiles(listOf(25, 50, 75).map(Double::valueOf)));
         
         assertStrings("[[, 1, 22, 333, 4444], [55555, 666666, 7777777, 88888888, 999999999]]", 
                 FuncList.of("", "1", "22", "333", "4444", "55555", "666666", "7777777", "88888888", "999999999")

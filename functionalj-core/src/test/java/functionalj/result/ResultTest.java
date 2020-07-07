@@ -34,7 +34,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import functionalj.function.Func;
-import functionalj.stream.StreamPlus;
+import functionalj.stream.intstream.IntStreamable;
 import functionalj.validator.Validator;
 import lombok.val;
 
@@ -235,7 +235,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst() {
-        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
@@ -256,7 +256,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_Exception() {
-        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
@@ -277,7 +277,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_AllNull() {
-        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
@@ -294,7 +294,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_AllException() {
-        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
         val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
@@ -325,7 +325,7 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_OneNullAllException() {
-        val nums  = StreamPlus.loop(13).map(i -> i*i*i).toList();
+        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
         val guess = nums
         .map(num -> (String)Result.valueOf(num)
                     .mapFirst(

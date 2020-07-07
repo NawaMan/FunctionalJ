@@ -61,7 +61,7 @@ import functionalj.functions.TimeFuncs;
 import functionalj.list.FuncList;
 import functionalj.ref.Run;
 import functionalj.ref.Substitution;
-import functionalj.stream.StreamPlus;
+import functionalj.stream.Streamable;
 import lombok.val;
 
 public class DeferActionTest {
@@ -628,7 +628,7 @@ public class DeferActionTest {
         val list = Run.with(DeferActionCreator.current.butWith(creator))
         .run(()->{
             val actions = FuncList
-                .from(StreamPlus.range(0, 5))
+                .from(Streamable.range(0, 5))
                 .map (i -> DeferAction.from(Sleep(100).thenReturn(i)))
                 .toImmutableList();
             

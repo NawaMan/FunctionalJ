@@ -31,6 +31,7 @@ import static functionalj.map.FuncMap.underlineMap;
 import static functionalj.map.FuncMap.UnderlineMap.LinkedHashMap;
 import static functionalj.ref.Run.With;
 import static functionalj.stream.StreamPlus.noMoreElement;
+import static functionalj.stream.intstream.IntStreamable.infiniteInt;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collector.Characteristics.CONCURRENT;
@@ -67,6 +68,7 @@ import functionalj.list.ImmutableList;
 import functionalj.promise.DeferAction;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.IntStreamable;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple3;
 import lombok.val;
@@ -181,7 +183,7 @@ public class StreamPlusTest {
     // remove duplicate
     @Test
     public void testRestate1() {
-        val stream = StreamPlus.infiniteInt().map(i -> i % 5).limit(20);
+        val stream = IntStreamable.infiniteInt().map(i -> i % 5).limit(20).boxed();
         assertStrings(
                 "0, 1, 2, 3, 4",
               stream
@@ -192,7 +194,7 @@ public class StreamPlusTest {
     // sieve of eratosthenes
     @Test
     public void testRestate2() {
-        val stream = StreamPlus.infiniteInt().skip(2);
+        val stream = IntStreamable.infiniteInt().skip(2).boxed();
         assertStrings(
                 "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, "
               + "31, 37, 41, 43, 47, 53, 59, 61, 67, 71, "
@@ -252,7 +254,7 @@ public class StreamPlusTest {
     }
     @Test
     public void testCollapseSize() {
-        val stream1 = StreamPlus.infiniteInt().limit(20);
+        val stream1 = IntStreamable.infiniteInt().limit(20).boxed();
         assertEquals(
                 "1, 5, 22, 92, 70", 
                 stream1.collapseSize(
@@ -260,7 +262,7 @@ public class StreamPlusTest {
                         (a,b)->a+b
                     ).joinToString(", "));
         
-        val stream2 = StreamPlus.infiniteInt().limit(20);
+        val stream2 = IntStreamable.infiniteInt().limit(20).boxed();
         assertEquals(
                 "1, 2-3, 4-5-6-7, 8-9-10-11-12-13-14-15, 16-17-18-19", 
                 stream2.collapseSize(
@@ -533,7 +535,7 @@ public class StreamPlusTest {
     @Test
     public void testFizzBuzz() {
         Function<StreamPlus<Integer>, FuncList<Integer>> streamPlusToList = s -> s.toImmutableList();
-        val stream  = StreamPlus.infiniteInt().limit(20);
+        val stream  = infiniteInt().limit(20).boxed().stream();
         val toString = 
                 With(underlineMap.butWith(LinkedHashMap))
                 .run(()->{
@@ -678,14 +680,6 @@ public class StreamPlusTest {
         assertStrings("[5.0]", stream.filter(Double.class, d -> d > 4.5).toList());
     }
     
-    //-- Cycle -- 
-    
-    @Test
-    public void testCycle() {
-        val stream = StreamPlus.cycle("One", "Two", "Three");
-        assertStrings("Two, Three, One, Two, Three", stream.skip(1).limit(5).joinToString(", "));
-    }
-    
     //-- Generate -- 
     
     @Test
@@ -727,7 +721,9 @@ public class StreamPlusTest {
         assertEquals("[[53, 54, 55, 56], " + 
                       "[63, 64, 65, 66], " + 
                       "[73, 74, 75, 76]]",
-                StreamPlus.infiniteInt()
+                IntStreamable
+                .infiniteInt()
+                .boxed()
                 .segment(startCondition, endCondition)
                 .skip   (5)
                 .limit  (3)
@@ -737,7 +733,9 @@ public class StreamPlusTest {
         assertEquals("[[53, 54, 55, 56], " + 
                       "[63, 64, 65, 66], " + 
                       "[73, 74, 75, 76]]",
-                StreamPlus.infiniteInt()
+                IntStreamable
+                .infiniteInt()
+                .boxed()
                 .segment(startCondition, endCondition, true)
                 .skip   (5)
                 .limit  (3)
@@ -747,7 +745,9 @@ public class StreamPlusTest {
         assertEquals("[[53, 54, 55], " + 
                       "[63, 64, 65], " + 
                       "[73, 74, 75]]",
-                StreamPlus.infiniteInt()
+                IntStreamable
+                .infiniteInt()
+                .boxed()
                 .segment(startCondition, endCondition, false)
                 .skip   (5)
                 .limit  (3)
@@ -781,8 +781,9 @@ public class StreamPlusTest {
                 "[4, 5, 6, 7], " + 
                 "[8, 9, 10, 11, 12, 13, 14, 15], " + 
                 "[16, 17, 18, 19]",
-                StreamPlus
-                .infiniteInt ()
+                IntStreamable
+                .infiniteInt()
+                .boxed()
                 .limit       (20)
                 .segmentSize (i -> i)
                 .map         (s -> s.toList())

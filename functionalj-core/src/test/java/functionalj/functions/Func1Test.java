@@ -36,7 +36,7 @@ import org.junit.Test;
 import functionalj.function.Func;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
-import functionalj.stream.StreamPlus;
+import functionalj.stream.Streamable;
 import lombok.val;
 
 public class Func1Test {
@@ -74,9 +74,9 @@ public class Func1Test {
     public void testApply() {
         val result   = Result.valueOf("Hello");
         val promise  = Promise.of("Hello");
-        val stream   = f(()->StreamPlus.infiniteInt().limit(5).map($I.asString()));
-        val list     = StreamPlus.infiniteInt().limit(5).map($I.asString()).toList();
-        val map      = StreamPlus.infiniteInt().limit(5).toMap($I, $I.asString());
+        val stream   = f(()->Streamable.infiniteInt().stream().limit(5).map($I.asString()));
+        val list     = Streamable.infiniteInt().stream().limit(5).map($I.asString()).toList();
+        val map      = Streamable.infiniteInt().stream().limit(5).toMap($I, $I.asString());
         val supplier = f(()   -> "Hello");
         val function = f(name -> "Hello " + name + "!");
         val func     = f(String::length);

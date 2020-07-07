@@ -37,6 +37,16 @@ import lombok.val;
 
 public class StreamableTest {
     
+    private void assertStrings(String str, Object obj) {
+        assertEquals(str, "" + obj);
+    }
+    
+    @Test
+    public void testCycle() {
+        val stream = Streamable.cycle("One", "Two", "Three");
+        assertStrings("Two, Three, One, Two, Three", stream.skip(1).limit(5).joinToString(", "));
+    }
+    
     @Test
     public void testSelectiveMap() {
         assertEquals("[One, --Two, Three, Four, Five]", 
