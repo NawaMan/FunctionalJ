@@ -174,7 +174,7 @@ public class StreamPlusTest {
         assertStrings(
                 "1, 12, 123, 1234, 12345", 
                 stream
-                    .accumulate((a, b)->a+b*10)
+                    .accumulate((prev, current)->prev*10 + current)
                     .joinToString(", "));
     }
     

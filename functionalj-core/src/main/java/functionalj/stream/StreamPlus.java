@@ -1162,7 +1162,7 @@ public interface StreamPlus<DATA>
                 .concat(
                     StreamPlus.of(prev.get()),
                     iterator.stream().map(n -> {
-                        val next = accumulator.apply(n, prev.get());
+                        val next = accumulator.apply(prev.get(), n);
                         prev.set(next);
                         return next;
                     })

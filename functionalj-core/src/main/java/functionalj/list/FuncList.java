@@ -608,18 +608,7 @@ public interface FuncList<DATA>
     // -- accumulate --
     
     public default FuncList<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-        return deriveWith(stream -> {
-            val iterator = StreamPlus.from(stream).iterator();
-            if (!iterator.hasNext())
-                return StreamPlus.empty();
-            
-            val prev = new AtomicReference<DATA>(iterator.next());
-            return StreamPlus.concat(StreamPlus.of(prev.get()), iterator.stream().map(n -> {
-                val next = accumulator.apply(n, prev.get());
-                prev.set(next);
-                return next;
-            }));
-        });
+        return deriveFrom(streamable -> streamable.accumulate(accumulator).stream());
     }
     
     // -- Filter --
@@ -653,8 +642,29 @@ public interface FuncList<DATA>
     }
     
     public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
-        return deriveWith(stream -> {
-            return stream().spawn(mapper);
-        });
+        return deriveFrom(streamable -> streamable.stream().spawn(mapper));
+    }
+    
+    //== restate ==
+    
+    /**
+     * Use each of the element to recreate the stream by applying each element to the rest of the stream and repeat.
+     * 
+     * For example:
+     *      inputs = [i1, i2, i3, i4, i5, i6, i7, i8, i9, i10]
+     *      and ~ is a restate function
+     * 
+     * From this we get
+     *      head0 = head of inputs = i1
+     *      rest0 = tail of inputs = [i2, i3, i4, i5, i6, i7, i8, i9, i10]
+     * 
+     * The outputs are:
+     *     output0 = head0 with rest1 = head0 ~ rest0 and head1 = head of rest0
+     *     output1 = head1 with rest2 = head1 ~ rest1 and head2 = head of rest2
+     *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
+     *     ...
+     **/
+    public default FuncList<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
+        return deriveFrom(streamable -> streamable.restate(restater).stream());
     }
 }

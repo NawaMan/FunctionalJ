@@ -34,7 +34,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -916,33 +915,67 @@ public interface Streamable<DATA>
     
     //== Spawn ==
     
-    
+    /**
+     * Map each element to a uncompleted action, run them and collect which ever finish first.
+     * The result stream will not be the same order with the original one 
+     *   -- as stated, the order will be the order of completion.
+     * If the result StreamPlus is closed (which is done everytime a terminal operation is done),
+     *   the unfinished actions will be canceled.
+     */
     public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
         return deriveWith(stream -> {
-            return stream().spawn(mapper);
+            return StreamPlus
+                    .from(stream)
+                    .spawn(mapper);
         });
     }
     
-    //== accumulate + restate ==
+    //== accumulate ==
     
+    /**
+     * Accumulate the previous to the next element.
+     * 
+     * For example:
+     *      inputs = [i1, i2, i3, i4, i5, i6, i7, i8, i9, i10]
+     *      and ~ is a accumulate function
+     * 
+     * From this we get
+     *      acc0  = head of inputs => i1
+     *      rest0 = tail of inputs => [i2, i3, i4, i5, i6, i7, i8, i9, i10]
+     * 
+     * The outputs are:
+     *     output0 = acc0 with acc1 = acc0 ~ rest0 and rest1 = rest of rest0
+     *     output1 = acc1 with acc2 = acc1 ~ rest1 and rest2 = rest of rest1
+     *     output2 = acc2 with acc3 = acc2 ~ rest2 and rest3 = rest of rest2
+     *     ...
+     */
     public default Streamable<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
         return deriveWith(stream -> {
-            val iterator = StreamPlus.from(stream).iterator();
-            if (!iterator.hasNext())
-                return StreamPlus.empty();
-            
-            val prev = new AtomicReference<DATA>(iterator.next());
-            return StreamPlus.concat(
-                        StreamPlus.of(prev.get()),
-                        iterator.stream().map(n -> {
-                            val next = accumulator.apply(n, prev.get());
-                            prev.set(next);
-                            return next;
-                        })
-                    );
+            return StreamPlus
+                    .from(stream)
+                    .accumulate(accumulator);
         });
     }
     
+    //== restate ==
+    
+    /**
+     * Use each of the element to recreate the stream by applying each element to the rest of the stream and repeat.
+     * 
+     * For example:
+     *      inputs = [i1, i2, i3, i4, i5, i6, i7, i8, i9, i10]
+     *      and ~ is a restate function
+     * 
+     * From this we get
+     *      head0 = head of inputs = i1
+     *      rest0 = tail of inputs = [i2, i3, i4, i5, i6, i7, i8, i9, i10]
+     * 
+     * The outputs are:
+     *     output0 = head0 with rest1 = head0 ~ rest0 and head1 = head of rest0
+     *     output1 = head1 with rest2 = head1 ~ rest1 and head2 = head of rest2
+     *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
+     *     ...
+     **/
     public default Streamable<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
         val func = (UnaryOperator<Tuple2<DATA, Streamable<DATA>>>)((Tuple2<DATA, Streamable<DATA>> pair) -> {
             val stream   = pair._2();
@@ -958,22 +991,5 @@ public interface Streamable<DATA>
         val endStream = (Streamable<DATA>)(()->StreamPlus.iterate(seed, func).takeUntil(t -> t == null).skip(1).map(t -> t._1()));
         return endStream;
     }
-    
-//    
-//    public default <T extends Comparable<? super T>> FuncList<Tuple2<DATA, Double>> toPercentilesOf(Function<? super DATA, T> mapper) {
-//        FuncList<Tuple2<Integer, DATA>> list 
-//                = mapWithIndex(Tuple2::of)
-//                .sortedBy(tuple -> mapper.apply(tuple._2()))
-//                .toImmutableList();
-//        return Helper.toPercentilesOf(size() - 1, list);
-//    }
-//    
-//    public default <T> FuncList<Tuple2<DATA, Double>> toPercentilesOf(Function<? super DATA, T> mapper, Comparator<T> comparator) {
-//        FuncList<Tuple2<Integer, DATA>> list 
-//                = mapWithIndex(Tuple2::of)
-//                .sortedBy(tuple -> mapper.apply(tuple._2()), comparator)
-//                .toImmutableList();
-//        return Helper.toPercentilesOf(size() - 1, list);
-//    }
     
 }
