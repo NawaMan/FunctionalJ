@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.IntStream;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.FuncUnit1;
@@ -1507,24 +1506,23 @@ public class IntFuncListTest {
         });
     }
     
-    @Ignore
     @Test
     public void testMapToObjWithIndex() {
-//        run(range(0, 10), list->{
-//            assertEquals("[0-0, 1-1, 2-2, 3-3, 4-4, 5-5, 6-6, 7-7, 8-8, 9-9]", 
-//                    list
-//                    .mapToObjWithIndex(
-//                        (index, value)->index + "-" + value)
-//                    .toListString());
-//            
-//            assertEquals("[0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9]", 
-//                    list
-//                    .mapToObjWithIndex(
-//                            i -> "" + i,
-//                            (index, value) -> index + ": " + value
-//                    )
-//                    .toListString());
-//        });
+        run(range(0, 10), list->{
+            assertEquals("[0-0, 1-1, 2-2, 3-3, 4-4, 5-5, 6-6, 7-7, 8-8, 9-9]", 
+                    list
+                    .mapToObjWithIndex(
+                        (index, value)->index + "-" + value)
+                    .toListString());
+            
+            assertEquals("[0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9]", 
+                    list
+                    .mapToObjWithIndex(
+                            i -> "" + i,
+                            (index, value) -> index + ": " + value
+                    )
+                    .toListString());
+        });
     }
     
     @Test

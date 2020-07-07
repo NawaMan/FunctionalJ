@@ -95,14 +95,11 @@ public interface IntStreamableAddtionalOperators {
         };
     }
     
-    public default <T> Streamable<T> mapToObjWithIndex(
-            IntIntBiFunction<T> mapper) {
-//        return ()->{
-//            return intStream()
-//                    .mapToObjWithIndex(mapper);
-//        };
-        // TODO - Fix this
-        return null;
+    public default <T> Streamable<T> mapToObjWithIndex(IntIntBiFunction<T> mapper) {
+        return ()->{
+            return intStream()
+                    .mapToObjWithIndex(mapper);
+        };
     }
     
     public default <T1, T> Streamable<T> mapToObjWithIndex(

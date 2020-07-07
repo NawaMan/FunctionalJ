@@ -111,7 +111,7 @@ public interface IntStreamPlusAddtionalOperators {
         });
     }
     
-    public default <T> StreamPlus<T> mapWithIndexToObj(IntIntBiFunction<T> mapper) {
+    public default <T> StreamPlus<T> mapToObjWithIndex(IntIntBiFunction<T> mapper) {
         val index = new AtomicInteger();
         return mapToObj(each -> {
             val i = index.getAndIncrement();

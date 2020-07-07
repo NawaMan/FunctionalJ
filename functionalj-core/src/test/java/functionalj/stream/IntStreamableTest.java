@@ -43,7 +43,6 @@ import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.FuncUnit0;
@@ -2046,25 +2045,24 @@ public class IntStreamableTest {
         });
     }
     
-    @Ignore
     @Test
     public void testMapToObjWithIndex() {
-//        val streamable = range(0, 10);
-//        run(()->{
-//            assertEquals("[0-0, 1-1, 2-2, 3-3, 4-4, 5-5, 6-6, 7-7, 8-8, 9-9]", 
-//                        streamable
-//                        .mapToObjWithIndex(
-//                            (index, value)->index + "-" + value)
-//                        .toListString());
-//            
-//            assertEquals("[0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9]", 
-//                        streamable
-//                        .mapToObjWithIndex(
-//                                i -> "" + i,
-//                                (index, value) -> index + ": " + value
-//                        )
-//                        .toListString());
-//        });
+        val streamable = range(0, 10);
+        run(()->{
+            assertEquals("[0-0, 1-1, 2-2, 3-3, 4-4, 5-5, 6-6, 7-7, 8-8, 9-9]", 
+                        streamable
+                        .mapToObjWithIndex(
+                            (index, value)->index + "-" + value)
+                        .toListString());
+            
+            assertEquals("[0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9]", 
+                        streamable
+                        .mapToObjWithIndex(
+                                i -> "" + i,
+                                (index, value) -> index + ": " + value
+                        )
+                        .toListString());
+        });
     }
     
     @Test

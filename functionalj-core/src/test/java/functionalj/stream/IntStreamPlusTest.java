@@ -57,7 +57,6 @@ import java.util.stream.Collector;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.list.intlist.ImmutableIntFuncList;
@@ -1731,22 +1730,21 @@ public class IntStreamPlusTest {
                     .toListString());
     }
     
-    @Ignore
     @Test
     public void testMapToObjWithIndex() {
-//        assertEquals("[0-0, 1-1, 2-2, 3-3, 4-4, 5-5, 6-6, 7-7, 8-8, 9-9]", 
-//                "" + range(0, 10)
-//                    .mapToObjWithIndex(
-//                        (index, value)->index + "-" + value)
-//                    .toListString());
-//        
-//        assertEquals("[0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9]", 
-//                "" + range(0, 10)
-//                    .mapToObjWithIndex(
-//                            i -> "" + i,
-//                            (index, value) -> index + ": " + value
-//                    )
-//                    .toListString());
+        assertEquals("[0-0, 1-1, 2-2, 3-3, 4-4, 5-5, 6-6, 7-7, 8-8, 9-9]", 
+                "" + range(0, 10)
+                    .mapToObjWithIndex(
+                        (index, value)->index + "-" + value)
+                    .toListString());
+        
+        assertEquals("[0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9]", 
+                "" + range(0, 10)
+                    .mapToObjWithIndex(
+                            i -> "" + i,
+                            (index, value) -> index + ": " + value
+                    )
+                    .toListString());
     }
     
     @Test
