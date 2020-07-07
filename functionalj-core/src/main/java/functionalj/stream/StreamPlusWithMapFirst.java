@@ -36,7 +36,7 @@ class StreamPlusMapAddOnHelper {
     static final <D, T> StreamPlus<T> mapFirst(
             StreamPlusWithMapFirst<D>  stream,
             Function<? super D, T> ... mappers) {
-        return stream.map(f((D data) -> eachMapFirst(data, mappers)));
+        return stream.streamPlus().map(f((D data) -> eachMapFirst(data, mappers)));
     }
     
     private static <T, D> T eachMapFirst(D d, Function<? super D, T>[] mappers) throws Exception {
@@ -61,10 +61,7 @@ class StreamPlusMapAddOnHelper {
     
 }
 
-public interface StreamPlusWithMapFirst<DATA> {
-    
-    public <TARGET> StreamPlus<TARGET> map(
-            Function<? super DATA, ? extends TARGET> mapper);
+public interface StreamPlusWithMapFirst<DATA> extends AsStreamPlus<DATA> {
     
     //== mapFirst ==
     

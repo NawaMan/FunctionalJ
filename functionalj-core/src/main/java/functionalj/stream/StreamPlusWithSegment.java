@@ -45,9 +45,6 @@ import lombok.val;
 
 public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
     
-    public void close();
-    
-    
     //== segment ==
     
     public default StreamPlus<StreamPlus<DATA>> segment(int count) {
@@ -93,7 +90,7 @@ public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
                     .flatMap(Supplier::get);
             
             resultStream
-            .onClose(()->StreamPlusWithSegment.this.close());
+            .onClose(()->stream.close());
             
             return resultStream;
         });
@@ -134,7 +131,7 @@ public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
                     .filterNonNull();
             
             resultStream
-            .onClose(()->StreamPlusWithSegment.this.close());
+            .onClose(()->stream.close());
             
             return resultStream;
         });
@@ -186,7 +183,7 @@ public interface StreamPlusWithSegment<DATA> extends AsStreamPlus<DATA> {
                 .flatMap(s -> (StreamPlus<DATA>)s.get());
             
             resultStream
-            .onClose(()->StreamPlusWithSegment.this.close());
+            .onClose(()->stream.close());
             
             return resultStream;
         });
