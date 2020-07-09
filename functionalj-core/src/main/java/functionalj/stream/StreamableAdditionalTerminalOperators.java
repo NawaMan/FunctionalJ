@@ -36,6 +36,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 import functionalj.function.Func1;
+import functionalj.function.IntObjBiConsumer;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.tuple.Tuple2;
@@ -48,8 +49,7 @@ public interface StreamableAdditionalTerminalOperators<DATA> {
     
     //-- Functionalities --
     
-    public default void forEachWithIndex(
-            BiConsumer<? super Integer, ? super DATA> action) {
+    public default void forEachWithIndex(IntObjBiConsumer<? super DATA> action) {
         stream()
         .forEachWithIndex(action);
     }
@@ -190,29 +190,29 @@ public interface StreamableAdditionalTerminalOperators<DATA> {
     //-- toMap --
     
     public default <KEY> FuncMap<KEY, DATA> toMap(
-            Function<? super DATA, ? extends KEY> keyMapper) {
+            Function<? super DATA, KEY> keyMapper) {
         return stream()
                 .toMap(keyMapper);
     }
     
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            Function<? super DATA, ? extends KEY>  keyMapper,
-            Function<? super DATA, ? extends VALUE> valueMapper) {
+            Function<? super DATA, KEY>  keyMapper,
+            Function<? super DATA, VALUE> valueMapper) {
         return stream()
                 .toMap(keyMapper, valueMapper);
     }
     
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            Function<? super DATA, ? extends KEY>   keyMapper,
-            Function<? super DATA, ? extends VALUE> valueMapper,
+            Function<? super DATA, KEY>   keyMapper,
+            Function<? super DATA, VALUE> valueMapper,
             BinaryOperator<VALUE>                   mergeFunction) {
         return stream()
                 .toMap(keyMapper, valueMapper, mergeFunction);
     }
     
     public default <KEY> FuncMap<KEY, DATA> toMap(
-            Function<? super DATA, ? extends KEY> keyMapper,
-            BinaryOperator<DATA>                  mergeFunction) {
+            Function<? super DATA, KEY> keyMapper,
+            BinaryOperator<DATA>        mergeFunction) {
         return stream()
                 .toMap(keyMapper, mergeFunction);
     }

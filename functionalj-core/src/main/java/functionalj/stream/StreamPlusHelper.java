@@ -46,11 +46,11 @@ public class StreamPlusHelper {
     
     static <T> boolean equals(Stream<T> stream1, Stream<T> stream2) {
         return !StreamPlus
-                .from       (stream1)
-                .combineWith(StreamPlus.from(stream2), AllowUnpaired, notEqual())
-                .filter     (TRUE::equals)
-                .findAny    ()
-                .isPresent  ();
+                .from     (stream1)
+                .zipWith  (StreamPlus.from(stream2), AllowUnpaired, notEqual())
+                .filter   (TRUE::equals)
+                .findAny  ()
+                .isPresent();
     }
     
     public static <T> int hashCode(Stream<T> stream) {
@@ -60,7 +60,7 @@ public class StreamPlusHelper {
     }
     
     public static <T> String toString(Stream<T> stream) {
-        return "[" + StreamPlus.from(stream).joinToString(", ") + "]";
+        return "[" + StreamPlus.from(stream).join(", ") + "]";
     }
     
     static <DATA, C, B> StreamPlus<C> doZipWith(

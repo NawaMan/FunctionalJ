@@ -339,7 +339,7 @@ public class FuncListTest {
         val concat = new StreamProcessor<String, String>() {
             @Override
             public String process(StreamPlus<String> stream) {
-                return stream.joinToString();
+                return stream.join();
             }
         };
         assertEquals("(18,4,TwoThreeFourEleven)", list.calculate(sumLength, avgLength, concat).toString());

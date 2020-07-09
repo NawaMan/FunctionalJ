@@ -25,8 +25,6 @@ package functionalj.stream;
 
 import static functionalj.lens.Access.theLong;
 import static functionalj.lens.Access.theString;
-import static functionalj.stream.ZipWithOption.AllowUnpaired;
-import static functionalj.stream.ZipWithOption.RequireBoth;
 import static functionalj.stream.longstream.LongStreamPlus.compound;
 import static functionalj.stream.longstream.LongStreamPlus.concat;
 import static functionalj.stream.longstream.LongStreamPlus.cycle;
@@ -1392,11 +1390,11 @@ public class LongStreamPlusTest {
         assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25)]", 
                         range(0, 5).zipWith(range(21, 27).boxed()).toListString());
         
-        assertEquals("[(0,21), (1,22), (2,23), (3,null), (4,null)]", 
-                        range(0, 5).zipWith(range(21, 24).boxed(), AllowUnpaired).toListString());
+        assertEquals("[(0,21), (1,22), (2,23)]", 
+                        range(0, 5).zipWith(range(21, 24).boxed()).toListString());
         
         assertEquals("[(0,21), (1,22), (2,23)]", 
-                range(0, 5).zipWith(range(21, 24).boxed(), RequireBoth).toListString());
+                range(0, 5).zipWith(range(21, 24).boxed()).toListString());
         
         assertEquals("[21, 23, 25]", 
                         range(0, 5).zipWith(range(21, 24).boxed(), (a, b) -> a + b).toListString());

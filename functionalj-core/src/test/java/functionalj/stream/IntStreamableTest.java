@@ -2,8 +2,6 @@ package functionalj.stream;
 
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
-import static functionalj.stream.ZipWithOption.AllowUnpaired;
-import static functionalj.stream.ZipWithOption.RequireBoth;
 import static functionalj.stream.intstream.IntStreamable.compound;
 import static functionalj.stream.intstream.IntStreamable.cycle;
 import static functionalj.stream.intstream.IntStreamable.empty;
@@ -477,8 +475,8 @@ public class IntStreamableTest {
             val streamable2 = range(2, 12);
             run(()->{
                 assertEquals(
-                        "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8]", 
-                        streamable1.zipToObjWith(streamable2.boxed(), AllowUnpaired, (a, b) -> a + "-" + b)
+                        "[5-2, 6-3, 7-4, 8-5, 9-6, 10-7, 11-8, -1-9, -1-10, -1-11]", 
+                        streamable1.zipToObjWith(-1, streamable2.boxed(), (a, b) -> a + "-" + b)
                         .toListString());
             });
         }
@@ -1851,10 +1849,13 @@ public class IntStreamableTest {
                          streamable.zipWith(anotherStreamble1.boxed()).toListString());
             
             assertEquals("[(0,21), (1,22), (2,23), (3,null), (4,null)]", 
-                         streamable.zipWith(anotherStreamble2.boxed(), AllowUnpaired).toListString());
+                         streamable.zipWith(-1, anotherStreamble2.boxed()).toListString());
+            
+            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25), (-1,26)]", 
+                         streamable.zipWith(-1, anotherStreamble1.boxed()).toListString());
             
             assertEquals("[(0,21), (1,22), (2,23)]", 
-                         streamable.zipWith(anotherStreamble2.boxed(), RequireBoth).toListString());
+                         streamable.zipWith(anotherStreamble2.boxed()).toListString());
             
             assertEquals("[21, 23, 25]", 
                          streamable.zipWith(anotherStreamble2.boxed(), (a, b) -> a + b).toListString());

@@ -57,28 +57,6 @@ public interface StreamableWithCombine<DATA> {
     
     //-- Zip --
     
-    public default <B, TARGET> Streamable<TARGET> combineWith(
-            Streamable<B>          anotherStreamable, 
-            Func2<DATA, B, TARGET> combinator) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
-            return StreamPlus
-                    .from       (stream)
-                    .combineWith(anotherStream, combinator);
-        });
-    }
-    public default <B, TARGET> Streamable<TARGET> combineWith(
-            Streamable<B>          anotherStreamable, 
-            ZipWithOption          option, 
-            Func2<DATA, B, TARGET> combinator) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
-            return StreamPlus
-                    .from       (stream)
-                    .combineWith(anotherStream, option, combinator);
-        });
-    }
-    
     public default <B> Streamable<Tuple2<DATA,B>> zipWith(
             Streamable<B> anotherStreamable) {
         return deriveWith(stream -> {

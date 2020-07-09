@@ -60,6 +60,14 @@ public interface LongIteratorPlus extends PrimitiveIterator.OfLong, Pipeable<Lon
         return this;
     }
     
+    public default void close() {
+        
+    }
+    
+    public default LongIteratorPlus onClose(Runnable closeHandler) {
+        return this;
+    }
+    
     public PrimitiveIterator.OfLong asIterator();
     
     public default LongIteratorPlus iterator() {

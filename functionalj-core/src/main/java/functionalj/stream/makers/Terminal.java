@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,35 +21,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.stream.makers;
 
-import java.util.function.BiFunction;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import functionalj.functions.ThrowFuncs;
-
-public interface LongObjBiFunction<DATA, TARGET> extends Func2<Long, DATA, TARGET> {
+/**
+ * Method with this marker is a terminal operation and that the stream will closed and any listener to onClose will be notified.e
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Terminal {
     
-    public TARGET applyAsLongUnsafe(long input1, DATA input2) throws Exception;
+    /**
+     * This flag indicates that the implementation is know to NOT be terminal for some reason
+     *   and it is planned to be fixed at later point.
+     **/
+    boolean knownIssue() default false;
     
-    public default TARGET applyAsLong(long input1, DATA input2) {
-        try {
-            return applyAsLongUnsafe(input1, input2);
-        } catch(Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.get().apply(exception);
-        }
-    }
-    
-    public default TARGET applyUnsafe(Long input1, DATA input2) throws Exception {
-        return applyAsLong(input1, input2);
-    }
-    
-    public static <D, T> T apply(BiFunction<Long, D, T> function, long input1, D input2) {
-        if (function instanceof LongObjBiPredicate) {
-            return ((LongObjBiFunction<D, T>)function).applyAsLong(input1, input2);
-        } else {
-            return function.apply(input1, input2);
-        }
-    }
+    /** Any comment for the marker */
+    String comment() default "";
     
 }
-

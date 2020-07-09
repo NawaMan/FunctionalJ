@@ -8,7 +8,6 @@ import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.stream.Streamable;
-import functionalj.stream.ZipWithOption;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import functionalj.stream.intstream.IntStreamableWithCombine;
@@ -71,11 +70,11 @@ public interface IntFuncListWithCombine extends IntStreamableWithCombine {
     }
     
     public default <ANOTHER> FuncList<IntTuple2<ANOTHER>> zipWith(
-            FuncList<ANOTHER> anotherList, 
-            ZipWithOption       option) {
+            int               defaultValue,
+            FuncList<ANOTHER> anotherList) {
         return deriveToList(() -> {
             return intStream()
-                    .zipWith(anotherList.stream(), option);
+                    .zipWith(defaultValue, anotherList.stream());
         });
     }
     
@@ -89,12 +88,12 @@ public interface IntFuncListWithCombine extends IntStreamableWithCombine {
     }
     
     public default <ANOTHER, TARGET> FuncList<TARGET> zipWith(
+            int                               defaultValue,
             FuncList<ANOTHER>                 anotherList, 
-            ZipWithOption                     option,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
         return deriveToList(() -> {
             return intStream()
-                    .zipWith(anotherList.stream(), option, merger);
+                    .zipWith(defaultValue, anotherList.stream(), merger);
         });
     }
     

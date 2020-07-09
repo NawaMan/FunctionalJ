@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,35 +21,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.stream;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import functionalj.functions.ThrowFuncs;
+import functionalj.pipeable.Pipeable;
+import lombok.val;
 
-public interface LongObjBiFunction<DATA, TARGET> extends Func2<Long, DATA, TARGET> {
+public interface StreamPlusWithPipe<DATA> {
     
-    public TARGET applyAsLongUnsafe(long input1, DATA input2) throws Exception;
+    public StreamPlus<DATA> streamPlus();
     
-    public default TARGET applyAsLong(long input1, DATA input2) {
-        try {
-            return applyAsLongUnsafe(input1, input2);
-        } catch(Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.get().apply(exception);
-        }
+    /** @return the pipeable of this stream. */
+    public default Pipeable<? extends StreamPlus<DATA>> pipable() {
+        val streamPlus = streamPlus();
+        return Pipeable.of(streamPlus);
     }
     
-    public default TARGET applyUnsafe(Long input1, DATA input2) throws Exception {
-        return applyAsLong(input1, input2);
-    }
-    
-    public static <D, T> T apply(BiFunction<Long, D, T> function, long input1, D input2) {
-        if (function instanceof LongObjBiPredicate) {
-            return ((LongObjBiFunction<D, T>)function).applyAsLong(input1, input2);
-        } else {
-            return function.apply(input1, input2);
-        }
+    /**
+     * Pipe this stream plus through the given function.
+     * 
+     * @param <T>       the target type.
+     * @param function  the function.
+     * @return          the target value.
+     */
+    public default <T> T pipeTo(Function<? super StreamPlus<DATA>, T> function) {
+        val streamPlus = streamPlus();
+        return function.apply(streamPlus);
     }
     
 }
-

@@ -31,6 +31,8 @@ import static functionalj.map.FuncMap.underlineMap;
 import static functionalj.map.FuncMap.UnderlineMap.LinkedHashMap;
 import static functionalj.ref.Run.With;
 import static functionalj.stream.StreamPlus.noMoreElement;
+import static functionalj.stream.ZipWithOption.AllowUnpaired;
+import static functionalj.stream.ZipWithOption.RequireBoth;
 import static functionalj.stream.intstream.IntStreamable.infiniteInt;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparingInt;
@@ -157,7 +159,7 @@ public class StreamPlusTest {
     @Test
     public void testMapWithPrev() {
         val stream = StreamPlus.of("One", "Two", "Three").mapWithPrev((prev, element) -> prev.orElse("").length() + element.length());
-        assertStrings("3, 6, 8", stream.joinToString(", "));
+        assertStrings("3, 6, 8", stream.join(", "));
     }
     
     @Test
@@ -167,7 +169,7 @@ public class StreamPlusTest {
                 "1, 3, 6, 10, 15", 
                 stream
                     .accumulate((a, b)->a+b)
-                    .joinToString(", "));
+                    .join(", "));
     }
     
     @Test
@@ -177,7 +179,7 @@ public class StreamPlusTest {
                 "1, 12, 123, 1234, 12345", 
                 stream
                     .accumulate((prev, current)->prev*10 + current)
-                    .joinToString(", "));
+                    .join(", "));
     }
     
     // remove duplicate
@@ -234,7 +236,7 @@ public class StreamPlusTest {
                 stream1.collapseWhen(
                         i -> (i % 3) == 0,
                         (a,b)->a+b
-                    ).joinToString(", "));
+                    ).join(", "));
         
         val stream2 = StreamPlus.of(1, 2, 3, 4, 5, 6);
         assertEquals(
@@ -242,7 +244,7 @@ public class StreamPlusTest {
                 stream2.collapseWhen(
                         i -> (i % 3) == 1,
                         (a,b)->a+b
-                    ).joinToString(", "));
+                    ).join(", "));
         
         val stream3 = StreamPlus.of(1, 2, 3, 4, 5, 6);
         assertEquals(
@@ -250,7 +252,7 @@ public class StreamPlusTest {
                 stream3.collapseWhen(
                         i -> (i % 3) <= 1,
                         (a,b)->a+b
-                    ).joinToString(", "));
+                    ).join(", "));
     }
     @Test
     public void testCollapseSize() {
@@ -485,13 +487,13 @@ public class StreamPlusTest {
     @Test
     public void testJoining() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("OneTwoThree", stream.joinToString());
+        assertStrings("OneTwoThree", stream.join());
     }
     
     @Test
     public void testJoiningDelimiter() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("One, Two, Three", stream.joinToString(", "));
+        assertStrings("One, Two, Three", stream.join(", "));
     }
     
     public static <DATA> Tuple3<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
@@ -769,13 +771,12 @@ public class StreamPlusTest {
     }
     @Test
     public void testSegment2() {
-        assertEquals("[A, B], [C]",  StreamPlus.of("A", "B", "C").segment(2       ).map(s -> s.toList().toString()).joinToString(", "));
-        assertEquals("[A, B]",       StreamPlus.of("A", "B", "C").segment(2, false).map(s -> s.toList().toString()).joinToString(", "));
+        assertEquals("[A, B], [C]",  StreamPlus.of("A", "B", "C").segment(2       ).map(s -> s.toList().toString()).join(", "));
+        assertEquals("[A, B]",       StreamPlus.of("A", "B", "C").segment(2, false).map(s -> s.toList().toString()).join(", "));
     }
     @Test
     public void testSegmentSize() {
         assertEquals(
-                "[], " + 
                 "[1], " + 
                 "[2, 3], " + 
                 "[4, 5, 6, 7], " + 
@@ -783,11 +784,12 @@ public class StreamPlusTest {
                 "[16, 17, 18, 19]",
                 IntStreamable
                 .infiniteInt()
-                .boxed()
-                .limit       (20)
-                .segmentSize (i -> i)
-                .map         (s -> s.toList())
-                .joinToString(", ")
+                .boxed      ()
+                .stream     ()
+                .limit      (20)
+                .segmentSize(i -> i)
+                .map        (s -> s.toList())
+                .join       (", ")
         );
     }
     
@@ -796,18 +798,18 @@ public class StreamPlusTest {
         {
             val streamA = StreamPlus.of("A", "B", "C");
             val streamB = IntStreamPlus.infinite().limit(10).boxed();
-            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB).joinToString(", "));
+            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB).join(", "));
         }
-//        {
-//            val streamA = StreamPlus.of("A", "B", "C");
-//            val streamB = IntStreamPlus.infinite().asStream();
-//            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB, RequireBoth).joinToString(", "));
-//        }
-//        {
-//            val streamA = StreamPlus.of("A", "B", "C");
-//            val streamB = IntStreamPlus.infinite().asStream();
-//            assertEquals("(A,0), (B,1), (C,2), (null,3), (null,4)", streamA.zipWith(streamB, AllowUnpaired).limit(5).joinToString(", "));
-//        }
+        {
+            val streamA = StreamPlus.of("A", "B", "C");
+            val streamB = IntStreamPlus.infinite().boxed();
+            assertEquals("(A,0), (B,1), (C,2)", streamA.zipWith(streamB, RequireBoth).join(", "));
+        }
+        {
+            val streamA = StreamPlus.of("A", "B", "C");
+            val streamB = IntStreamPlus.infinite().boxed();
+            assertEquals("(A,0), (B,1), (C,2), (null,3), (null,4)", streamA.zipWith(streamB, AllowUnpaired).limit(5).join(", "));
+        }
     }
     
     @Test
@@ -815,10 +817,21 @@ public class StreamPlusTest {
         val streamA = StreamPlus.of("A", "B", "C");
         val streamB = IntStreamPlus.infinite().boxed().map(theInteger.asString());
         val bool    = new AtomicBoolean(true);
-        assertEquals("A, 1, C, 3, 4", streamA.choose(streamB, (a, b) -> {
+        assertEquals("A, 1, C", streamA.choose(streamB, (a, b) -> {
             boolean curValue = bool.get();
             return bool.getAndSet(!curValue);
-        }).limit(5).joinToString(", "));
+        }).limit(5).join(", "));
+    }
+    
+    @Test
+    public void testChoose_AllowUnpaired() {
+        val streamA = StreamPlus.of("A", "B", "C");
+        val streamB = IntStreamPlus.infinite().boxed().map(theInteger.asString());
+        val bool    = new AtomicBoolean(true);
+        assertEquals("A, 1, C, 3, 4, 5, 6", streamA.choose(streamB, AllowUnpaired, (a, b) -> {
+            boolean curValue = bool.get();
+            return bool.getAndSet(!curValue);
+        }).limit(7).join(", "));
     }
     
     @Test
@@ -834,7 +847,7 @@ public class StreamPlusTest {
                 streamA
                     .merge(streamB)
                     .limit(10)
-                    .joinToString(", "));
+                    .join(", "));
     }
     
     @Test

@@ -57,28 +57,6 @@ public interface FuncListWithCombine<DATA> {
     
     //-- Zip --
     
-    public default <B, TARGET> FuncList<TARGET> combineWith(
-            FuncList<B>            anotherFuncList, 
-            Func2<DATA, B, TARGET> combinator) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherFuncList.stream();
-            return StreamPlus
-                    .from       (stream)
-                    .combineWith(anotherStream, combinator);
-        });
-    }
-    public default <B, TARGET> FuncList<TARGET> combineWith(
-            FuncList<B>            anotherFuncList, 
-            ZipWithOption          option, 
-            Func2<DATA, B, TARGET> combinator) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherFuncList.stream();
-            return StreamPlus
-                    .from       (stream)
-                    .combineWith(anotherStream, option, combinator);
-        });
-    }
-    
     public default <B> FuncList<Tuple2<DATA,B>> zipWith(
             FuncList<B> anotherFuncList) {
         return deriveWith(stream -> {

@@ -39,8 +39,8 @@ public class StrFuncsTest {
     
     @Test
     public void testLines() {
-        assertEquals("AA, AAA, AAAA, AAAAA", StrFuncs.lines("AA\nAAA\rAAAA\r\nAAAAA").joinToString(", "));
-        assertEquals("AA, AAA",              StrFuncs.lines("AA\nAAA\rAAAA\r\nAAAAA").limit(2).joinToString(", "));
+        assertEquals("AA, AAA, AAAA, AAAAA", StrFuncs.lines("AA\nAAA\rAAAA\r\nAAAAA").join(", "));
+        assertEquals("AA, AAA",              StrFuncs.lines("AA\nAAA\rAAAA\r\nAAAAA").limit(2).join(", "));
     }
     
     @Test
@@ -62,11 +62,11 @@ public class StrFuncsTest {
         assertEquals("A, AA, AAA, AAAA", 
                 matches("ABAABAAABAAAA", "A+")
                 .toTexts()
-                .joinToString(", "));
+                .join(", "));
         assertEquals("#{Hello}, #{There}", 
                 matches("--#{Hello}--#{There}--", "#\\{[a-zA-Z0-9$_]+\\}")
                 .toTexts()
-                .joinToString(", "));
+                .join(", "));
     }
     
     @Test

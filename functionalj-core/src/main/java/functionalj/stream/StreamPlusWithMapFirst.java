@@ -34,9 +34,9 @@ class StreamPlusMapAddOnHelper {
     
     @SafeVarargs
     static final <D, T> StreamPlus<T> mapFirst(
-            StreamPlusWithMapFirst<D>  stream,
+            StreamPlus<D>              streamPlus,
             Function<? super D, T> ... mappers) {
-        return stream.streamPlus().map(f((D data) -> eachMapFirst(data, mappers)));
+        return streamPlus.map(f((D data) -> eachMapFirst(data, mappers)));
     }
     
     private static <T, D> T eachMapFirst(D d, Function<? super D, T>[] mappers) throws Exception {
@@ -61,9 +61,9 @@ class StreamPlusMapAddOnHelper {
     
 }
 
-public interface StreamPlusWithMapFirst<DATA> extends AsStreamPlus<DATA> {
+public interface StreamPlusWithMapFirst<DATA> {
     
-    //== mapFirst ==
+    public StreamPlus<DATA> streamPlus();
     
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
@@ -76,8 +76,9 @@ public interface StreamPlusWithMapFirst<DATA> extends AsStreamPlus<DATA> {
     public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2) {
+        val streamPlus = streamPlus();
         return StreamPlusMapAddOnHelper
-                .mapFirst(this, mapper1, mapper2);
+                .mapFirst(streamPlus, mapper1, mapper2);
     }
     
     /**
@@ -93,8 +94,9 @@ public interface StreamPlusWithMapFirst<DATA> extends AsStreamPlus<DATA> {
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3) {
+        val streamPlus = streamPlus();
         return StreamPlusMapAddOnHelper
-                .mapFirst(this, mapper1, mapper2, mapper3);
+                .mapFirst(streamPlus, mapper1, mapper2, mapper3);
     }
     
     /**
@@ -112,8 +114,9 @@ public interface StreamPlusWithMapFirst<DATA> extends AsStreamPlus<DATA> {
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4) {
+        val streamPlus = streamPlus();
         return StreamPlusMapAddOnHelper
-                .mapFirst(this, mapper1, mapper2, mapper3, mapper4);
+                .mapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4);
     }
     
     /**
@@ -133,8 +136,9 @@ public interface StreamPlusWithMapFirst<DATA> extends AsStreamPlus<DATA> {
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5) {
+        val streamPlus = streamPlus();
         return StreamPlusMapAddOnHelper
-                .mapFirst(this, mapper1, mapper2, mapper3, mapper4, mapper5);
+                .mapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
     
     /**
@@ -156,7 +160,8 @@ public interface StreamPlusWithMapFirst<DATA> extends AsStreamPlus<DATA> {
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5,
             Function<? super DATA, T> mapper6) {
+        val streamPlus = streamPlus();
         return StreamPlusMapAddOnHelper
-                .mapFirst(this, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
+                .mapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
 }

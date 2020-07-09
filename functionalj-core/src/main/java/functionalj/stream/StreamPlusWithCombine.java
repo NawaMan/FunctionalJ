@@ -24,7 +24,7 @@
 package functionalj.stream;
 
 import static functionalj.function.FuncUnit0.funcUnit0;
-import static functionalj.stream.ZipWithOption.AllowUnpaired;
+import static functionalj.stream.ZipWithOption.RequireBoth;
 
 import java.util.stream.Stream;
 
@@ -32,8 +32,16 @@ import functionalj.function.Func2;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-public interface StreamPlusWithCombine<DATA> extends AsStreamPlus<DATA> {
+public interface StreamPlusWithCombine<DATA> {
     
+    public StreamPlus<DATA> streamPlus();
+    
+    /**
+     * Concatenate the given tail stream to this stream.
+     * 
+     * @param tail  the tail stream.
+     * @return      the combined stream.
+     */
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> concatWith(
             Stream<DATA> tail) {
@@ -44,11 +52,22 @@ public interface StreamPlusWithCombine<DATA> extends AsStreamPlus<DATA> {
                .flatMap(s -> (StreamPlus<DATA>)s);
     }
     
+    /**
+     * Merge this with another stream by alternatively picking value from the each stream.
+     * If one stream ended before another one, the rest of the value will be appended.
+     * 
+     * For an example: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
+     * 
+     * @param anotherStream  another stream.
+     * @return               the merged stream.
+     */
     public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
-        // TODO - Check to see if rawIterator is still needed.
-        val thisStream = stream();
-        val iteratorA  = StreamPlusHelper.rawIterator(thisStream);
-        val iteratorB  = StreamPlusHelper.rawIterator(anotherStream);
+        val streamPlus = streamPlus();
+        val iteratorA  = streamPlus.iterator();
+        val iteratorB  = StreamPlus.from(anotherStream).iterator();
         
         val resultStream 
                 = StreamPlusHelper
@@ -56,7 +75,7 @@ public interface StreamPlusWithCombine<DATA> extends AsStreamPlus<DATA> {
         
         resultStream
                 .onClose(()->{
-                    funcUnit0(()->thisStream   .close()).runCarelessly();
+                    funcUnit0(()->streamPlus   .close()).runCarelessly();
                     funcUnit0(()->anotherStream.close()).runCarelessly();
                 });
         return resultStream;
@@ -64,37 +83,127 @@ public interface StreamPlusWithCombine<DATA> extends AsStreamPlus<DATA> {
     
     //-- Zip --
     
-    public default <B, TARGET> StreamPlus<TARGET> combineWith(Stream<B> anotherStream, Func2<DATA, B, TARGET> combinator) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth)
-                .map(combinator::applyTo);
-    }
-    public default <B, TARGET> StreamPlus<TARGET> combineWith(Stream<B> anotherStream, ZipWithOption option, Func2<DATA, B, TARGET> combinator) {
-        return zipWith(anotherStream, option)
-                .map(combinator::applyTo);
+    /**
+     * Combine this stream with another stream into a stream of tuple pair.
+     * The combination stops when any of the stream ended.
+     * 
+     * For an example: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Result stream:  [(A, 1), (B, 2), (C, 3)] <br>
+     * 
+     * @param anotherStream  another stream.
+     * @return               the merged stream.
+     */
+    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream) {
+        return zipWith(anotherStream, RequireBoth, Tuple2::of);
     }
     
-    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, Tuple2::of);
-    }
-    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream, ZipWithOption option) {
+    /**
+     * Combine this stream with another stream into a stream of tuple pair.
+     * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
+     * 
+     * For an example with ZipWithOption.AllowUnpaired: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Result stream:  [(A, 1), (B, 2), (C, 3), (null, 4), (null, 5)] <br>
+     * 
+     * @param anotherStream  another stream.
+     * @param option         the zip option.
+     * @return               the merged stream.
+     */
+    public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(
+            Stream<B>     anotherStream,
+            ZipWithOption option) {
         return zipWith(anotherStream, option, Tuple2::of);
     }
     
-    public default <B, C> StreamPlus<C> zipWith(Stream<B> anotherStream, Func2<DATA, B, C> merger) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, merger);
+    /**
+     * Combine this stream with another stream using the combinator to create the result value one by one.
+     * The combination stops when any of the stream ended.
+     * 
+     * For an example: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Combinator:     (v1,v2) -> v1 + "-" + v2
+     *   Result stream:  [A-1, B-2, C-3] <br>
+     * 
+     * @param anotherStream  another stream.
+     * @param combinator     the combinator.
+     * @return               the merged stream.
+     */
+    public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
+            Stream<ANOTHER> anotherStream,
+            Func2<DATA, ANOTHER, TARGET> combinator) {
+        return zipWith(anotherStream, RequireBoth, combinator);
     }
+    
+    /**
+     * Combine this stream with another stream using the combinator to create the result value one by one.
+     * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
+     * 
+     * For an example with ZipWithOption.AllowUnpaired: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Combinator:     (v1,v2) -> v1 + "-" + v2
+     *   Result stream:  [A-1, B-2, C-3, null-4, null-5] <br>
+     * 
+     * @param anotherStream  another stream.
+     * @param option         the zip option.
+     * @param combinator     the combinator.
+     * @return               the merged stream.
+     */
     // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
     public default <B, C> StreamPlus<C> zipWith(
             Stream<B>         anotherStream, 
             ZipWithOption     option,
-            Func2<DATA, B, C> merger) {
+            Func2<DATA, B, C> combinator) {
         val iteratorA = streamPlus().iterator();
         val iteratorB = StreamPlus.from(anotherStream).iterator();
-        return StreamPlusHelper.doZipWith(option, merger, iteratorA, iteratorB);
+        return StreamPlusHelper.doZipWith(option, combinator, iteratorA, iteratorB);
     }
     
-    public default StreamPlus<DATA> choose(Stream<DATA> anotherStream, Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return zipWith(anotherStream, AllowUnpaired)
+    /**
+     * Create a new stream by choosing value from each stream suing the selector.
+     * The combine stream ended when any of the stream ended.
+     * 
+     * For an example: <br>
+     *   This stream:    [10, 1, 9, 2] <br>
+     *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
+     *   Selector:       (v1,v2) -> v1 > v2
+     *   Result stream:  [10, 5, 9, 5] <br>
+     * 
+     * @param anotherStream         another stream.
+     * @param selectThisNotAnother  the selector.
+     * @return                      the merged stream.
+     */
+    public default StreamPlus<DATA> choose(
+            Stream<DATA>               anotherStream,
+            Func2<DATA, DATA, Boolean> selectThisNotAnother) {
+        return choose(anotherStream, RequireBoth, selectThisNotAnother);
+    }
+    
+    /**
+     * Create a new stream by choosing value from each stream suing the selector.
+     * The combine stream ended when both stream ended.
+     * The value from the longer stream is automatically used after the shorter stream ended.
+     * 
+     * For an example with ZipWithOption.AllowUnpaired: <br>
+     *   This stream:    [10, 1, 9, 2] <br>
+     *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
+     *   Selector:       (v1,v2) -> v1 > v2
+     *   Result stream:  [10, 5, 9, 5, 5, 5, 5] <br>
+     * 
+     * @param anotherStream         another stream.
+     * @param option                the zip option.
+     * @param selectThisNotAnother  the selector.
+     * @return                      the merged stream.
+     */
+    public default StreamPlus<DATA> choose(
+            Stream<DATA>               anotherStream,
+            ZipWithOption              option,
+            Func2<DATA, DATA, Boolean> selectThisNotAnother) {
+        return zipWith(anotherStream, option)
                 .map(t -> {
                     val _1 = t._1();
                     val _2 = t._2();

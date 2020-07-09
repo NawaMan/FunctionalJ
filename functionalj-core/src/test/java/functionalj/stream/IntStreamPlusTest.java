@@ -26,8 +26,6 @@ package functionalj.stream;
 import static functionalj.lens.Access.theInteger;
 import static functionalj.lens.Access.theString;
 import static functionalj.promise.DeferAction.defer;
-import static functionalj.stream.ZipWithOption.AllowUnpaired;
-import static functionalj.stream.ZipWithOption.RequireBoth;
 import static functionalj.stream.intstream.IntStreamPlus.cycle;
 import static functionalj.stream.intstream.IntStreamPlus.ints;
 import static functionalj.stream.intstream.IntStreamPlus.loop;
@@ -1559,10 +1557,13 @@ public class IntStreamPlusTest {
                         range(0, 5).zipWith(range(21, 27).boxed()).toListString());
         
         assertEquals("[(0,21), (1,22), (2,23), (3,null), (4,null)]", 
-                        range(0, 5).zipWith(range(21, 24).boxed(), AllowUnpaired).toListString());
+                        range(0, 5).zipWith(-1, range(21, 24).boxed()).toListString());
+        
+        assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25), (-1,26)]", 
+                        range(0, 5).zipWith(-1, range(21, 27).boxed()).toListString());
         
         assertEquals("[(0,21), (1,22), (2,23)]", 
-                range(0, 5).zipWith(range(21, 24).boxed(), RequireBoth).toListString());
+                range(0, 5).zipWith(range(21, 24).boxed()).toListString());
         
         assertEquals("[21, 23, 25]", 
                         range(0, 5).zipWith(range(21, 24).boxed(), (a, b) -> a + b).toListString());

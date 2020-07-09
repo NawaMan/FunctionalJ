@@ -1,5 +1,7 @@
 package functionalj.stream.longstream;
 
+import static functionalj.function.Func.f;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
@@ -41,39 +43,68 @@ public class LongStreamPlusHelper {
     }
     
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipLongWith(
-            ZipWithOption                option, 
             LongObjBiFunction<B, TARGET> merger,
             LongIteratorPlus             iteratorA, 
             IteratorPlus<B>              iteratorB) {
         
-        val iterator = new Iterator<TARGET>() {
+        val targetIterator = new Iterator<TARGET>() {
             private boolean hasNextA;
             private boolean hasNextB;
             
             public boolean hasNext() {
                 hasNextA = iteratorA.hasNext();
                 hasNextB = iteratorB.hasNext();
-                return (option == ZipWithOption.RequireBoth)
-                        ? (hasNextA && hasNextB)
-                        : hasNextA;
+                return (hasNextA && hasNextB);
             }
             public TARGET next() {
                 if (!hasNextA)
                     throw new NoSuchElementException();
                 
                 long nextA = iteratorA.nextLong();
-                val  nextB = hasNextB ? iteratorB.next() : null;
+                val  nextB = iteratorB.next();
                 return merger.apply(nextA, nextB);
             }
         };
-        val iterable = new Iterable<TARGET>() {
-            @Override
-            public Iterator<TARGET> iterator() {
-                return iterator;
+        
+        val iterable     = (Iterable<TARGET>)() -> targetIterator;
+        val spliterator  = iterable.spliterator();
+        val targetStream = StreamPlus.from(StreamSupport.stream(spliterator, false));
+        targetStream.onClose(() -> {
+            f(iteratorA::close).runCarelessly();
+            f(iteratorB::close).runCarelessly();
+        });
+        return targetStream;
+    }
+    
+    static <DATA, B, TARGET> StreamPlus<TARGET> doZipLongWith(
+            long                         defaultValue,
+            LongObjBiFunction<B, TARGET> merger,
+            LongIteratorPlus             iteratorA, 
+            IteratorPlus<B>              iteratorB) {
+        
+        val targetIterator = new Iterator<TARGET>() {
+            private boolean hasNextA;
+            private boolean hasNextB;
+            
+            public boolean hasNext() {
+                hasNextA = iteratorA.hasNext();
+                hasNextB = iteratorB.hasNext();
+                return hasNextA || hasNextB;
             }
-          
+            public TARGET next() {
+                long nextA = hasNextA ? iteratorA.nextLong() : defaultValue;
+                val  nextB = hasNextB ? iteratorB.next()    : null;
+                return merger.apply(nextA, nextB);
+            }
         };
-        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+        val iterable     = (Iterable<TARGET>)() -> targetIterator;
+        val spliterator  = iterable.spliterator();
+        val targetStream = StreamPlus.from(StreamSupport.stream(spliterator, false));
+        targetStream.onClose(() -> {
+            f(iteratorA::close).runCarelessly();
+            f(iteratorB::close).runCarelessly();
+        });
+        return targetStream;
     }
     
     static LongStreamPlus doZipLongLongWith(
@@ -100,18 +131,19 @@ public class LongStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        val longIterator = LongIteratorPlus.from(iterator);
-        val iterable = new LongIterable() {
-            @Override
-            public LongIteratorPlus iterator() {
-                return longIterator;
-            }
-            
-        };
-        return LongStreamPlus.from(StreamSupport.longStream(iterable.spliterator(), false));
+        
+        val targetIterator = LongIteratorPlus.from(iterator);
+        val iterable       = (LongIterable)() -> targetIterator;
+        val spliterator    = iterable.spliterator();
+        val targetStream   = LongStreamPlus.from(StreamSupport.longStream(spliterator, false));
+        targetStream.onClose(() -> {
+            f(iteratorA::close).runCarelessly();
+            f(iteratorB::close).runCarelessly();
+        });
+        return targetStream;
     }
     
-    static <TARGET> StreamPlus<TARGET> doZipLongLongObjWith(
+    static <TARGET> StreamPlus<TARGET> doZipLongLongWith(
             LongLongBiFunction<TARGET> merger,
             LongIteratorPlus           iteratorA, 
             LongIteratorPlus           iteratorB) {
@@ -135,15 +167,16 @@ public class LongStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        val longIterator = IteratorPlus.from(iterator);
-        val iterable = new Iterable<TARGET>() {
-            @Override
-            public IteratorPlus<TARGET> iterator() {
-                return longIterator;
-            }
-            
-        };
-        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+        
+        val targetIterator = IteratorPlus.from(iterator);
+        val iterable       = (Iterable<TARGET>)() -> targetIterator;
+        val spliterator    = iterable.spliterator();
+        val targetStream   = StreamPlus.from(StreamSupport.stream(spliterator, false));
+        targetStream.onClose(() -> {
+            f(iteratorA::close).runCarelessly();
+            f(iteratorB::close).runCarelessly();
+        });
+        return targetStream;
     }
     
     static <TARGET> StreamPlus<TARGET> doZipLongLongObjWith(
@@ -181,15 +214,14 @@ public class LongStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        val longIterator = IteratorPlus.from(iterator);
-        val iterable = new Iterable<TARGET>() {
-            @Override
-            public IteratorPlus<TARGET> iterator() {
-                return longIterator;
-            }
-            
-        };
-        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+        val targetIterator = IteratorPlus.from(iterator);
+        val iterable       = (Iterable<TARGET>)() -> targetIterator;
+        val targetStream   = StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+        targetStream.onClose(() -> {
+            f(iteratorA::close).runCarelessly();
+            f(iteratorB::close).runCarelessly();
+        });
+        return targetStream;
     }
     
     static LongStreamPlus doZipLongLongWith(
@@ -227,15 +259,16 @@ public class LongStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        val longIterator = LongIteratorPlus.from(iterator);
-        val iterable = new LongIterable() {
-            @Override
-            public LongIteratorPlus iterator() {
-                return longIterator;
-            }
-            
-        };
-        return LongStreamPlus.from(StreamSupport.longStream(iterable.spliterator(), false));
+        
+        val targetIterator = LongIteratorPlus.from(iterator);
+        val iterable       = (LongIterable)() -> targetIterator;
+        val spliterator    = iterable.spliterator();
+        val targetStream   = LongStreamPlus.from(StreamSupport.longStream(spliterator, false));
+        targetStream.onClose(() -> {
+            f(iteratorA::close).runCarelessly();
+            f(iteratorB::close).runCarelessly();
+        });
+        return targetStream;
     }
     
     static <TARGET> StreamPlus<TARGET> doZipLongLongObjWith(
@@ -274,15 +307,16 @@ public class LongStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        val longIterator = IteratorPlus.from(iterator);
-        val iterable = new Iterable<TARGET>() {
-            @Override
-            public IteratorPlus<TARGET> iterator() {
-                return longIterator;
-            }
-            
-        };
-        return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+        
+        val targetIterator = IteratorPlus.from(iterator);
+        val iterable       = (Iterable<TARGET>)() -> targetIterator;
+        val spliterator    = iterable.spliterator();
+        val targetStream   = StreamPlus.from(StreamSupport.stream(spliterator, false));
+        targetStream.onClose(() -> {
+            f(iteratorA::close).runCarelessly();
+            f(iteratorB::close).runCarelessly();
+        });
+        return targetStream;
     }
     
     static LongStreamPlus doZipLongLongWith(
@@ -321,55 +355,56 @@ public class LongStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        val longIterator = LongIteratorPlus.from(iterator);
-        val iterable = new LongIterable() {
-            @Override
-            public LongIteratorPlus iterator() {
-                return longIterator;
-            }
-            
-        };
-        return LongStreamPlus.from(StreamSupport.longStream(iterable.spliterator(), false));
+        
+        val targetIterator = LongIteratorPlus.from(iterator);
+        val iterable       = (LongIterable)() -> targetIterator;
+        val spliterator    = iterable.spliterator();
+        val targetStream   = LongStreamPlus.from(StreamSupport.longStream(spliterator, false));
+        targetStream.onClose(() -> {
+            f(iteratorA::close).runCarelessly();
+            f(iteratorB::close).runCarelessly();
+        });
+        return targetStream;
     }
     
     static LongStreamPlus doMergeLong(
             LongIteratorPlus iteratorA, 
             LongIteratorPlus iteratorB) {
-        val iterable = new LongIterable() {
-            private final LongIteratorPlus iterator = new LongIteratorPlus() {
-                private boolean isA = true;
-                
-                public boolean hasNext() {
-                    if (isA) {
-                        if (iteratorA.hasNext()) return true;
-                        isA = false;
-                        if (iteratorB.hasNext()) return true;
-                        return false;
-                    }
-                    
-                    if (iteratorB.hasNext()) return true;
-                    isA = true;
+        val iterator = new LongIteratorPlus() {
+            private boolean isA = true;
+            
+            public boolean hasNext() {
+                if (isA) {
                     if (iteratorA.hasNext()) return true;
+                    isA = false;
+                    if (iteratorB.hasNext()) return true;
                     return false;
                 }
-                public long nextLong() {
-                    val next = isA ? iteratorA.next() : iteratorB.next();
-                    isA = !isA;
-                    return next;
-                }
-                @Override
-                public OfLong asIterator() {
-                    return this;
-                }
-            };
+                
+                if (iteratorB.hasNext()) return true;
+                isA = true;
+                if (iteratorA.hasNext()) return true;
+                return false;
+            }
+            public long nextLong() {
+                val next = isA ? iteratorA.next() : iteratorB.next();
+                isA = !isA;
+                return next;
+            }
             @Override
-            public LongIteratorPlus iterator() {
-                return iterator;
+            public OfLong asIterator() {
+                return this;
             }
         };
-        val spliterator = iterable.spliterator();
-        val stream      = StreamSupport.longStream(spliterator, false);
-        return LongStreamPlus.from(stream);
+        val iterable     = (LongIterable)() -> iterator;
+        val spliterator  = iterable.spliterator();
+        val targetStream = LongStreamPlus.from(StreamSupport.longStream(spliterator, false));
+        targetStream.onClose(() -> {
+            f(iterator::close).runCarelessly();
+            f(iteratorA::close).runCarelessly();
+            f(iteratorB::close).runCarelessly();
+        });
+        return targetStream;
     }
     
     static LongStreamPlus doChoiceWith(
@@ -407,15 +442,16 @@ public class LongStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        val longIterator = LongIteratorPlus.from(iterator);
-        val iterable = new LongIterable() {
-            @Override
-            public LongIteratorPlus iterator() {
-                return longIterator;
-            }
-            
-        };
-        return LongStreamPlus.from(StreamSupport.longStream(iterable.spliterator(), false));
+        
+        val targetIterator = LongIteratorPlus.from(iterator);
+        val iterable       = (LongIterable)() -> targetIterator;
+        val spliterator    = iterable.spliterator();
+        val targetStream   = LongStreamPlus.from(StreamSupport.longStream(spliterator, false));
+        targetStream.onClose(() -> {
+            f(iteratorA::close).runCarelessly();
+            f(iteratorB::close).runCarelessly();
+        });
+        return targetStream;
     }
     
     static LongIteratorPlus rawIterator(LongStream stream) {

@@ -74,27 +74,38 @@ public interface LongStreamPlusWithCombine {
     
     public default <ANOTHER> StreamPlus<LongTuple2<ANOTHER>> zipWith(
             Stream<ANOTHER> anotherStream) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, LongTuple2::of);
+        return useIteratorToObj(iteratorA -> {
+            val iteratorB = StreamPlus.from(anotherStream).iterator();
+            val doZipIntWith = LongStreamPlusHelper.doZipLongWith(LongTuple2::of, iteratorA, iteratorB);
+            return doZipIntWith;
+        });
     }
     public default <ANOTHER> StreamPlus<LongTuple2<ANOTHER>> zipWith(
+            long             defaultValue,
             Stream<ANOTHER> anotherStream, 
             ZipWithOption   option) {
-        return zipWith(anotherStream, option, LongTuple2::of);
+        return useIteratorToObj(iteratorA -> {
+            val iteratorB = StreamPlus.from(anotherStream).iterator();
+            return LongStreamPlusHelper.doZipLongWith(defaultValue, LongTuple2::of, iteratorA, iteratorB);
+        });
     }
     
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
             Stream<ANOTHER>                    anotherStream, 
             LongObjBiFunction<ANOTHER, TARGET> merger) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, merger);
+        return useIteratorToObj(iteratorA -> {
+            val iteratorB = StreamPlus.from(anotherStream).iterator();
+            return LongStreamPlusHelper.doZipLongWith(merger, iteratorA, iteratorB);
+        });
     }
     // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
+            long                               defaultValue,
             Stream<ANOTHER>                    anotherStream, 
-            ZipWithOption                      option,
             LongObjBiFunction<ANOTHER, TARGET> merger) {
         return useIteratorToObj(iteratorA -> {
             val iteratorB = StreamPlus.from(anotherStream).iterator();
-            return LongStreamPlusHelper.doZipLongWith(option, merger, iteratorA, iteratorB);
+            return LongStreamPlusHelper.doZipLongWith(defaultValue, merger, iteratorA, iteratorB);
         });
     }
     
@@ -104,7 +115,7 @@ public interface LongStreamPlusWithCombine {
             return LongStreamPlus
                     .from(anotherStream)
                     .useIteratorToObj(iteratorB -> {
-                        return LongStreamPlusHelper.doZipLongLongObjWith(LongLongTuple::new, iteratorA, iteratorB);
+                        return LongStreamPlusHelper.doZipLongLongWith(LongLongTuple::new, iteratorA, iteratorB);
                     });
         });
     }
@@ -139,7 +150,11 @@ public interface LongStreamPlusWithCombine {
             return LongStreamPlus
                     .from(anotherStream)
                     .useIterator(iteratorB -> {
-                        return LongStreamPlusHelper.doZipLongLongWith(merger, iteratorA, iteratorB);
+                        LongBiFunctionPrimitive merger2 = merger;
+                        LongIteratorPlus iteratorA2 = iteratorA;
+                        LongIteratorPlus iteratorB2 = iteratorB;
+                        LongStreamPlus doZipLongLongWith = LongStreamPlusHelper.doZipLongLongWith(merger2, iteratorA2, iteratorB2);
+                        return doZipLongLongWith;
                     });
         });
     }
@@ -176,7 +191,7 @@ public interface LongStreamPlusWithCombine {
             return LongStreamPlus
                     .from(anotherStream)
                     .useIteratorToObj(iteratorB -> {
-                        return LongStreamPlusHelper.doZipLongLongObjWith(merger, iteratorA, iteratorB);
+                        return LongStreamPlusHelper.doZipLongLongWith(merger, iteratorA, iteratorB);
                     });
         });
     }

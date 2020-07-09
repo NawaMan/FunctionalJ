@@ -57,7 +57,7 @@ public interface LongStreamableWithCombine {
     public default <ANOTHER> Streamable<LongTuple2<ANOTHER>> zipWith(Streamable<ANOTHER> anotherStreamable,
             ZipWithOption option) {
         return () -> {
-            return longStream().zipWith(anotherStreamable.stream(), option);
+            return longStream().zipWith(anotherStreamable.stream());
         };
     }
 
@@ -130,7 +130,7 @@ public interface LongStreamableWithCombine {
     public default <ANOTHER, TARGET> Streamable<TARGET> zipToObjWith(Streamable<ANOTHER> anotherStreamable,
             ZipWithOption option, LongObjBiFunction<ANOTHER, TARGET> merger) {
         return () -> {
-            return longStream().zipWith(anotherStreamable.stream(), option, merger);
+            return longStream().zipWith(anotherStreamable.stream(), merger);
         };
     }
 

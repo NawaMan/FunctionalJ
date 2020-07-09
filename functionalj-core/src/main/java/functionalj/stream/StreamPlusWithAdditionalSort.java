@@ -23,24 +23,54 @@
 // ============================================================================
 package functionalj.stream;
 
-import java.util.stream.Stream;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.function.Function;
 
-/**
- * Classes implementing this interface can provider a StreamPlus instance of itself.
- *
- * @param <DATA> the data type of the stream plus.
- * 
- * @author NawaMan -- nawa@nawaman.net
- */
-@FunctionalInterface
-public interface AsStreamPlus<DATA> {
+import functionalj.stream.makers.Eager;
+import lombok.val;
+
+public interface StreamPlusWithAdditionalSort<DATA> {
     
-    /** @return  the stream plus instance of this object. */
     public StreamPlus<DATA> streamPlus();
     
-    /** @return  return the stream underneath the stream plus. */
-    public default Stream<DATA> stream() {
-        return streamPlus().stream();
+    /**
+     * Sort the values by the mapped value.
+     * 
+     * @param <T>     the mapped type.
+     * @param mapper  the mapper.
+     * @return        the sorted stream.
+     */
+    @Eager
+    public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper) {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .sorted((a, b) -> {
+                    T vA = mapper.apply(a);
+                    T vB = mapper.apply(b);
+                    return vA.compareTo(vB);
+                });
+    }
+    
+    /**
+     * Sort the values by the mapped value using the comparator.
+     * 
+     * @param <T>         the mapped type.
+     * @param mapper      the mapper.
+     * @param comparator  the comparator.
+     * @return            the sorted stream.
+     */
+    @Eager
+    public default <T> StreamPlus<DATA> sortedBy(
+            Function<? super DATA, T> mapper, 
+            Comparator<T>             comparator) {
+        val streamPlus = streamPlus();
+        return streamPlus
+                .sorted((a, b) -> {
+                    T vA = mapper.apply(a);
+                    T vB = mapper.apply(b);
+                    return Objects.compare(vA, vB, comparator);
+                });
     }
     
 }

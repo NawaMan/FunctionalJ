@@ -35,7 +35,6 @@ import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.ZipWithOption;
 import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.IntTuple2;
 import lombok.val;
@@ -57,8 +56,8 @@ public interface IntStreamPlusWithCombine {
     
     public default IntStreamPlus mergeWith(IntStream anotherStream) {
         val thisStream = intStream();
-        val iteratorA  = IntStreamPlusHelper.rawIterator(thisStream);
-        val iteratorB  = IntStreamPlusHelper.rawIterator(anotherStream);
+        val iteratorA  = IntIteratorPlus.from(thisStream   .iterator());
+        val iteratorB  = IntIteratorPlus.from(anotherStream.iterator());
         
         val resultStream 
                 = IntStreamPlusHelper
@@ -74,30 +73,39 @@ public interface IntStreamPlusWithCombine {
     
     //-- Zip --
     
-    
     public default <ANOTHER> StreamPlus<IntTuple2<ANOTHER>> zipWith(
             Stream<ANOTHER> anotherStream) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, IntTuple2::of);
+        return useIteratorToObj(iteratorA -> {
+            val iteratorB = StreamPlus.from(anotherStream).iterator();
+            val doZipIntWith = IntStreamPlusHelper.doZipIntWith(IntTuple2::of, iteratorA, iteratorB);
+            return doZipIntWith;
+        });
     }
     public default <ANOTHER> StreamPlus<IntTuple2<ANOTHER>> zipWith(
-            Stream<ANOTHER> anotherStream, 
-            ZipWithOption   option) {
-        return zipWith(anotherStream, option, IntTuple2::of);
+            int             defaultValue,
+            Stream<ANOTHER> anotherStream) {
+        return useIteratorToObj(iteratorA -> {
+            val iteratorB = StreamPlus.from(anotherStream).iterator();
+            return IntStreamPlusHelper.doZipIntWith(defaultValue, IntTuple2::of, iteratorA, iteratorB);
+        });
     }
     
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
             Stream<ANOTHER>                   anotherStream, 
-            IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return zipWith(anotherStream, ZipWithOption.RequireBoth, merger);
-    }
-    // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
-    public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
-            Stream<ANOTHER>                   anotherStream, 
-            ZipWithOption                     option,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
         return useIteratorToObj(iteratorA -> {
             val iteratorB = StreamPlus.from(anotherStream).iterator();
-            return IntStreamPlusHelper.doZipIntWith(option, merger, iteratorA, iteratorB);
+            return IntStreamPlusHelper.doZipIntWith(merger, iteratorA, iteratorB);
+        });
+    }
+    // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
+    public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
+            int                               defaultValue,
+            Stream<ANOTHER>                   anotherStream,
+            IntObjBiFunction<ANOTHER, TARGET> merger) {
+        return useIteratorToObj(iteratorA -> {
+            val iteratorB = StreamPlus.from(anotherStream).iterator();
+            return IntStreamPlusHelper.doZipIntWith(defaultValue, merger, iteratorA, iteratorB);
         });
     }
     

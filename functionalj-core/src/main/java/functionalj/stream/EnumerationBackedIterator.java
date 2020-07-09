@@ -1,5 +1,5 @@
 // ============================================================================
-// Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
 // 
@@ -21,35 +21,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.stream;
 
-import java.util.function.BiFunction;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-import functionalj.functions.ThrowFuncs;
-
-public interface LongObjBiFunction<DATA, TARGET> extends Func2<Long, DATA, TARGET> {
+public class EnumerationBackedIterator<DATA> implements Iterator<DATA> {
     
-    public TARGET applyAsLongUnsafe(long input1, DATA input2) throws Exception;
+    private final Enumeration<DATA>  enumeration;
+    private DATA next;
     
-    public default TARGET applyAsLong(long input1, DATA input2) {
+    public EnumerationBackedIterator(Enumeration<DATA> enumeration) {
+        this.enumeration = enumeration;
+    }
+    @Override
+    public boolean hasNext() {
         try {
-            return applyAsLongUnsafe(input1, input2);
-        } catch(Exception exception) {
-            throw ThrowFuncs.exceptionTransformer.get().apply(exception);
+            next = enumeration.nextElement();
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
         }
     }
-    
-    public default TARGET applyUnsafe(Long input1, DATA input2) throws Exception {
-        return applyAsLong(input1, input2);
-    }
-    
-    public static <D, T> T apply(BiFunction<Long, D, T> function, long input1, D input2) {
-        if (function instanceof LongObjBiPredicate) {
-            return ((LongObjBiFunction<D, T>)function).applyAsLong(input1, input2);
-        } else {
-            return function.apply(input1, input2);
-        }
+    @Override
+    public DATA next() {
+        return next;
     }
     
 }
-

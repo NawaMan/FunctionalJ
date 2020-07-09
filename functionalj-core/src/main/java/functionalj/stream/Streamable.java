@@ -246,7 +246,7 @@ public interface Streamable<DATA>
      * Create a StreamPlus from the supplier. 
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
-    public static <D> Streamable<D> generate(Supplier<Supplier<D>> supplier) {
+    public static <D> Streamable<D> generate(Func0<Func0<D>> supplier) {
         return ()->StreamPlus.generate(supplier.get());
     }
     
@@ -254,7 +254,7 @@ public interface Streamable<DATA>
      * Create a StreamPlus from the supplier. 
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
-    public static <D> Streamable<D> generateWith(Supplier<Supplier<D>> supplier) {
+    public static <D> Streamable<D> generateWith(Func0<Func0<D>> supplier) {
         return ()->StreamPlus.generate(supplier.get());
     }
     

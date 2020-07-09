@@ -7,8 +7,6 @@ import static functionalj.list.intlist.IntFuncList.emptyList;
 import static functionalj.list.intlist.IntFuncList.ints;
 import static functionalj.list.intlist.IntFuncList.range;
 import static functionalj.list.intlist.IntFuncList.wholeNumbers;
-import static functionalj.stream.ZipWithOption.AllowUnpaired;
-import static functionalj.stream.ZipWithOption.RequireBoth;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -1275,16 +1273,22 @@ public class IntFuncListTest {
                     list.zipWith(anotherList1.boxed()).toListString());
             
             assertEquals("[(0,21), (1,22), (2,23), (3,null), (4,null)]", 
-                    list.zipWith(anotherList2.boxed(), AllowUnpaired).toListString());
+                    list.zipWith(-1, anotherList2.boxed()).toListString());
+            
+            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25), (-1,26)]", 
+                    list.zipWith(-1, anotherList1.boxed()).toListString());
             
             assertEquals("[(0,21), (1,22), (2,23)]", 
-                    list.zipWith(anotherList2.boxed(), RequireBoth).toListString());
+                    list.zipWith(anotherList2.boxed()).toListString());
             
             assertEquals("[0-21, 1-22, 2-23, 3-null, 4-null]", 
-                    list.zipWith(anotherList2.boxed(), AllowUnpaired, (a, b)-> a + "-" + b).toListString());
+                    list.zipWith(-1, anotherList2.boxed(), (a, b)-> a + "-" + b).toListString());
+            
+            assertEquals("[0-21, 1-22, 2-23, 3-24, 4-25, -1-26]", 
+                    list.zipWith(-1, anotherList1.boxed(), (a, b)-> a + "-" + b).toListString());
             
             assertEquals("[0-21, 1-22, 2-23]", 
-                    list.zipWith(anotherList2.boxed(), RequireBoth, (a, b)-> a + "-" + b).toListString());
+                    list.zipWith(anotherList2.boxed(), (a, b)-> a + "-" + b).toListString());
             
             assertEquals("[21, 23, 25]", 
                     list.zipWith(anotherList2.boxed(), (a, b) -> a + b).toListString());

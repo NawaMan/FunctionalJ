@@ -31,7 +31,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import functionalj.function.IntObjBiFunction;
 import functionalj.result.Result;
+import functionalj.tuple.IntTuple2;
 import functionalj.tuple.Tuple2;
 
 public interface StreamableAddtionalOperators<DATA> {
@@ -65,7 +67,7 @@ public interface StreamableAddtionalOperators<DATA> {
     
     //-- mapWithIndex --
     
-    public default Streamable<Tuple2<Integer, DATA>> mapWithIndex() {
+    public default Streamable<IntTuple2<DATA>> mapWithIndex() {
         return deriveWith(stream -> {
             return StreamPlus
                     .from(stream)
@@ -74,7 +76,7 @@ public interface StreamableAddtionalOperators<DATA> {
     }
     
     public default <T> Streamable<T> mapWithIndex(
-            BiFunction<? super Integer, ? super DATA, T> mapper) {
+            IntObjBiFunction<? super DATA, T> mapper) {
         return deriveWith(stream -> {
             return StreamPlus
                     .from(stream)
@@ -84,7 +86,7 @@ public interface StreamableAddtionalOperators<DATA> {
     
     public default <T1, T> Streamable<T> mapWithIndex(
                 Function<? super DATA, ? extends T1>       mapper1,
-                BiFunction<? super Integer, ? super T1, T> mapper) {
+                IntObjBiFunction<? super T1, T> mapper) {
         return deriveWith(stream -> {
             return StreamPlus
                     .from(stream)
@@ -170,7 +172,7 @@ public interface StreamableAddtionalOperators<DATA> {
     }
     
     public default Streamable<DATA> filterWithIndex(
-            BiFunction<? super Integer, ? super DATA, Boolean> predicate) {
+            IntObjBiFunction<? super DATA, Boolean> predicate) {
         return deriveWith(stream -> {
             return StreamPlus
                     .from(stream)
@@ -201,7 +203,7 @@ public interface StreamableAddtionalOperators<DATA> {
         return deriveWith(stream -> {
             return StreamPlus
                     .from(stream)
-                    .peek(selector, theConsumer);
+                    .peekBy(selector, theConsumer);
         });
     }
     public default <T> Streamable<DATA> peek(
@@ -210,7 +212,7 @@ public interface StreamableAddtionalOperators<DATA> {
         return deriveWith(stream -> {
             return StreamPlus
                     .from(stream)
-                    .peek(mapper, theConsumer);
+                    .peekAs(mapper, theConsumer);
         });
     }
     
@@ -221,7 +223,7 @@ public interface StreamableAddtionalOperators<DATA> {
         return deriveWith(stream -> {
             return StreamPlus
                     .from(stream)
-                    .peek(mapper, selector, theConsumer);
+                    .peekAs(mapper, selector, theConsumer);
         });
     }
     
