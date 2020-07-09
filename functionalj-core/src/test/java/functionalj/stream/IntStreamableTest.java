@@ -1112,14 +1112,6 @@ public class IntStreamableTest {
         run(()->{
             assertEquals(
                     "["
-                    + "2, null, 2, null, 2, null, 2, null, 2, null, "
-                    + "2, null, 2, null"
-                    + "]",
-                    streamable
-                        .mapFirst(i -> (Integer)(((i % 2) == 0) ? 2 : null))
-                        .toListString());
-            assertEquals(
-                    "["
                     + "2, null, 2, 3, 2, null, 2, null, 2, 3, "
                     + "2, null, 2, null"
                     + "]",

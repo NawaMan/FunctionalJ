@@ -8,16 +8,6 @@ public interface IntStreamableWithMapFirst {
     
     public IntStreamPlus intStream();
     
-    //== mapFirst ==
-    
-    public default <T> Streamable<T> mapFirst(
-            IntFunction<T> mapper) {
-        return ()->{
-            return intStream()
-                    .mapFirst(mapper);
-        };
-    }
-    
     public default <T> Streamable<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2) {

@@ -26,13 +26,37 @@ package functionalj.stream;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import functionalj.function.Func1;
+import functionalj.stream.intstream.IntStreamable;
+import lombok.val;
+
+
+class StreamableMapAddOnHelper {
+    
+    @SafeVarargs
+    static final <D, T> Streamable<T> doMapFirst(
+            Streamable<D>              streamable,
+            Function<? super D, T> ... mappers) {
+        val size = mappers.length;
+        if (size == 1)
+            return () -> streamable.stream().mapFirst(mappers[1], mappers[2]);
+        
+        return null;
+    }
+    
+}
+
 public interface StreamableWithMapFirst<DATA> {
     
     public <TARGET> Streamable<TARGET> deriveWith(
             Function<Stream<DATA>, Stream<TARGET>> action);
     
-    //== mapFirst ==
-
+    public <TARGET> Streamable<TARGET> derive(Func1<Streamable<DATA>, Streamable<TARGET>> action);
+    
+    public IntStreamable deriveToInt(Func1<Streamable<DATA>, IntStreamable> action);
+    
+    public <TARGET> Streamable<TARGET> deriveToObj(Func1<Streamable<DATA>, Streamable<TARGET>> action);
+    
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.
      * 
@@ -44,10 +68,10 @@ public interface StreamableWithMapFirst<DATA> {
     public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapFirst(mapper1, mapper2);
+        return deriveToObj(source -> {
+            return () -> {
+                return source.stream().mapFirst(mapper1, mapper2);
+            };
         });
     }
     

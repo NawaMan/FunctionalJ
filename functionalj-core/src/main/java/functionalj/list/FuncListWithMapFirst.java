@@ -26,16 +26,21 @@ package functionalj.list;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import functionalj.function.Func1;
 import functionalj.stream.Streamable;
 import functionalj.stream.StreamableWithMapFirst;
+import functionalj.stream.intstream.IntStreamable;
 
 public interface FuncListWithMapFirst<DATA>
         extends StreamableWithMapFirst<DATA> {
     
     public <TARGET> FuncList<TARGET> deriveFrom(Function<Streamable<DATA>, Stream<TARGET>> action);
     
+    public <TARGET> FuncList<TARGET> derive(Func1<Streamable<DATA>, Streamable<TARGET>> action);
     
-    //== mapCase ==
+    public IntStreamable deriveToInt(Func1<Streamable<DATA>, IntStreamable> action);
+    
+    public <TARGET> FuncList<TARGET> deriveToObj(Func1<Streamable<DATA>, Streamable<TARGET>> action);
     
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.

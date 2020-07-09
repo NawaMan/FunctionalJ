@@ -36,6 +36,7 @@ import functionalj.function.FuncUnit1;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
+import functionalj.stream.makers.Sequential;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -60,6 +61,7 @@ public interface StreamPlusWithModify<DATA> {
      *     output2 = acc2 with acc3 = acc2 ~ rest2 and rest3 = rest of rest2
      *     ...
      */
+    @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default StreamPlus<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
         val streamPlus = streamPlus();
         val iterator   = streamPlus.iterator();
@@ -97,6 +99,7 @@ public interface StreamPlusWithModify<DATA> {
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
      **/
+    @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default StreamPlus<DATA> restate(BiFunction<? super DATA, StreamPlus<DATA>, StreamPlus<DATA>> restater) {
         val func = (UnaryOperator<Tuple2<DATA, StreamPlus<DATA>>>)((Tuple2<DATA, StreamPlus<DATA>> pair) -> {

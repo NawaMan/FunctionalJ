@@ -28,13 +28,22 @@ import static functionalj.stream.ZipWithOption.RequireBoth;
 
 import java.util.stream.Stream;
 
+import functionalj.function.Func1;
 import functionalj.function.Func2;
+import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface StreamPlusWithCombine<DATA> {
     
     public StreamPlus<DATA> streamPlus();
+    
+    public <TARGET> StreamPlus<TARGET> derive(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action);
+    
+    public IntStreamPlus deriveToInt(Func1<StreamPlus<DATA>, IntStreamPlus> action);
+    
+    public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action);
+    
     
     /**
      * Concatenate the given tail stream to this stream.

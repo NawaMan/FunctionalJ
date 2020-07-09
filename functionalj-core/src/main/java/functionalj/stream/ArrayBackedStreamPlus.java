@@ -23,8 +23,6 @@
 // ============================================================================
 package functionalj.stream;
 
-import static functionalj.stream.StreamPlusHelper.derive;
-
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -77,9 +75,11 @@ public class ArrayBackedStreamPlus<DATA> implements StreamPlus<DATA> {
     public StreamPlus<DATA> onClose(Runnable closeHandler) {
         iterator.onClose(closeHandler);
         stream.onClose(closeHandler);
-        return derive(this, stream -> { 
-            return stream
-                    .onClose(closeHandler);
+        return derive(stream -> { 
+            stream
+                .stream()
+                .onClose(closeHandler);
+            return stream;
         });
     }
     

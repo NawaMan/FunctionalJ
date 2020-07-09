@@ -110,6 +110,16 @@ class Helper {
 //    }
 }
 
+class S implements Streamable<String> {
+
+    @Override
+    public StreamPlus<String> stream() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+}
+
 @FunctionalInterface
 public interface Streamable<DATA> 
         extends
@@ -509,6 +519,19 @@ public interface Streamable<DATA>
     public default <TARGET> Streamable<TARGET> deriveFrom(Function<Streamable<DATA>, Stream<TARGET>> action) {
         return Streamable.from(this, action);
     }
+    
+    public default <TARGET> Streamable<TARGET> derive(Func1<Streamable<DATA>, Streamable<TARGET>> action) {
+        return action.apply(this);
+    }
+    
+    public default IntStreamable deriveToInt(Func1<Streamable<DATA>, IntStreamable> action) {
+        return action.apply(this);
+    }
+    
+    public default <TARGET> Streamable<TARGET> deriveToObj(Func1<Streamable<DATA>, Streamable<TARGET>> action) {
+        return action.apply(this);
+    }
+    
     
     //== Stream specific ==
     

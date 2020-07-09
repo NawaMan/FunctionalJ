@@ -43,7 +43,6 @@ import lombok.val;
 public interface StreamPlusWithAdditionalFilter<DATA> {
     
     public StreamPlus<DATA> streamPlus();
-    
     /**
      * Map each value to an int and used it to filter the value.
      * 

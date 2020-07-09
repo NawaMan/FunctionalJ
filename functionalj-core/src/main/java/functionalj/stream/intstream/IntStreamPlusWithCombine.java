@@ -46,7 +46,12 @@ public interface IntStreamPlusWithCombine {
     
     public <TARGET> StreamPlus<TARGET> useIteratorToObj(Func1<IntIteratorPlus, StreamPlus<TARGET>> action);
     
-    
+    /**
+     * Concatenate the given tail stream to this stream.
+     * 
+     * @param tail  the tail stream.
+     * @return      the combined stream.
+     */
     public default IntStreamPlus concatWith(IntStream tail) {
         return IntStreamPlus.concat(
             IntStreamPlus.from(intStream()),

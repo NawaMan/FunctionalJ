@@ -18,11 +18,6 @@ public interface IntFuncListWithMapFirst
     //== mapFirst ==
     
     public default <T> FuncList<T> mapFirst(
-            IntFunction<T> mapper) {
-        return deriveToList(() -> intStream().mapFirst(mapper));
-    }
-    
-    public default <T> FuncList<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2) {
         return deriveToList(() -> intStream().mapFirst(mapper1, mapper2));

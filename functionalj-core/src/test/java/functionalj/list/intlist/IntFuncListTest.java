@@ -537,14 +537,6 @@ public class IntFuncListTest {
         run(wholeNumbers(14), list->{
             assertEquals(
                     "["
-                    + "2, null, 2, null, 2, null, 2, null, 2, null, "
-                    + "2, null, 2, null"
-                    + "]",
-                    list
-                        .mapFirst(i -> (Integer)(((i % 2) == 0) ? 2 : null))
-                        .toListString());
-            assertEquals(
-                    "["
                     + "2, null, 2, 3, 2, null, 2, null, 2, 3, "
                     + "2, null, 2, null"
                     + "]",

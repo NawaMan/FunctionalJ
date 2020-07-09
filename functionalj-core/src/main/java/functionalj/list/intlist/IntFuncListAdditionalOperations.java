@@ -2,13 +2,11 @@ package functionalj.list.intlist;
 
 import java.util.Collection;
 import java.util.OptionalInt;
-import java.util.function.Consumer;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
-import java.util.function.Predicate;
 
 import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.function.IntIntBiFunction;
@@ -166,22 +164,22 @@ public interface IntFuncListAdditionalOperations {
                     .peek(selector, theConsumer);
         });
     }
-    public default <T> IntFuncList peek(IntFunction<T> mapper, Consumer<? super T> theConsumer) {
-        return derive(()->{
-            return intStream()
-                    .peek(mapper, theConsumer);
-        });
-    }
-    
-    public default <T> IntFuncList peek(
-            IntFunction<T>       mapper, 
-            Predicate<? super T> selector, 
-            Consumer<? super T>  theConsumer) {
-        return derive(()->{
-            return intStream()
-                    .peek(mapper, selector, theConsumer);
-        });
-    }
+//    public default <T> IntFuncList peek(IntFunction<T> mapper, Consumer<? super T> theConsumer) {
+//        return derive(()->{
+//            return intStream()
+//                    .peek(mapper, theConsumer);
+//        });
+//    }
+//    
+//    public default <T> IntFuncList peek(
+//            IntFunction<T>       mapper, 
+//            Predicate<? super T> selector, 
+//            Consumer<? super T>  theConsumer) {
+//        return derive(()->{
+//            return intStream()
+//                    .peek(mapper, selector, theConsumer);
+//        });
+//    }
     
     //-- FlatMap --
     

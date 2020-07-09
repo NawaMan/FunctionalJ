@@ -85,6 +85,23 @@ import lombok.val;
 // TODO - Use this for byte, short and char
 // TODO - Intersect
 
+
+class IS implements IntStreamPlus {
+
+    @Override
+    public IntStreamPlus streamPlus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IntStream intStream() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+}
+
 @FunctionalInterface
 public interface IntStreamPlus 
         extends 
@@ -397,9 +414,26 @@ public interface IntStreamPlus
     
     public IntStream intStream();
     
+    public default IntStreamPlus streamPlus() {
+        return this;
+    }
+    
     public default IntStream stream() {
         return intStream();
     }
+    
+    public default IntStreamPlus derive(Func1<IntStreamPlus, IntStreamPlus> action) {
+        return action.apply(this);
+    }
+    
+    public default IntStreamPlus deriveToInt(Func1<IntStreamPlus, IntStreamPlus> action) {
+        return action.apply(this);
+    }
+    
+    public default <TARGET> StreamPlus<TARGET> deriveToObj(Func1<IntStreamPlus, StreamPlus<TARGET>> action) {
+        return action.apply(this);
+    }
+    
     
     public default IntStreamPlus intStreamPlus() {
         return this;
@@ -466,10 +500,6 @@ public interface IntStreamPlus
             return newIntStreamPlus.parallel();
         
         return newIntStreamPlus.sequential();
-    }
-    
-    public default IntStreamPlus derive(Function<IntStream, IntStream> action) {
-        return IntStreamPlus.from(action.apply(this));
     }
     
     public default <T> StreamPlus<T> deriveAsObject(Function<IntStream, Stream<T>> action) {

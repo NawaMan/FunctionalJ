@@ -566,6 +566,20 @@ public interface StreamPlus<DATA>
         return this;
     }
     
+    //-- Derive --
+    
+    public default <TARGET> StreamPlus<TARGET> derive(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action) {
+        return action.apply(this);
+    }
+    
+    public default IntStreamPlus deriveToInt(Func1<StreamPlus<DATA>, IntStreamPlus> action) {
+        return action.apply(this);
+    }
+    
+    public default <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action) {
+        return action.apply(this);
+    }
+    
     //-- Characteristics --
     
     @Override

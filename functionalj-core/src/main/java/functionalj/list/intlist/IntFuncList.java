@@ -50,6 +50,7 @@ import lombok.val;
 public interface IntFuncList
         extends 
             AsIntStreamable,
+            IntStreamable, 
             IntIterable,
             IntFuncListWithMapFirst,
             IntFuncListWithMapThen,
@@ -59,7 +60,7 @@ public interface IntFuncList
             IntFuncListWithSegment,
             IntFuncListWithCombine,
             IntStreamableWithCalculate,
-            IntFuncListAdditionalOperations,
+//            IntFuncListAdditionalOperations,
             IntStreamableAdditionalTerminalOperators {
     
     public static ImmutableIntFuncList empty() {
@@ -856,27 +857,69 @@ public interface IntFuncList
             return intStream().filter(data -> !predicate.test(data));
         });
     }
-    
-    @Override
-    default IntFuncList mapOnly(IntPredicate checker, IntUnaryOperator mapper) {
-        return IntFuncListAdditionalOperations.super.mapOnly(checker, mapper);
-    }
-    
-    @Override
-    default IntFuncList mapIf(IntPredicate checker, IntUnaryOperator mapper, IntUnaryOperator elseMapper) {
-        return derive(() -> {
-            return intStream().mapIf(checker, mapper, elseMapper);
-        });
-    }
-    
-    @Override
-    default <T> FuncList<T> mapToObjIf(IntPredicate checker, IntFunction<T> mapper, IntFunction<T> elseMapper) {
-        return IntFuncListAdditionalOperations.super.mapToObjIf(checker, mapper, elseMapper);
-    }
-
-    @Override
-    default IntFuncList peek(IntPredicate selector, IntConsumer theConsumer) {
-        return IntFuncListAdditionalOperations.super.peek(selector, theConsumer);
-    }
+//    
+//    @Override
+//    default IntFuncList mapOnly(IntPredicate checker, IntUnaryOperator mapper) {
+//        return IntFuncListAdditionalOperations.super.mapOnly(checker, mapper);
+//    }
+//    
+//    @Override
+//    default IntFuncList mapIf(IntPredicate checker, IntUnaryOperator mapper, IntUnaryOperator elseMapper) {
+//        return derive(() -> {
+//            return intStream().mapIf(checker, mapper, elseMapper);
+//        });
+//    }
+//    
+//    @Override
+//    default <T> FuncList<T> mapToObjIf(IntPredicate checker, IntFunction<T> mapper, IntFunction<T> elseMapper) {
+//        return IntFuncListAdditionalOperations.super.mapToObjIf(checker, mapper, elseMapper);
+//    }
+//
+//    @Override
+//    default IntFuncList peek(IntPredicate selector, IntConsumer theConsumer) {
+//        return IntFuncListAdditionalOperations.super.peek(selector, theConsumer);
+//    }
+//
+//    @Override
+//    default IntFuncList collapseAfter(IntPredicate conditionToCollapseNext, IntBinaryOperator concatFunc) {
+//        // TODO Auto-generated method stub
+//        return IntFuncListWithSegment.super.collapseAfter(conditionToCollapseNext, concatFunc);
+//    }
+//
+//    @Override
+//    default FuncList<IntStreamPlus> segmentSize(IntUnaryOperator segmentSize) {
+//        // TODO Auto-generated method stub
+//        return IntFuncListWithSegment.super.segmentSize(segmentSize);
+//    }
+//
+//    @Override
+//    default FuncList<IntStreamPlus> segmentSize(IntUnaryOperator segmentSize, IncompletedSegment incompletedSegment) {
+//        // TODO Auto-generated method stub
+//        return IntFuncListWithSegment.super.segmentSize(segmentSize, incompletedSegment);
+//    }
+//
+//    @Override
+//    default FuncList<IntStreamPlus> segmentSize(IntUnaryOperator segmentSize, boolean includeTail) {
+//        // TODO Auto-generated method stub
+//        return IntFuncListWithSegment.super.segmentSize(segmentSize, includeTail);
+//    }
+//
+//    @Override
+//    default IntFuncList collapseSize(IntUnaryOperator segmentSize, IntBinaryOperator concatFunc) {
+//        // TODO Auto-generated method stub
+//        return IntFuncListWithSegment.super.collapseSize(segmentSize, concatFunc);
+//    }
+//
+//    @Override
+//    default IntFuncList collapseSize(IntUnaryOperator segmentSize, IntBinaryOperator concatFunc, IncompletedSegment incompletedSegment) {
+//        // TODO Auto-generated method stub
+//        return IntFuncListWithSegment.super.collapseSize(segmentSize, concatFunc, incompletedSegment);
+//    }
+//
+//    @Override
+//    default IntFuncList collapseSize(IntUnaryOperator segmentSize, IntBinaryOperator concatFunc, boolean includeTail) {
+//        // TODO Auto-generated method stub
+//        return IntFuncListWithSegment.super.collapseSize(segmentSize, concatFunc, includeTail);
+//    }
     
 }

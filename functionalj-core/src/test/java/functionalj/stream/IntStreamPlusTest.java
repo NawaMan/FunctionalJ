@@ -700,14 +700,6 @@ public class IntStreamPlusTest {
     public void testMapFirst() {
         assertEquals(
                 "["
-                + "2, null, 2, null, 2, null, 2, null, 2, null, "
-                + "2, null, 2, null"
-                + "]",
-                wholeNumbers(14)
-                    .mapFirst(i -> (Integer)(((i % 2) == 0) ? 2 : null))
-                    .toListString());
-        assertEquals(
-                "["
                 + "2, null, 2, 3, 2, null, 2, null, 2, 3, "
                 + "2, null, 2, null"
                 + "]",

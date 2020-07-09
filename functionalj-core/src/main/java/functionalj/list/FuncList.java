@@ -54,6 +54,7 @@ import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusHelper;
 import functionalj.stream.Streamable;
+import functionalj.stream.intstream.IntStreamable;
 import functionalj.tuple.IntTuple2;
 import functionalj.tuple.Tuple;
 import lombok.val;
@@ -174,6 +175,21 @@ public interface FuncList<DATA>
             return action.apply(FuncList.this);
         });
     }
+    
+    public default <TARGET> FuncList<TARGET> derive(Func1<Streamable<DATA>, Streamable<TARGET>> action) {
+        return FuncListDerived.from((Supplier<Stream<TARGET>>)()-> {
+            return action.apply(FuncList.this).stream();
+        });
+    }
+    
+    public default IntStreamable deriveToInt(Func1<Streamable<DATA>, IntStreamable> action) {
+        return null;
+    }
+    
+    public default <TARGET> FuncList<TARGET> deriveToObj(Func1<Streamable<DATA>, Streamable<TARGET>> action) {
+        return null;
+    }
+    
     
     @Override
     public default FuncList<DATA> __data() throws Exception {
