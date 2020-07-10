@@ -48,6 +48,7 @@ import java.util.stream.Stream;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.list.intlist.ImmutableIntFuncList;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
@@ -182,7 +183,7 @@ public interface FuncList<DATA>
         });
     }
     
-    public default IntStreamable deriveToInt(Func1<Streamable<DATA>, IntStreamable> action) {
+    public default IntFuncList deriveToInt(Func1<Streamable<DATA>, IntStreamable> action) {
         return null;
     }
     

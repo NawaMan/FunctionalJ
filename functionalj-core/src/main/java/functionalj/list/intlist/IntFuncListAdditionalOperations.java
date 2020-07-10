@@ -17,10 +17,11 @@ import functionalj.stream.Streamable;
 import functionalj.stream.intstream.AsIntStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
+import functionalj.stream.intstream.IntStreamableAddtionalOperators;
 import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.ObjIntTuple;
 
-public interface IntFuncListAdditionalOperations {
+public interface IntFuncListAdditionalOperations extends IntStreamableAddtionalOperators {
     
     public IntStreamPlus intStream();
     

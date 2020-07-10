@@ -24,6 +24,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import functionalj.function.Func1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
@@ -60,8 +61,9 @@ public interface IntFuncList
             IntFuncListWithSegment,
             IntFuncListWithCombine,
             IntStreamableWithCalculate,
-//            IntFuncListAdditionalOperations,
-            IntStreamableAdditionalTerminalOperators {
+            IntFuncListAdditionalOperations,
+            IntStreamableAdditionalTerminalOperators 
+            {
     
     public static ImmutableIntFuncList empty() {
         return ImmutableIntFuncList.empty();
@@ -182,6 +184,19 @@ public interface IntFuncList
         val list = new IntFuncListDerivedFromIntStreamable(streamable);
         val isLazy = isLazy();
         return isLazy ? list : list.toImmutableList();
+    }
+    
+    public default IntFuncList derive(Func1<IntStreamable, IntStreamable> action) {
+        return null;
+    }
+    
+    public default IntFuncList deriveToInt(Func1<IntStreamable, IntStreamable> action) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public default <TARGET> FuncList<TARGET> deriveToObj(Func1<IntStreamable, Streamable<TARGET>> action) {
+        return deriveToList(action.apply(this));
     }
     
     public default <TARGET> FuncList<TARGET> deriveToList(Streamable<TARGET> streamable) {
@@ -632,7 +647,8 @@ public interface IntFuncList
     }
     
     public default <TARGET> FuncList<TARGET> flatMapToObj(IntFunction<? extends AsStreamable<TARGET>> mapper) {
-        return deriveToList(intStreamable().flatMapToObj(mapper));
+//        return deriveToList(intStreamable().flatMapToObj(mapper));
+        return null;
     }
     
     public default IntFuncList flatMapToInt(IntFunction<? extends AsIntStreamable> mapper) {

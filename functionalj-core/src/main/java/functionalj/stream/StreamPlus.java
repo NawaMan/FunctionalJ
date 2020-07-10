@@ -566,6 +566,10 @@ public interface StreamPlus<DATA>
         return this;
     }
     
+    public default StreamPlus<DATA> asStream() {
+        return streamPlus();
+    }
+    
     //-- Derive --
     
     public default <TARGET> StreamPlus<TARGET> derive(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action) {

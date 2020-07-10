@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import functionalj.function.Func1;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.Streamable;
 import functionalj.stream.StreamableWithMapFirst;
 import functionalj.stream.intstream.IntStreamable;
@@ -38,7 +39,7 @@ public interface FuncListWithMapFirst<DATA>
     
     public <TARGET> FuncList<TARGET> derive(Func1<Streamable<DATA>, Streamable<TARGET>> action);
     
-    public IntStreamable deriveToInt(Func1<Streamable<DATA>, IntStreamable> action);
+    public IntFuncList deriveToInt(Func1<Streamable<DATA>, IntStreamable> action);
     
     public <TARGET> FuncList<TARGET> deriveToObj(Func1<Streamable<DATA>, Streamable<TARGET>> action);
     
@@ -53,10 +54,10 @@ public interface FuncListWithMapFirst<DATA>
     public default <T> FuncList<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .mapFirst(mapper1, mapper2);
+        return deriveToObj(source -> {
+            return () -> {
+                return source.asStreamPlus().mapFirst(mapper1, mapper2);
+            };
         });
     }
     

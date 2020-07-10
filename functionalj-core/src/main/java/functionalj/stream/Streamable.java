@@ -474,6 +474,11 @@ public interface Streamable<DATA>
     public StreamPlus<DATA> stream();
     
     
+    public default StreamPlus<DATA> asStreamPlus() {
+        return stream();
+    }
+    
+    
     //== Helper functions ==
     // TODO - Move this out to a helper class
     

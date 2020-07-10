@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import functionalj.function.Func1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
 import functionalj.list.FuncList;
@@ -43,6 +44,16 @@ import lombok.val;
 
 
 //TODO - Use this for byte, short and char
+
+class I implements IntStreamable {
+
+    @Override
+    public IntStreamPlus intStream() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+}
 
 public interface IntStreamable 
         extends
@@ -277,6 +288,10 @@ public interface IntStreamable
         return intStream().boxed();
     }
     
+    public default IntStreamPlus asStreamPlus() {
+        return intStream();
+    }
+    
     //== Pipeable ==
     
     public default Pipeable<? extends IntStreamable> pipeable() {
@@ -285,15 +300,17 @@ public interface IntStreamable
     
     //== Helper functions ==
     
-    public default IntStreamable derive(
-                Function<IntStreamable, IntStream> action) {
-        return new IntStreamable() {
-            @Override
-            public IntStreamPlus intStream() {
-                val targetStream = action.apply(IntStreamable.this);
-                return IntStreamPlus.from(targetStream);
-            }
-        };
+    public default IntStreamable derive(Func1<IntStreamable, IntStreamable> action) {
+        return action.apply(IntStreamable.this);
+    }
+    
+    public default IntStreamable deriveToInt(Func1<IntStreamable, IntStreamable> action) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public default <TARGET> Streamable<TARGET> deriveToObj(Func1<IntStreamable, Streamable<TARGET>> action) {
+        return action.apply(IntStreamable.this);
     }
     
     public default <TARGET> Streamable<TARGET> deriveToStreamable(

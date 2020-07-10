@@ -70,7 +70,7 @@ public interface StreamableWithMapFirst<DATA> {
             Function<? super DATA, T> mapper2) {
         return deriveToObj(source -> {
             return () -> {
-                return source.stream().mapFirst(mapper1, mapper2);
+                return source.asStreamPlus().mapFirst(mapper1, mapper2);
             };
         });
     }
