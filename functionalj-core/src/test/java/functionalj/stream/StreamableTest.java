@@ -42,6 +42,14 @@ public class StreamableTest {
     }
     
     @Test
+    public void testMap() {
+        assertEquals("[3, 3, 5, 4, 4, 3, 5]", 
+                Streamable.of("One", "Two", "Three", "Four", "Five", "Six", "Seven")
+                        .map(String::length)
+                        .toListString());
+    }
+    
+    @Test
     public void testCycle() {
         val stream = Streamable.cycle("One", "Two", "Three");
         assertStrings("Two, Three, One, Two, Three", stream.skip(1).limit(5).joinToString(", "));

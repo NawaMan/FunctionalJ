@@ -27,6 +27,8 @@ import static functionalj.function.Func.f;
 import static functionalj.stream.StreamPlusMapAddOnHelper.doMapFirst;
 
 import java.util.function.Function;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import functionalj.function.Func1;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -68,11 +70,11 @@ public interface StreamPlusWithMapFirst<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    public <TARGET> StreamPlus<TARGET> derive(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action);
+    public <TARGET> StreamPlus<TARGET> derive(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
     
-    public IntStreamPlus deriveToInt(Func1<StreamPlus<DATA>, IntStreamPlus> action);
+    public IntStreamPlus deriveToInt(Func1<StreamPlus<DATA>, IntStream> action);
     
-    public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action);
+    public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
     
     /**
      * Map the value by applying each mapper one by one and use the first one that does not return null.

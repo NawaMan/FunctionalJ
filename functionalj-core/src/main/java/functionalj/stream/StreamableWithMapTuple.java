@@ -32,11 +32,10 @@ import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 
-public interface StreamableWithMapTuple<DATA>
-    extends StreamableWithMapThen<DATA> {
+public interface StreamableWithMapTuple<DATA> {
     
     public <TARGET> Streamable<TARGET> deriveWith(
-            Function<Stream<DATA>, Stream<TARGET>> action);
+            Function<StreamPlus<DATA>, Stream<TARGET>> action);
     
     //== mapTuple ==
     

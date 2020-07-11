@@ -160,10 +160,10 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     }
     
     public Streamable<DATA> streamable() {
-        return (Streamable<DATA>)()->{
+        return (Streamable<DATA>)(()->{
             val iterable = (Iterable<DATA>)()->newIterator();
             return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
-        };
+        });
     }
     
     public DATA[] toArray() {

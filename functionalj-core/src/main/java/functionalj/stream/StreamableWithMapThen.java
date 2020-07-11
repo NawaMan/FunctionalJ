@@ -35,7 +35,7 @@ import functionalj.function.Func6;
 public interface StreamableWithMapThen<DATA> {
     
     public <TARGET> Streamable<TARGET> deriveWith(
-            Function<Stream<DATA>, Stream<TARGET>> action);
+            Function<StreamPlus<DATA>, Stream<TARGET>> action);
     
     //== mapThen ==
     

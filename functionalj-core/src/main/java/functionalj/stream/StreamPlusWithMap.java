@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 
 import lombok.val;
 
-public interface StreamPlusWithAdditionalMap<DATA> {
+public interface StreamPlusWithMap<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     

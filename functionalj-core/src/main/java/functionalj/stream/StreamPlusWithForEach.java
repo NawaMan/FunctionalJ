@@ -30,7 +30,7 @@ import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Terminal;
 import lombok.val;
 
-public interface StreamPlusWithAdditionalForEach<DATA> {
+public interface StreamPlusWithForEach<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     

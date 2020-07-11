@@ -164,8 +164,8 @@ public interface FuncList<DATA>
     // == Override ==
     
     @Override
-    public default <TARGET> FuncList<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action) {
-        val list = new FuncListDerived<DATA, TARGET>(this, action);
+    public default <TARGET> FuncList<TARGET> deriveWith(Function<StreamPlus<DATA>, Stream<TARGET>> action) {
+        val list = new FuncListDerived<DATA, TARGET>(this, stream -> action.apply(StreamPlus.from(stream)));
         val isLazy = isLazy();
         return isLazy ? list : new ImmutableList<>(list, false);
     }
@@ -177,9 +177,9 @@ public interface FuncList<DATA>
         });
     }
     
-    public default <TARGET> FuncList<TARGET> derive(Func1<Streamable<DATA>, Streamable<TARGET>> action) {
+    public default <TARGET> FuncList<TARGET> derive(Func1<StreamPlus<DATA>, Stream<TARGET>> action) {
         return FuncListDerived.from((Supplier<Stream<TARGET>>)()-> {
-            return action.apply(FuncList.this).stream();
+            return action.apply(FuncList.this.stream());
         });
     }
     

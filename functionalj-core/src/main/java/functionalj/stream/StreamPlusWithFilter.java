@@ -40,7 +40,7 @@ import java.util.function.ToLongFunction;
 import functionalj.function.IntObjBiFunction;
 import lombok.val;
 
-public interface StreamPlusWithAdditionalFilter<DATA> {
+public interface StreamPlusWithFilter<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     /**

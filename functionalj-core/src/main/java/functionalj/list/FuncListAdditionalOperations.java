@@ -40,7 +40,7 @@ import functionalj.tuple.Tuple2;
 public interface FuncListAdditionalOperations<DATA>
         extends Streamable<DATA> {
     
-    public <TARGET> FuncList<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action);
+    public <TARGET> FuncList<TARGET> deriveWith(Function<StreamPlus<DATA>, Stream<TARGET>> action);
     
     //--map with condition --
     

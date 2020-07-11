@@ -33,7 +33,7 @@ import lombok.val;
 public interface StreamableWithCombine<DATA> {
     
     public <TARGET> Streamable<TARGET> deriveWith(
-            Function<Stream<DATA>, Stream<TARGET>> action);
+            Function<StreamPlus<DATA>, Stream<TARGET>> action);
     
     
     public default Streamable<DATA> concatWith(

@@ -380,7 +380,7 @@ public interface IntStreamable
 //    }
     
     public default <TARGET> Streamable<TARGET> mapToObj(IntFunction<? extends TARGET> mapper) {
-        return Streamable.from(this, 
+        return Streamable.fromInts(this, 
                 streamable -> 
                     streamable
                     .intStream()
@@ -392,7 +392,7 @@ public interface IntStreamable
     }
     
     public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends AsStreamable<TARGET>> mapper) {
-        return Streamable.from(this, 
+        return Streamable.fromInts(this, 
                 streamable -> 
                     streamable
                     .intStream()

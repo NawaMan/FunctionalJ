@@ -26,6 +26,7 @@ package functionalj.stream;
 import static functionalj.function.FuncUnit0.funcUnit0;
 import static functionalj.stream.ZipWithOption.RequireBoth;
 
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import functionalj.function.Func1;
@@ -38,11 +39,11 @@ public interface StreamPlusWithCombine<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    public <TARGET> StreamPlus<TARGET> derive(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action);
+    public <TARGET> StreamPlus<TARGET> derive(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
     
-    public IntStreamPlus deriveToInt(Func1<StreamPlus<DATA>, IntStreamPlus> action);
+    public IntStreamPlus deriveToInt(Func1<StreamPlus<DATA>, IntStream> action);
     
-    public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, StreamPlus<TARGET>> action);
+    public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
     
     
     /**

@@ -34,7 +34,7 @@ import lombok.val;
 
 public interface FuncListWithCombine<DATA> {
     
-    public <TARGET> FuncList<TARGET> deriveWith(Function<Stream<DATA>, Stream<TARGET>> action);
+    public <TARGET> FuncList<TARGET> deriveWith(Function<StreamPlus<DATA>, Stream<TARGET>> action);
     
     public default FuncList<DATA> concatWith(
             FuncList<DATA> tail) {

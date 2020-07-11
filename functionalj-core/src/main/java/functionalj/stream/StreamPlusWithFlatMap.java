@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 import lombok.val;
 
-public interface StreamPlusWithAdditionalFlatMap<DATA> {
+public interface StreamPlusWithFlatMap<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     

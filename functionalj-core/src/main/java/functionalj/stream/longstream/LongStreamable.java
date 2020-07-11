@@ -379,12 +379,14 @@ public interface LongStreamable
     
     public default IntStreamable flatMapToInt(
             LongFunction<? extends IntStream> mapper) {
-        return mapToObj(mapper).flatMapToInt(itself());
+//        return mapToObj(mapper).flatMapToInt(itself());
+        return null;
     }
     
     public default LongStreamable flatMapToLong(
             LongFunction<? extends LongStream> mapper) {
-        return mapToObj(mapper).flatMapToLong(itself());
+//        return mapToObj(mapper).flatMapToLong(itself());
+        return null;
     }
 //    
 //    public default DoubleStreamable flatMapToDouble(

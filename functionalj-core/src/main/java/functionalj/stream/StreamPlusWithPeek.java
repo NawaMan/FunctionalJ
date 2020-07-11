@@ -29,7 +29,7 @@ import java.util.function.Predicate;
 
 import lombok.val;
 
-public interface StreamPlusWithAdditionalPeek<DATA> {
+public interface StreamPlusWithPeek<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     

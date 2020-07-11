@@ -32,7 +32,7 @@ import java.util.stream.StreamSupport;
 import functionalj.stream.makers.Sequential;
 import lombok.val;
 
-public interface StreamPlusWithAdditionalLimit<DATA> {
+public interface StreamPlusWithLimit<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     

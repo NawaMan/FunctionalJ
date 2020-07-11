@@ -34,7 +34,7 @@ import functionalj.lens.lenses.AnyLens;
 public interface StreamableWithFillNull<DATA> {
     
     public <TARGET> Streamable<TARGET> deriveWith(
-            Function<Stream<DATA>, Stream<TARGET>> action);
+            Function<StreamPlus<DATA>, Stream<TARGET>> action);
     
     //== fillNull ==
     

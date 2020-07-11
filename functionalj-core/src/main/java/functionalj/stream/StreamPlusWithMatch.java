@@ -31,7 +31,7 @@ import functionalj.stream.makers.Sequential;
 import functionalj.stream.makers.Terminal;
 import lombok.val;
 
-public interface StreamPlusWithAdditionalMatch<DATA> {
+public interface StreamPlusWithMatch<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     

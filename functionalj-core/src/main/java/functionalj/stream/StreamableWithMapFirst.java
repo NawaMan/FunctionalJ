@@ -49,9 +49,9 @@ class StreamableMapAddOnHelper {
 public interface StreamableWithMapFirst<DATA> {
     
     public <TARGET> Streamable<TARGET> deriveWith(
-            Function<Stream<DATA>, Stream<TARGET>> action);
+            Function<StreamPlus<DATA>, Stream<TARGET>> action);
     
-    public <TARGET> Streamable<TARGET> derive(Func1<Streamable<DATA>, Streamable<TARGET>> action);
+    public <TARGET> Streamable<TARGET> derive(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
     
     public IntStreamable deriveToInt(Func1<Streamable<DATA>, IntStreamable> action);
     
@@ -70,7 +70,7 @@ public interface StreamableWithMapFirst<DATA> {
             Function<? super DATA, T> mapper2) {
         return deriveToObj(source -> {
             return () -> {
-                return source.asStreamPlus().mapFirst(mapper1, mapper2);
+                return source.streamPlus().mapFirst(mapper1, mapper2);
             };
         });
     }

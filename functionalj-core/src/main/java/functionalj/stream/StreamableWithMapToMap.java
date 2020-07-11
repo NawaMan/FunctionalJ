@@ -8,7 +8,7 @@ import functionalj.map.FuncMap;
 public interface StreamableWithMapToMap<DATA> {
     
     public <TARGET> Streamable<TARGET> deriveWith(
-            Function<Stream<DATA>, Stream<TARGET>> action);
+            Function<StreamPlus<DATA>, Stream<TARGET>> action);
     
     
     //== mapToMap ==

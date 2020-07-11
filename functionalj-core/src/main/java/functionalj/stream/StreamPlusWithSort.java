@@ -30,7 +30,7 @@ import java.util.function.Function;
 import functionalj.stream.makers.Eager;
 import lombok.val;
 
-public interface StreamPlusWithAdditionalSort<DATA> {
+public interface StreamPlusWithSort<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
