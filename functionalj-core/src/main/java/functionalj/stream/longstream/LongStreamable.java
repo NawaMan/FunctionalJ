@@ -234,28 +234,28 @@ public interface LongStreamable
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> IntStreamable deriveToIntFrom(
+    public static <SOURCE> IntStreamable deriveToInt(
             AsLongStreamable                   asStreamable,
             Function<LongStreamPlus, IntStream> action) {
         return IntStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> LongStreamable deriveToLongFrom(
+    public static <SOURCE> LongStreamable deriveToLong(
             AsLongStreamable                     asStreamable,
             Function<LongStreamPlus, LongStream> action) {
         return LongStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> DoubleStreamable deriveToDoubleFrom(
+    public static <SOURCE> DoubleStreamable deriveToDouble(
             AsLongStreamable                      asStreamable,
             Function<LongStreamPlus, DoubleStream> action) {
         return DoubleStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObjFrom(
+    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObj(
             AsLongStreamable                        asStreamable,
             Function<LongStreamPlus, Stream<TARGET>> action) {
         return Streamable.deriveFrom(asStreamable, action);

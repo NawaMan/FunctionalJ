@@ -96,28 +96,28 @@ public interface DoubleStreamable {
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> IntStreamable deriveToIntFrom(
+    public static <SOURCE> IntStreamable deriveToInt(
             AsDoubleStreamable                   asStreamable,
             Function<DoubleStreamPlus, IntStream> action) {
         return IntStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> LongStreamable deriveToLongFrom(
+    public static <SOURCE> LongStreamable deriveToLong(
             AsDoubleStreamable                     asStreamable,
             Function<DoubleStreamPlus, LongStream> action) {
         return LongStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> DoubleStreamable deriveToDoubleFrom(
+    public static <SOURCE> DoubleStreamable deriveToDouble(
             AsDoubleStreamable                      asStreamable,
             Function<DoubleStreamPlus, DoubleStream> action) {
         return DoubleStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObjFrom(
+    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObj(
             AsDoubleStreamable                        asStreamable,
             Function<DoubleStreamPlus, Stream<TARGET>> action) {
         return Streamable.deriveFrom(asStreamable, action);

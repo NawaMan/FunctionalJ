@@ -408,21 +408,21 @@ public interface Streamable<DATA>
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> LongStreamable deriveToLongFrom(
+    public static <SOURCE> LongStreamable deriveToLong(
             AsStreamable<SOURCE>                     asStreamable,
             Function<StreamPlus<SOURCE>, LongStream> action) {
         return LongStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> DoubleStreamable deriveToDoubleFrom(
+    public static <SOURCE> DoubleStreamable deriveToDouble(
             AsStreamable<SOURCE>                       asStreamable,
             Function<StreamPlus<SOURCE>, DoubleStream> action) {
         return DoubleStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObjFrom(
+    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObj(
             AsStreamable<SOURCE>                         asStreamable,
             Function<StreamPlus<SOURCE>, Stream<TARGET>> action) {
         return deriveFrom(asStreamable, action);

@@ -260,28 +260,28 @@ public interface IntStreamable
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> IntStreamable deriveToIntFrom(
+    public static <SOURCE> IntStreamable deriveToInt(
             AsIntStreamable                    asStreamable,
             Function<IntStreamPlus, IntStream> action) {
         return IntStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> LongStreamable deriveToLongFrom(
+    public static <SOURCE> LongStreamable deriveToLong(
             AsIntStreamable                     asStreamable,
             Function<IntStreamPlus, LongStream> action) {
         return LongStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> DoubleStreamable deriveToDoubleFrom(
+    public static <SOURCE> DoubleStreamable deriveToDouble(
             AsIntStreamable                       asStreamable,
             Function<IntStreamPlus, DoubleStream> action) {
         return DoubleStreamable.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObjFrom(
+    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObj(
             AsIntStreamable                         asStreamable,
             Function<IntStreamPlus, Stream<TARGET>> action) {
         return Streamable.deriveFrom(asStreamable, action);
