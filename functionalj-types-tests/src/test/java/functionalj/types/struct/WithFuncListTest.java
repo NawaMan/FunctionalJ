@@ -57,7 +57,7 @@ public class WithFuncListTest {
         
         assertEquals(
                 "[(One,3), (Two,3), (Three,5), (Four,4)]",
-                "" + parent.names().mapTuple(theString, theString.length()));
+                "" + parent.names().mapToTuple(theString, theString.length()));
     }
     
 }

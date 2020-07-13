@@ -34,10 +34,10 @@ import functionalj.function.Func1;
 import lombok.val;
 
 
-public interface CollectorPlus<DATA, ACCUMULATED, RESULT> 
+public interface CollectorPlus<DATA, ACCUMULATED, TARGET> 
             extends
-                CollectorExtensible<DATA, ACCUMULATED, RESULT>,
-                StreamProcessor<DATA, RESULT> {
+                CollectorExtensible<DATA, ACCUMULATED, TARGET>,
+                StreamProcessor<DATA, TARGET> {
     
     public static <D, A, R> CollectorPlus<D, A, R> from(Collector<D, A, R> collector) {
         return (collector instanceof CollectorPlus)
@@ -45,13 +45,19 @@ public interface CollectorPlus<DATA, ACCUMULATED, RESULT>
                 : ()->collector;
     }
     
+    // TODO - make it easy to create reducer
+    // (DATA, DATA)->DATA
+    // or
+    // (DATA)->TARGET , (TARGET, TARGET) -> TARGET
+    // or
+    // (DATA)->ACCUMULATED , (ACCUMULATED, ACCUMULATED) -> ACCUMULATED, (ACCUMULATED) -> TARGET
     
-    public default RESULT process(StreamPlus<DATA> stream) {
+    
+    public default TARGET process(StreamPlus<? extends DATA> stream) {
         return stream.calculate(this);
     }
     
-    
-    default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(Func1<SOURCE, DATA> mapper) {
+    public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, TARGET> of(Func1<SOURCE, DATA> mapper) {
         val collector = new DerivedCollectorPlus<>(this, mapper);
         return CollectorPlus.from(collector);
     }

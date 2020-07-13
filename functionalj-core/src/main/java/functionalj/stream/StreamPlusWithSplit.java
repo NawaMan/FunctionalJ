@@ -35,7 +35,7 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 public interface StreamPlusWithSplit<DATA>
-            extends StreamPlusWithMapTuple<DATA> {
+            extends StreamPlusWithMapToTuple<DATA> {
     
     // The most important thing here is to only evaluate the value once.
     // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.
@@ -58,7 +58,7 @@ public interface StreamPlusWithSplit<DATA>
     public default Tuple2<StreamPlus<DATA>, StreamPlus<DATA>> split(
             Predicate<? super DATA> predicate) {
         val temp 
-            = mapTuple(
+            = mapToTuple(
                     it -> predicate.test(it) ? 0 : 1,
                     it -> it
             )
@@ -87,7 +87,7 @@ public interface StreamPlusWithSplit<DATA>
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2) {
         val temp 
-            = mapTuple(
+            = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     :                       2,
@@ -123,7 +123,7 @@ public interface StreamPlusWithSplit<DATA>
             Predicate<? super DATA> predicate2,
             Predicate<? super DATA> predicate3) {
         val temp 
-            = mapTuple(
+            = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     : predicate3.test(it) ? 2
@@ -165,7 +165,7 @@ public interface StreamPlusWithSplit<DATA>
             Predicate<? super DATA> predicate3,
             Predicate<? super DATA> predicate4) {
         val temp 
-            = mapTuple(
+            = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     : predicate3.test(it) ? 2
@@ -213,7 +213,7 @@ public interface StreamPlusWithSplit<DATA>
             Predicate<? super DATA> predicate4,
             Predicate<? super DATA> predicate5) {
         val temp 
-            = mapTuple(
+            = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     : predicate3.test(it) ? 2
@@ -250,7 +250,7 @@ public interface StreamPlusWithSplit<DATA>
             KEY key1, Predicate<? super DATA> predicate,
             KEY key2) {
         val temp 
-            = mapTuple(
+            = mapToTuple(
                 it -> predicate.test(it) ? 0 : 1,
                 it -> it
             )
@@ -279,7 +279,7 @@ public interface StreamPlusWithSplit<DATA>
             KEY key2, Predicate<? super DATA> predicate2,
             KEY key3) {
         val temp 
-            = mapTuple(
+            = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     :                       2,
@@ -315,7 +315,7 @@ public interface StreamPlusWithSplit<DATA>
             KEY key3, Predicate<? super DATA> predicate3,
             KEY key4) {
         val temp 
-            = mapTuple(
+            = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     : predicate3.test(it) ? 2
@@ -357,7 +357,7 @@ public interface StreamPlusWithSplit<DATA>
             KEY key4, Predicate<? super DATA> predicate4,
             KEY key5) {
         val temp 
-            = mapTuple(
+            = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     : predicate3.test(it) ? 2
@@ -405,7 +405,7 @@ public interface StreamPlusWithSplit<DATA>
             KEY key5, Predicate<? super DATA> predicate5,
             KEY key6) {
         val temp 
-            = mapTuple(
+            = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     : predicate3.test(it) ? 2

@@ -6,13 +6,7 @@ import java.util.Optional;
 import functionalj.function.Func1;
 import functionalj.tuple.Tuple2;
 
-public interface StreamableWithStatistic<DATA> {
-    
-    public default StreamPlus<DATA> streamPlus() {
-        return streamPlus();
-    }
-    
-    public StreamPlus<DATA> stream();
+public interface StreamableWithStatistic<DATA> extends AsStreamable<DATA> {
     
     public default <D extends Comparable<D>> Optional<DATA> minBy(
             Func1<DATA, D> mapper) {

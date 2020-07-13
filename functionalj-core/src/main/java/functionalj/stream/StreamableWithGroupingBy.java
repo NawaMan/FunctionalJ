@@ -13,17 +13,11 @@ import functionalj.map.ImmutableMap;
 import lombok.val;
 
 public interface StreamableWithGroupingBy<DATA>
-    extends StreamableWithMapTuple<DATA> {
-    
-    
-    public StreamPlus<DATA> stream();
-    
-    //-- groupingBy --
+    extends StreamableWithMapToTuple<DATA> {
     
     // Eager
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public default <KEY> FuncMap<KEY, Streamable<? super DATA>> groupingBy(
-            Function<? super DATA, KEY> keyMapper) {
+    public default <KEY> FuncMap<KEY, Streamable<? super DATA>> groupingBy(Function<? super DATA, KEY> keyMapper) {
         Supplier  <Map<KEY, ArrayList<? super DATA>>>                                    supplier;
         BiConsumer<Map<KEY, ArrayList<? super DATA>>, ? super DATA>                      accumulator;
         BiConsumer<Map<KEY, ArrayList<? super DATA>>, Map<KEY, ArrayList<? super DATA>>> combiner;
@@ -52,8 +46,8 @@ public interface StreamableWithGroupingBy<DATA>
     
     // Eager
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            Function<? super DATA, KEY>               keyMapper,
-            Function<Streamable<? super DATA>, VALUE> aggregate) {
+            Function<? super DATA, KEY>                       keyMapper,
+            Function<? super Streamable<? super DATA>, VALUE> aggregate) {
         return groupingBy(keyMapper)
                 .mapValue(aggregate);
     }
@@ -63,8 +57,9 @@ public interface StreamableWithGroupingBy<DATA>
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             Function<? super DATA, KEY>          keyMapper,
             StreamProcessor<? super DATA, VALUE> processor) {
-        return groupingBy(keyMapper)
-                .mapValue(stream -> (VALUE)stream.calculate((StreamProcessor)processor));
+        FuncMap<KEY, Streamable<? super DATA>> groupingBy = groupingBy(keyMapper);
+        return (FuncMap<KEY, VALUE>) groupingBy
+                .mapValue(stream -> stream.calculate((StreamProcessor) processor));
     }
     
     // Eager

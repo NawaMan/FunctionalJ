@@ -23,137 +23,48 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.stream.Streamable.deriveFrom;
+
 import java.util.function.Function;
-import java.util.stream.Stream;
-
-import functionalj.function.Func1;
-import functionalj.stream.intstream.IntStreamable;
-import lombok.val;
 
 
-class StreamableMapAddOnHelper {
+public interface StreamableWithMapFirst<DATA> extends AsStreamable<DATA> {
     
-    @SafeVarargs
-    static final <D, T> Streamable<T> doMapFirst(
-            Streamable<D>              streamable,
-            Function<? super D, T> ... mappers) {
-        val size = mappers.length;
-        if (size == 1)
-            return () -> streamable.stream().mapFirst(mappers[1], mappers[2]);
-        
-        return null;
-    }
-    
-}
-
-public interface StreamableWithMapFirst<DATA> {
-    
-    public <TARGET> Streamable<TARGET> deriveWith(
-            Function<StreamPlus<DATA>, Stream<TARGET>> action);
-    
-    public <TARGET> Streamable<TARGET> derive(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
-    
-    public IntStreamable deriveToInt(Func1<Streamable<DATA>, IntStreamable> action);
-    
-    public <TARGET> Streamable<TARGET> deriveToObj(Func1<Streamable<DATA>, Streamable<TARGET>> action);
-    
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2) {
-        return deriveToObj(source -> {
-            return () -> {
-                return source.streamPlus().mapFirst(mapper1, mapper2);
-            };
-        });
+        return deriveFrom(this, stream -> stream.mapFirst(mapper1, mapper2));
     }
     
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @param mapper3  the third mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapFirst(mapper1, mapper2, mapper3);
-        });
+        return deriveFrom(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3));
     }
     
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @param mapper3  the third mapper.
-     * @param mapper4  the forth mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4);
-        });
+        return deriveFrom(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4));
     }
     
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @param mapper3  the third mapper.
-     * @param mapper4  the forth mapper.
-     * @param mapper5  the fifth mapper.
-     * @param mapper6  the sixth mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5);
-        });
+        return deriveFrom(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5));
     }
     
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @param mapper3  the third mapper.
-     * @param mapper4  the forth mapper.
-     * @param mapper5  the fifth mapper.
-     * @param mapper6  the sixth mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> Streamable<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
@@ -161,10 +72,6 @@ public interface StreamableWithMapFirst<DATA> {
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5,
             Function<? super DATA, T> mapper6) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
-        });
+        return deriveFrom(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
     }
 }

@@ -163,7 +163,7 @@ public class FuncListTest {
     public void testMapToTuple() {
         val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
         assertEquals("[(One,3), (Two,3), (Three,5), (Four,4), (Five,4), (Six,3), (Seven,5)]",
-                "" + list.mapTuple(theString, theString.length()));
+                "" + list.mapToTuple(theString, theString.length()));
     }
     
     @Test
@@ -338,7 +338,7 @@ public class FuncListTest {
         val avgLength = new AvgLength();
         val concat = new StreamProcessor<String, String>() {
             @Override
-            public String process(StreamPlus<String> stream) {
+            public String process(StreamPlus<? extends String> stream) {
                 return stream.join();
             }
         };

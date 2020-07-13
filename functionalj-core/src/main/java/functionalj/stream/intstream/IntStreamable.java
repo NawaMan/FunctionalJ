@@ -1,3 +1,26 @@
+// ============================================================================
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream.intstream;
 
 import static functionalj.lens.Access.theInteger;
@@ -14,11 +37,15 @@ import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
+import java.util.function.IntToDoubleFunction;
+import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import functionalj.function.Func1;
@@ -36,24 +63,16 @@ import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.Streamable;
 import functionalj.stream.doublestream.AsDoubleStreamable;
+import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamable;
 import functionalj.stream.longstream.AsLongStreamable;
+import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamable;
 import functionalj.tuple.IntIntTuple;
 import lombok.val;
 
 
 //TODO - Use this for byte, short and char
-
-class I implements IntStreamable {
-
-    @Override
-    public IntStreamPlus intStream() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-}
 
 public interface IntStreamable 
         extends
@@ -193,6 +212,82 @@ public interface IntStreamable
     public static IntStreamable compound(int seed1, int seed2, IntBinaryOperator f) {
         return ()->IntStreamPlus.iterate(seed1, seed2, f);
     }
+    
+    //-- Derive --
+    
+    /** Create a Streamable from the given Streamable. */
+    public static <SOURCE> IntStreamable deriveFrom(
+            AsStreamable<SOURCE>                    asStreamable,
+            Function<StreamPlus<SOURCE>, IntStream> action) {
+        return () -> {
+            val sourceStream = asStreamable.stream();
+            val targetStream = action.apply(sourceStream);
+            return IntStreamPlus.from(targetStream);
+        };
+    }
+    
+    /** Create a Streamable from the given IntStreamable. */
+    public static <TARGET> IntStreamable deriveFrom(
+            AsIntStreamable                    asStreamable,
+            Function<IntStreamPlus, IntStream> action) {
+        return () -> {
+            val sourceStream = asStreamable.intStream();
+            val targetStream = action.apply(sourceStream);
+            return IntStreamPlus.from(targetStream);
+        };
+    }
+    
+    /** Create a Streamable from the given LongStreamable. */
+    public static <TARGET> IntStreamable deriveFrom(
+            AsLongStreamable                    asStreamable,
+            Function<LongStreamPlus, IntStream> action) {
+        return () -> {
+            val sourceStream = asStreamable.longStream();
+            val targetStream = action.apply(sourceStream);
+            return IntStreamPlus.from(targetStream);
+        };
+    }
+    
+    /** Create a Streamable from the given LongStreamable. */
+    public static <TARGET> IntStreamable deriveFrom(
+            AsDoubleStreamable                    asStreamable,
+            Function<DoubleStreamPlus, IntStream> action) {
+        return () -> {
+            val sourceStream = asStreamable.doubleStream();
+            val targetStream = action.apply(sourceStream);
+            return IntStreamPlus.from(targetStream);
+        };
+    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE> IntStreamable deriveToIntFrom(
+            AsIntStreamable                    asStreamable,
+            Function<IntStreamPlus, IntStream> action) {
+        return IntStreamable.deriveFrom(asStreamable, action);
+    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE> LongStreamable deriveToLongFrom(
+            AsIntStreamable                     asStreamable,
+            Function<IntStreamPlus, LongStream> action) {
+        return LongStreamable.deriveFrom(asStreamable, action);
+    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE> DoubleStreamable deriveToDoubleFrom(
+            AsIntStreamable                       asStreamable,
+            Function<IntStreamPlus, DoubleStream> action) {
+        return DoubleStreamable.deriveFrom(asStreamable, action);
+    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObjFrom(
+            AsIntStreamable                         asStreamable,
+            Function<IntStreamPlus, Stream<TARGET>> action) {
+        return Streamable.deriveFrom(asStreamable, action);
+    }
+    
+    //-- Zip --
     
     public static Streamable<IntIntTuple> zipOf(
             IntStreamable streamable1, 
@@ -367,57 +462,69 @@ public interface IntStreamable
     
     //== Functionalities ==
     
+    //-- Map --
+    
     public default IntStreamable map(IntUnaryOperator mapper) {
         return IntStreamable.from(this, streamble -> streamble.intStream().map(mapper));
     }
     
-//    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
-//        return LongStreamPlus.from(stream().mapToLong(mapper));
-//    }
-//  
-//    public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
-//        return DoubleStreamPlus.from(stream().mapToDouble (mapper));
-//    }
+    public default IntStreamable mapToInt(IntUnaryOperator mapper) {
+        return IntStreamable.deriveFrom(this, stream -> stream.mapToInt(mapper));
+    }
+    
+    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
+        return LongStreamPlus.from(intStream().mapToLong(mapper));
+    }
+    
+    public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
+        return DoubleStreamPlus.from(intStream().mapToDouble (mapper));
+    }
     
     public default <TARGET> Streamable<TARGET> mapToObj(IntFunction<? extends TARGET> mapper) {
-        return Streamable.fromInts(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .mapToObj(mapper));
+        return Streamable.deriveFrom(this, stream -> stream.mapToObj(mapper));
     }
     
-    public default IntStreamable mapToInt(IntUnaryOperator mapper) {
-        return map(mapper);
-    }
+    //-- FlatMap --
     
-    public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends AsStreamable<TARGET>> mapper) {
-        return Streamable.fromInts(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .flatMapToObj(each -> mapper.apply(each).stream()));
+    public default IntStreamable flatMap(IntFunction<? extends AsIntStreamable> mapper) {
+        return IntStreamable.deriveFrom(this, stream -> {
+            return stream
+                    .flatMap(value -> mapper.apply(value).intStream())
+                    .intStream();
+        });
     }
     
     public default IntStreamable flatMapToInt(IntFunction<? extends AsIntStreamable> mapper) {
-        return flatMap(mapper);
+        return IntStreamable.deriveFrom(this, stream -> {
+            return stream
+                    .flatMap(value -> mapper.apply(value).intStream())
+                    .intStream();
+        });
     }
     
     public default LongStreamable flatMapToLong(IntFunction<? extends AsLongStreamable> mapper) {
-        return (LongStreamable)()->intStream().flatMapToLong(i -> mapper.apply(i).longStream());
+        return LongStreamable.deriveFrom(this, stream -> {
+            return stream
+                    .flatMapToLong(value -> mapper.apply(value).longStream())
+                    .longStream();
+        });
     }
     
     public default DoubleStreamable flatMapToDouble(IntFunction<? extends AsDoubleStreamable> mapper) {
-        return (DoubleStreamable)()->intStream().flatMapToDouble(i -> mapper.apply(i).doubleStream());
+        return DoubleStreamable.deriveFrom(this, stream -> {
+            return stream
+                    .flatMapToDouble(value -> mapper.apply(value).doubleStream())
+                    .doubleStream();
+        });
     }
     
-    public default IntStreamable flatMap(IntFunction<? extends AsIntStreamable> mapper) {
-        return IntStreamable.from(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .flatMap(each -> mapper.apply(each).intStream()));
+    public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends AsStreamable<TARGET>> mapper) {
+        return Streamable.deriveFrom(this, stream -> {
+            return stream.flatMapToObj(value -> mapper.apply(value).stream());
+        });
     }
+    
+    //-- Filter --
     
     public default IntStreamable filter(IntPredicate predicate) {
         return IntStreamable.from(this, 

@@ -1,16 +1,10 @@
 package functionalj.stream;
 
-import functionalj.function.IntObjBiConsumer;
-
-public interface StreamableWithForEach<DATA> {
+public interface StreamableWithForEach<DATA> extends AsStreamable<DATA>, StreamPlusWithForEach<DATA> {
     
-    public StreamPlus<DATA> stream();
-    
-    
-    //-- Functionalities --
-    
-    public default void forEachWithIndex(IntObjBiConsumer<? super DATA> action) {
-        stream()
-        .forEachWithIndex(action);
+    @Override
+    default StreamPlus<DATA> streamPlus() {
+        return AsStreamable.super.streamPlus();
     }
+    
 }

@@ -1,5 +1,5 @@
 package functionalj.stream;
 
-public interface StreamableWithModify<DATA> {
+public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
 
 }

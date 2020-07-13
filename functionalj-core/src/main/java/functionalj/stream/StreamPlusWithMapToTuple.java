@@ -31,7 +31,7 @@ import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 
-public interface StreamPlusWithMapTuple<DATA>
+public interface StreamPlusWithMapToTuple<DATA>
         extends StreamPlusWithMapThen<DATA> {
     
     /**
@@ -45,7 +45,7 @@ public interface StreamPlusWithMapTuple<DATA>
      * @return            the result stream.
      */
     public default <T1, T2> 
-        StreamPlus<Tuple2<T1, T2>> mapTuple(
+        StreamPlus<Tuple2<T1, T2>> mapToTuple(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2) {
         return mapThen(mapper1, mapper2,
@@ -66,7 +66,7 @@ public interface StreamPlusWithMapTuple<DATA>
      * @return            the result stream.
      */
     public default <T1, T2, T3> 
-        StreamPlus<Tuple3<T1, T2, T3>> mapTuple(
+        StreamPlus<Tuple3<T1, T2, T3>> mapToTuple(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3) {
@@ -90,7 +90,7 @@ public interface StreamPlusWithMapTuple<DATA>
      * @return            the result stream.
      */
     public default <T1, T2, T3, T4> 
-        StreamPlus<Tuple4<T1, T2, T3, T4>> mapTuple(
+        StreamPlus<Tuple4<T1, T2, T3, T4>> mapToTuple(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -117,7 +117,7 @@ public interface StreamPlusWithMapTuple<DATA>
      * @return            the result stream.
      */
     public default <T1, T2, T3, T4, T5> 
-        StreamPlus<Tuple5<T1, T2, T3, T4, T5>> mapTuple(
+        StreamPlus<Tuple5<T1, T2, T3, T4, T5>> mapToTuple(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
@@ -147,7 +147,7 @@ public interface StreamPlusWithMapTuple<DATA>
      * @return            the result stream.
      */
     public default <T1, T2, T3, T4, T5, T6> 
-        StreamPlus<Tuple6<T1, T2, T3, T4, T5, T6>> mapTuple(
+        StreamPlus<Tuple6<T1, T2, T3, T4, T5, T6>> mapToTuple(
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,

@@ -23,81 +23,52 @@
 // ============================================================================
 package functionalj.stream;
 
-import java.util.function.Function;
+import static functionalj.stream.Streamable.deriveFrom;
+
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.lens.lenses.AnyLens;
 
-public interface StreamableWithFillNull<DATA> {
-    
-    public <TARGET> Streamable<TARGET> deriveWith(
-            Function<StreamPlus<DATA>, Stream<TARGET>> action);
-    
-    //== fillNull ==
+public interface StreamableWithFillNull<DATA> extends AsStreamable<DATA> {
     
     public default <VALUE> Streamable<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             VALUE                replacement) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .fillNull(lens, replacement);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(lens, replacement));
     }
     
     public default <VALUE> Streamable<DATA> fillNull(
             Func1<DATA, VALUE>       get, 
             Func2<DATA, VALUE, DATA> set, 
             VALUE                    replacement) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .fillNull(get, set, replacement);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(get, set, replacement));
     }
     
     public default <VALUE> Streamable<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             Supplier<VALUE>      replacementSupplier) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .fillNull(lens, replacementSupplier);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(lens, replacementSupplier));
     }
     
     public default <VALUE> Streamable<DATA> fillNull(
             Func1<DATA, VALUE>       get, 
             Func2<DATA, VALUE, DATA> set, 
             Supplier<VALUE>          replacementSupplier) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .fillNull(get, set, replacementSupplier);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(get, set, replacementSupplier));
     }
     
     public default <VALUE> Streamable<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             Func1<DATA, VALUE>   replacementFunction) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .fillNull(lens, replacementFunction);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(lens, replacementFunction));
     }
     
     public default <VALUE> Streamable<DATA> fillNull(
             Func1<DATA, VALUE>       get, 
             Func2<DATA, VALUE, DATA> set, 
             Func1<DATA, VALUE>       replacementFunction) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from    (stream)
-                    .fillNull(get, set, replacementFunction);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(get, set, replacementFunction));
     }
 }

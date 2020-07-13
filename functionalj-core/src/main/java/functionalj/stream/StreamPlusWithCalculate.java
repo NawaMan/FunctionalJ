@@ -46,7 +46,7 @@ public interface StreamPlusWithCalculate<DATA> {
     //        Still not sure how to do that.
     
     public default <RESULT, ACCUMULATED> RESULT calculate(
-            Collector<DATA, ACCUMULATED, RESULT> collector) {
+            Collector<? super DATA, ACCUMULATED, RESULT> collector) {
         val collected = new Collected.ByCollector<>(collector);
         forEach(each -> {
             collected.accumulate(each);
@@ -59,8 +59,8 @@ public interface StreamPlusWithCalculate<DATA> {
                     ACCUMULATED2, RESULT2>
                         Tuple2<RESULT1, RESULT2> 
                         calculate(
-                            Collector<DATA, ACCUMULATED1, RESULT1> collector1,
-                            Collector<DATA, ACCUMULATED2, RESULT2> collector2) {
+                            Collector<? super DATA, ACCUMULATED1, RESULT1> collector1,
+                            Collector<? super DATA, ACCUMULATED2, RESULT2> collector2) {
         val collected1 = new Collected.ByCollector<>(collector1);
         val collected2 = new Collected.ByCollector<>(collector2);
         forEach(each -> {
@@ -78,9 +78,9 @@ public interface StreamPlusWithCalculate<DATA> {
                     ACCUMULATED3, RESULT3>
                         Tuple3<RESULT1, RESULT2, RESULT3> 
                         calculate(
-                            Collector<DATA, ACCUMULATED1, RESULT1> collector1,
-                            Collector<DATA, ACCUMULATED2, RESULT2> collector2,
-                            Collector<DATA, ACCUMULATED3, RESULT3> collector3) {
+                            Collector<? super DATA, ACCUMULATED1, RESULT1> collector1,
+                            Collector<? super DATA, ACCUMULATED2, RESULT2> collector2,
+                            Collector<? super DATA, ACCUMULATED3, RESULT3> collector3) {
         val collected1 = new Collected.ByCollector<>(collector1);
         val collected2 = new Collected.ByCollector<>(collector2);
         val collected3 = new Collected.ByCollector<>(collector3);
@@ -102,10 +102,10 @@ public interface StreamPlusWithCalculate<DATA> {
                     ACCUMULATED4, RESULT4>
                         Tuple4<RESULT1, RESULT2, RESULT3, RESULT4> 
                         calculate(
-                            Collector<DATA, ACCUMULATED1, RESULT1> collector1,
-                            Collector<DATA, ACCUMULATED2, RESULT2> collector2,
-                            Collector<DATA, ACCUMULATED3, RESULT3> collector3,
-                            Collector<DATA, ACCUMULATED4, RESULT4> collector4) {
+                            Collector<? super DATA, ACCUMULATED1, RESULT1> collector1,
+                            Collector<? super DATA, ACCUMULATED2, RESULT2> collector2,
+                            Collector<? super DATA, ACCUMULATED3, RESULT3> collector3,
+                            Collector<? super DATA, ACCUMULATED4, RESULT4> collector4) {
         val collected1 = new Collected.ByCollector<>(collector1);
         val collected2 = new Collected.ByCollector<>(collector2);
         val collected3 = new Collected.ByCollector<>(collector3);

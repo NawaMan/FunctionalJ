@@ -195,7 +195,7 @@ public class StructTypeExamples {
         assertEquals("[(Sales,Doe), (R&D,Jackson)]",
                 departments
                     .filter  (theDepartment.manager.firstName.thatEquals("John"))
-                    .mapTuple(theDepartment.name, theDepartment.manager.lastName)
+                    .mapToTuple(theDepartment.name, theDepartment.manager.lastName)
                     .toString());
     }
     

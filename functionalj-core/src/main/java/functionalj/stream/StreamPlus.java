@@ -121,7 +121,7 @@ public interface StreamPlus<DATA>
             StreamPlusWithMapFirst<DATA>,
             StreamPlusWithMapThen<DATA>,
             StreamPlusWithMapToMap<DATA>,
-            StreamPlusWithMapTuple<DATA>,
+            StreamPlusWithMapToTuple<DATA>,
             StreamPlusWithMapWithIndex<DATA>,
             StreamPlusWithMapWithPrev<DATA>,
             StreamPlusWithModify<DATA>,

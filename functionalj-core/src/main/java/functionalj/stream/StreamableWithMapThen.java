@@ -23,44 +23,32 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.stream.Streamable.deriveFrom;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
 
-public interface StreamableWithMapThen<DATA> {
-    
-    public <TARGET> Streamable<TARGET> deriveWith(
-            Function<StreamPlus<DATA>, Stream<TARGET>> action);
-    
-    //== mapThen ==
+public interface StreamableWithMapThen<DATA> extends AsStreamable<DATA> {
     
     public default <T1, T2, T> 
         Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
-                BiFunction<T1, T2, T> function) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from   (stream)
-                    .mapThen(mapper1, mapper2, function);
-        });
+                BiFunction<T1, T2, T> merger) {
+        return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, merger));
     }
     public default <T1, T2, T3, T> 
         Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
-                Func3<T1, T2, T3, T> function) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from   (stream)
-                    .mapThen(mapper1, mapper2, mapper3, function);
-        });
+                Func3<T1, T2, T3, T> merger) {
+        return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, merger));
     }
     public default <T1, T2, T3, T4, T> 
         Streamable<T> mapThen(
@@ -68,12 +56,8 @@ public interface StreamableWithMapThen<DATA> {
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
                 Function<? super DATA, T4> mapper4,
-                Func4<T1, T2, T3, T4, T> function) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from   (stream)
-                    .mapThen(mapper1, mapper2, mapper3, mapper4, function);
-        });
+                Func4<T1, T2, T3, T4, T> merger) {
+        return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, merger));
     }
     public default <T1, T2, T3, T4, T5, T> 
         Streamable<T> mapThen(
@@ -82,12 +66,8 @@ public interface StreamableWithMapThen<DATA> {
                 Function<? super DATA, T3> mapper3,
                 Function<? super DATA, T4> mapper4,
                 Function<? super DATA, T5> mapper5,
-                Func5<T1, T2, T3, T4, T5, T> function) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from   (stream)
-                    .mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, function);
-        });
+                Func5<T1, T2, T3, T4, T5, T> merger) {
+        return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, merger));
     }
     public default <T1, T2, T3, T4, T5, T6, T> 
         Streamable<T> mapThen(
@@ -97,11 +77,7 @@ public interface StreamableWithMapThen<DATA> {
                 Function<? super DATA, T4> mapper4,
                 Function<? super DATA, T5> mapper5,
                 Function<? super DATA, T6> mapper6,
-                Func6<T1, T2, T3, T4, T5, T6, T> function) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from   (stream)
-                    .mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, function);
-        });
+                Func6<T1, T2, T3, T4, T5, T6, T> merger) {
+        return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, merger));
     }
 }

@@ -5,12 +5,7 @@ import java.util.function.Function;
 
 import functionalj.map.FuncMap;
 
-public interface StreamableWithConversion<DATA> {
-    
-    public StreamPlus<DATA> stream();
-    
-    
-    //-- toMap --
+public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
     
     public default <KEY> FuncMap<KEY, DATA> toMap(
             Function<? super DATA, KEY> keyMapper) {

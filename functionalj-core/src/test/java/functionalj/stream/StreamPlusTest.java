@@ -500,7 +500,7 @@ public class StreamPlusTest {
             StreamPlus<DATA> stream,
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2) {
-        val temp = stream.mapTuple(
+        val temp = stream.mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
                     :                       2,
@@ -662,7 +662,7 @@ public class StreamPlusTest {
     public void testMapTuple2() {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings("[(ONE,one), (TWO,two), (THREE,three)]",
-                stream.mapTuple(
+                stream.mapToTuple(
                         String::toUpperCase,
                         String::toLowerCase
                     ).toList());
@@ -980,7 +980,8 @@ public class StreamPlusTest {
     public void testCalculate_of() {
         val stream = StreamPlus.of("Two", "Three", "Four", "Eleven");
         val sum = new Sum();
-        assertEquals(18, stream.calculate(sum.of(theString.length())).intValue());
+        CollectorPlus<String, int[], Integer> of = sum.of(theString.length());
+        assertEquals(18, stream.calculate(of).intValue());
     }
     
 }

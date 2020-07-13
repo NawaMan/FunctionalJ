@@ -30,7 +30,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
@@ -52,6 +51,7 @@ import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -70,13 +70,19 @@ import functionalj.pipeable.Pipeable;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
+import functionalj.stream.doublestream.AsDoubleStreamable;
+import functionalj.stream.doublestream.DoubleStreamPlus;
+import functionalj.stream.doublestream.DoubleStreamable;
+import functionalj.stream.intstream.AsIntStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
+import functionalj.stream.longstream.AsLongStreamable;
+import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamable;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-// TODO - Add intersect
+// TODO - Add intersect (retain) - but might want to do it after sort.
 
 class S implements Streamable<String> {
 
@@ -117,7 +123,7 @@ public interface Streamable<DATA>
             StreamableWithMapFirst<DATA>,
             StreamableWithMapThen<DATA>,
             StreamableWithMapToMap<DATA>,
-            StreamableWithMapTuple<DATA>,
+            StreamableWithMapToTuple<DATA>,
             StreamableWithMapWithIndex<DATA>,
             StreamableWithMapWithPrev<DATA>,
             StreamableWithModify<DATA>,
@@ -168,12 +174,6 @@ public interface Streamable<DATA>
     public static <TARGET> Streamable<TARGET> from(Func0<Stream<TARGET>> supplier) {
         return ()->StreamPlus.from(supplier.get());
     }
-    
-    /** Create a Streamable from the given IntStreamable. */
-    public static <TARGET> Streamable<TARGET> fromInts(IntStreamable source, Function<IntStreamable, Stream<TARGET>> action) {
-        return ()->StreamPlus.from(action.apply(source));
-    }
-    // TODO - Add fromLongs and fromDoubles
     
     /** Create a Streamable that is the repeat of the given array of data. */
     @SuppressWarnings("unchecked")
@@ -353,6 +353,82 @@ public interface Streamable<DATA>
             BinaryOperator<TARGET> compounder) {
         return ()->StreamPlus.compound(seed1, seed2, compounder);
     }
+    
+    //-- Derive --
+    
+    /** Create a Streamable from the given Streamable. */
+    public static <SOURCE, TARGET> Streamable<TARGET> deriveFrom(
+            AsStreamable<SOURCE>                         asStreamable,
+            Function<StreamPlus<SOURCE>, Stream<TARGET>> action) {
+        return () -> {
+            val sourceStream = asStreamable.stream();
+            val targetStream = action.apply(sourceStream);
+            return StreamPlus.from(targetStream);
+        };
+    }
+    
+    /** Create a Streamable from the given IntStreamable. */
+    public static <TARGET> Streamable<TARGET> deriveFrom(
+            AsIntStreamable                         asStreamable,
+            Function<IntStreamPlus, Stream<TARGET>> action) {
+        return () -> {
+            val sourceStream = asStreamable.intStream();
+            val targetStream = action.apply(sourceStream);
+            return StreamPlus.from(targetStream);
+        };
+    }
+    
+    /** Create a Streamable from the given LongStreamable. */
+    public static <TARGET> Streamable<TARGET> deriveFrom(
+            AsLongStreamable                         asStreamable,
+            Function<LongStreamPlus, Stream<TARGET>> action) {
+        return () -> {
+            val sourceStream = asStreamable.longStream();
+            val targetStream = action.apply(sourceStream);
+            return StreamPlus.from(targetStream);
+        };
+    }
+    
+    /** Create a Streamable from the given LongStreamable. */
+    public static <TARGET> Streamable<TARGET> deriveFrom(
+            AsDoubleStreamable                         asStreamable,
+            Function<DoubleStreamPlus, Stream<TARGET>> action) {
+        return () -> {
+            val sourceStream = asStreamable.doubleStream();
+            val targetStream = action.apply(sourceStream);
+            return StreamPlus.from(targetStream);
+        };
+    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE> IntStreamable deriveToInt(
+            AsStreamable<SOURCE>                    asStreamable,
+            Function<StreamPlus<SOURCE>, IntStream> action) {
+        return IntStreamable.deriveFrom(asStreamable, action);
+    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE> LongStreamable deriveToLongFrom(
+            AsStreamable<SOURCE>                     asStreamable,
+            Function<StreamPlus<SOURCE>, LongStream> action) {
+        return LongStreamable.deriveFrom(asStreamable, action);
+    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE> DoubleStreamable deriveToDoubleFrom(
+            AsStreamable<SOURCE>                       asStreamable,
+            Function<StreamPlus<SOURCE>, DoubleStream> action) {
+        return DoubleStreamable.deriveFrom(asStreamable, action);
+    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObjFrom(
+            AsStreamable<SOURCE>                         asStreamable,
+            Function<StreamPlus<SOURCE>, Stream<TARGET>> action) {
+        return deriveFrom(asStreamable, action);
+    }
+    
+    //-- Zip ---
     
     /**
      * Create a Streamable by combining elements together into a Streamable of tuples.
@@ -560,11 +636,6 @@ public interface Streamable<DATA>
     
     //== Core ==
     
-    /** Return the this as a streamable. */
-    public default Streamable<DATA> streamable() {
-        return this;
-    }
-    
     /** Return the stream of data behind this StreamPlus. */
     public StreamPlus<DATA> stream();
     
@@ -573,87 +644,122 @@ public interface Streamable<DATA>
         return stream();
     }
     
-    //-- Derive --
-    
-    public default <TARGET> Streamable<TARGET> derive(Func1<StreamPlus<DATA>, Stream<TARGET>> action) {
-        return () -> {
-            val streamPlus   = this.stream();
-            val resultStream = action.apply(streamPlus);
-            return StreamPlus.from(resultStream);
-        };
-    }
-    
-    public default IntStreamable deriveToInt(Func1<Streamable<DATA>, IntStreamable> action) {
-        return action.apply(this);
-    }
-    
-    public default LongStreamable deriveToLong(Func1<Streamable<DATA>, LongStreamable> action) {
-        return action.apply(this);
-    }
-//    
-//    public default DoubleStreamable deriveToDouble(Func1<Streamable<DATA>, DoubleStreamable> action) {
-//        return action.apply(this);
-//    }
-    
-    public default <TARGET> Streamable<TARGET> deriveToObj(Func1<Streamable<DATA>, Streamable<TARGET>> action) {
-        return action.apply(this);
-    }
-    
-    public default <TARGET> Streamable<TARGET> deriveWith(Function<StreamPlus<DATA>, Stream<TARGET>> action) {
-        val streamable = this;
-        return new Streamable<TARGET>() {
-            @Override
-            public StreamPlus<TARGET> stream() {
-                val sourceStream = streamable.stream();
-                val targetStream = action.apply(sourceStream);
-                return StreamPlus.from(targetStream);
-            }
-        };
+    /** Return the this as a streamable. */
+    public default Streamable<DATA> streamable() {
+        return this;
     }
     
     //-- Characteristics --
     
+    /**
+     * Returns an equivalent stream that is sequential.  May return
+     * itself, either because the stream was already sequential, or because
+     * the underlying stream state was modified to be sequential.
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * @return a sequential stream
+     */
     public default Streamable<DATA> sequential() {
-        return deriveWith(stream -> { 
+        return deriveFrom(this, stream -> { 
             return stream.sequential();
         });
     }
     
+    /**
+     * Returns an equivalent stream that is parallel.  May return
+     * itself, either because the stream was already parallel, or because
+     * the underlying stream state was modified to be parallel.
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * @return a parallel stream
+     */
+    /** Make the subsequence operation parallel */
     public default Streamable<DATA> parallel() {
-        return deriveWith(stream -> { 
+        return deriveFrom(this, stream -> { 
             return stream.parallel();
         });
     } 
     
+    /**
+     * Returns an equivalent stream that is
+     * <a href="package-summary.html#Ordering">unordered</a>.  May return
+     * itself, either because the stream was already unordered, or because
+     * the underlying stream state was modified to be unordered.
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * @return an unordered stream
+     */
     public default Streamable<DATA> unordered() {
-        return deriveWith(stream -> { 
+        return deriveFrom(this, stream -> { 
             return stream.unordered();
         });
     }
     
+    /**
+     * Returns whether this stream, if a terminal operation were to be executed,
+     * would execute in parallel.  Calling this method after invoking an
+     * terminal stream operation method may yield unpredictable results.
+     *
+     * @return {@code true} if this stream would execute in parallel if executed
+     */
+    public default boolean isParallel() {
+        return stream()
+                .isParallel();
+    }
+    
     //-- Iterator --
     
+    /** @return the iterable of this streamable. */
     public default IterablePlus<DATA> iterable() {
         return () -> iterator();
     }
     
+    /** @return a iterator of this streamable. */
     public default IteratorPlus<DATA> iterator() {
         return IteratorPlus.from(stream());
     }
     
+    /** @return a spliterator of this streamable. */
     public default Spliterator<DATA> spliterator() {
         val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
+    //-- Map --
+    
+    public default <TARGET> Streamable<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
+        return deriveFrom(this, stream -> stream.map(mapper));
+    }
+    
+    public default IntStreamable mapToInt(ToIntFunction<? super DATA> mapper) {
+        return IntStreamable.deriveFrom(this, stream -> stream.mapToInt(mapper));
+    }
+    
+    public default LongStreamable mapToLong(ToLongFunction<? super DATA> mapper) {
+        return LongStreamable.deriveFrom(this, stream -> stream.mapToLong(mapper));
+    }
+
+    public default DoubleStreamable mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+        return DoubleStreamable.deriveFrom(this, stream -> stream.mapToDouble(mapper));
+    }
+    
+    public default <T> Streamable<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
+        return map(mapper);
+    }
+    
     //-- Filter --
     
     public default Streamable<DATA> filter(Predicate<? super DATA> predicate) {
-        return deriveWith(stream -> {
-            return (predicate == null)
-                ? stream
-                : stream.filter(predicate);
-        });
+        if (predicate == null)
+            return this;
+        
+        return Streamable.deriveFrom(this, stream -> stream.filter(predicate));
     }
     
     @Override
@@ -706,111 +812,41 @@ public interface Streamable<DATA>
     //-- Peek --
     
     public default Streamable<DATA> peek(Consumer<? super DATA> action) {
-        return deriveWith(stream -> {
-            return (action == null)
-                    ? stream
-                    : stream.peek(action);
-        });
+        return Streamable.deriveFrom(this, stream -> stream.peek(action));
     }
     
     //-- Limit/Skip --
     
     public default Streamable<DATA> limit(long maxSize) {
-        return deriveWith(stream -> {
-            return stream.limit(maxSize);
-        });
+        return Streamable.deriveFrom(this, stream -> stream.limit(maxSize));
     }
     
     public default Streamable<DATA> skip(long n) {
-        return deriveWith(stream -> {
-            return stream.skip(n);
-        });
-    }
-    
-    public default Streamable<DATA> limit(Long maxSize) {
-        return deriveWith(stream -> {
-            return ((maxSize == null) || (maxSize.longValue() < 0))
-                    ? stream
-                    : stream.limit(maxSize);
-        });
-    }
-    
-    public default Streamable<DATA> skip(Long startAt) {
-        return deriveWith(stream -> {
-            return ((startAt == null) || (startAt.longValue() < 0))
-                    ? stream
-                    : stream.skip(startAt);
-        });
-    }
-    
-    public default Streamable<DATA> skipWhile(Predicate<? super DATA> condition) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).skipWhile(condition);
-        });
-    }
-    
-    public default Streamable<DATA> skipUntil(Predicate<? super DATA> condition) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).skipUntil(condition);
-        });
-    }
-    
-    public default Streamable<DATA> takeWhile(Predicate<? super DATA> condition) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).takeWhile(condition);
-        });
-    }
-    
-    public default Streamable<DATA> takeUntil(Predicate<? super DATA> condition) {
-        return deriveWith(stream -> {
-            return StreamPlus.from(stream).takeUntil(condition);
-        });
+        return Streamable.deriveFrom(this, stream -> stream.skip(n));
     }
     
     public default Streamable<DATA> distinct() {
-        return deriveWith(stream -> {
-            return stream.distinct();
-        });
+        return Streamable.deriveFrom(this, stream -> stream.distinct());
     }
     
     //-- Sorted --
     
     public default Streamable<DATA> sorted() {
-        return deriveWith(stream -> {
-            return stream.sorted();
-        });
+        return Streamable.deriveFrom(this, stream -> stream.sorted());
     }
     
-    public default Streamable<DATA> sorted(
-            Comparator<? super DATA> comparator) {
-        return deriveWith(stream -> {
-            return (comparator == null)
-                    ? stream.sorted()
-                    : stream.sorted(comparator);
-        });
+    public default Streamable<DATA> sorted(Comparator<? super DATA> comparator) {
+        return Streamable.deriveFrom(this, stream -> stream.sorted(comparator));
     }
     
-    public default <T extends Comparable<? super T>> Streamable<DATA> sortedBy(
-            Function<? super DATA, T> mapper) {
-        return deriveWith(stream -> {
-            return stream.sorted((a, b) -> {
-                        T vA = mapper.apply(a);
-                        T vB = mapper.apply(b);
-                        return vA.compareTo(vB);
-                    });
-        });
+    public default <T extends Comparable<? super T>> Streamable<DATA> sortedBy(Function<? super DATA, T> mapper) {
+        return Streamable.deriveFrom(this, stream -> stream.sortedBy(mapper));
     }
     
     public default <T> Streamable<DATA> sortedBy(
             Function<? super DATA, T> mapper, 
             Comparator<T>             comparator) {
-        return deriveWith(stream -> {
-            return stream.sorted((a, b) -> {
-                    T vA = mapper.apply(a);
-                    T vB = mapper.apply(b);
-                    return Objects.compare(vA,  vB, comparator);
-                });
-        });
+        return Streamable.deriveFrom(this, stream -> stream.sortedBy(mapper, comparator));
     }
     
     //-- Terminate --
@@ -996,11 +1032,7 @@ public interface Streamable<DATA>
      *   the unfinished actions will be canceled.
      */
     public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from(stream)
-                    .spawn(mapper);
-        });
+        return Streamable.deriveFrom(this, stream -> stream.spawn(mapper));
     }
     
     //== accumulate ==
@@ -1023,11 +1055,7 @@ public interface Streamable<DATA>
      *     ...
      */
     public default Streamable<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from(stream)
-                    .accumulate(accumulator);
-        });
+        return Streamable.deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
     
     //== restate ==
@@ -1057,7 +1085,7 @@ public interface Streamable<DATA>
                 return null;
             
             val head = iterator.next();
-            val tail =restater.apply(head, ()->iterator.stream());
+            val tail = restater.apply(head, ()->iterator.stream());
             return Tuple2.of(head, tail);
         });
         val seed = Tuple2.of((DATA)null, this);

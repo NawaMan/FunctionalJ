@@ -23,91 +23,46 @@
 // ============================================================================
 package functionalj.stream;
 
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 import functionalj.function.Func2;
 import functionalj.tuple.Tuple2;
-import lombok.val;
 
-public interface StreamableWithCombine<DATA> {
+public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
     
-    public <TARGET> Streamable<TARGET> deriveWith(
-            Function<StreamPlus<DATA>, Stream<TARGET>> action);
-    
-    
-    public default Streamable<DATA> concatWith(
-            Streamable<DATA> tail) {
-        return deriveWith(stream -> {
-            return StreamPlus
-                    .from      (stream)
-                    .concatWith(tail.stream());
-        });
+    public default Streamable<DATA> concatWith(Streamable<DATA> tail) {
+        return Streamable.deriveFrom(this, stream -> stream.concatWith(tail.stream()));
     }
     
-    public default Streamable<DATA> merge(
-            Streamable<DATA>        anotherStreamable) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
-            return StreamPlus
-                    .from      (stream)
-                    .concatWith(anotherStream);
-        });
+    public default Streamable<DATA> merge(Streamable<DATA> anotherStreamable) {
+        return Streamable.deriveFrom(this, stream -> stream.merge(anotherStreamable.stream()));
     }
     
     //-- Zip --
     
-    public default <B> Streamable<Tuple2<DATA,B>> zipWith(
-            Streamable<B> anotherStreamable) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
-            return StreamPlus
-                    .from   (stream)
-                    .zipWith(anotherStream);
-        });
+    public default <B> Streamable<Tuple2<DATA,B>> zipWith(Streamable<B> anotherStreamable) {
+        return Streamable.deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream()));
     }
     public default <B> Streamable<Tuple2<DATA,B>> zipWith(
             Streamable<B> anotherStreamable, 
             ZipWithOption option) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
-            return StreamPlus
-                    .from   (stream)
-                    .zipWith(anotherStream, option);
-        });
+        return Streamable.deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), option));
     }
     
     public default <B, C> Streamable<C> zipWith(
             Streamable<B>     anotherStreamable, 
             Func2<DATA, B, C> merger) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
-            return StreamPlus
-                    .from   (stream)
-                    .zipWith(anotherStream, merger);
-        });
+        return Streamable.deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), merger));
     }
     public default <B, C> Streamable<C> zipWith(
             Streamable<B>     anotherStreamable, 
             ZipWithOption     option, 
             Func2<DATA, B, C> merger) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
-            return StreamPlus
-                    .from   (stream)
-                    .zipWith(anotherStream, option, merger);
-        });
+        return Streamable.deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), option, merger));
     }
     
     public default Streamable<DATA> choose(
             Streamable<DATA>           anotherStreamable, 
             Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveWith(stream -> {
-            val anotherStream = anotherStreamable.stream();
-            return StreamPlus
-                    .from  (stream)
-                    .choose(anotherStream, selectThisNotAnother);
-        });
+        return Streamable.deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), selectThisNotAnother));
     }
     
 }
