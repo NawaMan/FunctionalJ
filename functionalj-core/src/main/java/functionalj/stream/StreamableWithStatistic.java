@@ -8,6 +8,10 @@ import functionalj.tuple.Tuple2;
 
 public interface StreamableWithStatistic<DATA> extends AsStreamable<DATA> {
     
+    public default int size() {
+        return (int)stream().count();
+    }
+    
     public default <D extends Comparable<D>> Optional<DATA> minBy(
             Func1<DATA, D> mapper) {
         return stream()

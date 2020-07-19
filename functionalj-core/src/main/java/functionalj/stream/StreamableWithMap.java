@@ -6,6 +6,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface StreamableWithMap<DATA> extends AsStreamable<DATA> {
+
+    
+    public default <T> Streamable<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
+        return deriveFrom(this, stream -> stream.mapToObj(mapper));
+    }
     
     public default Streamable<DATA> mapOnly(
             Predicate<? super DATA>      checker, 

@@ -71,6 +71,7 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 // TODO - Add intersect
+// TODO - Add prepare
 
 
 /**
@@ -521,24 +522,62 @@ public interface StreamPlus<DATA>
     
     //-- Characteristics --
     
+    /**
+     * Returns an equivalent stream that is sequential.  May return
+     * itself, either because the stream was already sequential, or because
+     * the underlying stream state was modified to be sequential.
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * @return a sequential stream
+     */
     @Override
     public default StreamPlus<DATA> sequential() {
         return StreamPlus.from(stream()
                 .sequential());
     }
     
+    /**
+     * Returns an equivalent stream that is parallel.  May return
+     * itself, either because the stream was already parallel, or because
+     * the underlying stream state was modified to be parallel.
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * @return a parallel stream
+     */
     @Override
     public default StreamPlus<DATA> parallel() {
         return StreamPlus.from(stream()
                 .parallel());
-    } 
+    }
     
+    /**
+     * Returns an equivalent stream that is
+     * <a href="package-summary.html#Ordering">unordered</a>.  May return
+     * itself, either because the stream was already unordered, or because
+     * the underlying stream state was modified to be unordered.
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * @return an unordered stream
+     */
     @Override
     public default StreamPlus<DATA> unordered() {
         return StreamPlus.from(stream()
                 .unordered());
     }
     
+    /**
+     * Returns whether this stream, if a terminal operation were to be executed,
+     * would execute in parallel.  Calling this method after invoking an
+     * terminal stream operation method may yield unpredictable results.
+     *
+     * @return {@code true} if this stream would execute in parallel if executed
+     */
     @Override
     public default boolean isParallel() {
         return stream()
@@ -561,11 +600,13 @@ public interface StreamPlus<DATA>
     
     //-- Iterator --
     
+    /** @return a iterator of this streamable. */
     @Override
     public default IteratorPlus<DATA> iterator() {
         return IteratorPlus.from(stream().iterator());
     }
     
+    /** @return a spliterator of this streamable. */
     @Override
     public default Spliterator<DATA> spliterator() {
         val iterator = iterator();
