@@ -35,12 +35,7 @@ public interface StreamPlusWithMatch<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /**
-     * Return the first element that matches the predicate.
-     * 
-     * @param predicate  the predicate.
-     * @return           the match element.
-     */
+    /** Return the first element that matches the predicate. */
     @Terminal
     @Sequential
     public default Optional<DATA> findFirst(
@@ -51,12 +46,7 @@ public interface StreamPlusWithMatch<DATA> {
                 .findFirst();
     }
     
-    /**
-     * Return the any element that matches the predicate.
-     * 
-     * @param predicate  the predicate.
-     * @return           the match element.
-     */
+    /** Return the any element that matches the predicate. */
     @Terminal
     public default Optional<DATA> findAny(
             Predicate<? super DATA> predicate) {
@@ -66,13 +56,7 @@ public interface StreamPlusWithMatch<DATA> {
                 .findAny();
     }
     
-    /**
-     * Use the mapper, return the first element that its mapped value matches the predicate.
-     * 
-     * @param mapper     the mapper.
-     * @param predicate  the predicate.
-     * @return           the match element.
-     */
+    /** Use the mapper, return the first element that its mapped value matches the predicate. */
     @Terminal
     @Sequential
     public default <T> Optional<DATA> findFirst(
@@ -84,13 +68,7 @@ public interface StreamPlusWithMatch<DATA> {
                 .findFirst();
     }
     
-    /**
-     * Use the mapper, return the any element that its mapped value matches the predicate.
-     * 
-     * @param mapper     the mapper.
-     * @param predicate  the predicate.
-     * @return           the match element.
-     */
+    /** Use the mapper, return the any element that its mapped value matches the predicate. */
     @Terminal
     public default <T>  Optional<DATA> findAny(
             Function<? super DATA, T> mapper, 

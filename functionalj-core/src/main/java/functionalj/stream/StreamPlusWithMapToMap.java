@@ -35,15 +35,7 @@ public interface StreamPlusWithMapToMap<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /**
-     * Put mapped value and put it in the map with specific keys.
-     * 
-     * @param <KEY>    the key type.
-     * @param <VALUE>  the value type.
-     * @param key      the key.
-     * @param mapper   the mapper.
-     * @return         the stream of maps.
-     */
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, Function<? super DATA, ? extends VALUE> mapper) {
         val streamPlus = streamPlus();
@@ -51,17 +43,7 @@ public interface StreamPlusWithMapToMap<DATA> {
                 .mapToObj(data -> mapOf(key, mapper.apply(data)));
     }
     
-    /**
-     * Put mapped value and put it in the map with specific keys.
-     * 
-     * @param <KEY>    the key type.
-     * @param <VALUE>  the value type.
-     * @param key1     the key 1.
-     * @param key2     the key 2.
-     * @param mapper1  the mapper 1.
-     * @param mapper2  the mapper 2.
-     * @return         the stream of maps.
-     */
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2) {
@@ -72,19 +54,7 @@ public interface StreamPlusWithMapToMap<DATA> {
                     key2, mapper2.apply(data)));
     }
     
-    /**
-     * Put mapped value and put it in the map with specific keys.
-     * 
-     * @param <KEY>    the key type.
-     * @param <VALUE>  the value type.
-     * @param key1     the key 1.
-     * @param key2     the key 2.
-     * @param key3     the key 3.
-     * @param mapper1  the mapper 1.
-     * @param mapper2  the mapper 2.
-     * @param mapper3  the mapper 3.
-     * @return         the stream of maps.
-     */
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
@@ -97,21 +67,7 @@ public interface StreamPlusWithMapToMap<DATA> {
                     key3, mapper3.apply(data)));
     }
     
-    /**
-     * Put mapped value and put it in the map with specific keys.
-     * 
-     * @param <KEY>    the key type.
-     * @param <VALUE>  the value type.
-     * @param key1     the key 1.
-     * @param key2     the key 2.
-     * @param key3     the key 3.
-     * @param key4     the key 4.
-     * @param mapper1  the mapper 1.
-     * @param mapper2  the mapper 2.
-     * @param mapper3  the mapper 3.
-     * @param mapper4  the mapper 4.
-     * @return         the stream of maps.
-     */
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
@@ -126,23 +82,7 @@ public interface StreamPlusWithMapToMap<DATA> {
                     key4, mapper4.apply(data)));
     }
     
-    /**
-     * Put mapped value and put it in the map with specific keys.
-     * 
-     * @param <KEY>    the key type.
-     * @param <VALUE>  the value type.
-     * @param key1     the key 1.
-     * @param key2     the key 2.
-     * @param key3     the key 3.
-     * @param key4     the key 4.
-     * @param key5     the key 5.
-     * @param mapper1  the mapper 1.
-     * @param mapper2  the mapper 2.
-     * @param mapper3  the mapper 3.
-     * @param mapper4  the mapper 4.
-     * @param mapper5  the mapper 5.
-     * @return         the stream of maps.
-     */
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
@@ -159,25 +99,7 @@ public interface StreamPlusWithMapToMap<DATA> {
                     key5, mapper5.apply(data)));
     }
     
-    /**
-     * Put mapped value and put it in the map with specific keys.
-     * 
-     * @param <KEY>    the key type.
-     * @param <VALUE>  the value type.
-     * @param key1     the key 1.
-     * @param key2     the key 2.
-     * @param key3     the key 3.
-     * @param key4     the key 4.
-     * @param key5     the key 5.
-     * @param key6     the key 6.
-     * @param mapper1  the mapper 1.
-     * @param mapper2  the mapper 2.
-     * @param mapper3  the mapper 3.
-     * @param mapper4  the mapper 4.
-     * @param mapper5  the mapper 5.
-     * @param mapper6  the mapper 6.
-     * @return         the stream of maps.
-     */
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
@@ -196,27 +118,7 @@ public interface StreamPlusWithMapToMap<DATA> {
                     key6, mapper6.apply(data)));
     }
     
-    /**
-     * Put mapped value and put it in the map with specific keys.
-     * 
-     * @param <KEY>    the key type.
-     * @param <VALUE>  the value type.
-     * @param key1     the key 1.
-     * @param key2     the key 2.
-     * @param key3     the key 3.
-     * @param key4     the key 4.
-     * @param key5     the key 5.
-     * @param key6     the key 6.
-     * @param key7     the key 7.
-     * @param mapper1  the mapper 1.
-     * @param mapper2  the mapper 2.
-     * @param mapper3  the mapper 3.
-     * @param mapper4  the mapper 4.
-     * @param mapper5  the mapper 5.
-     * @param mapper6  the mapper 6.
-     * @param mapper7  the mapper 7.
-     * @return         the stream of maps.
-     */
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
@@ -237,29 +139,7 @@ public interface StreamPlusWithMapToMap<DATA> {
                     key7, mapper7.apply(data)));
     }
     
-    /**
-     * Put mapped value and put it in the map with specific keys.
-     * 
-     * @param <KEY>    the key type.
-     * @param <VALUE>  the value type.
-     * @param key1     the key 1.
-     * @param key2     the key 2.
-     * @param key3     the key 3.
-     * @param key4     the key 4.
-     * @param key5     the key 5.
-     * @param key6     the key 6.
-     * @param key7     the key 7.
-     * @param key8     the key 8.
-     * @param mapper1  the mapper 1.
-     * @param mapper2  the mapper 2.
-     * @param mapper3  the mapper 3.
-     * @param mapper4  the mapper 4.
-     * @param mapper5  the mapper 5.
-     * @param mapper6  the mapper 6.
-     * @param mapper7  the mapper 7.
-     * @param mapper8  the mapper 8.
-     * @return         the stream of maps.
-     */
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
@@ -282,31 +162,7 @@ public interface StreamPlusWithMapToMap<DATA> {
                     key8, mapper8.apply(data)));
     }
     
-    /**
-     * Put mapped value and put it in the map with specific keys.
-     * 
-     * @param <KEY>    the key type.
-     * @param <VALUE>  the value type.
-     * @param key1     the key 1.
-     * @param key2     the key 2.
-     * @param key3     the key 3.
-     * @param key4     the key 4.
-     * @param key5     the key 5.
-     * @param key6     the key 6.
-     * @param key7     the key 7.
-     * @param key8     the key 8.
-     * @param key9     the key 9.
-     * @param mapper1  the mapper 1.
-     * @param mapper2  the mapper 2.
-     * @param mapper3  the mapper 3.
-     * @param mapper4  the mapper 4.
-     * @param mapper5  the mapper 5.
-     * @param mapper6  the mapper 6.
-     * @param mapper7  the mapper 7.
-     * @param mapper8  the mapper 8.
-     * @param mapper9  the mapper 9.
-     * @return         the stream of maps.
-     */
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
@@ -331,33 +187,7 @@ public interface StreamPlusWithMapToMap<DATA> {
                     key9, mapper9.apply(data)));
     }
     
-    /**
-     * Put mapped value and put it in the map with specific keys.
-     * 
-     * @param <KEY>     the key type.
-     * @param <VALUE>   the value type.
-     * @param key1      the key 1.
-     * @param key2      the key 2.
-     * @param key3      the key 3.
-     * @param key4      the key 4.
-     * @param key5      the key 5.
-     * @param key6      the key 6.
-     * @param key7      the key 7.
-     * @param key8      the key 8.
-     * @param key9      the key 9.
-     * @param key10     the key 10.
-     * @param mapper1   the mapper 1.
-     * @param mapper2   the mapper 2.
-     * @param mapper3   the mapper 3.
-     * @param mapper4   the mapper 4.
-     * @param mapper5   the mapper 5.
-     * @param mapper6   the mapper 6.
-     * @param mapper7   the mapper 7.
-     * @param mapper8   the mapper 8.
-     * @param mapper9   the mapper 9.
-     * @param mapper10  the mapper 10.
-     * @return          the stream of maps.
-     */
+    /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,

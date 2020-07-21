@@ -76,14 +76,7 @@ public interface StreamPlusWithMapFirst<DATA> {
     
     public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
     
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2) {
@@ -92,15 +85,7 @@ public interface StreamPlusWithMapFirst<DATA> {
         });
     }
     
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @param mapper3  the third mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
@@ -109,16 +94,7 @@ public interface StreamPlusWithMapFirst<DATA> {
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3);
     }
     
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @param mapper3  the third mapper.
-     * @param mapper4  the forth mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
@@ -128,17 +104,7 @@ public interface StreamPlusWithMapFirst<DATA> {
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4);
     }
     
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @param mapper3  the third mapper.
-     * @param mapper4  the forth mapper.
-     * @param mapper5  the fifth mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
@@ -149,18 +115,7 @@ public interface StreamPlusWithMapFirst<DATA> {
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
     
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @param mapper3  the third mapper.
-     * @param mapper4  the forth mapper.
-     * @param mapper5  the fifth mapper.
-     * @param mapper6  the sixth mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,

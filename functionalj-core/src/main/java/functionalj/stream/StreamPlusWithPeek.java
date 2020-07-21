@@ -33,14 +33,7 @@ public interface StreamPlusWithPeek<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /**
-     * Peek only the value that is an instance of the give class.
-     * 
-     * @param <T>          the type of the data.
-     * @param clzz         the class.
-     * @param theConsumer  the consumer.
-     * @return             the stream.
-     */
+    /** Peek only the value that is an instance of the give class. */
     public default <T extends DATA> StreamPlus<DATA> peek(
             Class<T>            clzz,
             Consumer<? super T> theConsumer) {
@@ -55,14 +48,7 @@ public interface StreamPlusWithPeek<DATA> {
                 });
     }
     
-    /**
-     * Peek only the value that is selected with selector.
-     * 
-     * @param <T>          the type of the data.
-     * @param selector     the selector.
-     * @param theConsumer  the consumer.
-     * @return             the stream.
-     */
+    /** Peek only the value that is selected with selector. */
     public default StreamPlus<DATA> peekBy(
             Predicate<? super DATA> selector,
             Consumer<? super DATA>  theConsumer) {
@@ -80,14 +66,7 @@ public interface StreamPlusWithPeek<DATA> {
     
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
     
-    /**
-     * Peek the mapped value using the mapper.
-     * 
-     * @param <T>          the type of the data.
-     * @param mapper       the mapper.
-     * @param theConsumer  the consumer.
-     * @return             the stream.
-     */
+    /** Peek the mapped value using the mapper. */
     public default <T> StreamPlus<DATA> peekAs(
             Function<? super DATA, T> mapper,
             Consumer<? super T>       theConsumer) {
@@ -98,15 +77,8 @@ public interface StreamPlusWithPeek<DATA> {
                     theConsumer.accept(target);
                 });
     }
-
-    /**
-     * Peek only the mapped value using the mapper.
-     * 
-     * @param <T>          the type of the data.
-     * @param selector     the selector.
-     * @param theConsumer  the consumer.
-     * @return             the stream.
-     */
+    
+    /** Peek only the mapped value using the mapper. */
     public default <T> StreamPlus<DATA> peekBy(
             Function<? super DATA, T> mapper,
             Predicate<? super T>      selector,
@@ -120,15 +92,7 @@ public interface StreamPlusWithPeek<DATA> {
                 });
     }
     
-    /**
-     * Peek only the mapped value using the mapper that is selected by the selector.
-     * 
-     * @param <T>          the type of the data.
-     * @param mapper       the mapper.
-     * @param selector     the selector.
-     * @param theConsumer  the consumer.
-     * @return             the stream.
-     */
+    /** Peek only the mapped value using the mapper that is selected by the selector. */
     public default <T> StreamPlus<DATA> peekAs(
             Function<? super DATA, T> mapper,
             Predicate<? super T>      selector,

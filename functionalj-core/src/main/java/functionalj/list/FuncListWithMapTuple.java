@@ -44,8 +44,8 @@ public interface FuncListWithMapTuple<DATA>
     
     public default <T1, T2> 
         FuncList<Tuple2<T1, T2>> mapToTuple(
-                Function<? super DATA, T1> mapper1,
-                Function<? super DATA, T2> mapper2) {
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2) {
         return deriveFrom(streamable -> {
             return streamable
                     .stream()
@@ -55,9 +55,9 @@ public interface FuncListWithMapTuple<DATA>
     
     public default <T1, T2, T3> 
         FuncList<Tuple3<T1, T2, T3>> mapToTuple(
-                Function<? super DATA, T1> mapper1,
-                Function<? super DATA, T2> mapper2,
-                Function<? super DATA, T3> mapper3) {
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3) {
         return deriveFrom(streamable -> {
             return streamable
                     .stream()
@@ -67,10 +67,10 @@ public interface FuncListWithMapTuple<DATA>
     
     public default <T1, T2, T3, T4> 
         FuncList<Tuple4<T1, T2, T3, T4>> mapToTuple(
-                Function<? super DATA, T1> mapper1,
-                Function<? super DATA, T2> mapper2,
-                Function<? super DATA, T3> mapper3,
-                Function<? super DATA, T4> mapper4) {
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4) {
         return deriveFrom(streamable -> {
             return streamable
                     .stream()
@@ -80,11 +80,11 @@ public interface FuncListWithMapTuple<DATA>
     
     public default <T1, T2, T3, T4, T5> 
         FuncList<Tuple5<T1, T2, T3, T4, T5>> mapToTuple(
-                Function<? super DATA, T1> mapper1,
-                Function<? super DATA, T2> mapper2,
-                Function<? super DATA, T3> mapper3,
-                Function<? super DATA, T4> mapper4,
-                Function<? super DATA, T5> mapper5) {
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Function<? super DATA, ? extends T5> mapper5) {
         return deriveFrom(streamable -> {
             return streamable
                     .stream()
@@ -93,12 +93,12 @@ public interface FuncListWithMapTuple<DATA>
     }
     public default <T1, T2, T3, T4, T5, T6> 
         FuncList<Tuple6<T1, T2, T3, T4, T5, T6>> mapToTuple(
-                Function<? super DATA, T1> mapper1,
-                Function<? super DATA, T2> mapper2,
-                Function<? super DATA, T3> mapper3,
-                Function<? super DATA, T4> mapper4,
-                Function<? super DATA, T5> mapper5,
-                Function<? super DATA, T6> mapper6) {
+                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T2> mapper2,
+                Function<? super DATA, ? extends T3> mapper3,
+                Function<? super DATA, ? extends T4> mapper4,
+                Function<? super DATA, ? extends T5> mapper5,
+                Function<? super DATA, ? extends T6> mapper6) {
         return deriveFrom(streamable -> {
             return streamable
                     .stream()

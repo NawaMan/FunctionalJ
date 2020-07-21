@@ -436,7 +436,7 @@ public class Tasks {
         }
         @Override
         public String toString() {
-            return "Race(" + list.joinToString(",") + ")";
+            return "Race(" + list.join(",") + ")";
         }
         
     }

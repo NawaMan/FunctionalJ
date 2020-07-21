@@ -36,17 +36,7 @@ public interface StreamPlusWithMapThen<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /**
-     * Map the value into different values and then combine them with the combinator.
-     * 
-     * @param <T1>        the first mapped type.
-     * @param <T2>        the second mapped type.
-     * @param <T>         the target type.
-     * @param mapper1     the first mapper.
-     * @param mapper2     the second mapper.
-     * @param combinator  the combinator.
-     * @return            the result stream.
-     */
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T> 
         StreamPlus<T> mapThen(
                 Function<? super DATA, ? extends T1> mapper1,
@@ -62,19 +52,7 @@ public interface StreamPlusWithMapThen<DATA> {
                 });
     }
     
-    /**
-     * Map the value into different values and then combine them with the combinator.
-     * 
-     * @param <T1>        the first mapped type.
-     * @param <T2>        the second mapped type.
-     * @param <T3>        the third mapped type.
-     * @param <T>         the target type.
-     * @param mapper1     the first mapper.
-     * @param mapper2     the second mapper.
-     * @param mapper3     the third mapper.
-     * @param combinator  the combinator.
-     * @return            the result stream.
-     */
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T> 
         StreamPlus<T> mapThen(
                 Function<? super DATA, ? extends T1> mapper1,
@@ -92,21 +70,7 @@ public interface StreamPlusWithMapThen<DATA> {
                 });
     }
     
-    /**
-     * Map the value into different values and then combine them with the combinator.
-     * 
-     * @param <T1>        the first mapped type.
-     * @param <T2>        the second mapped type.
-     * @param <T3>        the third mapped type.
-     * @param <T4>        the forth mapped type.
-     * @param <T>         the target type.
-     * @param mapper1     the first mapper.
-     * @param mapper2     the second mapper.
-     * @param mapper3     the third mapper.
-     * @param mapper4     the forth mapper.
-     * @param combinator  the combinator.
-     * @return            the result stream.
-     */
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T> 
         StreamPlus<T> mapThen(
                 Function<? super DATA, ? extends T1> mapper1,
@@ -126,23 +90,7 @@ public interface StreamPlusWithMapThen<DATA> {
         });
     }
     
-    /**
-     * Map the value into different values and then combine them with the combinator.
-     * 
-     * @param <T1>        the first mapped type.
-     * @param <T2>        the second mapped type.
-     * @param <T3>        the third mapped type.
-     * @param <T4>        the forth mapped type.
-     * @param <T5>        the fifth mapped type.
-     * @param <T>         the target type.
-     * @param mapper1     the first mapper.
-     * @param mapper2     the second mapper.
-     * @param mapper3     the third mapper.
-     * @param mapper4     the forth mapper.
-     * @param mapper5     the fifth mapper.
-     * @param combinator  the combinator.
-     * @return            the result stream.
-     */
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T5, T> 
         StreamPlus<T> mapThen(
                 Function<? super DATA, ? extends T1> mapper1,
@@ -164,25 +112,7 @@ public interface StreamPlusWithMapThen<DATA> {
                 });
     }
     
-    /**
-     * Map the value into different values and then combine them with the combinator.
-     * 
-     * @param <T1>        the first mapped type.
-     * @param <T2>        the second mapped type.
-     * @param <T3>        the third mapped type.
-     * @param <T4>        the forth mapped type.
-     * @param <T5>        the fifth mapped type.
-     * @param <T6>        the sixth mapped type.
-     * @param <T>         the target type.
-     * @param mapper1     the first mapper.
-     * @param mapper2     the second mapper.
-     * @param mapper3     the third mapper.
-     * @param mapper4     the forth mapper.
-     * @param mapper5     the fifth mapper.
-     * @param mapper6     the sixth mapper.
-     * @param combinator  the combinator.
-     * @return            the result stream.
-     */
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T5, T6, T> 
         StreamPlus<T> mapThen(
                 Function<? super DATA, ? extends T1> mapper1,

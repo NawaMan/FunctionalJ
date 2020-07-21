@@ -38,12 +38,7 @@ public interface StreamPlusWithFillNull<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /**
-     * Replace any null value with the given replacement.
-     * 
-     * @param replacement  the replacement.
-     * @return             the replaced stream.
-     */
+    /** Replace any null value with the given replacement. */
     public default StreamPlus<DATA> fillNull(DATA replacement) {
         val streamPlus = streamPlus();
         return streamPlus
@@ -57,13 +52,7 @@ public interface StreamPlusWithFillNull<DATA> {
                 });
     }
     
-    /**
-     * Replace sub element that is null (accessed with the given lens) with the given replacement.
-     * 
-     * @param lens         the lens.
-     * @param replacement  the replacement.
-     * @return             the replaced stream.
-     */
+    /** Replace sub element that is null (accessed with the given lens) with the given replacement. */
     public default <VALUE> StreamPlus<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             VALUE                replacement) {
@@ -73,14 +62,7 @@ public interface StreamPlusWithFillNull<DATA> {
                 replacement);
     }
     
-    /**
-     * Replace sub element that is null (accessed with the given getter and setter) with the given replacement.
-     * 
-     * @param getter       the getter.
-     * @param setter       the setter.
-     * @param replacement  the replacement.
-     * @return             the replaced stream.
-     */
+    /** Replace sub element that is null (accessed with the given getter and setter) with the given replacement. */
     public default <VALUE> StreamPlus<DATA> fillNull(
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
@@ -99,13 +81,7 @@ public interface StreamPlusWithFillNull<DATA> {
         });
     }
     
-    /**
-     * Replace sub element that is null (accessed with the given lens) with the replacement value from the supplier.
-     * 
-     * @param lens                 the lens.
-     * @param replacementSupplier  the replacement supplier.
-     * @return                     the replaced stream.
-     */
+    /** Replace sub element that is null (accessed with the given lens) with the replacement value from the supplier. */
     public default <VALUE> StreamPlus<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             Supplier<VALUE>      replacementSupplier) {
@@ -115,14 +91,7 @@ public interface StreamPlusWithFillNull<DATA> {
                 replacementSupplier);
     }
     
-    /**
-     * Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier.
-     * 
-     * @param getter               the getter.
-     * @param setter               the setter.
-     * @param replacementSupplier  the replacement supplier.
-     * @return                     the replaced stream.
-     */
+    /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier. */
     public default <VALUE> StreamPlus<DATA> fillNull(
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
@@ -142,13 +111,7 @@ public interface StreamPlusWithFillNull<DATA> {
         });
     }
     
-    /**
-     * Replace sub element that is null (accessed with the given lens) with the replacement value from the function.
-     * 
-     * @param lens                 the lens.
-     * @param replacementFunction  the replacement function.
-     * @return                     the replaced stream.
-     */
+    /** Replace sub element that is null (accessed with the given lens) with the replacement value from the function. */
     public default <VALUE> StreamPlus<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             Func1<DATA, VALUE>   replacementFunction) {
@@ -158,14 +121,7 @@ public interface StreamPlusWithFillNull<DATA> {
                 replacementFunction);
     }
     
-    /**
-     * Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function.
-     * 
-     * @param getter               the getter.
-     * @param setter               the setter.
-     * @param replacementFunction  the replacement function.
-     * @return                     the replaced stream.
-     */
+    /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function. */
     public default <VALUE> StreamPlus<DATA> fillNull(
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 

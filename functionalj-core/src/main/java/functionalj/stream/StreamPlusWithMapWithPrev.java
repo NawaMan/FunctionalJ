@@ -49,13 +49,7 @@ public interface StreamPlusWithMapWithPrev<DATA> {
                 });
     }
     
-    /**
-     * Create a stream whose value is the combination between the previous value and the current value of this stream.
-     * 
-     * @param <T>         the target type.
-     * @param combinator  the combinator.
-     * @return            the combined stream.
-     */
+    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
     public default <TARGET> StreamPlus<TARGET> mapWithPrev(
             BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> combinator) {
         val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());

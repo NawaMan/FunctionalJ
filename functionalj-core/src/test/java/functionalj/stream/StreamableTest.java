@@ -52,7 +52,7 @@ public class StreamableTest {
     @Test
     public void testCycle() {
         val stream = Streamable.cycle("One", "Two", "Three");
-        assertStrings("Two, Three, One, Two, Three", stream.skip(1).limit(5).joinToString(", "));
+        assertStrings("Two, Three, One, Two, Three", stream.skip(1).limit(5).join(", "));
     }
     
     @Test
@@ -73,21 +73,21 @@ public class StreamableTest {
     @Test
     public void testMapWithPrev() {
         val stream = Streamable.of("One", "Two", "Three").mapWithPrev((prev, element) -> prev.orElse("").length() + element.length());
-        assertEquals("3, 6, 8", stream.joinToString(", "));
-        assertEquals("3, 6, 8", stream.joinToString(", "));
+        assertEquals("3, 6, 8", stream.join(", "));
+        assertEquals("3, 6, 8", stream.join(", "));
     }
     
     @Test
     public void testMapWithPrev_each_prior() {
         // Check if mapWithPrev is "Each-Prior" adverb in Q
         val stream = Streamable.infiniteInt().limit(5).mapWithPrev((prev, element) -> element - prev.orElse(0));
-        assertEquals("0, 1, 1, 1, 1", stream.joinToString(", "));
+        assertEquals("0, 1, 1, 1, 1", stream.join(", "));
     }
     
     @Test
     public void testAccumulate() {
         val stream = Streamable.of(1, 2, 3, 4, 5);
-        assertEquals("1, 3, 6, 10, 15", stream.accumulate((a, b)->a+b).joinToString(", "));
+        assertEquals("1, 3, 6, 10, 15", stream.accumulate((a, b)->a+b).join(", "));
     }
     
 }

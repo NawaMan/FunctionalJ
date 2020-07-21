@@ -34,11 +34,7 @@ public interface StreamPlusWithForEach<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /**
-     * For each with the index.
-     * 
-     * @param action
-     */
+    /** For each with the index. */
     @Eager
     @Terminal
     public default void forEachWithIndex(IntObjBiConsumer<? super DATA> action) {
@@ -51,11 +47,7 @@ public interface StreamPlusWithForEach<DATA> {
         });
     }
     
-    /**
-     * Populate the array with the population in the stream from 0 to length or until run out of elements.
-     * 
-     * @param array  the array to populate to.
-     */
+    /** Populate the array with the population in the stream from 0 to length or until run out of elements. */
     @Terminal
     public default void populateArray(DATA[] array) {
         val streamPlus = streamPlus();
@@ -66,13 +58,7 @@ public interface StreamPlusWithForEach<DATA> {
         });
     }
     
-    /**
-     * Populate the array with the population in the stream from offset to length or until run out of elements.
-     * 
-     * @param array   the array to populate to.
-     * @param offset  the offset in the array -- the one that the first element will be in.
-     * @return
-     */
+    /** Populate the array with the population in the stream from offset to length or until run out of elements. */
     @Terminal
     public default void populateArray(DATA[] array, int offset) {
         val streamPlus = streamPlus();
@@ -83,14 +69,7 @@ public interface StreamPlusWithForEach<DATA> {
         });
     }
     
-    /**
-     * Populate the array with the population in the stream from offset to length or until run out of elements.
-     * 
-     * @param array   the array to populate to.
-     * @param offset  the offset in the array -- the one that the first element will be in.
-     * @param length  the length of the population to copy to.
-     * @return
-     */
+    /** Populate the array with the population in the stream from offset to length or until run out of elements. */
     @Terminal
     public default void populateArray(DATA[] array, int offset, int length) {
         val streamPlus = streamPlus();

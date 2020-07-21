@@ -33,25 +33,13 @@ public interface StreamPlusWithMap<DATA> {
     public StreamPlus<DATA> streamPlus();
     
     
-    /**
-     * Map the value using the mapper.
-     * 
-     * @param <T>     the target type.
-     * @param mapper  the mapper function.
-     * @return
-     */
+    /** Map the value using the mapper. */
     public default <T> StreamPlus<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
         val streamPlus = streamPlus();
         return streamPlus.map(mapper);
     }
     
-    /**
-     * Map the value using the mapper only when the condition is true.
-     * 
-     * @param <T>     the target type.
-     * @param mapper  the mapper function.
-     * @return
-     */
+    /** Map the value using the mapper only when the condition is true. */
     public default StreamPlus<DATA> mapOnly(
             Predicate<? super DATA>      condition, 
             Function<? super DATA, DATA> mapper) {
@@ -66,14 +54,7 @@ public interface StreamPlusWithMap<DATA> {
                 });
     }
     
-    /**
-     * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
-     * 
-     * @param <T>         the target type.
-     * @param mapper      the mapper function.
-     * @param elseMapper  the else mapper function.
-     * @return
-     */
+    /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
     public default <T> StreamPlus<T> mapIf(
             Predicate<? super DATA>   condition, 
             Function<? super DATA, T> mapper,
@@ -89,14 +70,7 @@ public interface StreamPlusWithMap<DATA> {
                 });
     }
     
-    /**
-     * Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.
-     * 
-     * @param <T>         the target type.
-     * @param mapper      the mapper function.
-     * @param elseMapper  the else mapper function.
-     * @return
-     */
+    /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.  */
     public default <T> StreamPlus<T> mapToObjIf(
             Predicate<? super DATA>   checker, 
             Function<? super DATA, T> mapper,

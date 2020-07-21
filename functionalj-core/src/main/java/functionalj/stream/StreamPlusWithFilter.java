@@ -43,13 +43,8 @@ import lombok.val;
 public interface StreamPlusWithFilter<DATA> {
     
     public StreamPlus<DATA> streamPlus();
-    /**
-     * Map each value to an int and used it to filter the value.
-     * 
-     * @param mapper     the mapper.
-     * @param predicate  the predicate.
-     * @return           the filtered stream.
-     */
+    
+    /** Map each value to an int and used it to filter the value. */
     public default StreamPlus<DATA> filterAsInt(
             ToIntFunction<? super DATA> mapper, 
             IntPredicate                predicate) {
@@ -62,13 +57,7 @@ public interface StreamPlusWithFilter<DATA> {
                 });
     }
     
-    /**
-     * Map each value to a long and used it to filter the value.
-     * 
-     * @param mapper     the mapper.
-     * @param predicate  the predicate.
-     * @return           the filtered stream.
-     */
+    /** Map each value to a long and used it to filter the value. */
     public default StreamPlus<DATA> filterAsLong(
             ToLongFunction<? super DATA> mapper, 
             LongPredicate                predicate) {
@@ -81,13 +70,7 @@ public interface StreamPlusWithFilter<DATA> {
                 });
     }
     
-    /**
-     * Map each value to a double and used it to filter the value.
-     * 
-     * @param mapper     the mapper.
-     * @param predicate  the predicate.
-     * @return           the filtered stream.
-     */
+    /** Map each value to a double and used it to filter the value. */
     public default StreamPlus<DATA> filterAsDouble(
             ToDoubleFunction<? super DATA> mapper, 
             DoublePredicate                predicate) {
@@ -100,13 +83,7 @@ public interface StreamPlusWithFilter<DATA> {
                 });
     }
     
-    /**
-     * Map each value to another object and used it to filter the value.
-     * 
-     * @param mapper     the mapper.
-     * @param predicate  the predicate.
-     * @return           the filtered stream.
-     */
+    /** Map each value to another object and used it to filter the value. */
     public default <T> StreamPlus<DATA> filterAsObject(
             Function<? super DATA, T> mapper, 
             Predicate<? super T>      predicate) {
@@ -115,13 +92,7 @@ public interface StreamPlusWithFilter<DATA> {
                 .filter(mapper, predicate);
     }
     
-    /**
-     * Map each value to another object and used it to filter the value.
-     * 
-     * @param mapper     the mapper.
-     * @param predicate  the predicate.
-     * @return           the filtered stream.
-     */
+    /** Map each value to another object and used it to filter the value. */
     public default <T> StreamPlus<DATA> filter(
             Function<? super DATA, T> mapper,
             Predicate<? super T>      predicate) {
@@ -134,12 +105,7 @@ public interface StreamPlusWithFilter<DATA> {
                 });
     }
     
-    /**
-     * Filter the element that is only the specific class.
-     * 
-     * @param clzz  the desired class.
-     * @return      the filtered stream.
-     */
+    /** Filter the element that is only the specific class. */
     public default <T> StreamPlus<DATA> filter(Class<T> clzz) {
         val streamPlus = streamPlus();
         return streamPlus
@@ -149,10 +115,6 @@ public interface StreamPlusWithFilter<DATA> {
     /**
      * Case the value to the given class and used it to filter the value.
      * If the value is not of the type (null included), it will be filtered out.
-     * 
-     * @param mapper     the mapper.
-     * @param predicate  the predicate.
-     * @return           the filtered stream.
      */
     public default <T> StreamPlus<DATA> filter(
             Class<T>             clzz,
@@ -169,12 +131,7 @@ public interface StreamPlusWithFilter<DATA> {
                 });
     }
     
-    /**
-     * Filter value with its index.
-     * 
-     * @param predicate  the predicate.
-     * @return           the filtered stream.
-     */
+    /** Filter value with its index. */
     public default StreamPlus<DATA> filterWithIndex(IntObjBiFunction<? super DATA, Boolean> predicate) {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
@@ -185,23 +142,25 @@ public interface StreamPlusWithFilter<DATA> {
                 });
     }
     
-    /**
-     * Filter value that is not null.
-     * 
-     * @return the filtered stream.
-     */
+    /** Filter value that is not null. */
     public default StreamPlus<DATA> filterNonNull() {
+        return excludeNull();
+    }
+    
+    /** Map the value to another object and filter the one that is not null. */
+    public default <T> StreamPlus<DATA> filterNonNull(Function<? super DATA, T> mapper) {
+        return excludeNull(mapper);
+    }
+    
+    /** Filter value that is not null. */
+    public default StreamPlus<DATA> excludeNull() {
         val streamPlus = streamPlus();
         return streamPlus
                 .filter(Objects::nonNull);
     }
     
-    /**
-     * Map the value to another object and filter the one that is not null.
-     * 
-     * @return the filtered stream.
-     */
-    public default <T> StreamPlus<DATA> filterNonNull(Function<? super DATA, T> mapper) {
+    /** Map the value to another object and filter the one that is not null. */
+    public default <T> StreamPlus<DATA> excludeNull(Function<? super DATA, T> mapper) {
         val streamPlus = streamPlus();
         return streamPlus.filter(value -> {
             val mapped    = mapper.apply(value);
@@ -210,21 +169,13 @@ public interface StreamPlusWithFilter<DATA> {
         });
     }
     
-    /**
-     * Filter only the value that is in the given items.
-     * 
-     * @return the filtered stream.
-     */
+    /** Filter only the value that is in the given items. */
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> filterIn(DATA ... items) {
         return filterIn(asList((DATA[])items));
     }
     
-    /**
-     * Filter only the value that is in the given collections.
-     * 
-     * @return the filtered stream.
-     */
+    /** Filter only the value that is in the given collections. */
     public default StreamPlus<DATA> filterIn(Collection<? super DATA> collection) {
         if (collection == null)
             return StreamPlus.empty();
@@ -233,11 +184,7 @@ public interface StreamPlusWithFilter<DATA> {
         return streamPlus.filter(data -> collection.contains(data));
     }
     
-    /**
-     * Filter only the value that the predicate returns false.
-     * 
-     * @return the filtered stream.
-     */
+    /** Filter only the value that the predicate returns false. */
     public default StreamPlus<DATA> exclude(Predicate<? super DATA> predicate) {
         if (predicate == null)
             return StreamPlus.empty();
@@ -247,11 +194,7 @@ public interface StreamPlusWithFilter<DATA> {
                 .filter(data -> !predicate.test(data));
     }
     
-    /**
-     * Filter out any value that is in the given items.
-     * 
-     * @return the filtered stream.
-     */
+    /** Filter out any value that is in the given items. */
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> excludeIn(DATA ... items) {
         val streamPlus = streamPlus();
@@ -259,11 +202,7 @@ public interface StreamPlusWithFilter<DATA> {
                 .excludeIn(asList((DATA[])items));
     }
     
-    /**
-     * Filter out any value that is in the given collection.
-     * 
-     * @return the filtered stream.
-     */
+    /** Filter out any value that is in the given collection. */
     public default StreamPlus<DATA> excludeIn(Collection<? super DATA> collection) {
         if (collection == null)
             return StreamPlus.empty();

@@ -194,9 +194,9 @@ public final class Console {
         public String toString() {
             return "++++++++++++++++++++\n" +
                    "Data: " + data + "\n" + 
-                   "outLines(" + outLines.size() + "): \n    " + outLines.joinToString("\n    ") + "\n" +
-                   "errLines(" + errLines.size() + "): \n    " + errLines.joinToString("\n    ") + "\n" +
-                   "inLines("  + inLines.size()  + "): \n    "  + inLines.joinToString("\n    ")  + "\n" +
+                   "outLines(" + outLines.size() + "): \n    " + outLines.join("\n    ") + "\n" +
+                   "errLines(" + errLines.size() + "): \n    " + errLines.join("\n    ") + "\n" +
+                   "inLines("  + inLines.size()  + "): \n    "  + inLines.join("\n    ")  + "\n" +
                    "--------------------"
                    ;
         }

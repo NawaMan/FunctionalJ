@@ -48,11 +48,9 @@ public interface StreamPlusWithReshape<DATA> {
     public StreamPlus<DATA> streamPlus();
     
     /**
-     * Segment the stream into sub stream with the fix length of count. The last portion may be shorter.
-     * 
-     * @param count  the element count of the sub stream.
-     * @return       the stream of sub stream.
-     */
+     * Segment the stream into sub stream with the fix length of count.
+     * The last portion may be shorter.
+     **/
     public default StreamPlus<StreamPlus<DATA>> segment(int count) {
         return segment(count, true);
     }
@@ -78,21 +76,12 @@ public interface StreamPlusWithReshape<DATA> {
     /**
      * Segment the stream into sub stream whenever the start condition is true.
      * The tail sub stream will always be included.
-     * 
-     * @param startCondition  the start new segment condition.
-     * @return                the stream of sub stream.
      */
     public default StreamPlus<StreamPlus<DATA>> segment(Predicate<? super DATA> startCondition) {
         return segment(startCondition, true);
     }
     
-    /**
-     * Segment the stream into sub stream whenever the start condition is true.
-     * 
-     * @param startCondition            the start new segment condition.
-     * @param includeIncompletedSegment the flag to include the last incomplete segment.
-     * @return                          the stream of sub stream.
-     */
+    /** Segment the stream into sub stream whenever the start condition is true. */
     public default StreamPlus<StreamPlus<DATA>> segment(
             Predicate<? super DATA> startCondition,
             boolean                 includeIncompletedSegment) {
@@ -138,10 +127,6 @@ public interface StreamPlusWithReshape<DATA> {
     /**
      * Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true.
      * The tail sub stream will always be included.
-     * 
-     * @param startCondition  the start new segment condition.
-     * @param endCondition    the end segment condition.
-     * @return                the stream of sub stream.
      */
     public default StreamPlus<StreamPlus<DATA>> segment(
             Predicate<? super DATA> startCondition,
@@ -149,13 +134,7 @@ public interface StreamPlusWithReshape<DATA> {
         return segment(startCondition, endCondition, true);
     }
     
-    /**
-     * Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true.
-     * 
-     * @param startCondition            the start new segment condition.
-     * @param includeIncompletedSegment the flag to include the last incomplete segment.
-     * @return                          the stream of sub stream.
-     */
+    /** Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true. */
     public default StreamPlus<StreamPlus<DATA>> segment(
             Predicate<? super DATA> startCondition,
             Predicate<? super DATA> endCondition,
@@ -203,9 +182,6 @@ public interface StreamPlusWithReshape<DATA> {
      * 
      * If the segmentSize function return null, the value will be ignored.
      * If the segmentSize function return 0, an empty stream is returned.
-     * 
-     * @param segmentSize  the function to determine the size of the next segment.
-     * @return             the stream of sub stream.
      */
     @SuppressWarnings("unchecked")
     public default StreamPlus<StreamPlus<DATA>> segmentSize(Func1<? super DATA, Integer> segmentSize) {
@@ -261,13 +237,7 @@ public interface StreamPlusWithReshape<DATA> {
             return resultStream;
         });
     }
-    /**
-     * Combine the current value with the one before it using then combinator everytime the condition to collapse is true.
-     * 
-     * @param conditionToCollapse  the condition.
-     * @param combinator           the combinator.
-     * @return                     the combined result stream.
-     */
+    /** Combine the current value with the one before it using then combinator everytime the condition to collapse is true. */
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> collapseWhen(
             Predicate<? super DATA>                 conditionToCollapse,
@@ -321,9 +291,6 @@ public interface StreamPlusWithReshape<DATA> {
      * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
      * 
      * If the segmentSize function return null or 0, the value will be used as is (no collapse).
-     * 
-     * @param segmentSize  the function to determine the size of the next segment.
-     * @return             the stream of sub stream.
      */
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> collapseSize(
@@ -384,10 +351,6 @@ public interface StreamPlusWithReshape<DATA> {
      * The value is mapped using the mapper function before combined.
      * 
      * If the segmentSize function return null or 0, the value will be used as is (no collapse).
-     * 
-     * @param segmentSize  the function to determine the size of the next segment.
-     * @param mapper       the mapper.
-     * @return             the stream of sub stream.
      */
     @SuppressWarnings("unchecked")
     public default <TARGET> StreamPlus<TARGET> collapseSize(
@@ -448,4 +411,5 @@ public interface StreamPlusWithReshape<DATA> {
         
         return resultStream;
     }
+    
 }

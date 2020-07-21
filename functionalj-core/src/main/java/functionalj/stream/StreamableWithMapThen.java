@@ -35,6 +35,7 @@ import functionalj.function.Func6;
 
 public interface StreamableWithMapThen<DATA> extends AsStreamable<DATA> {
     
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T> 
         Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
@@ -42,6 +43,8 @@ public interface StreamableWithMapThen<DATA> extends AsStreamable<DATA> {
                 BiFunction<T1, T2, T> merger) {
         return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, merger));
     }
+    
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T> 
         Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
@@ -50,6 +53,8 @@ public interface StreamableWithMapThen<DATA> extends AsStreamable<DATA> {
                 Func3<T1, T2, T3, T> merger) {
         return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, merger));
     }
+    
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T> 
         Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
@@ -59,6 +64,8 @@ public interface StreamableWithMapThen<DATA> extends AsStreamable<DATA> {
                 Func4<T1, T2, T3, T4, T> merger) {
         return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, merger));
     }
+    
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T5, T> 
         Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
@@ -69,6 +76,8 @@ public interface StreamableWithMapThen<DATA> extends AsStreamable<DATA> {
                 Func5<T1, T2, T3, T4, T5, T> merger) {
         return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, merger));
     }
+    
+    /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T5, T6, T> 
         Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,

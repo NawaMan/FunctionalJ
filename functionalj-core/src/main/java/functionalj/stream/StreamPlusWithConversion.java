@@ -50,12 +50,7 @@ public interface StreamPlusWithConversion<DATA> {
     
     //-- toArray --
     
-    /**
-     * Map the data to byte and return the byte array of all the results.
-     * 
-     * @param toByte  the mapper function.
-     * @return        the array containing the data.
-     */
+    /** Map the data to byte and return the byte array of all the results. */
     @Eager
     @Terminal
     public default byte[] toByteArray(ToByteFunction<DATA> toByte) {
@@ -70,12 +65,7 @@ public interface StreamPlusWithConversion<DATA> {
                 .toByteArray();
     }
     
-    /**
-     * Map the data to int and return the byte array of all the results.
-     * 
-     * @param toByte  the mapper function.
-     * @return        the array containing the data.
-     */
+    /** Map the data to int and return the byte array of all the results. */
     @Eager
     @Terminal
     public default int[] toIntArray(ToIntFunction<DATA> toInt) {
@@ -85,12 +75,7 @@ public interface StreamPlusWithConversion<DATA> {
                 .toArray ();
     }
     
-    /**
-     * Map the data to long and return the byte array of all the results.
-     * 
-     * @param toByte  the mapper function.
-     * @return        the array containing the data.
-     */
+    /** Map the data to long and return the byte array of all the results. */
     @Eager
     @Terminal
     public default long[] toLongArray(ToLongFunction<DATA> toLong) {
@@ -100,12 +85,7 @@ public interface StreamPlusWithConversion<DATA> {
                 .toArray  ();
     }
     
-    /**
-     * Map the data to double and return the byte array of all the results.
-     * 
-     * @param toByte  the mapper function.
-     * @return        the array containing the data.
-     */
+    /** Map the data to double and return the byte array of all the results. */
     @Eager
     @Terminal
     public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
@@ -205,15 +185,10 @@ public interface StreamPlusWithConversion<DATA> {
     /**
      * Create a map from the data using the keyMapper.
      * This method throw an exception with duplicate keys.
-     * 
-     * @param <KEY>      the type of the key.
-     * @param keyMapper  map the data to the key.
-     * @return           the map containing the key and data.
      */
     @Eager
     @Terminal
-    public default <KEY> FuncMap<KEY, DATA> toMap(
-            Function<? super DATA, KEY> keyMapper) {
+    public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, KEY> keyMapper) {
         val streamPlus = streamPlus();
         val theMap     = streamPlus.collect(Collectors.toMap(keyMapper, data -> data));
         return ImmutableMap.from(theMap);
@@ -222,11 +197,6 @@ public interface StreamPlusWithConversion<DATA> {
     /**
      * Create a map from the data using the keyMapper and the valueMapper.
      * This method throw an exception with duplicate keys.
-     * 
-     * @param <KEY>        the type of the key.
-     * @param keyMapper    map the data to the key.
-     * @param valueMapper  map the data to the value.
-     * @return             the map containing the key and data.
      */
     @Eager
     @Terminal
@@ -241,12 +211,6 @@ public interface StreamPlusWithConversion<DATA> {
     /**
      * Create a map from the data using the keyMapper and the valueMapper.
      * When a value mapped to the same key, use the merge function to merge the value.
-     * 
-     * @param <KEY>          the type of the key.
-     * @param keyMapper      map the data to the key.
-     * @param valueMapper    map the data to the value.
-     * @param mergeFunction  the merge function.
-     * @return               the map containing the key and data.
      */
     @Eager
     @Terminal
@@ -262,11 +226,6 @@ public interface StreamPlusWithConversion<DATA> {
     /**
      * Create a map from the data using the keyMapper.
      * When a value mapped to the same key, use the merge function to merge the value.
-     * 
-     * @param <KEY>          the type of the key.
-     * @param keyMapper      map the data to the key.
-     * @param mergeFunction  the merge function.
-     * @return               the map containing the key and data.
      */
     @Eager
     @Terminal

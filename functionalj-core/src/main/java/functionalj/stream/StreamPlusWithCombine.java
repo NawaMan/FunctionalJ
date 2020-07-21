@@ -46,15 +46,9 @@ public interface StreamPlusWithCombine<DATA> {
     public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, Stream<TARGET>> action);
     
     
-    /**
-     * Concatenate the given tail stream to this stream.
-     * 
-     * @param tail  the tail stream.
-     * @return      the combined stream.
-     */
+    /** Concatenate the given tail stream to this stream. */
     @SuppressWarnings("unchecked")
-    public default StreamPlus<DATA> concatWith(
-            Stream<DATA> tail) {
+    public default StreamPlus<DATA> concatWith(Stream<DATA> tail) {
         return StreamPlus.concat(
                 StreamPlus.of(this), 
                 StreamPlus.of(tail)
@@ -70,9 +64,6 @@ public interface StreamPlusWithCombine<DATA> {
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
-     * 
-     * @param anotherStream  another stream.
-     * @return               the merged stream.
      */
     public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
         val streamPlus = streamPlus();
@@ -101,9 +92,6 @@ public interface StreamPlusWithCombine<DATA> {
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
      *   Result stream:  [(A, 1), (B, 2), (C, 3)] <br>
-     * 
-     * @param anotherStream  another stream.
-     * @return               the merged stream.
      */
     public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(Stream<B> anotherStream) {
         return zipWith(anotherStream, RequireBoth, Tuple2::of);
@@ -117,10 +105,6 @@ public interface StreamPlusWithCombine<DATA> {
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
      *   Result stream:  [(A, 1), (B, 2), (C, 3), (null, 4), (null, 5)] <br>
-     * 
-     * @param anotherStream  another stream.
-     * @param option         the zip option.
-     * @return               the merged stream.
      */
     public default <B> StreamPlus<Tuple2<DATA,B>> zipWith(
             Stream<B>     anotherStream,
@@ -137,13 +121,9 @@ public interface StreamPlusWithCombine<DATA> {
      *   Another stream: [1, 2, 3, 4, 5] <br>
      *   Combinator:     (v1,v2) -> v1 + "-" + v2
      *   Result stream:  [A-1, B-2, C-3] <br>
-     * 
-     * @param anotherStream  another stream.
-     * @param combinator     the combinator.
-     * @return               the merged stream.
      */
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
-            Stream<ANOTHER> anotherStream,
+            Stream<ANOTHER>              anotherStream,
             Func2<DATA, ANOTHER, TARGET> combinator) {
         return zipWith(anotherStream, RequireBoth, combinator);
     }
@@ -157,11 +137,6 @@ public interface StreamPlusWithCombine<DATA> {
      *   Another stream: [1, 2, 3, 4, 5] <br>
      *   Combinator:     (v1,v2) -> v1 + "-" + v2
      *   Result stream:  [A-1, B-2, C-3, null-4, null-5] <br>
-     * 
-     * @param anotherStream  another stream.
-     * @param option         the zip option.
-     * @param combinator     the combinator.
-     * @return               the merged stream.
      */
     // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
     public default <B, C> StreamPlus<C> zipWith(
@@ -180,12 +155,8 @@ public interface StreamPlusWithCombine<DATA> {
      * For an example: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
-     *   Selector:       (v1,v2) -> v1 > v2
-     *   Result stream:  [10, 5, 9, 5] <br>
-     * 
-     * @param anotherStream         another stream.
-     * @param selectThisNotAnother  the selector.
-     * @return                      the merged stream.
+     *   Selector:       (v1,v2) -> v1 > v2 <br>
+     *   Result stream:  [10, 5, 9, 5]
      */
     public default StreamPlus<DATA> choose(
             Stream<DATA>               anotherStream,
@@ -201,13 +172,8 @@ public interface StreamPlusWithCombine<DATA> {
      * For an example with ZipWithOption.AllowUnpaired: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
-     *   Selector:       (v1,v2) -> v1 > v2
-     *   Result stream:  [10, 5, 9, 5, 5, 5, 5] <br>
-     * 
-     * @param anotherStream         another stream.
-     * @param option                the zip option.
-     * @param selectThisNotAnother  the selector.
-     * @return                      the merged stream.
+     *   Selector:       (v1,v2) -> v1 > v2 <br>
+     *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
      */
     public default StreamPlus<DATA> choose(
             Stream<DATA>               anotherStream,

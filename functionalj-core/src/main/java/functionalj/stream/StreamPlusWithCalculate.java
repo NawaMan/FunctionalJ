@@ -45,6 +45,7 @@ public interface StreamPlusWithCalculate<DATA> {
     // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
     //        Still not sure how to do that.
     
+    /** Perform the calculation using the data of this stream */
     public default <RESULT, ACCUMULATED> RESULT calculate(
             Collector<? super DATA, ACCUMULATED, RESULT> collector) {
         val collected = new Collected.ByCollector<>(collector);
@@ -55,6 +56,7 @@ public interface StreamPlusWithCalculate<DATA> {
         return value;
     }
     
+    /** Perform the calculation using the data of this stream */
     public default <ACCUMULATED1, RESULT1, 
                     ACCUMULATED2, RESULT2>
                         Tuple2<RESULT1, RESULT2> 
@@ -73,6 +75,7 @@ public interface StreamPlusWithCalculate<DATA> {
         );
     }
     
+    /** Perform the calculation using the data of this stream */
     public default <ACCUMULATED1, RESULT1, 
                     ACCUMULATED2, RESULT2, 
                     ACCUMULATED3, RESULT3>
@@ -96,6 +99,7 @@ public interface StreamPlusWithCalculate<DATA> {
         );
     }
     
+    /** Perform the calculation using the data of this stream */
     public default <ACCUMULATED1, RESULT1, 
                     ACCUMULATED2, RESULT2, 
                     ACCUMULATED3, RESULT3, 
@@ -124,6 +128,7 @@ public interface StreamPlusWithCalculate<DATA> {
         );
     }
     
+    /** Perform the calculation using the data of this stream */
     public default <ACCUMULATED1, RESULT1, 
                     ACCUMULATED2, RESULT2, 
                     ACCUMULATED3, RESULT3, 
@@ -157,6 +162,7 @@ public interface StreamPlusWithCalculate<DATA> {
         );
     }
     
+    /** Perform the calculation using the data of this stream */
     public default <ACCUMULATED1, RESULT1, 
                     ACCUMULATED2, RESULT2, 
                     ACCUMULATED3, RESULT3, 

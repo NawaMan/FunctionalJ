@@ -190,7 +190,7 @@ public class StreamPlusTest {
                 "0, 1, 2, 3, 4",
               stream
                   .restate((a, s)->s.filter(x -> x != a))
-                  .joinToString(", "));
+                  .join   (", "));
     }
     
     // sieve of eratosthenes
@@ -207,7 +207,7 @@ public class StreamPlusTest {
               stream
                   .restate((a, s)->s.filter(x -> x % a != 0))
                   .limit(60)
-                  .joinToString(", "));
+                  .join (", "));
     }
     
     @Test
@@ -262,7 +262,7 @@ public class StreamPlusTest {
                 stream1.collapseSize(
                         i -> i,
                         (a,b)->a+b
-                    ).joinToString(", "));
+                    ).join(", "));
         
         val stream2 = IntStreamable.infiniteInt().limit(20).boxed();
         assertEquals(
@@ -271,7 +271,7 @@ public class StreamPlusTest {
                         i -> i,
                         i -> "" + i,
                         (a,b)->a + "-" + b
-                    ).joinToString(", "));
+                    ).join(", "));
     }
     
     @Test

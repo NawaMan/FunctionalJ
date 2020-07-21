@@ -38,13 +38,7 @@ public interface StreamPlusWithPipe<DATA> {
         return Pipeable.of(streamPlus);
     }
     
-    /**
-     * Pipe this stream plus through the given function.
-     * 
-     * @param <T>       the target type.
-     * @param function  the function.
-     * @return          the target value.
-     */
+    /** Pipe this stream plus through the given function. */
     public default <T> T pipeTo(Function<? super StreamPlus<DATA>, T> function) {
         val streamPlus = streamPlus();
         return function.apply(streamPlus);

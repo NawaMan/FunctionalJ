@@ -1,118 +1,179 @@
+// ============================================================================
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
+import java.util.function.ToLongFunction;
 
-import functionalj.function.Func1;
-import functionalj.functions.StrFuncs;
+import functionalj.function.ToByteFunction;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
-import lombok.val;
 
 public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
     
-    public default String joinToString() {
-        return stream().map(StrFuncs::toStr)
-                .collect(Collectors.joining());
-    }
-    public default String joinToString(String delimiter) {
-        return stream().map(StrFuncs::toStr)
-                .collect(Collectors.joining(delimiter));
+    /** Map the data to byte and return the byte array of all the results. */
+    public default byte[] toByteArray(ToByteFunction<DATA> toByte) {
+        return stream()
+                .toByteArray(toByte);
     }
     
-    public default <T> T[] toArray(T[] a) {
-        return StreamPlus.of(stream()).toJavaList().toArray(a);
-    }
-    
-    public default List<DATA> toJavaList() {
-        return stream().collect(Collectors.toList());
-    }
-    
-    public default byte[] toByteArray(Func1<DATA, Byte> toByte) {
-        val byteArray = new ByteArrayOutputStream();
-        stream().forEach(d -> byteArray.write(toByte.apply(d)));
-        return byteArray.toByteArray();
-    }
-    
+    /** Map the data to int and return the byte array of all the results. */
     public default int[] toIntArray(ToIntFunction<DATA> toInt) {
-        return stream().mapToInt(toInt).toArray();
-    }
-//    
-//    public default long[] toLongArray(ToLongFunction<DATA> toLong) {
-//        return mapToLong(toLong).toArray();
-//    }
-//    
-//    public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
-//        return mapToDouble(toDouble).toArray();
-//    }
-    
-    public default FuncList<DATA> toList() {
-        return toImmutableList();
+        return stream()
+                .toIntArray(toInt);
     }
     
-    public default FuncList<DATA> toFuncList() {
-        return toImmutableList();
+    /** Map the data to long and return the byte array of all the results. */
+    public default long[] toLongArray(ToLongFunction<DATA> toLong) {
+        return stream()
+                .toLongArray(toLong);
     }
     
-    public default FuncList<DATA> toLazyList() {
-//        return stream().toLazyList();
-        return null;
+    /** Map the data to double and return the byte array of all the results. */
+    public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
+        return stream()
+                .toDoubleArray(toDouble);
     }
     
-    public default String toListString() {
-        return stream().toListString();
-    }
+    //-- toList --
     
-    public default ImmutableList<DATA> toImmutableList() {
-        return ImmutableList.from(stream());
-    }
-    
-    public default List<DATA> toMutableList() {
-        return toArrayList();
-    }
-    
+    /** @return the array list containing the elements. */
     public default ArrayList<DATA> toArrayList() {
-        return new ArrayList<DATA>(toJavaList());
+        return stream()
+                .toArrayList();
     }
     
-    public default Set<DATA> toSet() {
-        return new HashSet<DATA>(stream().collect(Collectors.toSet()));
+    /** @return a functional list containing the elements. */
+    public default FuncList<DATA> toFuncList() {
+        return stream()
+                .toFuncList();
     }
     
-    public default <KEY> FuncMap<KEY, DATA> toMap(
-            Function<? super DATA, KEY> keyMapper) {
+    /** @return an immutable list containing the elements. */
+    public default ImmutableList<DATA> toImmutableList() {
+        return stream()
+                .toImmutableList();
+    }
+    
+    /** @return an Java list containing the elements. */
+    public default List<DATA> toJavaList() {
+        return stream()
+                .toJavaList();
+    }
+    
+    /** @return a list containing the elements. */
+    public default FuncList<DATA> toList() {
+        return stream()
+                .toList();
+    }
+    
+    /** @return a mutable list containing the elements. */
+    public default List<DATA> toMutableList() {
+        return stream()
+                .toMutableList();
+    }
+    
+    //-- join --
+    
+    /** @return the concatenate of toString() of each elements. */
+    public default String join() {
+        return stream()
+                .join();
+    }
+    
+    /** @return the concatenate of toString() of each elements with the given delimiter. */
+    public default String join(String delimiter) {
+        return stream()
+                .join(delimiter);
+    }
+    
+    //-- toListString --
+    
+    /** @return the to string as a list for this stream. */
+    public default String toListString() {
+        return stream()
+                .toListString();
+    }
+    
+    //-- toMap --
+    
+    /**
+     * Create a map from the data using the keyMapper.
+     * This method throw an exception with duplicate keys.
+     */
+    public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, KEY> keyMapper) {
         return stream()
                 .toMap(keyMapper);
     }
     
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * This method throw an exception with duplicate keys.
+     */
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
-            Function<? super DATA, KEY>  keyMapper,
+            Function<? super DATA, KEY>   keyMapper,
             Function<? super DATA, VALUE> valueMapper) {
         return stream()
                 .toMap(keyMapper, valueMapper);
     }
     
+    /**
+     * Create a map from the data using the keyMapper and the valueMapper.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     */
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
             Function<? super DATA, KEY>   keyMapper,
             Function<? super DATA, VALUE> valueMapper,
-            BinaryOperator<VALUE>                   mergeFunction) {
+            BinaryOperator<VALUE>         mergeFunction) {
         return stream()
                 .toMap(keyMapper, valueMapper, mergeFunction);
     }
     
+    /**
+     * Create a map from the data using the keyMapper.
+     * When a value mapped to the same key, use the merge function to merge the value.
+     */
     public default <KEY> FuncMap<KEY, DATA> toMap(
             Function<? super DATA, KEY> keyMapper,
             BinaryOperator<DATA>        mergeFunction) {
         return stream()
                 .toMap(keyMapper, mergeFunction);
+    }
+    
+    //-- toSet --
+    
+    /** @return  a set of the elements. */
+    public default Set<DATA> toSet() {
+        return stream()
+                .toSet();
     }
     
 }

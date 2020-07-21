@@ -33,6 +33,8 @@ import lombok.val;
 
 public interface StreamPlusWithMapWithIndex<DATA> {
     
+    // TODO - to int, long, double
+    
     public StreamPlus<DATA> streamPlus();
     
     /** @return  the stream of each value and index. */
@@ -47,13 +49,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
                 });
     }
     
-    /**
-     * Create a stream whose value is the combination between value of this stream and its index.
-     * 
-     * @param <T>         the target type.
-     * @param combinator  the combinator.
-     * @return            the combined stream.
-     */
+    /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> StreamPlus<T> mapWithIndex(IntObjBiFunction<? super DATA, T> combinator) {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
@@ -65,13 +61,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
                 });
     }
     
-    /**
-     * Create a stream whose value is the combination between value of this stream and its index.
-     * 
-     * @param <T>         the target type.
-     * @param combinator  the combinator.
-     * @return            the combined stream.
-     */
+    /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> StreamPlus<T> mapWithIndexToObj(IntObjBiFunction<? super DATA, T> combinator) {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
@@ -83,14 +73,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
                 });
     }
     
-    /**
-     * Create a stream whose value is the combination between the mapped value of this stream and its index.
-     * 
-     * @param <T>          the target type.
-     * @param valueMapper  the value mapper.
-     * @param combinator   the combinator.
-     * @return             the combined stream.
-     */
+    /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
     public default <T1, T> StreamPlus<T> mapWithIndex(
                 Function<? super DATA, ? extends T1> valueMapper,
                 IntObjBiFunction<? super T1, T>      combinator) {
@@ -105,20 +88,13 @@ public interface StreamPlusWithMapWithIndex<DATA> {
                 });
     }
     
-    /**
-     * Create a stream whose value is the combination between the mapped value of this stream and its index.
-     * 
-     * @param <T>          the target type.
-     * @param valueMapper  the value mapper.
-     * @param combinator   the combinator.
-     * @return             the combined stream.
-     */
+    /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
     public default <T1, T> StreamPlus<T> mapToObjWithIndex(
-                Function<? super DATA, ? extends T1> mapper1,
+                Function<? super DATA, ? extends T1> valueMapper,
                 IntObjBiFunction<? super T1, T>      combinator) {
         val streamPlus = streamPlus();
         return streamPlus
-                .mapWithIndex(mapper1, combinator);
+                .mapWithIndex(valueMapper, combinator);
     }
     
 }

@@ -48,13 +48,7 @@ public interface StreamPlusWithStatistic<DATA> {
                 .count();
     }
     
-    /**
-     * Return the value whose mapped value is the smallest.
-     * 
-     * @param <D>     the mapped data type.
-     * @param mapper  the mapper.
-     * @return        the minimal data.
-     */
+    /** Return the value whose mapped value is the smallest. */
     @Eager
     @Terminal
     public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
@@ -67,13 +61,7 @@ public interface StreamPlusWithStatistic<DATA> {
                 });
     }
     
-    /**
-     * Return the value whose mapped value is the biggest.
-     * 
-     * @param <D>     the mapped data type.
-     * @param mapper  the mapper.
-     * @return        the maximum data.
-     */
+    /** Return the value whose mapped value is the biggest. */
     @Eager
     @Terminal
     public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
@@ -86,14 +74,7 @@ public interface StreamPlusWithStatistic<DATA> {
                 });
     }
     
-    /**
-     * Return the value whose mapped value is the smallest using the comparator.
-     * 
-     * @param <D>         the mapped data type.
-     * @param mapper      the mapper.
-     * @param comparator  the comparator.
-     * @return            the minimal data.
-     */
+    /** Return the value whose mapped value is the smallest using the comparator. */
     @Eager
     @Terminal
     public default <D> Optional<DATA> minBy(
@@ -108,14 +89,7 @@ public interface StreamPlusWithStatistic<DATA> {
                 });
     }
     
-    /**
-     * Return the value whose mapped value is the biggest using the comparator.
-     * 
-     * @param <D>         the mapped data type.
-     * @param mapper      the mapper.
-     * @param comparator  the comparator.
-     * @return            the maximum data.
-     */
+    /** Return the value whose mapped value is the biggest using the comparator. */
     @Eager
     @Terminal
     public default <D> Optional<DATA> maxBy(
@@ -130,14 +104,7 @@ public interface StreamPlusWithStatistic<DATA> {
                 });
     }
     
-    /**
-     * Return the value is the smallest and the biggest using the comparator.
-     * 
-     * @param <D>         the mapped data type.
-     * @param mapper      the mapper.
-     * @param comparator  the comparator.
-     * @return            the tuple pair of minimal and maximal data.
-     */
+    /** Return the value is the smallest and the biggest using the comparator. */
     @Eager
     @Terminal
     @SuppressWarnings("unchecked")
@@ -159,13 +126,7 @@ public interface StreamPlusWithStatistic<DATA> {
                 StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
     }
     
-    /**
-     * Return the value whose mapped value is the smallest and the biggest.
-     * 
-     * @param <D>     the mapped data type.
-     * @param mapper  the mapper.
-     * @return        the tuple pair of minimal and maximal data.
-     */
+    /** Return the value whose mapped value is the smallest and the biggest. */
     @Eager
     @Terminal
     @SuppressWarnings("unchecked")
@@ -187,14 +148,7 @@ public interface StreamPlusWithStatistic<DATA> {
                 StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
     }
     
-    /**
-     * Return the value whose mapped value is the smallest and the biggest using the comparator.
-     * 
-     * @param <D>         the mapped data type.
-     * @param mapper      the mapper.
-     * @param comparator  the comparator.
-     * @return            the tuple pair of minimal and maximal data.
-     */
+    /** Return the value whose mapped value is the smallest and the biggest using the comparator. */
     @Eager
     @Terminal
     @SuppressWarnings("unchecked")

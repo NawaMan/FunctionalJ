@@ -34,13 +34,7 @@ public interface StreamPlusWithSort<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /**
-     * Sort the values by the mapped value.
-     * 
-     * @param <T>     the mapped type.
-     * @param mapper  the mapper.
-     * @return        the sorted stream.
-     */
+    /** Sort the values by the mapped value. */
     @Eager
     public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper) {
         val streamPlus = streamPlus();
@@ -52,14 +46,7 @@ public interface StreamPlusWithSort<DATA> {
                 });
     }
     
-    /**
-     * Sort the values by the mapped value using the comparator.
-     * 
-     * @param <T>         the mapped type.
-     * @param mapper      the mapper.
-     * @param comparator  the comparator.
-     * @return            the sorted stream.
-     */
+    /** Sort the values by the mapped value using the comparator. */
     @Eager
     public default <T> StreamPlus<DATA> sortedBy(
             Function<? super DATA, T> mapper, 

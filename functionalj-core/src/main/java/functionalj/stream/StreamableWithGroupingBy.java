@@ -15,7 +15,7 @@ import lombok.val;
 public interface StreamableWithGroupingBy<DATA>
     extends StreamableWithMapToTuple<DATA> {
     
-    // Eager
+    /** Group the elements by determining the grouping keys */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public default <KEY> FuncMap<KEY, Streamable<? super DATA>> groupingBy(Function<? super DATA, KEY> keyMapper) {
         Supplier  <Map<KEY, ArrayList<? super DATA>>>                                    supplier;
@@ -44,15 +44,15 @@ public interface StreamableWithGroupingBy<DATA>
                     .mapValue(toStreamable);
     }
     
-    // Eager
+    /** Group the elements by determining the grouping keys and aggregate the result */
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             Function<? super DATA, KEY>                       keyMapper,
             Function<? super Streamable<? super DATA>, VALUE> aggregate) {
         return groupingBy(keyMapper)
                 .mapValue(aggregate);
     }
-    
-    // Eager
+
+    /** Group the elements by determining the grouping keys and aggregate the result */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             Function<? super DATA, KEY>          keyMapper,
@@ -62,7 +62,7 @@ public interface StreamableWithGroupingBy<DATA>
                 .mapValue(stream -> stream.calculate((StreamProcessor) processor));
     }
     
-    // Eager
+    /** Group the elements by determining the grouping keys and aggregate the result */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, ACCUMULATED, VALUE> FuncMap<? extends KEY, VALUE> groupingBy(
             Function<? super DATA, ? extends KEY>                 keyMapper,

@@ -27,17 +27,14 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import functionalj.stream.doublestream.DoubleStreamable;
-import functionalj.stream.intstream.IntStreamable;
-import functionalj.stream.longstream.LongStreamable;
-
 public interface StreamableWithFlatMap<DATA> extends AsStreamable<DATA> {
     
-    
+    /** FlatMap with the given mapper. */
     public default <T> Streamable<T> flatMapToObj(Function<? super DATA, ? extends Streamable<? extends T>> mapper) {
         return Streamable.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).stream()));
     }
     
+    /** FlatMap with the given mapper for only the value that pass the condition. */
     public default Streamable<DATA> flatMapOnly(
             Predicate<? super DATA>                            checker, 
             Function<? super DATA, ? extends Streamable<DATA>> mapper) {
@@ -46,6 +43,8 @@ public interface StreamableWithFlatMap<DATA> extends AsStreamable<DATA> {
             return stream.flatMapOnly(checker, newMapper);
         });
     }
+    
+    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
     public default <T> Streamable<T> flatMapIf(
             Predicate<? super DATA>                         checker, 
             Function<? super DATA, ? extends Streamable<T>> mapper, 
@@ -55,6 +54,14 @@ public interface StreamableWithFlatMap<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, Stream<T>> newElseMapper = value -> elseMapper.apply(value).stream();
             return stream.flatMapIf(checker, newMapper, newElseMapper);
         });
+    }
+    
+    /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
+    public default <T> Streamable<T> flatMapToObjIf(
+            Predicate<? super DATA>               checker, 
+            Function<? super DATA, Streamable<T>> mapper, 
+            Function<? super DATA, Streamable<T>> elseMapper) {
+        return flatMapIf(checker, mapper, elseMapper);
     }
     
 }

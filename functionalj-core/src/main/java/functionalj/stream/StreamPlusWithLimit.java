@@ -36,12 +36,7 @@ public interface StreamPlusWithLimit<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
-    /**
-     * Limit the size of the stream to the given size.
-     * 
-     * @param maxSize  the limited size.
-     * @return         the limited stream.
-     */
+    /** Limit the size of the stream to the given size. */
     public default StreamPlus<DATA> limit(Long maxSize) {
         val streamPlus = streamPlus();
         return ((maxSize == null) || (maxSize.longValue() < 0))
@@ -50,12 +45,7 @@ public interface StreamPlusWithLimit<DATA> {
                     .limit((long)maxSize);
     }
     
-    /**
-     * Skip to the given offset position.
-     * 
-     * @param offset  the offset.
-     * @return        the limited stream.
-     */
+    /** Skip to the given offset position. */
     public default StreamPlus<DATA> skip(Long offset) {
         val streamPlus = streamPlus();
         return ((offset == null) || (offset.longValue() < 0))
@@ -64,12 +54,7 @@ public interface StreamPlusWithLimit<DATA> {
                     .skip((long)offset);
     }
     
-    /**
-     * Skip any value while the condition is true.
-     * 
-     * @param offset  the condition.
-     * @return        the limited stream.
-     */
+    /** Skip any value while the condition is true. */
     @Sequential
     public default StreamPlus<DATA> skipWhile(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();
@@ -87,12 +72,7 @@ public interface StreamPlusWithLimit<DATA> {
         });
     }
     
-    /**
-     * Skip any value until the condition is true.
-     * 
-     * @param offset  the condition.
-     * @return        the limited stream.
-     */
+    /** Skip any value until the condition is true. */
     @Sequential
     public default StreamPlus<DATA> skipUntil(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();
@@ -110,12 +90,7 @@ public interface StreamPlusWithLimit<DATA> {
         });
     }
     
-    /**
-     * Accept any value while the condition is true.
-     * 
-     * @param offset  the condition.
-     * @return        the limited stream.
-     */
+    /** Accept any value while the condition is true. */
     @Sequential
     public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
         // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
@@ -144,12 +119,7 @@ public interface StreamPlusWithLimit<DATA> {
         });
     }
     
-    /**
-     * Accept any value until the condition is true.
-     * 
-     * @param offset  the condition.
-     * @return        the limited stream.
-     */
+    /** Accept any value until the condition is true. */
     @Sequential
     public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();

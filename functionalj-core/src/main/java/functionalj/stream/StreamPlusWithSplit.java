@@ -23,16 +23,15 @@
 // ============================================================================
 package functionalj.stream;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import functionalj.map.FuncMap;
-import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
-import lombok.val;
 
 public interface StreamPlusWithSplit<DATA>
             extends StreamPlusWithMapToTuple<DATA> {
@@ -51,23 +50,14 @@ public interface StreamPlusWithSplit<DATA>
      * The result is a tuple of streams where the first stream is for those element that the predicate returns true.
      * 
      * The elements in this stream is guaranteed to be in one of the result stream.
-     * 
-     * @param predicate  the predicate.
-     * @return           the tuple of streams.
      */
     public default Tuple2<StreamPlus<DATA>, StreamPlus<DATA>> split(
             Predicate<? super DATA> predicate) {
-        val temp 
-            = mapToTuple(
-                    it -> predicate.test(it) ? 0 : 1,
-                    it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).stream();
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).stream();
-        return Tuple.of(
-                list1,
-                list2);
+        Function<? super Streamable<DATA>, StreamPlus<DATA>> toStreamPlus = Streamable::streamPlus;
+        Streamable<DATA> streamable = ()->streamPlus();
+        return streamable
+                .split(predicate)
+                .map(toStreamPlus, toStreamPlus);
     }
     
     /**
@@ -78,29 +68,15 @@ public interface StreamPlusWithSplit<DATA>
      * Otherwise, it will be in the last sub stream.
      * 
      * The elements in this stream is guaranteed to be in one of the sub streams.
-     * 
-     * @param predicate1  the first predicate.
-     * @param predicate2  the second predicate.
-     * @return            the tuple of streams.
      */
     public default Tuple3<StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2) {
-        val temp 
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    :                       2,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).stream();
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).stream();
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).stream();
-        return Tuple.of(
-                list1,
-                list2,
-                list3);
+        Function<? super Streamable<DATA>, StreamPlus<DATA>> toStreamPlus = Streamable::streamPlus;
+        Streamable<DATA> streamable = ()->streamPlus();
+        return streamable
+                .split(predicate1, predicate2)
+                .map(toStreamPlus, toStreamPlus, toStreamPlus);
     }
     
     /**
@@ -112,34 +88,16 @@ public interface StreamPlusWithSplit<DATA>
      * Otherwise, it will be in the last sub stream.
      * 
      * The elements in this stream is guaranteed to be in one of the sub streams.
-     * 
-     * @param predicate1  the first predicate.
-     * @param predicate2  the second predicate.
-     * @param predicate3  the third predicate.
-     * @return            the tuple of streams.
      */
     public default Tuple4<StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2,
             Predicate<? super DATA> predicate3) {
-        val temp 
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    :                       3,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).stream();
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).stream();
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).stream();
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).stream();
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4);
+        Function<? super Streamable<DATA>, StreamPlus<DATA>> toStreamPlus = Streamable::streamPlus;
+        Streamable<DATA> streamable = ()->streamPlus();
+        return streamable
+                .split(predicate1, predicate2, predicate3)
+                .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
     }
     
     /**
@@ -152,39 +110,17 @@ public interface StreamPlusWithSplit<DATA>
      * Otherwise, it will be in the last sub stream.
      * 
      * The elements in this stream is guaranteed to be in one of the sub streams.
-     * 
-     * @param predicate1  the first predicate.
-     * @param predicate2  the second predicate.
-     * @param predicate3  the third predicate.
-     * @param predicate4  the forth predicate.
-     * @return            the tuple of streams.
      */
     public default Tuple5<StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2,
             Predicate<? super DATA> predicate3,
             Predicate<? super DATA> predicate4) {
-        val temp 
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    :                       4,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).stream();
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).stream();
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).stream();
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).stream();
-        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2()).stream();
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4,
-                list5);
+        Function<? super Streamable<DATA>, StreamPlus<DATA>> toStreamPlus = Streamable::streamPlus;
+        Streamable<DATA> streamable = ()->streamPlus();
+        return streamable
+                .split(predicate1, predicate2, predicate3, predicate4)
+                .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
     }
     
     /**
@@ -198,13 +134,6 @@ public interface StreamPlusWithSplit<DATA>
      * Otherwise, it will be in the last sub stream.
      * 
      * The elements in this stream is guaranteed to be in one of the sub streams.
-     * 
-     * @param predicate1  the first predicate.
-     * @param predicate2  the second predicate.
-     * @param predicate3  the third predicate.
-     * @param predicate4  the forth predicate.
-     * @param predicate5  the fifth predicate.
-     * @return            the tuple of streams.
      */
     public default Tuple6<StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>, StreamPlus<DATA>> split(
             Predicate<? super DATA> predicate1,
@@ -212,143 +141,65 @@ public interface StreamPlusWithSplit<DATA>
             Predicate<? super DATA> predicate3,
             Predicate<? super DATA> predicate4,
             Predicate<? super DATA> predicate5) {
-        val temp 
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    : predicate5.test(it) ? 4
-                    :                       5,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2()).stream();
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2()).stream();
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2()).stream();
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2()).stream();
-        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2()).stream();
-        val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2()).stream();
-        return Tuple.of(
-                list1,
-                list2,
-                list3,
-                list4,
-                list5,
-                list6);
+        Function<? super Streamable<DATA>, StreamPlus<DATA>> toStreamPlus = Streamable::streamPlus;
+        Streamable<DATA> streamable = ()->streamPlus();
+        return streamable
+                .split(predicate1, predicate2, predicate3, predicate4, predicate5)
+                .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
-     * 
-     * @param predicate  the predicate.
-     * @return           the tuple of streams.
      */
     public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate,
             KEY key2) {
-        val temp 
-            = mapToTuple(
-                it -> predicate.test(it) ? 0 : 1,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        return FuncMap.of(
-                key1, list1, 
-                key2, list2);
+        Function<? super Streamable<DATA>, StreamPlus<DATA>> toStreamPlus = Streamable::streamPlus;
+        Streamable<DATA> streamable = ()->streamPlus();
+        return streamable
+                .split(key1, predicate, key2)
+                .mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
-     * 
-     * @param key1        the key1.
-     * @param predicate1  the predicate1.
-     * @param key2        the key2.
-     * @param predicate2  the predicate2.
-     * @param key3        the key3.
-     * @return            the tuple of streams.
      */
     public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
             KEY key2, Predicate<? super DATA> predicate2,
             KEY key3) {
-        val temp 
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    :                       2,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3);
+        Function<? super Streamable<DATA>, StreamPlus<DATA>> toStreamPlus = Streamable::streamPlus;
+        Streamable<DATA> streamable = ()->streamPlus();
+        return streamable
+                .split(key1, predicate1, key2, predicate2, key3)
+                .mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
-     * 
-     * @param key1        the key1.
-     * @param predicate1  the predicate1.
-     * @param key2        the key2.
-     * @param predicate2  the predicate2.
-     * @param key3        the key3.
-     * @param predicate3  the predicate3.
-     * @param key4        the key4.
-     * @return            the tuple of streams.
      */
     public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
             KEY key2, Predicate<? super DATA> predicate2,
             KEY key3, Predicate<? super DATA> predicate3,
             KEY key4) {
-        val temp 
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    :                       3,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3, 
-                key4, list4);
+        Function<? super Streamable<DATA>, StreamPlus<DATA>> toStreamPlus = Streamable::streamPlus;
+        Streamable<DATA> streamable = ()->streamPlus();
+        return streamable
+                .split(key1, predicate1, key2, predicate2, key3, predicate3, key4)
+                .mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
-     * 
-     * @param key1        the key1.
-     * @param predicate1  the predicate1.
-     * @param key2        the key2.
-     * @param predicate2  the predicate2.
-     * @param key3        the key3.
-     * @param predicate3  the predicate3.
-     * @param key4        the key4.
-     * @param predicate4  the predicate4.
-     * @param key5        the key5.
-     * @return            the tuple of streams.
      */
     public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -356,46 +207,17 @@ public interface StreamPlusWithSplit<DATA>
             KEY key3, Predicate<? super DATA> predicate3,
             KEY key4, Predicate<? super DATA> predicate4,
             KEY key5) {
-        val temp 
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    :                       4,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3, 
-                key4, list4, 
-                key5, list5);
+        Function<? super Streamable<DATA>, StreamPlus<DATA>> toStreamPlus = Streamable::streamPlus;
+        Streamable<DATA> streamable = ()->streamPlus();
+        return streamable
+                .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5)
+                .mapValue(toStreamPlus);
     }
     
     /**
      * Split the stream using the predicate and return as part of a map.
      * 
      * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
-     * 
-     * @param key1        the key1.
-     * @param predicate1  the predicate1.
-     * @param key2        the key2.
-     * @param predicate2  the predicate2.
-     * @param key3        the key3.
-     * @param predicate3  the predicate3.
-     * @param key4        the key4.
-     * @param predicate4  the predicate4.
-     * @param key5        the key5.
-     * @param predicate5  the predicate5.
-     * @param key6        the key6.
-     * @return            the tuple of streams.
      */
     public default <KEY> FuncMap<KEY, StreamPlus<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -404,29 +226,10 @@ public interface StreamPlusWithSplit<DATA>
             KEY key4, Predicate<? super DATA> predicate4,
             KEY key5, Predicate<? super DATA> predicate5,
             KEY key6) {
-        val temp 
-            = mapToTuple(
-                it -> predicate1.test(it) ? 0
-                    : predicate2.test(it) ? 1
-                    : predicate3.test(it) ? 2
-                    : predicate4.test(it) ? 3
-                    : predicate5.test(it) ? 4
-                    :                       5,
-                it -> it
-            )
-            .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).map(it -> it._2()).stream() : StreamPlus.<DATA>empty();
-        return FuncMap.of(
-                key1, list1, 
-                key2, list2, 
-                key3, list3, 
-                key4, list4, 
-                key5, list5,
-                key6, list6);
+        Function<? super Streamable<DATA>, StreamPlus<DATA>> toStreamPlus = Streamable::streamPlus;
+        Streamable<DATA> streamable = ()->streamPlus();
+        return streamable
+                .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6)
+                .mapValue(toStreamPlus);
     }
 }

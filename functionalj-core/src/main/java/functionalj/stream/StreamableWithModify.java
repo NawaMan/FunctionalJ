@@ -1,3 +1,26 @@
+// ============================================================================
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.stream;
 
 import java.util.function.BiFunction;
@@ -10,22 +33,6 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
-
-    
-    //== Spawn ==
-    
-    /**
-     * Map each element to a uncompleted action, run them and collect which ever finish first.
-     * The result stream will not be the same order with the original one 
-     *   -- as stated, the order will be the order of completion.
-     * If the result StreamPlus is closed (which is done everytime a terminal operation is done),
-     *   the unfinished actions will be canceled.
-     */
-    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
-        return Streamable.deriveFrom(this, stream -> stream.spawn(mapper));
-    }
-    
-    //== accumulate ==
     
     /**
      * Accumulate the previous to the next element.
@@ -67,20 +74,47 @@ public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
      **/
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public default Streamable<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
-//        val func = (UnaryOperator<Tuple2<DATA, Streamable<DATA>>>)((Tuple2<DATA, Streamable<DATA>> pair) -> {
-//            val stream   = pair._2();
-//            val iterator = stream.iterator();
-//            if (!iterator.hasNext())
-//                return null;
-//            
-//            val head = iterator.next();
-//            val tail = restater.apply(head, ()->iterator.stream());
-//            return Tuple2.of(head, tail);
-//        });
-//        val seed = Tuple2.of((DATA)null, this);
-//        val endStream = (Streamable<DATA>)(()->StreamPlus.iterate(seed, func).takeUntil(t -> t == null).skip(1).map(t -> t._1()));
-//        return endStream;
-        return null;
+        val func = (UnaryOperator<Tuple2<DATA, Streamable<DATA>>>)((Tuple2<DATA, Streamable<DATA>> pair) -> {
+            val streamable = pair._2();
+            if (streamable == null)
+                return null;
+            
+            Object[] head     = new Object[] { null };
+            val      iterator = streamable.stream().iterator();
+            if (!iterator.hasNext())
+                return null;
+            
+            head[0]  = iterator.next();
+            val tail = restater.apply((DATA)head[0], streamable.skip(1));
+            if (tail == null)
+                return null;
+            
+            return Tuple2.of((DATA)head[0], tail);
+        });
+        val seed = Tuple2.of((DATA)null, this);
+        
+        // NOTE: The reason for the using untyped-generic is becuase "DATA" of this class is not seen as compatible with StreamPlus's.
+        val endStream 
+            = Streamable
+            .iterate  (seed, (UnaryOperator)func)
+            .takeUntil(t -> t == null)
+            .skip     (1)
+            .map      (t -> ((Tuple2)t)._1());
+        return endStream;
+    }
+    
+    //== Spawn ==
+    
+    /**
+     * Map each element to a uncompleted action, run them and collect which ever finish first.
+     * The result stream will not be the same order with the original one 
+     *   -- as stated, the order will be the order of completion.
+     * If the result StreamPlus is closed (which is done everytime a terminal operation is done),
+     *   the unfinished actions will be canceled.
+     */
+    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
+        return Streamable.deriveFrom(this, stream -> stream.spawn(mapper));
     }
 }

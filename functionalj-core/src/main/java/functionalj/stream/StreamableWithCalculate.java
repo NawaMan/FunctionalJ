@@ -31,8 +31,10 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
-public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
+public interface StreamableWithCalculate<DATA> 
+        extends AsStreamable<DATA> {
     
+    /** Perform the calculation using the data of this streamable */
     public default <A, T> T calculate(
             StreamProcessor<? extends DATA, T> processor) {
         val streamble = Streamable.from(()->stream());
@@ -45,6 +47,7 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
         return value;
     }
     
+    /** Perform the calculation using the data of this streamable */
     public default <T1, T2> Tuple2<T1, T2> calculate(
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2) {
@@ -61,6 +64,7 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
         return Tuple.of(value1, value2);
     }
     
+    /** Perform the calculation using the data of this streamable */
     public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2,
@@ -81,6 +85,7 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
         return Tuple.of(value1, value2, value3);
     }
     
+    /** Perform the calculation using the data of this streamable */
     public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2,
@@ -105,6 +110,7 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
         return Tuple.of(value1, value2, value3, value4);
     }
     
+    /** Perform the calculation using the data of this streamable */
     public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2,
@@ -133,6 +139,7 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
         return Tuple.of(value1, value2, value3, value4, value5);
     }
     
+    /** Perform the calculation using the data of this streamable */
     public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2,
