@@ -85,7 +85,6 @@ public interface Streamable<DATA>
             StreamableWithConversion<DATA>,
             StreamableWithFilter<DATA>,
             StreamableWithFlatMap<DATA>,
-            StreamableWithForEach<DATA>,
             StreamableWithLimit<DATA>,
             StreamableWithMap<DATA>,
             StreamableWithMatch<DATA>,
