@@ -29,7 +29,8 @@ import java.util.function.Function;
 
 import functionalj.map.FuncMap;
 
-public interface StreamableWithMapToMap<DATA> extends AsStreamable<DATA> {
+public interface StreamableWithMapToMap<DATA>
+        extends AsStreamable<DATA> {
     
     /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> Streamable<FuncMap<KEY, VALUE>> mapToMap(

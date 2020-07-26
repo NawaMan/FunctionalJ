@@ -82,30 +82,30 @@ import lombok.val;
 public interface Streamable<DATA> 
         extends
             AsStreamable<DATA>,
+            StreamableWithCalculate<DATA>,
+            StreamableWithCombine<DATA>,
             StreamableWithConversion<DATA>,
+            StreamableWithFillNull<DATA>,
             StreamableWithFilter<DATA>,
             StreamableWithFlatMap<DATA>,
             StreamableWithForEach<DATA>,
+            StreamableWithGroupingBy<DATA>,
             StreamableWithLimit<DATA>,
             StreamableWithMap<DATA>,
-            StreamableWithMatch<DATA>,
-            StreamableWithPeek<DATA>,
-            StreamableWithSort<DATA>,
-            StreamableWithStatistic<DATA>,
-            StreamableWithCombine<DATA>,
-            StreamableWithCalculate<DATA>,
-            StreamableWithFillNull<DATA>,
-            StreamableWithGroupingBy<DATA>,
             StreamableWithMapFirst<DATA>,
             StreamableWithMapThen<DATA>,
             StreamableWithMapToMap<DATA>,
             StreamableWithMapToTuple<DATA>,
             StreamableWithMapWithIndex<DATA>,
             StreamableWithMapWithPrev<DATA>,
+            StreamableWithMatch<DATA>,
             StreamableWithModify<DATA>,
+            StreamableWithPeek<DATA>,
             StreamableWithPipe<DATA>,
             StreamableWithReshape<DATA>,
-            StreamableWithSplit<DATA> {
+            StreamableWithSort<DATA>,
+            StreamableWithSplit<DATA>,
+            StreamableWithStatistic<DATA> {
     
     /** Throw a no more element exception. This is used for generator. */
     public static <TARGET> TARGET noMoreElement() throws NoMoreResultException {
@@ -476,22 +476,6 @@ public interface Streamable<DATA>
         };
     }
     
-    //== Core ==
-    
-    /** Return the stream of data behind this StreamPlus. */
-    public StreamPlus<DATA> stream();
-    
-    /** Return this StreamPlus. */
-    public default StreamPlus<DATA> streamPlus() {
-        return stream();
-    }
-    
-    /** Return the this as a streamable. */
-    public default Streamable<DATA> streamable() {
-        return this;
-    }
-
-    
     /** Create a Streamable that is the repeat of the given array of data. */
     @SuppressWarnings("unchecked")
     public static <TARGET> Streamable<TARGET> repeat(TARGET ... data) {
@@ -548,6 +532,28 @@ public interface Streamable<DATA>
         return IntStreamable
                 .range(startInclusive, endExclusive)
                 .boxed();
+    }
+    
+    /** Create a Streamable that for a loop from the start value inclusively to the end value inclusively. */
+    public static Streamable<Integer> rangeAll(int startInclusive, int endInclusive) {
+        return IntStreamable
+                .rangeAll(startInclusive, endInclusive)
+                .boxed();
+    }
+    
+    //== Core ==
+    
+    /** Return the stream of data behind this StreamPlus. */
+    public StreamPlus<DATA> stream();
+    
+    /** Return this StreamPlus. */
+    public default StreamPlus<DATA> streamPlus() {
+        return stream();
+    }
+    
+    /** Return the this as a streamable. */
+    public default Streamable<DATA> streamable() {
+        return this;
     }
     
     //-- Derive --
@@ -707,46 +713,56 @@ public interface Streamable<DATA>
     
     //-- Map --
     
+    /** Map each value into other value using the function. */
     public default <TARGET> Streamable<TARGET> map(Function<? super DATA, ? extends TARGET> mapper) {
         return deriveFrom(this, stream -> stream.map(mapper));
     }
     
+    /** Map each value into an integer value using the function. */
     public default IntStreamable mapToInt(ToIntFunction<? super DATA> mapper) {
         return IntStreamable.deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
     
+    /** Map each value into a long value using the function. */
     public default LongStreamable mapToLong(ToLongFunction<? super DATA> mapper) {
         return LongStreamable.deriveFrom(this, stream -> stream.mapToLong(mapper));
     }
     
+    /** Map each value into a double value using the function. */
     public default DoubleStreamable mapToDouble(ToDoubleFunction<? super DATA> mapper) {
         return DoubleStreamable.deriveFrom(this, stream -> stream.mapToDouble(mapper));
     }
     
     //-- FlatMap --
     
+    /** Map a value into a streamable and then flatten that streamable */
     public default <TARGET> Streamable<TARGET> flatMap(Function<? super DATA, ? extends Streamable<? extends TARGET>> mapper) {
         return deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).stream()));
     }
     
+    /** Map a value into an integer streamable and then flatten that streamable */
     public default IntStreamable flatMapToInt(Function<? super DATA, ? extends IntStreamable> mapper) {
         return IntStreamable.deriveFrom(this, stream -> stream.flatMapToInt(value -> mapper.apply(value).intStream()));
     }
     
+    /** Map a value into a long streamable and then flatten that streamable */
     public default LongStreamable flatMapToLong(Function<? super DATA, ? extends LongStreamable> mapper) {
         return LongStreamable.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
     }
     
+    /** Map a value into a double streamable and then flatten that streamable */
     public default DoubleStreamable flatMapToDouble(Function<? super DATA, ? extends DoubleStreamable> mapper) {
         return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
     }
     
     //-- Filter --
     
+    /** Select only the element that passes the predicate */
     public default Streamable<DATA> filter(Predicate<? super DATA> predicate) {
         return deriveFrom(this, stream -> stream.filter(predicate));
     }
     
+    /** Select only the element that the mapped value passes the predicate */
     @Override
     public default <T> Streamable<DATA> filter(
             Function<? super DATA, T> mapper, 
@@ -756,58 +772,81 @@ public interface Streamable<DATA>
     
     //-- Peek --
     
+    /** Consume each value using the action whenever a termination operation is called */
     public default Streamable<DATA> peek(Consumer<? super DATA> action) {
         return deriveFrom(this, stream -> stream.peek(action));
     }
     
     //-- Limit/Skip --
     
+    /** Limit the size */
     public default Streamable<DATA> limit(long maxSize) {
         return deriveFrom(this, stream -> stream.limit(maxSize));
     }
     
+    /** Trim off the first n values */
     public default Streamable<DATA> skip(long n) {
         return deriveFrom(this, stream -> stream.skip(n));
     }
     
     //-- Distinct --
     
+    /** Remove duplicates */
     public default Streamable<DATA> distinct() {
         return deriveFrom(this, stream -> stream.distinct());
     }
     
     //-- Sorted --
     
+    /** Sort the values in this stream */
     public default Streamable<DATA> sorted() {
         return deriveFrom(this, stream -> stream.sorted());
     }
     
+    /** Sort the values in this stream using the given comparator */
     public default Streamable<DATA> sorted(Comparator<? super DATA> comparator) {
         return deriveFrom(this, stream -> stream.sorted(comparator));
     }
     
     //-- Terminate --
     
+    /** Process each value using the given action */
     public default void forEach(Consumer<? super DATA> action) {
         stream()
         .forEach(action);
     }
     
+    /**
+     * Performs an action for each element of this stream, in the encounter
+     * order of the stream if the stream has a defined encounter order.
+     */
     public default void forEachOrdered(Consumer<? super DATA> action) {
         stream()
         .forEachOrdered(action);
     }
     
+    /**
+     * Performs a reduction on the elements of this stream, using the provided identity value and an associative accumulation function, 
+     * and returns the reduced value.
+     **/
     public default DATA reduce(DATA identity, BinaryOperator<DATA> reducer) {
         return stream()
                 .reduce(identity, reducer);
     }
     
+    /**
+     * Performs a reduction on the elements of this stream, using the provided identity value and an associative accumulation function, 
+     * and returns the reduced value.
+     **/
     public default Optional<DATA> reduce(BinaryOperator<DATA> reducer) {
         return stream()
                 .reduce(reducer);
     }
     
+    /**
+     * Performs a reduction on the elements of this stream, using the provided identity value and an associative accumulation function, 
+     * and returns the reduced value.
+     **/
     public default <U> U reduce(
             U                              identity,
             BiFunction<U, ? super DATA, U> accumulator,
@@ -816,6 +855,11 @@ public interface Streamable<DATA>
                 .reduce(identity, accumulator, combiner);
     }
     
+    /**
+     * Performs a mutable reduction operation on the elements of this stream. A mutable reduction is one in which the reduced value is 
+     * a mutable result container, such as an {@code ArrayList}, and elements are incorporated by updating the state of the result rather 
+     * than by replacing the result.
+     **/
     public default <R> R collect(
             Supplier<R>                 supplier,
             BiConsumer<R, ? super DATA> accumulator,
@@ -824,6 +868,11 @@ public interface Streamable<DATA>
                 .collect(supplier, accumulator, combiner);
     }
     
+    /**
+     * Performs a mutable reduction operation on the elements of this stream. A mutable reduction is one in which the reduced value is 
+     * a mutable result container, such as an {@code ArrayList}, and elements are incorporated by updating the state of the result rather 
+     * than by replacing the result.
+     **/
     public default <R, A> R collect(
             Collector<? super DATA, A, R> collector) {
         return stream()
@@ -832,29 +881,32 @@ public interface Streamable<DATA>
     
     //-- statistics --
     
-    public default Optional<DATA> min(
-            Comparator<? super DATA> comparator) {
+    /** Using the comparator, find the minimal value */
+    public default Optional<DATA> min(Comparator<? super DATA> comparator) {
         return stream()
                 .min(comparator);
     }
     
-    public default Optional<DATA> max(
-            Comparator<? super DATA> comparator) {
+    /** Using the comparator, find the maximum value */
+    public default Optional<DATA> max(Comparator<? super DATA> comparator) {
         return stream().max(comparator);
     }
     
+    /** Map each value to be a comparable and used it to find the minimal */
     @Override
     public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
         return stream()
                 .minBy(mapper);
     }
     
+    /** Map each value to be a comparable and used it to find the maximum */
     @Override
     public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
         return stream()
                 .minBy(mapper);
     }
     
+    /** Return the number of elements */
     public default long count() {
         return stream()
                 .count();
@@ -862,27 +914,31 @@ public interface Streamable<DATA>
     
     //-- Match --
     
-    
+    /** Check if any element match the predicate */
     public default boolean anyMatch(Predicate<? super DATA> predicate) {
         return stream()
                 .anyMatch(predicate);
     }
     
+    /** Check if all elements match the predicate */
     public default boolean allMatch(Predicate<? super DATA> predicate) {
         return stream()
                 .allMatch(predicate);
     }
     
+    /** Check if none of the elements match the predicate */
     public default boolean noneMatch(Predicate<? super DATA> predicate) {
         return stream()
                 .noneMatch(predicate);
     }
     
+    /** Returns the sequentially first element */
     public default Optional<DATA> findFirst() {
         return stream()
                 .findFirst();
     }
     
+    /** Returns the any element */
     public default Optional<DATA> findAny() {
         return stream()
                 .findAny();
@@ -890,11 +946,13 @@ public interface Streamable<DATA>
     
     //== Conversion ==
     
+    /** Convert this streamable to an array. */
     public default Object[] toArray() {
         return stream()
                 .toArray();
     }
     
+    /** Convert this streamable to an array. */
     public default <A> A[] toArray(IntFunction<A[]> generator) {
         return stream()
                 .toArray(generator);

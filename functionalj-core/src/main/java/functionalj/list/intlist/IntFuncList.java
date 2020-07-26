@@ -51,7 +51,6 @@ import lombok.val;
 public interface IntFuncList
         extends 
             AsIntStreamable,
-            IntStreamable, 
             IntIterable,
             IntFuncListWithMapFirst,
             IntFuncListWithMapThen,

@@ -21,9 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.list;
 
-import static functionalj.stream.Streamable.deriveFrom;
+import static functionalj.list.FuncList.deriveFrom;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -32,18 +32,16 @@ import java.util.function.Predicate;
 
 import functionalj.function.Func1;
 import functionalj.function.Func2;
-import functionalj.list.FuncList;
-import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.stream.intstream.IntStreamPlus;
-import lombok.val;
+import functionalj.stream.AsStreamable;
+import functionalj.stream.StreamPlus;
 
-public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
     
     /**
      * Segment the stream into sub stream with the fix length of count.
      * The last portion may be shorter.
      **/
-    public default Streamable<StreamPlus<DATA>> segment(int count) {
+    public default FuncList<StreamPlus<DATA>> segment(int count) {
         return deriveFrom(this, stream -> stream.segment(count));
     }
     
@@ -56,7 +54,7 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      *                       as opposed to thrown away.
      * @return             the stream of sub stream.
      */
-    public default Streamable<StreamPlus<DATA>> segment(
+    public default FuncList<StreamPlus<DATA>> segment(
             int     count, 
             boolean includeTail) {
         return deriveFrom(this, stream -> stream.segment(count, includeTail));
@@ -66,12 +64,12 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      * Segment the stream into sub stream whenever the start condition is true.
      * The tail sub stream will always be included.
      */
-    public default Streamable<StreamPlus<DATA>> segment(Predicate<DATA> startCondition) {
+    public default FuncList<StreamPlus<DATA>> segment(Predicate<DATA> startCondition) {
         return deriveFrom(this, stream -> stream.segment(startCondition));
     }
     
     /** Segment the stream into sub stream whenever the start condition is true. */
-    public default Streamable<StreamPlus<DATA>> segment(
+    public default FuncList<StreamPlus<DATA>> segment(
             Predicate<DATA> startCondition, 
             boolean         includeIncompletedSegment) {
         return deriveFrom(this, stream -> stream.segment(startCondition, includeIncompletedSegment));
@@ -81,14 +79,14 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      * Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true.
      * The tail sub stream will always be included.
      */
-    public default Streamable<StreamPlus<DATA>> segment(
+    public default FuncList<StreamPlus<DATA>> segment(
             Predicate<DATA> startCondition, 
             Predicate<DATA> endCondition) {
         return deriveFrom(this, stream -> stream.segment(startCondition, endCondition));
     }
     
     /** Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true. */
-    public default Streamable<StreamPlus<DATA>> segment(
+    public default FuncList<StreamPlus<DATA>> segment(
             Predicate<DATA> startCondition, 
             Predicate<DATA> endCondition, 
             boolean         includeIncompletedSegment) {
@@ -101,12 +99,12 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      * If the segmentSize function return null, the value will be ignored.
      * If the segmentSize function return 0, an empty stream is returned.
      */
-    public default Streamable<StreamPlus<DATA>> segmentSize(Func1<DATA, Integer> segmentSize) {
+    public default FuncList<StreamPlus<DATA>> segmentSize(Func1<DATA, Integer> segmentSize) {
         return deriveFrom(this, stream -> stream.segmentSize(segmentSize));
     }
     
     /** Combine the current value with the one before it using then combinator everytime the condition to collapse is true. */
-    public default Streamable<DATA> collapseWhen(
+    public default FuncList<DATA> collapseWhen(
             Predicate<DATA>         conditionToCollapse, 
             Func2<DATA, DATA, DATA> concatFunc) {
         return deriveFrom(this, stream -> stream.collapseWhen(conditionToCollapse, concatFunc));
@@ -117,7 +115,7 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      * 
      * If the segmentSize function return null or 0, the value will be used as is (no collapse).
      */
-    public default Streamable<DATA> collapseSize(
+    public default FuncList<DATA> collapseSize(
             Func1<DATA, Integer>    segmentSize, 
             Func2<DATA, DATA, DATA> combinator) {
         return deriveFrom(this, stream -> stream.collapseSize(segmentSize, combinator));
@@ -129,7 +127,7 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      * 
      * If the segmentSize function return null or 0, the value will be used as is (no collapse).
      */
-    public default <TARGET> Streamable<TARGET> collapseSize(
+    public default <TARGET> FuncList<TARGET> collapseSize(
             Func1<DATA, Integer>          segmentSize, 
             Func1<DATA, TARGET>           mapper, 
             Func2<TARGET, TARGET, TARGET> combinator) {
@@ -139,30 +137,25 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
     //-- More - then StreamPlus --
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T> Streamable<FuncList<DATA>> segmentByPercentiles(int ... percentiles) {
-        val percentileList = IntStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
-        return segmentByPercentiles(percentileList).streamable();
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(int ... percentiles) {
+        return FuncList.from(streamable().segmentByPercentiles(percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T> Streamable<FuncList<DATA>> segmentByPercentiles(double ... percentiles) {
-        // TODO - Make it lazy
-        val percentileList = DoubleStreamPlus.of(percentiles).boxed().toImmutableList();
-        return segmentByPercentiles(percentileList).streamable();
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(double ... percentiles) {
+        return FuncList.from(streamable().segmentByPercentiles(percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(FuncList<Double> percentiles) {
-        val list = streamPlus().sorted().toImmutableList();
-        return StreamableHelper.segmentByPercentiles(list, percentiles);
+        return FuncList.from(streamable().segmentByPercentiles(percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(
             Function<? super DATA, T> mapper,
             int ...                   percentiles) {
-        val percentileList = IntStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
-        return segmentByPercentiles(mapper, percentileList);
+        return FuncList.from(streamable().segmentByPercentiles(percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -170,16 +163,14 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, T> mapper,
             Comparator<T>             comparator,
             int ...                   percentiles) {
-        val percentileList = IntStreamPlus.of(percentiles).mapToObj(Double::valueOf).toImmutableList();
-        return segmentByPercentiles(mapper, comparator, percentileList);
+        return FuncList.from(streamable().segmentByPercentiles(mapper, comparator, percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(
             Function<? super DATA, T> mapper,
             double ...                percentiles) {
-        val percentileList = DoubleStreamPlus.of(percentiles).boxed().toImmutableList();
-        return segmentByPercentiles(mapper, percentileList);
+        return FuncList.from(streamable().segmentByPercentiles(mapper, percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -187,25 +178,22 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, T> mapper,
             Comparator<T>             comparator,
             double ...                percentiles) {
-        val percentileList = DoubleStreamPlus.of(percentiles).boxed().toImmutableList();
-        return segmentByPercentiles(mapper, comparator, percentileList);
+        return FuncList.from(streamable().segmentByPercentiles(mapper, comparator, percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(
             Function<? super DATA, T> mapper,
-            Collection<Double>          percentiles) {
-        val list = streamPlus().sortedBy(mapper).toImmutableList();
-        return StreamableHelper.segmentByPercentiles(list, percentiles);
+            Collection<Double>        percentiles) {
+        return FuncList.from(streamable().segmentByPercentiles(mapper, percentiles));
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(
             Function<? super DATA, T> mapper,
             Comparator<T>             comparator,
-            Collection<Double>          percentiles) {
-        val list = streamPlus().sortedBy(mapper, comparator).toImmutableList();
-        return StreamableHelper.segmentByPercentiles(list, percentiles);
+            Collection<Double>        percentiles) {
+        return FuncList.from(streamable().segmentByPercentiles(mapper, comparator, percentiles));
     }
     
 }

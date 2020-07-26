@@ -46,6 +46,7 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     public static final <T> ImmutableList<T> empty() {
         return (ImmutableList<T>)EMPTY;
     }
+    
     public static <T> ImmutableList<T> from(Collection<T> data) {
         if (data instanceof ImmutableList)
             return (ImmutableList<T>)data;
@@ -54,24 +55,27 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         
         return new ImmutableList<T>(data);
     }
+    
     @SafeVarargs
     public static <T> ImmutableList<T> of(T ... data) {
         return new ImmutableList<>(Arrays.asList(data));
     }
+    
     public static <T> ImmutableList<T> from(T[] datas) {
         return new ImmutableList<>(Arrays.asList(datas));
     }
+    
     public static <T> ImmutableList<T> from(Streamable<T> streamable) {
-        if (streamable instanceof ImmutableList)
-            return (ImmutableList<T>)streamable;
         if (streamable == null)
             return ImmutableList.empty();
         
         return new ImmutableList<T>(streamable.toJavaList());
     }
+    
     public static <T> ImmutableList<T> from(Stream<T> stream) {
         return new ImmutableList<T>(stream.collect(Collectors.toList()));
     }
+    
     public static <T> ImmutableList<T> from(ReadOnlyList<T> readOnlyList) {
         if (readOnlyList instanceof ImmutableList)
             return (ImmutableList<T>)readOnlyList;
@@ -80,6 +84,7 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         
         return new ImmutableList<T>(readOnlyList.toJavaList());
     }
+    
     public static <T> ImmutableList<T> from(FuncList<T> funcList) {
         if (funcList instanceof ImmutableList)
             return (ImmutableList<T>)funcList;

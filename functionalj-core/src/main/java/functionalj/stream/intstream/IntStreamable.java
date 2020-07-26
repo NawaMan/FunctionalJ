@@ -185,6 +185,10 @@ public interface IntStreamable
         return ()->IntStreamPlus.range(startInclusive, endExclusive);
     }
     
+    public static IntStreamable rangeAll(int startInclusive, int endInclusive) {
+        return ()->IntStreamPlus.range(startInclusive, endInclusive + 1);
+    }
+    
     public static IntStreamable generate(IntSupplier intSupplier) {
         return ()->IntStreamPlus.generate(intSupplier);
     }

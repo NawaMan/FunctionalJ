@@ -21,25 +21,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.list;
 
-import static functionalj.stream.Streamable.deriveFrom;
-
-import java.util.Comparator;
 import java.util.function.Function;
 
-public interface StreamableWithSort<DATA> extends AsStreamable<DATA> {
+import functionalj.pipeable.Pipeable;
+
+public interface FuncListWithPipe<DATA> {
     
-    /** Sort the values by the mapped value. */
-    public default <T extends Comparable<? super T>> Streamable<DATA> sortedBy(Function<? super DATA, T> mapper) {
-        return deriveFrom(this, stream -> stream.sortedBy(mapper));
+    public FuncList<DATA> toFuncList();
+    
+    /** @return the pipeable of this stream. */
+    public default <T> Pipeable<FuncList<DATA>> pipable() {
+        return Pipeable.of(this.toFuncList());
     }
     
-    /** Sort the values by the mapped value using the comparator. */
-    public default <T> Streamable<DATA> sortedBy(
-            Function<? super DATA, T> mapper, 
-            Comparator<T>             comparator) {
-        return deriveFrom(this, stream -> stream.sortedBy(mapper, comparator));
+    /** Pipe this stream plus through the given function. */
+    public default <T> T pipe(Function<? super FuncList<DATA>, T> piper) {
+        return piper.apply(this.toFuncList());
     }
     
 }

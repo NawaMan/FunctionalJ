@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.stream.Streamable.deriveFrom;
+
 import functionalj.function.Func2;
 import functionalj.tuple.Tuple2;
 
@@ -30,7 +32,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
     
     /** Concatenate the given tail stream to this stream. */
     public default Streamable<DATA> concatWith(Streamable<DATA> tail) {
-        return Streamable.deriveFrom(this, stream -> stream.concatWith(tail.stream()));
+        return deriveFrom(this, stream -> stream.concatWith(tail.stream()));
     }
     
     /**
@@ -43,7 +45,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
     public default Streamable<DATA> merge(Streamable<DATA> anotherStreamable) {
-        return Streamable.deriveFrom(this, stream -> stream.merge(anotherStreamable.stream()));
+        return deriveFrom(this, stream -> stream.merge(anotherStreamable.stream()));
     }
     
     //-- Zip --
@@ -58,7 +60,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
      *   Result stream:  [(A, 1), (B, 2), (C, 3)] <br>
      */
     public default <B> Streamable<Tuple2<DATA,B>> zipWith(Streamable<B> anotherStreamable) {
-        return Streamable.deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream()));
+        return deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream()));
     }
     
     /**
@@ -73,7 +75,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
     public default <B> Streamable<Tuple2<DATA,B>> zipWith(
             Streamable<B> anotherStreamable,
             ZipWithOption option) {
-        return Streamable.deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), option));
+        return deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), option));
     }
     
     /**
@@ -89,7 +91,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
     public default <B, C> Streamable<C> zipWith(
             Streamable<B>     anotherStreamable, 
             Func2<DATA, B, C> combinator) {
-        return Streamable.deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), combinator));
+        return deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), combinator));
     }
     
     /**
@@ -106,7 +108,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
             Streamable<B>     anotherStreamable, 
             ZipWithOption     option,
             Func2<DATA, B, C> combinator) {
-        return Streamable.deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), option, combinator));
+        return deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), option, combinator));
     }
     
     /**
@@ -122,7 +124,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
     public default Streamable<DATA> choose(
             Streamable<DATA>           anotherStreamable,
             Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return Streamable.deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), selectThisNotAnother));
+        return deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), selectThisNotAnother));
     }
     
     /**
@@ -140,7 +142,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
             Streamable<DATA>           anotherStreamable,
             ZipWithOption              option,
             Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return Streamable.deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), option, selectThisNotAnother));
+        return deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), option, selectThisNotAnother));
     }
     
 }

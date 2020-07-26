@@ -31,13 +31,14 @@ import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.lens.lenses.AnyLens;
 
-public interface StreamableWithFillNull<DATA> extends AsStreamable<DATA> {
+public interface StreamableWithFillNull<DATA>
+        extends AsStreamable<DATA> {
     
     /** Replace any null value with the given replacement. */
     public default Streamable<DATA> fillNull(DATA replacement) {
         return deriveFrom(this, stream -> stream.fillNull(replacement));
     }
-
+    
     /** Replace sub element that is null (accessed with the given lens) with the given replacement. */
     public default <VALUE> Streamable<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 

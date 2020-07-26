@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -43,7 +44,7 @@ import lombok.val;
 
 @FunctionalInterface
 public interface ReadOnlyList<DATA> 
-                    extends List<DATA>, Streamable<DATA> {
+                    extends List<DATA> {
     
     public static <T> ReadOnlyList<T> empty() {
         return ImmutableList.empty();
@@ -66,11 +67,10 @@ public interface ReadOnlyList<DATA>
     @Override
     public StreamPlus<DATA> stream();
     
-    @Override
     public default ImmutableList<DATA> toImmutableList() {
         return ImmutableList.from(this);
     }
-    @Override
+    
     public default List<DATA> toJavaList() {
         return this;
     }
@@ -159,7 +159,8 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default Spliterator<DATA> spliterator() {
-        return Streamable.super.spliterator();
+        val iterator = iterator();
+        return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
     @Override

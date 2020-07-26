@@ -21,25 +21,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.list;
 
-import static functionalj.stream.Streamable.deriveFrom;
+import static functionalj.list.FuncList.deriveFrom;
 
-import java.util.Comparator;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
-public interface StreamableWithSort<DATA> extends AsStreamable<DATA> {
+import functionalj.result.Result;
+import functionalj.stream.AsStreamable;
+import functionalj.tuple.Tuple2;
+
+public interface FuncListWithMapWithPrev<DATA> extends AsStreamable<DATA> {
     
-    /** Sort the values by the mapped value. */
-    public default <T extends Comparable<? super T>> Streamable<DATA> sortedBy(Function<? super DATA, T> mapper) {
-        return deriveFrom(this, stream -> stream.sortedBy(mapper));
+    /** @return  the stream of  each previous value and each current value. */
+    public default <TARGET> FuncList<TARGET> mapWithPrev(
+            BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> mapper) {
+        return deriveFrom(this, stream -> stream.mapWithPrev(mapper));
     }
     
-    /** Sort the values by the mapped value using the comparator. */
-    public default <T> Streamable<DATA> sortedBy(
-            Function<? super DATA, T> mapper, 
-            Comparator<T>             comparator) {
-        return deriveFrom(this, stream -> stream.sortedBy(mapper, comparator));
+    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    public default FuncList<Tuple2<? super Result<DATA>, ? super DATA>> mapWithPrev() {
+        return deriveFrom(this, stream -> stream.mapWithPrev());
     }
     
 }

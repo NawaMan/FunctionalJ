@@ -36,8 +36,7 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapTuple {
         val list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
         return Tuple.of(
                 list1,
-                list2
-            );
+                list2);
     }
     
     public default Tuple3<IntStreamable, IntStreamable, IntStreamable> split(

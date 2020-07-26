@@ -23,83 +23,64 @@
 // ============================================================================
 package functionalj.list;
 
-import java.util.function.Function;
+import static functionalj.list.FuncList.deriveFrom;
+
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.lens.lenses.AnyLens;
-import functionalj.stream.Streamable;
-import functionalj.stream.StreamableWithFillNull;
+import functionalj.stream.AsStreamable;
 
-public interface FuncListWithFillNull<DATA>
-        extends StreamableWithFillNull<DATA> {
+public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
     
-    public <TARGET> FuncList<TARGET> deriveFrom(Function<Streamable<DATA>, Stream<TARGET>> action);
+    /** Replace any null value with the given replacement. */
+    public default FuncList<DATA> fillNull(DATA replacement) {
+        return deriveFrom(this, stream -> stream.fillNull(replacement));
+    }
     
-    //== fillNull ==
-    
+    /** Replace sub element that is null (accessed with the given lens) with the given replacement. */
     public default <VALUE> FuncList<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             VALUE                replacement) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .fillNull(lens, replacement);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(lens, replacement));
     }
     
+    /** Replace sub element that is null (accessed with the given getter and setter) with the given replacement. */
     public default <VALUE> FuncList<DATA> fillNull(
-            Func1<DATA, VALUE>       get, 
-            Func2<DATA, VALUE, DATA> set, 
+            Func1<DATA, VALUE>       getter, 
+            Func2<DATA, VALUE, DATA> setter, 
             VALUE                    replacement) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .fillNull(get, set, replacement);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(getter, setter, replacement));
     }
     
+    /** Replace sub element that is null (accessed with the given lens) with the replacement value from the supplier. */
     public default <VALUE> FuncList<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             Supplier<VALUE>      replacementSupplier) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .fillNull(lens, replacementSupplier);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(lens, replacementSupplier));
     }
     
+    /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier. */
     public default <VALUE> FuncList<DATA> fillNull(
-            Func1<DATA, VALUE>       get, 
-            Func2<DATA, VALUE, DATA> set, 
+            Func1<DATA, VALUE>       getter, 
+            Func2<DATA, VALUE, DATA> setter, 
             Supplier<VALUE>          replacementSupplier) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .fillNull(get, set, replacementSupplier);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(getter, setter, replacementSupplier));
     }
     
+    /** Replace sub element that is null (accessed with the given lens) with the replacement value from the function. */
     public default <VALUE> FuncList<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             Func1<DATA, VALUE>   replacementFunction) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .fillNull(lens, replacementFunction);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(lens, replacementFunction));
     }
     
+    /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function. */
     public default <VALUE> FuncList<DATA> fillNull(
-            Func1<DATA, VALUE>       get, 
-            Func2<DATA, VALUE, DATA> set, 
+            Func1<DATA, VALUE>       getter, 
+            Func2<DATA, VALUE, DATA> setter, 
             Func1<DATA, VALUE>       replacementFunction) {
-        return deriveFrom(streamable -> {
-            return streamable
-                    .stream()
-                    .fillNull(get, set, replacementFunction);
-        });
+        return deriveFrom(this, stream -> stream.fillNull(getter, setter, replacementFunction));
     }
 }

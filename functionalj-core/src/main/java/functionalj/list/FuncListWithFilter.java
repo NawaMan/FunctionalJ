@@ -21,9 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.list;
 
-import static functionalj.stream.Streamable.deriveFrom;
+import static functionalj.list.FuncList.deriveFrom;
 
 import java.util.Collection;
 import java.util.function.DoublePredicate;
@@ -36,46 +36,47 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import functionalj.function.IntObjBiFunction;
+import functionalj.stream.AsStreamable;
 
-public interface StreamableWithFilter<DATA> extends AsStreamable<DATA> {
+public interface FuncListWithFilter<DATA> extends AsStreamable<DATA> {
     
     /** Map each value to an int and used it to filter the value. */
-    public default Streamable<DATA> filterAsInt(
+    public default FuncList<DATA> filterAsInt(
             ToIntFunction<? super DATA> mapper, 
             IntPredicate                predicate) {
         return deriveFrom(this, stream -> stream.filterAsInt(mapper, predicate));
     }
     
     /** Map each value to a long and used it to filter the value. */
-    public default Streamable<DATA> filterAsLong(
+    public default FuncList<DATA> filterAsLong(
             ToLongFunction<? super DATA> mapper, 
             LongPredicate                predicate) {
         return deriveFrom(this, stream -> stream.filterAsLong(mapper, predicate));
     }
     
     /** Map each value to a double and used it to filter the value. */
-    public default Streamable<DATA> filterAsDouble(
+    public default FuncList<DATA> filterAsDouble(
             ToDoubleFunction<? super DATA> mapper, 
             DoublePredicate                predicate) {
         return deriveFrom(this, stream -> stream.filterAsDouble(mapper, predicate));
     }
     
     /** Map each value to another object and used it to filter the value. */
-    public default <T> Streamable<DATA> filterAsObject(
+    public default <T> FuncList<DATA> filterAsObject(
             Function<? super DATA, T> mapper, 
             Predicate<? super T>      predicate) {
         return filter(mapper, predicate);
     }
     
     /** Map each value to another object and used it to filter the value. */
-    public default <T> Streamable<DATA> filter(
+    public default <T> FuncList<DATA> filter(
             Function<? super DATA, T> mapper, 
             Predicate<? super T>      predicate) {
         return deriveFrom(this, stream -> stream.filter(mapper, predicate));
     }
     
     /** Filter the element that is only the specific class. */
-    public default <T> Streamable<DATA> filter(Class<T> clzz) {
+    public default <T> FuncList<DATA> filter(Class<T> clzz) {
         return deriveFrom(this, stream -> stream.filter(clzz));
     }
     
@@ -83,55 +84,55 @@ public interface StreamableWithFilter<DATA> extends AsStreamable<DATA> {
      * Case the value to the given class and used it to filter the value.
      * If the value is not of the type (null included), it will be filtered out.
      */
-    public default <T> Streamable<DATA> filter(
+    public default <T> FuncList<DATA> filter(
             Class<T>             clzz, 
             Predicate<? super T> theCondition) {
         return deriveFrom(this, stream -> stream.filter(clzz, theCondition));
     }
     
     /** Filter value with its index. */
-    public default Streamable<DATA> filterWithIndex(IntObjBiFunction<? super DATA, Boolean> predicate) {
+    public default FuncList<DATA> filterWithIndex(IntObjBiFunction<? super DATA, Boolean> predicate) {
         return deriveFrom(this, stream -> stream.filterWithIndex(predicate));
     }
     
     /** Filter value that is not null. */
-    public default Streamable<DATA> filterNonNull() {
+    public default FuncList<DATA> filterNonNull() {
         return deriveFrom(this, stream -> stream.filterNonNull());
     }
     
     /** Map the value to another object and filter the one that is not null. */
-    public default <T> Streamable<DATA> filterNonNull(Function<? super DATA, T> mapper) {
+    public default <T> FuncList<DATA> filterNonNull(Function<? super DATA, T> mapper) {
         return deriveFrom(this, stream -> stream.filterNonNull(mapper));
     }
     
     /** Filter value that is not null. */
-    public default Streamable<DATA> excludeNull() {
+    public default FuncList<DATA> excludeNull() {
         return deriveFrom(this, stream -> stream.excludeNull());
     }
     
     /** Map the value to another object and filter the one that is not null. */
-    public default <T> Streamable<DATA> excludeNull(Function<? super DATA, T> mapper) {
+    public default <T> FuncList<DATA> excludeNull(Function<? super DATA, T> mapper) {
         return deriveFrom(this, stream -> stream.excludeNull(mapper));
     }
     
     /** Filter only the value that is in the given items. */
     @SuppressWarnings("unchecked")
-    public default Streamable<DATA> filterIn(DATA ... items) {
+    public default FuncList<DATA> filterIn(DATA ... items) {
         return deriveFrom(this, stream -> stream.filterIn(items));
     }
     
     /** Filter only the value that is in the given collections. */
-    public default Streamable<DATA> filterIn(Collection<? super DATA> collection) {
+    public default FuncList<DATA> filterIn(Collection<? super DATA> collection) {
         return deriveFrom(this, stream -> stream.filterIn(collection));
     }
     
     /** Filter only the value that the predicate returns false. */
-    public default Streamable<DATA> exclude(Predicate<? super DATA> predicate) {
+    public default FuncList<DATA> exclude(Predicate<? super DATA> predicate) {
         return deriveFrom(this, stream -> stream.exclude(predicate));
     }
     
     /** Filter out any value that is in the given collection. */
-    public default Streamable<DATA> excludeIn(Collection<? super DATA> collection) {
+    public default FuncList<DATA> excludeIn(Collection<? super DATA> collection) {
         return deriveFrom(this, stream -> stream.excludeIn(collection));
     }
     

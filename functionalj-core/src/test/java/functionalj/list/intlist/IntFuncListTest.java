@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -36,6 +37,7 @@ import functionalj.promise.DeferAction;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.IntAccumulator;
 import functionalj.stream.IntCollectorPlus;
+import functionalj.stream.Streamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import lombok.val;
@@ -1691,7 +1693,7 @@ public class IntFuncListTest {
                     list
                     .flatMapToObjIf(
                             theInteger.thatIsOdd(), 
-                            i -> range(0, i)         .boxed(),
+                            i -> range(0, i)         .boxed().streamable(),
                             i -> IntStreamable.of(-i).boxed()
                     )
                     .toListString());
