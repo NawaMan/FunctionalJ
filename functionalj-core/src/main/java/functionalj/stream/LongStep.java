@@ -6,6 +6,7 @@ import java.util.function.LongUnaryOperator;
 import functionalj.function.Func1;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public class LongStep implements LongUnaryOperator, LongStreamable, AsStreamable<Long> {

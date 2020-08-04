@@ -1,6 +1,6 @@
 package functionalj.list;
 
-import functionalj.stream.StreamableWithStatistic;
+import functionalj.streamable.StreamableWithStatistic;
 
 public interface FuncListWithStatistic<DATA> extends StreamableWithStatistic<DATA> {
     

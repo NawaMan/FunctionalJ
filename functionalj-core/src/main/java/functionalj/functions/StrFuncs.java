@@ -49,7 +49,7 @@ import functionalj.function.Func6;
 import functionalj.list.FuncList;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.Streamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 // TODO - Should only contains methods that return functions or constance of functions

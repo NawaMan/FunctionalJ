@@ -845,9 +845,9 @@ public class StreamPlusTest {
         assertEquals(
                 "A, 0, B, 1, C, 2, 3, 4, 5, 6", 
                 streamA
-                    .merge(streamB)
-                    .limit(10)
-                    .join(", "));
+                    .mergeWith(streamB)
+                    .limit    (10)
+                    .join     (", "));
     }
     
     @Test

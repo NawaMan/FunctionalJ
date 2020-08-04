@@ -61,7 +61,7 @@ import functionalj.functions.TimeFuncs;
 import functionalj.list.FuncList;
 import functionalj.ref.Run;
 import functionalj.ref.Substitution;
-import functionalj.stream.Streamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public class DeferActionTest {

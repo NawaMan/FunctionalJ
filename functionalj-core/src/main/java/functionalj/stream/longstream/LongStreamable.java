@@ -38,13 +38,13 @@ import java.util.stream.Stream;
 import functionalj.function.LongBiFunctionPrimitive;
 import functionalj.stream.AsStreamable;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.Streamable;
 import functionalj.stream.doublestream.AsDoubleStreamable;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamable;
 import functionalj.stream.intstream.AsIntStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
+import functionalj.streamable.Streamable;
 import functionalj.tuple.LongLongTuple;
 import lombok.val;
 
@@ -251,7 +251,8 @@ public interface LongStreamable
     public static <SOURCE> DoubleStreamable deriveToDouble(
             AsLongStreamable                      asStreamable,
             Function<LongStreamPlus, DoubleStream> action) {
-        return DoubleStreamable.deriveFrom(asStreamable, action);
+//        return DoubleStreamable.deriveFrom(asStreamable, action);
+        return null;
     }
     
     /** Create a Streamable from another streamable. */

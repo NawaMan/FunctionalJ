@@ -80,9 +80,8 @@ public interface StreamPlusWithMapFirst<DATA> {
     public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2) {
-        return deriveToObj(source -> {
-            return doMapFirst(source, mapper1, mapper2);
-        });
+        val streamPlus = streamPlus();
+        return doMapFirst(streamPlus, mapper1, mapper2);
     }
     
     /** Map the value by applying each mapper one by one and use the first one that does not return null. */
@@ -126,4 +125,5 @@ public interface StreamPlusWithMapFirst<DATA> {
         val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
+    
 }

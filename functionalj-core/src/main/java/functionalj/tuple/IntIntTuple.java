@@ -32,7 +32,10 @@ public class IntIntTuple implements Tuple2<Integer, Integer>, Map.Entry<Integer,
         return new IntIntTuple(i1, i2);
     }
     public static  IntIntTuple intTuple(int i1, int i2) {
-        return new IntIntTuple(i1, i2);
+        return of(i1, i2);
+    }
+    public static  IntIntTuple tuple(int i1, int i2) {
+        return of(i1, i2);
     }
     
     public final int _1;

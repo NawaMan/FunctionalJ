@@ -67,6 +67,7 @@ import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Sequential;
 import functionalj.stream.makers.Terminal;
+import functionalj.streamable.Streamable;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -512,9 +513,9 @@ public interface StreamPlus<DATA>
         return LongStreamPlus.from(action.apply(this));
     }
     
-    public default DoubleStreamPlus deriveToDouble(Func1<StreamPlus<DATA>, DoubleStream> action) {
-        return DoubleStreamPlus.from(action.apply(this));
-    }
+//    public default DoubleStreamPlus deriveToDouble(Func1<StreamPlus<DATA>, DoubleStream> action) {
+//        return DoubleStreamPlus.from(action.apply(this));
+//    }
     
     public default <TARGET> StreamPlus<TARGET> deriveToObj(Func1<StreamPlus<DATA>, Stream<TARGET>> action) {
         return StreamPlus.from(action.apply(this));
@@ -632,7 +633,8 @@ public interface StreamPlus<DATA>
     
     @Override
     public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
-        return DoubleStreamPlus.from(stream().mapToDouble(mapper));
+//        return DoubleStreamPlus.from(stream().mapToDouble(mapper));
+        return null;
     }
     
     //-- FlatMap --
@@ -654,7 +656,8 @@ public interface StreamPlus<DATA>
     
     @Override
     public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
-        return DoubleStreamPlus.from(stream().flatMapToDouble(mapper));
+//        return DoubleStreamPlus.from(stream().flatMapToDouble(mapper));
+        return null;
     }
     
     //-- Filter --
@@ -662,17 +665,6 @@ public interface StreamPlus<DATA>
     @Override
     public default StreamPlus<DATA> filter(Predicate<? super DATA> predicate) {
         return StreamPlus.from(stream().filter(predicate));
-    }
-    
-    @Override
-    public default <T> StreamPlus<DATA> filter(
-            Function<? super DATA, T> mapper, 
-            Predicate<? super T>      predicate) {
-        return filter(value -> {
-            val target = mapper.apply(value);
-            val isPass = predicate.test(target);
-            return isPass;
-        });
     }
     
     //-- Peek --
@@ -815,28 +807,6 @@ public interface StreamPlus<DATA>
             Comparator<? super DATA> comparator) {
         return terminate(this, stream -> {
             return stream.max(comparator);
-        });
-    }
-    
-    @Eager
-    @Terminal
-    @Override
-    public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
-        return min((a,b)->{
-            val mappedA = mapper.apply(a);
-            val mappedB = mapper.apply(b);
-            return mappedA.compareTo(mappedB);
-        });
-    }
-    
-    @Eager
-    @Terminal
-    @Override
-    public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
-        return max((a,b)->{
-            val mappedA = mapper.apply(a);
-            val mappedB = mapper.apply(b);
-            return mappedA.compareTo(mappedB);
         });
     }
     

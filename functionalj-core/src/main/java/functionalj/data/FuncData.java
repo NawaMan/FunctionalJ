@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import functionalj.result.Result;
-import functionalj.stream.Streamable;
+import functionalj.streamable.Streamable;
 import functionalj.types.IData;
 
 public class FuncData {

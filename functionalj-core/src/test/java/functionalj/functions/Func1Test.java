@@ -36,7 +36,7 @@ import org.junit.Test;
 import functionalj.function.Func;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
-import functionalj.stream.Streamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public class Func1Test {

@@ -44,11 +44,12 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, Pipeable
         return DoubleIteratorPlus.from(DoubleStreamPlus.of(ds));
     }
     public static DoubleIteratorPlus from(DoubleStream stream) {
-        val iterator 
-                = (stream instanceof DoubleStreamPlus) 
-                ? ((DoubleStreamPlus)stream).__iterator()
-                : stream.iterator();
-        return DoubleIteratorPlus.from(iterator);
+//        val iterator 
+//                = (stream instanceof DoubleStreamPlus) 
+//                ? ((DoubleStreamPlus)stream).__iterator()
+//                : stream.iterator();
+//        return DoubleIteratorPlus.from(iterator);
+        return null;
     }
     public static DoubleIteratorPlus from(PrimitiveIterator.OfDouble iterator) {
         if (iterator instanceof DoubleIteratorPlus)

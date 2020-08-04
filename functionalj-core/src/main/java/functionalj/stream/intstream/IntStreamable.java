@@ -25,9 +25,6 @@ package functionalj.stream.intstream;
 
 import static functionalj.lens.Access.theInteger;
 
-import java.util.Comparator;
-import java.util.IntSummaryStatistics;
-import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.Spliterator;
 import java.util.function.BiConsumer;
@@ -49,26 +46,18 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import functionalj.function.Func1;
-import functionalj.function.IntBiFunctionPrimitive;
-import functionalj.function.IntObjBiFunction;
-import functionalj.list.FuncList;
-import functionalj.list.intlist.ImmutableIntFuncList;
-import functionalj.list.intlist.IntFuncList;
 import functionalj.pipeable.Pipeable;
-import functionalj.promise.UncompletedAction;
-import functionalj.result.Result;
 import functionalj.stream.AsStreamable;
 import functionalj.stream.IntIterable;
 import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.Streamable;
 import functionalj.stream.doublestream.AsDoubleStreamable;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamable;
 import functionalj.stream.longstream.AsLongStreamable;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamable;
-import functionalj.tuple.IntIntTuple;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 
@@ -80,14 +69,13 @@ public interface IntStreamable
             IntIterable,
             IntStreamableWithMapFirst,
             IntStreamableWithMapThen,
-            IntStreamableWithMapTuple,
+            IntStreamableWithMapToTuple,
             IntStreamableWithMapToMap,
+            IntStreamableWithGroupingBy,
             IntStreamableWithSplit,
             IntStreamableWithSegment,
             IntStreamableWithCombine,
-            IntStreamableWithCalculate,
-            IntStreamableAddtionalOperators,
-            IntStreamableAdditionalTerminalOperators {
+            IntStreamableWithCalculate {
     
     public static IntStreamable empty() {
         return ()->IntStreamPlus.empty();
@@ -101,7 +89,7 @@ public interface IntStreamable
         if (data == null) {
             return empty();
         }
-        
+       
         val length = data.length;
         val ints   = new int[length];
         System.arraycopy(data, 0, ints, 0, length);
@@ -281,7 +269,8 @@ public interface IntStreamable
     public static <SOURCE> DoubleStreamable deriveToDouble(
             AsIntStreamable                       asStreamable,
             Function<IntStreamPlus, DoubleStream> action) {
-        return DoubleStreamable.deriveFrom(asStreamable, action);
+//        return DoubleStreamable.deriveFrom(asStreamable, action);
+        return null;
     }
     
     /** Create a Streamable from another streamable. */
@@ -291,73 +280,73 @@ public interface IntStreamable
         return Streamable.deriveFrom(asStreamable, action);
     }
     
-    //-- Zip --
+//    //-- Zip --
     
-    public static Streamable<IntIntTuple> zipOf(
-            IntStreamable streamable1, 
-            IntStreamable streamable2) {
-        return ()->{
-            return IntStreamPlus.zipOf(
-                    streamable1.intStream(),
-                    streamable2.intStream());
-        };
-    }
-    public static StreamPlus<IntIntTuple> zipOf(
-            IntStreamable streamable1, 
-            IntStreamable streamable2,
-            int           defaultValue) {
-        return ()->{
-            return IntStreamPlus.zipOf(
-                    streamable1.intStream(),
-                    streamable2.intStream(),
-                    defaultValue);
-        };
-    }
-    public static StreamPlus<IntIntTuple> zipOf(
-            IntStreamable streamable1, int defaultValue1,
-            IntStreamable streamable2, int defaultValue2) {
-        return ()->{
-            return IntStreamPlus.zipOf(
-                    streamable1.intStream(), defaultValue1,
-                    streamable2.intStream(), defaultValue2);
-        };
-    }
+//    public static Streamable<IntIntTuple> zipOf(
+//            IntStreamable streamable1, 
+//            IntStreamable streamable2) {
+//        return ()->{
+//            return IntStreamPlus.zipOf(
+//                    streamable1.intStream(),
+//                    streamable2.intStream());
+//        };
+//    }
+//    public static StreamPlus<IntIntTuple> zipOf(
+//            IntStreamable streamable1, 
+//            IntStreamable streamable2,
+//            int           defaultValue) {
+//        return ()->{
+//            return IntStreamPlus.zipOf(
+//                    streamable1.intStream(),
+//                    streamable2.intStream(),
+//                    defaultValue);
+//        };
+//    }
+//    public static StreamPlus<IntIntTuple> zipOf(
+//            IntStreamable streamable1, int defaultValue1,
+//            IntStreamable streamable2, int defaultValue2) {
+//        return ()->{
+//            return IntStreamPlus.zipOf(
+//                    streamable1.intStream(), defaultValue1,
+//                    streamable2.intStream(), defaultValue2);
+//        };
+//    }
     
-    public static IntStreamable zipOf(
-            IntStreamable          streamable1, 
-            IntStreamable          streamable2,
-            IntBiFunctionPrimitive merger) {
-        return ()->{
-            return IntStreamPlus.zipOf(
-                    streamable1.intStream(),
-                    streamable2.intStream(),
-                    merger);
-        };
-    }
-    public static IntStreamable zipOf(
-            IntStreamable          streamable1, 
-            IntStreamable          streamable2,
-            int                    defaultValue,
-            IntBiFunctionPrimitive merger) {
-        return ()->{
-            return IntStreamPlus.zipOf(
-                    streamable1.intStream(),
-                    streamable2.intStream(),
-                    defaultValue,
-                    merger);
-        };
-    }
-    public static IntStreamable zipOf(
-            IntStreamable streamable1, int defaultValue1,
-            IntStreamable streamable2, int defaultValue2,
-            IntBiFunctionPrimitive merger) {
-        return ()->{
-            return IntStreamPlus.zipOf(
-                    streamable1.intStream(), defaultValue1,
-                    streamable2.intStream(), defaultValue2,
-                    merger);
-        };
-    }
+//    public static IntStreamable zipOf(
+//            IntStreamable          streamable1, 
+//            IntStreamable          streamable2,
+//            IntBiFunctionPrimitive merger) {
+//        return ()->{
+//            return IntStreamPlus.zipOf(
+//                    streamable1.intStream(),
+//                    streamable2.intStream(),
+//                    merger);
+//        };
+//    }
+//    public static IntStreamable zipOf(
+//            IntStreamable          streamable1, 
+//            IntStreamable          streamable2,
+//            int                    defaultValue,
+//            IntBiFunctionPrimitive merger) {
+//        return ()->{
+//            return IntStreamPlus.zipOf(
+//                    streamable1.intStream(),
+//                    streamable2.intStream(),
+//                    defaultValue,
+//                    merger);
+//        };
+//    }
+//    public static IntStreamable zipOf(
+//            IntStreamable streamable1, int defaultValue1,
+//            IntStreamable streamable2, int defaultValue2,
+//            IntBiFunctionPrimitive merger) {
+//        return ()->{
+//            return IntStreamPlus.zipOf(
+//                    streamable1.intStream(), defaultValue1,
+//                    streamable2.intStream(), defaultValue2,
+//                    merger);
+//        };
+//    }
     
     public static IntStreamable from(
             IntStreamable                      source,
@@ -404,7 +393,7 @@ public interface IntStreamable
     }
     
     public default IntStreamable deriveToInt(Func1<IntStreamable, IntStreamable> action) {
-        // TODO Auto-generated method stub
+        //TODO Auto-generated method stub
         return null;
     }
     
@@ -428,10 +417,9 @@ public interface IntStreamable
         return LongStreamable.from(()->stream().mapToLong(i -> (long)i));
     }
     
-//    @Override
-//    public default DoubleStreamable asDoubleStream() {
-//        return DoubleStreamPlus.from(stream().asDoubleStream());
-//    }
+   public default DoubleStreamable asDoubleStream() {
+       return DoubleStreamable.from(()->stream().mapToDouble(i -> (long)i));
+   }
     
     public default Streamable<Integer> boxed() {
         return ()->StreamPlus.from(intStream().mapToObj(theInteger.boxed()));
@@ -515,11 +503,12 @@ public interface IntStreamable
     }
     
     public default DoubleStreamable flatMapToDouble(IntFunction<? extends AsDoubleStreamable> mapper) {
-        return DoubleStreamable.deriveFrom(this, stream -> {
-            return stream
-                    .flatMapToDouble(value -> mapper.apply(value).doubleStream())
-                    .doubleStream();
-        });
+//        return DoubleStreamable.deriveFrom(this, stream -> {
+//            return stream
+//                    .flatMapToDouble(value -> mapper.apply(value).doubleStream())
+//                    .doubleStream();
+//        });
+        return null;
     }
     
     public default <TARGET> Streamable<TARGET> flatMapToObj(IntFunction<? extends AsStreamable<TARGET>> mapper) {
@@ -593,37 +582,37 @@ public interface IntStreamable
                     .skip(offset));
     }
     
-    public default IntStreamable skipWhile(IntPredicate condition) {
-        return IntStreamable.from(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .skipWhile(condition));
-    }
+//    public default IntStreamable skipWhile(IntPredicate condition) {
+//        return IntStreamable.from(this, 
+//                streamable -> 
+//                    streamable
+//                    .intStream()
+//                    .skipWhile(condition));
+//    }
     
-    public default IntStreamable skipUntil(IntPredicate condition) {
-        return IntStreamable.from(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .skipUntil(condition));
-    }
+//    public default IntStreamable skipUntil(IntPredicate condition) {
+//        return IntStreamable.from(this, 
+//                streamable -> 
+//                    streamable
+//                    .intStream()
+//                    .skipUntil(condition));
+//    }
     
-    public default IntStreamable takeWhile(IntPredicate condition) {
-        return IntStreamable.from(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .takeWhile(condition));
-    }
+//    public default IntStreamable takeWhile(IntPredicate condition) {
+//        return IntStreamable.from(this, 
+//                streamable -> 
+//                    streamable
+//                    .intStream()
+//                    .takeWhile(condition));
+//    }
     
-    public default IntStreamable takeUntil(IntPredicate condition) {
-        return IntStreamable.from(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .takeUntil(condition));
-    }
+//    public default IntStreamable takeUntil(IntPredicate condition) {
+//        return IntStreamable.from(this, 
+//                streamable -> 
+//                    streamable
+//                    .intStream()
+//                    .takeUntil(condition));
+//    }
     
     public default IntStreamable distinct() {
         return IntStreamable.from(this, 
@@ -643,43 +632,43 @@ public interface IntStreamable
                     .sorted());
     }
     
-    public default IntStreamable sortedBy(
-            IntUnaryOperator mapper) {
-        return IntStreamable.from(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .sortedBy(mapper));
-    }
+//    public default IntStreamable sortedBy(
+//            IntUnaryOperator mapper) {
+//        return IntStreamable.from(this, 
+//                streamable -> 
+//                    streamable
+//                    .intStream()
+//                    .sortedBy(mapper));
+//    }
     
-    public default IntStreamable sortedBy(
-            IntUnaryOperator       mapper,
-            IntBiFunctionPrimitive comparator) {
-        return IntStreamable.from(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .sortedBy(mapper, comparator));
-    }
+//    public default IntStreamable sortedBy(
+//            IntUnaryOperator       mapper,
+//            IntBiFunctionPrimitive comparator) {
+//        return IntStreamable.from(this, 
+//                streamable -> 
+//                    streamable
+//                    .intStream()
+//                    .sortedBy(mapper, comparator));
+//    }
     
-    public default <T extends Comparable<? super T>> IntStreamable sortedByObj(
-            IntFunction<T> mapper) {
-        return IntStreamable.from(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .sortedAs(mapper));
-    }
+//    public default <T extends Comparable<? super T>> IntStreamable sortedByObj(
+//            IntFunction<T> mapper) {
+//        return IntStreamable.from(this, 
+//                streamable -> 
+//                    streamable
+//                    .intStream()
+//                    .sortedAs(mapper));
+//    }
     
-    public default <T> IntStreamable sortedByObj(
-            IntFunction<T> mapper, 
-            Comparator<T>  comparator) {
-        return IntStreamable.from(this, 
-                streamable -> 
-                    streamable
-                    .intStream()
-                    .sortedAs(mapper, comparator));
-    }
+//    public default <T> IntStreamable sortedByObj(
+//            IntFunction<T> mapper, 
+//            Comparator<T>  comparator) {
+//        return IntStreamable.from(this, 
+//                streamable -> 
+//                    streamable
+//                    .intStream()
+//                    .sortedAs(mapper, comparator));
+//    }
     
     //-- Terminate --
     
@@ -731,103 +720,103 @@ public interface IntStreamable
         return intStream().count();
     }
     
-    public default int size() {
-        return (int)intStream().count();
-    }
+//    public default int size() {
+//        return (int)intStream().count();
+//    }
     
-    public default boolean anyMatch(IntPredicate predicate) {
-        return intStream().anyMatch(predicate);
-    }
+//    public default boolean anyMatch(IntPredicate predicate) {
+//        return intStream().anyMatch(predicate);
+//    }
     
-    public default boolean allMatch(IntPredicate predicate) {
-        return intStream().allMatch(predicate);
-    }
+//    public default boolean allMatch(IntPredicate predicate) {
+//        return intStream().allMatch(predicate);
+//    }
     
-    public default boolean noneMatch(IntPredicate predicate) {
-        return intStream().noneMatch(predicate);
-    }
+//    public default boolean noneMatch(IntPredicate predicate) {
+//        return intStream().noneMatch(predicate);
+//    }
     
-    public default OptionalInt findFirst() {
-        return intStream().findFirst();
-    }
+//    public default OptionalInt findFirst() {
+//        return intStream().findFirst();
+//    }
     
-    public default OptionalInt findAny() {
-        return intStream().findAny();
-    }
+//    public default OptionalInt findAny() {
+//        return intStream().findAny();
+//    }
     
-    //== toXXX ==
+//    //== toXXX ==
     
     public default int[] toArray() {
         return intStream()
                 .toArray();
     }
     
-    public default int sum() {
-        return intStream().sum();
-    }
+//    public default int sum() {
+//        return intStream().sum();
+//    }
     
-    public default OptionalDouble average() {
-        return intStream().average();
-    }
+//    public default OptionalDouble average() {
+//        return intStream().average();
+//    }
     
-    public default IntSummaryStatistics summaryStatistics() {
-        return intStream().summaryStatistics();
-    }
+//    public default IntSummaryStatistics summaryStatistics() {
+//        return intStream().summaryStatistics();
+//    }
     
     public default String toListString() {
         return intStream()
                 .toListString();
     }
     
-    public default IntFuncList toList() {
-        return IntFuncList.from(this);
-    }
+//    public default IntFuncList toList() {
+//        return IntFuncList.from(this);
+//    }
     
-    public default FuncList<Integer> toBoxedList() {
-        return FuncList.from(this.boxed());
-    }
+//    public default FuncList<Integer> toBoxedList() {
+//        return FuncList.from(this.boxed());
+//    }
     
-    public default ImmutableIntFuncList toImmutableList() {
-        return intStream()
-                .toImmutableList();
-    }
+//    public default ImmutableIntFuncList toImmutableList() {
+//        return intStream()
+//                .toImmutableList();
+//    }
     
-    //== Plus ==
+//    //== Plus ==
     
-    public default String joinToString() {
-        return intStream()
-                .joinToString();
-    }
+//    public default String joinToString() {
+//        return intStream()
+//                .joinToString();
+//    }
     
-    public default String joinToString(String delimiter) {
-        return intStream()
-                .joinToString(delimiter);
-    }
+//    public default String joinToString(String delimiter) {
+//        return intStream()
+//                .joinToString(delimiter);
+//    }
     
-    //== Pipe ==
+//    //== Pipe ==
     
-    public default <T> Pipeable<? extends IntStreamable> pipable() {
-        return Pipeable.of(this);
-    }
+//    public default <T> Pipeable<? extends IntStreamable> pipable() {
+//        return Pipeable.of(this);
+//    }
     
-    //== Spawn ==
+//    //== Spawn ==
     
-    public default <T> Streamable<Result<T>> spawn(
-            IntFunction<? extends UncompletedAction<T>> mapToAction) {
-        return ()->
-                intStream()
-                .spawn(mapToAction);
-    }
+//    public default <T> Streamable<Result<T>> spawn(
+//            IntFunction<? extends UncompletedAction<T>> mapToAction) {
+//        return ()->
+//                intStream()
+//                .spawn(mapToAction);
+//    }
     
-    public default IntStreamable accumulate(IntBiFunctionPrimitive accumulator) {
-        return ()->
-                intStream()
-                .accumulate(accumulator);
-    }
+//    public default IntStreamable accumulate(IntBiFunctionPrimitive accumulator) {
+//        return ()->
+//                intStream()
+//                .accumulate(accumulator);
+//    }
     
-    public default IntStreamable restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
-        return ()->
-                intStream()
-                .restate(restater);
-    }
+//    public default IntStreamable restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
+//        return ()->
+//                intStream()
+//                .restate(restater);
+//    }
 }

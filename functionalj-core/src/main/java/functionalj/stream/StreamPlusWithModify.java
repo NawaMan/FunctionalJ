@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.stream.StreamPlusHelper.sequentialToObj;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -140,7 +142,7 @@ public interface StreamPlusWithModify<DATA> {
      */
     public default <T> StreamPlus<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapToAction) {
         val streamPlus = streamPlus();
-        return StreamPlusHelper.sequential(streamPlus, stream -> {
+        return sequentialToObj(streamPlus, stream -> {
             val results = new ArrayList<DeferAction<T>>();
             val index   = new AtomicInteger(0);
             

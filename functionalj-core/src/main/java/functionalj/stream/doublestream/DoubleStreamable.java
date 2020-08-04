@@ -31,13 +31,13 @@ import java.util.stream.Stream;
 
 import functionalj.stream.AsStreamable;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.Streamable;
 import functionalj.stream.intstream.AsIntStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import functionalj.stream.longstream.AsLongStreamable;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public interface DoubleStreamable {
@@ -45,83 +45,83 @@ public interface DoubleStreamable {
     //== Constructor ==
     
     public static DoubleStreamable from(DoubleStreamPlus mapToDouble) {
-        // TODO Auto-generated method stub
+        //TODO Auto-generated method stub
         return null;
     }
     
-    //-- Derive --
+    ////-- Derive --
     
-    /** Create a Streamable from the given Streamable. */
-    public static <SOURCE> DoubleStreamable deriveFrom(
-            AsStreamable<SOURCE>                       asStreamable,
-            Function<StreamPlus<SOURCE>, DoubleStream> action) {
-        return () -> {
-            val sourceStream = asStreamable.stream();
-            val targetStream = action.apply(sourceStream);
-            return DoubleStreamPlus.from(targetStream);
-        };
-    }
+    ///** Create a Streamable from the given Streamable. */
+    //public static <SOURCE> DoubleStreamable deriveFrom(
+    //        AsStreamable<SOURCE>                       asStreamable,
+    //        Function<StreamPlus<SOURCE>, DoubleStream> action) {
+    //    return () -> {
+    //        val sourceStream = asStreamable.stream();
+    //        val targetStream = action.apply(sourceStream);
+    //        return DoubleStreamPlus.from(targetStream);
+    //    };
+    //}
     
-    /** Create a Streamable from the given IntStreamable. */
-    public static <TARGET> DoubleStreamable deriveFrom(
-            AsIntStreamable                       asStreamable,
-            Function<IntStreamPlus, DoubleStream> action) {
-        return () -> {
-            val sourceStream = asStreamable.intStream();
-            val targetStream = action.apply(sourceStream);
-            return DoubleStreamPlus.from(targetStream);
-        };
-    }
+    ///** Create a Streamable from the given IntStreamable. */
+    //public static <TARGET> DoubleStreamable deriveFrom(
+    //        AsIntStreamable                       asStreamable,
+    //        Function<IntStreamPlus, DoubleStream> action) {
+    //    return () -> {
+    //        val sourceStream = asStreamable.intStream();
+    //        val targetStream = action.apply(sourceStream);
+    //        return DoubleStreamPlus.from(targetStream);
+    //    };
+    //}
     
-    /** Create a Streamable from the given LongStreamable. */
-    public static <TARGET> DoubleStreamable deriveFrom(
-            AsLongStreamable                       asStreamable,
-            Function<LongStreamPlus, DoubleStream> action) {
-        return () -> {
-            val sourceStream = asStreamable.longStream();
-            val targetStream = action.apply(sourceStream);
-            return DoubleStreamPlus.from(targetStream);
-        };
-    }
+    ///** Create a Streamable from the given LongStreamable. */
+    //public static <TARGET> DoubleStreamable deriveFrom(
+    //        AsLongStreamable                       asStreamable,
+    //        Function<LongStreamPlus, DoubleStream> action) {
+    //    return () -> {
+    //        val sourceStream = asStreamable.longStream();
+    //        val targetStream = action.apply(sourceStream);
+    //        return DoubleStreamPlus.from(targetStream);
+    //    };
+    //}
     
-    /** Create a Streamable from the given LongStreamable. */
-    public static <TARGET> DoubleStreamable deriveFrom(
-            AsDoubleStreamable                       asStreamable,
-            Function<DoubleStreamPlus, DoubleStream> action) {
-        return () -> {
-            val sourceStream = asStreamable.doubleStream();
-            val targetStream = action.apply(sourceStream);
-            return DoubleStreamPlus.from(targetStream);
-        };
-    }
+    ///** Create a Streamable from the given LongStreamable. */
+    //public static <TARGET> DoubleStreamable deriveFrom(
+    //        AsDoubleStreamable                       asStreamable,
+    //        Function<DoubleStreamPlus, DoubleStream> action) {
+    //    return () -> {
+    //        val sourceStream = asStreamable.doubleStream();
+    //        val targetStream = action.apply(sourceStream);
+    //        return DoubleStreamPlus.from(targetStream);
+    //    };
+    //}
     
-    /** Create a Streamable from another streamable. */
-    public static <SOURCE> IntStreamable deriveToInt(
-            AsDoubleStreamable                   asStreamable,
-            Function<DoubleStreamPlus, IntStream> action) {
-        return IntStreamable.deriveFrom(asStreamable, action);
-    }
+    ///** Create a Streamable from another streamable. */
+    //public static <SOURCE> IntStreamable deriveToInt(
+    //        AsDoubleStreamable                   asStreamable,
+    //        Function<DoubleStreamPlus, IntStream> action) {
+    //    return IntStreamable.deriveFrom(asStreamable, action);
+    //}
     
-    /** Create a Streamable from another streamable. */
-    public static <SOURCE> LongStreamable deriveToLong(
-            AsDoubleStreamable                     asStreamable,
-            Function<DoubleStreamPlus, LongStream> action) {
-        return LongStreamable.deriveFrom(asStreamable, action);
-    }
+    ///** Create a Streamable from another streamable. */
+    //public static <SOURCE> LongStreamable deriveToLong(
+    //        AsDoubleStreamable                     asStreamable,
+    //        Function<DoubleStreamPlus, LongStream> action) {
+    //    return LongStreamable.deriveFrom(asStreamable, action);
+    //}
     
-    /** Create a Streamable from another streamable. */
-    public static <SOURCE> DoubleStreamable deriveToDouble(
-            AsDoubleStreamable                      asStreamable,
-            Function<DoubleStreamPlus, DoubleStream> action) {
-        return DoubleStreamable.deriveFrom(asStreamable, action);
-    }
+    ///** Create a Streamable from another streamable. */
+    //public static <SOURCE> DoubleStreamable deriveToDouble(
+    //        AsDoubleStreamable                      asStreamable,
+    //        Function<DoubleStreamPlus, DoubleStream> action) {
+    //    return DoubleStreamable.deriveFrom(asStreamable, action);
+    //}
     
-    /** Create a Streamable from another streamable. */
-    public static <SOURCE, TARGET> Streamable<TARGET> deriveToObj(
-            AsDoubleStreamable                        asStreamable,
-            Function<DoubleStreamPlus, Stream<TARGET>> action) {
-        return Streamable.deriveFrom(asStreamable, action);
-    }
+    ///** Create a Streamable from another streamable. */
+    //public static <SOURCE, TARGET> Streamable<TARGET> deriveToObj(
+    //        AsDoubleStreamable                        asStreamable,
+    //        Function<DoubleStreamPlus, Stream<TARGET>> action) {
+    //    return Streamable.deriveFrom(asStreamable, action);
+    //}
     
     //== Core ==
     

@@ -29,6 +29,7 @@ import java.util.function.DoubleUnaryOperator;
 import functionalj.function.Func1;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public class DoubleStep implements DoubleUnaryOperator, DoubleStreamable, Streamable<Double> {

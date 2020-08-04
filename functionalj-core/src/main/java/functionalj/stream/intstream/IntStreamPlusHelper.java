@@ -8,6 +8,7 @@ import java.util.PrimitiveIterator;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
+import functionalj.function.Func1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
@@ -40,6 +41,49 @@ public class IntStreamPlusHelper {
         valueRef[0] = ref[0];
         
         return found;
+    }
+    
+    /** Run the given action sequentially, make sure to set the parallelity of the result back. */
+    public static <T> IntStreamPlus sequential(
+            AsIntStreamPlus      asStreamPlus,
+            Func1<IntStreamPlus, IntStreamPlus> action) {
+        val streamPlus = asStreamPlus.streamPlus();
+        val isParallel = streamPlus.isParallel();
+        
+        val orgIntStreamPlus = streamPlus.sequential();
+        val newIntStreamPlus = action.apply(orgIntStreamPlus);
+        if (newIntStreamPlus.isParallel() == isParallel)
+            return newIntStreamPlus;
+        
+        if (isParallel)
+            return newIntStreamPlus.parallel();
+        
+        return newIntStreamPlus.sequential();
+    }
+    
+    /** Run the given action sequentially, make sure to set the parallelity of the result back. */
+    public static <T> IntStreamPlus sequentialToInt(
+            AsIntStreamPlus                     asStreamPlus,
+            Func1<IntStreamPlus, IntStreamPlus> action) {
+        return sequential(asStreamPlus, action);
+    }
+    
+    /** Run the given action sequentially, make sure to set the parallelity of the result back. */
+    public static <T> StreamPlus<T> sequentialToObj(
+            AsIntStreamPlus                     asStreamPlus,
+            Func1<IntStreamPlus, StreamPlus<T>> action) {
+        val streamPlus = asStreamPlus.streamPlus();
+        val isParallel = streamPlus.isParallel();
+        
+        val orgIntStreamPlus = streamPlus.sequential();
+        val newIntStreamPlus = action.apply(orgIntStreamPlus);
+        if (newIntStreamPlus.isParallel() == isParallel)
+            return newIntStreamPlus;
+        
+        if (isParallel)
+            return newIntStreamPlus.parallel();
+        
+        return newIntStreamPlus.sequential();
     }
     
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipIntWith(

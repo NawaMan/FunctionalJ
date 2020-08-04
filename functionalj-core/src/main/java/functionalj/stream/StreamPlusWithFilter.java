@@ -180,6 +180,9 @@ public interface StreamPlusWithFilter<DATA> {
         if (collection == null)
             return StreamPlus.empty();
         
+        if (collection.isEmpty())
+            return StreamPlus.empty();
+        
         val streamPlus = streamPlus();
         return streamPlus.filter(data -> collection.contains(data));
     }
@@ -208,6 +211,9 @@ public interface StreamPlusWithFilter<DATA> {
             return StreamPlus.empty();
         
         val streamPlus = streamPlus();
+        if (collection.isEmpty())
+            return streamPlus;
+        
         return streamPlus
                 .filter(data -> !collection.contains(data));
     }

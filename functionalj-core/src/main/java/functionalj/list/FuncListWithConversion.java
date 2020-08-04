@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.list;
 
-import functionalj.stream.StreamableWithConversion;
+import functionalj.streamable.StreamableWithConversion;
 
 public interface FuncListWithConversion<DATA> extends StreamableWithConversion<DATA> {
     

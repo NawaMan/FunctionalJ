@@ -20,7 +20,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-// ============================================================================
+// ============================================================================ 
 package functionalj.stream.intstream;
 
 import java.util.function.IntConsumer;
@@ -37,12 +37,12 @@ import lombok.val;
 
 public interface IntStreamPlusWithCalculate {
 
-    public void forEach(IntConsumer action);
+     public void forEach(IntConsumer action);
     
     
     //== Calculate ==
     
-    // TODO - Optimize this so the concurrent one can has benefit from the Java implementation
+    //TODO - Optimize this so the concurrent one can has benefit from the Java implementation
     
     public default <RESULT, ACCUMULATED> RESULT calculate(
             IntCollectorPlus<ACCUMULATED, RESULT> collector) {

@@ -27,8 +27,8 @@ import functionalj.function.LongBiFunctionPrimitive;
 import functionalj.function.LongBiPredicatePrimitive;
 import functionalj.function.LongLongBiFunction;
 import functionalj.function.LongObjBiFunction;
-import functionalj.stream.Streamable;
 import functionalj.stream.ZipWithOption;
+import functionalj.streamable.Streamable;
 import functionalj.tuple.LongLongTuple;
 import functionalj.tuple.LongTuple2;
 

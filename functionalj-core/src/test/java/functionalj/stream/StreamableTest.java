@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import functionalj.list.FuncListDerived;
 import functionalj.list.ImmutableList;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public class StreamableTest {

@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.list;
 
-import functionalj.stream.StreamableWithCalculate;
+import functionalj.streamable.StreamableWithCalculate;
 
 public interface FuncListWithCalculate<DATA> 
         extends StreamableWithCalculate<DATA> {

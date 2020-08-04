@@ -31,6 +31,10 @@ public class IntTuple2<T2> implements Tuple2<Integer, T2>, Map.Entry<Integer, T2
         return new IntTuple2<>(i, t2);
     }
     
+    public static <T2> IntTuple2<T2> tuple(int i, T2 t2) {
+        return of(i, t2);
+    }
+    
     public final int _1;
     public final T2  _2;
     

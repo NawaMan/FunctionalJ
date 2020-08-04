@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusHelper;
-import functionalj.stream.Streamable;
+import functionalj.streamable.Streamable;
 
 public class FuncListDerived<SOURCE, DATA> 
                 implements FuncList<DATA> {

@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.tuple.IntTuple2.tuple;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -44,7 +46,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
         return streamPlus
                 .mapToObj(each -> {
                     val currentIndex = index.getAndIncrement();
-                    val tuple        = IntTuple2.of(currentIndex, each);
+                    val tuple        = tuple(currentIndex, each);
                     return tuple;
                 });
     }
@@ -54,7 +56,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
         return streamPlus
-                .mapToObj(each -> {
+                .map(each -> {
                     val currentIndex = index.getAndIncrement();
                     val target       = combinator.apply(currentIndex, each);
                     return target;

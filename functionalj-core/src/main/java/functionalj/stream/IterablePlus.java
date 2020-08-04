@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream;
 
+import functionalj.streamable.Streamable;
+
 /**
  * Classes implementing this interface can create an iterator plus.
  * 

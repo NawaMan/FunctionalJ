@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
 import functionalj.list.FuncList;
-import functionalj.stream.Streamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 @FunctionalInterface

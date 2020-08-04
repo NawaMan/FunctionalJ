@@ -36,7 +36,7 @@ public interface StreamPlusWithMap<DATA> {
     /** Map the value using the mapper. */
     public default <T> StreamPlus<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
         val streamPlus = streamPlus();
-        return streamPlus.map(mapper);
+        return streamPlus.mapToObj(mapper);
     }
     
     /** Map the value using the mapper only when the condition is true. */
@@ -61,7 +61,7 @@ public interface StreamPlusWithMap<DATA> {
             Function<? super DATA, T> elseMapper) {
         val streamPlus = streamPlus();
         return streamPlus
-                .map(value -> {
+                .mapToObj(value -> {
                     val isTrue = condition.test(value);
                     val mapped = isTrue 
                             ? mapper    .apply(value) 

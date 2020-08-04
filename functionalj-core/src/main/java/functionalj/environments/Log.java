@@ -32,7 +32,7 @@ import functionalj.function.Func;
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
 import functionalj.list.FuncListDerived;
-import functionalj.stream.Streamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public final class Log {

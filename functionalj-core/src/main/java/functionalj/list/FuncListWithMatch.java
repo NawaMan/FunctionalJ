@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.list;
 
-import functionalj.stream.StreamableWithMatch;
+import functionalj.streamable.StreamableWithMatch;
 
 public interface FuncListWithMatch<DATA> extends StreamableWithMatch<DATA> {
     

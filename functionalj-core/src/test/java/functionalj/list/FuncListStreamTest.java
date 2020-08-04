@@ -32,7 +32,7 @@ import java.util.List;
 import org.junit.Test;
 
 import functionalj.stream.StreamPlus;
-import functionalj.stream.Streamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public class FuncListStreamTest {

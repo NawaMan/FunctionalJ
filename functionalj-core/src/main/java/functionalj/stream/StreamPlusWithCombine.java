@@ -65,7 +65,7 @@ public interface StreamPlusWithCombine<DATA> {
      *   Another stream: [1, 2, 3, 4, 5] <br>
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
-    public default StreamPlus<DATA> merge(Stream<DATA> anotherStream) {
+    public default StreamPlus<DATA> mergeWith(Stream<DATA> anotherStream) {
         val streamPlus = streamPlus();
         val iteratorA  = streamPlus.iterator();
         val iteratorB  = StreamPlus.from(anotherStream).iterator();

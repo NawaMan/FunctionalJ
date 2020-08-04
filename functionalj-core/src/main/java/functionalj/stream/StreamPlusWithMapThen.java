@@ -36,6 +36,7 @@ public interface StreamPlusWithMapThen<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     
+    
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T> 
         StreamPlus<T> mapThen(
@@ -135,5 +136,4 @@ public interface StreamPlusWithMapThen<DATA> {
                     return v;
                 });
     }
-    
 }

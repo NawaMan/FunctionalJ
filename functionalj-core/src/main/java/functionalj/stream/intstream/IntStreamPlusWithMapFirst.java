@@ -26,6 +26,8 @@ package functionalj.stream.intstream;
 import static functionalj.stream.intstream.IntStreamPlusMapFirstAddOnHelper.doMapFirst;
 
 import java.util.function.IntFunction;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import functionalj.function.Func1;
 import functionalj.functions.ThrowFuncs;
@@ -68,47 +70,40 @@ public interface IntStreamPlusWithMapFirst {
     
     public IntStreamPlus streamPlus();
     
-    public IntStreamPlus derive(Func1<IntStreamPlus, IntStreamPlus> action);
+    public IntStreamPlus derive(Func1<IntStreamPlus, IntStream> action);
     
-    public IntStreamPlus deriveToInt(Func1<IntStreamPlus, IntStreamPlus> action);
+    public IntStreamPlus deriveToInt(Func1<IntStreamPlus, IntStream> action);
     
-    public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<IntStreamPlus, StreamPlus<TARGET>> action);
+    public <TARGET> StreamPlus<TARGET> deriveToObj(Func1<IntStreamPlus, Stream<TARGET>> action);
     
-    /**
-     * Map the value by applying each mapper one by one and use the first one that does not return null.
-     * 
-     * @param <T>      the target type.
-     * @param mapper1  the first mapper.
-     * @param mapper2  the second mapper.
-     * @return         the result of the first map result that is not null.
-     */
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2) {
-        return deriveToObj(source -> {
-            return doMapFirst(source, mapper1, mapper2);
-        });
+        val streamPlus = streamPlus();
+        return doMapFirst(streamPlus, mapper1, mapper2);
     }
     
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2,
             IntFunction<T> mapper3) {
         val streamPlus = streamPlus();
-        return IntStreamPlusMapFirstAddOnHelper
-                .doMapFirst(streamPlus, mapper1, mapper2, mapper3);
+        return doMapFirst(streamPlus, mapper1, mapper2, mapper3);
     }
     
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2,
             IntFunction<T> mapper3,
             IntFunction<T> mapper4) {
         val streamPlus = streamPlus();
-        return IntStreamPlusMapFirstAddOnHelper
-                .doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4);
+        return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4);
     }
     
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2,
@@ -116,10 +111,10 @@ public interface IntStreamPlusWithMapFirst {
             IntFunction<T> mapper4,
             IntFunction<T> mapper5) {
         val streamPlus = streamPlus();
-        return IntStreamPlusMapFirstAddOnHelper
-                .doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5);
+        return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
     
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> StreamPlus<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2,
@@ -128,7 +123,7 @@ public interface IntStreamPlusWithMapFirst {
             IntFunction<T> mapper5,
             IntFunction<T> mapper6) {
         val streamPlus = streamPlus();
-        return IntStreamPlusMapFirstAddOnHelper
-                .doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
+        return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
+    
 }

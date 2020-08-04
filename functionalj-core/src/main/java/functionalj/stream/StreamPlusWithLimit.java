@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.stream.StreamPlusHelper.sequential;
+
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -58,7 +60,7 @@ public interface StreamPlusWithLimit<DATA> {
     @Sequential
     public default StreamPlus<DATA> skipWhile(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();
-        return StreamPlusHelper.sequential(streamPlus, stream -> {
+        return sequential(streamPlus, stream -> {
             val isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
@@ -76,7 +78,7 @@ public interface StreamPlusWithLimit<DATA> {
     @Sequential
     public default StreamPlus<DATA> skipUntil(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();
-        return StreamPlusHelper.sequential(streamPlus, stream -> {
+        return sequential(streamPlus, stream -> {
             val isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
@@ -95,7 +97,7 @@ public interface StreamPlusWithLimit<DATA> {
     public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
         // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
         val streamPlus = streamPlus();
-        return StreamPlusHelper.sequential(streamPlus, stream -> {
+        return sequential(streamPlus, stream -> {
             val splitr = stream.spliterator();
             return StreamPlus.from(
                     StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
@@ -103,13 +105,14 @@ public interface StreamPlusWithLimit<DATA> {
                         @Override
                         public boolean tryAdvance(Consumer<? super DATA> consumer) {
                             if (stillGoing) {
-                                boolean hadNext = splitr.tryAdvance(elem -> {
+                                Consumer<? super DATA> action = elem -> {
                                     if (condition.test(elem)) {
                                         consumer.accept(elem);
                                     } else {
                                         stillGoing = false;
                                     }
-                                });
+                                };
+                                boolean hadNext = splitr.tryAdvance(action);
                                 return hadNext && stillGoing;
                             }
                             return false;
@@ -123,7 +126,7 @@ public interface StreamPlusWithLimit<DATA> {
     @Sequential
     public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
         val streamPlus = streamPlus();
-        return StreamPlusHelper.sequential(streamPlus, stream -> {
+        return sequential(streamPlus, stream -> {
             val splitr = stream.spliterator();
             val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
                 boolean stillGoing = true;
@@ -131,13 +134,14 @@ public interface StreamPlusWithLimit<DATA> {
                 @Override
                 public boolean tryAdvance(Consumer<? super DATA> consumer) {
                     if (stillGoing) {
-                        final boolean hadNext = splitr.tryAdvance(elem -> {
+                        Consumer<? super DATA> action = elem -> {
                             if (!condition.test(elem)) {
                                 consumer.accept(elem);
                             } else {
                                 stillGoing = false;
                             }
-                        });
+                        };
+                        boolean hadNext = splitr.tryAdvance(action);
                         return hadNext && stillGoing;
                     }
                     return false;

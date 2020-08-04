@@ -24,11 +24,12 @@
 package functionalj.stream.intstream;
 
 import java.util.function.IntBinaryOperator;
+import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
 import functionalj.stream.IncompletedSegment;
-import functionalj.stream.Streamable;
+import functionalj.streamable.Streamable;
 
 public interface IntStreamableWithSegment {
     
@@ -36,28 +37,31 @@ public interface IntStreamableWithSegment {
     
     //== segment ==
     
-    public default Streamable<IntStreamPlus> segment(int count) {
+    public default Streamable<IntStreamPlus> segmentSize(int count) {
         return ()->{
             return intStream()
-                    .segment(count);
+                    .segmentSize(count);
         };
     }
-    public default Streamable<IntStreamPlus> segment(
+    
+    public default Streamable<IntStreamPlus> segmentSize(
             int count, 
             IncompletedSegment incompletedSegment) {
         return ()->{
             return intStream()
-                    .segment(count, incompletedSegment);
+                    .segmentSize(count, incompletedSegment);
         };
     }
-    public default Streamable<IntStreamPlus> segment(
+    
+    public default Streamable<IntStreamPlus> segmentSize(
             int count, 
             boolean includeIncompletedSegment) {
         return ()->{
             return intStream()
-                    .segment(count, includeIncompletedSegment);
+                    .segmentSize(count, includeIncompletedSegment);
         };
     }
+    
     public default Streamable<IntStreamPlus> segment(
             IntPredicate startCondition) {
         return ()->{
@@ -65,6 +69,7 @@ public interface IntStreamableWithSegment {
                     .segment(startCondition);
         };
     }
+    
     public default Streamable<IntStreamPlus> segment(
             IntPredicate startCondition, 
             IncompletedSegment incompletedSegment) {
@@ -73,6 +78,7 @@ public interface IntStreamableWithSegment {
                     .segment(startCondition, incompletedSegment);
         };
     }
+    
     public default Streamable<IntStreamPlus> segment(
             IntPredicate startCondition, 
             boolean includeIncompletedSegment) {
@@ -112,7 +118,7 @@ public interface IntStreamableWithSegment {
     }
     
     public default Streamable<IntStreamPlus> segmentSize(
-            IntUnaryOperator segmentSize) {
+            IntFunction<Integer> segmentSize) {
         return ()->{
             return intStream()
                     .segmentSize(segmentSize);
@@ -120,21 +126,23 @@ public interface IntStreamableWithSegment {
     }
     
     public default Streamable<IntStreamPlus> segmentSize(
-            IntUnaryOperator segmentSize, 
-            IncompletedSegment incompletedSegment) {
-        return ()->{
-            return intStream()
-                    .segmentSize(segmentSize, incompletedSegment);
-        };
+            IntFunction<Integer> segmentSize, 
+            IncompletedSegment   incompletedSegment) {
+//        return ()->{
+//            return intStream()
+//                    .segmentSize(segmentSize, incompletedSegment);
+//        };
+        return null;
     }
     
     public default Streamable<IntStreamPlus> segmentSize(
             IntUnaryOperator segmentSize, 
             boolean includeTail) {
-        return ()->{
-            return intStream()
-                    .segmentSize(segmentSize, includeTail);
-        };
+//        return ()->{
+//            return intStream()
+//                    .segmentSize(segmentSize, includeTail);
+//        };
+        return null;
     }
     
     //== Collapse ==
@@ -160,30 +168,33 @@ public interface IntStreamableWithSegment {
     public default IntStreamable collapseSize(
             IntUnaryOperator  segmentSize, 
             IntBinaryOperator concatFunc) {
-        return ()->{
-            return intStream()
-                    .collapseSize(segmentSize, concatFunc);
-        };
+//        return ()->{
+//            return intStream()
+//                    .collapseSize(segmentSize, concatFunc);
+//        };
+        return null;
     }
     
     public default IntStreamable collapseSize(
             IntUnaryOperator  segmentSize, 
             IntBinaryOperator concatFunc,
             IncompletedSegment incompletedSegment) {
-        return ()->{
-            return intStream()
-                    .collapseSize(segmentSize, concatFunc, incompletedSegment);
-        };
+//        return ()->{
+//            return intStream()
+//                    .collapseSize(segmentSize, concatFunc, incompletedSegment);
+//        };
+        return null;
     }
     
     public default IntStreamable collapseSize(
             IntUnaryOperator  segmentSize, 
             IntBinaryOperator concatFunc,
             boolean includeTail) {
-        return ()->{
-            return intStream()
-                    .collapseSize(segmentSize, concatFunc, includeTail);
-        };
+//        return ()->{
+//            return intStream()
+//                    .collapseSize(segmentSize, concatFunc, includeTail);
+//        };
+        return null;
     }
 }
 

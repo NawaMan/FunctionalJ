@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.list;
 
-import functionalj.stream.StreamableWithForEach;
+import functionalj.streamable.StreamableWithForEach;
 
 public interface FuncListWithForEach<DATA> extends StreamableWithForEach<DATA> {
     

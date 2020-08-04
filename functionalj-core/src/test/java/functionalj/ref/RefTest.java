@@ -339,7 +339,7 @@ public class RefTest {
             .limit(5)
             .peek (i -> Time.sleep(40))
             .map  (i -> ref.value())
-            .joinToString(" - ");
+            .join (" - ");
         })
         .onComplete(r -> resultRef.set(r));
         

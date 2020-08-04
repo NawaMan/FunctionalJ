@@ -8,6 +8,7 @@ import java.util.function.IntUnaryOperator;
 import functionalj.function.Func1;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntStreamable, AsStreamable<Integer> {

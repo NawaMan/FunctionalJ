@@ -30,6 +30,7 @@ import org.junit.Test;
 import functionalj.function.FuncUnit0;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public class LongStreamableTest {

@@ -65,7 +65,7 @@ public interface StreamPlusWithConversion<DATA> {
                 .toByteArray();
     }
     
-    /** Map the data to int and return the byte array of all the results. */
+    /** Map the data to int and return the int array of all the results. */
     @Eager
     @Terminal
     public default int[] toIntArray(ToIntFunction<DATA> toInt) {
@@ -75,7 +75,7 @@ public interface StreamPlusWithConversion<DATA> {
                 .toArray ();
     }
     
-    /** Map the data to long and return the byte array of all the results. */
+    /** Map the data to long and return the long array of all the results. */
     @Eager
     @Terminal
     public default long[] toLongArray(ToLongFunction<DATA> toLong) {

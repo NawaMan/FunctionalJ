@@ -46,8 +46,8 @@ public interface FuncListWithCombine<DATA> extends AsStreamable<DATA> {
      *   Another list: [1, 2, 3, 4, 5] <br>
      *   Result list:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
-    public default FuncList<DATA> merge(FuncList<DATA> anotherList) {
-        return deriveFrom(this, stream -> stream.merge(anotherList.stream()));
+    public default FuncList<DATA> mergeWith(FuncList<DATA> anotherList) {
+        return deriveFrom(this, stream -> stream.mergeWith(anotherList.stream()));
     }
     
     //-- Zip --

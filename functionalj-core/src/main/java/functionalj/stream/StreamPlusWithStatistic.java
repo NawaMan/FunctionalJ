@@ -108,8 +108,7 @@ public interface StreamPlusWithStatistic<DATA> {
     @Eager
     @Terminal
     @SuppressWarnings("unchecked")
-    public default Tuple2<Optional<DATA>, Optional<DATA>> minMax(
-            Comparator<? super DATA> comparator) {
+    public default Tuple2<Optional<DATA>, Optional<DATA>> minMax(Comparator<? super DATA> comparator) {
         val streamPlus = streamPlus();
         val minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
         val maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);

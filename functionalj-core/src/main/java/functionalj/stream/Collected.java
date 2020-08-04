@@ -31,6 +31,7 @@ import functionalj.stream.doublestream.DoubleStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamable;
 import functionalj.stream.longstream.LongStreamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 

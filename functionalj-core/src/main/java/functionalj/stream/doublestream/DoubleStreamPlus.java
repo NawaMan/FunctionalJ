@@ -24,20 +24,13 @@
 
 package functionalj.stream.doublestream;
 
-import static functionalj.function.Func.f;
 import static functionalj.function.Func.itself;
-import static functionalj.lens.Access.theDouble;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.DoubleSummaryStatistics;
-import java.util.List;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -51,36 +44,23 @@ import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
-import functionalj.function.DoubleBiFunctionPrimitive;
-import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.FuncUnit1;
-import functionalj.function.ToIntBiDoubleFunctionPrimitive;
-import functionalj.pipeable.Pipeable;
-import functionalj.promise.DeferAction;
-import functionalj.promise.UncompletedAction;
-import functionalj.result.Result;
-import functionalj.stream.DoubleIteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.tuple.DoubleDoubleTuple;
-import functionalj.tuple.DoubleTuple2;
 import lombok.val;
 
 @FunctionalInterface
 public interface DoubleStreamPlus
         extends 
-            DoubleStream/*,
+            DoubleStream
+            /*,
             DoubleStreamPlusWithMapFirst,
             DoubleStreamPlusWithMapThen,
             DoubleStreamPlusWithMapTuple,
@@ -113,7 +93,7 @@ public interface DoubleStreamPlus
         return DoubleStreamPlus.of(doubles);
     }
     
-    // TODO - from-to, from almostTo, stepping.
+    //TODO - from-to, from almostTo, stepping.
     
     public static DoubleStreamPlus from(DoubleStream doubleStream) {
         if (doubleStream instanceof DoubleStreamPlus)
@@ -200,59 +180,59 @@ public interface DoubleStreamPlus
             return d;
         });
     }
-//    
-//    public static StreamPlus<DoubleDoubleTuple> zipOf(
-//            DoubleStream stream1, 
-//            DoubleStream stream2) {
-//        return DoubleStreamPlus.from(stream1)
-//                .zipWith(stream2);
-//    }
-//    public static StreamPlus<DoubleDoubleTuple> zipOf(
-//            DoubleStream stream1, 
-//            DoubleStream stream2,
-//            int       defaultValue) {
-//        return DoubleStreamPlus.from(stream1)
-//                .zipWith(stream2, defaultValue);
-//    }
-//    public static StreamPlus<DoubleDoubleTuple> zipOf(
-//            DoubleStream stream1, double defaultValue1,
-//            DoubleStream stream2, double defaultValue2) {
-//        return DoubleStreamPlus.from(stream1)
-//                .zipWith(stream2, defaultValue1, defaultValue2);
-//    }
-//    
-//    public static DoubleStreamPlus zipOf(
-//            DoubleStream              stream1, 
-//            DoubleStream              stream2,
-//            DoubleBiFunctionPrimitive merger) {
-//        return DoubleStreamPlus.from(stream1)
-//                .zipWith(stream2, merger);
-//    }
-//    public static DoubleStreamPlus zipOf(
-//            DoubleStream              stream1, 
-//            DoubleStream              stream2,
-//            double                    defaultValue,
-//            DoubleBiFunctionPrimitive merger) {
-//        return DoubleStreamPlus.from(stream1)
-//                .zipWith(stream2, defaultValue, merger);
-//    }
-//    public static DoubleStreamPlus zipOf(
-//            DoubleStreamPlus stream1, int defaultValue1,
-//            DoubleStreamPlus stream2, int defaultValue2,
-//            DoubleBiFunctionPrimitive merger) {
-//        return DoubleStreamPlus.from(stream1)
-//                .zipWith(stream2, defaultValue1, defaultValue2, merger);
-//    }
+////   
+////   public static StreamPlus<DoubleDoubleTuple> zipOf(
+////           DoubleStream stream1, 
+////           DoubleStream stream2) {
+////       return DoubleStreamPlus.from(stream1)
+////               .zipWith(stream2);
+////   }
+////   public static StreamPlus<DoubleDoubleTuple> zipOf(
+////           DoubleStream stream1, 
+////           DoubleStream stream2,
+////           int       defaultValue) {
+////       return DoubleStreamPlus.from(stream1)
+////               .zipWith(stream2, defaultValue);
+////   }
+////   public static StreamPlus<DoubleDoubleTuple> zipOf(
+////           DoubleStream stream1, double defaultValue1,
+////           DoubleStream stream2, double defaultValue2) {
+////       return DoubleStreamPlus.from(stream1)
+////               .zipWith(stream2, defaultValue1, defaultValue2);
+////   }
+////   
+////   public static DoubleStreamPlus zipOf(
+////           DoubleStream              stream1, 
+////           DoubleStream              stream2,
+////           DoubleBiFunctionPrimitive merger) {
+////       return DoubleStreamPlus.from(stream1)
+////               .zipWith(stream2, merger);
+////   }
+////   public static DoubleStreamPlus zipOf(
+////           DoubleStream              stream1, 
+////           DoubleStream              stream2,
+////           double                    defaultValue,
+////           DoubleBiFunctionPrimitive merger) {
+////       return DoubleStreamPlus.from(stream1)
+////               .zipWith(stream2, defaultValue, merger);
+////   }
+////   public static DoubleStreamPlus zipOf(
+////           DoubleStreamPlus stream1, int defaultValue1,
+////           DoubleStreamPlus stream2, int defaultValue2,
+////           DoubleBiFunctionPrimitive merger) {
+////       return DoubleStreamPlus.from(stream1)
+////               .zipWith(stream2, defaultValue1, defaultValue2, merger);
+////   }
     
-    //== Core ==
+//    //== Core ==
     
     public DoubleStream doubleStream();
-    
+   
     public default DoubleStreamPlus doubleStreamPlus() {
         return this;
     }
-    
-    @Override
+   
+//    @Override
     public default StreamPlus<Double> boxed() {
         return StreamPlus.from(doubleStream().boxed());
     }
@@ -278,52 +258,52 @@ public interface DoubleStreamPlus
         }
     }
     
-    public default DoubleStreamPlus sequential(Function<DoubleStreamPlus, DoubleStreamPlus> action) {
-        val stream = doubleStream();
+//    public default DoubleStreamPlus sequential(Function<DoubleStreamPlus, DoubleStreamPlus> action) {
+//        val stream = doubleStream();
         
-        val isParallel = stream.isParallel();
-        if (!isParallel) {
-            val orgDoubleStreamPlus = DoubleStreamPlus.from(stream);
-            val newDoubleStreamPlus = action.apply(orgDoubleStreamPlus);
-            return newDoubleStreamPlus;
-        }
+//        val isParallel = stream.isParallel();
+//        if (!isParallel) {
+//            val orgDoubleStreamPlus = DoubleStreamPlus.from(stream);
+//            val newDoubleStreamPlus = action.apply(orgDoubleStreamPlus);
+//            return newDoubleStreamPlus;
+//        }
         
-        val orgDoubleStreamPlus = DoubleStreamPlus.from(stream.sequential());
-        val newDoubleStreamPlus = action.apply(orgDoubleStreamPlus);
-        if (newDoubleStreamPlus.isParallel())
-            return newDoubleStreamPlus;
+//        val orgDoubleStreamPlus = DoubleStreamPlus.from(stream.sequential());
+//        val newDoubleStreamPlus = action.apply(orgDoubleStreamPlus);
+//        if (newDoubleStreamPlus.isParallel())
+//            return newDoubleStreamPlus;
         
-        return (DoubleStreamPlus)()->newDoubleStreamPlus.parallel();
-    }
+//        return (DoubleStreamPlus)()->newDoubleStreamPlus.parallel();
+//    }
     
-    public default <TARGET> StreamPlus<TARGET> sequentialToObj(Function<DoubleStreamPlus, StreamPlus<TARGET>> action) {
-        val stream = doubleStream();
+//    public default <TARGET> StreamPlus<TARGET> sequentialToObj(Function<DoubleStreamPlus, StreamPlus<TARGET>> action) {
+//        val stream = doubleStream();
         
-        val isParallel = stream.isParallel();
-        if (!isParallel) {
-            return action.apply(DoubleStreamPlus.from(stream));
-        }
+//        val isParallel = stream.isParallel();
+//        if (!isParallel) {
+//            return action.apply(DoubleStreamPlus.from(stream));
+//        }
         
-        val resultStream = action.apply(DoubleStreamPlus.from(stream.sequential()));
-        if (resultStream.isParallel())
-            return resultStream;
+//        val resultStream = action.apply(DoubleStreamPlus.from(stream.sequential()));
+//        if (resultStream.isParallel())
+//            return resultStream;
         
-        return resultStream.parallel();
-    }
+//        return resultStream.parallel();
+//    }
     
-    public default DoubleStreamPlus derive(
-            Function<DoubleStream, DoubleStream> action) {
-        return DoubleStreamPlus
-                .from(action.apply(this));
-    }
+//    public default DoubleStreamPlus derive(
+//            Function<DoubleStream, DoubleStream> action) {
+//        return DoubleStreamPlus
+//                .from(action.apply(this));
+//    }
     
-    public default <TARGET> StreamPlus<TARGET> deriveToStream(
-            Function<DoubleStream, Stream<TARGET>> action) {
-        return StreamPlus
-                .from(action.apply(this));
-    }
+//    public default <TARGET> StreamPlus<TARGET> deriveToStream(
+//            Function<DoubleStream, Stream<TARGET>> action) {
+//        return StreamPlus
+//                .from(action.apply(this));
+//    }
     
-    //== Stream specific ==
+//    //== Stream specific ==
     
     @Override
     public default DoubleStream sequential() {
@@ -345,7 +325,6 @@ public interface DoubleStreamPlus
                 .isParallel();
     }
     
-    // TODO - Think about terminate
     @Override
     public default PrimitiveIterator.OfDouble iterator() {
         return doubleStream()
@@ -373,6 +352,7 @@ public interface DoubleStreamPlus
     
     //== Functionalities ==
     
+    @Override
     public default IntStreamPlus mapToInt(DoubleToIntFunction mapper) {
         return IntStreamPlus.from(doubleStream().mapToInt(mapper));
     }
@@ -382,6 +362,7 @@ public interface DoubleStreamPlus
         return LongStreamPlus.from(doubleStream().mapToLong(mapper));
     }
     
+//    @Override
     public default DoubleStreamPlus mapToDouble(DoubleUnaryOperator mapper) {
         return DoubleStreamPlus.from(doubleStream().map(mapper));
     }
@@ -433,36 +414,36 @@ public interface DoubleStreamPlus
         return DoubleStreamPlus.from(doubleStream().filter(predicate));
     }
     
-    // TODO - Rename all filter with map to filter
-    public default DoubleStreamPlus filter(
-            DoubleUnaryOperator mapper, 
-            DoublePredicate     predicate) {
-        return DoubleStreamPlus.from(doubleStream().filter(i -> {
-            val v = mapper.applyAsDouble(i);
-            val b = predicate.test(v);
-            return b;
-        }));
-    }
+//    //TODO - Rename all filter with map to filter
+//    public default DoubleStreamPlus filter(
+//            DoubleUnaryOperator mapper, 
+//            DoublePredicate     predicate) {
+//        return DoubleStreamPlus.from(doubleStream().filter(i -> {
+//            val v = mapper.applyAsDouble(i);
+//            val b = predicate.test(v);
+//            return b;
+//        }));
+//    }
     
-    public default <T> DoubleStreamPlus filterAsObject(
-            DoubleFunction<? extends T> mapper,
-            Predicate<? super T>     theCondition) {
-        return filter(value -> {
-            val target = mapper.apply(value);
-            val isPass = theCondition.test(target);
-            return isPass;
-        });
-    }
+//    public default <T> DoubleStreamPlus filterAsObject(
+//            DoubleFunction<? extends T> mapper,
+//            Predicate<? super T>     theCondition) {
+//        return filter(value -> {
+//            val target = mapper.apply(value);
+//            val isPass = theCondition.test(target);
+//            return isPass;
+//        });
+//    }
     
-    public default <T> DoubleStreamPlus filterAsObject(
-            Function<Double, ? extends T> mapper,
-            Predicate<? super T>     theCondition) {
-        return filter(value -> {
-            val target = mapper.apply(value);
-            val isPass = theCondition.test(target);
-            return isPass;
-        });
-    }
+//    public default <T> DoubleStreamPlus filterAsObject(
+//            Function<Double, ? extends T> mapper,
+//            Predicate<? super T>     theCondition) {
+//        return filter(value -> {
+//            val target = mapper.apply(value);
+//            val isPass = theCondition.test(target);
+//            return isPass;
+//        });
+//    }
     
     @Override
     public default DoubleStreamPlus peek(DoubleConsumer action) {
@@ -481,139 +462,139 @@ public interface DoubleStreamPlus
         return DoubleStreamPlus.from(doubleStream().skip(offset));
     }
     
-    public default DoubleStreamPlus skipWhile(DoublePredicate condition) {
-        return sequential(stream -> {
-            val isStillTrue = new AtomicBoolean(true);
-            return stream
-                    .filter(e -> {
-                        if (!isStillTrue.get())
-                            return true;
+//    public default DoubleStreamPlus skipWhile(DoublePredicate condition) {
+//        return sequential(stream -> {
+//            val isStillTrue = new AtomicBoolean(true);
+//            return stream
+//                    .filter(e -> {
+//                        if (!isStillTrue.get())
+//                            return true;
                         
-                        if (!condition.test(e))
-                            isStillTrue.set(false);
+//                        if (!condition.test(e))
+//                            isStillTrue.set(false);
                         
-                        return !isStillTrue.get();
-                    });
-        });
-    }
+//                        return !isStillTrue.get();
+//                    });
+//        });
+//    }
     
-    public default DoubleStreamPlus skipUntil(DoublePredicate condition) {
-        return sequential(stream -> {
-            val isStillTrue = new AtomicBoolean(true);
-            return stream
-                    .filter(e -> {
-                        if (!isStillTrue.get())
-                            return true;
+//    public default DoubleStreamPlus skipUntil(DoublePredicate condition) {
+//        return sequential(stream -> {
+//            val isStillTrue = new AtomicBoolean(true);
+//            return stream
+//                    .filter(e -> {
+//                        if (!isStillTrue.get())
+//                            return true;
                         
-                        if (condition.test(e))
-                            isStillTrue.set(false);
+//                        if (condition.test(e))
+//                            isStillTrue.set(false);
                         
-                        return !isStillTrue.get();
-                    });
-        });
-    }
+//                        return !isStillTrue.get();
+//                    });
+//        });
+//    }
     
-    public default DoubleStreamPlus takeWhile(DoublePredicate condition) {
-        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
-        return sequential(stream -> {
-            val splitr = stream.spliterator();
-            return DoubleStreamPlus.from(
-                    StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-                        boolean stillGoing = true;
-                        @Override
-                        public boolean tryAdvance(DoubleConsumer consumer) {
-                            if (stillGoing) {
-                                final boolean hadNext = splitr.tryAdvance((double elem) -> {
-                                    if (condition.test(elem)) {
-                                        consumer.accept(elem);
-                                    } else {
-                                        stillGoing = false;
-                                    }
-                                });
-                                return hadNext && stillGoing;
-                            }
-                            return false;
-                        }
-                    }, false)
-                );
-        });
-    }
+//    public default DoubleStreamPlus takeWhile(DoublePredicate condition) {
+//        //https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
+//        return sequential(stream -> {
+//            val splitr = stream.spliterator();
+//            return DoubleStreamPlus.from(
+//                    StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
+//                        boolean stillGoing = true;
+//                        @Override
+//                        public boolean tryAdvance(DoubleConsumer consumer) {
+//                            if (stillGoing) {
+//                                final boolean hadNext = splitr.tryAdvance((double elem) -> {
+//                                    if (condition.test(elem)) {
+//                                        consumer.accept(elem);
+//                                    } else {
+//                                        stillGoing = false;
+//                                    }
+//                                });
+//                                return hadNext && stillGoing;
+//                            }
+//                            return false;
+//                        }
+//                    }, false)
+//                );
+//        });
+//    }
     
-    public default DoubleStreamPlus takeUntil(DoublePredicate condition) {
-        return sequential(stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
-                boolean stillGoing = true;
+//    public default DoubleStreamPlus takeUntil(DoublePredicate condition) {
+//        return sequential(stream -> {
+//            val splitr = stream.spliterator();
+//            val resultStream = StreamSupport.doubleStream(new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
+//                boolean stillGoing = true;
                 
-                @Override
-                public boolean tryAdvance(DoubleConsumer consumer) {
-                    if (stillGoing) {
-                        final boolean hadNext = splitr.tryAdvance((double elem) -> {
-                            if (!condition.test(elem)) {
-                                consumer.accept(elem);
-                            } else {
-                                stillGoing = false;
-                            }
-                        });
-                        return hadNext && stillGoing;
-                    }
-                    return false;
-                }
-            }, false);
-            return DoubleStreamPlus.from(resultStream);
-        });
-    }
+//                @Override
+//                public boolean tryAdvance(DoubleConsumer consumer) {
+//                    if (stillGoing) {
+//                        final boolean hadNext = splitr.tryAdvance((double elem) -> {
+//                            if (!condition.test(elem)) {
+//                                consumer.accept(elem);
+//                            } else {
+//                                stillGoing = false;
+//                            }
+//                        });
+//                        return hadNext && stillGoing;
+//                    }
+//                    return false;
+//                }
+//            }, false);
+//            return DoubleStreamPlus.from(resultStream);
+//        });
+//    }
     
     @Override
     public default DoubleStreamPlus distinct() {
         return DoubleStreamPlus.from(doubleStream().distinct());
     }
     
-    //-- Sorted --
+//    //-- Sorted --
     
     @Override
     public default DoubleStreamPlus sorted() {
         return DoubleStreamPlus.from(doubleStream().sorted());
     }
     
-    public default DoubleStreamPlus sortedBy(
-            DoubleUnaryOperator mapper) {
-        return DoubleStreamPlus.from(
-                doubleStream()
-                .mapToObj   (d     -> new DoubleDoubleTuple(d, mapper.applyAsDouble(d)))
-                .sorted     ((a,b) -> Double.compare(a._2, b._2))
-                .mapToDouble(t     -> t._1));
-    }
+//    public default DoubleStreamPlus sortedBy(
+//            DoubleUnaryOperator mapper) {
+//        return DoubleStreamPlus.from(
+//                doubleStream()
+//                .mapToObj   (d     -> new DoubleDoubleTuple(d, mapper.applyAsDouble(d)))
+//                .sorted     ((a,b) -> Double.compare(a._2, b._2))
+//                .mapToDouble(t     -> t._1));
+//    }
     
-    public default DoubleStreamPlus sortedBy(
-            DoubleUnaryOperator       mapper,
-            ToIntBiDoubleFunctionPrimitive comparator) {
-        return DoubleStreamPlus.from(
-                doubleStream()
-                .mapToObj   (d     -> new DoubleDoubleTuple(d, mapper.applyAsDouble(d)))
-                .sorted     ((a,b) -> comparator.applyAsDoubleAndDouble(a._2, b._2))
-                .mapToDouble(t     -> t._1));
-    }
+//    public default DoubleStreamPlus sortedBy(
+//            DoubleUnaryOperator       mapper,
+//            ToIntBiDoubleFunctionPrimitive comparator) {
+//        return DoubleStreamPlus.from(
+//                doubleStream()
+//                .mapToObj   (d     -> new DoubleDoubleTuple(d, mapper.applyAsDouble(d)))
+//                .sorted     ((a,b) -> comparator.applyAsDoubleAndDouble(a._2, b._2))
+//                .mapToDouble(t     -> t._1));
+//    }
     
-    // TODO - This should be changed to sortedAs
-    public default <T extends Comparable<? super T>> DoubleStreamPlus sortedByObj(
-            DoubleFunction<T> mapper) {
-        return DoubleStreamPlus.from(
-                doubleStream()
-                .mapToObj   (d     -> new DoubleTuple2<>(d, mapper.apply(d)))
-                .sorted     ((a,b) -> a._2.compareTo(b._2))
-                .mapToDouble(t     -> t._1));
-    }
+//    //TODO - This should be changed to sortedAs
+//    public default <T extends Comparable<? super T>> DoubleStreamPlus sortedByObj(
+//            DoubleFunction<T> mapper) {
+//        return DoubleStreamPlus.from(
+//                doubleStream()
+//                .mapToObj   (d     -> new DoubleTuple2<>(d, mapper.apply(d)))
+//                .sorted     ((a,b) -> a._2.compareTo(b._2))
+//                .mapToDouble(t     -> t._1));
+//    }
     
-    public default <T> DoubleStreamPlus sortedByObj(
-            DoubleFunction<T> mapper, 
-            Comparator<T>  comparator) {
-        return DoubleStreamPlus.from(
-                doubleStream()
-                .mapToObj   (i     -> new DoubleTuple2<>(i, mapper.apply(i)))
-                .sorted     ((a,b) -> comparator.compare(a._2, b._2))
-                .mapToDouble(t     -> t._1));
-    }
+//    public default <T> DoubleStreamPlus sortedByObj(
+//            DoubleFunction<T> mapper, 
+//            Comparator<T>  comparator) {
+//        return DoubleStreamPlus.from(
+//                doubleStream()
+//                .mapToObj   (i     -> new DoubleTuple2<>(i, mapper.apply(i)))
+//                .sorted     ((a,b) -> comparator.compare(a._2, b._2))
+//                .mapToDouble(t     -> t._1));
+//    }
     
     //-- Terminate --
     
@@ -684,12 +665,12 @@ public interface DoubleStreamPlus
         });
     }
     
-    public default int size() {
-        return terminate(stream-> {
-            return (int)stream
-                    .count();
-        });
-    }
+//    public default int size() {
+//        return terminate(stream-> {
+//            return (int)stream
+//                    .count();
+//        });
+//    }
     
     @Override
     public default boolean anyMatch(DoublePredicate predicate) {
@@ -733,13 +714,13 @@ public interface DoubleStreamPlus
     
     //== toXXX ==
     
-    public default StreamPlus<Double> asStream() {
-        val stream 
-                = StreamPlus.from(doubleStream()
-                .mapToObj(i -> Double.valueOf(i)));
-        stream.onClose(() -> { close(); });
-        return stream;
-    }
+//    public default StreamPlus<Double> asStream() {
+//        val stream 
+//                = StreamPlus.from(doubleStream()
+//                .mapToObj(i -> Double.valueOf(i)));
+//        stream.onClose(() -> { close(); });
+//        return stream;
+//    }
     
     @Override
     public default double[] toArray() {
@@ -773,193 +754,197 @@ public interface DoubleStreamPlus
         });
     }
     
-    public default IntStreamPlus asIntegerStream() {
-        return mapToInt(theDouble.toInteger());
-    }
-    
-    public default LongStreamPlus asLongStream() {
-        return mapToLong(theDouble.toLong());
-    }
-    
-    public default DoubleStreamPlus asDoubleStream() {
-        return this;
-    }
-    
     public default String toListString() {
-        // TODO - There must be a faster way
-        val strValue 
-            = mapToObj(String::valueOf)
-            .collect(Collectors.joining(", "));
-        return "[" + strValue + "]";
+        return null;
     }
     
-//  public default ImmutableDoubleFuncList toImmutableList() {
-//      return terminate(stream -> {
-//          return ImmutableDoubleFuncList.from(this);
-//      });
-//  }
+//    public default IntStreamPlus asIntegerStream() {
+//        return mapToInt(theDouble.toInteger());
+//    }
+    
+//    public default LongStreamPlus asLongStream() {
+//        return mapToLong(theDouble.toLong());
+//    }
+    
+//    public default DoubleStreamPlus asDoubleStream() {
+//        return this;
+//    }
+    
+//    public default String toListString() {
+//        //TODO - There must be a faster way
+//        val strValue 
+//            = mapToObj(String::valueOf)
+//            .collect(Collectors.joining(", "));
+//        return "[" + strValue + "]";
+//    }
+    
+//// public default ImmutableDoubleFuncList toImmutableList() {
+////     return terminate(stream -> {
+////         return ImmutableDoubleFuncList.from(this);
+////     });
+//// }
 
     
-    //-- Iterator --
+//    //-- Iterator --
     
-    /** DO NOT USE THIS METHOD OR YOUR STREAM WILL NOT BE CLOSED. */
-    // TODO - We should move this to an external function
-    public default PrimitiveIterator.OfDouble __iterator() {
-        return DoubleIteratorPlus.from(doubleStream());
-    }
+//    /** DO NOT USE THIS METHOD OR YOUR STREAM WILL NOT BE CLOSED. */
+//    //TODO - We should move this to an external function
+//    public default PrimitiveIterator.OfDouble __iterator() {
+//        return DoubleIteratorPlus.from(doubleStream());
+//    }
     
-    /**
-     * Use iterator of this stream without terminating the stream.
-     */
-    public default DoubleStreamPlus useIterator(Function<DoubleIteratorPlus, DoubleStreamPlus> action) {
-        return sequential(stream -> {
-            DoubleStreamPlus result = null;
-            try {
-                val iterator = DoubleIteratorPlus.from(stream).iterator();
-                result = action.apply(iterator);
-                return result;
-            } finally {
-                if (result == null) {
-                    f(()->close())
-                    .runCarelessly();
-                } else {
-                    result
-                    .onClose(()->{
-                        f(()->close())
-                        .runCarelessly();
-                    });
-                }
-            }
-        });
-    }
+//    /**
+//     * Use iterator of this stream without terminating the stream.
+//     */
+//    public default DoubleStreamPlus useIterator(Function<DoubleIteratorPlus, DoubleStreamPlus> action) {
+//        return sequential(stream -> {
+//            DoubleStreamPlus result = null;
+//            try {
+//                val iterator = DoubleIteratorPlus.from(stream).iterator();
+//                result = action.apply(iterator);
+//                return result;
+//            } finally {
+//                if (result == null) {
+//                    f(()->close())
+//                    .runCarelessly();
+//                } else {
+//                    result
+//                    .onClose(()->{
+//                        f(()->close())
+//                        .runCarelessly();
+//                    });
+//                }
+//            }
+//        });
+//    }
     
-    public default <TARGET> StreamPlus<TARGET> useIteratorToObj(
-            Function<DoubleIteratorPlus, StreamPlus<TARGET>> action) {
-        return sequentialToObj(stream -> {
-            StreamPlus<TARGET> result = null;
-            try {
-                val iterator = DoubleIteratorPlus.from(stream).iterator();
-                result = action.apply(iterator);
-                return result;
-            } finally {
-                if (result == null) {
-                    f(()->close())
-                    .runCarelessly();
-                } else {
-                    result
-                    .onClose(()->{
-                        f(()->close())
-                        .runCarelessly();
-                    });
-                }
-            }
-        });
-    }
+//    public default <TARGET> StreamPlus<TARGET> useIteratorToObj(
+//            Function<DoubleIteratorPlus, StreamPlus<TARGET>> action) {
+//        return sequentialToObj(stream -> {
+//            StreamPlus<TARGET> result = null;
+//            try {
+//                val iterator = DoubleIteratorPlus.from(stream).iterator();
+//                result = action.apply(iterator);
+//                return result;
+//            } finally {
+//                if (result == null) {
+//                    f(()->close())
+//                    .runCarelessly();
+//                } else {
+//                    result
+//                    .onClose(()->{
+//                        f(()->close())
+//                        .runCarelessly();
+//                    });
+//                }
+//            }
+//        });
+//    }
     
-    //== Plus ==
+//    //== Plus ==
     
-    public default String joinToString() {
-        val strValue 
-            = mapToObj(String::valueOf)
-            .collect  (Collectors.joining());
-        return strValue;
-    }
-    public default String joinToString(String delimiter) {
-        val strValue 
-            = mapToObj(String::valueOf)
-            .collect  (Collectors.joining(delimiter));
-        return strValue;
-    }
+//    public default String joinToString() {
+//        val strValue 
+//            = mapToObj(String::valueOf)
+//            .collect  (Collectors.joining());
+//        return strValue;
+//    }
+//    public default String joinToString(String delimiter) {
+//        val strValue 
+//            = mapToObj(String::valueOf)
+//            .collect  (Collectors.joining(delimiter));
+//        return strValue;
+//    }
     
-    //== Pipe ==
+//    //== Pipe ==
     
-    public default Pipeable<DoubleStreamPlus> pipable() {
-        return Pipeable.of(this);
-    }
+//    public default Pipeable<DoubleStreamPlus> pipable() {
+//        return Pipeable.of(this);
+//    }
     
-    public default <T> T pipe(Function<? super DoubleStreamPlus, T> piper) {
-        return piper.apply(this);
-    }
+//    public default <T> T pipe(Function<? super DoubleStreamPlus, T> piper) {
+//        return piper.apply(this);
+//    }
     
-    //== Spawn ==
+//    //== Spawn ==
     
-    public default <T> StreamPlus<Result<T>> spawn(DoubleFunction<? extends UncompletedAction<T>> mapToAction) {
-        return sequentialToObj(stream -> {
-            val results = new ArrayList<DeferAction<T>>();
-            val index   = new AtomicInteger(0);
+//    public default <T> StreamPlus<Result<T>> spawn(DoubleFunction<? extends UncompletedAction<T>> mapToAction) {
+//        return sequentialToObj(stream -> {
+//            val results = new ArrayList<DeferAction<T>>();
+//            val index   = new AtomicInteger(0);
             
-            List<? extends UncompletedAction<T>> actions 
-                = doubleStream()
-                .mapToObj(mapToAction)
-                .peek    (action -> results.add(DeferAction.<T>createNew()))
-                .peek    (action -> action
-                    .getPromise()
-                    .onComplete(result -> {
-                        val thisIndex  = index.getAndIncrement();
-                        val thisAction = results.get(thisIndex);
-                        if (result.isValue())
-                             thisAction.complete(result.value());
-                        else thisAction.fail    (result.exception());
-                    })
-                )
-                .peek   (action -> action.start())
-                .collect(Collectors.toList())
-                ;
+//            List<? extends UncompletedAction<T>> actions 
+//                = doubleStream()
+//                .mapToObj(mapToAction)
+//                .peek    (action -> results.add(DeferAction.<T>createNew()))
+//                .peek    (action -> action
+//                    .getPromise()
+//                    .onComplete(result -> {
+//                        val thisIndex  = index.getAndIncrement();
+//                        val thisAction = results.get(thisIndex);
+//                        if (result.isValue())
+//                             thisAction.complete(result.value());
+//                        else thisAction.fail    (result.exception());
+//                    })
+//                )
+//                .peek   (action -> action.start())
+//                .collect(Collectors.toList())
+//                ;
             
-            val resultStream 
-                = StreamPlus
-                .from(results.stream().map(action -> action.getResult()))
-                ;
-            resultStream
-                .onClose(()->actions.forEach(action -> action.abort("Stream closed!")));
+//            val resultStream 
+//                = StreamPlus
+//                .from(results.stream().map(action -> action.getResult()))
+//                ;
+//            resultStream
+//                .onClose(()->actions.forEach(action -> action.abort("Stream closed!")));
             
-            return resultStream;
-        });
-    }
+//            return resultStream;
+//        });
+//    }
     
-    public default DoubleStreamPlus accumulate(DoubleBiFunctionPrimitive accumulator) {
-        return useIterator(iterator -> {
-            if (!iterator.hasNext())
-                return DoubleStreamPlus.empty();
+//    public default DoubleStreamPlus accumulate(DoubleBiFunctionPrimitive accumulator) {
+//        return useIterator(iterator -> {
+//            if (!iterator.hasNext())
+//                return DoubleStreamPlus.empty();
             
-            val prev = new double[] { iterator.nextDouble() };
-            return DoubleStreamPlus
-                    .concat(
-                        DoubleStreamPlus.of(prev[0]),
-                        iterator.stream().map(n -> {
-                            val next = accumulator.applyAsDoubleAndDouble(n, prev[0]);
-                            prev[0] = next;
-                            return next;
-                        })
-                    );
-        });
-    }
+//            val prev = new double[] { iterator.nextDouble() };
+//            return DoubleStreamPlus
+//                    .concat(
+//                        DoubleStreamPlus.of(prev[0]),
+//                        iterator.stream().map(n -> {
+//                            val next = accumulator.applyAsDoubleAndDouble(n, prev[0]);
+//                            prev[0] = next;
+//                            return next;
+//                        })
+//                    );
+//        });
+//    }
     
-    public default DoubleStreamPlus restate(DoubleObjBiFunction<DoubleStreamPlus, DoubleStreamPlus> restater) {
-        val func = (UnaryOperator<DoubleTuple2<DoubleStreamPlus>>)((DoubleTuple2<DoubleStreamPlus> pair) -> {
-            val stream = pair._2();
-            if (stream == null)
-                return null;
+//    public default DoubleStreamPlus restate(DoubleObjBiFunction<DoubleStreamPlus, DoubleStreamPlus> restater) {
+//        val func = (UnaryOperator<DoubleTuple2<DoubleStreamPlus>>)((DoubleTuple2<DoubleStreamPlus> pair) -> {
+//            val stream = pair._2();
+//            if (stream == null)
+//                return null;
             
-            val iterator = stream.__iterator();
-            if (!iterator.hasNext())
-                return null;
+//            val iterator = stream.__iterator();
+//            if (!iterator.hasNext())
+//                return null;
             
-            val head = new double[] { iterator.nextDouble() };
-            val tail = DoubleObjBiFunction.apply(restater, head[0], DoubleIteratorPlus.from(iterator).stream());
-            if (tail == null)
-                return null;
+//            val head = new double[] { iterator.nextDouble() };
+//            val tail = DoubleObjBiFunction.apply(restater, head[0], DoubleIteratorPlus.from(iterator).stream());
+//            if (tail == null)
+//                return null;
             
-            return DoubleTuple2.<DoubleStreamPlus>of(head[0], tail);
-        });
-        val seed = DoubleTuple2.<DoubleStreamPlus>of(0, this);
-        DoubleStreamPlus endStream 
-            = StreamPlus
-            .iterate    (seed, func)
-            .takeUntil  (t -> t == null)
-            .skip       (1)
-            .mapToDouble(t -> t._1());
-        return endStream;
-    }
+//            return DoubleTuple2.<DoubleStreamPlus>of(head[0], tail);
+//        });
+//        val seed = DoubleTuple2.<DoubleStreamPlus>of(0, this);
+//        DoubleStreamPlus endStream 
+//            = StreamPlus
+//            .iterate    (seed, func)
+//            .takeUntil  (t -> t == null)
+//            .skip       (1)
+//            .mapToDouble(t -> t._1());
+//        return endStream;
+//    }
     
 }

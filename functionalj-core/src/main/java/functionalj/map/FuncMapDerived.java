@@ -48,7 +48,7 @@ import functionalj.map.MapAction.FilterKey;
 import functionalj.map.MapAction.Mapping;
 import functionalj.map.MapAction.With;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.Streamable;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {

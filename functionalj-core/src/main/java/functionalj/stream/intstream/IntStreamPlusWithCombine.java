@@ -28,12 +28,12 @@ import static functionalj.function.FuncUnit0.funcUnit0;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import functionalj.function.Func1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.stream.IntIteratorPlus;
+import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.IntTuple2;
@@ -41,26 +41,27 @@ import lombok.val;
 
 public interface IntStreamPlusWithCombine {
     
-    public IntStream     intStream();
-    public IntStreamPlus useIterator(Func1<IntIteratorPlus, IntStreamPlus> action);
+    public IntStreamPlus streamPlus();
     
-    public <TARGET> StreamPlus<TARGET> useIteratorToObj(Func1<IntIteratorPlus, StreamPlus<TARGET>> action);
-    
-    /**
-     * Concatenate the given tail stream to this stream.
-     * 
-     * @param tail  the tail stream.
-     * @return      the combined stream.
-     */
+    /** Concatenate the given tail stream to this stream. */
     public default IntStreamPlus concatWith(IntStream tail) {
         return IntStreamPlus.concat(
-            IntStreamPlus.from(intStream()),
+            IntStreamPlus.from(streamPlus()),
             IntStreamPlus.from(tail)
         );
     }
     
+    /**
+     * Merge this with another stream by alternatively picking value from the each stream.
+     * If one stream ended before another one, the rest of the value will be appended.
+     * 
+     * For an example: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
+     */
     public default IntStreamPlus mergeWith(IntStream anotherStream) {
-        val thisStream = intStream();
+        val thisStream = streamPlus();
         val iteratorA  = IntIteratorPlus.from(thisStream   .iterator());
         val iteratorB  = IntIteratorPlus.from(anotherStream.iterator());
         
@@ -78,150 +79,155 @@ public interface IntStreamPlusWithCombine {
     
     //-- Zip --
     
-    public default <ANOTHER> StreamPlus<IntTuple2<ANOTHER>> zipWith(
-            Stream<ANOTHER> anotherStream) {
-        return useIteratorToObj(iteratorA -> {
-            val iteratorB = StreamPlus.from(anotherStream).iterator();
-            val doZipIntWith = IntStreamPlusHelper.doZipIntWith(IntTuple2::of, iteratorA, iteratorB);
-            return doZipIntWith;
-        });
+    /**
+     * Combine this stream with another stream into a stream of tuple pair.
+     * The combination stops when any of the stream ended.
+     * 
+     * For an example: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Result stream:  [(A, 1), (B, 2), (C, 3)] <br>
+     */
+    public default <ANOTHER> StreamPlus<IntTuple2<ANOTHER>> zipWith(Stream<ANOTHER> anotherStream) {
+        IntIteratorPlus       iteratorA = streamPlus().iterator();
+        IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntWith((value, another) -> IntTuple2.of(value, another), iteratorA, iteratorB);
     }
+    
+    /**
+     * Combine this stream with another stream into a stream of tuple pair.
+     * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
+     * 
+     * For an example with ZipWithOption.AllowUnpaired: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Result stream:  [(A, 1), (B, 2), (C, 3), (null, 4), (null, 5)] <br>
+     */
     public default <ANOTHER> StreamPlus<IntTuple2<ANOTHER>> zipWith(
             int             defaultValue,
             Stream<ANOTHER> anotherStream) {
-        return useIteratorToObj(iteratorA -> {
-            val iteratorB = StreamPlus.from(anotherStream).iterator();
-            return IntStreamPlusHelper.doZipIntWith(defaultValue, IntTuple2::of, iteratorA, iteratorB);
-        });
+        IntIteratorPlus       iteratorA = streamPlus().iterator();
+        IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntWith(defaultValue, (value, another) -> IntTuple2.of(value, another), iteratorA, iteratorB);
     }
     
+    /**
+     * Combine this stream with another stream using the combinator to create the result value one by one.
+     * The combination stops when any of the stream ended.
+     * 
+     * For an example: <br>
+     *   This stream:    [A, B, C] <br>
+     *   Another stream: [1, 2, 3, 4, 5] <br>
+     *   Combinator:     (v1,v2) -> v1 + "-" + v2
+     *   Result stream:  [A-1, B-2, C-3] <br>
+     */
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
             Stream<ANOTHER>                   anotherStream, 
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return useIteratorToObj(iteratorA -> {
-            val iteratorB = StreamPlus.from(anotherStream).iterator();
-            return IntStreamPlusHelper.doZipIntWith(merger, iteratorA, iteratorB);
-        });
+        IntIteratorPlus       iteratorA = streamPlus().iterator();
+        IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntWith(merger, iteratorA, iteratorB);
     }
-    // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
+    
+    //https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
             int                               defaultValue,
             Stream<ANOTHER>                   anotherStream,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return useIteratorToObj(iteratorA -> {
-            val iteratorB = StreamPlus.from(anotherStream).iterator();
-            return IntStreamPlusHelper.doZipIntWith(defaultValue, merger, iteratorA, iteratorB);
-        });
+        IntIteratorPlus       iteratorA = streamPlus().iterator();
+        IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntWith(defaultValue, merger, iteratorA, iteratorB);
     }
     
     public default StreamPlus<IntIntTuple> zipWith(
             IntStream anotherStream) {
-        return useIteratorToObj(iteratorA -> {
-            return IntStreamPlus
-                    .from(anotherStream)
-                    .useIteratorToObj(iteratorB -> {
-                        return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB);
-                    });
-        });
+        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB);
     }
+    
     public default StreamPlus<IntIntTuple> zipWith(
             IntStream anotherStream,
             int       defaultValue) {
-        return useIteratorToObj(iteratorA -> {
-            return IntStreamPlus
-                    .from(anotherStream)
-                    .useIteratorToObj(iteratorB -> {
-                        return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB, defaultValue);
-                    });
-        });
+        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB, defaultValue);
     }
+    
     public default StreamPlus<IntIntTuple> zipWith(
             IntStream anotherStream,
             int       defaultValue1,
             int       defaultValue2) {
-        return useIteratorToObj(iteratorA -> {
-            return IntStreamPlus
-                    .from(anotherStream)
-                    .useIteratorToObj(iteratorB -> {
-                        return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB, defaultValue1, defaultValue2);
-                    });
-        });
+        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
     
     public default IntStreamPlus zipWith(
             IntStream              anotherStream, 
             IntBiFunctionPrimitive merger) {
-        return useIterator(iteratorA -> {
-            return IntStreamPlus
-                    .from(anotherStream)
-                    .useIterator(iteratorB -> {
-                        return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB);
-                    });
-        });
+        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB);
     }
+    
     public default IntStreamPlus zipWith(
             IntStream              anotherStream, 
             int                    defaultValue,
             IntBiFunctionPrimitive merger) {
-        return useIterator(iteratorA -> {
-            return IntStreamPlus
-                    .from(anotherStream)
-                    .useIterator(iteratorB -> {
-                        return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue);
-                    });
-        });
+        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue);
     }
+    
     public default IntStreamPlus zipWith(
             IntStream              anotherStream, 
             int                    defaultValue1,
             int                    defaultValue2,
             IntBiFunctionPrimitive merger) {
-        return useIterator(iteratorA -> {
-            return IntStreamPlus
-                    .from(anotherStream)
-                    .useIterator(iteratorB -> {
-                        return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
-                    });
-        });
+        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
     
     public default <T> StreamPlus<T> zipToObjWith(
             IntStream           anotherStream, 
             IntIntBiFunction<T> merger) {
-        return useIteratorToObj(iteratorA -> {
-            return IntStreamPlus
-                    .from(anotherStream)
-                    .useIteratorToObj(iteratorB -> {
-                        return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB);
-                    });
-        });
+        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB);
     }
+    
     public default <T> StreamPlus<T> zipToObjWith(
             IntStream           anotherStream, 
             int                 defaultValue,
             IntIntBiFunction<T> merger) {
-        return useIteratorToObj(iteratorA -> {
-            return IntStreamPlus
-                    .from(anotherStream)
-                    .useIteratorToObj(iteratorB -> {
-                        return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB, defaultValue);
-                    });
-        });
+        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB, defaultValue);
     }
+    
     public default <T> StreamPlus<T> zipToObjWith(
             IntStream           anotherStream, 
             int                 defaultValue1,
             int                 defaultValue2,
             IntIntBiFunction<T> merger) {
-        return useIteratorToObj(iteratorA -> {
-            return IntStreamPlus
-                    .from(anotherStream)
-                    .useIteratorToObj(iteratorB -> {
-                        return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
-                    });
-        });
+        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
+        return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
     
+    /**
+     * Create a new stream by choosing value from each stream suing the selector.
+     * The combine stream ended when both stream ended.
+     * The value from the longer stream is automatically used after the shorter stream ended.
+     * 
+     * For an example with ZipWithOption.AllowUnpaired: <br>
+     *   This stream:    [10, 1, 9, 2] <br>
+     *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
+     *   Selector:       (v1,v2) -> v1 > v2 <br>
+     *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
+     */
     public default IntStreamPlus choose(IntStreamPlus anotherStream, IntBiPredicatePrimitive selectThisNotAnother) {
         return zipWith(anotherStream, (a, b) -> selectThisNotAnother.testIntInt(a, b) ? a : b);
     }
