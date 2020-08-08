@@ -64,7 +64,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
-    public default <T> StreamPlus<T> mapWithIndexToObj(IntObjBiFunction<? super DATA, T> combinator) {
+    public default <T> StreamPlus<T> mapToObjWithIndex(IntObjBiFunction<? super DATA, T> combinator) {
         val index = new AtomicInteger();
         val streamPlus = streamPlus();
         return streamPlus

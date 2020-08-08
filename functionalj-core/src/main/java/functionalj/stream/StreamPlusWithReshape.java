@@ -51,8 +51,8 @@ public interface StreamPlusWithReshape<DATA> {
      * Segment the stream into sub stream with the fix length of count.
      * The last portion may be shorter.
      **/
-    public default StreamPlus<StreamPlus<DATA>> segment(int count) {
-        return segment(count, true);
+    public default StreamPlus<StreamPlus<DATA>> segmentSize(int count) {
+        return segmentSize(count, true);
     }
     
     /**
@@ -64,7 +64,7 @@ public interface StreamPlusWithReshape<DATA> {
      *                       as opposed to thrown away.
      * @return             the stream of sub stream.
      */
-    public default StreamPlus<StreamPlus<DATA>> segment(int count, boolean includeTail) {
+    public default StreamPlus<StreamPlus<DATA>> segmentSize(int count, boolean includeTail) {
         val index = new AtomicInteger(0);
         return segment(data -> {
                     val currentIndex = index.getAndIncrement();
@@ -82,8 +82,8 @@ public interface StreamPlusWithReshape<DATA> {
      *                       as opposed to thrown away.
      * @return             the stream of sub stream.
      */
-    public default StreamPlus<StreamPlus<DATA>> segment(int count, IncompletedSegment incompletedSegment) {
-        return segment(count, (incompletedSegment == IncompletedSegment.included));
+    public default StreamPlus<StreamPlus<DATA>> segmentSize(int count, IncompletedSegment incompletedSegment) {
+        return segmentSize(count, (incompletedSegment == IncompletedSegment.included));
     }
     
     /**

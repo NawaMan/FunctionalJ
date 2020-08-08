@@ -33,7 +33,6 @@ import java.util.function.Predicate;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.list.FuncList;
-import functionalj.stream.AsStreamable;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -45,8 +44,8 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      * Segment the stream into sub stream with the fix length of count.
      * The last portion may be shorter.
      **/
-    public default Streamable<StreamPlus<DATA>> segment(int count) {
-        return deriveFrom(this, stream -> stream.segment(count));
+    public default Streamable<StreamPlus<DATA>> segmentSize(int count) {
+        return deriveFrom(this, stream -> stream.segmentSize(count));
     }
     
     /**
@@ -58,10 +57,10 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      *                       as opposed to thrown away.
      * @return             the stream of sub stream.
      */
-    public default Streamable<StreamPlus<DATA>> segment(
+    public default Streamable<StreamPlus<DATA>> segmentSize(
             int     count, 
             boolean includeTail) {
-        return deriveFrom(this, stream -> stream.segment(count, includeTail));
+        return deriveFrom(this, stream -> stream.segmentSize(count, includeTail));
     }
     
     /**

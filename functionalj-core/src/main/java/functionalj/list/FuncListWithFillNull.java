@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.lens.lenses.AnyLens;
-import functionalj.stream.AsStreamable;
+import functionalj.streamable.AsStreamable;
 
 public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
     

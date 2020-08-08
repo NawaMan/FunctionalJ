@@ -56,19 +56,18 @@ import functionalj.function.LongLongBiFunction;
 import functionalj.function.LongObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.result.NoMoreResultException;
-import functionalj.stream.AsStreamable;
 import functionalj.stream.IterablePlus;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.AsDoubleStreamable;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamable;
-import functionalj.stream.intstream.AsIntStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamable;
 import functionalj.stream.longstream.AsLongStreamable;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamable;
+import functionalj.streamable.intstreamable.AsIntStreamable;
+import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -276,6 +275,73 @@ public interface Streamable<DATA>
         return ()->StreamPlus.compound(seed1, seed2, compounder);
     }
     
+    /** Create a Streamable that is the repeat of the given array of data. */
+    @SuppressWarnings("unchecked")
+    public static <TARGET> Streamable<TARGET> repeat(TARGET ... data) {
+        return cycle(data);
+    }
+    
+    /** Create a Streamable that is the repeat of the given list of data. */
+    public static <TARGET> Streamable<TARGET> repeat(FuncList<TARGET> data) {
+        return cycle(data);
+    }
+    
+    /** Create a Streamable that is the repeat of the given array of data. */
+    @SafeVarargs
+    public static <TARGET> Streamable<TARGET> cycle(TARGET ... data) {
+        val size = data.length;
+        return () ->
+                StreamPlus.from(
+                        IntStream
+                        .iterate(0, i -> i + 1)
+                        .mapToObj(i -> data[i % size]));
+    }
+    
+    /** Create a Streamable that is the repeat of the given list of data. */
+    public static <TARGET> Streamable<TARGET> cycle(FuncList<TARGET> data) {
+        val size = data.size();
+        return () ->
+                StreamPlus.from(
+                        IntStream
+                        .iterate(0, i -> i + 1)
+                        .mapToObj(i -> data.get(i % size)));
+    }
+    
+    /** Create a Streamable that for an infinite loop - the value is boolean true */
+    public static Streamable<Boolean> loop() {
+        return ()-> {
+            return StreamPlus.from(Stream.generate(() -> Boolean.TRUE));
+        };
+    }
+    
+    /** Create a Streamable that for a loop with the number of time given - the value is the index of the loop. */
+    public static Streamable<Boolean> loop(int time) {
+        return Streamable.loop().limit(time);
+    }
+    
+    /** Create a Streamable that for an infinite loop - the value is the index of the loop. */
+    public static Streamable<Integer> infiniteInt() {
+        return IntStreamable
+                .wholeNumbers()
+                .boxed();
+    }
+    
+    /** Create a Streamable that for a loop from the start value inclusively to the end value exclusively. */
+    public static Streamable<Integer> range(int startInclusive, int endExclusive) {
+        return IntStreamable
+                .range(startInclusive, endExclusive)
+                .boxed();
+    }
+    
+    /** Create a Streamable that for a loop from the start value inclusively to the end value inclusively. */
+    public static Streamable<Integer> rangeAll(int startInclusive, int endInclusive) {
+        return IntStreamable
+                .rangeAll(startInclusive, endInclusive)
+                .boxed();
+    }
+    
+    //-- Zip --
+    
     /**
      * Create a Streamable by combining elements together into a Streamable of tuples.
      * Only elements with pair will be combined. If this is not desirable, use streamable1.zip(streamable2).
@@ -480,74 +546,9 @@ public interface Streamable<DATA>
         };
     }
     
-    /** Create a Streamable that is the repeat of the given array of data. */
-    @SuppressWarnings("unchecked")
-    public static <TARGET> Streamable<TARGET> repeat(TARGET ... data) {
-        return cycle(data);
-    }
-    
-    /** Create a Streamable that is the repeat of the given list of data. */
-    public static <TARGET> Streamable<TARGET> repeat(FuncList<TARGET> data) {
-        return cycle(data);
-    }
-    
-    /** Create a Streamable that is the repeat of the given array of data. */
-    @SafeVarargs
-    public static <TARGET> Streamable<TARGET> cycle(TARGET ... data) {
-        val size = data.length;
-        return () ->
-                StreamPlus.from(
-                        IntStream
-                        .iterate(0, i -> i + 1)
-                        .mapToObj(i -> data[i % size]));
-    }
-    
-    /** Create a Streamable that is the repeat of the given list of data. */
-    public static <TARGET> Streamable<TARGET> cycle(FuncList<TARGET> data) {
-        val size = data.size();
-        return () ->
-                StreamPlus.from(
-                        IntStream
-                        .iterate(0, i -> i + 1)
-                        .mapToObj(i -> data.get(i % size)));
-    }
-    
-    /** Create a Streamable that for an infinite loop - the value is boolean true */
-    public static Streamable<Boolean> loop() {
-        return ()-> {
-            return StreamPlus.from(Stream.generate(() -> Boolean.TRUE));
-        };
-    }
-    
-    /** Create a Streamable that for a loop with the number of time given - the value is the index of the loop. */
-    public static Streamable<Boolean> loop(int time) {
-        return Streamable.loop().limit(time);
-    }
-    
-    /** Create a Streamable that for an infinite loop - the value is the index of the loop. */
-    public static Streamable<Integer> infiniteInt() {
-        return IntStreamable
-                .wholeNumbers()
-                .boxed();
-    }
-    
-    /** Create a Streamable that for a loop from the start value inclusively to the end value exclusively. */
-    public static Streamable<Integer> range(int startInclusive, int endExclusive) {
-        return IntStreamable
-                .range(startInclusive, endExclusive)
-                .boxed();
-    }
-    
-    /** Create a Streamable that for a loop from the start value inclusively to the end value inclusively. */
-    public static Streamable<Integer> rangeAll(int startInclusive, int endInclusive) {
-        return IntStreamable
-                .rangeAll(startInclusive, endInclusive)
-                .boxed();
-    }
-    
     //== Core ==
     
-    /** Return the stream of data behind this StreamPlus. */
+    /** Return the stream of data behind this Streamable. */
     public StreamPlus<DATA> stream();
     
     /** Return this StreamPlus. */
@@ -758,8 +759,7 @@ public interface Streamable<DATA>
     
     /** Map a value into a double streamable and then flatten that streamable */
     public default DoubleStreamable flatMapToDouble(Function<? super DATA, ? extends DoubleStreamable> mapper) {
-//        return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
-        return null;
+        return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
     }
     
     //-- Filter --
@@ -792,8 +792,8 @@ public interface Streamable<DATA>
     }
     
     /** Trim off the first n values */
-    public default Streamable<DATA> skip(long n) {
-        return deriveFrom(this, stream -> stream.skip(n));
+    public default Streamable<DATA> skip(long offset) {
+        return deriveFrom(this, stream -> stream.skip(offset));
     }
     
     //-- Distinct --

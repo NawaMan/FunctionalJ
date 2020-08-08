@@ -40,7 +40,7 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
     // The most important thing here is to only evaluate the value once.
     // Everything else that contradict that must give. That because we can use regular filter if evaluating once is not important.
     
-    //== split ==
+    // == split ==
     
     // TODO - Try to make it lazy 
     // It is not easy as it seems as there has to be buffer for one branch when go through with another branch.
@@ -60,8 +60,8 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
                     it -> it
             )
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list1 = temp.filter(it -> it._1() == 0).mapToObj(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).mapToObj(it -> it._2());
         return Tuple.of(
                 list1.streamable(),
                 list2.streamable());
@@ -87,9 +87,9 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
                 it -> it
             )
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list1 = temp.filter(it -> it._1() == 0).mapToObj(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).mapToObj(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).mapToObj(it -> it._2());
         return Tuple.of(
                 list1.streamable(),
                 list2.streamable(),
@@ -119,10 +119,10 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
                 it -> it
             )
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
+        val list1 = temp.filter(it -> it._1() == 0).mapToObj(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).mapToObj(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).mapToObj(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).mapToObj(it -> it._2());
         return Tuple.of(
                 list1.streamable(),
                 list2.streamable(),
@@ -156,11 +156,11 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
                 it -> it
             )
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
-        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
+        val list1 = temp.filter(it -> it._1() == 0).mapToObj(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).mapToObj(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).mapToObj(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).mapToObj(it -> it._2());
+        val list5 = temp.filter(it -> it._1() == 4).mapToObj(it -> it._2());
         return Tuple.of(
                 list1.streamable(),
                 list2.streamable(),
@@ -198,12 +198,12 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
                 it -> it
             )
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
-        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
-        val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2());
+        val list1 = temp.filter(it -> it._1() == 0).mapToObj(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).mapToObj(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).mapToObj(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).mapToObj(it -> it._2());
+        val list5 = temp.filter(it -> it._1() == 4).mapToObj(it -> it._2());
+        val list6 = temp.filter(it -> it._1() == 5).mapToObj(it -> it._2());
         return Tuple.of(
                 list1.streamable(),
                 list2.streamable(),
@@ -227,8 +227,8 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
                 key1, list1.streamable(), 
                 key2, list2.streamable());
@@ -251,9 +251,9 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
                 key1, list1.streamable(), 
                 key2, list2.streamable(), 
@@ -279,10 +279,10 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
                 key1, list1.streamable(), 
                 key2, list2.streamable(), 
@@ -311,11 +311,11 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
                 key1, list1.streamable(), 
                 key2, list2.streamable(), 
@@ -347,12 +347,12 @@ public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
-        val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
+        val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).mapToObj(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
                 key1, list1.streamable(), 
                 key2, list2.streamable(), 

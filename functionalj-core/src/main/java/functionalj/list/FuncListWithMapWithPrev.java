@@ -28,7 +28,7 @@ import static functionalj.list.FuncList.deriveFrom;
 import java.util.function.BiFunction;
 
 import functionalj.result.Result;
-import functionalj.stream.AsStreamable;
+import functionalj.streamable.AsStreamable;
 import functionalj.tuple.Tuple2;
 
 public interface FuncListWithMapWithPrev<DATA> extends AsStreamable<DATA> {

@@ -6,6 +6,7 @@ import java.util.function.LongUnaryOperator;
 import functionalj.function.Func1;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamable;
+import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
 import lombok.val;
 

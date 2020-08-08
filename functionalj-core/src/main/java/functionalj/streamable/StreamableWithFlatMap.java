@@ -23,24 +23,24 @@
 // ============================================================================
 package functionalj.streamable;
 
+import static functionalj.streamable.Streamable.deriveFrom;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import functionalj.stream.AsStreamable;
 
 public interface StreamableWithFlatMap<DATA> extends AsStreamable<DATA> {
     
     /** FlatMap with the given mapper. */
     public default <T> Streamable<T> flatMapToObj(Function<? super DATA, ? extends Streamable<? extends T>> mapper) {
-        return Streamable.deriveFrom(this, stream -> stream.flatMap(value -> mapper.apply(value).stream()));
+        return deriveFrom(this, stream -> stream.flatMapToObj(value -> mapper.apply(value).stream()));
     }
     
     /** FlatMap with the given mapper for only the value that pass the condition. */
     public default Streamable<DATA> flatMapOnly(
             Predicate<? super DATA>                            checker, 
             Function<? super DATA, ? extends Streamable<DATA>> mapper) {
-        return Streamable.deriveFrom(this, stream -> {
+        return deriveFrom(this, stream -> {
             Function<? super DATA, ? extends Stream<DATA>> newMapper = value -> mapper.apply(value).stream();
             return stream.flatMapOnly(checker, newMapper);
         });
@@ -49,11 +49,11 @@ public interface StreamableWithFlatMap<DATA> extends AsStreamable<DATA> {
     /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */
     public default <T> Streamable<T> flatMapIf(
             Predicate<? super DATA>                         checker, 
-            Function<? super DATA, ? extends Streamable<T>> mapper, 
-            Function<? super DATA, ? extends Streamable<T>> elseMapper) {
-        return Streamable.deriveFrom(this, stream -> {
-            Function<? super DATA, Stream<T>> newMapper     = value -> mapper.apply(value).stream();
-            Function<? super DATA, Stream<T>> newElseMapper = value -> elseMapper.apply(value).stream();
+            Function<? super DATA, ? extends Streamable<T>> trueMapper, 
+            Function<? super DATA, ? extends Streamable<T>> falseMapper) {
+        return deriveFrom(this, stream -> {
+            Function<? super DATA, Stream<T>> newMapper     = value -> trueMapper.apply(value).stream();
+            Function<? super DATA, Stream<T>> newElseMapper = value -> falseMapper.apply(value).stream();
             return stream.flatMapIf(checker, newMapper, newElseMapper);
         });
     }

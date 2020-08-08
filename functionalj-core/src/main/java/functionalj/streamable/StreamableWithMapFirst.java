@@ -27,8 +27,6 @@ import static functionalj.streamable.Streamable.deriveFrom;
 
 import java.util.function.Function;
 
-import functionalj.stream.AsStreamable;
-
 
 public interface StreamableWithMapFirst<DATA>
         extends AsStreamable<DATA> {

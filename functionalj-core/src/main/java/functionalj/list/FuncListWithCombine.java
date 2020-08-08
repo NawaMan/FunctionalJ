@@ -26,8 +26,8 @@ package functionalj.list;
 import static functionalj.list.FuncList.deriveFrom;
 
 import functionalj.function.Func2;
-import functionalj.stream.AsStreamable;
 import functionalj.stream.ZipWithOption;
+import functionalj.streamable.AsStreamable;
 import functionalj.tuple.Tuple2;
 
 public interface FuncListWithCombine<DATA> extends AsStreamable<DATA> {

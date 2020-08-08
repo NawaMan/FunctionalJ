@@ -1,6 +1,6 @@
 package functionalj.list.intlist;
 
-import functionalj.stream.intstream.IntStreamableWithCombine;
+import functionalj.streamable.intstreamable.IntStreamableWithCombine;
 
 
 public interface IntFuncListWithCombine extends IntStreamableWithCombine {

@@ -23,22 +23,16 @@
 // ============================================================================
 package functionalj.stream.intstream;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 
 import functionalj.map.FuncMap;
-import functionalj.map.ImmutableMap;
-import functionalj.stream.GrowOnlyIntArray;
 import functionalj.stream.IntCollectorPlus;
 import functionalj.stream.IntStreamProcessor;
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Terminal;
+import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
 public interface IntStreamPlusWithGroupingBy extends AsIntStreamPlus {
@@ -77,7 +71,7 @@ public interface IntStreamPlusWithGroupingBy extends AsIntStreamPlus {
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     public default <KEY, ACCUMULATED, VALUE> FuncMap<? extends KEY, VALUE> groupingBy(
             IntFunction<? extends KEY>                     keyMapper,
             Supplier<IntCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {

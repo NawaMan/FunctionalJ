@@ -51,6 +51,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import functionalj.function.FuncUnit1;
+import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.longstream.LongStreamPlus;
@@ -721,6 +722,10 @@ public interface DoubleStreamPlus
 //        stream.onClose(() -> { close(); });
 //        return stream;
 //    }
+    
+    public default DoubleFuncList toImmutableList() {
+        return null;
+    }
     
     @Override
     public default double[] toArray() {

@@ -27,8 +27,6 @@ import static functionalj.streamable.Streamable.deriveFrom;
 
 import java.util.function.Predicate;
 
-import functionalj.stream.AsStreamable;
-
 public interface StreamableWithLimit<DATA> extends AsStreamable<DATA> {
     
     /** Limit the size of the stream to the given size. */

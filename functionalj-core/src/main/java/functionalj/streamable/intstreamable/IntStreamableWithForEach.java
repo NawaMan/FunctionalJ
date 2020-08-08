@@ -21,27 +21,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.streamable.intstreamable;
 
-import functionalj.streamable.Streamable;
+import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.IntStreamPlusWithForEach;
 
-/**
- * 
- * 
- * @param <DATA>
- *
- * @author NawaMan -- nawa@nawaman.net
- */
-public interface AsStreamable<DATA> {
+public interface IntStreamableWithForEach extends AsIntStreamable, IntStreamPlusWithForEach {
     
-    public default Streamable<DATA> streamable() {
-        return (Streamable<DATA>)(()->stream());
+    @Override
+    default IntStreamPlus streamPlus() {
+        return AsIntStreamable.super.streamPlus();
     }
-    
-    public default StreamPlus<DATA> streamPlus() {
-        return stream();
-    }
-    
-    public StreamPlus<DATA> stream();
     
 }

@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.streamable;
 
-import functionalj.stream.AsStreamable;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusWithForEach;
 

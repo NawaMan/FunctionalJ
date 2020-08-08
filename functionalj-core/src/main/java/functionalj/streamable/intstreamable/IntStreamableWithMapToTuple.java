@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream.intstream;
+package functionalj.streamable.intstreamable;
 
 import static functionalj.streamable.Streamable.deriveFrom;
 

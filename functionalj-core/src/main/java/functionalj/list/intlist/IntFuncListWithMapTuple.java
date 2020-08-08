@@ -1,6 +1,6 @@
 package functionalj.list.intlist;
 
-import functionalj.stream.intstream.IntStreamableWithMapToTuple;
+import functionalj.streamable.intstreamable.IntStreamableWithMapToTuple;
 
 
 public interface IntFuncListWithMapTuple 

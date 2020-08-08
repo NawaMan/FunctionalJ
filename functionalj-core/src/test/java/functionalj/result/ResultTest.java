@@ -34,7 +34,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import functionalj.function.Func;
-import functionalj.stream.intstream.IntStreamable;
+import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.validator.Validator;
 import lombok.val;
 

@@ -5,8 +5,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 import functionalj.map.FuncMap;
-import functionalj.stream.AsStreamable;
 import functionalj.stream.StreamProcessor;
+import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
 
 public interface FuncListWithGroupingBy<DATA>

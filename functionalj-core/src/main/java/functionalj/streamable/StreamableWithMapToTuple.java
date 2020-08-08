@@ -27,7 +27,6 @@ import static functionalj.streamable.Streamable.deriveFrom;
 
 import java.util.function.Function;
 
-import functionalj.stream.AsStreamable;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;

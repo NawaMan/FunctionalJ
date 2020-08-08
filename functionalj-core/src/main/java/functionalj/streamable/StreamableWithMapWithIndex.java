@@ -28,7 +28,6 @@ import static functionalj.streamable.Streamable.deriveFrom;
 import java.util.function.Function;
 
 import functionalj.function.IntObjBiFunction;
-import functionalj.stream.AsStreamable;
 import functionalj.tuple.IntTuple2;
 
 public interface StreamableWithMapWithIndex<DATA> extends AsStreamable<DATA> {
@@ -46,8 +45,8 @@ public interface StreamableWithMapWithIndex<DATA> extends AsStreamable<DATA> {
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
-    public default <T> Streamable<T> mapWithIndexToObj(IntObjBiFunction<? super DATA, T> combinator) {
-        return deriveFrom(this, stream -> stream.mapWithIndexToObj(combinator));
+    public default <T> Streamable<T> mapToObjWithIndex(IntObjBiFunction<? super DATA, T> combinator) {
+        return deriveFrom(this, stream -> stream.mapToObjWithIndex(combinator));
     }
     
     /** Create a stream whose value is the combination between the mapped value of this stream and its index. */

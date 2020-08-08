@@ -11,7 +11,7 @@ import functionalj.function.Func1;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamable;
+import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
 public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIterator.OfInt {

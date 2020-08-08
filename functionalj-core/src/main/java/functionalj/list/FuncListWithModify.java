@@ -30,7 +30,7 @@ import java.util.function.BiFunction;
 import functionalj.function.Func1;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.AsStreamable;
+import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
 
 public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {

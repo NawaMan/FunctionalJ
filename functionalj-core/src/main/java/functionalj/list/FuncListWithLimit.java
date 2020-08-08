@@ -27,7 +27,7 @@ import static functionalj.list.FuncList.deriveFrom;
 
 import java.util.function.Predicate;
 
-import functionalj.stream.AsStreamable;
+import functionalj.streamable.AsStreamable;
 
 public interface FuncListWithLimit<DATA> extends AsStreamable<DATA> {
     

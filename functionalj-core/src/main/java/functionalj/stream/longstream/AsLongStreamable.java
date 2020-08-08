@@ -1,6 +1,6 @@
 package functionalj.stream.longstream;
 
-import functionalj.stream.AsStreamable;
+import functionalj.streamable.AsStreamable;
 
 public interface AsLongStreamable extends AsStreamable<Long> {
     

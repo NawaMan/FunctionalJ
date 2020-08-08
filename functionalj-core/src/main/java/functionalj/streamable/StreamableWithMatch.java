@@ -27,8 +27,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.stream.AsStreamable;
-
 public interface StreamableWithMatch<DATA> extends AsStreamable<DATA> {
     
     /** Return the first element that matches the predicate. */

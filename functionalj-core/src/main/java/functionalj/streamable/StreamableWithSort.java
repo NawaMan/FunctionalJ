@@ -28,8 +28,6 @@ import static functionalj.streamable.Streamable.deriveFrom;
 import java.util.Comparator;
 import java.util.function.Function;
 
-import functionalj.stream.AsStreamable;
-
 public interface StreamableWithSort<DATA> extends AsStreamable<DATA> {
     
     /** Sort the values by the mapped value. */

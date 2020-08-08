@@ -36,7 +36,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import functionalj.function.IntObjBiFunction;
-import functionalj.stream.AsStreamable;
+import functionalj.streamable.AsStreamable;
 
 public interface FuncListWithFilter<DATA> extends AsStreamable<DATA> {
     

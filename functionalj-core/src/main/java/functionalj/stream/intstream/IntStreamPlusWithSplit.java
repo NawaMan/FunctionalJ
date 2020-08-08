@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.IntPredicate;
 
 import functionalj.map.FuncMap;
+import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;

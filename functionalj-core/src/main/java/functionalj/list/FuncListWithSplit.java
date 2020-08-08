@@ -26,7 +26,7 @@ package functionalj.list;
 import java.util.function.Predicate;
 
 import functionalj.map.FuncMap;
-import functionalj.stream.AsStreamable;
+import functionalj.streamable.AsStreamable;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;

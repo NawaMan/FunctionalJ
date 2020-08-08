@@ -36,15 +36,15 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import functionalj.function.LongBiFunctionPrimitive;
-import functionalj.stream.AsStreamable;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.AsDoubleStreamable;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamable;
-import functionalj.stream.intstream.AsIntStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.intstream.IntStreamable;
+import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
+import functionalj.streamable.intstreamable.AsIntStreamable;
+import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.tuple.LongLongTuple;
 import lombok.val;
 

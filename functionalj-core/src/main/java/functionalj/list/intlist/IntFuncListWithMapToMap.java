@@ -1,6 +1,6 @@
 package functionalj.list.intlist;
 
-import functionalj.stream.intstream.IntStreamableWithMapToMap;
+import functionalj.streamable.intstreamable.IntStreamableWithMapToMap;
 
 
 public interface IntFuncListWithMapToMap extends IntStreamableWithMapToMap {

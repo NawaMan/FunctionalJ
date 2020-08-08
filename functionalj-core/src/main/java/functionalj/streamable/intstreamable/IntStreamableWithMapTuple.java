@@ -1,3 +1,4 @@
+package functionalj.streamable.intstreamable;
 //package functionalj.stream.intstream;
 //
 //import java.util.function.IntFunction;

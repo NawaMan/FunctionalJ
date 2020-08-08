@@ -32,7 +32,6 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
-import functionalj.stream.AsStreamable;
 
 public interface StreamableWithMapThen<DATA>
         extends AsStreamable<DATA> {

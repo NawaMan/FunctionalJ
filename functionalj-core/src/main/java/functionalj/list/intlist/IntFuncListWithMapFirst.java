@@ -1,6 +1,6 @@
 package functionalj.list.intlist;
 
-import functionalj.stream.intstream.IntStreamableWithMapFirst;
+import functionalj.streamable.intstreamable.IntStreamableWithMapFirst;
 
 
 

@@ -36,7 +36,6 @@ import functionalj.function.ToByteFunction;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
-import functionalj.stream.AsStreamable;
 
 public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
     

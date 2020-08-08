@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.streamable;
 
-import functionalj.stream.AsStreamable;
 import functionalj.stream.Collected;
 import functionalj.stream.StreamProcessor;
 import functionalj.tuple.Tuple;

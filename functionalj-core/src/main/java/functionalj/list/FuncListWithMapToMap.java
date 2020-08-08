@@ -28,7 +28,7 @@ import static functionalj.list.FuncList.deriveFrom;
 import java.util.function.Function;
 
 import functionalj.map.FuncMap;
-import functionalj.stream.AsStreamable;
+import functionalj.streamable.AsStreamable;
 
 public interface FuncListWithMapToMap<DATA>
         extends AsStreamable<DATA> {

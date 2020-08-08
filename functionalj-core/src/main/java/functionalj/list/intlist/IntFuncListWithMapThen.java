@@ -1,6 +1,6 @@
 package functionalj.list.intlist;
 
-import functionalj.stream.intstream.IntStreamableWithMapThen;
+import functionalj.streamable.intstreamable.IntStreamableWithMapThen;
 
 
 public interface IntFuncListWithMapThen 

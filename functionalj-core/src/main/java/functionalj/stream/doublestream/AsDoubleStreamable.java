@@ -1,6 +1,6 @@
 package functionalj.stream.doublestream;
 
-import functionalj.stream.AsStreamable;
+import functionalj.streamable.AsStreamable;
 
 public interface AsDoubleStreamable extends AsStreamable<Double> {
     

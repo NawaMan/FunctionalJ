@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.Optional;
 
 import functionalj.function.Func1;
-import functionalj.stream.AsStreamable;
 import functionalj.tuple.Tuple2;
 
 public interface StreamableWithStatistic<DATA> extends AsStreamable<DATA> {

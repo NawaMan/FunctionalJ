@@ -26,7 +26,6 @@ package functionalj.streamable;
 import static functionalj.streamable.Streamable.deriveFrom;
 
 import functionalj.function.Func2;
-import functionalj.stream.AsStreamable;
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.Tuple2;
 

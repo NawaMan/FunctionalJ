@@ -28,7 +28,7 @@ import static functionalj.list.FuncList.deriveFrom;
 import java.util.Comparator;
 import java.util.function.Function;
 
-import functionalj.stream.AsStreamable;
+import functionalj.streamable.AsStreamable;
 
 public interface FuncListWithSort<DATA> extends AsStreamable<DATA> {
     

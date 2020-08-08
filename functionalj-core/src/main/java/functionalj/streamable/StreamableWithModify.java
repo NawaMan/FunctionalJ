@@ -23,13 +23,14 @@
 // ============================================================================
 package functionalj.streamable;
 
+import static functionalj.streamable.Streamable.deriveFrom;
+
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import functionalj.function.Func1;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.AsStreamable;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -53,7 +54,7 @@ public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
      *     ...
      */
     public default Streamable<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-        return Streamable.deriveFrom(this, stream -> stream.accumulate(accumulator));
+        return deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
     
     //== restate ==

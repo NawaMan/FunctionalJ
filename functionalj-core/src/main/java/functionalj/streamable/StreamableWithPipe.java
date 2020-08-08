@@ -26,7 +26,6 @@ package functionalj.streamable;
 import java.util.function.Function;
 
 import functionalj.pipeable.Pipeable;
-import functionalj.stream.AsStreamable;
 
 public interface StreamableWithPipe<DATA> extends AsStreamable<DATA> {
     
