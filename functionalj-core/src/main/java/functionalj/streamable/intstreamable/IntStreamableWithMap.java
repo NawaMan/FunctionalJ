@@ -23,6 +23,9 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
+import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
+
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
@@ -34,18 +37,14 @@ public interface IntStreamableWithMap extends AsIntStreamable {
     
     /** Map the value using the mapper. */
     public default <T> Streamable<T> mapToObj(IntFunction<? extends T> mapper) {
-        return () -> {
-            return stream().mapToObj(mapper);
-        };
+        return deriveToObj(this, stream -> stream.mapToObj(mapper));
     }
     
     /** Map the value using the mapper only when the condition is true. */
     public default IntStreamable mapOnly(
             IntPredicate     condition, 
             IntUnaryOperator mapper) {
-        return () -> {
-            return stream().mapOnly(condition, mapper);
-        };
+        return deriveToInt(this, stream -> stream.mapOnly(condition, mapper));
     }
     
     /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
@@ -53,9 +52,7 @@ public interface IntStreamableWithMap extends AsIntStreamable {
             IntPredicate     condition, 
             IntUnaryOperator mapper, 
             IntUnaryOperator elseMapper) {
-        return () -> {
-            return stream().mapIf(condition, mapper, elseMapper);
-        };
+        return deriveToInt(this, stream -> stream.mapIf(condition, mapper, elseMapper));
     }
     
     /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.  */
@@ -63,9 +60,7 @@ public interface IntStreamableWithMap extends AsIntStreamable {
             IntPredicate   condition, 
             IntFunction<T> mapper, 
             IntFunction<T> elseMapper) {
-        return () -> {
-            return stream().mapToObjIf(condition, mapper, elseMapper);
-        };
+        return deriveToObj(this, stream -> stream.mapToObjIf(condition, mapper, elseMapper));
     }
     
 }

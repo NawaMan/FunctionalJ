@@ -31,21 +31,21 @@ import java.util.function.Predicate;
 import lombok.val;
 
 public interface IntStreamableWithMatch extends AsIntStreamable {
-
+    
     /** Return the first element that matches the predicate. */
     public default OptionalInt findFirst(
             IntPredicate predicate) {
         return streamPlus()
                 .findFirst(predicate);
     }
-
+    
     /** Return the any element that matches the predicate. */
     public default OptionalInt findAny(
             IntPredicate predicate) {
         return streamPlus()
                 .findAny(predicate);
     }
-
+    
     /** Use the mapper, return the first element that its mapped value matches the predicate. */
     public default <T> OptionalInt findFirst(
             IntFunction<T>       mapper,
@@ -56,7 +56,7 @@ public interface IntStreamableWithMatch extends AsIntStreamable {
                     return theCondition.test(mapped);
                 });
     }
-
+    
     /** Use the mapper, return the any element that its mapped value matches the predicate. */
     public default <T> OptionalInt findAny(
             IntFunction<T> mapper,
@@ -67,5 +67,5 @@ public interface IntStreamableWithMatch extends AsIntStreamable {
                     return theCondition.test(mapped);
                 });
     }
-
+    
 }

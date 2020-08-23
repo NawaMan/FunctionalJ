@@ -33,9 +33,8 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
-public interface IntStreamableWithCalculate
-        extends AsIntStreamable {
-
+public interface IntStreamableWithCalculate extends AsIntStreamable {
+    
     /** Perform the calculation using the data of this streamable */
     public default <A, T> T calculate(
             IntStreamProcessor<T> processor) {
@@ -48,7 +47,7 @@ public interface IntStreamableWithCalculate
         val value = collected.finish();
         return value;
     }
-
+    
     /** Perform the calculation using the data of this streamable */
     public default <T1, T2> Tuple2<T1, T2> calculate(
             IntStreamProcessor<T1> processor1,
@@ -65,7 +64,7 @@ public interface IntStreamableWithCalculate
         val value2 = collected2.finish();
         return Tuple.of(value1, value2);
     }
-
+    
     /** Perform the calculation using the data of this streamable */
     public default <T1, T2, T3> Tuple3<T1, T2, T3> calculate(
             IntStreamProcessor<T1> processor1,
@@ -86,7 +85,7 @@ public interface IntStreamableWithCalculate
         val value3 = collected3.finish();
         return Tuple.of(value1, value2, value3);
     }
-
+    
     /** Perform the calculation using the data of this streamable */
     public default <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> calculate(
             IntStreamProcessor<T1> processor1,
@@ -111,7 +110,7 @@ public interface IntStreamableWithCalculate
         val value4 = collected4.finish();
         return Tuple.of(value1, value2, value3, value4);
     }
-
+    
     /** Perform the calculation using the data of this streamable */
     public default <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> calculate(
             IntStreamProcessor<T1> processor1,
@@ -140,7 +139,7 @@ public interface IntStreamableWithCalculate
         val value5 = collected5.finish();
         return Tuple.of(value1, value2, value3, value4, value5);
     }
-
+    
     /** Perform the calculation using the data of this streamable */
     public default <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> calculate(
             IntStreamProcessor<T1> processor1,
@@ -173,5 +172,5 @@ public interface IntStreamableWithCalculate
         val value6 = collected6.finish();
         return Tuple.of(value1, value2, value3, value4, value5, value6);
     }
-
+    
 }

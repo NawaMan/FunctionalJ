@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.list;
 
-import static functionalj.list.FuncList.deriveFrom;
+import static functionalj.list.FuncList.from;
 
 import java.util.function.BiFunction;
 
@@ -53,7 +53,7 @@ public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
      *     ...
      */
     public default FuncList<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-        return deriveFrom(this, stream -> stream.accumulate(accumulator));
+        return from(stream().accumulate(accumulator));
     }
     
     //== restate ==
@@ -76,7 +76,7 @@ public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
      *     ...
      **/
     public default FuncList<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
-        return FuncList.from(streamable().restate(restater));
+        return from(streamable().restate(restater));
     }
     
     //== Spawn ==
@@ -88,7 +88,7 @@ public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
      * If the result StreamPlus is closed (which is done everytime a terminal operation is done),
      *   the unfinished actions will be canceled.
      */
-    public default <T> FuncList<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
-        return deriveFrom(this, stream -> stream.spawn(mapper));
+    public default <T> FuncList<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapToAction) {
+        return from(stream().spawn(mapToAction));
     }
 }

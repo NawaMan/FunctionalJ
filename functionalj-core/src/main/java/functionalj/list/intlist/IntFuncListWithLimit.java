@@ -21,25 +21,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.list.intlist;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
 
-import java.util.Comparator;
-import java.util.function.IntFunction;
+import static functionalj.list.intlist.IntFuncList.deriveToInt;
 
-public interface IntStreamableWithSort extends AsIntStreamable {
+import java.util.function.IntPredicate;
+
+public interface IntFuncListWithLimit extends AsIntFuncList {
     
-    /** Sort the values by the mapped value. */
-    public default <T extends Comparable<? super T>> IntStreamable sortedBy(IntFunction<T> mapper) {
-        return deriveFrom(this, stream -> stream.sortedBy(mapper));
+    /** Limit the size of the stream to the given size. */
+    public default IntFuncList limit(Long maxSize) {
+        return deriveToInt(this, stream -> stream.limit(maxSize));
     }
     
-    /** Sort the values by the mapped value using the comparator. */
-    public default <T> IntStreamable sortedBy(
-            IntFunction<T> mapper,
-            Comparator<T>  comparator) {
-        return deriveFrom(this, stream -> stream.sortedBy(mapper, comparator));
+    /** Skip to the given offset position. */
+    public default IntFuncList skip(Long startAt) {
+        return deriveToInt(this, stream -> stream.skip(startAt));
+    }
+    
+    /** Skip any value while the condition is true. */
+    public default IntFuncList skipWhile(IntPredicate condition) {
+        return deriveToInt(this, stream -> stream.skipWhile(condition));
+    }
+    
+    /** Skip any value until the condition is true. */
+    public default IntFuncList skipUntil(IntPredicate condition) {
+        return deriveToInt(this, stream -> stream.skipUntil(condition));
+    }
+    
+    /** Accept any value while the condition is true. */
+    public default IntFuncList takeWhile(IntPredicate condition) {
+        return deriveToInt(this, stream -> stream.takeWhile(condition));
+    }
+    
+    /** Accept any value until the condition is true. */
+    public default IntFuncList takeUntil(IntPredicate condition) {
+        return deriveToInt(this, stream -> stream.takeUntil(condition));
     }
     
 }

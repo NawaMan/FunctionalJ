@@ -21,30 +21,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.list;
+package functionalj.list.intlist;
 
-import static functionalj.list.FuncList.deriveFrom;
-import static functionalj.list.FuncList.from;
+import static functionalj.list.intlist.IntFuncList.deriveFrom;
+import static functionalj.list.intlist.IntFuncList.from;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.IntConsumer;
+import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
-import functionalj.streamable.AsStreamable;
-
-public interface FuncListWithPeek<DATA> extends AsStreamable<DATA> {
-
-    /** Peek only the value that is an instance of the give class. */
-    public default <T extends DATA> FuncList<DATA> peek(
-            Class<T>            clzz,
-            Consumer<? super T> theConsumer) {
-        return deriveFrom(this, stream -> stream.peek(clzz, theConsumer));
-    }
+public interface IntFuncListWithPeek extends AsIntFuncList {
     
     /** Peek only the value that is selected with selector. */
-    public default FuncList<DATA> peekBy(
-            Predicate<? super DATA> selector,
-            Consumer<? super DATA>  theConsumer) {
+    public default IntFuncList peekBy(
+            IntPredicate selector,
+            IntConsumer  theConsumer) {
         return from(() -> stream().peekBy(selector, theConsumer));
     }
     
@@ -53,25 +46,26 @@ public interface FuncListWithPeek<DATA> extends AsStreamable<DATA> {
     // TODO - peekAsInt, peekAsLong, peekAsDouble, peekAsObj
     
     /** Peek the mapped value using the mapper. */
-    public default <T> FuncList<DATA> peekAs(
-            Function<? super DATA, T> mapper,
-            Consumer<? super T>       theConsumer) {
-        return from(() -> stream().peekAs(mapper, theConsumer));
+    public default <T> IntFuncList peekAs(
+            IntFunction<T>      mapper,
+            Consumer<? super T> theConsumer) {
+        return deriveFrom(this, stream -> stream.peekAs(mapper, theConsumer));
     }
     
     /** Peek only the mapped value using the mapper. */
-    public default <T> FuncList<DATA> peekBy(
-            Function<? super DATA, T> mapper,
-            Predicate<? super T>      selector,
-            Consumer<? super DATA>    theConsumer) {
-        return from(() -> stream().peekBy(mapper, selector, theConsumer));
+    public default <T> IntFuncList peekBy(
+            IntFunction<T>       mapper,
+            Predicate<? super T> selector,
+            IntConsumer          theConsumer) {
+        return deriveFrom(this, stream -> stream.peekBy(mapper, selector, theConsumer));
     }
     
     /** Peek only the mapped value using the mapper that is selected by the selector. */
-    public default <T> FuncList<DATA> peekAs(
-            Function<? super DATA, T> mapper,
-            Predicate<? super T>      selector,
-            Consumer<? super T>       theConsumer) {
-        return from(() -> stream().peekAs(mapper, selector, theConsumer));
+    public default <T> IntFuncList peekAs(
+            IntFunction<T>       mapper,
+            Predicate<? super T> selector,
+            Consumer<? super T>  theConsumer) {
+        return deriveFrom(this, stream -> stream.peekAs(mapper, selector, theConsumer));
     }
+    
 }

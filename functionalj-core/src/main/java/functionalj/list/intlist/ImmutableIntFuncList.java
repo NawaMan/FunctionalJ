@@ -2,6 +2,7 @@ package functionalj.list.intlist;
 
 import java.util.Objects;
 import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -20,7 +21,6 @@ public class ImmutableIntFuncList implements IntFuncList {
     private volatile Integer hashcodeCache = null;
 
     private static ImmutableIntFuncList emptyList = new ImmutableIntFuncList(new int[0], true);
-
 
     public static ImmutableIntFuncList empty() {
         return emptyList;
@@ -52,12 +52,12 @@ public class ImmutableIntFuncList implements IntFuncList {
         return new ImmutableIntFuncList(data.clone(), true);
     }
 
-    //public static ImmutableIntFuncList from(IntStream source) {
-    //    if ((source == null))
-    //        return emptyList;
+    public static ImmutableIntFuncList from(IntStream source) {
+        if ((source == null))
+            return emptyList;
 
-    //    return new ImmutableIntFuncList(source.toArray(), true);
-    //}
+        return new ImmutableIntFuncList(source.toArray(), true);
+    }
 
     //public static ImmutableIntFuncList from(IntStreamable source) {
     //    if ((source == null))

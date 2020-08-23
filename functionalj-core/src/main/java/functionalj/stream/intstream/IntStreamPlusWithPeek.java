@@ -38,7 +38,7 @@ public interface IntStreamPlusWithPeek {
     //-- Peek --
     
     /** Peek only the value that is selected with selector. */
-    public default IntStreamPlus peek(
+    public default IntStreamPlus peekBy(
             IntPredicate selector,
             IntConsumer  theConsumer) {
         val streamPlus = streamPlus();

@@ -7,6 +7,7 @@ import java.util.function.IntPredicate;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
@@ -16,15 +17,15 @@ class IntFuncListDerivedFromIntStreamable
     private static final IntBiFunctionPrimitive zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;
     private static final IntPredicate           toZero        = (int i)          -> i  == 0;
 
-    private IntStreamable source;
+    private AsIntStreamable source;
 
-    public IntFuncListDerivedFromIntStreamable(IntStreamable souce) {
+    public IntFuncListDerivedFromIntStreamable(AsIntStreamable souce) {
         this.source = Objects.requireNonNull(souce);
     }
 
     @Override
     public IntStreamable intStreamable() {
-        return source;
+        return source.intStreamable();
     }
 
     @Override

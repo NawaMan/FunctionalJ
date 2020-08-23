@@ -1,73 +1,79 @@
+// ============================================================================
+// Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
+// ----------------------------------------------------------------------------
+// MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// ============================================================================
 package functionalj.list.intlist;
 
-import functionalj.streamable.intstreamable.IntStreamableWithMapFirst;
+import static functionalj.list.intlist.IntFuncList.deriveToObj;
 
+import java.util.function.IntFunction;
 
+import functionalj.list.FuncList;
 
-public interface IntFuncListWithMapFirst 
-                    extends IntStreamableWithMapFirst {
+public interface IntFuncListWithMapFirst extends AsIntFuncList {
     
-    // public IntStreamPlus intStream();
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
+    public default <T> FuncList<T> mapFirst(
+            IntFunction<T> mapper1,
+            IntFunction<T> mapper2) {
+        return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2));
+    }
     
-    // public <TARGET> FuncList<TARGET> deriveToList(Streamable<TARGET> streamable);
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
+    public default <T> FuncList<T> mapFirst(
+            IntFunction<T> mapper1,
+            IntFunction<T> mapper2,
+            IntFunction<T> mapper3) {
+        return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3));
+    }
     
-    // public IntFuncList derive(Func1<IntStreamable, IntStreamable> action);
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
+    public default <T> FuncList<T> mapFirst(
+            IntFunction<T> mapper1,
+            IntFunction<T> mapper2,
+            IntFunction<T> mapper3,
+            IntFunction<T> mapper4) {
+        return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4));
+    }
     
-    // public IntFuncList deriveToInt(Func1<IntStreamable, IntStreamable> action);
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
+    public default <T> FuncList<T> mapFirst(
+            IntFunction<T> mapper1,
+            IntFunction<T> mapper2,
+            IntFunction<T> mapper3,
+            IntFunction<T> mapper4,
+            IntFunction<T> mapper5) {
+        return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5));
+    }
     
-    // public <TARGET> FuncList<TARGET> deriveToObj(Func1<IntStreamable, Streamable<TARGET>> action);
+    /** Map the value by applying each mapper one by one and use the first one that does not return null. */
+    public default <T> FuncList<T> mapFirst(
+            IntFunction<T> mapper1,
+            IntFunction<T> mapper2,
+            IntFunction<T> mapper3,
+            IntFunction<T> mapper4,
+            IntFunction<T> mapper5,
+            IntFunction<T> mapper6) {
+        return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
+    }
     
-    // //== mapFirst ==
-    
-    // /**
-    //  * Map the value by applying each mapper one by one and use the first one that does not return null.
-    //  * 
-    //  * @param <T>      the target type.
-    //  * @param mapper1  the first mapper.
-    //  * @param mapper2  the second mapper.
-    //  * @return         the result of the first map result that is not null.
-    //  */
-    // public default <T> FuncList<T> mapFirst(
-    //         IntFunction<T> mapper1,
-    //         IntFunction<T> mapper2) {
-    //     return deriveToObj(source -> {
-    //         return () -> {
-    //             return source.asStreamPlus().mapFirst(mapper1, mapper2);
-    //         };
-    //     });
-    // }
-    
-    // public default <T> FuncList<T> mapFirst(
-    //         IntFunction<T> mapper1,
-    //         IntFunction<T> mapper2,
-    //         IntFunction<T> mapper3) {
-    //     return deriveToList(() -> intStream().mapFirst(mapper1, mapper2, mapper3));
-    // }
-    
-    // public default <T> FuncList<T> mapFirst(
-    //         IntFunction<T> mapper1,
-    //         IntFunction<T> mapper2,
-    //         IntFunction<T> mapper3,
-    //         IntFunction<T> mapper4) {
-    //     return deriveToList(() -> intStream().mapFirst(mapper1, mapper2, mapper3, mapper4));
-    // }
-    
-    // public default <T> FuncList<T> mapFirst(
-    //         IntFunction<T> mapper1,
-    //         IntFunction<T> mapper2,
-    //         IntFunction<T> mapper3,
-    //         IntFunction<T> mapper4,
-    //         IntFunction<T> mapper5) {
-    //     return deriveToList(() -> intStream().mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5));
-    // }
-    
-    // public default <T> FuncList<T> mapFirst(
-    //         IntFunction<T> mapper1,
-    //         IntFunction<T> mapper2,
-    //         IntFunction<T> mapper3,
-    //         IntFunction<T> mapper4,
-    //         IntFunction<T> mapper5,
-    //         IntFunction<T> mapper6) {
-    //     return deriveToList(() -> intStream().mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
-    // }
 }

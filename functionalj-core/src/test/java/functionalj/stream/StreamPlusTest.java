@@ -150,11 +150,11 @@ public class StreamPlusTest {
         assertStrings("11", stream.mapToLong(String::length).sum());
     }
 
-    @Test
-    public void testMapToDouble() {
-        val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("11.0", stream.mapToDouble(s -> s.length()*1.0).sum());
-    }
+//    @Test
+//    public void testMapToDouble() {
+//        val stream = StreamPlus.of("One", "Two", "Three");
+//        assertStrings("11.0", stream.mapToDouble(s -> s.length()*1.0).sum());
+//    }
 
     @Test
     public void testMapWithPrev() {
@@ -777,6 +777,7 @@ public class StreamPlusTest {
     @Test
     public void testSegmentSize() {
         assertEquals(
+                "[], " + 
                 "[1], " +
                 "[2, 3], " +
                 "[4, 5, 6, 7], " +

@@ -21,25 +21,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.list.intlist;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
+import static functionalj.list.FuncList.deriveFrom;
 
-import java.util.Comparator;
-import java.util.function.IntFunction;
+import java.util.OptionalInt;
 
-public interface IntStreamableWithSort extends AsIntStreamable {
+import functionalj.function.ObjIntBiFunction;
+import functionalj.list.FuncList;
+import functionalj.tuple.ObjIntTuple;
+
+public interface IntFuncListWithMapWithPrev extends AsIntFuncList {
     
-    /** Sort the values by the mapped value. */
-    public default <T extends Comparable<? super T>> IntStreamable sortedBy(IntFunction<T> mapper) {
-        return deriveFrom(this, stream -> stream.sortedBy(mapper));
+    /** @return  the stream of  each previous value and each current value. */
+    public default <TARGET> FuncList<TARGET> mapWithPrev(
+            ObjIntBiFunction<OptionalInt, ? extends TARGET> mapper) {
+        return deriveFrom(this, stream -> stream.mapWithPrev(mapper));
     }
     
-    /** Sort the values by the mapped value using the comparator. */
-    public default <T> IntStreamable sortedBy(
-            IntFunction<T> mapper,
-            Comparator<T>  comparator) {
-        return deriveFrom(this, stream -> stream.sortedBy(mapper, comparator));
+    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+    public default FuncList<ObjIntTuple<OptionalInt>> mapWithPrev() {
+        return deriveFrom(this, stream -> stream.mapWithPrev());
     }
     
 }

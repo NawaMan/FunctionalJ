@@ -21,25 +21,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.list.intlist;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
+import functionalj.streamable.intstreamable.IntStreamableWithForEach;
 
-import java.util.Comparator;
-import java.util.function.IntFunction;
-
-public interface IntStreamableWithSort extends AsIntStreamable {
-    
-    /** Sort the values by the mapped value. */
-    public default <T extends Comparable<? super T>> IntStreamable sortedBy(IntFunction<T> mapper) {
-        return deriveFrom(this, stream -> stream.sortedBy(mapper));
-    }
-    
-    /** Sort the values by the mapped value using the comparator. */
-    public default <T> IntStreamable sortedBy(
-            IntFunction<T> mapper,
-            Comparator<T>  comparator) {
-        return deriveFrom(this, stream -> stream.sortedBy(mapper, comparator));
-    }
+public interface IntFuncListWithForEach extends IntStreamableWithForEach {
     
 }

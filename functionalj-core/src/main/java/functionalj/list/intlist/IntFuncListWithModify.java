@@ -21,25 +21,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.list.intlist;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
-import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
+import static functionalj.list.intlist.IntFuncList.deriveFrom;
+import static functionalj.list.intlist.IntFuncList.deriveToObj;
 
 import java.util.function.IntFunction;
-import java.util.function.UnaryOperator;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
+import functionalj.list.FuncList;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.streamable.Streamable;
-import functionalj.tuple.IntTuple2;
-import lombok.val;
 
-public interface IntStreamableWithModify extends AsIntStreamable {
+public interface IntFuncListWithModify extends AsIntFuncList {
     
     /**
      * Accumulate the previous to the next element.
@@ -58,7 +54,7 @@ public interface IntStreamableWithModify extends AsIntStreamable {
      *     output2 = acc2 with acc3 = acc2 ~ rest2 and rest3 = rest of rest2
      *     ...
      */
-    public default IntStreamable accumulate(IntBiFunctionPrimitive accumulator) {
+    public default IntFuncList accumulate(IntBiFunctionPrimitive accumulator) {
         return deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
     
@@ -81,32 +77,8 @@ public interface IntStreamableWithModify extends AsIntStreamable {
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
      **/
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default IntStreamable restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
-        val func = (UnaryOperator<IntTuple2<IntStreamPlus>>)((IntTuple2<IntStreamPlus> pair) -> {
-            val stream = pair._2();
-            if (stream == null)
-                return null;
-            
-            val iterator = stream.iterator();
-            if (!iterator.hasNext())
-                return null;
-            
-            val head = new int[] { iterator.nextInt() };
-            val tail = IntObjBiFunction.apply(restater, head[0], IntIteratorPlus.from(iterator).stream());
-            if (tail == null)
-                return null;
-            
-            return IntTuple2.<IntStreamPlus>of(head[0], tail);
-        });
-        val seed = IntTuple2.<IntStreamPlus>of(0, streamPlus());
-        val endStream
-            = Streamable
-            .iterate  (seed, (UnaryOperator)func)
-            .takeUntil(t -> t == null)
-            .skip     (1)
-            .mapToInt (t -> ((IntTuple2)t)._1());
-        return endStream;
+    public default IntFuncList restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
+        return deriveFrom(this, stream -> stream.restate(restater));
     }
     
     //== Spawn ==
@@ -118,7 +90,7 @@ public interface IntStreamableWithModify extends AsIntStreamable {
      * If the result StreamPlus is closed (which is done everytime a terminal operation is done),
      *   the unfinished actions will be canceled.
      */
-    public default <T> Streamable<Result<T>> spawn(IntFunction<? extends UncompletedAction<T>> mapToAction) {
+    public default <T> FuncList<Result<T>> spawn(IntFunction<? extends UncompletedAction<T>> mapToAction) {
         return deriveToObj(this, stream -> stream.spawn(mapToAction));
     }
     

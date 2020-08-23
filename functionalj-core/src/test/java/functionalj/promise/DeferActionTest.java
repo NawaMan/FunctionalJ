@@ -51,6 +51,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.environments.AsyncRunner;
@@ -647,7 +648,7 @@ public class DeferActionTest {
         assertStrings("[0, 1, 2, 3, 4]", list);
     }
     
-    @Test
+    @Test @Ignore
     public void testCancelableStream() throws InterruptedException {
         val executor = Executors.newFixedThreadPool(2);
         val creator  = new LoggedCreator(runnable -> {

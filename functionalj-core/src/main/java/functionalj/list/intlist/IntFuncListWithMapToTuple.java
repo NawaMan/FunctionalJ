@@ -21,74 +21,70 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.list.intlist;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
+import static functionalj.list.intlist.IntFuncList.deriveToObj;
 
-import java.util.function.BiFunction;
 import java.util.function.IntFunction;
 
-import functionalj.function.Func3;
-import functionalj.function.Func4;
-import functionalj.function.Func5;
-import functionalj.function.Func6;
-import functionalj.streamable.Streamable;
+import functionalj.list.FuncList;
+import functionalj.tuple.Tuple2;
+import functionalj.tuple.Tuple3;
+import functionalj.tuple.Tuple4;
+import functionalj.tuple.Tuple5;
+import functionalj.tuple.Tuple6;
 
-public interface IntStreamableWithMapThen extends AsIntStreamable {
+
+public interface IntFuncListWithMapToTuple extends AsIntFuncList {
     
-    /** Map the value into different values and then combine them with the combinator. */
-    public default <T1, T2, T> 
-            Streamable<T> mapThen(
+    /**Map the value into different values and then combine them into a tuple. */
+    public default <T1, T2> 
+            FuncList<Tuple2<T1, T2>> mapToTuple(
                 IntFunction<? extends T1> mapper1,
-                IntFunction<? extends T2> mapper2,
-                BiFunction<T1, T2, T> function) {
-        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, function));
+                IntFunction<? extends T2> mapper2) {
+        return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
-    public default <T1, T2, T3, T> 
-            Streamable<T> mapThen(
+    public default <T1, T2, T3> 
+            FuncList<Tuple3<T1, T2, T3>> mapTuple(
+                IntFunction<? extends T1> mapper1,
+                IntFunction<? extends T2> mapper2,
+                IntFunction<? extends T3> mapper3) {
+        return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3));
+    }
+    
+    /** Map the value into different values and then combine them with the combinator. */
+    public default <T1, T2, T3, T4> 
+            FuncList<Tuple4<T1, T2, T3, T4>> mapTuple(
                 IntFunction<? extends T1> mapper1,
                 IntFunction<? extends T2> mapper2,
                 IntFunction<? extends T3> mapper3,
-                Func3<T1, T2, T3, T> function) {
-        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, function));
+                IntFunction<? extends T4> mapper4) {
+        return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
-    public default <T1, T2, T3, T4, T> 
-            Streamable<T> mapThen(
-                IntFunction<? extends T1> mapper1,
-                IntFunction<? extends T2> mapper2,
-                IntFunction<? extends T3> mapper3,
-                IntFunction<? extends T4> mapper4,
-                Func4<T1, T2, T3, T4, T> function) {
-        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, function));
-    }
-    
-    /** Map the value into different values and then combine them with the combinator. */
-    public default <T1, T2, T3, T4, T5, T> 
-            Streamable<T> mapThen(
+    public default <T1, T2, T3, T4, T5> 
+            FuncList<Tuple5<T1, T2, T3, T4, T5>> mapTuple(
                 IntFunction<? extends T1> mapper1,
                 IntFunction<? extends T2> mapper2,
                 IntFunction<? extends T3> mapper3,
                 IntFunction<? extends T4> mapper4,
-                IntFunction<? extends T5> mapper5,
-                Func5<T1, T2, T3, T4, T5, T> function) {
-        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, function));
+                IntFunction<? extends T5> mapper5) {
+        return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
-    public default <T1, T2, T3, T4, T5, T6, T> 
-            Streamable<T> mapThen(
+    public default <T1, T2, T3, T4, T5, T6> 
+            FuncList<Tuple6<T1, T2, T3, T4, T5, T6>> mapTuple(
                 IntFunction<? extends T1> mapper1,
                 IntFunction<? extends T2> mapper2,
                 IntFunction<? extends T3> mapper3,
                 IntFunction<? extends T4> mapper4,
                 IntFunction<? extends T5> mapper5,
-                IntFunction<? extends T6> mapper6,
-                Func6<T1, T2, T3, T4, T5, T6, T> function) {
-        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, function));
+                IntFunction<? extends T6> mapper6) {
+        return deriveToObj(this, stream -> stream.mapToTuple(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
     }
     
 }

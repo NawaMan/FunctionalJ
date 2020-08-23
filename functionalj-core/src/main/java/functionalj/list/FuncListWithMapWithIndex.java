@@ -24,6 +24,7 @@
 package functionalj.list;
 
 import static functionalj.list.FuncList.deriveFrom;
+import static functionalj.list.FuncList.from;
 
 import java.util.function.Function;
 
@@ -32,36 +33,36 @@ import functionalj.streamable.AsStreamable;
 import functionalj.tuple.IntTuple2;
 
 public interface FuncListWithMapWithIndex<DATA> extends AsStreamable<DATA> {
-
+    
     // TODO - to int, long, double
-
+    
     /** @return  the stream of each value and index. */
     public default FuncList<IntTuple2<DATA>> mapWithIndex() {
-        return deriveFrom(this, stream -> stream.mapWithIndex());
+        return FuncList.from(stream().mapWithIndex());
     }
-
+    
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> FuncList<T> mapWithIndex(IntObjBiFunction<? super DATA, T> combinator) {
-        return deriveFrom(this, stream -> stream.mapWithIndex(combinator));
+        return from(stream().mapWithIndex(combinator));
     }
-
+    
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> FuncList<T> mapToObjWithIndex(IntObjBiFunction<? super DATA, T> combinator) {
-        return deriveFrom(this, stream -> stream.mapToObjWithIndex(combinator));
+        return FuncList.from(stream().mapToObjWithIndex(combinator));
     }
-
+    
     /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
     public default <T1, T> FuncList<T> mapWithIndex(
                 Function<? super DATA, ? extends T1> valueMapper,
                 IntObjBiFunction<? super T1, T>      combinator) {
-        return deriveFrom(this, stream -> stream.mapWithIndex(valueMapper, combinator));
+        return FuncList.from(stream().mapWithIndex(valueMapper, combinator));
     }
-
+    
     /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
     public default <T1, T> FuncList<T> mapToObjWithIndex(
                 Function<? super DATA, ? extends T1> valueMapper,
                 IntObjBiFunction<? super T1, T>      combinator) {
-        return deriveFrom(this, stream -> stream.mapToObjWithIndex(valueMapper, combinator));
+        return FuncList.from(stream().mapToObjWithIndex(valueMapper, combinator));
     }
-
+    
 }

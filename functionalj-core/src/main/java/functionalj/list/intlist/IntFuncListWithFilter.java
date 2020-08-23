@@ -21,9 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.list.intlist;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
+import static functionalj.list.intlist.IntFuncList.deriveFrom;
 
 import java.util.function.DoublePredicate;
 import java.util.function.IntFunction;
@@ -38,31 +38,31 @@ import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.list.intlist.IntFuncList;
 import lombok.val;
 
-public interface IntStreamableWithFilter extends AsIntStreamable {
+public interface IntFuncListWithFilter extends AsIntFuncList {
     
     /** Map each value to an int and used it to filter the value. */
-    public default IntStreamable filterAsInt(
+    public default IntFuncList filterAsInt(
             IntUnaryOperator mapper,
             IntPredicate     predicate) {
         return deriveFrom(this, stream -> stream.filterAsInt(mapper, predicate));
     }
     
     /** Map each value to a long and used it to filter the value. */
-    public default IntStreamable filterAsLong(
+    public default IntFuncList filterAsLong(
             IntToLongFunction mapper,
             LongPredicate     predicate) {
         return deriveFrom(this, stream -> stream.filterAsLong(mapper, predicate));
     }
     
     /** Map each value to a double and used it to filter the value. */
-    public default IntStreamable filterAsDouble(
+    public default IntFuncList filterAsDouble(
             IntToDoubleFunction mapper,
             DoublePredicate     predicate) {
         return deriveFrom(this, stream -> stream.filterAsDouble(mapper, predicate));
     }
     
     /** Map each value to another object and used it to filter the value. */
-    public default <T> IntStreamable filterAsObject(
+    public default <T> IntFuncList filterAsObject(
             IntFunction<T>       mapper,
             Predicate<? super T> predicate) {
         IntPredicate newMapper = value -> {
@@ -73,45 +73,45 @@ public interface IntStreamableWithFilter extends AsIntStreamable {
     }
     
     /** Map each value to another object and used it to filter the value. */
-    public default <T> IntStreamable filter(
+    public default <T> IntFuncList filter(
             IntUnaryOperator mapper,
             IntPredicate     predicate) {
         return deriveFrom(this, stream -> stream.filter(mapper, predicate));
     }
     
     /** Filter value with its index. */
-    public default IntStreamable filterWithIndex(
+    public default IntFuncList filterWithIndex(
             IntBiPredicatePrimitive predicate) {
         return deriveFrom(this, stream -> stream.filterWithIndex(predicate));
     }
     
     /** Map the value to another object and filter the one that is not null. */
-    public default <T> IntStreamable filterNonNull(IntFunction<T> mapper) {
+    public default <T> IntFuncList filterNonNull(IntFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.filterNonNull(mapper));
     }
     
     /** Map the value to another object and filter the one that is not null. */
-    public default <T> IntStreamable excludeNull(IntFunction<T> mapper) {
+    public default <T> IntFuncList excludeNull(IntFunction<T> mapper) {
         return deriveFrom(this, stream -> stream.excludeNull(mapper));
     }
     
     /** Filter only the value that is in the given items. */
-    public default IntStreamable filterIn(int ... items) {
+    public default IntFuncList filterIn(int ... items) {
         return deriveFrom(this, stream -> stream.filterIn(items));
     }
     
     /** Filter only the value that is in the given collections. */
-    public default IntStreamable filterIn(IntFuncList collection) {
+    public default IntFuncList filterIn(IntFuncList collection) {
         return deriveFrom(this, stream -> stream.filterIn(collection));
     }
     
     /** Filter only the value that the predicate returns false. */
-    public default IntStreamable exclude(IntPredicate predicate) {
+    public default IntFuncList exclude(IntPredicate predicate) {
         return deriveFrom(this, stream -> stream.exclude(predicate));
     }
     
     /** Filter out any value that is in the given collection. */
-    public default IntStreamable excludeIn(IntFuncList collection) {
+    public default IntFuncList excludeIn(IntFuncList collection) {
         return deriveFrom(this, stream -> stream.excludeIn(collection));
     }
     

@@ -21,10 +21,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.list.intlist;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
-import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
+import static functionalj.list.intlist.IntFuncList.deriveToInt;
+import static functionalj.list.intlist.IntFuncList.deriveToObj;
 
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
@@ -32,37 +32,37 @@ import java.util.function.IntUnaryOperator;
 
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
-import functionalj.streamable.Streamable;
+import functionalj.list.FuncList;
 import functionalj.tuple.IntIntTuple;
 
-public interface IntStreamableWithMapWithIndex extends AsIntStreamable {
+public interface IntFuncListWithMapWithIndex extends AsIntFuncList {
     
     // TODO - to int, long, double
     
     /** @return  the stream of each value and index. */
-    public default Streamable<IntIntTuple> mapWithIndex() {
+    public default FuncList<IntIntTuple> mapWithIndex() {
         return deriveToObj(this, stream -> stream.mapWithIndex());
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
-    public default IntStreamable mapWithIndex(IntBinaryOperator combinator) {
+    public default IntFuncList mapWithIndex(IntBinaryOperator combinator) {
         return deriveToInt(this, stream -> stream.mapWithIndex(combinator));
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
-    public default <T> Streamable<T> mapToObjWithIndex(IntIntBiFunction<T> combinator) {
+    public default <T> FuncList<T> mapToObjWithIndex(IntIntBiFunction<T> combinator) {
         return deriveToObj(this, stream -> stream.mapToObjWithIndex(combinator));
     }
     
     /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
-    public default <T1, T> Streamable<T> mapWithIndex(
+    public default <T1, T> FuncList<T> mapWithIndex(
             IntUnaryOperator    valueMapper,
             IntIntBiFunction<T> combinator) {
         return deriveToObj(this, stream -> stream.mapWithIndex(valueMapper, combinator));
     }
     
     /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
-    public default <T1, T> Streamable<T> mapToObjWithIndex(
+    public default <T1, T> FuncList<T> mapToObjWithIndex(
             IntFunction<? extends T1>       valueMapper,
             IntObjBiFunction<? super T1, T> combinator) {
         return deriveToObj(this, stream -> stream.mapToObjWithIndex(valueMapper, combinator));

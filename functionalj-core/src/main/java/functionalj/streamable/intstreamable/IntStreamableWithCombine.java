@@ -23,7 +23,8 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntBiPredicatePrimitive;
@@ -37,7 +38,7 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
     
     /** Concatenate the given tail stream to this stream. */
     public default IntStreamable concatWith(IntStreamable tail) {
-        return deriveFrom(this, stream -> stream.concatWith(tail.intStream()));
+        return deriveToInt(this, stream -> stream.concatWith(tail.intStream()));
     }
     
     /**
@@ -50,7 +51,7 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
     public default IntStreamable mergeWith(IntStreamable anotherStreamable) {
-        return deriveFrom(this, stream -> stream.mergeWith(anotherStreamable.intStream()));
+        return deriveToInt(this, stream -> stream.mergeWith(anotherStreamable.intStream()));
     }
     
     //-- Zip --
@@ -66,9 +67,7 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
      */
     public default <ANOTHER> Streamable<IntTuple2<ANOTHER>> zipWith(
             Streamable<ANOTHER> anotherStreamable) {
-        return () -> {
-            return intStream().zipWith(anotherStreamable.stream());
-        };
+        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.stream()));
     }
     
     /**
@@ -83,9 +82,7 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
     public default <ANOTHER> Streamable<IntTuple2<ANOTHER>> zipWith(
             int                 defaultValue,
             Streamable<ANOTHER> anotherStreamable) {
-        return () -> {
-            return intStream().zipWith(defaultValue, anotherStreamable.stream());
-        };
+        return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherStreamable.stream()));
     }
     
     /**
@@ -99,7 +96,7 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
      *   Result stream:  [A-1, B-2, C-3] <br>
      */
     public default <ANOTHER, TARGET> Streamable<TARGET> zipWith(
-            Streamable<ANOTHER> anotherStreamable,
+            Streamable<ANOTHER>               anotherStreamable,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
         return () -> {
             return intStream().zipWith(anotherStreamable.stream(), merger);

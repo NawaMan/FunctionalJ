@@ -21,58 +21,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.list.intlist;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import static functionalj.list.intlist.IntFuncList.deriveToInt;
+import static functionalj.list.intlist.IntFuncList.deriveToObj;
 
-import lombok.val;
+import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
 
-public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
+import functionalj.list.FuncList;
+
+public interface IntFuncListWithMap extends AsIntFuncList {
     
     /** Map the value using the mapper. */
-    public default <T> StreamPlus<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
-        return StreamPlus.from(stream().map(each -> mapper.apply(each)));
+    public default <T> FuncList<T> mapToObj(IntFunction<? extends T> mapper) {
+        return deriveToObj(this, stream -> stream.mapToObj(mapper));
     }
     
     /** Map the value using the mapper only when the condition is true. */
-    public default StreamPlus<DATA> mapOnly(
-            Predicate<? super DATA>      condition, 
-            Function<? super DATA, DATA> mapper) {
-        val streamPlus = streamPlus();
-        return streamPlus
-                .map(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
-                            ? mapper.apply(value)
-                            : value;
-                    return mapped;
-                });
+    public default IntFuncList mapOnly(
+            IntPredicate     condition, 
+            IntUnaryOperator mapper) {
+        return deriveToInt(this, stream -> stream.mapOnly(condition, mapper));
     }
     
     /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
-    public default <T> StreamPlus<T> mapIf(
-            Predicate<? super DATA>   condition, 
-            Function<? super DATA, T> mapper,
-            Function<? super DATA, T> elseMapper) {
-        val streamPlus = streamPlus();
-        return streamPlus
-                .mapToObj(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue 
-                            ? mapper    .apply(value) 
-                            : elseMapper.apply(value);
-                    return mapped;
-                });
+    public default IntFuncList mapIf(
+            IntPredicate     condition, 
+            IntUnaryOperator mapper, 
+            IntUnaryOperator elseMapper) {
+        return deriveToInt(this, stream -> stream.mapIf(condition, mapper, elseMapper));
     }
     
     /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.  */
-    public default <T> StreamPlus<T> mapToObjIf(
-            Predicate<? super DATA>   checker, 
-            Function<? super DATA, T> mapper,
-            Function<? super DATA, T> elseMapper) {
-        return mapIf(checker, mapper, elseMapper);
+    public default <T> FuncList<T> mapToObjIf(
+            IntPredicate   condition, 
+            IntFunction<T> mapper, 
+            IntFunction<T> elseMapper) {
+        return deriveToObj(this, stream -> stream.mapToObjIf(condition, mapper, elseMapper));
     }
     
 }

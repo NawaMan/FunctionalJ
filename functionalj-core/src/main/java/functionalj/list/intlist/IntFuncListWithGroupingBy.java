@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.list.intlist;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -37,18 +37,18 @@ import functionalj.stream.IntStreamProcessor;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
-public interface IntStreamableWithGroupingBy extends IntStreamableWithMapToTuple {
+public interface IntFuncListWithGroupingBy extends IntFuncListWithMapToTuple {
     
     /** Group the elements by determining the grouping keys */
-    public default <KEY> FuncMap<KEY, IntStreamable> groupingBy(IntFunction<KEY> keyMapper) {
+    public default <KEY> FuncMap<KEY, IntFuncList> groupingBy(IntFunction<KEY> keyMapper) {
         // TODO - Avoid using boxed.
         Supplier  <Map<KEY, ArrayList<Integer>>>                               supplier;
         BiConsumer<Map<KEY, ArrayList<Integer>>, Integer>                      accumulator;
         BiConsumer<Map<KEY, ArrayList<Integer>>, Map<KEY, ArrayList<Integer>>> combiner;
         
         Supplier<ArrayList<Integer>> collectorSupplier = ArrayList::new;
-        Function<ArrayList<Integer>, IntStreamable> toStreamable
-                = array -> IntStreamable.from(()->IntStreamPlus.from(array.stream().mapToInt(Integer::intValue)));
+        Function<ArrayList<Integer>, IntFuncList> toStreamable
+                = array -> IntFuncList.from(()->IntStreamPlus.from(array.stream().mapToInt(Integer::intValue)));
                 
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
@@ -71,7 +71,7 @@ public interface IntStreamableWithGroupingBy extends IntStreamableWithMapToTuple
     /** Group the elements by determining the grouping keys and aggregate the result */
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             IntFunction<KEY>                       keyMapper,
-            Function<? super IntStreamable, VALUE> aggregate) {
+            Function<? super IntFuncList, VALUE> aggregate) {
         return groupingBy(keyMapper)
                 .mapValue(aggregate);
     }
@@ -80,7 +80,7 @@ public interface IntStreamableWithGroupingBy extends IntStreamableWithMapToTuple
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             IntFunction<KEY>          keyMapper,
             IntStreamProcessor<VALUE> processor) {
-        FuncMap<KEY, IntStreamable> groupingBy = groupingBy(keyMapper);
+        FuncMap<KEY, IntFuncList> groupingBy = groupingBy(keyMapper);
         return groupingBy
                 .mapValue(stream -> stream.calculate(processor));
     }

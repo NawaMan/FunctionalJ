@@ -23,21 +23,19 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
+import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
+
 import java.util.function.IntFunction;
 
 import functionalj.streamable.Streamable;
 
-public interface IntStreamableWithMapFirst
-        extends AsIntStreamable {
+public interface IntStreamableWithMapFirst extends AsIntStreamable {
     
     /** Map the value by applying each mapper one by one and use the first one that does not return null. */
     public default <T> Streamable<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2) {
-        
-        return () -> {
-                return streamPlus().mapFirst(mapper1, mapper2);
-            };
+        return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2));
     }
     
     /** Map the value by applying each mapper one by one and use the first one that does not return null. */
@@ -45,10 +43,7 @@ public interface IntStreamableWithMapFirst
             IntFunction<T> mapper1,
             IntFunction<T> mapper2,
             IntFunction<T> mapper3) {
-        return ()->{
-            return intStream()
-                    .mapFirst(mapper1, mapper2, mapper3);
-        };
+        return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3));
     }
     
     /** Map the value by applying each mapper one by one and use the first one that does not return null. */
@@ -57,10 +52,7 @@ public interface IntStreamableWithMapFirst
             IntFunction<T> mapper2,
             IntFunction<T> mapper3,
             IntFunction<T> mapper4) {
-        return ()->{
-            return intStream()
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4);
-        };
+        return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4));
     }
     
     /** Map the value by applying each mapper one by one and use the first one that does not return null. */
@@ -70,10 +62,7 @@ public interface IntStreamableWithMapFirst
             IntFunction<T> mapper3,
             IntFunction<T> mapper4,
             IntFunction<T> mapper5) {
-        return ()->{
-            return intStream()
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5);
-        };
+        return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5));
     }
     
     /** Map the value by applying each mapper one by one and use the first one that does not return null. */
@@ -84,10 +73,7 @@ public interface IntStreamableWithMapFirst
             IntFunction<T> mapper4,
             IntFunction<T> mapper5,
             IntFunction<T> mapper6) {
-        return ()->{
-            return intStream()
-                    .mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
-        };
+        return deriveToObj(this, stream -> stream.mapFirst(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6));
     }
     
 }
