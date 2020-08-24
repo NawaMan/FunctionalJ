@@ -66,6 +66,8 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import functionalj.promise.DeferAction;
+import functionalj.stream.longstream.LongAccumulator;
+import functionalj.stream.longstream.LongCollectorPlus;
 import functionalj.stream.longstream.LongStreamPlus;
 import lombok.val;
 

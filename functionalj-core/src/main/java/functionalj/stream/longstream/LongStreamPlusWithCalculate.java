@@ -26,7 +26,6 @@ package functionalj.stream.longstream;
 import java.util.function.LongConsumer;
 
 import functionalj.stream.Collected;
-import functionalj.stream.LongCollectorPlus;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;

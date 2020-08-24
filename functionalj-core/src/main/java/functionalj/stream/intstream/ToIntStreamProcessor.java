@@ -1,6 +1,8 @@
-package functionalj.stream;
+package functionalj.stream.intstream;
 
 import functionalj.lens.lenses.IntegerAccess;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamProcessor;
 
 @FunctionalInterface
 public interface ToIntStreamProcessor<DATA> extends StreamProcessor<DATA, Integer>, IntegerAccess<StreamPlus<DATA>> {

@@ -32,12 +32,12 @@ import lombok.val;
 
 public interface IntStreamPlusWithMap {
     
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     
     /** Map the value using the mapper. */
     public default <T> StreamPlus<T> mapToObj(IntFunction<? extends T> mapper) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(mapper);
     }
     
@@ -45,7 +45,7 @@ public interface IntStreamPlusWithMap {
     public default IntStreamPlus mapOnly(
             IntPredicate     condition, 
             IntUnaryOperator mapper) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .map(value -> {
                     val isTrue = condition.test(value);
@@ -61,7 +61,7 @@ public interface IntStreamPlusWithMap {
             IntPredicate     condition, 
             IntUnaryOperator mapper, 
             IntUnaryOperator elseMapper) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .map(value -> {
                     val isTrue = condition.test(value);
@@ -77,7 +77,7 @@ public interface IntStreamPlusWithMap {
             IntPredicate   condition, 
             IntFunction<T> mapper, 
             IntFunction<T> elseMapper) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(value -> {
                     val isTrue = condition.test(value);

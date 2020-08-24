@@ -1,4 +1,4 @@
-package functionalj.stream;
+package functionalj.stream.intstream;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -10,7 +10,6 @@ import java.util.stream.StreamSupport;
 import functionalj.function.Func1;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
-import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 

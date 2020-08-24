@@ -38,7 +38,7 @@ public interface IntFuncListWithPeek extends AsIntFuncList {
     public default IntFuncList peekBy(
             IntPredicate selector,
             IntConsumer  theConsumer) {
-        return from(() -> streamPlus().peekBy(selector, theConsumer));
+        return from(() -> intStreamPlus().peekBy(selector, theConsumer));
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj

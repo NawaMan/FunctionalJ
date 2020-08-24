@@ -24,7 +24,6 @@
 package functionalj.list;
 
 import static functionalj.list.FuncList.deriveFrom;
-import static functionalj.list.FuncList.from;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -45,7 +44,7 @@ public interface FuncListWithPeek<DATA> extends AsStreamable<DATA> {
     public default FuncList<DATA> peekBy(
             Predicate<? super DATA> selector,
             Consumer<? super DATA>  theConsumer) {
-        return from(() -> stream().peekBy(selector, theConsumer));
+        return FuncList.deriveFrom(this, stream -> stream.peekBy(selector, theConsumer));
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj
@@ -56,7 +55,7 @@ public interface FuncListWithPeek<DATA> extends AsStreamable<DATA> {
     public default <T> FuncList<DATA> peekAs(
             Function<? super DATA, T> mapper,
             Consumer<? super T>       theConsumer) {
-        return from(() -> stream().peekAs(mapper, theConsumer));
+        return FuncList.deriveFrom(this, stream -> stream.peekAs(mapper, theConsumer));
     }
     
     /** Peek only the mapped value using the mapper. */
@@ -64,7 +63,7 @@ public interface FuncListWithPeek<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, T> mapper,
             Predicate<? super T>      selector,
             Consumer<? super DATA>    theConsumer) {
-        return from(() -> stream().peekBy(mapper, selector, theConsumer));
+        return FuncList.deriveFrom(this, stream -> stream.peekBy(mapper, selector, theConsumer));
     }
     
     /** Peek only the mapped value using the mapper that is selected by the selector. */
@@ -72,6 +71,7 @@ public interface FuncListWithPeek<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, T> mapper,
             Predicate<? super T>      selector,
             Consumer<? super T>       theConsumer) {
-        return from(() -> stream().peekAs(mapper, selector, theConsumer));
+        return FuncList.deriveFrom(this, stream -> stream.peekAs(mapper, selector, theConsumer));
     }
+    
 }

@@ -21,14 +21,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.doublestream;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleUnaryOperator;
 
 import functionalj.function.Func1;
-import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.stream.doublestream.DoubleStreamable;
+import functionalj.stream.StreamPlus;
 import functionalj.streamable.Streamable;
 import lombok.val;
 

@@ -1,6 +1,4 @@
-package functionalj.stream;
-
-import functionalj.stream.doublestream.DoubleStreamPlus;
+package functionalj.stream.doublestream;
 
 public interface DoubleStreamProcessor<TARGET> {
     

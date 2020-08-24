@@ -1,4 +1,4 @@
-package functionalj.stream;
+package functionalj.stream.intstream;
 
 import java.util.function.BiConsumer;
 

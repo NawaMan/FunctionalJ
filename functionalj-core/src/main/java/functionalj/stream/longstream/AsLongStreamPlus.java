@@ -21,18 +21,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.longstream;
 
-import java.util.function.BiConsumer;
+import java.util.stream.LongStream;
 
-
+/**
+ * Classes implementing this interface can provider a StreamPlus instance of itself.
+ *
+ * @param <DATA> the data type of the stream plus.
+ * 
+ * @author NawaMan -- nawa@nawaman.net
+ */
 @FunctionalInterface
-public interface DoubleAccumulator<ACCUMULATED> extends BiConsumer<ACCUMULATED, Double> {
+public interface AsLongStreamPlus {
     
-    void acceptDouble(ACCUMULATED accumulator, double element);
+    /** @return  the stream plus instance of this object. */
+    public LongStreamPlus streamPlus();
     
-    default void accept(ACCUMULATED accumulator, Double element) {
-        acceptDouble(accumulator, element.doubleValue());
+    /** @return  return the stream underneath the stream plus. */
+    public default LongStream stream() {
+        return streamPlus().stream();
+    }
+    
+    /** @return  return the stream underneath the stream plus. */
+    public default LongStream longStream() {
+        return streamPlus();
     }
     
 }

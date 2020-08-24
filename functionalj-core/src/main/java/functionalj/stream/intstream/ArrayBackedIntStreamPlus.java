@@ -21,12 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.intstream;
 
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
-import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 // This class along with ArrayBackedIntIteratorPlus helps improve performance when do pullNext, useNext and mapNext 

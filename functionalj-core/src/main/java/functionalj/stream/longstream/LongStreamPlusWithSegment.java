@@ -42,9 +42,7 @@ import java.util.function.LongUnaryOperator;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
-import functionalj.stream.GrowOnlyLongArray;
 import functionalj.stream.IncompletedSegment;
-import functionalj.stream.LongIteratorPlus;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import functionalj.stream.doublestream.DoubleIteratorPlus;
 import lombok.val;
 
 public class DoubleIteratorPlusTest {

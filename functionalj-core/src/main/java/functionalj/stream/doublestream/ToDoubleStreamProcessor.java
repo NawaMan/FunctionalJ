@@ -1,6 +1,8 @@
-package functionalj.stream;
+package functionalj.stream.doublestream;
 
 import functionalj.lens.lenses.DoubleAccess;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamProcessor;
 
 @FunctionalInterface
 public interface ToDoubleStreamProcessor<DATA> extends StreamProcessor<DATA, Double>, DoubleAccess<StreamPlus<DATA>> {

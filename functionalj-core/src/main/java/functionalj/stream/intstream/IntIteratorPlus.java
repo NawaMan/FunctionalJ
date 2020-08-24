@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.intstream;
 
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
@@ -36,7 +36,6 @@ import functionalj.list.intlist.IntFuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
-import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
 @FunctionalInterface

@@ -23,8 +23,6 @@
 // ============================================================================
 package functionalj.list;
 
-import static functionalj.list.FuncList.from;
-
 import java.util.Comparator;
 import java.util.function.Function;
 
@@ -34,14 +32,14 @@ public interface FuncListWithSort<DATA> extends AsStreamable<DATA> {
     
     /** Sort the values by the mapped value. */
     public default <T extends Comparable<? super T>> FuncList<DATA> sortedBy(Function<? super DATA, T> mapper) {
-        return from(() -> stream().sortedBy(mapper));
+        return FuncList.deriveFrom(this, stream -> stream.sortedBy(mapper));
     }
     
     /** Sort the values by the mapped value using the comparator. */
     public default <T> FuncList<DATA> sortedBy(
             Function<? super DATA, T> mapper, 
             Comparator<T>             comparator) {
-        return from(() -> stream().sortedBy(mapper, comparator));
+        return FuncList.deriveFrom(this, stream -> stream.sortedBy(mapper, comparator));
     }
     
 }

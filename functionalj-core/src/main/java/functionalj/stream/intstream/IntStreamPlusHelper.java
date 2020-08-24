@@ -12,8 +12,6 @@ import functionalj.function.Func1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
-import functionalj.stream.IntIterable;
-import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.ZipWithOption;
@@ -47,7 +45,7 @@ public class IntStreamPlusHelper {
     public static <T> IntStreamPlus sequential(
             AsIntStreamPlus      asStreamPlus,
             Func1<IntStreamPlus, IntStreamPlus> action) {
-        val streamPlus = asStreamPlus.streamPlus();
+        val streamPlus = asStreamPlus.intStreamPlus();
         val isParallel = streamPlus.isParallel();
         
         val orgIntStreamPlus = streamPlus.sequential();
@@ -72,7 +70,7 @@ public class IntStreamPlusHelper {
     public static <T> StreamPlus<T> sequentialToObj(
             AsIntStreamPlus                     asStreamPlus,
             Func1<IntStreamPlus, StreamPlus<T>> action) {
-        val streamPlus = asStreamPlus.streamPlus();
+        val streamPlus = asStreamPlus.intStreamPlus();
         val isParallel = streamPlus.isParallel();
         
         val orgIntStreamPlus = streamPlus.sequential();

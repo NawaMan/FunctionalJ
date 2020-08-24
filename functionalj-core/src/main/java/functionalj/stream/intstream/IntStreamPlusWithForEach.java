@@ -32,13 +32,13 @@ import lombok.val;
 
 public interface IntStreamPlusWithForEach {
     
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     /** For each with the index. */
     @Eager
     @Terminal
     public default void forEachWithIndex(IntBiConsumer action) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         val index      = new AtomicInteger();
         streamPlus
         .forEach(each -> {
@@ -50,7 +50,7 @@ public interface IntStreamPlusWithForEach {
     /** Populate the array with the population in the stream from 0 to length or until run out of elements. */
     @Terminal
     public default void populateArray(int[] array) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         streamPlus
         .limit           (array.length)
         .forEachWithIndex((index, element) -> {
@@ -61,7 +61,7 @@ public interface IntStreamPlusWithForEach {
     /** Populate the array with the population in the stream from offset to length or until run out of elements. */
     @Terminal
     public default void populateArray(int[] array, int offset) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         streamPlus
         .limit           (array.length - offset)
         .forEachWithIndex((index, element) -> {
@@ -72,7 +72,7 @@ public interface IntStreamPlusWithForEach {
     /** Populate the array with the population in the stream from offset to length or until run out of elements. */
     @Terminal
     public default void populateArray(int[] array, int offset, int length) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         streamPlus
         .limit           (Math.min(length, array.length - offset))
         .forEachWithIndex((index, element) -> {

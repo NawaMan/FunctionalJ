@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.doublestream;
 
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collector;
 
+import functionalj.stream.CollectorPlus;
 import lombok.val;
 
 

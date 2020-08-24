@@ -1,6 +1,4 @@
-package functionalj.stream;
-
-import functionalj.stream.intstream.IntStreamPlus;
+package functionalj.stream.intstream;
 
 public interface IntStreamProcessor<TARGET> {
     

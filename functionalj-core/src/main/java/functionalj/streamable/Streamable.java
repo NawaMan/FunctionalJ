@@ -59,15 +59,15 @@ import functionalj.result.NoMoreResultException;
 import functionalj.stream.IterablePlus;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.doublestream.AsDoubleStreamable;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.longstream.AsLongStreamable;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamable;
+import functionalj.streamable.doublestreamable.AsDoubleStreamable;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
+import functionalj.streamable.longstreamable.AsLongStreamable;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -568,7 +568,7 @@ public interface Streamable<DATA>
             AsStreamable<SOURCE>                         asStreamable,
             Function<StreamPlus<SOURCE>, Stream<TARGET>> action) {
         return () -> {
-            val sourceStream = asStreamable.stream();
+            val sourceStream = asStreamable.streamPlus();
             val targetStream = action.apply(sourceStream);
             return StreamPlus.from(targetStream);
         };
@@ -579,7 +579,7 @@ public interface Streamable<DATA>
             AsIntStreamable                         asStreamable,
             Function<IntStreamPlus, Stream<TARGET>> action) {
         return () -> {
-            val sourceStream = asStreamable.streamPlus();
+            val sourceStream = asStreamable.intStreamPlus();
             val targetStream = action.apply(sourceStream);
             return StreamPlus.from(targetStream);
         };

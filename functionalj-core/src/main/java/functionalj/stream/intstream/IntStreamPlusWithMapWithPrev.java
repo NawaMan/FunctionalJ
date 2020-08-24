@@ -34,12 +34,12 @@ import lombok.val;
 
 public interface IntStreamPlusWithMapWithPrev {
     
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     /** @return  the stream of  each previous value and each current value. */
     public default StreamPlus<ObjIntTuple<OptionalInt>> mapWithPrev() {
         val prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(element -> {
                     val prevValue = prev.get();
@@ -52,7 +52,7 @@ public interface IntStreamPlusWithMapWithPrev {
     public default <TARGET> StreamPlus<TARGET> mapWithPrev(
             ObjIntBiFunction<OptionalInt, ? extends TARGET> mapper) {
         val prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(element -> {
                     val prevValue = prev.get();

@@ -70,7 +70,6 @@ import functionalj.pipeable.Pipeable;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.LongIteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -274,6 +273,10 @@ public interface LongStreamPlus
     public LongStream longStream();
     
     public default LongStreamPlus longStreamPlus() {
+        return this;
+    }
+    
+    public default LongStream stream() {
         return this;
     }
     

@@ -33,7 +33,7 @@ import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.IntIteratorPlus;
+import functionalj.stream.intstream.IntIteratorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.Streamable;
 import functionalj.tuple.IntTuple2;
@@ -99,7 +99,7 @@ public interface IntStreamableWithModify extends AsIntStreamable {
             
             return IntTuple2.<IntStreamPlus>of(head[0], tail);
         });
-        val seed = IntTuple2.<IntStreamPlus>of(0, streamPlus());
+        val seed = IntTuple2.<IntStreamPlus>of(0, intStreamPlus());
         val endStream
             = Streamable
             .iterate  (seed, (UnaryOperator)func)

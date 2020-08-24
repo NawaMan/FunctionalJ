@@ -1,16 +1,16 @@
-package functionalj.stream;
+package functionalj.stream.longstream;
 
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
+import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
+import java.util.stream.LongStream;
 
 import functionalj.function.Func1;
-import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.LongStreamable;
-import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
-public class LongStep implements LongUnaryOperator, LongStreamable, AsStreamable<Long> {
+public class LongStep implements LongUnaryOperator, LongFunction<Long>, Function<Long, Long>, LongStreamable {
     
     private final long size;
     private final long start;
@@ -92,8 +92,8 @@ public class LongStep implements LongUnaryOperator, LongStreamable, AsStreamable
     }
     
     @Override
-    public StreamPlus<Long> stream() {
-        return longStream().boxed();
+    public LongStream stream() {
+        return longStream().stream();
     }
     
     @Override
@@ -108,6 +108,24 @@ public class LongStep implements LongUnaryOperator, LongStreamable, AsStreamable
     @Override
     public Streamable<Long> streamable() {
         return LongStreamable.super.streamable();
+    }
+
+    @Override
+    public LongStreamPlus streamPlus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Long apply(Long t) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Long apply(long value) {
+        // TODO Auto-generated method stub
+        return null;
     }
     
 }

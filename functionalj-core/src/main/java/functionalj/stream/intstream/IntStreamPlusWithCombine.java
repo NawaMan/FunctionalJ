@@ -32,7 +32,6 @@ import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
-import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.tuple.IntIntTuple;
@@ -41,12 +40,12 @@ import lombok.val;
 
 public interface IntStreamPlusWithCombine {
     
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     /** Concatenate the given tail stream to this stream. */
     public default IntStreamPlus concatWith(IntStream tail) {
         return IntStreamPlus.concat(
-            IntStreamPlus.from(streamPlus()),
+            IntStreamPlus.from(intStreamPlus()),
             IntStreamPlus.from(tail)
         );
     }
@@ -61,7 +60,7 @@ public interface IntStreamPlusWithCombine {
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
     public default IntStreamPlus mergeWith(IntStream anotherStream) {
-        val thisStream = streamPlus();
+        val thisStream = intStreamPlus();
         val iteratorA  = IntIteratorPlus.from(thisStream   .iterator());
         val iteratorB  = IntIteratorPlus.from(anotherStream.iterator());
         
@@ -89,7 +88,7 @@ public interface IntStreamPlusWithCombine {
      *   Result stream:  [(A, 1), (B, 2), (C, 3)] <br>
      */
     public default <ANOTHER> StreamPlus<IntTuple2<ANOTHER>> zipWith(Stream<ANOTHER> anotherStream) {
-        IntIteratorPlus       iteratorA = streamPlus().iterator();
+        IntIteratorPlus       iteratorA = intStreamPlus().iterator();
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntWith((value, another) -> IntTuple2.of(value, another), iteratorA, iteratorB);
     }
@@ -106,7 +105,7 @@ public interface IntStreamPlusWithCombine {
     public default <ANOTHER> StreamPlus<IntTuple2<ANOTHER>> zipWith(
             int             defaultValue,
             Stream<ANOTHER> anotherStream) {
-        IntIteratorPlus       iteratorA = streamPlus().iterator();
+        IntIteratorPlus       iteratorA = intStreamPlus().iterator();
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntWith(defaultValue, (value, another) -> IntTuple2.of(value, another), iteratorA, iteratorB);
     }
@@ -124,7 +123,7 @@ public interface IntStreamPlusWithCombine {
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
             Stream<ANOTHER>                   anotherStream, 
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        IntIteratorPlus       iteratorA = streamPlus().iterator();
+        IntIteratorPlus       iteratorA = intStreamPlus().iterator();
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntWith(merger, iteratorA, iteratorB);
     }
@@ -134,14 +133,14 @@ public interface IntStreamPlusWithCombine {
             int                               defaultValue,
             Stream<ANOTHER>                   anotherStream,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        IntIteratorPlus       iteratorA = streamPlus().iterator();
+        IntIteratorPlus       iteratorA = intStreamPlus().iterator();
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntWith(defaultValue, merger, iteratorA, iteratorB);
     }
     
     public default StreamPlus<IntIntTuple> zipWith(
             IntStream anotherStream) {
-        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB);
     }
@@ -149,7 +148,7 @@ public interface IntStreamPlusWithCombine {
     public default StreamPlus<IntIntTuple> zipWith(
             IntStream anotherStream,
             int       defaultValue) {
-        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB, defaultValue);
     }
@@ -158,7 +157,7 @@ public interface IntStreamPlusWithCombine {
             IntStream anotherStream,
             int       defaultValue1,
             int       defaultValue2) {
-        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(IntIntTuple::new, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
@@ -166,7 +165,7 @@ public interface IntStreamPlusWithCombine {
     public default IntStreamPlus zipWith(
             IntStream              anotherStream, 
             IntBiFunctionPrimitive merger) {
-        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB);
     }
@@ -175,7 +174,7 @@ public interface IntStreamPlusWithCombine {
             IntStream              anotherStream, 
             int                    defaultValue,
             IntBiFunctionPrimitive merger) {
-        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue);
     }
@@ -185,7 +184,7 @@ public interface IntStreamPlusWithCombine {
             int                    defaultValue1,
             int                    defaultValue2,
             IntBiFunctionPrimitive merger) {
-        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }
@@ -193,7 +192,7 @@ public interface IntStreamPlusWithCombine {
     public default <T> StreamPlus<T> zipToObjWith(
             IntStream           anotherStream, 
             IntIntBiFunction<T> merger) {
-        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB);
     }
@@ -202,7 +201,7 @@ public interface IntStreamPlusWithCombine {
             IntStream           anotherStream, 
             int                 defaultValue,
             IntIntBiFunction<T> merger) {
-        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB, defaultValue);
     }
@@ -212,7 +211,7 @@ public interface IntStreamPlusWithCombine {
             int                 defaultValue1,
             int                 defaultValue2,
             IntIntBiFunction<T> merger) {
-        IntIteratorPlus iteratorA = streamPlus().iterator();
+        IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
         return IntStreamPlusHelper.doZipIntIntObjWith(merger, iteratorA, iteratorB, defaultValue1, defaultValue2);
     }

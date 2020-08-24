@@ -36,16 +36,11 @@ import java.util.stream.IntStream;
 public interface AsIntStreamPlus {
     
     /** @return  the stream plus instance of this object. */
-    public IntStreamPlus streamPlus();
-    
-    /** @return  return the stream underneath the stream plus. */
-    public default IntStream stream() {
-        return streamPlus().stream();
-    }
+    public IntStreamPlus intStreamPlus();
     
     /** @return  return the stream underneath the stream plus. */
     public default IntStream intStream() {
-        return streamPlus();
+        return intStreamPlus();
     }
     
 }

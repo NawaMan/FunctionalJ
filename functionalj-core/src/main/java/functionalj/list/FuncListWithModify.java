@@ -53,7 +53,7 @@ public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
      *     ...
      */
     public default FuncList<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-        return from(stream().accumulate(accumulator));
+        return FuncList.deriveFrom(this, stream -> stream.accumulate(accumulator));
     }
     
     //== restate ==
@@ -89,6 +89,6 @@ public interface FuncListWithModify<DATA> extends AsStreamable<DATA> {
      *   the unfinished actions will be canceled.
      */
     public default <T> FuncList<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapToAction) {
-        return from(stream().spawn(mapToAction));
+        return FuncList.deriveFrom(this, stream -> stream.spawn(mapToAction));
     }
 }

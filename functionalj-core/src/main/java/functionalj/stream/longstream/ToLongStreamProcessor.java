@@ -1,6 +1,8 @@
-package functionalj.stream;
+package functionalj.stream.longstream;
 
 import functionalj.lens.lenses.LongAccess;
+import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamProcessor;
 
 @FunctionalInterface
 public interface ToLongStreamProcessor<DATA> extends StreamProcessor<DATA, Long>, LongAccess<StreamPlus<DATA>> {

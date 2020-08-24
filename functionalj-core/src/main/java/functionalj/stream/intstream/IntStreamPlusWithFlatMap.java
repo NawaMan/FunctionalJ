@@ -34,11 +34,11 @@ import lombok.val;
 
 public interface IntStreamPlusWithFlatMap {
     
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     /** FlatMap with the given mapper. */
     public default <T> StreamPlus<T> flatMapToObj(IntFunction<? extends Stream<? extends T>> mapper) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(mapper)
                 .flatMap(Func.itself());
@@ -48,7 +48,7 @@ public interface IntStreamPlusWithFlatMap {
     public default IntStreamPlus flatMapOnly(
             IntPredicate                     condition, 
             IntFunction<? extends IntStream> mapper) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .flatMap(value -> {
                     val isTrue = condition.test(value);
@@ -64,7 +64,7 @@ public interface IntStreamPlusWithFlatMap {
             IntPredicate                     condition, 
             IntFunction<? extends IntStream> mapper, 
             IntFunction<? extends IntStream> elseMapper) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .flatMap(value -> {
                     val isTrue = condition.test(value);
@@ -79,7 +79,7 @@ public interface IntStreamPlusWithFlatMap {
             IntPredicate   checker, 
             IntFunction<? extends Stream<T>> mapper, 
             IntFunction<? extends Stream<T>> elseMapper) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(mapper)
                 .flatMap(Func.itself());

@@ -33,7 +33,6 @@ import functionalj.function.LongBiFunctionPrimitive;
 import functionalj.function.LongBiPredicatePrimitive;
 import functionalj.function.LongLongBiFunction;
 import functionalj.function.LongObjBiFunction;
-import functionalj.stream.LongIteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.LongLongTuple;

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
-import functionalj.stream.GrowOnlyIntArray;
+import functionalj.stream.intstream.GrowOnlyIntArray;
 import lombok.val;
 
 class IntStreamableHelper {

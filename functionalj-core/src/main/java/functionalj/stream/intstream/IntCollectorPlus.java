@@ -21,46 +21,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.intstream;
 
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.function.ToLongFunction;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 
+import functionalj.stream.CollectorPlus;
 import lombok.val;
 
-public interface LongCollectorPlus<ACCUMULATED, RESULT> 
+public interface IntCollectorPlus<ACCUMULATED, RESULT> 
         extends
-            CollectorPlus<Long, ACCUMULATED, RESULT>,
-            LongStreamProcessor<RESULT> {
+            CollectorPlus<Integer, ACCUMULATED, RESULT>,
+            IntStreamProcessor<RESULT> {
     
     Supplier<ACCUMULATED>         supplier();
-    LongAccumulator<ACCUMULATED>  longAccumulator();
+    IntAccumulator<ACCUMULATED>   intAccumulator();
     BinaryOperator<ACCUMULATED>   combiner();
     Function<ACCUMULATED, RESULT> finisher();
     Set<Characteristics>          characteristics();
     
     
-    default BiConsumer<ACCUMULATED, Long> accumulator() {
-        return longAccumulator();
+    default BiConsumer<ACCUMULATED, Integer> accumulator() {
+        return intAccumulator();
     }
     
     
-    default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToLongFunction<SOURCE> mapper) {
-        val collector = new CollectorFromLong<>(this, mapper);
+    default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToIntFunction<SOURCE> mapper) {
+        val collector = new CollectorFromInt<>(this, mapper);
         return CollectorPlus.from(collector);
     }
 }
 
-class LongCollector<ACCUMULATED, RESULT> 
-        implements Collector<Long, ACCUMULATED, RESULT> {
-    private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
+class IntegerCollector<ACCUMULATED, RESULT> 
+        implements Collector<Integer, ACCUMULATED, RESULT> {
+    private final IntCollectorPlus<ACCUMULATED, RESULT> collector;
     
-    public LongCollector(LongCollectorPlus<ACCUMULATED, RESULT> collector) {
+    public IntegerCollector(IntCollectorPlus<ACCUMULATED, RESULT> collector) {
         this.collector = collector;
     }
     
@@ -69,7 +70,7 @@ class LongCollector<ACCUMULATED, RESULT>
         return collector.supplier();
     }
     @Override
-    public BiConsumer<ACCUMULATED, Long> accumulator() {
+    public BiConsumer<ACCUMULATED, Integer> accumulator() {
         return collector.accumulator();
     }
     @Override
@@ -86,14 +87,14 @@ class LongCollector<ACCUMULATED, RESULT>
     }
 }
 
-class CollectorFromLong<SOURCE, ACCUMULATED, RESULT>
+class CollectorFromInt<SOURCE, ACCUMULATED, RESULT>
         implements Collector<SOURCE, ACCUMULATED, RESULT> {
-    private final LongCollectorPlus<ACCUMULATED, RESULT> collector;
-    private final ToLongFunction<SOURCE>                 mapper;
+    private final IntCollectorPlus<ACCUMULATED, RESULT> collector;
+    private final ToIntFunction<SOURCE>                 mapper;
     
-    public CollectorFromLong(
-            LongCollectorPlus<ACCUMULATED, RESULT> collector, 
-            ToLongFunction<SOURCE>                 mapper) {
+    public CollectorFromInt(
+            IntCollectorPlus<ACCUMULATED, RESULT> collector, 
+            ToIntFunction<SOURCE>                 mapper) {
         this.collector = collector;
         this.mapper    = mapper;
     }
@@ -106,7 +107,7 @@ class CollectorFromLong<SOURCE, ACCUMULATED, RESULT>
     public BiConsumer<ACCUMULATED, SOURCE> accumulator() {
         val accumulator = collector.accumulator();
         return (a, s)->{
-            val d = mapper.applyAsLong(s);
+            val d = mapper.applyAsInt(s);
             accumulator.accept(a, d);
         };
     }

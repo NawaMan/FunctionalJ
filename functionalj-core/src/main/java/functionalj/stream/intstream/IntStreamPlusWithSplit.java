@@ -54,8 +54,8 @@ public interface IntStreamPlusWithSplit
      */
     public default Tuple2<IntStreamPlus, IntStreamPlus> split(
             IntPredicate predicate) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::streamPlus;
-        IntStreamable streamable = ()->streamPlus();
+        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
+        IntStreamable streamable = ()->intStreamPlus();
         return streamable
                 .split(predicate)
                 .map(toStreamPlus, toStreamPlus);
@@ -73,8 +73,8 @@ public interface IntStreamPlusWithSplit
     public default Tuple3<IntStreamPlus, IntStreamPlus, IntStreamPlus> split(
             IntPredicate predicate1,
             IntPredicate predicate2) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::streamPlus;
-        IntStreamable streamable = ()->streamPlus();
+        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
+        IntStreamable streamable = ()->intStreamPlus();
         return streamable
                 .split(predicate1, predicate2)
                 .map(toStreamPlus, toStreamPlus, toStreamPlus);
@@ -94,8 +94,8 @@ public interface IntStreamPlusWithSplit
             IntPredicate predicate1,
             IntPredicate predicate2,
             IntPredicate predicate3) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::streamPlus;
-        IntStreamable streamable = ()->streamPlus();
+        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
+        IntStreamable streamable = ()->intStreamPlus();
         return streamable
                 .split(predicate1, predicate2, predicate3)
                 .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
@@ -117,8 +117,8 @@ public interface IntStreamPlusWithSplit
             IntPredicate predicate2,
             IntPredicate predicate3,
             IntPredicate predicate4) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::streamPlus;
-        IntStreamable streamable = ()->streamPlus();
+        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
+        IntStreamable streamable = ()->intStreamPlus();
         return streamable
                 .split(predicate1, predicate2, predicate3, predicate4)
                 .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
@@ -142,8 +142,8 @@ public interface IntStreamPlusWithSplit
             IntPredicate predicate3,
             IntPredicate predicate4,
             IntPredicate predicate5) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::streamPlus;
-        IntStreamable streamable = ()->streamPlus();
+        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
+        IntStreamable streamable = ()->intStreamPlus();
         return streamable
                 .split(predicate1, predicate2, predicate3, predicate4, predicate5)
                 .map(toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus, toStreamPlus);
@@ -157,8 +157,8 @@ public interface IntStreamPlusWithSplit
     public default <KEY> FuncMap<KEY, IntStreamPlus> split(
             KEY key1, IntPredicate predicate,
             KEY key2) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::streamPlus;
-        IntStreamable streamable = ()->streamPlus();
+        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
+        IntStreamable streamable = ()->intStreamPlus();
         return streamable
                 .split(key1, predicate, key2)
                 .mapValue(toStreamPlus);
@@ -173,8 +173,8 @@ public interface IntStreamPlusWithSplit
             KEY key1, IntPredicate predicate1,
             KEY key2, IntPredicate predicate2,
             KEY key3) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::streamPlus;
-        IntStreamable streamable = ()->streamPlus();
+        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
+        IntStreamable streamable = ()->intStreamPlus();
         return streamable
                 .split(key1, predicate1, key2, predicate2, key3)
                 .mapValue(toStreamPlus);
@@ -190,8 +190,8 @@ public interface IntStreamPlusWithSplit
             KEY key2, IntPredicate predicate2,
             KEY key3, IntPredicate predicate3,
             KEY key4) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::streamPlus;
-        IntStreamable streamable = ()->streamPlus();
+        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
+        IntStreamable streamable = ()->intStreamPlus();
         return streamable
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4)
                 .mapValue(toStreamPlus);
@@ -208,8 +208,8 @@ public interface IntStreamPlusWithSplit
             KEY key3, IntPredicate predicate3,
             KEY key4, IntPredicate predicate4,
             KEY key5) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::streamPlus;
-        IntStreamable streamable = ()->streamPlus();
+        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
+        IntStreamable streamable = ()->intStreamPlus();
         return streamable
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5)
                 .mapValue(toStreamPlus);
@@ -227,8 +227,8 @@ public interface IntStreamPlusWithSplit
             KEY key4, IntPredicate predicate4,
             KEY key5, IntPredicate predicate5,
             KEY key6) {
-        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::streamPlus;
-        IntStreamable streamable = ()->streamPlus();
+        Function<IntStreamable, IntStreamPlus> toStreamPlus = IntStreamable::intStreamPlus;
+        IntStreamable streamable = ()->intStreamPlus();
         return streamable
                 .split(key1, predicate1, key2, predicate2, key3, predicate3, key4, predicate4, key5, predicate5, key6)
                 .mapValue(toStreamPlus);

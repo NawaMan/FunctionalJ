@@ -30,17 +30,17 @@ import lombok.val;
 
 public interface IntStreamPlusWithPipe {
     
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     /** @return the pipeable of this stream. */
     public default Pipeable<? extends IntStreamPlus> pipable() {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return Pipeable.of(streamPlus);
     }
     
     /** Pipe this stream plus through the given function. */
     public default <T> T pipeTo(Function<? super IntStreamPlus, T> function) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return function.apply(streamPlus);
     }
     

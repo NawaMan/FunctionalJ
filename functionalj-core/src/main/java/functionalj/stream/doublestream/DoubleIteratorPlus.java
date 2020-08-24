@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.doublestream;
 
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
@@ -33,7 +33,6 @@ import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
-import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 

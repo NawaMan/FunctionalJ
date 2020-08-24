@@ -55,8 +55,8 @@ public interface IntStreamableWithFlatMap extends AsIntStreamable {
             IntPredicate                         checker, 
             IntFunction<? extends IntStreamable> trueMapper, 
             IntFunction<? extends IntStreamable> falseMapper) {
-        IntFunction<? extends IntStream> newTrueMapper  = value -> trueMapper .apply(value).stream();
-        IntFunction<? extends IntStream> newFalseMapper = value -> falseMapper.apply(value).stream();
+        IntFunction<? extends IntStream> newTrueMapper  = value -> trueMapper .apply(value).intStream();
+        IntFunction<? extends IntStream> newFalseMapper = value -> falseMapper.apply(value).intStream();
         return deriveToInt(this, stream -> stream.flatMapIf(checker, newTrueMapper, newFalseMapper));
     }
     

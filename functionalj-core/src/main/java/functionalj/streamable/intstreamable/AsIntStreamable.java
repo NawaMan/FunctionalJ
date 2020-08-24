@@ -33,11 +33,7 @@ import functionalj.stream.intstream.AsIntStreamPlus;
 public interface AsIntStreamable extends AsIntStreamPlus {
     
     public default IntStreamable intStreamable() {
-        return ()->streamPlus();
-    }
-    
-    public default IntStreamable streamable() {
-        return intStreamable();
+        return ()->intStreamPlus();
     }
     
 }

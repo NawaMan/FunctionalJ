@@ -1,6 +1,4 @@
-package functionalj.stream;
-
-import functionalj.stream.longstream.LongStreamPlus;
+package functionalj.stream.longstream;
 
 public interface LongStreamProcessor<TARGET> {
     

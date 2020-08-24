@@ -12,8 +12,6 @@ import functionalj.function.LongBiFunctionPrimitive;
 import functionalj.function.LongLongBiFunction;
 import functionalj.function.LongObjBiFunction;
 import functionalj.stream.IteratorPlus;
-import functionalj.stream.LongIterable;
-import functionalj.stream.LongIteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.ZipWithOption;
 import lombok.val;

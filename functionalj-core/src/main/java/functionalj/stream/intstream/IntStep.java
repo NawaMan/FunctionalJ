@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.intstream;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -30,7 +30,6 @@ import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
 
 import functionalj.function.Func1;
-import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
@@ -111,11 +110,11 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     }
     
     public IntStream intStream() {
-        return streamPlus().intStream();
+        return intStreamPlus().intStream();
     }
     
     @Override
-    public IntStreamPlus streamPlus() {
+    public IntStreamPlus intStreamPlus() {
         val num = new AtomicInteger(start);
         return IntStreamPlus.generate(()->num.getAndUpdate(i -> i + size));
     }

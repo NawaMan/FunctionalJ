@@ -49,7 +49,7 @@ import lombok.val;
 
 public interface IntStreamPlusWithConversion {
 
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
 
     //-- toArray --
 
@@ -57,7 +57,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default byte[] toByteArray(IntToByteFunction toByte) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         val byteArray  = new ByteArrayOutputStream();
         streamPlus
         .forEach(d -> {
@@ -72,7 +72,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default int[] toIntArray(IntUnaryOperator toInt) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .map(toInt)
                 .toArray ();
@@ -82,7 +82,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default long[] toLongArray(IntToLongFunction toLong) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToLong(toLong)
                 .toArray  ();
@@ -92,7 +92,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default double[] toDoubleArray(IntToDoubleFunction toDouble) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToDouble(toDouble)
                 .toArray    ();
@@ -107,7 +107,7 @@ public interface IntStreamPlusWithConversion {
         //TODO - This is not efficient but without knowing the size, it is not so easy to do efficiently
         //       The proper solution for this is to have the stream itself contain the marker if it knows its size.
         //       May be by using peekSize() method to check the size and the forEach to populate it.
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         val javaList = streamPlus.boxed().toJavaList();
         return new ArrayList<Integer>(javaList);
     }
@@ -136,7 +136,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default List<Integer> toJavaList() {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(Integer::valueOf)
                 .collect(Collectors.toList());
@@ -146,7 +146,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default FuncList<Integer> toList() {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return ImmutableList.from(
                 streamPlus.boxed());
     }
@@ -164,7 +164,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default String join() {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(StrFuncs::toStr)
                 .collect (Collectors.joining());
@@ -174,7 +174,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default String join(String delimiter) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(StrFuncs::toStr)
                 .collect (Collectors.joining(delimiter));
@@ -186,7 +186,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default String toListString() {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         val strValue
                 = streamPlus
                 .mapToObj(String::valueOf)
@@ -203,7 +203,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, Integer> toMap(IntFunction<KEY> keyMapper) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         val theMap     = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> i));
         return ImmutableMap.from(theMap);
     }
@@ -217,7 +217,7 @@ public interface IntStreamPlusWithConversion {
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
             IntFunction<KEY>   keyMapper,
             IntFunction<VALUE> valueMapper) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i)));
         return ImmutableMap.from(theMap);
     }
@@ -232,7 +232,7 @@ public interface IntStreamPlusWithConversion {
             IntFunction<KEY>      keyMapper,
             IntFunction<VALUE>    valueMapper,
             BinaryOperator<VALUE> mergeFunction) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i), mergeFunction));
         return ImmutableMap.from(theMap);
     }
@@ -246,7 +246,7 @@ public interface IntStreamPlusWithConversion {
     public default <KEY> FuncMap<KEY, Integer> toMap(
             IntFunction<KEY>  keyMapper,
             IntBinaryOperator mergeFunction) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         val theMap = streamPlus
                 .boxed()
                 .collect(Collectors.toMap(
@@ -262,7 +262,7 @@ public interface IntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default Set<Integer> toSet() {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus.boxed().collect(Collectors.toSet());
     }
 

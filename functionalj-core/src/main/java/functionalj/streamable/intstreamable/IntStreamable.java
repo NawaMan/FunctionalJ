@@ -49,18 +49,18 @@ import java.util.stream.Stream;
 import functionalj.function.Func0;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.list.intlist.IntFuncList;
-import functionalj.stream.IntIterable;
-import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.doublestream.AsDoubleStreamable;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamable;
+import functionalj.stream.intstream.IntIterable;
+import functionalj.stream.intstream.IntIteratorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.longstream.AsLongStreamable;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.longstream.LongStreamable;
 import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
+import functionalj.streamable.doublestreamable.AsDoubleStreamable;
+import functionalj.streamable.longstreamable.AsLongStreamable;
 import functionalj.tuple.IntIntTuple;
 import lombok.val;
 
@@ -449,21 +449,14 @@ public interface IntStreamable
     
     /** Return the stream of data behind this IntStreamable. */
     public default IntStream intStream() {
-        return streamPlus();
+        return intStreamPlus().intStream();
     }
     
     /** Return this StreamPlus. */
-    public default IntStream stream() {
-        return streamPlus();
-    }
+    public  IntStreamPlus intStreamPlus();
     
     /** Return the this as a streamable. */
     public default IntStreamable intStreamable() {
-        return this;
-    }
-    
-    /** Return the this as a streamable. */
-    public default IntStreamable streamable() {
         return this;
     }
     
@@ -474,7 +467,7 @@ public interface IntStreamable
             AsStreamable<SOURCE>                    asStreamable,
             Function<StreamPlus<SOURCE>, IntStream> action) {
         return () -> {
-            val sourceStream = asStreamable.stream();
+            val sourceStream = asStreamable.streamPlus();
             val targetStream = action.apply(sourceStream);
             return IntStreamPlus.from(targetStream);
         };
@@ -485,7 +478,7 @@ public interface IntStreamable
             AsIntStreamable                    asStreamable,
             Function<IntStreamPlus, IntStream> action) {
         return () -> {
-            val sourceStream = asStreamable.streamPlus();
+            val sourceStream = asStreamable.intStreamPlus();
             val targetStream = action.apply(sourceStream);
             return IntStreamPlus.from(targetStream);
         };
@@ -615,7 +608,7 @@ public interface IntStreamable
      * @return {@code true} if this stream would execute in parallel if executed
      */
     public default boolean isParallel() {
-        return stream()
+        return intStreamPlus()
                 .isParallel();
     }
     

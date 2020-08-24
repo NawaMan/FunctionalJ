@@ -27,8 +27,17 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 
+import functionalj.stream.doublestream.DoubleAccumulator;
+import functionalj.stream.doublestream.DoubleCollectorPlus;
+import functionalj.stream.doublestream.DoubleStreamProcessor;
 import functionalj.stream.doublestream.DoubleStreamable;
+import functionalj.stream.intstream.IntAccumulator;
+import functionalj.stream.intstream.IntCollectorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.IntStreamProcessor;
+import functionalj.stream.longstream.LongAccumulator;
+import functionalj.stream.longstream.LongCollectorPlus;
+import functionalj.stream.longstream.LongStreamProcessor;
 import functionalj.stream.longstream.LongStreamable;
 import functionalj.streamable.Streamable;
 import functionalj.streamable.intstreamable.IntStreamable;

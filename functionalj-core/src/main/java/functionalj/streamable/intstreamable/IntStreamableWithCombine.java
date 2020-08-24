@@ -192,7 +192,7 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
      *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
      */
     public default IntStreamable choose(IntStreamable anotherStreamable, IntBiPredicatePrimitive selectThisNotAnother) {
-        return deriveToInt(this, stream -> stream.choose(anotherStreamable.streamPlus(), selectThisNotAnother));
+        return deriveToInt(this, stream -> stream.choose(anotherStreamable.intStreamPlus(), selectThisNotAnother));
     }
     
 }

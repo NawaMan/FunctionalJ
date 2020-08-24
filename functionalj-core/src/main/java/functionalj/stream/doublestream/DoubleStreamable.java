@@ -28,11 +28,12 @@ import java.util.stream.DoubleStream;
 
 import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.longstream.AsLongStreamable;
 import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
+import functionalj.streamable.doublestreamable.AsDoubleStreamable;
 import functionalj.streamable.intstreamable.AsIntStreamable;
+import functionalj.streamable.longstreamable.AsLongStreamable;
 import lombok.val;
 
 public interface DoubleStreamable {
@@ -51,7 +52,7 @@ public interface DoubleStreamable {
             AsStreamable<SOURCE>                       asStreamable,
             Function<StreamPlus<SOURCE>, DoubleStream> action) {
         return () -> {
-            val sourceStream = asStreamable.stream();
+            val sourceStream = asStreamable.streamPlus();
             val targetStream = action.apply(sourceStream);
             return DoubleStreamPlus.from(targetStream);
         };
@@ -62,7 +63,7 @@ public interface DoubleStreamable {
             AsIntStreamable                       asStreamable,
             Function<IntStreamPlus, DoubleStream> action) {
         return () -> {
-            val sourceStream = asStreamable.streamPlus();
+            val sourceStream = asStreamable.intStreamPlus();
             val targetStream = action.apply(sourceStream);
             return DoubleStreamPlus.from(targetStream);
         };

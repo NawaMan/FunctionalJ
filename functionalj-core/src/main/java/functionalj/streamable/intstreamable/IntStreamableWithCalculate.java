@@ -24,7 +24,7 @@
 package functionalj.streamable.intstreamable;
 
 import functionalj.stream.Collected;
-import functionalj.stream.IntStreamProcessor;
+import functionalj.stream.intstream.IntStreamProcessor;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.tuple.Tuple3;

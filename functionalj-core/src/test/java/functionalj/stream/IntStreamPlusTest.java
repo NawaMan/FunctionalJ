@@ -60,6 +60,8 @@ import org.junit.Test;
 
 import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
+import functionalj.stream.intstream.IntAccumulator;
+import functionalj.stream.intstream.IntCollectorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 

@@ -38,7 +38,6 @@ import functionalj.function.IntObjBiFunction;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.IntIteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.makers.Sequential;
 import functionalj.tuple.IntTuple2;
@@ -46,7 +45,7 @@ import lombok.val;
 
 public interface IntStreamPlusWithModify {
     
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     /**
      * Accumulate the previous to the next element.
@@ -67,7 +66,7 @@ public interface IntStreamPlusWithModify {
      */
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default IntStreamPlus accumulate(IntBiFunctionPrimitive accumulator) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         val iterator   = streamPlus.iterator();
         if (!iterator.hasNext())
             return IntStreamPlus.empty();
@@ -105,7 +104,7 @@ public interface IntStreamPlusWithModify {
      **/
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default IntStreamPlus restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         val func = (UnaryOperator<IntTuple2<IntStreamPlus>>)((IntTuple2<IntStreamPlus> pair) -> {
             val stream = pair._2();
             if (stream == null)
@@ -140,7 +139,7 @@ public interface IntStreamPlusWithModify {
      *   the unfinished actions will be canceled.
      */
     public default <T> StreamPlus<Result<T>> spawn(IntFunction<? extends UncompletedAction<T>> mapToAction) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return sequentialToObj(streamPlus, stream -> {
             val results = new ArrayList<DeferAction<T>>();
             val index   = new AtomicInteger(0);

@@ -35,14 +35,14 @@ import lombok.val;
 
 public interface IntStreamPlusWithMatch {
     
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     /** Return the first element that matches the predicate. */
     @Terminal
     @Sequential
     public default OptionalInt findFirst(
             IntPredicate predicate) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(predicate)
                 .findFirst();
@@ -52,7 +52,7 @@ public interface IntStreamPlusWithMatch {
     @Terminal
     public default OptionalInt findAny(
             IntPredicate predicate) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(predicate)
                 .findAny();
@@ -64,7 +64,7 @@ public interface IntStreamPlusWithMatch {
     public default OptionalInt findFirst(
             IntUnaryOperator mapper, 
             IntPredicate     theCondition) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(mapper, theCondition)
                 .findFirst();
@@ -75,7 +75,7 @@ public interface IntStreamPlusWithMatch {
     public default <T> OptionalInt findAny(
             IntUnaryOperator mapper, 
             IntPredicate     theCondition) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(mapper, theCondition)
                 .findAny();
@@ -87,7 +87,7 @@ public interface IntStreamPlusWithMatch {
     public default <T> OptionalInt findFirstBy(
             IntFunction<? extends T> mapper, 
             Predicate<? super T>     theCondition) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filterAsObject(mapper, theCondition)
                 .findFirst();
@@ -98,7 +98,7 @@ public interface IntStreamPlusWithMatch {
     public default <T> OptionalInt findAnyBy(
             IntFunction<? extends T> mapper, 
             Predicate<? super T>      theCondition) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filterAsObject(mapper, theCondition)
                 .findAny();

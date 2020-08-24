@@ -41,14 +41,13 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 
 import functionalj.result.NoMoreResultException;
-import functionalj.stream.GrowOnlyIntArray;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
 public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
 
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
 
     /**
      * Segment the stream into sub stream with the fix length of count.
@@ -112,7 +111,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
         val newStorage = (Supplier<GrowOnlyIntArray>)GrowOnlyIntArray::new;
         val toStreamPlus = (Function<GrowOnlyIntArray, IntStreamPlus>)GrowOnlyIntArray::stream;
 
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return sequentialToObj(streamPlus, stream -> {
             val list = new AtomicReference<>(newStorage.get());
             val adding = new AtomicBoolean(false);
@@ -174,7 +173,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
         val toStreamPlus = (Function<GrowOnlyIntArray, IntStreamPlus>)GrowOnlyIntArray::stream;
 
         // TODO - Find a way to make it fully lazy. Try tryAdvance.
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return sequentialToObj(streamPlus, stream -> {
             val list         = new AtomicReference<>(newStorage.get());
             val adding       = new AtomicBoolean(false);
@@ -224,7 +223,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
         val singleStream = (IntFunction<IntStreamPlus>)(data -> IntStreamPlus.of(data));
 
         // TODO - Find a way to make it fully lazy. Try tryAdvance.
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return sequentialToObj(streamPlus, stream -> {
             val listRef = new AtomicReference<>(newStorage.get());
             val leftRef = new AtomicInteger(-1);
@@ -285,7 +284,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
         val intArray = new int[1];
         int first;
 
-        val iterator = streamPlus().iterator();
+        val iterator = intStreamPlus().iterator();
 
         if (!iterator.hasNext()) {
             return empty();
@@ -344,7 +343,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
         val intArray = new int[1];
 
         val firstObj = new Object();
-        val iterator = streamPlus().iterator();
+        val iterator = intStreamPlus().iterator();
         val prev = new AtomicReference<Object>(firstObj);
         val resultStream = generateWith(()->{
             if (prev.get() == dummy)

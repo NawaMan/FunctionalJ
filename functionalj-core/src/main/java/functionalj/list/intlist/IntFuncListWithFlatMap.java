@@ -56,8 +56,8 @@ public interface IntFuncListWithFlatMap extends AsIntFuncList {
             IntPredicate                         checker, 
             IntFunction<? extends IntFuncList> trueMapper, 
             IntFunction<? extends IntFuncList> falseMapper) {
-        IntFunction<? extends IntStream> newTrueMapper  = value -> trueMapper .apply(value).stream();
-        IntFunction<? extends IntStream> newFalseMapper = value -> falseMapper.apply(value).stream();
+        IntFunction<? extends IntStream> newTrueMapper  = value -> trueMapper .apply(value).intStream();
+        IntFunction<? extends IntStream> newFalseMapper = value -> falseMapper.apply(value).intStream();
         return deriveToInt(this, stream -> stream.flatMapIf(checker, newTrueMapper, newFalseMapper));
     }
     

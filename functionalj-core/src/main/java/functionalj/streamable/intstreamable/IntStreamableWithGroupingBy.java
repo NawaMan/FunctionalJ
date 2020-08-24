@@ -33,8 +33,8 @@ import java.util.function.Supplier;
 
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
-import functionalj.stream.IntStreamProcessor;
 import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.IntStreamProcessor;
 import lombok.val;
 
 public interface IntStreamableWithGroupingBy extends IntStreamableWithMapToTuple {

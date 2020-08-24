@@ -31,12 +31,12 @@ public interface IntStreamableWithPipe extends AsIntStreamable {
     
     /** @return the pipeable of this stream. */
     public default <T> Pipeable<IntStreamable> pipable() {
-        return Pipeable.of(this.streamable());
+        return Pipeable.of(this.intStreamable());
     }
     
     /** Pipe this stream plus through the given function. */
     public default <T> T pipe(Function<? super IntStreamable, T> piper) {
-        return piper.apply(this.streamable());
+        return piper.apply(this.intStreamable());
     }
     
 }

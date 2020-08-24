@@ -28,8 +28,6 @@ import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 import functionalj.map.FuncMap;
-import functionalj.stream.IntCollectorPlus;
-import functionalj.stream.IntStreamProcessor;
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Terminal;
 import functionalj.streamable.intstreamable.IntStreamable;
@@ -43,10 +41,10 @@ public interface IntStreamPlusWithGroupingBy extends AsIntStreamPlus {
     @SuppressWarnings("unchecked")
     public default <KEY> FuncMap<KEY, IntStreamPlus> groupingBy(
             IntFunction<? extends KEY> keyMapper) {
-        IntStreamable streamable = () -> streamPlus();
+        IntStreamable streamable = () -> intStreamPlus();
         return (FuncMap<KEY, IntStreamPlus>) streamable
                 .groupingBy(keyMapper)
-                .mapValue  (IntStreamable::streamPlus);
+                .mapValue  (IntStreamable::intStreamPlus);
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
@@ -75,7 +73,7 @@ public interface IntStreamPlusWithGroupingBy extends AsIntStreamPlus {
     public default <KEY, ACCUMULATED, VALUE> FuncMap<? extends KEY, VALUE> groupingBy(
             IntFunction<? extends KEY>                     keyMapper,
             Supplier<IntCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
-        IntStreamable streamable = () -> streamPlus();
+        IntStreamable streamable = () -> intStreamPlus();
         return (FuncMap<KEY, VALUE>) streamable
                 .groupingBy(keyMapper, collectorSupplier);
     }

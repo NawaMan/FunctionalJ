@@ -21,17 +21,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.longstream;
 
-import java.util.function.BiConsumer;
+import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.LongConsumer;
+
+import functionalj.pipeable.Pipeable;
+import lombok.val;
 
 @FunctionalInterface
-public interface LongAccumulator<ACCUMULATED> extends BiConsumer<ACCUMULATED, Long> {
+public interface LongIterable extends Pipeable<LongIterable> {
     
-    void acceptLong(ACCUMULATED accumulator, long element);
+    public LongIteratorPlus iterator();
     
-    default void accept(ACCUMULATED accumulator, Long element) {
-        acceptLong(accumulator, element.longValue());
+    public default LongIterable __data() throws Exception {
+        return this;
+    }
+    
+    default void forEach(LongConsumer action) {
+        Objects.requireNonNull(action);
+        val iterator = iterator();
+        while (iterator.hasNext()) {
+            val i = iterator.nextLong();
+            action.accept(i);
+        }
+    }
+    
+    default Spliterator.OfLong spliterator() {
+        return Spliterators.spliteratorUnknownSize(iterator(), 0);
     }
     
 }

@@ -41,12 +41,12 @@ public interface IntStreamPlusWithMapWithIndex {
     
     // // TODO - to int, long, double
     
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     /** @return  the stream of each value and index. */
     public default StreamPlus<IntIntTuple> mapWithIndex() {
         val index = new AtomicInteger();
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
                     val currentIndex = index.getAndIncrement();
@@ -58,7 +58,7 @@ public interface IntStreamPlusWithMapWithIndex {
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default IntStreamPlus mapWithIndex(IntBinaryOperator combinator) {
         val index = new AtomicInteger();
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .map(each -> {
                     val currentIndex = index.getAndIncrement();
@@ -70,7 +70,7 @@ public interface IntStreamPlusWithMapWithIndex {
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> StreamPlus<T> mapToObjWithIndex(IntIntBiFunction<T> combinator) {
         val index = new AtomicInteger();
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
                     val currentIndex = index.getAndIncrement();
@@ -84,7 +84,7 @@ public interface IntStreamPlusWithMapWithIndex {
                 IntUnaryOperator    valueMapper,
                 IntIntBiFunction<T> combiner) {
         val index = new AtomicInteger();
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
                     val currentIndex = index.getAndIncrement();
@@ -99,7 +99,7 @@ public interface IntStreamPlusWithMapWithIndex {
                 IntFunction<? extends T1>       valueMapper,
                 IntObjBiFunction<? super T1, T> combiner) {
         val index = new AtomicInteger();
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
                     val i      = index.getAndIncrement();

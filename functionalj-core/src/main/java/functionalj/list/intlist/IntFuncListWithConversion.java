@@ -43,25 +43,25 @@ public interface IntFuncListWithConversion extends AsIntFuncList {
     
     /** Map the data to byte and return the byte array of all the results. */
     public default byte[] toByteArray(IntToByteFunction toByte) {
-        return streamPlus()
+        return intStreamPlus()
                 .toByteArray(toByte);
     }
     
     /** Map the data to int and return the byte array of all the results. */
     public default int[] toIntArray(IntUnaryOperator toInt) {
-        return streamPlus()
+        return intStreamPlus()
                 .toIntArray(toInt);
     }
     
     /** Map the data to long and return the byte array of all the results. */
     public default long[] toLongArray(IntToLongFunction toLong) {
-        return streamPlus()
+        return intStreamPlus()
                 .toLongArray(toLong);
     }
     
     /** Map the data to double and return the byte array of all the results. */
     public default double[] toDoubleArray(IntToDoubleFunction toDouble) {
-        return streamPlus()
+        return intStreamPlus()
                 .toDoubleArray(toDouble);
     }
     
@@ -69,37 +69,37 @@ public interface IntFuncListWithConversion extends AsIntFuncList {
     
     /** @return the array list containing the elements. */
     public default ArrayList<Integer> toArrayList() {
-        return streamPlus()
+        return intStreamPlus()
                 .toArrayList();
     }
     
     /** @return a functional list containing the elements. */
     public default IntFuncList toFuncList() {
-        return streamPlus()
+        return intStreamPlus()
                 .toFuncList();
     }
     
     /** @return an immutable list containing the elements. */
     public default ImmutableIntFuncList toImmutableList() {
-        return streamPlus()
+        return intStreamPlus()
                 .toImmutableList();
     }
     
     /** @return an Java list containing the elements. */
     public default List<Integer> toJavaList() {
-        return streamPlus()
+        return intStreamPlus()
                 .toJavaList();
     }
     
     /** @return a list containing the elements. */
     public default FuncList<Integer> toList() {
-        return streamPlus()
+        return intStreamPlus()
                 .toList();
     }
     
     /** @return a mutable list containing the elements. */
     public default List<Integer> toMutableList() {
-        return streamPlus()
+        return intStreamPlus()
                 .toMutableList();
     }
     
@@ -107,13 +107,13 @@ public interface IntFuncListWithConversion extends AsIntFuncList {
     
     /** @return the concatenate of toString() of each elements. */
     public default String join() {
-        return streamPlus()
+        return intStreamPlus()
                 .join();
     }
     
     /** @return the concatenate of toString() of each elements with the given delimiter. */
     public default String join(String delimiter) {
-        return streamPlus()
+        return intStreamPlus()
                 .join(delimiter);
     }
     
@@ -121,7 +121,7 @@ public interface IntFuncListWithConversion extends AsIntFuncList {
     
     /** @return the to string as a list for this stream. */
     public default String toListString() {
-        return streamPlus()
+        return intStreamPlus()
                 .toListString();
     }
     
@@ -132,7 +132,7 @@ public interface IntFuncListWithConversion extends AsIntFuncList {
      * This method throw an exception with duplicate keys.
      */
     public default <KEY> FuncMap<KEY, Integer> toMap(IntFunction<KEY> keyMapper) {
-        return streamPlus()
+        return intStreamPlus()
                 .toMap(keyMapper);
     }
     
@@ -143,7 +143,7 @@ public interface IntFuncListWithConversion extends AsIntFuncList {
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
             IntFunction<KEY>   keyMapper,
             IntFunction<VALUE> valueMapper) {
-        return streamPlus()
+        return intStreamPlus()
                 .toMap(keyMapper, valueMapper);
     }
     
@@ -155,7 +155,7 @@ public interface IntFuncListWithConversion extends AsIntFuncList {
             IntFunction<KEY>      keyMapper,
             IntFunction<VALUE>    valueMapper,
             BinaryOperator<VALUE> mergeFunction) {
-        return streamPlus()
+        return intStreamPlus()
                 .toMap(keyMapper, valueMapper, mergeFunction);
     }
     
@@ -166,7 +166,7 @@ public interface IntFuncListWithConversion extends AsIntFuncList {
     public default <KEY> FuncMap<KEY, Integer> toMap(
             IntFunction<KEY>  keyMapper,
             IntBinaryOperator mergeFunction) {
-        return streamPlus()
+        return intStreamPlus()
                 .toMap(keyMapper, mergeFunction);
     }
     
@@ -174,7 +174,7 @@ public interface IntFuncListWithConversion extends AsIntFuncList {
     
     /** @return  a set of the elements. */
     public default Set<Integer> toSet() {
-        return streamPlus()
+        return intStreamPlus()
                 .toSet();
     }
     

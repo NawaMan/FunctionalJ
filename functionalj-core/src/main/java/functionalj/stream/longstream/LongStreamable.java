@@ -37,16 +37,18 @@ import java.util.stream.Stream;
 
 import functionalj.function.LongBiFunctionPrimitive;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.doublestream.AsDoubleStreamable;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.doublestream.DoubleStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
+import functionalj.streamable.doublestreamable.AsDoubleStreamable;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
+import functionalj.streamable.longstreamable.AsLongStreamable;
 import functionalj.tuple.LongLongTuple;
 import lombok.val;
+
 
 public interface LongStreamable 
         extends
@@ -194,7 +196,7 @@ public interface LongStreamable
             AsStreamable<SOURCE>                     asStreamable,
             Function<StreamPlus<SOURCE>, LongStream> action) {
         return () -> {
-            val sourceStream = asStreamable.stream();
+            val sourceStream = asStreamable.streamPlus();
             val targetStream = action.apply(sourceStream);
             return LongStreamPlus.from(targetStream);
         };
@@ -205,7 +207,7 @@ public interface LongStreamable
             AsIntStreamable                     asStreamable,
             Function<IntStreamPlus, LongStream> action) {
         return () -> {
-            val sourceStream = asStreamable.streamPlus();
+            val sourceStream = asStreamable.intStreamPlus();
             val targetStream = action.apply(sourceStream);
             return LongStreamPlus.from(targetStream);
         };
@@ -339,7 +341,7 @@ public interface LongStreamable
             Function<LongStreamable, LongStream> action) {
         return new LongStreamable() {
             @Override
-            public LongStreamPlus longStream() {
+            public LongStreamPlus streamPlus() {
                 val targetStream = action.apply(source);
                 return LongStreamPlus.from(targetStream);
             }
@@ -356,10 +358,12 @@ public interface LongStreamable
         return boxed();
     }
     
-    public LongStreamPlus longStream();
+    public default LongStreamPlus longStream() {
+        return streamPlus();
+    }
     
-    public default StreamPlus<Long> stream() {
-        return longStream().boxed();
+    public default LongStream stream() {
+        return longStream().longStream();
     }
     
 //    //== Pipeable ==
@@ -394,7 +398,7 @@ public interface LongStreamable
 //    }
     
     public default LongStreamable asLongStreamable() {
-        return LongStreamable.from(()->stream().mapToLong(i -> (long)i));
+        return LongStreamable.from(()->streamPlus().mapToLong(i -> (long)i));
     }
     
 //    @Override

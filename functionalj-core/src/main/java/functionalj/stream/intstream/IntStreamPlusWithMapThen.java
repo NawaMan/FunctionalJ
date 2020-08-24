@@ -35,7 +35,7 @@ import lombok.val;
 
 public interface IntStreamPlusWithMapThen {
     
-    public IntStreamPlus streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     
     /** Map the value into different values and then combine them with the combinator. */
@@ -44,7 +44,7 @@ public interface IntStreamPlusWithMapThen {
                 IntFunction<? extends T1> mapper1,
                 IntFunction<? extends T2> mapper2,
                 BiFunction<T1, T2, T> function) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
                     val v1 = mapper1.apply(each);
@@ -61,7 +61,7 @@ public interface IntStreamPlusWithMapThen {
                 IntFunction<? extends T2> mapper2,
                 IntFunction<? extends T3> mapper3,
                 Func3<T1, T2, T3, T> function) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
                     val v1 = mapper1.apply(each);
@@ -80,7 +80,7 @@ public interface IntStreamPlusWithMapThen {
                 IntFunction<? extends T3> mapper3,
                 IntFunction<? extends T4> mapper4,
                 Func4<T1, T2, T3, T4, T> function) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
                     val v1 = mapper1.apply(each);
@@ -101,7 +101,7 @@ public interface IntStreamPlusWithMapThen {
                 IntFunction<? extends T4> mapper4,
                 IntFunction<? extends T5> mapper5,
                 Func5<T1, T2, T3, T4, T5, T> function) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
                     val v1 = mapper1.apply(each);
@@ -123,7 +123,7 @@ public interface IntStreamPlusWithMapThen {
                 IntFunction<? extends T5> mapper5,
                 IntFunction<? extends T6> mapper6,
                 Func6<T1, T2, T3, T4, T5, T6, T> function) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
                     val v1 = mapper1.apply(each);

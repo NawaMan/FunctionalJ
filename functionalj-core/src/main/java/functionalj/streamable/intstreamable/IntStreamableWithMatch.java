@@ -35,14 +35,14 @@ public interface IntStreamableWithMatch extends AsIntStreamable {
     /** Return the first element that matches the predicate. */
     public default OptionalInt findFirst(
             IntPredicate predicate) {
-        return streamPlus()
+        return intStreamPlus()
                 .findFirst(predicate);
     }
     
     /** Return the any element that matches the predicate. */
     public default OptionalInt findAny(
             IntPredicate predicate) {
-        return streamPlus()
+        return intStreamPlus()
                 .findAny(predicate);
     }
     
@@ -50,7 +50,7 @@ public interface IntStreamableWithMatch extends AsIntStreamable {
     public default <T> OptionalInt findFirst(
             IntFunction<T>       mapper,
             Predicate<? super T> theCondition) {
-        return streamPlus()
+        return intStreamPlus()
                 .findFirst(i -> {
                     val mapped = mapper.apply(i);
                     return theCondition.test(mapped);
@@ -61,7 +61,7 @@ public interface IntStreamableWithMatch extends AsIntStreamable {
     public default <T> OptionalInt findAny(
             IntFunction<T> mapper,
             Predicate<? super T> theCondition) {
-        return streamPlus()
+        return intStreamPlus()
                 .findAny(i -> {
                     val mapped = mapper.apply(i);
                     return theCondition.test(mapped);

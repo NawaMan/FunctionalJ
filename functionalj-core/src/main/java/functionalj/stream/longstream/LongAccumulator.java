@@ -21,21 +21,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable;
+package functionalj.stream.longstream;
 
-import functionalj.stream.AsStreamPlus;
+import java.util.function.BiConsumer;
 
-/**
- * Classes implementing this interface can act like a stramable.
- * 
- * @param <DATA>
- *
- * @author NawaMan -- nawa@nawaman.net
- */
-public interface AsStreamable<DATA> extends AsStreamPlus<DATA> {
+@FunctionalInterface
+public interface LongAccumulator<ACCUMULATED> extends BiConsumer<ACCUMULATED, Long> {
     
-    public default Streamable<DATA> streamable() {
-        return ()->streamPlus();
+    void acceptLong(ACCUMULATED accumulator, long element);
+    
+    default void accept(ACCUMULATED accumulator, Long element) {
+        acceptLong(accumulator, element.longValue());
     }
     
 }

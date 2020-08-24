@@ -41,25 +41,25 @@ public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
     
     /** Map the data to byte and return the byte array of all the results. */
     public default byte[] toByteArray(ToByteFunction<DATA> toByte) {
-        return stream()
+        return streamPlus()
                 .toByteArray(toByte);
     }
     
     /** Map the data to int and return the byte array of all the results. */
     public default int[] toIntArray(ToIntFunction<DATA> toInt) {
-        return stream()
+        return streamPlus()
                 .toIntArray(toInt);
     }
     
     /** Map the data to long and return the byte array of all the results. */
     public default long[] toLongArray(ToLongFunction<DATA> toLong) {
-        return stream()
+        return streamPlus()
                 .toLongArray(toLong);
     }
     
     /** Map the data to double and return the byte array of all the results. */
     public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
-        return stream()
+        return streamPlus()
                 .toDoubleArray(toDouble);
     }
     
@@ -67,37 +67,37 @@ public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
     
     /** @return the array list containing the elements. */
     public default ArrayList<DATA> toArrayList() {
-        return stream()
+        return streamPlus()
                 .toArrayList();
     }
     
     /** @return a functional list containing the elements. */
     public default FuncList<DATA> toFuncList() {
-        return stream()
+        return streamPlus()
                 .toFuncList();
     }
     
     /** @return an immutable list containing the elements. */
     public default ImmutableList<DATA> toImmutableList() {
-        return stream()
+        return streamPlus()
                 .toImmutableList();
     }
     
     /** @return an Java list containing the elements. */
     public default List<DATA> toJavaList() {
-        return stream()
+        return streamPlus()
                 .toJavaList();
     }
     
     /** @return a list containing the elements. */
     public default FuncList<DATA> toList() {
-        return stream()
+        return streamPlus()
                 .toList();
     }
     
     /** @return a mutable list containing the elements. */
     public default List<DATA> toMutableList() {
-        return stream()
+        return streamPlus()
                 .toMutableList();
     }
     
@@ -105,13 +105,13 @@ public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
     
     /** @return the concatenate of toString() of each elements. */
     public default String join() {
-        return stream()
+        return streamPlus()
                 .join();
     }
     
     /** @return the concatenate of toString() of each elements with the given delimiter. */
     public default String join(String delimiter) {
-        return stream()
+        return streamPlus()
                 .join(delimiter);
     }
     
@@ -119,7 +119,7 @@ public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
     
     /** @return the to string as a list for this stream. */
     public default String toListString() {
-        return stream()
+        return streamPlus()
                 .toListString();
     }
     
@@ -130,7 +130,7 @@ public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
      * This method throw an exception with duplicate keys.
      */
     public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, KEY> keyMapper) {
-        return stream()
+        return streamPlus()
                 .toMap(keyMapper);
     }
     
@@ -141,7 +141,7 @@ public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
             Function<? super DATA, KEY>   keyMapper,
             Function<? super DATA, VALUE> valueMapper) {
-        return stream()
+        return streamPlus()
                 .toMap(keyMapper, valueMapper);
     }
     
@@ -153,7 +153,7 @@ public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, KEY>   keyMapper,
             Function<? super DATA, VALUE> valueMapper,
             BinaryOperator<VALUE>         mergeFunction) {
-        return stream()
+        return streamPlus()
                 .toMap(keyMapper, valueMapper, mergeFunction);
     }
     
@@ -164,7 +164,7 @@ public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
     public default <KEY> FuncMap<KEY, DATA> toMap(
             Function<? super DATA, KEY> keyMapper,
             BinaryOperator<DATA>        mergeFunction) {
-        return stream()
+        return streamPlus()
                 .toMap(keyMapper, mergeFunction);
     }
     
@@ -172,7 +172,7 @@ public interface StreamableWithConversion<DATA> extends AsStreamable<DATA> {
     
     /** @return  a set of the elements. */
     public default Set<DATA> toSet() {
-        return stream()
+        return streamPlus()
                 .toSet();
     }
     

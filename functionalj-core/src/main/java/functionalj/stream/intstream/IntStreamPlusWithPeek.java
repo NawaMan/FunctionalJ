@@ -33,7 +33,7 @@ import lombok.val;
 
 public interface IntStreamPlusWithPeek {
     
-     public IntStreamPlus streamPlus();
+     public IntStreamPlus intStreamPlus();
     
     //-- Peek --
     
@@ -41,7 +41,7 @@ public interface IntStreamPlusWithPeek {
     public default IntStreamPlus peekBy(
             IntPredicate selector,
             IntConsumer  theConsumer) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .peek(value -> {
                     if (!selector.test(value))
@@ -59,7 +59,7 @@ public interface IntStreamPlusWithPeek {
     public default <T> IntStreamPlus peekAs(
             IntFunction<T>      mapper,
             Consumer<? super T> consumer) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .peek(value -> {
                     val target = mapper.apply(value);
@@ -72,7 +72,7 @@ public interface IntStreamPlusWithPeek {
             IntFunction<T>       mapper,
             Predicate<? super T> selector,
             IntConsumer          consumer) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .peek(value -> {
                     val target = mapper.apply(value);
@@ -86,7 +86,7 @@ public interface IntStreamPlusWithPeek {
             IntFunction<T>       mapper,
             Predicate<? super T> selector,
             Consumer<? super T>  consumer) {
-        val streamPlus = streamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .peek(value -> {
                     val target = mapper.apply(value);
