@@ -46,7 +46,7 @@ public interface IntStreamableWithFlatMap extends AsIntStreamable {
             IntFunction<? extends IntStreamable> mapper) {
         return deriveToInt(this, stream -> {
             IntFunction<? extends IntStream> newMapper = value -> mapper.apply(value).intStream();
-            return stream().flatMapOnly(checker, newMapper);
+            return stream.flatMapOnly(checker, newMapper);
         });
     }
     

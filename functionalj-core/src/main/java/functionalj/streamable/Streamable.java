@@ -579,7 +579,7 @@ public interface Streamable<DATA>
             AsIntStreamable                         asStreamable,
             Function<IntStreamPlus, Stream<TARGET>> action) {
         return () -> {
-            val sourceStream = asStreamable.intStream();
+            val sourceStream = asStreamable.streamPlus();
             val targetStream = action.apply(sourceStream);
             return StreamPlus.from(targetStream);
         };

@@ -98,9 +98,7 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
     public default <ANOTHER, TARGET> Streamable<TARGET> zipWith(
             Streamable<ANOTHER>               anotherStreamable,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return () -> {
-            return intStream().zipWith(anotherStreamable.stream(), merger);
-        };
+        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.stream(), merger));
     }
     
     /**
@@ -114,9 +112,7 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
      *   Result stream:  [A-1, B-2, C-3, null-4, null-5] <br>
      */
     public default Streamable<IntIntTuple> zipWith(IntStreamable anotherStreamable) {
-        return () -> {
-            return intStream().zipWith(anotherStreamable.intStream());
-        };
+        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.intStream()));
     }
     
     /**
@@ -130,9 +126,7 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
      *   Result stream:  [10, 5, 9, 5]
      */
     public default Streamable<IntIntTuple> zipWith(IntStreamable anotherStreamable, int defaultValue) {
-        return () -> {
-            return intStream().zipWith(anotherStreamable.intStream(), defaultValue);
-        };
+        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.intStream(), defaultValue));
     }
     
     /**
@@ -148,58 +142,42 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
      */
     public default Streamable<IntIntTuple> zipWith(IntStreamable anotherStreamable, int defaultValue1,
             int defaultValue2) {
-        return () -> {
-            return intStream().zipWith(anotherStreamable.intStream(), defaultValue1, defaultValue2);
-        };
+        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.intStream(), defaultValue1, defaultValue2));
     }
     
     public default IntStreamable zipWith(IntStreamable anotherStreamable, IntBiFunctionPrimitive merger) {
-        return () -> {
-            return intStream().zipWith(anotherStreamable.intStream(), merger);
-        };
+        return deriveToInt(this, stream -> stream.zipWith(anotherStreamable.intStream(), merger));
     }
     
     public default IntStreamable zipWith(IntStreamable anotherStreamable, int defaultValue,
             IntBiFunctionPrimitive merger) {
-        return () -> {
-            return intStream().zipWith(anotherStreamable.intStream(), defaultValue, merger);
-        };
+        return deriveToInt(this, stream -> stream.zipWith(anotherStreamable.intStream(), defaultValue, merger));
     }
     
     public default IntStreamable zipWith(IntStreamable anotherStreamable, int defaultValue1, int defaultValue2,
             IntBiFunctionPrimitive merger) {
-        return () -> {
-            return intStream().zipWith(anotherStreamable.intStream(), defaultValue1, defaultValue2, merger);
-        };
+        return deriveToInt(this, stream -> stream.zipWith(anotherStreamable.intStream(), defaultValue1, defaultValue2, merger));
     }
     
     public default <T> Streamable<T> zipToObjWith(IntStreamable anotherStreamable, IntIntBiFunction<T> merger) {
-        return () -> {
-            return intStream().zipToObjWith(anotherStreamable.intStream(), merger);
-        };
+        return deriveToObj(this, stream -> stream.zipToObjWith(anotherStreamable.intStream(), merger));
     }
     
     public default <T> Streamable<T> zipToObjWith(IntStreamable anotherStreamable, int defaultValue,
             IntIntBiFunction<T> merger) {
-        return () -> {
-            return intStream().zipToObjWith(anotherStreamable.intStream(), defaultValue, merger);
-        };
+        return deriveToObj(this, stream -> stream.zipToObjWith(anotherStreamable.intStream(), defaultValue, merger));
     }
     
     public default <T> Streamable<T> zipToObjWith(IntStreamable anotherStreamable, int defaultValue1, int defaultValue2,
             IntIntBiFunction<T> merger) {
-        return () -> {
-            return intStream().zipToObjWith(anotherStreamable.intStream(), defaultValue1, defaultValue2, merger);
-        };
+        return deriveToObj(this, stream -> stream.zipToObjWith(anotherStreamable.intStream(), defaultValue1, defaultValue2, merger));
     }
     
     public default <ANOTHER, TARGET> Streamable<TARGET> zipToObjWith(
             int                 defaultValue,
             Streamable<ANOTHER> anotherStreamable,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return () -> {
-            return intStream().zipWith(defaultValue, anotherStreamable.stream(), merger);
-        };
+        return deriveToObj(this, stream -> stream.zipWith(defaultValue, anotherStreamable.stream(), merger));
     }
     
     /**
@@ -214,9 +192,7 @@ public interface IntStreamableWithCombine extends AsIntStreamable {
      *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
      */
     public default IntStreamable choose(IntStreamable anotherStreamable, IntBiPredicatePrimitive selectThisNotAnother) {
-        return () -> {
-            return intStream().choose(anotherStreamable.intStream(), selectThisNotAnother);
-        };
+        return deriveToInt(this, stream -> stream.choose(anotherStreamable.streamPlus(), selectThisNotAnother));
     }
     
 }

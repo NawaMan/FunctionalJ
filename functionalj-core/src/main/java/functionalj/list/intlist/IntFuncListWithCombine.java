@@ -193,7 +193,7 @@ public interface IntFuncListWithCombine extends AsIntFuncList {
      *   Result stream:  [10, 5, 9, 5, 5, 5, 5]
      */
     public default IntFuncList choose(IntFuncList anotherStreamable, IntBiPredicatePrimitive selectThisNotAnother) {
-        return deriveToInt(this, stream -> stream.choose(anotherStreamable.intStream(), selectThisNotAnother));
+        return deriveToInt(this, stream -> stream.choose(anotherStreamable.streamPlus(), selectThisNotAnother));
     }
     
 }

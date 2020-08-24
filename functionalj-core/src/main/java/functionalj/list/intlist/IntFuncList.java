@@ -273,13 +273,18 @@ public interface IntFuncList
     public IntStreamable intStreamable();
     
     /** Return the stream of data behind this IntStreamable. */
-    public default IntStreamPlus intStream() {
+    public default IntStream intStream() {
         return intStreamable().intStream();
     }
     
     /** Return this StreamPlus. */
-    public default IntStreamPlus stream() {
-        return intStreamable().intStream();
+    public default IntStream stream() {
+        return intStreamable().stream();
+    }
+    
+    /** Return this StreamPlus. */
+    public default IntStreamPlus streamPlus() {
+        return intStreamable().streamPlus();
     }
     
     /** Return the this as a streamable. */
@@ -289,7 +294,7 @@ public interface IntFuncList
     
     /** Return this StreamPlus. */
     public default IntStreamPlus asStreamPlus() {
-        return intStream();
+        return streamPlus();
     }
     
     //-- Derive --
@@ -777,7 +782,7 @@ public interface IntFuncList
         if (index >= size())
             throw new IndexOutOfBoundsException(index + " vs " + size());
         
-        return from(() -> {
+        return deriveToInt(this, stream -> {
             val i = new AtomicInteger();
             return map(each -> (i.getAndIncrement() == index) ? value : each)
                     .stream();
@@ -791,7 +796,7 @@ public interface IntFuncList
         if (index >= size())
             throw new IndexOutOfBoundsException(index + " vs " + size());
         
-        return from(() -> {
+        return deriveToInt(this, stream -> {
             val i = new AtomicInteger();
             return map(each -> (i.getAndIncrement() == index) ? mapper.applyAsInt(each) : each)
                     .stream();

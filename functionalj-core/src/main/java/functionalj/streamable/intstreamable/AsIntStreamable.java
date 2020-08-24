@@ -23,14 +23,14 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
-import functionalj.stream.intstream.IntStreamPlus;
+import functionalj.stream.intstream.AsIntStreamPlus;
 
 /**
  * Classes implementing this interface can act like an int stramable.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
-public interface AsIntStreamable {
+public interface AsIntStreamable extends AsIntStreamPlus {
     
     public default IntStreamable intStreamable() {
         return ()->streamPlus();
@@ -39,15 +39,5 @@ public interface AsIntStreamable {
     public default IntStreamable streamable() {
         return intStreamable();
     }
-    
-    public default IntStreamPlus streamPlus() {
-        return intStream();
-    }
-    
-    public default IntStreamPlus stream() {
-        return intStream();
-    }
-    
-    public IntStreamPlus intStream();
     
 }

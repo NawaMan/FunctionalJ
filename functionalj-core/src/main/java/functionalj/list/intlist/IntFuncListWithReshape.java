@@ -110,7 +110,7 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
     public default IntFuncList collapseWhen(
             IntPredicate      conditionToCollapse,
             IntBinaryOperator concatFunc) {
-        return from(() -> stream().collapseWhen(conditionToCollapse, concatFunc));
+        return from(() -> streamPlus().collapseWhen(conditionToCollapse, concatFunc));
     }
     
     /**
@@ -121,7 +121,7 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
     public default IntFuncList collapseSize(
             IntFunction<Integer> segmentSize,
             IntBinaryOperator    combinator) {
-        return from(() -> stream().collapseSize(segmentSize, combinator));
+        return from(() -> streamPlus().collapseSize(segmentSize, combinator));
     }
     
     /**
@@ -134,7 +134,7 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
             IntUnaryOperator  segmentSize,
             IntUnaryOperator  mapper,
             IntBinaryOperator combinator) {
-        return from(() -> stream().collapseSize(segmentSize, mapper, combinator));
+        return from(() -> streamPlus().collapseSize(segmentSize, mapper, combinator));
     }
     
     /**

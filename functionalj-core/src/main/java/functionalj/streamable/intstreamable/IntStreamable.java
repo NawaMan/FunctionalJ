@@ -448,11 +448,13 @@ public interface IntStreamable
     //== Core ==
     
     /** Return the stream of data behind this IntStreamable. */
-    public IntStreamPlus intStream();
+    public default IntStream intStream() {
+        return streamPlus();
+    }
     
     /** Return this StreamPlus. */
-    public default IntStreamPlus stream() {
-        return intStream();
+    public default IntStream stream() {
+        return streamPlus();
     }
     
     /** Return the this as a streamable. */
@@ -463,11 +465,6 @@ public interface IntStreamable
     /** Return the this as a streamable. */
     public default IntStreamable streamable() {
         return this;
-    }
-    
-    /** Return this StreamPlus. */
-    public default IntStreamPlus asStreamPlus() {
-        return intStream();
     }
     
     //-- Derive --
@@ -488,7 +485,7 @@ public interface IntStreamable
             AsIntStreamable                    asStreamable,
             Function<IntStreamPlus, IntStream> action) {
         return () -> {
-            val sourceStream = asStreamable.intStream();
+            val sourceStream = asStreamable.streamPlus();
             val targetStream = action.apply(sourceStream);
             return IntStreamPlus.from(targetStream);
         };

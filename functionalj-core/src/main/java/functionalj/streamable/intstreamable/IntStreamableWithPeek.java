@@ -24,7 +24,6 @@
 package functionalj.streamable.intstreamable;
 
 import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
-import static functionalj.streamable.intstreamable.IntStreamable.from;
 
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
@@ -38,7 +37,7 @@ public interface IntStreamableWithPeek extends AsIntStreamable {
     public default IntStreamable peekBy(
             IntPredicate selector,
             IntConsumer  theConsumer) {
-        return from(() -> stream().peekBy(selector, theConsumer));
+        return IntStreamable.deriveToInt(this, stream -> stream.peekBy(selector, theConsumer));
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj

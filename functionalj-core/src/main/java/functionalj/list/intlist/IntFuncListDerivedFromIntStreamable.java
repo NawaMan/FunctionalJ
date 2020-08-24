@@ -4,9 +4,9 @@ import static functionalj.streamable.intstreamable.IntStreamable.zipOf;
 
 import java.util.Objects;
 import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
 
 import functionalj.function.IntBiFunctionPrimitive;
-import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
@@ -29,7 +29,7 @@ class IntFuncListDerivedFromIntStreamable
     }
 
     @Override
-    public IntStreamPlus intStream() {
+    public IntStream intStream() {
         return source.intStream();
     }
 

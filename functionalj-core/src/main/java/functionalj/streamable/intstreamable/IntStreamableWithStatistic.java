@@ -19,14 +19,14 @@ public interface IntStreamableWithStatistic extends AsIntStreamable {
     /** Return the value whose mapped value is the smallest. */
     public default <D extends Comparable<D>> OptionalInt minBy(
             IntFunction<D> mapper) {
-        return stream()
+        return streamPlus()
                 .minBy(mapper);
     }
     
     /** Return the value whose mapped value is the biggest. */
     public default <D extends Comparable<D>> OptionalInt maxBy(
             IntFunction<D> mapper) {
-        return stream()
+        return streamPlus()
                 .maxBy(mapper);
     }
     
@@ -34,7 +34,7 @@ public interface IntStreamableWithStatistic extends AsIntStreamable {
     public default <D> OptionalInt minBy(
             IntFunction<D>        mapper,
             Comparator<? super D> comparator) {
-        return stream()
+        return streamPlus()
                 .minBy(mapper, comparator);
     }
     
@@ -42,21 +42,21 @@ public interface IntStreamableWithStatistic extends AsIntStreamable {
     public default <D> OptionalInt maxBy(
             IntFunction<D>        mapper,
             Comparator<? super D> comparator) {
-        return stream()
+        return streamPlus()
                 .maxBy(mapper, comparator);
     }
     
     /** Return the value is the smallest and the biggest using the comparator. */
     public default Tuple2<OptionalInt, OptionalInt> minMax(
             IntBinaryOperator comparator) {
-        return stream()
+        return streamPlus()
                 .minMax(comparator);
     }
     
     /** Return the value whose mapped value is the smallest and the biggest. */
     public default <D extends Comparable<D>> Tuple2<OptionalInt, OptionalInt> minMaxBy(
             IntFunction<D> mapper) {
-        return stream()
+        return streamPlus()
                 .minMaxBy(mapper);
     }
     
@@ -64,7 +64,7 @@ public interface IntStreamableWithStatistic extends AsIntStreamable {
     public default <D> Tuple2<OptionalInt, OptionalInt> minMaxBy(
             IntFunction<D>        mapper,
             Comparator<? super D> comparator) {
-        return stream()
+        return streamPlus()
                 .minMaxBy(mapper, comparator);
     }
     
@@ -88,7 +88,7 @@ public interface IntStreamableWithStatistic extends AsIntStreamable {
     public default <D extends Comparable<D>> OptionalInt minIndexBy(
             IntPredicate   filter,
             IntFunction<D> mapper) {
-        return stream()
+        return streamPlus()
                 .mapWithIndex()
                 .filter(t -> filter.test(t._2))
                 .minBy (t -> mapper.apply(t._2))
@@ -100,7 +100,7 @@ public interface IntStreamableWithStatistic extends AsIntStreamable {
     public default <D extends Comparable<D>> OptionalInt maxIndexBy(
             IntPredicate   filter,
             IntFunction<D> mapper) {
-        return stream()
+        return streamPlus()
                 .mapWithIndex()
                 .filter(t -> filter.test(t._2))
                 .maxBy (t -> mapper.apply(t._2))
@@ -111,7 +111,7 @@ public interface IntStreamableWithStatistic extends AsIntStreamable {
     public default <D extends Comparable<D>> OptionalInt minIndexOf(
             IntPredicate   filter,
             IntUnaryOperator mapper) {
-        return stream()
+        return streamPlus()
                 .mapWithIndex()
                 .map   (t -> t.map2ToInt(mapper))
                 .filter(t -> filter.test(t._2))
@@ -124,7 +124,7 @@ public interface IntStreamableWithStatistic extends AsIntStreamable {
     public default <D extends Comparable<D>> OptionalInt maxIndexOf(
             IntPredicate   filter,
             IntFunction<D> mapper) {
-        return intStream()
+        return streamPlus()
                 .mapWithIndex()
                 .filter(t -> filter.test(t._2))
                 .maxBy (t -> mapper.apply(t._2))

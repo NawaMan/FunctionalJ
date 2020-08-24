@@ -2,9 +2,6 @@ package functionalj.list.doublelist;
 
 import java.util.function.DoubleUnaryOperator;
 
-import functionalj.list.FuncList;
-import functionalj.list.intlist.IntFuncList;
-
 public interface DoubleFuncList {
     
     DoubleFuncList append(double d);

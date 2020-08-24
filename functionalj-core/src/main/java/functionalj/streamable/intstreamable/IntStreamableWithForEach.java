@@ -23,14 +23,8 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
-import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamPlusWithForEach;
 
 public interface IntStreamableWithForEach extends AsIntStreamable, IntStreamPlusWithForEach {
-    
-    @Override
-    default IntStreamPlus streamPlus() {
-        return AsIntStreamable.super.streamPlus();
-    }
     
 }

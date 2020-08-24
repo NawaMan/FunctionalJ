@@ -592,7 +592,7 @@ public interface FuncList<DATA>
     public static <TARGET> FuncList<TARGET> deriveFrom(
             AsIntStreamable                         asStreamable,
             Function<IntStreamPlus, Stream<TARGET>> action) {
-        val sourceStream = asStreamable.intStream();
+        val sourceStream = asStreamable.streamPlus();
         val targetStream = action.apply(sourceStream);
         return FuncList.from(targetStream);
     }

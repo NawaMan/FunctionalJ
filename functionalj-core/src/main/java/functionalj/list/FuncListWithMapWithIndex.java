@@ -23,7 +23,6 @@
 // ============================================================================
 package functionalj.list;
 
-import static functionalj.list.FuncList.deriveFrom;
 import static functionalj.list.FuncList.from;
 
 import java.util.function.Function;

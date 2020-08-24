@@ -47,7 +47,7 @@ public interface IntFuncListWithFlatMap extends AsIntFuncList {
             IntFunction<? extends IntFuncList> mapper) {
         return deriveToInt(this, stream -> {
             IntFunction<? extends IntStream> newMapper = value -> mapper.apply(value).intStream();
-            return stream().flatMapOnly(checker, newMapper);
+            return stream.flatMapOnly(checker, newMapper);
         });
     }
     

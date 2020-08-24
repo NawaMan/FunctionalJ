@@ -23,8 +23,8 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
-import static functionalj.streamable.Streamable.deriveFrom;
-import static functionalj.streamable.intstreamable.IntStreamable.from;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
 
 import java.util.Comparator;
 import java.util.function.BiFunction;
@@ -48,7 +48,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
      * The last portion may be shorter.
      **/
     public default Streamable<IntStreamPlus> segmentSize(int count) {
-        return deriveFrom(this, stream -> stream.segmentSize(count));
+        return deriveToObj(this, stream -> stream.segmentSize(count));
     }
     
     /**
@@ -63,7 +63,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
     public default Streamable<IntStreamPlus> segmentSize(
             int     count,
             boolean includeTail) {
-        return deriveFrom(this, stream -> stream.segmentSize(count, includeTail));
+        return deriveToObj(this, stream -> stream.segmentSize(count, includeTail));
     }
     
     /**
@@ -71,14 +71,14 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
      * The tail sub stream will always be included.
      */
     public default Streamable<IntStreamPlus> segment(IntPredicate startCondition) {
-        return deriveFrom(this, stream -> stream.segment(startCondition));
+        return deriveToObj(this, stream -> stream.segment(startCondition));
     }
     
     /** Segment the stream into sub stream whenever the start condition is true. */
     public default Streamable<IntStreamPlus> segment(
             IntPredicate startCondition,
             boolean      includeIncompletedSegment) {
-        return deriveFrom(this, stream -> stream.segment(startCondition, includeIncompletedSegment));
+        return deriveToObj(this, stream -> stream.segment(startCondition, includeIncompletedSegment));
     }
     
     /**
@@ -88,7 +88,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
     public default Streamable<IntStreamPlus> segment(
             IntPredicate startCondition,
             IntPredicate endCondition) {
-        return deriveFrom(this, stream -> stream.segment(startCondition, endCondition));
+        return deriveToObj(this, stream -> stream.segment(startCondition, endCondition));
     }
     
     /** Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true. */
@@ -96,7 +96,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
             IntPredicate startCondition,
             IntPredicate endCondition,
             boolean         includeIncompletedSegment) {
-        return deriveFrom(this, stream -> stream.segment(startCondition, endCondition, includeIncompletedSegment));
+        return deriveToObj(this, stream -> stream.segment(startCondition, endCondition, includeIncompletedSegment));
     }
     
     /**
@@ -106,14 +106,14 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
      * If the segmentSize function return 0, an empty stream is returned.
      */
     public default Streamable<IntStreamPlus> segmentSize(IntFunction<Integer> segmentSize) {
-        return deriveFrom(this, stream -> stream.segmentSize(segmentSize));
+        return deriveToObj(this, stream -> stream.segmentSize(segmentSize));
     }
     
     /** Combine the current value with the one before it using then combinator everytime the condition to collapse is true. */
     public default IntStreamable collapseWhen(
             IntPredicate      conditionToCollapse,
             IntBinaryOperator concatFunc) {
-        return from(() -> stream().collapseWhen(conditionToCollapse, concatFunc));
+        return deriveToInt(this, stream -> stream.collapseWhen(conditionToCollapse, concatFunc));
     }
     
     /**
@@ -124,7 +124,8 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
     public default IntStreamable collapseSize(
             IntFunction<Integer> segmentSize,
             IntBinaryOperator    combinator) {
-        return from(() -> stream().collapseSize(segmentSize, combinator));
+//        return deriveToInt(this, stream -> stream.ccollapseSize(segmentSize, combinator));
+        return null;
     }
     
     /**
@@ -137,7 +138,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
             IntUnaryOperator  segmentSize,
             IntUnaryOperator  mapper,
             IntBinaryOperator combinator) {
-        return from(() -> stream().collapseSize(segmentSize, mapper, combinator));
+        return deriveToInt(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
     }
     
     /**
@@ -150,7 +151,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
             IntFunction<Integer>               segmentSize,
             IntFunction<TARGET>                mapper,
             BiFunction<TARGET, TARGET, TARGET> combinator) {
-        return deriveFrom(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
+        return deriveToObj(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
     }
     
     //-- More - then StreamPlus --

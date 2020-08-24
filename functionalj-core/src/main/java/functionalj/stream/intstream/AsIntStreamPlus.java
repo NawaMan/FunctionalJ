@@ -43,4 +43,9 @@ public interface AsIntStreamPlus {
         return streamPlus().stream();
     }
     
+    /** @return  return the stream underneath the stream plus. */
+    public default IntStream intStream() {
+        return streamPlus();
+    }
+    
 }

@@ -205,7 +205,7 @@ public interface LongStreamable
             AsIntStreamable                     asStreamable,
             Function<IntStreamPlus, LongStream> action) {
         return () -> {
-            val sourceStream = asStreamable.intStream();
+            val sourceStream = asStreamable.streamPlus();
             val targetStream = action.apply(sourceStream);
             return LongStreamPlus.from(targetStream);
         };

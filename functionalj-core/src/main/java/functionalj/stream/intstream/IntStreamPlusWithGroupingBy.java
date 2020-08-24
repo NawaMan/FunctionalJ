@@ -46,7 +46,7 @@ public interface IntStreamPlusWithGroupingBy extends AsIntStreamPlus {
         IntStreamable streamable = () -> streamPlus();
         return (FuncMap<KEY, IntStreamPlus>) streamable
                 .groupingBy(keyMapper)
-                .mapValue  (IntStreamable::intStream);
+                .mapValue  (IntStreamable::streamPlus);
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
