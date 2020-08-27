@@ -53,7 +53,7 @@ public interface StreamPlusWithGroupingBy<DATA> {
             Function<? super DATA, KEY>                       keyMapper,
             Function<? super StreamPlus<? super DATA>, VALUE> aggregate) {
         Streamable<DATA>                                  streamable     = () -> streamPlus();
-        Function<? super Streamable<? super DATA>, VALUE> valueAggregate = valueStreamable -> aggregate.apply(valueStreamable.stream());
+        Function<? super Streamable<? super DATA>, VALUE> valueAggregate = valueStreamable -> aggregate.apply(valueStreamable.streamPlus());
         return streamable
                 .groupingBy(keyMapper, valueAggregate);
     }

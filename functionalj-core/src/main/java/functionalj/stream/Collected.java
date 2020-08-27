@@ -147,7 +147,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
         public RESULT finish() {
-            val stream = streamable.stream();
+            val stream = streamable.streamPlus();
             return (RESULT) processor.process((StreamPlus)stream);
         }
     }

@@ -537,7 +537,7 @@ public class StreamPlusTest {
     @Test
     public void testFizzBuzz() {
         Function<StreamPlus<Integer>, FuncList<Integer>> streamPlusToList = s -> s.toImmutableList();
-        val stream  = infiniteInt().limit(20).boxed().stream();
+        val stream  = infiniteInt().limit(20).boxed().streamPlus();
         val toString =
                 With(underlineMap.butWith(LinkedHashMap))
                 .run(()->{
@@ -786,7 +786,7 @@ public class StreamPlusTest {
                 IntStreamable
                 .infiniteInt()
                 .boxed      ()
-                .stream     ()
+                .streamPlus ()
                 .limit      (20)
                 .segmentSize(i -> i)
                 .map        (s -> s.toList())

@@ -23,8 +23,21 @@
 // ============================================================================
 package functionalj.stream;
 
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
+
+import lombok.val;
 
 /**
  * Classes implementing this interface can provider a StreamPlus instance of itself.
@@ -49,8 +62,97 @@ public interface AsStreamPlus<DATA>
         return streamPlus().stream();
     }
     
+    //== Terminal operations ==
+    
+    /** @return a iterator of this streamable. */
+    public default IteratorPlus<DATA> iterator() {
+        return streamPlus().iterator();
+    }
+    
+    /** @return a spliterator of this streamable. */
+    public default Spliterator<DATA> spliterator() {
+        val iterator = iterator();
+        return Spliterators.spliteratorUnknownSize(iterator, 0);
+    }
+    
     public default void forEach(Consumer<? super DATA> action) {
-        stream().forEach(action);
+        streamPlus().forEach(action);
+    }
+    
+    public default void forEachOrdered(Consumer<? super DATA> action) {
+        streamPlus().forEachOrdered(action);
+    }
+    
+    public default DATA reduce(DATA identity, BinaryOperator<DATA> reducer) {
+        return streamPlus().reduce(identity, reducer);
+    }
+    
+    public default Optional<DATA> reduce(BinaryOperator<DATA> reducer) {
+        return streamPlus().reduce(reducer);
+    }
+    
+    public default <U> U reduce(
+            U                              identity,
+            BiFunction<U, ? super DATA, U> accumulator,
+            BinaryOperator<U>              combiner) {
+        return streamPlus().reduce(identity, accumulator, combiner);
+    }
+    
+    public default <R> R collect(
+            Supplier<R>                 supplier,
+            BiConsumer<R, ? super DATA> accumulator,
+            BiConsumer<R, R>            combiner) {
+        return streamPlus().collect(supplier, accumulator, combiner);
+    }
+    
+    public default <R, A> R collect(Collector<? super DATA, A, R> collector) {
+        return streamPlus().collect(collector);
+    }
+    
+    //-- statistics --
+    
+    public default Optional<DATA> min(Comparator<? super DATA> comparator) {
+        return streamPlus().min(comparator);
+    }
+    
+    public default Optional<DATA> max(Comparator<? super DATA> comparator) {
+        return streamPlus().max(comparator);
+    }
+    
+    public default long count() {
+        return streamPlus().count();
+    }
+    
+    //-- Match --
+    
+    public default boolean anyMatch(Predicate<? super DATA> predicate) {
+        return streamPlus().anyMatch(predicate);
+    }
+    
+    public default boolean allMatch(Predicate<? super DATA> predicate) {
+        return streamPlus().allMatch(predicate);
+    }
+    
+    public default boolean noneMatch(Predicate<? super DATA> predicate) {
+        return streamPlus().noneMatch(predicate);
+    }
+    
+    public default Optional<DATA> findFirst() {
+        return streamPlus().findFirst();
+    }
+    
+    public default Optional<DATA> findAny() {
+        return streamPlus().findAny();
+    }
+    
+    //== Conversion ==
+    
+    public default Object[] toArray() {
+        return streamPlus().toArray();
+    }
+    
+    public default <A> A[] toArray(IntFunction<A[]> generator) {
+        return streamPlus().toArray(generator);
     }
     
 }

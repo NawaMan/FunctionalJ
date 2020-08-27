@@ -38,8 +38,6 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -48,7 +46,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,7 +55,6 @@ import functionalj.function.Func2;
 import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.result.Result;
-import functionalj.stream.IterablePlus;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusHelper;
@@ -677,11 +673,6 @@ public interface FuncList<DATA>
     
     //-- Iterator --
     
-    /** @return the iterable of this list. */
-    public default IterablePlus<DATA> iterable() {
-        return () -> iterator();
-    }
-    
     /** @return a iterator of this list. */
     public default IteratorPlus<DATA> iterator() {
         return IteratorPlus.from(stream());
@@ -808,125 +799,6 @@ public interface FuncList<DATA>
     public default void forEachOrdered(Consumer<? super DATA> action) {
         stream()
         .forEachOrdered(action);
-    }
-    
-    /**
-     * Performs a reduction on the elements of this stream, using the provided identity value and an associative accumulation function,
-     * and returns the reduced value.
-     **/
-    public default DATA reduce(DATA identity, BinaryOperator<DATA> reducer) {
-        return stream()
-                .reduce(identity, reducer);
-    }
-    
-    /**
-     * Performs a reduction on the elements of this stream, using the provided identity value and an associative accumulation function,
-     * and returns the reduced value.
-     **/
-    public default Optional<DATA> reduce(BinaryOperator<DATA> reducer) {
-        return stream()
-                .reduce(reducer);
-    }
-    
-    /**
-     * Performs a reduction on the elements of this stream, using the provided identity value and an associative accumulation function,
-     * and returns the reduced value.
-     **/
-    public default <U> U reduce(
-            U                              identity,
-            BiFunction<U, ? super DATA, U> accumulator,
-            BinaryOperator<U>              combiner) {
-        return stream()
-                .reduce(identity, accumulator, combiner);
-    }
-    
-    /**
-     * Performs a mutable reduction operation on the elements of this stream. A mutable reduction is one in which the reduced value is
-     * a mutable result container, such as an {@code ArrayList}, and elements are incorporated by updating the state of the result rather
-     * than by replacing the result.
-     **/
-    public default <R> R collect(
-            Supplier<R>                 supplier,
-            BiConsumer<R, ? super DATA> accumulator,
-            BiConsumer<R, R>            combiner) {
-        return stream()
-                .collect(supplier, accumulator, combiner);
-    }
-    
-    /**
-     * Performs a mutable reduction operation on the elements of this stream. A mutable reduction is one in which the reduced value is
-     * a mutable result container, such as an {@code ArrayList}, and elements are incorporated by updating the state of the result rather
-     * than by replacing the result.
-     **/
-    public default <R, A> R collect(
-            Collector<? super DATA, A, R> collector) {
-        return stream()
-                .collect(collector);
-    }
-    
-    //-- statistics --
-    
-    /** Using the comparator, find the minimal value */
-    public default Optional<DATA> min(Comparator<? super DATA> comparator) {
-        return stream()
-                .min(comparator);
-    }
-    
-    /** Using the comparator, find the maximum value */
-    public default Optional<DATA> max(Comparator<? super DATA> comparator) {
-        return stream().max(comparator);
-    }
-    
-    /** Map each value to be a comparable and used it to find the minimal */
-    @Override
-    public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
-        return stream()
-                .minBy(mapper);
-    }
-    
-    /** Map each value to be a comparable and used it to find the maximum */
-    @Override
-    public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
-        return stream()
-                .minBy(mapper);
-    }
-    
-    /** Return the number of elements */
-    public default long count() {
-        return stream()
-                .count();
-    }
-    
-    //-- Match --
-    
-    /** Check if any element match the predicate */
-    public default boolean anyMatch(Predicate<? super DATA> predicate) {
-        return stream()
-                .anyMatch(predicate);
-    }
-    
-    /** Check if all elements match the predicate */
-    public default boolean allMatch(Predicate<? super DATA> predicate) {
-        return stream()
-                .allMatch(predicate);
-    }
-    
-    /** Check if none of the elements match the predicate */
-    public default boolean noneMatch(Predicate<? super DATA> predicate) {
-        return stream()
-                .noneMatch(predicate);
-    }
-    
-    /** Returns the sequentially first element */
-    public default Optional<DATA> findFirst() {
-        return stream()
-                .findFirst();
-    }
-    
-    /** Returns the any element */
-    public default Optional<DATA> findAny() {
-        return stream()
-                .findAny();
     }
     
     //== Conversion ==

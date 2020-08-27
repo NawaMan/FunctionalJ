@@ -25,6 +25,7 @@ package functionalj.stream.doublestream;
 
 import java.util.function.Function;
 import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -131,7 +132,7 @@ public interface DoubleStreamable {
     
     public DoubleStreamPlus doubleStream();
     
-    public default StreamPlus<Double> stream() {
+    public default Stream<Double> stream() {
         return doubleStream().boxed();
     }
     
