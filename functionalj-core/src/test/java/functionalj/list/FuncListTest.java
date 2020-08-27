@@ -56,7 +56,6 @@ import functionalj.promise.DeferAction;
 import functionalj.stream.CollectorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamProcessor;
-import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.Streamable;
 import lombok.val;
 

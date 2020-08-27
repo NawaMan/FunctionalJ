@@ -21,26 +21,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream;
+package functionalj.stream.intstream;
 
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.OptionalInt;
+import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 
 import functionalj.stream.makers.Sequential;
 import functionalj.stream.makers.Terminal;
 import lombok.val;
 
-public interface StreamPlusWithMatch<DATA> {
+public interface AsIntStreamPlusWithMatch {
     
-    public StreamPlus<DATA> streamPlus();
+    public IntStreamPlus intStreamPlus();
     
     /** Return the first element that matches the predicate. */
     @Terminal
     @Sequential
-    public default Optional<DATA> findFirst(
-            Predicate<? super DATA> predicate) {
-        val streamPlus = streamPlus();
+    public default OptionalInt findFirst(
+            IntPredicate predicate) {
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(predicate)
                 .findFirst();
@@ -48,21 +50,21 @@ public interface StreamPlusWithMatch<DATA> {
     
     /** Return the any element that matches the predicate. */
     @Terminal
-    public default Optional<DATA> findAny(
-            Predicate<? super DATA> predicate) {
-        val streamPlus = streamPlus();
+    public default OptionalInt findAny(
+            IntPredicate predicate) {
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(predicate)
                 .findAny();
     }
     
-    /** Use the mapper, return the first element that its mapped value matches the predicate. */
+    /** Return the any element that matches the predicate. */
     @Terminal
     @Sequential
-    public default <T> Optional<DATA> findFirst(
-            Function<? super DATA, T> mapper, 
-            Predicate<? super T>      theCondition) {
-        val streamPlus = streamPlus();
+    public default OptionalInt findFirst(
+            IntUnaryOperator mapper, 
+            IntPredicate     theCondition) {
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(mapper, theCondition)
                 .findFirst();
@@ -70,12 +72,35 @@ public interface StreamPlusWithMatch<DATA> {
     
     /** Use the mapper, return the any element that its mapped value matches the predicate. */
     @Terminal
-    public default <T>  Optional<DATA> findAny(
-            Function<? super DATA, T> mapper, 
-            Predicate<? super T>      theCondition) {
-        val streamPlus = streamPlus();
+    public default <T> OptionalInt findAny(
+            IntUnaryOperator mapper, 
+            IntPredicate     theCondition) {
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(mapper, theCondition)
+                .findAny();
+    }
+    
+    /** Return the any element that matches the predicate. */
+    @Terminal
+    @Sequential
+    public default <T> OptionalInt findFirstBy(
+            IntFunction<? extends T> mapper, 
+            Predicate<? super T>     theCondition) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .filterAsObject(mapper, theCondition)
+                .findFirst();
+    }
+    
+    /** Use the mapper, return the any element that its mapped value matches the predicate. */
+    @Terminal
+    public default <T> OptionalInt findAnyBy(
+            IntFunction<? extends T> mapper, 
+            Predicate<? super T>      theCondition) {
+        val streamPlus = intStreamPlus();
+        return streamPlus
+                .filterAsObject(mapper, theCondition)
                 .findAny();
     }
     

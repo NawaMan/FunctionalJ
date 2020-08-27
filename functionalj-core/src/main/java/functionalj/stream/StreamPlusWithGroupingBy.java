@@ -32,7 +32,9 @@ import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Terminal;
 import functionalj.streamable.Streamable;
 
-public interface StreamPlusWithGroupingBy<DATA> extends AsStreamPlus<DATA> {
+public interface StreamPlusWithGroupingBy<DATA> {
+    
+    public StreamPlus<DATA> streamPlus();
     
     /** Group the elements by determining the grouping keys */
     @Eager

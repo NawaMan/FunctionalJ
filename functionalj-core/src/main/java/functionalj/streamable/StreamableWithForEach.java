@@ -23,8 +23,8 @@
 // ============================================================================
 package functionalj.streamable;
 
-import functionalj.stream.StreamPlusWithForEach;
+import functionalj.stream.AsStreamPlusWithForEach;
 
-public interface StreamableWithForEach<DATA> extends AsStreamable<DATA>, StreamPlusWithForEach<DATA> {
+public interface StreamableWithForEach<DATA> extends AsStreamable<DATA>, AsStreamPlusWithForEach<DATA> {
     
 }

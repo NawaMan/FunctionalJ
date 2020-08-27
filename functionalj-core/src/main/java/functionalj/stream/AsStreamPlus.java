@@ -23,6 +23,7 @@
 // ============================================================================
 package functionalj.stream;
 
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -33,7 +34,12 @@ import java.util.stream.Stream;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface AsStreamPlus<DATA> {
+public interface AsStreamPlus<DATA> 
+                    extends
+                        AsStreamPlusWithConversion<DATA>,
+                        AsStreamPlusWithForEach<DATA>,
+                        AsStreamPlusWithMatch<DATA>,
+                        AsStreamPlusWithStatistic<DATA> {
     
     /** @return  the stream plus instance of this object. */
     public StreamPlus<DATA> streamPlus();
@@ -41,6 +47,10 @@ public interface AsStreamPlus<DATA> {
     /** @return  return the stream underneath the stream plus. */
     public default Stream<DATA> stream() {
         return streamPlus().stream();
+    }
+    
+    public default void forEach(Consumer<? super DATA> action) {
+        stream().forEach(action);
     }
     
 }

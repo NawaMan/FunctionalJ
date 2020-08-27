@@ -33,7 +33,10 @@ import java.util.stream.IntStream;
  * @author NawaMan -- nawa@nawaman.net
  */
 @FunctionalInterface
-public interface AsIntStreamPlus {
+public interface AsIntStreamPlus 
+                    extends 
+                        AsIntStreamPlusWithConversion,
+                        AsIntStreamPlusWithMatch {
     
     /** @return  the stream plus instance of this object. */
     public IntStreamPlus intStreamPlus();

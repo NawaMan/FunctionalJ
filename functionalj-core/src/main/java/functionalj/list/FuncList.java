@@ -83,7 +83,6 @@ public interface FuncList<DATA>
             Predicate<DATA>,
             FuncListWithCalculate<DATA>,
             FuncListWithCombine<DATA>,
-            FuncListWithConversion<DATA>,
             FuncListWithFillNull<DATA>,
             FuncListWithFilter<DATA>,
             FuncListWithFlatMap<DATA>,
@@ -97,14 +96,12 @@ public interface FuncList<DATA>
             FuncListWithMapToTuple<DATA>,
             FuncListWithMapWithIndex<DATA>,
             FuncListWithMapWithPrev<DATA>,
-            FuncListWithMatch<DATA>,
             FuncListWithModify<DATA>,
             FuncListWithPeek<DATA>,
             FuncListWithPipe<DATA>,
             FuncListWithReshape<DATA>,
             FuncListWithSort<DATA>,
-            FuncListWithSplit<DATA>,
-            FuncListWithStatistic<DATA> {
+            FuncListWithSplit<DATA> {
     
     /** Returns an empty FuncList. */
     public static <TARGET> ImmutableList<TARGET> empty() {

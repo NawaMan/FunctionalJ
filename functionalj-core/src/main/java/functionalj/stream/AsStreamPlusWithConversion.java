@@ -44,7 +44,7 @@ import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Terminal;
 import lombok.val;
 
-public interface StreamPlusWithConversion<DATA> {
+public interface AsStreamPlusWithConversion<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     

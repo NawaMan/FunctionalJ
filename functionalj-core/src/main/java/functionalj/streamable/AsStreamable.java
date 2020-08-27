@@ -32,7 +32,9 @@ import functionalj.stream.AsStreamPlus;
  *
  * @author NawaMan -- nawa@nawaman.net
  */
-public interface AsStreamable<DATA> extends AsStreamPlus<DATA> {
+public interface AsStreamable<DATA> 
+                    extends
+                        AsStreamPlus<DATA> {
     
     public default Streamable<DATA> streamable() {
         return ()->streamPlus();

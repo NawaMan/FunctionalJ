@@ -108,12 +108,9 @@ public interface StreamPlus<DATA>
             AsStreamPlus<DATA>,
             StreamPlusWithCalculate<DATA>,
             StreamPlusWithCombine<DATA>,
-            StreamPlusWithConversion<DATA>,
             StreamPlusWithFillNull<DATA>,
             StreamPlusWithFilter<DATA>,
             StreamPlusWithFlatMap<DATA>,
-            StreamPlusWithForEach<DATA>,
-            StreamPlusWithGroupingBy<DATA>,
             StreamPlusWithLimit<DATA>,
             StreamPlusWithMap<DATA>,
             StreamPlusWithMapFirst<DATA>,
@@ -122,14 +119,12 @@ public interface StreamPlus<DATA>
             StreamPlusWithMapToTuple<DATA>,
             StreamPlusWithMapWithIndex<DATA>,
             StreamPlusWithMapWithPrev<DATA>,
-            StreamPlusWithMatch<DATA>,
             StreamPlusWithModify<DATA>,
             StreamPlusWithReshape<DATA>,
             StreamPlusWithPeek<DATA>,
             StreamPlusWithPipe<DATA>,
             StreamPlusWithSort<DATA>,
-            StreamPlusWithSplit<DATA>,
-            StreamPlusWithStatistic<DATA> {
+            StreamPlusWithSplit<DATA> {
 
     /** Throw a no more element exception. This is used for generator. */
     public static <TARGET> TARGET noMoreElement() throws NoMoreResultException {

@@ -35,7 +35,7 @@ import functionalj.stream.makers.Terminal;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-public interface StreamPlusWithStatistic<DATA> {
+public interface AsStreamPlusWithStatistic<DATA> {
     
     public StreamPlus<DATA> streamPlus();
     

@@ -87,7 +87,6 @@ public interface Streamable<DATA>
             AsStreamable<DATA>,
             StreamableWithCalculate<DATA>,
             StreamableWithCombine<DATA>,
-            StreamableWithConversion<DATA>,
             StreamableWithFillNull<DATA>,
             StreamableWithFilter<DATA>,
             StreamableWithFlatMap<DATA>,
@@ -101,14 +100,12 @@ public interface Streamable<DATA>
             StreamableWithMapToTuple<DATA>,
             StreamableWithMapWithIndex<DATA>,
             StreamableWithMapWithPrev<DATA>,
-            StreamableWithMatch<DATA>,
             StreamableWithModify<DATA>,
             StreamableWithPeek<DATA>,
             StreamableWithPipe<DATA>,
             StreamableWithReshape<DATA>,
             StreamableWithSort<DATA>,
-            StreamableWithSplit<DATA>,
-            StreamableWithStatistic<DATA> {
+            StreamableWithSplit<DATA> {
 
     /** Throw a no more element exception. This is used for generator. */
     public static <TARGET> TARGET noMoreElement() throws NoMoreResultException {
