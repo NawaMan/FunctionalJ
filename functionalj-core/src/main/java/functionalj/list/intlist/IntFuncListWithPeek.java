@@ -32,13 +32,15 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
+import functionalj.streamable.intstreamable.IntStreamable;
+
 public interface IntFuncListWithPeek extends AsIntFuncList {
     
     /** Peek only the value that is selected with selector. */
     public default IntFuncList peekBy(
             IntPredicate selector,
             IntConsumer  theConsumer) {
-        return from(() -> intStreamPlus().peekBy(selector, theConsumer));
+        return from((IntStreamable)(() -> intStreamPlus().peekBy(selector, theConsumer)));
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj

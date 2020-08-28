@@ -972,11 +972,11 @@ public interface FuncList<DATA>
         if (index >= size())
             throw new IndexOutOfBoundsException(index + " vs " + size());
         
-        return from(() -> {
+        return from((Streamable<DATA>)(() -> {
             val i = new AtomicInteger();
             return map(each -> (i.getAndIncrement() == index) ? value : each)
                     .stream();
-        });
+        }));
     }
     
     /** Returns a new functional list with the new value (calculated from the mapper) replacing at the index. */
@@ -985,12 +985,12 @@ public interface FuncList<DATA>
             throw new IndexOutOfBoundsException(index + "");
         if (index >= size())
             throw new IndexOutOfBoundsException(index + " vs " + size());
-        
-        return from(() -> {
+
+        return from((Streamable<DATA>)(() -> {
             val i = new AtomicInteger();
             return map(each -> (i.getAndIncrement() == index) ? mapper.apply(each) : each)
                     .stream();
-        });
+        }));
     }
     
     /** Returns a new list with the given elements inserts into at the given index. */

@@ -536,8 +536,8 @@ public interface Streamable<DATA>
     //== Core ==
     
     /** Return the stream of data behind this Streamable. */
-    public default Stream<DATA> stream() {
-        return streamPlus().stream();
+    public default StreamPlus<DATA> stream() {
+        return streamPlus();
     }
     
     /** Return this StreamPlus. */

@@ -25,6 +25,7 @@ package functionalj.streamable;
 
 import functionalj.stream.AsStreamPlus;
 import functionalj.stream.IterablePlus;
+import functionalj.stream.StreamPlus;
 
 /**
  * Classes implementing this interface can act like a stramable.
@@ -36,6 +37,9 @@ import functionalj.stream.IterablePlus;
 public interface AsStreamable<DATA> 
                     extends
                         AsStreamPlus<DATA> {
+    
+    /** @return  the stream plus instance of this object. */
+    public StreamPlus<DATA> stream();
     
     public default Streamable<DATA> streamable() {
         return ()->streamPlus();

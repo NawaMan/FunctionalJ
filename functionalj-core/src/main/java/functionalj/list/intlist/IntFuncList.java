@@ -270,7 +270,7 @@ public interface IntFuncList
     public IntStreamable intStreamable();
     
     /** Return the stream of data behind this IntStreamable. */
-    public default IntStream intStream() {
+    public default IntStreamPlus intStream() {
         return intStreamable().intStream();
     }
     

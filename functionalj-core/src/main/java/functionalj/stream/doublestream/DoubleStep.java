@@ -25,7 +25,6 @@ package functionalj.stream.doublestream;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleUnaryOperator;
-import java.util.stream.Stream;
 
 import functionalj.function.Func1;
 import functionalj.stream.StreamPlus;
@@ -133,8 +132,9 @@ public class DoubleStep implements DoubleUnaryOperator, DoubleStreamable, Stream
     }
 
     @Override
-    public Stream<Double> stream() {
-        return DoubleStreamable.super.stream();
+    public StreamPlus<Double> stream() {
+//        return DoubleStreamable.super.stream();
+        return null;
     }
     
 }

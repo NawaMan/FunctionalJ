@@ -37,6 +37,7 @@ import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.AsIntStreamable;
+import functionalj.streamable.intstreamable.IntStreamable;
 
 public interface IntFuncListWithReshape extends AsIntStreamable {
     
@@ -110,7 +111,7 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
     public default IntFuncList collapseWhen(
             IntPredicate      conditionToCollapse,
             IntBinaryOperator concatFunc) {
-        return from(() -> intStreamPlus().collapseWhen(conditionToCollapse, concatFunc));
+        return from((IntStreamable)(() -> intStreamPlus().collapseWhen(conditionToCollapse, concatFunc)));
     }
     
     /**
@@ -121,7 +122,8 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
     public default IntFuncList collapseSize(
             IntFunction<Integer> segmentSize,
             IntBinaryOperator    combinator) {
-        return from(() -> intStreamPlus().collapseSize(segmentSize, combinator));
+        IntStreamable streamable = () -> intStreamPlus().collapseSize(segmentSize, combinator);
+        return from(streamable);
     }
     
     /**
@@ -134,7 +136,8 @@ public interface IntFuncListWithReshape extends AsIntStreamable {
             IntUnaryOperator  segmentSize,
             IntUnaryOperator  mapper,
             IntBinaryOperator combinator) {
-        return from(() -> intStreamPlus().collapseSize(segmentSize, mapper, combinator));
+        IntStreamable streamable = () -> intStreamPlus().collapseSize(segmentSize, mapper, combinator);
+        return from(streamable);
     }
     
     /**

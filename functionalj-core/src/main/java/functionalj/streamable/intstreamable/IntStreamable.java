@@ -445,8 +445,8 @@ public interface IntStreamable
     //== Core ==
     
     /** Return the stream of data behind this IntStreamable. */
-    public default IntStream intStream() {
-        return intStreamPlus().intStream();
+    public default IntStreamPlus intStream() {
+        return intStreamPlus();
     }
     
     /** Return this StreamPlus. */

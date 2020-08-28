@@ -109,8 +109,8 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
         this.start = start;
     }
     
-    public IntStream intStream() {
-        return intStreamPlus().intStream();
+    public IntStreamPlus intStream() {
+        return intStreamPlus();
     }
     
     @Override

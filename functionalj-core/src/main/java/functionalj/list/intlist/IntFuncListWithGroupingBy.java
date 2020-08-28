@@ -35,6 +35,7 @@ import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamProcessor;
+import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
 public interface IntFuncListWithGroupingBy extends IntFuncListWithMapToTuple {
@@ -48,7 +49,7 @@ public interface IntFuncListWithGroupingBy extends IntFuncListWithMapToTuple {
         
         Supplier<ArrayList<Integer>> collectorSupplier = ArrayList::new;
         Function<ArrayList<Integer>, IntFuncList> toStreamable
-                = array -> IntFuncList.from(()->IntStreamPlus.from(array.stream().mapToInt(Integer::intValue)));
+                = array -> IntFuncList.from((IntStreamable)(()->IntStreamPlus.from(array.stream().mapToInt(Integer::intValue))));
                 
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
