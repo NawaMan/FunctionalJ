@@ -171,11 +171,11 @@ public interface StreamPlusWithReshape<DATA> {
         
         // TODO - Find a way to make it fully lazy. Try tryAdvance.
         val streamPlus = streamPlus();
-        return sequentialToObj(streamPlus, stream -> {
+        StreamPlus<StreamPlus<DATA>> returnStream = sequentialToObj(streamPlus, stream -> {
             val list         = new AtomicReference<>(newStorage.get());
             val adding       = new AtomicBoolean(false);
             
-            val resultStream 
+            StreamPlus<StreamPlus<DATA>> resultStream 
                 = StreamPlus.from(
                     stream
                     .mapToObj(i -> {
@@ -205,6 +205,7 @@ public interface StreamPlusWithReshape<DATA> {
             
             return resultStream;
         });
+        return returnStream;
     }
     
     /**
@@ -293,7 +294,7 @@ public interface StreamPlusWithReshape<DATA> {
         }
         
         val prev = new AtomicReference<Object>(first);
-        val resultStream = generateWith(()->{
+        StreamPlus<DATA> resultStream = generateWith(()->{
             if (prev.get() == dummy)
                 throw new NoMoreResultException();
             
@@ -406,7 +407,7 @@ public interface StreamPlusWithReshape<DATA> {
         val firstObj = new Object();
         val iterator = streamPlus().iterator();
         val prev = new AtomicReference<Object>(firstObj);
-        val resultStream = StreamPlus.generateWith(()->{
+        StreamPlus<TARGET> resultStream = StreamPlus.generateWith(()->{
             if (prev.get() == dummy)
                 throw new NoMoreResultException();
             

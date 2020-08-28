@@ -174,11 +174,11 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
 
         // TODO - Find a way to make it fully lazy. Try tryAdvance.
         val streamPlus = intStreamPlus();
-        return sequentialToObj(streamPlus, stream -> {
+        StreamPlus<IntStreamPlus> returnStream = sequentialToObj(streamPlus, stream -> {
             val list         = new AtomicReference<>(newStorage.get());
             val adding       = new AtomicBoolean(false);
 
-            val resultStream
+            StreamPlus<IntStreamPlus> resultStream
                 = StreamPlus.from(
                     stream
                     .mapToObj(i -> {
@@ -208,6 +208,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
 
             return resultStream;
         });
+        return returnStream;
     }
 
     /**
