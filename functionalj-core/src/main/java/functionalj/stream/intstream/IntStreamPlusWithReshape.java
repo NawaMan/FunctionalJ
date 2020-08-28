@@ -345,7 +345,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
         val firstObj = new Object();
         val iterator = intStreamPlus().iterator();
         val prev = new AtomicReference<Object>(firstObj);
-        val resultStream = generateWith(()->{
+        IntStreamPlus resultStream = generateWith(()->{
             if (prev.get() == dummy)
                 throw new NoMoreResultException();
 
