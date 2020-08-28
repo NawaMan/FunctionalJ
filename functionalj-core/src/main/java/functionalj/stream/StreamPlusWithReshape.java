@@ -342,7 +342,7 @@ public interface StreamPlusWithReshape<DATA> {
         val firstObj = new Object();
         val iterator = streamPlus().iterator();
         val prev = new AtomicReference<Object>(firstObj);
-        val resultStream = generateWith(()->{
+        StreamPlus<DATA> resultStream = generateWith(()->{
             if (prev.get() == dummy)
                 throw new NoMoreResultException();
             
