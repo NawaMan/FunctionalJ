@@ -71,4 +71,5 @@ public interface StreamableWithPeek<DATA> extends AsStreamable<DATA> {
             Consumer<? super T>       theConsumer) {
         return deriveFrom(this, stream -> stream.peekAs(mapper, selector, theConsumer));
     }
+    
 }

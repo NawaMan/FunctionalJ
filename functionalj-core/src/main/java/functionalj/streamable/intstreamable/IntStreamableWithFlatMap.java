@@ -25,6 +25,7 @@ package functionalj.streamable.intstreamable;
 
 import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
 import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
 
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
@@ -42,8 +43,8 @@ public interface IntStreamableWithFlatMap extends AsIntStreamable {
     
     /** FlatMap with the given mapper for only the value that pass the condition. */
     public default IntStreamable flatMapOnly(
-            IntPredicate                         checker, 
-            IntFunction<? extends IntStreamable> mapper) {
+                    IntPredicate                         checker, 
+                    IntFunction<? extends IntStreamable> mapper) {
         return deriveToInt(this, stream -> {
             IntFunction<? extends IntStream> newMapper = value -> mapper.apply(value).intStream();
             return stream.flatMapOnly(checker, newMapper);
@@ -57,7 +58,9 @@ public interface IntStreamableWithFlatMap extends AsIntStreamable {
             IntFunction<? extends IntStreamable> falseMapper) {
         IntFunction<? extends IntStream> newTrueMapper  = value -> trueMapper .apply(value).intStream();
         IntFunction<? extends IntStream> newFalseMapper = value -> falseMapper.apply(value).intStream();
-        return deriveToInt(this, stream -> stream.flatMapIf(checker, newTrueMapper, newFalseMapper));
+        return deriveFrom(this, stream -> {
+            return stream.flatMapIf(checker, newTrueMapper, newFalseMapper);
+        });
     }
     
     /** FlatMap with the mapper if the condition is true, otherwise use another elseMapper. */

@@ -9,10 +9,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,8 +23,8 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
 import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
 
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
@@ -46,7 +46,7 @@ public interface IntStreamableWithMapWithIndex extends AsIntStreamable {
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default IntStreamable mapWithIndex(IntBinaryOperator combinator) {
-        return deriveToInt(this, stream -> stream.mapWithIndex(combinator));
+        return deriveFrom(this, stream -> stream.mapWithIndex(combinator));
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */

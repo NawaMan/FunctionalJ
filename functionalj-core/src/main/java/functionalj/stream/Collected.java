@@ -46,6 +46,12 @@ import lombok.val;
 
 public interface Collected<DATA, ACCUMULATED, RESULT> {
     
+    public static <D, A, R> Collected<D, A, R> collectedOf(
+            Streamable<D>                   streamable, 
+            StreamProcessor<? extends D, R> processor) {
+        return of(streamable, processor);
+    }
+    
     @SuppressWarnings("unchecked")
     public static <D, A, R> Collected<D, A, R> of(
             Streamable<D>                   streamable, 
@@ -153,6 +159,13 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     }
     
     public static interface CollectedInt<ACCUMULATED, RESULT> {
+        
+        public static <A, R> CollectedInt<A, R> collectedOf(
+                IntStreamable         streamable, 
+                IntStreamProcessor<R> processor) {
+            return Collected.ofInt(streamable, processor);
+        }
+        
         public void   accumulate(int each);
         public RESULT finish();
     }
@@ -205,6 +218,13 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     }
     
     public static interface CollectedLong<ACCUMULATED, RESULT> {
+        
+        public static <A, R> CollectedLong<A, R> collectedInt(
+                LongStreamable         streamable, 
+                LongStreamProcessor<R> processor) {
+            return Collected.ofLong(streamable, processor);
+        }
+        
         public void   accumulate(long each);
         public RESULT finish();
     }
@@ -255,6 +275,13 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
     }
     
     public static interface CollectedDouble<ACCUMULATED, RESULT> {
+        
+        public static <A, R> CollectedDouble<A, R> collectedInt(
+                DoubleStreamable         streamable, 
+                DoubleStreamProcessor<R> processor) {
+            return Collected.ofDouble(streamable, processor);
+        }
+        
         public void   accumulate(double each);
         public RESULT finish();
     }

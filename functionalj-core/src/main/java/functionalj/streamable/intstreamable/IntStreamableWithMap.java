@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
 import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
 
 import java.util.function.IntFunction;
@@ -44,7 +44,7 @@ public interface IntStreamableWithMap extends AsIntStreamable {
     public default IntStreamable mapOnly(
             IntPredicate     condition, 
             IntUnaryOperator mapper) {
-        return deriveToInt(this, stream -> stream.mapOnly(condition, mapper));
+        return deriveFrom(this, stream -> stream.mapOnly(condition, mapper));
     }
     
     /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
@@ -52,7 +52,7 @@ public interface IntStreamableWithMap extends AsIntStreamable {
             IntPredicate     condition, 
             IntUnaryOperator mapper, 
             IntUnaryOperator elseMapper) {
-        return deriveToInt(this, stream -> stream.mapIf(condition, mapper, elseMapper));
+        return deriveFrom(this, stream -> stream.mapIf(condition, mapper, elseMapper));
     }
     
     /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.  */

@@ -37,6 +37,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+import functionalj.stream.makers.Eager;
+import functionalj.stream.makers.Terminal;
 import lombok.val;
 
 /**
@@ -55,18 +57,23 @@ public interface AsStreamPlus<DATA>
                         AsStreamPlusWithStatistic<DATA> {
     
     /** @return  the stream plus instance of this object. */
+    public static <D> StreamPlus<D> streamOf(AsStreamPlus<D> streamPlus) {
+        return streamPlus.streamPlus();
+    }
+    
+    /** @return  the stream plus instance of this object. */
     public StreamPlus<DATA> streamPlus();
     
     /** @return  return the stream underneath the stream plus. */
     public default Stream<DATA> stream() {
-        return streamPlus().stream();
+        return streamPlus();
     }
     
     //== Terminal operations ==
     
     /** @return a iterator of this streamable. */
     public default IteratorPlus<DATA> iterator() {
-        return streamPlus().iterator();
+        return streamOf(this).iterator();
     }
     
     /** @return a spliterator of this streamable. */
@@ -76,83 +83,94 @@ public interface AsStreamPlus<DATA>
     }
     
     public default void forEach(Consumer<? super DATA> action) {
-        streamPlus().forEach(action);
+        streamOf(this).forEach(action);
     }
     
     public default void forEachOrdered(Consumer<? super DATA> action) {
-        streamPlus().forEachOrdered(action);
+        streamOf(this).forEachOrdered(action);
     }
     
     public default DATA reduce(DATA identity, BinaryOperator<DATA> reducer) {
-        return streamPlus().reduce(identity, reducer);
+        return streamOf(this).reduce(identity, reducer);
     }
     
     public default Optional<DATA> reduce(BinaryOperator<DATA> reducer) {
-        return streamPlus().reduce(reducer);
+        return streamOf(this).reduce(reducer);
     }
     
     public default <U> U reduce(
             U                              identity,
             BiFunction<U, ? super DATA, U> accumulator,
             BinaryOperator<U>              combiner) {
-        return streamPlus().reduce(identity, accumulator, combiner);
+        return streamOf(this).reduce(identity, accumulator, combiner);
     }
     
     public default <R> R collect(
             Supplier<R>                 supplier,
             BiConsumer<R, ? super DATA> accumulator,
             BiConsumer<R, R>            combiner) {
-        return streamPlus().collect(supplier, accumulator, combiner);
+        return streamOf(this).collect(supplier, accumulator, combiner);
     }
     
     public default <R, A> R collect(Collector<? super DATA, A, R> collector) {
-        return streamPlus().collect(collector);
+        return streamOf(this).collect(collector);
     }
     
     //-- statistics --
     
     public default Optional<DATA> min(Comparator<? super DATA> comparator) {
-        return streamPlus().min(comparator);
+        return streamOf(this).min(comparator);
     }
     
     public default Optional<DATA> max(Comparator<? super DATA> comparator) {
-        return streamPlus().max(comparator);
+        return streamOf(this).max(comparator);
     }
     
     public default long count() {
-        return streamPlus().count();
+        return streamOf(this).count();
     }
     
     //-- Match --
     
+    @Terminal
     public default boolean anyMatch(Predicate<? super DATA> predicate) {
-        return streamPlus().anyMatch(predicate);
+        return streamOf(this).anyMatch(predicate);
     }
     
+    @Eager
+    @Terminal
     public default boolean allMatch(Predicate<? super DATA> predicate) {
-        return streamPlus().allMatch(predicate);
+        return streamOf(this).allMatch(predicate);
     }
     
+    @Eager
+    @Terminal
     public default boolean noneMatch(Predicate<? super DATA> predicate) {
-        return streamPlus().noneMatch(predicate);
+        return streamOf(this).noneMatch(predicate);
     }
     
+    @Terminal
     public default Optional<DATA> findFirst() {
-        return streamPlus().findFirst();
+        return streamOf(this).findFirst();
     }
     
+    @Terminal
     public default Optional<DATA> findAny() {
-        return streamPlus().findAny();
+        return streamOf(this).findAny();
     }
     
     //== Conversion ==
     
+    @Eager
+    @Terminal
     public default Object[] toArray() {
-        return streamPlus().toArray();
+        return streamOf(this).toArray();
     }
     
+    @Eager
+    @Terminal
     public default <A> A[] toArray(IntFunction<A[]> generator) {
-        return streamPlus().toArray(generator);
+        return streamOf(this).toArray(generator);
     }
     
 }

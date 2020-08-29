@@ -24,6 +24,7 @@
 package functionalj.streamable;
 
 import static functionalj.streamable.Streamable.deriveFrom;
+import static functionalj.streamable.Streamable.deriveToObj;
 
 import functionalj.function.Func2;
 import functionalj.stream.ZipWithOption;
@@ -61,7 +62,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
      *   Result stream:  [(A, 1), (B, 2), (C, 3)] <br>
      */
     public default <B> Streamable<Tuple2<DATA,B>> zipWith(Streamable<B> anotherStreamable) {
-        return deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream()));
+        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.stream()));
     }
     
     /**
@@ -76,7 +77,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
     public default <B> Streamable<Tuple2<DATA,B>> zipWith(
             Streamable<B> anotherStreamable,
             ZipWithOption option) {
-        return deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), option));
+        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.stream(), option));
     }
     
     /**
@@ -92,7 +93,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
     public default <B, C> Streamable<C> zipWith(
             Streamable<B>     anotherStreamable, 
             Func2<DATA, B, C> combinator) {
-        return deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), combinator));
+        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.stream(), combinator));
     }
     
     /**
@@ -109,7 +110,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
             Streamable<B>     anotherStreamable, 
             ZipWithOption     option,
             Func2<DATA, B, C> combinator) {
-        return deriveFrom(this, stream -> stream.zipWith(anotherStreamable.stream(), option, combinator));
+        return deriveToObj(this, stream -> stream.zipWith(anotherStreamable.stream(), option, combinator));
     }
     
     /**
@@ -143,7 +144,7 @@ public interface StreamableWithCombine<DATA> extends AsStreamable<DATA> {
             Streamable<DATA>           anotherStreamable,
             ZipWithOption              option,
             Func2<DATA, DATA, Boolean> selectThisNotAnother) {
-        return deriveFrom(this, stream -> stream.choose(anotherStreamable.stream(), option, selectThisNotAnother));
+        return deriveToObj(this, stream -> stream.choose(anotherStreamable.stream(), option, selectThisNotAnother));
     }
     
 }

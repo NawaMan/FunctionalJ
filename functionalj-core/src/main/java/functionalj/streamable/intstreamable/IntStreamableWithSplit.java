@@ -23,7 +23,10 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
+
 import java.util.function.IntPredicate;
+
+import static functionalj.streamable.intstreamable.AsIntStreamable.streamableOf;
 
 import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
@@ -63,8 +66,8 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
         val list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
         val list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
         return Tuple.of(
-                list1.intStreamable(),
-                list2.intStreamable());
+                streamableOf(list1),
+                streamableOf(list2));
     }
     
     /**
@@ -91,9 +94,9 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
         val list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
         val list3 = temp.filter(it -> it._1() == 2).mapToInt(it -> it._2());
         return Tuple.of(
-                list1.intStreamable(),
-                list2.intStreamable(),
-                list3.intStreamable());
+                streamableOf(list1),
+                streamableOf(list2),
+                streamableOf(list3));
     }
     
     /**
@@ -110,7 +113,7 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
             IntPredicate predicate1,
             IntPredicate predicate2,
             IntPredicate predicate3) {
-        val temp 
+        val temp
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
@@ -124,10 +127,10 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
         val list3 = temp.filter(it -> it._1() == 2).mapToInt(it -> it._2());
         val list4 = temp.filter(it -> it._1() == 3).mapToInt(it -> it._2());
         return Tuple.of(
-                list1.intStreamable(),
-                list2.intStreamable(),
-                list3.intStreamable(),
-                list4.intStreamable());
+                streamableOf(list1),
+                streamableOf(list2),
+                streamableOf(list3),
+                streamableOf(list4));
     }
     
     /**
@@ -162,11 +165,11 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
         val list4 = temp.filter(it -> it._1() == 3).mapToInt(it -> it._2());
         val list5 = temp.filter(it -> it._1() == 4).mapToInt(it -> it._2());
         return Tuple.of(
-                list1.intStreamable(),
-                list2.intStreamable(),
-                list3.intStreamable(),
-                list4.intStreamable(),
-                list5.intStreamable());
+                streamableOf(list1),
+                streamableOf(list2),
+                streamableOf(list3),
+                streamableOf(list4),
+                streamableOf(list5));
     }
     
     /**
@@ -205,12 +208,12 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
         val list5 = temp.filter(it -> it._1() == 4).mapToInt(it -> it._2());
         val list6 = temp.filter(it -> it._1() == 5).mapToInt(it -> it._2());
         return Tuple.of(
-                list1.intStreamable(),
-                list2.intStreamable(),
-                list3.intStreamable(),
-                list4.intStreamable(),
-                list5.intStreamable(),
-                list6.intStreamable());
+                streamableOf(list1),
+                streamableOf(list2),
+                streamableOf(list3),
+                streamableOf(list4),
+                streamableOf(list5),
+                streamableOf(list6));
     }
     
     /**
@@ -230,8 +233,8 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
         val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
         val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(
-                key1, list1.intStreamable(),
-                key2, list2.intStreamable());
+                key1, streamableOf(list1),
+                key2, streamableOf(list2));
     }
     
     /**
@@ -255,9 +258,9 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
         val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
         val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(
-                key1, list1.intStreamable(),
-                key2, list2.intStreamable(),
-                key3, list3.intStreamable());
+                key1, streamableOf(list1),
+                key2, streamableOf(list2),
+                key3, streamableOf(list3));
     }
     
     /**
@@ -284,10 +287,10 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
         val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
         val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(
-                key1, list1.intStreamable(),
-                key2, list2.intStreamable(),
-                key3, list3.intStreamable(),
-                key4, list4.intStreamable());
+                key1, streamableOf(list1),
+                key2, streamableOf(list2),
+                key3, streamableOf(list3),
+                key4, streamableOf(list4));
     }
     
     /**
@@ -317,11 +320,11 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
         val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToInt(it -> it._2()) : IntFuncList.empty();
         val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(
-                key1, list1.intStreamable(),
-                key2, list2.intStreamable(),
-                key3, list3.intStreamable(),
-                key4, list4.intStreamable(),
-                key5, list5.intStreamable());
+                key1, streamableOf(list1),
+                key2, streamableOf(list2),
+                key3, streamableOf(list3),
+                key4, streamableOf(list4),
+                key5, streamableOf(list5));
     }
     
     /**
@@ -354,12 +357,12 @@ public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
         val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).mapToInt(it -> it._2()) : IntFuncList.empty();
         val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(
-                key1, list1.intStreamable(),
-                key2, list2.intStreamable(),
-                key3, list3.intStreamable(),
-                key4, list4.intStreamable(),
-                key5, list5.intStreamable(),
-                key6, list6.intStreamable());
+                key1, streamableOf(list1),
+                key2, streamableOf(list2),
+                key3, streamableOf(list3),
+                key4, streamableOf(list4),
+                key5, streamableOf(list5),
+                key6, streamableOf(list6));
     }
     
 }

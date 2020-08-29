@@ -24,6 +24,7 @@
 package functionalj.streamable;
 
 import static functionalj.streamable.Streamable.deriveFrom;
+import static functionalj.streamable.Streamable.deriveToObj;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -45,7 +46,7 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      * The last portion may be shorter.
      **/
     public default Streamable<StreamPlus<DATA>> segmentSize(int count) {
-        return deriveFrom(this, stream -> stream.segmentSize(count));
+        return deriveToObj(this, stream -> stream.segmentSize(count));
     }
     
     /**
@@ -53,14 +54,14 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
      * 
      * @param count        the element count of the sub stream.
-     * @param includeTail  the flag indicating if the last sub stream that does not have count element is to be included 
+     * @param includeTail  the flag indicating if the last sub stream that does not have count element is to be included
      *                       as opposed to thrown away.
      * @return             the stream of sub stream.
      */
     public default Streamable<StreamPlus<DATA>> segmentSize(
-            int     count, 
+            int     count,
             boolean includeTail) {
-        return deriveFrom(this, stream -> stream.segmentSize(count, includeTail));
+        return deriveToObj(this, stream -> stream.segmentSize(count, includeTail));
     }
     
     /**
@@ -85,7 +86,7 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
     public default Streamable<StreamPlus<DATA>> segment(
             Predicate<DATA> startCondition, 
             Predicate<DATA> endCondition) {
-        return deriveFrom(this, stream -> stream.segment(startCondition, endCondition));
+        return deriveToObj(this, stream -> stream.segment(startCondition, endCondition));
     }
     
     /** Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true. */
@@ -93,7 +94,7 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
             Predicate<DATA> startCondition, 
             Predicate<DATA> endCondition, 
             boolean         includeIncompletedSegment) {
-        return deriveFrom(this, stream -> stream.segment(startCondition, endCondition, includeIncompletedSegment));
+        return deriveToObj(this, stream -> stream.segment(startCondition, endCondition, includeIncompletedSegment));
     }
     
     /**
@@ -103,7 +104,7 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
      * If the segmentSize function return 0, an empty stream is returned.
      */
     public default Streamable<StreamPlus<DATA>> segmentSize(Func1<DATA, Integer> segmentSize) {
-        return deriveFrom(this, stream -> stream.segmentSize(segmentSize));
+        return deriveToObj(this, stream -> stream.segmentSize(segmentSize));
     }
     
     /** Combine the current value with the one before it using then combinator everytime the condition to collapse is true. */
@@ -134,7 +135,7 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
             Func1<DATA, Integer>          segmentSize, 
             Func1<DATA, TARGET>           mapper, 
             Func2<TARGET, TARGET, TARGET> combinator) {
-        return deriveFrom(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
+        return deriveToObj(this, stream -> stream.collapseSize(segmentSize, mapper, combinator));
     }
     
     //-- More - then StreamPlus --

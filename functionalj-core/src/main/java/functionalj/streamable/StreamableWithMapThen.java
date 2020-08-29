@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.streamable;
 
-import static functionalj.streamable.Streamable.deriveFrom;
+import static functionalj.streamable.Streamable.deriveToObj;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -33,54 +33,53 @@ import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
 
-public interface StreamableWithMapThen<DATA>
-        extends AsStreamable<DATA> {
+public interface StreamableWithMapThen<DATA> extends AsStreamable<DATA> {
     
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T> 
-        Streamable<T> mapThen(
+            Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 BiFunction<T1, T2, T>      merger) {
-        return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, merger));
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, merger));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T> 
-        Streamable<T> mapThen(
+            Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
                 Func3<T1, T2, T3, T>       merger) {
-        return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, merger));
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, merger));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T> 
-        Streamable<T> mapThen(
+            Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
                 Function<? super DATA, T4> mapper4,
                 Func4<T1, T2, T3, T4, T>   merger) {
-        return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, merger));
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, merger));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T5, T> 
-        Streamable<T> mapThen(
+            Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
                 Function<? super DATA, T4> mapper4,
                 Function<? super DATA, T5> mapper5,
                 Func5<T1, T2, T3, T4, T5, T> merger) {
-        return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, merger));
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, merger));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
     public default <T1, T2, T3, T4, T5, T6, T> 
-        Streamable<T> mapThen(
+            Streamable<T> mapThen(
                 Function<? super DATA, T1> mapper1,
                 Function<? super DATA, T2> mapper2,
                 Function<? super DATA, T3> mapper3,
@@ -88,7 +87,7 @@ public interface StreamableWithMapThen<DATA>
                 Function<? super DATA, T5> mapper5,
                 Function<? super DATA, T6> mapper6,
                 Func6<T1, T2, T3, T4, T5, T6, T> merger) {
-        return deriveFrom(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, merger));
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, merger));
     }
     
 }

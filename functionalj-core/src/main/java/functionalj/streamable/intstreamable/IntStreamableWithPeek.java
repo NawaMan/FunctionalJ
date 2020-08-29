@@ -2,7 +2,7 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -37,7 +37,7 @@ public interface IntStreamableWithPeek extends AsIntStreamable {
     public default IntStreamable peekBy(
             IntPredicate selector,
             IntConsumer  theConsumer) {
-        return IntStreamable.deriveToInt(this, stream -> stream.peekBy(selector, theConsumer));
+        return deriveFrom(this, stream -> stream.peekBy(selector, theConsumer));
     }
     
     // TODO - peekByInt, peekByLong, peekByDouble, peekByObj

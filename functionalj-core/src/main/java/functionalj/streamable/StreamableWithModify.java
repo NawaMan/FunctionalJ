@@ -24,6 +24,7 @@
 package functionalj.streamable;
 
 import static functionalj.streamable.Streamable.deriveFrom;
+import static functionalj.streamable.Streamable.deriveToObj;
 
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
@@ -97,7 +98,7 @@ public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
         });
         val seed = Tuple2.of((DATA)null, this);
         
-        // NOTE: The reason for the using untyped-generic is becuase "DATA" of this class is not seen as compatible with StreamPlus's.
+        // NOTE: The reason for the using untyped-generic is because "DATA" of this class is not seen as compatible with StreamPlus's.
         val endStream 
             = Streamable
             .iterate  (seed, (UnaryOperator)func)
@@ -111,12 +112,13 @@ public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
     
     /**
      * Map each element to a uncompleted action, run them and collect which ever finish first.
-     * The result stream will not be the same order with the original one 
+     * The result stream will not be the same order with the original one
      *   -- as stated, the order will be the order of completion.
      * If the result StreamPlus is closed (which is done everytime a terminal operation is done),
      *   the unfinished actions will be canceled.
      */
-    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapper) {
-        return Streamable.deriveFrom(this, stream -> stream.spawn(mapper));
+    public default <T> Streamable<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapToAction) {
+        return deriveToObj(this, stream -> stream.spawn(mapToAction));
     }
+    
 }

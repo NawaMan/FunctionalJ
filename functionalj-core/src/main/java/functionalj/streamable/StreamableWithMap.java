@@ -24,6 +24,7 @@
 package functionalj.streamable;
 
 import static functionalj.streamable.Streamable.deriveFrom;
+import static functionalj.streamable.Streamable.deriveToObj;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -33,30 +34,30 @@ public interface StreamableWithMap<DATA> extends AsStreamable<DATA> {
     
     /** Map the value using the mapper. */
     public default <T> Streamable<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
-        return deriveFrom(this, stream -> stream.mapToObj(mapper));
+        return deriveToObj(this, stream -> stream.mapToObj(mapper));
     }
     
     /** Map the value using the mapper only when the condition is true. */
     public default Streamable<DATA> mapOnly(
-            Predicate<? super DATA>      checker, 
+            Predicate<? super DATA>      condition, 
             Function<? super DATA, DATA> mapper) {
-        return deriveFrom(this, stream -> stream.mapOnly(checker, mapper));
+        return deriveFrom(this, stream -> stream.mapOnly(condition, mapper));
     }
     
     /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper. */
     public default <T> Streamable<T> mapIf(
-            Predicate<? super DATA>   checker, 
+            Predicate<? super DATA>   condition, 
             Function<? super DATA, T> mapper,
             Function<? super DATA, T> elseMapper) {
-        return deriveFrom(this, stream -> stream.mapIf(checker, mapper, elseMapper));
+        return deriveFrom(this, stream -> stream.mapIf(condition, mapper, elseMapper));
     }
     
     /** Map the value using the mapper only when the condition is true. Otherwise, map using the elseMapper.  */
     public default <T> Streamable<T> mapToObjIf(
-            Predicate<? super DATA>   checker, 
+            Predicate<? super DATA>   condition, 
             Function<? super DATA, T> mapper,
             Function<? super DATA, T> elseMapper) {
-        return deriveFrom(this, stream -> stream.mapToObjIf(checker, mapper, elseMapper));
+        return deriveToObj(this, stream -> stream.mapToObjIf(condition, mapper, elseMapper));
     }
     
 }

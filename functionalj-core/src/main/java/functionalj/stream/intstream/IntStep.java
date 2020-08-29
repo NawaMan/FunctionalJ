@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
-import java.util.stream.IntStream;
 
 import functionalj.function.Func1;
 import functionalj.streamable.intstreamable.IntStreamable;

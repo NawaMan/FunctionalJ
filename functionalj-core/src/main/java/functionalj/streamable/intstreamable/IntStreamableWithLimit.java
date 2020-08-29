@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
 
 import java.util.function.IntPredicate;
 
@@ -31,32 +31,32 @@ public interface IntStreamableWithLimit extends AsIntStreamable {
     
     /** Limit the size of the stream to the given size. */
     public default IntStreamable limit(Long maxSize) {
-        return deriveToInt(this, stream -> stream.limit(maxSize));
+        return deriveFrom(this, stream -> stream.limit(maxSize));
     }
     
     /** Skip to the given offset position. */
     public default IntStreamable skip(Long startAt) {
-        return deriveToInt(this, stream -> stream.skip(startAt));
+        return deriveFrom(this, stream -> stream.skip(startAt));
     }
     
     /** Skip any value while the condition is true. */
     public default IntStreamable skipWhile(IntPredicate condition) {
-        return deriveToInt(this, stream -> stream.skipWhile(condition));
+        return deriveFrom(this, stream -> stream.skipWhile(condition));
     }
     
     /** Skip any value until the condition is true. */
     public default IntStreamable skipUntil(IntPredicate condition) {
-        return deriveToInt(this, stream -> stream.skipUntil(condition));
+        return deriveFrom(this, stream -> stream.skipUntil(condition));
     }
     
     /** Accept any value while the condition is true. */
     public default IntStreamable takeWhile(IntPredicate condition) {
-        return deriveToInt(this, stream -> stream.takeWhile(condition));
+        return deriveFrom(this, stream -> stream.takeWhile(condition));
     }
     
     /** Accept any value until the condition is true. */
     public default IntStreamable takeUntil(IntPredicate condition) {
-        return deriveToInt(this, stream -> stream.takeUntil(condition));
+        return deriveFrom(this, stream -> stream.takeUntil(condition));
     }
     
 }

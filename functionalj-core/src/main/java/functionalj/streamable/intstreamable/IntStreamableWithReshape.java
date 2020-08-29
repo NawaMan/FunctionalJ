@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,6 +24,7 @@
 package functionalj.streamable.intstreamable;
 
 import static functionalj.streamable.intstreamable.IntStreamable.deriveToInt;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
 import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
 
 import java.util.Comparator;
@@ -54,7 +55,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
     /**
      * Segment the stream into sub stream with the fix length of count.
      * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
-     *
+     * 
      * @param count        the element count of the sub stream.
      * @param includeTail  the flag indicating if the last sub stream that does not have count element is to be included
      *                       as opposed to thrown away.
@@ -113,7 +114,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
     public default IntStreamable collapseWhen(
             IntPredicate      conditionToCollapse,
             IntBinaryOperator concatFunc) {
-        return deriveToInt(this, stream -> stream.collapseWhen(conditionToCollapse, concatFunc));
+        return deriveFrom(this, stream -> stream.collapseWhen(conditionToCollapse, concatFunc));
     }
     
     /**
@@ -124,7 +125,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
     public default IntStreamable collapseSize(
             IntFunction<Integer> segmentSize,
             IntBinaryOperator    combinator) {
-//        return deriveToInt(this, stream -> stream.ccollapseSize(segmentSize, combinator));
+//        return deriveFrom(this, stream -> stream.ccollapseSize(segmentSize, combinator));
         return null;
     }
     

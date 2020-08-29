@@ -27,11 +27,16 @@ import functionalj.stream.intstream.AsIntStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 
 /**
- * Classes implementing this interface can act like an int stramable.
+ * Classes implementing this interface can act like an int streamable.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
 public interface AsIntStreamable extends AsIntStreamPlus {
+    
+    /** Returns the stream for this streamable. */
+    public static IntStreamable streamableOf(AsIntStreamable streamable) {
+        return streamable.intStreamable();
+    }
     
     /** @return  the stream plus instance of this object. */
     public IntStreamPlus intStream();

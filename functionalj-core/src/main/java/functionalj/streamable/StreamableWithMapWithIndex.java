@@ -24,6 +24,7 @@
 package functionalj.streamable;
 
 import static functionalj.streamable.Streamable.deriveFrom;
+import static functionalj.streamable.Streamable.deriveToObj;
 
 import java.util.function.Function;
 
@@ -36,7 +37,7 @@ public interface StreamableWithMapWithIndex<DATA> extends AsStreamable<DATA> {
     
     /** @return  the stream of each value and index. */
     public default Streamable<IntTuple2<DATA>> mapWithIndex() {
-        return deriveFrom(this, stream -> stream.mapWithIndex());
+        return deriveToObj(this, stream -> stream.mapWithIndex());
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
@@ -46,20 +47,21 @@ public interface StreamableWithMapWithIndex<DATA> extends AsStreamable<DATA> {
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> Streamable<T> mapToObjWithIndex(IntObjBiFunction<? super DATA, T> combinator) {
-        return deriveFrom(this, stream -> stream.mapToObjWithIndex(combinator));
+        return deriveToObj(this, stream -> stream.mapToObjWithIndex(combinator));
     }
     
     /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
     public default <T1, T> Streamable<T> mapWithIndex(
                 Function<? super DATA, ? extends T1> valueMapper,
                 IntObjBiFunction<? super T1, T>      combinator) {
-        return deriveFrom(this, stream -> stream.mapWithIndex(valueMapper, combinator));
+        return deriveToObj(this, stream -> stream.mapWithIndex(valueMapper, combinator));
     }
     
     /** Create a stream whose value is the combination between the mapped value of this stream and its index. */
     public default <T1, T> Streamable<T> mapToObjWithIndex(
                 Function<? super DATA, ? extends T1> valueMapper,
                 IntObjBiFunction<? super T1, T>      combinator) {
-        return deriveFrom(this, stream -> stream.mapToObjWithIndex(valueMapper, combinator));
+        return deriveToObj(this, stream -> stream.mapToObjWithIndex(valueMapper, combinator));
     }
+    
 }

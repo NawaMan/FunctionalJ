@@ -38,8 +38,8 @@ public interface StreamableWithFlatMap<DATA> extends AsStreamable<DATA> {
     
     /** FlatMap with the given mapper for only the value that pass the condition. */
     public default Streamable<DATA> flatMapOnly(
-            Predicate<? super DATA>                            checker, 
-            Function<? super DATA, ? extends Streamable<DATA>> mapper) {
+                    Predicate<? super DATA>                            checker, 
+                    Function<? super DATA, ? extends Streamable<DATA>> mapper) {
         return deriveFrom(this, stream -> {
             Function<? super DATA, ? extends Stream<DATA>> newMapper = value -> mapper.apply(value).stream();
             return stream.flatMapOnly(checker, newMapper);
@@ -52,9 +52,9 @@ public interface StreamableWithFlatMap<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, ? extends Streamable<T>> trueMapper, 
             Function<? super DATA, ? extends Streamable<T>> falseMapper) {
         return deriveFrom(this, stream -> {
-            Function<? super DATA, Stream<T>> newMapper     = value -> trueMapper.apply(value).stream();
-            Function<? super DATA, Stream<T>> newElseMapper = value -> falseMapper.apply(value).stream();
-            return stream.flatMapIf(checker, newMapper, newElseMapper);
+            Function<? super DATA, Stream<T>> newTrueMapper  = value -> trueMapper.apply(value).stream();
+            Function<? super DATA, Stream<T>> newFalseMapper = value -> falseMapper.apply(value).stream();
+            return stream.flatMapIf(checker, newTrueMapper, newFalseMapper);
         });
     }
     

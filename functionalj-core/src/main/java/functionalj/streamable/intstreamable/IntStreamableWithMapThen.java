@@ -41,8 +41,8 @@ public interface IntStreamableWithMapThen extends AsIntStreamable {
             Streamable<T> mapThen(
                 IntFunction<? extends T1> mapper1,
                 IntFunction<? extends T2> mapper2,
-                BiFunction<T1, T2, T> function) {
-        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, function));
+                BiFunction<T1, T2, T>     merger) {
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, merger));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
@@ -51,8 +51,8 @@ public interface IntStreamableWithMapThen extends AsIntStreamable {
                 IntFunction<? extends T1> mapper1,
                 IntFunction<? extends T2> mapper2,
                 IntFunction<? extends T3> mapper3,
-                Func3<T1, T2, T3, T> function) {
-        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, function));
+                Func3<T1, T2, T3, T>      merger) {
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, merger));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
@@ -62,8 +62,8 @@ public interface IntStreamableWithMapThen extends AsIntStreamable {
                 IntFunction<? extends T2> mapper2,
                 IntFunction<? extends T3> mapper3,
                 IntFunction<? extends T4> mapper4,
-                Func4<T1, T2, T3, T4, T> function) {
-        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, function));
+                Func4<T1, T2, T3, T4, T>  merger) {
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, merger));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
@@ -74,8 +74,8 @@ public interface IntStreamableWithMapThen extends AsIntStreamable {
                 IntFunction<? extends T3> mapper3,
                 IntFunction<? extends T4> mapper4,
                 IntFunction<? extends T5> mapper5,
-                Func5<T1, T2, T3, T4, T5, T> function) {
-        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, function));
+                Func5<T1, T2, T3, T4, T5, T> merger) {
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, merger));
     }
     
     /** Map the value into different values and then combine them with the combinator. */
@@ -87,8 +87,8 @@ public interface IntStreamableWithMapThen extends AsIntStreamable {
                 IntFunction<? extends T4> mapper4,
                 IntFunction<? extends T5> mapper5,
                 IntFunction<? extends T6> mapper6,
-                Func6<T1, T2, T3, T4, T5, T6, T> function) {
-        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, function));
+                Func6<T1, T2, T3, T4, T5, T6, T> merger) {
+        return deriveToObj(this, stream -> stream.mapThen(mapper1, mapper2, mapper3, mapper4, mapper5, mapper6, merger));
     }
     
 }

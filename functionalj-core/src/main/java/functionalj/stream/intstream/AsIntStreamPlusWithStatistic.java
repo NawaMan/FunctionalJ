@@ -41,7 +41,7 @@ import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
-public interface IntStreamPlusWithStatistic {
+public interface AsIntStreamPlusWithStatistic {
     
     public IntStreamPlus intStreamPlus();
     
