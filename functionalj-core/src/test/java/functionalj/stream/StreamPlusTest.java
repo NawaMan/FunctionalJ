@@ -1042,8 +1042,8 @@ public class StreamPlusTest {
         assertEquals(
                 "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
                 stream.fillNull(
-                        car          -> car.color(),
-                        (car, color) -> car.withColor(color),
+                        (Car car)               -> car.color(),
+                        (Car car, String color) -> car.withColor(color),
                         "Black").toListString());
     }
     
@@ -1061,9 +1061,9 @@ public class StreamPlusTest {
         assertEquals(
                 "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
                 stream.fillNull(
-                        car          -> car.color(),
-                        (car, color) -> car.withColor(color),
-                        ()           -> "Black").toListString());
+                        (Car car)               -> car.color(),
+                        (Car car, String color) -> car.withColor(color),
+                        ()                      -> "Black").toListString());
     }
     
     @Test
@@ -1080,9 +1080,9 @@ public class StreamPlusTest {
         assertEquals(
                 "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
                 stream.fillNull(
-                        car          -> car.color(),
-                        (car, color) -> car.withColor(color),
-                        (Car car)    -> "Black").toListString());
+                        (Car car)               -> car.color(),
+                        (Car car, String color) -> car.withColor(color),
+                        (Car car)               -> "Black").toListString());
     }
     
     //-- StreamPlusWithFilter --
