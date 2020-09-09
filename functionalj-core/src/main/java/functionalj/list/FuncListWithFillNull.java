@@ -58,7 +58,7 @@ public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
     public default <VALUE> FuncList<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             Supplier<VALUE>      replacementSupplier) {
-        return deriveFrom(this, stream -> stream.fillNull(lens, replacementSupplier));
+        return deriveFrom(this, stream -> stream.fillNullWith(lens, replacementSupplier));
     }
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier. */
@@ -66,14 +66,14 @@ public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
             Supplier<VALUE>          replacementSupplier) {
-        return deriveFrom(this, stream -> stream.fillNull(getter, setter, replacementSupplier));
+        return deriveFrom(this, stream -> stream.fillNullWith(getter, setter, replacementSupplier));
     }
     
     /** Replace sub element that is null (accessed with the given lens) with the replacement value from the function. */
     public default <VALUE> FuncList<DATA> fillNull(
             AnyLens<DATA, VALUE> lens, 
             Func1<DATA, VALUE>   replacementFunction) {
-        return deriveFrom(this, stream -> stream.fillNull(lens, replacementFunction));
+        return deriveFrom(this, stream -> stream.fillNullBy(lens, replacementFunction));
     }
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function. */
@@ -81,6 +81,6 @@ public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
             Func1<DATA, VALUE>       replacementFunction) {
-        return deriveFrom(this, stream -> stream.fillNull(getter, setter, replacementFunction));
+        return deriveFrom(this, stream -> stream.fillNullBy(getter, setter, replacementFunction));
     }
 }

@@ -82,17 +82,17 @@ public interface StreamPlusWithFillNull<DATA> {
     }
     
     /** Replace sub element that is null (accessed with the given lens) with the replacement value from the supplier. */
-    public default <VALUE> StreamPlus<DATA> fillNull(
+    public default <VALUE> StreamPlus<DATA> fillNullWith(
             AnyLens<DATA, VALUE> lens, 
             Supplier<VALUE>      replacementSupplier) {
-        return fillNull(
+        return fillNullWith(
                 (Func1<DATA, VALUE>)lens, 
                 ((WriteLens<DATA, VALUE>)lens)::apply, 
                 replacementSupplier);
     }
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier. */
-    public default <VALUE> StreamPlus<DATA> fillNull(
+    public default <VALUE> StreamPlus<DATA> fillNullWith(
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
             Supplier<VALUE>          replacementSupplier) {
@@ -112,17 +112,17 @@ public interface StreamPlusWithFillNull<DATA> {
     }
     
     /** Replace sub element that is null (accessed with the given lens) with the replacement value from the function. */
-    public default <VALUE> StreamPlus<DATA> fillNull(
+    public default <VALUE> StreamPlus<DATA> fillNullBy(
             AnyLens<DATA, VALUE> lens, 
             Func1<DATA, VALUE>   replacementFunction) {
-        return fillNull(
+        return fillNullBy(
                 (Func1<DATA, VALUE>)lens, 
                 ((WriteLens<DATA, VALUE>)lens)::apply, 
                 replacementFunction);
     }
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function. */
-    public default <VALUE> StreamPlus<DATA> fillNull(
+    public default <VALUE> StreamPlus<DATA> fillNullBy(
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
             Func1<DATA, VALUE>       replacementFunction) {

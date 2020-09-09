@@ -1052,7 +1052,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red"));
         assertEquals(
                 "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
-                stream.fillNull(Car.theCar.color, () -> "Black").toListString());
+                stream.fillNullWith(Car.theCar.color, () -> "Black").toListString());
     }
     
     @Test
@@ -1060,7 +1060,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red"));
         assertEquals(
                 "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
-                stream.fillNull(
+                stream.fillNullWith(
                         (Car car)               -> car.color(),
                         (Car car, String color) -> car.withColor(color),
                         ()                      -> "Black").toListString());
@@ -1071,7 +1071,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red"));
         assertEquals(
                 "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
-                stream.fillNull(Car.theCar.color, (Car car) -> "Black").toListString());
+                stream.fillNullBy(Car.theCar.color, (Car car) -> "Black").toListString());
     }
     
     @Test
@@ -1079,7 +1079,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of(new Car("Blue"), new Car("Green"), new Car(null), new Car("Red"));
         assertEquals(
                 "[Car(color=Blue), Car(color=Green), Car(color=Black), Car(color=Red)]",
-                stream.fillNull(
+                stream.fillNullBy(
                         (Car car)               -> car.color(),
                         (Car car, String color) -> car.withColor(color),
                         (Car car)               -> "Black").toListString());
