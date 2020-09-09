@@ -54,6 +54,14 @@ public interface StringAccess<HOST>
         return access::apply;
     }
     
+    public default CharacterAccessPrimitive<HOST> charAt(int index) {
+        return host -> {
+            val  strValue  = apply(host);
+            char charValue = strValue.charAt(index);
+            return charValue;
+        };
+    }
+    
     // Extra
     
     public default BooleanAccess<HOST> thatIsBlank() {
@@ -78,14 +86,14 @@ public interface StringAccess<HOST>
         });
     }
     
-    public default StringAccess<HOST> prefix(Object ... prefixes) {
+    public default StringAccess<HOST> withPrefix(Object ... prefixes) {
         return stringAccess("", str -> {
             val eachToString = __internal__.stringFrom(str);
             String prefix = Stream.of(prefixes).map(eachToString).collect(joining());
             return prefix + str;
         });
     }
-    public default StringAccess<HOST> suffix(Object ... suffixes) {
+    public default StringAccess<HOST> withSuffix(Object ... suffixes) {
         return stringAccess("", str -> {
             val eachToString = __internal__.stringFrom(str);
             String prefix = Stream.of(suffixes).map(eachToString).collect(joining());

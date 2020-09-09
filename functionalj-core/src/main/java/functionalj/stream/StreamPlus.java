@@ -656,7 +656,7 @@ public interface StreamPlus<DATA>
     }
     
     //-- Filter --
-
+    
     @Override
     public default StreamPlus<DATA> filter(Predicate<? super DATA> predicate) {
         return StreamPlus.from(stream().filter(predicate));
