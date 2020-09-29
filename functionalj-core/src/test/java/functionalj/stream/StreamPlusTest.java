@@ -353,13 +353,13 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings("11", stream.mapToInt(String::length).sum());
     }
-    
-    @Test
-    public void testMapToLong() {
-        val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("11", stream.mapToLong(String::length).sum());
-    }
-    
+//    
+//    @Test
+//    public void testMapToLong() {
+//        val stream = StreamPlus.of("One", "Two", "Three");
+//        assertStrings("11", stream.mapToLong(String::length).sum());
+//    }
+//    
     @Test @Ignore
     public void testMapToDouble() {
         val stream = StreamPlus.of("One", "Two", "Three");
@@ -551,12 +551,12 @@ public class StreamPlusTest {
         val stream = StreamPlus.of('A', 'B', 'C', 'D');
         assertStrings("[65, 66, 67, 68]", Arrays.toString(stream.toIntArray(c -> (int)c)));
     }
-    
-    @Test
-    public void testToLongArray() {
-        val stream = StreamPlus.of('A', 'B', 'C', 'D');
-        assertStrings("[65, 66, 67, 68]", Arrays.toString(stream.toLongArray(c -> (long)c)));
-    }
+//    
+//    @Test
+//    public void testToLongArray() {
+//        val stream = StreamPlus.of('A', 'B', 'C', 'D');
+//        assertStrings("[65, 66, 67, 68]", Arrays.toString(stream.toLongArray(c -> (long)c)));
+//    }
     
     @Test @Ignore
     public void testToDoubleArray() {
