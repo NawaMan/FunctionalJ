@@ -57,7 +57,7 @@ public interface AsIntStreamPlus
                         AsIntStreamPlusWithStatistic {
     
     /** @return  the stream plus instance of this object. */
-    public static IntStreamPlus streamOf(AsIntStreamPlus streamPlus) {
+    public static IntStreamPlus streamFrom(AsIntStreamPlus streamPlus) {
         return streamPlus.intStreamPlus();
     }
     
@@ -73,7 +73,7 @@ public interface AsIntStreamPlus
     
     /** @return a iterator of this streamable. */
     public default IntIteratorPlus iterator() {
-        return streamOf(this).iterator();
+        return streamFrom(this).iterator();
     }
     
     /** @return a spliterator of this streamable. */
@@ -85,26 +85,26 @@ public interface AsIntStreamPlus
     @Eager
     @Terminal
     public default void forEach(IntConsumer action) {
-        streamOf(this).forEach(action);
+        streamFrom(this).forEach(action);
     }
     
     @Eager
     @Terminal
     @Sequential
     public default void forEachOrdered(IntConsumer action) {
-        streamOf(this).forEachOrdered(action);
+        streamFrom(this).forEachOrdered(action);
     }
     
     @Eager
     @Terminal
     public default int reduce(int identity, IntBinaryOperator reducer) {
-        return streamOf(this).reduce(identity, reducer);
+        return streamFrom(this).reduce(identity, reducer);
     }
     
     @Eager
     @Terminal
     public default OptionalInt reduce(IntBinaryOperator reducer) {
-        return streamOf(this).reduce(reducer);
+        return streamFrom(this).reduce(reducer);
     }
     
     @Eager
@@ -113,7 +113,7 @@ public interface AsIntStreamPlus
             Supplier<R>       supplier,
             ObjIntConsumer<R> accumulator,
             BiConsumer<R, R>  combiner) {
-        return streamOf(this).collect(supplier, accumulator, combiner);
+        return streamFrom(this).collect(supplier, accumulator, combiner);
     }
     
     //-- statistics --
@@ -121,66 +121,66 @@ public interface AsIntStreamPlus
     @Eager
     @Terminal
     public default OptionalInt min() {
-        return streamOf(this).min();
+        return streamFrom(this).min();
     }
     
     @Eager
     @Terminal
     public default OptionalInt max() {
-        return streamOf(this).max();
+        return streamFrom(this).max();
     }
     
     @Eager
     @Terminal
     public default long count() {
-        return streamOf(this).count();
+        return streamFrom(this).count();
     }
     
     @Eager
     @Terminal
     public default int sum() {
-        return streamOf(this).sum();
+        return streamFrom(this).sum();
     }
     
     @Eager
     @Terminal
     public default OptionalDouble average() {
-        return streamOf(this).average();
+        return streamFrom(this).average();
     }
     
     @Eager
     @Terminal
     public default IntSummaryStatistics summaryStatistics() {
-        return streamOf(this).summaryStatistics();
+        return streamFrom(this).summaryStatistics();
     }
     
     //-- Match --
     
     @Terminal
     public default boolean anyMatch(IntPredicate predicate) {
-        return streamOf(this).anyMatch(predicate);
+        return streamFrom(this).anyMatch(predicate);
     }
     
     @Eager
     @Terminal
     public default boolean allMatch(IntPredicate predicate) {
-        return streamOf(this).allMatch(predicate);
+        return streamFrom(this).allMatch(predicate);
     }
     
     @Eager
     @Terminal
     public default boolean noneMatch(IntPredicate predicate) {
-        return streamOf(this).noneMatch(predicate);
+        return streamFrom(this).noneMatch(predicate);
     }
     
     @Terminal
     public default OptionalInt findFirst() {
-        return streamOf(this).findFirst();
+        return streamFrom(this).findFirst();
     }
     
     @Terminal
     public default OptionalInt findAny() {
-        return streamOf(this).findAny();
+        return streamFrom(this).findAny();
     }
     
     //== Conversion ==
@@ -188,7 +188,7 @@ public interface AsIntStreamPlus
     @Eager
     @Terminal
     public default int[] toArray() {
-        return streamOf(this).toArray();
+        return streamFrom(this).toArray();
     }
     
 }

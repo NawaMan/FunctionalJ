@@ -1,9 +1,5 @@
 package functionalj.stream;
 
-import static functionalj.functions.ObjFuncs.notEqual;
-import static functionalj.stream.ZipWithOption.AllowUnpaired;
-import static java.lang.Boolean.TRUE;
-
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -42,25 +38,6 @@ public class StreamPlusHelper {
         }
         
         return found;
-    }
-    
-    static <T> boolean equals(Stream<T> stream1, Stream<T> stream2) {
-        return !StreamPlus
-                .from     (stream1)
-                .zipWith  (StreamPlus.from(stream2), AllowUnpaired, notEqual())
-                .filter   (TRUE::equals)
-                .findAny  ()
-                .isPresent();
-    }
-    
-    public static <T> int hashCode(Stream<T> stream) {
-        return stream
-                .mapToInt(e -> (e == null) ? 0 : e.hashCode())
-                .reduce(1, (h, eh) -> 31*h + eh);
-    }
-    
-    public static <T> String toString(Stream<T> stream) {
-        return "[" + StreamPlus.from(stream).join(", ") + "]";
     }
     
     static <DATA, C, B> StreamPlus<C> doZipWith(
@@ -162,7 +139,7 @@ public class StreamPlusHelper {
     }
     
     /** Run the given action sequentially, make sure to set the parallelity of the result back. */
-    public static <D, T> StreamPlus<T> sequential(
+    static <D, T> StreamPlus<T> sequential(
             AsStreamPlus<D>      asStreamPlus,
             Func1<StreamPlus<D>, StreamPlus<T>> action) {
         val streamPlus = asStreamPlus.streamPlus();
@@ -180,13 +157,13 @@ public class StreamPlusHelper {
     }
     
     /** Run the given action sequentially, make sure to set the parallelity of the result back. */
-    public static <D, T> StreamPlus<T> sequentialToObj(
+    static <D, T> StreamPlus<T> sequentialToObj(
             AsStreamPlus<D>                     asStreamPlus,
             Func1<StreamPlus<D>, StreamPlus<T>> action) {
         return sequential(asStreamPlus, action);
     }
     
-    public static <D, T> StreamPlus<T> derive(
+    static <D, T> StreamPlus<T> derive(
             AsStreamPlus<D>     asStreamPlus,
             Function<Stream<D>, Stream<T>> action) {
         val streamPlus = asStreamPlus.streamPlus();

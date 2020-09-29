@@ -37,7 +37,7 @@ import functionalj.stream.StreamPlus;
 public interface AsStreamable<DATA> extends AsStreamPlus<DATA> {
     
     /** Returns the streamable for this streamable. */
-    public static <D> Streamable<D> streamableOf(AsStreamable<D> streamable) {
+    public static <D> Streamable<D> streamableFrom(AsStreamable<D> streamable) {
         return streamable.streamable();
     }
     

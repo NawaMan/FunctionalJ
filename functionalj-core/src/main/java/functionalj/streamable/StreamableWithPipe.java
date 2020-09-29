@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.streamable;
 
-import static functionalj.streamable.AsStreamable.streamableOf;
+import static functionalj.streamable.AsStreamable.streamableFrom;
 
 import java.util.function.Function;
 
@@ -33,12 +33,12 @@ public interface StreamableWithPipe<DATA> extends AsStreamable<DATA> {
     
     /** @return the pipeable of this stream. */
     public default <T> Pipeable<Streamable<DATA>> pipable() {
-        return Pipeable.of(streamableOf(this));
+        return Pipeable.of(streamableFrom(this));
     }
     
     /** Pipe this stream plus through the given function. */
     public default <T> T pipe(Function<? super Streamable<DATA>, T> piper) {
-        return piper.apply(streamableOf(this));
+        return piper.apply(streamableFrom(this));
     }
     
 }

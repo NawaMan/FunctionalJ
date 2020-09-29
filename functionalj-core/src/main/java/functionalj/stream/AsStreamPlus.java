@@ -57,7 +57,7 @@ public interface AsStreamPlus<DATA>
                         AsStreamPlusWithStatistic<DATA> {
     
     /** @return  the stream plus instance of this object. */
-    public static <D> StreamPlus<D> streamOf(AsStreamPlus<D> streamPlus) {
+    public static <D> StreamPlus<D> streamFrom(AsStreamPlus<D> streamPlus) {
         return streamPlus.streamPlus();
     }
     
@@ -73,7 +73,7 @@ public interface AsStreamPlus<DATA>
     
     /** @return a iterator of this streamable. */
     public default IteratorPlus<DATA> iterator() {
-        return streamOf(this).iterator();
+        return streamFrom(this).iterator();
     }
     
     /** @return a spliterator of this streamable. */
@@ -83,80 +83,80 @@ public interface AsStreamPlus<DATA>
     }
     
     public default void forEach(Consumer<? super DATA> action) {
-        streamOf(this).forEach(action);
+        streamFrom(this).forEach(action);
     }
     
     public default void forEachOrdered(Consumer<? super DATA> action) {
-        streamOf(this).forEachOrdered(action);
+        streamFrom(this).forEachOrdered(action);
     }
     
     public default DATA reduce(DATA identity, BinaryOperator<DATA> reducer) {
-        return streamOf(this).reduce(identity, reducer);
+        return streamFrom(this).reduce(identity, reducer);
     }
     
     public default Optional<DATA> reduce(BinaryOperator<DATA> reducer) {
-        return streamOf(this).reduce(reducer);
+        return streamFrom(this).reduce(reducer);
     }
     
     public default <U> U reduce(
             U                              identity,
             BiFunction<U, ? super DATA, U> accumulator,
             BinaryOperator<U>              combiner) {
-        return streamOf(this).reduce(identity, accumulator, combiner);
+        return streamFrom(this).reduce(identity, accumulator, combiner);
     }
     
     public default <R> R collect(
             Supplier<R>                 supplier,
             BiConsumer<R, ? super DATA> accumulator,
             BiConsumer<R, R>            combiner) {
-        return streamOf(this).collect(supplier, accumulator, combiner);
+        return streamFrom(this).collect(supplier, accumulator, combiner);
     }
     
     public default <R, A> R collect(Collector<? super DATA, A, R> collector) {
-        return streamOf(this).collect(collector);
+        return streamFrom(this).collect(collector);
     }
     
     //-- statistics --
     
     public default Optional<DATA> min(Comparator<? super DATA> comparator) {
-        return streamOf(this).min(comparator);
+        return streamFrom(this).min(comparator);
     }
     
     public default Optional<DATA> max(Comparator<? super DATA> comparator) {
-        return streamOf(this).max(comparator);
+        return streamFrom(this).max(comparator);
     }
     
     public default long count() {
-        return streamOf(this).count();
+        return streamFrom(this).count();
     }
     
     //-- Match --
     
     @Terminal
     public default boolean anyMatch(Predicate<? super DATA> predicate) {
-        return streamOf(this).anyMatch(predicate);
+        return streamFrom(this).anyMatch(predicate);
     }
     
     @Eager
     @Terminal
     public default boolean allMatch(Predicate<? super DATA> predicate) {
-        return streamOf(this).allMatch(predicate);
+        return streamFrom(this).allMatch(predicate);
     }
     
     @Eager
     @Terminal
     public default boolean noneMatch(Predicate<? super DATA> predicate) {
-        return streamOf(this).noneMatch(predicate);
+        return streamFrom(this).noneMatch(predicate);
     }
     
     @Terminal
     public default Optional<DATA> findFirst() {
-        return streamOf(this).findFirst();
+        return streamFrom(this).findFirst();
     }
     
     @Terminal
     public default Optional<DATA> findAny() {
-        return streamOf(this).findAny();
+        return streamFrom(this).findAny();
     }
     
     //== Conversion ==
@@ -164,13 +164,13 @@ public interface AsStreamPlus<DATA>
     @Eager
     @Terminal
     public default Object[] toArray() {
-        return streamOf(this).toArray();
+        return streamFrom(this).toArray();
     }
     
     @Eager
     @Terminal
     public default <A> A[] toArray(IntFunction<A[]> generator) {
-        return streamOf(this).toArray(generator);
+        return streamFrom(this).toArray(generator);
     }
     
 }

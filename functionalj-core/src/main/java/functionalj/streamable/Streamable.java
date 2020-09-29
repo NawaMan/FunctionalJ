@@ -163,7 +163,7 @@ public interface Streamable<DATA>
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static <TARGET> Streamable<TARGET> generate(Func0<Func0<TARGET>> supplier) {
-        return ()->StreamPlus.generate(supplier.get());
+        return generateWith(supplier);
     }
     
     /**
@@ -277,21 +277,23 @@ public interface Streamable<DATA>
     @SafeVarargs
     public static <TARGET> Streamable<TARGET> cycle(TARGET ... data) {
         val size = data.length;
-        return () ->
-                StreamPlus.from(
+        return () -> {
+                return StreamPlus.from(
                         IntStream
                         .iterate(0, i -> i + 1)
                         .mapToObj(i -> data[i % size]));
+        };
     }
     
     /** Create a Streamable that is the repeat of the given list of data. */
     public static <TARGET> Streamable<TARGET> cycle(FuncList<TARGET> data) {
         val size = data.size();
-        return () ->
-                StreamPlus.from(
+        return () -> {
+            return StreamPlus.from(
                         IntStream
                         .iterate(0, i -> i + 1)
                         .mapToObj(i -> data.get(i % size)));
+        };
     }
     
     /** Create a Streamable that for an infinite loop - the value is boolean true */
@@ -310,20 +312,6 @@ public interface Streamable<DATA>
     public static Streamable<Integer> infiniteInt() {
         return IntStreamable
                 .wholeNumbers()
-                .boxed();
-    }
-    
-    /** Create a Streamable that for a loop from the start value inclusively to the end value exclusively. */
-    public static Streamable<Integer> range(int startInclusive, int endExclusive) {
-        return IntStreamable
-                .range(startInclusive, endExclusive)
-                .boxed();
-    }
-    
-    /** Create a Streamable that for a loop from the start value inclusively to the end value inclusively. */
-    public static Streamable<Integer> rangeAll(int startInclusive, int endInclusive) {
-        return IntStreamable
-                .rangeAll(startInclusive, endInclusive)
                 .boxed();
     }
     

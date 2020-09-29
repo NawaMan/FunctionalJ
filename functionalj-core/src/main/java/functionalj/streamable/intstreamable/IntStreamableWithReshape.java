@@ -215,7 +215,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
             IntFunction<T> mapper,
             DoubleFuncList percentiles) {
         val list = intStreamPlus().sortedBy(mapper).toImmutableList();
-        return IntStreamableHelper.segmentByPercentiles(list, percentiles);
+        return IntStreamableUtils.segmentByPercentiles(list, percentiles);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -224,7 +224,7 @@ public interface IntStreamableWithReshape extends AsIntStreamable {
             Comparator<T>      comparator,
             DoubleFuncList percentiles) {
         val list = intStreamPlus().sortedBy(mapper, comparator).toImmutableList();
-        return IntStreamableHelper.segmentByPercentiles(list, percentiles);
+        return IntStreamableUtils.segmentByPercentiles(list, percentiles);
     }
     
 }

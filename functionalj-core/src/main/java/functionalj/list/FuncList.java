@@ -545,16 +545,6 @@ public interface FuncList<DATA>
         return FuncList.from(Streamable.loop(time));
     }
     
-    /** Create a FuncList that for a loop from the start value inclusively to the end value exclusively. */
-    public static FuncList<Integer> range(int startInclusive, int endExclusive) {
-        return FuncList.from(Streamable.range(startInclusive, endExclusive));
-    }
-    
-    /** Create a FuncList that for a loop from the start value inclusively to the end value inclusively. */
-    public static FuncList<Integer> rangeAll(int startInclusive, int endInclusive) {
-        return FuncList.from(Streamable.rangeAll(startInclusive, endInclusive));
-    }
-    
     //== Core ==
     
     /** Return the stream of data behind this StreamPlus. */

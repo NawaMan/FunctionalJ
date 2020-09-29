@@ -31,7 +31,7 @@ import functionalj.list.FuncList;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
-class StreamableHelper {
+public class StreamableHelper {
     
     // TODO - Change to DoubleFuncList
     static <D> FuncList<FuncList<D>> segmentByPercentiles(FuncList<D> list, Collection<Double> percentiles) {

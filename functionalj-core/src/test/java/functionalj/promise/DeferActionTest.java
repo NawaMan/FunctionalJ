@@ -629,7 +629,7 @@ public class DeferActionTest {
         val list = Run.with(DeferActionCreator.current.butWith(creator))
         .run(()->{
             val actions = FuncList
-                .from(Streamable.range(0, 5))
+                .from(Streamable.iterate(0, i -> i + 2).limit(5))
                 .map (i -> DeferAction.from(Sleep(100).thenReturn(i)))
                 .toImmutableList();
             
