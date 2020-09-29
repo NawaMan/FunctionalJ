@@ -252,26 +252,26 @@ public class IntStreamPlusTest {
                 .mapToInt(i -> i * 2)
                 .toListString());
     }
-    
-    @Test
-    public void testMapToLong() {
-        val intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
-        assertEquals(
-                "[2, 2, 4, 6, 10, 16]", 
-                intStream
-                .mapToLong(i -> i * 2)
-                .toListString());
-    }
-    
-    @Test @Ignore
-    public void testMapToDouble() {
-        val intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
-        assertEquals(
-                "[2.0, 2.0, 4.0, 6.0, 10.0, 16.0]", 
-                intStream
-                .mapToDouble(i -> i * 2)
-                .toListString());
-    }
+//    
+//    @Test
+//    public void testMapToLong() {
+//        val intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
+//        assertEquals(
+//                "[2, 2, 4, 6, 10, 16]", 
+//                intStream
+//                .mapToLong(i -> i * 2)
+//                .toListString());
+//    }
+//    
+//    @Test @Ignore
+//    public void testMapToDouble() {
+//        val intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
+//        assertEquals(
+//                "[2.0, 2.0, 4.0, 6.0, 10.0, 16.0]", 
+//                intStream
+//                .mapToDouble(i -> i * 2)
+//                .toListString());
+//    }
     
     @Test
     public void testMapToObj() {

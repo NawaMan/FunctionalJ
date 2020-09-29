@@ -61,9 +61,7 @@ import functionalj.function.IntObjBiFunction;
 import functionalj.function.LongLongBiFunction;
 import functionalj.function.LongObjBiFunction;
 import functionalj.result.NoMoreResultException;
-import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Sequential;
 import functionalj.stream.makers.Terminal;
@@ -431,8 +429,9 @@ public interface StreamPlus<DATA>
             LongStream stream1,
             LongStream stream2,
             LongLongBiFunction<TARGET> merger) {
-        return LongStreamPlus.from(stream1)
-                .zipToObjWith(stream2, merger);
+//        return LongStreamPlus.from(stream1)
+//                .zipToObjWith(stream2, merger);
+        return null;
     }
     
     /** Zip longs from two LongStreams and combine it into another object. */
@@ -441,8 +440,9 @@ public interface StreamPlus<DATA>
             LongStream                 stream2,
             long                       defaultValue,
             LongLongBiFunction<TARGET> merger) {
-        return LongStreamPlus.from(stream1)
-                .zipToObjWith(stream2, defaultValue, merger);
+        return null;
+//        return LongStreamPlus.from(stream1)
+//                .zipToObjWith(stream2, defaultValue, merger);
     }
     
     /**
@@ -455,8 +455,9 @@ public interface StreamPlus<DATA>
             LongStream                stream2,
             long                      defaultValue2,
             LongLongBiFunction<TARGET> merger) {
-        return LongStreamPlus.from(stream1)
-                .zipToObjWith(stream2, defaultValue1, defaultValue2, merger);
+        return null;
+//        return LongStreamPlus.from(stream1)
+//                .zipToObjWith(stream2, defaultValue1, defaultValue2, merger);
     }
     
     /**
@@ -467,8 +468,9 @@ public interface StreamPlus<DATA>
             LongStream                         stream1,
             Stream<ANOTHER>                    stream2,
             LongObjBiFunction<ANOTHER, TARGET> merger) {
-        return LongStreamPlus.from(stream1)
-                .zipWith(stream2, merger);
+        return null;
+//        return LongStreamPlus.from(stream1)
+//                .zipWith(stream2, merger);
     }
     
     /**
@@ -480,8 +482,9 @@ public interface StreamPlus<DATA>
             long                               defaultValue,
             Stream<ANOTHER>                    stream2,
             LongObjBiFunction<ANOTHER, TARGET> merger) {
-        return LongStreamPlus.from(stream1)
-                .zipWith(defaultValue, stream2, merger);
+        return null;
+//        return LongStreamPlus.from(stream1)
+//                .zipWith(defaultValue, stream2, merger);
     }
     
     //== Core ==
@@ -504,8 +507,11 @@ public interface StreamPlus<DATA>
         return IntStreamPlus.from(action.apply(this));
     }
     
-    public default LongStreamPlus deriveToLong(Func1<StreamPlus<DATA>, LongStream> action) {
-        return LongStreamPlus.from(action.apply(this));
+//    public default LongStreamPlus deriveToLong(Func1<StreamPlus<DATA>, LongStream> action) {
+//        return LongStreamPlus.from(action.apply(this));
+//    }
+    public default LongStream deriveToLong(Func1<StreamPlus<DATA>, LongStream> action) {
+        return null;
     }
     
 //    public default DoubleStreamPlus deriveToDouble(Func1<StreamPlus<DATA>, DoubleStream> action) {
@@ -622,12 +628,15 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
-        return LongStreamPlus.from(stream().mapToLong(mapper));
+//    public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
+//        return LongStreamPlus.from(stream().mapToLong(mapper));
+    public default LongStream mapToLong(ToLongFunction<? super DATA> mapper) {
+        return null;
     }
     
     @Override
-    public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+    public default DoubleStream mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+//    public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
 //        return DoubleStreamPlus.from(stream().mapToDouble(mapper));
         return null;
     }
@@ -645,12 +654,15 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-    public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
-        return LongStreamPlus.from(stream().flatMapToLong(mapper));
+//    public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
+//        return LongStreamPlus.from(stream().flatMapToLong(mapper));
+    public default LongStream flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
+        return null;
     }
     
     @Override
-    public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
+    public default DoubleStream flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
+//    public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
 //        return DoubleStreamPlus.from(stream().flatMapToDouble(mapper));
         return null;
     }

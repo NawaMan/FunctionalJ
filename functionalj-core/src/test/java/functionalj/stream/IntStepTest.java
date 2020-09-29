@@ -1,6 +1,5 @@
 package functionalj.stream;
 
-import static functionalj.stream.intstream.IntStep.from;
 import static functionalj.stream.intstream.IntStep.step;
 import static org.junit.Assert.assertEquals;
 

@@ -44,7 +44,7 @@ public class IntStreamableTest {
     public void testEmpty() {
         val streamble = empty();
         run(()->{
-//            assertEquals("[]", streamble.toListString());
+            assertEquals("[]", streamble.toListString());
         });
     }
 
@@ -52,7 +52,7 @@ public class IntStreamableTest {
     public void testEmptyIntStream() {
         val streamble = emptyIntStreamable();
         run(()->{
-//            assertEquals("[]", streamble.toListString());
+            assertEquals("[]", streamble.toListString());
         });
     }
 

@@ -58,14 +58,10 @@ import functionalj.result.Result;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusHelper;
-import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
-import functionalj.streamable.doublestreamable.AsDoubleStreamable;
 import functionalj.streamable.intstreamable.AsIntStreamable;
-import functionalj.streamable.longstreamable.AsLongStreamable;
 import functionalj.tuple.IntTuple2;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
@@ -579,24 +575,24 @@ public interface FuncList<DATA>
         val targetStream = action.apply(sourceStream);
         return FuncList.from(targetStream);
     }
-    
-    /** Create a Streamable from the given LongStreamable. */
-    public static <TARGET> FuncList<TARGET> deriveFrom(
-            AsLongStreamable                         asStreamable,
-            Function<LongStreamPlus, Stream<TARGET>> action) {
-        val sourceStream = asStreamable.longStream();
-        val targetStream = action.apply(sourceStream);
-        return FuncList.from(targetStream);
-    }
-    
-    /** Create a Streamable from the given LongStreamable. */
-    public static <TARGET> FuncList<TARGET> deriveFrom(
-            AsDoubleStreamable                         asStreamable,
-            Function<DoubleStreamPlus, Stream<TARGET>> action) {
-        val sourceStream = asStreamable.doubleStream();
-        val targetStream = action.apply(sourceStream);
-        return FuncList.from(targetStream);
-    }
+//    
+//    /** Create a Streamable from the given LongStreamable. */
+//    public static <TARGET> FuncList<TARGET> deriveFrom(
+//            AsLongStreamable                         asStreamable,
+//            Function<LongStreamPlus, Stream<TARGET>> action) {
+//        val sourceStream = asStreamable.longStream();
+//        val targetStream = action.apply(sourceStream);
+//        return FuncList.from(targetStream);
+//    }
+//    
+//    /** Create a Streamable from the given LongStreamable. */
+//    public static <TARGET> FuncList<TARGET> deriveFrom(
+//            AsDoubleStreamable                         asStreamable,
+//            Function<DoubleStreamPlus, Stream<TARGET>> action) {
+//        val sourceStream = asStreamable.doubleStream();
+//        val targetStream = action.apply(sourceStream);
+//        return FuncList.from(targetStream);
+//    }
 //  
 //    /** Create a Streamable from another streamable. */
 //    public static <SOURCE> IntFuncList deriveToInt(

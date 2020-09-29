@@ -30,33 +30,21 @@ import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import functionalj.function.Func0;
 import functionalj.function.Func2;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
-import functionalj.function.LongLongBiFunction;
-import functionalj.function.LongObjBiFunction;
 import functionalj.list.FuncList;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.stream.doublestream.DoubleStreamable;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.longstream.LongStreamPlus;
-import functionalj.stream.longstream.LongStreamable;
-import functionalj.streamable.doublestreamable.AsDoubleStreamable;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
-import functionalj.streamable.longstreamable.AsLongStreamable;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
@@ -438,88 +426,88 @@ public interface Streamable<DATA>
                     merger);
         };
     }
-    
-    /**
-     * Zip longs from two LongStreams and combine it into another object.
-     * The result stream has the size of the shortest stream.
-     */
-    public static <TARGET> Streamable<TARGET> zipOf(
-            LongStreamable       streamable1,
-            LongStreamable       streamable2,
-            LongLongBiFunction<TARGET> merger) {
-        return ()->{
-            return StreamPlus.zipOf(
-                    streamable1.longStream(),
-                    streamable2.longStream(),
-                    merger);
-        };
-    }
-    
-    /** Zip longs from two LongStreamables and combine it into another object. */
-    public static <T> Streamable<T> zipOf(
-            LongStreamable       streamable1,
-            LongStreamable       streamable2,
-            int                 defaultValue,
-            LongLongBiFunction<T> merger) {
-        return ()->{
-            return StreamPlus.zipOf(
-                    streamable1.longStream(),
-                    streamable2.longStream(),
-                    defaultValue,
-                    merger);
-        };
-    }
-    
-    /**
-     * Zip values from a long streamable and another object streamable and combine it into another object.
-     * The result stream has the size of the shortest stream.
-     */
-    public static <TARGET> Streamable<TARGET> zipOf(
-            LongStreamable             streamable1,
-            long                       defaultValue1,
-            LongStreamable             streamable2,
-            long                       defaultValue2,
-            LongLongBiFunction<TARGET> merger) {
-        return ()->{
-            return StreamPlus.zipOf(
-                    streamable1.longStream(), defaultValue1,
-                    streamable2.longStream(), defaultValue2,
-                    merger);
-        };
-    }
-    
-    /**
-     * Zip values from a long streamable and another object streamable and combine it into another object.
-     * The result stream has the size of the shortest stream.
-     */
-    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
-            LongStreamable                     streamable1,
-            Streamable<ANOTHER>                streamable2,
-            LongObjBiFunction<ANOTHER, TARGET> merger) {
-        return ()->{
-            return StreamPlus.zipOf(
-                    streamable1.longStream(),
-                    streamable2.stream(),
-                    merger);
-        };
-    }
-    
-    /**
-     * Zip values from an long streamable and another object streamable and combine it into another object.
-     * The default value will be used if the first streamable ended first and null will be used if the second stream ended first.
-     */
-    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
-            LongStreamable                     streamable1,
-            long                               defaultValue,
-            Streamable<ANOTHER>                streamable2,
-            LongObjBiFunction<ANOTHER, TARGET> merger) {
-        return ()->{
-            return StreamPlus.zipOf(
-                    streamable1.longStream(), defaultValue,
-                    streamable2.stream(),
-                    merger);
-        };
-    }
+//    
+//    /**
+//     * Zip longs from two LongStreams and combine it into another object.
+//     * The result stream has the size of the shortest stream.
+//     */
+//    public static <TARGET> Streamable<TARGET> zipOf(
+//            LongStreamable       streamable1,
+//            LongStreamable       streamable2,
+//            LongLongBiFunction<TARGET> merger) {
+//        return ()->{
+//            return StreamPlus.zipOf(
+//                    streamable1.longStream(),
+//                    streamable2.longStream(),
+//                    merger);
+//        };
+//    }
+//    
+//    /** Zip longs from two LongStreamables and combine it into another object. */
+//    public static <T> Streamable<T> zipOf(
+//            LongStreamable       streamable1,
+//            LongStreamable       streamable2,
+//            int                 defaultValue,
+//            LongLongBiFunction<T> merger) {
+//        return ()->{
+//            return StreamPlus.zipOf(
+//                    streamable1.longStream(),
+//                    streamable2.longStream(),
+//                    defaultValue,
+//                    merger);
+//        };
+//    }
+//    
+//    /**
+//     * Zip values from a long streamable and another object streamable and combine it into another object.
+//     * The result stream has the size of the shortest stream.
+//     */
+//    public static <TARGET> Streamable<TARGET> zipOf(
+//            LongStreamable             streamable1,
+//            long                       defaultValue1,
+//            LongStreamable             streamable2,
+//            long                       defaultValue2,
+//            LongLongBiFunction<TARGET> merger) {
+//        return ()->{
+//            return StreamPlus.zipOf(
+//                    streamable1.longStream(), defaultValue1,
+//                    streamable2.longStream(), defaultValue2,
+//                    merger);
+//        };
+//    }
+//    
+//    /**
+//     * Zip values from a long streamable and another object streamable and combine it into another object.
+//     * The result stream has the size of the shortest stream.
+//     */
+//    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
+//            LongStreamable                     streamable1,
+//            Streamable<ANOTHER>                streamable2,
+//            LongObjBiFunction<ANOTHER, TARGET> merger) {
+//        return ()->{
+//            return StreamPlus.zipOf(
+//                    streamable1.longStream(),
+//                    streamable2.stream(),
+//                    merger);
+//        };
+//    }
+//    
+//    /**
+//     * Zip values from an long streamable and another object streamable and combine it into another object.
+//     * The default value will be used if the first streamable ended first and null will be used if the second stream ended first.
+//     */
+//    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
+//            LongStreamable                     streamable1,
+//            long                               defaultValue,
+//            Streamable<ANOTHER>                streamable2,
+//            LongObjBiFunction<ANOTHER, TARGET> merger) {
+//        return ()->{
+//            return StreamPlus.zipOf(
+//                    streamable1.longStream(), defaultValue,
+//                    streamable2.stream(),
+//                    merger);
+//        };
+//    }
     
     //== Core ==
     
@@ -559,28 +547,28 @@ public interface Streamable<DATA>
             return StreamPlus.from(targetStream);
         };
     }
-    
-    /** Create a Streamable from the given LongStreamable. */
-    public static <TARGET> Streamable<TARGET> deriveFrom(
-            AsLongStreamable                         asStreamable,
-            Function<LongStreamPlus, Stream<TARGET>> action) {
-        return () -> {
-            val sourceStream = asStreamable.longStream();
-            val targetStream = action.apply(sourceStream);
-            return StreamPlus.from(targetStream);
-        };
-    }
-    
-    /** Create a Streamable from the given LongStreamable. */
-    public static <TARGET> Streamable<TARGET> deriveFrom(
-            AsDoubleStreamable                         asStreamable,
-            Function<DoubleStreamPlus, Stream<TARGET>> action) {
-        return () -> {
-            val sourceStream = asStreamable.doubleStream();
-            val targetStream = action.apply(sourceStream);
-            return StreamPlus.from(targetStream);
-        };
-    }
+//    
+//    /** Create a Streamable from the given LongStreamable. */
+//    public static <TARGET> Streamable<TARGET> deriveFrom(
+//            AsLongStreamable                         asStreamable,
+//            Function<LongStreamPlus, Stream<TARGET>> action) {
+//        return () -> {
+//            val sourceStream = asStreamable.longStream();
+//            val targetStream = action.apply(sourceStream);
+//            return StreamPlus.from(targetStream);
+//        };
+//    }
+//    
+//    /** Create a Streamable from the given LongStreamable. */
+//    public static <TARGET> Streamable<TARGET> deriveFrom(
+//            AsDoubleStreamable                         asStreamable,
+//            Function<DoubleStreamPlus, Stream<TARGET>> action) {
+//        return () -> {
+//            val sourceStream = asStreamable.doubleStream();
+//            val targetStream = action.apply(sourceStream);
+//            return StreamPlus.from(targetStream);
+//        };
+//    }
     
     /** Create a Streamable from another streamable. */
     public static <SOURCE> IntStreamable deriveToInt(
@@ -588,21 +576,21 @@ public interface Streamable<DATA>
             Function<StreamPlus<SOURCE>, IntStream> action) {
         return IntStreamable.deriveFrom(asStreamable, action);
     }
-    
-    /** Create a Streamable from another streamable. */
-    public static <SOURCE> LongStreamable deriveToLong(
-            AsStreamable<SOURCE>                     asStreamable,
-            Function<StreamPlus<SOURCE>, LongStream> action) {
-        return LongStreamable.deriveFrom(asStreamable, action);
-    }
-    
-    /** Create a Streamable from another streamable. */
-    public static <SOURCE> DoubleStreamable deriveToDouble(
-            AsStreamable<SOURCE>                       asStreamable,
-            Function<StreamPlus<SOURCE>, DoubleStream> action) {
-//        return DoubleStreamable.deriveFrom(asStreamable, action);
-        return null;
-    }
+//    
+//    /** Create a Streamable from another streamable. */
+//    public static <SOURCE> LongStreamable deriveToLong(
+//            AsStreamable<SOURCE>                     asStreamable,
+//            Function<StreamPlus<SOURCE>, LongStream> action) {
+//        return LongStreamable.deriveFrom(asStreamable, action);
+//    }
+//    
+//    /** Create a Streamable from another streamable. */
+//    public static <SOURCE> DoubleStreamable deriveToDouble(
+//            AsStreamable<SOURCE>                       asStreamable,
+//            Function<StreamPlus<SOURCE>, DoubleStream> action) {
+////        return DoubleStreamable.deriveFrom(asStreamable, action);
+//        return null;
+//    }
     
     /** Create a Streamable from another streamable. */
     public static <SOURCE, TARGET> Streamable<TARGET> deriveToObj(
@@ -685,17 +673,17 @@ public interface Streamable<DATA>
     public default IntStreamable mapToInt(ToIntFunction<? super DATA> mapper) {
         return IntStreamable.deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
-    
-    /** Map each value into a long value using the function. */
-    public default LongStreamable mapToLong(ToLongFunction<? super DATA> mapper) {
-        return LongStreamable.deriveFrom(this, stream -> stream.mapToLong(mapper));
-    }
-    
-    /** Map each value into a double value using the function. */
-    public default DoubleStreamable mapToDouble(ToDoubleFunction<? super DATA> mapper) {
-//        return DoubleStreamable.deriveFrom(this, stream -> stream.mapToDouble(mapper));
-        return null;
-    }
+//    
+//    /** Map each value into a long value using the function. */
+//    public default LongStreamable mapToLong(ToLongFunction<? super DATA> mapper) {
+//        return LongStreamable.deriveFrom(this, stream -> stream.mapToLong(mapper));
+//    }
+//    
+//    /** Map each value into a double value using the function. */
+//    public default DoubleStreamable mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+////        return DoubleStreamable.deriveFrom(this, stream -> stream.mapToDouble(mapper));
+//        return null;
+//    }
     
     //-- FlatMap --
     
@@ -708,16 +696,16 @@ public interface Streamable<DATA>
     public default IntStreamable flatMapToInt(Function<? super DATA, ? extends IntStreamable> mapper) {
         return IntStreamable.deriveFrom(this, stream -> stream.flatMapToInt(value -> mapper.apply(value).intStream()));
     }
-    
-    /** Map a value into a long streamable and then flatten that streamable */
-    public default LongStreamable flatMapToLong(Function<? super DATA, ? extends LongStreamable> mapper) {
-        return LongStreamable.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
-    }
-    
-    /** Map a value into a double streamable and then flatten that streamable */
-    public default DoubleStreamable flatMapToDouble(Function<? super DATA, ? extends DoubleStreamable> mapper) {
-        return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
-    }
+//    
+//    /** Map a value into a long streamable and then flatten that streamable */
+//    public default LongStreamable flatMapToLong(Function<? super DATA, ? extends LongStreamable> mapper) {
+//        return LongStreamable.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
+//    }
+//    
+//    /** Map a value into a double streamable and then flatten that streamable */
+//    public default DoubleStreamable flatMapToDouble(Function<? super DATA, ? extends DoubleStreamable> mapper) {
+//        return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
+//    }
     
     //-- Filter --
     

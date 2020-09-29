@@ -23,8 +23,6 @@
 // ============================================================================
 package functionalj.stream.intstream;
 
-import static functionalj.function.Func.itself;
-
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.OptionalDouble;
@@ -54,8 +52,6 @@ import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.doublestream.DoubleStreamPlus;
-import functionalj.stream.longstream.LongStreamPlus;
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Sequential;
 import functionalj.stream.makers.Terminal;
@@ -418,12 +414,13 @@ public interface IntStreamPlus
     }
     
     @Override
-    public default LongStreamPlus asLongStream() {
+//    public default LongStreamPlus asLongStream() {
+    public default LongStream asLongStream() {
         return mapToLong(i -> i);
     }
     
     @Override
-    public default DoubleStreamPlus asDoubleStream() {
+    public default DoubleStream asDoubleStream() {
         return mapToDouble(i -> i);
     }
     
@@ -551,55 +548,6 @@ public interface IntStreamPlus
         });
     }
     
-    ////TODO: Is this still needed?
-    ////The recent change has make iterator non-terminate action, let try out.
-    ///** Use iterator of this stream without terminating the stream. */
-    //public default IntStreamPlus useIterator(Func1<IntIteratorPlus, IntStreamPlus> action) {
-    //    return sequential(stream -> {
-    //        IntStreamPlus result = null;
-    //        try {
-    //            val iterator = iterator();
-    //            result = action.apply(iterator);
-    //            return result;
-    //        } finally {
-    //            if (result == null) {
-    //                f(()->close())
-    //                .runCarelessly();
-    //            } else {
-    //                result
-    //                .onClose(()->{
-    //                    f(()->close())
-    //                    .runCarelessly();
-    //                });
-    //            }
-    //        }
-    //    });
-    //}
-    
-    //@Override
-    //public default <TARGET> StreamPlus<TARGET> useIteratorToObj(
-    //        Func1<IntIteratorPlus, StreamPlus<TARGET>> action) {
-    //    return sequentialToObj(stream -> {
-    //        StreamPlus<TARGET> result = null;
-    //        try {
-    //            val iterator = IntIteratorPlus.from(stream).iterator();
-    //            result = action.apply(iterator);
-    //            return result;
-    //        } finally {
-    //            if (result == null) {
-    //                f(()->close())
-    //                .runCarelessly();
-    //            } else {
-    //                result
-    //                .onClose(()->{
-    //                    f(()->close())
-    //                    .runCarelessly();
-    //                });
-    //            }
-    //        }
-    //    });
-    //}
-    
     //== Functionalities ==
     
     //-- Map --
@@ -614,12 +562,15 @@ public interface IntStreamPlus
     }
     
     @Override
-    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
-        return LongStreamPlus.from(intStream().mapToLong(mapper));
+    public default LongStream mapToLong(IntToLongFunction mapper) {
+//    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
+//        return LongStreamPlus.from(intStream().mapToLong(mapper));
+        return null;
     }
     
     @Override
-    public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
+    public default DoubleStream mapToDouble(IntToDoubleFunction mapper) {
+//    public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
 //        return DoubleStreamPlus.from(stream().mapToDouble(mapper));
         return null;
     }
@@ -640,12 +591,16 @@ public interface IntStreamPlus
         return flatMap(mapper);
     }
     
-    public default LongStreamPlus flatMapToLong(IntFunction<? extends LongStream> mapper) {
-        return mapToObj(mapper).flatMapToLong(itself());
+    public default LongStream flatMapToLong(IntFunction<? extends LongStream> mapper) {
+        return null;
+//    public default LongStreamPlus flatMapToLong(IntFunction<? extends LongStream> mapper) {
+//        return mapToObj(mapper).flatMapToLong(itself());
     }
     
-    public default DoubleStreamPlus flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {
-        return mapToObj(mapper).flatMapToDouble(itself());
+    public default DoubleStream flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {
+//    public default DoubleStreamPlus flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {
+//        return mapToObj(mapper).flatMapToDouble(itself());
+        return null;
     }
     
     //-- Filter --
