@@ -564,10 +564,10 @@ public class DeferActionTest {
                 + "New defer action: 3, "
                 + "New defer action: 4, "
                 + "Start #0: , End #0: 0, "
-                + "Start #1: , End #1: 1, "
-                + "Start #2: , End #2: 2, "
-                + "Start #3: , End #3: 3, "
-                + "Start #4: , End #4: 4"
+                + "Start #1: , End #1: 2, "
+                + "Start #2: , End #2: 4, "
+                + "Start #3: , End #3: 6, "
+                + "Start #4: , End #4: 8"
             + "]", creator.logs().toString());
     }
     
@@ -585,10 +585,10 @@ public class DeferActionTest {
                 + "New defer action: 3, "
                 + "New defer action: 4, "
                 + "Start #0: , End #0: 0, "
-                + "Start #1: , End #1: 1, "
-                + "Start #2: , End #2: 2, "
-                + "Start #3: , End #3: 3, "
-                + "Start #4: , End #4: 4"
+                + "Start #1: , End #1: 2, "
+                + "Start #2: , End #2: 4, "
+                + "Start #3: , End #3: 6, "
+                + "Start #4: , End #4: 8"
             + "]", creator.logs().toString());
         
         boolean zeroOneDone01 = creator.logs().toString().startsWith("["
@@ -597,28 +597,28 @@ public class DeferActionTest {
                 + "New defer action: 2, "
                 + "New defer action: 3, "
                 + "New defer action: 4, "
-            + "Start #0: , Start #1: , End #0: 0, End #1: 1, ");
+            + "Start #0: , Start #1: , End #0: 0, End #1: 2, ");
         boolean oneZeroDone01 = creator.logs().toString().startsWith("["
                 + "New defer action: 0, "
                 + "New defer action: 1, "
                 + "New defer action: 2, "
                 + "New defer action: 3, "
                 + "New defer action: 4, "
-                + "Start #1: , Start #0: , End #1: 1, End #0: 0, ");
+                + "Start #1: , Start #0: , End #1: 2, End #0: 0, ");
         boolean zeroOneDone10 = creator.logs().toString().startsWith("["
                 + "New defer action: 0, "
                 + "New defer action: 1, "
                 + "New defer action: 2, "
                 + "New defer action: 3, "
                 + "New defer action: 4, "
-            + "Start #0: , Start #1: , End #1: 1, End #0: 0, ");
+            + "Start #0: , Start #1: , End #1: 2, End #0: 0, ");
         boolean oneZeroDone10 = creator.logs().toString().startsWith("["
                 + "New defer action: 0, "
                 + "New defer action: 1, "
                 + "New defer action: 2, "
                 + "New defer action: 3, "
                 + "New defer action: 4, "
-                + "Start #1: , Start #0: , End #0: 0, End #1: 1, ");
+                + "Start #1: , Start #0: , End #0: 0, End #1: 2, ");
         if (!(zeroOneDone01 || oneZeroDone01 || zeroOneDone10 || oneZeroDone10)) {
             System.err.println(creator.logs);
         }
@@ -645,7 +645,7 @@ public class DeferActionTest {
             actions.forEach(action -> action.abort());
             return (List<Integer>)results;
         });
-        assertStrings("[0, 1, 2, 3, 4]", list);
+        assertStrings("[0, 2, 4, 6, 8]", list);
     }
     
     @Test @Ignore
