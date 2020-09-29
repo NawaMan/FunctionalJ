@@ -31,7 +31,7 @@ import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.intstream.GrowOnlyIntArray;
 import lombok.val;
 
-class IntStreamableHelper {
+class IntStreamableUtils {
     
     // TODO - Change to DoubleFuncList
     static <D> FuncList<IntFuncList> segmentByPercentiles(IntFuncList list, DoubleFuncList percentiles) {
