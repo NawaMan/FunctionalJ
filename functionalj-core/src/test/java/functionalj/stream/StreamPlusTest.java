@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -528,6 +529,27 @@ public class StreamPlusTest {
         
         val stream2 = StreamPlus.of("One", "Two", "Three");
         assertStrings("[One, Two, Three]", Arrays.toString(stream2.map(s -> s).toArray(n -> new String[n])));
+    }
+    
+    @Test
+    public void testHead() {
+        val stream1 = StreamPlus.of("One", "Two", "Three");
+        assertEquals("One",   stream1.head(()-> "N/A"));
+        assertEquals("Two",   stream1.head(()-> "N/A"));
+        assertEquals("Three", stream1.head(()-> "N/A"));
+        assertEquals("N/A",   stream1.head(()-> "N/A"));
+        assertEquals("N/A",   stream1.head(()-> "N/A"));
+        
+        val stream2 = StreamPlus.of("One", "Two", "Three");
+        assertEquals(Optional.of("One"),   stream2.head());
+        assertEquals(Optional.of("Two"),   stream2.head());
+        assertEquals(Optional.of("Three"), stream2.head());
+        assertEquals(Optional.empty(),     stream2.head());
+        assertEquals(Optional.empty(),     stream2.head());
+        
+        val stream3 = StreamPlus.of("One", "Two", "Three");
+        assertEquals("One",          stream3.head(()-> "N/A"));
+        assertEquals("[Two, Three]", stream3.toListString());
     }
     
     //-- AsStreamPlus --

@@ -33,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -471,6 +472,34 @@ public class StreamableTest {
 //        val stream2 = StreamPlus.of("One", "Two", "Three");
 //        assertStrings("[One, Two, Three]", Arrays.toString(stream2.map(s -> s).toArray(n -> new String[n])));
 //    }
+    
+    @Test
+    public void testHead() {
+        run(Streamable.of("One", "Two", "Three"),
+            (streamable) -> {
+                assertEquals("One",   streamable.head(()-> "N/A"));
+                assertEquals("Two",   streamable.head(()-> "N/A"));
+                assertEquals("Three", streamable.head(()-> "N/A"));
+                assertEquals("N/A",   streamable.head(()-> "N/A"));
+                assertEquals("N/A",   streamable.head(()-> "N/A"));
+            });
+        
+        run(Streamable.of("One", "Two", "Three"),
+            (streamable) -> {
+                assertEquals(Optional.of("One"),   streamable.head());
+                assertEquals(Optional.of("Two"),   streamable.head());
+                assertEquals(Optional.of("Three"), streamable.head());
+                assertEquals(Optional.empty(),     streamable.head());
+                assertEquals(Optional.empty(),     streamable.head());
+            });
+        
+        run(Streamable.of("One", "Two", "Three"),
+            (streamable) -> {
+                assertEquals("One",          streamable.head(()-> "N/A"));
+                assertEquals("[Two, Three]", streamable.toListString());
+            });
+    }
+    
 //    
 //    //-- AsStreamPlus --
 //    

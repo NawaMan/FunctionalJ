@@ -173,4 +173,24 @@ public interface AsStreamPlus<DATA>
         return streamFrom(this).toArray(generator);
     }
     
+    //== Head ==
+    
+    public default DATA head(Supplier<DATA> orValue) {
+        val iterator = streamPlus().iterator();
+        if (!iterator.hasNext()) {
+            return orValue.get();
+        }
+        
+        return iterator.next();
+    }
+    
+    public default Optional<DATA> head() {
+        val iterator = streamPlus().iterator();
+        if (!iterator.hasNext()) {
+            return Optional.empty();
+        }
+        
+        return Optional.of(iterator.next());
+    }
+    
 }
