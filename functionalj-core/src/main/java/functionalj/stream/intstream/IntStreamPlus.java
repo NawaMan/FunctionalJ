@@ -29,6 +29,7 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -523,7 +524,8 @@ public interface IntStreamPlus
     @Terminal
     @Override
     public default void close() {
-        intStream().close();
+        intStream()
+        .close();
     }
     
     @Override
@@ -533,7 +535,7 @@ public interface IntStreamPlus
     
     //-- Iterator --
     
-    /** @return a iterator of this streamable. */
+    /** @return a iterator of this stream. */
     @Override
     public default IntIteratorPlus iterator() {
         return IntIteratorPlus.from(intStream().iterator());
@@ -542,10 +544,8 @@ public interface IntStreamPlus
     /** @return a spliterator of this streamable. */
     @Override
     public default Spliterator.OfInt spliterator() {
-        return terminate(s -> {
-            val iterator = iterator();
-            return Spliterators.spliteratorUnknownSize(iterator, 0);
-        });
+        val iterator = iterator();
+        return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
     //== Functionalities ==
@@ -826,4 +826,34 @@ public interface IntStreamPlus
         });
     }
     
+    //== Pop ==
+    
+    public default int pop(IntSupplier orValue) {
+        val iterator = intStreamPlus().iterator();
+        if (!iterator.hasNext()) {
+            return orValue.getAsInt();
+        }
+        
+        return iterator.nextInt();
+    }
+    
+    public default OptionalInt pop() {
+        val iterator = intStreamPlus().iterator();
+        if (!iterator.hasNext()) {
+            return OptionalInt.empty();
+        }
+        
+        return OptionalInt.of(iterator.next());
+    }
+    
+    public default IntStreamPlus pop(int count) {
+        val iterator = intStreamPlus().iterator();
+        val hasNext = new AtomicBoolean();
+        return generateWith(()   -> {
+                    hasNext.set(iterator.hasNext());
+                    return hasNext.get() ? iterator.next() : null;
+                 })
+                .limit     (count)
+                .takeWhile (each -> hasNext.get());
+    }
 }

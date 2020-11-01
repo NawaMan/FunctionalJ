@@ -9,6 +9,9 @@ import org.junit.Test;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
+// This test check if memory is taken (from boxing) when when perform integer primitive access.
+// It might fail if there are other thread running at the same time and using memory.
+// If it is run by itself and pass, then it is successful as there is no extra memory is used.
 public class IntegerAccessTest {
     
     @SuppressWarnings("unused")

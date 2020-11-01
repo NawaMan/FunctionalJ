@@ -311,7 +311,10 @@ public class StreamPlusTest {
     
     @Test
     public void testIterator() {
-        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five");
+        // Nawa: Using iterator and create stream works better for Stream/Iterator duality.
+        val list  = Arrays.asList("One", "Two", "Three", "Four", "Five");
+        val stream = IteratorBackedStreamPlus.from(list.stream());
+        
         val iterator = stream.iterator();
         
         assertTrue(iterator.hasNext());
@@ -324,6 +327,23 @@ public class StreamPlusTest {
         assertTrue("Three".equals(iterator.next()));
         
         assertStrings("[Four, Five]", stream.toList());
+        
+        val newStream = IteratorBackedStreamPlus
+                .from(list.stream())
+                .map(theString.length())
+                .map(theInteger.time(5));
+        val newIterator = newStream.iterator();
+        
+        assertTrue(newIterator.hasNext());
+        assertTrue(15 == newIterator.next());
+        
+        assertTrue(newIterator.hasNext());
+        assertTrue(15 == newIterator.next());
+        
+        assertTrue(newIterator.hasNext());
+        assertTrue(25 == newIterator.next());
+        
+        assertStrings("[20, 20]", newStream.toList());
     }
     
     @Test
@@ -532,24 +552,30 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testHead() {
+    public void testPop() {
         val stream1 = StreamPlus.of("One", "Two", "Three");
-        assertEquals("One",   stream1.head(()-> "N/A"));
-        assertEquals("Two",   stream1.head(()-> "N/A"));
-        assertEquals("Three", stream1.head(()-> "N/A"));
-        assertEquals("N/A",   stream1.head(()-> "N/A"));
-        assertEquals("N/A",   stream1.head(()-> "N/A"));
+        assertEquals("One",   stream1.pop(()-> "N/A"));
+        assertEquals("Two",   stream1.pop(()-> "N/A"));
+        assertEquals("Three", stream1.pop(()-> "N/A"));
+        assertEquals("N/A",   stream1.pop(()-> "N/A"));
+        assertEquals("N/A",   stream1.pop(()-> "N/A"));
         
         val stream2 = StreamPlus.of("One", "Two", "Three");
-        assertEquals(Optional.of("One"),   stream2.head());
-        assertEquals(Optional.of("Two"),   stream2.head());
-        assertEquals(Optional.of("Three"), stream2.head());
-        assertEquals(Optional.empty(),     stream2.head());
-        assertEquals(Optional.empty(),     stream2.head());
+        assertEquals(Optional.of("One"),   stream2.pop());
+        assertEquals(Optional.of("Two"),   stream2.pop());
+        assertEquals(Optional.of("Three"), stream2.pop());
+        assertEquals(Optional.empty(),     stream2.pop());
+        assertEquals(Optional.empty(),     stream2.pop());
         
         val stream3 = StreamPlus.of("One", "Two", "Three");
-        assertEquals("One",          stream3.head(()-> "N/A"));
+        assertEquals("One",          stream3.pop(()-> "N/A"));
         assertEquals("[Two, Three]", stream3.toListString());
+         
+        val stream4 = StreamPlus.of("One", "Two", "Three");
+        assertEquals("[One, Two]", stream4.pop(2).toListString());
+        assertEquals("[Three]",    stream4.pop(2).toListString());
+        assertEquals("[]",         stream4.pop(2).toListString());
+        assertEquals("[]",         stream4.toListString());
     }
     
     //-- AsStreamPlus --

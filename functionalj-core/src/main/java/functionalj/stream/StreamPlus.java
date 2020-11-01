@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -144,7 +145,7 @@ public interface StreamPlus<DATA>
     /** Create a StreamPlus from the given data. */
     @SafeVarargs
     public static <TARGET> StreamPlus<TARGET> of(TARGET ... data) {
-        return ArrayBackedStreamPlus.from(data);
+        return IteratorBackedStreamPlus.from(data);
     }
     
     /** Create a StreamPlus from the given data */
@@ -161,7 +162,7 @@ public interface StreamPlus<DATA>
         
         return (stream instanceof StreamPlus)
                 ? (StreamPlus)stream
-                : (StreamPlus)(()->stream);
+                : IteratorBackedStreamPlus.from(stream);
     }
     
     /** Create a StreamPlus from the given iterator. */
@@ -893,6 +894,37 @@ public interface StreamPlus<DATA>
             return stream
                     .toArray(generator);
         });
+    }
+    
+    //== Pop ==
+    
+    public default DATA pop(Supplier<DATA> orValue) {
+        val iterator = streamPlus().iterator();
+        if (!iterator.hasNext()) {
+            return orValue.get();
+        }
+        
+        return iterator.next();
+    }
+    
+    public default Optional<DATA> pop() {
+        val iterator = streamPlus().iterator();
+        if (!iterator.hasNext()) {
+            return Optional.empty();
+        }
+        
+        return Optional.of(iterator.next());
+    }
+    
+    public default StreamPlus<DATA> pop(int count) {
+        val iterator = streamPlus().iterator();
+        val hasNext = new AtomicBoolean();
+        return generateWith(()   -> {
+                    hasNext.set(iterator.hasNext());
+                    return hasNext.get() ? iterator.next() : null;
+                 })
+                .limit     (count)
+                .takeWhile (each -> hasNext.get());
     }
     
 }

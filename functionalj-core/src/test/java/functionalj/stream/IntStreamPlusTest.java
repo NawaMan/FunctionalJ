@@ -35,16 +35,19 @@ import static functionalj.stream.intstream.IntStreamPlus.wholeNumbers;
 import static functionalj.stream.intstream.IntStreamPlus.zipOf;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -52,6 +55,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -610,6 +614,34 @@ public class IntStreamPlusTest {
         assertArrayEquals(
                 new int[] {1, 1, 2, 3, 5, 8, 13, 21, 34},
                 ints(1, 1, 2, 3, 5, 8, 13, 21, 34).toArray());
+    }
+    
+    @Test
+    public void testPop() {
+        // Nawa see IteratorBackedStreamPlus
+        val stream1 = IntStreamPlus.naturalNumbers(3);
+        assertEquals( 1, stream1.pop(()-> -1));
+        assertEquals( 2, stream1.pop(()-> -1));
+        assertEquals( 3, stream1.pop(()-> -1));
+        assertEquals(-1, stream1.pop(()-> -1));
+        assertEquals(-1, stream1.pop(()-> -1));
+        
+        val stream2 = IntStreamPlus.naturalNumbers(3);
+        assertEquals(OptionalInt.of(1),   stream2.pop());
+        assertEquals(OptionalInt.of(2),   stream2.pop());
+        assertEquals(OptionalInt.of(3),   stream2.pop());
+        assertEquals(OptionalInt.empty(), stream2.pop());
+        assertEquals(OptionalInt.empty(), stream2.pop());
+        
+        val stream3 = IntStreamPlus.naturalNumbers(3);
+        assertEquals(1,        stream3.pop(()-> -1));
+        assertEquals("[2, 3]", stream3.toListString());
+         
+        val stream4 = IntStreamPlus.naturalNumbers(3);
+        assertEquals("[1, 2]", stream4.pop(2).toListString());
+        assertEquals("[3]",    stream4.pop(2).toListString());
+        assertEquals("[]",     stream4.pop(2).toListString());
+        assertEquals("[]",     stream4.toListString());
     }
     
     @Test
@@ -1564,6 +1596,86 @@ public class IntStreamPlusTest {
         assertEquals("[21, 23, 25]", 
                         range(0, 5).zipWith(range(21, 24).boxed(), (a, b) -> a + b).toListString());
     }
+    
+    //-- Close --
+    
+    @Test
+    public void testClosed() {
+        val stream = IntStreamPlus.of(1, 2, 3);
+        
+        val isClosed = new AtomicBoolean(false);
+        stream
+        .onClose(()->isClosed.set(true));
+        
+        assertFalse(isClosed.get());
+        assertEquals(
+                "[2, 4, 6]",
+                stream
+                .map(theInteger.time(2))
+                .toListString());
+        assertTrue(isClosed.get());
+        
+        try {
+            stream.toList();
+            fail("Stream should be closed now.");
+        } catch (IllegalStateException e) {
+            // Expected!!
+        }
+    }
+    
+    @Test
+    public void testClose() {
+        val stream = IntStreamPlus.of(1, 2, 3);
+        
+        val isClosed = new AtomicBoolean(false);
+        stream
+        .onClose(()->
+            isClosed.set(true));
+        
+        assertFalse(isClosed.get());
+        stream.close();
+        assertTrue(isClosed.get());
+    }
+    
+    @Test
+    public void testIterator() {
+//        val stream = IntStreamPlus.of(1, 2, 3, 4, 5);
+        val stream = StreamPlus.of(1, 2, 3, 4, 5);
+        
+        stream.onClose(() -> {
+            System.out.println("Yo!");
+        });
+//        stream.intStream().onClose(() -> {
+//            System.out.println("Yo!");
+//        });
+//        
+        val iterator = stream.iterator();
+        
+        assertTrue(iterator.hasNext());
+        assertTrue(1 == iterator.next());
+        
+        assertTrue(iterator.hasNext());
+        assertTrue(2 == iterator.next());
+        
+        assertTrue(iterator.hasNext());
+        assertTrue(3 == iterator.next());
+        
+        assertEquals("[4, 5]", stream.map(i -> "" + i).collect(toList()).toString());
+    }
+    
+//    @Test
+//    public void testToIterator() throws Exception {
+//        val stream  = StreamPlus.of("One", "Two", "Three");
+//        val list    = new ArrayList<String>();
+//        val isClose = new AtomicBoolean(false);
+//        stream.onClose(()->isClose.set(true));
+//        try(val iterator = stream.iterator()) {
+//            while (iterator.hasNext())
+//                list.add(iterator.next());
+//            assertStrings("[One, Two, Three]", list);
+//        }
+//        assertTrue(isClose.get());
+//    }
     
     @Test
     public void testChoose() {

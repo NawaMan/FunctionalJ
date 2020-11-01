@@ -136,7 +136,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     }
     
     public StreamPlus<DATA> stream() {
-        return new ArrayBackedStreamPlus<DATA>(this);
+        return new IteratorBackedStreamPlus<DATA>(this);
     }
     
     public AutoCloseableResult<IteratorPlus<DATA>> pullNext(int count) {
