@@ -1,9 +1,11 @@
 package functionalj.stream;
 
+import functionalj.OnClosable;
+
 import java.util.Iterator;
 import java.util.stream.Stream;
 
-public class StreamBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
+public class StreamBackedIteratorPlus<DATA> extends OnClosable<IteratorPlus<DATA>> implements IteratorPlus<DATA> {
     
     private final Stream<DATA> stream;
     private final Iterator<DATA> iterator;
@@ -20,10 +22,15 @@ public class StreamBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     
     public void close() {
         stream.close();
+        if (iterator instanceof IteratorPlus) {
+            ((IteratorPlus<DATA>) iterator).close();
+        }
+        super.close();
     }
     
     public IteratorPlus<DATA> onClose(Runnable closeHandler) {
         this.stream.onClose(closeHandler);
+        super.onClose(closeHandler);
         return this;
     }
     

@@ -615,7 +615,8 @@ public class IntStreamPlusTest {
                 new int[] {1, 1, 2, 3, 5, 8, 13, 21, 34},
                 ints(1, 1, 2, 3, 5, 8, 13, 21, 34).toArray());
     }
-    
+
+    @Ignore("Let's do this when we make poppable")
     @Test
     public void testPop() {
         // Nawa see IteratorBackedStreamPlus

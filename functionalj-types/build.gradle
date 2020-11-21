@@ -1,5 +1,8 @@
 version="${theVersion}.0"
 
+sourceCompatibility = theSourceCompatibility
+targetCompatibility = theTargetCompatibility
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -8,12 +11,12 @@ repositories {
 dependencies {
     compileOnly         'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
-    
+
     // == Test ==
-    
+
     testCompile 'junit:junit:4.12'
-    
+
     testCompile             'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
-    
+
 }

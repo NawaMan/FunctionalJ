@@ -1,5 +1,8 @@
 version="${theVersion}.0"
 
+sourceCompatibility = theSourceCompatibility
+targetCompatibility = theTargetCompatibility
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -9,20 +12,20 @@ dependencies {
     compile             project(':functionalj-all')
     annotationProcessor project(':functionalj-types')
     annotationProcessor project(':functionalj-elm')
-    
+
     compile 'junit:junit:4.12'
-    
+
     compileOnly         'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
-    
+
     // == Test ==
-    
+
     testCompile 'junit:junit:4.12'
-    
+
     testAnnotationProcessor project(':functionalj-types')
     testAnnotationProcessor project(':functionalj-elm')
-    
+
     testCompile             'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
-    
+
 }

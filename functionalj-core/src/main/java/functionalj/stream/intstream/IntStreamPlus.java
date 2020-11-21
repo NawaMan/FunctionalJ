@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,18 +31,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.IntBinaryOperator;
-import java.util.function.IntConsumer;
-import java.util.function.IntFunction;
-import java.util.function.IntPredicate;
-import java.util.function.IntSupplier;
-import java.util.function.IntToDoubleFunction;
-import java.util.function.IntToLongFunction;
-import java.util.function.IntUnaryOperator;
-import java.util.function.ObjIntConsumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -53,6 +42,7 @@ import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.StreamPlusWithLimit;
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Sequential;
 import functionalj.stream.makers.Terminal;
@@ -116,10 +106,18 @@ public interface IntStreamPlus
     // TODO - from-to, from almostTo, stepping.
     
     public static IntStreamPlus from(IntStream intStream) {
+        if (intStream == null)
+            return IntStreamPlus.empty();
+        
         if (intStream instanceof IntStreamPlus)
             return (IntStreamPlus)intStream;
         
-        return ()->intStream;
+        return new IntStreamPlusImpl() {
+            @Override
+            public IntStream intStream() {
+                return intStream;
+            }
+        };
     }
     
     public static IntStreamPlus zeroes() {
@@ -803,7 +801,7 @@ public interface IntStreamPlus
             return stream
                     .findFirst();
         });
-    }   
+    }
     
     @Terminal
     @Override
@@ -856,4 +854,11 @@ public interface IntStreamPlus
                 .limit     (count)
                 .takeWhile (each -> hasNext.get());
     }
+
+    // Deambigious
+
+    public default IntStreamPlus takeWhile(IntPredicate condition) {
+        return IntStreamPlusWithLimit.super.takeWhile(condition);
+    }
+
 }

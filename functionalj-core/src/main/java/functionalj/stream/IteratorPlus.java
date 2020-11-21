@@ -48,10 +48,17 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
         }
         return IteratorPlus.from(stream.iterator());
     }
+
     public static <D> IteratorPlus<D> from(Iterator<D> iterator) {
         if (iterator instanceof IteratorPlus)
              return (IteratorPlus<D>)iterator;
-        else return (IteratorPlus<D>)(()->iterator);
+
+        else return new IteratorPlusImpl<D> () {
+            @Override
+            public Iterator<D> asIterator() {
+                return iterator;
+            }
+        };
     }
     
     public default IteratorPlus<DATA> __data() throws Exception {

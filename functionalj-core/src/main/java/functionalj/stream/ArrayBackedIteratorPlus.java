@@ -30,13 +30,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
 
+import functionalj.OnClosable;
 import functionalj.function.Func1;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
-public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
+public class ArrayBackedIteratorPlus<DATA>  extends OnClosable<IteratorPlus<DATA>> implements IteratorPlus<DATA> {
     
     private final DATA[] array;
     private final int    start;
@@ -44,9 +45,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     private final Iterator<DATA> iterator;
     
     private AtomicInteger current = new AtomicInteger();
-    
-    private volatile Runnable closeHandler = null;
-    
+
     @SafeVarargs
     public static <DATA> ArrayBackedIteratorPlus<DATA> of(DATA ... array) {
         DATA[] copiedArray = Arrays.copyOf(array, array.length);
@@ -103,33 +102,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     public int getLength() {
         return end - start;
     }
-    
-    public void close() {
-        if (this.closeHandler != null) {
-            this.closeHandler.run();
-        }
-    }
-    
-    public IteratorPlus<DATA> onClose(Runnable closeHandler) {
-        if (closeHandler != null) {
-            synchronized (this) {
-                if (this.closeHandler == null) {
-                    this.closeHandler = closeHandler;
-                } else {
-                    val thisCloseHandler = this.closeHandler;
-                    this.closeHandler = new Runnable() {
-                        @Override
-                        public void run() {
-                            thisCloseHandler.run();
-                            closeHandler.run();
-                        }
-                    };
-                }
-            }
-        }
-        return this;
-    }
-    
+
     @Override
     public Iterator<DATA> asIterator() {
         return iterator;

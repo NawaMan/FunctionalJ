@@ -159,10 +159,10 @@ public class IteratorPlusTest {
         iterator.onClose(()->isClosed.set(true));
         
         assertEquals("[2, 3, 5]", iterator.pullNext(3).map(IteratorPlus::stream).map(StreamPlus::toListString).get());
-        assertFalse(isClosed.get());
+        assertFalse (isClosed.get());
         
         assertFalse(iterator.hasNext());
-        assertTrue(isClosed.get());
+        assertTrue (isClosed.get());
     }
     
     @Test

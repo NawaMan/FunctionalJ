@@ -249,11 +249,11 @@ public class StreamPlusTest {
     @Test
     public void testClosed() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        
+
         val isClosed = new AtomicBoolean(false);
         stream
         .onClose(()->isClosed.set(true));
-        
+
         assertFalse(isClosed.get());
         assertStrings(
                 "[3, 3, 5]",
@@ -261,7 +261,7 @@ public class StreamPlusTest {
                 .map(theString.length())
                 .toList());
         assertTrue(isClosed.get());
-        
+
         try {
             stream.toList();
             fail("Stream should be closed now.");
@@ -286,13 +286,14 @@ public class StreamPlusTest {
                 .toList()
                 .toString());
         assertTrue(isClosed.get());
-        
-        try {
+
+        // NOTE - Since we use IteratorBackedStreamPlus, our stream never throw an exception
+//        try {
             stream.toList();
-            fail("Stream should be closed now.");
-        } catch (IllegalStateException e) {
-            // Expected!!
-        }
+//            fail("Stream should be closed now.");
+//        } catch (IllegalStateException e) {
+//            // Expected!!
+//        }
     }
     
     @Test
@@ -342,8 +343,16 @@ public class StreamPlusTest {
         
         assertTrue(newIterator.hasNext());
         assertTrue(25 == newIterator.next());
-        
-        assertStrings("[20, 20]", newStream.toList());
+
+        try {
+            assertStrings("[20, 20]", newStream.toList());
+            fail("Expect stream already closed exception.");
+        } catch (IllegalStateException exception) {
+            val message = exception.getMessage();
+            if (!(message.contains("stream") && message.contains("closed"))) {
+                fail("Expect stream already closed exception.");
+            }
+        }
     }
     
     @Test
