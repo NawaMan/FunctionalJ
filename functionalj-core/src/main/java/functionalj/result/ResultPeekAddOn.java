@@ -39,7 +39,7 @@ public interface ResultPeekAddOn<DATA> {
             if (!clzz.isInstance(value))
                 return;
             
-            val target = clzz.cast(value);
+            var target = clzz.cast(value);
             theConsumer.accept(target);
         });
     }
@@ -53,14 +53,14 @@ public interface ResultPeekAddOn<DATA> {
     }
     public default <T> Result<DATA> peek(Func1<? super DATA, T> mapper, FuncUnit1<? super T> theConsumer) {
         return peek(value -> {
-            val target = mapper.apply(value);
+            var target = mapper.apply(value);
             theConsumer.accept(target);
         });
     }
     
     public default <T> Result<DATA> peek(Func1<? super DATA, T> mapper, Predicate<? super T> selector, FuncUnit1<? super T> theConsumer) {
         return peek(value -> {
-            val target = mapper.apply(value);
+            var target = mapper.apply(value);
             if (selector.test(target))
                 theConsumer.accept(target);
         });

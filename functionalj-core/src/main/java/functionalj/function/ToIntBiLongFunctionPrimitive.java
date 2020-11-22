@@ -36,7 +36,7 @@ public interface ToIntBiLongFunctionPrimitive extends ToIntBiLongFunction<Long> 
     
     
     public static int apply(ToIntBiLongFunction<Long> function, long value, long anotherValue) {
-        val resValue 
+        var resValue 
             = (function instanceof ToIntBiLongFunctionPrimitive)
             ? ((ToIntBiLongFunctionPrimitive)function).applyAsLongAndLong(value, anotherValue)
             : function.applyAsInt(value, anotherValue);

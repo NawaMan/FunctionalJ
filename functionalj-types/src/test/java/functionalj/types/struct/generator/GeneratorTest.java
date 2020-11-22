@@ -62,7 +62,7 @@ public class GeneratorTest {
     
     @Test
     public void testStandard() {
-        val generated = generate();
+        var generated = generate();
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
@@ -243,12 +243,12 @@ public class GeneratorTest {
     
     @Test
     public void testDecouplingWithSuper() {
-        val generatedWith = generate(()->{
+        var generatedWith = generate(()->{
             configures.coupleWithDefinition = true;
         });
         assertTrue(generatedWith.contains(" implements Definitions.CarDef"));
         
-        val generatedWithout = generate(()->{
+        var generatedWithout = generate(()->{
             configures.coupleWithDefinition = false;
         });
         assertFalse(generatedWithout.contains(" implements Definitions.CarDef"));
@@ -256,12 +256,12 @@ public class GeneratorTest {
     
     @Test
     public void testIsClassOrInteface() {
-        val generatedWith = generate(()->{
+        var generatedWith = generate(()->{
             isClass = true;
         });
         assertTrue(generatedWith.contains(" extends Definitions.CarDef"));
         
-        val generatedWithout = generate(()->{
+        var generatedWithout = generate(()->{
             isClass = false;
         });
         assertTrue(generatedWithout.contains(" implements Definitions.CarDef"));
@@ -269,12 +269,12 @@ public class GeneratorTest {
     
     @Test
     public void testNoArgConstructor() {
-        val generatedWith = generate(()->{
+        var generatedWith = generate(()->{
             configures.generateNoArgConstructor = true;
         });
         assertTrue(generatedWith.contains("public Car() {"));
         
-        val generatedWithout = generate(()->{
+        var generatedWithout = generate(()->{
             configures.generateNoArgConstructor = false;
         });
         assertFalse(generatedWithout.contains("public Car() {"));
@@ -282,12 +282,12 @@ public class GeneratorTest {
     
     @Test
     public void testAllArgConstructor() {
-        val generatedWith = generate(()->{
+        var generatedWith = generate(()->{
             configures.generateAllArgConstructor = true;
         });
         assertTrue(generatedWith.contains("public Car(int anint, boolean anbool, String anstring) {"));
         
-        val generatedWithout = generate(()->{
+        var generatedWithout = generate(()->{
             configures.generateAllArgConstructor = false;
         });
         assertTrue(generatedWithout.contains("private Car(int anint, boolean anbool, String anstring) {"));
@@ -295,13 +295,13 @@ public class GeneratorTest {
     
     @Test
     public void testLensClass() {
-        val generatedWith = generate(()->{
+        var generatedWith = generate(()->{
             configures.generateLensClass = true;
         });
         assertTrue(generatedWith.contains("public static final Car.CarLens<Car> theCar = new Car.CarLens<>(LensSpec.of(Car.class));"));
         assertTrue(generatedWith.contains("public static class CarLens<HOST> extends ObjectLensImpl<HOST, Car> {"));
         
-        val generatedWithout = generate(()->{
+        var generatedWithout = generate(()->{
             configures.generateLensClass = false;
         });
         assertFalse(generatedWithout.contains("public static final CarLens<Car> theCar = new CarLens<>(LensSpec.of(Car.class));"));
@@ -328,8 +328,8 @@ public class GeneratorTest {
                     configures,          // Configurations
                     getters,
                     emptyList());
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
-        val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
+        var dataObjSpec = new StructBuilder(sourceSpec).build();
+        var generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }
 }

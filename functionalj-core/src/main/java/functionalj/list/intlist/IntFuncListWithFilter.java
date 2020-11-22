@@ -66,7 +66,7 @@ public interface IntFuncListWithFilter extends AsIntFuncList {
             IntFunction<T>       mapper,
             Predicate<? super T> predicate) {
         IntPredicate newMapper = value -> {
-            val newValue = mapper.apply(value);
+            var newValue = mapper.apply(value);
             return predicate.test(newValue);
         };
         return deriveFrom(this, stream -> stream.filter(newMapper));

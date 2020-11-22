@@ -18,7 +18,7 @@ public class IntegerAccessTest {
     @Test
     public void test() {
         long beforeUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
-        val str1 = IntStreamPlus
+        var str1 = IntStreamPlus
                 .infinite()
                 .map($I.time(2))
                 .limit(1)
@@ -27,7 +27,7 @@ public class IntegerAccessTest {
         long afterUsedMem  = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         long actualUsedMem = afterUsedMem - beforeUsedMem;
         
-        val str2 = IntStreamPlus
+        var str2 = IntStreamPlus
                 .infinite()
                 .mapToObj(i -> $I.time(2).apply(i))
                 .limit(100000)
@@ -37,7 +37,7 @@ public class IntegerAccessTest {
         long afterUsedMem2 = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         long delta2 = Math.round((afterUsedMem2 - beforeUsedMem - actualUsedMem) / 1000000.0);
         
-        val str3 = IntStreamPlus
+        var str3 = IntStreamPlus
                 .infinite()
                 .map($I.time(2))
                 .limit(100000)
@@ -46,7 +46,7 @@ public class IntegerAccessTest {
         long afterUsedMem3 = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         long delta3 = Math.round((afterUsedMem3 - beforeUsedMem - actualUsedMem) / 1000000.0);
         
-        val str4 = IntStreamPlus
+        var str4 = IntStreamPlus
                 .infinite()
                 .mapToObj(i -> $I.time(2).apply(i))
                 .limit(100000)
@@ -56,7 +56,7 @@ public class IntegerAccessTest {
         long afterUsedMem4 = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         long delta4 = Math.round((afterUsedMem4 - beforeUsedMem - actualUsedMem) / 1000000.0);
         
-        val str5 = IntStreamPlus
+        var str5 = IntStreamPlus
                 .infinite()
                 .map($I.time(2))
                 .limit(100000)

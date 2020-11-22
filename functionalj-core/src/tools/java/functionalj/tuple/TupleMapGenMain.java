@@ -89,16 +89,16 @@ public class TupleMapGenMain {
     }
     
     private static String generate(int tupleSize, FuncList<Boolean> flags) {
-        val typeParamDefs  = flags.mapWithIndex(generateEach(typeParamDefTemplates)).filter(Objects::nonNull).joining(", ");
-        val tupleParamDefs = flags.mapWithIndex(generateEach(tupleParamDefTemplates)).filter(Objects::nonNull).joining(", ");
+        var typeParamDefs  = flags.mapWithIndex(generateEach(typeParamDefTemplates)).filter(Objects::nonNull).joining(", ");
+        var tupleParamDefs = flags.mapWithIndex(generateEach(tupleParamDefTemplates)).filter(Objects::nonNull).joining(", ");
         
-        val params = flags.mapWithIndex(generateEach(paramTemplates)).map(prependWith(paramIndent)).joining(",\n");
-        val calls  = flags.mapWithIndex(generateEach(callTemplates)) .map(prependWith(callIndent)) .joining(",\n");
+        var params = flags.mapWithIndex(generateEach(paramTemplates)).map(prependWith(paramIndent)).joining(",\n");
+        var calls  = flags.mapWithIndex(generateEach(callTemplates)) .map(prependWith(callIndent)) .joining(",\n");
         
         return String.format(template, typeParamDefs, tupleSize, tupleParamDefs, params, calls);
     }
     private static String generate(int tupleSize) {
-        val lines = new ArrayList<String>();
+        var lines = new ArrayList<String>();
         
         range(0, (int)Math.pow(2, tupleSize)).mapToObj(i -> (Integer)i)
         .filter ($I.thatIsNot(0))
@@ -113,8 +113,8 @@ public class TupleMapGenMain {
     }
     
     private static Func2<Integer, Boolean, String> generateEach(Tuple2<String, String> templates) {
-        val trueTemplate  = templates._1();
-        val falseTemplate = templates._2();
+        var trueTemplate  = templates._1();
+        var falseTemplate = templates._2();
         return Func.of((Integer i, Boolean e)->{ 
             return Result.value(e ? trueTemplate : falseTemplate)
                     .map(template -> String.format(template, i + 1))

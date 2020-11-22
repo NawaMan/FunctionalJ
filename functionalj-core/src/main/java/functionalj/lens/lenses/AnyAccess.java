@@ -126,74 +126,74 @@ public interface AnyAccess<HOST, DATA>
     
     public default IntegerAccessBoxed<HOST> intBoxedAccess(int defaultValue, Function<DATA, Integer> function) {
         return host -> {
-            val value = __internal__.processValue(this, host, defaultValue, function);
+            var value = __internal__.processValue(this, host, defaultValue, function);
             return value;
         };
     }
     public default IntegerAccessPrimitive<HOST> intPrimitiveAccess(int defaultValue, ToIntFunction<DATA> function) {
         return host -> {
-            val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
+            var value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
         };
     }
     
     public default LongAccessBoxed<HOST> longAccess(long defaultValue, Function<DATA, Long> function) {
         return host -> {
-            val value = __internal__.processValue(this, host, defaultValue, function);
+            var value = __internal__.processValue(this, host, defaultValue, function);
             return value;
         };
     }
     
     public default LongAccessPrimitive<HOST> longPrimitiveAccess(long defaultValue, ToLongFunction<DATA> function) {
         return host -> {
-            val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
+            var value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
         };
     }
     
     public default DoubleAccessBoxed<HOST> doubleAccess(double defaultValue, Function<DATA, Double> function) {
         return host -> {
-            val value = __internal__.processValue(this, host, defaultValue, function);
+            var value = __internal__.processValue(this, host, defaultValue, function);
             return value;
         };
     }
     public default DoubleAccessPrimitive<HOST> doublePrimitiveAccess(double defaultValue, ToDoubleFunction<DATA> function) {
         return host -> {
-            val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
+            var value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
         };
     }
     
     public default BigIntegerAccess<HOST> bigIntegerAccess(BigInteger defaultValue, Function<DATA, BigInteger> function) {
         return host -> {
-            val value = __internal__.processValue(this, host, defaultValue, function);
+            var value = __internal__.processValue(this, host, defaultValue, function);
             return value;
         };
     }
     public default BigDecimalAccess<HOST> bigDecimalAccess(BigDecimal defaultValue, Function<DATA, BigDecimal> function) {
         return host -> {
-            val value = __internal__.processValue(this, host, defaultValue, function);
+            var value = __internal__.processValue(this, host, defaultValue, function);
             return value;
         };
     }
     
     public default StringAccess<HOST> stringAccess(String defaultValue, Function<DATA, String> function) {
         return host -> {
-            val value = __internal__.processValue(this, host, defaultValue, function);
+            var value = __internal__.processValue(this, host, defaultValue, function);
             return value;
         };
     }
     
     public default BooleanAccessBoxed<HOST> booleanAccess(boolean defaultValue, Function<DATA, Boolean> function) {
         return host -> {
-            val value = __internal__.processValue(this, host, defaultValue, function);
+            var value = __internal__.processValue(this, host, defaultValue, function);
             return value;
         };
     }
     
     public default BooleanAccessPrimitive<HOST> booleanPrimitiveAccess(boolean defaultValue, Predicate<DATA> function) {
         return host -> {
-            val value = __internal__.processValuePrimitive(this, host, defaultValue, function);
+            var value = __internal__.processValuePrimitive(this, host, defaultValue, function);
             return value;
         };
     }
@@ -224,11 +224,11 @@ public interface AnyAccess<HOST, DATA>
             if (host == null)
                 return defaultValue;
             
-            val value = access.apply(host);
+            var value = access.apply(host);
             if (value == null)
                 return defaultValue;
             
-            val newValue = function.apply(value);
+            var newValue = function.apply(value);
             return newValue;
         }
         
@@ -241,11 +241,11 @@ public interface AnyAccess<HOST, DATA>
             if (host == null)
                 return defaultValue;
             
-            val value = access.apply(host);
+            var value = access.apply(host);
             if (value == null)
                 return defaultValue;
             
-            val newValue = function.applyAsInt(value);
+            var newValue = function.applyAsInt(value);
             return newValue;
         }
         
@@ -258,11 +258,11 @@ public interface AnyAccess<HOST, DATA>
             if (host == null)
                 return defaultValue;
             
-            val value = access.apply(host);
+            var value = access.apply(host);
             if (value == null)
                 return defaultValue;
             
-            val newValue = function.applyAsLong(value);
+            var newValue = function.applyAsLong(value);
             return newValue;
         }
         
@@ -275,11 +275,11 @@ public interface AnyAccess<HOST, DATA>
             if (host == null)
                 return defaultValue;
             
-            val value = access.apply(host);
+            var value = access.apply(host);
             if (value == null)
                 return defaultValue;
             
-            val newValue = function.applyAsDouble(value);
+            var newValue = function.applyAsDouble(value);
             return newValue;
         }
         
@@ -292,11 +292,11 @@ public interface AnyAccess<HOST, DATA>
             if (host == null)
                 return defaultValue;
             
-            val value = access.apply(host);
+            var value = access.apply(host);
             if (value == null)
                 return defaultValue;
             
-            val newValue = function.test(value);
+            var newValue = function.test(value);
             return newValue;
         }
         
@@ -306,7 +306,7 @@ public interface AnyAccess<HOST, DATA>
                 if (host == null)
                     return fallbackValue;
                 
-                val value = access.apply(host);
+                var value = access.apply(host);
                 if (value == null)
                     return fallbackValue;
                 
@@ -319,7 +319,7 @@ public interface AnyAccess<HOST, DATA>
                 if (host == null)
                     return fallbackValueSupplier.get();
                 
-                val value = access.apply(host);
+                var value = access.apply(host);
                 if (value == null)
                     return fallbackValueSupplier.get();
                 
@@ -331,7 +331,7 @@ public interface AnyAccess<HOST, DATA>
                 if (host == null)
                     throw new NullPointerException();
                 
-                val value = access.apply(host);
+                var value = access.apply(host);
                 if (value == null)
                     throw new NullPointerException();
                 
@@ -344,7 +344,7 @@ public interface AnyAccess<HOST, DATA>
                 if (host == null)
                     throw exceptionSupplier.get();
                 
-                val value = access.apply(host);
+                var value = access.apply(host);
                 if (value == null)
                     throw exceptionSupplier.get();
                 
@@ -357,7 +357,7 @@ public interface AnyAccess<HOST, DATA>
                         Function<Function<HOST, DATA>, ACCESS> createSubLens) {
             return createNullableAccess(
                     host -> {
-                        val value = access.apply(host);
+                        var value = access.apply(host);
                         return Nullable.of(value);
                     },
                     createSubLens);

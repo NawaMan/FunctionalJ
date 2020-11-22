@@ -89,7 +89,7 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
         if (!promise.isStarted() && this instanceof DeferAction)
             ((DeferAction<DATA>)this).start();
         
-        val result = promise.getResult();
+        var result = promise.getResult();
         return result;
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {

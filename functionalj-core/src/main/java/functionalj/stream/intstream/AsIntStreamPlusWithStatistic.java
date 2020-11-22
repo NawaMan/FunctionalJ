@@ -49,7 +49,7 @@ public interface AsIntStreamPlusWithStatistic {
     @Eager
     @Terminal
     public default int size() {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return (int)streamPlus
                 .count();
     }
@@ -58,7 +58,7 @@ public interface AsIntStreamPlusWithStatistic {
     @Eager
     @Terminal
     public default <D extends Comparable<D>> OptionalInt minBy(IntFunction<D> mapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .sortedBy(mapper)
                 .findFirst()
@@ -69,7 +69,7 @@ public interface AsIntStreamPlusWithStatistic {
     @Eager
     @Terminal
     public default <D extends Comparable<D>> OptionalInt maxBy(IntFunction<D> mapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .sortedBy(mapper,(a, b) -> Objects.compare(a, b, Comparator.reverseOrder()))
                 .findFirst()
@@ -83,7 +83,7 @@ public interface AsIntStreamPlusWithStatistic {
     public default <D> OptionalInt minBy(
             IntFunction<D>        mapper, 
             Comparator<? super D> comparator) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .sortedBy(mapper, (Comparator)comparator)
                 .findFirst()
@@ -97,7 +97,7 @@ public interface AsIntStreamPlusWithStatistic {
     public default <D> OptionalInt maxBy(
             IntFunction<D>        mapper, 
             Comparator<? super D> comparator) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .sortedBy(mapper, (Comparator)comparator.reversed())
                 .findFirst()
@@ -106,8 +106,8 @@ public interface AsIntStreamPlusWithStatistic {
     
     /** Return the value whose mapped value is the smallest mapped int value. */
     public default <D> OptionalInt minOf(IntUnaryOperator mapper) {
-        val streamPlus = intStreamPlus();
-        val result 
+        var streamPlus = intStreamPlus();
+        var result 
                 = streamPlus
                 .mapToObj(i      -> IntIntTuple.of(i, mapper.applyAsInt(i)))
                 .min     ((a, b) -> Integer.compare(a._2, b._2))
@@ -119,7 +119,7 @@ public interface AsIntStreamPlusWithStatistic {
     
     /** Return the value whose mapped value is the largest mapped int value. */
     public default <D> OptionalInt maxOf(IntUnaryOperator mapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         Optional<Object> result 
                 = streamPlus
                 .mapToObj(i      -> IntIntTuple.of(i, mapper.applyAsInt(i)))
@@ -134,17 +134,17 @@ public interface AsIntStreamPlusWithStatistic {
     @Eager
     @Terminal
     public default Tuple2<OptionalInt, OptionalInt> minMax(IntBinaryOperator comparator) {
-        val streamPlus = intStreamPlus();
-        val minRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
-        val maxRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
+        var streamPlus = intStreamPlus();
+        var minRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
+        var maxRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
         streamPlus
             .sorted((a, b) -> comparator.applyAsInt(a, b))
             .forEach(each -> {
                 minRef.compareAndSet(IntStreamPlusHelper.dummy, each);
                 maxRef.set(each);
             });
-        val min = minRef.get();
-        val max = maxRef.get();
+        var min = minRef.get();
+        var max = maxRef.get();
         return Tuple2.of(
                 IntStreamPlusHelper.dummy.equals(min) ? OptionalInt.empty() : OptionalInt.of((Integer)min),
                 IntStreamPlusHelper.dummy.equals(max) ? OptionalInt.empty() : OptionalInt.of((Integer)max));
@@ -154,9 +154,9 @@ public interface AsIntStreamPlusWithStatistic {
     @Eager
     @Terminal
     public default <D extends Comparable<D>> Tuple2<OptionalInt, OptionalInt> minMaxBy(IntFunction<D> mapper) {
-        val streamPlus = intStreamPlus();
-        val minRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
-        val maxRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
+        var streamPlus = intStreamPlus();
+        var minRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
+        var maxRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
         streamPlus
         .sortedBy(mapper)
         .forEach(each -> {
@@ -164,8 +164,8 @@ public interface AsIntStreamPlusWithStatistic {
             maxRef.set(each);
         });
         
-        val min = minRef.get();
-        val max = maxRef.get();
+        var min = minRef.get();
+        var max = maxRef.get();
         return tuple2(
                 IntStreamPlusHelper.dummy.equals(min) ? OptionalInt.empty() : OptionalInt.of((Integer)min),
                 IntStreamPlusHelper.dummy.equals(max) ? OptionalInt.empty() : OptionalInt.of((Integer)max));
@@ -174,9 +174,9 @@ public interface AsIntStreamPlusWithStatistic {
     /** Return the value whose mapped value is the smallest and the biggest. */
     public default <D extends Comparable<D>> Optional<IntIntTuple> minMaxOf(
             IntUnaryOperator mapper) {
-        val streamPlus = intStreamPlus();
-        val minRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
-        val maxRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
+        var streamPlus = intStreamPlus();
+        var minRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
+        var maxRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
         IntStreamPlus.from(streamPlus)
             .mapToObj(i    -> intTuple(i, mapper.applyAsInt(i)))
             .sortedBy(t    -> t._2)
@@ -184,14 +184,14 @@ public interface AsIntStreamPlusWithStatistic {
                 minRef.compareAndSet(IntStreamPlusHelper.dummy, each);
                 maxRef.set(each);
             });
-        val min = minRef.get();
-        val max = maxRef.get();
+        var min = minRef.get();
+        var max = maxRef.get();
         
         if (IntStreamPlusHelper.dummy.equals(min)
          || IntStreamPlusHelper.dummy.equals(max))
             return Optional.empty();
         
-        val intTuple = intTuple(((IntIntTuple)min)._1, ((IntIntTuple)max)._1);
+        var intTuple = intTuple(((IntIntTuple)min)._1, ((IntIntTuple)max)._1);
         return Optional.of(intTuple);
     }
     
@@ -201,9 +201,9 @@ public interface AsIntStreamPlusWithStatistic {
     public default <D> Tuple2<OptionalInt, OptionalInt> minMaxBy(
             IntFunction<D>        mapper, 
             Comparator<? super D> comparator) {
-        val streamPlus = intStreamPlus();
-        val minRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
-        val maxRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
+        var streamPlus = intStreamPlus();
+        var minRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
+        var maxRef = new AtomicReference<Object>(IntStreamPlusHelper.dummy);
         streamPlus
         .sortedBy(mapper, (i1, i2)->comparator.compare(i1, i2))
         .forEach(each -> {
@@ -211,8 +211,8 @@ public interface AsIntStreamPlusWithStatistic {
             maxRef.set(each);
         });
         
-        val min = minRef.get();
-        val max = maxRef.get();
+        var min = minRef.get();
+        var max = maxRef.get();
         return tuple2(
                 IntStreamPlusHelper.dummy.equals(min) ? OptionalInt.empty() : OptionalInt.of((Integer)min),
                 IntStreamPlusHelper.dummy.equals(max) ? OptionalInt.empty() : OptionalInt.of((Integer)max));

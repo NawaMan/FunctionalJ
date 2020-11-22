@@ -38,13 +38,13 @@ public interface StreamPlusWithMapWithPrev<DATA> {
     
     /** @return  the stream of  each previous value and each current value. */
     public default StreamPlus<Tuple2<? super Result<DATA>, ? super DATA>> mapWithPrev() {
-        val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
-        val streamPlus = streamPlus();
+        var prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(element -> {
-                    val prevValue = prev.get();
+                    var prevValue = prev.get();
                     prev.set(Result.valueOf(element));
-                    val result = Tuple.of(prevValue, element);
+                    var result = Tuple.of(prevValue, element);
                     return result;
                 });
     }
@@ -52,12 +52,12 @@ public interface StreamPlusWithMapWithPrev<DATA> {
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
     public default <TARGET> StreamPlus<TARGET> mapWithPrev(
             BiFunction<? super Result<DATA>, ? super DATA, ? extends TARGET> combinator) {
-        val prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
-        val streamPlus = streamPlus();
+        var prev = new AtomicReference<Result<DATA>>(Result.ofNotExist());
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(element -> {
-                    val prevValue = prev.get();
-                    val newValue  = combinator.apply(prevValue, element);
+                    var prevValue = prev.get();
+                    var newValue  = combinator.apply(prevValue, element);
                     prev.set(Result.valueOf(element));
                     return newValue;
                 });

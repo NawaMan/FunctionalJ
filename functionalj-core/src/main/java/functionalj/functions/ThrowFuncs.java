@@ -34,7 +34,7 @@ import lombok.val;
 public interface ThrowFuncs {
     
     public static final Ref<Func1<Exception, RuntimeException>> exceptionTransformer = Ref.ofValue(e -> {
-        val throwable = (e instanceof RuntimeException) 
+        var throwable = (e instanceof RuntimeException) 
                 ? (RuntimeException)e 
                 : new FunctionInvocationException(e);
         return throwable;
@@ -54,7 +54,7 @@ public interface ThrowFuncs {
     }
     
     public static void handleThrowRuntime(Exception exception) {
-        val throwable = exceptionTransformer.value().apply(exception);
+        var throwable = exceptionTransformer.value().apply(exception);
         handleNoThrow(throwable);
         throw throwable;
     }

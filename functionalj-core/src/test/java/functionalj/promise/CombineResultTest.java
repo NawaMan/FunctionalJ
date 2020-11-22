@@ -38,16 +38,16 @@ public class CombineResultTest {
 
     @Test
     public void testMerge() {
-        val logs = new ArrayList<String>();
+        var logs = new ArrayList<String>();
         
-        val action1  = DeferAction.createNew().start();
-        val action2  = DeferAction.createNew().start();
-        val action3  = DeferAction.createNew().start();
-        val combiner = new CombineResult<>(
+        var action1  = DeferAction.createNew().start();
+        var action2  = DeferAction.createNew().start();
+        var action3  = DeferAction.createNew().start();
+        var combiner = new CombineResult<>(
                 listOf(action1, action2, action3),
                 l -> Result.valueOf(l.toString()));
         
-        val combine = combiner.getDeferAction()
+        var combine = combiner.getDeferAction()
         .onComplete(result -> {
             logs.add(result.toString());
         });

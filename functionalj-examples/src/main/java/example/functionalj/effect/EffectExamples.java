@@ -25,17 +25,17 @@ public class EffectExamples {
     
     @Test
     public void basicEffect() throws InterruptedException {
-        val logs = new ArrayList<String>();
+        var logs = new ArrayList<String>();
         
         // The preparation
-        val loadFile = f((String fileName) -> {
+        var loadFile = f((String fileName) -> {
             return DeferAction
                 .from(()->Files.readAllBytes(Paths.get(fileName)))
                 .start()
                 .getPromise();
         });
         
-        val latch = new CountDownLatch(1);
+        var latch = new CountDownLatch(1);
         
         // Use it in the business logic code
         loadFile.apply("fileNotFound.txt")
@@ -55,7 +55,7 @@ public class EffectExamples {
     @Test
     public void basicTask() throws IOException {
         // Define task
-        val wordCountOf = f((String fileName) -> 
+        var wordCountOf = f((String fileName) -> 
                 Task.from(()->Files.readAllBytes(Paths.get(fileName)))
                 .map(String::new)
                 .map(matches("[a-zA-Z]+"))
@@ -63,17 +63,17 @@ public class EffectExamples {
                 .map(StreamPlus::size)
         );
         // Define operations -> Notice that this is a generic operation -- no mention of Task.
-        val compareWordCount = f((Integer count1, Integer count2) -> {
+        var compareWordCount = f((Integer count1, Integer count2) -> {
             return (count1 == count2) ? "Same size."
                  : (count1 >  count2) ? "First file is larger."
                                       : "Second file is larger.";
         });
         
         // Declare tasks
-        val task1 = wordCountOf.apply("../LICENSE");
-        val task2 = wordCountOf.apply("../.travis.yml");
+        var task1 = wordCountOf.apply("../LICENSE");
+        var task2 = wordCountOf.apply("../.travis.yml");
         // Compose the tasks
-        val compareTask = compareWordCount.applyTo(task1, task2);
+        var compareTask = compareWordCount.applyTo(task1, task2);
         
         // At this point, nothing is run.
         
@@ -83,10 +83,10 @@ public class EffectExamples {
     
     @Test
     public void storeExample() {
-        val apppend = f((String str, ImmutableList<String> list)-> list.append(str).toImmutableList());
+        var apppend = f((String str, ImmutableList<String> list)-> list.append(str).toImmutableList());
         
-        val list = FuncList.of("One", "Two");
-        val store = new Store<>(list);
+        var list = FuncList.of("One", "Two");
+        var store = new Store<>(list);
         
         assertEquals("[One, Two]", store.value().toString());
         

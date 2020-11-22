@@ -41,7 +41,7 @@ public class DOWithSameClassName {
     
     @Test
     public void testSameName() {
-        val obj = new functionalj.types.struct.DOSameName("Obj");
+        var obj = new functionalj.types.struct.DOSameName("Obj");
         assertEquals("Obj", obj.name());
     }
     

@@ -26,13 +26,13 @@ public interface EraAccess<HOST, ERA extends Era>
     
     public default IntegerAccessPrimitive<HOST> getValue() {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.getValue();
         };
     }
     public default StringAccess<HOST> getDisplayName(TextStyle style, Locale locale) {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.getDisplayName(style, locale);
         };
     }

@@ -21,12 +21,12 @@
 //                Function<TYPE,  IRule<SUB>>            readSub,
 //                WriteLens<TYPE, IRule<SUB>>            writeSub,
 //                Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
-//        val readThis  = lensSpec.getRead();
-//        val writeThis = lensSpec.getWrite();
-//        val subRead   = (Function<HOST, IRule<SUB>>) LensUtils.createSubRead(readThis,  readSub,             lensSpec.getIsNullSafe());
-//        val subWrite  = (WriteLens<HOST, IRule<SUB>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, lensSpec.getIsNullSafe());
-//        val spec      = LensUtils.createLensSpecParameterized(subRead, subWrite, subCreator);
-//        val lens      = new RuleLens<HOST, SUB, SUBLENS>(spec);
+//        var readThis  = lensSpec.getRead();
+//        var writeThis = lensSpec.getWrite();
+//        var subRead   = (Function<HOST, IRule<SUB>>) LensUtils.createSubRead(readThis,  readSub,             lensSpec.getIsNullSafe());
+//        var subWrite  = (WriteLens<HOST, IRule<SUB>>)LensUtils.createSubWrite(readThis, writeThis, writeSub, lensSpec.getIsNullSafe());
+//        var spec      = LensUtils.createLensSpecParameterized(subRead, subWrite, subCreator);
+//        var lens      = new RuleLens<HOST, SUB, SUBLENS>(spec);
 //        return lens;
 //    }
 //    
@@ -35,8 +35,8 @@
 //            Function<HOST,  IRule<SUB>>            readSub,
 //            WriteLens<HOST, IRule<SUB>>            writeSub,
 //            Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
-//        val spec = LensUtils.createLensSpecParameterized(readSub, writeSub, subCreator);
-//        val lens = new RuleLens<HOST, SUB, SUBLENS>(spec);
+//        var spec = LensUtils.createLensSpecParameterized(readSub, writeSub, subCreator);
+//        var lens = new RuleLens<HOST, SUB, SUBLENS>(spec);
 //        return lens;
 //    }
 //    

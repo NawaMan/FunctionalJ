@@ -62,7 +62,7 @@ public class NonRequireFieldTest {
     
     @Test
     public void testBuilder() {
-        val generated = generate();
+        var generated = generate();
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
@@ -337,8 +337,8 @@ public class NonRequireFieldTest {
                     configures,          // Configurations
                     getters,
                     emptyList());
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
-        val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
+        var dataObjSpec = new StructBuilder(sourceSpec).build();
+        var generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }
     

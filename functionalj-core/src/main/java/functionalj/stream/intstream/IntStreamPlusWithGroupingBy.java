@@ -53,8 +53,8 @@ public interface IntStreamPlusWithGroupingBy extends AsIntStreamPlus {
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             IntFunction<? extends KEY>     keyMapper,
             Function<IntStreamPlus, VALUE> aggregate) {
-        val groupingBy = groupingBy(keyMapper);
-        val mapValue = groupingBy.mapValue(aggregate);
+        var groupingBy = groupingBy(keyMapper);
+        var mapValue = groupingBy.mapValue(aggregate);
         return (FuncMap<KEY, VALUE>)mapValue;
     }
     

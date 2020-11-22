@@ -49,7 +49,7 @@ public abstract class ChoiceTypeSwitch<D, T> {
     }
     public T orGet(Function<? super D, T> valueMapper) {
         @SuppressWarnings("unchecked")
-        val newAction = (Function<? super D, T>)(($action != null) ? $action : valueMapper);
+        var newAction = (Function<? super D, T>)(($action != null) ? $action : valueMapper);
         return newAction.apply($value);
     }
     public T orElseGet(Supplier<T> valueSupplier) {

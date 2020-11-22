@@ -40,7 +40,7 @@ public interface AsStreamPlusWithMatch<DATA> {
     @Sequential
     public default Optional<DATA> findFirst(
             Predicate<? super DATA> predicate) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .filter(predicate)
                 .findFirst();
@@ -50,7 +50,7 @@ public interface AsStreamPlusWithMatch<DATA> {
     @Terminal
     public default Optional<DATA> findAny(
             Predicate<? super DATA> predicate) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .filter(predicate)
                 .findAny();
@@ -62,7 +62,7 @@ public interface AsStreamPlusWithMatch<DATA> {
     public default <T> Optional<DATA> findFirst(
             Function<? super DATA, T> mapper, 
             Predicate<? super T>      theCondition) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .filter(mapper, theCondition)
                 .findFirst();
@@ -73,7 +73,7 @@ public interface AsStreamPlusWithMatch<DATA> {
     public default <T>  Optional<DATA> findAny(
             Function<? super DATA, T> mapper, 
             Predicate<? super T>      theCondition) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .filter(mapper, theCondition)
                 .findAny();

@@ -43,7 +43,7 @@ public class IntTuple2Test {
     
     @Test
     public void testLensRead() {
-        val tuples = Arrays.asList(
+        var tuples = Arrays.asList(
                 new IntTuple2<>(1, "One"),
                 new IntTuple2<>(2, "Two"),
                 new IntTuple2<>(3, "Three")

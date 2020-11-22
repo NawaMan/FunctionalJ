@@ -44,7 +44,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     }
     
     public static double apply(DoubleAccess<Double> access, double value) {
-        val resValue 
+        var resValue 
             = (access instanceof DoubleToDoubleAccessPrimitive)
             ? ((DoubleToDoubleAccessPrimitive)access).applyDoubleToDouble(value)
             : access.applyAsDouble(value);

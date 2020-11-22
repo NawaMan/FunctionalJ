@@ -49,7 +49,7 @@ public class StructExtendFormTest {
     
     @Test
     public void example01_Extends() {
-        val fiendlyGuy = new FriendlyGuy("Hi");
+        var fiendlyGuy = new FriendlyGuy("Hi");
         assertEquals("Hi Bruce Wayne!", fiendlyGuy.greeting("Bruce Wayne"));
     }
     

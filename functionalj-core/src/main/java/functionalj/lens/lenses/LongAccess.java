@@ -54,25 +54,25 @@ public interface LongAccess<HOST>
         
         if (accessToValue instanceof ToLongFunction) {
             @SuppressWarnings("unchecked")
-            val func1  = (ToLongFunction<H>)accessToValue;
-            val access = ofPrimitive(func1);
+            var func1  = (ToLongFunction<H>)accessToValue;
+            var access = ofPrimitive(func1);
             return access;
         }
         
         if (accessToValue instanceof Func1) {
-            val func1  = (Func1<H, Long>)accessToValue;
-            val access = (LongAccessBoxed<H>)func1::applyUnsafe;
+            var func1  = (Func1<H, Long>)accessToValue;
+            var access = (LongAccessBoxed<H>)func1::applyUnsafe;
             return access;
         }
         
-        val func   = (Function<H, Long>)accessToValue;
-        val access = (LongAccessBoxed<H>)(host -> func.apply(host));
+        var func   = (Function<H, Long>)accessToValue;
+        var access = (LongAccessBoxed<H>)(host -> func.apply(host));
         return access;
     }
     
     public static <H> LongAccess<H> ofPrimitive(ToLongFunction<H> accessToValue) {
         requireNonNull(accessToValue);
-        val access = (LongAccessPrimitive<H>)accessToValue::applyAsLong;
+        var access = (LongAccessPrimitive<H>)accessToValue::applyAsLong;
         return access;
     }
     
@@ -100,8 +100,8 @@ public interface LongAccess<HOST>
     
     public default LocalDateTimeAccess<HOST> toLocalDateTime(ZoneId zone) {
         return host -> {
-            val timestampMilliSecond = apply(host);
-            val instant = Instant.ofEpochMilli(timestampMilliSecond);
+            var timestampMilliSecond = apply(host);
+            var instant = Instant.ofEpochMilli(timestampMilliSecond);
             return LocalDateTime.ofInstant(instant, zone);
         };
     }
@@ -237,7 +237,7 @@ public interface LongAccess<HOST>
     }
     
     public default BooleanAccessPrimitive<HOST> bitAt(long bitIndex) {
-        val p = (int)Math.pow(2, bitIndex);
+        var p = (int)Math.pow(2, bitIndex);
         return host -> {
             long longValue = applyAsLong(host);
             return (longValue & p) != 0;
@@ -247,7 +247,7 @@ public interface LongAccess<HOST>
         return host -> {
             long longValue = applyAsLong(host);
             long value     = anotherSupplier.getAsLong();
-            val p          = (int)Math.pow(2, value);
+            var p          = (int)Math.pow(2, value);
             return (longValue & p) != 0;
         };
     }
@@ -255,7 +255,7 @@ public interface LongAccess<HOST>
         return host -> {
             long longValue = applyAsLong(host);
             long value     = anotherAccess.applyAsLong(host);
-            val p          = (int)Math.pow(2, value);
+            var p          = (int)Math.pow(2, value);
             return (longValue & p) != 0;
         };
     }
@@ -263,7 +263,7 @@ public interface LongAccess<HOST>
         return host -> {
             long longValue = applyAsLong(host);
             long value     = anotherFunction.applyAsLong(host, longValue);
-            val p          = (int)Math.pow(2, value);
+            var p          = (int)Math.pow(2, value);
             return (longValue & p) != 0;
         };
     }

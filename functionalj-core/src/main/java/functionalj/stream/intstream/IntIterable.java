@@ -41,9 +41,9 @@ public interface IntIterable {
 
     default void forEach(IntConsumer action) {
         Objects.requireNonNull(action);
-        val iterator = iterator();
+        var iterator = iterator();
         while (iterator.hasNext()) {
-            val i = iterator.nextInt();
+            var i = iterator.nextInt();
             action.accept(i);
         }
     }

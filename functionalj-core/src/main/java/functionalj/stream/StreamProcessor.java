@@ -14,8 +14,8 @@ public interface StreamProcessor<DATA, TARGET> {
     
     public default <SOURCE> StreamProcessor<SOURCE, TARGET> of(Func1<SOURCE, DATA> mapper) {
         return stream -> {
-            val dataStream = stream.map(mapper);
-            val target     = StreamProcessor.this.process(dataStream);
+            var dataStream = stream.map(mapper);
+            var target     = StreamProcessor.this.process(dataStream);
             return target;
         };
     }

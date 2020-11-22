@@ -40,11 +40,11 @@ public interface StreamPlusWithFillNull<DATA> {
     
     /** Replace any null value with the given replacement. */
     public default StreamPlus<DATA> fillNull(DATA replacement) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .map(value -> {
-                    val isNull = value == null;
-                    val replaced
+                    var isNull = value == null;
+                    var replaced
                             = isNull
                             ? replacement
                             : value;
@@ -67,13 +67,13 @@ public interface StreamPlusWithFillNull<DATA> {
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
             VALUE                    replacement) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return derive(streamPlus, stream ->  {
             return (Stream<DATA>)stream
                     .map(orgElmt -> {
-                        val value   = getter.apply(orgElmt);
+                        var value   = getter.apply(orgElmt);
                         if (value == null) {
-                            val newElmt = setter.apply(orgElmt, replacement);
+                            var newElmt = setter.apply(orgElmt, replacement);
                             return (DATA)newElmt;
                         }
                         return orgElmt;
@@ -96,14 +96,14 @@ public interface StreamPlusWithFillNull<DATA> {
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
             Supplier<VALUE>          replacementSupplier) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return derive(streamPlus, stream ->  {
             return (Stream<DATA>)stream
                     .map(orgValue -> {
-                        val value = getter.apply(orgValue);
+                        var value = getter.apply(orgValue);
                         if (value == null) {
-                            val replacement = replacementSupplier.get();
-                            val newValue    = setter.apply(orgValue, replacement);
+                            var replacement = replacementSupplier.get();
+                            var newValue    = setter.apply(orgValue, replacement);
                             return (DATA)newValue;
                         }
                         return orgValue;
@@ -126,14 +126,14 @@ public interface StreamPlusWithFillNull<DATA> {
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
             Func1<DATA, VALUE>       replacementFunction) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return derive(streamPlus, stream ->  {
             return (Stream<DATA>)stream
                     .map(orgValue -> {
-                        val value = getter.apply(orgValue);
+                        var value = getter.apply(orgValue);
                         if (value == null) {
-                            val replacement = replacementFunction.apply(orgValue);
-                            val newValue    = setter.apply(orgValue, replacement);
+                            var replacement = replacementFunction.apply(orgValue);
+                            var newValue    = setter.apply(orgValue, replacement);
                             return (DATA)newValue;
                         }
                         return orgValue;

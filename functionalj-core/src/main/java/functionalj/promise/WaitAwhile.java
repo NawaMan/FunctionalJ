@@ -88,7 +88,7 @@ public abstract class WaitAwhile extends Wait {
         
         @Override
         public WaitSession newSession() {
-            val session = new WaitSession();
+            var session = new WaitSession();
             AsyncRunner.run(asyncRunner, ()->{
                 // TODO - Once scheduling is available, use it.
                 try {

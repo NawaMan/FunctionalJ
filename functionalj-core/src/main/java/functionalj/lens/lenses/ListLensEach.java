@@ -23,11 +23,11 @@ public class ListLensEach <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
     
     @Override
     public AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS> accessParameterized() {
-        val read = Func.f((HOST host) -> {
+        var read = Func.f((HOST host) -> {
             return apply(host)
                     .filter(checker);
         });
-        val specWithSub = new AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS>() {
+        var specWithSub = new AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS>() {
             @Override
             public FuncList<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
@@ -46,27 +46,27 @@ public class ListLensEach <HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
     
     public Func1<HOST, HOST> changeTo(TYPE newValue) {
         return host -> {
-            val orgList = ListLensEach.this.parentLens.apply(host);
-            val newList = orgList.mapOnly(checker, __ -> newValue);
-            val newHost = ListLensEach.this.parentLens.changeTo(newList).apply(host);
+            var orgList = ListLensEach.this.parentLens.apply(host);
+            var newList = orgList.mapOnly(checker, __ -> newValue);
+            var newHost = ListLensEach.this.parentLens.changeTo(newList).apply(host);
             return newHost;
         };
     }
     
     public Func1<HOST, HOST> changeTo(Supplier<TYPE> supplier) {
         return host -> {
-            val orgList = ListLensEach.this.parentLens.apply(host);
-            val newList = orgList.mapOnly(checker, __ -> supplier.get());
-            val newHost = ListLensEach.this.parentLens.changeTo(newList).apply(host);
+            var orgList = ListLensEach.this.parentLens.apply(host);
+            var newList = orgList.mapOnly(checker, __ -> supplier.get());
+            var newHost = ListLensEach.this.parentLens.changeTo(newList).apply(host);
             return newHost;
         };
     }
     
     public Func1<HOST, HOST> changeTo(Function<TYPE, TYPE> mapper) {
         return host -> {
-            val orgList = ListLensEach.this.parentLens.apply(host);
-            val newList = orgList.mapOnly(checker, mapper);
-            val newHost = ListLensEach.this.parentLens.changeTo(newList).apply(host);
+            var orgList = ListLensEach.this.parentLens.apply(host);
+            var newList = orgList.mapOnly(checker, mapper);
+            var newHost = ListLensEach.this.parentLens.changeTo(newList).apply(host);
             return newHost;
         };
     }

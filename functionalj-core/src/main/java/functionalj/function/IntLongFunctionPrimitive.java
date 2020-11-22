@@ -62,7 +62,7 @@ public interface IntLongFunctionPrimitive extends ToIntBiIntFunction<Integer> {
         if (function instanceof IntLongFunctionPrimitive)
             return ((IntLongFunctionPrimitive)function).applyAsIntAndInt(value, anotherValue);
         
-        val resValue = function.applyAsInt(value, anotherValue);
+        var resValue = function.applyAsInt(value, anotherValue);
         return resValue;
     }
 }

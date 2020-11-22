@@ -23,7 +23,7 @@ public class RefExamples {
     }
     
     public static void greet(String name) {
-        val greetingString = greeting.value().apply(name);
+        var greetingString = greeting.value().apply(name);
         println.value().accept(greetingString);
     }
     
@@ -34,7 +34,7 @@ public class RefExamples {
     
     @Test
     public void testDefaultMessage() {
-        val logs = new ArrayList<String>();
+        var logs = new ArrayList<String>();
         With(println.butWith(logs::add))
         .run(()-> {
             greet("Jack");
@@ -44,7 +44,7 @@ public class RefExamples {
     
     @Test
     public void testCustomMessage() {
-        val logs = new ArrayList<String>();
+        var logs = new ArrayList<String>();
         With(println .butWith(logs::add),
              greeting.butWith(name -> "What's up " + name + "?"))
         .run(()-> {

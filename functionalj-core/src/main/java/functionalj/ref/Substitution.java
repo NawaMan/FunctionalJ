@@ -45,7 +45,7 @@ public abstract class Substitution<DATA> {
     }
     
     public static final FuncList<Substitution<?>> getCurrentSubstitutionOf(Ref<?> ... refs) {
-        val refList = FuncList.of((Ref<?>[])refs);
+        var refList = FuncList.of((Ref<?>[])refs);
         return getCurrentSubstitutionOf((List<Ref<?>>)refList);
     }
     

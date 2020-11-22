@@ -97,7 +97,7 @@ public class GenMethod implements IGenerateDefinition {
                 .forEach(types::add);
         }
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        val streams = Stream.of(
+        var streams = Stream.of(
                     types.stream(),
                     (usedTypes  != null) ? usedTypes .stream() : (Stream<Type>)(Stream)Stream.empty(),
                     (exceptions != null) ? exceptions.stream() : (Stream<Type>)(Stream)Stream.empty()
@@ -107,19 +107,19 @@ public class GenMethod implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        val paramDefs 
+        var paramDefs 
             = params.stream()
                 .map(param -> param.toTerm(currentPackage))
                 .collect(joining(", "));
-        val paramDefsToText
+        var paramDefsToText
             = isVarAgrs 
             ? paramDefs.replaceAll("([^ ]+)$", "... $1") 
             : paramDefs;
-        val throwing = (exceptions == null || exceptions.isEmpty())
+        var throwing = (exceptions == null || exceptions.isEmpty())
                      ? ""
                      : (" throws " + exceptions.stream().map(type -> type.simpleName()).collect(Collectors.joining(", ")) + " ");
-        val lineEnd = throwing + ((body == null) ? ";" : " {");
-        val definition
+        var lineEnd = throwing + ((body == null) ? ";" : " {");
+        var definition
                 = ILines.oneLineOf(
                     accessibility, modifiability, scope,
                     type.simpleNameWithGeneric(""), name + "(" + paramDefsToText + ")" + lineEnd);

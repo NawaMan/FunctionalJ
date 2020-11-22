@@ -67,9 +67,9 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
      * @return             the stream of sub stream.
      */
     public default StreamPlus<IntStreamPlus> segmentSize(int count, boolean includeTail) {
-        val index = new AtomicInteger(0);
+        var index = new AtomicInteger(0);
         return segment(data -> {
-                    val currentIndex = index.getAndIncrement();
+                    var currentIndex = index.getAndIncrement();
                     return (currentIndex % count) == 0;
                 },
                 includeTail);
@@ -108,18 +108,18 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
             IntPredicate startCondition,
             boolean      includeIncompletedSegment) {
         // TODO - Find a way to make it fully lazy. Try tryAdvance.
-        val newStorage = (Supplier<GrowOnlyIntArray>)GrowOnlyIntArray::new;
-        val toStreamPlus = (Function<GrowOnlyIntArray, IntStreamPlus>)GrowOnlyIntArray::stream;
+        var newStorage = (Supplier<GrowOnlyIntArray>)GrowOnlyIntArray::new;
+        var toStreamPlus = (Function<GrowOnlyIntArray, IntStreamPlus>)GrowOnlyIntArray::stream;
 
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return sequentialToObj(streamPlus, stream -> {
-            val list = new AtomicReference<>(newStorage.get());
-            val adding = new AtomicBoolean(false);
+            var list = new AtomicReference<>(newStorage.get());
+            var adding = new AtomicBoolean(false);
 
-            val streamOrNull = (IntFunction<IntStreamPlus>)((int data) ->{
+            var streamOrNull = (IntFunction<IntStreamPlus>)((int data) ->{
                 if (startCondition.test(data)) {
                     adding.set(true);
-                    val resultList = list.getAndUpdate(l -> newStorage.get());
+                    var resultList = list.getAndUpdate(l -> newStorage.get());
                     list.get().add(data);
                     return resultList.isEmpty() ? null : toStreamPlus.apply(resultList);
                 }
@@ -128,13 +128,13 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
                 }
                 return null;
             });
-            val mainStream = StreamPlus.from(stream.mapToObj(streamOrNull)).filterNonNull();
+            var mainStream = StreamPlus.from(stream.mapToObj(streamOrNull)).filterNonNull();
             if (!includeIncompletedSegment)
                 return mainStream;
 
-            val mainSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->mainStream;
-            val tailSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->StreamPlus.of(toStreamPlus.apply(list.get()));
-            val resultStream
+            var mainSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->mainStream;
+            var tailSupplier = (Supplier<StreamPlus<IntStreamPlus>>)()->StreamPlus.of(toStreamPlus.apply(list.get()));
+            var resultStream
                     = StreamPlus.of(mainSupplier, tailSupplier)
                     .flatMap(Supplier::get);
 
@@ -160,7 +160,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
             IntPredicate       startCondition,
             IntPredicate       endCondition,
             IncompletedSegment incompletedSegment) {
-        val includeIncompletedSegment = incompletedSegment == IncompletedSegment.included;
+        var includeIncompletedSegment = incompletedSegment == IncompletedSegment.included;
         return segment(startCondition, endCondition, includeIncompletedSegment);
     }
 
@@ -169,20 +169,20 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
             IntPredicate startCondition,
             IntPredicate endCondition,
             boolean      includeIncompletedSegment) {
-        val newStorage   = (Supplier<GrowOnlyIntArray>)GrowOnlyIntArray::new;
-        val toStreamPlus = (Function<GrowOnlyIntArray, IntStreamPlus>)GrowOnlyIntArray::stream;
+        var newStorage   = (Supplier<GrowOnlyIntArray>)GrowOnlyIntArray::new;
+        var toStreamPlus = (Function<GrowOnlyIntArray, IntStreamPlus>)GrowOnlyIntArray::stream;
 
         // TODO - Find a way to make it fully lazy. Try tryAdvance.
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         StreamPlus<IntStreamPlus> returnStream = sequentialToObj(streamPlus, stream -> {
-            val list         = new AtomicReference<>(newStorage.get());
-            val adding       = new AtomicBoolean(false);
+            var list         = new AtomicReference<>(newStorage.get());
+            var adding       = new AtomicBoolean(false);
 
             StreamPlus<IntStreamPlus> resultStream
                 = StreamPlus.from(
                     stream
                     .mapToObj(i -> {
-                        val shouldStart = startCondition.test(i);
+                        var shouldStart = startCondition.test(i);
                         if (shouldStart) {
                             adding.set(true);
                         }
@@ -192,7 +192,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
 
                         if (endCondition.test(i)) {
                             adding.set(shouldStart);
-                            val resultList = list.getAndUpdate(l -> newStorage.get());
+                            var resultList = list.getAndUpdate(l -> newStorage.get());
                             return toStreamPlus.apply(resultList);
                         }
 
@@ -218,23 +218,23 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
      * If the segmentSize function return 0, an empty stream is returned.
      */
     public default StreamPlus<IntStreamPlus> segmentSize(IntFunction<Integer> segmentSize) {
-        val newStorage   = (Supplier<GrowOnlyIntArray>)GrowOnlyIntArray::new;
-        val toStreamPlus = (Function<GrowOnlyIntArray, IntStreamPlus>)GrowOnlyIntArray::stream;
-        val emptyStream  = (Supplier<IntStreamPlus>)IntStreamPlus::empty;
-        val singleStream = (IntFunction<IntStreamPlus>)(data -> IntStreamPlus.of(data));
+        var newStorage   = (Supplier<GrowOnlyIntArray>)GrowOnlyIntArray::new;
+        var toStreamPlus = (Function<GrowOnlyIntArray, IntStreamPlus>)GrowOnlyIntArray::stream;
+        var emptyStream  = (Supplier<IntStreamPlus>)IntStreamPlus::empty;
+        var singleStream = (IntFunction<IntStreamPlus>)(data -> IntStreamPlus.of(data));
 
         // TODO - Find a way to make it fully lazy. Try tryAdvance.
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return sequentialToObj(streamPlus, stream -> {
-            val listRef = new AtomicReference<>(newStorage.get());
-            val leftRef = new AtomicInteger(-1);
+            var listRef = new AtomicReference<>(newStorage.get());
+            var leftRef = new AtomicInteger(-1);
 
-            val head
+            var head
                 = stream
                 .mapToObj(each -> {
                     int left = leftRef.get();
                     if (left == -1) {
-                        val newSize = segmentSize.apply(each);
+                        var newSize = segmentSize.apply(each);
                         if (newSize == null) {
                             return null;
                         } else if (newSize == 0) {
@@ -242,19 +242,19 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
                         } else if (newSize == 1) {
                             return singleStream.apply(each);
                         } else {
-                            val list = listRef.get();
+                            var list = listRef.get();
                             list.add(each);
                             leftRef.set(newSize - 1);
                         }
                     } else if (left == 1) {
-                        val list = listRef.getAndSet(newStorage.get());
+                        var list = listRef.getAndSet(newStorage.get());
                         list.add(each);
 
                         leftRef.set(-1);
                         return toStreamPlus.apply(list);
 
                     } else {
-                        val list = listRef.get();
+                        var list = listRef.get();
                         list.add(each);
                         leftRef.decrementAndGet();
                     }
@@ -263,7 +263,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
                 .filterNonNull()
                 ;
 
-            val resultStream
+            var resultStream
                 = StreamPlus.of(
                     f(()-> head),
                     f(()-> StreamPlus.of(toStreamPlus.apply(listRef.get())))
@@ -282,10 +282,10 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
             IntPredicate      conditionToCollapse,
             IntBinaryOperator combinator) {
         Object dummy = IntStreamPlusHelper.dummy;
-        val intArray = new int[1];
+        var intArray = new int[1];
         int first;
 
-        val iterator = intStreamPlus().iterator();
+        var iterator = intStreamPlus().iterator();
 
         if (!iterator.hasNext()) {
             return empty();
@@ -296,16 +296,16 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
             return empty();
         }
 
-        val prev = new AtomicReference<Object>(new int[] { first });
+        var prev = new AtomicReference<Object>(new int[] { first });
         IntStreamPlus resultStream = generateWith(()->{
             if (prev.get() == dummy)
                 throw new NoMoreResultException();
 
             while(true) {
                 int next;
-                val prevValue = intArray[0];
+                var prevValue = intArray[0];
                 if (!iterator.hasNext()) {
-                    val yield = prevValue;
+                    var yield = prevValue;
                     prev.set(dummy);
                     return yield;
                 }
@@ -313,15 +313,15 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
                 try {
                     next = iterator.next();
                 } catch (NoSuchElementException e) {
-                    val yield = prevValue;
+                    var yield = prevValue;
                     prev.set(dummy);
                     return yield;
                 }
                 if (conditionToCollapse.test(next)) {
-                    val newValue = combinator.applyAsInt(prevValue, next);
+                    var newValue = combinator.applyAsInt(prevValue, next);
                     prev.set(newValue);
                 } else {
-                    val yield = prevValue;
+                    var yield = prevValue;
                     intArray[0] = next;
                     prev.set(intArray);
                     return yield;
@@ -341,11 +341,11 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
             IntFunction<Integer> segmentSize,
             IntBinaryOperator    combinator) {
         Object dummy = IntStreamPlusHelper.dummy;
-        val intArray = new int[1];
+        var intArray = new int[1];
 
-        val firstObj = new Object();
-        val iterator = intStreamPlus().iterator();
-        val prev = new AtomicReference<Object>(firstObj);
+        var firstObj = new Object();
+        var iterator = intStreamPlus().iterator();
+        var prev = new AtomicReference<Object>(firstObj);
         IntStreamPlus resultStream = generateWith(()->{
             if (prev.get() == dummy)
                 throw new NoMoreResultException();
@@ -359,7 +359,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
                     if (prevValue == firstObj)
                         throw new NoMoreResultException();
 
-                    val yield = intArray[0];
+                    var yield = intArray[0];
                     prev.set(dummy);
                     return yield;
                 }
@@ -382,13 +382,13 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
                         intArray[0] = newValue;
                         prev.set(intArray);
                     } catch (NoSuchElementException e) {
-                        val yield = intArray[0];
+                        var yield = intArray[0];
                         prev.set(dummy);
                         return yield;
                     }
                 }
 
-                val yield = intArray[0];
+                var yield = intArray[0];
                 prev.set(firstObj);
                 return yield;
             }
@@ -407,13 +407,13 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
             IntUnaryOperator  segmentSize,
             IntUnaryOperator  mapper,
             IntBinaryOperator combinator) {
-        // val dummy = IntStreamPlusHelper.dummy;
-        // val intArray = new int[1];
+        // var dummy = IntStreamPlusHelper.dummy;
+        // var intArray = new int[1];
 
-        // val firstObj = new Object();
-        // val iterator = streamPlus().iterator();
-        // val prev = new AtomicReference<Object>(firstObj);
-        // val resultStream = generateWith(()->{
+        // var firstObj = new Object();
+        // var iterator = streamPlus().iterator();
+        // var prev = new AtomicReference<Object>(firstObj);
+        // var resultStream = generateWith(()->{
         //     if (prev.get() == dummy)
         //         throw new NoMoreResultException();
 
@@ -425,7 +425,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
         //             if (prev.get() == firstObj)
         //                 throw new NoMoreResultException();
 
-        //             val yield = prev.get();
+        //             var yield = prev.get();
         //             prev.set(StreamPlusHelper.dummy);
         //             return (TARGET)yield;
         //         }
@@ -436,7 +436,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
         //         }
 
         //         if (newSize == 1) {
-        //             val target = (TARGET)mapper.apply((DATA)next);
+        //             var target = (TARGET)mapper.apply((DATA)next);
         //             return target;
         //         }
 
@@ -446,17 +446,17 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
         //             try {
         //                 next   = iterator.next();
         //                 target = (TARGET)mapper.apply((DATA)next);
-        //                 val prevValue = (TARGET)prev.get();
-        //                 val newValue  = combinator.apply(prevValue, target);
+        //                 var prevValue = (TARGET)prev.get();
+        //                 var newValue  = combinator.apply(prevValue, target);
         //                 prev.set(newValue);
         //             } catch (NoSuchElementException e) {
-        //                 val yield = prev.get();
+        //                 var yield = prev.get();
         //                 prev.set(StreamPlusHelper.dummy);
         //                 return (TARGET)yield;
         //             }
         //         }
 
-        //         val yield = prev.get();
+        //         var yield = prev.get();
         //         prev.set(firstObj);
         //         return (TARGET)yield;
         //     }
@@ -466,13 +466,13 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
 
         return null;
 //        return sequential(stream -> {
-//            val splitr = stream.spliterator();
-//            val value = new AtomicReference<AtomicInteger>(null);
+//            var splitr = stream.spliterator();
+//            var value = new AtomicReference<AtomicInteger>(null);
 //            IntStreamPlus head = IntStreamPlus.from(StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
 //                @Override
 //                public boolean tryAdvance(IntConsumer consumer) {
-//                    val count = new AtomicInteger(0);
-//                    val hasNext = new AtomicBoolean();
+//                    var count = new AtomicInteger(0);
+//                    var hasNext = new AtomicBoolean();
 //                    do {
 //                        hasNext.set(splitr.tryAdvance((int next) -> {
 //                            if (count.get() == 0) {
@@ -504,7 +504,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
 //            IntStreamPlus tail = (includeTail && (value.get() != null))
 //                     ? IntStreamPlus.of(value.get().get())
 //                     : IntStreamPlus.empty();
-//            val resultStream
+//            var resultStream
 //                = StreamPlus.of(
 //                    f(()-> head),
 //                    f(()-> tail)
@@ -551,9 +551,9 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
 //                return IntStreamPlus.empty();
 //            }
 //
-//            val prev = new int[][] { new int[] { first }};
-//            val isDone = new boolean[] { false };
-//            val collapseNext = new boolean[] { conditionToCollapseNext.test(first) };
+//            var prev = new int[][] { new int[] { first }};
+//            var isDone = new boolean[] { false };
+//            var collapseNext = new boolean[] { conditionToCollapseNext.test(first) };
 //            IntStreamPlus resultStream = IntStreamPlus.generate(()->{
 //                if (prev[0] == null) {
 //                    isDone[0] = true;
@@ -565,7 +565,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
 //                    try {
 //                        next = iterator.nextInt();
 //                    } catch (NoSuchElementException e) {
-//                        val yield = prev[0][0];
+//                        var yield = prev[0][0];
 //                        prev[0] = null;
 //                        return yield;
 //                    }
@@ -574,7 +574,7 @@ public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
 //                    if (collapseNow) {
 //                        prev[0][0] = concatFunc.applyAsInt(prev[0][0], next);
 //                    } else {
-//                        val yield = prev[0][0];
+//                        var yield = prev[0][0];
 //                        prev[0][0] = next;
 //                        return yield;
 //                    }

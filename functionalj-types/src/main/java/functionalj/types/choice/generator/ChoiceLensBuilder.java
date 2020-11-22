@@ -42,32 +42,32 @@ public class ChoiceLensBuilder {
     }
     
     public List<String> build() {
-        val targetName    = sourceSpec.targetName;
-        val lensClassName = targetName + "Lens";
-        val lensClassDef = asList(
+        var targetName    = sourceSpec.targetName;
+        var lensClassName = targetName + "Lens";
+        var lensClassDef = asList(
                 "public static final " + lensClassName + "<" + targetName + "> the" + targetName + " = new " + lensClassName + "<>(LensSpec.of(" + targetName + ".class));",
                 "public static final " + lensClassName + "<" + targetName + "> each" + targetName + " = the" + targetName + ";",
                 "public static class " + lensClassName + "<HOST> extends ObjectLensImpl<HOST, " + targetName + "> {\n"
                 );
         
-        val lensClassConstructor = asList(
+        var lensClassConstructor = asList(
                 "    public " + lensClassName + "(LensSpec<HOST, " + targetName + "> spec) {",
                 "        super(spec);",
                 "    }"
                 );
         
-        val isMethods = sourceSpec
+        var isMethods = sourceSpec
                 .choices.stream()
                 .map(choice -> "BooleanAccessPrimitive<" + targetName + "> is" + choice.name + " = " + targetName + "::is" + choice.name + ";")
                 .map(each   -> "    public final " + each)
                 .collect(toList());
-        val asMethods = sourceSpec
+        var asMethods = sourceSpec
                 .choices.stream()
                 .map(choice -> "ResultAccess<HOST, " + choice.name + ", " + choice.name + "."+ choice.name + "Lens<HOST>> as" + choice.name + " = createSubResultLens(" + targetName +"::as" + choice.name + ", (functionalj.lens.core.WriteLens<" + targetName + ",Result<" + choice.name + ">>)null, " + choice.name + "."+ choice.name + "Lens::new);")
                 .map(each   -> "    public final " + each)
                 .collect(toList());
         
-        val lensClassDefClose = asList(
+        var lensClassDefClose = asList(
                 "}"
                 );
         

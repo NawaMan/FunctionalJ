@@ -49,7 +49,7 @@ public class Tuple2Test {
     
     @Test
     public void testLensRead() {
-        val theTuple = theTuple2.of(STRING(), STRING());
+        var theTuple = theTuple2.of(STRING(), STRING());
         assertEquals("[I, S]", "" + tuples.map(theTuple._1()));
     }
     

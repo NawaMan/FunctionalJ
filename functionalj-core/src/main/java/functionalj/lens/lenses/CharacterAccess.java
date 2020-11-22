@@ -49,25 +49,25 @@ public interface CharacterAccess<HOST>
         
         if (accessToValue instanceof ToCharFunction) {
             @SuppressWarnings("unchecked")
-            val func1  = (ToCharFunction<H>)accessToValue;
-            val access = ofPrimitive(func1);
+            var func1  = (ToCharFunction<H>)accessToValue;
+            var access = ofPrimitive(func1);
             return access;
         }
         
         if (accessToValue instanceof Func1) {
-            val func1  = (Func1<H, Character>)accessToValue;
-            val access = (CharacterAccessBoxed<H>)func1::applyUnsafe;
+            var func1  = (Func1<H, Character>)accessToValue;
+            var access = (CharacterAccessBoxed<H>)func1::applyUnsafe;
             return access;
         }
         
-        val func   = (Function<H, Character>)accessToValue;
-        val access = (CharacterAccessBoxed<H>)(host -> func.apply(host));
+        var func   = (Function<H, Character>)accessToValue;
+        var access = (CharacterAccessBoxed<H>)(host -> func.apply(host));
         return access;
     }
     
     public static <H> CharacterAccess<H> ofPrimitive(ToCharFunction<H> accessToValue) {
         requireNonNull(accessToValue);
-        val access = (CharacterAccessPrimitive<H>)accessToValue::applyAsChar;
+        var access = (CharacterAccessPrimitive<H>)accessToValue::applyAsChar;
         return access;
     }
     

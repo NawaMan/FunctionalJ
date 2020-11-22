@@ -41,21 +41,21 @@ public class Specs {
         
         // TODO - BUG!!! ... the method has to return something can't be void. ... fix this when can.
         default boolean ensureValid(Validation<D> self, D data) {
-            val validationException = validate(self, data);
+            var validationException = validate(self, data);
             if (validationException != null)
                 throw validationException;
             
             return true;
         }
         default ValidationException validate(Validation<D> validation, D data) {
-            val validationException = validation.match()
+            var validationException = validation.match()
                     .toBoolean  (v -> $inner.checkToBoolean  (v, data))
                     .toMessage  (v -> $inner.checkToMessage  (v, data))
                     .toException(v -> $inner.checkToException(v, data));
             return validationException;
         }
         default Validator<D> toValidator(Validation<D> self) {
-            val ref = new AtomicReference<ValidationException>();
+            var ref = new AtomicReference<ValidationException>();
             return Validator.of(data -> {
                         ref.set(validate(self, data));
                         return (ref.get() == null);
@@ -84,7 +84,7 @@ public class Specs {
                         .get ();
             }
             static <D> ValidationException checkToException(Validation.ToException<D> validating, D data) {
-                val exception = validating.errorChecker().apply(data);
+                var exception = validating.errorChecker().apply(data);
                 return exception;
             }
         }

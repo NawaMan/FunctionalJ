@@ -42,7 +42,7 @@ public class FullGeneratorTest {
   
   @Test
   public void testGenerator() {
-      val spec = new SourceSpec(
+      var spec = new SourceSpec(
               "BasicColor",
               new Type(FullGeneratorTest.class.getPackage().getName(), "ChoiceTypeExampleTest", "ChoiceType1TypeSpec"),
               asList(
@@ -53,8 +53,8 @@ public class FullGeneratorTest {
                       new CaseParam("g", new Type("int"), false),
                       new CaseParam("b", new Type("int"), false)
                   ))));
-      val target = new TargetClass(spec);
-      val lines  = target.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+      var target = new TargetClass(spec);
+      var lines  = target.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
       assertEquals(
               "package functionalj.types.choice.generator;\n" + 
               "\n" + 

@@ -42,7 +42,7 @@ public interface AsIntStreamPlusWithMatch {
     @Sequential
     public default OptionalInt findFirst(
             IntPredicate predicate) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .filter(predicate)
                 .findFirst();
@@ -52,7 +52,7 @@ public interface AsIntStreamPlusWithMatch {
     @Terminal
     public default OptionalInt findAny(
             IntPredicate predicate) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .filter(predicate)
                 .findAny();
@@ -64,7 +64,7 @@ public interface AsIntStreamPlusWithMatch {
     public default OptionalInt findFirst(
             IntUnaryOperator mapper, 
             IntPredicate     theCondition) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .filter(mapper, theCondition)
                 .findFirst();
@@ -75,7 +75,7 @@ public interface AsIntStreamPlusWithMatch {
     public default <T> OptionalInt findAny(
             IntUnaryOperator mapper, 
             IntPredicate     theCondition) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .filter(mapper, theCondition)
                 .findAny();
@@ -87,7 +87,7 @@ public interface AsIntStreamPlusWithMatch {
     public default <T> OptionalInt findFirstBy(
             IntFunction<? extends T> mapper, 
             Predicate<? super T>     theCondition) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .filterAsObject(mapper, theCondition)
                 .findFirst();
@@ -98,7 +98,7 @@ public interface AsIntStreamPlusWithMatch {
     public default <T> OptionalInt findAnyBy(
             IntFunction<? extends T> mapper, 
             Predicate<? super T>      theCondition) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .filterAsObject(mapper, theCondition)
                 .findAny();

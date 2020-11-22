@@ -43,29 +43,29 @@ public class RefTest {
 
     @Test
     public void testNull() {
-        val ref = Ref.of(String.class).defaultToNull();
+        var ref = Ref.of(String.class).defaultToNull();
         assertNull(ref.value());
     }
     
     @Test
     public void testValue() {
-        val ref1 = Ref.ofValue("Value");
+        var ref1 = Ref.ofValue("Value");
         assertEquals("Value", ref1.value());
         
-        val ref2 = Ref.ofValue(42);
+        var ref2 = Ref.ofValue(42);
         assertEquals(42, (int)ref2.value());
     }
     
     @Test
     public void testFrom() {
-        val ref1 = Ref.of(String.class).defaultFrom(()->"Value");
+        var ref1 = Ref.of(String.class).defaultFrom(()->"Value");
         assertEquals("Value", ref1.value());
         
-        val ref2 = Ref.of(Integer.class).defaultFrom(()->42);
+        var ref2 = Ref.of(Integer.class).defaultFrom(()->42);
         assertEquals(42, (int)ref2.value());
         
-        val counter = new AtomicInteger();
-        val ref3 = Ref.of(Integer.class).defaultFrom(counter::getAndIncrement);
+        var counter = new AtomicInteger();
+        var ref3 = Ref.of(Integer.class).defaultFrom(counter::getAndIncrement);
         assertEquals(0, (int)ref3.value());
         assertEquals(1, (int)ref3.value());
         assertEquals(2, (int)ref3.value());
@@ -73,8 +73,8 @@ public class RefTest {
     
     @Test
     public void testCurrentRef() {
-        val ref1 = Ref.of(String.class).defaultFrom(()->"OrgValue");
-        val ref2 = ref1;
+        var ref1 = Ref.of(String.class).defaultFrom(()->"OrgValue");
+        var ref2 = ref1;
         assertEquals("OrgValue", ref2.value());
         
         Ref.runWith(
@@ -96,8 +96,8 @@ public class RefTest {
     
     @Test
     public void testRefTo() {
-        val ref1 = Ref.to(Answer.class);
-        val ref2 = ref1;
+        var ref1 = Ref.to(Answer.class);
+        var ref2 = ref1;
         assertEquals("Answer [number=42]", "" + ref1.value());
         assertEquals("Answer [number=42]", "" + ref2.value());
         
@@ -117,12 +117,12 @@ public class RefTest {
     
     @Test
     public void testDictate() {
-        val ref1 = Ref.ofValue("DICTATE!").dictate();
-        val ref2 = Ref.of(String.class).dictateTo("DICTATE!!");
+        var ref1 = Ref.ofValue("DICTATE!").dictate();
+        var ref2 = Ref.of(String.class).dictateTo("DICTATE!!");
         
         assertEquals("DICTATE! DICTATE!!",  ref1.value() + " " + ref2.value());
         
-        val value 
+        var value 
               = With(ref1.butWith("Weak!"))
                 .and(ref2.butWith("Weak!!"))
                 .run(()->ref1.value() + " " + ref2.value());
@@ -137,12 +137,12 @@ public class RefTest {
     
     @Test
     public void testBasicRetain() {
-        val counter0 = new AtomicInteger();
-        val counter1 = new AtomicInteger();
-        val counter2 = new AtomicInteger();
-        val ref0     = Ref.of(Integer.class).defaultFrom(counter0::getAndIncrement);
-        val ref1     = Ref.of(Integer.class).defaultFrom(counter1::getAndIncrement).retained().forever();
-        val ref2     = Ref.of(Integer.class).defaultFrom(counter2::getAndIncrement).retained().never();
+        var counter0 = new AtomicInteger();
+        var counter1 = new AtomicInteger();
+        var counter2 = new AtomicInteger();
+        var ref0     = Ref.of(Integer.class).defaultFrom(counter0::getAndIncrement);
+        var ref1     = Ref.of(Integer.class).defaultFrom(counter1::getAndIncrement).retained().forever();
+        var ref2     = Ref.of(Integer.class).defaultFrom(counter2::getAndIncrement).retained().never();
         assertEquals(0, ref0.value().intValue());
         assertEquals(1, ref0.value().intValue());
         assertEquals(2, ref0.value().intValue());
@@ -156,10 +156,10 @@ public class RefTest {
     
     @Test
     public void testRetainSame() {
-        val state    = new AtomicInteger(42);
-        val counter  = new AtomicInteger(0);
-        val refState = Ref.of(Integer.class).defaultFrom(state::get);
-        val ref      = Ref.of(Integer.class).defaultFrom(counter::getAndIncrement).retained().when(refState).same();
+        var state    = new AtomicInteger(42);
+        var counter  = new AtomicInteger(0);
+        var refState = Ref.of(Integer.class).defaultFrom(state::get);
+        var ref      = Ref.of(Integer.class).defaultFrom(counter::getAndIncrement).retained().when(refState).same();
         
         assertEquals(42, state.get());
         assertEquals( 0, ref.value().intValue());
@@ -191,10 +191,10 @@ public class RefTest {
     
     @Test
     public void testRetainEquals() {
-        val state    = new AtomicInteger(42);
-        val counter  = new AtomicInteger(0);
-        val refState = Ref.of(Integer.class).defaultFrom(state::get);
-        val ref      = Ref.of(Integer.class).defaultFrom(counter::getAndIncrement).retained().when(refState).equals();
+        var state    = new AtomicInteger(42);
+        var counter  = new AtomicInteger(0);
+        var refState = Ref.of(Integer.class).defaultFrom(state::get);
+        var ref      = Ref.of(Integer.class).defaultFrom(counter::getAndIncrement).retained().when(refState).equals();
         
         assertEquals(42, state.get());
         assertEquals( 0, ref.value().intValue());
@@ -227,10 +227,10 @@ public class RefTest {
     
     @Test
     public void testRetainMatch() {
-        val state    = new AtomicInteger(42);
-        val counter  = new AtomicInteger(0);
-        val refState = Ref.of(Integer.class).defaultFrom(state::get);
-        val ref      = Ref.of(Integer.class)
+        var state    = new AtomicInteger(42);
+        var counter  = new AtomicInteger(0);
+        var refState = Ref.of(Integer.class).defaultFrom(state::get);
+        var ref      = Ref.of(Integer.class)
                 .defaultFrom(counter::getAndIncrement)
                 .retained().when(refState).match((Integer s) -> s.intValue() == 42);
         
@@ -254,8 +254,8 @@ public class RefTest {
     
     @Test
     public void testRetainPeriod() throws InterruptedException {
-        val counter = new AtomicInteger(0);
-        val ref     = Ref.of(Integer.class)
+        var counter = new AtomicInteger(0);
+        var ref     = Ref.of(Integer.class)
                 .defaultFrom(counter::getAndIncrement)
                 .retained().withIn(50).milliSeconds();
         
@@ -271,10 +271,10 @@ public class RefTest {
     
     @Test
     public void testRetain_crossThread() throws InterruptedException {
-        val state    = new AtomicInteger(42);
-        val counter  = new AtomicInteger(0);
-        val refState = Ref.of(Integer.class).defaultFrom(state::get);
-        val ref      = Ref.of(Integer.class)
+        var state    = new AtomicInteger(42);
+        var counter  = new AtomicInteger(0);
+        var refState = Ref.of(Integer.class).defaultFrom(state::get);
+        var ref      = Ref.of(Integer.class)
                 .defaultFrom(counter::getAndIncrement)
                 .retained()
                 .locally()
@@ -289,14 +289,14 @@ public class RefTest {
         assertEquals(1, ref.value().intValue());
         assertEquals(1, ref.value().intValue());
         
-        val resultRef = new AtomicReference<String>();
+        var resultRef = new AtomicReference<String>();
         Run.async(()->{
             Time.sleep(10);
-            val value1 = ref.value();
+            var value1 = ref.value();
             Time.sleep(20);
-            val value2 = ref.value();
+            var value2 = ref.value();
             Time.sleep(100);
-            val value3 = ref.value();
+            var value3 = ref.value();
             resultRef.set(value1 + " - " + value2 + " - " + value3);
         });
         
@@ -311,10 +311,10 @@ public class RefTest {
     
     @Test
     public void testRetain_localThread() throws InterruptedException {
-        val state    = new ThreadLocal<Integer>();
-        val counter  = new AtomicInteger(0);
-        val refState = Ref.of(Integer.class).defaultFrom(state::get);
-        val ref      = Ref.of(Integer.class)
+        var state    = new ThreadLocal<Integer>();
+        var counter  = new AtomicInteger(0);
+        var refState = Ref.of(Integer.class).defaultFrom(state::get);
+        var ref      = Ref.of(Integer.class)
                 .defaultFrom(counter::getAndIncrement)
                 .retained()
                 .locally()
@@ -332,7 +332,7 @@ public class RefTest {
         assertEquals(1, ref.value().intValue());
         
         
-        val resultRef = new AtomicReference<Result<String>>();
+        var resultRef = new AtomicReference<Result<String>>();
         Run.async(()->{
             state.set(42);
             return IntStreamPlus.infinite()
@@ -358,12 +358,12 @@ public class RefTest {
     
     @Test
     public void testMap() {
-        val counter = new AtomicInteger(0);
-        val ref     = Ref.of(Integer.class)
+        var counter = new AtomicInteger(0);
+        var ref     = Ref.of(Integer.class)
                 .defaultFrom(counter::getAndIncrement)
                 .map(String.class, String::valueOf);
         
-        val supplier = Ref.of(Integer.class)
+        var supplier = Ref.of(Integer.class)
                 .defaultFrom(counter::getAndIncrement)
                 .then(String::valueOf);
         

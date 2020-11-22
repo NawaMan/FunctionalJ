@@ -68,8 +68,8 @@ public class LensTest {
     
     @Test
     public void test() {
-        val car1 = new Car("blue");
-        val driver1 = new Driver(car1);
+        var car1 = new Car("blue");
+        var driver1 = new Driver(car1);
         
         assertThis("blue",             theCar.color.apply(car1));
         assertThis("Car(color=green)", theCar.color.changeTo("green").apply(car1));
@@ -80,11 +80,11 @@ public class LensTest {
         assertThis("Driver(car=Car(color=red))",   theDriver.car.withColor("red").apply(driver1));
         assertThis(false,                          theDriver.car.color.thatIsBlank().apply(driver1));
         
-        val drivers = asList(
+        var drivers = asList(
                 driver1,
                 driver1.withCar(new Car("red")),
                 theDriver.car.color.changeTo("green").apply(driver1));
-        val expected = asList(
+        var expected = asList(
                 true,
                 false,
                 false);
@@ -95,16 +95,16 @@ public class LensTest {
                     assertThis(expected.get(index), actual);
                 }));
         
-        val checkForCompanyWithBlueCar = theCompany.drivers.thatContains(theDriver.car.color.thatEquals("blue"));
+        var checkForCompanyWithBlueCar = theCompany.drivers.thatContains(theDriver.car.color.thatEquals("blue"));
         assertThis(false, checkForCompanyWithBlueCar.apply(new Company(asList())));
         assertThis(true,  checkForCompanyWithBlueCar.apply(new Company(asList(driver1))));
         assertThis(true,  checkForCompanyWithBlueCar.apply(new Company(asList(driver1, driver1.withCar(new Car("red"))))));
         
-        val findCarColor = theDriver.car.toNullable().thenMap(theCar.color);
+        var findCarColor = theDriver.car.toNullable().thenMap(theCar.color);
         assertThis("Nullable.EMPTY",    findCarColor.apply(new Driver(null)));
         assertThis("Nullable.of(blue)", findCarColor.apply(new Driver(new Car("blue"))));
         
-        val company = new Company(asList(driver1, driver1.withCar(new Car("red"))));
+        var company = new Company(asList(driver1, driver1.withCar(new Car("red"))));
          assertEquals("Driver(car=Car(color=blue))", theCompany.drivers.first().apply(company).toString());
     }
 
@@ -257,12 +257,12 @@ public class LensTest {
     
     @Test
     public void testNullSafety() {
-        val driverWithNoCar     = new Driver(null);
-        val nullSafeGetColor    = theDriver.car.color;
-        val nullUnsafeGetDriver = theDriver.nullUnsafe();
-        val nullUnsafeGetCar    = nullUnsafeGetDriver.car;
-        val nullUnsafeGetColor  = nullUnsafeGetCar.color;
-        val mayBeGetColor       = nullSafeGetColor.toNullable();
+        var driverWithNoCar     = new Driver(null);
+        var nullSafeGetColor    = theDriver.car.color;
+        var nullUnsafeGetDriver = theDriver.nullUnsafe();
+        var nullUnsafeGetCar    = nullUnsafeGetDriver.car;
+        var nullUnsafeGetColor  = nullUnsafeGetCar.color;
+        var mayBeGetColor       = nullSafeGetColor.toNullable();
         
         assertNull(nullSafeGetColor.apply(driverWithNoCar));
         assertEquals(Nullable.empty(), mayBeGetColor.apply(driverWithNoCar));
@@ -275,19 +275,19 @@ public class LensTest {
     }
     
     public void testNullSafetyMethods() {
-        val driverWithNoCar = new Driver(null);
+        var driverWithNoCar = new Driver(null);
         
         assertNull(theDriver.car.color.apply(driverWithNoCar));
         assertEquals("N/A", theDriver.car.color.orDefaultTo("N/A").apply(driverWithNoCar));
     }
     
     public void testShortHand() {
-        val lists = listOf(
+        var lists = listOf(
                     listOf("ONE", "TWO", "THREE"),
                     listOf("AE", "BEE", "SEE")
                 );
         
-        val theStrListLens = theList.of(LensTypes.STRING());
+        var theStrListLens = theList.of(LensTypes.STRING());
         assertEquals(
                 "[[ONE (3), TWO, THREE], [AE (2), BEE, SEE]]",
                 "" + lists

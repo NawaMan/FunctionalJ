@@ -24,7 +24,7 @@ public interface Tuple2Access<HOST, T1, T2,
     
     @Override
     public default Tuple2Access<HOST, T1, T2, T1ACCESS, T2ACCESS> newAccess(Function<HOST, Tuple2<T1, T2>> access) {
-        val accessParam = new AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1ACCESS, T2ACCESS>() {
+        var accessParam = new AccessParameterized2<HOST, Tuple2<T1, T2>, T1, T2, T1ACCESS, T2ACCESS>() {
             @Override
             public Tuple2<T1, T2> applyUnsafe(HOST host) throws Exception {
                 return access.apply(host);

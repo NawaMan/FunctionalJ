@@ -61,28 +61,28 @@ public class CaseLensBuilder {
     }
     
     public List<String> build() {
-        val packageName      = sourceSpec.sourceType.packageName();
-        val dataObjClassName = sourceSpec.targetName + "." + choiceCase.name;
-        val lensType = new Type(
+        var packageName      = sourceSpec.sourceType.packageName();
+        var dataObjClassName = sourceSpec.targetName + "." + choiceCase.name;
+        var lensType = new Type(
                 null,
                 null,
                 choiceCase.name + "Lens",
                 asList(new Generic("HOST")));
-        val superType = ObjectLensImpl.type();
+        var superType = ObjectLensImpl.type();
         
-        val lensFields = choiceCase.params.stream().map(getter -> getterToLensField(getter, dataObjClassName, sourceSpec)).collect(toList());
+        var lensFields = choiceCase.params.stream().map(getter -> getterToLensField(getter, dataObjClassName, sourceSpec)).collect(toList());
         
-        val lensSpecType = new Type(
+        var lensSpecType = new Type(
                 Core.LensSpec.type().packageName(),
                 null,
                 Core.LensSpec.type().simpleName(),
                 asList(new Generic("HOST"), new Generic(dataObjClassName)));
         
-        val consParams  = asList(new GenParam("spec", lensSpecType));
-        val consBody    = "super(spec);"; // This ignore the id for now.
-        val constructor = new GenConstructor(PUBLIC, lensType.simpleName(), consParams, line(consBody));
+        var consParams  = asList(new GenParam("spec", lensSpecType));
+        var consBody    = "super(spec);"; // This ignore the id for now.
+        var constructor = new GenConstructor(PUBLIC, lensType.simpleName(), consParams, line(consBody));
         
-        val lensClass = new GenClass(
+        var lensClass = new GenClass(
                 PUBLIC, STATIC, MODIFIABLE, lensType, "HOST",
                 asList   (superType.withGenerics(asList(new Generic("HOST"), new Generic(dataObjClassName)))),
                 emptyList(),
@@ -100,43 +100,43 @@ public class CaseLensBuilder {
      * @return the generated field.
      */
     public GenField generateTheLensField() {
-        val choiceName     = choiceCase.name;
-        val choiceTypeName = sourceSpec.sourceType.simpleName();
-        val caseName       = choiceCase.name;
-        val packageName    = sourceSpec.sourceType.packageName();
-        val encloseName    = sourceSpec.sourceType.encloseName();
-        val generics       = sourceSpec.generics.stream().map(generic -> generic.name).collect(Collectors.toList());
-        val targetType     = new Type(packageName, choiceTypeName, caseName, generics.toArray(new String[0]));
-        val lensType       = targetType.lensType(packageName, encloseName, null).withGenerics(asList(new Generic(choiceName)));
-        val defaultValue   = String.format("new %1$s<>(%2$s.of(%3$s.class))", lensType.simpleName(), Core.LensSpec.simpleName(), choiceName);
-        val theField       = new GenField(PUBLIC, FINAL, STATIC, "the"+choiceName, lensType, defaultValue);
+        var choiceName     = choiceCase.name;
+        var choiceTypeName = sourceSpec.sourceType.simpleName();
+        var caseName       = choiceCase.name;
+        var packageName    = sourceSpec.sourceType.packageName();
+        var encloseName    = sourceSpec.sourceType.encloseName();
+        var generics       = sourceSpec.generics.stream().map(generic -> generic.name).collect(Collectors.toList());
+        var targetType     = new Type(packageName, choiceTypeName, caseName, generics.toArray(new String[0]));
+        var lensType       = targetType.lensType(packageName, encloseName, null).withGenerics(asList(new Generic(choiceName)));
+        var defaultValue   = String.format("new %1$s<>(%2$s.of(%3$s.class))", lensType.simpleName(), Core.LensSpec.simpleName(), choiceName);
+        var theField       = new GenField(PUBLIC, FINAL, STATIC, "the"+choiceName, lensType, defaultValue);
         return theField;
     }
     
     public GenField generateEachLensField() {
-        val theField     = generateTheLensField();
-        val choiceName   = theField.getName().replaceFirst("^the", "each");
-        val lensType     = theField.getType();
-        val defaultValue = theField.getName();
-        val eachField    = new GenField(PUBLIC, FINAL, STATIC, choiceName, lensType, defaultValue);
+        var theField     = generateTheLensField();
+        var choiceName   = theField.getName().replaceFirst("^the", "each");
+        var lensType     = theField.getType();
+        var defaultValue = theField.getName();
+        var eachField    = new GenField(PUBLIC, FINAL, STATIC, choiceName, lensType, defaultValue);
         return eachField;
     }
     
     static String withMethodName(CaseParam choiceCase) {
-        val name = choiceCase.name;
+        var name = choiceCase.name;
         return "with" + name.substring(0,1).toUpperCase() + name.substring(1);
     }
     private GenField getterToLensField(CaseParam param, String recordClassName, SourceSpec sourceSpec) {
-        val recordName = recordClassName;
-        val paramName  = param.name;
-        val paramType  = new Type(
+        var recordName = recordClassName;
+        var paramName  = param.name;
+        var paramType  = new Type(
                 (param.type.packageName() == null) ? null : param.type.packageName(),
                 param.type.encloseName(),
                 param.type.simpleName(),
                 param.type.generics().stream().map(generic -> generic.name).collect(toList()).toArray(new String[0]));
-        val type        = paramType.declaredType();
-        val isPrimitive = paramType.isPrimitive();
-        val withName    = withMethodName(param);
+        var type        = paramType.declaredType();
+        var isPrimitive = paramType.isPrimitive();
+        var withName    = withMethodName(param);
         
         GenField field;
         if (type.isList()) {
@@ -162,14 +162,14 @@ public class CaseLensBuilder {
     // TODO - DRY this.
     
     private GenField createLensField(String dataObjName, String name, Type type, boolean isPrimitive, String withName) {
-        val packageName  = sourceSpec.sourceType.packageName();
-        val encloseName  = sourceSpec.sourceType.encloseName();
-        val withLens     = sourceSpec.localTypeWithLens;
-        val lensType     = type.lensType(packageName, encloseName, withLens);
-        val lensTypeDef  = getLensTypeDef(lensType);
-        val isCustomLens = type.lensType(packageName, encloseName, withLens).isCustomLens();
-        val value        = lensFieldValue(dataObjName, name, withName, type, isPrimitive, lensType, lensTypeDef, isCustomLens);
-        val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensTypeDef, value);
+        var packageName  = sourceSpec.sourceType.packageName();
+        var encloseName  = sourceSpec.sourceType.encloseName();
+        var withLens     = sourceSpec.localTypeWithLens;
+        var lensType     = type.lensType(packageName, encloseName, withLens);
+        var lensTypeDef  = getLensTypeDef(lensType);
+        var isCustomLens = type.lensType(packageName, encloseName, withLens).isCustomLens();
+        var value        = lensFieldValue(dataObjName, name, withName, type, isPrimitive, lensType, lensTypeDef, isCustomLens);
+        var field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensTypeDef, value);
         return field;
     }
 
@@ -185,28 +185,28 @@ public class CaseLensBuilder {
         if (isPrimitive) {
             if (type.equals(Type.INTEGER)
              || type.equals(Type.INT)) {
-                val value = format("createSubLensInt(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
+                var value = format("createSubLensInt(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
                 return value;
             }
             if (type.equals(Type.LONG)
              || type.equals(Type.LNG)) {
-                val value = format("createSubLensLong(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
+                var value = format("createSubLensLong(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
                 return value;
             }
             if (type.equals(Type.DOUBLE)
              || type.equals(Type.DBL)) {
-                val value = format("createSubLensDouble(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
+                var value = format("createSubLensDouble(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
                 return value;
             }
             if (type.equals(Type.BOOLEAN)
              || type.equals(Type.BOOL)) {
-                val value = format("createSubLensBoolean(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
+                var value = format("createSubLensBoolean(%1$s::%2$s, %1$s::%3$s)", dataObjName, name, withName);
                 return value;
             }
         }
         
-        val spec         = isCustomLens ? lensTypeDef.simpleName() + "::new" : lensTypeDef.simpleName() + "::of";
-        val value        = format("(" + lensType.simpleName() + ")createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        var spec         = isCustomLens ? lensTypeDef.simpleName() + "::new" : lensTypeDef.simpleName() + "::of";
+        var value        = format("(" + lensType.simpleName() + ")createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
         return value;
     }
     
@@ -217,115 +217,115 @@ public class CaseLensBuilder {
     }
     
     private GenField createObjectLensField(String dataObjName, String name, Type type, String withName) {
-        val packageName  = sourceSpec.sourceType.packageName();
-        val encloseName  = sourceSpec.sourceType.encloseName();
-        val withLens     = sourceSpec.localTypeWithLens;
-        val lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST"), new Generic(Type.OBJECT)));
-        val isCustomLens = type.lensType(packageName, encloseName, withLens).isCustomLens();
-        val spec         = isCustomLens ? lensType.simpleName() + "::new" : lensType.simpleName() + "::of";
-        val value        = format("(" + lensType.simpleName() + ")createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
-        val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
+        var packageName  = sourceSpec.sourceType.packageName();
+        var encloseName  = sourceSpec.sourceType.encloseName();
+        var withLens     = sourceSpec.localTypeWithLens;
+        var lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST"), new Generic(Type.OBJECT)));
+        var isCustomLens = type.lensType(packageName, encloseName, withLens).isCustomLens();
+        var spec         = isCustomLens ? lensType.simpleName() + "::new" : lensType.simpleName() + "::of";
+        var value        = format("(" + lensType.simpleName() + ")createSubLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        var field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }
     
     private GenField createGenListLensField(String dataObjName, String name, Type type, String withName) {
-        val packageName  = sourceSpec.sourceType.packageName();
-        val encloseName  = sourceSpec.sourceType.encloseName();
-        val withLens     = sourceSpec.localTypeWithLens;
-        val paramGeneric = type.generics().get(0);
-        val paramType    = paramGeneric.toType();
-        val lensGenerics = asList(new Generic("HOST"), paramGeneric, new Generic(paramType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
-        val lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
-        val isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
-        val spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
-        val value        = format("createSubListLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
-        val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
+        var packageName  = sourceSpec.sourceType.packageName();
+        var encloseName  = sourceSpec.sourceType.encloseName();
+        var withLens     = sourceSpec.localTypeWithLens;
+        var paramGeneric = type.generics().get(0);
+        var paramType    = paramGeneric.toType();
+        var lensGenerics = asList(new Generic("HOST"), paramGeneric, new Generic(paramType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
+        var lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
+        var isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
+        var spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
+        var value        = format("createSubListLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        var field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }
     
     private GenField createGenMapLensField(String dataObjName, String name, Type type, String withName) {
-        val packageName  = sourceSpec.sourceType.packageName();
-        val encloseName  = sourceSpec.sourceType.encloseName();
-        val withLens     = sourceSpec.localTypeWithLens;
-        val keyGeneric   = type.generics().get(0);
-        val valueGeneric = type.generics().get(1);
-        val keyType      = keyGeneric.toType();
-        val valueType    = valueGeneric.toType();
-        val lensGenerics = asList(new Generic("HOST"), 
+        var packageName  = sourceSpec.sourceType.packageName();
+        var encloseName  = sourceSpec.sourceType.encloseName();
+        var withLens     = sourceSpec.localTypeWithLens;
+        var keyGeneric   = type.generics().get(0);
+        var valueGeneric = type.generics().get(1);
+        var keyType      = keyGeneric.toType();
+        var valueType    = valueGeneric.toType();
+        var lensGenerics = asList(new Generic("HOST"), 
                                 keyGeneric, valueGeneric,
                                 new Generic(keyType  .lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))),
                                 new Generic(valueType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
-        val lensType  = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
-        val keySpec   = keyType  .lensType(packageName, encloseName, withLens).isCustomLens() ? keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::new" : keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::of";
-        val valueSpec = valueType.lensType(packageName, encloseName, withLens).isCustomLens() ? valueType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : valueType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
-        val value     = format("createSubMapLens(%1$s::%2$s, %1$s::%3$s, %4$s, %5$s)", dataObjName, name, withName, keySpec, valueSpec);
-        val field     = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
+        var lensType  = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
+        var keySpec   = keyType  .lensType(packageName, encloseName, withLens).isCustomLens() ? keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::new" : keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::of";
+        var valueSpec = valueType.lensType(packageName, encloseName, withLens).isCustomLens() ? valueType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : valueType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
+        var value     = format("createSubMapLens(%1$s::%2$s, %1$s::%3$s, %4$s, %5$s)", dataObjName, name, withName, keySpec, valueSpec);
+        var field     = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }
     
     private GenField createGenFuncListLensField(String dataObjName, String name, Type type, String withName) {
-        val packageName  = sourceSpec.sourceType.packageName();
-        val encloseName  = sourceSpec.sourceType.encloseName();
-        val withLens     = sourceSpec.localTypeWithLens;
-        val paramGeneric = type.generics().get(0);
-        val paramType    = paramGeneric.toType();
-        val lensGenerics = asList(new Generic("HOST"), paramGeneric, new Generic(paramType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
-        val lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
-        val isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
-        val spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
-        val value        = format("createSubFuncListLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
-        val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
+        var packageName  = sourceSpec.sourceType.packageName();
+        var encloseName  = sourceSpec.sourceType.encloseName();
+        var withLens     = sourceSpec.localTypeWithLens;
+        var paramGeneric = type.generics().get(0);
+        var paramType    = paramGeneric.toType();
+        var lensGenerics = asList(new Generic("HOST"), paramGeneric, new Generic(paramType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
+        var lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
+        var isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
+        var spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
+        var value        = format("createSubFuncListLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        var field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }
     
     private GenField createGenFuncMapLensField(String dataObjName, String name, Type type, String withName) {
-        val packageName  = sourceSpec.sourceType.packageName();
-        val encloseName  = sourceSpec.sourceType.encloseName();
-        val withLens     = sourceSpec.localTypeWithLens;
-        val keyGeneric   = type.generics().get(0);
-        val valueGeneric = type.generics().get(1);
-        val keyType      = keyGeneric.toType();
-        val valueType    = valueGeneric.toType();
-        val lensGenerics = asList(new Generic("HOST"), 
+        var packageName  = sourceSpec.sourceType.packageName();
+        var encloseName  = sourceSpec.sourceType.encloseName();
+        var withLens     = sourceSpec.localTypeWithLens;
+        var keyGeneric   = type.generics().get(0);
+        var valueGeneric = type.generics().get(1);
+        var keyType      = keyGeneric.toType();
+        var valueType    = valueGeneric.toType();
+        var lensGenerics = asList(new Generic("HOST"), 
                                  keyGeneric, valueGeneric,
                                  new Generic(keyType  .lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))),
                                  new Generic(valueType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
-        val lensType  = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
-        val keySpec   = keyType  .lensType(packageName, encloseName, withLens).isCustomLens() ? keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::new" : keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::of";
-        val valueSpec = valueType.lensType(packageName, encloseName, withLens).isCustomLens() ? valueType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : valueType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
-        val value     = format("createSubFuncMapLens(%1$s::%2$s, %1$s::%3$s, %4$s, %5$s)", dataObjName, name, withName, keySpec, valueSpec);
-        val field     = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
+        var lensType  = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
+        var keySpec   = keyType  .lensType(packageName, encloseName, withLens).isCustomLens() ? keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::new" : keyType  .lensType(packageName, encloseName, withLens).simpleName() + "::of";
+        var valueSpec = valueType.lensType(packageName, encloseName, withLens).isCustomLens() ? valueType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : valueType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
+        var value     = format("createSubFuncMapLens(%1$s::%2$s, %1$s::%3$s, %4$s, %5$s)", dataObjName, name, withName, keySpec, valueSpec);
+        var field     = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }
     
     private GenField createGenNullableLensField(String dataObjName, String name, Type type, String withName) {
-        val packageName  = sourceSpec.sourceType.packageName();
-        val encloseName  = sourceSpec.sourceType.encloseName();
-        val withLens     = sourceSpec.localTypeWithLens;
-        val paramGeneric = type.generics().get(0);
-        val paramType    = paramGeneric.toType();
-        val lensGenerics = asList(new Generic("HOST"), paramGeneric, new Generic(paramType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
-        val lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
-        val isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
-        val spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
-        val value        = format("createSubNullableLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
-        val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
+        var packageName  = sourceSpec.sourceType.packageName();
+        var encloseName  = sourceSpec.sourceType.encloseName();
+        var withLens     = sourceSpec.localTypeWithLens;
+        var paramGeneric = type.generics().get(0);
+        var paramType    = paramGeneric.toType();
+        var lensGenerics = asList(new Generic("HOST"), paramGeneric, new Generic(paramType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
+        var lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
+        var isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
+        var spec         = isCustomLens ? paramType.lensType(packageName, encloseName, withLens).simpleName() + "::new" : paramType.lensType(packageName, encloseName, withLens).simpleName() + "::of";
+        var value        = format("createSubNullableLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        var field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }
     
     private GenField createGenOptionalLensField(String dataObjName, String name, Type type, String withName) {
-        val packageName  = sourceSpec.sourceType.packageName();
-        val encloseName  = sourceSpec.sourceType.encloseName();
-        val withLens     = sourceSpec.localTypeWithLens;
-        val paramGeneric = type.generics().get(0);
-        val paramType    = paramGeneric.toType();
-        val lensGenerics = asList(new Generic("HOST"), paramGeneric, new Generic(paramType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
-        val lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
-        val isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
-        val simpleName   = paramType.lensType(packageName, encloseName, withLens).simpleName();
-        val spec         = isCustomLens ? simpleName + "::new" : simpleName + "::of";
-        val value        = format("createSubOptionalLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
-        val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
+        var packageName  = sourceSpec.sourceType.packageName();
+        var encloseName  = sourceSpec.sourceType.encloseName();
+        var withLens     = sourceSpec.localTypeWithLens;
+        var paramGeneric = type.generics().get(0);
+        var paramType    = paramGeneric.toType();
+        var lensGenerics = asList(new Generic("HOST"), paramGeneric, new Generic(paramType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
+        var lensType     = type.lensType(packageName, encloseName, withLens).withGenerics(lensGenerics);
+        var isCustomLens = paramType.lensType(packageName, encloseName, withLens).isCustomLens();
+        var simpleName   = paramType.lensType(packageName, encloseName, withLens).simpleName();
+        var spec         = isCustomLens ? simpleName + "::new" : simpleName + "::of";
+        var value        = format("createSubOptionalLens(%1$s::%2$s, %1$s::%3$s, %4$s)", dataObjName, name, withName, spec);
+        var field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensType, value);
         return field;
     }
     

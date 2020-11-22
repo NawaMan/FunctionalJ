@@ -143,7 +143,7 @@ public class ResultAccessTest {
     
     @Test
     public void testResultAccessMap() {
-        val logs = new ArrayList<String>();
+        var logs = new ArrayList<String>();
         
         theDriver.secondCar.thenMap(Car::color)
         .apply(new Driver(new Car("Black"), Result.valueOf(new Car("White"))))

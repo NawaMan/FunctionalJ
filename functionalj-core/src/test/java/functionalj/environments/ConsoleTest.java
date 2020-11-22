@@ -41,9 +41,9 @@ public class ConsoleTest {
     
     @Test
     public void testOut() {
-        val sysOut = System.out;
-        val buffer = new ByteArrayOutputStream();
-        val stream = new PrintStream(buffer);
+        var sysOut = System.out;
+        var buffer = new ByteArrayOutputStream();
+        var stream = new PrintStream(buffer);
         System.setOut(stream);
         try {
             Console
@@ -60,11 +60,11 @@ public class ConsoleTest {
     
     @Test
     public void testIn() {
-        val sysIn = System.in;
-        val stream = new ByteArrayInputStream("One\nTwo\n".getBytes());
+        var sysIn = System.in;
+        var stream = new ByteArrayInputStream("One\nTwo\n".getBytes());
         System.setIn(stream);
         try {
-            val console = Env.console();
+            var console = Env.console();
             assertEquals("One", console.readln());
             assertEquals("Two", console.readln());
         } finally {
@@ -74,14 +74,14 @@ public class ConsoleTest {
     
     @Test
     public void testStub_out() {
-        val stub = new Console.Stub();
+        var stub = new Console.Stub();
         With(Env.refs.console.butWith(stub))
         .run(()->{
             Console
             .println("One")
             .println("Two");
             
-            val outLines = StreamPlus.from(stub.outLines()).toJavaList();
+            var outLines = StreamPlus.from(stub.outLines()).toJavaList();
             assertEquals(
                     "[One, Two]",
                     outLines.toString());
@@ -92,14 +92,14 @@ public class ConsoleTest {
     
     @Test
     public void testStub_out2() {
-        val stub = new Console.Stub();
+        var stub = new Console.Stub();
         With(Env.refs.console.butWith(stub))
         .run(()->{
             Console
             .outPrintln("Three")
             .outPrintln("Four");
             
-            val outLines = StreamPlus.from(stub.outLines()).toJavaList();
+            var outLines = StreamPlus.from(stub.outLines()).toJavaList();
             assertEquals(
                     "[Three, Four]",
                     outLines.toString());
@@ -110,7 +110,7 @@ public class ConsoleTest {
     
     @Test
     public void testStub_err() {
-        val stub = new Console.Stub();
+        var stub = new Console.Stub();
         With(Env.refs.console.butWith(stub))
         .run(()->{
             stub.clear();
@@ -119,7 +119,7 @@ public class ConsoleTest {
             .errPrintln("Five")
             .errPrintln("Six");
             
-            val outLines = StreamPlus.from(stub.errLines()).toJavaList();
+            var outLines = StreamPlus.from(stub.errLines()).toJavaList();
             assertEquals(
                     "[Five, Six]",
                     outLines.toString());
@@ -130,7 +130,7 @@ public class ConsoleTest {
     
     @Test
     public void testStub_in() {
-        val stub = new Console.Stub();
+        var stub = new Console.Stub();
         With(Env.refs.console.butWith(stub))
         .run(()->{
             stub.addInLines("One", "Two");
@@ -146,7 +146,7 @@ public class ConsoleTest {
     
     @Test
     public void testUseStub_Done() {
-        val records = Console.useStub(StreamPlus.of("One", "Two", "Three", "Four"), ()->{
+        var records = Console.useStub(StreamPlus.of("One", "Two", "Three", "Four"), ()->{
             Console.outPrint(Console.readln());
             Console.errPrint(Console.readln());
             Console.outPrintln(Console.readln());
@@ -170,7 +170,7 @@ public class ConsoleTest {
     
     @Test
     public void testUseStub_Delay() {
-        val queue = new ConsoleInQueue();
+        var queue = new ConsoleInQueue();
         queue.add("One");
         queue.add("Two");
         
@@ -184,7 +184,7 @@ public class ConsoleTest {
             queue.end();
         }).start();
         
-        val records = Console.useStub(queue, ()->{
+        var records = Console.useStub(queue, ()->{
             Console.outPrint(Console.readln());
             Console.errPrint(Console.readln());
             Console.outPrintln(Console.readln());
@@ -208,7 +208,7 @@ public class ConsoleTest {
     
     @Test
     public void testUseStub_NoIn() {
-        val records = Console.useStub(()->{
+        var records = Console.useStub(()->{
             Console.outPrintln("out.");
             Console.errPrintln("ERR!");
         });
@@ -228,7 +228,7 @@ public class ConsoleTest {
     @Test
     public void testUseStub_Holder() {
         // Umm - Not as easy to use as first thought. -- We have to wait until the queue is set.
-        val inQueue = new AtomicReference<ConsoleInQueue>();
+        var inQueue = new AtomicReference<ConsoleInQueue>();
         new Thread(()->{
             try {
                 Thread.sleep(50);
@@ -237,13 +237,13 @@ public class ConsoleTest {
                 }
             } catch (InterruptedException e) {
             }
-            val queue = inQueue.get();
+            var queue = inQueue.get();
             queue.add("Three");
             queue.add("Four");
             queue.end();
         }).start();
         
-        val records = Console.useStub(inQueue::set, ()->{
+        var records = Console.useStub(inQueue::set, ()->{
             Console.outPrintln("out.");
             Console.errPrintln("ERR!");
             Console.outPrintln(Console.readln());
@@ -268,7 +268,7 @@ public class ConsoleTest {
     @Test
     public void testUseStub_Holder_Promise() {
         // This might be a bit more useful as we can have UI interact with this.
-        val action = DeferAction.of(ConsoleInQueue.class).onComplete(inQueueResult -> {
+        var action = DeferAction.of(ConsoleInQueue.class).onComplete(inQueueResult -> {
             inQueueResult.ifPresent(inQueue -> {
                 new Thread(()->{
                     try {
@@ -283,7 +283,7 @@ public class ConsoleTest {
         })
         .start();
         
-        val records = Console.useStub(action::complete, ()->{
+        var records = Console.useStub(action::complete, ()->{
             Console.outPrintln("out.");
             Console.errPrintln("ERR!");
             Console.outPrintln(Console.readln());

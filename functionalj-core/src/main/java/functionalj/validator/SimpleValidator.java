@@ -52,11 +52,11 @@ public interface SimpleValidator<DATA> extends Validator<DATA> {
 
     public default Result<DATA> validate(DATA data) {
         return Result.of(()->{
-            val checker = checker();
+            var checker = checker();
             if (checker.test(data))
                 return data;
                 
-            val exception = createException(data);
+            var exception = createException(data);
             throw exception;
         });
     }

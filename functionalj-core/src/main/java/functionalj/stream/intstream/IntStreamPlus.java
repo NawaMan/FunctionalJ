@@ -143,8 +143,8 @@ public interface IntStreamPlus
     
     /** Create a StreamPlus that is the repeat of the given array of data. */
     public static IntStreamPlus cycle(int ... data) {
-        val ints = Arrays.copyOf(data, data.length);
-        val size = ints.length;
+        var ints = Arrays.copyOf(data, data.length);
+        var size = ints.length;
         return IntStreamPlus.from(
                 IntStream
                 .iterate(0, i -> i + 1)
@@ -235,7 +235,7 @@ public interface IntStreamPlus
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static IntStreamPlus generateWith(IntSupplier supplier) {
-        val iterable = (IntIterable)() -> new IntSupplierBackedIterator(supplier);
+        var iterable = (IntIterable)() -> new IntSupplierBackedIterator(supplier);
         return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
     }
     
@@ -291,9 +291,9 @@ public interface IntStreamPlus
      * Note: this is an alias of compound()
      **/
     public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator f) {
-        val counter = new AtomicInteger(0);
-        val int1    = new AtomicInteger(seed1);
-        val int2    = new AtomicInteger(seed2);
+        var counter = new AtomicInteger(0);
+        var int1    = new AtomicInteger(seed1);
+        var int2    = new AtomicInteger(seed2);
         return IntStreamPlus.generate(()->{
             if (counter.getAndIncrement() == 0)
                 return seed1;
@@ -427,9 +427,9 @@ public interface IntStreamPlus
     
     public default <TARGET> TARGET terminate(
             Function<IntStream, TARGET> action) {
-        val stream = intStream();
+        var stream = intStream();
         try {
-            val result = action.apply(stream);
+            var result = action.apply(stream);
             return result;
         } finally {
             stream.close();
@@ -437,7 +437,7 @@ public interface IntStreamPlus
     }
     
     public default void terminate(FuncUnit1<IntStream> action) {
-        val stream = intStream();
+        var stream = intStream();
         try {
             action.accept(stream);
         } finally {
@@ -446,9 +446,9 @@ public interface IntStreamPlus
     }
     
     public default IntStreamPlus sequential(Func1<IntStreamPlus, IntStreamPlus> action) {
-        val isParallel = isParallel();
-        val orgIntStreamPlus = sequential();
-        val newIntStreamPlus = action.apply(orgIntStreamPlus);
+        var isParallel = isParallel();
+        var orgIntStreamPlus = sequential();
+        var newIntStreamPlus = action.apply(orgIntStreamPlus);
         if (newIntStreamPlus.isParallel() == isParallel)
             return newIntStreamPlus;
         
@@ -542,7 +542,7 @@ public interface IntStreamPlus
     /** @return a spliterator of this streamable. */
     @Override
     public default Spliterator.OfInt spliterator() {
-        val iterator = iterator();
+        var iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
@@ -827,7 +827,7 @@ public interface IntStreamPlus
     //== Pop ==
     
     public default int pop(IntSupplier orValue) {
-        val iterator = intStreamPlus().iterator();
+        var iterator = intStreamPlus().iterator();
         if (!iterator.hasNext()) {
             return orValue.getAsInt();
         }
@@ -836,7 +836,7 @@ public interface IntStreamPlus
     }
     
     public default OptionalInt pop() {
-        val iterator = intStreamPlus().iterator();
+        var iterator = intStreamPlus().iterator();
         if (!iterator.hasNext()) {
             return OptionalInt.empty();
         }
@@ -845,8 +845,8 @@ public interface IntStreamPlus
     }
     
     public default IntStreamPlus pop(int count) {
-        val iterator = intStreamPlus().iterator();
-        val hasNext = new AtomicBoolean();
+        var iterator = intStreamPlus().iterator();
+        var hasNext = new AtomicBoolean();
         return generateWith(()   -> {
                     hasNext.set(iterator.hasNext());
                     return hasNext.get() ? iterator.next() : null;

@@ -78,9 +78,9 @@ public class ListLensTest {
     
     @Test
     public void testListLens() {
-        val listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
+        var listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
         
-        val withCars = new WithCars(asList(new Car("Blue")));
+        var withCars = new WithCars(asList(new Car("Blue")));
         assertEquals("WithCars [cars=[Car(color=Blue)]]",  withCars.toString());
         assertEquals("Car(color=Blue)",                    listLens.first().apply(withCars).toString());
         assertEquals("Car(color=Blue)",                    listLens.first().toNullable().get().apply(withCars).toString());
@@ -89,10 +89,10 @@ public class ListLensTest {
         assertTrue(listLens.first().toNullable().isPresent().apply(withCars));
         assertEquals("Car(color=Blue)", listLens.first().toNullable().get().asString().apply(withCars));
         
-        val withNoCars = new WithCars(asList());
+        var withNoCars = new WithCars(asList());
         assertFalse(listLens.first().toNullable().isPresent().apply(withNoCars));
         
-        val withTwoCars = new WithCars(asList(new Car("Blue"), new Car("Green")));
+        var withTwoCars = new WithCars(asList(new Car("Blue"), new Car("Green")));
         assertEquals("WithCars [cars=[Car(color=Blue), Car(color=Green)]]",   withTwoCars.toString());
         assertEquals("WithCars [cars=[Car(color=Yellow), Car(color=Green)]]", listLens.first().withColor("Yellow").apply(withTwoCars).toString());
         assertEquals("WithCars [cars=[Car(color=Blue), Car(color=Red)]]",     listLens.last() .withColor("Red").apply(withTwoCars).toString());
@@ -102,10 +102,10 @@ public class ListLensTest {
     
     @Test
     public void testListLensChangeTo() {
-        val withTwoCars = new WithCars(asList(new Car("Blue"), new Car("Green")));
+        var withTwoCars = new WithCars(asList(new Car("Blue"), new Car("Green")));
         assertEquals("WithCars [cars=[Car(color=Blue), Car(color=Green)]]", withTwoCars.toString());
         
-        val listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
+        var listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
         assertEquals("WithCars [cars=[Car(color=Red), Car(color=Green)]]", 
                 listLens.changeTo(
                         theCar.color.thatIs("Blue"), 

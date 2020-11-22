@@ -37,7 +37,7 @@ public interface StreamPlusWithSort<DATA> {
     /** Sort the values by the mapped value. */
     @Eager
     public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .sorted((a, b) -> {
                     T vA = mapper.apply(a);
@@ -51,7 +51,7 @@ public interface StreamPlusWithSort<DATA> {
     public default <T> StreamPlus<DATA> sortedBy(
             Function<? super DATA, T> mapper, 
             Comparator<T>             comparator) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .sorted((a, b) -> {
                     T vA = mapper.apply(a);

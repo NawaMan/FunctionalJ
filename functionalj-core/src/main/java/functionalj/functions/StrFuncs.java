@@ -207,8 +207,8 @@ public class StrFuncs {
     
     public static <I> Func1<I, String> withPattern(Pattern pattern, String defaultValue) {
         return input -> {
-            val inputStr = String.valueOf(input);
-            val matcher  = pattern.matcher(inputStr);
+            var inputStr = String.valueOf(input);
+            var matcher  = pattern.matcher(inputStr);
             return matcher.find()
                     ? matcher.group()
                     : defaultValue;
@@ -216,8 +216,8 @@ public class StrFuncs {
     }
     public static <I> Func1<I, String> withPattern(Pattern pattern, Supplier<String> defaultValueSupplier) {
         return input -> {
-            val inputStr = String.valueOf(input);
-            val matcher  = pattern.matcher(inputStr);
+            var inputStr = String.valueOf(input);
+            var matcher  = pattern.matcher(inputStr);
             return matcher.find()
                     ? matcher.group()
                     : defaultValueSupplier.get();
@@ -225,8 +225,8 @@ public class StrFuncs {
     }
     public static <I> Func1<I, String> withPattern(Pattern pattern, Function<String, String> defaultValueFunction) {
         return input -> {
-            val inputStr = String.valueOf(input);
-            val matcher  = pattern.matcher(inputStr);
+            var inputStr = String.valueOf(input);
+            var matcher  = pattern.matcher(inputStr);
             return matcher.find()
                     ? matcher.group()
                     : defaultValueFunction.apply(inputStr);
@@ -234,8 +234,8 @@ public class StrFuncs {
     }
     public static <I> Func1<I, String> withPath(Pattern pattern, BiFunction<String, Matcher, String> defaultValueFunction) {
         return input -> {
-            val inputStr = String.valueOf(input);
-            val matcher  = pattern.matcher(inputStr);
+            var inputStr = String.valueOf(input);
+            var matcher  = pattern.matcher(inputStr);
             return matcher.find()
                     ? matcher.group()
                     : defaultValueFunction.apply(inputStr, matcher);
@@ -297,7 +297,7 @@ public class StrFuncs {
     public static String repeat(char chr, int count) {
         if (count <= 0)
             return "";
-        val buffer = new StringBuffer();
+        var buffer = new StringBuffer();
         for (int i = 0; i < count; i++)
             buffer.append(chr);
         return buffer.toString();
@@ -305,7 +305,7 @@ public class StrFuncs {
     public static String repeat(String str, int count) {
         if (count <= 0)
             return "";
-        val buffer = new StringBuffer();
+        var buffer = new StringBuffer();
         for (int i = 0; i < count; i++)
             buffer.append(str);
         return buffer.toString();
@@ -330,17 +330,17 @@ public class StrFuncs {
         if (str == null || (str.length() == 0))
             return StreamPlus.empty();
         
-        val pattern = (flags < 0) ? Pattern.compile(regexDelimiter) : Pattern.compile(regexDelimiter, flags);
-        val matcher = pattern.matcher(str);
-        val offset  = new AtomicInteger(0);
-        val isLast  = new AtomicReference<Boolean>(null);
+        var pattern = (flags < 0) ? Pattern.compile(regexDelimiter) : Pattern.compile(regexDelimiter, flags);
+        var matcher = pattern.matcher(str);
+        var offset  = new AtomicInteger(0);
+        var isLast  = new AtomicReference<Boolean>(null);
         Iterable<String> iterable = new Iterable<String>() {
             @Override
             public Iterator<String> iterator() {
                 return new Iterator<String>() {
                     @Override
                     public boolean hasNext() {
-                        val find = matcher.find();
+                        var find = matcher.find();
                         if (!find) {
                             if (isLast.get() == null) {
                                 isLast.set(true);
@@ -353,16 +353,16 @@ public class StrFuncs {
                     }
                     @Override
                     public String next() {
-                        val isLastBoolean = isLast.get();
+                        var isLastBoolean = isLast.get();
                         if (isLastBoolean == null) {
-                            val start = matcher.start();
-                            val end   = matcher.end();
-                            val next  = str.subSequence(offset.get(), start);
+                            var start = matcher.start();
+                            var end   = matcher.end();
+                            var next  = str.subSequence(offset.get(), start);
                             offset.set(end);
                             return next.toString();
                         }
                         if (isLastBoolean == true) {
-                            val next  = str.subSequence(offset.get(), str.length());
+                            var next  = str.subSequence(offset.get(), str.length());
                             return next.toString();
                         }
                         return null;
@@ -413,9 +413,9 @@ public class StrFuncs {
     }
     
     public static FuncList<String> grab(CharSequence strValue, String regex, int patternFlags) {
-        val pattern  = Pattern.compile(regex, patternFlags);
+        var pattern  = Pattern.compile(regex, patternFlags);
         return FuncList.from(Streamable.from(()->{
-            val matcher  = pattern.matcher(strValue);
+            var matcher  = pattern.matcher(strValue);
             try (val iterator = createMatchIterator(matcher)) {
                 return iterator.stream();
             }
@@ -459,10 +459,10 @@ public class StrFuncs {
         if (str == null || (str.length() == 0))
             return RegExMatchResultStream.empty;
         
-        val pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
-        val matcher = pattern.matcher(str);
-        val source  = Func.lazy(()->str.toString());
-        val index   = new AtomicInteger();
+        var pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
+        var matcher = pattern.matcher(str);
+        var source  = Func.lazy(()->str.toString());
+        var index   = new AtomicInteger();
         
         Iterable<RegExMatchResult> iterable = new Iterable<RegExMatchResult>() {
             @Override
@@ -491,13 +491,13 @@ public class StrFuncs {
             return "";
         
         StringBuffer buffer = new StringBuffer();
-        val flags   = 0;
-        val pattern = Pattern.compile("\\$[a-zA-Z0-9_]++", flags);
-        val matcher = pattern.matcher(str);
+        var flags   = 0;
+        var pattern = Pattern.compile("\\$[a-zA-Z0-9_]++", flags);
+        var matcher = pattern.matcher(str);
         while (matcher.find()) {
-            val group       = matcher.group();
-            val name        = group.substring(1, group.length());
-            val replacement = String.valueOf(replacer.apply(name));
+            var group       = matcher.group();
+            var name        = group.substring(1, group.length());
+            var replacement = String.valueOf(replacer.apply(name));
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);

@@ -42,14 +42,14 @@ public class Utils {
         if (str.length() <= 2)
             return str.toLowerCase();
         
-        val firstTwo = str.substring(0, 2);
+        var firstTwo = str.substring(0, 2);
         if (firstTwo.equals(firstTwo.toUpperCase())) {
-            val first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
-            val rest = str.substring(first.length());
+            var first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
+            var rest = str.substring(first.length());
             return first.toLowerCase() + rest;
         } else {
-            val first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
-            val rest = str.substring(first.length());
+            var first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
+            var rest = str.substring(first.length());
             return first.toLowerCase() + rest;
         }
     }

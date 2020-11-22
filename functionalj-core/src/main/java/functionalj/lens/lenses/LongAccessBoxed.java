@@ -8,7 +8,7 @@ public interface LongAccessBoxed<HOST> extends LongAccess<HOST> {
     
     public default long applyAsLong(HOST host) {
         try {
-            val value = applyUnsafe(host);
+            var value = applyUnsafe(host);
             return value.longValue();
         } catch (RuntimeException e) {
             throw e;

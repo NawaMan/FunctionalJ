@@ -15,8 +15,8 @@ import lombok.val;
 public class ElmChoiceBuilderTest {
     
     private static ElmChoiceBuilder setupBuilder() {
-        val genericYear = new Generic("year", null, asList(Type.INTEGER));
-        val caseParams = asList(
+        var genericYear = new Generic("year", null, asList(Type.INTEGER));
+        var caseParams = asList(
                 new CaseParam("name",   Type.STRING,  false),
                 new CaseParam("age",    Type.INTEGER, false),
                 new CaseParam("years",  new Type("java.util", null, "List", asList(genericYear)), false),
@@ -24,17 +24,17 @@ public class ElmChoiceBuilderTest {
                 new CaseParam("user",   new Type("functionalj.types.elm", null, "User"), false)
             );
         
-        val sourceType = new Type("functionalj.types.elm", null, "LoggedIn");
-        val cases      = asList(new Case("LoggedIn", caseParams), new Case("LoggedOut"));
-        val choiceSpec = new SourceSpec("LoggedIn", sourceType, cases);
-        val spec       = new ElmChoiceSpec(choiceSpec, "LoginStatus", "Example/Functionalj/Elm");
-        val builder    = new ElmChoiceBuilder(spec);
+        var sourceType = new Type("functionalj.types.elm", null, "LoggedIn");
+        var cases      = asList(new Case("LoggedIn", caseParams), new Case("LoggedOut"));
+        var choiceSpec = new SourceSpec("LoggedIn", sourceType, cases);
+        var spec       = new ElmChoiceSpec(choiceSpec, "LoginStatus", "Example/Functionalj/Elm");
+        var builder    = new ElmChoiceBuilder(spec);
         return builder;
     }
     
     @Test
     public void testChoiceTypeDefinition() {
-        val builder = setupBuilder();
+        var builder = setupBuilder();
         assertEquals(
                 "type LoginStatus\n" + 
                 "    = LoggedIn String Int (List Int) (Maybe Float) Functionalj.Types.Elm.User\n" + 
@@ -44,7 +44,7 @@ public class ElmChoiceBuilderTest {
     
     @Test
     public void testChoiceTypeEncoder() {
-        val builder = setupBuilder();
+        var builder = setupBuilder();
         assertEquals(
                 "loginStatusEncoder : LoginStatus -> Json.Encode.Value\n" + 
                 "loginStatusEncoder loginStatus = \n" + 
@@ -67,7 +67,7 @@ public class ElmChoiceBuilderTest {
     
     @Test
     public void testChoiceTypeDecoder() {
-        val builder = setupBuilder();
+        var builder = setupBuilder();
         assertEquals(
                 "loginStatusDecoder : Json.Decode.Decoder LoginStatus\n" + 
                 "loginStatusDecoder = \n" + 

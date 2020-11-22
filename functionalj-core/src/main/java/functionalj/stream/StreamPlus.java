@@ -184,7 +184,7 @@ public interface StreamPlus<DATA>
     
     /** Create a StreamPlus from the given enumeration. */
     public static <TARGET> StreamPlus<TARGET> from(Enumeration<TARGET> enumeration) {
-        val iterable = (Iterable<TARGET>)() -> new EnumerationBackedIterator<TARGET>(enumeration);
+        var iterable = (Iterable<TARGET>)() -> new EnumerationBackedIterator<TARGET>(enumeration);
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
@@ -231,7 +231,7 @@ public interface StreamPlus<DATA>
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static <TARGET> StreamPlus<TARGET> generateWith(Func0<TARGET> supplier) {
-        val iterable = (Iterable<TARGET>)() -> new SupplierBackedIterator<TARGET>(supplier);
+        var iterable = (Iterable<TARGET>)() -> new SupplierBackedIterator<TARGET>(supplier);
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
@@ -302,7 +302,7 @@ public interface StreamPlus<DATA>
         AtomicReference<TARGET> d1      = new AtomicReference<TARGET>(seed1);
         AtomicReference<TARGET> d2      = new AtomicReference<TARGET>(seed2);
         return StreamPlus.generate(()->{
-            val index = counter.getAndIncrement();
+            var index = counter.getAndIncrement();
             if (index == 0)
                 return seed1;
             if (index == 1)
@@ -623,7 +623,7 @@ public interface StreamPlus<DATA>
     /** @return a spliterator of this streamable. */
     @Override
     public default Spliterator<DATA> spliterator() {
-        val iterator = iterator();
+        var iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
@@ -907,36 +907,37 @@ public interface StreamPlus<DATA>
         });
     }
     
-    //== Pop ==
-    
-    public default DATA pop(Supplier<DATA> orValue) {
-        val iterator = streamPlus().iterator();
-        if (!iterator.hasNext()) {
-            return orValue.get();
-        }
-        
-        return iterator.next();
-    }
-    
-    public default Optional<DATA> pop() {
-        val iterator = streamPlus().iterator();
-        if (!iterator.hasNext()) {
-            return Optional.empty();
-        }
-        
-        return Optional.of(iterator.next());
-    }
-    
-    public default StreamPlus<DATA> pop(int count) {
-        val iterator = streamPlus().iterator();
-        val hasNext = new AtomicBoolean();
-        return generateWith(()   -> {
-                    hasNext.set(iterator.hasNext());
-                    return hasNext.get() ? iterator.next() : null;
-                 })
-                .limit     (count)
-                .takeWhile (each -> hasNext.get());
-    }
+    // We cannot get pop to work with all type stream so it has to be done in a different way.
+//    //== Pop ==
+//
+//    public default DATA pop(Supplier<DATA> orValue) {
+//        var iterator = streamPlus().iterator();
+//        if (!iterator.hasNext()) {
+//            return orValue.get();
+//        }
+//
+//        return iterator.next();
+//    }
+//
+//    public default Optional<DATA> pop() {
+//        var iterator = streamPlus().iterator();
+//        if (!iterator.hasNext()) {
+//            return Optional.empty();
+//        }
+//
+//        return Optional.of(iterator.next());
+//    }
+//
+//    public default StreamPlus<DATA> pop(int count) {
+//        var iterator = streamPlus().iterator();
+//        var hasNext = new AtomicBoolean();
+//        return generateWith(()   -> {
+//                    hasNext.set(iterator.hasNext());
+//                    return hasNext.get() ? iterator.next() : null;
+//                 })
+//                .limit     (count)
+//                .takeWhile (each -> hasNext.get());
+//    }
 
     // Deambigious
 

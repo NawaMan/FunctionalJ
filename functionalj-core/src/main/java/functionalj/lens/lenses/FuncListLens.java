@@ -103,7 +103,7 @@ public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                     return list.get(list.size() - 1);
                 },
                 (list, newValue)->{
-                    val newList = new ArrayList<>(list);
+                    var newList = new ArrayList<>(list);
                     newList.set(list.size() - 1, newValue);
                     return ImmutableList.from(newList);
                 });

@@ -35,12 +35,12 @@ public class common {
     
     public static String extractTargetName(Element element) {
         if (element.getAnnotation(Struct.class) != null) {
-            val specTargetName = element.getAnnotation(Struct.class).name();
-            val simpleName     = element.getSimpleName().toString();
+            var specTargetName = element.getAnnotation(Struct.class).name();
+            var simpleName     = element.getSimpleName().toString();
             return extractTargetName(simpleName, specTargetName);
         } else if (element.getAnnotation(Struct.class) != null) {
-            val specTargetName = element.getAnnotation(Choice.class).name();
-            val simpleName     = element.getSimpleName().toString();
+            var specTargetName = element.getAnnotation(Choice.class).name();
+            var simpleName     = element.getSimpleName().toString();
             return extractTargetName(simpleName, specTargetName);
         }
         return null;
@@ -66,7 +66,7 @@ public class common {
                         || (elmt.getAnnotation(Choice.class) != null);
                 })
                 .map(elmt -> {
-                    val targetName = extractTargetName(elmt);
+                    var targetName = extractTargetName(elmt);
                     return targetName;
                 })
                 .filter(Objects::nonNull)

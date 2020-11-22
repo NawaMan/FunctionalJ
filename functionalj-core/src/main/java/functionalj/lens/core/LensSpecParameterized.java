@@ -41,8 +41,8 @@ public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyLens<
     
     @Override
     public default SUBLENS createSubAccess(Function<TYPE, SUB> accessToSub) {
-        val read = getSpec().getRead().andThen(accessToSub);
-        val spec = LensSpec.of(read);
+        var read = getSpec().getRead().andThen(accessToSub);
+        var spec = LensSpec.of(read);
         return createSubLens(spec);
     }
     

@@ -28,14 +28,14 @@ public class IntStreamPlusHelper {
     public static <T> boolean hasAt(IntStream stream, long index, int[][] valueRef) {
         // Note: It is done this way to avoid interpreting 'null' as no-value
         
-        val ref = new int[1][];
+        var ref = new int[1][];
         stream
             .skip     (index)
             .peek     (value -> { ref[0] = new int[] { value }; })
             .findFirst()
             .orElse   (-1);
         
-        val found = ref[0] != null;
+        var found = ref[0] != null;
         valueRef[0] = ref[0];
         
         return found;
@@ -45,11 +45,11 @@ public class IntStreamPlusHelper {
     public static <T> IntStreamPlus sequential(
             AsIntStreamPlus      asStreamPlus,
             Func1<IntStreamPlus, IntStreamPlus> action) {
-        val streamPlus = asStreamPlus.intStreamPlus();
-        val isParallel = streamPlus.isParallel();
+        var streamPlus = asStreamPlus.intStreamPlus();
+        var isParallel = streamPlus.isParallel();
         
-        val orgIntStreamPlus = streamPlus.sequential();
-        val newIntStreamPlus = action.apply(orgIntStreamPlus);
+        var orgIntStreamPlus = streamPlus.sequential();
+        var newIntStreamPlus = action.apply(orgIntStreamPlus);
         if (newIntStreamPlus.isParallel() == isParallel)
             return newIntStreamPlus;
         
@@ -70,11 +70,11 @@ public class IntStreamPlusHelper {
     public static <T> StreamPlus<T> sequentialToObj(
             AsIntStreamPlus                     asStreamPlus,
             Func1<IntStreamPlus, StreamPlus<T>> action) {
-        val streamPlus = asStreamPlus.intStreamPlus();
-        val isParallel = streamPlus.isParallel();
+        var streamPlus = asStreamPlus.intStreamPlus();
+        var isParallel = streamPlus.isParallel();
         
-        val orgIntStreamPlus = streamPlus.sequential();
-        val newIntStreamPlus = action.apply(orgIntStreamPlus);
+        var orgIntStreamPlus = streamPlus.sequential();
+        var newIntStreamPlus = action.apply(orgIntStreamPlus);
         if (newIntStreamPlus.isParallel() == isParallel)
             return newIntStreamPlus;
         
@@ -89,7 +89,7 @@ public class IntStreamPlusHelper {
             IntIteratorPlus             iteratorA, 
             IteratorPlus<B>             iteratorB) {
         
-        val targetIterator = new Iterator<TARGET>() {
+        var targetIterator = new Iterator<TARGET>() {
             private boolean hasNextA;
             private boolean hasNextB;
             
@@ -103,14 +103,14 @@ public class IntStreamPlusHelper {
                     throw new NoSuchElementException();
                 
                 int nextA = iteratorA.nextInt();
-                val nextB = iteratorB.next();
+                var nextB = iteratorB.next();
                 return merger.apply(nextA, nextB);
             }
         };
         
-        val iterable     = (Iterable<TARGET>)() -> targetIterator;
-        val spliterator  = iterable.spliterator();
-        val targetStream = StreamPlus.from(StreamSupport.stream(spliterator, false));
+        var iterable     = (Iterable<TARGET>)() -> targetIterator;
+        var spliterator  = iterable.spliterator();
+        var targetStream = StreamPlus.from(StreamSupport.stream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -124,7 +124,7 @@ public class IntStreamPlusHelper {
             IntIteratorPlus             iteratorA, 
             IteratorPlus<B>             iteratorB) {
         
-        val targetIterator = new Iterator<TARGET>() {
+        var targetIterator = new Iterator<TARGET>() {
             private boolean hasNextA;
             private boolean hasNextB;
             
@@ -135,13 +135,13 @@ public class IntStreamPlusHelper {
             }
             public TARGET next() {
                 int nextA = hasNextA ? iteratorA.nextInt() : defaultValue;
-                val nextB = hasNextB ? iteratorB.next()    : null;
+                var nextB = hasNextB ? iteratorB.next()    : null;
                 return merger.apply(nextA, nextB);
             }
         };
-        val iterable     = (Iterable<TARGET>)() -> targetIterator;
-        val spliterator  = iterable.spliterator();
-        val targetStream = StreamPlus.from(StreamSupport.stream(spliterator, false));
+        var iterable     = (Iterable<TARGET>)() -> targetIterator;
+        var spliterator  = iterable.spliterator();
+        var targetStream = StreamPlus.from(StreamSupport.stream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -154,7 +154,7 @@ public class IntStreamPlusHelper {
             IntIteratorPlus        iteratorA, 
             IntIteratorPlus        iteratorB) {
         
-        val iterator = new PrimitiveIterator.OfInt() {
+        var iterator = new PrimitiveIterator.OfInt() {
             private boolean hasNextA;
             private boolean hasNextB;
             
@@ -174,10 +174,10 @@ public class IntStreamPlusHelper {
             }
         };
         
-        val targetIterator = IntIteratorPlus.from(iterator);
-        val iterable       = (IntIterable)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
+        var targetIterator = IntIteratorPlus.from(iterator);
+        var iterable       = (IntIterable)() -> targetIterator;
+        var spliterator    = iterable.spliterator();
+        var targetStream   = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -190,7 +190,7 @@ public class IntStreamPlusHelper {
             IntIteratorPlus          iteratorA, 
             IntIteratorPlus          iteratorB) {
         
-        val iterator = new Iterator<TARGET>() {
+        var iterator = new Iterator<TARGET>() {
             private boolean hasNextA;
             private boolean hasNextB;
             
@@ -210,10 +210,10 @@ public class IntStreamPlusHelper {
             }
         };
         
-        val targetIterator = IteratorPlus.from(iterator);
-        val iterable       = (Iterable<TARGET>)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = StreamPlus.from(StreamSupport.stream(spliterator, false));
+        var targetIterator = IteratorPlus.from(iterator);
+        var iterable       = (Iterable<TARGET>)() -> targetIterator;
+        var spliterator    = iterable.spliterator();
+        var targetStream   = StreamPlus.from(StreamSupport.stream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -227,7 +227,7 @@ public class IntStreamPlusHelper {
             IntIteratorPlus          iteratorB,
             int                      defaultValue) {
         
-        val iterator = new Iterator<TARGET>() {
+        var iterator = new Iterator<TARGET>() {
             private boolean hasNextA;
             private boolean hasNextB;
             
@@ -256,9 +256,9 @@ public class IntStreamPlusHelper {
                 throw new NoSuchElementException();
             }
         };
-        val targetIterator = IteratorPlus.from(iterator);
-        val iterable       = (Iterable<TARGET>)() -> targetIterator;
-        val targetStream   = StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
+        var targetIterator = IteratorPlus.from(iterator);
+        var iterable       = (Iterable<TARGET>)() -> targetIterator;
+        var targetStream   = StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -272,7 +272,7 @@ public class IntStreamPlusHelper {
             IntIteratorPlus        iteratorB,
             int                    defaultValue) {
         
-        val iterator = new PrimitiveIterator.OfInt() {
+        var iterator = new PrimitiveIterator.OfInt() {
             private boolean hasNextA;
             private boolean hasNextB;
             
@@ -302,10 +302,10 @@ public class IntStreamPlusHelper {
             }
         };
         
-        val targetIterator = IntIteratorPlus.from(iterator);
-        val iterable       = (IntIterable)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
+        var targetIterator = IntIteratorPlus.from(iterator);
+        var iterable       = (IntIterable)() -> targetIterator;
+        var spliterator    = iterable.spliterator();
+        var targetStream   = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -320,7 +320,7 @@ public class IntStreamPlusHelper {
             int                      defaultValueA,
             int                      defaultValueB) {
         
-        val iterator = new Iterator<TARGET>() {
+        var iterator = new Iterator<TARGET>() {
             private boolean hasNextA;
             private boolean hasNextB;
             
@@ -350,10 +350,10 @@ public class IntStreamPlusHelper {
             }
         };
         
-        val targetIterator = IteratorPlus.from(iterator);
-        val iterable       = (Iterable<TARGET>)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = StreamPlus.from(StreamSupport.stream(spliterator, false));
+        var targetIterator = IteratorPlus.from(iterator);
+        var iterable       = (Iterable<TARGET>)() -> targetIterator;
+        var spliterator    = iterable.spliterator();
+        var targetStream   = StreamPlus.from(StreamSupport.stream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -368,7 +368,7 @@ public class IntStreamPlusHelper {
             int                    defaultValueA,
             int                    defaultValueB) {
         
-        val iterator = new PrimitiveIterator.OfInt() {
+        var iterator = new PrimitiveIterator.OfInt() {
             private boolean hasNextA;
             private boolean hasNextB;
             
@@ -398,10 +398,10 @@ public class IntStreamPlusHelper {
             }
         };
         
-        val targetIterator = IntIteratorPlus.from(iterator);
-        val iterable       = (IntIterable)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
+        var targetIterator = IntIteratorPlus.from(iterator);
+        var iterable       = (IntIterable)() -> targetIterator;
+        var spliterator    = iterable.spliterator();
+        var targetStream   = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();
@@ -413,7 +413,7 @@ public class IntStreamPlusHelper {
             IntIteratorPlus iteratorA, 
             IntIteratorPlus iteratorB) {
         @SuppressWarnings("resource")
-        val iterator = new IntIteratorPlus() {
+        var iterator = new IntIteratorPlus() {
             private boolean isA = true;
             
             public boolean hasNext() {
@@ -430,7 +430,7 @@ public class IntStreamPlusHelper {
                 return false;
             }
             public int nextInt() {
-                val next = isA ? iteratorA.next() : iteratorB.next();
+                var next = isA ? iteratorA.next() : iteratorB.next();
                 isA = !isA;
                 return next;
             }
@@ -439,9 +439,9 @@ public class IntStreamPlusHelper {
                 return this;
             }
         };
-        val iterable     = (IntIterable)() -> iterator;
-        val spliterator  = iterable.spliterator();
-        val targetStream = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
+        var iterable     = (IntIterable)() -> iterator;
+        var spliterator  = iterable.spliterator();
+        var targetStream = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iterator::close).runCarelessly();
             f(iteratorA::close).runCarelessly();
@@ -456,7 +456,7 @@ public class IntStreamPlusHelper {
             IntIteratorPlus        iteratorA, 
             IntIteratorPlus        iteratorB) {
         
-        val iterator = new PrimitiveIterator.OfInt() {
+        var iterator = new PrimitiveIterator.OfInt() {
             private boolean hasNextA;
             private boolean hasNextB;
             
@@ -486,10 +486,10 @@ public class IntStreamPlusHelper {
             }
         };
         
-        val targetIterator = IntIteratorPlus.from(iterator);
-        val iterable       = (IntIterable)() -> targetIterator;
-        val spliterator    = iterable.spliterator();
-        val targetStream   = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
+        var targetIterator = IntIteratorPlus.from(iterator);
+        var iterable       = (IntIterable)() -> targetIterator;
+        var spliterator    = iterable.spliterator();
+        var targetStream   = IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
         targetStream.onClose(() -> {
             f(iteratorA::close).runCarelessly();
             f(iteratorB::close).runCarelessly();

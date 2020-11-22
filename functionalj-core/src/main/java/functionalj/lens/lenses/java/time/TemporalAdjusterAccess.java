@@ -16,7 +16,7 @@ public interface TemporalAdjusterAccess<HOST, TEMPORAL_ADJUSTER extends Temporal
     
     public default TemporalAccess<HOST, Temporal> adjustInto(Temporal temporal) {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.adjustInto(temporal);
         };
     }

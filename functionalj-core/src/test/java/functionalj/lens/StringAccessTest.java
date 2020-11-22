@@ -11,7 +11,7 @@ public class StringAccessTest {
 
     @Test
     public void testSplit() {
-        val str = "1, 2,3";
+        var str = "1, 2,3";
         assertEquals("[1, 2, 3]", theString.split("[ \t]*,[ \t]*").apply(str).toString());
         
     }

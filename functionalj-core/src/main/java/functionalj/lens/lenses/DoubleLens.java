@@ -50,12 +50,12 @@ public interface DoubleLens<HOST>
     public default double applyAsDouble(HOST host) {
         LensSpec<HOST, Double> lensSpec = lensSpec();
         if (lensSpec instanceof PrimitiveLensSpecs.DoubleLensSpecPrimitive) {
-            val spec  = (PrimitiveLensSpecs.DoubleLensSpecPrimitive)lensSpec;
-            val value = spec.applyAsDouble(host);
+            var spec  = (PrimitiveLensSpecs.DoubleLensSpecPrimitive)lensSpec;
+            var value = spec.applyAsDouble(host);
             return value;
         }
         
-        val value = lensSpec.apply(host);
+        var value = lensSpec.apply(host);
         return value;
     }
 

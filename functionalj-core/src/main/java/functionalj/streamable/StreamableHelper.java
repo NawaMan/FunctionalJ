@@ -35,8 +35,8 @@ public class StreamableHelper {
     
     // TODO - Change to DoubleFuncList
     static <D> FuncList<FuncList<D>> segmentByPercentiles(FuncList<D> list, Collection<Double> percentiles) {
-        val size    = list.size();
-        val indexes = FuncList.from(percentiles)
+        var size    = list.size();
+        var indexes = FuncList.from(percentiles)
                 .append(100.0)
                 .sorted()
                 .map   (d -> (int)Math.round(d*size/100))
@@ -44,7 +44,7 @@ public class StreamableHelper {
         if (indexes.get(indexes.size() - 1) != size) {
             indexes.add(size);
         }
-        val lists   = new ArrayList<List<D>>();
+        var lists   = new ArrayList<List<D>>();
         for (int i = 0; i < indexes.size(); i++) {
             lists.add(new ArrayList<D>());
         }
@@ -53,8 +53,8 @@ public class StreamableHelper {
             if (i >= indexes.get(idx)) {
                 idx++;
             }
-            val l = lists.get(idx);
-            val element = list.get(i);
+            var l = lists.get(idx);
+            var element = list.get(i);
             l.add(element);
         }
         return FuncList.from(

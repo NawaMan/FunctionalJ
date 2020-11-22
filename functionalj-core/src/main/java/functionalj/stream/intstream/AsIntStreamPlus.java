@@ -78,7 +78,7 @@ public interface AsIntStreamPlus
     
     /** @return a spliterator of this streamable. */
     public default Spliterator.OfInt spliterator() {
-        val iterator = iterator();
+        var iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     

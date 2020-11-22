@@ -50,11 +50,11 @@ public class Run {
         return With(substitutions);
     }
     public static SyncRunInstance withAllExcept(Substitution<?> ... excludedSubstitutions) {
-        val currentSubstitutions = Substitution.getCurrentSubstitutions().excludeIn(FuncList.of(excludedSubstitutions));
+        var currentSubstitutions = Substitution.getCurrentSubstitutions().excludeIn(FuncList.of(excludedSubstitutions));
         return With(currentSubstitutions);
     }
     public static SyncRunInstance WithAll() {
-        val currentSubstitutions = Substitution.getCurrentSubstitutions();
+        var currentSubstitutions = Substitution.getCurrentSubstitutions();
         return With(currentSubstitutions);
     }
     
@@ -116,7 +116,7 @@ public class Run {
         }
         
         public R with(Substitution<?> ... newSubstitutions) {
-            val substitutions = Func.listOf(newSubstitutions);
+            var substitutions = Func.listOf(newSubstitutions);
             return with(substitutions);
         }
         public abstract R with(List<Substitution<?>> newSubstitutions);
@@ -140,16 +140,16 @@ public class Run {
         }
         
         public SyncRunInstance with(List<Substitution<?>> newSubstitutions) {
-            val substitutions = this.substitutions().appendAll(newSubstitutions);
+            var substitutions = this.substitutions().appendAll(newSubstitutions);
             return new SyncRunInstance(substitutions);
         }
         
         public <E extends Exception> void run(RunBody<E> action) throws E {
-            val substitutions = substitutions();
+            var substitutions = substitutions();
             Ref.runWith(substitutions, action);
         }
         public <V, E extends Exception> V run(ComputeBody<V, E> action) throws E {
-            val substitutions = substitutions();
+            var substitutions = substitutions();
             return Ref.runWith(substitutions, action);
         }
     }
@@ -163,18 +163,18 @@ public class Run {
         }
         
         public AsyncRunInstance with(List<Substitution<?>> newSubstitutions) {
-            val substitutions = this.substitutions().appendAll(newSubstitutions);
+            var substitutions = this.substitutions().appendAll(newSubstitutions);
             return new AsyncRunInstance(substitutions);
         }
         
         public <E extends Exception> Promise<Object> run(RunBody<E> action) throws E {
-            val substitutions = substitutions();
+            var substitutions = substitutions();
             return AsyncRunner.run(()->{
                 Ref.runWith(substitutions, action);
             });
         }
         public <V, E extends Exception> Promise<V> run(ComputeBody<V, E> action) throws E {
-            val substitutions = substitutions();
+            var substitutions = substitutions();
             return AsyncRunner.run(()->{
                 return Ref.runWith(substitutions, action);
             });

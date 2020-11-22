@@ -39,7 +39,7 @@ import lombok.val;
 class utils {
     
     static <IN> Function<IN, Stream<IN>> delimitWith(IN delimiter) {
-        val isFirst = new AtomicBoolean(true);
+        var isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);
@@ -48,7 +48,7 @@ class utils {
     }
     
     static <IN> Function<IN, Stream<IN>> delimitWith(Supplier<? extends IN> delimiter) {
-        val isFirst = new AtomicBoolean(true);
+        var isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);
@@ -77,7 +77,7 @@ class utils {
     }
     
     static String withMethodName(Getter getter) {
-        val name = getter.getName();
+        var name = getter.getName();
         return "with" + name.substring(0,1).toUpperCase() + name.substring(1);
     }
     

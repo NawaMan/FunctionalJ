@@ -52,7 +52,7 @@ public interface IntStreamableWithGroupingBy extends IntStreamableWithMapToTuple
                 
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
-            val key = keyMapper.apply(each);
+            var key = keyMapper.apply(each);
             map.compute(key, (k, a)->{
                 if (a == null) {
                     a = collectorSupplier.get();
@@ -62,7 +62,7 @@ public interface IntStreamableWithGroupingBy extends IntStreamableWithMapToTuple
             });
         };
         combiner = (map1, map2) -> map1.putAll(map2);
-        val theMap = intStream().boxed().collect(supplier, accumulator, combiner);
+        var theMap = intStream().boxed().collect(supplier, accumulator, combiner);
         return ImmutableMap
                     .from    (theMap)
                     .mapValue(toStreamable);

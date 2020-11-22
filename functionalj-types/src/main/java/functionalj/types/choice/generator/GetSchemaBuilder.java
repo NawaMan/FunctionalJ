@@ -35,9 +35,9 @@ public class GetSchemaBuilder implements Lines {
 
     @Override
     public List<String> lines() {
-        val map = Map.class.getCanonicalName();
-        val str = String.class.getCanonicalName();
-        val prm = CaseParam.class.getCanonicalName();
+        var map = Map.class.getCanonicalName();
+        var str = String.class.getCanonicalName();
+        var prm = CaseParam.class.getCanonicalName();
         return asList(
                 "public " + map + "<" + str + ", " + map + "<" + str + ", " + prm + ">> __getSchema() {",
                 "    return getChoiceSchema();",

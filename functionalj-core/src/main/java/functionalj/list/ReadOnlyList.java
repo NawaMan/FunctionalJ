@@ -120,8 +120,8 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default DATA get(int index) {
-        val ref   = new AtomicReference<DATA>();
-        val found = StreamPlusHelper.hasAt(this.stream(), index, ref);
+        var ref   = new AtomicReference<DATA>();
+        var found = StreamPlusHelper.hasAt(this.stream(), index, ref);
         if (!found)
             throw new IndexOutOfBoundsException("" + index);
         
@@ -150,8 +150,8 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default ReadOnlyList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
-        val length = toIndexExclusive - fromIndexInclusive;
-        val subList = stream()
+        var length = toIndexExclusive - fromIndexInclusive;
+        var subList = stream()
                 .skip(fromIndexInclusive).limit(length)
                 .collect(Collectors.toList());
         return (ReadOnlyList<DATA>)(()->StreamPlus.from(subList.stream()));
@@ -159,7 +159,7 @@ public interface ReadOnlyList<DATA>
     
     @Override
     public default Spliterator<DATA> spliterator() {
-        val iterator = iterator();
+        var iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     

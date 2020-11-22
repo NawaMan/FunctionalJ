@@ -64,12 +64,12 @@ public class TargetTypeGeneral implements Lines {
     
     @Override
     public List<String> lines() {
-        val emptyLine   = asList("");
-        val getSchema   = new GetSchemaBuilder().lines();
-        val firstSwitch = prepareFirstSwitch(targetName);
-        val toString    = prepareToStringMethod();
-        val hashCode    = prepareHashCode();
-        val equals      = prepareEquals(targetName);
+        var emptyLine   = asList("");
+        var getSchema   = new GetSchemaBuilder().lines();
+        var firstSwitch = prepareFirstSwitch(targetName);
+        var toString    = prepareToStringMethod();
+        var hashCode    = prepareHashCode();
+        var equals      = prepareEquals(targetName);
         return asList(
     		getSchema,   emptyLine,
             firstSwitch, emptyLine,
@@ -83,8 +83,8 @@ public class TargetTypeGeneral implements Lines {
     }
     
     private List<String> prepareFirstSwitch(final java.lang.String targetName) {
-        val firstSwitchTypeDef = format("%1$sFirstSwitch%2$s", targetName, targetClass.getType().genericsString());
-        val firstSwitchLines = 
+        var firstSwitchTypeDef = format("%1$sFirstSwitch%2$s", targetName, targetClass.getType().genericsString());
+        var firstSwitchLines = 
                 asList(format(
                           "private final %1$s __switch = new %1$s(this);\n"
                         + "@Override public %1$s match() {\n"
@@ -101,15 +101,15 @@ public class TargetTypeGeneral implements Lines {
         if (hasMethod(format("java.lang.String toString(%s)", targetClass.type.toString()), DEFAULT))
             return null;
         
-        val choiceStrings = choices.stream()
+        var choiceStrings = choices.stream()
             .map(choice -> {
-                val camelName  = toCamelCase(choice.name);
-                val paramCount = choice.params.size();
+                var camelName  = toCamelCase(choice.name);
+                var paramCount = choice.params.size();
                 if (paramCount == 0) {
                     return format("            .%1$s(__ -> \"%2$s\")", camelName, choice.name);
                 } else {
-                    val template       = templateRange(1, paramCount + 1, ",");
-                    val templateParams = choice.params.stream().map(p -> camelName + "." + p.name).collect(joining(","));
+                    var template       = templateRange(1, paramCount + 1, ",");
+                    var templateParams = choice.params.stream().map(p -> camelName + "." + p.name).collect(joining(","));
                     return format("            .%1$s(%1$s -> \"%2$s(\" + String.format(\"%3$s\", %4$s) + \")\")", 
                                       camelName, choice.name, template, templateParams);
                 }
@@ -117,7 +117,7 @@ public class TargetTypeGeneral implements Lines {
             .map("    "::concat)
             .collect(toList());
         
-        val toStringLines = asList(
+        var toStringLines = asList(
             asList(( "private volatile String toString = null;\n"
                   + "@Override\n"
                   + "public String toString() {\n"
@@ -143,7 +143,7 @@ public class TargetTypeGeneral implements Lines {
     }
     
     private List<String> prepareHashCode() {
-        val mthdSignature = format("int hashCode(%s)", targetClass.type.toString());
+        var mthdSignature = format("int hashCode(%s)", targetClass.type.toString());
         if (hasMethod(mthdSignature, DEFAULT))
             return null;
         return asList(

@@ -79,27 +79,27 @@ public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
      **/
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default Streamable<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
-        val func = (UnaryOperator<Tuple2<DATA, Streamable<DATA>>>)((Tuple2<DATA, Streamable<DATA>> pair) -> {
-            val streamable = pair._2();
+        var func = (UnaryOperator<Tuple2<DATA, Streamable<DATA>>>)((Tuple2<DATA, Streamable<DATA>> pair) -> {
+            var streamable = pair._2();
             if (streamable == null)
                 return null;
             
             Object[] head     = new Object[] { null };
-            val      iterator = streamable.stream().iterator();
+            var      iterator = streamable.stream().iterator();
             if (!iterator.hasNext())
                 return null;
             
             head[0]  = iterator.next();
-            val tail = restater.apply((DATA)head[0], streamable.skip(1));
+            var tail = restater.apply((DATA)head[0], streamable.skip(1));
             if (tail == null)
                 return null;
             
             return Tuple2.of((DATA)head[0], tail);
         });
-        val seed = Tuple2.of((DATA)null, this);
+        var seed = Tuple2.of((DATA)null, this);
         
         // NOTE: The reason for the using untyped-generic is because "DATA" of this class is not seen as compatible with StreamPlus's.
-        val endStream 
+        var endStream 
             = Streamable
             .iterate  (seed, (UnaryOperator)func)
             .takeUntil(t -> t == null)

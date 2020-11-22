@@ -87,7 +87,7 @@ public class ChoiceTypeExamples {
     
     @Test
     public void example05_ifXXX() {
-        val output = new AtomicReference<String>();
+        var output = new AtomicReference<String>();
         LoginStatus status = LoginStatus.Login("root");
         status
             .ifLogin(s -> output.set("User: " + s.userName()))
@@ -97,7 +97,7 @@ public class ChoiceTypeExamples {
     
     @Test
     public void example06_PatternMatching() {
-        val f = Func.f((LoginStatus status) -> {
+        var f = Func.f((LoginStatus status) -> {
             return status.match()
                     .login (s -> "User: " + s.userName()) 
                     .logout("Guess");
@@ -112,8 +112,8 @@ public class ChoiceTypeExamples {
     
     @Test
     public void example07_PatternMatchingWithPayLoad() {
-        val moderators = asList("Jack", "John");
-        val f = Func.f((LoginStatus status) -> {
+        var moderators = asList("Jack", "John");
+        var f = Func.f((LoginStatus status) -> {
             return status.match()
                     .login (theLogin.userName.thatEquals("root"),   "Administrator")
                     .login (theLogin.userName.thatIsIn(moderators), "Moderator")

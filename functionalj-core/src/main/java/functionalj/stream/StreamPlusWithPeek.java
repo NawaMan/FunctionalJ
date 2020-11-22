@@ -37,13 +37,13 @@ public interface StreamPlusWithPeek<DATA> {
     public default <T extends DATA> StreamPlus<DATA> peek(
             Class<T>            clzz,
             Consumer<? super T> theConsumer) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .peek(value -> {
                     if (!clzz.isInstance(value))
                         return;
                     
-                    val target = clzz.cast(value);
+                    var target = clzz.cast(value);
                     theConsumer.accept(target);
                 });
     }
@@ -52,7 +52,7 @@ public interface StreamPlusWithPeek<DATA> {
     public default StreamPlus<DATA> peekBy(
             Predicate<? super DATA> selector,
             Consumer<? super DATA>  theConsumer) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .peek(value -> {
                     if (!selector.test(value))
@@ -70,10 +70,10 @@ public interface StreamPlusWithPeek<DATA> {
     public default <T> StreamPlus<DATA> peekAs(
             Function<? super DATA, T> mapper,
             Consumer<? super T>       consumer) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .peek(value -> {
-                    val target = mapper.apply(value);
+                    var target = mapper.apply(value);
                     consumer.accept(target);
                 });
     }
@@ -83,10 +83,10 @@ public interface StreamPlusWithPeek<DATA> {
             Function<? super DATA, T> mapper,
             Predicate<? super T>      selector,
             Consumer<? super DATA>    consumer) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .peek(value -> {
-                    val target = mapper.apply(value);
+                    var target = mapper.apply(value);
                     if (selector.test(target))
                         consumer.accept(value);
                 });
@@ -97,10 +97,10 @@ public interface StreamPlusWithPeek<DATA> {
             Function<? super DATA, T> mapper,
             Predicate<? super T>      selector,
             Consumer<? super T>       consumer) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .peek(value -> {
-                    val target = mapper.apply(value);
+                    var target = mapper.apply(value);
                     if (selector.test(target)) {
                         consumer.accept(target);
                     }

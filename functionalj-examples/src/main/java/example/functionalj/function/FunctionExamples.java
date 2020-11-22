@@ -60,14 +60,14 @@ public class FunctionExamples {
     
     @Test
     public void example01_Function() {
-        val toInt = (Func1<String, Integer>)this::toInt;
+        var toInt = (Func1<String, Integer>)this::toInt;
         assertEquals(42, (int)toInt.apply("42"));
     }
     
     @Test
     public void example02_Apply() {
-        val toInt    = (Func1<String, List<String>>)this::readLines;
-        val fileName = "FileNotExist.file";
+        var toInt    = (Func1<String, List<String>>)this::readLines;
+        var fileName = "FileNotExist.file";
         
         try {
             toInt.applyUnsafe(fileName);
@@ -94,19 +94,19 @@ public class FunctionExamples {
     
     @Test
     public void example03_Create() {
-        val toInt = Func.of(this::toInt);
+        var toInt = Func.of(this::toInt);
         assertEquals(42, (int)toInt.apply("42"));
     }
     
     @Test
     public void example04_Create() {
-        val toInt = f(this::toInt);
+        var toInt = f(this::toInt);
         assertEquals(42, (int)toInt.apply("42"));
     }
     
     @Test
     public void example04_ToString() {
-        val toInt = f(this::toInt);
+        var toInt = f(this::toInt);
         assertTrue(toInt.toString().startsWith("example.functionalj.function.FunctionExamples$$Lambda$"));
         // example.functionalj.accesslens.FunctionExamples$$Lambda$2/460332449@726f3b58
         // System.out.println(toInt.toString());
@@ -114,26 +114,26 @@ public class FunctionExamples {
     
     @Test
     public void example05_ToString_Name() {
-        val toInt = f("Str2Int", this::toInt);
+        var toInt = f("Str2Int", this::toInt);
         assertEquals("F1::Str2Int", toInt.toString());
     }
     
     @Test
     public void example06_ToString_Stack() {
-        val toInt = F(this::toInt);
+        var toInt = F(this::toInt);
         assertEquals("F1@example.functionalj.function.FunctionExamples#123", toInt.toString());
     }
     
     @Test
     public void example07_ToString_StackName() {
-        val toInt = F("Str2Int", this::toInt);
+        var toInt = F("Str2Int", this::toInt);
         assertEquals("F1::Str2Int@example.functionalj.function.FunctionExamples#129", toInt.toString());
     }
     
     @Test
     public void example08_Safely() {
-        val readLines = f(this::readLines).safely();
-        val lines     = readLines.apply("FileNotFound.txt");
+        var readLines = f(this::readLines).safely();
+        var lines     = readLines.apply("FileNotFound.txt");
         assertEquals(
                 "Result:{ Exception: java.nio.file.NoSuchFileException: FileNotFound.txt }",
                 lines.toString());
@@ -141,16 +141,16 @@ public class FunctionExamples {
     
     @Test
     public void example08_Optionally() {
-        val readLines = f(this::readLines).optionally();
-        val lines     = readLines.apply("FileNotFound.txt");
+        var readLines = f(this::readLines).optionally();
+        var lines     = readLines.apply("FileNotFound.txt");
         assertEquals("Optional.empty", lines.toString());
     }
     
     @Test
     public void example09_Async() throws InterruptedException {
-        val lock = new CountDownLatch(1);
+        var lock = new CountDownLatch(1);
         
-        val readLines = f(this::readLines).async();
+        var readLines = f(this::readLines).async();
         readLines
                 .apply        ("FileNotFound.txt")
                 .whenAbsentUse(FuncList.empty())
@@ -163,21 +163,21 @@ public class FunctionExamples {
     
     @Test
     public void example15_orElse() {
-        val readLines = f(this::readLines);
-        val lines     = readLines.orElse("FileNotFound.txt", FuncList.empty());
+        var readLines = f(this::readLines);
+        var lines     = readLines.orElse("FileNotFound.txt", FuncList.empty());
         assertEquals("[]", lines.toString());
     }
     
     @Test
     public void example16_DefaultReturn() {
-        val readLines = f(this::readLines).whenAbsentUse(FuncList.empty());
-        val lines     = readLines.apply("FileNotFound.txt");
+        var readLines = f(this::readLines).whenAbsentUse(FuncList.empty());
+        var lines     = readLines.apply("FileNotFound.txt");
         assertEquals("[]", lines.toString());
     }
     
     @Test
     public void example10_FlexibleInputs() {
-        val toInt = f(this::toInt);
+        var toInt = f(this::toInt);
         
         assertEquals("42",      "" + toInt.apply("42"));
         assertEquals("[1, 42]", "" + toInt.applyTo(FuncList.of("1", "42")));
@@ -190,27 +190,27 @@ public class FunctionExamples {
                 "{One:1, Forty-Two:42}",
                 "" + toInt.applyTo(FuncMap.of("One", "1", "Forty-Two", "42")));
         
-        val supplier = (Supplier<String>)()->"42";
+        var supplier = (Supplier<String>)()->"42";
         assertEquals("42", "" + toInt.applyTo(supplier).get());
         
-        val function = (Function<Integer, String>)(i->("" + i));
+        var function = (Function<Integer, String>)(i->("" + i));
         assertEquals("42", "" + toInt.applyTo(function).apply(42));
     }
     
     @Test
     public void example11_Tuple() {
-        val add = f((Integer a, Integer b)->a + b);
-        val pair = Tuple.of(5, 7);
+        var add = f((Integer a, Integer b)->a + b);
+        var pair = Tuple.of(5, 7);
         assertEquals("12", "" + add.applyTo(pair));
     }
     
     @Test
     public void example12_Bind() {
-        val add = f((Integer a, Integer b)->a + b);
-        val addFive_1 = add.bind1(5);
-        val addFive_2 = add.bind2(5);
-        val addFive_3 = add.bind(__, 5);
-        val addFive_4 = add.bind(5, __);
+        var add = f((Integer a, Integer b)->a + b);
+        var addFive_1 = add.bind1(5);
+        var addFive_2 = add.bind2(5);
+        var addFive_3 = add.bind(__, 5);
+        var addFive_4 = add.bind(5, __);
         assertTrue(addFive_1 instanceof Function);
         assertTrue(addFive_2 instanceof Function);
         assertTrue(addFive_3 instanceof Function);
@@ -219,14 +219,14 @@ public class FunctionExamples {
     
     @Test
     public void example13_Currying() {
-        val add = f((Integer a, Integer b)->a + b);
+        var add = f((Integer a, Integer b)->a + b);
         assertEquals("12", "" + add.applyTo(5).apply(7));
     }
     
     @Test
     public void example14_Composition() {
-        val add = f((Integer a, Integer b)->a + b);
-        val sum = add.then(i -> "Sum: " + i);
+        var add = f((Integer a, Integer b)->a + b);
+        var sum = add.then(i -> "Sum: " + i);
         assertEquals("Sum: 12", "" + sum.apply(5, 7));
     }
     

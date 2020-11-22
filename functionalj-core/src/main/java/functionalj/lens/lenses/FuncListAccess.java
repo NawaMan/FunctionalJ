@@ -43,7 +43,7 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         extends CollectionAccess<HOST, FuncList<TYPE>, TYPE, TYPEACCESS> {
     
     public static <H, T, A extends AnyAccess<H, T>> FuncListAccess<H, T, A> of(Function<H, FuncList<T>> read, Function<Function<H, T>, A> createAccess) {
-        val accessParameterized = new AccessParameterized<H, FuncList<T>, T, A>() {
+        var accessParameterized = new AccessParameterized<H, FuncList<T>, T, A>() {
             @Override
             public FuncList<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
@@ -94,7 +94,7 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
     }
     
     public default FuncListAccess<HOST, Integer, IntegerAccess<HOST>> indexesOf(Predicate<? super TYPE> check) {
-        val access  = new AccessParameterized<HOST, FuncList<Integer>, Integer, IntegerAccess<HOST>>() {
+        var access  = new AccessParameterized<HOST, FuncList<Integer>, Integer, IntegerAccess<HOST>>() {
             @Override
             public FuncList<Integer> applyUnsafe(HOST host) throws Exception {
                 return FuncListAccess.this.apply(host).indexesOf(check);

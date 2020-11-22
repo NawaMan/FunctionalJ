@@ -59,19 +59,19 @@ public class SwitchClass implements Lines {
     
     @Override
     public List<String> lines() {
-        val targetName      = targetClass.type.simpleName();
-        val switchClassName = switchClassName(targetName, choices);
-        val mapTargetType   = "TARGET";
+        var targetName      = targetClass.type.simpleName();
+        var switchClassName = switchClassName(targetName, choices);
+        var mapTargetType   = "TARGET";
         
-        val isLast    = choices.size() <= 1;
-        val nextName  = switchClassName(targetName, choices, 1);
-        val retType   = isLast? mapTargetType : nextName + "<" + mapTargetType + (targetClass.getType().genericParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams()) + ">";
-        val retStmt   = isLast? "return newAction.apply($value);" : "return new " + nextName + "<" + mapTargetType + (targetClass.getType().genericParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams()) + ">($value, newAction);";
-        val thisChoice = choices.get(0);
-        val thisName  = thisChoice.name;
-        val camelName = toCamelCase(thisChoice.name);
+        var isLast    = choices.size() <= 1;
+        var nextName  = switchClassName(targetName, choices, 1);
+        var retType   = isLast? mapTargetType : nextName + "<" + mapTargetType + (targetClass.getType().genericParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams()) + ">";
+        var retStmt   = isLast? "return newAction.apply($value);" : "return new " + nextName + "<" + mapTargetType + (targetClass.getType().genericParams().isEmpty() ? "" : ", " + targetClass.getType().genericParams()) + ">($value, newAction);";
+        var thisChoice = choices.get(0);
+        var thisName  = thisChoice.name;
+        var camelName = toCamelCase(thisChoice.name);
         
-        val firstSwitchLines = !isFirst ? new ArrayList<String>() : asList(
+        var firstSwitchLines = !isFirst ? new ArrayList<String>() : asList(
             asList(format("public static class %1$sFirstSwitch%2$s {",                                targetName, targetClass.getType().genericDef())),
             asList(format("    private %s $value;",                                                               targetClass.getType().typeWithGenerics())),
             asList(format("    private %sFirstSwitch(%s theValue) { this.$value = theValue; }",       targetName, targetClass.getType().typeWithGenerics())),
@@ -86,7 +86,7 @@ public class SwitchClass implements Lines {
         .flatMap(List::stream)
         .collect(toList());
         
-        val firstSwitchTypeLines = !isFirst ? new ArrayList<String>() : asList(
+        var firstSwitchTypeLines = !isFirst ? new ArrayList<String>() : asList(
             asList(format("public static class %1$sFirstSwitchTyped<%2$s> {",                        targetName, mapTargetType + (targetClass.getType().genericDefParams().isEmpty() ? "" : ", " + targetClass.getType().genericDefParams()))),
             asList(format("    private %s $value;",                                                  targetClass.getType().typeWithGenerics())),
             asList(format("    private %sFirstSwitchTyped(%s theValue) { this.$value = theValue; }", targetName, targetClass.getType().typeWithGenerics())),
@@ -98,7 +98,7 @@ public class SwitchClass implements Lines {
         .flatMap(List::stream)
         .collect(toList());
         
-        val switchLines = asList(
+        var switchLines = asList(
             asList(format("public static class %1$s<%3$s> extends %5$s<%2$s, %4$s> {",                                                 switchClassName, targetName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType + (targetClass.getType().genericDefParams().isEmpty() ? "" : ", " + targetClass.getType().genericDefParams()), mapTargetType, ChoiceTypeSwitch.class.getSimpleName())),
             asList(format("    private %1$s(%2$s theValue, Function<%2$s, ? extends %3$s> theAction) { super(theValue, theAction); }", switchClassName, targetName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType)),
             asList(format("    ")),
@@ -109,7 +109,7 @@ public class SwitchClass implements Lines {
         .flatMap(List::stream)
         .collect(toList());
         
-        val lines = new ArrayList<String>();
+        var lines = new ArrayList<String>();
         lines.addAll(firstSwitchLines);
         lines.addAll(firstSwitchTypeLines);
         lines.addAll(switchLines);
@@ -118,8 +118,8 @@ public class SwitchClass implements Lines {
     
     private List<String> createCasesComplete(boolean isFirst, boolean typed, String thisName, String camelName, String targetName, 
             String retType, String retStmt, String mapTargetType) {
-        val methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
-        val lineBF = isFirst ? "    Function<" + targetName + targetClass.getType().genericsString() + ", " + mapTargetType + "> $action = null;" : null;
+        var methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
+        var lineBF = isFirst ? "    Function<" + targetName + targetClass.getType().genericsString() + ", " + mapTargetType + "> $action = null;" : null;
         return asList(
             format("public %1$s%2$s %3$s(Function<? super %4$s, ? extends %5$s> theAction) {", methodGeneric, retType, camelName, thisName + targetClass.getType().genericsString(), mapTargetType),
             lineBF,
@@ -147,8 +147,8 @@ public class SwitchClass implements Lines {
     
     private List<String> createCasesPartial(boolean isFirst, boolean typed, Case thisChoice, String thisName,
             String camelName, String switchClassName, String targetName, String mapTargetType) {
-        val methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
-        val lineBF = isFirst ? "    Function<" + targetName  + targetClass.getType().genericsString() + ", " + mapTargetType + "> $action = null;" : null;
+        var methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
+        var lineBF = isFirst ? "    Function<" + targetName  + targetClass.getType().genericsString() + ", " + mapTargetType + "> $action = null;" : null;
         return !thisChoice.isParameterized() ? new ArrayList<String>()
         : asList(
             format(""),

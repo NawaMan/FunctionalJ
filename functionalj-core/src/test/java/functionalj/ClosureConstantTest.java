@@ -92,18 +92,18 @@ public class ClosureConstantTest {
     
     @Test
     public void testLazy() throws InterruptedException {
-        val threadCount = 10;
-        val callPerThread = 50;
+        var threadCount = 10;
+        var callPerThread = 50;
         
-        val c = new AtomicInteger();
-        val counter = lazy(()->{
+        var c = new AtomicInteger();
+        var counter = lazy(()->{
             return c.incrementAndGet();
         });
         sleep5();
         // Ensure no running before first call to the counter.
         assertEquals(0, c.intValue());
         
-        val latch = new CountDownLatch(threadCount);
+        var latch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             new Thread(()->{
                 for (int l = 0; l < callPerThread; l++) {

@@ -45,23 +45,23 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
     
     @Override
     public default DATA applyUnsafe(HOST host) throws Exception {
-        val spec  = lensSpec();
+        var spec  = lensSpec();
         if (spec.isNullSafe() && (host == null))
             return null;
         
-        val read  = spec.getRead();
-        val value = read.apply(host);
+        var read  = spec.getRead();
+        var value = read.apply(host);
         return value;
     }
     
     @Override
     default HOST apply(HOST host, DATA data) {
-        val spec  = lensSpec();
+        var spec  = lensSpec();
         if (spec.isNullSafe() && (host == null))
             return null;
         
-        val write    = spec.getWrite();
-        val newValue = write.apply(host, data);
+        var write    = spec.getWrite();
+        var newValue = write.apply(host, data);
         return newValue;
     }
     
@@ -76,66 +76,66 @@ public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HO
     }
     default Func1<HOST, HOST> changeTo(Supplier<DATA> dataSupplier) {
         return host -> {
-            val newValue = dataSupplier.get();
+            var newValue = dataSupplier.get();
             return apply(host, newValue);
         };
     }
     default Func1<HOST, HOST> changeTo(Function<DATA, DATA> dataMapper) {
         return host -> {
-            val oldValue = read(host);
-            val newValue = dataMapper.apply(oldValue);
+            var oldValue = read(host);
+            var newValue = dataMapper.apply(oldValue);
             return apply(host, newValue);
         };
     }
     default Func1<HOST, HOST> changeTo(BiFunction<HOST, DATA, DATA> mapper) {
         return host -> {
-            val oldValue = read(host);
-            val newValue = mapper.apply(host, oldValue);
+            var oldValue = read(host);
+            var newValue = mapper.apply(host, oldValue);
             return apply(host, newValue);
         };
     }
     
     default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, DATA data) {
         return host -> {
-            val originalData = apply(host);
-            val shouldChange = check.test(originalData);
+            var originalData = apply(host);
+            var shouldChange = check.test(originalData);
             if (!shouldChange)
                 return host;
             
-            val newData = data;
+            var newData = data;
             return apply(host, newData);
         };
     }
     default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, Supplier<DATA> dataSupplier) {
         return host -> {
-            val originalData = apply(host);
-            val shouldChange = check.test(originalData);
+            var originalData = apply(host);
+            var shouldChange = check.test(originalData);
             if (!shouldChange)
                 return host;
             
-            val newData = dataSupplier.get();
+            var newData = dataSupplier.get();
             return apply(host, newData);
         };
     }
     default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, Function<DATA, DATA> dataMapper) {
         return host -> {
-            val originalData = apply(host);
-            val shouldChange = check.test(originalData);
+            var originalData = apply(host);
+            var shouldChange = check.test(originalData);
             if (!shouldChange)
                 return host;
             
-            val newData = dataMapper.apply(originalData);
+            var newData = dataMapper.apply(originalData);
             return apply(host, newData);
         };
     }
     default Func1<HOST, HOST> changeOnly(Predicate<DATA> check, BiFunction<HOST, DATA, DATA> mapper) {
         return host -> {
-            val originalData = apply(host);
-            val shouldChange = check.test(originalData);
+            var originalData = apply(host);
+            var shouldChange = check.test(originalData);
             if (!shouldChange)
                 return host;
             
-            val newData = mapper.apply(host, originalData);
+            var newData = mapper.apply(host, originalData);
             return apply(host, newData);
         };
     }

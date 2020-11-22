@@ -48,25 +48,25 @@ public interface DoubleAccess<HOST>
         
         if (accessToValue instanceof ToDoubleFunction) {
             @SuppressWarnings("unchecked")
-            val func1  = (ToDoubleFunction<H>)accessToValue;
-            val access = ofPrimitive(func1);
+            var func1  = (ToDoubleFunction<H>)accessToValue;
+            var access = ofPrimitive(func1);
             return access;
         }
         
         if (accessToValue instanceof Func1) {
-            val func1  = (Func1<H, Double>)accessToValue;
-            val access = (DoubleAccessBoxed<H>)func1::applyUnsafe;
+            var func1  = (Func1<H, Double>)accessToValue;
+            var access = (DoubleAccessBoxed<H>)func1::applyUnsafe;
             return access;
         }
         
-        val func   = (Function<H, Double>)accessToValue;
-        val access = (DoubleAccessBoxed<H>)(host -> func.apply(host));
+        var func   = (Function<H, Double>)accessToValue;
+        var access = (DoubleAccessBoxed<H>)(host -> func.apply(host));
         return access;
     }
     
     public static <H> DoubleAccess<H> ofPrimitive(ToDoubleFunction<H> accessToValue) {
         requireNonNull(accessToValue);
-        val access = (DoubleAccessPrimitive<H>)accessToValue::applyAsDouble;
+        var access = (DoubleAccessPrimitive<H>)accessToValue::applyAsDouble;
         return access;
     }
     

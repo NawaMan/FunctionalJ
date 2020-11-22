@@ -42,7 +42,7 @@ public class ElmChoiceSpec {
         this.sourceSpec = sourceSpec;
         this.typeName   = sourceSpec.targetName;
         
-        val baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
+        var baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
         this.folderName = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
     }
     ElmChoiceSpec(SourceSpec sourceSpec, String typeName, String folderName) {
@@ -52,8 +52,8 @@ public class ElmChoiceSpec {
     }
     
     private String elmBaseModule(Element element, SourceSpec sourceSpec) {
-        val baseModule  = element.getAnnotation(Elm.class).baseModule();
-        val elmtPackage = sourceSpec.sourceType.packageName();
+        var baseModule  = element.getAnnotation(Elm.class).baseModule();
+        var elmtPackage = sourceSpec.sourceType.packageName();
         return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) 
                 ? elmtPackage
                 : baseModule;

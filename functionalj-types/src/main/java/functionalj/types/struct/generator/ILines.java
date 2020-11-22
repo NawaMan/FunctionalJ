@@ -276,11 +276,11 @@ public interface ILines extends IRequireTypes {
         return ILines.linesOf(Stream.concat(this.lines(), lines.lines()).map(toLine));
     }
     public default ILines containWith(String prefix, String delimiter, String suffix) {
-        val lines     = this.lines().collect(toList());
-        val firstLine = lines.stream().limit(1).map(line -> prefix    + " " + line).collect(toList());
-        val restLines = lines.stream().skip (1).map(line -> delimiter + " " + line).collect(toList());
-        val lastLine  = (suffix == null) ? null : Stream.of(suffix);
-        val stream
+        var lines     = this.lines().collect(toList());
+        var firstLine = lines.stream().limit(1).map(line -> prefix    + " " + line).collect(toList());
+        var restLines = lines.stream().skip (1).map(line -> delimiter + " " + line).collect(toList());
+        var lastLine  = (suffix == null) ? null : Stream.of(suffix);
+        var stream
             = Stream.of(
                 firstLine.stream(),
                 restLines.stream(),

@@ -66,19 +66,19 @@ public interface IntStreamPlusWithModify {
      */
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default IntStreamPlus accumulate(IntBiFunctionPrimitive accumulator) {
-        val streamPlus = intStreamPlus();
-        val iterator   = streamPlus.iterator();
+        var streamPlus = intStreamPlus();
+        var iterator   = streamPlus.iterator();
         if (!iterator.hasNext())
             return IntStreamPlus.empty();
         
-        val prev = new int[] { iterator.nextInt() };
+        var prev = new int[] { iterator.nextInt() };
         return IntStreamPlus
                 .concat(
                     IntStreamPlus.of(prev[0]),
                     iterator
                     .stream()
                     .map(n -> {
-                        val next = accumulator.applyAsIntAndInt(n, prev[0]);
+                        var next = accumulator.applyAsIntAndInt(n, prev[0]);
                         prev[0] = next;
                         return next;
                     })
@@ -104,24 +104,24 @@ public interface IntStreamPlusWithModify {
      **/
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default IntStreamPlus restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
-        val streamPlus = intStreamPlus();
-        val func = (UnaryOperator<IntTuple2<IntStreamPlus>>)((IntTuple2<IntStreamPlus> pair) -> {
-            val stream = pair._2();
+        var streamPlus = intStreamPlus();
+        var func = (UnaryOperator<IntTuple2<IntStreamPlus>>)((IntTuple2<IntStreamPlus> pair) -> {
+            var stream = pair._2();
             if (stream == null)
                 return null;
             
-            val iterator = stream.iterator();
+            var iterator = stream.iterator();
             if (!iterator.hasNext())
                 return null;
             
-            val head = new int[] { iterator.nextInt() };
-            val tail = IntObjBiFunction.apply(restater, head[0], IntIteratorPlus.from(iterator).stream());
+            var head = new int[] { iterator.nextInt() };
+            var tail = IntObjBiFunction.apply(restater, head[0], IntIteratorPlus.from(iterator).stream());
             if (tail == null)
                 return null;
             
             return IntTuple2.<IntStreamPlus>of(head[0], tail);
         });
-        val seed = IntTuple2.<IntStreamPlus>of(0, streamPlus);
+        var seed = IntTuple2.<IntStreamPlus>of(0, streamPlus);
         IntStreamPlus endStream 
             = StreamPlus
             .iterate  (seed, func)
@@ -139,17 +139,17 @@ public interface IntStreamPlusWithModify {
      *   the unfinished actions will be canceled.
      */
     public default <T> StreamPlus<Result<T>> spawn(IntFunction<? extends UncompletedAction<T>> mapToAction) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return sequentialToObj(streamPlus, stream -> {
-            val results = new ArrayList<DeferAction<T>>();
-            val index   = new AtomicInteger(0);
+            var results = new ArrayList<DeferAction<T>>();
+            var index   = new AtomicInteger(0);
             
             FuncUnit1<UncompletedAction<T>> setOnComplete = action -> 
                 action
                 .getPromise()
                 .onComplete(result -> {
-                    val thisIndex  = index.getAndIncrement();
-                    val thisAction = results.get(thisIndex);
+                    var thisIndex  = index.getAndIncrement();
+                    var thisAction = results.get(thisIndex);
                     if (result.isValue())
                          thisAction.complete(result.value());
                     else thisAction.fail    (result.exception());
@@ -164,7 +164,7 @@ public interface IntStreamPlusWithModify {
                 .collect (Collectors.toList())
                 ;
             
-            val resultStream 
+            var resultStream 
                 = StreamPlus
                 .from(results.stream().map(action -> action.getResult()));
             resultStream

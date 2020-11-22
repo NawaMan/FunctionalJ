@@ -47,12 +47,12 @@ public interface LongLens<HOST>
     public default long applyAsLong(HOST host) {
         LensSpec<HOST, Long> lensSpec = lensSpec();
         if (lensSpec instanceof PrimitiveLensSpecs.LongLensSpecPrimitive) {
-            val spec  = (PrimitiveLensSpecs.LongLensSpecPrimitive)lensSpec;
-            val value = spec.applyAsLong(host);
+            var spec  = (PrimitiveLensSpecs.LongLensSpecPrimitive)lensSpec;
+            var value = spec.applyAsLong(host);
             return value;
         }
         
-        val value = lensSpec.apply(host);
+        var value = lensSpec.apply(host);
         return value;
     }
 

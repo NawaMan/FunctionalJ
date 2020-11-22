@@ -33,7 +33,7 @@ public class NamedTest {
 
     @Test
     public void test() {
-        val namedSupplier = Named.Supplier("GetWord", ()->"Hello");
+        var namedSupplier = Named.Supplier("GetWord", ()->"Hello");
         assertEquals("Supplier::GetWord", namedSupplier.toString());
     }
 

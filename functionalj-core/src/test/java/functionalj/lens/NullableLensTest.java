@@ -150,7 +150,7 @@ public class NullableLensTest {
         assertEquals("Driver(firstCar=Car(color=blue),secondCar=Nullable.of(Car(color=blue)))", blueDriver.toString());
         assertEquals("Driver(firstCar=null,secondCar=Nullable.EMPTY)",                          nullDriver.toString());
         
-        val drivers = Arrays.asList(blueDriver, nullDriver);
+        var drivers = Arrays.asList(blueDriver, nullDriver);
         assertEquals(
                    "[" 
                 +      "Driver(firstCar=Car(color=green),secondCar=Nullable.of(Car(color=green))), "

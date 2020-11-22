@@ -36,7 +36,7 @@ public class ElmStructTest {
     
     @Test
     public void test() {
-        val sourceSpec = new SourceSpec(
+        var sourceSpec = new SourceSpec(
                     definitionClassName, // specClassName
                     packageName,         // packageName
                     null,                // encloseName
@@ -49,8 +49,8 @@ public class ElmStructTest {
                     getters,
                     emptyList());
         
-        val spec   = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm");
-        val struct = new ElmStructBuilder(spec);
+        var spec   = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm");
+        var struct = new ElmStructBuilder(spec);
         assertEquals(expected, struct.toElmCode());
     }
     

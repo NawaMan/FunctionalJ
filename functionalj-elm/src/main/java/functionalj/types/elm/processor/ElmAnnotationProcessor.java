@@ -92,13 +92,13 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Elm.class)) {
-            val struct = element.getAnnotation(Struct.class);
+            var struct = element.getAnnotation(Struct.class);
             if (struct != null) {
                 handleStructType(element);
                 continue;
             }
             
-            val choice = element.getAnnotation(Choice.class);
+            var choice = element.getAnnotation(Choice.class);
             if (choice != null) {
                 handleChoiceType(element);
                 continue;
@@ -110,22 +110,22 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     }
     
     private void handleStructType(Element element) {
-        val dummyMessager  = new DummyMessager();
-        val input          = new StructSpecInputImpl(element, elementUtils, typeUtils, dummyMessager);
-        val structSpec     = new StructSpec(input);
-        val sourceSpec     = structSpec.sourceSpec();
-        val packageName    = structSpec.packageName();
-        val specTargetName = structSpec.targetTypeName();
+        var dummyMessager  = new DummyMessager();
+        var input          = new StructSpecInputImpl(element, elementUtils, typeUtils, dummyMessager);
+        var structSpec     = new StructSpec(input);
+        var sourceSpec     = structSpec.sourceSpec();
+        var packageName    = structSpec.packageName();
+        var specTargetName = structSpec.targetTypeName();
         try {
-            val elmStructSpec = new ElmStructSpec(sourceSpec, element);
-            val elmStruct     = new ElmStructBuilder(elmStructSpec);
-            val baseDir       = "./generated/elm/";
-            val folderName    = elmStructSpec.folderName();
-            val fileName      = elmStructSpec.fileName();
+            var elmStructSpec = new ElmStructSpec(sourceSpec, element);
+            var elmStruct     = new ElmStructBuilder(elmStructSpec);
+            var baseDir       = "./generated/elm/";
+            var folderName    = elmStructSpec.folderName();
+            var fileName      = elmStructSpec.fileName();
             
-            val generatedPath = baseDir + folderName + "/";
-            val generatedCode = elmStruct.toElmCode();
-            val generatedName = generatedPath + fileName;
+            var generatedPath = baseDir + folderName + "/";
+            var generatedCode = elmStruct.toElmCode();
+            var generatedName = generatedPath + fileName;
             
             generateElmCode(generatedPath, generatedCode, generatedName);
         } catch (Exception e) {
@@ -143,28 +143,28 @@ public class ElmAnnotationProcessor extends AbstractProcessor {
     
     private void generateElmCode(String generatedPath, String generatedCode, String generatedName) throws IOException {
         new File(generatedPath).mkdirs();
-        val generatedFile = new File(generatedName);
-        val lines         = asList(generatedCode.split("\n"));
+        var generatedFile = new File(generatedName);
+        var lines         = asList(generatedCode.split("\n"));
         Files.write(generatedFile.toPath(), lines);
     }
     
     private void handleChoiceType(Element element) {
-        val dummyMessager  = new DummyMessager();
-        val input          = new ChoiceSpecInputImpl(element, elementUtils, dummyMessager);
-        val choiceSpec     = new ChoiceSpec(input);
-        val sourceSpec     = choiceSpec.sourceSpec();
-        val packageName    = choiceSpec.packageName();
-        val specTargetName = choiceSpec.targetName();
+        var dummyMessager  = new DummyMessager();
+        var input          = new ChoiceSpecInputImpl(element, elementUtils, dummyMessager);
+        var choiceSpec     = new ChoiceSpec(input);
+        var sourceSpec     = choiceSpec.sourceSpec();
+        var packageName    = choiceSpec.packageName();
+        var specTargetName = choiceSpec.targetName();
         try {
-            val elmChoiceSpec = new ElmChoiceSpec(sourceSpec, element);
-            val elmChoice     = new ElmChoiceBuilder(elmChoiceSpec);
-            val baseDir       = "./generated/elm/";
-            val folderName    = elmChoiceSpec.folderName();
-            val fileName      = elmChoiceSpec.fileName();
+            var elmChoiceSpec = new ElmChoiceSpec(sourceSpec, element);
+            var elmChoice     = new ElmChoiceBuilder(elmChoiceSpec);
+            var baseDir       = "./generated/elm/";
+            var folderName    = elmChoiceSpec.folderName();
+            var fileName      = elmChoiceSpec.fileName();
             
-            val generatedPath = baseDir + folderName + "/";
-            val generatedCode = elmChoice.toElmCode();
-            val generatedName = generatedPath + fileName;
+            var generatedPath = baseDir + folderName + "/";
+            var generatedCode = elmChoice.toElmCode();
+            var generatedName = generatedPath + fileName;
             
             generateElmCode(generatedPath, generatedCode, generatedName);
         } catch (Exception e) {

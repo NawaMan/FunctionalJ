@@ -51,14 +51,14 @@ public abstract class Ref<DATA> {
     
     public static <D> Ref<D> ofValue(D value) {
         @SuppressWarnings("unchecked")
-        val dataClass = (Class<D>)value.getClass();
-        val result    = Result.valueOf(value);
-        val ref       = new RefOf.FromResult<D>(dataClass, result, null);
+        var dataClass = (Class<D>)value.getClass();
+        var result    = Result.valueOf(value);
+        var ref       = new RefOf.FromResult<D>(dataClass, result, null);
         return ref;
     }
     
     public static <D> Ref<D> dictactedTo(D value) {
-        val ref = ofValue(value);
+        var ref = ofValue(value);
         return ref.dictate();
     }
     
@@ -73,10 +73,10 @@ public abstract class Ref<DATA> {
     abstract Result<DATA> findResult();
     
     Result<DATA> findOverrideResult() {
-        val entry    = refEntry.get();
-        val supplier = entry.findSupplier(this);
+        var entry    = refEntry.get();
+        var supplier = entry.findSupplier(this);
         if (supplier != null) {
-            val result = Result.of(supplier);
+            var result = Result.of(supplier);
             return result;
         }
         
@@ -95,24 +95,24 @@ public abstract class Ref<DATA> {
     }
     
     public final Result<DATA> getResult() {
-        val override = findOverrideResult();
+        var override = findOverrideResult();
         if (override != null) {
             if (override.isPresent() || (whenAbsentSupplier == null))
                 return override;
             if (!override.isPresent() && (whenAbsentSupplier != null)) {
-                val elseValue = whenAbsentSupplier.get();
+                var elseValue = whenAbsentSupplier.get();
                 if (elseValue != null)
                      return Result.valueOf(elseValue);
                 else return Result.ofNotExist();
             }
         }
         
-        val result = findResult();
+        var result = findResult();
         if (result != null) {
             if (result.isPresent() || (whenAbsentSupplier == null))
                 return result;
             if (!result.isPresent() && (whenAbsentSupplier != null)) {
-                val elseValue = Result.from(whenAbsentSupplier);
+                var elseValue = Result.from(whenAbsentSupplier);
                 if (elseValue.isPresent())
                     return elseValue;
                else return Result.ofNotExist();
@@ -122,7 +122,7 @@ public abstract class Ref<DATA> {
         if (whenAbsentSupplier == null)
             return Result.ofNotExist();
         
-        val elseValue = whenAbsentSupplier.get();
+        var elseValue = whenAbsentSupplier.get();
         if (elseValue == null)
             return Result.ofNotExist();
         
@@ -139,14 +139,14 @@ public abstract class Ref<DATA> {
     
     public final Func0<DATA> valueSupplier() {
         return ()->{
-            val value = value();
+            var value = value();
             return value;
         };
     }
     
     public final DATA value() {
-        val result = getResult();
-        val value  = result.value();
+        var result = getResult();
+        var value  = result.value();
         return value;
     }
     public final DATA orElse(DATA elseValue) {
@@ -168,8 +168,8 @@ public abstract class Ref<DATA> {
     
     public final <TARGET> Ref<TARGET> map(Class<TARGET> targetClass, Func1<DATA, TARGET> mapper) {
         return Ref.of(targetClass).defaultFrom(()->{
-            val result = getResult();
-            val target = result.map(mapper);
+            var result = getResult();
+            var target = result.map(mapper);
             return target.get();
         });
     }
@@ -249,7 +249,7 @@ public abstract class Ref<DATA> {
     
     static final <V, E extends Exception> 
             V runWith(List<Substitution<?>> substitutions, ComputeBody<V, E> action) throws E {
-        val map = refEntry.get();
+        var map = refEntry.get();
         try {
             if (substitutions != null) {
                 Entry current = map;
@@ -272,7 +272,7 @@ public abstract class Ref<DATA> {
     
     static final <V, E extends Exception> 
             void runWith(List<Substitution<?>> substitutions, RunBody<E> action) throws E {
-        val map = refEntry.get();
+        var map = refEntry.get();
         try {
             if (substitutions != null) {
                 Entry currentEntry = map;
@@ -282,7 +282,7 @@ public abstract class Ref<DATA> {
                     if (substitution.ref() instanceof DictatedRef)
                         continue;
                     
-                    val newEntry = new Entry(currentEntry, substitution);
+                    var newEntry = new Entry(currentEntry, substitution);
                     refEntry.set(newEntry);
                     currentEntry = newEntry;
                 }
@@ -295,11 +295,11 @@ public abstract class Ref<DATA> {
     }
     
     public static final FuncList<Ref<?>> getCurrentRefs() {
-        val set = new HashSet<Ref<?>>();
+        var set = new HashSet<Ref<?>>();
         Entry entry = refEntry.get();
         while ((entry != null) && (entry.substitution != null)) {
             @SuppressWarnings("rawtypes")
-            val ref = entry.substitution.ref();
+            var ref = entry.substitution.ref();
             set.add(ref);
             
             entry = entry.parent;
@@ -308,11 +308,11 @@ public abstract class Ref<DATA> {
     }
     
     static final FuncList<Substitution<?>> getSubstitutions() {
-        val map = new HashMap<Ref<?>, Substitution<?>>();
+        var map = new HashMap<Ref<?>, Substitution<?>>();
         Entry entry = refEntry.get();
         while ((entry != null) && (entry.substitution != null)) {
             @SuppressWarnings("rawtypes")
-            val ref = entry.substitution.ref();
+            var ref = entry.substitution.ref();
             map.putIfAbsent(ref, entry.substitution);
             
             entry = entry.parent;

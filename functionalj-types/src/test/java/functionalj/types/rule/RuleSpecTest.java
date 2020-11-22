@@ -35,7 +35,7 @@ public class RuleSpecTest {
 
     @Test
     public void testBoolean() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.types.rule", null, "value", "java.lang.String", "Not valid.", RuleType.Bool);
+        var ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.types.rule", null, "value", "java.lang.String", "Not valid.", RuleType.Bool);
         assertEquals(
                 "package functionalj.types.rule;\n" + 
                 "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.String> implements functionalj.types.IRule<java.lang.String> {\n" + 
@@ -62,7 +62,7 @@ public class RuleSpecTest {
     }
     @Test
     public void testBoolean_int() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.types.rule", null, "value", "int", "Not valid.", RuleType.Bool);
+        var ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.types.rule", null, "value", "int", "Not valid.", RuleType.Bool);
         assertEquals(
                 "package functionalj.types.rule;\n" + 
                 "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.types.IRule<java.lang.Integer> {\n" + 
@@ -89,7 +89,7 @@ public class RuleSpecTest {
     }
     @Test
     public void testErrorMessage() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.types.rule", null, "value", "int", null, RuleType.ErrMsg);
+        var ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.types.rule", null, "value", "int", null, RuleType.ErrMsg);
         assertEquals(
                 "package functionalj.types.rule;\n" + 
                 "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.types.IRule<java.lang.Integer> {\n" + 
@@ -116,7 +116,7 @@ public class RuleSpecTest {
     }
     @Test
     public void testException() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.types.rule", null, "value", "int", null, RuleType.Func);
+        var ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.types.rule", null, "value", "int", null, RuleType.Func);
         assertEquals(
                 "package functionalj.types.rule;\n" + 
                 "public class ThreeDigitString extends functionalj.result.Acceptable<java.lang.Integer> implements functionalj.types.IRule<java.lang.Integer> {\n" + 
@@ -143,7 +143,7 @@ public class RuleSpecTest {
     }
     @Test
     public void testSubRule() {
-        val ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.types.rule", "NonNullString", "value", "java.lang.String", "Not valid.", RuleType.Bool);
+        var ruleSpec = new RuleSpec("ThreeDigitString", "RuleSpecTest", "functionalj.types.rule", "NonNullString", "value", "java.lang.String", "Not valid.", RuleType.Bool);
         assertEquals(
                 "package functionalj.types.rule;\n" + 
                 "public class ThreeDigitString extends NonNullString {\n" + 

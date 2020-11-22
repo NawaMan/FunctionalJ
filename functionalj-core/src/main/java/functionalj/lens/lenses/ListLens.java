@@ -100,7 +100,7 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                     return list.get(list.size() - 1);
                 },
                 (list, newValue)->{
-                    val newList = new ArrayList<>(list);
+                    var newList = new ArrayList<>(list);
                     newList.set(list.size() - 1, newValue);
                     return newList;
                 });
@@ -120,7 +120,7 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
                     return list.get(index);
                 },
                 (list, newValue)->{
-                    val newList = new ArrayList<>(list);
+                    var newList = new ArrayList<>(list);
                     newList.set(index, newValue);
                     return newList;
                 });
@@ -128,10 +128,10 @@ public interface ListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
     
     public default Func1<HOST, HOST> changeTo(Predicate<TYPE> checker, Function<TYPE, TYPE> mapper) {
         return host -> {
-            val newList = apply(host).stream()
+            var newList = apply(host).stream()
                     .map(each -> checker.test(each) ? mapper.apply(each) : each)
                     .collect(Collectors.toList());
-            val newHost = apply(host, newList);
+            var newHost = apply(host, newList);
             return newHost;
         };
     }

@@ -36,8 +36,8 @@ public class BlockingQueueIteratorPlusTest {
     
     @Test
     public void testBasic() throws InterruptedException {
-        val endValue = (String)UUID.randomUUID().toString();
-        val queue    = new LinkedBlockingQueue<String>();
+        var endValue = (String)UUID.randomUUID().toString();
+        var queue    = new LinkedBlockingQueue<String>();
         try (val iterator = new BlockingQueueIteratorPlus<String>(endValue, queue)) {
             
             queue.put("One");
@@ -61,8 +61,8 @@ public class BlockingQueueIteratorPlusTest {
     
     @Test
     public void testBlocking() throws InterruptedException {
-        val endValue = (String)UUID.randomUUID().toString();
-        val queue    = new LinkedBlockingQueue<String>();
+        var endValue = (String)UUID.randomUUID().toString();
+        var queue    = new LinkedBlockingQueue<String>();
         try (val iterator = new BlockingQueueIteratorPlus<String>(endValue, queue)) {
             
             queue.put("One");
@@ -91,8 +91,8 @@ public class BlockingQueueIteratorPlusTest {
     
     @Test
     public void testBlockingStream() throws InterruptedException {
-        val endValue = (String)UUID.randomUUID().toString();
-        val queue    = new LinkedBlockingQueue<String>();
+        var endValue = (String)UUID.randomUUID().toString();
+        var queue    = new LinkedBlockingQueue<String>();
         try (val iterator = new BlockingQueueIteratorPlus<String>(endValue, queue)) {
             queue.put("One");
             queue.put("Two");

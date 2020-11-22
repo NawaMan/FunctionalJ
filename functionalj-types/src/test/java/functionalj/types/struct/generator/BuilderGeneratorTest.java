@@ -53,14 +53,14 @@ public class BuilderGeneratorTest {
     
     @Test
     public void testMixed() {
-        val getters = asList(
+        var getters = asList(
                 new Getter("a", Type.INT, true, DefaultValue.MINUS_ONE),
                 new Getter("b", Type.BOOL),
                 new Getter("c", Type.STRING, true, DefaultValue.NULL),
                 new Getter("d", Type.STRING),
                 new Getter("e", Type.STRING, true, DefaultValue.NULL)
         );
-        val sourceSpec = new SourceSpec(
+        var sourceSpec = new SourceSpec(
                 definitionClassName, // specClassName
                 packageName,         // packageName
                 null,                // encloseName
@@ -72,7 +72,7 @@ public class BuilderGeneratorTest {
                 configures,          // Configurations
                 getters,
                 emptyList());
-        val builder    = new BuilderGenerator(sourceSpec);
+        var builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
                 "public static final class Builder {\n" + 
                 "    \n" + 
@@ -144,14 +144,14 @@ public class BuilderGeneratorTest {
     
     @Test
     public void testAllRequired() {
-        val getters = asList(
+        var getters = asList(
                 new Getter("a", Type.INT),
                 new Getter("b", Type.BOOL),
                 new Getter("c", Type.STRING),
                 new Getter("d", Type.STRING),
                 new Getter("e", Type.STRING)
         );
-        val sourceSpec = new SourceSpec(
+        var sourceSpec = new SourceSpec(
                 definitionClassName, // specClassName
                 packageName,         // packageName
                 null,                // encloseName
@@ -163,7 +163,7 @@ public class BuilderGeneratorTest {
                 configures,          // Configurations
                 getters,
                 emptyList());
-        val builder    = new BuilderGenerator(sourceSpec);
+        var builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
                 "public static final class Builder {\n" + 
                 "    \n" + 
@@ -223,14 +223,14 @@ public class BuilderGeneratorTest {
     
     @Test
     public void testAllOptional() {
-        val getters = asList(
+        var getters = asList(
                 new Getter("a", Type.INT,    true, DefaultValue.MINUS_ONE),
                 new Getter("b", Type.BOOL,   true, DefaultValue.FALSE),
                 new Getter("c", Type.STRING, true, DefaultValue.NULL),
                 new Getter("d", Type.STRING, true, DefaultValue.EMPTY),
                 new Getter("e", Type.STRING, true, DefaultValue.NULL)
         );
-        val sourceSpec = new SourceSpec(
+        var sourceSpec = new SourceSpec(
                 definitionClassName, // specClassName
                 packageName,         // packageName
                 null,                // encloseName
@@ -242,7 +242,7 @@ public class BuilderGeneratorTest {
                 configures,          // Configurations
                 getters,
                 emptyList());
-        val builder    = new BuilderGenerator(sourceSpec);
+        var builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
                 "public static final class Builder {\n" + 
                 "    \n" + 
@@ -352,10 +352,10 @@ public class BuilderGeneratorTest {
     
     @Test
     public void testOneRequired() {
-        val getters = asList(
+        var getters = asList(
                 new Getter("a", Type.INT)
         );
-        val sourceSpec = new SourceSpec(
+        var sourceSpec = new SourceSpec(
                 definitionClassName, // specClassName
                 packageName,         // packageName
                 null,                // encloseName
@@ -367,7 +367,7 @@ public class BuilderGeneratorTest {
                 configures,          // Configurations
                 getters,
                 emptyList());
-        val builder    = new BuilderGenerator(sourceSpec);
+        var builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
                 "public static final class Builder {\n" + 
                 "    \n" + 
@@ -395,10 +395,10 @@ public class BuilderGeneratorTest {
     
     @Test
     public void testOneOptional() {
-        val getters = asList(
+        var getters = asList(
                 new Getter("a", Type.INT, true, DefaultValue.MINUS_ONE)
         );
-        val sourceSpec = new SourceSpec(
+        var sourceSpec = new SourceSpec(
                 definitionClassName, // specClassName
                 packageName,         // packageName
                 null,                // encloseName
@@ -410,7 +410,7 @@ public class BuilderGeneratorTest {
                 configures,          // Configurations
                 getters,
                 emptyList());
-        val builder    = new BuilderGenerator(sourceSpec);
+        var builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
                 "public static final class Builder {\n" + 
                 "    \n" + 
@@ -443,7 +443,7 @@ public class BuilderGeneratorTest {
     @Test
     public void testNone() {
         List<Getter> getters = emptyList();
-        val sourceSpec = new SourceSpec(
+        var sourceSpec = new SourceSpec(
                 definitionClassName, // specClassName
                 packageName,         // packageName
                 null,                // encloseName
@@ -455,7 +455,7 @@ public class BuilderGeneratorTest {
                 configures,          // Configurations
                 getters,
                 emptyList());
-        val builder    = new BuilderGenerator(sourceSpec);
+        var builder    = new BuilderGenerator(sourceSpec);
         assertEquals(
                 "public static final class Builder implements DataBuilder_ready {\n" + 
                 "    \n" + 

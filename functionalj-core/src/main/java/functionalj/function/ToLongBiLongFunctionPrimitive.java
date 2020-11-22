@@ -36,7 +36,7 @@ public interface ToLongBiLongFunctionPrimitive extends ToLongBiLongFunction<Long
     
     
     public static long apply(ToLongBiLongFunction<Long> function, long value, long anotherValue) {
-        val resValue 
+        var resValue 
             = (function instanceof ToLongBiLongFunctionPrimitive)
             ? ((ToLongBiLongFunctionPrimitive)function).applyAsLongAndLong(value, anotherValue)
             : function.applyAsLong(value, anotherValue);

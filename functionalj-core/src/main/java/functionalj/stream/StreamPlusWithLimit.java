@@ -40,7 +40,7 @@ public interface StreamPlusWithLimit<DATA> {
     
     /** Limit the size of the stream to the given size. */
     public default StreamPlus<DATA> limit(Long maxSize) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return ((maxSize == null) || (maxSize.longValue() < 0))
                 ? streamPlus
                 : streamPlus
@@ -49,7 +49,7 @@ public interface StreamPlusWithLimit<DATA> {
     
     /** Skip to the given offset position. */
     public default StreamPlus<DATA> skip(Long offset) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return ((offset == null) || (offset.longValue() < 0))
                 ? streamPlus
                 : streamPlus
@@ -59,9 +59,9 @@ public interface StreamPlusWithLimit<DATA> {
     /** Skip any value while the condition is true. */
     @Sequential
     public default StreamPlus<DATA> skipWhile(Predicate<? super DATA> condition) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return sequential(streamPlus, stream -> {
-            val isStillTrue = new AtomicBoolean(true);
+            var isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
@@ -77,9 +77,9 @@ public interface StreamPlusWithLimit<DATA> {
     /** Skip any value until the condition is true. */
     @Sequential
     public default StreamPlus<DATA> skipUntil(Predicate<? super DATA> condition) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return sequential(streamPlus, stream -> {
-            val isStillTrue = new AtomicBoolean(true);
+            var isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
@@ -96,9 +96,9 @@ public interface StreamPlusWithLimit<DATA> {
     @Sequential
     public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
         // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
+            var splitr = stream.spliterator();
             return StreamPlus.from(
                     StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
                         boolean stillGoing = true;
@@ -125,10 +125,10 @@ public interface StreamPlusWithLimit<DATA> {
     /** Accept any value until the condition is true. */
     @Sequential
     public default StreamPlus<DATA> takeUntil(Predicate<? super DATA> condition) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+            var splitr = stream.spliterator();
+            var resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
                 boolean stillGoing = true;
                 
                 @Override

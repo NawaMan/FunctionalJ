@@ -108,10 +108,10 @@ public class Retry<DATA> {
     }
     
     DeferAction<DATA> create(DeferActionBuilder<DATA> builder) {
-        val interruptOnCancel = builder.interruptOnCancel();
-        val supplier          = builder.supplier();
-        val onStart           = builder.onStart();
-        val runner            = builder.runner();
+        var interruptOnCancel = builder.interruptOnCancel();
+        var supplier          = builder.supplier();
+        var onStart           = builder.onStart();
+        var runner            = builder.runner();
         if (times == Retry.NO_RETRY)
             return DeferAction.create(interruptOnCancel, supplier, onStart, runner);
         

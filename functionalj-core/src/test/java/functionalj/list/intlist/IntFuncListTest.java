@@ -201,7 +201,7 @@ public class IntFuncListTest {
 //    
 //    @Test
 //    public void testPeek() {
-//        val logs = new ArrayList<String>();
+//        var logs = new ArrayList<String>();
 //        intList.peek(i -> logs.add("" + i)).forEach(t -> {
 //        });
 //        assertEquals("[1, 1, 2, 3, 5, 8, 13]", logs.toString());
@@ -223,9 +223,9 @@ public class IntFuncListTest {
 //    
 //    @Test
 //    public void testLazy() {
-//        val factor = new AtomicInteger(1);
+//        var factor = new AtomicInteger(1);
 //        
-//        val list = intList.lazy().map(i -> i * factor.get());
+//        var list = intList.lazy().map(i -> i * factor.get());
 //        
 //        // This set change the values.
 //        factor.set(2);
@@ -234,9 +234,9 @@ public class IntFuncListTest {
 //    
 //    @Test
 //    public void testEager() {
-//        val factor = new AtomicInteger(1);
+//        var factor = new AtomicInteger(1);
 //        
-//        val list = intList.eager().map(i -> i * factor.get());
+//        var list = intList.eager().map(i -> i * factor.get());
 //        
 //        // This set change the values.
 //        factor.set(2);
@@ -498,7 +498,7 @@ public class IntFuncListTest {
 //    
 //    @Test
 //    public void testForEach() {
-//        val buffer1 = new StringBuffer();
+//        var buffer1 = new StringBuffer();
 //        intList.forEach(i -> buffer1.append(" ").append(i));
 //        assertEquals(" 1 1 2 3 5 8 13", buffer1.toString());
 //    }
@@ -1224,7 +1224,7 @@ public class IntFuncListTest {
 //    
 //    @Test
 //    public void testConcatWith() {
-//        val anotherList = range(21, 27);
+//        var anotherList = range(21, 27);
 //        run(range(0, 5), list->{
 //            assertEquals("["
 //                            + "0, 1, 2, 3, 4, "
@@ -1246,7 +1246,7 @@ public class IntFuncListTest {
 //    
 //    @Test
 //    public void testMergeWith() {
-//        val anotherList = range(21, 27);
+//        var anotherList = range(21, 27);
 //        run(range(0, 5), list->{
 //            assertEquals("[0, 21, 1, 22, 2, 23, 3, 24, 4, 25, 26]", 
 //                        list
@@ -1262,8 +1262,8 @@ public class IntFuncListTest {
 //    
 //    @Test
 //    public void testZipWith_boxed() {
-//        val anotherList1 = range(21, 27);
-//        val anotherList2 = range(21, 24);
+//        var anotherList1 = range(21, 27);
+//        var anotherList2 = range(21, 24);
 //        run(range(0, 5), list->{
 //            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25)]", 
 //                    list.zipWith(anotherList1.boxed()).toListString());
@@ -1303,8 +1303,8 @@ public class IntFuncListTest {
 //    
 //    @Test
 //    public void testZipWith() {
-//        val anotherList1 = range(21, 27);
-//        val anotherList2 = range(21, 24);
+//        var anotherList1 = range(21, 27);
+//        var anotherList2 = range(21, 24);
 //        run(range(0, 5), list->{
 //            assertEquals("[(0,21), (1,22), (2,23), (3,24), (4,25)]", 
 //                    list.zipWith(anotherList1).toListString());
@@ -1331,7 +1331,7 @@ public class IntFuncListTest {
 //    
 //    @Test
 //    public void testChoose() {
-//        val anotherList = range(22, 30);
+//        var anotherList = range(22, 30);
 //        run(range(0, 5), list->{
 //            // 0 % 3 = 0 vs 22 % 2 = 0 => 22
 //            // 1 % 3 = 1 vs 23 % 2 = 1 => 23
@@ -1432,8 +1432,8 @@ public class IntFuncListTest {
 //    
 //    @Test
 //    public void testCalculate() {
-//        val sum = new Sum();
-//        val max = new Max();
+//        var sum = new Sum();
+//        var max = new Max();
 //        run(range(0, 10), list->{
 //            assertEquals("45", 
 //                         "" + list.calculate(sum));
@@ -1614,7 +1614,7 @@ public class IntFuncListTest {
 //    public void testPeekMore() {
 //        run(range(0, 10), list->{
 //            {
-//                val lines = new ArrayList<String>();
+//                var lines = new ArrayList<String>();
 //                assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
 //                        list
 //                        .peek(theInteger.thatIsEven(), i -> lines.add("" + i))
@@ -1626,7 +1626,7 @@ public class IntFuncListTest {
 //            }
 //            
 //            {
-//                val lines = new ArrayList<String>();
+//                var lines = new ArrayList<String>();
 //                assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
 //                        list
 //                        .peek((int    i) -> "--> " + i + ";", 
@@ -1639,7 +1639,7 @@ public class IntFuncListTest {
 //            }
 //            
 //            {
-//                val lines = new ArrayList<String>();
+//                var lines = new ArrayList<String>();
 //                assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
 //                        list
 //                        .peek((int    i) -> "--> " + i + ";", 
@@ -1703,7 +1703,7 @@ public class IntFuncListTest {
 //    @Test
 //    public void testForEachWithIndex() {
 //        run(range(0, 10), list->{
-//            val lines = new ArrayList<String>();
+//            var lines = new ArrayList<String>();
 //            list
 //            .forEachWithIndex((i, v) -> lines.add(i + ": " + v));
 //            

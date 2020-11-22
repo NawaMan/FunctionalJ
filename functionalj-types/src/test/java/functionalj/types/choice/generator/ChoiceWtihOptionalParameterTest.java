@@ -38,8 +38,8 @@ public class ChoiceWtihOptionalParameterTest {
     
     @Test
     public void testChoiceWithOptionalDouble() {
-        val target = new TargetClass(spec);
-        val lines  = target.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var target = new TargetClass(spec);
+        var lines  = target.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(expected, lines);
     }
     

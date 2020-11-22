@@ -150,39 +150,39 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     }
     
     public default Object[] toArray() {
-        val _1 = _1();
-        val _2 = _2();
+        var _1 = _1();
+        var _2 = _2();
         return new Object[] { _1, _2 };
     }
     
     public default <T> T[] toArray(Class<T> type) {
-        val _1 = _1();
-        val _2 = _2();
-        val array = Array.newInstance(type, 2);
+        var _1 = _1();
+        var _2 = _2();
+        var array = Array.newInstance(type, 2);
         Array.set(array, 0, _1);
         Array.set(array, 1, _2);
         @SuppressWarnings("unchecked")
-        val toArray = (T[])array;
+        var toArray = (T[])array;
         return toArray;
     }
     
     public default FuncList<Object> toList() {
-        val _1 = _1();
-        val _2 = _2();
+        var _1 = _1();
+        var _2 = _2();
         return FuncList.of(_1, _2);
     }
     
     public default <K> FuncMap<K, Object> toMap(K k1, K k2) {
-        val e1 = (k1 != null) ? ImmutableTuple.of(k1, (Object)_1()) : null;
-        val e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object)_2()) : null;
+        var e1 = (k1 != null) ? ImmutableTuple.of(k1, (Object)_1()) : null;
+        var e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object)_2()) : null;
         return ImmutableMap.ofEntries(e1, e2);
     }
     
     //== mapTo ==
     
     public default <T> T mapTo(BiFunction<? super T1, ? super T2, T> mapper) {
-        val _1 = _1();
-        val _2 = _2();
+        var _1 = _1();
+        var _2 = _2();
         return mapper.apply(_1, _2);
     }
     
@@ -197,8 +197,8 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     }
     
     public default <NT1, NT2> Tuple2<NT1, NT2> map(BiFunction<? super T1, ? super T2, Tuple2<NT1, NT2>> mapper) {
-        val _1 = _1();
-        val _2 = _2();
+        var _1 = _1();
+        var _2 = _2();
         return mapper.apply(_1, _2);
     }
     
@@ -211,42 +211,42 @@ public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
             Function<? super T1, NT1> mapper1, 
             Function<? super T2, NT2> mapper2, 
             BiFunction<? super NT1, ? super NT2, T> mapper) {
-        val _1 = _1();
-        val _2 = _2();
-        val n1 = mapper1.apply(_1);
-        val n2 = mapper2.apply(_2);
+        var _1 = _1();
+        var _2 = _2();
+        var n1 = mapper1.apply(_1);
+        var n2 = mapper2.apply(_2);
         return mapper.apply(n1, n2);
     }
     
     public default <NT2> Tuple2<T1, NT2> map(Absent absent1, Function<? super T2, NT2> mapper2) {
-        val _1 = _1();
-        val _2 = _2();
-        val n1 = _1;
-        val n2 = mapper2.apply(_2);
+        var _1 = _1();
+        var _2 = _2();
+        var n1 = _1;
+        var n2 = mapper2.apply(_2);
         return Tuple.of(n1, n2);
     }
     
     public default <NT1> Tuple2<NT1, T2> map(Function<? super T1, NT1> mapper1, Absent absent2) {
-        val _1 = _1();
-        val _2 = _2();
-        val n1 = mapper1.apply(_1);
-        val n2 = _2;
+        var _1 = _1();
+        var _2 = _2();
+        var n1 = mapper1.apply(_1);
+        var n2 = _2;
         return Tuple.of(n1, n2);
     }
     
     //== Reduce ==
     
     public default <TARGET> TARGET reduce(Func2<T1, T2, TARGET> reducer) {
-        val _1     = _1();
-        val _2     = _2();
-        val target = reducer.apply(_1, _2);
+        var _1     = _1();
+        var _2     = _2();
+        var target = reducer.apply(_1, _2);
         return target;
     }
     
     //== drop ==
     
     public default T1 drop() {
-        val _1 = _1();
+        var _1 = _1();
         return _1;
     }
     

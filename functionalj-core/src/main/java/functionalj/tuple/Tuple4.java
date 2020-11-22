@@ -61,19 +61,19 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     }
     
     public default Object[] toArray() {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
-        val _4 = _4();
+        var _1 = _1();
+        var _2 = _2();
+        var _3 = _3();
+        var _4 = _4();
         return new Object[] { _1, _2, _3, _4 };
     }
     
     public default <T> T[] toArray(Class<T> type) {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
-        val _4 = _4();
-        val array = Array.newInstance(type, 4);
+        var _1 = _1();
+        var _2 = _2();
+        var _3 = _3();
+        var _4 = _4();
+        var array = Array.newInstance(type, 4);
         Array.set(array, 0, _1);
         Array.set(array, 1, _2);
         Array.set(array, 2, _3);
@@ -84,28 +84,28 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     }
     
     public default FuncList<Object> toList() {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
-        val _4 = _4();
+        var _1 = _1();
+        var _2 = _2();
+        var _3 = _3();
+        var _4 = _4();
         return FuncList.of(_1, _2, _3, _4);
     }
     
     public default <K> FuncMap<K, Object> toMap(K k1, K k2, K k3, K k4) {
-        val e1 = (k1 != null) ? ImmutableTuple.of(k1, (Object)_1()) : null;
-        val e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object)_2()) : null;
-        val e3 = (k3 != null) ? ImmutableTuple.of(k3, (Object)_3()) : null;
-        val e4 = (k4 != null) ? ImmutableTuple.of(k4, (Object)_4()) : null;
+        var e1 = (k1 != null) ? ImmutableTuple.of(k1, (Object)_1()) : null;
+        var e2 = (k2 != null) ? ImmutableTuple.of(k2, (Object)_2()) : null;
+        var e3 = (k3 != null) ? ImmutableTuple.of(k3, (Object)_3()) : null;
+        var e4 = (k4 != null) ? ImmutableTuple.of(k4, (Object)_4()) : null;
         return ImmutableMap.ofEntries(e1, e2, e3, e4);
     }
     
     //== mapTo ==
     
     public default <T> T mapTo(Func4<? super T1, ? super T2, ? super T3, ? super T4, T> mapper) {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
-        val _4 = _4();
+        var _1 = _1();
+        var _2 = _2();
+        var _3 = _3();
+        var _4 = _4();
         return mapper.apply(_1, _2, _3, _4);
     }
     
@@ -310,35 +310,35 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
     //== Reduce ==
     
     public default <TARGET> TARGET reduce(Func2<T1, T2, TARGET> reducer) {
-        val _1     = _1();
-        val _2     = _2();
-        val target = reducer.apply(_1, _2);
+        var _1     = _1();
+        var _2     = _2();
+        var target = reducer.apply(_1, _2);
         return target;
     }
     
     public default <TARGET> TARGET reduce(Func3<T1, T2, T3, TARGET> reducer) {
-        val _1     = _1();
-        val _2     = _2();
-        val _3     = _3();
-        val target = reducer.apply(_1, _2, _3);
+        var _1     = _1();
+        var _2     = _2();
+        var _3     = _3();
+        var target = reducer.apply(_1, _2, _3);
         return target;
     }
     
     public default <TARGET> TARGET reduce(Func4<T1, T2, T3, T4, TARGET> reducer) {
-        val _1     = _1();
-        val _2     = _2();
-        val _3     = _3();
-        val _4     = _4();
-        val target = reducer.apply(_1, _2, _3, _4);
+        var _1     = _1();
+        var _2     = _2();
+        var _3     = _3();
+        var _4     = _4();
+        var target = reducer.apply(_1, _2, _3, _4);
         return target;
     }
     
     //== drop ==
     
     public default Tuple3<T1, T2, T3> drop() {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
+        var _1 = _1();
+        var _2 = _2();
+        var _3 = _3();
         return Tuple.of(_1, _2, _3);
     }
     
@@ -360,9 +360,9 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
             Keep   keep2,
             Keep   keep3,
             Keep   keep4) {
-        val _2 = _2();
-        val _3 = _3();
-        val _4 = _4();
+        var _2 = _2();
+        var _3 = _3();
+        var _4 = _4();
         return Tuple.of(_2, _3, _4);
     }
     
@@ -371,9 +371,9 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
             Absent drop2,
             Keep   keep3,
             Keep   keep4) {
-        val _1 = _1();
-        val _3 = _3();
-        val _4 = _4();
+        var _1 = _1();
+        var _3 = _3();
+        var _4 = _4();
         return Tuple.of(_1, _3, _4);
     }
     
@@ -382,9 +382,9 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
             Keep   keep2,
             Absent drop3,
             Keep   keep4) {
-        val _1 = _1();
-        val _2 = _2();
-        val _4 = _4();
+        var _1 = _1();
+        var _2 = _2();
+        var _4 = _4();
         return Tuple.of(_1, _2, _4);
     }
     
@@ -393,9 +393,9 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
             Keep   keep2, 
             Keep   keep3,
             Absent drop4) {
-        val _1 = _1();
-        val _2 = _2();
-        val _3 = _3();
+        var _1 = _1();
+        var _2 = _2();
+        var _3 = _3();
         return Tuple.of(_1, _2, _3);
     }
     
@@ -404,8 +404,8 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
             Absent drop2,
             Keep   keep3,
             Keep   keep4) {
-        val _3 = _3();
-        val _4 = _4();
+        var _3 = _3();
+        var _4 = _4();
         return Tuple.of(_3, _4);
     }
     
@@ -414,8 +414,8 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
             Keep   keep2,
             Absent drop3,
             Keep   keep4) {
-        val _2 = _2();
-        val _4 = _4();
+        var _2 = _2();
+        var _4 = _4();
         return Tuple.of(_2, _4);
     }
     
@@ -424,8 +424,8 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
             Keep   keep2,
             Keep   keep3,
             Absent drop4) {
-        val _2 = _2();
-        val _3 = _3();
+        var _2 = _2();
+        var _3 = _3();
         return Tuple.of(_2, _3);
     }
     
@@ -434,8 +434,8 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
             Absent drop2, 
             Absent drop3,
             Keep   keep4) {
-        val _1 = _1();
-        val _4 = _4();
+        var _1 = _1();
+        var _4 = _4();
         return Tuple.of(_1, _4);
     }
     
@@ -444,8 +444,8 @@ public interface Tuple4<T1, T2, T3, T4> extends Pipeable<Tuple4<T1, T2, T3, T4>>
             Keep   keep2, 
             Absent drop3, 
             Absent drop4) {
-        val _1 = _1();
-        val _2 = _2();
+        var _1 = _1();
+        var _2 = _2();
         return Tuple.of(_1, _2);
     }
     

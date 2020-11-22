@@ -50,13 +50,13 @@ public class SimpleStructTest {
     
     @Test
     public void testReadLens_getProperty() {
-        val obj1 = new SimpleFromInteface("Obj1");
+        var obj1 = new SimpleFromInteface("Obj1");
         assertEquals("Obj1", theSimpleFromInteface.name.apply(obj1));
     }
         
     @Test
     public void testWriteLens_createNewObject() {
-        val obj1 = new SimpleFromInteface("Obj1");
+        var obj1 = new SimpleFromInteface("Obj1");
         assertEquals("Obj1",               obj1.name());
         assertEquals("Object1",            theSimpleFromInteface.name.changeTo("Object1").apply(obj1).name());
         assertEquals("SimpleFromInteface", obj1.withName("Object1").getClass().getSimpleName());
@@ -66,12 +66,12 @@ public class SimpleStructTest {
     
     @Test
     public void testWithStream_createNewObject() {
-        val list = Arrays.asList(
+        var list = Arrays.asList(
                     new SimpleFromInteface("Obj1"),
                     new SimpleFromInteface("Obj2"),
                     new SimpleFromInteface("Obj3")
                 );
-        val names = list.stream().map(theSimpleFromInteface.name).collect(toList());
+        var names = list.stream().map(theSimpleFromInteface.name).collect(toList());
         assertEquals("[Obj1, Obj2, Obj3]", names.toString());
         
         assertEquals(1, list.stream().filter(theSimpleFromInteface.name.thatEquals("Obj2")).count());

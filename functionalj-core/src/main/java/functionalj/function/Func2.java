@@ -147,15 +147,15 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     }
     public default <SOURCE> Func1<SOURCE, OUTPUT> applyTo(Func1<SOURCE, INPUT1> input1, Func1<SOURCE, INPUT2> input2) {
         return source -> {
-            val i1 = input1.apply(source);
-            val i2 = input2.apply(source);
+            var i1 = input1.apply(source);
+            var i2 = input2.apply(source);
             return apply(i1, i2);
         };
     }
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2) {
         try {
-            val output = applyUnsafe(input1, input2);
+            var output = applyUnsafe(input1, input2);
             return Result.valueOf(output);
         } catch (Exception exception) {
             return Result.ofException(exception);
@@ -190,7 +190,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
+                var outputValue = this.applyUnsafe(input1, input2);
                 return outputValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
@@ -201,7 +201,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> ifExceptionThenPrint() {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
+                var outputValue = this.applyUnsafe(input1, input2);
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -212,7 +212,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> ifExceptionThenPrint(PrintStream printStream) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
+                var outputValue = this.applyUnsafe(input1, input2);
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace(printStream);
@@ -223,7 +223,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> ifExceptionThenPrint(PrintWriter printWriter) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
+                var outputValue = this.applyUnsafe(input1, input2);
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace(printWriter);
@@ -235,8 +235,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultValue;
@@ -249,8 +249,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultSupplier.get();
@@ -263,8 +263,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(null);
@@ -277,8 +277,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func3<INPUT1, INPUT2, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(input1, input2, null);
@@ -291,8 +291,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Func2<Tuple2<INPUT1, INPUT2>, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(Tuple.of(input1, input2), null);
@@ -306,8 +306,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentUse(Consumer<Exception> exceptionHandler, OUTPUT defaultValue) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultValue;
@@ -321,8 +321,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentGet(Consumer<Exception> exceptionHandler, Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultSupplier.get();
@@ -336,8 +336,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func1<Exception, OUTPUT> exceptionMapper) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(null);
@@ -351,8 +351,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func3<INPUT1, INPUT2, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(input1, input2, null);
@@ -366,8 +366,8 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     public default Func2<INPUT1, INPUT2, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func2<Tuple2<INPUT1, INPUT2>, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(Tuple.of(input1, input2), null);
@@ -403,7 +403,7 @@ public interface Func2<INPUT1, INPUT2, OUTPUT> extends BiFunction<INPUT1, INPUT2
     
     public default Func2<INPUT1, INPUT2, Promise<OUTPUT>> async() {
         return (input1, input2) -> {
-            val supplier = (Func0<OUTPUT>)()->{
+            var supplier = (Func0<OUTPUT>)()->{
                 return this.applyUnsafe(input1, input2);
             };
             return DeferAction.from(supplier)

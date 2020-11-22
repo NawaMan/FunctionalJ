@@ -19,7 +19,7 @@ public interface TemporalAmountAccess<HOST, TEMPORAL_AMOUNT extends TemporalAmou
     
     public default LongAccessPrimitive<HOST> get(TemporalUnit unit) {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.get(unit);
         };
     }
@@ -30,13 +30,13 @@ public interface TemporalAmountAccess<HOST, TEMPORAL_AMOUNT extends TemporalAmou
     
     public default TemporalAccess<HOST, Temporal> addTo(Temporal temporal) {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.addTo(temporal);
         };
     }
     public default TemporalAccess<HOST, Temporal> subtractFrom(Temporal temporal) {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.subtractFrom(temporal);
         };
     }

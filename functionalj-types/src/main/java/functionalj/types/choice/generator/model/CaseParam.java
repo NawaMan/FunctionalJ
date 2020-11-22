@@ -57,7 +57,7 @@ public class CaseParam {
     }
     
     public String toCode() {
-        val params = asList(
+        var params = asList(
                 toStringLiteral(name),
                 type.toCode(),
                 "" + isNullable,

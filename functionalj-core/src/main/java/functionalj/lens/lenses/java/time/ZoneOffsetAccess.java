@@ -26,14 +26,14 @@ public interface ZoneOffsetAccess<HOST>
    
    public default IntegerAccessPrimitive<HOST> getTotalSeconds() {
        return host -> {
-           val value = apply(host);
+           var value = apply(host);
            return value.getTotalSeconds();
        };
    }
    
    public default ZoneRulesAccess<HOST> getRules() {
        return host -> {
-           val value = apply(host);
+           var value = apply(host);
            return value.getRules();
        };
    }

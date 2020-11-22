@@ -43,7 +43,7 @@ public class CaseLensGeneratorTest {
         Case white = null;
         Case black = null;
         Case rgb   = null;
-        val spec = new SourceSpec(
+        var spec = new SourceSpec(
                 "BasicColor",
                 new Type(FullGeneratorTest.class.getPackage().getName(), "ChoiceTypeExampleTest", "ChoiceType1TypeSpec"),
                 asList(

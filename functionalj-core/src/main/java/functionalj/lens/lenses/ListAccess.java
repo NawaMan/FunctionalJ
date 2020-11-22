@@ -37,7 +37,7 @@ public interface ListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>
         extends CollectionAccess<HOST, List<TYPE>, TYPE, TYPEACCESS> {
     
     public static <H, T, A extends AnyAccess<H, T>> ListAccess<H, T, A> of(Function<H, List<T>> read, Function<Function<H, T>, A> createAccess) {
-        val accessParameterized = new AccessParameterized<H, List<T>, T, A>() {
+        var accessParameterized = new AccessParameterized<H, List<T>, T, A>() {
             @Override
             public List<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);

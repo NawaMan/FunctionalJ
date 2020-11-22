@@ -83,10 +83,10 @@ public class Method {
                 (exceptions.isEmpty() ? "" : " throws " + exceptions.stream().map(e -> e.toString()).collect(joining(",")));
     }
     public String definitionForThis() {
-        val isFirst = new AtomicBoolean(true);
+        var isFirst = new AtomicBoolean(true);
         return returnType.toString() + " " +
                 toString(param -> {
-                    val isFirstCall = isFirst.get();
+                    var isFirstCall = isFirst.get();
                     isFirst.set(false);
                     return isFirstCall ? null : param.type.toString() + " " + param.name;
                 }) +
@@ -96,20 +96,20 @@ public class Method {
         return toString(param -> param.name);
     }
     public String callForThis(Type type) {
-        val isFirst      = new AtomicBoolean(true);
-        val genericCount = type.generics().size();
-        val firstStr     = "this";
+        var isFirst      = new AtomicBoolean(true);
+        var genericCount = type.generics().size();
+        var firstStr     = "this";
         return toString(param ->  {
-            val isFirstCall = isFirst.get();
+            var isFirstCall = isFirst.get();
             isFirst.set(false);
-            val prefix = param.type.toString().equals(type.toString()) ? format("Self%1$s.wrap(", (genericCount != 0) ? "" + genericCount : "") : "";
-            val suffix = param.type.toString().equals(type.toString()) ? ")" : "";
+            var prefix = param.type.toString().equals(type.toString()) ? format("Self%1$s.wrap(", (genericCount != 0) ? "" + genericCount : "") : "";
+            var suffix = param.type.toString().equals(type.toString()) ? ")" : "";
             return prefix + (isFirstCall ? firstStr : param.name) + suffix;
         });
     }
     
     public String toString(Function<? super MethodParam, ? extends String> paramMapper) {
-        val paramsStr 
+        var paramsStr 
                 = params.stream()
                 .map    (paramMapper)
                 .filter (Objects::nonNull)
@@ -118,7 +118,7 @@ public class Method {
     }
     
     public String toCode() {
-        val parameters = asList(
+        var parameters = asList(
                 kind.toCode(),
                 toStringLiteral(name),
                 returnType.toCode(),

@@ -77,7 +77,7 @@ public class AccessLensExamples {
     
     @Test
     public void example04_Stream() {
-        val users = FuncList.of(
+        var users = FuncList.of(
                     new User("John"),
                     new User("NawaMan"),
                     new User("Jack")
@@ -85,16 +85,16 @@ public class AccessLensExamples {
         
         StringAccess<User> userName = User::name;
         
-        val usersWithLongName = users.filter(userName.length().thatGreaterThan(4));
+        var usersWithLongName = users.filter(userName.length().thatGreaterThan(4));
         assertEquals("[User[name: NawaMan]]", usersWithLongName.toString());
     }
     
     @Test
     public void example05_CommonAccess() {
-        val names = FuncList.of("John", "David", "Adam", "Ben");
+        var names = FuncList.of("John", "David", "Adam", "Ben");
         
-        val shortNames = names.filter(theString.length().thatLessThan(4));
-        val longNames  = names.filter($S.length().thatGreaterThan(4));
+        var shortNames = names.filter(theString.length().thatLessThan(4));
+        var longNames  = names.filter($S.length().thatGreaterThan(4));
         
         assertEquals("[Ben]",   shortNames.toString());
         assertEquals("[David]", longNames.toString());

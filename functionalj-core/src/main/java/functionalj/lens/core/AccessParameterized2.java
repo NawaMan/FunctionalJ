@@ -43,16 +43,16 @@ public interface AccessParameterized2<HOST, TYPE, PARAMETER1, PARAMETER2,
     
     public default PARAMETERACCESS1 createSubAccess1(Function<TYPE, PARAMETER1> accessToParameter) {
         return createSubAccessFromHost1(host -> {
-            val list  = apply(host);
-            val value = accessToParameter.apply(list);
+            var list  = apply(host);
+            var value = accessToParameter.apply(list);
             return value;
         });
     }
     
     public default PARAMETERACCESS2 createSubAccess2(Function<TYPE, PARAMETER2> accessToParameter) {
         return createSubAccessFromHost2(host -> {
-            val list  = apply(host);
-            val value = accessToParameter.apply(list);
+            var list  = apply(host);
+            var value = accessToParameter.apply(list);
             return value;
         });
     }

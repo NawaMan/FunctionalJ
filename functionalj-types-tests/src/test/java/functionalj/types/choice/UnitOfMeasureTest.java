@@ -32,12 +32,12 @@
 //    
 //    @Test
 //    public void test() {
-//        val celsius = Celsius(0.0);
+//        var celsius = Celsius(0.0);
 //        Assert.assertEquals("Celsius(0.0)",     "" + celsius);
 //        Assert.assertEquals("Fahrenheit(32.0)", "" + celsius.toFahrenheit());
 //        Assert.assertEquals("Celsius(0.0)",     "" + celsius.toCelsius());
 //        
-//        val fahrenheit = Fahrenheit(0);
+//        var fahrenheit = Fahrenheit(0);
 //        Assert.assertEquals("Fahrenheit(0.0)",             "" + fahrenheit);
 //        Assert.assertEquals("Fahrenheit(0.0)",             "" + fahrenheit.toFahrenheit());
 //        Assert.assertEquals("Celsius(-17.77777777777778)", "" + fahrenheit.toCelsius());

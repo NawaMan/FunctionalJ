@@ -19,7 +19,7 @@ public class SubFromMapBuilder implements Lines {
     }
     
     private Stream<String> body() {
-        val paramIndex = new AtomicInteger(choice.params.size());
+        var paramIndex = new AtomicInteger(choice.params.size());
         Supplier<String> comma = ()-> (paramIndex.decrementAndGet() != 0) ? "," : "";
         return Stream.of(
                 Stream.of("    return " + choice.name + "("),

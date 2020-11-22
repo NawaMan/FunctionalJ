@@ -56,7 +56,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
             return false;
         
         @SuppressWarnings("unchecked")
-        val anotherRef = (RefOf<DATA>)another;
+        var anotherRef = (RefOf<DATA>)another;
         if (!anotherRef.getDataType().equals(this.getDataType()))
             return false;
         
@@ -103,7 +103,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         
         @Override
         protected final Result<DATA> findResult() {
-            val result = Result.of(supplier);
+            var result = Result.of(supplier);
             return result;
         }
         
@@ -124,7 +124,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         
         @Override
         protected final Result<DATA> findResult() {
-            val result = Result.of(anotherRef.valueSupplier()).whenAbsentGet(whenAbsentSupplier);
+            var result = Result.of(anotherRef.valueSupplier()).whenAbsentGet(whenAbsentSupplier);
             return result;
         }
         

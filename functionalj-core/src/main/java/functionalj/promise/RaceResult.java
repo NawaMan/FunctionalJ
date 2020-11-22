@@ -53,15 +53,15 @@ public class RaceResult<DATA> implements HasPromise<DATA> {
     
     public static <D> RaceResult<D> Race(List<? extends StartableAction<D>> actions) {
         DeferAction<D> deferAction   = DeferAction.createNew();
-        val            pendingAction = deferAction.start();
+        var            pendingAction = deferAction.start();
         
-        val startedActions = FuncList.from(actions)
+        var startedActions = FuncList.from(actions)
                 .filterNonNull()
                 .map(StartableAction::start)
                 .toImmutableList();
         
-        val counter = new AtomicInteger(actions.size());
-        val hasNull = new AtomicBoolean(false);
+        var counter = new AtomicInteger(actions.size());
+        var hasNull = new AtomicBoolean(false);
         startedActions
         .forEach(action -> {
             action.onComplete(result -> {
@@ -82,9 +82,9 @@ public class RaceResult<DATA> implements HasPromise<DATA> {
             });
         });
         
-        val promise  = pendingAction.getPromise();
-        val promises = startedActions.map(PendingAction::getPromise).toImmutableList();
-        val race     = new RaceResult<D>(promise, promises);
+        var promise  = pendingAction.getPromise();
+        var promises = startedActions.map(PendingAction::getPromise).toImmutableList();
+        var race     = new RaceResult<D>(promise, promises);
         return race;
     }
     

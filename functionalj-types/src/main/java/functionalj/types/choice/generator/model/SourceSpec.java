@@ -69,7 +69,7 @@ public class SourceSpec {
     }
     
     public String toCode() {
-        val params = asList(
+        var params = asList(
                 toStringLiteral(targetName),
                 sourceType.toCode(),
                 toStringLiteral(specObjName),

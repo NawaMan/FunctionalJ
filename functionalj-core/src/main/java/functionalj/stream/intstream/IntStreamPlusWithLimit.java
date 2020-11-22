@@ -40,7 +40,7 @@ public interface IntStreamPlusWithLimit {
     
     /** Limit the size of the stream to the given size. */
     public default IntStreamPlus limit(Long maxSize) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return ((maxSize == null) || (maxSize.longValue() < 0))
                 ? streamPlus
                 : IntStreamPlus.from(
@@ -50,7 +50,7 @@ public interface IntStreamPlusWithLimit {
     
     /** Skip to the given offset position. */
     public default IntStreamPlus skip(Long offset) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return ((offset == null) || (offset.longValue() < 0))
                 ? streamPlus
                 : IntStreamPlus.from(
@@ -61,9 +61,9 @@ public interface IntStreamPlusWithLimit {
     /** Skip any value while the condition is true. */
     @Sequential
     public default IntStreamPlus skipWhile(IntPredicate condition) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
-            val isStillTrue = new AtomicBoolean(true);
+            var isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
@@ -79,9 +79,9 @@ public interface IntStreamPlusWithLimit {
     /** Skip any value until the condition is true. */
     @Sequential
     public default IntStreamPlus skipUntil(IntPredicate condition) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
-            val isStillTrue = new AtomicBoolean(true);
+            var isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
@@ -98,9 +98,9 @@ public interface IntStreamPlusWithLimit {
     @Sequential
     public default IntStreamPlus takeWhile(IntPredicate condition) {
         // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
+            var splitr = stream.spliterator();
             return IntStreamPlus.from(
                     StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
                         boolean stillGoing = true;
@@ -127,10 +127,10 @@ public interface IntStreamPlusWithLimit {
     /** Accept any value until the condition is true. */
     @Sequential
     public default IntStreamPlus takeUntil(IntPredicate condition) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+            var splitr = stream.spliterator();
+            var resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
                 boolean stillGoing = true;
                 
                 @Override

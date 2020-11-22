@@ -38,11 +38,11 @@ public interface AsStreamPlusWithForEach<DATA> {
     @Eager
     @Terminal
     public default void forEachWithIndex(IntObjBiConsumer<? super DATA> action) {
-        val streamPlus = streamPlus();
-        val index      = new AtomicInteger();
+        var streamPlus = streamPlus();
+        var index      = new AtomicInteger();
         streamPlus
         .forEach(each -> {
-            val currentIndex = index.getAndIncrement();
+            var currentIndex = index.getAndIncrement();
             action.accept(currentIndex, each);
         });
     }
@@ -50,7 +50,7 @@ public interface AsStreamPlusWithForEach<DATA> {
     /** Populate the array with the population in the stream from 0 to length or until run out of elements. */
     @Terminal
     public default void populateArray(DATA[] array) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         streamPlus
         .limit           (array.length)
         .forEachWithIndex((index, element) -> {
@@ -61,7 +61,7 @@ public interface AsStreamPlusWithForEach<DATA> {
     /** Populate the array with the population in the stream from offset to length or until run out of elements. */
     @Terminal
     public default void populateArray(DATA[] array, int offset) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         streamPlus
         .limit           (array.length - offset)
         .forEachWithIndex((index, element) -> {
@@ -72,7 +72,7 @@ public interface AsStreamPlusWithForEach<DATA> {
     /** Populate the array with the population in the stream from offset to length or until run out of elements. */
     @Terminal
     public default void populateArray(DATA[] array, int offset, int length) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         streamPlus
         .limit           (Math.min(length, array.length - offset))
         .forEachWithIndex((index, element) -> {

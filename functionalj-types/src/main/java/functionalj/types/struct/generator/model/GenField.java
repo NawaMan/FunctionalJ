@@ -59,7 +59,7 @@ public class GenField implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        val def = oneLineOf(
+        var def = oneLineOf(
                     accessibility, 
                     scope, 
                     modifiability, 
@@ -67,7 +67,7 @@ public class GenField implements IGenerateDefinition {
                     name
                 );
         
-        val value = (defaultValue != null) ? " = " + defaultValue : "";
+        var value = (defaultValue != null) ? " = " + defaultValue : "";
         return ()->Stream.of(def + value + ";");
     }
 }

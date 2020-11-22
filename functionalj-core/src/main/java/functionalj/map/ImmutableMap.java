@@ -94,7 +94,7 @@ public final class ImmutableMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, V
         if (map instanceof TreeMap)
             return this;
         
-        val sortedMap = new TreeMap<KEY, VALUE>();
+        var sortedMap = new TreeMap<KEY, VALUE>();
         entryStream()
             .forEach(e -> sortedMap.put(e.getKey(), e.getValue()));
         return new ImmutableMap<KEY, VALUE>(sortedMap, isLazy());

@@ -46,7 +46,7 @@ public class AccessUtils {
             createSubNullableAccess(
                     AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPEACCESS> accessParameterized,
                     Function<HOST, Nullable<TYPE>>                              read) {
-        val specWithSub = new AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPEACCESS>() {
+        var specWithSub = new AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPEACCESS>() {
             @Override
             public Nullable<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
@@ -65,7 +65,7 @@ public class AccessUtils {
             createSubOptionalAccess(
                     AccessParameterized<HOST, Optional<TYPE>, TYPE, TYPEACCESS> accessParameterized,
                     Function<HOST, Optional<TYPE>>                              read) {
-        val specWithSub = new AccessParameterized<HOST, Optional<TYPE>, TYPE, TYPEACCESS>() {
+        var specWithSub = new AccessParameterized<HOST, Optional<TYPE>, TYPE, TYPEACCESS>() {
             @Override
             public Optional<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
@@ -83,7 +83,7 @@ public class AccessUtils {
             createSubResultAccess(
                     AccessParameterized<HOST, Result<TYPE>, TYPE, TYPEACCESS> accessParameterized,
                     Function<HOST, Result<TYPE>>                              read) {
-        val specWithSub = new AccessParameterized<HOST, Result<TYPE>, TYPE, TYPEACCESS>() {
+        var specWithSub = new AccessParameterized<HOST, Result<TYPE>, TYPE, TYPEACCESS>() {
             @Override
             public Result<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
@@ -102,7 +102,7 @@ public class AccessUtils {
             createSubListAccess(
                     AccessParameterized<HOST, List<TYPE>, TYPE, TYPEACCESS> accessParameterized,
                     Function<HOST, List<TYPE>>                              read) {
-        val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, TYPEACCESS>() {
+        var specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, TYPEACCESS>() {
             @Override
             public List<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
@@ -119,7 +119,7 @@ public class AccessUtils {
             createSubFuncListAccess(
                     AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPEACCESS> accessParameterized,
                     Function<HOST, FuncList<TYPE>>                              read) {
-        val specWithSub = new AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPEACCESS>() {
+        var specWithSub = new AccessParameterized<HOST, FuncList<TYPE>, TYPE, TYPEACCESS>() {
             @Override
             public FuncList<TYPE> applyUnsafe(HOST host) throws Exception {
                 return read.apply(host);
@@ -136,7 +136,7 @@ public class AccessUtils {
             NullableAccess<HOST, TYPE, TYPELENS> createNullableAccess(
                         Function<HOST, Nullable<TYPE>>           accessNullable,
                         Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
-        val accessWithSub = new AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPELENS>() {
+        var accessWithSub = new AccessParameterized<HOST, Nullable<TYPE>, TYPE, TYPELENS>() {
             @Override
             public Nullable<TYPE> applyUnsafe(HOST host) throws Exception {
                 return accessNullable.apply(host);
@@ -153,7 +153,7 @@ public class AccessUtils {
             ResultAccess<HOST, TYPE, TYPELENS> createResultAccess(
                         Function<HOST, Result<TYPE>>             accessResult,
                         Function<Function<HOST, TYPE>, TYPELENS> createSubLens) {
-        val accessWithSub = new AccessParameterized<HOST, Result<TYPE>, TYPE, TYPELENS>() {
+        var accessWithSub = new AccessParameterized<HOST, Result<TYPE>, TYPE, TYPELENS>() {
             @Override
             public Result<TYPE> applyUnsafe(HOST host) throws Exception {
                 return accessResult.apply(host);

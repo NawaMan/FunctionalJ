@@ -78,7 +78,7 @@ public interface AsStreamPlus<DATA>
     
     /** @return a spliterator of this streamable. */
     public default Spliterator<DATA> spliterator() {
-        val iterator = iterator();
+        var iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     

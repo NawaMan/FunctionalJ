@@ -44,11 +44,11 @@ public class SubClassDefinition implements Lines {
     
     @Override
     public List<String> lines() {
-        val name = choice.name;
-        val lens = new CaseLensBuilder(targetClass.spec, choice);
-        val lensTheInstance  = lens.generateTheLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
-        val lensEachInstance = lens.generateEachLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
-        val toMapMethod  = new ToMapBuilder(targetClass, this.choice);
+        var name = choice.name;
+        var lens = new CaseLensBuilder(targetClass.spec, choice);
+        var lensTheInstance  = lens.generateTheLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
+        var lensEachInstance = lens.generateEachLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
+        var toMapMethod  = new ToMapBuilder(targetClass, this.choice);
         if (!choice.isParameterized()) {
             return asList(
                     asList(format("public static final class %1$s%2$s extends %3$s {",    name, targetClass.getType().genericDef(), targetClass.getType().typeWithGenerics())),
@@ -66,9 +66,9 @@ public class SubClassDefinition implements Lines {
             .collect(toList());
         }
         
-        val paramDefs   = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
-        val paramCalls  = choice.mapJoinParams(p ->                                   p.name, ", ");
-        val fieldAccss  = targetClass.spec.publicFields ? "public" : "private";
+        var paramDefs   = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
+        var paramCalls  = choice.mapJoinParams(p ->                                   p.name, ", ");
+        var fieldAccss  = targetClass.spec.publicFields ? "public" : "private";
         return asList(
                 asList(               format("public static final class %1$s%2$s extends %3$s {", name, targetClass.getType().genericDef(), targetClass.getType().typeWithGenerics())),
                 asList(               format("    " + lensTheInstance)),

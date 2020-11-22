@@ -11,7 +11,7 @@ public class FuncMapBuilderTest {
 
     @Test
     public void testMapBuilder() {
-        val map = newMap()
+        var map = newMap()
                 .with(1, "A")
                 .with(2, "B")
                 .with(3, "C")
@@ -46,7 +46,7 @@ public class FuncMapBuilderTest {
     
     @Test
     public void testMapBuilder_duplicateOverride() {
-        val map = newMap()
+        var map = newMap()
                 .with(1, "A")
                 .with(2, "B")
                 .with(3, "C")

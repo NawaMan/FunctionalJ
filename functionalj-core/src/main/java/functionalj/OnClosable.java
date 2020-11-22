@@ -23,14 +23,14 @@ public class OnClosable<TYPE> implements Closeable {
         return null;
     }
     public void close() {
-        if (!isClosed) {
-            synchronized (this) {
-                if (!isClosed) {
-                    onClose.run();
-                    return;
-                }
-            }
-        }
-        throw new IllegalStateException("stream has already been operated upon or closed");
+//        if (!isClosed) {
+//            synchronized (this) {
+//                if (!isClosed) {
+//                    onClose.run();
+//                    return;
+//                }
+//            }
+//        }
+//        throw new IllegalStateException("stream has already been operated upon or closed");
     }
 }

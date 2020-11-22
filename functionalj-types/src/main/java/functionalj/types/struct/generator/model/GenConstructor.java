@@ -60,7 +60,7 @@ public class GenConstructor implements IGenerateDefinition {
     public Stream<Type> requiredTypes() {
         Set<Type> types = new HashSet<>();
         for (val param : params) {
-            val paramType = param.getType();
+            var paramType = param.getType();
             if (types.contains(paramType))
                 continue;
             
@@ -88,8 +88,8 @@ public class GenConstructor implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        val paramDefs = params.stream().map(param -> param.toTerm(currentPackage)).collect(joining(", "));
-        val definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{")
+        var paramDefs = params.stream().map(param -> param.toTerm(currentPackage)).collect(joining(", "));
+        var definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{")
                 .map    (utils.toStr())
                 .filter (Objects::nonNull)
                 .collect(joining(" "));

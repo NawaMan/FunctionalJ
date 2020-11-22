@@ -54,43 +54,43 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     }
     public default BooleanAccessPrimitive<HOST> thatIsZero() {
         return (BooleanAccessPrimitive<HOST>)(host -> {
-            val value = apply(host);
-            val zero  = toZero().apply(host);
+            var value = apply(host);
+            var zero  = toZero().apply(host);
             return value.compareTo(zero) == 0;
         });
     }
     public default BooleanAccessPrimitive<HOST> thatIsNotZero() {
         return (BooleanAccessPrimitive<HOST>)(host -> {
-            val value = apply(host);
-            val zero  = toZero().apply(host);
+            var value = apply(host);
+            var zero  = toZero().apply(host);
             return value.compareTo(zero) != 0;
         });
     }
     public default BooleanAccessPrimitive<HOST> thatIsPositive() {
         return (BooleanAccessPrimitive<HOST>)(host -> {
-            val value = apply(host);
-            val zero  = toZero().apply(host);
+            var value = apply(host);
+            var zero  = toZero().apply(host);
             return value.compareTo(zero) > 0;
         });
     }
     public default BooleanAccessPrimitive<HOST> thatIsNegative() {
         return (BooleanAccessPrimitive<HOST>)(host -> {
-            val value = apply(host);
-            val zero  = toZero().apply(host);
+            var value = apply(host);
+            var zero  = toZero().apply(host);
             return value.compareTo(zero) < 0;
         });
     }
     public default BooleanAccessPrimitive<HOST> thatIsNotPositive() {
         return (BooleanAccessPrimitive<HOST>)(host -> {
-            val value = apply(host);
-            val zero  = toZero().apply(host);
+            var value = apply(host);
+            var zero  = toZero().apply(host);
             return value.compareTo(zero) <= 0;
         });
     }
     public default BooleanAccessPrimitive<HOST> thatIsNotNegative() {
         return (BooleanAccessPrimitive<HOST>)(host -> {
-            val value = apply(host);
-            val zero  = toZero().apply(host);
+            var value = apply(host);
+            var zero  = toZero().apply(host);
             return value.compareTo(zero) >= 0;
         });
     }
@@ -119,31 +119,31 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
     
     public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> asInteger() {
         return ResultAccess.of(host -> {
-            val value = apply(host);
+            var value = apply(host);
             return Result.from(()->__mathOperators().toInteger(value));
         }, func -> (IntegerAccessBoxed<HOST>)(func::apply));
     }
     public default ResultAccess<HOST, Long, LongAccess<HOST>> asLong() {
         return ResultAccess.of(host -> {
-            val value = apply(host);
+            var value = apply(host);
             return Result.from(()->__mathOperators().toLong(value));
         }, func -> (LongAccessBoxed<HOST>)(func::apply));
     }
     public default ResultAccess<HOST, Double, DoubleAccess<HOST>> asDouble() {
         return ResultAccess.of(host -> {
-            val value = apply(host);
+            var value = apply(host);
             return Result.from(()->__mathOperators().toDouble(value));
         }, func -> (DoubleAccessBoxed<HOST>)(func::apply));
     }
     public default ResultAccess<HOST, BigInteger, BigIntegerAccess<HOST>> asBigInteger() {
         return ResultAccess.of(host -> {
-            val value = apply(host);
+            var value = apply(host);
             return Result.from(()->__mathOperators().toBigInteger(value));
         }, func -> (BigIntegerAccess<HOST>)(func::apply));
     }
     public default ResultAccess<HOST, BigDecimal, BigDecimalAccess<HOST>> asBigDecimal() {
         return ResultAccess.of(host -> {
-            val value = apply(host);
+            var value = apply(host);
             return Result.from(()->__mathOperators().toBigDecimal(value));
         }, func -> (BigDecimalAccess<HOST>)(func::apply));
     }
@@ -165,7 +165,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return accessCreator.newAccess(host -> {
             if (host == null)
                 return value;
-            val v = orgAccess.apply(host); 
+            var v = orgAccess.apply(host); 
             return operator.apply(v, value);
         });
     }
@@ -179,8 +179,8 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
             if (host == null)
                 return Func.getOrElse(valueSupplier, fallbackValue);
             
-            val v     = orgAccess.apply(host); 
-            val value = Func.getOrElse(valueSupplier, fallbackValue);
+            var v     = orgAccess.apply(host); 
+            var value = Func.getOrElse(valueSupplier, fallbackValue);
             return operator.apply(v, value);
         });
     }
@@ -194,8 +194,8 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
             if (host == null)
                 return Func.applyOrElse(valueFunction, fallbackValue, fallbackValue);
             
-            val v     = orgAccess.apply(host); 
-            val value = Func.applyOrElse(valueFunction, v, fallbackValue);
+            var v     = orgAccess.apply(host); 
+            var value = Func.applyOrElse(valueFunction, v, fallbackValue);
             return operator.apply(v, value);
         });
     }
@@ -209,8 +209,8 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
             if (host == null)
                 return Func.applyOrElse(valueFunction, host, fallbackValue, fallbackValue);
             
-            val v     = orgAccess.apply(host); 
-            val value = Func.applyOrElse(valueFunction, host, v, fallbackValue);
+            var v     = orgAccess.apply(host); 
+            var value = Func.applyOrElse(valueFunction, host, v, fallbackValue);
             return operator.apply(v, value);
         });
     }
@@ -337,7 +337,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return newAccess(host -> {
             if (host == null)
                 return __mathOperators().zero();
-            val v = apply(host); 
+            var v = apply(host); 
             return __mathOperators().abs(v);
         });
     }
@@ -345,7 +345,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return newAccess(host -> {
             if (host == null)
                 return __mathOperators().zero();
-            val v = apply(host); 
+            var v = apply(host); 
             return __mathOperators().negate(v);
         });
     }
@@ -353,7 +353,7 @@ public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS ext
         return newAccess(host -> {
             if (host == null)
                 return __mathOperators().zero();
-            val v = apply(host); 
+            var v = apply(host); 
             return __mathOperators().signum(v);
         });
     }

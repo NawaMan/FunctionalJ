@@ -65,7 +65,7 @@ public class SubscriptionRecord<DATA> implements HasPromise<DATA> {
     }
     
     public SubscriptionStatus getSubscriptionStatus() {
-        val promiseStatus = promise.getStatus();
+        var promiseStatus = promise.getStatus();
         Objects.requireNonNull(promiseStatus);
         
         if (promiseStatus.isComplete())

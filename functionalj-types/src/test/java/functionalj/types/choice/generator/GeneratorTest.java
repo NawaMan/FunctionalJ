@@ -59,10 +59,10 @@ public class GeneratorTest {
     
     @Test
     public void testSubClassConstructor_noParams() {
-        val sourceSpec = new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList());
-        val target     = new TargetClass(sourceSpec);
-        val sub        = new SubClassConstructor(target, new Case("White"));
-        val lines      = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var sourceSpec = new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList());
+        var target     = new TargetClass(sourceSpec);
+        var sub        = new SubClassConstructor(target, new Case("White"));
+        var lines      = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final White white = White.instance;\n" + 
                 "public static final White White() {\n" + 
@@ -87,15 +87,15 @@ public class GeneratorTest {
     
     @Test
     public void testSubClassConstructor_withParams() {
-        val sourceSpec = new SourceSpec("Color", new Type("p1.p2", "EncloserClass", "ColorSpec"), emptyList());
-        val target     = new TargetClass(sourceSpec);
-        val sub        = new SubClassConstructor(target, 
+        var sourceSpec = new SourceSpec("Color", new Type("p1.p2", "EncloserClass", "ColorSpec"), emptyList());
+        var target     = new TargetClass(sourceSpec);
+        var sub        = new SubClassConstructor(target, 
                 new Case("RGB",   "__validateRGB", asList(
                     new CaseParam("r", new Type("int"), false),
                     new CaseParam("g", new Type("int"), false),
                     new CaseParam("b", new Type("int"), false)
                 )));
-        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final RGB RGB(int r, int g, int b) {\n" + 
                 "    ColorSpec.__validateRGB(r, g, b);\n" + 
@@ -120,14 +120,14 @@ public class GeneratorTest {
     }
     @Test
     public void testSubClassConstructor_withParams_withGeneric() {
-        val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList());
-        val target = new TargetClass(sourceSpec);
-        val sub    = new SubClassDefinition(target, 
+        var sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
+        var sourceSpec = new SourceSpec("Coroutine", sourceType, "spec", false, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList());
+        var target = new TargetClass(sourceSpec);
+        var sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
                     new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false)
                 )));
-        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class Next<D> extends Coroutine<D> {\n" + 
                 "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(LensSpec.of(Next.class));\n" + 
@@ -171,9 +171,9 @@ public class GeneratorTest {
     
     @Test
     public void testSubClassDefinition_noParams() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
-        val sub    = new SubClassDefinition(target, new Case("White"));
-        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        var sub    = new SubClassDefinition(target, new Case("White"));
+        var lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class White extends Color {\n" + 
                 "    public static final White.WhiteLens<White> theWhite = new White.WhiteLens<>(LensSpec.of(White.class));\n" + 
@@ -203,14 +203,14 @@ public class GeneratorTest {
     
     @Test
     public void testSubClassDefinition_withParams() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
-        val sub    = new SubClassDefinition(target, 
+        var target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        var sub    = new SubClassDefinition(target, 
                 new Case("RGB",   "__validateRGB", asList(
                     new CaseParam("r", new Type("int"), false),
                     new CaseParam("g", new Type("int"), false),
                     new CaseParam("b", new Type("int"), false)
                 )));
-        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class RGB extends Color {\n" + 
                 "    public static final RGB.RGBLens<RGB> theRGB = new RGB.RGBLens<>(LensSpec.of(RGB.class));\n" + 
@@ -268,13 +268,13 @@ public class GeneratorTest {
     
     @Test
     public void testSubClassDefinition_withParams_withGeneric() {
-        val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
-        val sub    = new SubClassDefinition(target, 
+        var sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
+        var target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", false, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
+        var sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
                     new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false)
                 )));
-        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class Next<D> extends Coroutine<D> {\n" + 
                 "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(LensSpec.of(Next.class));\n" + 
@@ -316,8 +316,8 @@ public class GeneratorTest {
     
     @Test
     public void testSwitchClass_simple_notLast() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
-        val sub    = new SwitchClass(target, false, asList(
+        var target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        var sub    = new SwitchClass(target, false, asList(
                         new Case("White"),
                         new Case("Black"),
                         new Case("RGB",   "__validateRGB", asList(
@@ -325,7 +325,7 @@ public class GeneratorTest {
                             new CaseParam("g", new Type("int"), false),
                             new CaseParam("b", new Type("int"), false)
                         ))));
-        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static class ColorSwitchWhiteBlackRGB<TARGET> extends ChoiceTypeSwitch<Color, TARGET> {\n" + 
                 "    private ColorSwitchWhiteBlackRGB(Color theValue, Function<Color, ? extends TARGET> theAction) { super(theValue, theAction); }\n" + 
@@ -352,9 +352,9 @@ public class GeneratorTest {
     
     @Test
     public void testSwitchClass_simple_last() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
-        val sub    = new SwitchClass(target, false, asList(new Case("White")));
-        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        var sub    = new SwitchClass(target, false, asList(new Case("White")));
+        var lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static class ColorSwitchWhite<TARGET> extends ChoiceTypeSwitch<Color, TARGET> {\n" + 
                 "    private ColorSwitchWhite(Color theValue, Function<Color, ? extends TARGET> theAction) { super(theValue, theAction); }\n" + 
@@ -381,8 +381,8 @@ public class GeneratorTest {
     
     @Test
     public void testSubCheckMethod() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
-        val sub    = new SubCheckMethod(target, asList(
+        var target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        var sub    = new SubCheckMethod(target, asList(
                         new Case("White", emptyList()),
                         new Case("Black", emptyList()),
                         new Case("RGB",   "__validateRGB", asList(
@@ -390,7 +390,7 @@ public class GeneratorTest {
                                 new CaseParam("g", new Type("int"), false),
                                 new CaseParam("b", new Type("int"), false)
                                 ))));
-        val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public boolean isWhite() { return this instanceof White; }\n" + 
                 "public Result<White> asWhite() { return Result.valueOf(this).filter(White.class).map(White.class::cast); }\n" + 
@@ -409,7 +409,7 @@ public class GeneratorTest {
     
     @Test
     public void testSourceMethods() {
-        val target = new TargetClass(
+        var target = new TargetClass(
                     new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null,
                     emptyList(),
                     emptyList(),
@@ -444,8 +444,8 @@ public class GeneratorTest {
                                     asList(new MethodParam("c", new Type("p1.p2", "Color")))
                                 )
                         ), emptyList()));
-        val sub    = new SourceMethod(target);
-        val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var sub    = new SourceMethod(target);
+        var lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public boolean equals(java.lang.Object obj) {\n" + 
                 "    return __spec.equals(Self.wrap(this), obj);\n" + 
@@ -464,8 +464,8 @@ public class GeneratorTest {
     
     @Test
     public void testTargetTypeGeneral_expand() {
-        val target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
-        val sub    = new TargetTypeGeneral(target, asList(
+        var target = new TargetClass(new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), emptyList()));
+        var sub    = new TargetTypeGeneral(target, asList(
                         new Case("White", emptyList()),
                         new Case("Black", emptyList()),
                         new Case("RGB",   "__validateRGB", asList(
@@ -473,7 +473,7 @@ public class GeneratorTest {
                                 new CaseParam("g", new Type("int"), false),
                                 new CaseParam("b", new Type("int"), false)
                                 ))));
-        val lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var lines = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public java.util.Map<java.lang.String, java.util.Map<java.lang.String, functionalj.types.choice.generator.model.CaseParam>> __getSchema() {\n" + 
                 "    return getChoiceSchema();\n" + 
@@ -523,8 +523,8 @@ public class GeneratorTest {
     
     @Test
     public void testTargetTypeGeneral_withMethods() {
-        val colorType = new Type("p1.p2", "Color");
-        val target = new TargetClass(
+        var colorType = new Type("p1.p2", "Color");
+        var target = new TargetClass(
                     new SourceSpec("Color", new Type("p1.p2", "ColorSpec"), "spec", true, null,
                     emptyList(),
                     emptyList(),
@@ -554,7 +554,7 @@ public class GeneratorTest {
                             )
                         )
                     ), emptyList()));
-        val choices = asList(
+        var choices = asList(
                         new Case("White", emptyList()),
                         new Case("Black", emptyList()),
                         new Case("RGB", asList(
@@ -611,13 +611,13 @@ public class GeneratorTest {
     
     @Test
     public void testSubClassDefinition_withPublicField() {
-        val sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
-        val target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
-        val sub    = new SubClassDefinition(target, 
+        var sourceType = new Type("p1.p2", null, "Next", asList(new Generic("D")));
+        var target = new TargetClass(new SourceSpec("Coroutine", sourceType, "spec", true, null, asList(new Generic("D")), emptyList(), emptyList(), emptyList()));
+        var sub    = new SubClassDefinition(target, 
                 new Case("Next", asList(
                     new CaseParam("next", new Type("functionalj.function", null, "Func1", asList(new Generic("D"), new Generic("Coroutine<D>"))), false)
                 )));
-        val lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var lines  = sub.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(
                 "public static final class Next<D> extends Coroutine<D> {\n" + 
                 "    public static final Next.NextLens<Next> theNext = new Next.NextLens<>(LensSpec.of(Next.class));\n" + 

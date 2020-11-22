@@ -20,7 +20,7 @@ public class BugThreeNullableBuilder {
     
     @Test
     public void testParent() {
-        val code = generate();
+        var code = generate();
         assertEquals(
                 "package ci.server;\n" + 
                 "\n" + 
@@ -349,8 +349,8 @@ public class BugThreeNullableBuilder {
                     new Getter("country",     new Type("java.lang", null, "String", emptyList()), true,  NULL),
                     new Getter("description", new Type("java.lang", null, "String", emptyList()), true,  NULL)),
                 asList("Brand", "Product"));
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
-        val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
+        var dataObjSpec = new StructBuilder(sourceSpec).build();
+        var generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }
     

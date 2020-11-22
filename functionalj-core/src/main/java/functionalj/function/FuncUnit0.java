@@ -77,7 +77,7 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     public default <I, T> Func1<I, T> then(Func1<I, T> function) {
         return input -> {
             runUnsafe();
-            val value = function.applyUnsafe(input);
+            var value = function.applyUnsafe(input);
             return value;
         };
     }
@@ -95,7 +95,7 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     public default <T> Func0<T> thenGet(Func0<T> supplier) {
         return () -> {
             runUnsafe();
-            val value = supplier.applyUnsafe();
+            var value = supplier.applyUnsafe();
             return value;
         };
     }

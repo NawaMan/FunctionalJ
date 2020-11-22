@@ -92,7 +92,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
         requireNonNull(supplier);
         return (input1, input2, input3) -> {
             acceptUnsafe(input1, input2, input3);
-            val value = supplier.applyUnsafe();
+            var value = supplier.applyUnsafe();
             return value;
         };
     }
@@ -108,9 +108,9 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     
     public default FuncUnit1<Tuple3<INPUT1, INPUT2, INPUT3>> wholly() {
         return tuple -> {
-            val _1 = tuple._1();
-            val _2 = tuple._2();
-            val _3 = tuple._3();
+            var _1 = tuple._1();
+            var _2 = tuple._2();
+            var _3 = tuple._3();
             acceptUnsafe(_1, _2, _3);
         };
     }
@@ -124,7 +124,7 @@ public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     }
     public default Func3<HasPromise<INPUT1>, HasPromise<INPUT2>, HasPromise<INPUT3>, Promise<Object>> defer() {
         return (promise1, promise2, promise3) -> {
-            val func0 = this.thenReturnNull();
+            var func0 = this.thenReturnNull();
             return Promise.from(
                     input1 -> promise1,
                     input2 -> promise2,

@@ -68,8 +68,8 @@ public class ImmutableTuple {
         if (tuple == null)
             return new ImmutableTuple2<>(null, null);
         
-        val _1 = tuple._1();
-        val _2 = tuple._2();
+        var _1 = tuple._1();
+        var _2 = tuple._2();
         return new ImmutableTuple2<>(_1, _2);
     }
 
@@ -80,9 +80,9 @@ public class ImmutableTuple {
         if (tuple == null)
             return new ImmutableTuple3<>(null, null, null);
         
-        val _1 = tuple._1();
-        val _2 = tuple._2();
-        val _3 = tuple._3();
+        var _1 = tuple._1();
+        var _2 = tuple._2();
+        var _3 = tuple._3();
         return new ImmutableTuple3<>(_1, _2, _3);
     }
 
@@ -93,10 +93,10 @@ public class ImmutableTuple {
         if (tuple == null)
             return new ImmutableTuple4<>(null, null, null, null);
         
-        val _1 = tuple._1();
-        val _2 = tuple._2();
-        val _3 = tuple._3();
-        val _4 = tuple._4();
+        var _1 = tuple._1();
+        var _2 = tuple._2();
+        var _3 = tuple._3();
+        var _4 = tuple._4();
         return new ImmutableTuple4<>(_1, _2, _3, _4);
     }
 
@@ -107,11 +107,11 @@ public class ImmutableTuple {
         if (tuple == null)
             return new ImmutableTuple5<>(null, null, null, null, null);
         
-        val _1 = tuple._1();
-        val _2 = tuple._2();
-        val _3 = tuple._3();
-        val _4 = tuple._4();
-        val _5 = tuple._5();
+        var _1 = tuple._1();
+        var _2 = tuple._2();
+        var _3 = tuple._3();
+        var _4 = tuple._4();
+        var _5 = tuple._5();
         return new ImmutableTuple5<>(_1, _2, _3, _4, _5);
     }
 
@@ -122,12 +122,12 @@ public class ImmutableTuple {
         if (tuple == null)
             return new ImmutableTuple6<>(null, null, null, null, null, null);
         
-        val _1 = tuple._1();
-        val _2 = tuple._2();
-        val _3 = tuple._3();
-        val _4 = tuple._4();
-        val _5 = tuple._5();
-        val _6 = tuple._6();
+        var _1 = tuple._1();
+        var _2 = tuple._2();
+        var _3 = tuple._3();
+        var _4 = tuple._4();
+        var _5 = tuple._5();
+        var _6 = tuple._6();
         return new ImmutableTuple6<>(_1, _2, _3, _4, _5, _6);
     }
     

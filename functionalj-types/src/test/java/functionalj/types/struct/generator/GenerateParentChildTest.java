@@ -60,7 +60,7 @@ public class GenerateParentChildTest {
     
     @Test
     public void testParent() {
-        val code = generate();
+        var code = generate();
         assertEquals(
                 "package me.test;\n" + 
                 "\n" + 
@@ -200,8 +200,8 @@ public class GenerateParentChildTest {
                     configures,          // Configurations
                     getters,
                     asList("Child"));
-        val dataObjSpec = new StructBuilder(sourceSpec).build();
-        val generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
+        var dataObjSpec = new StructBuilder(sourceSpec).build();
+        var generated   = new GenStruct(sourceSpec, dataObjSpec).toText();
         return generated;
     }
     

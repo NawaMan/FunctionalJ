@@ -16,7 +16,7 @@ public class ResultExample {
     
     @Test
     public void testHandleException() {
-        val wordCount
+        var wordCount
                 = Result.of(()->Files.readAllBytes(Paths.get("FileNotFound.txt")))
                 .map        (String::new)
                 .map        (matches("[a-zA-Z]+"))
@@ -29,7 +29,7 @@ public class ResultExample {
     
     @Test
     public void testValidation() {
-        val result1
+        var result1
                 = Result.valueOf("One Two Three Four Five Six")
                 .map     (matches("[a-zA-Z]+"))
                 .map     (Stream::count)
@@ -37,7 +37,7 @@ public class ResultExample {
                 ;
         assertEquals("Result:{ Value: 6 }", result1.toString());
         
-        val result2
+        var result2
                 = Result.valueOf("One Two Three Four")
                 .map     (matches("[a-zA-Z]+"))
                 .map     (Stream::count)

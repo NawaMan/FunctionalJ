@@ -46,8 +46,8 @@ public class ImmutableResult<DATA> extends Result<DATA> {
         if (validators != null) {
             for (val validator : validators) {
                 try {
-                    val result    = validator.validate(data);
-                    val exception = result.getException();
+                    var result    = validator.validate(data);
+                    var exception = result.getException();
                     if (exception != null) {
                         if (exception instanceof ValidationException) {
                             theData = new ExceptionHolder(exception);

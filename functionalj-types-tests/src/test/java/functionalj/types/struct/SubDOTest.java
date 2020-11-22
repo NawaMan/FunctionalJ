@@ -51,7 +51,7 @@ public class SubDOTest {
     
     @Test
     public void testParentChild() {
-        val parent = new Parent("John", new Child("Greg"));
+        var parent = new Parent("John", new Child("Greg"));
         assertEquals("Greg", parent.child().name());
     }
     

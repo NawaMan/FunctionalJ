@@ -354,12 +354,12 @@ public enum DefaultValue {
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         if (value == DEFAULT) {
             try {
-                val clzz      = new Type("nawaman.defaultj.api", "IProvideDefault").toClass();
-                val dpMethod  = clzz.getMethod("defaultProvider");
-                val dpOption  = (Optional)dpMethod.invoke(clzz);
-                val dp        = dpOption.get();
-                val getMethod = clzz.getMethod("get", Class.class);
-                val retValue  = getMethod.invoke(dp, type.toClass());
+                var clzz      = new Type("nawaman.defaultj.api", "IProvideDefault").toClass();
+                var dpMethod  = clzz.getMethod("defaultProvider");
+                var dpOption  = (Optional)dpMethod.invoke(clzz);
+                var dp        = dpOption.get();
+                var getMethod = clzz.getMethod("get", Class.class);
+                var retValue  = getMethod.invoke(dp, type.toClass());
                 return retValue;
             } catch (Exception e) {
                 throw new StructConversionException(e);
@@ -521,9 +521,9 @@ public enum DefaultValue {
     
     private static Object getEmpty(Type type) {
         try {
-            val funcList = type.toClass();
-            val method   = funcList.getMethod("empty");
-            val empty    = method.invoke(funcList);
+            var funcList = type.toClass();
+            var method   = funcList.getMethod("empty");
+            var empty    = method.invoke(funcList);
             return empty;
         } catch (Exception e) {
             throw new StructConversionException(e);

@@ -37,7 +37,7 @@ class utils {
     }
     
     static <IN> Function<IN, Stream<IN>> delimitWith(IN delimiter) {
-        val isFirst = new AtomicBoolean(true);
+        var isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);

@@ -17,7 +17,7 @@ public class PipeableExamples {
     
     @Test
     public void testPipeable() {
-        val str = Pipeable.of("Hello world.")
+        var str = Pipeable.of("Hello world.")
                 .pipeTo(
                     String::toUpperCase,
                     replaceAll("\\.", "!!")
@@ -27,15 +27,15 @@ public class PipeableExamples {
     
     @Test
     public void testPipeLine() {
-        val readFile = PipeLine
+        var readFile = PipeLine
                 .of  (String.class)
                 .then(Paths ::get)
                 .then(Files ::readAllBytes)
                 .then(String::new)
                 .thenReturn();
           
-        val fileNames = FuncList.of("file1.txt", "file2.txt");
-        val fileContents = fileNames.map(readFile);
+        var fileNames = FuncList.of("file1.txt", "file2.txt");
+        var fileContents = fileNames.map(readFile);
         // Notice that the error is suppressed.
         assertEquals("[null, null]", fileContents.toString());
     }
@@ -50,7 +50,7 @@ public class PipeableExamples {
     
     @Test
     public void testPipeableClass() {
-        val user = new User("root");
+        var user = new User("root");
         assertEquals("User name: root", user.pipeTo(User::name, "User name: "::concat));
     }
     

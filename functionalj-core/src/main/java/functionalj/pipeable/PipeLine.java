@@ -59,7 +59,7 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
             Object data = input;
             for (int i = 0; i < functions.size(); i++) {
                 @SuppressWarnings("rawtypes")
-                val func1 = functions.get(i);
+                var func1 = functions.get(i);
                 data = __internal.apply(func1, data);
             }
             if (catchHandler == null)
@@ -76,16 +76,16 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     }
     
     public static <I> Builder<I, I> of(Class<I> inputType) {
-        val builder = new Builder<I, I>(NULL_UNSAFE);
+        var builder = new Builder<I, I>(NULL_UNSAFE);
         return builder;
     }
     public static <I> Builder<I, I> ofNullable(Class<I> inputType) {
-        val builder = new Builder<I, I>(NULL_SAFE);
+        var builder = new Builder<I, I>(NULL_SAFE);
         return builder;
     }
     
     public static <I, O> Builder<I, O> from(Func1<I, O> func1) {
-        val builder = new Builder<I, O>(NULL_UNSAFE);
+        var builder = new Builder<I, O>(NULL_UNSAFE);
         builder.functions.add(func1);
         return builder;
     }

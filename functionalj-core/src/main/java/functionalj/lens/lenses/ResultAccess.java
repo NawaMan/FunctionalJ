@@ -40,7 +40,7 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
                             AccessParameterized<HOST, Result<TYPE>, TYPE, SUBACCESS>  {
     
     public static <H, T, A extends AnyAccess<H, T>> ResultAccess<H, T, A> of(Function<H, Result<T>> read, Function<Function<H, T>, A> createAccess) {
-        val accessParameterized = new AccessParameterized<H, Result<T>, T, A>() {
+        var accessParameterized = new AccessParameterized<H, Result<T>, T, A>() {
             @Override
             public Result<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
@@ -74,7 +74,7 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
     
     public default <TARGET> 
         ResultAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenMap(Function<TYPE, TARGET> mapper) {
-        val accessWithSub = new AccessParameterized<HOST, Result<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
+        var accessWithSub = new AccessParameterized<HOST, Result<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Result<TARGET> applyUnsafe(HOST host) throws Exception {
                 Result<TYPE> result = ResultAccess.this.apply(host);
@@ -96,7 +96,7 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
     
     public default <TARGET> 
         ResultAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenFlatMap(Function<TYPE, Result<TARGET>> mapper) {
-        val accessWithSub = new AccessParameterized<HOST, Result<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
+        var accessWithSub = new AccessParameterized<HOST, Result<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Result<TARGET> applyUnsafe(HOST host) throws Exception {
                 return ResultAccess.this.apply(host).flatMap(Func1.from(mapper));

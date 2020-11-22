@@ -24,7 +24,7 @@ public class FuncMapBuilder<K, V> {
     }
     
     public ImmutableMap<K, V> build() {
-        val map = FuncMap.underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        var map = FuncMap.underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         for (Tuple2<K, V> entry : this.entries) {
             K key   = entry._1();
             V value = entry._2();

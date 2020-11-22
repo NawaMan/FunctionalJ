@@ -47,7 +47,7 @@ public class Generic {
     }
     
     public String toCode() {
-        val params = asList(
+        var params = asList(
                 toStringLiteral(name),
                 toStringLiteral(withBound),
                 toListCode     (boundTypes, Type::toCode)

@@ -111,7 +111,7 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         } else if (data instanceof ImmutableList) {
             this.data = ((ImmutableList<DATA>)data).data;
         } else {
-            val list = new ArrayList<DATA>();
+            var list = new ArrayList<DATA>();
             data.forEach(list::add);
             this.data = unmodifiableList(list);
         }

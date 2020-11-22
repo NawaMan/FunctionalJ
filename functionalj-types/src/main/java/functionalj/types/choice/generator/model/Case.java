@@ -76,7 +76,7 @@ public class Case {
     }
     
     public String toCode() {
-        val parameters = asList(
+        var parameters = asList(
                 toStringLiteral(name),
                 toStringLiteral(validationMethod),
                 toListCode     (params, CaseParam::toCode)

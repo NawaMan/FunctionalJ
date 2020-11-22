@@ -53,7 +53,7 @@ public interface StreamableWithGroupingBy<DATA>
         
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
-            val key = keyMapper.apply(each);
+            var key = keyMapper.apply(each);
             map.compute(key, (k, a)->{
                 if (a == null) {
                     a = collectorSupplier.get();
@@ -63,7 +63,7 @@ public interface StreamableWithGroupingBy<DATA>
             });
         };
         combiner = (map1, map2) -> map1.putAll(map2);
-        val theMap = streamPlus().collect(supplier, accumulator, combiner);
+        var theMap = streamPlus().collect(supplier, accumulator, combiner);
         return ImmutableMap
                     .from    (theMap)
                     .mapValue(toStreamable);

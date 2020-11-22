@@ -57,9 +57,9 @@ public class GenericChoiceTest {
     
     @Test
     public void test() {
-        val targetClass = new TargetClass(spec);
-        val code = targetClass.lines().stream().collect(Collectors.joining("\n"));
-        val expect = 
+        var targetClass = new TargetClass(spec);
+        var code = targetClass.lines().stream().collect(Collectors.joining("\n"));
+        var expect = 
                 "package functionalj.types.choice.generator;\n" + 
                 "\n" + 
                 "import functionalj.lens.core.LensSpec;\n" + 

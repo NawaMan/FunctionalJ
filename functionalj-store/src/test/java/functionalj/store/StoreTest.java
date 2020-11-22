@@ -15,7 +15,7 @@ public class StoreTest {
     
     @Test
     public void testBasic() {
-        val store = new Store<>(0);
+        var store = new Store<>(0);
         assertEquals("Store [data=0]", store.toString());
         ChangeResult<Integer> result = store.change(theInteger.plus(1));
         assertEquals("Store [data=1]", store.toString());
@@ -24,7 +24,7 @@ public class StoreTest {
     
     @Test
     public void testChain() {
-        val store = new Store<>(0);
+        var store = new Store<>(0);
         assertEquals("Store [data=0]", store.toString());
         store
             .change(theInteger.plus(1))
@@ -33,11 +33,11 @@ public class StoreTest {
     }
     @Test
     public void testReject1() {
-        val positiveNumberAcceptor = (Func2<Integer, Result<Integer>, ChangeResult<Integer>>)((org, res)->{
+        var positiveNumberAcceptor = (Func2<Integer, Result<Integer>, ChangeResult<Integer>>)((org, res)->{
             return res.map(newValue -> rejectNegative(org, newValue)).get();
         });
         
-        val store = new Store<>(0, positiveNumberAcceptor);
+        var store = new Store<>(0, positiveNumberAcceptor);
         assertEquals("Store [data=0]", store.toString());
         store
             .change(theInteger.plus(1))
@@ -47,11 +47,11 @@ public class StoreTest {
     }
     @Test
     public void testReject2() {
-        val positiveNumberAcceptor = (Func2<Integer, Result<Integer>, ChangeResult<Integer>>)((org, res)->{
+        var positiveNumberAcceptor = (Func2<Integer, Result<Integer>, ChangeResult<Integer>>)((org, res)->{
             return res.map(newValue -> rejectNegative(org, newValue)).get();
         });
         
-        val store = new Store<>(0, positiveNumberAcceptor);
+        var store = new Store<>(0, positiveNumberAcceptor);
         assertEquals("Store [data=0]", store.toString());
         store.change(theInteger.plus(1));
         assertEquals("Store [data=1]", store.toString());
@@ -70,7 +70,7 @@ public class StoreTest {
     @Test
     public void testUse() {
     	val log   = new ArrayList<String>();
-        val store = new Store<>(0);
+        var store = new Store<>(0);
         assertEquals("Store [data=0]", store.toString());
         store   .change(theInteger.plus(1))
         .store().use   (value -> log.add("" + value));

@@ -27,26 +27,26 @@ public interface TimeDefinitionAccess<HOST>
     
     public default BooleanAccessPrimitive<HOST> isUtc() {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value == TimeDefinition.UTC;
         };
     }
     public default BooleanAccessPrimitive<HOST> isWall() {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value == TimeDefinition.WALL;
         };
     }
     public default BooleanAccessPrimitive<HOST> isStandard() {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value == TimeDefinition.STANDARD;
         };
     }
     
     public default LocalDateTimeAccess<HOST> createDateTime(LocalDateTime dateTime, ZoneOffset standardOffset, ZoneOffset wallOffset) {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.createDateTime(dateTime, standardOffset, wallOffset);
         };
     }
@@ -54,7 +54,7 @@ public interface TimeDefinitionAccess<HOST>
     
     public default IntegerAccessPrimitive<HOST> compareTo(TimeDefinition other) {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.compareTo(other);
         };
     }

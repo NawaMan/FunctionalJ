@@ -48,12 +48,12 @@ public interface IntegerLens<HOST>
     public default int applyAsInt(HOST host) {
         LensSpec<HOST, Integer> lensSpec = lensSpec();
         if (lensSpec instanceof PrimitiveLensSpecs.IntegerLensSpecPrimitive) {
-            val spec  = (PrimitiveLensSpecs.IntegerLensSpecPrimitive)lensSpec;
-            val value = spec.applyAsInt(host);
+            var spec  = (PrimitiveLensSpecs.IntegerLensSpecPrimitive)lensSpec;
+            var value = spec.applyAsInt(host);
             return value;
         }
         
-        val value = lensSpec.apply(host);
+        var value = lensSpec.apply(host);
         return value;
     }
 

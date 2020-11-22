@@ -50,7 +50,7 @@ public class WithPostConstruct {
     
     @Test
     public void testPostConstruct_runAfterWith() {
-        val object = new SimpleWithPostReConstruct("Obj1");
+        var object = new SimpleWithPostReConstruct("Obj1");
         assertEquals("[Hello: Obj1]", logs.toString());
         
         object.withName("Object1");

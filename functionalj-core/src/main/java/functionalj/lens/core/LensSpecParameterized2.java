@@ -44,15 +44,15 @@ public interface LensSpecParameterized2<HOST, TYPE, SUB1, SUB2,
     
     @Override
     public default SUBLENS1 createSubAccess1(Function<TYPE, SUB1> accessToSub) {
-        val read = getSpec().getRead().andThen(accessToSub);
-        val spec = LensSpec.of(read);
+        var read = getSpec().getRead().andThen(accessToSub);
+        var spec = LensSpec.of(read);
         return createSubLens1(spec);
     }
 
     @Override
     public default SUBLENS2 createSubAccess2(Function<TYPE, SUB2> accessToSub) {
-        val read = getSpec().getRead().andThen(accessToSub);
-        val spec = LensSpec.of(read);
+        var read = getSpec().getRead().andThen(accessToSub);
+        var spec = LensSpec.of(read);
         return createSubLens2(spec);
     }
 

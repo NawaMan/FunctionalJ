@@ -19,27 +19,27 @@ public interface ZoneIdAccess<HOST, ZONE_ID extends ZoneId>
     
     public default StringAccess<HOST> getId() {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.getId();
         };
     }
     public default StringAccess<HOST> getDisplayName(TextStyle style, Locale locale) {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.getDisplayName(style, locale);
         };
     }
     
     public default ZoneRulesAccess<HOST> getRules() {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.getRules();
         };
     }
     
     public default ZoneIdAccess<HOST, ZoneId> normalized() {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.normalized();
         };
     }

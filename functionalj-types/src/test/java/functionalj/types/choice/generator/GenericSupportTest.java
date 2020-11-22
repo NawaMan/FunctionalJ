@@ -42,7 +42,7 @@ public class GenericSupportTest {
     
     @Test
     public void test() {
-        val generator = new Generator("Option",
+        var generator = new Generator("Option",
                 new Type(FullGeneratorTest.class.getPackage().getName(), "GenericSupportTest", "OptionSpec"),
                 "spec", false, null,
                 asList(
@@ -56,7 +56,7 @@ public class GenericSupportTest {
                 asList(),
                 emptyList());
         
-        val lines  = generator.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
+        var lines  = generator.lines().stream().filter(Objects::nonNull).collect(Collectors.joining("\n"));
         assertEquals(expected, lines);
     }
     

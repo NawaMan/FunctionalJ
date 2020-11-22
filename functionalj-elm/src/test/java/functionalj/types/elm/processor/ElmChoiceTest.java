@@ -16,8 +16,8 @@ public class ElmChoiceTest {
     
     @Test
     public void test() {
-        val genericYear = new Generic("year", null, asList(Type.INTEGER));
-        val caseParams = asList(
+        var genericYear = new Generic("year", null, asList(Type.INTEGER));
+        var caseParams = asList(
                 new CaseParam("name",   Type.STRING,  false),
                 new CaseParam("age",    Type.INTEGER, false),
                 new CaseParam("years",  new Type("java.util", null, "List", asList(genericYear)), false),
@@ -25,11 +25,11 @@ public class ElmChoiceTest {
                 new CaseParam("user",   new Type("example.functionalj.elm", null, "User"), false)
             );
         
-        val sourceType = new Type("functionalj.types.elm", null, "LoggedIn");
-        val cases      = asList(new Case("LoggedIn", caseParams), new Case("LoggedOut"));
-        val choiceSpec = new SourceSpec("LoggedIn", sourceType, cases);
-        val spec       = new ElmChoiceSpec(choiceSpec, "LoginStatus", "Example/Functionalj/Elm");
-        val builder    = new ElmChoiceBuilder(spec);
+        var sourceType = new Type("functionalj.types.elm", null, "LoggedIn");
+        var cases      = asList(new Case("LoggedIn", caseParams), new Case("LoggedOut"));
+        var choiceSpec = new SourceSpec("LoggedIn", sourceType, cases);
+        var spec       = new ElmChoiceSpec(choiceSpec, "LoginStatus", "Example/Functionalj/Elm");
+        var builder    = new ElmChoiceBuilder(spec);
         assertEquals(expected, builder.toElmCode());
     }
     

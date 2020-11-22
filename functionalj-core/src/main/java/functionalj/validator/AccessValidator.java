@@ -39,13 +39,13 @@ public interface AccessValidator<DATA, TARGET> extends Validator<DATA> {
     
     public default Result<DATA> validate(DATA data) {
         return Result.of(()->{
-            val mapper  = access();
-            val target  = mapper.apply(data);
-            val checker = checker();
+            var mapper  = access();
+            var target  = mapper.apply(data);
+            var checker = checker();
             if (checker.test(target))
                 return data;
                 
-            val exception = createException(data, target);
+            var exception = createException(data, target);
             throw exception;
         });
     }
