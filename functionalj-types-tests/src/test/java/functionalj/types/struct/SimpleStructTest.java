@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,6 +33,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import functionalj.types.DefaultTo;
+import lombok.val;
 
 
 public class SimpleStructTest {
@@ -50,13 +51,13 @@ public class SimpleStructTest {
     
     @Test
     public void testReadLens_getProperty() {
-        var obj1 = new SimpleFromInteface("Obj1");
+        val obj1 = new SimpleFromInteface("Obj1");
         assertEquals("Obj1", theSimpleFromInteface.name.apply(obj1));
     }
         
     @Test
     public void testWriteLens_createNewObject() {
-        var obj1 = new SimpleFromInteface("Obj1");
+        val obj1 = new SimpleFromInteface("Obj1");
         assertEquals("Obj1",               obj1.name());
         assertEquals("Object1",            theSimpleFromInteface.name.changeTo("Object1").apply(obj1).name());
         assertEquals("SimpleFromInteface", obj1.withName("Object1").getClass().getSimpleName());
@@ -66,12 +67,12 @@ public class SimpleStructTest {
     
     @Test
     public void testWithStream_createNewObject() {
-        var list = Arrays.asList(
+        val list = Arrays.asList(
                     new SimpleFromInteface("Obj1"),
                     new SimpleFromInteface("Obj2"),
                     new SimpleFromInteface("Obj3")
                 );
-        var names = list.stream().map(theSimpleFromInteface.name).collect(toList());
+        val names = list.stream().map(theSimpleFromInteface.name).collect(toList());
         assertEquals("[Obj1, Obj2, Obj3]", names.toString());
         
         assertEquals(1, list.stream().filter(theSimpleFromInteface.name.thatEquals("Obj2")).count());

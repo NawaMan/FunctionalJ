@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
+import lombok.val;
 
 
 public class StreamPlusIteratorPlusExamples {
@@ -31,8 +32,8 @@ public class StreamPlusIteratorPlusExamples {
     
     @Test
     public void testCombine() {
-        var player1 = StreamPlus.of(Paper, Paper, Rock);
-        var player2 = StreamPlus.of(Rock,  Paper, Scissors);
+        val player1 = StreamPlus.of(Paper, Paper, Rock);
+        val player2 = StreamPlus.of(Rock,  Paper, Scissors);
         
         assertEquals(
                 "Player1 score: 2",
@@ -41,10 +42,10 @@ public class StreamPlusIteratorPlusExamples {
     
     @Test
     public void testVariantRead() {
-        var bytes = IntStreamPlus.of(78, 97, 119, 97, 0, 2, 0, 1).boxed().iterator();
-        var magicNumber = bytes.mapNext(4, bs -> new String(bs.toByteArray(Integer::byteValue)));
-        var majorVersion = bytes.pullNext(2).get().toList().toString();
-        var minorVersion = bytes.pullNext(2).get().toList().toString();
+        val bytes = IntStreamPlus.of(78, 97, 119, 97, 0, 2, 0, 1).boxed().iterator();
+        val magicNumber = bytes.mapNext(4, bs -> new String(bs.toByteArray(Integer::byteValue)));
+        val majorVersion = bytes.pullNext(2).get().toList().toString();
+        val minorVersion = bytes.pullNext(2).get().toList().toString();
         assertEquals("Nawa", magicNumber.get());
         assertEquals("[0, 2]",     majorVersion);
         assertEquals("[0, 1]",     minorVersion);

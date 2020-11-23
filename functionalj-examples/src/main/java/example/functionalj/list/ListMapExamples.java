@@ -23,7 +23,9 @@
 // ============================================================================
 package example.functionalj.list;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,7 @@ import org.junit.Test;
 import functionalj.function.Func;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
+import lombok.val;
 
 
 public class ListMapExamples {
@@ -58,14 +61,14 @@ public class ListMapExamples {
     
     @Test
     public void exampleUnsupportException() {
-        var list = FuncList.of("I", "Me", "Myself");
+        val list = FuncList.of("I", "Me", "Myself");
         try {
             list.add("We");
             fail("Expect an error!");
         } catch (UnsupportedOperationException e) {
         }
         
-        var map = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
+        val map = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
         try {
             map.put("Ten", 10.0);
             fail("Expect an error!");
@@ -75,11 +78,11 @@ public class ListMapExamples {
     
     @Test
     public void exampleImmutableModification() {
-        var list = FuncList.of("I", "Me", "Myself");
-        var map  = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
+        val list = FuncList.of("I", "Me", "Myself");
+        val map  = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
         
-        var newList = list.append("First-Person");
-        var newMap  = map .with("Ten", 10.0);
+        val newList = list.append("First-Person");
+        val newMap  = map .with("Ten", 10.0);
         
         assertEquals("[I, Me, Myself]",                            list.toString());
         assertEquals("{E:2.71828, One:1.0, PI:3.14159}",           map .toString());
@@ -89,21 +92,21 @@ public class ListMapExamples {
     
     @Test
     public void exampleFunctional() {
-        var list = FuncList.of("I", "Me", "Myself");
-        var map  = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
+        val list = FuncList.of("I", "Me", "Myself");
+        val map  = FuncMap .of("One", 1.0, "PI", 3.14159, "E", 2.71828);
         assertEquals("[1, 2, 6]",          list.map     (String::length).toString());
         assertEquals("{E:3, One:1, PI:3}", map .mapValue(Math::round)   .toString());
     }
     
     @Test
     public void exampleImmutable() {
-        var cats         = FuncList.of("Kitty", "Tigger", "Striped", "Oreo", "Simba", "Scar", "Felix", "Pete", "Schrödinger's");
-        var rand         = new Random();
-        var deadNotAlive = Func.f((String s) -> rand.nextBoolean()).toPredicate();
-        var deadCats     = cats.filter(deadNotAlive);
+        val cats         = FuncList.of("Kitty", "Tigger", "Striped", "Oreo", "Simba", "Scar", "Felix", "Pete", "Schrödinger's");
+        val rand         = new Random();
+        val deadNotAlive = Func.f((String s) -> rand.nextBoolean()).toPredicate();
+        val deadCats     = cats.filter(deadNotAlive);
         assertNotEquals(deadCats, deadCats);
         
-        var surelyDeadCats = deadCats.toImmutableList();
+        val surelyDeadCats = deadCats.toImmutableList();
         assertEquals(surelyDeadCats, surelyDeadCats);
     }
     

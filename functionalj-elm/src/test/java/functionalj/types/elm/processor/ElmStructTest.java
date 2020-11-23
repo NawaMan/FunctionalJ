@@ -12,6 +12,7 @@ import functionalj.types.Type;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
+import lombok.val;
 
 
 public class ElmStructTest {
@@ -36,7 +37,7 @@ public class ElmStructTest {
     
     @Test
     public void test() {
-        var sourceSpec = new SourceSpec(
+        val sourceSpec = new SourceSpec(
                     definitionClassName, // specClassName
                     packageName,         // packageName
                     null,                // encloseName
@@ -49,8 +50,8 @@ public class ElmStructTest {
                     getters,
                     emptyList());
         
-        var spec   = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm");
-        var struct = new ElmStructBuilder(spec);
+        val spec   = new ElmStructSpec(sourceSpec, "User", "Example/Functionalj/Elm");
+        val struct = new ElmStructBuilder(spec);
         assertEquals(expected, struct.toElmCode());
     }
     

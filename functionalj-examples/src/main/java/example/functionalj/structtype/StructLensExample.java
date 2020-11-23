@@ -32,6 +32,7 @@ import org.junit.Test;
 
 import functionalj.map.FuncMap;
 import functionalj.types.Struct;
+import lombok.val;
 
 
 public class StructLensExample {
@@ -44,7 +45,7 @@ public class StructLensExample {
     
     @Test
     public void testLensToMap() {
-        var company = new Company("HighProfitCorp", listOf(
+        val company = new Company("HighProfitCorp", listOf(
                     new Personel(1, "John", "Doe", 100_000, true),
                     new Personel(2, "Jane", "Smith", 150_000, false)
                 )
@@ -59,7 +60,7 @@ public class StructLensExample {
                 + "}"
                 + "]", 
                 company.toString());
-        var changeJaneFamilyName
+        val changeJaneFamilyName
                 = theCompany
                 .employees
                 .get(2)

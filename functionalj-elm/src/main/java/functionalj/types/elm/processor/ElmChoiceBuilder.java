@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.struct.generator.ILines;
+import lombok.val;
 
 
 /**
@@ -69,12 +70,12 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     }
     
     public ILines typeDefinition() {
-        var definition = line("type " + spec.typeName());
-        var choices    = spec.sourceSpec()
+        val definition = line("type " + spec.typeName());
+        val choices    = spec.sourceSpec()
                 .choices.stream()
                 .map(toCaseTypes)
                 .map(toLine);
-        var lines = linesOf(choices)
+        val lines = linesOf(choices)
                     .containWith("=", "|", null);
         return definition
                 .append(indent(lines));
@@ -82,8 +83,8 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     
     private static Function<CaseParam, String> toParamType = ElmChoiceBuilder::toParamType;
     private static String toParamType(CaseParam caseParam) {
-        var paramType    = caseParam.type;
-        var elmParamType = caseParam.isNullable 
+        val paramType    = caseParam.type;
+        val elmParamType = caseParam.isNullable 
                 ? elmParamType(elmMayBeOfType(paramType))
                 : elmParamType(paramType);
         return elmParamType;
@@ -91,8 +92,8 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     
     private static Function<Case, String> toCaseTypes = ElmChoiceBuilder::toCaseTypes;
     private static String toCaseTypes(Case choice) {
-        var name   = choice.name;
-        var params = choice
+        val name   = choice.name;
+        val params = choice
                 .params.stream()
                 .map    (toParamType)
                 .collect(joining(" "));
@@ -100,33 +101,33 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     }
     
     public ElmFunctionBuilder encoder() {
-        var typeName    = spec.typeName();
-        var name        = encoderName();
-        var params      = camelName();
-        var declaration = typeName + " -> Json.Encode.Value";
+        val typeName    = spec.typeName();
+        val name        = encoderName();
+        val params      = camelName();
+        val declaration = typeName + " -> Json.Encode.Value";
         
-        var caseExpr = line("case " + name + " of");
-        var choices  = linesOf(
+        val caseExpr = line("case " + name + " of");
+        val choices  = linesOf(
                 spec.sourceSpec()
                 .choices.stream()
                 .map(toCaseField));
-        var body = caseExpr.append(choices.indent(1));
+        val body = caseExpr.append(choices.indent(1));
         return new ElmFunctionBuilder(name, declaration, params, body);
     }
     
     private static Function<Case, ILines> toCaseField = ElmChoiceBuilder::toCaseField;
     private static ILines toCaseField(Case choice) {
-        var paramNameList = choice.params.stream().map(param -> param.name).collect(joining(" "));
-        var matchCase     = ILines.line(choice.name + " " + paramNameList + " ->");
-        var targetFunc    = ILines.line("Json.Encode.object");
+        val paramNameList = choice.params.stream().map(param -> param.name).collect(joining(" "));
+        val matchCase     = ILines.line(choice.name + " " + paramNameList + " ->");
+        val targetFunc    = ILines.line("Json.Encode.object");
         
-        var taggedEncoder = line("( \"__tagged\", Json.Encode.string \"" + choice.name + "\" )").toStream();
-        var encoders 
+        val taggedEncoder = line("( \"__tagged\", Json.Encode.string \"" + choice.name + "\" )").toStream();
+        val encoders 
                 = choice
                 .params.stream()
                 .map(toCaseParam)
                 .map(toLine);
-        var params = linesOf(concat(taggedEncoder, encoders))
+        val params = linesOf(concat(taggedEncoder, encoders))
                     .containWith("[", ",", "]")
                     .indent(1);
         return matchCase.append(
@@ -138,24 +139,24 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     private static Function<CaseParam, String> toCaseParam = ElmChoiceBuilder::toCaseParam;
     
     private static String toCaseParam(CaseParam caseParam) {
-        var encoder = encoderNameOf(caseParam.type, caseParam.name, caseParam.isNullable);
-        var name    = caseParam.name;
+        val encoder = encoderNameOf(caseParam.type, caseParam.name, caseParam.isNullable);
+        val name    = caseParam.name;
         return "( \"" + name + "\", " + encoder + " )";
     }
     
     public ElmFunctionBuilder decoder() {
-        var typeName    = spec.typeName();
-        var name        = decoderName();
-        var declaration = "Json.Decode.Decoder " + typeName;
-        var params      = "";
+        val typeName    = spec.typeName();
+        val name        = decoderName();
+        val declaration = "Json.Decode.Decoder " + typeName;
+        val params      = "";
         
-        var firstLines = line(
+        val firstLines = line(
                 "Json.Decode.field \"__tagged\" Json.Decode.string",
                 "    |> Json.Decode.andThen",
                 "        (\\str ->",
                 "            case str of"
             );
-        var fieldEncoders 
+        val fieldEncoders 
                 = linesOf(
                     spec
                     .sourceSpec()
@@ -163,12 +164,12 @@ public class ElmChoiceBuilder implements ElmTypeDef {
                     .stream()
                     .map(toFieldDecoder(typeName)))
                     .indent(4);
-        var lastLines = line(
+        val lastLines = line(
                 "                somethingElse ->",
                 "                    Json.Decode.fail <| \"Unknown tagged: \" ++ somethingElse",
                 ")");
-        var body = firstLines.append(fieldEncoders).append(lastLines);
-        var encoder = new ElmFunctionBuilder(name, declaration, params, body);
+        val body = firstLines.append(fieldEncoders).append(lastLines);
+        val encoder = new ElmFunctionBuilder(name, declaration, params, body);
         return encoder;
     }
     
@@ -176,10 +177,10 @@ public class ElmChoiceBuilder implements ElmTypeDef {
         return choice -> toFieldDecoder(typeName, choice);
     }
     private static ILines toFieldDecoder(String typeName, Case choice) {
-        var fieldName   = choice.name;
-        var firstLine   = line("\"" + fieldName + "\" ->");
-        var secondLine  = line("    Json.Decode.succeed " + fieldName);
-        var restOfLines = linesOf(choice.params.stream().map(toChoiceParamDecoder)).indent(2);
+        val fieldName   = choice.name;
+        val firstLine   = line("\"" + fieldName + "\" ->");
+        val secondLine  = line("    Json.Decode.succeed " + fieldName);
+        val restOfLines = linesOf(choice.params.stream().map(toChoiceParamDecoder)).indent(2);
         return firstLine
                 .append(secondLine)
                 .append(restOfLines)
@@ -188,20 +189,20 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     
     private static Function<CaseParam, ILines> toChoiceParamDecoder = ElmChoiceBuilder::toChoiceParamDecoder;
     private static ILines toChoiceParamDecoder(CaseParam caseParam) {
-        var caseType = caseParam.type;
-        var isList   = caseType.isList()
+        val caseType = caseParam.type;
+        val isList   = caseType.isList()
                     || caseType.isFuncList();
-        var bareType = (caseType.isNullable() || caseType.isOptional() || isList)
+        val bareType = (caseType.isNullable() || caseType.isOptional() || isList)
                      ? caseType.generics().get(0).toType()
                      : caseType;
-        var isNullable = caseParam.isNullable
+        val isNullable = caseParam.isNullable
                       || caseType.isNullable()
                       || caseType.isOptional();
-        var reqOrOpt = isNullable
+        val reqOrOpt = isNullable
                      ? "Json.Decode.Pipeline.optional"
                      : "Json.Decode.Pipeline.required";
-        var quotedName = "\"" + caseParam.name + "\"";
-        var decoderType = isList
+        val quotedName = "\"" + caseParam.name + "\"";
+        val decoderType = isList
                         ? "(Json.Decode.list " + decoderNameOf(bareType) + ")"
                         : ( isNullable
                             ? "(Json.Decode.nullable " + decoderNameOf(bareType) + ") Nothing"
@@ -239,11 +240,11 @@ public class ElmChoiceBuilder implements ElmTypeDef {
     private static final String separator = "\n\n\n";
     
     private String fileTemplate(ILines ... ilines) {
-        var typeName    = typeName();
-        var camalName   = camelName();
-        var moduleName  = spec.moduleName();
-        var content     = Stream.of(ilines).map(ILines::toText).collect(joining(separator));
-        var fileContent = format(topTemplate, typeName, camalName, moduleName, content);
+        val typeName    = typeName();
+        val camalName   = camelName();
+        val moduleName  = spec.moduleName();
+        val content     = Stream.of(ilines).map(ILines::toText).collect(joining(separator));
+        val fileContent = format(topTemplate, typeName, camalName, moduleName, content);
         return fileContent;
     }
     

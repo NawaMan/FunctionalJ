@@ -35,6 +35,7 @@ import org.junit.Test;
 
 import functionalj.function.Func;
 import functionalj.types.Choice;
+import lombok.val;
 
 
 public class ChoiceTypeExamples {
@@ -87,7 +88,7 @@ public class ChoiceTypeExamples {
     
     @Test
     public void example05_ifXXX() {
-        var output = new AtomicReference<String>();
+        val output = new AtomicReference<String>();
         LoginStatus status = LoginStatus.Login("root");
         status
             .ifLogin(s -> output.set("User: " + s.userName()))
@@ -97,7 +98,7 @@ public class ChoiceTypeExamples {
     
     @Test
     public void example06_PatternMatching() {
-        var f = Func.f((LoginStatus status) -> {
+        val f = Func.f((LoginStatus status) -> {
             return status.match()
                     .login (s -> "User: " + s.userName()) 
                     .logout("Guess");
@@ -112,8 +113,8 @@ public class ChoiceTypeExamples {
     
     @Test
     public void example07_PatternMatchingWithPayLoad() {
-        var moderators = asList("Jack", "John");
-        var f = Func.f((LoginStatus status) -> {
+        val moderators = asList("Jack", "John");
+        val f = Func.f((LoginStatus status) -> {
             return status.match()
                     .login (theLogin.userName.thatEquals("root"),   "Administrator")
                     .login (theLogin.userName.thatIsIn(moderators), "Moderator")

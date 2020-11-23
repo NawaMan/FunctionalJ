@@ -10,6 +10,7 @@ import java.util.function.Function;
 import org.junit.Test;
 
 import functionalj.ref.Ref;
+import lombok.val;
 
 
 public class RefExamples {
@@ -23,7 +24,7 @@ public class RefExamples {
     }
     
     public static void greet(String name) {
-        var greetingString = greeting.value().apply(name);
+        val greetingString = greeting.value().apply(name);
         println.value().accept(greetingString);
     }
     
@@ -34,7 +35,7 @@ public class RefExamples {
     
     @Test
     public void testDefaultMessage() {
-        var logs = new ArrayList<String>();
+        val logs = new ArrayList<String>();
         With(println.butWith(logs::add))
         .run(()-> {
             greet("Jack");
@@ -44,7 +45,7 @@ public class RefExamples {
     
     @Test
     public void testCustomMessage() {
-        var logs = new ArrayList<String>();
+        val logs = new ArrayList<String>();
         With(println .butWith(logs::add),
              greeting.butWith(name -> "What's up " + name + "?"))
         .run(()-> {

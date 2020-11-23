@@ -30,6 +30,7 @@ import javax.lang.model.element.Element;
 
 import functionalj.types.choice.generator.model.SourceSpec;
 import functionalj.types.elm.Elm;
+import lombok.val;
 
 
 public class ElmChoiceSpec {
@@ -42,7 +43,7 @@ public class ElmChoiceSpec {
         this.sourceSpec = sourceSpec;
         this.typeName   = sourceSpec.targetName;
         
-        var baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
+        val baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
         this.folderName = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
     }
     ElmChoiceSpec(SourceSpec sourceSpec, String typeName, String folderName) {
@@ -52,8 +53,8 @@ public class ElmChoiceSpec {
     }
     
     private String elmBaseModule(Element element, SourceSpec sourceSpec) {
-        var baseModule  = element.getAnnotation(Elm.class).baseModule();
-        var elmtPackage = sourceSpec.sourceType.packageName();
+        val baseModule  = element.getAnnotation(Elm.class).baseModule();
+        val elmtPackage = sourceSpec.sourceType.packageName();
         return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) 
                 ? elmtPackage
                 : baseModule;

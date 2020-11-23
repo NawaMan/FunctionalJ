@@ -11,13 +11,14 @@ import org.junit.Test;
 import functionalj.list.FuncList;
 import functionalj.pipeable.PipeLine;
 import functionalj.pipeable.Pipeable;
+import lombok.val;
 
 
 public class PipeableExamples {
     
     @Test
     public void testPipeable() {
-        var str = Pipeable.of("Hello world.")
+        val str = Pipeable.of("Hello world.")
                 .pipeTo(
                     String::toUpperCase,
                     replaceAll("\\.", "!!")
@@ -27,15 +28,15 @@ public class PipeableExamples {
     
     @Test
     public void testPipeLine() {
-        var readFile = PipeLine
+        val readFile = PipeLine
                 .of  (String.class)
                 .then(Paths ::get)
                 .then(Files ::readAllBytes)
                 .then(String::new)
                 .thenReturn();
           
-        var fileNames = FuncList.of("file1.txt", "file2.txt");
-        var fileContents = fileNames.map(readFile);
+        val fileNames = FuncList.of("file1.txt", "file2.txt");
+        val fileContents = fileNames.map(readFile);
         // Notice that the error is suppressed.
         assertEquals("[null, null]", fileContents.toString());
     }
@@ -50,7 +51,7 @@ public class PipeableExamples {
     
     @Test
     public void testPipeableClass() {
-        var user = new User("root");
+        val user = new User("root");
         assertEquals("User name: root", user.pipeTo(User::name, "User name: "::concat));
     }
     

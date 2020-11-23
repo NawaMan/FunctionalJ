@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.types.elm.processor;
 
-
+import lombok.val;
 
 /**
  * Generic utility class.
@@ -42,14 +42,14 @@ public class Utils {
         if (str.length() <= 2)
             return str.toLowerCase();
         
-        var firstTwo = str.substring(0, 2);
+        val firstTwo = str.substring(0, 2);
         if (firstTwo.equals(firstTwo.toUpperCase())) {
-            var first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
-            var rest = str.substring(first.length());
+            val first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
+            val rest = str.substring(first.length());
             return first.toLowerCase() + rest;
         } else {
-            var first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
-            var rest = str.substring(first.length());
+            val first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
+            val rest = str.substring(first.length());
             return first.toLowerCase() + rest;
         }
     }

@@ -32,12 +32,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import example.functionalj.accesslens.User;
-import functionalj.types.Struct;
 import functionalj.lens.lenses.IntegerAccess;
 import functionalj.lens.lenses.StringAccess;
 import functionalj.lens.lenses.StringLens;
 import functionalj.list.FuncList;
+import functionalj.types.Struct;
+import lombok.val;
 
 
 public class AccessLensExamples {
@@ -77,7 +77,7 @@ public class AccessLensExamples {
     
     @Test
     public void example04_Stream() {
-        var users = FuncList.of(
+        val users = FuncList.of(
                     new User("John"),
                     new User("NawaMan"),
                     new User("Jack")
@@ -85,16 +85,16 @@ public class AccessLensExamples {
         
         StringAccess<User> userName = User::name;
         
-        var usersWithLongName = users.filter(userName.length().thatGreaterThan(4));
+        val usersWithLongName = users.filter(userName.length().thatGreaterThan(4));
         assertEquals("[User[name: NawaMan]]", usersWithLongName.toString());
     }
     
     @Test
     public void example05_CommonAccess() {
-        var names = FuncList.of("John", "David", "Adam", "Ben");
+        val names = FuncList.of("John", "David", "Adam", "Ben");
         
-        var shortNames = names.filter(theString.length().thatLessThan(4));
-        var longNames  = names.filter($S.length().thatGreaterThan(4));
+        val shortNames = names.filter(theString.length().thatLessThan(4));
+        val longNames  = names.filter($S.length().thatGreaterThan(4));
         
         assertEquals("[Ben]",   shortNames.toString());
         assertEquals("[David]", longNames.toString());

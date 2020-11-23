@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import functionalj.types.Struct;
+import lombok.val;
 
 
 public class StructExtendFormTest {
@@ -49,7 +50,7 @@ public class StructExtendFormTest {
     
     @Test
     public void example01_Extends() {
-        var fiendlyGuy = new FriendlyGuy("Hi");
+        val fiendlyGuy = new FriendlyGuy("Hi");
         assertEquals("Hi Bruce Wayne!", fiendlyGuy.greeting("Bruce Wayne"));
     }
     

@@ -10,13 +10,14 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class ResultExample {
     
     @Test
     public void testHandleException() {
-        var wordCount
+        val wordCount
                 = Result.of(()->Files.readAllBytes(Paths.get("FileNotFound.txt")))
                 .map        (String::new)
                 .map        (matches("[a-zA-Z]+"))
@@ -29,7 +30,7 @@ public class ResultExample {
     
     @Test
     public void testValidation() {
-        var result1
+        val result1
                 = Result.valueOf("One Two Three Four Five Six")
                 .map     (matches("[a-zA-Z]+"))
                 .map     (Stream::count)
@@ -37,7 +38,7 @@ public class ResultExample {
                 ;
         assertEquals("Result:{ Value: 6 }", result1.toString());
         
-        var result2
+        val result2
                 = Result.valueOf("One Two Three Four")
                 .map     (matches("[a-zA-Z]+"))
                 .map     (Stream::count)
