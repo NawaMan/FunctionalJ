@@ -27,7 +27,7 @@ import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import lombok.val;
+
 
 // This class along with ArrayBackedIteratorPlus helps improve performance when do pullNext, useNext and mapNext 
 //   with multiple value to run faster.
@@ -38,26 +38,26 @@ public class ArrayBackedStreamPlus<DATA> implements StreamPlus<DATA> {
     
     @SafeVarargs
     public static <DATA> StreamPlus<DATA> of(DATA ... array) {
-        val iterator = ArrayBackedIteratorPlus.of(array);
-        val stream   = new ArrayBackedStreamPlus<>(iterator);
+        var iterator = ArrayBackedIteratorPlus.of(array);
+        var stream   = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
     public static <DATA> StreamPlus<DATA> from(DATA[] array) {
-        val iterator = ArrayBackedIteratorPlus.of(array);
-        val stream   = new ArrayBackedStreamPlus<>(iterator);
+        var iterator = ArrayBackedIteratorPlus.of(array);
+        var stream   = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
     public static <DATA> StreamPlus<DATA> from(DATA[] array, int start, int length) {
         @SuppressWarnings("unchecked")
-        val iterator = (ArrayBackedIteratorPlus<DATA>)ArrayBackedIteratorPlus.of(array, start, length);
-        val stream   = new ArrayBackedStreamPlus<>(iterator);
+        var iterator = (ArrayBackedIteratorPlus<DATA>)ArrayBackedIteratorPlus.of(array, start, length);
+        var stream   = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
     
     ArrayBackedStreamPlus(ArrayBackedIteratorPlus<DATA> iterator) {
         this.iterator = iterator;
         
-        val iterable = (Iterable<DATA>)()->iterator;
+        var iterable = (Iterable<DATA>)()->iterator;
         this.stream  = StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     

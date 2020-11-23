@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,12 +34,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import lombok.val;
 
 class utils {
     
     static <IN> Function<IN, Stream<IN>> delimitWith(IN delimiter) {
-        val isFirst = new AtomicBoolean(true);
+        var isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);
@@ -48,7 +47,7 @@ class utils {
     }
     
     static <IN> Function<IN, Stream<IN>> delimitWith(Supplier<? extends IN> delimiter) {
-        val isFirst = new AtomicBoolean(true);
+        var isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);
@@ -77,7 +76,7 @@ class utils {
     }
     
     static String withMethodName(Getter getter) {
-        val name = getter.getName();
+        var name = getter.getName();
         return "with" + name.substring(0,1).toUpperCase() + name.substring(1);
     }
     
@@ -96,5 +95,5 @@ class utils {
                 .filter(Objects::nonNull)
                 .collect(toList());
     }
-
+    
 }

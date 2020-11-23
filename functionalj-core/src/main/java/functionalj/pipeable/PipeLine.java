@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func1;
 import functionalj.list.ImmutableList;
-import lombok.val;
+
 
 public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     
@@ -58,8 +58,7 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
         try {
             Object data = input;
             for (int i = 0; i < functions.size(); i++) {
-                @SuppressWarnings("rawtypes")
-                val func1 = functions.get(i);
+                var func1 = functions.get(i);
                 data = __internal.apply(func1, data);
             }
             if (catchHandler == null)
@@ -76,16 +75,16 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     }
     
     public static <I> Builder<I, I> of(Class<I> inputType) {
-        val builder = new Builder<I, I>(NULL_UNSAFE);
+        var builder = new Builder<I, I>(NULL_UNSAFE);
         return builder;
     }
     public static <I> Builder<I, I> ofNullable(Class<I> inputType) {
-        val builder = new Builder<I, I>(NULL_SAFE);
+        var builder = new Builder<I, I>(NULL_SAFE);
         return builder;
     }
     
     public static <I, O> Builder<I, O> from(Func1<I, O> func1) {
-        val builder = new Builder<I, O>(NULL_UNSAFE);
+        var builder = new Builder<I, O>(NULL_UNSAFE);
         builder.functions.add(func1);
         return builder;
     }

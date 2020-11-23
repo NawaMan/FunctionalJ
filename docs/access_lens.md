@@ -64,7 +64,7 @@ In the above code, `userNameLength` is a function of `User` to the length of its
 You can also use it with stream.
 
 ```java
-    val users = FuncList.of(
+    var users = FuncList.of(
                 new User("John"),
                 new User("NawaMan"),
                 new User("Jack")
@@ -72,7 +72,7 @@ You can also use it with stream.
     
     StringAccess<User> userName = User::name;
     
-    val usersWithLongName = users.filter(userName.length().thatGreaterThan(4));
+    var usersWithLongName = users.filter(userName.length().thatGreaterThan(4));
     assertEquals("[User(NawaMan)]", usersWithLongName.toString());
 ```
 
@@ -85,10 +85,10 @@ There are also short hands for those: `$S`, `$B`, `$I`, `$L`, `$D` and `$O`.
 This is how it might be used.
 
 ```java
-    val names = FuncList.of("John", "David", "Adam", "Ben");
+    var names = FuncList.of("John", "David", "Adam", "Ben");
     
-    val shortNames = names.filter(theString.length().thatLessThan(4));
-    val longNames  = names.filter($S.length().thatGreaterThan(4));
+    var shortNames = names.filter(theString.length().thatLessThan(4));
+    var longNames  = names.filter($S.length().thatGreaterThan(4));
     
     assertEquals("[Ben]",   shortNames.toString());
     assertEquals("[David]", longNames.toString());

@@ -38,7 +38,7 @@ import functionalj.lens.IntegerLens;
 import functionalj.lens.LensSpec;
 import functionalj.lens.ObjectLensImpl;
 import functionalj.lens.StringLens;
-import lombok.val;
+
 
 /**
  * This test helps to guarantee that the core class names that the annotation project uses still matches.
@@ -71,7 +71,7 @@ public class GuaranteeCoreAnnotationsDependencyTest {
     }
     
     private void assertAllChecked() {
-        val allCores = new TreeSet<Core>(asList(Core.values()));
+        var allCores = new TreeSet<Core>(asList(Core.values()));
         assertEquals(allCores.toString(), checkedCores.toString());
     }
     

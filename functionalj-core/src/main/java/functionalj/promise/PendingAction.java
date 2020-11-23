@@ -31,7 +31,7 @@ import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
-import lombok.val;
+
 
 public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipeable<HasPromise<DATA>> {
     
@@ -85,7 +85,7 @@ public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipe
     public PendingAction<DATA> onComplete(
             FuncUnit1<Result<DATA>>       resultConsumer,
             FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        val subscription = promise.onComplete(Wait.forever(), resultConsumer);
+        var subscription = promise.onComplete(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
@@ -94,7 +94,7 @@ public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipe
             Wait                          wait,
             FuncUnit1<Result<DATA>>       resultConsumer,
             FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        val subscription = promise.onComplete(wait, resultConsumer);
+        var subscription = promise.onComplete(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
@@ -112,13 +112,13 @@ public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipe
     //== Functional ==
     
     public final PendingAction<DATA> filter(Predicate<? super DATA> predicate) {
-        val newPromise = promise.filter(predicate);
+        var newPromise = promise.filter(predicate);
         return new PendingAction<DATA>(newPromise);
     }
     
     @SuppressWarnings("unchecked")
     public final <TARGET> PendingAction<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
-        val newPromise = promise.map(mapper);
+        var newPromise = promise.map(mapper);
         return new PendingAction<TARGET>((Promise<TARGET>)newPromise);
     }
     
@@ -128,7 +128,7 @@ public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipe
     }
     
     public final <TARGET> PendingAction<TARGET> chain(Func1<DATA, ? extends HasPromise<TARGET>> mapper) {
-        val newPromise = promise.flatMap(mapper);
+        var newPromise = promise.flatMap(mapper);
         return new PendingAction<TARGET>((Promise<TARGET>)newPromise);
     }
     

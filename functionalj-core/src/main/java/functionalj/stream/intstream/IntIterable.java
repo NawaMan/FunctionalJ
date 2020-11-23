@@ -28,7 +28,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
 
-import lombok.val;
+
 
 @FunctionalInterface
 public interface IntIterable {
@@ -41,9 +41,9 @@ public interface IntIterable {
 
     default void forEach(IntConsumer action) {
         Objects.requireNonNull(action);
-        val iterator = iterator();
+        var iterator = iterator();
         while (iterator.hasNext()) {
-            val i = iterator.nextInt();
+            var i = iterator.nextInt();
             action.accept(i);
         }
     }

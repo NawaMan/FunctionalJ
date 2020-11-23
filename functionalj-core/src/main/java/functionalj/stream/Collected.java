@@ -33,7 +33,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamProcessor;
 import functionalj.streamable.Streamable;
 import functionalj.streamable.intstreamable.IntStreamable;
-import lombok.val;
+
 
 
 public interface Collected<DATA, ACCUMULATED, RESULT> {
@@ -145,7 +145,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
         public RESULT finish() {
-            val stream = streamable.streamPlus();
+            var stream = streamable.streamPlus();
             return (RESULT) processor.process((StreamPlus)stream);
         }
     }
@@ -180,7 +180,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         }
         
         public RESULT finish() {
-            val finisher = collector.finisher();
+            var finisher = collector.finisher();
             return finisher.apply(accumulated);
         }
         
@@ -203,8 +203,8 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
         }
         
         public RESULT finish() {
-            val stream    = streamable.intStream();
-            val intStream = IntStreamPlus.from(stream);
+            var stream    = streamable.intStream();
+            var intStream = IntStreamPlus.from(stream);
             return processor.process(intStream);
         }
     }
@@ -238,7 +238,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
 //        }
 //        
 //        public RESULT finish() {
-//            val finisher = collector.finisher();
+//            var finisher = collector.finisher();
 //            return finisher.apply(accumulated);
 //        }
 //        
@@ -261,7 +261,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
 //        }
 //        
 //        public RESULT finish() {
-//            val longStream = streamable.longStream();
+//            var longStream = streamable.longStream();
 //            return processor.process(longStream);
 //        }
 //    }
@@ -295,7 +295,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
 //        }
 //        
 //        public RESULT finish() {
-//            val finisher = collector.finisher();
+//            var finisher = collector.finisher();
 //            return finisher.apply(accumulated);
 //        }
 //        
@@ -318,7 +318,7 @@ public interface Collected<DATA, ACCUMULATED, RESULT> {
 //        }
 //        
 //        public RESULT finish() {
-//           val doubleStream = streamable.doubleStream();
+//           var doubleStream = streamable.doubleStream();
 //            return processor.process(doubleStream);
 //        }
 //    }

@@ -29,7 +29,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
-import lombok.val;
+
 
 public interface IntStreamPlusWithPeek {
     
@@ -41,7 +41,7 @@ public interface IntStreamPlusWithPeek {
     public default IntStreamPlus peekBy(
             IntPredicate selector,
             IntConsumer  theConsumer) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .peek(value -> {
                     if (!selector.test(value))
@@ -59,10 +59,10 @@ public interface IntStreamPlusWithPeek {
     public default <T> IntStreamPlus peekAs(
             IntFunction<T>      mapper,
             Consumer<? super T> consumer) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .peek(value -> {
-                    val target = mapper.apply(value);
+                    var target = mapper.apply(value);
                     consumer.accept(target);
                 });
     }
@@ -72,10 +72,10 @@ public interface IntStreamPlusWithPeek {
             IntFunction<T>       mapper,
             Predicate<? super T> selector,
             IntConsumer          consumer) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .peek(value -> {
-                    val target = mapper.apply(value);
+                    var target = mapper.apply(value);
                     if (selector.test(target))
                         consumer.accept(value);
                 });
@@ -86,10 +86,10 @@ public interface IntStreamPlusWithPeek {
             IntFunction<T>       mapper,
             Predicate<? super T> selector,
             Consumer<? super T>  consumer) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .peek(value -> {
-                    val target = mapper.apply(value);
+                    var target = mapper.apply(value);
                     if (selector.test(target)) {
                         consumer.accept(target);
                     }

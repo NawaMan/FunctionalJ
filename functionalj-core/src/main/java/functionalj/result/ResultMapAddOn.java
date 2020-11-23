@@ -39,7 +39,7 @@ import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
-import lombok.val;
+
 
 class ResultMapAddOnHelper {
     
@@ -50,9 +50,9 @@ class ResultMapAddOnHelper {
         return result.map(d -> {
             Exception exception = null;
             boolean hasNull = false;
-            for(val mapper : mappers) {
+            for(var mapper : mappers) {
                 try {
-                    val res = mapper.apply(d);
+                    var res = mapper.apply(d);
                     if (res == null)
                          hasNull = true;
                     else return (T)res;
@@ -189,9 +189,9 @@ public interface ResultMapAddOn<DATA> {
                 Func1<? super DATA, ? extends T2> mapper2,
                 Func2<T1, T2, T> function) {
         return map(each -> {
-            val v1 = mapper1.apply(each);
-            val v2 = mapper2.apply(each);
-            val v  = function.apply(v1, v2);
+            var v1 = mapper1.apply(each);
+            var v2 = mapper2.apply(each);
+            var v  = function.apply(v1, v2);
             return v;
         });
     }
@@ -202,10 +202,10 @@ public interface ResultMapAddOn<DATA> {
                 Func1<? super DATA, ? extends T3> mapper3,
                 Func3<T1, T2, T3, T> function) {
         return map(each -> {
-            val v1 = mapper1.apply(each);
-            val v2 = mapper2.apply(each);
-            val v3 = mapper3.apply(each);
-            val v  = function.apply(v1, v2, v3);
+            var v1 = mapper1.apply(each);
+            var v2 = mapper2.apply(each);
+            var v3 = mapper3.apply(each);
+            var v  = function.apply(v1, v2, v3);
             return v;
         });
     }
@@ -217,11 +217,11 @@ public interface ResultMapAddOn<DATA> {
                 Func1<? super DATA, ? extends T4> mapper4,
                 Func4<T1, T2, T3, T4, T> function) {
         return map(each -> {
-            val v1 = mapper1.apply(each);
-            val v2 = mapper2.apply(each);
-            val v3 = mapper3.apply(each);
-            val v4 = mapper4.apply(each);
-            val v  = function.apply(v1, v2, v3, v4);
+            var v1 = mapper1.apply(each);
+            var v2 = mapper2.apply(each);
+            var v3 = mapper3.apply(each);
+            var v4 = mapper4.apply(each);
+            var v  = function.apply(v1, v2, v3, v4);
             return v;
         });
     }
@@ -234,12 +234,12 @@ public interface ResultMapAddOn<DATA> {
                 Func1<? super DATA, ? extends T5> mapper5,
                 Func5<T1, T2, T3, T4, T5, T> function) {
         return map(each -> {
-            val v1 = mapper1.apply(each);
-            val v2 = mapper2.apply(each);
-            val v3 = mapper3.apply(each);
-            val v4 = mapper4.apply(each);
-            val v5 = mapper5.apply(each);
-            val v  = function.apply(v1, v2, v3, v4, v5);
+            var v1 = mapper1.apply(each);
+            var v2 = mapper2.apply(each);
+            var v3 = mapper3.apply(each);
+            var v4 = mapper4.apply(each);
+            var v5 = mapper5.apply(each);
+            var v  = function.apply(v1, v2, v3, v4, v5);
             return v;
         });
     }
@@ -253,13 +253,13 @@ public interface ResultMapAddOn<DATA> {
                 Func1<? super DATA, ? extends T6> mapper6,
                 Func6<T1, T2, T3, T4, T5, T6, T> function) {
         return map(each -> {
-            val v1 = mapper1.apply(each);
-            val v2 = mapper2.apply(each);
-            val v3 = mapper3.apply(each);
-            val v4 = mapper4.apply(each);
-            val v5 = mapper5.apply(each);
-            val v6 = mapper6.apply(each);
-            val v  = function.apply(v1, v2, v3, v4, v5, v6);
+            var v1 = mapper1.apply(each);
+            var v2 = mapper2.apply(each);
+            var v3 = mapper3.apply(each);
+            var v4 = mapper4.apply(each);
+            var v5 = mapper5.apply(each);
+            var v6 = mapper6.apply(each);
+            var v  = function.apply(v1, v2, v3, v4, v5, v6);
             return v;
         });
     }

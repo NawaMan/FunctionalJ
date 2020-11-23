@@ -23,8 +23,8 @@
 // ============================================================================
 package functionalj.streamable.intstreamable;
 
-import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
 import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
+import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
 
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;

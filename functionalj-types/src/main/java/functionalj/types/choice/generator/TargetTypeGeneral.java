@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,15 +36,16 @@ import java.util.Objects;
 
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.Method;
-import lombok.val;
+
 
 
 /**
  * Generator for general methods of TargetType like toString, hashCode and equals.
- * 
+ *
  * @author manusitn
  */
 public class TargetTypeGeneral implements Lines {
+    
     private final TargetClass  targetClass;
     private final List<Case> choices;
     
@@ -52,7 +53,7 @@ public class TargetTypeGeneral implements Lines {
     
     /**
      * Constructor.
-     * 
+     *
      * @param targetClass  the target class.
      * @param choices      the choices.
      */
@@ -64,14 +65,14 @@ public class TargetTypeGeneral implements Lines {
     
     @Override
     public List<String> lines() {
-        val emptyLine   = asList("");
-        val getSchema   = new GetSchemaBuilder().lines();
-        val firstSwitch = prepareFirstSwitch(targetName);
-        val toString    = prepareToStringMethod();
-        val hashCode    = prepareHashCode();
-        val equals      = prepareEquals(targetName);
+        var emptyLine   = asList("");
+        var getSchema   = new GetSchemaBuilder().lines();
+        var firstSwitch = prepareFirstSwitch(targetName);
+        var toString    = prepareToStringMethod();
+        var hashCode    = prepareHashCode();
+        var equals      = prepareEquals(targetName);
         return asList(
-    		getSchema,   emptyLine,
+            getSchema,   emptyLine,
             firstSwitch, emptyLine,
             toString,    emptyLine,
             hashCode,    emptyLine,
@@ -83,8 +84,8 @@ public class TargetTypeGeneral implements Lines {
     }
     
     private List<String> prepareFirstSwitch(final java.lang.String targetName) {
-        val firstSwitchTypeDef = format("%1$sFirstSwitch%2$s", targetName, targetClass.getType().genericsString());
-        val firstSwitchLines = 
+        var firstSwitchTypeDef = format("%1$sFirstSwitch%2$s", targetName, targetClass.getType().genericsString());
+        var firstSwitchLines =
                 asList(format(
                           "private final %1$s __switch = new %1$s(this);\n"
                         + "@Override public %1$s match() {\n"
@@ -101,23 +102,23 @@ public class TargetTypeGeneral implements Lines {
         if (hasMethod(format("java.lang.String toString(%s)", targetClass.type.toString()), DEFAULT))
             return null;
         
-        val choiceStrings = choices.stream()
+        var choiceStrings = choices.stream()
             .map(choice -> {
-                val camelName  = toCamelCase(choice.name);
-                val paramCount = choice.params.size();
+                var camelName  = toCamelCase(choice.name);
+                var paramCount = choice.params.size();
                 if (paramCount == 0) {
                     return format("            .%1$s(__ -> \"%2$s\")", camelName, choice.name);
                 } else {
-                    val template       = templateRange(1, paramCount + 1, ",");
-                    val templateParams = choice.params.stream().map(p -> camelName + "." + p.name).collect(joining(","));
-                    return format("            .%1$s(%1$s -> \"%2$s(\" + String.format(\"%3$s\", %4$s) + \")\")", 
+                    var template       = templateRange(1, paramCount + 1, ",");
+                    var templateParams = choice.params.stream().map(p -> camelName + "." + p.name).collect(joining(","));
+                    return format("            .%1$s(%1$s -> \"%2$s(\" + String.format(\"%3$s\", %4$s) + \")\")",
                                       camelName, choice.name, template, templateParams);
                 }
             })
             .map("    "::concat)
             .collect(toList());
         
-        val toStringLines = asList(
+        var toStringLines = asList(
             asList(( "private volatile String toString = null;\n"
                   + "@Override\n"
                   + "public String toString() {\n"
@@ -143,7 +144,7 @@ public class TargetTypeGeneral implements Lines {
     }
     
     private List<String> prepareHashCode() {
-        val mthdSignature = format("int hashCode(%s)", targetClass.type.toString());
+        var mthdSignature = format("int hashCode(%s)", targetClass.type.toString());
         if (hasMethod(mthdSignature, DEFAULT))
             return null;
         return asList(
@@ -182,4 +183,5 @@ public class TargetTypeGeneral implements Lines {
                 .filter  (m -> (kind == null) ? true : kind.equals(m.kind))
                 .anyMatch(m -> mthdSignature.equals(m.signature));
     }
+    
 }

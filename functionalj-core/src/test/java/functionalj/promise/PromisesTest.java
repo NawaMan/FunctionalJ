@@ -32,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import functionalj.result.Result;
-import lombok.val;
+
 
 public class PromisesTest {
     
@@ -42,10 +42,10 @@ public class PromisesTest {
     
     @Test
     public void testOf2_happy() {
-        val control1 = (PendingAction<String> )DeferAction.of(String.class).start();
-        val control2 = (PendingAction<Integer>)DeferAction.of(Integer.class).start();
+        var control1 = (PendingAction<String> )DeferAction.of(String.class).start();
+        var control2 = (PendingAction<Integer>)DeferAction.of(Integer.class).start();
         
-        val promise 
+        var promise 
             = Promise.from(
                 str     -> control1,
                 padding -> control2,
@@ -64,10 +64,10 @@ public class PromisesTest {
     
     @Test
     public void testOf2_happySwitch() {
-        val control1 = DeferAction.of(String.class).start();
-        val control2 = DeferAction.of(Integer.class).start();
+        var control1 = DeferAction.of(String.class).start();
+        var control2 = DeferAction.of(Integer.class).start();
         
-        val promise 
+        var promise 
             = Promise.from(
                 str     -> control1,
                 padding -> control2,
@@ -86,10 +86,10 @@ public class PromisesTest {
     
     @Test
     public void testOf2_fail1() {
-        val control1 = DeferAction.of(String.class).start();
-        val control2 = DeferAction.of(Integer.class).start();
+        var control1 = DeferAction.of(String.class).start();
+        var control2 = DeferAction.of(Integer.class).start();
         
-        val promise 
+        var promise 
             = Promise.from(
                 str     -> control1,
                 padding -> control2,
@@ -107,10 +107,10 @@ public class PromisesTest {
     
     @Test
     public void testOf2_fail2() {
-        val control1 = DeferAction.of(String.class).start();
-        val control2 = DeferAction.of(Integer.class).start();
+        var control1 = DeferAction.of(String.class).start();
+        var control2 = DeferAction.of(Integer.class).start();
         
-        val promise 
+        var promise 
             = Promise.from(
                 str     -> control1,
                 padding -> control2,
@@ -128,10 +128,10 @@ public class PromisesTest {
     
     @Test
     public void testOf2_fail1After2() {
-        val control1 = DeferAction.of(String.class).start();
-        val control2 = DeferAction.of(Integer.class).start();
+        var control1 = DeferAction.of(String.class).start();
+        var control2 = DeferAction.of(Integer.class).start();
         
-        val promise 
+        var promise 
             = Promise.from(
                 str     -> control1,
                 padding -> control2.getPromise(),
@@ -152,13 +152,13 @@ public class PromisesTest {
     
     @Test
     public void testOf6_happy() {
-        val control1 = DeferAction.of(Integer.class).start();
-        val control2 = DeferAction.of(Integer.class).start();
-        val control3 = DeferAction.of(Integer.class).start();
-        val control4 = DeferAction.of(Integer.class).start();
-        val control5 = DeferAction.of(Integer.class).start();
-        val control6 = DeferAction.of(Integer.class).start();
-        val promise 
+        var control1 = DeferAction.of(Integer.class).start();
+        var control2 = DeferAction.of(Integer.class).start();
+        var control3 = DeferAction.of(Integer.class).start();
+        var control4 = DeferAction.of(Integer.class).start();
+        var control5 = DeferAction.of(Integer.class).start();
+        var control6 = DeferAction.of(Integer.class).start();
+        var promise 
             = Promise.from(
                 _1 -> control1,
                 _2 -> control2,
@@ -195,7 +195,7 @@ public class PromisesTest {
     
     @Test
     public void testOf6_mix() throws InterruptedException {
-        val promise 
+        var promise 
             = Promise.from(
                 _1 -> run(Sleep(50).thenReturn(1)),
                 _2 -> Result.valueOf(2),
@@ -214,13 +214,13 @@ public class PromisesTest {
     
     @Test
     public void testOf2_cancel_propagation() throws InterruptedException {
-        val promise1 = DeferAction.of(Integer.class);
-        val promise2 = DeferAction.of(Integer.class);
-        val promise3 = DeferAction.of(Integer.class).complete(5);
-        val promise4 = DeferAction.of(Integer.class);
-        val promise5 = DeferAction.of(Integer.class);
-        val promise6 = DeferAction.of(Integer.class);
-        val promise 
+        var promise1 = DeferAction.of(Integer.class);
+        var promise2 = DeferAction.of(Integer.class);
+        var promise3 = DeferAction.of(Integer.class).complete(5);
+        var promise4 = DeferAction.of(Integer.class);
+        var promise5 = DeferAction.of(Integer.class);
+        var promise6 = DeferAction.of(Integer.class);
+        var promise 
             = Promise.from(
                 _1 -> promise1,
                 _2 -> promise2,
@@ -233,7 +233,7 @@ public class PromisesTest {
                 });
         promise.start();
         
-        val subscription = promise.onComplete();
+        var subscription = promise.onComplete();
         subscription.unsubscribe();
         
         assertStrings("Result:{ Cancelled: No more listener. }", promise .getResult());

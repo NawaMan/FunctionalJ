@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 import functionalj.function.Func1;
-import lombok.val;
+
 
 
 public interface CollectorPlus<DATA, ACCUMULATED, TARGET> 
@@ -58,7 +58,7 @@ public interface CollectorPlus<DATA, ACCUMULATED, TARGET>
     }
     
     public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, TARGET> of(Func1<SOURCE, DATA> mapper) {
-        val collector = new DerivedCollectorPlus<>(this, mapper);
+        var collector = new DerivedCollectorPlus<>(this, mapper);
         return CollectorPlus.from(collector);
     }
 }
@@ -81,9 +81,9 @@ class DerivedCollectorPlus<SOURCE, DATA, ACCUMULATED, RESULT>
     }
     @Override
     public BiConsumer<ACCUMULATED, SOURCE> accumulator() {
-        val accumulator = collector.accumulator();
+        var accumulator = collector.accumulator();
         return (a, s)->{
-            val d = mapper.apply(s);
+            var d = mapper.apply(s);
             accumulator.accept(a, d);
         };
     }

@@ -35,7 +35,7 @@ import java.util.function.Predicate;
 import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessParameterized2;
-import lombok.val;
+
 
 @FunctionalInterface
 public interface MapAccess<HOST, KEY, VALUE, 
@@ -118,13 +118,13 @@ public interface MapAccess<HOST, KEY, VALUE,
     public default CollectionAccess<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>,
                     MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>> 
             entries() {
-        val entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map -> map.entrySet());
+        var entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map -> map.entrySet());
         return () -> entryCollectionSpec;
     }
     public default CollectionAccess<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>, 
                     MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>> 
             filterEntries(Predicate<Map.Entry<KEY, VALUE>> entryPredicate) {
-        val entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map->{
+        var entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map->{
             return map.entrySet().stream().filter(entryPredicate).collect(toSet());
         });
         return () -> entryCollectionSpec;
@@ -132,7 +132,7 @@ public interface MapAccess<HOST, KEY, VALUE,
     public default CollectionAccess<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>, 
                     MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>> 
             filterEntries(BiPredicate<KEY, VALUE> entryBiPredicate) {
-        val entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map->{
+        var entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map->{
             return map.entrySet().stream()
                     .filter(entry -> entryBiPredicate.test(entry.getKey(), entry.getValue()))
                     .collect(toSet());
@@ -142,7 +142,7 @@ public interface MapAccess<HOST, KEY, VALUE,
     public default CollectionAccess<HOST, Collection<Map.Entry<KEY, VALUE>>, Map.Entry<KEY, VALUE>, 
                     MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>> 
             filter(Predicate<KEY> keyPredicate) {
-        val entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map->{
+        var entryCollectionSpec = Helper.createEntryCollectionSpec(accessParameterized2(), map->{
             return map.entrySet().stream()
                     .filter(entry->keyPredicate.test(entry.getKey()))
                     .collect(toSet());
@@ -151,12 +151,12 @@ public interface MapAccess<HOST, KEY, VALUE,
     }
     
     public default CollectionAccess<HOST, Collection<KEY>, KEY, KEYACCESS> keys() {
-        val keyCollectionSpec = Helper.createKeyCollectionSpec(accessParameterized2(), Map::keySet);
+        var keyCollectionSpec = Helper.createKeyCollectionSpec(accessParameterized2(), Map::keySet);
         return () -> keyCollectionSpec;
     }
     
     public default CollectionAccess<HOST, Collection<VALUE>, VALUE, VALUEACCESS> values() {
-        val valueCollectionSpec = Helper.createValueCollectionSpec(accessParameterized2(), Map::values);
+        var valueCollectionSpec = Helper.createValueCollectionSpec(accessParameterized2(), Map::values);
         return () -> valueCollectionSpec;
     }
     
@@ -201,7 +201,7 @@ public interface MapAccess<HOST, KEY, VALUE,
             createEntryCollectionSpec(
                     AccessParameterized2<HOST, Map<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> spec,
                     Function<Map<KEY, VALUE>, Collection<Map.Entry<KEY, VALUE>>> accessEntrySet) {
-            val access = new AccessParameterized<HOST, 
+            var access = new AccessParameterized<HOST, 
                                 Collection<Map.Entry<KEY, VALUE>>, 
                                 Map.Entry<KEY, VALUE>, 
                                 MapEntryAccess<HOST, Map.Entry<KEY, VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>>() {
@@ -220,7 +220,7 @@ public interface MapAccess<HOST, KEY, VALUE,
                                         AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS> accessParameterized2 = new AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>() {
                                             @Override
                                             public Entry<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
-                                                val entry = accessToParameter.apply(host);
+                                                var entry = accessToParameter.apply(host);
                                                 return entry;
                                             }
                                             @Override
@@ -248,8 +248,8 @@ public interface MapAccess<HOST, KEY, VALUE,
             = new AccessParameterized2<HOST, Map.Entry<KEY,VALUE>, KEY, VALUE, KEYACCESS, VALUEACCESS>() {
                 @Override
                 public Entry<KEY, VALUE> applyUnsafe(HOST host) throws Exception {
-                    val map   = mapAccessSpec.apply(host);
-                    val entry = accessEntry.apply(map);
+                    var map   = mapAccessSpec.apply(host);
+                    var entry = accessEntry.apply(map);
                     return entry;
                 }
                 

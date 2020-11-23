@@ -38,7 +38,7 @@ import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.ResultLens;
 import functionalj.lens.lenses.StringLens;
 import functionalj.result.Result;
-import lombok.val;
+
 
 public class ResultAccessTest {
 
@@ -143,7 +143,7 @@ public class ResultAccessTest {
     
     @Test
     public void testResultAccessMap() {
-        val logs = new ArrayList<String>();
+        var logs = new ArrayList<String>();
         
         theDriver.secondCar.thenMap(Car::color)
         .apply(new Driver(new Car("Black"), Result.valueOf(new Car("White"))))

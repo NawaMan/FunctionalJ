@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func0;
 import functionalj.result.Result;
-import lombok.val;
+
 
 public class RefBuilder<DATA> {
     
@@ -64,21 +64,21 @@ public class RefBuilder<DATA> {
     
     public Ref<DATA> defaultToNull() {
         @SuppressWarnings("unchecked")
-        val result = (Result<DATA>)Result.ofNull();
-        val ref    = new RefOf.FromResult<>(dataClass, result, elseSupplier);
+        var result = (Result<DATA>)Result.ofNull();
+        var ref    = new RefOf.FromResult<>(dataClass, result, elseSupplier);
         return ref;
     }
     public Ref<DATA> defaultTo(DATA value) {
-        val result = Result.valueOf(value);
-        val ref    = new RefOf.FromResult<>(dataClass, result, elseSupplier);
+        var result = Result.valueOf(value);
+        var ref    = new RefOf.FromResult<>(dataClass, result, elseSupplier);
         return ref;
     }
     public Ref<DATA> defaultFrom(Ref<DATA> anotherRef) {
-        val ref = new RefOf.FromRef<DATA>(dataClass, anotherRef, elseSupplier);
+        var ref = new RefOf.FromRef<DATA>(dataClass, anotherRef, elseSupplier);
         return ref;
     }
     public Ref<DATA> defaultFrom(Func0<DATA> supplier) {
-        val ref = new RefOf.FromSupplier<DATA>(dataClass, supplier, elseSupplier);
+        var ref = new RefOf.FromSupplier<DATA>(dataClass, supplier, elseSupplier);
         return ref;
     }
     public Ref<DATA> defaultToTypeDefault() {
@@ -88,15 +88,15 @@ public class RefBuilder<DATA> {
     
     
     public Ref<DATA> dictateToNull() {
-        val ref = defaultToNull();
+        var ref = defaultToNull();
         return ref.dictate();
     }
     public Ref<DATA> dictateTo(DATA value) {
-        val ref = defaultTo(value);
+        var ref = defaultTo(value);
         return ref.dictate();
     }
     public Ref<DATA> dictateFrom(Func0<DATA> supplier) {
-        val ref = defaultFrom(supplier);
+        var ref = defaultFrom(supplier);
         return ref.dictate();
     }
     

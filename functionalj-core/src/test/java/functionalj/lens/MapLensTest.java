@@ -33,13 +33,13 @@ import org.junit.Test;
 
 import functionalj.lens.lenses.MapLens;
 import functionalj.lens.lenses.StringLens;
-import lombok.val;
+
 
 public class MapLensTest {
     
     @Test
     public void testMapLens() {
-        val mapLens = MapLens.<Map<String, String>, String, String, StringLens<Map<String,String>>, StringLens<Map<String,String>>>
+        var mapLens = MapLens.<Map<String, String>, String, String, StringLens<Map<String,String>>, StringLens<Map<String,String>>>
                 of(
                     map -> map,
                     (map, newMap) -> newMap,
@@ -47,7 +47,7 @@ public class MapLensTest {
                     spec->()->spec);
         
         
-        val map = new LinkedHashMap<String, String>();
+        var map = new LinkedHashMap<String, String>();
         map.put("name1", "2");
         map.put("name2", "42");
         

@@ -32,7 +32,7 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
 import functionalj.lens.core.WriteLens;
 import functionalj.result.Result;
-import lombok.val;
+
 
 @FunctionalInterface
 public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
@@ -44,10 +44,10 @@ public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
         ResultLens<HOST, TYPE, SUBLENS> of(
             LensSpec<HOST, Result<TYPE>> resultLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        val read  = resultLensSpec.getRead();
-        val write = resultLensSpec.getWrite();
-        val spec  = createLensSpecParameterized(read, write, subCreator);
-        val nullableLens = (ResultLens<HOST, TYPE, SUBLENS>)()->spec;
+        var read  = resultLensSpec.getRead();
+        var write = resultLensSpec.getWrite();
+        var spec  = createLensSpecParameterized(read, write, subCreator);
+        var nullableLens = (ResultLens<HOST, TYPE, SUBLENS>)()->spec;
         return nullableLens;
     }
     

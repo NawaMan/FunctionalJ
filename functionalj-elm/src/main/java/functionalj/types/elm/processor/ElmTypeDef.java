@@ -24,7 +24,7 @@
 package functionalj.types.elm.processor;
 
 import functionalj.types.struct.generator.ILines;
-import lombok.val;
+
 
 /**
  * Classes implementing this interface can create type definition in Elm.
@@ -36,7 +36,7 @@ public interface ElmTypeDef {
     public String typeName();
     
     public default String camelName() {
-        val camelName = Utils.toCamelCase(typeName());
+        var camelName = Utils.toCamelCase(typeName());
         return camelName;
     }
     
@@ -49,52 +49,52 @@ public interface ElmTypeDef {
     public ElmFunctionBuilder decoder();
     
     public default ElmFunctionBuilder listEncoder() {
-        val listName    = camelName() + "List";
-        val funcName    = listName + "Encoder";
-        val declaration = "List " + typeName() + " -> Json.Encode.Value";
-        val parameters  = listName;
-        val body        = ILines.line("Json.Encode.list " + encoderName() + " " + listName);
+        var listName    = camelName() + "List";
+        var funcName    = listName + "Encoder";
+        var declaration = "List " + typeName() + " -> Json.Encode.Value";
+        var parameters  = listName;
+        var body        = ILines.line("Json.Encode.list " + encoderName() + " " + listName);
         return new ElmFunctionBuilder(funcName, declaration, parameters, body);
     }
     
     public default ElmFunctionBuilder listDecoder() {
-        val listName    = camelName() + "List";
-        val funcName    = listName + "Decoder";
-        val declaration = "Json.Decode.Decoder (List " + typeName() + ")";
-        val parameters  = "";
-        val body        = ILines.line("Json.Decode.list " + decoderName());
+        var listName    = camelName() + "List";
+        var funcName    = listName + "Decoder";
+        var declaration = "Json.Decode.Decoder (List " + typeName() + ")";
+        var parameters  = "";
+        var body        = ILines.line("Json.Decode.list " + decoderName());
         return new ElmFunctionBuilder(funcName, declaration, parameters, body);
     }
     
     public default ElmFunctionBuilder decode() {
-        val funcName    = "decode" + typeName();
-        val declaration = "String -> Result Json.Decode.Error " + typeName();
-        val parameters  = "";
-        val body        = ILines.line("Json.Decode.decodeString " + decoderName());
+        var funcName    = "decode" + typeName();
+        var declaration = "String -> Result Json.Decode.Error " + typeName();
+        var parameters  = "";
+        var body        = ILines.line("Json.Decode.decodeString " + decoderName());
         return new ElmFunctionBuilder(funcName, declaration, parameters, body);
     }
     
     public default ElmFunctionBuilder decodeList() {
-        val funcName    = "decode" + typeName() + "List";
-        val declaration = "String -> Result Json.Decode.Error (List " + typeName() + ")";
-        val parameters  = "";
-        val body        = ILines.line("Json.Decode.decodeString " + camelName() + "ListDecoder");
+        var funcName    = "decode" + typeName() + "List";
+        var declaration = "String -> Result Json.Decode.Error (List " + typeName() + ")";
+        var parameters  = "";
+        var body        = ILines.line("Json.Decode.decodeString " + camelName() + "ListDecoder");
         return new ElmFunctionBuilder(funcName, declaration, parameters, body);
     }
     
     public default ElmFunctionBuilder encode() {
-        val funcName    = "encode" + typeName();
-        val declaration = typeName() + " -> Int -> String";
-        val parameters  = camelName() + " indent";
-        val body        = ILines.line(encoderName() + " " + camelName() + " |> Json.Encode.encode indent");
+        var funcName    = "encode" + typeName();
+        var declaration = typeName() + " -> Int -> String";
+        var parameters  = camelName() + " indent";
+        var body        = ILines.line(encoderName() + " " + camelName() + " |> Json.Encode.encode indent");
         return new ElmFunctionBuilder(funcName, declaration, parameters, body);
     }
     
     public default ElmFunctionBuilder encodeList() {
-        val funcName    = "encode" + typeName() + "List";
-        val declaration = "List " + typeName() + " -> Int -> String";
-        val parameters  = camelName() + "List indent";
-        val body        = ILines.line(camelName() + "ListEncoder " + camelName() + "List |> Json.Encode.encode indent");
+        var funcName    = "encode" + typeName() + "List";
+        var declaration = "List " + typeName() + " -> Int -> String";
+        var parameters  = camelName() + "List indent";
+        var body        = ILines.line(camelName() + "ListEncoder " + camelName() + "List |> Json.Encode.encode indent");
         return new ElmFunctionBuilder(funcName, declaration, parameters, body);
     }
     

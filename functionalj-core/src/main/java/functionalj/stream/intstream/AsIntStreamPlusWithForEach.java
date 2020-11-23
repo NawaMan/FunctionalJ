@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import functionalj.function.IntBiConsumer;
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Terminal;
-import lombok.val;
+
 
 public interface AsIntStreamPlusWithForEach {
     
@@ -38,11 +38,11 @@ public interface AsIntStreamPlusWithForEach {
     @Eager
     @Terminal
     public default void forEachWithIndex(IntBiConsumer action) {
-        val streamPlus = intStreamPlus();
-        val index      = new AtomicInteger();
+        var streamPlus = intStreamPlus();
+        var index      = new AtomicInteger();
         streamPlus
         .forEach(each -> {
-            val currentIndex = index.getAndIncrement();
+            var currentIndex = index.getAndIncrement();
             action.accept(currentIndex, each);
         });
     }
@@ -50,7 +50,7 @@ public interface AsIntStreamPlusWithForEach {
     /** Populate the array with the population in the stream from 0 to length or until run out of elements. */
     @Terminal
     public default void populateArray(int[] array) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         streamPlus
         .limit           (array.length)
         .forEachWithIndex((index, element) -> {
@@ -61,7 +61,7 @@ public interface AsIntStreamPlusWithForEach {
     /** Populate the array with the population in the stream from offset to length or until run out of elements. */
     @Terminal
     public default void populateArray(int[] array, int offset) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         streamPlus
         .limit           (array.length - offset)
         .forEachWithIndex((index, element) -> {
@@ -72,7 +72,7 @@ public interface AsIntStreamPlusWithForEach {
     /** Populate the array with the population in the stream from offset to length or until run out of elements. */
     @Terminal
     public default void populateArray(int[] array, int offset, int length) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         streamPlus
         .limit           (Math.min(length, array.length - offset))
         .forEachWithIndex((index, element) -> {

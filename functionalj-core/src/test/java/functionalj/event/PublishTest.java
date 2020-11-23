@@ -31,21 +31,21 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import lombok.val;
+
 
 public class PublishTest {
 
     @Test
     public void testBasic() {
-        val logsValue  = new ArrayList<String>();
-        val logsResult = new ArrayList<String>();
-        val logsHalf   = new ArrayList<String>();
+        var logsValue  = new ArrayList<String>();
+        var logsResult = new ArrayList<String>();
+        var logsHalf   = new ArrayList<String>();
         
-        val publisher     = new Publisher<String>();
-        val topic         = publisher.getTopic();
-        val subscription1 = topic.subscribe(value  -> { logsValue .add(value .toString()); });
-        val subscription2 = topic.onNext   (result -> { logsResult.add(result.toString()); });
-        val subscription3 = topic.onNext   (result -> { logsHalf  .add(result.toString()); });
+        var publisher     = new Publisher<String>();
+        var topic         = publisher.getTopic();
+        var subscription1 = topic.subscribe(value  -> { logsValue .add(value .toString()); });
+        var subscription2 = topic.onNext   (result -> { logsResult.add(result.toString()); });
+        var subscription3 = topic.onNext   (result -> { logsHalf  .add(result.toString()); });
         
         publisher.publish("One");
         subscription3.unsubcribe();
@@ -73,12 +73,12 @@ public class PublishTest {
     
     @Test
     public void testUnsubscribe() {
-        val logs = new ArrayList<String>();
+        var logs = new ArrayList<String>();
         
-        val publisher    = new Publisher<String>();
-        val topic1       = publisher.getTopic();
-        val topic2       = topic1.map(String::length);
-        val subscription = topic2.subscribe(value  -> { logs.add(value .toString()); });
+        var publisher    = new Publisher<String>();
+        var topic1       = publisher.getTopic();
+        var topic2       = topic1.map(String::length);
+        var subscription = topic2.subscribe(value  -> { logs.add(value .toString()); });
         
         publisher.publish("One");
         publisher.publish("Two");
@@ -93,10 +93,10 @@ public class PublishTest {
     
     @Test
     public void testMap() {
-        val logs = new ArrayList<String>();
+        var logs = new ArrayList<String>();
         
-        val publisher = new Publisher<String>();
-        val topic     = publisher.getTopic().map(String::length);
+        var publisher = new Publisher<String>();
+        var topic     = publisher.getTopic().map(String::length);
         topic.subscribe(value  -> { logs .add(value .toString()); });
         
         publisher.publish("One");
@@ -108,13 +108,13 @@ public class PublishTest {
     
     @Test
     public void testSubUnsubscribe() {
-        val logs       = new ArrayList<String>();
-        val logResults = new ArrayList<String>();
+        var logs       = new ArrayList<String>();
+        var logResults = new ArrayList<String>();
         
-        val publisher    = new Publisher<String>();
-        val topic1       = publisher.getTopic();
-        val topic2       = topic1.map(String::length);
-        val subscription = topic2.subscribe(value  -> { logs.add(value .toString()); });
+        var publisher    = new Publisher<String>();
+        var topic1       = publisher.getTopic();
+        var topic2       = topic1.map(String::length);
+        var subscription = topic2.subscribe(value  -> { logs.add(value .toString()); });
         topic2.onNext(result -> { logResults.add(result.toString()); });
         
         publisher.publish("One");

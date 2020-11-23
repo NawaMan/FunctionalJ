@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -40,17 +40,18 @@ import functionalj.types.struct.generator.ILines;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.With;
-import lombok.val;
+
 
 /**
  * Representation of a generated constructor.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
 @With
 @EqualsAndHashCode(callSuper=false)
 public class GenConstructor implements IGenerateDefinition {
+    
     private Accessibility  accessibility;
     private String         name;
     private List<GenParam> params;
@@ -58,9 +59,9 @@ public class GenConstructor implements IGenerateDefinition {
     
     @Override
     public Stream<Type> requiredTypes() {
-        Set<Type> types = new HashSet<>();
-        for (val param : params) {
-            val paramType = param.getType();
+        Set<Type> types = new HashSet<Type>();
+        for (var param : params) {
+            var paramType = param.getType();
             if (types.contains(paramType))
                 continue;
             
@@ -88,8 +89,8 @@ public class GenConstructor implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        val paramDefs = params.stream().map(param -> param.toTerm(currentPackage)).collect(joining(", "));
-        val definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{")
+        var paramDefs = params.stream().map(param -> param.toTerm(currentPackage)).collect(joining(", "));
+        var definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{")
                 .map    (utils.toStr())
                 .filter (Objects::nonNull)
                 .collect(joining(" "));

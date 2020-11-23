@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.ILines;
-import lombok.val;
+
 
 /**
  * This class generate Elm structure type.
@@ -67,27 +67,27 @@ public class ElmStructBuilder implements ElmTypeDef {
     }
     
     public ILines typeDefinition() {
-        val definition = line("type alias " + spec.typeName() + " = ");
-        val fields = spec
+        var definition = line("type alias " + spec.typeName() + " = ");
+        var fields = spec
             .sourceSpec()
             .getGetters()
             .stream()
             .map(toField)
             .map(toLine);
-        val lines = linesOf(fields)
+        var lines = linesOf(fields)
                   .containWith("{", ",", "}");
         return definition
                 .append(indent(lines));
     }
     
     public ElmFunctionBuilder encoder() {
-        val typeName    = spec.typeName();
-        val name        = encoderName();
-        val declaration = typeName + " -> Json.Encode.Value";
-        val params      = camelName();
+        var typeName    = spec.typeName();
+        var name        = encoderName();
+        var declaration = typeName + " -> Json.Encode.Value";
+        var params      = camelName();
         
-        val firstLine = line("Json.Encode.object");
-        val fieldEncoders 
+        var firstLine = line("Json.Encode.object");
+        var fieldEncoders 
                 = linesOf(
                     spec
                     .sourceSpec()
@@ -97,15 +97,15 @@ public class ElmStructBuilder implements ElmTypeDef {
                     .map(toLine))
                     .containWith("[", ",", "]")
                     .indent(1);
-        val body    = firstLine.append(fieldEncoders);
-        val encoder = new ElmFunctionBuilder(name, declaration, params, body);
+        var body    = firstLine.append(fieldEncoders);
+        var encoder = new ElmFunctionBuilder(name, declaration, params, body);
         return encoder;
     }
     
     private static Function<Getter, String> toField = ElmStructBuilder::toField;
     private static String toField(Getter getter) {
-        val fieldName = getter.getName();
-        val emlType   = emlType(getter.getType());
+        var fieldName = getter.getName();
+        var emlType   = emlType(getter.getType());
         return fieldName + " : " + emlType;
     }
     
@@ -113,20 +113,20 @@ public class ElmStructBuilder implements ElmTypeDef {
         return getter -> toFieldEncoder(typeName, getter);
     }
     private static String toFieldEncoder(String typeName, Getter getter) {
-        val fieldName   = getter.getName();
-        val camelName   = toCamelCase   (typeName);
-        val typeEncoder = encoderNameOf (getter.getType(), camelName + "." + fieldName, getter.isNullable());
+        var fieldName   = getter.getName();
+        var camelName   = toCamelCase   (typeName);
+        var typeEncoder = encoderNameOf (getter.getType(), camelName + "." + fieldName, getter.isNullable());
         return "( \"" + fieldName + "\", " + typeEncoder + " )";
     }
     
     public ElmFunctionBuilder decoder() {
-        val typeName    = spec.typeName();
-        val name        = decoderName();
-        val declaration = "Json.Decode.Decoder " + typeName;
-        val params      = "";
+        var typeName    = spec.typeName();
+        var name        = decoderName();
+        var declaration = "Json.Decode.Decoder " + typeName;
+        var params      = "";
         
-        val firstLine = line("Json.Decode.succeed " + typeName);
-        val fieldEncoders 
+        var firstLine = line("Json.Decode.succeed " + typeName);
+        var fieldEncoders 
                 = linesOf(
                     spec
                     .sourceSpec()
@@ -135,8 +135,8 @@ public class ElmStructBuilder implements ElmTypeDef {
                     .map(toFieldDecoder(typeName))
                     .map(toLine))
                     .indent(1);
-        val body    = firstLine.append(fieldEncoders);
-        val encoder = new ElmFunctionBuilder(name, declaration, params, body);
+        var body    = firstLine.append(fieldEncoders);
+        var encoder = new ElmFunctionBuilder(name, declaration, params, body);
         return encoder;
     }
     
@@ -144,9 +144,9 @@ public class ElmStructBuilder implements ElmTypeDef {
         return getter -> toFieldDecoder(typeName, getter);
     }
     private static String toFieldDecoder(String typeName, Getter getter) {
-        val fieldName   = getter.getName();
-        val typeDecoder = decoderNameOf (getter.getType());
-        val qualifier   = getter.isRequired() ? "required" : "optional";
+        var fieldName   = getter.getName();
+        var typeDecoder = decoderNameOf (getter.getType());
+        var qualifier   = getter.isRequired() ? "required" : "optional";
         return "|> Json.Decode.Pipeline." + qualifier + " \"" + fieldName + "\" " + typeDecoder;
     }
     
@@ -179,11 +179,11 @@ public class ElmStructBuilder implements ElmTypeDef {
     private static final String separator = "\n\n\n";
     
     private String fileTemplate(ILines ... ilines) {
-        val typeName    = typeName();
-        val camalName   = camelName();
-        val moduleName  = spec.moduleName();
-        val content     = Stream.of(ilines).map(ILines::toText).collect(joining(separator));
-        val fileContent = format(topTemplate, typeName, camalName, moduleName, content);
+        var typeName    = typeName();
+        var camalName   = camelName();
+        var moduleName  = spec.moduleName();
+        var content     = Stream.of(ilines).map(ILines::toText).collect(joining(separator));
+        var fileContent = format(topTemplate, typeName, camalName, moduleName, content);
         return fileContent;
     }
     

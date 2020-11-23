@@ -33,20 +33,20 @@ import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
-import lombok.val;
+
 
 public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
     
     /** Perform the calculation using the data of this streamable */
     public default <A, T> T calculate(
             StreamProcessor<? extends DATA, T> processor) {
-        val streamble = streamableFrom(this);
-        val collected = collectedOf(streamble, processor);
+        var streamble = streamableFrom(this);
+        var collected = collectedOf(streamble, processor);
         streamble
         .forEach(each -> {
             collected.accumulate(each);
         });
-        val value = collected.finish();
+        var value = collected.finish();
         return value;
     }
     
@@ -54,16 +54,16 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
     public default <T1, T2> Tuple2<T1, T2> calculate(
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2) {
-        val streamble = streamableFrom(this);
-        val collected1 = collectedOf(streamble, processor1);
-        val collected2 = collectedOf(streamble, processor2);
+        var streamble = streamableFrom(this);
+        var collected1 = collectedOf(streamble, processor1);
+        var collected2 = collectedOf(streamble, processor2);
         streamble
         .forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
         });
-        val value1 = collected1.finish();
-        val value2 = collected2.finish();
+        var value1 = collected1.finish();
+        var value2 = collected2.finish();
         return Tuple.of(value1, value2);
     }
     
@@ -72,19 +72,19 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             StreamProcessor<DATA, T1> processor1,
             StreamProcessor<DATA, T2> processor2,
             StreamProcessor<DATA, T3> processor3) {
-        val streamble = streamableFrom(this);
-        val collected1 = collectedOf(streamble, processor1);
-        val collected2 = collectedOf(streamble, processor2);
-        val collected3 = collectedOf(streamble, processor3);
+        var streamble = streamableFrom(this);
+        var collected1 = collectedOf(streamble, processor1);
+        var collected2 = collectedOf(streamble, processor2);
+        var collected3 = collectedOf(streamble, processor3);
         streamble
         .forEach(each -> {
             collected1.accumulate(each);
             collected2.accumulate(each);
             collected3.accumulate(each);
         });
-        val value1 = collected1.finish();
-        val value2 = collected2.finish();
-        val value3 = collected3.finish();
+        var value1 = collected1.finish();
+        var value2 = collected2.finish();
+        var value3 = collected3.finish();
         return Tuple.of(value1, value2, value3);
     }
     
@@ -94,11 +94,11 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             StreamProcessor<DATA, T2> processor2,
             StreamProcessor<DATA, T3> processor3,
             StreamProcessor<DATA, T4> processor4) {
-        val streamble = streamableFrom(this);
-        val collected1 = collectedOf(streamble, processor1);
-        val collected2 = collectedOf(streamble, processor2);
-        val collected3 = collectedOf(streamble, processor3);
-        val collected4 = collectedOf(streamble, processor4);
+        var streamble = streamableFrom(this);
+        var collected1 = collectedOf(streamble, processor1);
+        var collected2 = collectedOf(streamble, processor2);
+        var collected3 = collectedOf(streamble, processor3);
+        var collected4 = collectedOf(streamble, processor4);
         streamble
         .forEach(each -> {
             collected1.accumulate(each);
@@ -106,10 +106,10 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             collected3.accumulate(each);
             collected4.accumulate(each);
         });
-        val value1 = collected1.finish();
-        val value2 = collected2.finish();
-        val value3 = collected3.finish();
-        val value4 = collected4.finish();
+        var value1 = collected1.finish();
+        var value2 = collected2.finish();
+        var value3 = collected3.finish();
+        var value4 = collected4.finish();
         return Tuple.of(value1, value2, value3, value4);
     }
     
@@ -120,12 +120,12 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             StreamProcessor<DATA, T3> processor3,
             StreamProcessor<DATA, T4> processor4,
             StreamProcessor<DATA, T5> processor5) {
-        val streamble = streamableFrom(this);
-        val collected1 = collectedOf(streamble, processor1);
-        val collected2 = collectedOf(streamble, processor2);
-        val collected3 = collectedOf(streamble, processor3);
-        val collected4 = collectedOf(streamble, processor4);
-        val collected5 = collectedOf(streamble, processor5);
+        var streamble = streamableFrom(this);
+        var collected1 = collectedOf(streamble, processor1);
+        var collected2 = collectedOf(streamble, processor2);
+        var collected3 = collectedOf(streamble, processor3);
+        var collected4 = collectedOf(streamble, processor4);
+        var collected5 = collectedOf(streamble, processor5);
         streamble
         .forEach(each -> {
             collected1.accumulate(each);
@@ -134,11 +134,11 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             collected4.accumulate(each);
             collected5.accumulate(each);
         });
-        val value1 = collected1.finish();
-        val value2 = collected2.finish();
-        val value3 = collected3.finish();
-        val value4 = collected4.finish();
-        val value5 = collected5.finish();
+        var value1 = collected1.finish();
+        var value2 = collected2.finish();
+        var value3 = collected3.finish();
+        var value4 = collected4.finish();
+        var value5 = collected5.finish();
         return Tuple.of(value1, value2, value3, value4, value5);
     }
     
@@ -150,13 +150,13 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             StreamProcessor<DATA, T4> processor4,
             StreamProcessor<DATA, T5> processor5,
             StreamProcessor<DATA, T6> processor6) {
-        val streamble = streamableFrom(this);
-        val collected1 = collectedOf(streamble, processor1);
-        val collected2 = collectedOf(streamble, processor2);
-        val collected3 = collectedOf(streamble, processor3);
-        val collected4 = collectedOf(streamble, processor4);
-        val collected5 = collectedOf(streamble, processor5);
-        val collected6 = collectedOf(streamble, processor6);
+        var streamble = streamableFrom(this);
+        var collected1 = collectedOf(streamble, processor1);
+        var collected2 = collectedOf(streamble, processor2);
+        var collected3 = collectedOf(streamble, processor3);
+        var collected4 = collectedOf(streamble, processor4);
+        var collected5 = collectedOf(streamble, processor5);
+        var collected6 = collectedOf(streamble, processor6);
         streamble
         .forEach(each -> {
             collected1.accumulate(each);
@@ -166,12 +166,12 @@ public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
             collected5.accumulate(each);
             collected6.accumulate(each);
         });
-        val value1 = collected1.finish();
-        val value2 = collected2.finish();
-        val value3 = collected3.finish();
-        val value4 = collected4.finish();
-        val value5 = collected5.finish();
-        val value6 = collected6.finish();
+        var value1 = collected1.finish();
+        var value2 = collected2.finish();
+        var value3 = collected3.finish();
+        var value4 = collected4.finish();
+        var value5 = collected5.finish();
+        var value6 = collected6.finish();
         return Tuple.of(value1, value2, value3, value4, value5, value6);
     }
     

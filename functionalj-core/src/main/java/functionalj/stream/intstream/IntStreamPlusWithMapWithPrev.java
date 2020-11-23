@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import functionalj.function.ObjIntBiFunction;
 import functionalj.stream.StreamPlus;
 import functionalj.tuple.ObjIntTuple;
-import lombok.val;
+
 
 
 public interface IntStreamPlusWithMapWithPrev {
@@ -38,25 +38,25 @@ public interface IntStreamPlusWithMapWithPrev {
     
     /** @return  the stream of  each previous value and each current value. */
     public default StreamPlus<ObjIntTuple<OptionalInt>> mapWithPrev() {
-        val prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
-        val streamPlus = intStreamPlus();
+        var prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(element -> {
-                    val prevValue = prev.get();
+                    var prevValue = prev.get();
                     prev.set(OptionalInt.of(element));
-                    val result = ObjIntTuple.of(prevValue, element);
+                    var result = ObjIntTuple.of(prevValue, element);
                     return result;
                 });
     }
     
     public default <TARGET> StreamPlus<TARGET> mapWithPrev(
             ObjIntBiFunction<OptionalInt, ? extends TARGET> mapper) {
-        val prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
-        val streamPlus = intStreamPlus();
+        var prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(element -> {
-                    val prevValue = prev.get();
-                    val newValue  = mapper.apply(prevValue, element);
+                    var prevValue = prev.get();
+                    var newValue  = mapper.apply(prevValue, element);
                     prev.set(OptionalInt.of(element));
                     return newValue;
                 });

@@ -29,13 +29,13 @@ import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.intstream.GrowOnlyIntArray;
-import lombok.val;
+
 
 class IntStreamableUtils {
     
     // TODO - Change to DoubleFuncList
     static <D> FuncList<IntFuncList> segmentByPercentiles(IntFuncList list, DoubleFuncList percentiles) {
-        val size = list.size();
+        var size = list.size();
         DoubleFuncList indexes = percentiles
                 .append(100.0)
                 .sorted()
@@ -44,7 +44,7 @@ class IntStreamableUtils {
         if (indexes.get(indexes.size() - 1) != size) {
             indexes.add(size);
         }
-        val lists = new ArrayList<GrowOnlyIntArray>();
+        var lists = new ArrayList<GrowOnlyIntArray>();
         for (int i = 0; i < indexes.size(); i++) {
             lists.add(new GrowOnlyIntArray());
         }
@@ -53,8 +53,8 @@ class IntStreamableUtils {
             if (i >= indexes.get(idx)) {
                 idx++;
             }
-            val l = lists.get(idx);
-            val element = list.get(i);
+            var l = lists.get(idx);
+            var element = list.get(i);
             l.add(element);
         }
         return FuncList.from(

@@ -29,7 +29,7 @@ import java.util.function.Function;
 
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
-import lombok.val;
+
 
 public interface StreamPlusWithMapToMap<DATA> {
     
@@ -38,7 +38,7 @@ public interface StreamPlusWithMapToMap<DATA> {
     /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, Function<? super DATA, ? extends VALUE> mapper) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(key, mapper.apply(data)));
     }
@@ -47,7 +47,7 @@ public interface StreamPlusWithMapToMap<DATA> {
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -59,7 +59,7 @@ public interface StreamPlusWithMapToMap<DATA> {
             KEY key1, Function<? super DATA, ? extends VALUE> mapper1,
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -73,7 +73,7 @@ public interface StreamPlusWithMapToMap<DATA> {
             KEY key2, Function<? super DATA, ? extends VALUE> mapper2,
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
             KEY key4, Function<? super DATA, ? extends VALUE> mapper4) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -89,7 +89,7 @@ public interface StreamPlusWithMapToMap<DATA> {
             KEY key3, Function<? super DATA, ? extends VALUE> mapper3,
             KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
             KEY key5, Function<? super DATA, ? extends VALUE> mapper5) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(data -> ImmutableMap.of(
                     key1, mapper1.apply(data),
@@ -107,7 +107,7 @@ public interface StreamPlusWithMapToMap<DATA> {
             KEY key4, Function<? super DATA, ? extends VALUE> mapper4,
             KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
             KEY key6, Function<? super DATA, ? extends VALUE> mapper6) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -127,7 +127,7 @@ public interface StreamPlusWithMapToMap<DATA> {
             KEY key5, Function<? super DATA, ? extends VALUE> mapper5,
             KEY key6, Function<? super DATA, ? extends VALUE> mapper6,
             KEY key7, Function<? super DATA, ? extends VALUE> mapper7) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -149,7 +149,7 @@ public interface StreamPlusWithMapToMap<DATA> {
             KEY key6, Function<? super DATA, ? extends VALUE> mapper6,
             KEY key7, Function<? super DATA, ? extends VALUE> mapper7,
             KEY key8, Function<? super DATA, ? extends VALUE> mapper8) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -173,7 +173,7 @@ public interface StreamPlusWithMapToMap<DATA> {
             KEY key7, Function<? super DATA, ? extends VALUE> mapper7,
             KEY key8, Function<? super DATA, ? extends VALUE> mapper8,
             KEY key9, Function<? super DATA, ? extends VALUE> mapper9) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -199,7 +199,7 @@ public interface StreamPlusWithMapToMap<DATA> {
             KEY key8, Function<? super DATA, ? extends VALUE> mapper8,
             KEY key9, Function<? super DATA, ? extends VALUE> mapper9,
             KEY key10, Function<? super DATA, ? extends VALUE> mapper10) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),

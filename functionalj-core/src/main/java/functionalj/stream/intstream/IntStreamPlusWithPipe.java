@@ -26,7 +26,7 @@ package functionalj.stream.intstream;
 import java.util.function.Function;
 
 import functionalj.pipeable.Pipeable;
-import lombok.val;
+
 
 public interface IntStreamPlusWithPipe {
     
@@ -34,13 +34,13 @@ public interface IntStreamPlusWithPipe {
     
     /** @return the pipeable of this stream. */
     public default Pipeable<? extends IntStreamPlus> pipable() {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return Pipeable.of(streamPlus);
     }
     
     /** Pipe this stream plus through the given function. */
     public default <T> T pipeTo(Function<? super IntStreamPlus, T> function) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return function.apply(streamPlus);
     }
     

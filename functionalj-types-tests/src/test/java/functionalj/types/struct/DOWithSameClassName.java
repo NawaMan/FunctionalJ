@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import functionalj.types.Struct;
-import lombok.val;
+
 
 public class DOWithSameClassName {
     
@@ -41,7 +41,7 @@ public class DOWithSameClassName {
     
     @Test
     public void testSameName() {
-        val obj = new functionalj.types.struct.DOSameName("Obj");
+        var obj = new functionalj.types.struct.DOSameName("Obj");
         assertEquals("Obj", obj.name());
     }
     

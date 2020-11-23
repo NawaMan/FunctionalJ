@@ -7,7 +7,7 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
-import lombok.val;
+
 
 @FunctionalInterface
 public interface IsoEraAccess<HOST>
@@ -25,20 +25,20 @@ public interface IsoEraAccess<HOST>
     
     public default IntegerAccessPrimitive<HOST> getValue() {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value.getValue();
         };
     }
     
     public default BooleanAccessPrimitive<HOST> isBce() {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value == IsoEra.BCE;
         };
     }
     public default BooleanAccessPrimitive<HOST> isCe() {
         return host -> {
-            val value = apply(host);
+            var value = apply(host);
             return value == IsoEra.CE;
         };
     }

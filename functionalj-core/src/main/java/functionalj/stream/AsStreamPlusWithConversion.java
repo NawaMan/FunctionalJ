@@ -42,7 +42,7 @@ import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Terminal;
-import lombok.val;
+
 
 public interface AsStreamPlusWithConversion<DATA> {
     
@@ -54,8 +54,8 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default byte[] toByteArray(ToByteFunction<DATA> toByte) {
-        val streamPlus = streamPlus();
-        val byteArray  = new ByteArrayOutputStream();
+        var streamPlus = streamPlus();
+        var byteArray  = new ByteArrayOutputStream();
         streamPlus
         .forEach(d -> {
             byte b = toByte.apply(d);
@@ -69,7 +69,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default int[] toIntArray(ToIntFunction<DATA> toInt) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToInt(toInt)
                 .toArray ();
@@ -79,7 +79,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default long[] toLongArray(ToLongFunction<DATA> toLong) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToLong(toLong)
                 .toArray  ();
@@ -89,7 +89,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default double[] toDoubleArray(ToDoubleFunction<DATA> toDouble) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToDouble(toDouble)
                 .toArray    ();
@@ -118,7 +118,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default ImmutableList<DATA> toImmutableList() {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return ImmutableList.from(streamPlus);
     }
     
@@ -126,7 +126,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default List<DATA> toJavaList() {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus.collect(Collectors.toList());
     }
     
@@ -150,7 +150,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default String join() {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(StrFuncs::toStr)
                 .collect (Collectors.joining());
@@ -160,7 +160,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default String join(String delimiter) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(StrFuncs::toStr)
                 .collect (Collectors.joining(delimiter));
@@ -172,8 +172,8 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default String toListString() {
-        val streamPlus = streamPlus();
-        val strValue 
+        var streamPlus = streamPlus();
+        var strValue 
                 = streamPlus
                 .mapToObj(String::valueOf)
                 .collect (Collectors.joining(", "));
@@ -189,8 +189,8 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, DATA> toMap(Function<? super DATA, KEY> keyMapper) {
-        val streamPlus = streamPlus();
-        val theMap     = streamPlus.collect(Collectors.toMap(keyMapper, data -> data));
+        var streamPlus = streamPlus();
+        var theMap     = streamPlus.collect(Collectors.toMap(keyMapper, data -> data));
         return ImmutableMap.from(theMap);
     }
     
@@ -203,8 +203,8 @@ public interface AsStreamPlusWithConversion<DATA> {
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
             Function<? super DATA, KEY>   keyMapper,
             Function<? super DATA, VALUE> valueMapper) {
-        val streamPlus = streamPlus();
-        val theMap = streamPlus.collect(Collectors.toMap(keyMapper, valueMapper));
+        var streamPlus = streamPlus();
+        var theMap = streamPlus.collect(Collectors.toMap(keyMapper, valueMapper));
         return ImmutableMap.from(theMap);
     }
     
@@ -218,8 +218,8 @@ public interface AsStreamPlusWithConversion<DATA> {
             Function<? super DATA, KEY>   keyMapper,
             Function<? super DATA, VALUE> valueMapper,
             BinaryOperator<VALUE>         mergeFunction) {
-        val streamPlus = streamPlus();
-        val theMap = streamPlus.collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
+        var streamPlus = streamPlus();
+        var theMap = streamPlus.collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
         return ImmutableMap.from(theMap);
     }
     
@@ -232,8 +232,8 @@ public interface AsStreamPlusWithConversion<DATA> {
     public default <KEY> FuncMap<KEY, DATA> toMap(
             Function<? super DATA, KEY> keyMapper,
             BinaryOperator<DATA>        mergeFunction) {
-        val streamPlus = streamPlus();
-        val theMap = streamPlus.collect(Collectors.toMap(keyMapper, value -> value, mergeFunction));
+        var streamPlus = streamPlus();
+        var theMap = streamPlus.collect(Collectors.toMap(keyMapper, value -> value, mergeFunction));
         return (FuncMap<KEY, DATA>) ImmutableMap.from(theMap);
     }
     
@@ -243,7 +243,7 @@ public interface AsStreamPlusWithConversion<DATA> {
     @Eager
     @Terminal
     public default Set<DATA> toSet() {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus.collect(Collectors.toSet());
     }
     

@@ -30,7 +30,7 @@ import javax.lang.model.element.Element;
 
 import functionalj.types.elm.Elm;
 import functionalj.types.struct.generator.SourceSpec;
-import lombok.val;
+
 
 /**
  * This class represents The spec for an Elm structure type.
@@ -47,7 +47,7 @@ public class ElmStructSpec {
         this.sourceSpec = sourceSpec;
         this.typeName   = sourceSpec.getTargetClassName();
         
-        val baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
+        var baseModule = asList(elmBaseModule(element, sourceSpec).split("\\."));
         this.folderName = baseModule.stream().map(Utils::toTitleCase).collect(joining("/"));
     }
     ElmStructSpec(SourceSpec sourceSpec, String typeName, String folderName) {
@@ -57,8 +57,8 @@ public class ElmStructSpec {
     }
     
     private String elmBaseModule(Element element, SourceSpec sourceSpec) {
-        val baseModule  = element.getAnnotation(Elm.class).baseModule();
-        val elmtPackage = sourceSpec.getPackageName();
+        var baseModule  = element.getAnnotation(Elm.class).baseModule();
+        var elmtPackage = sourceSpec.getPackageName();
         return (Elm.FROM_PACAKGE_NAME.equals(baseModule)) 
                 ? elmtPackage
                 : baseModule;

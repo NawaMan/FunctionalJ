@@ -57,7 +57,7 @@ import functionalj.stream.CollectorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamProcessor;
 import functionalj.streamable.Streamable;
-import lombok.val;
+
 
 public class FuncListTest {
     
@@ -67,7 +67,7 @@ public class FuncListTest {
     
     @Test
     public void testToArray() {
-        val array = FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).toArray(new Integer[0]);
+        var array = FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).toArray(new Integer[0]);
         assertStrings("[1, 2, 3, 4, 5, 4, 3, 2, 1]", Arrays.toString(array));
     }
     
@@ -75,16 +75,16 @@ public class FuncListTest {
 //    
 //    @Test
 //    public void testLazy() {
-//        val counter = new AtomicInteger(0);
-//        val value   = IntStreamPlus.range(0, 10).toImmutableList().map(i -> counter.getAndIncrement()).limit(4).joinToString(", ");
+//        var counter = new AtomicInteger(0);
+//        var value   = IntStreamPlus.range(0, 10).toImmutableList().map(i -> counter.getAndIncrement()).limit(4).joinToString(", ");
 //        assertStrings("0, 1, 2, 3", value);
 //        assertStrings("4",          counter.get());
 //    }
 //    
 //    @Test
 //    public void testEager() {
-//        val counter = new AtomicInteger(0);
-//        val value   = IntStreamPlus.range(0, 10)
+//        var counter = new AtomicInteger(0);
+//        var value   = IntStreamPlus.range(0, 10)
 //                .toImmutableList()
 //                .eager()
 //                .map(i -> counter.getAndIncrement())
@@ -96,8 +96,8 @@ public class FuncListTest {
 //    
 //    @Test
 //    public void testEager2() {
-//        val counter = new AtomicInteger(0);
-//        val value   = IntStreamPlus.range(0, 10)
+//        var counter = new AtomicInteger(0);
+//        var value   = IntStreamPlus.range(0, 10)
 //                .toImmutableList()
 //                .eager()
 //                .limit(4)
@@ -121,7 +121,7 @@ public class FuncListTest {
     
     @Test
     public void testTakeWhile() {
-        val list = new ArrayList<Integer>();
+        var list = new ArrayList<Integer>();
         assertStrings("[1, 2, 3]", FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeWhile(i -> i < 4).peek(list::add));
         assertStrings("[1, 2, 3]", list);
         
@@ -132,7 +132,7 @@ public class FuncListTest {
     
     @Test
     public void testTakeUtil() {
-        val list = new ArrayList<Integer>();
+        var list = new ArrayList<Integer>();
         assertStrings("[1, 2, 3, 4]", FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeUntil(i -> i > 4).peek(list::add));
         assertStrings("[1, 2, 3, 4]", list);
         
@@ -142,40 +142,40 @@ public class FuncListTest {
     }
     @Test
     public void testSkipTake() {
-        val list = new ArrayList<Integer>();
+        var list = new ArrayList<Integer>();
         assertStrings("[3, 4, 5, 4, 3]", FuncList.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i < 3).takeUntil(i -> i < 3).peek(list::add));
         assertStrings("[3, 4, 5, 4, 3]", list);
     }
     
     @Test
     public void testIndexes() {
-        val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
+        var list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
         assertEquals("[0, 1, 5]", "" + list.indexesOf(theString.length().thatLessThan(4)));
     }
     
     @Test
     public void testSelect() {
-        val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
+        var list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
         assertEquals("[(0,One), (1,Two), (5,Six)]", "" + list.query(theString.length().thatLessThan(4)));
     }
     
     @Test
     public void testMapToTuple() {
-        val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
+        var list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
         assertEquals("[(One,3), (Two,3), (Three,5), (Four,4), (Five,4), (Six,3), (Seven,5)]",
                 "" + list.mapToTuple(theString, theString.length()));
     }
     
     @Test
     public void testFlatMapOnly() {
-        val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
+        var list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
         assertEquals("[One, One, Two, Two, Three, Four, Five, Six, Six, Seven]",
                 "" + list.flatMapOnly(theString.length().thatLessThan(4), s -> ImmutableList.of(s, s)));
     }
     
     @Test
     public void testFlatMapIf() {
-        val list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
+        var list = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
         assertEquals("[One, One, Two, Two, Three, Three, Three, Four, Four, Four, Five, Five, Five, Six, Six, Seven, Seven, Seven]",
                 "" + list.flatMapIf(
                         theString.length().thatLessThan(4),
@@ -185,9 +185,9 @@ public class FuncListTest {
     
     @Test @Ignore
     public void testToMap() {
-        val index   = new AtomicInteger();
-        val theList = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
-        val theMap  = theList.mapToMap(
+        var index   = new AtomicInteger();
+        var theList = ImmutableList.of("One", "Two", "Three", "Four", "Five", "Six", "Seven");
+        var theMap  = theList.mapToMap(
                         "index",   __ -> "" + index.getAndIncrement(), 
                         "word",   theString, 
                         "length", theString.length().asString());
@@ -209,12 +209,12 @@ public class FuncListTest {
     
     @Test
     public void testFillNull() {
-        val drivers = FuncList.of(
+        var drivers = FuncList.of(
                 new LensTest.Driver(new LensTest.Car("Red")),
                 new LensTest.Driver(new LensTest.Car(null)),
                 new LensTest.Driver(new LensTest.Car("Blue"))
                 );
-        val driversOfCarsWithColors = drivers.fillNull(LensTest.Driver.theDriver.car.color, "Green");
+        var driversOfCarsWithColors = drivers.fillNull(LensTest.Driver.theDriver.car.color, "Green");
         assertEquals("["
                 + "Driver(car=Car(color=Red)), "
                 + "Driver(car=Car(color=Green)), "
@@ -225,18 +225,18 @@ public class FuncListTest {
     
     @Test @Ignore
     public void testSpawn() {
-        val list = FuncList.of("Two", "Three", "Four", "Eleven");
-        val first  = new AtomicLong(-1);
-        val logs   = new ArrayList<String>();
+        var list = FuncList.of("Two", "Three", "Four", "Eleven");
+        var first  = new AtomicLong(-1);
+        var logs   = new ArrayList<String>();
         list
         .spawn(str -> {
             return Sleep(str.length()*100 + 5).thenReturn(str).defer();
         })
         .forEach(element -> {
             first.compareAndSet(-1, System.currentTimeMillis());
-            val start    = first.get();
-            val end      = System.currentTimeMillis();
-            val duration = Math.round((end - start)/100.0)*100;
+            var start    = first.get();
+            var end      = System.currentTimeMillis();
+            var duration = Math.round((end - start)/100.0)*100;
             logs.add(element + " -- " + duration);
         });
         assertEquals("["
@@ -250,22 +250,22 @@ public class FuncListTest {
     
     @Test @Ignore
     public void testSpawn_limit() {
-        val list  = FuncList.of("Two", "Three", "Four", "Eleven");
-        val first   = new AtomicLong(-1);
-        val actions = new ArrayList<DeferAction<String>>();
-        val logs    = new ArrayList<String>();
+        var list  = FuncList.of("Two", "Three", "Four", "Eleven");
+        var first   = new AtomicLong(-1);
+        var actions = new ArrayList<DeferAction<String>>();
+        var logs    = new ArrayList<String>();
         list
         .spawn(str -> {
-            val action = Sleep(str.length()*50 + 5).thenReturn(str).defer();
+            var action = Sleep(str.length()*50 + 5).thenReturn(str).defer();
             actions.add(action);
             return action;
         })
         .limit(1)
         .forEach(element -> {
             first.compareAndSet(-1, System.currentTimeMillis());
-            val start    = first.get();
-            val end      = System.currentTimeMillis();
-            val duration = Math.round((end - start)/50.0)*50;
+            var start    = first.get();
+            var end      = System.currentTimeMillis();
+            var duration = Math.round((end - start)/50.0)*50;
             logs.add(element + " -- " + duration);
         });
         assertEquals("[Result:{ Value: Two } -- 0]",
@@ -326,17 +326,17 @@ public class FuncListTest {
     
     @Test
     public void testCalculate() {
-        val stream = FuncList.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new SumLength();
+        var stream = FuncList.of("Two", "Three", "Four", "Eleven");
+        var sumLength = new SumLength();
         assertEquals(18, stream.calculate(sumLength).intValue());
     }
     
     @Test
     public void testCalculate2() {
-        val list = FuncList.of("Two", "Three", "Four", "Eleven");
-        val sumLength = new SumLength();
-        val avgLength = new AvgLength();
-        val concat = new StreamProcessor<String, String>() {
+        var list = FuncList.of("Two", "Three", "Four", "Eleven");
+        var sumLength = new SumLength();
+        var avgLength = new AvgLength();
+        var concat = new StreamProcessor<String, String>() {
             @Override
             public String process(StreamPlus<? extends String> stream) {
                 return stream.join();
@@ -347,7 +347,7 @@ public class FuncListTest {
     
     @Test
     public void testPercentile() {
-        val source = FuncList.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        var source = FuncList.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
         assertStrings("[[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]",     source.segmentByPercentiles(50));
         assertStrings("[[0, 1, 2], [3, 4], [5, 6, 7], [8, 9]]", source.segmentByPercentiles(25, 50, 75));
         

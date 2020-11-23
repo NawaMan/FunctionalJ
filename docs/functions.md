@@ -13,7 +13,7 @@ Since functions are functional interfaces, Java 8 method references can be used 
     }
     
     ...
-        val toInt = (Func1<String, Integer>)this::toInt;
+        var toInt = (Func1<String, Integer>)this::toInt;
         assertEquals(42, (int)toInt.apply("42"));
     ...
 ```
@@ -34,8 +34,8 @@ The code below demonstrate the differences.
     }
     
     ...
-        val toInt    = (Func1<String, List<String>>)this::readLines;
-        val fileName = "FileNotExist.file";
+        var toInt    = (Func1<String, List<String>>)this::readLines;
+        var fileName = "FileNotExist.file";
         
         // This throws 'java.nio.file.NoSuchFileException: FileNotExist.file'
         toInt.applyUnsafe(fileName);
@@ -52,7 +52,7 @@ The code below demonstrate the differences.
 Functions can be created using the static method `Func.of(...)`. This method take lambda or method reference.
 
 ```java
-    val toInt = Func.of(this::toInt);
+    var toInt = Func.of(this::toInt);
     assertEquals(42, (int)toInt.apply("42"));
 ```
 
@@ -62,7 +62,7 @@ Static methods `Func.f(...)` and `Func.F(...)` can also be used.
     import static functionalj.function.Func.f;
     
     ...
-        val toInt = f(this::toInt);
+        var toInt = f(this::toInt);
         assertEquals(42, (int)toInt.apply("42"));
     ...
 ```
@@ -75,7 +75,7 @@ For example, the above `toInt.toString()` might be something like this: `example
 Functions in FunctionalJ can be created with name so its `toString()` returns something useful.
 
 ```java
-    val toInt = f("Str2Int", this::toInt);
+    var toInt = f("Str2Int", this::toInt);
     assertEquals("F1::Str2Int", toInt.toString());
 ```
 
@@ -84,7 +84,7 @@ You can also use `Func.F(...)` method to create functions that `toString()` poin
 ```java
     import static functionalj.function.Func.F;
     
-        val toInt = F(this::toInt);
+        var toInt = F(this::toInt);
         assertEquals("F1@example.functionalj.accesslens.FunctionExamples#92", toInt.toString());
 ```
 where `"example.functionalj.accesslens.FunctionExamples"` is the file name and `92` is the line number.
@@ -92,7 +92,7 @@ where `"example.functionalj.accesslens.FunctionExamples"` is the file name and `
 A name can be given to `F(...)` and have its `toString()` show both name and location.
 
 ```java
-    val toInt = F("Str2Int", this::toInt);
+    var toInt = F("Str2Int", this::toInt);
     assertEquals("F1::Str2Int@example.functionalj.accesslens.FunctionExamples#98", toInt.toString());
 ```
 
@@ -100,8 +100,8 @@ A name can be given to `F(...)` and have its `toString()` show both name and loc
 - `safely()` makes the function returns `Result<...>` and do not throw exception.
 
 ```java
-    val readLines = f(this::readLines).safely();
-    val lines     = readLines.apply("FileNotFound.txt");
+    var readLines = f(this::readLines).safely();
+    var lines     = readLines.apply("FileNotFound.txt");
     assertEquals(
             "Result:{ Exception: java.nio.file.NoSuchFileException: FileNotFound.txt }",
             lines.toString());
@@ -110,15 +110,15 @@ A name can be given to `F(...)` and have its `toString()` show both name and loc
 - `optionally()` makes the function returns standard Java `Optional<>` and do not throw exception.
 
 ```java
-    val readLines = f(this::readLines).optionally();
-    val lines     = readLines.apply("FileNotFound.txt");
+    var readLines = f(this::readLines).optionally();
+    var lines     = readLines.apply("FileNotFound.txt");
     assertEquals("Optional.empty", lines.toString());
 ```
 
 - `async()` makes the function returns `Promise<...>`.
 
 ```java
-    val readLines = f(this::readLines).async();
+    var readLines = f(this::readLines).async();
     readLines
             .apply        ("FileNotFound.txt")
             .whenAbsentUse(FuncList.empty())
@@ -138,16 +138,16 @@ Since returning `null` and throwing exception can become problematic, there are 
 - `orElse(...)` and `orGet(...)` applies the function with input and adjust the return value when the return value is null or exception.
 
 ```java
-    val readLines = f(this::readLines);
-    val lines     = readLines.orElse("FileNotFound.txt", FuncList.empty());
+    var readLines = f(this::readLines);
+    var lines     = readLines.orElse("FileNotFound.txt", FuncList.empty());
     assertEquals("[]", lines.toString());
 ```
 
 - `whenAbsentXXX(...)` specifies how to adjust the return result in case of null or exception.
 
 ```java
-    val readLines = f(this::readLines).whenAbsentUse(FuncList.empty());
-    val lines     = readLines.apply("FileNotFound.txt");
+    var readLines = f(this::readLines).whenAbsentUse(FuncList.empty());
+    var lines     = readLines.apply("FileNotFound.txt");
     assertEquals("[]", lines.toString());
 ```
 
@@ -163,7 +163,7 @@ This enables functions to be reused without additional work.
 It might be easier to see an example.
 
 ```java
-    val toInt = f(this::toInt);
+    var toInt = f(this::toInt);
     
     assertEquals("42",      "" + toInt.applyTo("42"));
     assertEquals("[1, 42]", "" + toInt.applyTo(FuncList.of("1", "42")));
@@ -176,18 +176,18 @@ It might be easier to see an example.
             "{One:1, Forty-Two:42}",
             "" + toInt.applyTo(FuncMap.of("One", "1", "Forty-Two", "42")));
     
-    val supplier = (Supplier<String>)()->"42";
+    var supplier = (Supplier<String>)()->"42";
     assertEquals("42", "" + toInt.applyTo(supplier).get());
     
-    val function = (Function<Integer, String>)(i->("" + i));
+    var function = (Function<Integer, String>)(i->("" + i));
     assertEquals("42", "" + toInt.applyTo(function).apply(42));
 ```
 
 In case of functions with more than one parameter, any tuple of the matching parameters is also accepted.
 
 ```java
-    val add = f((Integer a, Integer b)->a + b);
-    val pair = Tuple.of(5, 7);
+    var add = f((Integer a, Integer b)->a + b);
+    var pair = Tuple.of(5, 7);
     assertEquals("12", "" + add.applyTo(pair));
 ```
 
@@ -197,18 +197,18 @@ Partial application is the process of applying part of the parameters to a funct
 In FunctionalJ, the methods `bind(...)` can be used to do partial application.
 
 ```java
-    val add = f((Integer a, Integer b)->a + b);
-    val addFive_1 = add.bind1(5);      // Apply the first parameter in advance.
-    val addFive_2 = add.bind2(5);      // Apply the second parameter in advance.
-    val addFive_3 = add.bind(__, 5);   // Apply the first parameter in advance.
-    val addFive_4 = add.bind(5, __);   // Apply the second parameter in advance.
+    var add = f((Integer a, Integer b)->a + b);
+    var addFive_1 = add.bind1(5);      // Apply the first parameter in advance.
+    var addFive_2 = add.bind2(5);      // Apply the second parameter in advance.
+    var addFive_3 = add.bind(__, 5);   // Apply the first parameter in advance.
+    var addFive_4 = add.bind(5, __);   // Apply the second parameter in advance.
 ```
 all the `addFive_x` above is a function of ONE integer as another one is already given.
 
 Additionally, any function can accept only the first parameter using `applyTo(...)` and returns another function if one or more parameter is needed. This is also know as currying.
 
 ```java
-    val add = f((Integer a, Integer b)->a + b);
+    var add = f((Integer a, Integer b)->a + b);
     assertEquals("12", "" + add.applyTo(5).applyTo(7));
 ```
 
@@ -216,7 +216,7 @@ Additionally, any function can accept only the first parameter using `applyTo(..
 Composition is a processing of creating another function from two existing functions in the way that the result of the first function will be applied to the second function. This is done using method `then(...)`.
 
 ```java
-    val add = f((Integer a, Integer b)->a + b);
-    val sum = add.then(i -> "Sum: " + i);
+    var add = f((Integer a, Integer b)->a + b);
+    var sum = add.then(i -> "Sum: " + i);
     assertEquals("Sum: 12", "" + sum.applyTo(5, 7));
 ```

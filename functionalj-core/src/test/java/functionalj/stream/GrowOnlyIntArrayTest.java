@@ -8,13 +8,13 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import functionalj.stream.intstream.GrowOnlyIntArray;
-import lombok.val;
+
 
 public class GrowOnlyIntArrayTest {
 
     @Test
     public void testAdd() {
-        val array = new GrowOnlyIntArray();
+        var array = new GrowOnlyIntArray();
         for (int i = 0; i < 1000; i++) {
             array.add(i);
         }
@@ -127,12 +127,12 @@ public class GrowOnlyIntArrayTest {
     
     @Test
     public void testPopulatedGrowOnlyIntArray() {
-        val orgArray = new GrowOnlyIntArray();
+        var orgArray = new GrowOnlyIntArray();
         for (int i = 0; i < 1000; i++) {
             orgArray.add(i);
         }
         
-        val newArray = new GrowOnlyIntArray(orgArray.stream().toArray());
+        var newArray = new GrowOnlyIntArray(orgArray.stream().toArray());
         assertTrue(
                 Arrays.equals(
                     orgArray.stream().toArray(),

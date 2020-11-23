@@ -39,7 +39,7 @@ import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
-import lombok.val;
+
 
 class ResultChainAddOnHelper {
     @SafeVarargs
@@ -51,7 +51,7 @@ class ResultChainAddOnHelper {
             boolean hasNull = false;
             for(Function<? super D, Result<T>> mapper : mappers) {
                 try {
-                    val res = mapper.apply(d);
+                    var res = mapper.apply(d);
                     if (res.isNull())
                         hasNull = true;
                     else if (res.isException()) {
@@ -196,15 +196,15 @@ public interface ResultChainAddOn<DATA> {
             Func1<? super DATA, ? extends Result<T2>> mapper2,
             Func2<T1, T2, T> mapper) {
         return Result.of(Func0.of(()->{
-            val value   = asResult().orThrow();
+            var value   = asResult().orThrow();
             
-            val result1 = mapper1.apply(value);
-            val value1  = result1.orThrow();
+            var result1 = mapper1.apply(value);
+            var value1  = result1.orThrow();
             
-            val result2 = mapper2.apply(value);
-            val value2  = result2.orThrow();
+            var result2 = mapper2.apply(value);
+            var value2  = result2.orThrow();
             
-            val target  = mapper.apply(value1, value2);
+            var target  = mapper.apply(value1, value2);
             return target;
         }));
     }
@@ -216,18 +216,18 @@ public interface ResultChainAddOn<DATA> {
             Func1<? super DATA, ? extends Result<T3>> mapper3,
             Func3<T1, T2, T3, T> mapper) {
         return Result.of(Func0.of(()->{
-            val value   = asResult().orThrow();
+            var value   = asResult().orThrow();
             
-            val result1 = mapper1.apply(value);
-            val value1  = result1.orThrow();
+            var result1 = mapper1.apply(value);
+            var value1  = result1.orThrow();
             
-            val result2 = mapper2.apply(value);
-            val value2  = result2.orThrow();
+            var result2 = mapper2.apply(value);
+            var value2  = result2.orThrow();
             
-            val result3 = mapper3.apply(value);
-            val value3  = result3.orThrow();
+            var result3 = mapper3.apply(value);
+            var value3  = result3.orThrow();
             
-            val target  = mapper.apply(value1, value2, value3);
+            var target  = mapper.apply(value1, value2, value3);
             return target;
         }));
     }
@@ -240,21 +240,21 @@ public interface ResultChainAddOn<DATA> {
             Func1<? super DATA, ? extends Result<T4>> mapper4,
             Func4<T1, T2, T3, T4, T> mapper) {
         return Result.of(Func0.of(()->{
-            val value   = asResult().orThrow();
+            var value   = asResult().orThrow();
             
-            val result1 = mapper1.apply(value);
-            val value1  = result1.orThrow();
+            var result1 = mapper1.apply(value);
+            var value1  = result1.orThrow();
             
-            val result2 = mapper2.apply(value);
-            val value2  = result2.orThrow();
+            var result2 = mapper2.apply(value);
+            var value2  = result2.orThrow();
             
-            val result3 = mapper3.apply(value);
-            val value3  = result3.orThrow();
+            var result3 = mapper3.apply(value);
+            var value3  = result3.orThrow();
             
-            val result4 = mapper4.apply(value);
-            val value4  = result4.orThrow();
+            var result4 = mapper4.apply(value);
+            var value4  = result4.orThrow();
             
-            val target  = mapper.apply(value1, value2, value3, value4);
+            var target  = mapper.apply(value1, value2, value3, value4);
             return target;
         }));
     }
@@ -268,24 +268,24 @@ public interface ResultChainAddOn<DATA> {
             Func1<? super DATA, ? extends Result<T5>> mapper5,
             Func5<T1, T2, T3, T4, T5, T> mapper) {
         return Result.of(Func0.of(()->{
-            val value   = asResult().orThrow();
+            var value   = asResult().orThrow();
             
-            val result1 = mapper1.apply(value);
-            val value1  = result1.orThrow();
+            var result1 = mapper1.apply(value);
+            var value1  = result1.orThrow();
             
-            val result2 = mapper2.apply(value);
-            val value2  = result2.orThrow();
+            var result2 = mapper2.apply(value);
+            var value2  = result2.orThrow();
             
-            val result3 = mapper3.apply(value);
-            val value3  = result3.orThrow();
+            var result3 = mapper3.apply(value);
+            var value3  = result3.orThrow();
             
-            val result4 = mapper4.apply(value);
-            val value4  = result4.orThrow();
+            var result4 = mapper4.apply(value);
+            var value4  = result4.orThrow();
             
-            val result5 = mapper5.apply(value);
-            val value5  = result5.orThrow();
+            var result5 = mapper5.apply(value);
+            var value5  = result5.orThrow();
             
-            val target  = mapper.apply(value1, value2, value3, value4, value5);
+            var target  = mapper.apply(value1, value2, value3, value4, value5);
             return target;
         }));
     }
@@ -300,27 +300,27 @@ public interface ResultChainAddOn<DATA> {
             Func1<? super DATA, ? extends Result<T6>> mapper6,
             Func6<T1, T2, T3, T4, T5, T6, T> mapper) {
         return Result.of(Func0.of(()->{
-            val value   = asResult().orThrow();
+            var value   = asResult().orThrow();
             
-            val result1 = mapper1.apply(value);
-            val value1  = result1.orThrow();
+            var result1 = mapper1.apply(value);
+            var value1  = result1.orThrow();
             
-            val result2 = mapper2.apply(value);
-            val value2  = result2.orThrow();
+            var result2 = mapper2.apply(value);
+            var value2  = result2.orThrow();
             
-            val result3 = mapper3.apply(value);
-            val value3  = result3.orThrow();
+            var result3 = mapper3.apply(value);
+            var value3  = result3.orThrow();
             
-            val result4 = mapper4.apply(value);
-            val value4  = result4.orThrow();
+            var result4 = mapper4.apply(value);
+            var value4  = result4.orThrow();
             
-            val result5 = mapper5.apply(value);
-            val value5  = result5.orThrow();
+            var result5 = mapper5.apply(value);
+            var value5  = result5.orThrow();
             
-            val result6 = mapper6.apply(value);
-            val value6  = result6.orThrow();
+            var result6 = mapper6.apply(value);
+            var value6  = result6.orThrow();
             
-            val target  = mapper.apply(value1, value2, value3, value4, value5, value6);
+            var target  = mapper.apply(value1, value2, value3, value4, value5, value6);
             return target;
         }));
     }

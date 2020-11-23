@@ -15,7 +15,7 @@ import functionalj.map.FuncMap;
 import functionalj.types.Choice;
 import functionalj.types.IData;
 import functionalj.types.Struct;
-import lombok.val;
+
 
 public class ChoiceToMapTest {
     
@@ -55,12 +55,12 @@ public class ChoiceToMapTest {
     @Test
     public void testFromMap() {
         try {
-            val timedAction1 
+            var timedAction1 
                     = new TimedAction(
                     LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
                     FuncList.of(Rotate(5), Move(7)));
-            val map = timedAction1.__toMap();
-            val timedAction2 = IData.$utils.fromMap(map, TimedAction.class);
+            var map = timedAction1.__toMap();
+            var timedAction2 = IData.$utils.fromMap(map, TimedAction.class);
             assertEquals(timedAction1, timedAction2);
         } catch (Exception e) {
             
@@ -68,29 +68,29 @@ public class ChoiceToMapTest {
     }
     @Test
     public void testFromMap_map() {
-        val mapTimedAction1 
+        var mapTimedAction1 
         = new MapTimedAction(
                 LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
                 FuncMap.of(
                         "One", Rotate(5),
                         "Two", Move(7)));
-        val map = mapTimedAction1.__toMap();
-        val mapTimedAction2 = IData.$utils.fromMap(map, MapTimedAction.class);
+        var map = mapTimedAction1.__toMap();
+        var mapTimedAction2 = IData.$utils.fromMap(map, MapTimedAction.class);
         assertEquals(mapTimedAction1, mapTimedAction2);
     }
     
     // TODO - This is mess up now ... ListLens crap out.
 //    @Test
 //    public void testFromMap_deepList() {
-//        val deepTimedAction1 
+//        var deepTimedAction1 
 //                = new DeepTimedAction(
 //                        LocalDateTime.of(2019, Month.JUNE, 10, 23, 8, 34), 
 //                        asList(
 //                            asList(Rotate(5),  Move(7)),
 //                            asList(Rotate(15), Move(17))
 //                        ));
-//        val map = deepTimedAction1.toMap();
-//        val deepTimedAction2 = FuncType.structFromMap(map, TimedAction.class);
+//        var map = deepTimedAction1.toMap();
+//        var deepTimedAction2 = FuncType.structFromMap(map, TimedAction.class);
 //        System.out.println("timedAction1: " + deepTimedAction1);
 //        System.out.println("timedAction2: " + deepTimedAction2);
 //        assertEquals(deepTimedAction1, deepTimedAction2);

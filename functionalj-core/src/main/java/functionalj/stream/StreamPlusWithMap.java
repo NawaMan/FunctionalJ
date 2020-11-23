@@ -26,7 +26,7 @@ package functionalj.stream;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import lombok.val;
+
 
 public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
     
@@ -39,11 +39,11 @@ public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
     public default StreamPlus<DATA> mapOnly(
             Predicate<? super DATA>      condition, 
             Function<? super DATA, DATA> mapper) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .map(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
+                    var isTrue = condition.test(value);
+                    var mapped = isTrue
                             ? mapper.apply(value)
                             : value;
                     return mapped;
@@ -55,11 +55,11 @@ public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
             Predicate<? super DATA>   condition, 
             Function<? super DATA, T> mapper,
             Function<? super DATA, T> elseMapper) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue 
+                    var isTrue = condition.test(value);
+                    var mapped = isTrue 
                             ? mapper    .apply(value) 
                             : elseMapper.apply(value);
                     return mapped;

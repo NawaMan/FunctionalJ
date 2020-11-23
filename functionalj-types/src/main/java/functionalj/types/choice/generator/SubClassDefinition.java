@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import lombok.AllArgsConstructor;
-import lombok.val;
 
 
 @AllArgsConstructor
@@ -44,11 +43,11 @@ public class SubClassDefinition implements Lines {
     
     @Override
     public List<String> lines() {
-        val name = choice.name;
-        val lens = new CaseLensBuilder(targetClass.spec, choice);
-        val lensTheInstance  = lens.generateTheLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
-        val lensEachInstance = lens.generateEachLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
-        val toMapMethod  = new ToMapBuilder(targetClass, this.choice);
+        var name = choice.name;
+        var lens = new CaseLensBuilder(targetClass.spec, choice);
+        var lensTheInstance  = lens.generateTheLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
+        var lensEachInstance = lens.generateEachLensField().toDefinition(targetClass.type.packageName()).lines().findFirst().get();
+        var toMapMethod  = new ToMapBuilder(targetClass, this.choice);
         if (!choice.isParameterized()) {
             return asList(
                     asList(format("public static final class %1$s%2$s extends %3$s {",    name, targetClass.getType().genericDef(), targetClass.getType().typeWithGenerics())),
@@ -66,9 +65,9 @@ public class SubClassDefinition implements Lines {
             .collect(toList());
         }
         
-        val paramDefs   = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
-        val paramCalls  = choice.mapJoinParams(p ->                                   p.name, ", ");
-        val fieldAccss  = targetClass.spec.publicFields ? "public" : "private";
+        var paramDefs   = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
+        var paramCalls  = choice.mapJoinParams(p ->                                   p.name, ", ");
+        var fieldAccss  = targetClass.spec.publicFields ? "public" : "private";
         return asList(
                 asList(               format("public static final class %1$s%2$s extends %3$s {", name, targetClass.getType().genericDef(), targetClass.getType().typeWithGenerics())),
                 asList(               format("    " + lensTheInstance)),
@@ -97,4 +96,5 @@ public class SubClassDefinition implements Lines {
              return format("        this.%1$s = %1$s;",                 p.name);
         else return format("        this.%1$s = $utils.notNull(%1$s);", p.name);
     }
+    
 }

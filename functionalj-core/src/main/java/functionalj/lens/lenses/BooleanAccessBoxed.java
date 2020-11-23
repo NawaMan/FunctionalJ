@@ -24,14 +24,14 @@
 package functionalj.lens.lenses;
 
 import functionalj.functions.ThrowFuncs;
-import lombok.val;
+
 
 @FunctionalInterface
 public interface BooleanAccessBoxed<HOST> extends BooleanAccess<HOST> {
     
     public default boolean test(HOST host) {
         try {
-            val value = applyUnsafe(host);
+            var value = applyUnsafe(host);
             return value.booleanValue();
         } catch (RuntimeException e) {
             throw e;

@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import functionalj.ref.ProcessBody;
-import lombok.val;
+
 
 /**
  * Implementation to get the caller.
@@ -47,7 +47,7 @@ public class CallerId {
     }
     
     private static StackTraceElement last() {
-        val list = callerTrace.get();
+        var list = callerTrace.get();
         if (list.isEmpty()) {
             callerTrace.get().add(null);
             return null;
@@ -66,12 +66,12 @@ public class CallerId {
         StackTraceElement  trace   = last();
         boolean isAdded = false;
         if (trace == null) {
-            val stackTrace = Thread.currentThread().getStackTrace();
-            val length     = stackTrace.length;
-            val index      = Math.min(length - 1, 3);
+            var stackTrace = Thread.currentThread().getStackTrace();
+            var length     = stackTrace.length;
+            var index      = Math.min(length - 1, 3);
             trace = stackTrace[index];
             
-            val list = callerTrace.get();
+            var list = callerTrace.get();
             list.set(0, trace);
             isAdded = true;
         }
@@ -91,7 +91,7 @@ public class CallerId {
      * @throws T  the exception thrown by the value.
      */
     public <V, T extends Exception> V tracePause(ProcessBody<StackTraceElement, V, T> body) throws T {
-        val trace = last();
+        var trace = last();
         callerTrace.get().add(0, null);
         
         try {

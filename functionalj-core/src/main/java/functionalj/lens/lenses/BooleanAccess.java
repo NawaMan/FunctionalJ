@@ -29,7 +29,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import functionalj.function.Func1;
-import lombok.val;
+
 
 public interface BooleanAccess<HOST> 
         extends 
@@ -46,25 +46,25 @@ public interface BooleanAccess<HOST>
         
         if (accessToValue instanceof Predicate) {
             @SuppressWarnings("unchecked")
-            val func1  = (Predicate<H>)accessToValue;
-            val access = ofPrimitive(func1);
+            var func1  = (Predicate<H>)accessToValue;
+            var access = ofPrimitive(func1);
             return access;
         }
         
         if (accessToValue instanceof Func1) {
-            val func1  = (Func1<H, Boolean>)accessToValue;
-            val access = (BooleanAccessBoxed<H>)func1::applyUnsafe;
+            var func1  = (Func1<H, Boolean>)accessToValue;
+            var access = (BooleanAccessBoxed<H>)func1::applyUnsafe;
             return access;
         }
 
-        val func   = (Function<H, Boolean>)accessToValue;
-        val access = (BooleanAccessBoxed<H>)(host -> func.apply(host));
+        var func   = (Function<H, Boolean>)accessToValue;
+        var access = (BooleanAccessBoxed<H>)(host -> func.apply(host));
         return access;
     }
     
     public static <H> BooleanAccess<H> ofPrimitive(Predicate<H> accessToValue) {
         requireNonNull(accessToValue);
-        val access = (BooleanAccessPrimitive<H>)accessToValue::test;
+        var access = (BooleanAccessPrimitive<H>)accessToValue::test;
         return access;
     }
     
@@ -81,31 +81,31 @@ public interface BooleanAccess<HOST>
     
     public default BooleanAccessPrimitive<HOST> nagate() {
         return host -> {
-            val boolValue = test(host);
+            var boolValue = test(host);
             return !boolValue;
         };
     }
     public default BooleanAccessPrimitive<HOST> or(boolean anotherBoolean) {
         return host -> {
-            val boolValue = test(host);
+            var boolValue = test(host);
             return boolValue || anotherBoolean;
         };
     }
     public default BooleanAccessPrimitive<HOST> and(boolean anotherBoolean) {
         return host -> {
-            val boolValue = test(host);
+            var boolValue = test(host);
             return boolValue && anotherBoolean;
         };
     }
     public default BooleanAccessPrimitive<HOST> or(Predicate<? super HOST> anotherPredicate) {
         return host -> {
-            val boolValue = test(host);
+            var boolValue = test(host);
             return boolValue || anotherPredicate.test(host);
         };
     }
     public default BooleanAccessPrimitive<HOST> and(Predicate<? super HOST> anotherPredicate) {
         return host -> {
-            val boolValue = test(host);
+            var boolValue = test(host);
             return boolValue && anotherPredicate.test(host);
         };
     }

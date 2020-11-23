@@ -40,7 +40,7 @@ import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.makers.Sequential;
 import functionalj.tuple.Tuple2;
-import lombok.val;
+
 
 public interface StreamPlusWithModify<DATA> {
     
@@ -65,19 +65,19 @@ public interface StreamPlusWithModify<DATA> {
      */
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default StreamPlus<DATA> accumulate(BiFunction<? super DATA, ? super DATA, ? extends DATA> accumulator) {
-        val streamPlus = streamPlus();
-        val iterator   = streamPlus.iterator();
+        var streamPlus = streamPlus();
+        var iterator   = streamPlus.iterator();
         if (!iterator.hasNext())
             return StreamPlus.empty();
         
-        val prev = new AtomicReference<DATA>(iterator.next());
+        var prev = new AtomicReference<DATA>(iterator.next());
         return StreamPlus
                 .concat(
                     StreamPlus.of(prev.get()),
                     iterator
                     .stream()
                     .map(each -> {
-                        val next = accumulator.apply(prev.get(), each);
+                        var next = accumulator.apply(prev.get(), each);
                         prev.set(next);
                         return next;
                     })
@@ -104,27 +104,27 @@ public interface StreamPlusWithModify<DATA> {
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default StreamPlus<DATA> restate(BiFunction<? super DATA, StreamPlus<DATA>, StreamPlus<DATA>> restater) {
-        val func = (UnaryOperator<Tuple2<DATA, StreamPlus<DATA>>>)((Tuple2<DATA, StreamPlus<DATA>> pair) -> {
-            val stream = pair._2();
+        var func = (UnaryOperator<Tuple2<DATA, StreamPlus<DATA>>>)((Tuple2<DATA, StreamPlus<DATA>> pair) -> {
+            var stream = pair._2();
             if (stream == null)
                 return null;
             
             Object[] head     = new Object[] { null };
-            val      iterator = stream.iterator();
+            var      iterator = stream.iterator();
             if (!iterator.hasNext())
                 return null;
             
             head[0]  = iterator.next();
-            val tail = restater.apply((DATA)head[0], iterator.stream());
+            var tail = restater.apply((DATA)head[0], iterator.stream());
             if (tail == null)
                 return null;
             
             return Tuple2.of((DATA)head[0], tail);
         });
-        val seed = Tuple2.of((DATA)null, this);
+        var seed = Tuple2.of((DATA)null, this);
         
         // NOTE: The reason for the using untyped-generic is becuase "DATA" of this class is not seen as compatible with StreamPlus's.
-        val endStream 
+        var endStream 
             = StreamPlus
             .iterate  (seed, (UnaryOperator)func)
             .takeUntil(t -> t == null)
@@ -141,17 +141,17 @@ public interface StreamPlusWithModify<DATA> {
      *   the unfinished actions will be canceled.
      */
     public default <T> StreamPlus<Result<T>> spawn(Func1<DATA, ? extends UncompletedAction<T>> mapToAction) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return sequentialToObj(streamPlus, stream -> {
-            val results = new ArrayList<DeferAction<T>>();
-            val index   = new AtomicInteger(0);
+            var results = new ArrayList<DeferAction<T>>();
+            var index   = new AtomicInteger(0);
             
             FuncUnit1<UncompletedAction<T>> setOnComplete = action -> 
                 action
                 .getPromise()
                 .onComplete(result -> {
-                    val thisIndex  = index.getAndIncrement();
-                    val thisAction = results.get(thisIndex);
+                    var thisIndex  = index.getAndIncrement();
+                    var thisAction = results.get(thisIndex);
                     if (result.isValue())
                          thisAction.complete(result.value());
                     else thisAction.fail    (result.exception());
@@ -166,7 +166,7 @@ public interface StreamPlusWithModify<DATA> {
                 .collect (Collectors.toList())
                 ;
             
-            val resultStream 
+            var resultStream 
                 = StreamPlus
                 .from(results.stream().map(action -> action.getResult()));
             resultStream

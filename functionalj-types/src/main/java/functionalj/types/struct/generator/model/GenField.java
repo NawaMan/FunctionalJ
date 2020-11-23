@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,11 +33,11 @@ import functionalj.types.struct.generator.ILines;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.With;
-import lombok.val;
+
 
 /**
  * Representation of a generated field.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
@@ -59,15 +59,16 @@ public class GenField implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        val def = oneLineOf(
-                    accessibility, 
-                    scope, 
-                    modifiability, 
-                    type.simpleNameWithGeneric(currentPackage), 
+        var def = oneLineOf(
+                    accessibility,
+                    scope,
+                    modifiability,
+                    type.simpleNameWithGeneric(currentPackage),
                     name
                 );
         
-        val value = (defaultValue != null) ? " = " + defaultValue : "";
+        var value = (defaultValue != null) ? " = " + defaultValue : "";
         return ()->Stream.of(def + value + ";");
     }
+    
 }

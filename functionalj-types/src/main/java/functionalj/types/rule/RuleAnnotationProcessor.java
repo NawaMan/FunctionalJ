@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -52,10 +52,10 @@ import javax.tools.Diagnostic;
 import functionalj.types.IRule;
 import functionalj.types.Rule;
 import functionalj.types.rule.RuleSpec.RuleType;
-import lombok.val;
+
 
 public class RuleAnnotationProcessor extends AbstractProcessor {
-
+    
     private Elements elementUtils;
     @SuppressWarnings("unused")
     private Types    typeUtils;
@@ -75,7 +75,7 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
     
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        Set<String> annotations = new LinkedHashSet<String>();
+        var annotations = new LinkedHashSet<String>();
         annotations.add(Rule.class.getCanonicalName());
         return annotations;
     }
@@ -98,18 +98,18 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Rule.class)) {
-            val method = (ExecutableElement)element;
-            val rule   = method.getAnnotation(Rule.class);
-            val msg    = rule.value();
-            val hasMsg = (msg != null) && !"".equals(msg);
-            val isBool = (method.getReturnType() instanceof PrimitiveType)
+            var method = (ExecutableElement)element;
+            var rule   = method.getAnnotation(Rule.class);
+            var msg    = rule.value();
+            var hasMsg = (msg != null) && !"".equals(msg);
+            var isBool = (method.getReturnType() instanceof PrimitiveType)
                       && "boolean".equals(((PrimitiveType)method.getReturnType()).toString());
             
             if (!isBool && hasMsg) {
                 warn(method, "The error message is only used with a boolean checker.");
             }
             
-            val ruleType = getRuleType(method.getReturnType());
+            var ruleType = getRuleType(method.getReturnType());
             if (ruleType == null) {
                 error(method, "Invalid return type: only boolean, String and functionalj.result.ValidationException is allowed.");
                 continue;
@@ -119,22 +119,22 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
                 continue;
             }
             
-            val targetName     = method.getSimpleName().toString();
-            val enclosingClass = method.getEnclosingElement().getSimpleName().toString();
-            val packageName    = elementUtils.getPackageOf(method).getQualifiedName().toString();
-            val superType      = getSuperType(method);
-            val dataName       = getDataName(method);
-            val dataType       = getDataType(method);
-            val errorMsg       = isBool ? msg : null;
-            val spec           = new RuleSpec(targetName, enclosingClass, packageName, superType, dataName, dataType, errorMsg, ruleType);
+            var targetName     = method.getSimpleName().toString();
+            var enclosingClass = method.getEnclosingElement().getSimpleName().toString();
+            var packageName    = elementUtils.getPackageOf(method).getQualifiedName().toString();
+            var superType      = getSuperType(method);
+            var dataName       = getDataName(method);
+            var dataType       = getDataType(method);
+            var errorMsg       = isBool ? msg : null;
+            var spec           = new RuleSpec(targetName, enclosingClass, packageName, superType, dataName, dataType, errorMsg, ruleType);
             
             try {
-                val className  = packageName + "." + targetName;
-                val content    = "// " + spec.toString() + "\n" 
-                               + "// " + logs.toString() + "\n" 
-                               + 
+                var className  = packageName + "." + targetName;
+                var content    = "// " + spec.toString() + "\n"
+                               + "// " + logs.toString() + "\n"
+                               +
                                spec.toCode();
-                val logString  = "";//"\n" + logs.stream().map("// "::concat).collect(joining("\n"));
+                var logString  = "";//"\n" + logs.stream().map("// "::concat).collect(joining("\n"));
                 generateCode(element, className, content + logString);
             } catch (Exception e) {
                 e.printStackTrace(System.err);
@@ -155,28 +155,28 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
     }
     
     private String getSuperType(ExecutableElement method) {
-        val rule = method.getAnnotation(Rule.class);
+        var rule = method.getAnnotation(Rule.class);
         if (rule == null)
             return null;
         
-        val clzz = rule.extendRule();
+        var clzz = rule.extendRule();
         if (clzz == null)
             return null;
         
         return (clzz.trim().isEmpty() || clzz.equals(IRule.class.getCanonicalName())) ? null : clzz;
     }
     private String getDataName(ExecutableElement method) {
-        val name = method.getParameters().get(0).getSimpleName().toString();
+        var name = method.getParameters().get(0).getSimpleName().toString();
         return name;
     }
     
     private String getDataType(ExecutableElement method) {
-        val type = method.getParameters().get(0).asType();
+        var type = method.getParameters().get(0).asType();
         if (type instanceof PrimitiveType)
             return type.toString();
         
         if (type instanceof DeclaredType) {
-            val typeElement = ((TypeElement)((DeclaredType)type).asElement());
+            var typeElement = ((TypeElement)((DeclaredType)type).asElement());
             return typeElement.getQualifiedName().toString();
         }
         error(method, "The method parameter type is not supported.");
@@ -189,8 +189,8 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
                 return RuleType.Bool;
         }
         if (returnType instanceof DeclaredType) {
-            val typeElement = ((TypeElement)((DeclaredType)returnType).asElement());
-            val fullName    = typeElement.getQualifiedName().toString();
+            var typeElement = ((TypeElement)((DeclaredType)returnType).asElement());
+            var fullName    = typeElement.getQualifiedName().toString();
             if ("java.lang.String".equals(fullName))
                 return RuleType.ErrMsg;
             if ("functionalj.result.ValidationException".equals(fullName))
@@ -198,4 +198,5 @@ public class RuleAnnotationProcessor extends AbstractProcessor {
         }
         return null;
     }
+    
 }

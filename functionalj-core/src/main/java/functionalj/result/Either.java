@@ -25,7 +25,7 @@ package functionalj.result;
 
 import java.util.Optional;
 
-import lombok.val;
+
 
 public class Either<VALUE, ERROR> extends ImmutableResult<VALUE> {
     
@@ -41,18 +41,18 @@ public class Either<VALUE, ERROR> extends ImmutableResult<VALUE> {
     }
     
     public boolean isValue() {
-        val exception = getException();
+        var exception = getException();
         return !(exception instanceof ValueException);
     }
     
     public boolean isError() {
-        val exception = getException();
+        var exception = getException();
         return (exception instanceof ValueException);
     }
     
     @SuppressWarnings("unchecked")
     public ERROR errorValue() {
-        val exception = getException();
+        var exception = getException();
         if (exception instanceof ValueException)
             return (ERROR)((ValueException)exception).getErrorValue();
         

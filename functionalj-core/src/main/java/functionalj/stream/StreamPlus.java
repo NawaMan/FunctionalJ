@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -67,7 +67,7 @@ import functionalj.stream.makers.Sequential;
 import functionalj.stream.makers.Terminal;
 import functionalj.streamable.Streamable;
 import functionalj.tuple.Tuple2;
-import lombok.val;
+
 
 // TODO - Add intersect
 // TODO - Add prepare
@@ -172,7 +172,7 @@ public interface StreamPlus<DATA>
     
     /** Create a StreamPlus from the given enumeration. */
     public static <TARGET> StreamPlus<TARGET> from(Enumeration<TARGET> enumeration) {
-        val iterable = (Iterable<TARGET>)() -> new EnumerationBackedIterator<TARGET>(enumeration);
+        var iterable = (Iterable<TARGET>)() -> new EnumerationBackedIterator<TARGET>(enumeration);
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
@@ -219,7 +219,7 @@ public interface StreamPlus<DATA>
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static <TARGET> StreamPlus<TARGET> generateWith(Func0<TARGET> supplier) {
-        val iterable = (Iterable<TARGET>)() -> new SupplierBackedIterator<TARGET>(supplier);
+        var iterable = (Iterable<TARGET>)() -> new SupplierBackedIterator<TARGET>(supplier);
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
@@ -290,7 +290,7 @@ public interface StreamPlus<DATA>
         AtomicReference<TARGET> d1      = new AtomicReference<TARGET>(seed1);
         AtomicReference<TARGET> d2      = new AtomicReference<TARGET>(seed2);
         return StreamPlus.generate(()->{
-            val index = counter.getAndIncrement();
+            var index = counter.getAndIncrement();
             if (index == 0)
                 return seed1;
             if (index == 1)
@@ -611,7 +611,7 @@ public interface StreamPlus<DATA>
     /** @return a spliterator of this streamable. */
     @Override
     public default Spliterator<DATA> spliterator() {
-        val iterator = iterator();
+        var iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
@@ -691,6 +691,13 @@ public interface StreamPlus<DATA>
     @Override
     public default StreamPlus<DATA> skip(long offset) {
         return StreamPlus.from(stream().skip(offset));
+    }
+    
+    //-- Take while --
+    
+    @Override
+    public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
+        return StreamPlus.from(stream().takeWhile(condition));
     }
     
     //-- Distinct --

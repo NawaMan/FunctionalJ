@@ -30,7 +30,7 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
-import lombok.val;
+
 
 public interface StreamPlusWithMapThen<DATA> {
     
@@ -43,12 +43,12 @@ public interface StreamPlusWithMapThen<DATA> {
                 Function<? super DATA, ? extends T1> mapper1,
                 Function<? super DATA, ? extends T2> mapper2,
                 BiFunction<T1, T2, T> function) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val v1 = mapper1.apply(each);
-                    val v2 = mapper2.apply(each);
-                    val v  = function.apply(v1, v2);
+                    var v1 = mapper1.apply(each);
+                    var v2 = mapper2.apply(each);
+                    var v  = function.apply(v1, v2);
                     return v;
                 });
     }
@@ -60,13 +60,13 @@ public interface StreamPlusWithMapThen<DATA> {
                 Function<? super DATA, ? extends T2> mapper2,
                 Function<? super DATA, ? extends T3> mapper3,
                 Func3<T1, T2, T3, T> function) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val v1 = mapper1.apply(each);
-                    val v2 = mapper2.apply(each);
-                    val v3 = mapper3.apply(each);
-                    val v  = function.apply(v1, v2, v3);
+                    var v1 = mapper1.apply(each);
+                    var v2 = mapper2.apply(each);
+                    var v3 = mapper3.apply(each);
+                    var v  = function.apply(v1, v2, v3);
                     return v;
                 });
     }
@@ -79,14 +79,14 @@ public interface StreamPlusWithMapThen<DATA> {
                 Function<? super DATA, ? extends T3> mapper3,
                 Function<? super DATA, ? extends T4> mapper4,
                 Func4<T1, T2, T3, T4, T> function) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val v1 = mapper1.apply(each);
-                    val v2 = mapper2.apply(each);
-                    val v3 = mapper3.apply(each);
-                    val v4 = mapper4.apply(each);
-                    val v  = function.apply(v1, v2, v3, v4);
+                    var v1 = mapper1.apply(each);
+                    var v2 = mapper2.apply(each);
+                    var v3 = mapper3.apply(each);
+                    var v4 = mapper4.apply(each);
+                    var v  = function.apply(v1, v2, v3, v4);
                     return v;
         });
     }
@@ -100,15 +100,15 @@ public interface StreamPlusWithMapThen<DATA> {
                 Function<? super DATA, ? extends T4> mapper4,
                 Function<? super DATA, ? extends T5> mapper5,
                 Func5<T1, T2, T3, T4, T5, T> function) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val v1 = mapper1.apply(each);
-                    val v2 = mapper2.apply(each);
-                    val v3 = mapper3.apply(each);
-                    val v4 = mapper4.apply(each);
-                    val v5 = mapper5.apply(each);
-                    val v  = function.apply(v1, v2, v3, v4, v5);
+                    var v1 = mapper1.apply(each);
+                    var v2 = mapper2.apply(each);
+                    var v3 = mapper3.apply(each);
+                    var v4 = mapper4.apply(each);
+                    var v5 = mapper5.apply(each);
+                    var v  = function.apply(v1, v2, v3, v4, v5);
                     return v;
                 });
     }
@@ -123,16 +123,16 @@ public interface StreamPlusWithMapThen<DATA> {
                 Function<? super DATA, ? extends T5> mapper5,
                 Function<? super DATA, ? extends T6> mapper6,
                 Func6<T1, T2, T3, T4, T5, T6, T> function) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val v1 = mapper1.apply(each);
-                    val v2 = mapper2.apply(each);
-                    val v3 = mapper3.apply(each);
-                    val v4 = mapper4.apply(each);
-                    val v5 = mapper5.apply(each);
-                    val v6 = mapper6.apply(each);
-                    val v  = function.apply(v1, v2, v3, v4, v5, v6);
+                    var v1 = mapper1.apply(each);
+                    var v2 = mapper2.apply(each);
+                    var v3 = mapper3.apply(each);
+                    var v4 = mapper4.apply(each);
+                    var v5 = mapper5.apply(each);
+                    var v6 = mapper6.apply(each);
+                    var v  = function.apply(v1, v2, v3, v4, v5, v6);
                     return v;
                 });
     }

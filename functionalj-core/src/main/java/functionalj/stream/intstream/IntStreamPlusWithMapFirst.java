@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 import functionalj.function.Func1;
 import functionalj.functions.ThrowFuncs;
 import functionalj.stream.StreamPlus;
-import lombok.val;
+
 
 
 class IntStreamPlusMapFirstAddOnHelper {
@@ -47,9 +47,9 @@ class IntStreamPlusMapFirstAddOnHelper {
     private static <T> T eachMapFirst(int d, IntFunction<T>[] mappers) {
         Exception exception = null;
         boolean hasNull = false;
-        for(val mapper : mappers) {
+        for(var mapper : mappers) {
             try {
-                val res = mapper.apply(d);
+                var res = mapper.apply(d);
                 if (res == null)
                      hasNull = true;
                 else return (T)res;
@@ -80,7 +80,7 @@ public interface IntStreamPlusWithMapFirst {
     public default <T> StreamPlus<T> mapFirst(
             IntFunction<T> mapper1,
             IntFunction<T> mapper2) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2);
     }
     
@@ -89,7 +89,7 @@ public interface IntStreamPlusWithMapFirst {
             IntFunction<T> mapper1,
             IntFunction<T> mapper2,
             IntFunction<T> mapper3) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3);
     }
     
@@ -99,7 +99,7 @@ public interface IntStreamPlusWithMapFirst {
             IntFunction<T> mapper2,
             IntFunction<T> mapper3,
             IntFunction<T> mapper4) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4);
     }
     
@@ -110,7 +110,7 @@ public interface IntStreamPlusWithMapFirst {
             IntFunction<T> mapper3,
             IntFunction<T> mapper4,
             IntFunction<T> mapper5) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
     
@@ -122,7 +122,7 @@ public interface IntStreamPlusWithMapFirst {
             IntFunction<T> mapper4,
             IntFunction<T> mapper5,
             IntFunction<T> mapper6) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
     

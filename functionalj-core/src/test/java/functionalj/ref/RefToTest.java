@@ -31,7 +31,7 @@ import org.junit.Test;
 import defaultj.core.Bindings;
 import defaultj.core.DefaultProvider;
 import defaultj.core.bindings.TypeBinding;
-import lombok.val;
+
 
 public class RefToTest {
 
@@ -64,16 +64,16 @@ public class RefToTest {
     
     @Test
     public void testBasic() {
-        val person = personRef.get();
+        var person = personRef.get();
         assertEquals("FLASH!", person.zoom());
     }
     
     @Test
     public void testOverride1() {
-        val typeBinding = new TypeBinding<Car>(SuperCar.class);
-        val bindings    = new Bindings.Builder().bind(Car.class, typeBinding).build();
-        val provider    = new DefaultProvider.Builder().bingings(bindings).build();
-        val zoom = With(RefTo.defaultProvider.butWith(provider)).run(()->{
+        var typeBinding = new TypeBinding<Car>(SuperCar.class);
+        var bindings    = new Bindings.Builder().bind(Car.class, typeBinding).build();
+        var provider    = new DefaultProvider.Builder().bingings(bindings).build();
+        var zoom = With(RefTo.defaultProvider.butWith(provider)).run(()->{
             return personRef
                     .get()
                     .zoom();
@@ -83,20 +83,20 @@ public class RefToTest {
     
     @Test
     public void testOverride2() {
-        val zoom = With(personRef.butFrom(()->new Person(new SuperCar()))).run(()->personRef.get().zoom());
+        var zoom = With(personRef.butFrom(()->new Person(new SuperCar()))).run(()->personRef.get().zoom());
         assertEquals("SUPER FLASH!!!!", zoom);
     }
     
     @Test
     public void testDefaultToDefault() {
-        val r = Ref.of(Person.class)
+        var r = Ref.of(Person.class)
                 .defaultToTypeDefault();
         assertEquals("FLASH!", r.value().zoom().toString());
     }
     
     @Test
     public void testWhenAbsent() {
-        val r = Ref.of(Person.class)
+        var r = Ref.of(Person.class)
                 .whenAbsentUseTypeDefault()
                 .defaultTo(new Person(new SuperCar()));
         assertEquals("SUPER FLASH!!!!", 
@@ -104,7 +104,7 @@ public class RefToTest {
                 .zoom()
                 .toString());
         
-        val zoom = With(r.butFrom(()->null))
+        var zoom = With(r.butFrom(()->null))
         .run(()->{
             return r.value()
                     .zoom();

@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import functionalj.types.struct.Core;
-import lombok.val;
+
 
 public class Type implements IRequireTypes {
     
@@ -157,7 +157,7 @@ public class Type implements IRequireTypes {
         this.simpleName  = simpleName;
         this.packageName = packageName;
         this.isVirtual   = false;
-        this.generics    
+        this.generics
                 = asList(generics)
                 .stream()
                 .map(generic->new Generic(generic))
@@ -179,10 +179,10 @@ public class Type implements IRequireTypes {
         List<Generic> genericList = (generics == null)
                             ? null
                             : generics.stream().filter(Objects::nonNull).collect(toList());
-        this.generics 
+        this.generics
                 = Collections.unmodifiableList(
-                        ((genericList == null) || genericList.isEmpty()) 
-                        ? new ArrayList<Generic>() 
+                        ((genericList == null) || genericList.isEmpty())
+                        ? new ArrayList<Generic>()
                         : new ArrayList<Generic>(generics));
     }
     
@@ -216,14 +216,14 @@ public class Type implements IRequireTypes {
     
     /**
      * Create a type of the given class.
-     * 
+     *
      * @param clzz      the class.
      * @param generics  the generic for this type.
      * @return      the type.
      */
     public static Type of(Class<?> clzz, Generic ... generics) {
-        val pckg = clzz.getPackage().getName().toString();
-        val name = clzz.getCanonicalName().toString().substring(pckg.length() + 1 );
+        var pckg = clzz.getPackage().getName().toString();
+        var name = clzz.getCanonicalName().toString().substring(pckg.length() + 1 );
         return new Type(pckg, name).withGenerics(asList(generics));
     }
     
@@ -238,7 +238,7 @@ public class Type implements IRequireTypes {
     
     @Override
     public String toString() {
-        val generics = ofNullable(this.generics)
+        var generics = ofNullable(this.generics)
                 .filter(l -> !l.isEmpty())
                 .map   (l -> this.generics.stream())
                 .map   (s -> s.map(g -> g.name))
@@ -264,7 +264,7 @@ public class Type implements IRequireTypes {
     }
     
     public String toCode() {
-        val params = asList(
+        var params = asList(
                 toStringLiteral(packageName),
                 toStringLiteral(encloseName),
                 toStringLiteral(simpleName),
@@ -281,18 +281,18 @@ public class Type implements IRequireTypes {
     @Override
     public Stream<Type> requiredTypes() {
         return Stream.concat(
-                Stream.of(this), 
+                Stream.of(this),
                 this.generics()
                     .stream()
                     .flatMap(generic -> generic.boundTypes.stream())
                     .filter(type -> !((type.packageName() == null) && (type.encloseName() == null))));
     }
     
-    private static ConcurrentHashMap<Type, Object> classCache = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<Type, Object> classCache = new ConcurrentHashMap<Type, Object>();
     
     @SuppressWarnings("unchecked")
     public <T> Class<T> toClass()  {
-        val result = classCache.computeIfAbsent(this, t -> {
+        var result = classCache.computeIfAbsent(this, t -> {
             if (Type.primitiveTypes.containsValue(t)) {
                 if (Type.BYT.equals(t))
                     return byte.class;
@@ -313,7 +313,7 @@ public class Type implements IRequireTypes {
             }
             
             try {
-                val fullName = t.fullName();
+                var fullName = t.fullName();
                 return Class.forName(fullName);
             } catch (Exception e) {
                 return e;
@@ -327,7 +327,7 @@ public class Type implements IRequireTypes {
     
     public static final Map<String, Type> primitiveTypes;
     static {
-        val map = new HashMap<String, Type>();
+        var map = new HashMap<String, Type>();
         map.put("char",    CHR);
         map.put("byte",    BYT);
         map.put("short",   SHRT);
@@ -341,7 +341,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the full type name without the generic without the package name opt-out when same package.
-     * 
+     *
      * @return  the full name.
      */
     public String fullName() {
@@ -349,7 +349,7 @@ public class Type implements IRequireTypes {
     }
     /**
      * Returns the full type name without the generic.
-     * 
+     *
      * @param currentPackage  the current package so that the package can be opt-out or null if it should never.
      * @return  the full name.
      */
@@ -362,7 +362,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the full type name with the generic.
-     * 
+     *
      * @param currentPackage  the current package.
      * @return  the full name.
      */
@@ -372,7 +372,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the declared type of this class (in case of non-primitive, declared type is the type).
-     * 
+     *
      * @return  the declared type.
      */
     public Type declaredType() {
@@ -381,7 +381,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the default value - to be used in the declaration of fields.
-     * 
+     *
      * @return  the default value.
      */
     public Object defaultValue() {
@@ -421,11 +421,11 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the lens type of this type.
-     * 
+     *
      * @return  the lens type.
      */
     public Type lensType(String packageName, String encloseName, List<String> localTypeWithLens) {
-        val lensType = knownLensType();
+        var lensType = knownLensType();
         if (lensType != null)
             return lensType;
         
@@ -454,8 +454,8 @@ public class Type implements IRequireTypes {
     }
     
     public Type knownLensType() {
-        val declaredType = this.declaredType();
-        val lensType = lensTypes.get(declaredType);
+        var declaredType = this.declaredType();
+        var lensType = lensTypes.get(declaredType);
         if (lensType != null)
             return lensType;
         
@@ -464,14 +464,14 @@ public class Type implements IRequireTypes {
         
         return null;
     }
-
+    
     /**
      * Check if this lens is custom lens.
-     * 
+     *
      * @return {@code true} if this lens is a custom lens.
      */
     public boolean isCustomLens() {
-        val lensType = this.knownLensType();
+        var lensType = this.knownLensType();
         return !lensTypes.values().contains(lensType)
             && !lensTypes.values().stream()
              .anyMatch(type -> type.simpleName() .equals(lensType.simpleName())
@@ -480,7 +480,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a list type.
-     * 
+     *
      * @return {@code true} if this type is a list.
      */
     public boolean isList() {
@@ -489,7 +489,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a map type.
-     * 
+     *
      * @return {@code true} if this type is a map.
      */
     public boolean isMap() {
@@ -498,7 +498,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a functional list type.
-     * 
+     *
      * @return {@code true} if this type is a functional list.
      */
     public boolean isFuncList() {
@@ -507,7 +507,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a functional map type.
-     * 
+     *
      * @return {@code true} if this type is a functional map.
      */
     public boolean isFuncMap() {
@@ -516,7 +516,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a nullable type.
-     * 
+     *
      * @return {@code true} if this type is a nullable.
      */
     public boolean isNullable() {
@@ -525,7 +525,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a Optional type.
-     * 
+     *
      * @return {@code true} if this type is a Optional.
      */
     public boolean isOptional() {
@@ -534,7 +534,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a Optional type.
-     * 
+     *
      * @return {@code true} if this type is a Optional.
      */
     public boolean isObject() {
@@ -542,7 +542,7 @@ public class Type implements IRequireTypes {
     }
     
     // These are lens types that are in the main lens package.
-    private static final Map<Type, Type> lensTypes = new HashMap<>();
+    private static final Map<Type, Type> lensTypes = new HashMap<Type, Type>();
     static {
         lensTypes.put(OBJECT,     Core.ObjectLens    .type());
         lensTypes.put(INT,        Core.IntegerLens   .type());
@@ -582,7 +582,7 @@ public class Type implements IRequireTypes {
     }
     public static final Map<String, Type> boxedType;
     static {
-        val map = new HashMap<String, Type>();
+        var map = new HashMap<String, Type>();
         map.put(Character.class.getCanonicalName(), CHARACTER);
         map.put(Byte.class.getCanonicalName(),      BYTE);
         map.put(Short.class.getCanonicalName(),     SHORT);
@@ -596,7 +596,7 @@ public class Type implements IRequireTypes {
     }
     public static final Map<Type, Type> declaredTypes;
     static {
-        val map = new HashMap<Type, Type>();
+        var map = new HashMap<Type, Type>();
         map.put(CHR,  CHARACTER);
         map.put(BYT,  BYTE);
         map.put(SHRT, SHORT);
@@ -609,7 +609,7 @@ public class Type implements IRequireTypes {
     }
     public static final Map<String, Type> temporalTypes;
     static {
-        val map = new HashMap<String, Type>();
+        var map = new HashMap<String, Type>();
         map.put(DayOfWeek.class.getCanonicalName(),      Core.DayOfWeek.type());
         map.put(Instant.class.getCanonicalName(),        Core.Instant.type());
         map.put(LocalDate.class.getCanonicalName(),      Core.LocalDate.type());
@@ -641,7 +641,7 @@ public class Type implements IRequireTypes {
     }
     
     public Type getPredicateType() {
-        val toString = this.toString();
+        var toString = this.toString();
         if ("int"    .equals(toString)) return INTEGER;
         if ("long"   .equals(toString)) return LONG;
         if ("boolean".equals(toString)) return BOOLEAN;
@@ -655,7 +655,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the simple name without the generic.
-     * 
+     *
      * @return  the simple name.
      */
     public String simpleNameWithGeneric() {
@@ -664,7 +664,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the simple name without the generic.
-     * 
+     *
      * @param currentPackage  the current package.
      * @return  the simple name.
      */

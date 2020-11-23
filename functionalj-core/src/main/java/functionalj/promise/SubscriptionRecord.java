@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import functionalj.result.Result;
-import lombok.val;
+
 
 public class SubscriptionRecord<DATA> implements HasPromise<DATA> {
     
@@ -65,7 +65,7 @@ public class SubscriptionRecord<DATA> implements HasPromise<DATA> {
     }
     
     public SubscriptionStatus getSubscriptionStatus() {
-        val promiseStatus = promise.getStatus();
+        var promiseStatus = promise.getStatus();
         Objects.requireNonNull(promiseStatus);
         
         if (promiseStatus.isComplete())

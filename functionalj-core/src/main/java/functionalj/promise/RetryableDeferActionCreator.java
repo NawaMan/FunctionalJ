@@ -33,7 +33,7 @@ import functionalj.function.FuncUnit0;
 import functionalj.function.FuncUnit1;
 import functionalj.ref.Ref;
 import functionalj.result.Result;
-import lombok.val;
+
 
 
 public class RetryableDeferActionCreator {
@@ -52,25 +52,25 @@ public class RetryableDeferActionCreator {
             Func0<DATA> supplier) {
         DeferAction<DATA> finalAction = DeferAction.createNew();
         
-        val config = new DeferActionConfig()
+        var config = new DeferActionConfig()
                 .interruptOnCancel(interruptOnCancel)
                 .onStart(onStart)
                 .runner(runner);
         
-        val couter  = new AtomicInteger(retry.times());
-        val builder = config.createBuilder(supplier);
+        var couter  = new AtomicInteger(retry.times());
+        var builder = config.createBuilder(supplier);
         
-        val onCompleteRef = new AtomicReference<FuncUnit1<Result<DATA>>>();
-        val onComplete    = (FuncUnit1<Result<DATA>>)(result -> {
+        var onCompleteRef = new AtomicReference<FuncUnit1<Result<DATA>>>();
+        var onComplete    = (FuncUnit1<Result<DATA>>)(result -> {
             if (result.isPresent()) {
-                val value = result.value();
+                var value = result.value();
                 finalAction.complete(value);
             } else {
-                val count = couter.decrementAndGet();
+                var count = couter.decrementAndGet();
                 if (count == 0) {
                     finalAction.abort("Retry exceed: " + retry.times());
                 } else {
-                    val period = retry.waitTimeMilliSecond();
+                    var period = retry.waitTimeMilliSecond();
                     Env.time().sleep(period);
                     
                     builder

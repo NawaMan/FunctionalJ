@@ -34,7 +34,7 @@ import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.stream.StreamPlus;
 import functionalj.tuple.IntIntTuple;
-import lombok.val;
+
 
 
 public interface IntStreamPlusWithMapWithIndex {
@@ -45,36 +45,36 @@ public interface IntStreamPlusWithMapWithIndex {
     
     /** @return  the stream of each value and index. */
     public default StreamPlus<IntIntTuple> mapWithIndex() {
-        val index = new AtomicInteger();
-        val streamPlus = intStreamPlus();
+        var index = new AtomicInteger();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val currentIndex = index.getAndIncrement();
-                    val tuple        = tuple(currentIndex, each);
+                    var currentIndex = index.getAndIncrement();
+                    var tuple        = tuple(currentIndex, each);
                     return tuple;
                 });
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default IntStreamPlus mapWithIndex(IntBinaryOperator combinator) {
-        val index = new AtomicInteger();
-        val streamPlus = intStreamPlus();
+        var index = new AtomicInteger();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .map(each -> {
-                    val currentIndex = index.getAndIncrement();
-                    val target       = combinator.applyAsInt(currentIndex, each);
+                    var currentIndex = index.getAndIncrement();
+                    var target       = combinator.applyAsInt(currentIndex, each);
                     return target;
                 });
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> StreamPlus<T> mapToObjWithIndex(IntIntBiFunction<T> combinator) {
-        val index = new AtomicInteger();
-        val streamPlus = intStreamPlus();
+        var index = new AtomicInteger();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val currentIndex = index.getAndIncrement();
-                    val target       = combinator.applyInt(currentIndex, each);
+                    var currentIndex = index.getAndIncrement();
+                    var target       = combinator.applyInt(currentIndex, each);
                     return target;
                 });
     }
@@ -83,13 +83,13 @@ public interface IntStreamPlusWithMapWithIndex {
     public default <T1, T> StreamPlus<T> mapWithIndex(
                 IntUnaryOperator    valueMapper,
                 IntIntBiFunction<T> combiner) {
-        val index = new AtomicInteger();
-        val streamPlus = intStreamPlus();
+        var index = new AtomicInteger();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val currentIndex = index.getAndIncrement();
-                    val value        = valueMapper.applyAsInt(each);
-                    val target       = combiner.apply(currentIndex, value);
+                    var currentIndex = index.getAndIncrement();
+                    var value        = valueMapper.applyAsInt(each);
+                    var target       = combiner.apply(currentIndex, value);
                     return target;
                 });
     }
@@ -98,13 +98,13 @@ public interface IntStreamPlusWithMapWithIndex {
     public default <T1, T> StreamPlus<T> mapToObjWithIndex(
                 IntFunction<? extends T1>       valueMapper,
                 IntObjBiFunction<? super T1, T> combiner) {
-        val index = new AtomicInteger();
-        val streamPlus = intStreamPlus();
+        var index = new AtomicInteger();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val i      = index.getAndIncrement();
-                    val value  = valueMapper.apply(each);
-                    val target = combiner.apply(i, value);
+                    var i      = index.getAndIncrement();
+                    var value  = valueMapper.apply(each);
+                    var target = combiner.apply(i, value);
                     return target;
                 });
     }

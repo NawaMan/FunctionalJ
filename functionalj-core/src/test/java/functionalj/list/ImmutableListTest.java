@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import lombok.val;
+
 
 public class ImmutableListTest {
     
@@ -71,7 +71,7 @@ public class ImmutableListTest {
     }
     @Test
     public void testSplit_ensurePredicateGotCalledOncePerItem() {
-        val processedStrings = new ArrayList<String>();
+        var processedStrings = new ArrayList<String>();
         assertEquals("([One, Two],[Four, Five],[Three])", 
                 ImmutableList.of("One", "Two", "Three", "Four", "Five")
                 .split($S.length().thatEquals(3),

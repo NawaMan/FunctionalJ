@@ -32,7 +32,7 @@ import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
-import lombok.val;
+
 
 public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
     
@@ -53,14 +53,14 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
      */
     public default Tuple2<IntFuncList, IntFuncList> split(
             IntPredicate predicate) {
-        val temp
+        var temp
             = mapToTuple(
                     it -> predicate.test(it) ? 0 : 1,
                     it -> it
             )
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
+        var list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
+        var list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
         return Tuple.of(
                 list1,
                 list2);
@@ -78,7 +78,7 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
     public default Tuple3<IntFuncList, IntFuncList, IntFuncList> split(
             IntPredicate predicate1,
             IntPredicate predicate2) {
-        val temp
+        var temp
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
@@ -86,9 +86,9 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).mapToInt(it -> it._2());
+        var list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
+        var list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
+        var list3 = temp.filter(it -> it._1() == 2).mapToInt(it -> it._2());
         return Tuple.of(
                 list1,
                 list2,
@@ -109,7 +109,7 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             IntPredicate predicate1,
             IntPredicate predicate2,
             IntPredicate predicate3) {
-        val temp 
+        var temp 
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
@@ -118,10 +118,10 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).mapToInt(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).mapToInt(it -> it._2());
+        var list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
+        var list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
+        var list3 = temp.filter(it -> it._1() == 2).mapToInt(it -> it._2());
+        var list4 = temp.filter(it -> it._1() == 3).mapToInt(it -> it._2());
         return Tuple.of(
                 list1,
                 list2,
@@ -145,7 +145,7 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             IntPredicate predicate2,
             IntPredicate predicate3,
             IntPredicate predicate4) {
-        val temp
+        var temp
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
@@ -155,11 +155,11 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).mapToInt(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).mapToInt(it -> it._2());
-        val list5 = temp.filter(it -> it._1() == 4).mapToInt(it -> it._2());
+        var list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
+        var list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
+        var list3 = temp.filter(it -> it._1() == 2).mapToInt(it -> it._2());
+        var list4 = temp.filter(it -> it._1() == 3).mapToInt(it -> it._2());
+        var list5 = temp.filter(it -> it._1() == 4).mapToInt(it -> it._2());
         return Tuple.of(
                 list1,
                 list2,
@@ -186,7 +186,7 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             IntPredicate predicate3,
             IntPredicate predicate4,
             IntPredicate predicate5) {
-        val temp 
+        var temp 
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
@@ -197,12 +197,12 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
-        val list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
-        val list3 = temp.filter(it -> it._1() == 2).mapToInt(it -> it._2());
-        val list4 = temp.filter(it -> it._1() == 3).mapToInt(it -> it._2());
-        val list5 = temp.filter(it -> it._1() == 4).mapToInt(it -> it._2());
-        val list6 = temp.filter(it -> it._1() == 5).mapToInt(it -> it._2());
+        var list1 = temp.filter(it -> it._1() == 0).mapToInt(it -> it._2());
+        var list2 = temp.filter(it -> it._1() == 1).mapToInt(it -> it._2());
+        var list3 = temp.filter(it -> it._1() == 2).mapToInt(it -> it._2());
+        var list4 = temp.filter(it -> it._1() == 3).mapToInt(it -> it._2());
+        var list5 = temp.filter(it -> it._1() == 4).mapToInt(it -> it._2());
+        var list6 = temp.filter(it -> it._1() == 5).mapToInt(it -> it._2());
         return Tuple.of(
                 list1,
                 list2,
@@ -220,14 +220,14 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
     public default <KEY> FuncMap<KEY, IntFuncList> split(
             KEY key1, IntPredicate predicate,
             KEY key2) {
-        val temp 
+        var temp 
             = mapToTuple(
                 it -> predicate.test(it) ? 0 : 1,
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(
                 key1, list1,
                 key2, list2);
@@ -242,7 +242,7 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             KEY key1, IntPredicate predicate1,
             KEY key2, IntPredicate predicate2,
             KEY key3) {
-        val temp 
+        var temp 
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
@@ -250,9 +250,9 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(
                 key1, list1,
                 key2, list2,
@@ -269,7 +269,7 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             KEY key2, IntPredicate predicate2,
             KEY key3, IntPredicate predicate3,
             KEY key4) {
-        val temp
+        var temp
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
@@ -278,10 +278,10 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(
                 key1, list1,
                 key2, list2,
@@ -300,7 +300,7 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             KEY key3, IntPredicate predicate3,
             KEY key4, IntPredicate predicate4,
             KEY key5) {
-        val temp
+        var temp
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
@@ -310,11 +310,11 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(
                 key1, list1,
                 key2, list2,
@@ -335,7 +335,7 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
             KEY key4, IntPredicate predicate4,
             KEY key5, IntPredicate predicate5,
             KEY key6) {
-        val temp
+        var temp
             = mapToTuple(
                 it -> predicate1.test(it) ? 0
                     : predicate2.test(it) ? 1
@@ -346,12 +346,12 @@ public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
                 it -> it
             )
             .toImmutableList();
-        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).mapToInt(it -> it._2()) : IntFuncList.empty();
-        val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).mapToInt(it -> it._2()) : IntFuncList.empty();
+        var list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).mapToInt(it -> it._2()) : IntFuncList.empty();
         return FuncMap.of(
                 key1, list1,
                 key2, list2,

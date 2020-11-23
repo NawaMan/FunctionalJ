@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Terminal;
-import lombok.val;
+
 
 /**
  * Classes implementing this interface can provider a StreamPlus instance of itself.
@@ -78,7 +78,7 @@ public interface AsStreamPlus<DATA>
     
     /** @return a spliterator of this streamable. */
     public default Spliterator<DATA> spliterator() {
-        val iterator = iterator();
+        var iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     

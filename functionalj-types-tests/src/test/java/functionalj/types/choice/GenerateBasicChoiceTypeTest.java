@@ -38,7 +38,7 @@
 //import org.junit.Test;
 //
 //import functionalj.types.Choice;
-//import lombok.val;
+//
 //
 //@Choice
 //interface UpOrDownSpec {
@@ -108,7 +108,7 @@
 //    
 //    @Test
 //    public void testAction() {
-//        val count = new AtomicInteger(0);
+//        var count = new AtomicInteger(0);
 //        
 //        assertEquals(0, count.get());
 //        count.set(counting.apply(count.get(), Up()));

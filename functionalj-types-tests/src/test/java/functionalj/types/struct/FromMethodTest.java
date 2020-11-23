@@ -39,7 +39,7 @@ import functionalj.list.FuncList;
 import functionalj.types.DefaultTo;
 import functionalj.types.Nullable;
 import functionalj.types.Struct;
-import lombok.val;
+
 
 public class FromMethodTest {
     
@@ -62,8 +62,8 @@ public class FromMethodTest {
         
         
         
-        val inventory    = new Inventory();
-        val newInventory = inventory
+        var inventory    = new Inventory();
+        var newInventory = inventory
                 .withCars(list -> list
                     .append(new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000)))
                     .append(new CarForSale(new Car("Mazda",  2008, "White"),  new Price(30000)))
@@ -83,9 +83,9 @@ public class FromMethodTest {
                 "{car={color=Silver, year=2010, make=Subaru}, price={discountPercent=0, price=20000}}",
                 new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000)).__toMap().toString());
         
-        val orgCfS = new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000));
-        val mapCfS = orgCfS.__toMap();
-        val newCfS = CarForSale.fromMap(mapCfS);
+        var orgCfS = new CarForSale(new Car("Subaru", 2010, "Silver"), new Price(20000));
+        var mapCfS = orgCfS.__toMap();
+        var newCfS = CarForSale.fromMap(mapCfS);
         assertEquals("{car={color=Silver, year=2010, make=Subaru}, price={discountPercent=0, price=20000}}", mapCfS.toString());
         assertEquals("CarForSale[car: Car[make: Subaru, year: 2010, color: Silver], price: Price[price: 20000, discountPercent: 0]]", orgCfS.toString());
         assertEquals("CarForSale[car: Car[make: Subaru, year: 2010, color: Silver], price: Price[price: 20000, discountPercent: 0]]", newCfS.toString());
@@ -96,7 +96,7 @@ public class FromMethodTest {
     
     @Test
     public void test() {
-        val car = new Car("Toyota", 2008, "White");
+        var car = new Car("Toyota", 2008, "White");
         assertEquals("Car[make: Toyota, year: 2008, color: White]", car.toString());
         assertEquals("[make:String, year:int, color:String]",
                 Car.spec.getGetters()
@@ -105,23 +105,23 @@ public class FromMethodTest {
                 .collect(toList())
                 .toString());
         
-        val car2 = new Car("Toyota", 2008);
+        var car2 = new Car("Toyota", 2008);
         assertEquals("Car[make: Toyota, year: 2008, color: null]", car2.toString());
         
-        val car3 = new Car.Builder()
+        var car3 = new Car.Builder()
                 .make("BMW")
                 .year(2010)
                 .build();
         assertEquals("Car[make: BMW, year: 2010, color: null]", car3.toString());
         
-        val car4 = new Car.Builder()
+        var car4 = new Car.Builder()
                 .make("BMW")
                 .year(2010)
                 .color("Black")
                 .build();
         assertEquals("Car[make: BMW, year: 2010, color: Black]", car4.toString());
         
-        val cars = FuncList.of(car4);
+        var cars = FuncList.of(car4);
         assertEquals("Car[make: BMW, year: 2009, color: Black]",  theCar.year.changeTo($I.less(1)).apply(car4).toString());
         assertEquals("Car[make: Benz, year: 2010, color: Black]", theCar.make.changeTo("Benz").apply(car4).toString());
         assertEquals("[Car[make: BMW, year: 2009, color: Black]]", "" + cars.mapOnly(theCar.year.thatEquals(2010), theCar.year.changeTo($I.less(1))));

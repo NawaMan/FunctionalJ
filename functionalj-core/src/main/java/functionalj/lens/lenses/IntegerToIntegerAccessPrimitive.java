@@ -28,7 +28,7 @@ import java.util.function.IntUnaryOperator;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.ToIntBiIntFunction;
-import lombok.val;
+
 
 @FunctionalInterface
 public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, IntegerAccessPrimitive<Integer> {
@@ -45,7 +45,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     
     
     public static int apply(IntegerAccess<Integer> access, int value) {
-        val resValue 
+        var resValue 
             = (access instanceof IntegerToIntegerAccessPrimitive)
             ? ((IntegerToIntegerAccessPrimitive)access).applyIntToInt(value)
             : access.applyAsInt(value);
@@ -173,7 +173,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
     }
     
     public default IntegerToBooleanAccessPrimitive bitAt(int bitIndex) {
-        val p = (int)Math.pow(2, bitIndex);
+        var p = (int)Math.pow(2, bitIndex);
         return host -> {
             int intValue = applyAsInt(host);
             return (intValue & p) != 0;
@@ -183,7 +183,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         return host -> {
             int intValue = applyAsInt(host);
             int value    = anotherSupplier.getAsInt();
-            val p        = (int)Math.pow(2, value);
+            var p        = (int)Math.pow(2, value);
             return (intValue & p) != 0;
         };
     }
@@ -191,7 +191,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = IntegerToIntegerAccessPrimitive.apply(anotherAccess, host);
-            val p            = (int)Math.pow(2, anotherValue);
+            var p            = (int)Math.pow(2, anotherValue);
             return (intValue & p) != 0;
         };
     }
@@ -199,7 +199,7 @@ public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, Integ
         return host -> {
             int intValue     = applyAsInt(host);
             int anotherValue = IntBiFunctionPrimitive.apply(anotherFunction, host, intValue);
-            val p        = (int)Math.pow(2, anotherValue);
+            var p        = (int)Math.pow(2, anotherValue);
             return (intValue & p) != 0;
         };
     }

@@ -30,7 +30,7 @@ import java.util.function.Function;
 
 import functionalj.function.IntObjBiFunction;
 import functionalj.tuple.IntTuple2;
-import lombok.val;
+
 
 
 public interface StreamPlusWithMapWithIndex<DATA> {
@@ -41,36 +41,36 @@ public interface StreamPlusWithMapWithIndex<DATA> {
     
     /** @return  the stream of each value and index. */
     public default StreamPlus<IntTuple2<DATA>> mapWithIndex() {
-        val index = new AtomicInteger();
-        val streamPlus = streamPlus();
+        var index = new AtomicInteger();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val currentIndex = index.getAndIncrement();
-                    val tuple        = tuple(currentIndex, each);
+                    var currentIndex = index.getAndIncrement();
+                    var tuple        = tuple(currentIndex, each);
                     return tuple;
                 });
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> StreamPlus<T> mapWithIndex(IntObjBiFunction<? super DATA, T> combinator) {
-        val index = new AtomicInteger();
-        val streamPlus = streamPlus();
+        var index = new AtomicInteger();
+        var streamPlus = streamPlus();
         return streamPlus
                 .map(each -> {
-                    val currentIndex = index.getAndIncrement();
-                    val target       = combinator.apply(currentIndex, each);
+                    var currentIndex = index.getAndIncrement();
+                    var target       = combinator.apply(currentIndex, each);
                     return target;
                 });
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> StreamPlus<T> mapToObjWithIndex(IntObjBiFunction<? super DATA, T> combinator) {
-        val index = new AtomicInteger();
-        val streamPlus = streamPlus();
+        var index = new AtomicInteger();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val currentIndex = index.getAndIncrement();
-                    val target       = combinator.apply(currentIndex, each);
+                    var currentIndex = index.getAndIncrement();
+                    var target       = combinator.apply(currentIndex, each);
                     return target;
                 });
     }
@@ -79,13 +79,13 @@ public interface StreamPlusWithMapWithIndex<DATA> {
     public default <T1, T> StreamPlus<T> mapWithIndex(
                 Function<? super DATA, ? extends T1> valueMapper,
                 IntObjBiFunction<? super T1, T>      combinator) {
-        val index = new AtomicInteger();
-        val streamPlus = streamPlus();
+        var index = new AtomicInteger();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    val currentIndex = index.getAndIncrement();
-                    val value        = valueMapper.apply(each);
-                    val target       = combinator.apply(currentIndex, value);
+                    var currentIndex = index.getAndIncrement();
+                    var value        = valueMapper.apply(each);
+                    var target       = combinator.apply(currentIndex, value);
                     return target;
                 });
     }
@@ -94,7 +94,7 @@ public interface StreamPlusWithMapWithIndex<DATA> {
     public default <T1, T> StreamPlus<T> mapToObjWithIndex(
                 Function<? super DATA, ? extends T1> valueMapper,
                 IntObjBiFunction<? super T1, T>      combinator) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .mapWithIndex(valueMapper, combinator);
     }

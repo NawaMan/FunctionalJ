@@ -31,7 +31,7 @@ import functionalj.map.FuncMap;
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Terminal;
 import functionalj.streamable.intstreamable.IntStreamable;
-import lombok.val;
+
 
 public interface IntStreamPlusWithGroupingBy extends AsIntStreamPlus {
     
@@ -53,8 +53,8 @@ public interface IntStreamPlusWithGroupingBy extends AsIntStreamPlus {
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             IntFunction<? extends KEY>     keyMapper,
             Function<IntStreamPlus, VALUE> aggregate) {
-        val groupingBy = groupingBy(keyMapper);
-        val mapValue = groupingBy.mapValue(aggregate);
+        var groupingBy = groupingBy(keyMapper);
+        var mapValue = groupingBy.mapValue(aggregate);
         return (FuncMap<KEY, VALUE>)mapValue;
     }
     

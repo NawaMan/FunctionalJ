@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -42,11 +42,11 @@ import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.ILines;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.StructSpec;
-import lombok.val;
+
 
 /**
  * Representation of Struct class.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public class GenStruct implements ILines {
@@ -71,7 +71,7 @@ public class GenStruct implements ILines {
     
     /**
      * Construct a GenStruct with the data object spec.
-     * 
+     *
      * @param dataObjSpec  the spec.
      */
     public GenStruct(SourceSpec sourceSpec, StructSpec dataObjSpec) {
@@ -80,12 +80,12 @@ public class GenStruct implements ILines {
     }
     
     public Stream<String> lines() {
-        val importList = importListLines();
-        val imports    = importList.map(wrapWith("import ", ";")).collect(toList());
-        String packageName = dataClass.type().packageName();
-        String packageDef = "package " + packageName + ";";
-        ILines dataObjDef = dataClass.getClassSpec().toDefinition(packageName);
-        ILines lines
+        var importList  = importListLines();
+        var imports     = importList.map(wrapWith("import ", ";")).collect(toList());
+        var packageName = dataClass.type().packageName();
+        var packageDef  = "package " + packageName + ";";
+        var dataObjDef  = dataClass.getClassSpec().toDefinition(packageName);
+        var lines
                 = linesOf(Stream.of(
                     line(packageDef),
                     line(imports),
@@ -98,7 +98,7 @@ public class GenStruct implements ILines {
     }
     
     private Stream<String> importListLines() {
-        val types = new HashSet<Type>();
+        var types = new HashSet<Type>();
         dataClass.fields()      .stream().flatMap(GenField      ::requiredTypes).forEach(types::add);
         dataClass.methods()     .stream().flatMap(GenMethod     ::requiredTypes).forEach(types::add);
         dataClass.constructors().stream().flatMap(GenConstructor::requiredTypes).forEach(types::add);
@@ -108,20 +108,20 @@ public class GenStruct implements ILines {
         
         types.remove(dataClass.type());
         
-        val lensImport = types.stream()
+        var lensImport = types.stream()
                 .filter (Objects::nonNull)
                 .collect(toList());
         
-        val thisPackage   = (String)dataClass.type().packageName();
-        val thisEnclose   = (String)dataClass.type().encloseName();
-        val thisClassName = (String)dataClass.type().simpleName();
-        val withLens      = sourceSpec.getTypeWithLens();
-        val lensClass     = (String)dataClass.type().lensType(thisPackage, thisEnclose, withLens).fullName(thisPackage);
-        val superClass    = (String)dataClass.getSourcePackageName() + "." + dataClass.getSourceClassName();
-        val isLensClass   = (Predicate<String>)((String name) -> name.equals(lensClass));
-        val isSuperClass  = (Predicate<String>)((String name) -> name.equals(superClass));
+        var thisPackage   = (String)dataClass.type().packageName();
+        var thisEnclose   = (String)dataClass.type().encloseName();
+        var thisClassName = (String)dataClass.type().simpleName();
+        var withLens      = sourceSpec.getTypeWithLens();
+        var lensClass     = (String)dataClass.type().lensType(thisPackage, thisEnclose, withLens).fullName(thisPackage);
+        var superClass    = (String)dataClass.getSourcePackageName() + "." + dataClass.getSourceClassName();
+        var isLensClass   = (Predicate<String>)((String name) -> name.equals(lensClass));
+        var isSuperClass  = (Predicate<String>)((String name) -> name.equals(superClass));
         
-        val importTypes = (List<Type>)asList(
+        var importTypes = (List<Type>)asList(
                 alwaysImports.stream(),
                 lensImport.stream(),
                 types.stream(),
@@ -132,7 +132,7 @@ public class GenStruct implements ILines {
             .flatMap(themAll())
             .collect(toList());
         
-        val importList = importTypes.stream()
+        var importList = importTypes.stream()
                 .filter(type->!type.isVirtual())
                 .filter(type->!thisPackage.equals(type.packageName()) || !Objects.equals(thisClassName, type.encloseName()))
                 .map   (Type::declaredType)

@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,10 +31,10 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import functionalj.types.choice.generator.model.Case;
-import lombok.val;
+
 
 public class Utils {
-
+    
     public static String templateRange(int fromInclusive, int toExclusive, String delimiter) {
         return range(fromInclusive, toExclusive).mapToObj(i -> "%" + i + "$s") .collect(joining(delimiter));
     }
@@ -49,14 +49,14 @@ public class Utils {
         if (str.length() <= 2)
             return str.toLowerCase();
         
-        val firstTwo = str.substring(0, 2);
+        var firstTwo = str.substring(0, 2);
         if (firstTwo.equals(firstTwo.toUpperCase())) {
-            val first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
-            val rest = str.substring(first.length());
+            var first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
+            var rest = str.substring(first.length());
             return first.toLowerCase() + rest;
         } else {
-            val first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
-            val rest = str.substring(first.length());
+            var first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
+            var rest = str.substring(first.length());
             return first.toLowerCase() + rest;
         }
     }
@@ -74,7 +74,7 @@ public class Utils {
         if (list.isEmpty())
             return "java.util.Collections.emptyList()";
         
-        val str = list.stream().map(toCode).collect(joining(", "));
+        var str = list.stream().map(toCode).collect(joining(", "));
         return "java.util.Arrays.asList(" + str + ")";
     }
     
@@ -86,14 +86,14 @@ public class Utils {
         if (str.isEmpty())
             return "\"\"";
         
-        val matcher = pattern.matcher(str);
-        val buffer  = new StringBuffer();
+        var matcher = pattern.matcher(str);
+        var buffer  = new StringBuffer();
         while (matcher.find()) {
-            val original = matcher.group();
+            var original = matcher.group();
             if(original.length() == 0)
                 continue;
             
-            val replacement = findReplacement(original);
+            var replacement = findReplacement(original);
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);

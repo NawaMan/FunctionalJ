@@ -37,5 +37,5 @@ public class FromMapBuilder implements Lines {
             .flatMap(allLines -> allLines)
             .collect(toList());
     }
-
+    
 }

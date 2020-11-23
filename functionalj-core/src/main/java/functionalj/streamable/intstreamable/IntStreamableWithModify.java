@@ -37,7 +37,7 @@ import functionalj.stream.intstream.IntIteratorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.Streamable;
 import functionalj.tuple.IntTuple2;
-import lombok.val;
+
 
 public interface IntStreamableWithModify extends AsIntStreamable {
     
@@ -83,24 +83,24 @@ public interface IntStreamableWithModify extends AsIntStreamable {
      **/
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default IntStreamable restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
-        val func = (UnaryOperator<IntTuple2<IntStreamPlus>>)((IntTuple2<IntStreamPlus> pair) -> {
-            val stream = pair._2();
+        var func = (UnaryOperator<IntTuple2<IntStreamPlus>>)((IntTuple2<IntStreamPlus> pair) -> {
+            var stream = pair._2();
             if (stream == null)
                 return null;
             
-            val iterator = stream.iterator();
+            var iterator = stream.iterator();
             if (!iterator.hasNext())
                 return null;
             
-            val head = new int[] { iterator.nextInt() };
-            val tail = IntObjBiFunction.apply(restater, head[0], IntIteratorPlus.from(iterator).stream());
+            var head = new int[] { iterator.nextInt() };
+            var tail = IntObjBiFunction.apply(restater, head[0], IntIteratorPlus.from(iterator).stream());
             if (tail == null)
                 return null;
             
             return IntTuple2.<IntStreamPlus>of(head[0], tail);
         });
-        val seed = IntTuple2.<IntStreamPlus>of(0, intStreamPlus());
-        val endStream
+        var seed = IntTuple2.<IntStreamPlus>of(0, intStreamPlus());
+        var endStream
             = Streamable
             .iterate  (seed, (UnaryOperator)func)
             .takeUntil(t -> t == null)

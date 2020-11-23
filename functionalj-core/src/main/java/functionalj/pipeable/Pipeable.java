@@ -34,7 +34,6 @@ import functionalj.function.Func;
 import functionalj.function.Func1;
 import functionalj.functions.ThrowFuncs;
 import functionalj.result.Result;
-import lombok.val;
 import nullablej.nullable.Nullable;
 
 // TODO - Think about adding Finally.
@@ -161,8 +160,8 @@ public interface Pipeable<DATA> {
     public default <OUTPUT> 
         OUTPUT pipeTo(Func1<? super DATA, OUTPUT> func1) {
         try {
-            val input  = __data();
-            val output = __internal.apply(func1, input);
+            var input  = __data();
+            var output = __internal.apply(func1, input);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -177,8 +176,8 @@ public interface Pipeable<DATA> {
             Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
             throws EXCEPTION {
         try {
-            val input  = __data();
-            val output = __internal.apply(func1, input);
+            var input  = __data();
+            var output = __internal.apply(func1, input);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -191,9 +190,9 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA,  DATA1>  func1, 
                 Func1<? super DATA1, OUTPUT> func2) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val output = __internal.apply(func2, data1);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var output = __internal.apply(func2, data1);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -209,9 +208,9 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val output = __internal.apply(func2, data1);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var output = __internal.apply(func2, data1);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -225,10 +224,10 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA1, DATA2>  func2, 
                 Func1<? super DATA2, OUTPUT> func3) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val output = __internal.apply(func3, data2);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var output = __internal.apply(func3, data2);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -245,10 +244,10 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val output = __internal.apply(func3, data2);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var output = __internal.apply(func3, data2);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -263,11 +262,11 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA2, DATA3>  func3, 
                 Func1<? super DATA3, OUTPUT> func4) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val output = __internal.apply(func4, data3);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var output = __internal.apply(func4, data3);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -285,11 +284,11 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val output = __internal.apply(func4, data3);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var output = __internal.apply(func4, data3);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -305,12 +304,12 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA3, DATA4>  func4,
                 Func1<? super DATA4, OUTPUT> func5) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val data4  = __internal.apply(func4, data3);
-            val output = __internal.apply(func5, data4);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var data4  = __internal.apply(func4, data3);
+            var output = __internal.apply(func5, data4);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -329,12 +328,12 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val data4  = __internal.apply(func4, data3);
-            val output = __internal.apply(func5, data4);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var data4  = __internal.apply(func4, data3);
+            var output = __internal.apply(func5, data4);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -351,13 +350,13 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA4, DATA5>  func5,
                 Func1<? super DATA5, OUTPUT> func6) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val data4  = __internal.apply(func4, data3);
-            val data5  = __internal.apply(func5, data4);
-            val output = __internal.apply(func6, data5);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var data4  = __internal.apply(func4, data3);
+            var data5  = __internal.apply(func5, data4);
+            var output = __internal.apply(func6, data5);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -377,13 +376,13 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val data4  = __internal.apply(func4, data3);
-            val data5  = __internal.apply(func5, data4);
-            val output = __internal.apply(func6, data5);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var data4  = __internal.apply(func4, data3);
+            var data5  = __internal.apply(func5, data4);
+            var output = __internal.apply(func6, data5);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -401,14 +400,14 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA5, DATA6>  func6,
                 Func1<? super DATA6, OUTPUT> func7) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val data4  = __internal.apply(func4, data3);
-            val data5  = __internal.apply(func5, data4);
-            val data6  = __internal.apply(func6, data5);
-            val output = __internal.apply(func7, data6);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var data4  = __internal.apply(func4, data3);
+            var data5  = __internal.apply(func5, data4);
+            var data6  = __internal.apply(func6, data5);
+            var output = __internal.apply(func7, data6);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -429,14 +428,14 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val data4  = __internal.apply(func4, data3);
-            val data5  = __internal.apply(func5, data4);
-            val data6  = __internal.apply(func6, data5);
-            val output = __internal.apply(func7, data6);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var data4  = __internal.apply(func4, data3);
+            var data5  = __internal.apply(func5, data4);
+            var data6  = __internal.apply(func6, data5);
+            var output = __internal.apply(func7, data6);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -455,15 +454,15 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA6, DATA7>  func7,
                 Func1<? super DATA7, OUTPUT> func8) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val data4  = __internal.apply(func4, data3);
-            val data5  = __internal.apply(func5, data4);
-            val data6  = __internal.apply(func6, data5);
-            val data7  = __internal.apply(func7, data6);
-            val output = __internal.apply(func8, data7);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var data4  = __internal.apply(func4, data3);
+            var data5  = __internal.apply(func5, data4);
+            var data6  = __internal.apply(func6, data5);
+            var data7  = __internal.apply(func7, data6);
+            var output = __internal.apply(func8, data7);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -485,15 +484,15 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val data4  = __internal.apply(func4, data3);
-            val data5  = __internal.apply(func5, data4);
-            val data6  = __internal.apply(func6, data5);
-            val data7  = __internal.apply(func7, data6);
-            val output = __internal.apply(func8, data7);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var data4  = __internal.apply(func4, data3);
+            var data5  = __internal.apply(func5, data4);
+            var data6  = __internal.apply(func6, data5);
+            var data7  = __internal.apply(func7, data6);
+            var output = __internal.apply(func8, data7);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -513,16 +512,16 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA7, DATA8>  func8,
                 Func1<? super DATA8, OUTPUT> func9) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val data4  = __internal.apply(func4, data3);
-            val data5  = __internal.apply(func5, data4);
-            val data6  = __internal.apply(func6, data5);
-            val data7  = __internal.apply(func7, data6);
-            val data8  = __internal.apply(func8, data7);
-            val output = __internal.apply(func9, data8);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var data4  = __internal.apply(func4, data3);
+            var data5  = __internal.apply(func5, data4);
+            var data6  = __internal.apply(func6, data5);
+            var data7  = __internal.apply(func7, data6);
+            var data8  = __internal.apply(func8, data7);
+            var output = __internal.apply(func9, data8);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -545,16 +544,16 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1, input);
-            val data2  = __internal.apply(func2, data1);
-            val data3  = __internal.apply(func3, data2);
-            val data4  = __internal.apply(func4, data3);
-            val data5  = __internal.apply(func5, data4);
-            val data6  = __internal.apply(func6, data5);
-            val data7  = __internal.apply(func7, data6);
-            val data8  = __internal.apply(func8, data7);
-            val output = __internal.apply(func9, data8);
+            var input  = __data();
+            var data1  = __internal.apply(func1, input);
+            var data2  = __internal.apply(func2, data1);
+            var data3  = __internal.apply(func3, data2);
+            var data4  = __internal.apply(func4, data3);
+            var data5  = __internal.apply(func5, data4);
+            var data6  = __internal.apply(func6, data5);
+            var data7  = __internal.apply(func7, data6);
+            var data8  = __internal.apply(func8, data7);
+            var output = __internal.apply(func9, data8);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -575,17 +574,17 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA8, DATA9>  func9,
                 Func1<? super DATA9, OUTPUT> func10) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val output = __internal.apply(func10, data9);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var output = __internal.apply(func10, data9);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -609,17 +608,17 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val output = __internal.apply(func10, data9);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var output = __internal.apply(func10, data9);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -641,18 +640,18 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA9,  DATA10> func10,
                 Func1<? super DATA10, OUTPUT> func11) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val output = __internal.apply(func11, data10);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var output = __internal.apply(func11, data10);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -677,18 +676,18 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val output = __internal.apply(func11, data10);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var output = __internal.apply(func11, data10);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -711,19 +710,19 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA10, DATA11> func11,
                 Func1<? super DATA11, OUTPUT> func12) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val data11 = __internal.apply(func11, data10);
-            val output = __internal.apply(func12, data11);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var data11 = __internal.apply(func11, data10);
+            var output = __internal.apply(func12, data11);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -749,19 +748,19 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val data11 = __internal.apply(func11, data10);
-            val output = __internal.apply(func12, data11);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var data11 = __internal.apply(func11, data10);
+            var output = __internal.apply(func12, data11);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -785,20 +784,20 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA11, DATA12> func12,
                 Func1<? super DATA12, OUTPUT> func13) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val data11 = __internal.apply(func11, data10);
-            val data12 = __internal.apply(func12, data11);
-            val output = __internal.apply(func13, data12);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var data11 = __internal.apply(func11, data10);
+            var data12 = __internal.apply(func12, data11);
+            var output = __internal.apply(func13, data12);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -825,20 +824,20 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val data11 = __internal.apply(func11, data10);
-            val data12 = __internal.apply(func12, data11);
-            val output = __internal.apply(func13, data12);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var data11 = __internal.apply(func11, data10);
+            var data12 = __internal.apply(func12, data11);
+            var output = __internal.apply(func13, data12);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -863,21 +862,21 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA12, DATA13> func13,
                 Func1<? super DATA13, OUTPUT> func14) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val data11 = __internal.apply(func11, data10);
-            val data12 = __internal.apply(func12, data11);
-            val data13 = __internal.apply(func13, data12);
-            val output = __internal.apply(func14, data13);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var data11 = __internal.apply(func11, data10);
+            var data12 = __internal.apply(func12, data11);
+            var data13 = __internal.apply(func13, data12);
+            var output = __internal.apply(func14, data13);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -905,21 +904,21 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val data11 = __internal.apply(func11, data10);
-            val data12 = __internal.apply(func12, data11);
-            val data13 = __internal.apply(func13, data12);
-            val output = __internal.apply(func14, data13);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var data11 = __internal.apply(func11, data10);
+            var data12 = __internal.apply(func12, data11);
+            var data13 = __internal.apply(func13, data12);
+            var output = __internal.apply(func14, data13);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -945,22 +944,22 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA13, DATA14> func14,
                 Func1<? super DATA14, OUTPUT> func15) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val data11 = __internal.apply(func11, data10);
-            val data12 = __internal.apply(func12, data11);
-            val data13 = __internal.apply(func13, data12);
-            val data14 = __internal.apply(func14, data13);
-            val output = __internal.apply(func15, data14);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var data11 = __internal.apply(func11, data10);
+            var data12 = __internal.apply(func12, data11);
+            var data13 = __internal.apply(func13, data12);
+            var data14 = __internal.apply(func14, data13);
+            var output = __internal.apply(func15, data14);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -989,22 +988,22 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val data11 = __internal.apply(func11, data10);
-            val data12 = __internal.apply(func12, data11);
-            val data13 = __internal.apply(func13, data12);
-            val data14 = __internal.apply(func14, data13);
-            val output = __internal.apply(func15, data14);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var data11 = __internal.apply(func11, data10);
+            var data12 = __internal.apply(func12, data11);
+            var data13 = __internal.apply(func13, data12);
+            var data14 = __internal.apply(func14, data13);
+            var output = __internal.apply(func15, data14);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);
@@ -1031,23 +1030,23 @@ public interface Pipeable<DATA> {
                 Func1<? super DATA14, DATA15> func15,
                 Func1<? super DATA15, OUTPUT> func16) {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val data11 = __internal.apply(func11, data10);
-            val data12 = __internal.apply(func12, data11);
-            val data13 = __internal.apply(func13, data12);
-            val data14 = __internal.apply(func14, data13);
-            val data15 = __internal.apply(func15, data14);
-            val output = __internal.apply(func16, data15);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var data11 = __internal.apply(func11, data10);
+            var data12 = __internal.apply(func12, data11);
+            var data13 = __internal.apply(func13, data12);
+            var data14 = __internal.apply(func14, data13);
+            var data15 = __internal.apply(func15, data14);
+            var output = __internal.apply(func16, data15);
             return output;
         } catch (RuntimeException exception) {
             throw exception;
@@ -1077,23 +1076,23 @@ public interface Pipeable<DATA> {
                 Catch<OUTPUT, FINALOUTPUT, EXCEPTION> catchHandler)
                 throws EXCEPTION {
         try {
-            val input  = __data();
-            val data1  = __internal.apply(func1,  input);
-            val data2  = __internal.apply(func2,  data1);
-            val data3  = __internal.apply(func3,  data2);
-            val data4  = __internal.apply(func4,  data3);
-            val data5  = __internal.apply(func5,  data4);
-            val data6  = __internal.apply(func6,  data5);
-            val data7  = __internal.apply(func7,  data6);
-            val data8  = __internal.apply(func8,  data7);
-            val data9  = __internal.apply(func9,  data8);
-            val data10 = __internal.apply(func10, data9);
-            val data11 = __internal.apply(func11, data10);
-            val data12 = __internal.apply(func12, data11);
-            val data13 = __internal.apply(func13, data12);
-            val data14 = __internal.apply(func14, data13);
-            val data15 = __internal.apply(func15, data14);
-            val output = __internal.apply(func16, data15);
+            var input  = __data();
+            var data1  = __internal.apply(func1,  input);
+            var data2  = __internal.apply(func2,  data1);
+            var data3  = __internal.apply(func3,  data2);
+            var data4  = __internal.apply(func4,  data3);
+            var data5  = __internal.apply(func5,  data4);
+            var data6  = __internal.apply(func6,  data5);
+            var data7  = __internal.apply(func7,  data6);
+            var data8  = __internal.apply(func8,  data7);
+            var data9  = __internal.apply(func9,  data8);
+            var data10 = __internal.apply(func10, data9);
+            var data11 = __internal.apply(func11, data10);
+            var data12 = __internal.apply(func12, data11);
+            var data13 = __internal.apply(func13, data12);
+            var data14 = __internal.apply(func14, data13);
+            var data15 = __internal.apply(func15, data14);
+            var output = __internal.apply(func16, data15);
             return catchHandler.doCatch(output, null);
         } catch (Exception e) {
             return catchHandler.doCatch(null, e);

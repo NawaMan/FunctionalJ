@@ -33,7 +33,7 @@ import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.Tuple2;
-import lombok.val;
+
 
 public interface StreamPlusWithCombine<DATA> {
     
@@ -66,11 +66,11 @@ public interface StreamPlusWithCombine<DATA> {
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
     public default StreamPlus<DATA> mergeWith(Stream<DATA> anotherStream) {
-        val streamPlus = streamPlus();
-        val iteratorA  = streamPlus.iterator();
-        val iteratorB  = StreamPlus.from(anotherStream).iterator();
+        var streamPlus = streamPlus();
+        var iteratorA  = streamPlus.iterator();
+        var iteratorB  = StreamPlus.from(anotherStream).iterator();
         
-        val resultStream 
+        var resultStream 
                 = StreamPlusHelper
                 .doMerge(iteratorA, iteratorB);
         
@@ -143,8 +143,8 @@ public interface StreamPlusWithCombine<DATA> {
             Stream<B>         anotherStream, 
             ZipWithOption     option,
             Func2<DATA, B, C> combinator) {
-        val iteratorA = streamPlus().iterator();
-        val iteratorB = StreamPlus.from(anotherStream).iterator();
+        var iteratorA = streamPlus().iterator();
+        var iteratorB = StreamPlus.from(anotherStream).iterator();
         return StreamPlusHelper.doZipWith(option, combinator, iteratorA, iteratorB);
     }
     
@@ -181,15 +181,15 @@ public interface StreamPlusWithCombine<DATA> {
             Func2<DATA, DATA, Boolean> selectThisNotAnother) {
         return zipWith(anotherStream, option)
                 .map(t -> {
-                    val _1 = t._1();
-                    val _2 = t._2();
+                    var _1 = t._1();
+                    var _2 = t._2();
                     if ((_1 != null) && _2 == null)
                         return _1;
                     if ((_1 == null) && _2 != null)
                         return _2;
                     if ((_1 == null) && _2 == null)
                         return null;
-                    val which = selectThisNotAnother.applyTo(t);
+                    var which = selectThisNotAnother.applyTo(t);
                     return which ? _1 : _2;
                 })
                 .filterNonNull();

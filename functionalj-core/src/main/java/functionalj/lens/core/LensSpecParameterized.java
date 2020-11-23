@@ -26,7 +26,7 @@ package functionalj.lens.core;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyLens;
-import lombok.val;
+
 
 public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyLens<HOST, SUB>>
             extends AccessParameterized<HOST, TYPE, SUB, SUBLENS> {
@@ -41,8 +41,8 @@ public interface LensSpecParameterized<HOST, TYPE, SUB, SUBLENS extends AnyLens<
     
     @Override
     public default SUBLENS createSubAccess(Function<TYPE, SUB> accessToSub) {
-        val read = getSpec().getRead().andThen(accessToSub);
-        val spec = LensSpec.of(read);
+        var read = getSpec().getRead().andThen(accessToSub);
+        var spec = LensSpec.of(read);
         return createSubLens(spec);
     }
     

@@ -26,7 +26,7 @@ package functionalj.promise;
 import java.util.concurrent.TimeUnit;
 
 import functionalj.result.Result;
-import lombok.val;
+
 
 public abstract class UncompletedAction<DATA> extends StartableAction<DATA> implements HasPromise<DATA> {
     
@@ -89,7 +89,7 @@ public abstract class UncompletedAction<DATA> extends StartableAction<DATA> impl
         if (!promise.isStarted() && this instanceof DeferAction)
             ((DeferAction<DATA>)this).start();
         
-        val result = promise.getResult();
+        var result = promise.getResult();
         return result;
     }
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {

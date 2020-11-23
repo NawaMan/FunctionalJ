@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,7 +37,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import functionalj.types.struct.Core;
-import lombok.val;
+
 
 public enum DefaultValue {
     
@@ -143,7 +143,7 @@ public enum DefaultValue {
         if (value == NULL)
             return true;
         
-        if (Type.STR.equals(type) 
+        if (Type.STR.equals(type)
          || Type.STRING.equals(type))
             return ((value != MAX_VALUE) || (value != MIN_VALUE));
         
@@ -310,7 +310,7 @@ public enum DefaultValue {
             }
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-            
+        
         if (Type.STR.equals(type)
          || Type.STRING.equals(type)) {
             if (value == EMPTY)  return "\"\"";
@@ -354,12 +354,12 @@ public enum DefaultValue {
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         if (value == DEFAULT) {
             try {
-                val clzz      = new Type("nawaman.defaultj.api", "IProvideDefault").toClass();
-                val dpMethod  = clzz.getMethod("defaultProvider");
-                val dpOption  = (Optional)dpMethod.invoke(clzz);
-                val dp        = dpOption.get();
-                val getMethod = clzz.getMethod("get", Class.class);
-                val retValue  = getMethod.invoke(dp, type.toClass());
+                var clzz      = new Type("nawaman.defaultj.api", "IProvideDefault").toClass();
+                var dpMethod  = clzz.getMethod("defaultProvider");
+                var dpOption  = (Optional)dpMethod.invoke(clzz);
+                var dp        = dpOption.get();
+                var getMethod = clzz.getMethod("get", Class.class);
+                var retValue  = getMethod.invoke(dp, type.toClass());
                 return retValue;
             } catch (Exception e) {
                 throw new StructConversionException(e);
@@ -475,7 +475,7 @@ public enum DefaultValue {
             }
             throw new IllegalArgumentException("Type: " + type + ", Value: " + value);
         }
-            
+        
         if (Type.STR.equals(type)
          || Type.STRING.equals(type)) {
             if (value == EMPTY)  return "";
@@ -521,9 +521,9 @@ public enum DefaultValue {
     
     private static Object getEmpty(Type type) {
         try {
-            val funcList = type.toClass();
-            val method   = funcList.getMethod("empty");
-            val empty    = method.invoke(funcList);
+            var funcList = type.toClass();
+            var method   = funcList.getMethod("empty");
+            var empty    = method.invoke(funcList);
             return empty;
         } catch (Exception e) {
             throw new StructConversionException(e);

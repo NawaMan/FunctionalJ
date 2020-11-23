@@ -28,7 +28,7 @@ import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
 import functionalj.stream.StreamPlus;
-import lombok.val;
+
 
 public interface IntStreamPlusWithMap {
     
@@ -37,7 +37,7 @@ public interface IntStreamPlusWithMap {
     
     /** Map the value using the mapper. */
     public default <T> StreamPlus<T> mapToObj(IntFunction<? extends T> mapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus.mapToObj(mapper);
     }
     
@@ -45,11 +45,11 @@ public interface IntStreamPlusWithMap {
     public default IntStreamPlus mapOnly(
             IntPredicate     condition, 
             IntUnaryOperator mapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .map(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
+                    var isTrue = condition.test(value);
+                    var mapped = isTrue
                             ? mapper.applyAsInt(value)
                             : value;
                     return mapped;
@@ -61,11 +61,11 @@ public interface IntStreamPlusWithMap {
             IntPredicate     condition, 
             IntUnaryOperator mapper, 
             IntUnaryOperator elseMapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .map(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue 
+                    var isTrue = condition.test(value);
+                    var mapped = isTrue 
                             ? mapper    .applyAsInt(value) 
                             : elseMapper.applyAsInt(value);
                     return mapped;
@@ -77,11 +77,11 @@ public interface IntStreamPlusWithMap {
             IntPredicate   condition, 
             IntFunction<T> mapper, 
             IntFunction<T> elseMapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue 
+                    var isTrue = condition.test(value);
+                    var mapped = isTrue 
                             ? mapper    .apply(value) 
                             : elseMapper.apply(value);
                     return mapped;

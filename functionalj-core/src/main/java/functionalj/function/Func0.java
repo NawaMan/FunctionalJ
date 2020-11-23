@@ -35,7 +35,7 @@ import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
 import functionalj.ref.ComputeBody;
 import functionalj.result.Result;
-import lombok.val;
+
 
 /**
  * Function of zeroth parameter - a supplier.
@@ -61,7 +61,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
         return Func0.from(0, generatorFunction);
     }
     public static <T> Func0<T> from(int start, IntFunction<T> generatorFunction) {
-        val counter = new AtomicInteger(start);
+        var counter = new AtomicInteger(start);
         return ()-> generatorFunction.apply(counter.getAndIncrement());
     }
     
@@ -103,15 +103,15 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     
     public default <TARGET> Func0<TARGET> then(Func1<OUTPUT, TARGET> mapper) {
         return ()->{
-            val output = this.applyUnsafe();
-            val target = Func.applyUnsafe(mapper, output);
+            var output = this.applyUnsafe();
+            var target = Func.applyUnsafe(mapper, output);
             return target;
         };
     }
     public default <TARGET> Func0<TARGET> map(Func1<OUTPUT, TARGET> mapper) {
         return ()->{
-            val output = this.applyUnsafe();
-            val target = (output != null) 
+            var output = this.applyUnsafe();
+            var target = (output != null) 
                        ? Func.applyUnsafe(mapper, output)
                        : null;
             return target;
@@ -121,7 +121,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Func0<OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
         return ()->{
             try {
-                val outputValue = this.applyUnsafe();
+                var outputValue = this.applyUnsafe();
                 return outputValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
@@ -132,7 +132,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Func0<OUTPUT> ifExceptionThenPrint() {
         return ()->{
             try {
-                val outputValue = this.applyUnsafe();
+                var outputValue = this.applyUnsafe();
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -143,7 +143,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Func0<OUTPUT> ifExceptionThenPrint(PrintStream printStream) {
         return ()->{
             try {
-                val outputValue = this.applyUnsafe();
+                var outputValue = this.applyUnsafe();
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace(printStream);
@@ -154,7 +154,7 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Func0<OUTPUT> ifExceptionThenPrint(PrintWriter printWriter) {
         return ()->{
             try {
-                val outputValue = this.applyUnsafe();
+                var outputValue = this.applyUnsafe();
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace(printWriter);
@@ -166,8 +166,8 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Func0<OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return ()->{
             try {
-                val outputValue = this.applyUnsafe();
-                val returnValue 
+                var outputValue = this.applyUnsafe();
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultValue;
@@ -180,8 +180,8 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Func0<OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return ()->{
             try {
-                val outputValue = this.applyUnsafe();
-                val returnValue 
+                var outputValue = this.applyUnsafe();
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultSupplier.get();
@@ -194,8 +194,8 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Func0<OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
         return ()->{
             try {
-                val outputValue = this.applyUnsafe();
-                val returnValue 
+                var outputValue = this.applyUnsafe();
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(null);
@@ -209,8 +209,8 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Func0<OUTPUT> whenAbsentUse(Consumer<Exception> exceptionHandler, OUTPUT defaultValue) {
         return ()->{
             try {
-                val outputValue = this.applyUnsafe();
-                val returnValue 
+                var outputValue = this.applyUnsafe();
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultValue;
@@ -224,8 +224,8 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Func0<OUTPUT> whenAbsentGet(Consumer<Exception> exceptionHandler, Supplier<OUTPUT> defaultSupplier) {
         return ()->{
             try {
-                val outputValue = this.applyUnsafe();
-                val returnValue 
+                var outputValue = this.applyUnsafe();
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultSupplier.get();
@@ -239,8 +239,8 @@ public interface Func0<OUTPUT> extends Supplier<OUTPUT>, ComputeBody<OUTPUT, Run
     public default Func0<OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func1<Exception, OUTPUT> exceptionMapper) {
         return ()->{
             try {
-                val outputValue = this.applyUnsafe();
-                val returnValue 
+                var outputValue = this.applyUnsafe();
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(null);

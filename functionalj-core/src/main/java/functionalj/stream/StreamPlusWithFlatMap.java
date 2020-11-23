@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import lombok.val;
+
 
 public interface StreamPlusWithFlatMap<DATA> {
     
@@ -35,7 +35,7 @@ public interface StreamPlusWithFlatMap<DATA> {
     
     /** FlatMap with the given mapper. */
     public default <T> StreamPlus<T> flatMapToObj(Function<? super DATA, ? extends Stream<? extends T>> mapper) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus.flatMap(mapper);
     }
     
@@ -43,11 +43,11 @@ public interface StreamPlusWithFlatMap<DATA> {
     public default StreamPlus<DATA> flatMapOnly(
             Predicate<? super DATA>                        condition, 
             Function<? super DATA, ? extends Stream<DATA>> mapper) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .flatMap(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
+                    var isTrue = condition.test(value);
+                    var mapped = isTrue
                             ? mapper.apply(value)
                             : StreamPlus.of(value);
                     return mapped;
@@ -59,11 +59,11 @@ public interface StreamPlusWithFlatMap<DATA> {
             Predicate<? super DATA>           condition, 
             Function<? super DATA, Stream<T>> mapper, 
             Function<? super DATA, Stream<T>> elseMapper) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .flatMap(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
+                    var isTrue = condition.test(value);
+                    var mapped = isTrue
                             ? mapper.apply(value)
                             : elseMapper.apply(value);
                     return mapped;

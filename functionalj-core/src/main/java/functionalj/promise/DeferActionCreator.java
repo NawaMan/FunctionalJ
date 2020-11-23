@@ -33,7 +33,7 @@ import functionalj.ref.ComputeBody;
 import functionalj.ref.Ref;
 import functionalj.result.Result;
 import functionalj.supportive.Default;
-import lombok.val;
+
 
 // This class create a defer action with a task.
 // Since there are a specific steps for this, we have this one in one place.
@@ -53,10 +53,10 @@ public class DeferActionCreator {
             Runnable    onStart,
             boolean     interruptOnCancel,
             AsyncRunner runner) {
-        val promiseRef = new AtomicReference<Promise<D>>();
-        val runTask    = new RunTask<D>(interruptOnCancel, supplier, onStart, runner, promiseRef::get);
-        val action     = new DeferAction<D>(runTask, null);
-        val promise    = action.getPromise();
+        var promiseRef = new AtomicReference<Promise<D>>();
+        var runTask    = new RunTask<D>(interruptOnCancel, supplier, onStart, runner, promiseRef::get);
+        var action     = new DeferAction<D>(runTask, null);
+        var promise    = action.getPromise();
         promiseRef.set(promise);
         return action;
     }
@@ -88,8 +88,8 @@ public class DeferActionCreator {
             AsyncRunner
             .run(runner, new Body())
             .onComplete(result->{
-                val promise = promiseRef.get();
-                val action = new PendingAction<D>(promise);
+                var promise = promiseRef.get();
+                var action = new PendingAction<D>(promise);
                 if (result.isValue())
                      action.complete(null);
                 else if (result.isCancelled())
@@ -100,7 +100,7 @@ public class DeferActionCreator {
         
         class Body implements ComputeBody<Void, RuntimeException> {
             public void prepared() {
-                val promise = promiseRef.get();
+                var promise = promiseRef.get();
                 if (!promise.isNotDone()) 
                     return;
                 
@@ -110,9 +110,9 @@ public class DeferActionCreator {
             }
             @Override
             public Void compute() throws RuntimeException {
-                val promise = promiseRef.get();
-                val action = new PendingAction<D>(promise);
-                val result = Result.of(this::runSupplier);
+                var promise = promiseRef.get();
+                var action = new PendingAction<D>(promise);
+                var result = Result.of(this::runSupplier);
                 action.completeWith(result);
                 return null;
             }
@@ -132,8 +132,8 @@ public class DeferActionCreator {
                 threadRef.set(Thread.currentThread());
                 promise.eavesdrop(r -> {
                     r.ifCancelled(() -> {
-                        val thread = threadRef.get();
-                        val isCurrentThread = (thread != null) && !thread.equals(Thread.currentThread());
+                        var thread = threadRef.get();
+                        var isCurrentThread = (thread != null) && !thread.equals(Thread.currentThread());
                         if (isCurrentThread) {
                             thread.interrupt();
                         }

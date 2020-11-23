@@ -38,7 +38,7 @@ import functionalj.lens.core.WriteLens;
 import functionalj.lens.lenses.AnyLens;
 import functionalj.lens.lenses.IntegerLens;
 import functionalj.lens.lenses.ObjectLens;
-import lombok.val;
+
 
 
 public interface IntTuple2Lens<HOST, T2, T2LENS extends AnyLens<HOST,T2>>
@@ -51,7 +51,7 @@ public interface IntTuple2Lens<HOST, T2, T2LENS extends AnyLens<HOST,T2>>
                     Function<HOST,  IntTuple2<T2>>      read,
                     WriteLens<HOST, IntTuple2<T2>>      write,
                     Function<LensSpec<HOST, T2>, T2LENS> valueLensCreator) {
-        val spec = new LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS>() {
+        var spec = new LensSpecParameterized<HOST, IntTuple2<T2>, T2, T2LENS>() {
             @Override public LensSpec<HOST, IntTuple2<T2>> getSpec()          { return LensSpec.of(read, write);        }
             @Override public T2LENS createSubLens(LensSpec<HOST, T2> subSpec) { return valueLensCreator.apply(subSpec); }
         };    
@@ -82,93 +82,93 @@ public interface IntTuple2Lens<HOST, T2, T2LENS extends AnyLens<HOST,T2>>
     }
     
     public default T2LENS T2() {
-        val write = (WriteLens<IntTuple2<T2>, T2>)((tuple, T2) -> new IntTuple2<T2>(tuple._1, T2));
-        val read  = (Function <IntTuple2<T2>, T2>)IntTuple2::_2;
+        var write = (WriteLens<IntTuple2<T2>, T2>)((tuple, T2) -> new IntTuple2<T2>(tuple._1, T2));
+        var read  = (Function <IntTuple2<T2>, T2>)IntTuple2::_2;
         return LensUtils.createSubLens(this, read, write, lensSpecParameterized()::createSubLens);
     }
     
     public default Function<HOST, HOST> change1To(int _1value) {
         return host -> {
-            val newTuple = new IntTuple2<>(_1value, apply(host)._2);
+            var newTuple = new IntTuple2<>(_1value, apply(host)._2);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change2To(T2 T2value) {
         return host -> {
-            val newTuple = new IntTuple2<>(apply(host)._1, T2value);
+            var newTuple = new IntTuple2<>(apply(host)._1, T2value);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change1By(Supplier<Integer> _1valueSupplier) {
         return host -> {
-            val newTuple = new IntTuple2<>(_1valueSupplier.get(), apply(host)._2);
+            var newTuple = new IntTuple2<>(_1valueSupplier.get(), apply(host)._2);
             return apply(host, newTuple);
         };
     }
     public default Function<HOST, HOST> change1By(IntSupplier _1valueSupplier) {
         return host -> {
-            val newTuple = new IntTuple2<>(_1valueSupplier.getAsInt(), apply(host)._2);
+            var newTuple = new IntTuple2<>(_1valueSupplier.getAsInt(), apply(host)._2);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change2By(Supplier<T2> T2valueSupplier) {
         return host -> {
-            val newTuple = new IntTuple2<>(apply(host)._1, T2valueSupplier.get());
+            var newTuple = new IntTuple2<>(apply(host)._1, T2valueSupplier.get());
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change1By(Function<Integer, Integer> _1valueTransformer) {
         return host -> {
-            val oldTuple = apply(host);
-            val new_1    = _1valueTransformer.apply(oldTuple._1);
-            val newTuple = new IntTuple2<>(new_1, oldTuple._2);
+            var oldTuple = apply(host);
+            var new_1    = _1valueTransformer.apply(oldTuple._1);
+            var newTuple = new IntTuple2<>(new_1, oldTuple._2);
             return apply(host, newTuple);
         };
     }
     public default Function<HOST, HOST> change1By(IntFunction<Integer> _1valueTransformer) {
         return host -> {
-            val oldTuple = apply(host);
-            val new_1    = _1valueTransformer.apply(oldTuple._1);
-            val newTuple = new IntTuple2<>(new_1, oldTuple._2);
+            var oldTuple = apply(host);
+            var new_1    = _1valueTransformer.apply(oldTuple._1);
+            var newTuple = new IntTuple2<>(new_1, oldTuple._2);
             return apply(host, newTuple);
         };
     }
     public default Function<HOST, HOST> change1By(ToIntFunction<Integer> _1valueTransformer) {
         return host -> {
-            val oldTuple = apply(host);
-            val new_1    = _1valueTransformer.applyAsInt(oldTuple._1);
-            val newTuple = new IntTuple2<>(new_1, oldTuple._2);
+            var oldTuple = apply(host);
+            var new_1    = _1valueTransformer.applyAsInt(oldTuple._1);
+            var newTuple = new IntTuple2<>(new_1, oldTuple._2);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change2By(Function<T2,T2> T2valueTransformer) {
         return host -> {
-            val oldTuple = apply(host);
-            val newT2 = T2valueTransformer.apply(oldTuple._2);
-            val newTuple = new IntTuple2<>(oldTuple._1, newT2);
+            var oldTuple = apply(host);
+            var newT2 = T2valueTransformer.apply(oldTuple._2);
+            var newTuple = new IntTuple2<>(oldTuple._1, newT2);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change1By(BiFunction<Integer,T2,Integer> _1valueTransformer) {
         return host -> {
-            val oldTuple = apply(host);
-            val new_1    = _1valueTransformer.apply(oldTuple._1, oldTuple._2);
-            val newTuple = new IntTuple2<>(new_1, oldTuple._2);
+            var oldTuple = apply(host);
+            var new_1    = _1valueTransformer.apply(oldTuple._1, oldTuple._2);
+            var newTuple = new IntTuple2<>(new_1, oldTuple._2);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change2By(BiFunction<Integer,T2,T2> T2valueTransformer) {
         return host -> {
-            val oldTuple = apply(host);
-            val newT2    = T2valueTransformer.apply(oldTuple._1, oldTuple._2);
-            val newTuple = new IntTuple2<>(oldTuple._1, newT2);
+            var oldTuple = apply(host);
+            var newT2    = T2valueTransformer.apply(oldTuple._1, oldTuple._2);
+            var newTuple = new IntTuple2<>(oldTuple._1, newT2);
             return apply(host, newTuple);
         };
     }

@@ -39,7 +39,7 @@ import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
-import lombok.val;
+
 
 // 2018-11-14 - WIP - `Finish` is not done.
 public class GeneratorTest {
@@ -81,7 +81,7 @@ public class GeneratorTest {
         }
         
         public Iterable<D> iterable() {
-            val iterator = new GeneratorIterator<>(newInstance());
+            var iterator = new GeneratorIterator<>(newInstance());
             return () -> iterator;
         }
         
@@ -97,7 +97,7 @@ public class GeneratorTest {
         public D applyUnsafe() throws Exception {
             if (nextEntryRef.get() == null) {
                 if (finish.isUseValue()) {
-                    val returnValue = finish.asUseValue().value().returnValue();
+                    var returnValue = finish.asUseValue().value().returnValue();
                     prevRef.set(returnValue);
                 } else if (finish.isStop()) {
                     prevRef.set(null);
@@ -106,20 +106,20 @@ public class GeneratorTest {
                 return prevRef.get();
             }
             
-            val entry = nextEntryRef.get().apply(prevRef.get());
+            var entry = nextEntryRef.get().apply(prevRef.get());
             return Switch(entry)
                     .next((Next<D> n) -> {
-                        val value = n.body().apply();
+                        var value = n.body().apply();
                         prevRef.set(value);
                         
-                        val nextE = n.more();
+                        var nextE = n.more();
                         nextEntryRef.set(nextE);
                         if (nextE == null)
                             doAfterLast(n);
                         return value;
                     })
                     .last((Last<D> l) -> {
-                        val value = l.body().apply();
+                        var value = l.body().apply();
                         prevRef.set(value);
                         
                         doAfterLast(l);
@@ -177,11 +177,11 @@ public class GeneratorTest {
     
     @Test
     public void test() {
-        val g1 = new Generator<String>(
+        var g1 = new Generator<String>(
                 e(()->"Last"));
         assertEquals("Last", g1.get());
         
-        val g2 = new Generator<String>(
+        var g2 = new Generator<String>(
                    e(()-> "First" ,               ()
                 -> e(()-> "Second",               second
                 -> e(()-> second + "-Last"))));
@@ -191,7 +191,7 @@ public class GeneratorTest {
     }
 //    @Test
 //    public void testUseLast() {
-//        val g = new Generator<Integer>(
+//        var g = new Generator<Integer>(
 //                e(()-> 1,            first
 //                -> e(()-> first + 1, prev
 //                -> e(()-> prev  + 1))),

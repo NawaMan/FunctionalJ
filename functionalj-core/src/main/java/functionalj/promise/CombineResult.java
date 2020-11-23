@@ -31,7 +31,7 @@ import functionalj.function.Func1;
 import functionalj.function.NamedExpression;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
-import lombok.val;
+
 
 @SuppressWarnings("rawtypes")
 public class CombineResult<D> {
@@ -54,7 +54,7 @@ public class CombineResult<D> {
         this.subscriptions = new SubscriptionRecord[count];
         this.isDone        = new AtomicBoolean(false);
         
-        val promises = hasPromises
+        var promises = hasPromises
         .map(promise -> promise.getExpression())
         .map(promise -> promise.getPromise());
         
@@ -100,13 +100,13 @@ public class CombineResult<D> {
         if (!isDone.compareAndSet(false, true))
             return;
         
-        val resultList   = (FuncList)FuncList.from(results);
-        val mergedResult = mergeFunc.apply(resultList);
+        var resultList   = (FuncList)FuncList.from(results);
+        var mergedResult = mergeFunc.apply(resultList);
         action.completeWith((Result)mergedResult);
     }
     
     private void unsbscribeAll() {
-        for(val subscription : subscriptions) {
+        for(var subscription : subscriptions) {
             if (subscription != null)
                 subscription.unsubscribe();
         }

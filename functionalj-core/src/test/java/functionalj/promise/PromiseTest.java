@@ -36,7 +36,7 @@ import org.junit.Test;
 
 import functionalj.function.Func;
 import functionalj.pipeable.PipeLine;
-import lombok.val;
+
 
 public class PromiseTest {
     
@@ -46,46 +46,46 @@ public class PromiseTest {
     
     @Test
     public void testValue() {
-        val promise = Promise.of("Hello!");
+        var promise = Promise.of("Hello!");
         assertEquals (PromiseStatus.COMPLETED,    promise.getStatus());
         assertStrings("Result:{ Value: Hello! }", promise.getCurrentResult());
         
-        val ref = new AtomicReference<String>(null);
+        var ref = new AtomicReference<String>(null);
         promise.onComplete(r -> ref.set(r.get()));
         assertStrings("Hello!", ref);
     }
     
     @Test
     public void testException() {
-        val promise = Promise.ofException(new IOException());
+        var promise = Promise.ofException(new IOException());
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
         assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
-        val ref = new AtomicReference<String>(null);
+        var ref = new AtomicReference<String>(null);
         promise.onComplete(r -> ref.set("" + r.get()));
         assertStrings("null", ref.get());
     }
     
     @Test
     public void testCancel() {
-        val promise = Promise.ofAborted();
+        var promise = Promise.ofAborted();
         assertEquals (PromiseStatus.ABORTED,  promise.getStatus());
         assertStrings("Result:{ Cancelled }", promise.getCurrentResult());
         
-        val ref = new AtomicReference<String>(null);
+        var ref = new AtomicReference<String>(null);
         promise.onComplete(r -> ref.set("" + r.get()));
         assertStrings("null", ref.get());
     }
     
     @Test
     public void testCreateNew_complete() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
-        val promiseControl = DeferAction.of(String.class);
-        val promise        = promiseControl.getPromise();
+        var promiseControl = DeferAction.of(String.class);
+        var promise        = promiseControl.getPromise();
         assertEquals (PromiseStatus.NOT_STARTED, promise.getStatus());
         
-        val pendingControl = promiseControl.start();
+        var pendingControl = promiseControl.start();
         assertEquals (PromiseStatus.PENDING, promise.getStatus());
         
         promise.onComplete(r -> list.add("1: " + r.toString()));
@@ -105,11 +105,11 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_exception() {
-        val promiseControl = DeferAction.of(String.class);
-        val promise        = promiseControl.getPromise();
+        var promiseControl = DeferAction.of(String.class);
+        var promise        = promiseControl.getPromise();
         assertEquals (PromiseStatus.NOT_STARTED, promise.getStatus());
         
-        val pendingControl = promiseControl.start();
+        var pendingControl = promiseControl.start();
         assertEquals (PromiseStatus.PENDING, promise.getStatus());
         
         pendingControl.fail(new IOException());
@@ -119,8 +119,8 @@ public class PromiseTest {
     
     @Test
     public void testAbort() {
-        val ref = new AtomicReference<String>(null);
-        val action = DeferAction.of(String.class)
+        var ref = new AtomicReference<String>(null);
+        var action = DeferAction.of(String.class)
                 .onComplete(r -> ref.set("" + r))
                 .start();
         
@@ -132,11 +132,11 @@ public class PromiseTest {
     
     @Test
     public void testLifeCycle_multipleCall_noEffect() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
-        val deferAction   = DeferAction.of(String.class);
-        val promise       = deferAction.getPromise();
-        val pendingAction = deferAction.start();
+        var deferAction   = DeferAction.of(String.class);
+        var promise       = deferAction.getPromise();
+        var pendingAction = deferAction.start();
         
         promise.onComplete(r -> list.add("1: " + r.toString()));
         
@@ -171,14 +171,14 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_unsubscribed() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
-        val deferAction   = DeferAction.of(String.class);
-        val promise       = deferAction.getPromise();
-        val pendingAction = deferAction.start();
+        var deferAction   = DeferAction.of(String.class);
+        var promise       = deferAction.getPromise();
+        var pendingAction = deferAction.start();
         
-        val sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
-        val sub2 = promise.onComplete(r -> list.add("2: " + r.toString()));
+        var sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
+        var sub2 = promise.onComplete(r -> list.add("2: " + r.toString()));
         
         sub1.unsubscribe();
         
@@ -193,14 +193,14 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_lastUnsubscribed() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
-        val deferAction   = DeferAction.of(String.class);
-        val promise       = deferAction.getPromise();
-        val pendingAction = deferAction.start();
+        var deferAction   = DeferAction.of(String.class);
+        var promise       = deferAction.getPromise();
+        var pendingAction = deferAction.start();
         
         // Last subscription at this time.
-        val sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
+        var sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
         sub1.unsubscribe();
         
         // Complete -- but this is too late.
@@ -212,7 +212,7 @@ public class PromiseTest {
                 promise.getCurrentResult());
         
         // This subscription will get cancelled as the result.
-        val sub2 = promise.onComplete(r -> list.add("2: " + r.toString()));
+        var sub2 = promise.onComplete(r -> list.add("2: " + r.toString()));
         sub2.unsubscribe();
         
         assertStrings(
@@ -222,17 +222,17 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_unsubscribed_withEavesdrop() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
-        val deferAction   = DeferAction.of(String.class);
-        val promise       = deferAction.getPromise();
-        val pendingAction = deferAction.start();
+        var deferAction   = DeferAction.of(String.class);
+        var promise       = deferAction.getPromise();
+        var pendingAction = deferAction.start();
         
         // Add an eavesdrop
         promise.eavesdrop(r -> list.add("e: " + r.toString()));
         
         // Last subscription at this time as an eavesdrop does not count.
-        val sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
+        var sub1 = promise.onComplete(r -> list.add("1: " + r.toString()));
         sub1.unsubscribe();
         
         // Complete -- but this is too late.
@@ -248,23 +248,23 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_abortNoSubsriptionAfter_withNoSubscription() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
-        val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
-        val session = new WaitSession() {
+        var onExpireds = new ArrayList<BiConsumer<String, Exception>>();
+        var session = new WaitSession() {
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
-        val wait = new WaitAwhile() {
+        var wait = new WaitAwhile() {
             @Override
             public WaitSession newSession() {
                 return session;
             }
         };
         
-        val promise = DeferAction.of(String.class)
+        var promise = DeferAction.of(String.class)
                 .abortNoSubsriptionAfter(wait)
                 .eavesdrop(r -> list.add("e: " + r.toString()))
                 .start()
@@ -280,23 +280,23 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_abortNoSubsriptionAfter_withSubscription() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
-        val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
-        val session = new WaitSession() {
+        var onExpireds = new ArrayList<BiConsumer<String, Exception>>();
+        var session = new WaitSession() {
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
-        val wait = new WaitAwhile() {
+        var wait = new WaitAwhile() {
             @Override
             public WaitSession newSession() {
                 return session;
             }
         };
         
-        val promise = DeferAction.of(String.class)
+        var promise = DeferAction.of(String.class)
                 .abortNoSubsriptionAfter(wait)
                 .eavesdrop (r -> list.add("e: " + r.toString()))
                 .onComplete(r -> list.add("s: " + r.toString()))
@@ -311,7 +311,7 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_map_mapBeforeComplete() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
         DeferAction.of(String.class)
         .use(promise -> {
@@ -327,7 +327,7 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_map2_mapAfterComplete() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
         DeferAction.of(String.class)
         .use(promise -> {
@@ -343,7 +343,7 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_flatMap() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
         DeferAction.of(String.class)
         .use(promise -> {
@@ -359,7 +359,7 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_filter() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
         DeferAction.of(String.class)
         .use(promise -> {
@@ -380,16 +380,16 @@ public class PromiseTest {
     
     @Test
     public void testCreateNew_waitOrDefault() {
-        val list = new ArrayList<String>();
+        var list = new ArrayList<String>();
         
-        val onExpireds = new ArrayList<BiConsumer<String, Exception>>();
-        val session = new WaitSession() {
+        var onExpireds = new ArrayList<BiConsumer<String, Exception>>();
+        var session = new WaitSession() {
             @Override
             public void onExpired(BiConsumer<String, Exception> onDone) {
                 onExpireds.add(onDone);
             }
         };
-        val wait = new WaitAwhile() {
+        var wait = new WaitAwhile() {
             @Override
             public WaitSession newSession() {
                 return session;
@@ -411,10 +411,10 @@ public class PromiseTest {
     
     @Test
     public void testParentStatus_complete() {
-        val parentPromise = DeferAction.of(String.class)
+        var parentPromise = DeferAction.of(String.class)
                 .getPromise();
         
-        val childPromise = parentPromise.map(String::length);
+        var childPromise = parentPromise.map(String::length);
         
         assertStrings("NOT_STARTED", parentPromise.getStatus());
         assertStrings("NOT_STARTED", childPromise.getStatus());
@@ -433,10 +433,10 @@ public class PromiseTest {
     
     @Test
     public void testParentStatus_exception() {
-        val parentPromise = DeferAction.of(String.class)
+        var parentPromise = DeferAction.of(String.class)
                 .getPromise();
         
-        val childPromise = parentPromise.map(String::length);
+        var childPromise = parentPromise.map(String::length);
         
         assertStrings("NOT_STARTED", parentPromise.getStatus());
         assertStrings("NOT_STARTED", childPromise.getStatus());
@@ -455,59 +455,59 @@ public class PromiseTest {
     
     @Test
     public void testElseUse() {
-        val promise = Promise.ofException(new IOException());
+        var promise = Promise.ofException(new IOException());
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
         assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
-        val promise2 = promise.whenAbsentUse("Else");
+        var promise2 = promise.whenAbsentUse("Else");
         assertStrings("Result:{ Value: Else }", promise2.getResult());
     }
     
     @Test
     public void testElseGet() {
-        val promise = Promise.ofException(new IOException());
+        var promise = Promise.ofException(new IOException());
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
         assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
-        val promise2 = promise.whenAbsentGet(()->"Else");
+        var promise2 = promise.whenAbsentGet(()->"Else");
         assertStrings("Result:{ Value: Else }", promise2.getResult());
     }
     
     @Test
     public void testMapResult() {
-        val promise = Promise.ofException(new IOException());
+        var promise = Promise.ofException(new IOException());
         assertEquals (PromiseStatus.COMPLETED,                     promise.getStatus());
         assertStrings("Result:{ Exception: java.io.IOException }", promise.getCurrentResult());
         
-        val promise2 = promise.mapResult(result -> result.whenExceptionApply(e -> e.getClass().getName()));
+        var promise2 = promise.mapResult(result -> result.whenExceptionApply(e -> e.getClass().getName()));
         assertStrings("Result:{ Value: java.io.IOException }", promise2.getResult());
         
-        val ref = new AtomicReference<String>();
+        var ref = new AtomicReference<String>();
         promise.mapResult(result -> result.ifException(e -> ref.set(e.getClass().getName())));
         assertStrings("java.io.IOException", ref.get());
     }
     
     @Test
     public void testDeferMethod() throws InterruptedException {
-        val add = Func.f((Integer a, Integer b)->(a + b));
-        val mul = Func.f((Integer a, Integer b)->(a * b));
+        var add = Func.f((Integer a, Integer b)->(a + b));
+        var mul = Func.f((Integer a, Integer b)->(a * b));
         
-        val a = Sleep(50).thenReturn(20).defer();
-        val b = Sleep(50).thenReturn( 1).defer();
-        val c = Sleep(50).thenReturn( 2).defer();
+        var a = Sleep(50).thenReturn(20).defer();
+        var b = Sleep(50).thenReturn( 1).defer();
+        var c = Sleep(50).thenReturn( 2).defer();
         
-        val r1 = add.applyTo(a, b);
-        val r2 = mul.applyTo(add.applyTo(a, b), c);
-//        val r3 = add
+        var r1 = add.applyTo(a, b);
+        var r2 = mul.applyTo(add.applyTo(a, b), c);
+//        var r3 = add
 //                .then(mul.elevateWith(c)) // This does not work as c is a promise.
 //                .apply(a, b);
-        val r4 = a
+        var r4 = a
                 .pipeTo(
                     add.elevateWith(b),
                     mul.elevateWith(c)
                 );
-        val f5 = add.elevateWith(b).andThen(mul.elevateWith(c));
-        val r5 = f5.apply(a);
+        var f5 = add.elevateWith(b).andThen(mul.elevateWith(c));
+        var r5 = f5.apply(a);
         
         assertStrings("Result:{ Value: 21 }", r1.getResult());
         assertStrings("Result:{ Value: 42 }", r2.getResult());
@@ -518,18 +518,18 @@ public class PromiseTest {
     
     @Test
     public void testDeferMethod_PipeLine() throws InterruptedException {
-        val add = Func.f((Integer a, Integer b)->(a + b));
-        val nul = Func.f((Integer a, Integer b)->(a * b));
+        var add = Func.f((Integer a, Integer b)->(a + b));
+        var nul = Func.f((Integer a, Integer b)->(a * b));
         
-        val a = Sleep(50).thenReturn(20).defer();
-        val b = Sleep(50).thenReturn( 1).defer();
-        val c = Sleep(50).thenReturn( 2).defer();
+        var a = Sleep(50).thenReturn(20).defer();
+        var b = Sleep(50).thenReturn( 1).defer();
+        var c = Sleep(50).thenReturn( 2).defer();
         
-        val f6 = PipeLine
+        var f6 = PipeLine
                 .from(add.elevateWith(b))
                 .then(nul.elevateWith(c))
                 .thenReturn();
-        val r6 = f6.apply(a);
+        var r6 = f6.apply(a);
         assertStrings("Result:{ Value: 42 }", r6.getResult());
     }
     

@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import functionalj.lens.core.AccessParameterized;
-import lombok.val;
+
 
 @FunctionalInterface
 public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
@@ -70,8 +70,8 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
     }
     
     public default CollectionAccess<HOST, COLLECTION, TYPE, SUBACCESS> filter(Predicate<TYPE> checker) {
-        val spec        = accessParameterized();
-        val specWithSub = new AccessParameterized<HOST, COLLECTION, TYPE, SUBACCESS>() {
+        var spec        = accessParameterized();
+        var specWithSub = new AccessParameterized<HOST, COLLECTION, TYPE, SUBACCESS>() {
             @SuppressWarnings("unchecked")
             @Override
             public COLLECTION applyUnsafe(HOST host) throws Exception {
@@ -86,12 +86,12 @@ public interface CollectionAccess<HOST, COLLECTION extends Collection<TYPE>, TYP
     }
     
     public default ListAccess<HOST, TYPE, SUBACCESS> toList() {
-        val spec        = accessParameterized();
-        val specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, SUBACCESS>() {
+        var spec        = accessParameterized();
+        var specWithSub = new AccessParameterized<HOST, List<TYPE>, TYPE, SUBACCESS>() {
             @SuppressWarnings("unchecked")
             @Override
             public List<TYPE> applyUnsafe(HOST host) throws Exception{
-                val collection = spec.apply(host);
+                var collection = spec.apply(host);
                 if (collection  instanceof List)
                     return (List<TYPE>)collection;
                 

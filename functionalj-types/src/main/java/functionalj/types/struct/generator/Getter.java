@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,8 +27,6 @@ import static functionalj.types.choice.generator.Utils.toStringLiteral;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
-import java.util.List;
-
 import functionalj.types.DefaultValue;
 import functionalj.types.Type;
 import lombok.Value;
@@ -36,7 +34,7 @@ import lombok.With;
 
 /**
  * Getter of the input spec.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
@@ -50,7 +48,7 @@ public class Getter {
     
     /**
      * Create a getter for the name and type.
-     * 
+     *
      * @param name  the getter name.
      * @param type  the getter type.
      */
@@ -60,7 +58,7 @@ public class Getter {
     
     /**
      * Create a getter for the name and type.
-     * 
+     *
      * @param name      the getter name.
      * @param type      the getter type.
      * @param nullable  nullable flag for this getter.
@@ -85,7 +83,7 @@ public class Getter {
     }
     
     public String toCode() {
-        List<Object> params = asList(
+        var params = asList(
                 toStringLiteral(name),
                 type.toCode(),
                 nullable,

@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 import functionalj.function.Func2;
 import functionalj.result.Result;
 import functionalj.result.ValidationException;
-import lombok.val;
+
 
 public interface SimpleValidator<DATA> extends Validator<DATA> {
     
@@ -52,11 +52,11 @@ public interface SimpleValidator<DATA> extends Validator<DATA> {
 
     public default Result<DATA> validate(DATA data) {
         return Result.of(()->{
-            val checker = checker();
+            var checker = checker();
             if (checker.test(data))
                 return data;
                 
-            val exception = createException(data);
+            var exception = createException(data);
             throw exception;
         });
     }

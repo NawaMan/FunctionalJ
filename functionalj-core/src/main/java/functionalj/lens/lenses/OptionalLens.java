@@ -32,7 +32,7 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
 import functionalj.lens.core.WriteLens;
-import lombok.val;
+
 
 @FunctionalInterface
 public interface OptionalLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
@@ -44,10 +44,10 @@ public interface OptionalLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
         OptionalLens<HOST, TYPE, SUBLENS> of(
             LensSpec<HOST, Optional<TYPE>> optionalLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        val read  = optionalLensSpec.getRead();
-        val write = optionalLensSpec.getWrite();
-        val spec  = createLensSpecParameterized(read, write, subCreator);
-        val optionalLens = (OptionalLens<HOST, TYPE, SUBLENS>)()->spec;
+        var read  = optionalLensSpec.getRead();
+        var write = optionalLensSpec.getWrite();
+        var spec  = createLensSpecParameterized(read, write, subCreator);
+        var optionalLens = (OptionalLens<HOST, TYPE, SUBLENS>)()->spec;
         return optionalLens;
     }
     

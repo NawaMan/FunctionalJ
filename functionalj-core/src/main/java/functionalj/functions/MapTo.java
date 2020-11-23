@@ -32,7 +32,7 @@ import functionalj.map.ImmutableMap;
 import functionalj.tuple.ToMapFunc;
 import functionalj.tuple.ToTuple2Func;
 import functionalj.tuple.Tuple;
-import lombok.val;
+
 
 public class MapTo {
     
@@ -63,9 +63,9 @@ public class MapTo {
         return input -> {
             Exception exception = null;
             boolean hasNull = false;
-            for(val mapper : mappers) {
+            for(var mapper : mappers) {
                 try {
-                    val res = mapper.apply(input);
+                    var res = mapper.apply(input);
                     if (res == null)
                          hasNull = true;
                     else return (T)res;
@@ -94,8 +94,8 @@ public class MapTo {
             Func1<? super D, ? extends T1> mapper1,
             Func1<? super D, ? extends T2> mapper2) {
         return input -> {
-            val v1 = mapper1.apply(input);
-            val v2 = mapper2.apply(input);
+            var v1 = mapper1.apply(input);
+            var v2 = mapper2.apply(input);
             return Tuple.of(v1, v2);
         };
     }

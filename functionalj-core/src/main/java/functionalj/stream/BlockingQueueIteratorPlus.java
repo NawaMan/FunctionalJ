@@ -32,7 +32,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 import functionalj.functions.ThrowFuncs;
-import lombok.val;
+
 
 public class BlockingQueueIteratorPlus<DATA> implements IteratorPlus<DATA> {
     
@@ -68,7 +68,7 @@ public class BlockingQueueIteratorPlus<DATA> implements IteratorPlus<DATA> {
     }
     
     public StreamPlus<DATA> remainingValues() {
-        val list = new ArrayList<DATA>();
+        var list = new ArrayList<DATA>();
         queue.drainTo(list);
         return StreamPlus.from(list.stream()).exclude(endData::equals);
     }

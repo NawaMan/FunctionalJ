@@ -8,7 +8,6 @@ import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 
-import lombok.val;
 
 public class Generic {
     
@@ -47,7 +46,7 @@ public class Generic {
     }
     
     public String toCode() {
-        val params = asList(
+        var params = asList(
                 toStringLiteral(name),
                 toStringLiteral(withBound),
                 toListCode     (boundTypes, Type::toCode)

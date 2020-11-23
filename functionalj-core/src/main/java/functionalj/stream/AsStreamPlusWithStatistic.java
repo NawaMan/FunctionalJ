@@ -33,7 +33,7 @@ import functionalj.function.Func1;
 import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Terminal;
 import functionalj.tuple.Tuple2;
-import lombok.val;
+
 
 public interface AsStreamPlusWithStatistic<DATA> {
     
@@ -43,7 +43,7 @@ public interface AsStreamPlusWithStatistic<DATA> {
     @Eager
     @Terminal
     public default int size() {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return (int)streamPlus
                 .count();
     }
@@ -52,11 +52,11 @@ public interface AsStreamPlusWithStatistic<DATA> {
     @Eager
     @Terminal
     public default <D extends Comparable<D>> Optional<DATA> minBy(Func1<DATA, D> mapper) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .min((a,b) -> {
-                    val mappedA = mapper.apply(a);
-                    val mappedB = mapper.apply(b);
+                    var mappedA = mapper.apply(a);
+                    var mappedB = mapper.apply(b);
                     return mappedA.compareTo(mappedB);
                 });
     }
@@ -65,11 +65,11 @@ public interface AsStreamPlusWithStatistic<DATA> {
     @Eager
     @Terminal
     public default <D extends Comparable<D>> Optional<DATA> maxBy(Func1<DATA, D> mapper) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .max((a,b) -> {
-                    val mappedA = mapper.apply(a);
-                    val mappedB = mapper.apply(b);
+                    var mappedA = mapper.apply(a);
+                    var mappedB = mapper.apply(b);
                     return mappedA.compareTo(mappedB);
                 });
     }
@@ -80,11 +80,11 @@ public interface AsStreamPlusWithStatistic<DATA> {
     public default <D> Optional<DATA> minBy(
             Func1<DATA, D>        mapper, 
             Comparator<? super D> comparator) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .min((a,b) -> {
-                    val mappedA = mapper.apply(a);
-                    val mappedB = mapper.apply(b);
+                    var mappedA = mapper.apply(a);
+                    var mappedB = mapper.apply(b);
                     return comparator.compare(mappedA, mappedB);
                 });
     }
@@ -95,11 +95,11 @@ public interface AsStreamPlusWithStatistic<DATA> {
     public default <D> Optional<DATA> maxBy(
             Func1<DATA, D>        mapper, 
             Comparator<? super D> comparator) {
-        val streamPlus = streamPlus();
+        var streamPlus = streamPlus();
         return streamPlus
                 .max((a,b) -> {
-                    val mappedA = mapper.apply(a);
-                    val mappedB = mapper.apply(b);
+                    var mappedA = mapper.apply(a);
+                    var mappedB = mapper.apply(b);
                     return comparator.compare(mappedA, mappedB);
                 });
     }
@@ -109,17 +109,17 @@ public interface AsStreamPlusWithStatistic<DATA> {
     @Terminal
     @SuppressWarnings("unchecked")
     public default Tuple2<Optional<DATA>, Optional<DATA>> minMax(Comparator<? super DATA> comparator) {
-        val streamPlus = streamPlus();
-        val minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-        val maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
+        var streamPlus = streamPlus();
+        var minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
+        var maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
         streamPlus
             .sorted(comparator)
             .forEach(each -> {
                 minRef.compareAndSet(StreamPlusHelper.dummy, each);
                 maxRef.set(each);
             });
-        val min = minRef.get();
-        val max = maxRef.get();
+        var min = minRef.get();
+        var max = maxRef.get();
         return Tuple2.of(
                 StreamPlusHelper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
                 StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
@@ -130,9 +130,9 @@ public interface AsStreamPlusWithStatistic<DATA> {
     @Terminal
     @SuppressWarnings("unchecked")
     public default <D extends Comparable<D>> Tuple2<Optional<DATA>, Optional<DATA>> minMaxBy(Func1<DATA, D> mapper) {
-        val streamPlus = streamPlus();
-        val minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-        val maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
+        var streamPlus = streamPlus();
+        var minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
+        var maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
         streamPlus
         .sortedBy(mapper)
         .forEach(each -> {
@@ -140,8 +140,8 @@ public interface AsStreamPlusWithStatistic<DATA> {
             maxRef.set(each);
         });
         
-        val min = minRef.get();
-        val max = maxRef.get();
+        var min = minRef.get();
+        var max = maxRef.get();
         return tuple2(
                 StreamPlusHelper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
                 StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));
@@ -154,9 +154,9 @@ public interface AsStreamPlusWithStatistic<DATA> {
     public default <D> Tuple2<Optional<DATA>, Optional<DATA>> minMaxBy(
             Func1<DATA, D>        mapper, 
             Comparator<? super D> comparator) {
-        val streamPlus = streamPlus();
-        val minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
-        val maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
+        var streamPlus = streamPlus();
+        var minRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
+        var maxRef = new AtomicReference<Object>(StreamPlusHelper.dummy);
         streamPlus
         .sortedBy(mapper, (i1, i2)->comparator.compare(i1, i2))
         .forEach(each -> {
@@ -164,8 +164,8 @@ public interface AsStreamPlusWithStatistic<DATA> {
             maxRef.set(each);
         });
         
-        val min = minRef.get();
-        val max = maxRef.get();
+        var min = minRef.get();
+        var max = maxRef.get();
         return tuple2(
                 StreamPlusHelper.dummy.equals(min) ? Optional.empty() : Optional.ofNullable((DATA)min),
                 StreamPlusHelper.dummy.equals(max) ? Optional.empty() : Optional.ofNullable((DATA)max));

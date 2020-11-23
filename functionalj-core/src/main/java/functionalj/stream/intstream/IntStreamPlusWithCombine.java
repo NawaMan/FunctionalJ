@@ -36,7 +36,7 @@ import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.IntTuple2;
-import lombok.val;
+
 
 public interface IntStreamPlusWithCombine {
     
@@ -60,11 +60,11 @@ public interface IntStreamPlusWithCombine {
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
     public default IntStreamPlus mergeWith(IntStream anotherStream) {
-        val thisStream = intStreamPlus();
-        val iteratorA  = IntIteratorPlus.from(thisStream   .iterator());
-        val iteratorB  = IntIteratorPlus.from(anotherStream.iterator());
+        var thisStream = intStreamPlus();
+        var iteratorA  = IntIteratorPlus.from(thisStream   .iterator());
+        var iteratorB  = IntIteratorPlus.from(anotherStream.iterator());
         
-        val resultStream 
+        var resultStream 
                 = IntStreamPlusHelper
                 .doMergeInt(iteratorA, iteratorB);
         

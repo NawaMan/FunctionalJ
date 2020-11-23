@@ -35,7 +35,7 @@ import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
-import lombok.val;
+
 
 // TODO - Generate Store that immitate an immutable type and have the changes store inside.
 // TODO - Must mention that this is not thread safe.
@@ -71,11 +71,11 @@ public class Store<DATA> implements Func0<DATA> {
     
     private ChangeResult<DATA> defaultAcceptor(DATA originalData, Result<DATA> newResult) {
         if (newResult.isValue()) {
-            val changeResult = new ChangeResult<DATA>(this, originalData, Accepted(newResult.value()));
+            var changeResult = new ChangeResult<DATA>(this, originalData, Accepted(newResult.value()));
             return changeResult;
         }
-        val exception  = newResult.getException();
-        val failResult = new ChangeResult<DATA>(this, originalData, Failed(new ChangeFailException(exception)));
+        var exception  = newResult.getException();
+        var failResult = new ChangeResult<DATA>(this, originalData, Failed(new ChangeFailException(exception)));
         return failResult;
     }
     private ChangeResult<DATA> ensureStore(ChangeResult<DATA> changeResult) {
@@ -86,23 +86,23 @@ public class Store<DATA> implements Func0<DATA> {
     }
     
     public ChangeResult<DATA> change(Func1<DATA, DATA> changer) {
-        val originalData  = dataRef.get();
-        val approveResult = approver.applySafely(originalData, changer);
+        var originalData  = dataRef.get();
+        var approveResult = approver.applySafely(originalData, changer);
         if (approveResult.isPresent()) {
             return new ChangeResult<DATA>(this, originalData, NotAllowed(approveResult.get()));
         }
-        val newResult = changer
+        var newResult = changer
                 .applySafely(originalData)
                 .pipeTo(
                     accepter.applyTo(originalData),
                     this::ensureStore
                 );
-        val result = newResult.result();
+        var result = newResult.result();
         if (result.isValue()) {
-            val newValue = result.value();
-            val isSuccess = dataRef.compareAndSet(originalData, newValue);
+            var newValue = result.value();
+            var isSuccess = dataRef.compareAndSet(originalData, newValue);
             if (!isSuccess) {
-                val dataAlreadyChanged = new IllegalStateException(
+                var dataAlreadyChanged = new IllegalStateException(
                         "The data in the store has already changed: "
                         + "originalData=" + originalData + ", "
                         + "currentData="  + dataRef.get() + ", "
@@ -116,13 +116,13 @@ public class Store<DATA> implements Func0<DATA> {
     
     @SafeVarargs
     public final ChangeResult<DATA> change(Func1<DATA, DATA> changer, Func1<DATA, DATA> ... moreChangers) {
-        val result = new AtomicReference<>(this.change(changer));
+        var result = new AtomicReference<>(this.change(changer));
         StreamPlus
         .of(moreChangers)
         .filterNonNull()
         .forEach(c -> {
-            val prevResult = result.get();
-            val newResult  = prevResult.change(c);
+            var prevResult = result.get();
+            var newResult  = prevResult.change(c);
             result.set(newResult);
         });
         return result.get();
@@ -132,7 +132,7 @@ public class Store<DATA> implements Func0<DATA> {
         if (consumer == null)
             return this;
         
-        val value = dataRef.get();
+        var value = dataRef.get();
         consumer.accept(value);
         return this;
     }

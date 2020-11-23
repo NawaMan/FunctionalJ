@@ -29,7 +29,7 @@ import org.junit.Test;
 
 import functionalj.types.Struct;
 import functionalj.types.struct.DOFromClass;
-import lombok.val;
+
 
 public class DOFromClassTest {
     
@@ -47,7 +47,7 @@ public class DOFromClassTest {
     
     @Test
     public void testFromClass() {
-        val obj = new DOFromClass("Obj", 5);
+        var obj = new DOFromClass("Obj", 5);
         assertEquals("Obj", obj.name());
         assertEquals("OBJ", obj.nameUpperCase());
     }

@@ -1,5 +1,6 @@
 package functionalj.types.choice.generator;
 
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -17,34 +18,37 @@ public class SubSchemaBuilder implements Lines {
     }
     
     private Stream<String> def() {
-        String valueType = CaseParam.class.getCanonicalName();
+        var valueType = CaseParam.class.getCanonicalName();
         if (choice.params.isEmpty()) {
-            return Stream.of(
+            var def = Stream.of(
                     Stream.of("static private functionalj.map.FuncMap<String, " + valueType + "> __schema__ = functionalj.map.FuncMap.<String, " + valueType + ">empty();"))
-                    .flatMap(lines -> lines);
+                    .flatMap(identity());
+            return def;
         }
         
-        Stream<String> params 
+        var params
                 = choice
                 .params.stream()
                 .map(param -> "    .with(\"" + param.name + "\", " + param.toCode() + ")");
-        return Stream.of(
-                Stream.of("static private functionalj.map.FuncMap<String, " + valueType + "> __schema__ = functionalj.map.FuncMap.<String, " + valueType + ">newMap()"), 
+        var def = Stream.of(
+                Stream.of("static private functionalj.map.FuncMap<String, " + valueType + "> __schema__ = functionalj.map.FuncMap.<String, " + valueType + ">newMap()"),
                 params,
                 Stream.of("    .build();"))
-                .flatMap(lines -> lines);
+                .flatMap(identity());
+        return def;
     }
     
     @Override
     public List<String> lines() {
-        String valueType = CaseParam.class.getCanonicalName();
-        return Stream.of(
+        var valueType = CaseParam.class.getCanonicalName();
+        var lines = Stream.of(
                 def(),
                 Stream.of("public static java.util.Map<String, " + valueType + "> getCaseSchema() {"),
                 Stream.of("    return __schema__;"),
                 Stream.of("}"))
-            .flatMap(lines -> lines)
+            .flatMap(identity())
             .collect(toList());
+        return lines;
     }
-
+    
 }

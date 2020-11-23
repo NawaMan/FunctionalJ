@@ -31,7 +31,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import lombok.val;
+
 
 public class ValueTest {
     
@@ -44,7 +44,7 @@ public class ValueTest {
     @Test
     public void testGet() {
         // NOTE - Not exactly efficient ... but will do for now.
-        val length = value.map(str -> {
+        var length = value.map(str -> {
             return str.length();
         });
         
@@ -53,8 +53,8 @@ public class ValueTest {
     
     @Test
     public void testLazy() {
-        val logs = new ArrayList<String>();
-        val length =  value.map(str -> {
+        var logs = new ArrayList<String>();
+        var length =  value.map(str -> {
             logs.add(str);
             return str.length();
         });
@@ -74,8 +74,8 @@ public class ValueTest {
     
     @Test
     public void testPrintException() {
-        val buffer = new StringWriter();
-        val length =  value.map(str -> {
+        var buffer = new StringWriter();
+        var length =  value.map(str -> {
             throw new NullPointerException();
         });
         

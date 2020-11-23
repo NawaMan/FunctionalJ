@@ -4,13 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import lombok.val;
+
 
 public class FuncListBuilderTest {
     
     @Test
     public void testListBuilder() {
-        val map = FuncList.newList()
+        var map = FuncList.newList()
                 .with("A")
                 .with("B")
                 .with("C")

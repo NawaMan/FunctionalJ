@@ -46,7 +46,7 @@ import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.supportive.CallerId;
 import functionalj.tuple.ImmutableTuple2;
-import lombok.val;
+
 
 public interface Func {
     
@@ -822,7 +822,7 @@ public interface Func {
     //== Join with delimit ==
     
     public static <IN> Func1<IN, Stream<IN>> delimitWith(IN delimiter) {
-        val isFirst = new AtomicBoolean(true);
+        var isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);
@@ -831,7 +831,7 @@ public interface Func {
     }
     
     public static <IN> Func1<IN, Stream<IN>> delimitWith(Supplier<? extends IN> delimiter) {
-        val isFirst = new AtomicBoolean(true);
+        var isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);
@@ -840,7 +840,7 @@ public interface Func {
     }
     
     public static <IN> Func1<IN, Stream<IN>> delimitWith(Func1<IN, ? extends IN> delimiter) {
-        val isFirst = new AtomicBoolean(true);
+        var isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);
@@ -860,7 +860,7 @@ public interface Func {
             if (errMsg == null)
                 return;
             
-            val exception = exceptionCreator.apply(errMsg);
+            var exception = exceptionCreator.apply(errMsg);
             if (exception == null)
                 return;
             
@@ -871,12 +871,12 @@ public interface Func {
     //== Index ==
     
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> withIndex(Func2<INPUT, Integer, OUTPUT> body) {
-        val index = new AtomicInteger();
+        var index = new AtomicInteger();
         return input -> body.applyUnsafe(input, index.getAndIncrement());
     }
     
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> usingIndex(Func1<Integer, OUTPUT> body) {
-        val index = new AtomicInteger();
+        var index = new AtomicInteger();
         return input -> body.applyUnsafe(index.getAndIncrement());
     }
     
@@ -898,37 +898,37 @@ public interface Func {
     }
     
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> withIndex(WithIndexFunction<INPUT, OUTPUT> body) {
-        val index = new AtomicInteger();
+        var index = new AtomicInteger();
         return input -> {
-            val withIndex = new WithIndex<INPUT>(input, index.getAndIncrement());
+            var withIndex = new WithIndex<INPUT>(input, index.getAndIncrement());
             return body.applyUnsafe(withIndex);
         };
     }
     
     public static <INPUT> Func1<INPUT, WithIndex<INPUT>> withIndex() {
-        val index = new AtomicInteger();
+        var index = new AtomicInteger();
         return input -> new WithIndex<INPUT>(input, index.getAndIncrement());
     }
     
     public static <INPUT, OUTPUT> FuncUnit1<INPUT> withIndex(FuncUnit2<INPUT, Integer> body) {
-        val index = new AtomicInteger();
+        var index = new AtomicInteger();
         return input -> body.acceptUnsafe(input, index.getAndIncrement());
     }
     
     public static <INPUT, OUTPUT> FuncUnit1<INPUT> withIndex(FuncUnit1<Integer> body) {
-        val index = new AtomicInteger();
+        var index = new AtomicInteger();
         return input -> body.acceptUnsafe(index.getAndIncrement());
     }
     
     //== Cache and Lazy ==
     
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> cacheFor(Function<INPUT, OUTPUT> inFunction) {
-        val cache = new ConcurrentHashMap<INPUT, OUTPUT>();
+        var cache = new ConcurrentHashMap<INPUT, OUTPUT>();
         return in -> cache.computeIfAbsent(in, inFunction::apply);
     }
     public static <INPUT, OUTPUT> Func1<INPUT, OUTPUT> cacheFor(long time, Function<INPUT, OUTPUT> inFunction) {
-        val cache       = new ConcurrentHashMap<INPUT, OUTPUT>();
-        val expiredTime = new ConcurrentHashMap<INPUT, Long>();
+        var cache       = new ConcurrentHashMap<INPUT, OUTPUT>();
+        var expiredTime = new ConcurrentHashMap<INPUT, Long>();
         return in -> {
             if (expiredTime.contains(in)
              && expiredTime.get(in) > Env.time().currentMilliSecond()) {
@@ -943,12 +943,12 @@ public interface Func {
     
     @SuppressWarnings("unchecked")
     public static <TYPE> Func0<TYPE> lazy(Supplier<TYPE> supplier) {
-        val reference = new AtomicReference<Object>();
-        val startKey  = new Object();
+        var reference = new AtomicReference<Object>();
+        var startKey  = new Object();
         return ()->{
             if (reference.compareAndSet(null, startKey)) {
                 try {
-                    val value = supplier.get();
+                    var value = supplier.get();
                     reference.set((Supplier<TYPE>)(()->value));
                 } catch (RuntimeException e) {
                     reference.set(e);
@@ -1091,7 +1091,7 @@ public interface Func {
         if (supplier == null)
             return fallback;
         
-        val value = supplier.get();
+        var value = supplier.get();
         return (value == null) ? fallback : value;
     }
     
@@ -1110,7 +1110,7 @@ public interface Func {
         if (function == null)
             return fallback;
         
-        val value = function.apply(input);
+        var value = function.apply(input);
         return (value == null) ? fallback : value;
     }
     
@@ -1135,7 +1135,7 @@ public interface Func {
         if (function == null)
             return fallback;
         
-        val value = function.apply(input1, input2);
+        var value = function.apply(input1, input2);
         return (value == null) ? fallback : value;
     }
     

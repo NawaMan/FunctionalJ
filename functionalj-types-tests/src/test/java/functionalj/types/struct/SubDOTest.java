@@ -30,7 +30,7 @@ import org.junit.Test;
 import functionalj.types.Struct;
 import functionalj.types.struct.Child;
 import functionalj.types.struct.Parent;
-import lombok.val;
+
 
 public class SubDOTest {
     
@@ -51,7 +51,7 @@ public class SubDOTest {
     
     @Test
     public void testParentChild() {
-        val parent = new Parent("John", new Child("Greg"));
+        var parent = new Parent("John", new Child("Greg"));
         assertEquals("Greg", parent.child().name());
     }
     

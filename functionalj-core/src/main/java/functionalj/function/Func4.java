@@ -38,7 +38,6 @@ import functionalj.result.Result;
 import functionalj.task.Task;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple4;
-import lombok.val;
 import nullablej.nullable.Nullable;
 
 /**
@@ -131,17 +130,17 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     }
     public default <SOURCE> Func1<SOURCE, OUTPUT> applyTo(Func1<SOURCE, INPUT1> input1, Func1<SOURCE, INPUT2> input2, Func1<SOURCE, INPUT3> input3, Func1<SOURCE, INPUT4> input4) {
         return source -> {
-            val i1 = input1.apply(source);
-            val i2 = input2.apply(source);
-            val i3 = input3.apply(source);
-            val i4 = input4.apply(source);
+            var i1 = input1.apply(source);
+            var i2 = input2.apply(source);
+            var i3 = input3.apply(source);
+            var i4 = input4.apply(source);
             return apply(i1, i2, i3, i4);
         };
     }
     
     public default Result<OUTPUT> applySafely(INPUT1 input1, INPUT2 input2, INPUT3 input3, INPUT4 input4) {
         try {
-            val output = applyUnsafe(input1, input2, input3, input4);
+            var output = applyUnsafe(input1, input2, input3, input4);
             return Result.valueOf(output);
         } catch (Exception exception) {
             return Result.ofException(exception);
@@ -176,7 +175,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
                 return outputValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
@@ -187,7 +186,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> ifExceptionThenPrint() {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -198,7 +197,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> ifExceptionThenPrint(PrintStream printStream) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace(printStream);
@@ -209,7 +208,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> ifExceptionThenPrint(PrintWriter printWriter) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace(printWriter);
@@ -221,8 +220,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultValue;
@@ -235,8 +234,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultSupplier.get();
@@ -249,8 +248,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(null);
@@ -263,8 +262,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Func5<INPUT1, INPUT2, INPUT3, INPUT4, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(input1, input2, input3, input4, null);
@@ -277,8 +276,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Func2<Tuple4<INPUT1, INPUT2, INPUT3, INPUT4>, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(Tuple.of(input1, input2, input3, input4), null);
@@ -292,8 +291,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentUse(Consumer<Exception> exceptionHandler, OUTPUT defaultValue) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultValue;
@@ -307,8 +306,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentGet(Consumer<Exception> exceptionHandler, Supplier<OUTPUT> defaultSupplier) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : defaultSupplier.get();
@@ -322,8 +321,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func1<Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(null);
@@ -337,8 +336,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func5<INPUT1, INPUT2, INPUT3, INPUT4, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(input1, input2, input3, input4, null);
@@ -352,8 +351,8 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func2<Tuple4<INPUT1, INPUT2, INPUT3, INPUT4>, Exception, OUTPUT> exceptionMapper) {
         return (input1, input2, input3, input4)->{
             try {
-                val outputValue = this.applyUnsafe(input1, input2, input3, input4);
-                val returnValue 
+                var outputValue = this.applyUnsafe(input1, input2, input3, input4);
+                var returnValue 
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(Tuple.of(input1, input2, input3, input4), null);
@@ -389,7 +388,7 @@ public interface Func4<INPUT1, INPUT2, INPUT3, INPUT4, OUTPUT> {
     
     public default Func4<INPUT1, INPUT2, INPUT3, INPUT4, HasPromise<OUTPUT>> async() {
         return (input1, input2, input3, input4) -> {
-            val supplier = (Func0<OUTPUT>)()->{
+            var supplier = (Func0<OUTPUT>)()->{
                 return this.applyUnsafe(input1, input2, input3, input4);
             };
             return DeferAction.from(supplier)

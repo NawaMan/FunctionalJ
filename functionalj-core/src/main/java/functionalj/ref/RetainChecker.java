@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
-import lombok.val;
+
 
 @FunctionalInterface
 public interface RetainChecker {
@@ -97,7 +97,7 @@ public interface RetainChecker {
                 BiPredicate<STATE, STATE> changeCheck,
                 StateUpdater<STATE>       stateUpdater) {
             this.state = new Holder<>(isLocal);
-            val initialState
+            var initialState
                     = (initialStateSupplier != null)
                     ? initialStateSupplier.get()
                     : stateSupplier.get();
@@ -109,10 +109,10 @@ public interface RetainChecker {
         
         @Override
         public final boolean stillValid() {
-            val newValue  = stateSupplier.get();
-            val oldState  = state.get();
-            val isChanged = isChanged(newValue, oldState);
-            val newState  = newState(isChanged, oldState, newValue);
+            var newValue  = stateSupplier.get();
+            var oldState  = state.get();
+            var isChanged = isChanged(newValue, oldState);
+            var newState  = newState(isChanged, oldState, newValue);
             state.set(oldState, newState);
             return !isChanged;
         }

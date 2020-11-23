@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -44,12 +44,12 @@ import functionalj.types.struct.generator.IGenerateDefinition;
 import functionalj.types.struct.generator.ILines;
 import lombok.Value;
 import lombok.With;
-import lombok.val;
+
 import lombok.experimental.Accessors;
 
 /**
  * Representation of a generated class.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 @Value
@@ -141,26 +141,26 @@ public class GenClass implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        val extendedList    = extendeds()   .stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
-        val implementedList = implementeds().stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
+        var extendedList    = extendeds()   .stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
+        var implementedList = implementeds().stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
         
-        val fieldDefs       = fields()      .stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
-        val constructorDefs = constructors().stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
-        val methodDefs      = methods()     .stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
-        val innerClassDefs  = innerClasses().stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
-        val moreDefs        = mores()       .stream().collect(toList());
+        var fieldDefs       = fields()      .stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        var constructorDefs = constructors().stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        var methodDefs      = methods()     .stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        var innerClassDefs  = innerClasses().stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        var moreDefs        = mores()       .stream().collect(toList());
         
-        val className = type().simpleNameWithGeneric();
-        val firstLine
+        var className = type().simpleNameWithGeneric();
+        var firstLine
                 = oneLineOf(
                     accessibility, scope, modifiability, isClass ? "class" : "interface", className,
                     utils.prefixWith(extendedList,    "extends "),
                     utils.prefixWith(implementedList, "implements "),
                     "{");
         
-        val lastLine = "}";
+        var lastLine = "}";
         
-        val componentLines
+        var componentLines
                 = linesOf(
                     fieldDefs,
                     constructorDefs,
@@ -168,10 +168,11 @@ public class GenClass implements IGenerateDefinition {
                     innerClassDefs,
                     moreDefs);
         
-        val lines = flatenLines(withSeparateIndentedSpace(
+        var lines = flatenLines(withSeparateIndentedSpace(
                 line  (firstLine),
                 indent(componentLines),
                 line  (lastLine)));
         return lines;
     }
+    
 }

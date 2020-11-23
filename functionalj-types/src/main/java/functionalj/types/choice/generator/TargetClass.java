@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,14 +36,15 @@ import functionalj.types.Type;
 import functionalj.types.choice.ChoiceTypeSwitch;
 import functionalj.types.choice.IChoice;
 import functionalj.types.choice.Self;
-import functionalj.types.choice.generator.model.Method.Kind;
+import functionalj.types.choice.generator.model.Method;
+//import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.Value;
-import lombok.val;
 
 
 @Value
 public class TargetClass implements Lines {
+    
     public final SourceSpec spec;
     public final Type       type;
     
@@ -54,7 +55,7 @@ public class TargetClass implements Lines {
     
     @Override
     public List<String> lines() {
-        val imports = new TreeSet<String>();
+        var imports = new TreeSet<String>();
         imports.add(ChoiceTypeSwitch.class.getCanonicalName());
         imports.add(IChoice.class.getCanonicalName());
         imports.add("java.util.function.Function");
@@ -66,17 +67,17 @@ public class TargetClass implements Lines {
         imports.add("functionalj.lens.core.LensSpec");
         imports.add("functionalj.lens.lenses.*");
         
-        val hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);
+        var hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);
         if (hasChoiceWuthMoreThanOneParam) {
             imports.add("functionalj.types.Absent");
         }
         
         String selfDef = "";
         List<String> specObj = null;
-        if (spec.methods.stream().anyMatch(m -> Kind.DEFAULT.equals(m.kind))) {
+        if (spec.methods.stream().anyMatch(m -> Method.Kind.DEFAULT.equals(m.kind))) {
             // TODO - move this to $utils ?
             imports.add("nullablej.utils.reflection.UProxy");
-            specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);", 
+            specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);",
                     spec.sourceType.fullName() + spec.sourceType.genericsString(),
                     spec.sourceType.fullName()));
             
@@ -110,48 +111,48 @@ public class TargetClass implements Lines {
             .filter (t -> !"java.lang".equals(t.packageName()))
             .forEach(t -> imports.add(t.fullName()));
         
-        val sourceMethods = new SourceMethod(this).lines().stream()
+        var sourceMethods = new SourceMethod(this).lines().stream()
                 .filter(Objects::nonNull)
                 .map("    "::concat)
                 .collect(toList());;
-        
-        val subClassConstructors 
+                
+        var subClassConstructors
                 = spec.choices.stream()
                 .flatMap(choice -> new SubClassConstructor(this, choice).lines().stream())
                 .filter(Objects::nonNull)
                 .map("    "::concat)
                 .collect(toList());
         
-        val subClassDefinitions
+        var subClassDefinitions
                 = spec.choices.stream()
                 .flatMap(choice -> new SubClassDefinition(this, choice).lines().stream())
                 .filter(Objects::nonNull)
                 .map("    "::concat)
                 .collect(toList());
         
-        val targetGeneral
+        var targetGeneral
                 = new TargetTypeGeneral(this, spec.choices)
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
         
-        val targetCheckMethods
+        var targetCheckMethods
                 = new SubCheckMethod(this, spec.choices)
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
-        val fromMapMethod 
+        var fromMapMethod
                 = new FromMapBuilder(this)
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
-        val schemaMethod
+        var schemaMethod
                 = new SchemaBuilder(this)
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
         
-        val switchClasses = range(0, spec.choices.size())
+        var switchClasses = range(0, spec.choices.size())
                 .mapToObj(index   -> spec.choices.stream().skip(index).collect(toList()))
                 .flatMap (choices -> new SwitchClass(this, (choices.size() == spec.choices.size()), choices).lines().stream())
                 .filter(Objects::nonNull)
@@ -159,12 +160,12 @@ public class TargetClass implements Lines {
                 .collect(toList())
                 ;
         
-        val choiceLens = new ChoiceLensBuilder(spec).build();
+        var choiceLens = new ChoiceLensBuilder(spec).build();
         
-        val typeName     = type.typeWithGenerics();
-        val pckgName     = spec.sourceType.packageName();
-        val importLines  = imports.stream().map(i -> "import " + i + ";").collect(toList());
-        val specConstant = (spec.specObjName == null) ? "    " : "    public static final " + SourceSpec.class.getCanonicalName() + " " + spec.specObjName + " = " + spec.toCode() + ";";
+        var typeName     = type.typeWithGenerics();
+        var pckgName     = spec.sourceType.packageName();
+        var importLines  = imports.stream().map(i -> "import " + i + ";").collect(toList());
+        var specConstant = (spec.specObjName == null) ? "    " : "    public static final " + SourceSpec.class.getCanonicalName() + " " + spec.specObjName + " = " + spec.toCode() + ";";
         return asList(
                 asList(format("package %s;", pckgName)),
                 asList(format("")),

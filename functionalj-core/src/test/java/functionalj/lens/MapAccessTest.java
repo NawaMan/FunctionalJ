@@ -36,13 +36,13 @@ import functionalj.lens.core.AccessParameterized2;
 import functionalj.lens.lenses.IntegerAccess;
 import functionalj.lens.lenses.MapAccess;
 import functionalj.lens.lenses.StringAccess;
-import lombok.val;
+
 
 public class MapAccessTest {
     
     @Test
     public void testMapAccess() {
-        val mapAccess = new MapAccess<
+        var mapAccess = new MapAccess<
                                 Map<String, Integer>, String, Integer, 
                                 StringAccess<Map<String, Integer>>, IntegerAccess<Map<String, Integer>>>() {
             @Override
@@ -76,7 +76,7 @@ public class MapAccessTest {
             }
         };
         
-        val map = new LinkedHashMap<String, Integer>();
+        var map = new LinkedHashMap<String, Integer>();
         map.put("name1", 2);
         map.put("name2", 4);
         assertEquals("[name1, name2]",     mapAccess.keys()   .apply(map).toString());

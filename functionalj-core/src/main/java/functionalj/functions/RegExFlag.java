@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import functionalj.function.Func;
-import lombok.val;
+
 
 public class RegExFlag {
     
@@ -41,7 +41,7 @@ public class RegExFlag {
         
         int f = 0;
         for (int i = 0; i < flags.length; i++) {
-            val flag = flags[i];
+            var flag = flags[i];
             f |= (flag != null) ? flag.flags : 0;
         }
         
@@ -53,7 +53,7 @@ public class RegExFlag {
         
         int f = 0;
         for (int i = 0; i < flags.length; i++) {
-            val flag = flags[i];
+            var flag = flags[i];
             f |= flag;
         }
         return newFlag.apply(f);

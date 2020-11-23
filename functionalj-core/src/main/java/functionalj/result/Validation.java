@@ -38,7 +38,6 @@ import functionalj.lens.lenses.ResultAccess;
 import functionalj.lens.lenses.StringLens;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Specs.ValidationSpec;
-import lombok.val;
 import nullablej.utils.reflection.UProxy;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -737,7 +736,7 @@ public abstract class Validation<D extends Object> implements Pipeable<Validatio
                     : valueSupplier.get();
         }
         public T orGet(Function<? super D, T> valueMapper) {
-            val newAction = (Function<? super D, T>)(($action != null) ? $action : valueMapper);
+            var newAction = (Function<? super D, T>)(($action != null) ? $action : valueMapper);
             return newAction.apply($value);
         }
         public T orElseGet(Supplier<T> valueSupplier) {

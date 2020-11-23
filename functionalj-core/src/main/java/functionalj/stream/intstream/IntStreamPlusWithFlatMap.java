@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 import functionalj.function.Func;
 import functionalj.stream.StreamPlus;
-import lombok.val;
+
 
 public interface IntStreamPlusWithFlatMap {
     
@@ -38,7 +38,7 @@ public interface IntStreamPlusWithFlatMap {
     
     /** FlatMap with the given mapper. */
     public default <T> StreamPlus<T> flatMapToObj(IntFunction<? extends Stream<? extends T>> mapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(mapper)
                 .flatMap(Func.itself());
@@ -48,11 +48,11 @@ public interface IntStreamPlusWithFlatMap {
     public default IntStreamPlus flatMapOnly(
             IntPredicate                     condition, 
             IntFunction<? extends IntStream> mapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .flatMap(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
+                    var isTrue = condition.test(value);
+                    var mapped = isTrue
                             ? mapper.apply(value)
                             : IntStreamPlus.of(value);
                     return mapped;
@@ -64,11 +64,11 @@ public interface IntStreamPlusWithFlatMap {
             IntPredicate                     condition, 
             IntFunction<? extends IntStream> mapper, 
             IntFunction<? extends IntStream> elseMapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .flatMap(value -> {
-                    val isTrue = condition.test(value);
-                    val mapped = isTrue
+                    var isTrue = condition.test(value);
+                    var mapped = isTrue
                             ? mapper.apply(value)
                             : elseMapper.apply(value);
                     return mapped;
@@ -79,7 +79,7 @@ public interface IntStreamPlusWithFlatMap {
             IntPredicate   checker, 
             IntFunction<? extends Stream<T>> mapper, 
             IntFunction<? extends Stream<T>> elseMapper) {
-        val streamPlus = intStreamPlus();
+        var streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(mapper)
                 .flatMap(Func.itself());

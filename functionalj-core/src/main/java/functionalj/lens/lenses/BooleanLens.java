@@ -26,7 +26,7 @@ package functionalj.lens.lenses;
 import java.util.function.Predicate;
 
 import functionalj.lens.core.LensSpec;
-import lombok.val;
+
 
 @FunctionalInterface
 public interface BooleanLens<HOST>
@@ -49,12 +49,12 @@ public interface BooleanLens<HOST>
     public default boolean test(HOST host) {
         LensSpec<HOST, Boolean> lensSpec = lensSpec();
         if (lensSpec instanceof PrimitiveLensSpecs.BooleanLensSpecPrimitive) {
-            val spec  = (PrimitiveLensSpecs.BooleanLensSpecPrimitive)lensSpec;
-            val value = spec.test(host);
+            var spec  = (PrimitiveLensSpecs.BooleanLensSpecPrimitive)lensSpec;
+            var value = spec.test(host);
             return value;
         }
         
-        val value = lensSpec.apply(host);
+        var value = lensSpec.apply(host);
         return value;
     }
     

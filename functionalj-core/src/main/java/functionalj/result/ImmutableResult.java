@@ -25,7 +25,7 @@ package functionalj.result;
 
 import functionalj.list.FuncList;
 import functionalj.validator.Validator;
-import lombok.val;
+
 
 public class ImmutableResult<DATA> extends Result<DATA> {
     
@@ -44,10 +44,10 @@ public class ImmutableResult<DATA> extends Result<DATA> {
     ImmutableResult(DATA data, FuncList<Validator<? super DATA>> validators) {
         Object theData = data;
         if (validators != null) {
-            for (val validator : validators) {
+            for (var validator : validators) {
                 try {
-                    val result    = validator.validate(data);
-                    val exception = result.getException();
+                    var result    = validator.validate(data);
+                    var exception = result.getException();
                     if (exception != null) {
                         if (exception instanceof ValidationException) {
                             theData = new ExceptionHolder(exception);

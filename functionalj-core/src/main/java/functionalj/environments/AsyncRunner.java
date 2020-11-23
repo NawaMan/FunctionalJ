@@ -38,7 +38,7 @@ import functionalj.ref.ComputeBody;
 import functionalj.ref.Run;
 import functionalj.ref.RunBody;
 import functionalj.ref.Substitution;
-import lombok.val;
+
 
 @FunctionalInterface
 public interface AsyncRunner extends FuncUnit1<Runnable> {
@@ -56,11 +56,11 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
         });
     }
     public static <DATA, EXCEPTION extends Exception>  Promise<DATA> run(AsyncRunner runner, ComputeBody<DATA, EXCEPTION> body) {
-        val action = DeferAction.of((Class<DATA>)null).start();
+        var action = DeferAction.of((Class<DATA>)null).start();
         
-        val theRunner     = (runner != null) ? runner : Env.async();
-        val substitutions = Substitution.getCurrentSubstitutions().exclude(Substitution::isThreadLocal);
-        val latch         = new CountDownLatch(1);
+        var theRunner     = (runner != null) ? runner : Env.async();
+        var substitutions = Substitution.getCurrentSubstitutions().exclude(Substitution::isThreadLocal);
+        var latch         = new CountDownLatch(1);
         theRunner.accept(()->{
             try {
                 Run.with(substitutions)
@@ -86,7 +86,7 @@ public interface AsyncRunner extends FuncUnit1<Runnable> {
             e.printStackTrace();
         }
         
-        val promise = action.getPromise();
+        var promise = action.getPromise();
         return promise;
     }
     

@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,7 +34,7 @@ import java.util.Objects;
 
 import functionalj.types.choice.Self;
 import functionalj.types.choice.generator.model.Method;
-import lombok.val;
+
 
 public class SourceMethod implements Lines {
     
@@ -60,17 +60,17 @@ public class SourceMethod implements Lines {
     }
     
     private List<String> methodToCode(Method m) {
-        val genericsDef = m.generics.isEmpty() ? "" : 
+        var genericsDef = m.generics.isEmpty() ? "" :
                         "<" + m.generics.stream()
                                .map(g -> g.withBound.replaceAll(" extends Object$", ""))
                                .collect(joining(", ")) + "> ";
-        val returnSelf = Objects.equals(m.returnType.packageName(),     targetClass.type.packageName())
+        var returnSelf = Objects.equals(m.returnType.packageName(),     targetClass.type.packageName())
                       && Objects.equals(m.returnType.encloseName(),     targetClass.type.encloseName())
                       && Objects.equals(m.returnType.simpleName(),      targetClass.type.simpleName())
                       && Objects.equals(m.returnType.generics().size(), targetClass.type.generics().size());
-        val genericCount = targetClass.type.generics().size();
-        val returnPrefix = returnSelf ? Self.class.getCanonicalName() + (genericCount == 0 ? "" : genericCount) + ".unwrap(" : "";
-        val returnSuffix = returnSelf ? ")"                            : "";
+        var genericCount = targetClass.type.generics().size();
+        var returnPrefix = returnSelf ? Self.class.getCanonicalName() + (genericCount == 0 ? "" : genericCount) + ".unwrap(" : "";
+        var returnSuffix = returnSelf ? ")"                            : "";
         if (DEFAULT.equals(m.kind)) {
             if (isThisMethod(m)) {
                 return asList(format(
@@ -89,7 +89,7 @@ public class SourceMethod implements Lines {
             return asList(format(
                     "public static %1$s%2$s {\n"
                   + "    return %3$s%4$s.%5$s%6$s;\n"
-                  + "}", 
+                  + "}",
                   genericsDef,
                   m.definition(),
                   returnPrefix,
@@ -103,5 +103,5 @@ public class SourceMethod implements Lines {
     private boolean isThisMethod(Method m) {
         return !m.params.isEmpty() && m.params.get(0).type.toString().equals(targetClass.type.toString());
     }
-    
+
 }

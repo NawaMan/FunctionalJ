@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -56,7 +56,7 @@ import functionalj.stream.makers.Eager;
 import functionalj.stream.makers.Sequential;
 import functionalj.stream.makers.Terminal;
 import functionalj.tuple.IntIntTuple;
-import lombok.val;
+
 
 // TODO - Use this for byte, short and char
 // TODO - Intersect
@@ -144,8 +144,8 @@ public interface IntStreamPlus
     
     /** Create a StreamPlus that is the repeat of the given array of data. */
     public static IntStreamPlus cycle(int ... data) {
-        val ints = Arrays.copyOf(data, data.length);
-        val size = ints.length;
+        var ints = Arrays.copyOf(data, data.length);
+        var size = ints.length;
         return IntStreamPlus.from(
                 IntStream
                 .iterate(0, i -> i + 1)
@@ -236,7 +236,7 @@ public interface IntStreamPlus
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static IntStreamPlus generateWith(IntSupplier supplier) {
-        val iterable = (IntIterable)() -> new IntSupplierBackedIterator(supplier);
+        var iterable = (IntIterable)() -> new IntSupplierBackedIterator(supplier);
         return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
     }
     
@@ -292,9 +292,9 @@ public interface IntStreamPlus
      * Note: this is an alias of compound()
      **/
     public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator f) {
-        val counter = new AtomicInteger(0);
-        val int1    = new AtomicInteger(seed1);
-        val int2    = new AtomicInteger(seed2);
+        var counter = new AtomicInteger(0);
+        var int1    = new AtomicInteger(seed1);
+        var int2    = new AtomicInteger(seed2);
         return IntStreamPlus.generate(()->{
             if (counter.getAndIncrement() == 0)
                 return seed1;
@@ -428,9 +428,9 @@ public interface IntStreamPlus
     
     public default <TARGET> TARGET terminate(
             Function<IntStream, TARGET> action) {
-        val stream = intStream();
+        var stream = intStream();
         try {
-            val result = action.apply(stream);
+            var result = action.apply(stream);
             return result;
         } finally {
             stream.close();
@@ -438,7 +438,7 @@ public interface IntStreamPlus
     }
     
     public default void terminate(FuncUnit1<IntStream> action) {
-        val stream = intStream();
+        var stream = intStream();
         try {
             action.accept(stream);
         } finally {
@@ -447,9 +447,9 @@ public interface IntStreamPlus
     }
     
     public default IntStreamPlus sequential(Func1<IntStreamPlus, IntStreamPlus> action) {
-        val isParallel = isParallel();
-        val orgIntStreamPlus = sequential();
-        val newIntStreamPlus = action.apply(orgIntStreamPlus);
+        var isParallel = isParallel();
+        var orgIntStreamPlus = sequential();
+        var newIntStreamPlus = action.apply(orgIntStreamPlus);
         if (newIntStreamPlus.isParallel() == isParallel)
             return newIntStreamPlus;
         
@@ -543,7 +543,7 @@ public interface IntStreamPlus
     @Override
     public default Spliterator.OfInt spliterator() {
         return terminate(s -> {
-            val iterator = iterator();
+            var iterator = iterator();
             return Spliterators.spliteratorUnknownSize(iterator, 0);
         });
     }
@@ -632,6 +632,13 @@ public interface IntStreamPlus
     @Override
     public default IntStreamPlus distinct() {
         return IntStreamPlus.from(intStream().distinct());
+    }
+    
+    //-- Take while --
+    
+    @Override
+    public default IntStreamPlus takeWhile(IntPredicate condition) {
+        return IntStreamPlus.from(intStream().takeWhile(condition));
     }
     
     //-- Sorted --
@@ -803,7 +810,7 @@ public interface IntStreamPlus
             return stream
                     .findFirst();
         });
-    }   
+    }
     
     @Terminal
     @Override
