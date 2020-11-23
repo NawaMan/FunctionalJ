@@ -41,6 +41,7 @@ import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.markers.Sequential;
 import functionalj.tuple.IntTuple2;
+import lombok.val;
 
 
 public interface IntStreamPlusWithModify {

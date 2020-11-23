@@ -67,6 +67,7 @@ import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
 import functionalj.streamable.Streamable;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 
 
 // TODO - Add intersect
@@ -691,13 +692,6 @@ public interface StreamPlus<DATA>
     @Override
     public default StreamPlus<DATA> skip(long offset) {
         return StreamPlus.from(stream().skip(offset));
-    }
-    
-    //-- Take while --
-    
-    @Override
-    public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
-        return StreamPlus.from(stream().takeWhile(condition));
     }
     
     //-- Distinct --

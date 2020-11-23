@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import functionalj.function.IntBiConsumer;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
+import lombok.val;
 
 
 public interface AsIntStreamPlusWithForEach {

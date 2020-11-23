@@ -40,6 +40,7 @@ import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.markers.Sequential;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 
 
 public interface StreamPlusWithModify<DATA> {

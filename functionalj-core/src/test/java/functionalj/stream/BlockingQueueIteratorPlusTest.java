@@ -30,6 +30,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.junit.Test;
 
+import lombok.val;
+
 
 
 public class BlockingQueueIteratorPlusTest {

@@ -28,6 +28,7 @@ import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
 import functionalj.stream.StreamPlus;
+import lombok.val;
 
 
 public interface IntStreamPlusWithMap {

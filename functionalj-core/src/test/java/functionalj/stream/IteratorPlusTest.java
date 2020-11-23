@@ -36,6 +36,7 @@ import org.junit.Test;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
 import functionalj.stream.intstream.IntStreamPlus;
+import lombok.val;
 
 
 public class IteratorPlusTest {

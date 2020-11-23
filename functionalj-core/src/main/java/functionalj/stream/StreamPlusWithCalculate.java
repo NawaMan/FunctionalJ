@@ -32,6 +32,7 @@ import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
+import lombok.val;
 
 
 

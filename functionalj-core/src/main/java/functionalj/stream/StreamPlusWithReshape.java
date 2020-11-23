@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.result.NoMoreResultException;
+import lombok.val;
 
 
 public interface StreamPlusWithReshape<DATA> {
@@ -58,9 +59,9 @@ public interface StreamPlusWithReshape<DATA> {
     /**
      * Segment the stream into sub stream with the fix length of count.
      * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
-     * 
+     *
      * @param count        the element count of the sub stream.
-     * @param includeTail  the flag indicating if the last sub stream that does not have count element is to be included 
+     * @param includeTail  the flag indicating if the last sub stream that does not have count element is to be included
      *                       as opposed to thrown away.
      * @return             the stream of sub stream.
      */
@@ -76,9 +77,9 @@ public interface StreamPlusWithReshape<DATA> {
     /**
      * Segment the stream into sub stream with the fix length of count.
      * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
-     * 
+     *
      * @param count        the element count of the sub stream.
-     * @param includeTail  the option indicating if the last sub stream that does not have count element is to be included 
+     * @param includeTail  the option indicating if the last sub stream that does not have count element is to be included
      *                       as opposed to thrown away.
      * @return             the stream of sub stream.
      */
@@ -175,7 +176,7 @@ public interface StreamPlusWithReshape<DATA> {
             val list         = new AtomicReference<>(newStorage.get());
             val adding       = new AtomicBoolean(false);
             
-            StreamPlus<StreamPlus<DATA>> resultStream 
+            StreamPlus<StreamPlus<DATA>> resultStream
                 = StreamPlus.from(
                     stream
                     .mapToObj(i -> {
@@ -210,7 +211,7 @@ public interface StreamPlusWithReshape<DATA> {
     
     /**
      * Create a stream of sub-stream which size is derived from the value.
-     * 
+     *
      * If the segmentSize function return null, the value will be ignored.
      * If the segmentSize function return 0, an empty stream is returned.
      */
@@ -226,7 +227,7 @@ public interface StreamPlusWithReshape<DATA> {
             val listRef = new AtomicReference<>(newStorage.get());
             val leftRef = new AtomicInteger(-1);
             
-            val head 
+            val head
                 = stream
                 .mapToObj(each -> {
                     int left = leftRef.get();
@@ -260,7 +261,7 @@ public interface StreamPlusWithReshape<DATA> {
                 .filterNonNull()
                 ;
             
-            val resultStream 
+            StreamPlus<StreamPlus<DATA>> resultStream
                 = StreamPlus.of(
                     f(()-> head),
                     f(()-> StreamPlus.of(toStreamPlus.apply(listRef.get())))
@@ -330,12 +331,12 @@ public interface StreamPlusWithReshape<DATA> {
     
     /**
      * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
-     * 
+     *
      * If the segmentSize function return null or 0, the value will be used as is (no collapse).
      */
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> collapseSize(
-            Func1<? super DATA, Integer>            segmentSize, 
+            Func1<? super DATA, Integer>            segmentSize,
             Func2<? super DATA, ? super DATA, DATA> combinator) {
         Object dummy = StreamPlusHelper.dummy;
         
@@ -394,13 +395,13 @@ public interface StreamPlusWithReshape<DATA> {
     /**
      * Collapse the value of this stream together. Each sub stream size is determined by the segmentSize function.
      * The value is mapped using the mapper function before combined.
-     * 
+     *
      * If the segmentSize function return null or 0, the value will be used as is (no collapse).
      */
     @SuppressWarnings("unchecked")
     public default <TARGET> StreamPlus<TARGET> collapseSize(
-            Func1<DATA, Integer>          segmentSize, 
-            Func1<DATA, TARGET>           mapper, 
+            Func1<DATA, Integer>          segmentSize,
+            Func1<DATA, TARGET>           mapper,
             Func2<TARGET, TARGET, TARGET> combinator) {
         val dummy = StreamPlusHelper.dummy;
         

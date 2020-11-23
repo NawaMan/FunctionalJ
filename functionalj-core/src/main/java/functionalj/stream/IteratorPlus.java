@@ -33,6 +33,7 @@ import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
+import lombok.val;
 
 
 @FunctionalInterface

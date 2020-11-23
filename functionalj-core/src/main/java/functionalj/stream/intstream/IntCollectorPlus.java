@@ -32,6 +32,7 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 
 import functionalj.stream.CollectorPlus;
+import lombok.val;
 
 
 public interface IntCollectorPlus<ACCUMULATED, RESULT> 

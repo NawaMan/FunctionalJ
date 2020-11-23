@@ -26,6 +26,8 @@ package functionalj.stream.intstream;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
+import lombok.val;
+
 
 
 // This class along with ArrayBackedIntIteratorPlus helps improve performance when do pullNext, useNext and mapNext

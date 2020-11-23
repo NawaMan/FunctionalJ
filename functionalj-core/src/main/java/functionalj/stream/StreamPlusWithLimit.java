@@ -32,6 +32,7 @@ import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 
 import functionalj.stream.markers.Sequential;
+import lombok.val;
 
 
 public interface StreamPlusWithLimit<DATA> {
@@ -91,36 +92,36 @@ public interface StreamPlusWithLimit<DATA> {
             });
         });
     }
-//
-//    /** Accept any value while the condition is true. */
-//    @Sequential
-//    public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
-//        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
-//        val streamPlus = streamPlus();
-//        return sequential(streamPlus, stream -> {
-//            val splitr = stream.spliterator();
-//            return StreamPlus.from(
-//                    StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
-//                        boolean stillGoing = true;
-//                        @Override
-//                        public boolean tryAdvance(Consumer<? super DATA> consumer) {
-//                            if (stillGoing) {
-//                                Consumer<? super DATA> action = elem -> {
-//                                    if (condition.test(elem)) {
-//                                        consumer.accept(elem);
-//                                    } else {
-//                                        stillGoing = false;
-//                                    }
-//                                };
-//                                boolean hadNext = splitr.tryAdvance(action);
-//                                return hadNext && stillGoing;
-//                            }
-//                            return false;
-//                        }
-//                    }, false)
-//                );
-//        });
-//    }
+
+    /** Accept any value while the condition is true. */
+    @Sequential
+    public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
+        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
+        val streamPlus = streamPlus();
+        return sequential(streamPlus, stream -> {
+            val splitr = stream.spliterator();
+            return StreamPlus.from(
+                    StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+                        boolean stillGoing = true;
+                        @Override
+                        public boolean tryAdvance(Consumer<? super DATA> consumer) {
+                            if (stillGoing) {
+                                Consumer<? super DATA> action = elem -> {
+                                    if (condition.test(elem)) {
+                                        consumer.accept(elem);
+                                    } else {
+                                        stillGoing = false;
+                                    }
+                                };
+                                boolean hadNext = splitr.tryAdvance(action);
+                                return hadNext && stillGoing;
+                            }
+                            return false;
+                        }
+                    }, false)
+                );
+        });
+    }
     
     /** Accept any value until the condition is true. */
     @Sequential

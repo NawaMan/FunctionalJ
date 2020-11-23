@@ -32,6 +32,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 import functionalj.functions.ThrowFuncs;
+import lombok.val;
 
 
 public class BlockingQueueIteratorPlus<DATA> implements IteratorPlus<DATA> {

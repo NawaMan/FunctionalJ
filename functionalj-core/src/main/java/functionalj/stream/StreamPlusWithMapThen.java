@@ -30,6 +30,7 @@ import functionalj.function.Func3;
 import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
+import lombok.val;
 
 
 public interface StreamPlusWithMapThen<DATA> {

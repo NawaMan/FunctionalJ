@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import functionalj.stream.markers.Eager;
+import lombok.val;
 
 
 public interface StreamPlusWithSort<DATA> {

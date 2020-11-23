@@ -27,6 +27,8 @@ import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import lombok.val;
+
 
 
 // This class along with ArrayBackedIteratorPlus helps improve performance when do pullNext, useNext and mapNext 

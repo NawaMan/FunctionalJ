@@ -1,6 +1,7 @@
 package functionalj.stream;
 
 import functionalj.function.Func1;
+import lombok.val;
 
 
 public interface StreamProcessor<DATA, TARGET> {

@@ -31,15 +31,16 @@ import functionalj.function.FuncUnit0;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.Streamable;
 import functionalj.streamable.intstreamable.IntStreamable;
+import lombok.val;
 
 
 public class IntStreamableTest {
-
+    
     void run(FuncUnit0 runnable) {
         runnable.run();
         runnable.run();
     }
-
+    
     @Test
     public void testEmpty() {
         val streamble = empty();
@@ -47,7 +48,7 @@ public class IntStreamableTest {
             assertEquals("[]", streamble.toListString());
         });
     }
-
+    
     @Test
     public void testEmptyIntStream() {
         val streamble = emptyIntStreamable();
@@ -55,37 +56,37 @@ public class IntStreamableTest {
             assertEquals("[]", streamble.toListString());
         });
     }
-
+    
     @Test
     public void testOf() {
         val intArray = new int[] {1, 1, 2, 3, 5, 8};
-
+        
         val streamble1 = IntStreamable.of(intArray);
         run(()->{
             assertEquals("[1, 1, 2, 3, 5, 8]", streamble1.toListString());
         });
-
+        
         val streamble2 = steamableOf(intArray);
         run(()->{
             assertEquals("[1, 1, 2, 3, 5, 8]", streamble2.toListString());
         });
-
+        
         val streamble3 = ints(intArray);
         run(()->{
             assertEquals("[1, 1, 2, 3, 5, 8]", streamble3.toListString());
         });
-
+        
         val nullStreamble = IntStreamable.of(null);
         run(()->{
             assertEquals("[]", nullStreamble.toListString());
         });
-
+        
         val zeroStreamble = IntStreamable.of(new int[0]);
         run(()->{
             assertEquals("[]", zeroStreamble.toListString());
         });
     }
-
+    
     @Test
     public void testOf_immutable() {
         val intArray = new int[] {1, 1, 2, 3, 5, 8};
@@ -96,7 +97,7 @@ public class IntStreamableTest {
             // NOICE ------^  The value are not changed after.
         });
     }
-
+    
     @Test
     public void testZeroes() {
         val zeroes  = zeroes();
@@ -106,7 +107,7 @@ public class IntStreamableTest {
             assertEquals("[0, 0, 0, 0, 0, 0]", zeroes6.toListString());
         });
     }
-
+    
     @Test
     public void testOnes() {
         val ones  = ones();
@@ -116,7 +117,7 @@ public class IntStreamableTest {
             assertEquals("[1, 1, 1, 1, 1, 1]", ones6.toListString());
         });
     }
-
+    
     @Test
     public void testRepeat() {
         val streamable = repeat(1, 2, 3);
@@ -124,7 +125,7 @@ public class IntStreamableTest {
             assertEquals("[1, 2, 3, 1, 2, 3, 1, 2, 3, 1]", streamable.limit(10).toListString());
         });
     }
-
+    
     @Test
     public void testCycle() {
         val streamable = cycle(1, 2, 3);
@@ -132,7 +133,7 @@ public class IntStreamableTest {
             assertEquals("[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2]", streamable.limit(11).toListString());
         });
     }
-
+    
     @Test
     public void testLoop() {
         val loop  = loop();
@@ -142,7 +143,7 @@ public class IntStreamableTest {
             assertEquals("[0, 1, 2, 3, 4]", loop5.toListString());
         });
     }
-
+    
     @Test
     public void testInfinite() {
         val streamable  = infinite();
@@ -150,7 +151,7 @@ public class IntStreamableTest {
             assertEquals("[5, 6, 7, 8, 9]", streamable.skip(5).limit(5).toListString());
         });
     }
-
+    
     @Test
     public void testInfiniteInt() {
         val streamable  = infiniteInt();
@@ -158,7 +159,7 @@ public class IntStreamableTest {
             assertEquals("[5, 6, 7, 8, 9]", streamable.skip(5).limit(5).toListString());
         });
     }
-
+    
     @Test
     public void testNaturalNumbers() {
         val streamable1 = naturalNumbers();
@@ -168,7 +169,7 @@ public class IntStreamableTest {
             assertEquals("[1, 2, 3, 4, 5]", streamable2.toListString());
         });
     }
-
+    
     @Test
     public void testWholeNumbers() {
         val streamable1 = wholeNumbers();
@@ -178,7 +179,7 @@ public class IntStreamableTest {
             assertEquals("[0, 1, 2, 3, 4]", streamable2.toListString());
         });
     }
-
+    
     @Test
     public void testRange() {
         val streamable  = range(7, 12);
@@ -186,7 +187,7 @@ public class IntStreamableTest {
             assertEquals("[7, 8, 9, 10, 11]", streamable.toListString());
         });
     }
-
+    
     @Test
     public void testGenerate() {
         val streamable  = generate(()->5);
@@ -194,7 +195,7 @@ public class IntStreamableTest {
             assertEquals("[5, 5, 5]", streamable.limit(3).toListString());
         });
     }
-
+    
     @Test
     public void testGenerateWith() {
         val streamable  = generateWith(()->IntStreamPlus.of(1, 2, 3));
@@ -202,20 +203,20 @@ public class IntStreamableTest {
             assertEquals("[1, 2, 3]", streamable.toListString());
         });
     }
-
+    
     @Test
     public void testIterate() {
         val streamable1  = iterate(1, a -> a + 1);
         run(()->{
             assertEquals("[6, 7, 8, 9, 10]", streamable1.skip(5).limit(5).toListString());
         });
-
+    
         val streamable2  = iterate(1, 1, (a, b) -> a + b);
         run(()->{
             assertEquals("[1, 1, 2, 3, 5, 8, 13]", streamable2.limit(7).toListString());
         });
     }
-
+    
     @Test
     public void testConcat() {
         val range1  = range(0, 5);
@@ -229,7 +230,7 @@ public class IntStreamableTest {
                         streamable.toListString());
         });
     }
-
+    
     @Test
     public void testCompound() {
         val streamable1 = compound(1, i -> i * 2);
@@ -237,7 +238,7 @@ public class IntStreamableTest {
             assertEquals("[32, 64, 128, 256, 512]",
                     streamable1.skip(5).limit(5).toListString());
         });
-
+    
         val streamable2 = compound(1, 2, (a, b) -> a * 3 + b);
         run(()->{
             assertEquals("[1, 2, 5, 11, 26]",
@@ -369,7 +370,7 @@ public class IntStreamableTest {
 //            });
 //        }
 //    }
-
+    
 //    @Test
 //    public void testZipWith() {
 //        {
@@ -504,7 +505,7 @@ public class IntStreamableTest {
 //            });
 //        }
 //    }
-
+    
     @Test
     public void testMap() {
         val streamable = ints(1, 1, 2, 3, 5, 8);
@@ -516,7 +517,7 @@ public class IntStreamableTest {
                     .toListString());
         });
     }
-
+    
     @Test
     public void testMapToInt() {
         val streamable = ints(1, 1, 2, 3, 5, 8);
@@ -528,7 +529,7 @@ public class IntStreamableTest {
                     .toListString());
         });
     }
-
+    
 //    @Test
 //    public void testMapToLong() {
 //        val intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
@@ -548,7 +549,7 @@ public class IntStreamableTest {
 //                .mapToDouble(i -> i * 2)
 //                .toListString());
 //    }
-
+    
     @Test
     public void testMapToObj() {
         val streamable = ints(1, 1, 2, 3, 5, 8);
@@ -560,7 +561,7 @@ public class IntStreamableTest {
                     .toListString());
         });
     }
-
+    
     @Test
     public void testFlatMap() {
         val streamable = ints(1, 2, 3, 5);
@@ -572,7 +573,7 @@ public class IntStreamableTest {
                     .toListString());
         });
     }
-
+    
     @Test
     public void testFlatMapToObj() {
         val streamable = ints(1, 2, 3, 5);
@@ -583,7 +584,7 @@ public class IntStreamableTest {
                 .flatMapToObj(mapper)
                 .toListString());
     }
-
+    
     @Test
     public void testFilter() {
         val streamable = loop(10);
@@ -615,7 +616,7 @@ public class IntStreamableTest {
 //                    .toListString());
         });
     }
-
+    
     @Test
     public void testPeek() {
         val streamable = loop(5);
@@ -631,7 +632,7 @@ public class IntStreamableTest {
                     list.toString());
         });
     }
-
+    
     @Test
     public void testLimit() {
         val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21);
@@ -643,7 +644,7 @@ public class IntStreamableTest {
                     .toListString());
         });
     }
-
+    
     @Test
     public void testSkip() {
         val streamable = ints(1, 1, 2, 3, 5, 8, 13, 21);

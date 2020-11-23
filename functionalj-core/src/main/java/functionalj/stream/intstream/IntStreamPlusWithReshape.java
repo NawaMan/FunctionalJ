@@ -43,6 +43,7 @@ import java.util.function.Supplier;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
+import lombok.val;
 
 
 public interface IntStreamPlusWithReshape extends AsIntStreamPlus {

@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -81,6 +81,7 @@ import functionalj.promise.DeferAction;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.IntStreamable;
+import lombok.val;
 
 
 public class StreamPlusTest {
@@ -353,13 +354,13 @@ public class StreamPlusTest {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings("11", stream.mapToInt(String::length).sum());
     }
-//    
+//
 //    @Test
 //    public void testMapToLong() {
 //        val stream = StreamPlus.of("One", "Two", "Three");
 //        assertStrings("11", stream.mapToLong(String::length).sum());
 //    }
-//    
+//
     @Test @Ignore
     public void testMapToDouble() {
         val stream = StreamPlus.of("One", "Two", "Three");
@@ -551,7 +552,7 @@ public class StreamPlusTest {
         val stream = StreamPlus.of('A', 'B', 'C', 'D');
         assertStrings("[65, 66, 67, 68]", Arrays.toString(stream.toIntArray(c -> (int)c)));
     }
-//    
+//
 //    @Test
 //    public void testToLongArray() {
 //        val stream = StreamPlus.of('A', 'B', 'C', 'D');
@@ -1782,7 +1783,7 @@ public class StreamPlusTest {
         assertStrings(
                 "(Result:{ NotExist },One), "
                 + "(Result:{ Value: One },Two), "
-                + "(Result:{ Value: Two },Three)", 
+                + "(Result:{ Value: Two },Three)",
                 stream.mapWithPrev().join(", "));
     }
     
@@ -1970,7 +1971,7 @@ public class StreamPlusTest {
     @Test
     public void testSegmentSize_function() {
         assertEquals(
-                "[], " + 
+                "[], " +
                 "[1], " +
                 "[2, 3], " +
                 "[4, 5, 6, 7], " +

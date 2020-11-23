@@ -299,6 +299,7 @@ public abstract class Ref<DATA> {
         val set = new HashSet<Ref<?>>();
         Entry entry = refEntry.get();
         while ((entry != null) && (entry.substitution != null)) {
+            @SuppressWarnings("rawtypes")
             val ref = entry.substitution.ref();
             set.add(ref);
             
@@ -311,6 +312,7 @@ public abstract class Ref<DATA> {
         val map = new HashMap<Ref<?>, Substitution<?>>();
         Entry entry = refEntry.get();
         while ((entry != null) && (entry.substitution != null)) {
+            @SuppressWarnings("rawtypes")
             val ref = entry.substitution.ref();
             map.putIfAbsent(ref, entry.substitution);
             

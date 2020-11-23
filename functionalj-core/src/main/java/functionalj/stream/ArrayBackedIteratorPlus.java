@@ -34,6 +34,7 @@ import functionalj.function.Func1;
 import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
 import functionalj.streamable.Streamable;
+import lombok.val;
 
 
 public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {

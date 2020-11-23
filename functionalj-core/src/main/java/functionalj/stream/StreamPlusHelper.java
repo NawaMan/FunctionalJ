@@ -9,6 +9,7 @@ import java.util.stream.StreamSupport;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
+import lombok.val;
 
 
 public class StreamPlusHelper {

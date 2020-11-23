@@ -38,6 +38,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import functionalj.function.IntObjBiFunction;
+import lombok.val;
 
 
 public interface StreamPlusWithFilter<DATA> {

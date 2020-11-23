@@ -39,6 +39,7 @@ import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 
 
 public interface AsIntStreamPlusWithStatistic {

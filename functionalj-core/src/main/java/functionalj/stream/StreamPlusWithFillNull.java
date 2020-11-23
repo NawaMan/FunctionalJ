@@ -32,6 +32,7 @@ import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.lens.core.WriteLens;
 import functionalj.lens.lenses.AnyLens;
+import lombok.val;
 
 
 public interface StreamPlusWithFillNull<DATA> {

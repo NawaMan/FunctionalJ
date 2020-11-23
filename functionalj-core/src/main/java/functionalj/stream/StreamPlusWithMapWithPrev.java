@@ -29,6 +29,7 @@ import java.util.function.BiFunction;
 import functionalj.result.Result;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 
 
 

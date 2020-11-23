@@ -30,6 +30,7 @@ import java.util.function.IntUnaryOperator;
 
 import functionalj.function.Func1;
 import functionalj.streamable.intstreamable.IntStreamable;
+import lombok.val;
 
 
 public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function<Integer, Integer>, IntStreamable {

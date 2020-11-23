@@ -39,6 +39,7 @@ import java.util.stream.IntStream;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
+import lombok.val;
 
 
 /**

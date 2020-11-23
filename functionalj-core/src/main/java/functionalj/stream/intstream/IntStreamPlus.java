@@ -56,6 +56,7 @@ import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
 import functionalj.tuple.IntIntTuple;
+import lombok.val;
 
 
 // TODO - Use this for byte, short and char
@@ -632,13 +633,6 @@ public interface IntStreamPlus
     @Override
     public default IntStreamPlus distinct() {
         return IntStreamPlus.from(intStream().distinct());
-    }
-    
-    //-- Take while --
-    
-    @Override
-    public default IntStreamPlus takeWhile(IntPredicate condition) {
-        return IntStreamPlus.from(intStream().takeWhile(condition));
     }
     
     //-- Sorted --

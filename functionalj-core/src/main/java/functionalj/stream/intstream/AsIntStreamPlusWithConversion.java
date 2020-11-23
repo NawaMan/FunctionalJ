@@ -45,6 +45,7 @@ import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Terminal;
+import lombok.val;
 
 
 public interface AsIntStreamPlusWithConversion {

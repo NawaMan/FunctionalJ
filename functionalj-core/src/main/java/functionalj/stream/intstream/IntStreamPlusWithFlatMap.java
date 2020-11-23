@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 
 import functionalj.function.Func;
 import functionalj.stream.StreamPlus;
+import lombok.val;
 
 
 public interface IntStreamPlusWithFlatMap {
