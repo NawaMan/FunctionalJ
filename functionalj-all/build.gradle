@@ -8,8 +8,8 @@ repositories {
 dependencies {
     compile project(':functionalj-core')
     // compile project(':functionalj-elm')
-    // compile project(':functionalj-store')
-    // compile project(':functionalj-types')
+    compile project(':functionalj-store')
+    compile project(':functionalj-types')
     
     compileOnly         'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'

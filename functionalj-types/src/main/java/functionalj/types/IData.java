@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import functionalj.types.choice.ChoiceTypes;
@@ -42,6 +43,12 @@ import lombok.val;
 public interface IData {
     
     public Map<String, Object> __toMap();
+    
+    
+    public static <DATA extends IData> Optional<DATA> fromMap(Map<String, Object> map, Class<DATA> clazz) {
+        return Optional.ofNullable(IData.$utils.fromMap(map, clazz));
+    }
+    
     
     public static class $utils {
         

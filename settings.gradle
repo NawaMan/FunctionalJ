@@ -1,7 +1,7 @@
 
 include ":functionalj-core"
-// include ":functionalj-store"
-// include ":functionalj-types"
+include ":functionalj-store"
+include ":functionalj-types"
 // include ":functionalj-elm"
 
 include ":functionalj-all"
