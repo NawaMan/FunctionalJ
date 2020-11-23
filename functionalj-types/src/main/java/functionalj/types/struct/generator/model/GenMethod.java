@@ -41,6 +41,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.With;
+import lombok.val;
 
 
 /**
@@ -86,7 +87,7 @@ public class GenMethod implements IGenerateDefinition {
         types.add(type);
         
         for (GenParam param : params) {
-            var paramType = param.getType();
+            val paramType = param.getType();
             if (types.contains(paramType))
                 continue;
             
@@ -98,7 +99,7 @@ public class GenMethod implements IGenerateDefinition {
                 .forEach(types::add);
         }
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        var streams = Stream.of(
+        val streams = Stream.of(
                     types.stream(),
                     (usedTypes  != null) ? usedTypes .stream() : (Stream<Type>)(Stream)Stream.empty(),
                     (exceptions != null) ? exceptions.stream() : (Stream<Type>)(Stream)Stream.empty()
@@ -108,19 +109,19 @@ public class GenMethod implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        var paramDefs
+        val paramDefs
             = params.stream()
                 .map(param -> param.toTerm(currentPackage))
                 .collect(joining(", "));
-        var paramDefsToText
+        val paramDefsToText
             = isVarAgrs
             ? paramDefs.replaceAll("([^ ]+)$", "... $1")
             : paramDefs;
-        var throwing = (exceptions == null || exceptions.isEmpty())
+        val throwing = (exceptions == null || exceptions.isEmpty())
                      ? ""
                      : (" throws " + exceptions.stream().map(type -> type.simpleName()).collect(Collectors.joining(", ")) + " ");
-        var lineEnd = throwing + ((body == null) ? ";" : " {");
-        var definition
+        val lineEnd = throwing + ((body == null) ? ";" : " {");
+        val definition
                 = ILines.oneLineOf(
                     accessibility, modifiability, scope,
                     type.simpleNameWithGeneric(""), name + "(" + paramDefsToText + ")" + lineEnd);

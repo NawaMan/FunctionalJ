@@ -48,6 +48,7 @@ import javax.tools.Diagnostic;
 
 import functionalj.types.Choice;
 import functionalj.types.choice.generator.Generator;
+import lombok.val;
 
 
 /**
@@ -91,19 +92,19 @@ public class ChoiceAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Choice.class)) {
-            var input      = new ChoiceSpecInputImpl(element, elementUtils, messager);
-            var choiceSpec = new ChoiceSpec(input);
-            var sourceSpec = choiceSpec.sourceSpec();
-            var generator  = new Generator(sourceSpec);
+            val input      = new ChoiceSpecInputImpl(element, elementUtils, messager);
+            val choiceSpec = new ChoiceSpec(input);
+            val sourceSpec = choiceSpec.sourceSpec();
+            val generator  = new Generator(sourceSpec);
             
-            var typeElement    = (TypeElement)element;
-            var packageName    = choiceSpec.packageName();
-            var targetName     = choiceSpec.targetName();
-            var specTargetName = choiceSpec.specTargetName();
+            val typeElement    = (TypeElement)element;
+            val packageName    = choiceSpec.packageName();
+            val targetName     = choiceSpec.targetName();
+            val specTargetName = choiceSpec.specTargetName();
             try {
-                var className      = packageName + "." + targetName;
-                var content        = generator.lines().stream().collect(joining("\n"));
-                var logString      = "\n" + logs.stream().map("// "::concat).collect(joining("\n"));
+                val className      = packageName + "." + targetName;
+                val content        = generator.lines().stream().collect(joining("\n"));
+                val logString      = "\n" + logs.stream().map("// "::concat).collect(joining("\n"));
                 generateCode(element, className, content + logString);
             } catch (Exception e) {
                 e.printStackTrace(System.err);

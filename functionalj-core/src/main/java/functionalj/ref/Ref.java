@@ -254,7 +254,7 @@ public abstract class Ref<DATA> {
         try {
             if (substitutions != null) {
                 Entry current = map;
-                for (var substitution : substitutions) {
+                for (val substitution : substitutions) {
                     if (substitution == null)
                         continue;
                     if (substitution.ref() instanceof DictatedRef)
@@ -277,7 +277,7 @@ public abstract class Ref<DATA> {
         try {
             if (substitutions != null) {
                 Entry currentEntry = map;
-                for (var substitution : substitutions) {
+                for (val substitution : substitutions) {
                     if (substitution == null)
                         continue;
                     if (substitution.ref() instanceof DictatedRef)

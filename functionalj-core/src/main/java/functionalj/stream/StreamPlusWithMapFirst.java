@@ -48,7 +48,7 @@ class StreamPlusMapAddOnHelper {
     private static <T, D> T eachMapFirst(D d, Function<? super D, T>[] mappers) throws Exception {
         Exception exception = null;
         boolean hasNull = false;
-        for(var mapper : mappers) {
+        for(val mapper : mappers) {
             try {
                 val res = mapper.apply(d);
                 if (res == null)

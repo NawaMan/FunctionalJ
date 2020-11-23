@@ -29,6 +29,7 @@ import static java.util.Arrays.asList;
 import java.util.List;
 
 import functionalj.types.choice.generator.model.Case;
+import lombok.val;
 
 
 public class SubClassConstructor implements Lines {
@@ -44,12 +45,12 @@ public class SubClassConstructor implements Lines {
     
     @Override
     public List<String> lines() {
-        var sourceName = targetClass.spec.sourceType.simpleName();
-        var name       = choice.name;
-        var genericDef = targetClass.getType().genericDef().isEmpty() ? "" : targetClass.getType().genericDef() + " ";
+        val sourceName = targetClass.spec.sourceType.simpleName();
+        val name       = choice.name;
+        val genericDef = targetClass.getType().genericDef().isEmpty() ? "" : targetClass.getType().genericDef() + " ";
         if (!choice.isParameterized()) {
-            var isGeneric = !targetClass.getType().genericsString().isEmpty();
-            var instance  = isGeneric ? "" : "public static final " + name + " " + Utils.toCamelCase(name) + " = " + name + ".instance;";
+            val isGeneric = !targetClass.getType().genericsString().isEmpty();
+            val instance  = isGeneric ? "" : "public static final " + name + " " + Utils.toCamelCase(name) + " = " + name + ".instance;";
             return asList(
                 format(instance),
                 format("public static final %1$s%2$s %3$s() {", genericDef, name + targetClass.getType().genericsString(), name),
@@ -58,10 +59,10 @@ public class SubClassConstructor implements Lines {
             );
         }
         
-        var validateName = choice.validationMethod;
-        var isV = (validateName != null);
-        var paramDefs  = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
-        var paramCalls = choice.mapJoinParams(p ->                                   p.name, ", ");
+        val validateName = choice.validationMethod;
+        val isV = (validateName != null);
+        val paramDefs  = choice.mapJoinParams(p -> p.type.typeWithGenerics() + " " + p.name, ", ");
+        val paramCalls = choice.mapJoinParams(p ->                                   p.name, ", ");
         return asList(
                 format      ("public static final %1$s%2$s %3$s(%4$s) {", genericDef, name + targetClass.getType().genericsString(), name, paramDefs),
                 isV ? format("    %1$s.%2$s(%3$s);",                      sourceName, validateName, paramCalls) : null,

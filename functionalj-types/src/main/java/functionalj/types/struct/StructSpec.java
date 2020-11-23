@@ -57,6 +57,7 @@ import functionalj.types.common;
 import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
+import lombok.val;
 
 
 public class StructSpec {
@@ -94,7 +95,7 @@ public class StructSpec {
     }
     
     public String packageName() {
-        var element = input.element();
+        val element = input.element();
         if (element instanceof TypeElement)
             return extractPackageNameType(element);
         if (element instanceof ExecutableElement)
@@ -103,14 +104,14 @@ public class StructSpec {
     }
     
     public String targetTypeName() {
-        var element        = input.element();
-        var struct         = element.getAnnotation(Struct.class);
-        var specTargetName = struct.name();
+        val element        = input.element();
+        val struct         = element.getAnnotation(Struct.class);
+        val specTargetName = struct.name();
         return specTargetName;
     }
     
     public SourceSpec sourceSpec() {
-        var element = input.element();
+        val element = input.element();
         if (element instanceof TypeElement)
             return extractSourceSpecType(element);
         if (element instanceof ExecutableElement)
@@ -118,16 +119,16 @@ public class StructSpec {
         throw new IllegalArgumentException("Record annotation is only support class or method.");
     }
     private SourceSpec extractSourceSpecType(Element element) {
-        var type        = (TypeElement)element;
-        var simpleName  = type.getSimpleName().toString();
-        var isInterface = ElementKind.INTERFACE.equals(element.getKind());
-        var isClass     = ElementKind.CLASS    .equals(element.getKind());
+        val type        = (TypeElement)element;
+        val simpleName  = type.getSimpleName().toString();
+        val isInterface = ElementKind.INTERFACE.equals(element.getKind());
+        val isClass     = ElementKind.CLASS    .equals(element.getKind());
         if (!isInterface && !isClass) {
             error(element, "Only a class or interface can be annotated with " + Struct.class.getSimpleName() + ": " + simpleName);
             return null;
         }
         
-        var localTypeWithLens = common.readLocalTypeWithLens(element);
+        val localTypeWithLens = common.readLocalTypeWithLens(element);
         
         List<Getter> getters = type.getEnclosedElements().stream()
                 .filter(elmt  ->elmt.getKind().equals(ElementKind.METHOD))
@@ -141,22 +142,22 @@ public class StructSpec {
         if (getters.stream().anyMatch(g -> g == null))
             return null;
         
-        var packageName    = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
-        var encloseName    = element.getEnclosingElement().getSimpleName().toString();
-        var sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
-        var struct         = element.getAnnotation(Struct.class);
-        var specTargetName = struct.name();
-        var targetName     = common.extractTargetName(simpleName, struct.name());
-        var specField      = struct.specField();
+        val packageName    = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
+        val encloseName    = element.getEnclosingElement().getSimpleName().toString();
+        val sourceName     = type.getQualifiedName().toString().substring(packageName.length() + 1 );
+        val struct         = element.getAnnotation(Struct.class);
+        val specTargetName = struct.name();
+        val targetName     = common.extractTargetName(simpleName, struct.name());
+        val specField      = struct.specField();
         
-        var configures = extractConfigurations(element, struct);
+        val configures = extractConfigurations(element, struct);
         if (configures == null)
             return null;
         
         if (!ensureNoArgConstructorWhenRequireFieldExists(element, getters, packageName, specTargetName, configures))
             return null;
         
-        var validatorName = (String)null;
+        val validatorName = (String)null;
         
         try {
             return new SourceSpec(sourceName, packageName, encloseName, targetName, packageName, isClass, specField, validatorName, configures, getters, localTypeWithLens);
@@ -173,26 +174,26 @@ public class StructSpec {
     }
     
     private SourceSpec extractSourceSpecMethod(Element element) {
-        var method         = (ExecutableElement)element;
-        var packageName    = packageName();
-        var encloseName    = element.getEnclosingElement().getSimpleName().toString();
-        var struct         = element.getAnnotation(Struct.class);
-        var specTargetName = common.extractTargetName(method.getSimpleName().toString(), struct.name());
-        var specField      = struct.specField();
+        val method         = (ExecutableElement)element;
+        val packageName    = packageName();
+        val encloseName    = element.getEnclosingElement().getSimpleName().toString();
+        val struct         = element.getAnnotation(Struct.class);
+        val specTargetName = common.extractTargetName(method.getSimpleName().toString(), struct.name());
+        val specField      = struct.specField();
         
-        var localTypeWithLens = common.readLocalTypeWithLens(element);
+        val localTypeWithLens = common.readLocalTypeWithLens(element);
         
-        var isClass      = (Boolean)null;
-        var sourceName   = (String)null;
-        var superPackage = packageName;
+        val isClass      = (Boolean)null;
+        val sourceName   = (String)null;
+        val superPackage = packageName;
         
-        var validatorName = isBooleanStringOrValidation(method.getReturnType()) ? method.getSimpleName().toString() : null;
+        val validatorName = isBooleanStringOrValidation(method.getReturnType()) ? method.getSimpleName().toString() : null;
         
-        var configures = extractConfigurations(element, struct);
+        val configures = extractConfigurations(element, struct);
         if (configures == null)
             return null;
         
-        var getters = method.getParameters().stream()
+        val getters = method.getParameters().stream()
                 .map(p -> createGetterFromParameter(element, p))
                 .filter(Objects::nonNull)
                 .collect(toList());
@@ -215,15 +216,15 @@ public class StructSpec {
     }
     
     private String extractPackageNameType(Element element) {
-        var type        = (TypeElement)element;
-        var packageName = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
+        val type        = (TypeElement)element;
+        val packageName = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
         return packageName;
     }
     
     private String extractPackageNameMethod(Element element) {
-        var method      = (ExecutableElement)element;
-        var type        = (TypeElement)(method.getEnclosingElement());
-        var packageName = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
+        val method      = (ExecutableElement)element;
+        val type        = (TypeElement)(method.getEnclosingElement());
+        val packageName = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
         return packageName;
     }
     
@@ -233,8 +234,8 @@ public class StructSpec {
                 return true;
         }
         if (returnType instanceof DeclaredType) {
-            var typeElement = ((TypeElement)((DeclaredType)returnType).asElement());
-            var fullName    = typeElement.getQualifiedName().toString();
+            val typeElement = ((TypeElement)((DeclaredType)returnType).asElement());
+            val fullName    = typeElement.getQualifiedName().toString();
             if ("java.lang.String".equals(fullName))
                 return true;
             if ("functionalj.result.ValidationException".equals(fullName))
@@ -250,31 +251,31 @@ public class StructSpec {
             return true;
         if (getters.stream().noneMatch(Getter::isRequired))
             return true;
-        var field = getters.stream().filter(Getter::isRequired).findFirst().get().getName();
+        val field = getters.stream().filter(Getter::isRequired).findFirst().get().getName();
         error(element, "No arg constructor cannot be generate when at least one field is require: "
                         + packageName + "." + specTargetName + " -> field: " + field);
         return false;
     }
     
     private Getter createGetterFromParameter(Element element, VariableElement p){
-        var name        = p.getSimpleName().toString();
-        var type        = getType(element, p.asType());
-        var isPrimitive = type.isPrimitive();
-        var isNullable  = ((p.getAnnotation(Nullable.class) != null) || (p.getAnnotation(DefaultTo.class) != null));
-        var defTo       = (p.getAnnotation(DefaultTo.class) != null)
+        val name        = p.getSimpleName().toString();
+        val type        = getType(element, p.asType());
+        val isPrimitive = type.isPrimitive();
+        val isNullable  = ((p.getAnnotation(Nullable.class) != null) || (p.getAnnotation(DefaultTo.class) != null));
+        val defTo       = (p.getAnnotation(DefaultTo.class) != null)
                         ? p.getAnnotation(DefaultTo.class).value()
                         : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
-        var defValue = (DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(type) : defTo;
+        val defValue = (DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(type) : defTo;
         if (!DefaultValue.isSuitable(type, defValue)) {
             error(element, "Default value is not suitable for the type: " + type.fullName() + " -> DefaultTo " + defValue);
             return null;
         }
-        var getter = new Getter(name, type, isNullable, defValue);
+        val getter = new Getter(name, type, isNullable, defValue);
         return getter;
     }
     
     private Configurations extractConfigurations(Element element, Struct struct) {
-        var configures = new Configurations();
+        val configures = new Configurations();
         configures.coupleWithDefinition            = struct.coupleWithDefinition();
         configures.generateNoArgConstructor        = struct.generateNoArgConstructor();
         configures.generateRequiredOnlyConstructor = struct.generateRequiredOnlyConstructor();
@@ -295,7 +296,7 @@ public class StructSpec {
     
     private boolean isAbstract(ExecutableElement method) {
         // Seriously ... no other way?
-        try (var writer = new StringWriter()) {
+        try (val writer = new StringWriter()) {
             input.elementUtils().printElements(writer, method);
             return writer.toString().contains(" abstract ");
         } catch (IOException e) {
@@ -306,19 +307,19 @@ public class StructSpec {
     
     private Getter createGetterFromMethod(Element element, ExecutableElement method) {
         try {
-            var methodName  = method.getSimpleName().toString();
-            var returnType  = getType(element, method.getReturnType());
-            var isPrimitive = returnType.isPrimitive();
-            var isNullable  = ((method.getAnnotation(Nullable.class) != null) || (method.getAnnotation(DefaultTo.class) != null));
-            var defTo       = (method.getAnnotation(DefaultTo.class) != null)
+            val methodName  = method.getSimpleName().toString();
+            val returnType  = getType(element, method.getReturnType());
+            val isPrimitive = returnType.isPrimitive();
+            val isNullable  = ((method.getAnnotation(Nullable.class) != null) || (method.getAnnotation(DefaultTo.class) != null));
+            val defTo       = (method.getAnnotation(DefaultTo.class) != null)
                             ? method.getAnnotation(DefaultTo.class).value()
                             : ((isNullable && !isPrimitive) ? DefaultValue.NULL : DefaultValue.REQUIRED);
-            var defValue = ((DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo);
+            val defValue = ((DefaultValue.UNSPECIFIED == defTo) ? DefaultValue.getUnspecfiedValue(returnType) : defTo);
             if (!DefaultValue.isSuitable(returnType, defValue)) {
                 error(element, "Default value is not suitable for the type: " + returnType.fullName() + " -> DefaultTo " + defTo);
                 return null;
             }
-            var getter = new Getter(methodName, returnType, isNullable, defValue);
+            val getter = new Getter(methodName, returnType, isNullable, defValue);
             return getter;
         } catch (Exception e) {
             e.printStackTrace();
@@ -327,36 +328,36 @@ public class StructSpec {
     }
     
     private Type getType(Element element, TypeMirror typeMirror) {
-        var typeStr = typeMirror.toString();
+        val typeStr = typeMirror.toString();
         if (typeMirror instanceof PrimitiveType)
             return Type.primitiveTypes.get(typeStr);
         
         if (typeMirror instanceof DeclaredType) {
-            var typeElement = ((TypeElement)((DeclaredType)typeMirror).asElement());
-            var typeName = typeElement.getSimpleName().toString();
+            val typeElement = ((TypeElement)((DeclaredType)typeMirror).asElement());
+            val typeName = typeElement.getSimpleName().toString();
             if (typeName.equals("String"))
                 return Type.STRING;
             
-            var generics = ((DeclaredType)typeMirror).getTypeArguments().stream()
+            val generics = ((DeclaredType)typeMirror).getTypeArguments().stream()
                     .map(typeArg -> getType(element, (TypeMirror)typeArg))
                     .map(type    -> new Generic(type))
                     .collect(toList());
             
-            var packageName = getPackageName(element, typeElement);
-            var encloseElmt = typeElement.getEnclosingElement();
-            var encloseName = typeElementKinds.contains(encloseElmt.getKind()) ? encloseElmt.getSimpleName().toString() : null;
+            val packageName = getPackageName(element, typeElement);
+            val encloseElmt = typeElement.getEnclosingElement();
+            val encloseName = typeElementKinds.contains(encloseElmt.getKind()) ? encloseElmt.getSimpleName().toString() : null;
             return new Type(packageName, encloseName, typeName, generics);
         }
         return Type.newVirtualType(typeMirror.toString());
     }
     
     private String getPackageName(Element element, TypeElement typeElement) {
-        var elementUtils = input.elementUtils();
-        var typePackage = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
+        val elementUtils = input.elementUtils();
+        val typePackage = elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
         if (!typePackage.isEmpty())
             return typePackage;
         
-        var packageName = elementUtils.getPackageOf(element).getQualifiedName().toString();
+        val packageName = elementUtils.getPackageOf(element).getQualifiedName().toString();
         return packageName;
     }
     

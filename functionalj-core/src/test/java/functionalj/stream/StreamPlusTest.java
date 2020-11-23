@@ -332,7 +332,7 @@ public class StreamPlusTest {
         val list    = new ArrayList<String>();
         val isClose = new AtomicBoolean(false);
         stream.onClose(()->isClose.set(true));
-        try(var iterator = stream.iterator()) {
+        try(val iterator = stream.iterator()) {
             while (iterator.hasNext())
                 list.add(iterator.next());
             assertStrings("[One, Two, Three]", list);

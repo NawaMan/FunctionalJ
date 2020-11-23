@@ -44,7 +44,7 @@ import functionalj.types.struct.generator.IGenerateDefinition;
 import functionalj.types.struct.generator.ILines;
 import lombok.Value;
 import lombok.With;
-
+import lombok.val;
 import lombok.experimental.Accessors;
 
 /**
@@ -141,26 +141,26 @@ public class GenClass implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        var extendedList    = extendeds()   .stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
-        var implementedList = implementeds().stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
+        val extendedList    = extendeds()   .stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
+        val implementedList = implementeds().stream().map(Type::simpleNameWithGeneric).collect(joining(",")).trim();
         
-        var fieldDefs       = fields()      .stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
-        var constructorDefs = constructors().stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
-        var methodDefs      = methods()     .stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
-        var innerClassDefs  = innerClasses().stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
-        var moreDefs        = mores()       .stream().collect(toList());
+        val fieldDefs       = fields()      .stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        val constructorDefs = constructors().stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        val methodDefs      = methods()     .stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        val innerClassDefs  = innerClasses().stream().map(gen -> gen.toDefinition(currentPackage)).collect(toList());
+        val moreDefs        = mores()       .stream().collect(toList());
         
-        var className = type().simpleNameWithGeneric();
-        var firstLine
+        val className = type().simpleNameWithGeneric();
+        val firstLine
                 = oneLineOf(
                     accessibility, scope, modifiability, isClass ? "class" : "interface", className,
                     utils.prefixWith(extendedList,    "extends "),
                     utils.prefixWith(implementedList, "implements "),
                     "{");
         
-        var lastLine = "}";
+        val lastLine = "}";
         
-        var componentLines
+        val componentLines
                 = linesOf(
                     fieldDefs,
                     constructorDefs,
@@ -168,7 +168,7 @@ public class GenClass implements IGenerateDefinition {
                     innerClassDefs,
                     moreDefs);
         
-        var lines = flatenLines(withSeparateIndentedSpace(
+        val lines = flatenLines(withSeparateIndentedSpace(
                 line  (firstLine),
                 indent(componentLines),
                 line  (lastLine)));

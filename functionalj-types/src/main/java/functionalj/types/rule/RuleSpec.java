@@ -31,6 +31,7 @@ import java.util.Map;
 import functionalj.types.IRule;
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import lombok.val;
 
 
 @Value
@@ -62,7 +63,7 @@ public class RuleSpec {
     
     private static final Map<String, String> genericTypes;
     static {
-        var map = new HashMap<String, String>();
+        val map = new HashMap<String, String>();
         map.put("byte",    Byte     .class.getCanonicalName());
         map.put("short",   Short    .class.getCanonicalName());
         map.put("int",     Integer  .class.getCanonicalName());
@@ -75,11 +76,11 @@ public class RuleSpec {
     }
     
     public String toCode() {
-        var dataTypeGeneric = getDataTypeGeneric();
-        var validationCall  = validationCall();
-        var isSubRule       = (superRule != null) && !superRule.equals(IRule.class.getCanonicalName());
-        var superClass      = isSubRule ? superRule : "functionalj.result.Acceptable<" + dataTypeGeneric + "> implements functionalj.types.IRule<" + dataTypeGeneric + ">";
-        var strTemplate =
+        val dataTypeGeneric = getDataTypeGeneric();
+        val validationCall  = validationCall();
+        val isSubRule       = (superRule != null) && !superRule.equals(IRule.class.getCanonicalName());
+        val superClass      = isSubRule ? superRule : "functionalj.result.Acceptable<" + dataTypeGeneric + "> implements functionalj.types.IRule<" + dataTypeGeneric + ">";
+        val strTemplate =
                 "package " + packageName + ";\n" +
                 "public class " + targetName + " extends " + superClass + " {\n" +
                 "    public static " + targetName + " from(" + dataType + " " + dataName + ") { \n" +
@@ -106,8 +107,8 @@ public class RuleSpec {
     }
     
     private String validationCall() {
-        var validationType = ruleType.getMethod();
-        var msgParam       = (ruleType == RuleType.Bool) ? ", " + toStringLiteral(((errorMsg != null) && !errorMsg.isEmpty()) ? errorMsg : targetName) : "";
+        val validationType = ruleType.getMethod();
+        val msgParam       = (ruleType == RuleType.Bool) ? ", " + toStringLiteral(((errorMsg != null) && !errorMsg.isEmpty()) ? errorMsg : targetName) : "";
         return "functionalj.result.Validation." + validationType
                 + "(" + packageName + "." + enclosingClass + "::" + targetName + msgParam + ")";
     }

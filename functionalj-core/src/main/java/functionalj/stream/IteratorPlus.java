@@ -126,7 +126,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
     public default IteratorPlus<DATA> useNext(int count, FuncUnit1<StreamPlus<DATA>> usage) {
         Object[] array = stream().limit(count).toArray();
         if ((array.length != 0) || count == 0) {
-            try (var iterator = (ArrayBackedIteratorPlus<DATA>)new ArrayBackedIteratorPlus<Object>(array)) {
+            try (val iterator = (ArrayBackedIteratorPlus<DATA>)new ArrayBackedIteratorPlus<Object>(array)) {
                 val stream   = iterator.stream();
                 usage.accept(stream);
             }

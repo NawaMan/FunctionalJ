@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import functionalj.types.choice.generator.model.Case;
+import lombok.val;
 
 
 public class SubFromMapBuilder implements Lines {
@@ -19,7 +20,7 @@ public class SubFromMapBuilder implements Lines {
     }
     
     private Stream<String> body() {
-        var paramIndex = new AtomicInteger(choice.params.size());
+        val paramIndex = new AtomicInteger(choice.params.size());
         Supplier<String> comma = ()-> (paramIndex.decrementAndGet() != 0) ? "," : "";
         return Stream.of(
                 Stream.of("    return " + choice.name + "("),

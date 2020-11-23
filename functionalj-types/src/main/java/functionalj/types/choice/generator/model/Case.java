@@ -35,6 +35,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import lombok.ToString;
+import lombok.val;
 
 
 @ToString
@@ -77,7 +78,7 @@ public class Case {
     }
     
     public String toCode() {
-        var parameters = asList(
+        val parameters = asList(
                 toStringLiteral(name),
                 toStringLiteral(validationMethod),
                 toListCode     (params, CaseParam::toCode)

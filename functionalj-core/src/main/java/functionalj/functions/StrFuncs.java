@@ -417,7 +417,7 @@ public class StrFuncs {
         val pattern  = Pattern.compile(regex, patternFlags);
         return FuncList.from(Streamable.from(()->{
             val matcher  = pattern.matcher(strValue);
-            try (var iterator = createMatchIterator(matcher)) {
+            try (val iterator = createMatchIterator(matcher)) {
                 return iterator.stream();
             }
         }));

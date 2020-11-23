@@ -26,6 +26,8 @@ package functionalj.types.choice;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import lombok.val;
+
 
 public abstract class ChoiceTypeSwitch<D, T> {
     
@@ -49,7 +51,7 @@ public abstract class ChoiceTypeSwitch<D, T> {
     }
     public T orGet(Function<? super D, T> valueMapper) {
         @SuppressWarnings("unchecked")
-        var newAction = (Function<? super D, T>)(($action != null) ? $action : valueMapper);
+        val newAction = (Function<? super D, T>)(($action != null) ? $action : valueMapper);
         return newAction.apply($value);
     }
     public T orElseGet(Supplier<T> valueSupplier) {

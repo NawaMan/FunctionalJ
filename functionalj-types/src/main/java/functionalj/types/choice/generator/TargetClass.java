@@ -40,6 +40,7 @@ import functionalj.types.choice.generator.model.Method;
 //import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.Value;
+import lombok.val;
 
 
 @Value
@@ -55,7 +56,7 @@ public class TargetClass implements Lines {
     
     @Override
     public List<String> lines() {
-        var imports = new TreeSet<String>();
+        val imports = new TreeSet<String>();
         imports.add(ChoiceTypeSwitch.class.getCanonicalName());
         imports.add(IChoice.class.getCanonicalName());
         imports.add("java.util.function.Function");
@@ -67,7 +68,7 @@ public class TargetClass implements Lines {
         imports.add("functionalj.lens.core.LensSpec");
         imports.add("functionalj.lens.lenses.*");
         
-        var hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);
+        val hasChoiceWuthMoreThanOneParam = spec.choices.stream().anyMatch(c -> c.params.size() >1);
         if (hasChoiceWuthMoreThanOneParam) {
             imports.add("functionalj.types.Absent");
         }
@@ -111,48 +112,48 @@ public class TargetClass implements Lines {
             .filter (t -> !"java.lang".equals(t.packageName()))
             .forEach(t -> imports.add(t.fullName()));
         
-        var sourceMethods = new SourceMethod(this).lines().stream()
+        val sourceMethods = new SourceMethod(this).lines().stream()
                 .filter(Objects::nonNull)
                 .map("    "::concat)
                 .collect(toList());;
                 
-        var subClassConstructors
+        val subClassConstructors
                 = spec.choices.stream()
                 .flatMap(choice -> new SubClassConstructor(this, choice).lines().stream())
                 .filter(Objects::nonNull)
                 .map("    "::concat)
                 .collect(toList());
         
-        var subClassDefinitions
+        val subClassDefinitions
                 = spec.choices.stream()
                 .flatMap(choice -> new SubClassDefinition(this, choice).lines().stream())
                 .filter(Objects::nonNull)
                 .map("    "::concat)
                 .collect(toList());
         
-        var targetGeneral
+        val targetGeneral
                 = new TargetTypeGeneral(this, spec.choices)
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
         
-        var targetCheckMethods
+        val targetCheckMethods
                 = new SubCheckMethod(this, spec.choices)
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
-        var fromMapMethod
+        val fromMapMethod
                 = new FromMapBuilder(this)
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
-        var schemaMethod
+        val schemaMethod
                 = new SchemaBuilder(this)
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
         
-        var switchClasses = range(0, spec.choices.size())
+        val switchClasses = range(0, spec.choices.size())
                 .mapToObj(index   -> spec.choices.stream().skip(index).collect(toList()))
                 .flatMap (choices -> new SwitchClass(this, (choices.size() == spec.choices.size()), choices).lines().stream())
                 .filter(Objects::nonNull)
@@ -160,12 +161,12 @@ public class TargetClass implements Lines {
                 .collect(toList())
                 ;
         
-        var choiceLens = new ChoiceLensBuilder(spec).build();
+        val choiceLens = new ChoiceLensBuilder(spec).build();
         
-        var typeName     = type.typeWithGenerics();
-        var pckgName     = spec.sourceType.packageName();
-        var importLines  = imports.stream().map(i -> "import " + i + ";").collect(toList());
-        var specConstant = (spec.specObjName == null) ? "    " : "    public static final " + SourceSpec.class.getCanonicalName() + " " + spec.specObjName + " = " + spec.toCode() + ";";
+        val typeName     = type.typeWithGenerics();
+        val pckgName     = spec.sourceType.packageName();
+        val importLines  = imports.stream().map(i -> "import " + i + ";").collect(toList());
+        val specConstant = (spec.specObjName == null) ? "    " : "    public static final " + SourceSpec.class.getCanonicalName() + " " + spec.specObjName + " = " + spec.toCode() + ";";
         return asList(
                 asList(format("package %s;", pckgName)),
                 asList(format("")),

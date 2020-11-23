@@ -33,6 +33,7 @@ import functionalj.types.struct.generator.ILines;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.With;
+import lombok.val;
 
 
 /**
@@ -59,7 +60,7 @@ public class GenField implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        var def = oneLineOf(
+        val def = oneLineOf(
                     accessibility,
                     scope,
                     modifiability,
@@ -67,7 +68,7 @@ public class GenField implements IGenerateDefinition {
                     name
                 );
         
-        var value = (defaultValue != null) ? " = " + defaultValue : "";
+        val value = (defaultValue != null) ? " = " + defaultValue : "";
         return ()->Stream.of(def + value + ";");
     }
     

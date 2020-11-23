@@ -329,7 +329,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(promise.eavesdroppers);
         promise.eavesdroppers.clear();
         
-        for (var eavesdropper : eavesdroppers) {
+        for (val eavesdropper : eavesdroppers) {
             carelessly(()->{
                 eavesdropper.accept(result);
             });

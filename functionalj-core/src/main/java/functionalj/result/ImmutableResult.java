@@ -45,7 +45,7 @@ public class ImmutableResult<DATA> extends Result<DATA> {
     ImmutableResult(DATA data, FuncList<Validator<? super DATA>> validators) {
         Object theData = data;
         if (validators != null) {
-            for (var validator : validators) {
+            for (val validator : validators) {
                 try {
                     val result    = validator.validate(data);
                     val exception = result.getException();

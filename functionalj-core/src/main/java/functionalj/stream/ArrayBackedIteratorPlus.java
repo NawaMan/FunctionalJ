@@ -154,7 +154,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
         if ((current.get() >= end) && (count != 0))
             return Result.ofNoMore();
         
-        try (var iterator = new ArrayBackedIteratorPlus<DATA>(array, old, old + count)){
+        try (val iterator = new ArrayBackedIteratorPlus<DATA>(array, old, old + count)){
             val stream = iterator.stream();
             val value = mapper.apply(stream);
             return Result.valueOf(value);

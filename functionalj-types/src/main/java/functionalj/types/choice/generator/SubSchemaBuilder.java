@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
+import lombok.val;
 
 public class SubSchemaBuilder implements Lines {
     
@@ -18,19 +19,19 @@ public class SubSchemaBuilder implements Lines {
     }
     
     private Stream<String> def() {
-        var valueType = CaseParam.class.getCanonicalName();
+        val valueType = CaseParam.class.getCanonicalName();
         if (choice.params.isEmpty()) {
-            var def = Stream.of(
+            val def = Stream.of(
                     Stream.of("static private functionalj.map.FuncMap<String, " + valueType + "> __schema__ = functionalj.map.FuncMap.<String, " + valueType + ">empty();"))
                     .flatMap(identity());
             return def;
         }
         
-        var params
+        val params
                 = choice
                 .params.stream()
                 .map(param -> "    .with(\"" + param.name + "\", " + param.toCode() + ")");
-        var def = Stream.of(
+        val def = Stream.of(
                 Stream.of("static private functionalj.map.FuncMap<String, " + valueType + "> __schema__ = functionalj.map.FuncMap.<String, " + valueType + ">newMap()"),
                 params,
                 Stream.of("    .build();"))
@@ -40,8 +41,8 @@ public class SubSchemaBuilder implements Lines {
     
     @Override
     public List<String> lines() {
-        var valueType = CaseParam.class.getCanonicalName();
-        var lines = Stream.of(
+        val valueType = CaseParam.class.getCanonicalName();
+        val lines = Stream.of(
                 def(),
                 Stream.of("public static java.util.Map<String, " + valueType + "> getCaseSchema() {"),
                 Stream.of("    return __schema__;"),

@@ -34,11 +34,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import lombok.val;
+
 
 class utils {
     
     static <IN> Function<IN, Stream<IN>> delimitWith(IN delimiter) {
-        var isFirst = new AtomicBoolean(true);
+        val isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);
@@ -47,7 +49,7 @@ class utils {
     }
     
     static <IN> Function<IN, Stream<IN>> delimitWith(Supplier<? extends IN> delimiter) {
-        var isFirst = new AtomicBoolean(true);
+        val isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);
@@ -76,7 +78,7 @@ class utils {
     }
     
     static String withMethodName(Getter getter) {
-        var name = getter.getName();
+        val name = getter.getName();
         return "with" + name.substring(0,1).toUpperCase() + name.substring(1);
     }
     

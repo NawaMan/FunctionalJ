@@ -130,7 +130,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
     public default IntIteratorPlus useNext(int count, FuncUnit1<IntStreamPlus> usage) {
         int[] array = stream().limit(count).toArray();
         if ((array.length != 0) || count == 0) {
-            try (var iterator = new ArrayBackedIntIteratorPlus(array)) {
+            try (val iterator = new ArrayBackedIntIteratorPlus(array)) {
                 val stream   = iterator.stream();
                 usage.accept(stream);
             }

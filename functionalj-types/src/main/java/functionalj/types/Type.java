@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import functionalj.types.struct.Core;
+import lombok.val;
 
 
 public class Type implements IRequireTypes {
@@ -222,8 +223,8 @@ public class Type implements IRequireTypes {
      * @return      the type.
      */
     public static Type of(Class<?> clzz, Generic ... generics) {
-        var pckg = clzz.getPackage().getName().toString();
-        var name = clzz.getCanonicalName().toString().substring(pckg.length() + 1 );
+        val pckg = clzz.getPackage().getName().toString();
+        val name = clzz.getCanonicalName().toString().substring(pckg.length() + 1 );
         return new Type(pckg, name).withGenerics(asList(generics));
     }
     
@@ -238,7 +239,7 @@ public class Type implements IRequireTypes {
     
     @Override
     public String toString() {
-        var generics = ofNullable(this.generics)
+        val generics = ofNullable(this.generics)
                 .filter(l -> !l.isEmpty())
                 .map   (l -> this.generics.stream())
                 .map   (s -> s.map(g -> g.name))
@@ -264,7 +265,7 @@ public class Type implements IRequireTypes {
     }
     
     public String toCode() {
-        var params = asList(
+        val params = asList(
                 toStringLiteral(packageName),
                 toStringLiteral(encloseName),
                 toStringLiteral(simpleName),
@@ -292,7 +293,7 @@ public class Type implements IRequireTypes {
     
     @SuppressWarnings("unchecked")
     public <T> Class<T> toClass()  {
-        var result = classCache.computeIfAbsent(this, t -> {
+        val result = classCache.computeIfAbsent(this, t -> {
             if (Type.primitiveTypes.containsValue(t)) {
                 if (Type.BYT.equals(t))
                     return byte.class;
@@ -313,7 +314,7 @@ public class Type implements IRequireTypes {
             }
             
             try {
-                var fullName = t.fullName();
+                val fullName = t.fullName();
                 return Class.forName(fullName);
             } catch (Exception e) {
                 return e;
@@ -327,7 +328,7 @@ public class Type implements IRequireTypes {
     
     public static final Map<String, Type> primitiveTypes;
     static {
-        var map = new HashMap<String, Type>();
+        val map = new HashMap<String, Type>();
         map.put("char",    CHR);
         map.put("byte",    BYT);
         map.put("short",   SHRT);
@@ -425,7 +426,7 @@ public class Type implements IRequireTypes {
      * @return  the lens type.
      */
     public Type lensType(String packageName, String encloseName, List<String> localTypeWithLens) {
-        var lensType = knownLensType();
+        val lensType = knownLensType();
         if (lensType != null)
             return lensType;
         
@@ -454,8 +455,8 @@ public class Type implements IRequireTypes {
     }
     
     public Type knownLensType() {
-        var declaredType = this.declaredType();
-        var lensType = lensTypes.get(declaredType);
+        val declaredType = this.declaredType();
+        val lensType = lensTypes.get(declaredType);
         if (lensType != null)
             return lensType;
         
@@ -471,7 +472,7 @@ public class Type implements IRequireTypes {
      * @return {@code true} if this lens is a custom lens.
      */
     public boolean isCustomLens() {
-        var lensType = this.knownLensType();
+        val lensType = this.knownLensType();
         return !lensTypes.values().contains(lensType)
             && !lensTypes.values().stream()
              .anyMatch(type -> type.simpleName() .equals(lensType.simpleName())
@@ -582,7 +583,7 @@ public class Type implements IRequireTypes {
     }
     public static final Map<String, Type> boxedType;
     static {
-        var map = new HashMap<String, Type>();
+        val map = new HashMap<String, Type>();
         map.put(Character.class.getCanonicalName(), CHARACTER);
         map.put(Byte.class.getCanonicalName(),      BYTE);
         map.put(Short.class.getCanonicalName(),     SHORT);
@@ -596,7 +597,7 @@ public class Type implements IRequireTypes {
     }
     public static final Map<Type, Type> declaredTypes;
     static {
-        var map = new HashMap<Type, Type>();
+        val map = new HashMap<Type, Type>();
         map.put(CHR,  CHARACTER);
         map.put(BYT,  BYTE);
         map.put(SHRT, SHORT);
@@ -609,7 +610,7 @@ public class Type implements IRequireTypes {
     }
     public static final Map<String, Type> temporalTypes;
     static {
-        var map = new HashMap<String, Type>();
+        val map = new HashMap<String, Type>();
         map.put(DayOfWeek.class.getCanonicalName(),      Core.DayOfWeek.type());
         map.put(Instant.class.getCanonicalName(),        Core.Instant.type());
         map.put(LocalDate.class.getCanonicalName(),      Core.LocalDate.type());
@@ -641,7 +642,7 @@ public class Type implements IRequireTypes {
     }
     
     public Type getPredicateType() {
-        var toString = this.toString();
+        val toString = this.toString();
         if ("int"    .equals(toString)) return INTEGER;
         if ("long"   .equals(toString)) return LONG;
         if ("boolean".equals(toString)) return BOOLEAN;

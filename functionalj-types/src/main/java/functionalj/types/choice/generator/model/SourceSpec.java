@@ -35,6 +35,7 @@ import java.util.function.Function;
 
 import functionalj.types.Generic;
 import functionalj.types.Type;
+import lombok.val;
 
 
 public class SourceSpec {
@@ -69,7 +70,7 @@ public class SourceSpec {
     }
     
     public String toCode() {
-        var params = asList(
+        val params = asList(
                 toStringLiteral(targetName),
                 sourceType.toCode(),
                 toStringLiteral(specObjName),

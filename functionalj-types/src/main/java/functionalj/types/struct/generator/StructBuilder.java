@@ -66,6 +66,7 @@ import functionalj.types.struct.generator.model.GenMethod;
 import functionalj.types.struct.generator.model.GenParam;
 import functionalj.types.struct.generator.model.Modifiability;
 import functionalj.types.struct.generator.model.Scope;
+import lombok.val;
 
 
 /**
@@ -93,8 +94,8 @@ public class StructBuilder {
      **/
     public StructSpec build() {
         // TODO - Find sometime to clean this up - it is a mess.
-        var extendeds    = new ArrayList<Type>();
-        var implementeds = new ArrayList<Type>();
+        val extendeds    = new ArrayList<Type>();
+        val implementeds = new ArrayList<Type>();
         
         if (sourceSpec.getConfigures().coupleWithDefinition) {
             if (sourceSpec.getIsClass() != null) {
@@ -104,27 +105,27 @@ public class StructBuilder {
             }
         }
         
-        var istruct = Type.of(IStruct.class);
+        val istruct = Type.of(IStruct.class);
         implementeds.add(istruct);
         
-        var targetType    = new Type(sourceSpec.getTargetPackageName(), sourceSpec.getTargetClassName());
-        var targetGeneric = new Generic(targetType);
-        var pipeable      = Core.Pipeable.type().withGenerics(asList(targetGeneric));
+        val targetType    = new Type(sourceSpec.getTargetPackageName(), sourceSpec.getTargetClassName());
+        val targetGeneric = new Generic(targetType);
+        val pipeable      = Core.Pipeable.type().withGenerics(asList(targetGeneric));
         implementeds.add(pipeable);
         
-        var pipeMethod = new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, targetType, "__data", emptyList(), ILines.line("return this;"), emptyList(), asList(Type.of(Exception.class)), false);
+        val pipeMethod = new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, targetType, "__data", emptyList(), ILines.line("return this;"), emptyList(), asList(Type.of(Exception.class)), false);
         
-        var withMethodName = (Function<Getter, String>)(utils::withMethodName);
-        var getters        = sourceSpec.getGetters();
-        var getterFields   = getters.stream().map    (getter -> getterToField(sourceSpec, getter));
-        var getterMethods  = getters.stream().map    (getter -> getterToGetterMethod(getter));
-        var witherMethods  = getters.stream().flatMap(getter -> getterToWitherMethods(sourceSpec, withMethodName, getter));
+        val withMethodName = (Function<Getter, String>)(utils::withMethodName);
+        val getters        = sourceSpec.getGetters();
+        val getterFields   = getters.stream().map    (getter -> getterToField(sourceSpec, getter));
+        val getterMethods  = getters.stream().map    (getter -> getterToGetterMethod(getter));
+        val witherMethods  = getters.stream().flatMap(getter -> getterToWitherMethods(sourceSpec, withMethodName, getter));
         
         GenField theField = null;
         GenField eachField = null;
         GenClass lensClass = null;
         if (sourceSpec.getConfigures().generateLensClass) {
-            var lensClassBuilder = new LensClassBuilder(sourceSpec);
+            val lensClassBuilder = new LensClassBuilder(sourceSpec);
             lensClass            = lensClassBuilder.build();
             theField             = lensClassBuilder.generateTheLensField();
             eachField            = lensClassBuilder.generateEachLensField();
@@ -134,11 +135,11 @@ public class StructBuilder {
             builderClass = new BuilderGenerator(sourceSpec).build();
         }
         
-        var specField = generateSpecField();
+        val specField = generateSpecField();
         
         GenMethod toString = null;
         
-        var toStringTemplate = sourceSpec.getConfigures().toStringTemplate;
+        val toStringTemplate = sourceSpec.getConfigures().toStringTemplate;
         if (toStringTemplate != null) {
             String toStringBody = null;
             if (!toStringTemplate.isEmpty()) {
@@ -161,7 +162,7 @@ public class StructBuilder {
                     line(toStringBody));
         }
         
-        var hashCode = new GenMethod(
+        val hashCode = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
@@ -169,7 +170,7 @@ public class StructBuilder {
                 "hashCode",
                 Collections.emptyList(),
                 line("return toString().hashCode();"));
-        var equals = new GenMethod(
+        val equals = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
@@ -178,19 +179,19 @@ public class StructBuilder {
                 asList(new GenParam("another", Type.of(Object.class))),
                 line("return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));"));
         
-        var fields = listOf(
+        val fields = listOf(
                     Stream.of(theField, eachField),
                     getterFields,
                     specField
                  );
         
-        var fromMapBody = ILines.line(
+        val fromMapBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
                 .map(g -> "            (" + g.getType().simpleNameWithGeneric() + ")$utils.fromMapValue(map.get(\"" + g.getName() + "\"), $schema.get(\"" + g.getName() + "\"))")
                 .collect(Collectors.joining(",\n"))
                 .split("\n"));
-        var getterHasGeneric
+        val getterHasGeneric
                 = sourceSpec
                 .getGetters().stream()
                 .anyMatch(g ->
@@ -198,7 +199,7 @@ public class StructBuilder {
                         .getType()
                         .generics()
                         .isEmpty());
-        var fromMap = new GenMethod(
+        val fromMap = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.STATIC,
                 Modifiability.MODIFIABLE,
@@ -214,12 +215,12 @@ public class StructBuilder {
                     line("return obj;")
                 ));
         
-        var toMapBody = ILines.line(
+        val toMapBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
                 .map(g -> "map.put(\"" + g.getName() + "\", " + IStruct.class.getCanonicalName() + ".$utils.toMapValueObject(" + g.getName() + "));")
                 .collect(Collectors.toList()));
-        var toMap = new GenMethod(
+        val toMap = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
@@ -235,12 +236,12 @@ public class StructBuilder {
                 emptyList(),
                 false);
         
-        var getStructSchemaBody = ILines.line(
+        val getStructSchemaBody = ILines.line(
                 sourceSpec.getGetters()
                 .stream()
                 .map(g -> "map.put(\"" + g.getName() + "\", " + g.toCode() + ");")
                 .collect(Collectors.toList()));
-        var getStructSchema = new GenMethod(
+        val getStructSchema = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.STATIC,
                 Modifiability.MODIFIABLE,
@@ -256,7 +257,7 @@ public class StructBuilder {
                 emptyList(),
                 false);
         
-        var getSchema = new GenMethod(
+        val getSchema = new GenMethod(
                 Accessibility.PUBLIC,
                 Scope.INSTANCE,
                 Modifiability.MODIFIABLE,
@@ -268,27 +269,27 @@ public class StructBuilder {
                 emptyList(),
                 false);
         
-        var flatMap = Arrays.<Stream<GenMethod>>asList(
+        val flatMap = Arrays.<Stream<GenMethod>>asList(
                     Stream.of(pipeMethod),
                     getterMethods,
                     witherMethods,
                     Stream.of(fromMap, toMap, getSchema, getStructSchema),
                     Stream.of(toString, hashCode, equals).filter(Objects::nonNull)
                  );
-        var methods = flatMap.stream().flatMap(themAll()).collect(toList());
+        val methods = flatMap.stream().flatMap(themAll()).collect(toList());
         
-        var constructors = listOf(
+        val constructors = listOf(
                     noArgConstructor(),
                     requiredOnlyConstructor(),
                     allArgConstructor()
                 );
         
-        var innerClasses = listOf(
+        val innerClasses = listOf(
                     lensClass,
                     builderClass
                 );
         
-        var dataObjSpec = new StructSpec(
+        val dataObjSpec = new StructSpec(
                 sourceSpec.getTargetClassName(),
                 sourceSpec.getTargetPackageName(),
                 sourceSpec.getSpecName(),
@@ -305,7 +306,7 @@ public class StructBuilder {
             return emptyStream;
         }
         
-        var genField = new GenField(PUBLIC, FINAL, STATIC,
+        val genField = new GenField(PUBLIC, FINAL, STATIC,
                         sourceSpec.getSpecObjName(),
                         Type.of(SourceSpec.class),
                         sourceSpec.toCode());
@@ -316,15 +317,15 @@ public class StructBuilder {
         if (!sourceSpec.getConfigures().generateNoArgConstructor)
             return null;
         
-        var name        = sourceSpec.getTargetClassName();
-        var paramString = sourceSpec.getGetters().stream()
+        val name        = sourceSpec.getTargetClassName();
+        val paramString = sourceSpec.getGetters().stream()
                 .map    (getter -> getter.getType().defaultValue())
                 .map    (String::valueOf)
                 .collect(joining(", "));
-        var body = "this(" + paramString + ");";
+        val body = "this(" + paramString + ");";
         
-        var publicConstructor = sourceSpec.getConfigures().publicConstructor;
-        var accessibility     = (publicConstructor ? PUBLIC : PACKAGE);
+        val publicConstructor = sourceSpec.getConfigures().publicConstructor;
+        val accessibility     = (publicConstructor ? PUBLIC : PACKAGE);
         return new GenConstructor(accessibility, name, emptyList(), line(body));
     }
     
@@ -338,22 +339,22 @@ public class StructBuilder {
          && sourceSpec.getGetters().stream().noneMatch(Getter::isRequired))
             return null;
         
-        var name   = sourceSpec.getTargetClassName();
-        var params = sourceSpec.getGetters().stream()
+        val name   = sourceSpec.getTargetClassName();
+        val params = sourceSpec.getGetters().stream()
                         .filter(getter -> getter.isRequired())
                         .map   (this::getterToGenParam)
                         .collect(toList());
         
-        var pkgName      = sourceSpec.getPackageName();
-        var eclName      = sourceSpec.getEncloseName();
-        var valName      = sourceSpec.getValidatorName();
-        var getterParams = sourceSpec.getGetters().stream().map(getter -> getter.getDefaultValueCode(getter.getName())).collect(joining(","));
+        val pkgName      = sourceSpec.getPackageName();
+        val eclName      = sourceSpec.getEncloseName();
+        val valName      = sourceSpec.getValidatorName();
+        val getterParams = sourceSpec.getGetters().stream().map(getter -> getter.getDefaultValueCode(getter.getName())).collect(joining(","));
         
-        var assignGetters  = sourceSpec.getGetters().stream().map(getter -> "this." + getter.getName() + " = " + getter.getDefaultValueCode(getter.getName()) + ";");
-        var validate       = (Stream<String>)((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
-        var ipostConstruct = Type.of(IPostConstruct.class).simpleName();
-        var postConstruct  = Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();");
-        var assignments
+        val assignGetters  = sourceSpec.getGetters().stream().map(getter -> "this." + getter.getName() + " = " + getter.getDefaultValueCode(getter.getName()) + ";");
+        val validate       = (Stream<String>)((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
+        val ipostConstruct = Type.of(IPostConstruct.class).simpleName();
+        val postConstruct  = Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();");
+        val assignments
                 = Stream.of(
                         assignGetters,
                         validate,
@@ -361,34 +362,34 @@ public class StructBuilder {
                 .filter(Objects::nonNull)
                 .flatMap(Function.identity())
                 .collect(toList());
-        var publicConstructor = sourceSpec.getConfigures().publicConstructor;
-        var accessibility     = (publicConstructor ? PUBLIC : PACKAGE);
+        val publicConstructor = sourceSpec.getConfigures().publicConstructor;
+        val accessibility     = (publicConstructor ? PUBLIC : PACKAGE);
         return new GenConstructor(accessibility, name, params, ILines.line(assignments));
     }
     private GenConstructor allArgConstructor() {
-        var allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>)((spec, acc) ->{
-            var name = spec.getTargetClassName();
+        val allArgsConstructor = (BiFunction<SourceSpec, Accessibility, GenConstructor>)((spec, acc) ->{
+            val name = spec.getTargetClassName();
             List<GenParam> params = spec.getGetters().stream()
                         .map(this::getterToGenParam)
                         .collect(toList());
             
-            var pkgName         = sourceSpec.getPackageName();
-            var eclName         = sourceSpec.getEncloseName();
-            var valName         = sourceSpec.getValidatorName();
+            val pkgName         = sourceSpec.getPackageName();
+            val eclName         = sourceSpec.getEncloseName();
+            val valName         = sourceSpec.getValidatorName();
             String getterParams = sourceSpec.getGetters().stream().map(getter -> getter.getName()).collect(Collectors.joining(","));
             
-            var assignGetters  = spec.getGetters().stream().map(this::initGetterField);
-            var validate       = (Stream<String>)((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
-            var ipostConstruct = Type.of(IPostConstruct.class).simpleName();
-            var body = Stream.of(
+            val assignGetters  = spec.getGetters().stream().map(this::initGetterField);
+            val validate       = (Stream<String>)((valName == null) ? null : Stream.of("functionalj.result.ValidationException.ensure(" + pkgName + "." + eclName + "." + valName + "(" + getterParams + "), this);"));
+            val ipostConstruct = Type.of(IPostConstruct.class).simpleName();
+            val body = Stream.of(
                             assignGetters,
                             validate,
                             Stream.of("if (this instanceof " + ipostConstruct + ") ((" + ipostConstruct + ")this).postConstruct();"))
                     .flatMap(Function.identity());
             return new GenConstructor(acc, name, params, ILines.of(()->body));
         });
-        var publicConstructor = sourceSpec.getConfigures().publicConstructor;
-        var allArgsConstAccessibility
+        val publicConstructor = sourceSpec.getConfigures().publicConstructor;
+        val allArgsConstAccessibility
                 = sourceSpec.getConfigures().generateAllArgConstructor
                 ? (publicConstructor ? PUBLIC : PACKAGE)
                 : PRIVATE;
@@ -397,8 +398,8 @@ public class StructBuilder {
     
     private String initGetterField(Getter getter) {
         // TODO - some of these should be pushed to $utils
-        var    getterName = getter.getName();
-        var    getterType = getter.getType();
+        val    getterName = getter.getName();
+        val    getterType = getter.getType();
         String initValue  = null;
         if (getterType.isList()) {
             initValue = String.format("ImmutableList.from(%1$s)", getterName);
@@ -417,7 +418,7 @@ public class StructBuilder {
         }
         
         if (!getter.isRequired()) {
-            var defaultValue = DefaultValue.defaultValueCode(getterType, getter.getDefaultTo());
+            val defaultValue = DefaultValue.defaultValueCode(getterType, getter.getDefaultTo());
             initValue = String.format("java.util.Optional.ofNullable(%1$s).orElseGet(()->%2$s)", getterName, defaultValue);
         }
         
@@ -426,34 +427,34 @@ public class StructBuilder {
     
     private GenField getterToField(SourceSpec sourceSpec, Getter getter) {
         // It should be good to convert this to tuple2 and apply to the method.
-        var name  = getter.getName();
-        var type  = getter.getType();
-        var accss = sourceSpec.getConfigures().publicFields ? PUBLIC : PRIVATE;
-        var field = new GenField(accss, FINAL, INSTANCE, name, type, null);
+        val name  = getter.getName();
+        val type  = getter.getType();
+        val accss = sourceSpec.getConfigures().publicFields ? PUBLIC : PRIVATE;
+        val field = new GenField(accss, FINAL, INSTANCE, name, type, null);
         return field;
     }
     
     private GenParam getterToGenParam(Getter getter) {
-        var paramName = getter.getName();
-        var paramType = getter.getType();
+        val paramName = getter.getName();
+        val paramType = getter.getType();
         return new GenParam(paramName, paramType);
     }
     
     private Stream<GenMethod> getterToWitherMethods(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
-        var stream = Stream.of(
+        val stream = Stream.of(
                     getterToWitherMethodValue(     sourceSpec, withMethodName, getter),
                     getterToWitherMethodSupplier(  sourceSpec, withMethodName, getter),
                     getterToWitherMethodFunction(  sourceSpec, withMethodName, getter),
                     getterToWitherMethodBiFunction(sourceSpec, withMethodName, getter)
                 );
-        var isList
+        val isList
                 =  getter.getType().isList()
                 || getter.getType().isFuncList();
         if (!isList)
             return stream;
         
-        var arrayMethod = getterToWitherMethodArray(sourceSpec, withMethodName, getter);
+        val arrayMethod = getterToWitherMethodArray(sourceSpec, withMethodName, getter);
         return Stream.concat(
                 Stream.of(arrayMethod),
                 stream);
@@ -463,13 +464,13 @@ public class StructBuilder {
     
     private GenMethod getterToWitherMethodArray(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
-        var listName = getter.getName();
-        var name = withMethodName.apply(getter);
-        var type = sourceSpec.getTargetType();
-        var params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0).toType()));
-        var isFList = getter.getType().isFuncList();
-        var newArray = isFList ? "functionalj.list.ImmutableList.of" : Arrays.class.getCanonicalName() + ".asList";
-        var paramCall
+        val listName = getter.getName();
+        val name = withMethodName.apply(getter);
+        val type = sourceSpec.getTargetType();
+        val params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0).toType()));
+        val isFList = getter.getType().isFuncList();
+        val newArray = isFList ? "functionalj.list.ImmutableList.of" : Arrays.class.getCanonicalName() + ".asList";
+        val paramCall
                 = sourceSpec
                 .getGetters()
                 .stream()
@@ -477,68 +478,68 @@ public class StructBuilder {
                         ? newArray + "(" + g.getName() + ")"
                         : g.getName())
                 .collect(joining(", "));
-        var usedTypes = isFList ? asList(Type.FUNC_LIST) : Collections.<Type>emptyList();
-        var returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
+        val usedTypes = isFList ? asList(Type.FUNC_LIST) : Collections.<Type>emptyList();
+        val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
         return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine), usedTypes, emptyList(),true);
     }
     private GenMethod getterToWitherMethodValue(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
-        var name = withMethodName.apply(getter);
-        var type = sourceSpec.getTargetType();
-        var params = asList(new GenParam(getter.getName(), getter.getType()));
-        var paramCall = sourceSpec.getGetters().stream().map(Getter::getName).collect(joining(", "));
-        var returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
+        val name = withMethodName.apply(getter);
+        val type = sourceSpec.getTargetType();
+        val params = asList(new GenParam(getter.getName(), getter.getType()));
+        val paramCall = sourceSpec.getGetters().stream().map(Getter::getName).collect(joining(", "));
+        val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
         return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
     }
     private GenMethod getterToWitherMethodSupplier(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
-        var name       = withMethodName.apply(getter);
-        var type       = sourceSpec.getTargetType();
-        var getterName = getter.getName();
-        var getterType = getter.getType().declaredType();
-        var params     = asList(new GenParam(getter.getName(), Type.of(Supplier.class, new Generic(getterType))));
-        var paramCall  = sourceSpec.getGetters().stream()
+        val name       = withMethodName.apply(getter);
+        val type       = sourceSpec.getTargetType();
+        val getterName = getter.getName();
+        val getterType = getter.getType().declaredType();
+        val params     = asList(new GenParam(getter.getName(), Type.of(Supplier.class, new Generic(getterType))));
+        val paramCall  = sourceSpec.getGetters().stream()
                             .map    (Getter::getName)
                             .map    (gName -> gName.equals(getterName) ? gName + ".get()" : gName)
                             .collect(joining(", "));
-        var returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
+        val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
         return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
     }
     private GenMethod getterToWitherMethodFunction(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
-        var name       = withMethodName.apply(getter);
-        var type       = sourceSpec.getTargetType();
-        var getterName = getter.getName();
-        var getterType = getter.getType().declaredType();
-        var params     = asList(new GenParam(getterName, Type.of(Function.class, new Generic(getterType), new Generic(getterType))));
-        var paramCall  = sourceSpec.getGetters().stream()
+        val name       = withMethodName.apply(getter);
+        val type       = sourceSpec.getTargetType();
+        val getterName = getter.getName();
+        val getterType = getter.getType().declaredType();
+        val params     = asList(new GenParam(getterName, Type.of(Function.class, new Generic(getterType), new Generic(getterType))));
+        val paramCall  = sourceSpec.getGetters().stream()
                         .map    (Getter::getName)
                         .map    (gName -> gName.equals(getterName) ? gName + ".apply(this." + gName + ")" : gName)
                         .collect(joining(", "));
-        var returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
+        val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
         return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
     }
     private GenMethod getterToWitherMethodBiFunction(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
-        var name       = withMethodName.apply(getter);
-        var type       = sourceSpec.getTargetType();
-        var getterName = getter.getName();
-        var getterType = getter.getType().declaredType();
-        var params     = asList(new GenParam(getterName, Type.of(BiFunction.class, new Generic(type), new Generic(getterType), new Generic(getterType))));
-        var paramCall  = sourceSpec.getGetters().stream()
+        val name       = withMethodName.apply(getter);
+        val type       = sourceSpec.getTargetType();
+        val getterName = getter.getName();
+        val getterType = getter.getType().declaredType();
+        val params     = asList(new GenParam(getterName, Type.of(BiFunction.class, new Generic(type), new Generic(getterType), new Generic(getterType))));
+        val paramCall  = sourceSpec.getGetters().stream()
                 .map    (Getter::getName)
                 .map    (gName -> gName.equals(getterName) ? gName + ".apply(this, this." + gName + ")" : gName)
                 .collect(joining(", "));
-        var returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
+        val returnLine = "return new " + sourceSpec.getTargetClassName() + "(" + paramCall + ");";
         return new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(returnLine));
     }
     
     private GenMethod getterToGetterMethod(Getter getter) {
-        var name = getter.getName();
-        var type = getter.getType();
-        var params = new ArrayList<GenParam>();
-        var body   = "return " + getter.getName() + ";";
-        var method = new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(body));
+        val name = getter.getName();
+        val type = getter.getType();
+        val params = new ArrayList<GenParam>();
+        val body   = "return " + getter.getName() + ";";
+        val method = new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(body));
         return method;
     }
 

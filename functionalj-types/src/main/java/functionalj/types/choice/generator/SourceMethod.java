@@ -34,6 +34,7 @@ import java.util.Objects;
 
 import functionalj.types.choice.Self;
 import functionalj.types.choice.generator.model.Method;
+import lombok.val;
 
 
 public class SourceMethod implements Lines {
@@ -60,17 +61,17 @@ public class SourceMethod implements Lines {
     }
     
     private List<String> methodToCode(Method m) {
-        var genericsDef = m.generics.isEmpty() ? "" :
+        val genericsDef = m.generics.isEmpty() ? "" :
                         "<" + m.generics.stream()
                                .map(g -> g.withBound.replaceAll(" extends Object$", ""))
                                .collect(joining(", ")) + "> ";
-        var returnSelf = Objects.equals(m.returnType.packageName(),     targetClass.type.packageName())
+        val returnSelf = Objects.equals(m.returnType.packageName(),     targetClass.type.packageName())
                       && Objects.equals(m.returnType.encloseName(),     targetClass.type.encloseName())
                       && Objects.equals(m.returnType.simpleName(),      targetClass.type.simpleName())
                       && Objects.equals(m.returnType.generics().size(), targetClass.type.generics().size());
-        var genericCount = targetClass.type.generics().size();
-        var returnPrefix = returnSelf ? Self.class.getCanonicalName() + (genericCount == 0 ? "" : genericCount) + ".unwrap(" : "";
-        var returnSuffix = returnSelf ? ")"                            : "";
+        val genericCount = targetClass.type.generics().size();
+        val returnPrefix = returnSelf ? Self.class.getCanonicalName() + (genericCount == 0 ? "" : genericCount) + ".unwrap(" : "";
+        val returnSuffix = returnSelf ? ")"                            : "";
         if (DEFAULT.equals(m.kind)) {
             if (isThisMethod(m)) {
                 return asList(format(

@@ -26,6 +26,7 @@ package functionalj.types;
 import java.util.Map;
 
 import functionalj.types.struct.generator.Getter;
+import lombok.val;
 
 
 public interface IStruct extends IData {
@@ -35,8 +36,8 @@ public interface IStruct extends IData {
     
     public static <S extends IStruct> S fromMap(Map<String, Object> map, Class<S> clazz) {
         try {
-            var method = clazz.getMethod("fromMap", Map.class);
-            var struct = method.invoke(clazz, map);
+            val method = clazz.getMethod("fromMap", Map.class);
+            val struct = method.invoke(clazz, map);
             return clazz.cast(struct);
         } catch (Exception cause) {
             throw new StructConversionException(cause);

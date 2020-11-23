@@ -29,6 +29,7 @@ import static java.util.stream.Collectors.joining;
 
 import functionalj.types.DefaultValue;
 import functionalj.types.Type;
+import lombok.val;
 
 
 public class CaseParam {
@@ -58,7 +59,7 @@ public class CaseParam {
     }
     
     public String toCode() {
-        var params = asList(
+        val params = asList(
                 toStringLiteral(name),
                 type.toCode(),
                 "" + isNullable,

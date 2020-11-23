@@ -28,6 +28,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 import functionalj.types.Type;
+import lombok.val;
 
 
 public class MethodParam {
@@ -41,7 +42,7 @@ public class MethodParam {
     }
     
     public String toCode() {
-        var params = asList(
+        val params = asList(
                 toStringLiteral(name),
                 type.toCode()
         );

@@ -19,6 +19,7 @@ import functionalj.types.Type;
 import functionalj.types.struct.generator.model.GenClass;
 import functionalj.types.struct.generator.model.GenMethod;
 import functionalj.types.struct.generator.model.GenParam;
+import lombok.val;
 
 
 abstract class BuilderInterface {
@@ -48,22 +49,22 @@ public class BuilderGenerator {
      * @return  the generated class.
      */
     public GenClass build() {
-        var builderInterfaces =
+        val builderInterfaces =
                 Stream.concat(
                         sourceSpec.getGetters().stream().map(BuilderInterface.BuilderGetter::new),
                         Stream.of(new BuilderInterface.BuilderReady())
                 )
                 .collect(toList());
-        var typeName = sourceSpec.getTargetClassName();
+        val typeName = sourceSpec.getTargetClassName();
         return generateBuilderCode(typeName, builderInterfaces);
     }
     
     private List<GenClass> generateSubInterfaces(
             String                 typeName,
             List<BuilderInterface> builderInterfaces) {
-        var interfaceCount = builderInterfaces.size();
-        var interfaces     = new ArrayList<GenClass>();
-        for (var i = 1; i < interfaceCount; i++) {
+        val interfaceCount = builderInterfaces.size();
+        val interfaces     = new ArrayList<GenClass>();
+        for (int i = 1; i < interfaceCount; i++) {
             GenClass code = generateSubInterface(typeName, builderInterfaces, i);
             interfaces.add(code);
         }
@@ -71,9 +72,9 @@ public class BuilderGenerator {
     }
     
     private GenClass generateSubInterface(String typeName, List<BuilderInterface> builderInterfaces, int i) {
-        var builderInterface = builderInterfaces.get(i);
-        var isGetter = (builderInterface instanceof BuilderInterface.BuilderGetter);
-        var builderInterfaceCode
+        val builderInterface = builderInterfaces.get(i);
+        val isGetter = (builderInterface instanceof BuilderInterface.BuilderGetter);
+        val builderInterfaceCode
                 = isGetter
                 ? generateGetterInterface(typeName, builderInterfaces, i)
                 : generateReadyInterface (typeName);
@@ -81,23 +82,23 @@ public class BuilderGenerator {
     }
     
     private GenClass generateGetterInterface(String typeName, List<BuilderInterface> builderInterfaces, int i) {
-        var builderInterface = builderInterfaces.get(i);
-        var getter           = ((BuilderInterface.BuilderGetter) builderInterface).getter();
-        var getterName       = getter.getName();
-        var getterType       = getter.getType().simpleNameWithGeneric();
+        val builderInterface = builderInterfaces.get(i);
+        val getter           = ((BuilderInterface.BuilderGetter) builderInterface).getter();
+        val getterName       = getter.getName();
+        val getterType       = getter.getType().simpleNameWithGeneric();
         
-        var interfaceName = format("%1$sBuilder_without%2$s", typeName, capitalize(getterName));
-        var packageName = sourceSpec.getPackageName();
-        var methodType
+        val interfaceName = format("%1$sBuilder_without%2$s", typeName, capitalize(getterName));
+        val packageName = sourceSpec.getPackageName();
+        val methodType
                 = getterAt(builderInterfaces, i + 1)
                 .map      (nextGetter -> typeName + "Builder_without" + capitalize(nextGetter.getName()))
                 .orElseGet(()         -> typeName + "Builder_ready");
         
-        var param = new GenParam(getterName, new Type(packageName, getterType));
-        var mthd  = "public " + methodType + " " + getterName + "(" + param.toTerm(packageName) + ");";
-        var extraMethodCode = generateExtraMethods(typeName, builderInterfaces, i, true);
+        val param = new GenParam(getterName, new Type(packageName, getterType));
+        val mthd  = "public " + methodType + " " + getterName + "(" + param.toTerm(packageName) + ");";
+        val extraMethodCode = generateExtraMethods(typeName, builderInterfaces, i, true);
         
-        var getterInterface = new GenClass(
+        val getterInterface = new GenClass(
                 PUBLIC, STATIC, MODIFIABLE, false,
                 new Type(packageName, interfaceName),
                 (String)null,
@@ -113,47 +114,47 @@ public class BuilderGenerator {
     }
     
     private Optional<Getter> getterAt(List<BuilderInterface> builderInterfaces, int i) {
-        var interfaceCount   = builderInterfaces.size();
-        var isThisLastGetter = (i == (interfaceCount - 1));
+        val interfaceCount   = builderInterfaces.size();
+        val isThisLastGetter = (i == (interfaceCount - 1));
         
         if (isThisLastGetter)
             return Optional.empty();
         
-        var buildInterface = builderInterfaces.get(i);
+        val buildInterface = builderInterfaces.get(i);
         if (!(buildInterface instanceof BuilderInterface.BuilderGetter))
             return Optional.empty();
         
-        var getter = ((BuilderInterface.BuilderGetter) buildInterface).getter();
+        val getter = ((BuilderInterface.BuilderGetter) buildInterface).getter();
         return Optional.of(getter);
     }
     
     private List<String> generateExtraMethods(String typeName, List<BuilderInterface> builderInterfaces,
             int interfaceIndx, boolean isDefault) {
         
-        var builderInterface = builderInterfaces.get(interfaceIndx);
-        var getter           = ((BuilderInterface.BuilderGetter) builderInterface).getter();
+        val builderInterface = builderInterfaces.get(interfaceIndx);
+        val getter           = ((BuilderInterface.BuilderGetter) builderInterface).getter();
         
-        var interfaceCount = builderInterfaces.size();
-        var lines          = new ArrayList<String>();
+        val interfaceCount = builderInterfaces.size();
+        val lines          = new ArrayList<String>();
         lines.add("");
         
         if (getter.isNullable()) {
             for (int n = interfaceIndx + 1; n < interfaceCount; n++) {
                 BuilderInterface bc = builderInterfaces.get(n);
                 if (bc instanceof BuilderInterface.BuilderGetter) {
-                    var bg = ((BuilderInterface.BuilderGetter) bc).getter();
-                    var bgName = bg.getName();
-                    var bgType = bg.getType().simpleNameWithGeneric();
+                    val bg = ((BuilderInterface.BuilderGetter) bc).getter();
+                    val bgName = bg.getName();
+                    val bgType = bg.getType().simpleNameWithGeneric();
                     
-                    var methodType
+                    val methodType
                             = getterAt(builderInterfaces, n + 1)
                             .map      (nextGetter -> typeName + "Builder_without" + capitalize(nextGetter.getName()))
                             .orElseGet(()         -> typeName + "Builder_ready");
                     
-                    var mthDef = format("%1$s(%2$s %1$s)", bgName, bgType);
+                    val mthDef = format("%1$s(%2$s %1$s)", bgName, bgType);
                     lines.add("public " + (isDefault ? "default " : "") + methodType + " " + mthDef + "{");
                     
-                    var returnLine = new StringBuffer();
+                    val returnLine = new StringBuffer();
                     returnLine.append("    return ");
                     for (int c = interfaceIndx; c < n; c++) {
                         BuilderInterface bcc = builderInterfaces.get(c);
@@ -163,10 +164,10 @@ public class BuilderGenerator {
                             returnLine.append(call);
                         }
                     }
-                    var bcc = builderInterfaces.get(n);
+                    val bcc = builderInterfaces.get(n);
                     if (bcc instanceof BuilderInterface.BuilderGetter) {
-                        var bgc  = ((BuilderInterface.BuilderGetter)bcc).getter();
-                        var call = bgc.getName() + "(" + bgc.getName() + ")";
+                        val bgc  = ((BuilderInterface.BuilderGetter)bcc).getter();
+                        val call = bgc.getName() + "(" + bgc.getName() + ")";
                         returnLine.append(call);
                     } else {
                         returnLine.append("");
@@ -182,10 +183,10 @@ public class BuilderGenerator {
                 } else {
                     lines.add("public " + (isDefault ? "default " : "") + typeName + " build() {");
                     
-                    var returnLine = new StringBuffer();
+                    val returnLine = new StringBuffer();
                     returnLine.append("    return ");
-                    for (var c = interfaceIndx; c < n; c++) {
-                        var bcc = builderInterfaces.get(c);
+                    for (int c = interfaceIndx; c < n; c++) {
+                        val bcc = builderInterfaces.get(c);
                         if (bcc instanceof BuilderInterface.BuilderGetter) {
                             Getter bgc = ((BuilderInterface.BuilderGetter)bcc).getter();
                             returnLine.append(bgc.getName() + "(");
@@ -205,7 +206,7 @@ public class BuilderGenerator {
     }
     
     private GenClass generateReadyInterface(String typeName) {
-        var packageName = sourceSpec.getPackageName();
+        val packageName = sourceSpec.getPackageName();
         return new GenClass(PUBLIC, STATIC, MODIFIABLE,
                 false,
                 new Type(packageName, typeName + "Builder_ready"),
@@ -237,13 +238,13 @@ public class BuilderGenerator {
     }
     
     private GenClass generateBuilderReadyClass(String typeName) {
-        var targetClassName = sourceSpec.getTargetClassName();
-        var packageName     = sourceSpec.getPackageName();
-        var type            = new Type(packageName, targetClassName, "Builder", new String[0]);
-        var builderReady    = new Type(packageName, targetClassName, typeName + "Builder_ready", new String[0]);
-        var implementeds    = asList(builderReady);
+        val targetClassName = sourceSpec.getTargetClassName();
+        val packageName     = sourceSpec.getPackageName();
+        val type            = new Type(packageName, targetClassName, "Builder", new String[0]);
+        val builderReady    = new Type(packageName, targetClassName, typeName + "Builder_ready", new String[0]);
+        val implementeds    = asList(builderReady);
         
-        var buildMthd = new GenMethod(
+        val buildMthd = new GenMethod(
                 PUBLIC, INSTANCE, FINAL,
                 // type
                 sourceSpec.getTargetType(),
@@ -253,9 +254,9 @@ public class BuilderGenerator {
                 emptyList(),
                 // Body
                 ILines.line(String.format("return new %1$s();", typeName)));
-        var methods = asList(buildMthd);
+        val methods = asList(buildMthd);
         
-        var builderReadyClass = new GenClass(
+        val builderReadyClass = new GenClass(
                 PUBLIC, STATIC, FINAL,
                 // type
                 type,
@@ -280,14 +281,14 @@ public class BuilderGenerator {
     }
     
     private GenClass generateBuilderClass(String typeName, List<BuilderInterface> builderInterfaces) {
-        var firstBuilder  = ((BuilderInterface.BuilderGetter)builderInterfaces.get(0)).getter();
-        var secondBuilder = builderInterfaces.get(1);
+        val firstBuilder  = ((BuilderInterface.BuilderGetter)builderInterfaces.get(0)).getter();
+        val secondBuilder = builderInterfaces.get(1);
         
-        var pckgName = sourceSpec.getPackageName();
-        var mthdBody = builderBody(typeName, builderInterfaces);
-        var mthdType = builderMthdType(typeName, secondBuilder, pckgName);
+        val pckgName = sourceSpec.getPackageName();
+        val mthdBody = builderBody(typeName, builderInterfaces);
+        val mthdType = builderMthdType(typeName, secondBuilder, pckgName);
         
-        var builderMethod = new GenMethod(
+        val builderMethod = new GenMethod(
                 PUBLIC, INSTANCE, FINAL,
                 // type
                 mthdType,
@@ -298,11 +299,11 @@ public class BuilderGenerator {
                 // body
                 ILines.line(mthdBody));
         
-        var extra = generateExtraMethods(typeName, builderInterfaces, 0, false);
+        val extra = generateExtraMethods(typeName, builderInterfaces, 0, false);
         
-        var interfaces = generateSubInterfaces(typeName, builderInterfaces);
+        val interfaces = generateSubInterfaces(typeName, builderInterfaces);
         
-        var builderClass = new GenClass(
+        val builderClass = new GenClass(
                 PUBLIC, STATIC, FINAL,
                 new Type(pckgName, typeName, "Builder", emptyList()),
                 // generic
@@ -326,8 +327,8 @@ public class BuilderGenerator {
     }
     
     private Stream<String> builderBody(String typeName, List<BuilderInterface> builderInterfaces) {
-        var packageName = sourceSpec.getPackageName();
-        var returns =
+        val packageName = sourceSpec.getPackageName();
+        val returns =
                 builderInterfaces.stream()
                 .skip(1)
                 .map(builderClass -> {
@@ -343,24 +344,24 @@ public class BuilderGenerator {
                     }
                 });
         
-        var newType = String.format("    return new %1$s(", typeName);
+        val newType = String.format("    return new %1$s(", typeName);
         
-        var paramList = builderInterfaces.stream()
+        val paramList = builderInterfaces.stream()
                 .filter (b -> b instanceof BuilderInterface.BuilderGetter)
                 .map    (b -> ((BuilderInterface.BuilderGetter)b).getter().getName())
                 .map    (n -> "        " + n)
                 .collect(toList());
-        var params = Stream.concat(
+        val params = Stream.concat(
             paramList.stream().limit(paramList.size() - 1).map(p -> p + ","),
             paramList.stream().skip (paramList.size() - 1)
         );
         
-        var closes = builderInterfaces.stream()
+        val closes = builderInterfaces.stream()
         .skip(1)
         .map(builderClass -> "};")
         ;
         
-        var body = Stream.of(
+        val body = Stream.of(
                 returns,
                 Stream.of(newType),
                 params,
@@ -385,7 +386,7 @@ public class BuilderGenerator {
     }
     
     private static String capitalize(String name) {
-        var first = Character.toUpperCase(name.charAt(0));
+        val first = Character.toUpperCase(name.charAt(0));
         if (name.length() == 1)
             return "" + first;
         

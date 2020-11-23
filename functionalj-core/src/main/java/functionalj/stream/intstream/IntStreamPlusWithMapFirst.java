@@ -48,7 +48,7 @@ class IntStreamPlusMapFirstAddOnHelper {
     private static <T> T eachMapFirst(int d, IntFunction<T>[] mappers) {
         Exception exception = null;
         boolean hasNull = false;
-        for(var mapper : mappers) {
+        for(val mapper : mappers) {
             try {
                 val res = mapper.apply(d);
                 if (res == null)

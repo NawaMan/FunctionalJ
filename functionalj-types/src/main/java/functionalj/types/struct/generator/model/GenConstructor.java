@@ -40,6 +40,7 @@ import functionalj.types.struct.generator.ILines;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.With;
+import lombok.val;
 
 
 /**
@@ -60,8 +61,8 @@ public class GenConstructor implements IGenerateDefinition {
     @Override
     public Stream<Type> requiredTypes() {
         Set<Type> types = new HashSet<Type>();
-        for (var param : params) {
-            var paramType = param.getType();
+        for (val param : params) {
+            val paramType = param.getType();
             if (types.contains(paramType))
                 continue;
             
@@ -89,8 +90,8 @@ public class GenConstructor implements IGenerateDefinition {
     
     @Override
     public ILines toDefinition(String currentPackage) {
-        var paramDefs = params.stream().map(param -> param.toTerm(currentPackage)).collect(joining(", "));
-        var definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{")
+        val paramDefs = params.stream().map(param -> param.toTerm(currentPackage)).collect(joining(", "));
+        val definition = Stream.of(accessibility, name + "(" + paramDefs + ")", "{")
                 .map    (utils.toStr())
                 .filter (Objects::nonNull)
                 .collect(joining(" "));

@@ -64,7 +64,7 @@ public class MapTo {
         return input -> {
             Exception exception = null;
             boolean hasNull = false;
-            for(var mapper : mappers) {
+            for(val mapper : mappers) {
                 try {
                     val res = mapper.apply(input);
                     if (res == null)

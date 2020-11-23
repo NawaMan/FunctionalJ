@@ -6,7 +6,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':functionalj-types')
+    // compile project(':functionalj-types')
     
     compile 'io.nullablej:nullablej:4.0.1.0'
     compile 'io.defaultj:defaultj-api:2.0.0.0'

@@ -107,7 +107,7 @@ public class CombineResult<D> {
     }
     
     private void unsbscribeAll() {
-        for(var subscription : subscriptions) {
+        for(val subscription : subscriptions) {
             if (subscription != null)
                 subscription.unsubscribe();
         }

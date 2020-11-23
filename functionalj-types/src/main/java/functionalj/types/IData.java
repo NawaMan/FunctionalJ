@@ -36,6 +36,7 @@ import functionalj.types.choice.IChoice;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.Getter;
+import lombok.val;
 
 
 public interface IData {
@@ -94,22 +95,22 @@ public interface IData {
             if (obj != null)
                 return (T)obj;
             
-            var value = defaultValueSupplier.get();
+            val value = defaultValueSupplier.get();
             return (T)value;
         }
         
         public static <T> T fromMapValue(Object obj, Getter getter) {
-            var type         = getter.getType();
-            var defaultValue = getter.getDefaultTo();
+            val type         = getter.getType();
+            val defaultValue = getter.getDefaultTo();
             
             return fromMapValue(obj, type, defaultValue);
         }
         
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public static <T> T fromMapValue(Object obj, CaseParam caseParam) {
-            var   type         = caseParam.type;
+            val   type         = caseParam.type;
             Class clzz         = type.toClass();
-            var   defaultValue = caseParam.defValue;
+            val   defaultValue = caseParam.defValue;
             
             if ((obj instanceof List) && type.isList()) {
                 return IStruct.$utils.fromMapValue(obj, type, defaultValue);
@@ -119,11 +120,11 @@ public interface IData {
         }
         
         public static <T> T propertyFromMap(Map<String, Object> map, Map<String, CaseParam> schema, String name) {
-            var caseParam = schema.get(name);
+            val caseParam = schema.get(name);
             if (caseParam == null)
                 throw new IllegalArgumentException("Unknown property: " + name);
             
-            var rawValue = map.get(name);
+            val rawValue = map.get(name);
             return fromMapValue(rawValue, caseParam);
         }
         
@@ -142,21 +143,21 @@ public interface IData {
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
         private static Map fromMapValue(Map obj, Type type) {
-            var keyType = ((type.generics().size() > 0) ? type.generics().get(0).toType() : Type.OBJECT);
-            var valType = ((type.generics().size() > 1) ? type.generics().get(1).toType() : Type.OBJECT);
+            val keyType = ((type.generics().size() > 0) ? type.generics().get(0).toType() : Type.OBJECT);
+            val valType = ((type.generics().size() > 1) ? type.generics().get(1).toType() : Type.OBJECT);
             Map map = new HashMap();
             obj
             .entrySet()
             .forEach(entry -> {
-                var key   = fromValue(((Map.Entry)entry).getKey(),   keyType);
-                var value = fromValue(((Map.Entry)entry).getValue(), valType);
+                val key   = fromValue(((Map.Entry)entry).getKey(),   keyType);
+                val value = fromValue(((Map.Entry)entry).getValue(), valType);
                 map.put(key, value);
             });
             if (type.isFuncMap()) {
                 try {
-                    var funcListName  = Core.FuncMap.type().fullName();
-                    var funcListClass = Class.forName(funcListName);
-                    var funcListFrom  = funcListClass.getMethod("from", Map.class);
+                    val funcListName  = Core.FuncMap.type().fullName();
+                    val funcListClass = Class.forName(funcListName);
+                    val funcListFrom  = funcListClass.getMethod("from", Map.class);
                     return (Map)funcListFrom.invoke(funcListClass, map);
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Object does not fit the data specfication for type (" + type + "): " + obj);
@@ -170,11 +171,11 @@ public interface IData {
             if (obj == null)
                 return null;
             
-            var clazz    = type.toClass();
-            var isStruct = IStruct.class.isAssignableFrom(clazz);
-            var isChoice = IChoice.class.isAssignableFrom(clazz);
-            var isList   = List.class.isAssignableFrom(clazz);
-            var isMap    = Map.class.isAssignableFrom(clazz);
+            val clazz    = type.toClass();
+            val isStruct = IStruct.class.isAssignableFrom(clazz);
+            val isChoice = IChoice.class.isAssignableFrom(clazz);
+            val isList   = List.class.isAssignableFrom(clazz);
+            val isMap    = Map.class.isAssignableFrom(clazz);
             
             if (isStruct) {
                 if (obj instanceof Map)
@@ -195,15 +196,15 @@ public interface IData {
         }
         @SuppressWarnings({ "unchecked", "rawtypes" })
         private static List fromListValue(List obj, Type type) {
-            var elementType = ((type.generics().size() > 0) ? type.generics().get(0).toType() : Type.OBJECT);
+            val elementType = ((type.generics().size() > 0) ? type.generics().get(0).toType() : Type.OBJECT);
             List list = (List)(obj).stream()
                     .map(each -> fromValue(each, elementType))
                     .collect(toList());
             if (type.isFuncList()) {
                 try {
-                    var funcListName  = Core.FuncList.type().fullName();
-                    var funcListClass = Class.forName(funcListName);
-                    var funcListFrom  = funcListClass.getMethod("from", List.class);
+                    val funcListName  = Core.FuncList.type().fullName();
+                    val funcListClass = Class.forName(funcListName);
+                    val funcListFrom  = funcListClass.getMethod("from", List.class);
                     return (List)funcListFrom.invoke(funcListClass, list);
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Object does not fit the data specfication for type (" + type + "): " + obj);

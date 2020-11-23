@@ -31,6 +31,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import functionalj.types.choice.generator.model.Case;
+import lombok.val;
 
 
 public class Utils {
@@ -49,14 +50,14 @@ public class Utils {
         if (str.length() <= 2)
             return str.toLowerCase();
         
-        var firstTwo = str.substring(0, 2);
+        val firstTwo = str.substring(0, 2);
         if (firstTwo.equals(firstTwo.toUpperCase())) {
-            var first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
-            var rest = str.substring(first.length());
+            val first = str.replaceAll("^([A-Z]+)([A-Z][^A-Z]*)$", "$1");
+            val rest = str.substring(first.length());
             return first.toLowerCase() + rest;
         } else {
-            var first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
-            var rest = str.substring(first.length());
+            val first = str.replaceAll("^([A-Z]+[^A-Z])(.*)$", "$1");
+            val rest = str.substring(first.length());
             return first.toLowerCase() + rest;
         }
     }
@@ -74,7 +75,7 @@ public class Utils {
         if (list.isEmpty())
             return "java.util.Collections.emptyList()";
         
-        var str = list.stream().map(toCode).collect(joining(", "));
+        val str = list.stream().map(toCode).collect(joining(", "));
         return "java.util.Arrays.asList(" + str + ")";
     }
     
@@ -86,14 +87,14 @@ public class Utils {
         if (str.isEmpty())
             return "\"\"";
         
-        var matcher = pattern.matcher(str);
-        var buffer  = new StringBuffer();
+        val matcher = pattern.matcher(str);
+        val buffer  = new StringBuffer();
         while (matcher.find()) {
-            var original = matcher.group();
+            val original = matcher.group();
             if(original.length() == 0)
                 continue;
             
-            var replacement = findReplacement(original);
+            val replacement = findReplacement(original);
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);

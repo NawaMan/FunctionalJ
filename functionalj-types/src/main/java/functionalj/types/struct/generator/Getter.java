@@ -31,6 +31,7 @@ import functionalj.types.DefaultValue;
 import functionalj.types.Type;
 import lombok.Value;
 import lombok.With;
+import lombok.val;
 
 /**
  * Getter of the input spec.
@@ -83,7 +84,7 @@ public class Getter {
     }
     
     public String toCode() {
-        var params = asList(
+        val params = asList(
                 toStringLiteral(name),
                 type.toCode(),
                 nullable,

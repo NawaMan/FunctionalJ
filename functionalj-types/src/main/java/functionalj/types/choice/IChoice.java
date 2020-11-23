@@ -28,6 +28,7 @@ import java.util.Map;
 import functionalj.types.ChoiceConversionException;
 import functionalj.types.IData;
 import functionalj.types.choice.generator.model.CaseParam;
+import lombok.val;
 
 
 public interface IChoice<S> extends IData {
@@ -39,8 +40,8 @@ public interface IChoice<S> extends IData {
     
     public static <S extends IChoice<S>> S fromMap(Map<String, Object> map, Class<S> clazz) {
         try {
-            var method = clazz.getMethod("fromMap", Map.class);
-            var struct = method.invoke(clazz, map);
+            val method = clazz.getMethod("fromMap", Map.class);
+            val struct = method.invoke(clazz, map);
             return clazz.cast(struct);
         } catch (Exception cause) {
             throw new ChoiceConversionException(cause);

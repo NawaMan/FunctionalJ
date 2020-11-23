@@ -46,6 +46,7 @@ import javax.tools.Diagnostic;
 import functionalj.types.Struct;
 import functionalj.types.struct.generator.StructBuilder;
 import functionalj.types.struct.generator.model.GenStruct;
+import lombok.val;
 
 
 /**
@@ -90,20 +91,20 @@ public class StructAnnotationProcessor extends AbstractProcessor {
         // TODO - Should find a way to warn when a field is not immutable.
         hasError = false;
         for (Element element : roundEnv.getElementsAnnotatedWith(Struct.class)) {
-            var input     = new StructSpecInputImpl(element, elementUtils, typeUtils, messager);
-            var strucSpec = new StructSpec(input);
+            val input     = new StructSpecInputImpl(element, elementUtils, typeUtils, messager);
+            val strucSpec = new StructSpec(input);
             
-            var packageName    = strucSpec.packageName();
-            var specTargetName = strucSpec.targetTypeName();
+            val packageName    = strucSpec.packageName();
+            val specTargetName = strucSpec.targetTypeName();
             
             try {
-                var sourceSpec = strucSpec.sourceSpec();
+                val sourceSpec = strucSpec.sourceSpec();
                 if (sourceSpec == null)
                     continue;
                 
-                var dataObjSpec = new StructBuilder(sourceSpec).build();
-                var className   = (String)dataObjSpec.type().fullName("");
-                var content     = new GenStruct(sourceSpec, dataObjSpec).lines().collect(joining("\n"));
+                val dataObjSpec = new StructBuilder(sourceSpec).build();
+                val className   = (String)dataObjSpec.type().fullName("");
+                val content     = new GenStruct(sourceSpec, dataObjSpec).lines().collect(joining("\n"));
                 generateCode(element, className, content);
             } catch (Exception e) {
                 error(element, "Problem generating the class: "

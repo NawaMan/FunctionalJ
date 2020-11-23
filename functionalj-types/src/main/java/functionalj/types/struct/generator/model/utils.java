@@ -28,6 +28,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import lombok.val;
+
 
 class utils {
     
@@ -36,7 +38,7 @@ class utils {
     }
     
     static <IN> Function<IN, Stream<IN>> delimitWith(IN delimiter) {
-        var isFirst = new AtomicBoolean(true);
+        val isFirst = new AtomicBoolean(true);
         return in -> {
             if (isFirst.getAndSet(false))
                 return Stream.of(in);

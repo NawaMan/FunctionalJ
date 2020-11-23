@@ -33,6 +33,7 @@ import java.util.Objects;
 
 import functionalj.types.choice.ChoiceTypeSwitch;
 import functionalj.types.choice.generator.model.Case;
+import lombok.val;
 import lombok.experimental.ExtensionMethod;
 
 @ExtensionMethod(Utils.class)
@@ -56,22 +57,22 @@ public class SwitchClass implements Lines {
     
     @Override
     public List<String> lines() {
-        var targetName      = targetClass.type.simpleName();
-        var switchClassName = Utils.switchClassName(targetName, choices);
-        var mapTargetType   = "TARGET";
+        val targetName      = targetClass.type.simpleName();
+        val switchClassName = Utils.switchClassName(targetName, choices);
+        val mapTargetType   = "TARGET";
         
-        var isLast   = choices.size() <= 1;
-        var nextName = Utils.switchClassName(targetName, choices, 1);
-        var retType  = isLast ? mapTargetType : nextName + "<" + mapTargetType + (targetClass.getType().genericParams().isEmpty() ? "" : (", " + targetClass.getType().genericParams())) + ">";
-        var retStmt
+        val isLast   = choices.size() <= 1;
+        val nextName = Utils.switchClassName(targetName, choices, 1);
+        val retType  = isLast ? mapTargetType : nextName + "<" + mapTargetType + (targetClass.getType().genericParams().isEmpty() ? "" : (", " + targetClass.getType().genericParams())) + ">";
+        val retStmt
                 = isLast
                 ? "return newAction.apply($value);"
                 : "return new " + nextName + "<" + mapTargetType + (targetClass.getType().genericParams().isEmpty() ? "" : (", " + targetClass.getType().genericParams())) + ">($value, newAction);";
-        var thisChoice = choices.get(0);
-        var thisName  = thisChoice.name;
-        var camelName = Utils.toCamelCase(thisChoice.name);
+        val thisChoice = choices.get(0);
+        val thisName  = thisChoice.name;
+        val camelName = Utils.toCamelCase(thisChoice.name);
         
-        var firstSwitchLines
+        val firstSwitchLines
                 = !isFirst
                 ? (List<String>)new ArrayList<String>()
                 : asList(
@@ -89,7 +90,7 @@ public class SwitchClass implements Lines {
                 .flatMap(List::stream)
                 .collect(toList());
                 
-        var firstSwitchTypeLines
+        val firstSwitchTypeLines
                 = !isFirst
                 ? (List<String>)new ArrayList<String>()
                 : asList(
@@ -106,18 +107,18 @@ public class SwitchClass implements Lines {
                 
         List<String> casesComplete = createCasesComplete(false, true,             thisName, camelName,                  targetName, retType, retStmt, mapTargetType);
         List<String> casesPartial  = createCasesPartial (false, true, thisChoice, thisName, camelName, switchClassName, targetName,                   mapTargetType);
-        var switchLinesList = new ArrayList<List<String>>();
+        val switchLinesList = new ArrayList<List<String>>();
         switchLinesList.add(asList(format("public static class %1$s<%3$s> extends %5$s<%2$s, %4$s> {",                                                 switchClassName, targetName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType + (targetClass.getType().genericDefParams().isEmpty() ? "" : ", " + targetClass.getType().genericDefParams()), mapTargetType, ChoiceTypeSwitch.class.getSimpleName())));
         switchLinesList.add(asList(format("    private %1$s(%2$s theValue, Function<%2$s, ? extends %3$s> theAction) { super(theValue, theAction); }", switchClassName, targetName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType)));
         switchLinesList.add(asList(format("    ")));
         switchLinesList.add(casesComplete);
         switchLinesList.add(casesPartial);
         switchLinesList.add(asList(format("}")));
-        var switchLines = switchLinesList.stream()
+        val switchLines = switchLinesList.stream()
                 .flatMap(List::stream)
                 .collect(toList());
         
-        var lines = new ArrayList<String>();
+        val lines = new ArrayList<String>();
         lines.addAll(firstSwitchLines);
         lines.addAll(firstSwitchTypeLines);
         lines.addAll(switchLines);
@@ -126,8 +127,8 @@ public class SwitchClass implements Lines {
     
     private List<String> createCasesComplete(boolean isFirst, boolean typed, String thisName, String camelName, String targetName,
             String retType, String retStmt, String mapTargetType) {
-        var methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
-        var lineBF = isFirst ? "    Function<" + targetName + targetClass.getType().genericsString() + ", " + mapTargetType + "> $action = null;" : null;
+        val methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
+        val lineBF = isFirst ? "    Function<" + targetName + targetClass.getType().genericsString() + ", " + mapTargetType + "> $action = null;" : null;
         return asList(
             format("public %1$s%2$s %3$s(Function<? super %4$s, ? extends %5$s> theAction) {", methodGeneric, retType, camelName, thisName + targetClass.getType().genericsString(), mapTargetType),
             lineBF,
@@ -155,8 +156,8 @@ public class SwitchClass implements Lines {
     
     private List<String> createCasesPartial(boolean isFirst, boolean typed, Case thisChoice, String thisName,
             String camelName, String switchClassName, String targetName, String mapTargetType) {
-        var methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
-        var lineBF = isFirst ? "    Function<" + targetName  + targetClass.getType().genericsString() + ", " + mapTargetType + "> $action = null;" : null;
+        val methodGeneric = typed ? "" : (isFirst ? "<" + mapTargetType + "> " : "");
+        val lineBF = isFirst ? "    Function<" + targetName  + targetClass.getType().genericsString() + ", " + mapTargetType + "> $action = null;" : null;
         return !thisChoice.isParameterized()
                 ? new ArrayList<String>()
                 : asList(

@@ -30,19 +30,21 @@ import java.util.List;
 
 import javax.lang.model.element.Element;
 
+import lombok.val;
+
 
 /** This class is intentionally named in lower case to signal that it should not be used. */
 public class common {
     
     public static String extractTargetName(Element element) {
         if (element.getAnnotation(Struct.class) != null) {
-            var specTargetName = element.getAnnotation(Struct.class).name();
-            var simpleName     = element.getSimpleName().toString();
+            val specTargetName = element.getAnnotation(Struct.class).name();
+            val simpleName     = element.getSimpleName().toString();
             return extractTargetName(simpleName, specTargetName);
             
         } else if (element.getAnnotation(Struct.class) != null) {
-            var specTargetName = element.getAnnotation(Choice.class).name();
-            var simpleName     = element.getSimpleName().toString();
+            val specTargetName = element.getAnnotation(Choice.class).name();
+            val simpleName     = element.getSimpleName().toString();
             return extractTargetName(simpleName, specTargetName);
         }
         return null;
