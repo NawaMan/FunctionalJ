@@ -104,8 +104,8 @@ public class SwitchClass implements Lines {
                 .flatMap(List::stream)
                 .collect(toList());
                 
-        List<String> casesComplete = null; // createCasesComplete(false, true,             thisName, camelName,                  targetName, retType, retStmt, mapTargetType);
-        List<String> casesPartial  = null; // createCasesPartial (false, true, thisChoice, thisName, camelName, switchClassName, targetName,                   mapTargetType);
+        List<String> casesComplete = createCasesComplete(false, true,             thisName, camelName,                  targetName, retType, retStmt, mapTargetType);
+        List<String> casesPartial  = createCasesPartial (false, true, thisChoice, thisName, camelName, switchClassName, targetName,                   mapTargetType);
         var switchLinesList = new ArrayList<List<String>>();
         switchLinesList.add(asList(format("public static class %1$s<%3$s> extends %5$s<%2$s, %4$s> {",                                                 switchClassName, targetName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType + (targetClass.getType().genericDefParams().isEmpty() ? "" : ", " + targetClass.getType().genericDefParams()), mapTargetType, ChoiceTypeSwitch.class.getSimpleName())));
         switchLinesList.add(asList(format("    private %1$s(%2$s theValue, Function<%2$s, ? extends %3$s> theAction) { super(theValue, theAction); }", switchClassName, targetName + (targetClass.getType().genericsString().isEmpty() ? "" : targetClass.getType().genericsString()), mapTargetType)));

@@ -13,6 +13,8 @@ dependencies {
     compileOnly         'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     
+    compile 'junit:junit:4.12'
+    
     // == Test ==
     
     testCompile 'junit:junit:4.12'

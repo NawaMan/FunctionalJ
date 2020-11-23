@@ -103,5 +103,5 @@ public class SourceMethod implements Lines {
     private boolean isThisMethod(Method m) {
         return !m.params.isEmpty() && m.params.get(0).type.toString().equals(targetClass.type.toString());
     }
-
+    
 }
