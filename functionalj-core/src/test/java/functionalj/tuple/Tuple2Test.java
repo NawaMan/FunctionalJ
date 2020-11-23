@@ -34,6 +34,7 @@ import org.junit.Test;
 import functionalj.lens.lenses.StringLens;
 import functionalj.lens.lenses.Tuple2Lens;
 import functionalj.list.ImmutableList;
+import lombok.val;
 
 
 public class Tuple2Test {
@@ -49,7 +50,7 @@ public class Tuple2Test {
     
     @Test
     public void testLensRead() {
-        var theTuple = theTuple2.of(STRING(), STRING());
+        val theTuple = theTuple2.of(STRING(), STRING());
         assertEquals("[I, S]", "" + tuples.map(theTuple._1()));
     }
     

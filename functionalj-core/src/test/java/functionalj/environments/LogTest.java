@@ -23,20 +23,20 @@
 // ============================================================================
 package functionalj.environments;
 
-import static functionalj.list.FuncList.listOf;
 import static functionalj.ref.Run.With;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import functionalj.stream.StreamPlus;
+import lombok.val;
 
 
 public class LogTest {
     
     @Test
     public void testLog() {
-        var stub = new Console.Stub();
+        val stub = new Console.Stub();
         With(Env.refs.console.butWith(stub))
         .run(()->{
             Log.log("One");
@@ -45,7 +45,7 @@ public class LogTest {
             Log.logEach("-->", listOf("Three", "Four"), "<--");
             Log.logBy(()-> "42");
             
-            var outLines = StreamPlus.from(stub.outLines()).toJavaList();
+            val outLines = StreamPlus.from(stub.outLines()).toJavaList();
             assertEquals(
                     "["
                     + "One, "
@@ -61,7 +61,7 @@ public class LogTest {
     }
     @Test
     public void testLogErr() {
-        var stub = new Console.Stub();
+        val stub = new Console.Stub();
         With(Env.refs.console.butWith(stub))
         .run(()->{
             try {
@@ -69,7 +69,7 @@ public class LogTest {
             } catch (Exception e) {
                 Log.logErr("Error!", e);
             }
-            var expected =
+            val expected =
                     "Error!\n" + 
                     "java.lang.NullPointerException: NULL!!!";
             assertEquals(expected, stub.errLines().limit(2).join("\n"));

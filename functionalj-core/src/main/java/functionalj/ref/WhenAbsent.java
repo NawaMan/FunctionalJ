@@ -27,6 +27,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func;
 import functionalj.function.Func0;
+import lombok.val;
 
 
 class WhenAbsent {
@@ -42,8 +43,8 @@ class WhenAbsent {
     }
     static <D> Func0<D> UseDefault(Class<D> dataClass) {
         return ()->{
-            var provider = RefTo.defaultProvider.value();
-            var value    = provider.get(dataClass);
+            val provider = RefTo.defaultProvider.value();
+            val value    = provider.get(dataClass);
             return value;
         };
     }

@@ -56,6 +56,7 @@ import functionalj.pipeable.Pipeable;
 import functionalj.ref.Ref;
 import functionalj.result.HasResult;
 import functionalj.result.Result;
+import lombok.val;
 
 
 
@@ -102,8 +103,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T1>> promise1,
             NamedExpression<HasPromise<T2>> promise2,
             Func2<T1, T2, D>                merger) {
-        var action  = DeferAction.from(promise1, promise2, merger);
-        var promise = action.getPromise();
+        val action  = DeferAction.from(promise1, promise2, merger);
+        val promise = action.getPromise();
         return promise;
     }
     
@@ -112,8 +113,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T2>> promise2,
             NamedExpression<HasPromise<T3>> promise3,
             Func3<T1, T2, T3, D>            merger) {
-        var action  = DeferAction.from(promise1, promise2, promise3, merger);
-        var promise = action.getPromise();
+        val action  = DeferAction.from(promise1, promise2, promise3, merger);
+        val promise = action.getPromise();
         return promise;
     }
     
@@ -123,8 +124,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T3>> promise3,
             NamedExpression<HasPromise<T4>> promise4,
             Func4<T1, T2, T3, T4, D>        merger) {
-        var action  = DeferAction.from(promise1, promise2, promise3, promise4, merger);
-        var promise = action.getPromise();
+        val action  = DeferAction.from(promise1, promise2, promise3, promise4, merger);
+        val promise = action.getPromise();
         return promise;
     }
     
@@ -135,8 +136,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T4>> promise4,
             NamedExpression<HasPromise<T5>> promise5,
             Func5<T1, T2, T3, T4, T5, D>    merger) {
-        var action  = DeferAction.from(promise1, promise2, promise3, promise4, promise5, merger);
-        var promise = action.getPromise();
+        val action  = DeferAction.from(promise1, promise2, promise3, promise4, promise5, merger);
+        val promise = action.getPromise();
         return promise;
     }
     
@@ -148,8 +149,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             NamedExpression<HasPromise<T5>>  promise5,
             NamedExpression<HasPromise<T6>>  promise6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        var action  = DeferAction.from(promise1, promise2, promise3, promise4, promise5, promise6, merger);
-        var promise = action.getPromise();
+        val action  = DeferAction.from(promise1, promise2, promise3, promise4, promise5, promise6, merger);
+        val promise = action.getPromise();
         return promise;
     }
     
@@ -196,7 +197,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     public final PromiseStatus getStatus() {
-        var data = dataRef.get();
+        val data = dataRef.get();
         if (data instanceof Promise) {
             @SuppressWarnings("unchecked")
             Promise<DATA> promise = (Promise<DATA>)data;
@@ -213,7 +214,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
             return PromiseStatus.PENDING;
         if (data instanceof Result) {
             @SuppressWarnings("unchecked")
-            var result = (Result<DATA>)data;
+            val result = (Result<DATA>)data;
             if (result.isCancelled())
                 return PromiseStatus.ABORTED;
             if (result.isReady())
@@ -233,18 +234,18 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     
     @SuppressWarnings("unchecked")
     public final boolean start() {
-        var data = dataRef.get();
+        val data = dataRef.get();
         if (data instanceof Promise) {
-            var parent = (Promise<DATA>)data;
+            val parent = (Promise<DATA>)data;
             return parent.start();
         }
         
-        var isStartAction = (data instanceof StartableAction);
-        var isOnStart     = (data instanceof OnStart);
+        val isStartAction = (data instanceof StartableAction);
+        val isOnStart     = (data instanceof OnStart);
         if (!isStartAction && !isOnStart)
             return false;
         
-        var isJustStarted = dataRef.compareAndSet(data, consumers);
+        val isJustStarted = dataRef.compareAndSet(data, consumers);
         if (isJustStarted) {
             if (isStartAction)  ((StartableAction<DATA>)data).start();
             else if (isOnStart) ((OnStart)data).run();
@@ -253,39 +254,39 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     OnStart getOnStart() {
-        var data = dataRef.get();
+        val data = dataRef.get();
         return (data instanceof OnStart) ? (OnStart)data : OnStart.DoNothing;
     }
     
     boolean abort() {
         @SuppressWarnings("unchecked")
-        var cancelResult = (Result<DATA>)Result.ofCancelled();
+        val cancelResult = (Result<DATA>)Result.ofCancelled();
         return makeDone(cancelResult);
     }
     boolean abort(String message) {
         @SuppressWarnings("unchecked")
-        var cancelResult = (Result<DATA>)Result.ofCancelled(message);
+        val cancelResult = (Result<DATA>)Result.ofCancelled(message);
         return makeDone(cancelResult);
     }
     boolean abort(Exception cause) {
         @SuppressWarnings("unchecked")
-        var cancelResult = (Result<DATA>)Result.ofCancelled(null, cause);
+        val cancelResult = (Result<DATA>)Result.ofCancelled(null, cause);
         return makeDone(cancelResult);
     }
     boolean abort(String message, Exception cause) {
         @SuppressWarnings("unchecked")
-        var cancelResult = (Result<DATA>)Result.ofCancelled(message, cause);
+        val cancelResult = (Result<DATA>)Result.ofCancelled(message, cause);
         return makeDone(cancelResult);
     }
     
     boolean makeComplete(DATA data) { 
-        var result = Result.valueOf(data);
+        val result = Result.valueOf(data);
         return makeDone(result);
     }
     
     boolean makeFail(Exception exception) {
         @SuppressWarnings("unchecked")
-        var result = (Result<DATA>)Result.ofException(exception);
+        val result = (Result<DATA>)Result.ofException(exception);
         return makeDone(result);
     }
     
@@ -295,12 +296,12 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         }
     }
     static <DATA> boolean makeDone(Promise<DATA> promise, Result<DATA> result) {
-        var isDone = promise.synchronouseOperation(()->{
-            var data = promise.dataRef.get();
+        val isDone = promise.synchronouseOperation(()->{
+            val data = promise.dataRef.get();
             try {
                 if (data instanceof Promise) {
                     @SuppressWarnings("unchecked")
-                    var parent = (Promise<DATA>)data;
+                    val parent = (Promise<DATA>)data;
                     try {
                         if (!promise.dataRef.compareAndSet(parent, result))
                             return false;
@@ -322,10 +323,10 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (isDone != null)
             return isDone.booleanValue();
         
-        var subscribers = new HashMap<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>>(promise.consumers);
+        val subscribers = new HashMap<SubscriptionRecord<DATA>, FuncUnit1<Result<DATA>>>(promise.consumers);
         promise.consumers.clear();
         
-        var eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(promise.eavesdroppers);
+        val eavesdroppers = new ArrayList<Consumer<Result<DATA>>>(promise.eavesdroppers);
         promise.eavesdroppers.clear();
         
         for (var eavesdropper : eavesdroppers) {
@@ -365,7 +366,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     private <T> Promise<T> newSubPromise(FuncUnit2<Result<DATA>, Promise<T>> resultConsumer) {
-        var promise = new Promise<T>(this);
+        val promise = new Promise<T>(this);
         onComplete(resultConsumer.elevateWith(promise));
         return promise;
     }
@@ -385,8 +386,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         return PromiseStatus.COMPLETED.equals(getStatus());
     }
     public final boolean isDone() {
-        var status = getStatus();
-        var isDone = (null != status) && status.isDone();
+        val status = getStatus();
+        val isDone = (null != status) && status.isDone();
         return isDone;
     }
     public final boolean isNotDone() {
@@ -401,7 +402,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         abortWhenNoSubscription();
     }
     void unsubscribe(Promise<DATA> promise) {
-        var entry = consumers.entrySet().stream().filter(e -> Objects.equals(e.getKey().getPromise(), promise)).findFirst();
+        val entry = consumers.entrySet().stream().filter(e -> Objects.equals(e.getKey().getPromise(), promise)).findFirst();
         if (entry.isPresent())
             consumers.remove(entry.get().getKey());
         abortWhenNoSubscription();
@@ -413,7 +414,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     private SubscriptionRecord<DATA> listen(boolean isEavesdropping, FuncUnit1<Result<DATA>> resultConsumer) {
-        var subscription = new SubscriptionRecord<DATA>(this);
+        val subscription = new SubscriptionRecord<DATA>(this);
         if (isEavesdropping)
              eavesdroppers.add(resultConsumer);
         else consumers    .put(subscription, resultConsumer);
@@ -428,7 +429,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public final Result<DATA> getResult(long timeout, TimeUnit unit) {
         start();
         if (!isDone()) {
-            var latch = new CountDownLatch(1);
+            val latch = new CountDownLatch(1);
             synchronouseOperation(()->{
                 onComplete(result -> {
                     latch.countDown();
@@ -451,20 +452,20 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         if (!isDone())
             throw new UncheckedInterruptedException(new InterruptedException());
         
-        var currentResult = getCurrentResult();
+        val currentResult = getCurrentResult();
         return currentResult;
     }
     
     public final Result<DATA> getCurrentResult() {
-        var data = dataRef.get();
+        val data = dataRef.get();
         if (data instanceof Result) {
             @SuppressWarnings("unchecked")
-            var result = (Result<DATA>)data;
+            val result = (Result<DATA>)data;
             return result;
         }
         if (data instanceof Promise) {
             @SuppressWarnings("unchecked")
-            var parent = (Promise<DATA>)data;
+            val parent = (Promise<DATA>)data;
             return parent.getCurrentResult();
         }
         return Result.ofNotReady();
@@ -511,25 +512,25 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     
     public final Promise<DATA> abortNoSubscriptionAfter(Wait wait) {
-        var subscriptionHolder = onComplete(wait);
+        val subscriptionHolder = onComplete(wait);
         subscriptionHolder.assign(__ -> subscriptionHolder.unsubscribe());
         return this;
     }
     
     @SuppressWarnings("unchecked")
     final SubscriptionRecord<DATA> doSubscribe(boolean isEavesdropping, Wait wait, FuncUnit1<Result<DATA>> resultConsumer) {
-        var toRunNow           = new AtomicBoolean(false);
-        var returnSubscription = (SubscriptionRecord<DATA>)synchronouseOperation(()->{
-            var data = dataRef.get();
+        val toRunNow           = new AtomicBoolean(false);
+        val returnSubscription = (SubscriptionRecord<DATA>)synchronouseOperation(()->{
+            val data = dataRef.get();
             if (data instanceof Result) {
-                var subscription = new SubscriptionRecord<DATA>(this);
+                val subscription = new SubscriptionRecord<DATA>(this);
                 toRunNow.set(true);
                 return subscription;
             }
             
-            var hasNotified  = new AtomicBoolean(false);
-            var waitSession  = wait != null ? wait.newSession() : Wait.forever().newSession();
-            var subscription = listen(isEavesdropping, result -> {
+            val hasNotified  = new AtomicBoolean(false);
+            val waitSession  = wait != null ? wait.newSession() : Wait.forever().newSession();
+            val subscription = listen(isEavesdropping, result -> {
                 if (hasNotified.compareAndSet(false, true)) {
                     try {
                         resultConsumer.accept(result);
@@ -548,7 +549,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
                 Result<DATA> result;
                 try {
                     if (wait instanceof WaitOrDefault) {
-                        var supplier = ((WaitOrDefault<DATA>)wait).getDefaultSupplier();
+                        val supplier = ((WaitOrDefault<DATA>)wait).getDefaultSupplier();
                         if (supplier == null)
                              result = Result.ofCancelled(message, throwable);
                         else result = supplier.get();
@@ -571,8 +572,8 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
         
         if (toRunNow.get()) {
             // The consumer can be heavy so we remove it out of the locked operation.
-            var data = dataRef.get();
-            var result = (Result<DATA>)data;
+            val data = dataRef.get();
+            val result = (Result<DATA>)data;
             try {
                 resultConsumer.accept(result);
             } catch (Throwable e) {
@@ -588,7 +589,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public final Promise<DATA> filter(Predicate<? super DATA> predicate) {
         requireNonNull(predicate);
         return (Promise<DATA>)newSubPromise((Result<DATA> r, Promise<DATA> targetPromise) -> {
-            var result = r.filter(predicate);
+            val result = r.filter(predicate);
             targetPromise.makeDone((Result<DATA>) result);
         });
     }
@@ -596,7 +597,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public final Promise<DATA> peek(FuncUnit1<? super DATA> peeker) {
         requireNonNull(peeker);
         return (Promise<DATA>)newSubPromise((Result<DATA> r, Promise<DATA> targetPromise) -> {
-            var result = r.peek(peeker);
+            val result = r.peek(peeker);
             targetPromise.makeDone((Result<DATA>) result);
         });
     }
@@ -605,7 +606,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public final <TARGET> Promise<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         requireNonNull(mapper);
         return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
-            var result = r.map(mapper);
+            val result = r.map(mapper);
             targetPromise.makeDone((Result<TARGET>) result);
         });
     }
@@ -614,7 +615,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     public final <TARGET> Promise<TARGET> mapResult(Function<Result<? super DATA>, Result<? extends TARGET>> mapper) {
         requireNonNull(mapper);
         return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
-            var result = mapper.apply(r);
+            val result = mapper.apply(r);
             targetPromise.makeDone((Result<TARGET>) result);
         });
     }
@@ -624,7 +625,7 @@ public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeabl
     }
     public final <TARGET> Promise<TARGET> chain(Func1<DATA, ? extends HasPromise<TARGET>> mapper) {
         return (Promise<TARGET>)newSubPromise((Result<DATA> r, Promise<TARGET> targetPromise) -> {
-            var targetResult = r.map(mapper);
+            val targetResult = r.map(mapper);
             targetResult.ifPresent(hasPromise -> {
                 hasPromise.getPromise().onComplete(result -> {
                     targetPromise.makeDone((Result<TARGET>) result);

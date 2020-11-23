@@ -45,36 +45,36 @@ public interface IntStreamPlusWithMapWithIndex {
     
     /** @return  the stream of each value and index. */
     public default StreamPlus<IntIntTuple> mapWithIndex() {
-        var index = new AtomicInteger();
-        var streamPlus = intStreamPlus();
+        val index = new AtomicInteger();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    var currentIndex = index.getAndIncrement();
-                    var tuple        = tuple(currentIndex, each);
+                    val currentIndex = index.getAndIncrement();
+                    val tuple        = tuple(currentIndex, each);
                     return tuple;
                 });
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default IntStreamPlus mapWithIndex(IntBinaryOperator combinator) {
-        var index = new AtomicInteger();
-        var streamPlus = intStreamPlus();
+        val index = new AtomicInteger();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .map(each -> {
-                    var currentIndex = index.getAndIncrement();
-                    var target       = combinator.applyAsInt(currentIndex, each);
+                    val currentIndex = index.getAndIncrement();
+                    val target       = combinator.applyAsInt(currentIndex, each);
                     return target;
                 });
     }
     
     /** Create a stream whose value is the combination between value of this stream and its index. */
     public default <T> StreamPlus<T> mapToObjWithIndex(IntIntBiFunction<T> combinator) {
-        var index = new AtomicInteger();
-        var streamPlus = intStreamPlus();
+        val index = new AtomicInteger();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    var currentIndex = index.getAndIncrement();
-                    var target       = combinator.applyInt(currentIndex, each);
+                    val currentIndex = index.getAndIncrement();
+                    val target       = combinator.applyInt(currentIndex, each);
                     return target;
                 });
     }
@@ -83,13 +83,13 @@ public interface IntStreamPlusWithMapWithIndex {
     public default <T1, T> StreamPlus<T> mapWithIndex(
                 IntUnaryOperator    valueMapper,
                 IntIntBiFunction<T> combiner) {
-        var index = new AtomicInteger();
-        var streamPlus = intStreamPlus();
+        val index = new AtomicInteger();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    var currentIndex = index.getAndIncrement();
-                    var value        = valueMapper.applyAsInt(each);
-                    var target       = combiner.apply(currentIndex, value);
+                    val currentIndex = index.getAndIncrement();
+                    val value        = valueMapper.applyAsInt(each);
+                    val target       = combiner.apply(currentIndex, value);
                     return target;
                 });
     }
@@ -98,13 +98,13 @@ public interface IntStreamPlusWithMapWithIndex {
     public default <T1, T> StreamPlus<T> mapToObjWithIndex(
                 IntFunction<? extends T1>       valueMapper,
                 IntObjBiFunction<? super T1, T> combiner) {
-        var index = new AtomicInteger();
-        var streamPlus = intStreamPlus();
+        val index = new AtomicInteger();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(each -> {
-                    var i      = index.getAndIncrement();
-                    var value  = valueMapper.apply(each);
-                    var target = combiner.apply(i, value);
+                    val i      = index.getAndIncrement();
+                    val value  = valueMapper.apply(each);
+                    val target = combiner.apply(i, value);
                     return target;
                 });
     }

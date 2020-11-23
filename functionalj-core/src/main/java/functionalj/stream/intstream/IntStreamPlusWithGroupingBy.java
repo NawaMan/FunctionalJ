@@ -28,8 +28,8 @@ import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 import functionalj.map.FuncMap;
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Terminal;
 import functionalj.streamable.intstreamable.IntStreamable;
 
 
@@ -53,8 +53,8 @@ public interface IntStreamPlusWithGroupingBy extends AsIntStreamPlus {
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
             IntFunction<? extends KEY>     keyMapper,
             Function<IntStreamPlus, VALUE> aggregate) {
-        var groupingBy = groupingBy(keyMapper);
-        var mapValue = groupingBy.mapValue(aggregate);
+        val groupingBy = groupingBy(keyMapper);
+        val mapValue = groupingBy.mapValue(aggregate);
         return (FuncMap<KEY, VALUE>)mapValue;
     }
     

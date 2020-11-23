@@ -52,9 +52,9 @@ import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Sequential;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 import functionalj.tuple.IntIntTuple;
 
 
@@ -144,8 +144,8 @@ public interface IntStreamPlus
     
     /** Create a StreamPlus that is the repeat of the given array of data. */
     public static IntStreamPlus cycle(int ... data) {
-        var ints = Arrays.copyOf(data, data.length);
-        var size = ints.length;
+        val ints = Arrays.copyOf(data, data.length);
+        val size = ints.length;
         return IntStreamPlus.from(
                 IntStream
                 .iterate(0, i -> i + 1)
@@ -236,7 +236,7 @@ public interface IntStreamPlus
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static IntStreamPlus generateWith(IntSupplier supplier) {
-        var iterable = (IntIterable)() -> new IntSupplierBackedIterator(supplier);
+        val iterable = (IntIterable)() -> new IntSupplierBackedIterator(supplier);
         return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
     }
     
@@ -292,9 +292,9 @@ public interface IntStreamPlus
      * Note: this is an alias of compound()
      **/
     public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator f) {
-        var counter = new AtomicInteger(0);
-        var int1    = new AtomicInteger(seed1);
-        var int2    = new AtomicInteger(seed2);
+        val counter = new AtomicInteger(0);
+        val int1    = new AtomicInteger(seed1);
+        val int2    = new AtomicInteger(seed2);
         return IntStreamPlus.generate(()->{
             if (counter.getAndIncrement() == 0)
                 return seed1;
@@ -428,9 +428,9 @@ public interface IntStreamPlus
     
     public default <TARGET> TARGET terminate(
             Function<IntStream, TARGET> action) {
-        var stream = intStream();
+        val stream = intStream();
         try {
-            var result = action.apply(stream);
+            val result = action.apply(stream);
             return result;
         } finally {
             stream.close();
@@ -438,7 +438,7 @@ public interface IntStreamPlus
     }
     
     public default void terminate(FuncUnit1<IntStream> action) {
-        var stream = intStream();
+        val stream = intStream();
         try {
             action.accept(stream);
         } finally {
@@ -447,9 +447,9 @@ public interface IntStreamPlus
     }
     
     public default IntStreamPlus sequential(Func1<IntStreamPlus, IntStreamPlus> action) {
-        var isParallel = isParallel();
-        var orgIntStreamPlus = sequential();
-        var newIntStreamPlus = action.apply(orgIntStreamPlus);
+        val isParallel = isParallel();
+        val orgIntStreamPlus = sequential();
+        val newIntStreamPlus = action.apply(orgIntStreamPlus);
         if (newIntStreamPlus.isParallel() == isParallel)
             return newIntStreamPlus;
         
@@ -543,7 +543,7 @@ public interface IntStreamPlus
     @Override
     public default Spliterator.OfInt spliterator() {
         return terminate(s -> {
-            var iterator = iterator();
+            val iterator = iterator();
             return Spliterators.spliteratorUnknownSize(iterator, 0);
         });
     }

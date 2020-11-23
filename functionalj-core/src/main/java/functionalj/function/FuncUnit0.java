@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;
 import functionalj.functions.ThrowFuncs;
 import functionalj.promise.DeferAction;
 import functionalj.ref.RunBody;
+import lombok.val;
 
 
 public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
@@ -77,7 +78,7 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     public default <I, T> Func1<I, T> then(Func1<I, T> function) {
         return input -> {
             runUnsafe();
-            var value = function.applyUnsafe(input);
+            val value = function.applyUnsafe(input);
             return value;
         };
     }
@@ -95,7 +96,7 @@ public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     public default <T> Func0<T> thenGet(Func0<T> supplier) {
         return () -> {
             runUnsafe();
-            var value = supplier.applyUnsafe();
+            val value = supplier.applyUnsafe();
             return value;
         };
     }

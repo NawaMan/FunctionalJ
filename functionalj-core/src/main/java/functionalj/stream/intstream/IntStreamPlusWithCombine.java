@@ -60,11 +60,11 @@ public interface IntStreamPlusWithCombine {
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
     public default IntStreamPlus mergeWith(IntStream anotherStream) {
-        var thisStream = intStreamPlus();
-        var iteratorA  = IntIteratorPlus.from(thisStream   .iterator());
-        var iteratorB  = IntIteratorPlus.from(anotherStream.iterator());
+        val thisStream = intStreamPlus();
+        val iteratorA  = IntIteratorPlus.from(thisStream   .iterator());
+        val iteratorB  = IntIteratorPlus.from(anotherStream.iterator());
         
-        var resultStream 
+        val resultStream 
                 = IntStreamPlusHelper
                 .doMergeInt(iteratorA, iteratorB);
         

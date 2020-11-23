@@ -32,6 +32,7 @@ import java.util.function.Supplier;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class Loop<DATA> extends Retry<DATA> {
@@ -52,25 +53,25 @@ public class Loop<DATA> extends Retry<DATA> {
     
     @Override
     DeferAction<DATA> create(DeferActionBuilder<DATA> builder) {
-        var interruptOnCancel = builder.interruptOnCancel();
-        var supplier          = builder.supplier();
-        var onStart           = builder.onStart();
-        var runner            = builder.runner();
+        val interruptOnCancel = builder.interruptOnCancel();
+        val supplier          = builder.supplier();
+        val onStart           = builder.onStart();
+        val runner            = builder.runner();
         
         DeferAction<DATA> finalAction = DeferAction.createNew();
         
-        var config = new DeferActionConfig()
+        val config = new DeferActionConfig()
                 .interruptOnCancel(interruptOnCancel)
                 .onStart(onStart)
                 .runner(runner);
         
-        var shouldStop      = shouldStop();
-        var actionBuilder   = config.createBuilder(supplier);
-        var subscriptionRef = new AtomicReference<SubscriptionRecord<DATA>>();
-        var onComplete      = new OnComplete<>(actionBuilder, shouldStop, finalAction, subscriptionRef::get);
+        val shouldStop      = shouldStop();
+        val actionBuilder   = config.createBuilder(supplier);
+        val subscriptionRef = new AtomicReference<SubscriptionRecord<DATA>>();
+        val onComplete      = new OnComplete<>(actionBuilder, shouldStop, finalAction, subscriptionRef::get);
         
-        var action       = actionBuilder.build();
-        var subscription = action.getPromise().onComplete(onComplete);
+        val action       = actionBuilder.build();
+        val subscription = action.getPromise().onComplete(onComplete);
         subscriptionRef.set(subscription);
         action.start();
         
@@ -80,8 +81,8 @@ public class Loop<DATA> extends Retry<DATA> {
         if (breakCondition != null)
             return breakCondition;
         
-        var counter = new AtomicInteger(count.intValue());
-        var stopPredicate = (Func1<Result<DATA>, Boolean>)(result)->{
+        val counter = new AtomicInteger(count.intValue());
+        val stopPredicate = (Func1<Result<DATA>, Boolean>)(result)->{
             return counter.decrementAndGet() <= 0;
         };
         return stopPredicate;
@@ -107,9 +108,9 @@ public class Loop<DATA> extends Retry<DATA> {
         
         @Override
         public void acceptUnsafe(Result<DATA> result) throws Exception {
-            var shouldBreak = shouldStop.apply(result);
+            val shouldBreak = shouldStop.apply(result);
             if (shouldBreak) {
-                var value = result.value();
+                val value = result.value();
                 finalAction.complete(value);
             } else {
                 subscriptionRef.get().unsubscribe();

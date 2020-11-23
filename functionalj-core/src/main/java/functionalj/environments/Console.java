@@ -50,6 +50,7 @@ import functionalj.ref.ComputeBody;
 import functionalj.ref.RunBody;
 import functionalj.stream.BlockingQueueIteratorPlus;
 import functionalj.stream.StreamPlus;
+import lombok.val;
 
 
 public final class Console {
@@ -213,7 +214,7 @@ public final class Console {
     
     public static <EXCEPTION extends Exception> StubRecord<Object> useStub(FuncUnit1<ConsoleInQueue> holder, RunBody<EXCEPTION> body) 
             throws EXCEPTION {
-        var inQueue = new ConsoleInQueue();
+        val inQueue = new ConsoleInQueue();
         if (holder != null)
             holder.accept(inQueue);
         return useStub(inQueue, ()->{ body.run(); return null; });
@@ -221,7 +222,7 @@ public final class Console {
     
     public static <DATA, EXCEPTION extends Exception> StubRecord<DATA> useStub(FuncUnit1<ConsoleInQueue> holder, 
             ComputeBody<DATA, EXCEPTION> body) throws EXCEPTION {
-        var inQueue = new ConsoleInQueue();
+        val inQueue = new ConsoleInQueue();
         if (holder != null)
             holder.accept(inQueue);
         return useStub(inQueue, ()->{ body.run(); return null; });
@@ -239,7 +240,7 @@ public final class Console {
     
     public static <DATA, EXCEPTION extends Exception> StubRecord<DATA> useStub(Stream<String> inLines, ComputeBody<DATA, EXCEPTION> body) 
             throws EXCEPTION {
-        var inQueue = new ConsoleInQueue(StreamPlus.from(inLines).toJavaList());
+        val inQueue = new ConsoleInQueue(StreamPlus.from(inLines).toJavaList());
         return useStub(true, inQueue, body);
     }
     
@@ -249,13 +250,13 @@ public final class Console {
     }
     private static <DATA, EXCEPTION extends Exception> StubRecord<DATA> useStub(boolean isInStreamDone, ConsoleInQueue inQueue, 
             ComputeBody<DATA, EXCEPTION> body) throws EXCEPTION {
-        var stub = new Console.Stub(isInStreamDone, inQueue);
-        var data = With(Env.refs.console.butWith(stub)).run(body);
+        val stub = new Console.Stub(isInStreamDone, inQueue);
+        val data = With(Env.refs.console.butWith(stub)).run(body);
         stub.flush();
-        var outLines = stub.outLines().toImmutableList();
-        var errLines = stub.errLines().toImmutableList();
-        var inLines  = stub.recordedInLines().toImmutableList();
-        var result   = new StubRecord<DATA>(data, outLines, errLines, inLines);
+        val outLines = stub.outLines().toImmutableList();
+        val errLines = stub.errLines().toImmutableList();
+        val inLines  = stub.recordedInLines().toImmutableList();
+        val result   = new StubRecord<DATA>(data, outLines, errLines, inLines);
         return result;
     }
     
@@ -422,7 +423,7 @@ public final class Console {
         
         @Override
         public Instance outPrint(Object obj) {
-            var text = String.valueOf(obj);
+            val text = String.valueOf(obj);
             outTexts.get().add(text);
             return this;
         }
@@ -433,7 +434,7 @@ public final class Console {
         }
         @Override
         public Instance outPrintf(String format, Object ... args) {
-            var line = String.format(format, args);
+            val line = String.format(format, args);
             return outPrintln(line);
         }
         @Override
@@ -443,7 +444,7 @@ public final class Console {
         
         @Override
         public Instance errPrint(Object obj) {
-            var text = String.valueOf(obj);
+            val text = String.valueOf(obj);
             errTexts.get().add(text);
             return this;
         }
@@ -454,7 +455,7 @@ public final class Console {
         }
         @Override
         public Instance errPrintf(String format, Object ... args) {
-            var line = String.format(format, args);
+            val line = String.format(format, args);
             return errPrintln(line);
         }
         @Override
@@ -463,12 +464,12 @@ public final class Console {
         }
         
         public void flush() {
-            var outs = outTexts.get();
+            val outs = outTexts.get();
             if ((outs != null) && !outs.isEmpty()) {
                 outPrintln();
             }
             
-            var errs = errTexts.get();
+            val errs = errTexts.get();
             if ((errs != null) && !errs.isEmpty()) {
                 errPrintln();
             }
@@ -479,15 +480,15 @@ public final class Console {
                 ConcurrentLinkedQueue<String>                  lines) {
             texts.getAndUpdate(oldQuery -> {
                 if (oldQuery.isEmpty()) {
-                    var fullLine = String.valueOf(line);
-                    var lineArray = fullLine.split("(\n|\r\n?)");
+                    val fullLine = String.valueOf(line);
+                    val lineArray = fullLine.split("(\n|\r\n?)");
                     Arrays.stream(lineArray)
                           .forEach(lines::add);
                     return oldQuery;
                 }
                 
-                var fullLine = oldQuery.stream().collect(Collectors.joining()) + String.valueOf(line);
-                var lineArray = fullLine.split("(\n|\r\n?)");
+                val fullLine = oldQuery.stream().collect(Collectors.joining()) + String.valueOf(line);
+                val lineArray = fullLine.split("(\n|\r\n?)");
                 Arrays.stream(lineArray)
                       .forEach(lines::add);
                 return new ConcurrentLinkedQueue<String>();
@@ -504,7 +505,7 @@ public final class Console {
         }
         public Stub addInLines(Iterator<String> lines) {
             while (lines.hasNext()) {
-                var line = lines.next();
+                val line = lines.next();
                 putInLine.accept(line);
             }
             return this;

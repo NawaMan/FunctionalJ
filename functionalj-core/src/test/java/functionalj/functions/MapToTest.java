@@ -31,6 +31,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class MapToTest {
@@ -42,7 +43,7 @@ public class MapToTest {
     
     @Test
     public void testTuple() {
-        var f1 = toTuple  ((String s)->s, (String s) -> s.length())
+        val f1 = toTuple  ((String s)->s, (String s) -> s.length())
                 .thenReduce((a,b)-> a + " - " + b);
         Assert.assertEquals("Result:{ Value: Hello - 5 }", "" + Result.valueOf("Hello").map(f1));
     }

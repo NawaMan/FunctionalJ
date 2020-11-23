@@ -26,6 +26,7 @@ package functionalj.lens.lenses;
 import java.util.function.ToDoubleFunction;
 
 import functionalj.lens.core.LensSpec;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -50,12 +51,12 @@ public interface DoubleLens<HOST>
     public default double applyAsDouble(HOST host) {
         LensSpec<HOST, Double> lensSpec = lensSpec();
         if (lensSpec instanceof PrimitiveLensSpecs.DoubleLensSpecPrimitive) {
-            var spec  = (PrimitiveLensSpecs.DoubleLensSpecPrimitive)lensSpec;
-            var value = spec.applyAsDouble(host);
+            val spec  = (PrimitiveLensSpecs.DoubleLensSpecPrimitive)lensSpec;
+            val value = spec.applyAsDouble(host);
             return value;
         }
         
-        var value = lensSpec.apply(host);
+        val value = lensSpec.apply(host);
         return value;
     }
 

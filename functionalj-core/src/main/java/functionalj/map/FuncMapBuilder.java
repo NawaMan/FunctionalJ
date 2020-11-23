@@ -6,6 +6,7 @@ import java.util.List;
 import functionalj.map.FuncMap.UnderlineMap;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 
 
 public class FuncMapBuilder<K, V> {
@@ -24,7 +25,7 @@ public class FuncMapBuilder<K, V> {
     }
     
     public ImmutableMap<K, V> build() {
-        var map = FuncMap.underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = FuncMap.underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         for (Tuple2<K, V> entry : this.entries) {
             K key   = entry._1();
             V value = entry._2();

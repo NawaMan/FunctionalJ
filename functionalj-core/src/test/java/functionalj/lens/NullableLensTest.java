@@ -38,6 +38,7 @@ import functionalj.lens.core.LensUtils;
 import functionalj.lens.lenses.NullableLens;
 import functionalj.lens.lenses.ObjectLensImpl;
 import functionalj.lens.lenses.StringLens;
+import lombok.val;
 import nullablej.nullable.Nullable;
 
 public class NullableLensTest {
@@ -149,7 +150,7 @@ public class NullableLensTest {
         assertEquals("Driver(firstCar=Car(color=blue),secondCar=Nullable.of(Car(color=blue)))", blueDriver.toString());
         assertEquals("Driver(firstCar=null,secondCar=Nullable.EMPTY)",                          nullDriver.toString());
         
-        var drivers = Arrays.asList(blueDriver, nullDriver);
+        val drivers = Arrays.asList(blueDriver, nullDriver);
         assertEquals(
                    "[" 
                 +      "Driver(firstCar=Car(color=green),secondCar=Nullable.of(Car(color=green))), "

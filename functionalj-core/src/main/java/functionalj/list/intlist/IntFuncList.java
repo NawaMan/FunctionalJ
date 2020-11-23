@@ -58,6 +58,7 @@ import functionalj.streamable.Streamable;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.tuple.IntIntTuple;
+import lombok.val;
 import nullablej.nullable.Nullable;
 
 
@@ -294,8 +295,8 @@ public interface IntFuncList
 //            LongFuncList                        list,
 //            Function<LongStreamPlus, IntStream> action) {
 //        return () -> {
-//            var sourceStream = asStreamable.longStream();
-//            var targetStream = action.apply(sourceStream);
+//            val sourceStream = asStreamable.longStream();
+//            val targetStream = action.apply(sourceStream);
 //            return IntStreamPlus.from(targetStream);
 //        };
 //    }
@@ -305,8 +306,8 @@ public interface IntFuncList
 //            AsDoubleStreamable                    asStreamable,
 //            Function<DoubleStreamPlus, IntStream> action) {
 //        return () -> {
-//            var sourceStream = asStreamable.doubleStream();
-//            var targetStream = action.apply(sourceStream);
+//            val sourceStream = asStreamable.doubleStream();
+//            val targetStream = action.apply(sourceStream);
 //            return IntStreamPlus.from(targetStream);
 //        };
 //    }
@@ -641,14 +642,14 @@ public interface IntFuncList
     // -- List specific --
     
     public default IntFuncList indexesOf(IntPredicate check) {
-        var streamable = intStreamable()
+        val streamable = intStreamable()
                     .mapWithIndex((index, data) -> check.test(data) ? index : -1)
                     .filter(i -> i != -1);
         return from(streamable);
     }
     
     public default IntFuncList indexesOf(int value) {
-        var streamable = intStreamable()
+        val streamable = intStreamable()
                 .mapWithIndex((index, data) -> (data == value) ? index : -1)
                 .filter(i -> i != -1);
         return from(streamable);
@@ -664,7 +665,7 @@ public interface IntFuncList
     
     /** Returns the first elements */
     public default IntFuncList first(int count) {
-        var streamable = limit(count).intStreamable();
+        val streamable = limit(count).intStreamable();
         return from(streamable);
     }
     
@@ -677,8 +678,8 @@ public interface IntFuncList
     
     /** Returns the last elements */
     public default IntFuncList last(int count) {
-        var size   = this.size();
-        var offset = Math.max(0, size - count);
+        val size   = this.size();
+        val offset = Math.max(0, size - count);
         return skip(offset);
     }
     
@@ -697,19 +698,19 @@ public interface IntFuncList
     
     /** Add the given value to the end of the list. */
     public default IntFuncList append(int value) {
-        var streamable = IntStreamable.concat(intStreamable(), IntStreamable.of(value));
+        val streamable = IntStreamable.concat(intStreamable(), IntStreamable.of(value));
         return from(streamable);
     }
     
     /** Add the given values to the end of the list. */
     public default IntFuncList appendAll(int ... values) {
-        var streamable = IntStreamable.concat(intStreamable(), IntStreamable.of(values));
+        val streamable = IntStreamable.concat(intStreamable(), IntStreamable.of(values));
         return from(streamable);
     }
     
     /** Add the given value in the collection to the end of the list. */
     public default IntFuncList appendAll(IntStreamable values) {
-        var streamable = IntStreamable.concat(intStreamable(), values);
+        val streamable = IntStreamable.concat(intStreamable(), values);
         return from(streamable);
     }
     
@@ -719,19 +720,19 @@ public interface IntFuncList
 //            return this;
 //        }
 //        
-//        var streamable = IntStreamable.concat(streamable(), (IntStreamable)() -> supplier.get());
+//        val streamable = IntStreamable.concat(streamable(), (IntStreamable)() -> supplier.get());
 //        return from(streamable);
 //    }
     
     /** Add the given value to the beginning of the list */
     public default IntFuncList prepend(int value) {
-        var streamable = IntStreamable.concat(IntStreamable.of(value), intStreamable());
+        val streamable = IntStreamable.concat(IntStreamable.of(value), intStreamable());
         return from(streamable);
     }
     
     /** Add the given values to the beginning of the list */
     public default IntFuncList prependAll(int ... values) {
-        var streamable = IntStreamable.concat(IntStreamable.of(values), intStreamable());
+        val streamable = IntStreamable.concat(IntStreamable.of(values), intStreamable());
         return from(streamable);
     }
     
@@ -740,7 +741,7 @@ public interface IntFuncList
         if (prefixStreamable == null)
             return this;
         
-        var streamable = IntStreamable.concat(prefixStreamable, intStreamable());
+        val streamable = IntStreamable.concat(prefixStreamable, intStreamable());
         return from(streamable);
     }
     
@@ -759,7 +760,7 @@ public interface IntFuncList
             throw new IndexOutOfBoundsException(index + " vs " + size());
         
         return deriveToInt(this, stream -> {
-            var i = new AtomicInteger();
+            val i = new AtomicInteger();
             return map(each -> (i.getAndIncrement() == index) ? value : each)
                     .intStream();
         });
@@ -773,7 +774,7 @@ public interface IntFuncList
             throw new IndexOutOfBoundsException(index + " vs " + size());
         
         return deriveToInt(this, stream -> {
-            var i = new AtomicInteger();
+            val i = new AtomicInteger();
             return map(each -> (i.getAndIncrement() == index) ? mapper.applyAsInt(each) : each)
                     .intStream();
         });
@@ -784,9 +785,9 @@ public interface IntFuncList
         if ((elements == null) || (elements.length == 0))
             return this;
         
-        var first      = intStreamable().limit(index);
-        var tail       = intStreamable().skip(index);
-        var streamable = IntStreamable.concat(first, IntStreamable.of(elements), tail);
+        val first      = intStreamable().limit(index);
+        val tail       = intStreamable().skip(index);
+        val streamable = IntStreamable.concat(first, IntStreamable.of(elements), tail);
         return from(streamable);
     }
     
@@ -795,10 +796,10 @@ public interface IntFuncList
         if (theStreamable == null)
             return this;
         
-        var first  = intStreamable().limit(index);
-        var middle = theStreamable.intStreamable();
-        var tail   = intStreamable().skip(index);
-        var streamable = IntStreamable.concat(first, middle, tail);
+        val first  = intStreamable().limit(index);
+        val middle = theStreamable.intStreamable();
+        val tail   = intStreamable().skip(index);
+        val streamable = IntStreamable.concat(first, middle, tail);
         return from(streamable);
     }
     
@@ -812,9 +813,9 @@ public interface IntFuncList
         if (index < 0)
             throw new IndexOutOfBoundsException("index: " + index);
         
-        var first  = intStreamable().limit(index);
-        var tail   = intStreamable().skip(index + 1);
-        var streamable = IntStreamable.concat(first, tail);
+        val first  = intStreamable().limit(index);
+        val tail   = intStreamable().skip(index + 1);
+        val streamable = IntStreamable.concat(first, tail);
         return from(streamable);
     }
     
@@ -825,9 +826,9 @@ public interface IntFuncList
         if (count <= 0)
             throw new IndexOutOfBoundsException("count: " + count);
         
-        var first  = intStreamable().limit(fromIndexInclusive);
-        var tail   = intStreamable().skip(fromIndexInclusive + count);
-        var streamable = IntStreamable.concat(first, tail);
+        val first  = intStreamable().limit(fromIndexInclusive);
+        val tail   = intStreamable().skip(fromIndexInclusive + count);
+        val streamable = IntStreamable.concat(first, tail);
         return from(streamable);
     }
     
@@ -843,14 +844,14 @@ public interface IntFuncList
         if (fromIndexInclusive == toIndexExclusive)
             return this;
         
-        var first  = intStreamable().limit(fromIndexInclusive);
-        var tail   = intStreamable().skip(toIndexExclusive + 1);
+        val first  = intStreamable().limit(fromIndexInclusive);
+        val tail   = intStreamable().skip(toIndexExclusive + 1);
         return from(IntStreamable.concat(first, tail));
     }
     
     /** Returns the sub list from the index starting `fromIndexInclusive` to `toIndexExclusive`. */
     public default IntFuncList subList(int fromIndexInclusive, int toIndexExclusive) {
-        var length = toIndexExclusive - fromIndexInclusive;
+        val length = toIndexExclusive - fromIndexInclusive;
         return skip(fromIndexInclusive)
                 .limit(length);
     }
@@ -858,15 +859,15 @@ public interface IntFuncList
     /** Returns the new list with reverse order of this list. */
     //Note - Eager
     public default IntFuncList reverse() {
-        var length = size();
+        val length = size();
         if (length <= 1)
             return this;
         
-        var array = toArray();
-        var mid = length / 2;
+        val array = toArray();
+        val mid = length / 2;
         for (int i = 0; i < mid; i++) {
-            var j = length - i - 1;
-            var temp = array[i];
+            val j = length - i - 1;
+            val temp = array[i];
             array[i] = array[j];
             array[j] = temp;
         }
@@ -876,15 +877,15 @@ public interface IntFuncList
     /** Returns the new list with random order of this list. */
     //Note - Eager
     public default IntFuncList shuffle() {
-        var length = size();
+        val length = size();
         if (length <= 1)
             return this;
         
-        var array = toArray();
-        var rand  = new Random();
+        val array = toArray();
+        val rand  = new Random();
         for (int i = 0; i < length; i++) {
-            var j = rand.nextInt(length);
-            var temp = array[i];
+            val j = rand.nextInt(length);
+            val temp = array[i];
             array[i] = array[j];
             array[j] = temp;
         }
@@ -892,7 +893,7 @@ public interface IntFuncList
     }
     
     public default FuncList<IntIntTuple> query(IntPredicate check) {
-        var streamable
+        val streamable
                 = intStreamable()
                 .mapToObjWithIndex((index, data) -> check.test(data) ? IntIntTuple.of(index, data) : null)
                 .filterNonNull();
@@ -934,8 +935,8 @@ public interface IntFuncList
     }
     
     public default int get(int index) {
-        var ref   = new int[1][];
-        var found = IntStreamPlusHelper.hasAt(this.intStream(), index, ref);
+        val ref   = new int[1][];
+        val found = IntStreamPlusHelper.hasAt(this.intStream(), index, ref);
         if (!found)
             throw new IndexOutOfBoundsException("" + index);
         

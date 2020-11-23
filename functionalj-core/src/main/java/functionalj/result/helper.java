@@ -32,41 +32,42 @@ import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.FuncUnit2;
+import lombok.val;
 
 
 class helper {
     
     static <DATA> Func2<DATA, Exception, Boolean> processIs(Predicate<ResultStatus> statusCheck) {
         return (DATA value, Exception exception) -> {
-            var status = ResultStatus.getStatus(value, exception);
+            val status = ResultStatus.getStatus(value, exception);
             return statusCheck.test(status);
         };
     }
     
     static <DATA> FuncUnit2<DATA, Exception> processIf(Predicate<ResultStatus> statusCheck, Consumer<? super DATA> consumer) {
         return (value, exception) -> {
-            var status = ResultStatus.getStatus(value, exception);
+            val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
                 consumer.accept(value);
         };
     }
     static <DATA> FuncUnit2<DATA, Exception> processIf(Predicate<ResultStatus> statusCheck, BiConsumer<? super DATA, ? super Exception> consumer) {
         return (value, exception) -> {
-            var status = ResultStatus.getStatus(value, exception);
+            val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
                 consumer.accept(value, exception);
         };
     }
     static <DATA> FuncUnit2<DATA, Exception> processIf(Predicate<ResultStatus> statusCheck, Runnable runnable) {
         return (value, exception) -> {
-            var status = ResultStatus.getStatus(value, exception);
+            val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
                 runnable.run();
         };
     }
     static <DATA> FuncUnit2<DATA, Exception> processIfException(Predicate<ResultStatus> statusCheck, Consumer<? super Exception> consumer) {
         return (value, exception) -> {
-            var status = ResultStatus.getStatus(value, exception);
+            val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
                 consumer.accept(exception);
         };
@@ -77,7 +78,7 @@ class helper {
             Result<DATA>            result,
             DATA                    fallbackValue) {
         return (value, exception) -> {
-            var status = ResultStatus.getStatus(value, exception);
+            val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
                 return Result.valueOf(fallbackValue);
             
@@ -90,7 +91,7 @@ class helper {
             Result<DATA>             result,
             Supplier<? extends DATA> fallbackSupplier) {
         return (value, exception) -> {
-            var status = ResultStatus.getStatus(value, exception);
+            val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
                 return Result.of(Func0.from(fallbackSupplier));
             
@@ -103,7 +104,7 @@ class helper {
             Result<DATA>                             result,
             Func1<? super Exception, ? extends DATA> recoverFunction) {
         return (value, exception) -> {
-            var status = ResultStatus.getStatus(value, exception);
+            val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
                 return Result.of(()->recoverFunction.apply(exception));
             
@@ -116,7 +117,7 @@ class helper {
             Result<DATA>                                   result,
             Func2<DATA, ? super Exception, ? extends DATA> recoverFunction) {
         return (value, exception) -> {
-            var status = ResultStatus.getStatus(value, exception);
+            val status = ResultStatus.getStatus(value, exception);
             if (statusCheck.test(status))
                 return Result.of(()->recoverFunction.apply(value, exception));
             

@@ -76,7 +76,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
     
     @Override
     public default boolean hasNext() {
-        var hasNext = asIterator().hasNext();
+        val hasNext = asIterator().hasNext();
         if (!hasNext) {
             close();
         }
@@ -94,7 +94,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
     }
     
     public default IntStreamPlus stream() {
-        var iterable = (IntIterable)()->this;
+        val iterable = (IntIterable)()->this;
         return IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
     }
     
@@ -113,13 +113,13 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
         if ((array.length == 0) && count != 0)
             return AutoCloseableResult.from(Result.ofNoMore());
         
-        var iterator = new ArrayBackedIntIteratorPlus(array);
+        val iterator = new ArrayBackedIntIteratorPlus(array);
         return AutoCloseableResult.valueOf(iterator);
     }
     
     public default IntIteratorPlus useNext(IntConsumer usage) {
         if (hasNext()) {
-            var next = nextInt();
+            val next = nextInt();
             usage.accept(next);
         }
         
@@ -130,7 +130,7 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
         int[] array = stream().limit(count).toArray();
         if ((array.length != 0) || count == 0) {
             try (var iterator = new ArrayBackedIntIteratorPlus(array)) {
-                var stream   = iterator.stream();
+                val stream   = iterator.stream();
                 usage.accept(stream);
             }
         }
@@ -140,8 +140,8 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
     
     public default <TARGET> Result<TARGET> mapNext(IntFunction<TARGET> mapper) {
         if (hasNext()) {
-            var next  = nextInt();
-            var value = mapper.apply(next);
+            val next  = nextInt();
+            val value = mapper.apply(next);
             return Result.valueOf(value);
         } else {
             return Result.ofNoMore();
@@ -149,13 +149,13 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
     }
     
     public default <TARGET> Result<TARGET> mapNext(int count, Func1<IntStreamPlus, TARGET> mapper) {
-        var array = stream().limit(count).toArray();
+        val array = stream().limit(count).toArray();
         if ((array.length == 0) && (count != 0))
             return Result.ofNoMore();
         
-        var input  = ArrayBackedIntIteratorPlus.from(array);
-        var stream = input.stream();
-        var value = mapper.apply(stream);
+        val input  = ArrayBackedIntIteratorPlus.from(array);
+        val stream = input.stream();
+        val value = mapper.apply(stream);
         return Result.valueOf(value);
     }
     

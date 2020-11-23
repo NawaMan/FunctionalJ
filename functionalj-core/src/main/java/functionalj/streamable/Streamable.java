@@ -46,6 +46,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 
 
 // TODO - Add intersect (retain) - but might want to do it after sort.
@@ -111,7 +112,7 @@ public interface Streamable<DATA>
     /** Create a Streamable from the given data. */
     @SafeVarargs
     public static <TARGET> Streamable<TARGET> steamableOf(TARGET ... data) {
-        var list = Arrays.asList(data);
+        val list = Arrays.asList(data);
         return Streamable.from(list);
     }
     
@@ -264,7 +265,7 @@ public interface Streamable<DATA>
     /** Create a Streamable that is the repeat of the given array of data. */
     @SafeVarargs
     public static <TARGET> Streamable<TARGET> cycle(TARGET ... data) {
-        var size = data.length;
+        val size = data.length;
         return () -> {
                 return StreamPlus.from(
                         IntStream
@@ -275,7 +276,7 @@ public interface Streamable<DATA>
     
     /** Create a Streamable that is the repeat of the given list of data. */
     public static <TARGET> Streamable<TARGET> cycle(FuncList<TARGET> data) {
-        var size = data.size();
+        val size = data.size();
         return () -> {
             return StreamPlus.from(
                         IntStream
@@ -531,8 +532,8 @@ public interface Streamable<DATA>
             AsStreamable<SOURCE>                         asStreamable,
             Function<StreamPlus<SOURCE>, Stream<TARGET>> action) {
         return () -> {
-            var sourceStream = asStreamable.streamPlus();
-            var targetStream = action.apply(sourceStream);
+            val sourceStream = asStreamable.streamPlus();
+            val targetStream = action.apply(sourceStream);
             return StreamPlus.from(targetStream);
         };
     }
@@ -542,8 +543,8 @@ public interface Streamable<DATA>
             AsIntStreamable                         asStreamable,
             Function<IntStreamPlus, Stream<TARGET>> action) {
         return () -> {
-            var sourceStream = asStreamable.intStreamPlus();
-            var targetStream = action.apply(sourceStream);
+            val sourceStream = asStreamable.intStreamPlus();
+            val targetStream = action.apply(sourceStream);
             return StreamPlus.from(targetStream);
         };
     }
@@ -553,8 +554,8 @@ public interface Streamable<DATA>
 //            AsLongStreamable                         asStreamable,
 //            Function<LongStreamPlus, Stream<TARGET>> action) {
 //        return () -> {
-//            var sourceStream = asStreamable.longStream();
-//            var targetStream = action.apply(sourceStream);
+//            val sourceStream = asStreamable.longStream();
+//            val targetStream = action.apply(sourceStream);
 //            return StreamPlus.from(targetStream);
 //        };
 //    }
@@ -564,8 +565,8 @@ public interface Streamable<DATA>
 //            AsDoubleStreamable                         asStreamable,
 //            Function<DoubleStreamPlus, Stream<TARGET>> action) {
 //        return () -> {
-//            var sourceStream = asStreamable.doubleStream();
-//            var targetStream = action.apply(sourceStream);
+//            val sourceStream = asStreamable.doubleStream();
+//            val targetStream = action.apply(sourceStream);
 //            return StreamPlus.from(targetStream);
 //        };
 //    }

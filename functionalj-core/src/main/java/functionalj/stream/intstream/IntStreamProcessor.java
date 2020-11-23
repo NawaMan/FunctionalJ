@@ -13,8 +13,8 @@ public interface IntStreamProcessor<TARGET> {
 //        return new StreamProcessor<SOURCE, TARGET>() {
 //            @Override
 //            public TARGET process(StreamPlus<SOURCE> stream) {
-//                var dataStream = stream.mapToInt(mapper);
-//                var target     = IntStreamProcessor.this.process(dataStream);
+//                val dataStream = stream.mapToInt(mapper);
+//                val target     = IntStreamProcessor.this.process(dataStream);
 //                return target;
 //            }
 //        };

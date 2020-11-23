@@ -39,25 +39,25 @@ public class FuncListStreamTest {
     
     @Test
     public void testStream() {
-        var rawList    = (List<String>)asList("One", "Two", "Three");
-        var streamable = (Streamable<String>)(()->StreamPlus.from(rawList.stream()));
-        var newList    = new FuncListDerived<String, Integer>(streamable, stream -> stream.map(String::length));
+        val rawList    = (List<String>)asList("One", "Two", "Three");
+        val streamable = (Streamable<String>)(()->StreamPlus.from(rawList.stream()));
+        val newList    = new FuncListDerived<String, Integer>(streamable, stream -> stream.map(String::length));
         assertEquals("[3, 3, 5]", newList.stream().collect(toList()).toString());
     }
     
     @Test
     public void testAppend() {
-        var rawList    = (List<String>)asList("One", "Two", "Three");
-        var streamable = (Streamable<String>)(()->StreamPlus.from(rawList.stream()));
-        var newList    = new FuncListDerived<String, Integer>(streamable, stream -> stream.map(String::length));
+        val rawList    = (List<String>)asList("One", "Two", "Three");
+        val streamable = (Streamable<String>)(()->StreamPlus.from(rawList.stream()));
+        val newList    = new FuncListDerived<String, Integer>(streamable, stream -> stream.map(String::length));
         assertEquals("[3, 3, 5, 6]", newList.append(6).toString());
     }
     
     @Test
     public void testSet() {
-        var rawList    = (List<String>)asList("One", "Two", "Three");
-        var streamable = (Streamable<String>)(()->StreamPlus.from(rawList.stream()));
-        var newList    = new FuncListDerived<String, Integer>(streamable, stream -> stream.map(String::length));
+        val rawList    = (List<String>)asList("One", "Two", "Three");
+        val streamable = (Streamable<String>)(()->StreamPlus.from(rawList.stream()));
+        val newList    = new FuncListDerived<String, Integer>(streamable, stream -> stream.map(String::length));
         assertEquals("[3, 1, 5]", newList.with(1, 1).toString());
     }
     

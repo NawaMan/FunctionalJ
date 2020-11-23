@@ -24,6 +24,7 @@
 package functionalj.lens.lenses;
 
 import functionalj.lens.core.LensSpec;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -47,12 +48,12 @@ public interface LongLens<HOST>
     public default long applyAsLong(HOST host) {
         LensSpec<HOST, Long> lensSpec = lensSpec();
         if (lensSpec instanceof PrimitiveLensSpecs.LongLensSpecPrimitive) {
-            var spec  = (PrimitiveLensSpecs.LongLensSpecPrimitive)lensSpec;
-            var value = spec.applyAsLong(host);
+            val spec  = (PrimitiveLensSpecs.LongLensSpecPrimitive)lensSpec;
+            val value = spec.applyAsLong(host);
             return value;
         }
         
-        var value = lensSpec.apply(host);
+        val value = lensSpec.apply(host);
         return value;
     }
 

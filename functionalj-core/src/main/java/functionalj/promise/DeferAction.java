@@ -47,6 +47,7 @@ import functionalj.function.NamedExpression;
 import functionalj.list.FuncList;
 import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeable<HasPromise<DATA>> {
@@ -65,7 +66,7 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     }
     
     public static <D> DeferAction<D> ofValue(D value) {
-        var action = new DeferAction<D>();
+        val action = new DeferAction<D>();
         action.getPromise().makeComplete(value);
         return action;
     }
@@ -87,8 +88,8 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         return DeferActionConfig.current.value().createBuilder(supplier).build();
     }
     public static <D> DeferAction<D> from(CompletableFuture<D> completableFucture) {
-        var action = DeferAction.of((Class<D>)null);
-        var pending = action.start();
+        val action = DeferAction.of((Class<D>)null);
+        val pending = action.start();
         
         completableFucture.handle((value, exception) -> {
             if (exception != null) {
@@ -136,15 +137,15 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
             NamedExpression<HasPromise<T1>> promise1,
             NamedExpression<HasPromise<T2>> promise2,
             Func2<T1, T2, D>                merger) {
-        var merge = (Func1)f((FuncList<Result> results)-> {
-            var result1 = (Result<T1>)results.get(0);
-            var result2 = (Result<T2>)results.get(1);
-            var mergedResult = Result.ofResults(result1, result2, merger);
+        val merge = (Func1)f((FuncList<Result> results)-> {
+            val result1 = (Result<T1>)results.get(0);
+            val result2 = (Result<T2>)results.get(1);
+            val mergedResult = Result.ofResults(result1, result2, merger);
             return (Result<D>)mergedResult;
         });
-        var promises = listOf(promise1, promise2);
-        var combiner = new CombineResult(promises, merge);
-        var action   = combiner.getDeferAction();
+        val promises = listOf(promise1, promise2);
+        val combiner = new CombineResult(promises, merge);
+        val action   = combiner.getDeferAction();
         return action;
     }
     
@@ -154,16 +155,16 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
             NamedExpression<HasPromise<T2>> promise2,
             NamedExpression<HasPromise<T3>> promise3,
             Func3<T1, T2, T3, D>            merger) {
-        var merge = (Func1)f((FuncList<Result> results)-> {
-            var result1 = (Result<T1>)results.get(0);
-            var result2 = (Result<T2>)results.get(1);
-            var result3 = (Result<T3>)results.get(2);
-            var mergedResult = Result.ofResults(result1, result2, result3, merger);
+        val merge = (Func1)f((FuncList<Result> results)-> {
+            val result1 = (Result<T1>)results.get(0);
+            val result2 = (Result<T2>)results.get(1);
+            val result3 = (Result<T3>)results.get(2);
+            val mergedResult = Result.ofResults(result1, result2, result3, merger);
             return (Result<D>)mergedResult;
         });
-        var promises = listOf(promise1, promise2, promise3);
-        var combiner = new CombineResult(promises, merge);
-        var action   = combiner.getDeferAction();
+        val promises = listOf(promise1, promise2, promise3);
+        val combiner = new CombineResult(promises, merge);
+        val action   = combiner.getDeferAction();
         return action;
     }
     
@@ -174,17 +175,17 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
             NamedExpression<HasPromise<T3>> promise3,
             NamedExpression<HasPromise<T4>> promise4,
             Func4<T1, T2, T3, T4, D>        merger) {
-        var merge = (Func1)f((FuncList<Result> results)-> {
-            var result1 = (Result<T1>)results.get(0);
-            var result2 = (Result<T2>)results.get(1);
-            var result3 = (Result<T3>)results.get(2);
-            var result4 = (Result<T4>)results.get(3);
-            var mergedResult = Result.ofResults(result1, result2, result3, result4, merger);
+        val merge = (Func1)f((FuncList<Result> results)-> {
+            val result1 = (Result<T1>)results.get(0);
+            val result2 = (Result<T2>)results.get(1);
+            val result3 = (Result<T3>)results.get(2);
+            val result4 = (Result<T4>)results.get(3);
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, merger);
             return (Result<D>)mergedResult;
         });
-        var promises = listOf(promise1, promise2, promise3, promise4);
-        var combiner = new CombineResult(promises, merge);
-        var action   = combiner.getDeferAction();
+        val promises = listOf(promise1, promise2, promise3, promise4);
+        val combiner = new CombineResult(promises, merge);
+        val action   = combiner.getDeferAction();
         return action;
     }
     
@@ -196,18 +197,18 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
             NamedExpression<HasPromise<T4>> promise4,
             NamedExpression<HasPromise<T5>> promise5,
             Func5<T1, T2, T3, T4, T5, D>    merger) {
-        var merge = (Func1)f((FuncList<Result> results)-> {
-            var result1 = (Result<T1>)results.get(0);
-            var result2 = (Result<T2>)results.get(1);
-            var result3 = (Result<T3>)results.get(2);
-            var result4 = (Result<T4>)results.get(3);
-            var result5 = (Result<T5>)results.get(4);
-            var mergedResult = Result.ofResults(result1, result2, result3, result4, result5, merger);
+        val merge = (Func1)f((FuncList<Result> results)-> {
+            val result1 = (Result<T1>)results.get(0);
+            val result2 = (Result<T2>)results.get(1);
+            val result3 = (Result<T3>)results.get(2);
+            val result4 = (Result<T4>)results.get(3);
+            val result5 = (Result<T5>)results.get(4);
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, merger);
             return (Result<D>)mergedResult;
         });
-        var promises = listOf(promise1, promise2, promise3, promise4, promise5);
-        var combiner = new CombineResult(promises, merge);
-        var action   = combiner.getDeferAction();
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5);
+        val combiner = new CombineResult(promises, merge);
+        val action   = combiner.getDeferAction();
         return action;
     }
     
@@ -220,19 +221,19 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
             NamedExpression<HasPromise<T5>>  promise5,
             NamedExpression<HasPromise<T6>>  promise6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
-        var merge = (Func1)f((FuncList<Result> results)-> {
-            var result1 = (Result<T1>)results.get(0);
-            var result2 = (Result<T2>)results.get(1);
-            var result3 = (Result<T3>)results.get(2);
-            var result4 = (Result<T4>)results.get(3);
-            var result5 = (Result<T5>)results.get(4);
-            var result6 = (Result<T6>)results.get(5);
-            var mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, merger);
+        val merge = (Func1)f((FuncList<Result> results)-> {
+            val result1 = (Result<T1>)results.get(0);
+            val result2 = (Result<T2>)results.get(1);
+            val result3 = (Result<T3>)results.get(2);
+            val result4 = (Result<T4>)results.get(3);
+            val result5 = (Result<T5>)results.get(4);
+            val result6 = (Result<T6>)results.get(5);
+            val mergedResult = Result.ofResults(result1, result2, result3, result4, result5, result6, merger);
             return (Result<D>)mergedResult;
         });
-        var promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6);
-        var combiner = new CombineResult(promises, merge);
-        var action   = combiner.getDeferAction();
+        val promises = listOf(promise1, promise2, promise3, promise4, promise5, promise6);
+        val combiner = new CombineResult(promises, merge);
+        val action   = combiner.getDeferAction();
         return action;
     }
     
@@ -240,14 +241,14 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     public static <D, T> DeferAction<D> from(
             Func1<FuncList<T>, D> merger,
             NamedExpression<HasPromise<T>> ... promises) {
-        var merge = f((Result<T>[] results)-> {
-            var resultList = listOf(results).map(Result::get);
-            var mergedResult = merger.apply(resultList);
+        val merge = f((Result<T>[] results)-> {
+            val resultList = listOf(results).map(Result::get);
+            val mergedResult = merger.apply(resultList);
             return (Result<D>)mergedResult;
         });
-        var promiseList = listOf(promises);
-        var combiner    = new CombineResult(promiseList, merge);
-        var action      = combiner.getDeferAction();
+        val promiseList = listOf(promises);
+        val combiner    = new CombineResult(promiseList, merge);
+        val action      = combiner.getDeferAction();
         return action;
     }
     
@@ -283,7 +284,7 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
         if (parent != null) {
             parent.start();
         } else {
-            var isStarted = promise.start();
+            val isStarted = promise.start();
             
             if (!isStarted && (task != null))
                 carelessly(task);
@@ -333,7 +334,7 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     public DeferAction<DATA> onComplete(
             FuncUnit1<Result<DATA>>       resultConsumer,
             FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        var subscription = promise.onComplete(Wait.forever(), resultConsumer);
+        val subscription = promise.onComplete(Wait.forever(), resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
@@ -342,7 +343,7 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
             Wait                          wait,
             FuncUnit1<Result<DATA>>       resultConsumer,
             FuncUnit1<SubscriptionRecord<DATA>> subscriptionConsumer) {
-        var subscription = promise.onComplete(wait, resultConsumer);
+        val subscription = promise.onComplete(wait, resultConsumer);
         carelessly(() -> subscriptionConsumer.accept(subscription));
         return this;
     }
@@ -360,19 +361,19 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     //== Functional ==
     
     public final DeferAction<DATA> filter(Predicate<? super DATA> predicate) {
-        var newPromise = promise.filter(predicate);
+        val newPromise = promise.filter(predicate);
         return new DeferAction<DATA>(this, newPromise);
     }
     
     public final DeferAction<DATA> peek(FuncUnit1<? super DATA> peeker) {
-        var newPromise = promise.peek(peeker);
+        val newPromise = promise.peek(peeker);
         return new DeferAction<DATA>(this, (Promise<DATA>)newPromise);
     }
     
     @SuppressWarnings("unchecked")
     public final <TARGET> DeferAction<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
-        var newPromise = promise.map(mapper);
-        var newAction  = new DeferAction<TARGET>(this, (Promise<TARGET>)newPromise);
+        val newPromise = promise.map(mapper);
+        val newAction  = new DeferAction<TARGET>(this, (Promise<TARGET>)newPromise);
         return newAction;
     }
     
@@ -382,7 +383,7 @@ public class DeferAction<DATA> extends UncompletedAction<DATA> implements Pipeab
     }
     
     public final <TARGET> DeferAction<TARGET> chain(Func1<DATA, ? extends HasPromise<TARGET>> mapper) {
-        var newPromise = promise.chain(mapper);
+        val newPromise = promise.chain(mapper);
         return new DeferAction<TARGET>(this, (Promise<TARGET>)newPromise);
     }
     

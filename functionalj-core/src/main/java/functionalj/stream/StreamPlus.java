@@ -62,9 +62,9 @@ import functionalj.function.LongLongBiFunction;
 import functionalj.function.LongObjBiFunction;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.intstream.IntStreamPlus;
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Sequential;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 import functionalj.streamable.Streamable;
 import functionalj.tuple.Tuple2;
 
@@ -93,7 +93,7 @@ import functionalj.tuple.Tuple2;
  * </ol>
  *
  * If any of the rules are not observed, it is a bug.
- * See annotations in {@link functionalj.stream.makers} package for more information.
+ * See annotations in {@link functionalj.stream.markers} package for more information.
  *
  * @param <DATA>  the data type.
  *
@@ -172,7 +172,7 @@ public interface StreamPlus<DATA>
     
     /** Create a StreamPlus from the given enumeration. */
     public static <TARGET> StreamPlus<TARGET> from(Enumeration<TARGET> enumeration) {
-        var iterable = (Iterable<TARGET>)() -> new EnumerationBackedIterator<TARGET>(enumeration);
+        val iterable = (Iterable<TARGET>)() -> new EnumerationBackedIterator<TARGET>(enumeration);
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
@@ -219,7 +219,7 @@ public interface StreamPlus<DATA>
      * The supplier will be repeatedly asked for value until NoMoreResultException is thrown.
      **/
     public static <TARGET> StreamPlus<TARGET> generateWith(Func0<TARGET> supplier) {
-        var iterable = (Iterable<TARGET>)() -> new SupplierBackedIterator<TARGET>(supplier);
+        val iterable = (Iterable<TARGET>)() -> new SupplierBackedIterator<TARGET>(supplier);
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
@@ -290,7 +290,7 @@ public interface StreamPlus<DATA>
         AtomicReference<TARGET> d1      = new AtomicReference<TARGET>(seed1);
         AtomicReference<TARGET> d2      = new AtomicReference<TARGET>(seed2);
         return StreamPlus.generate(()->{
-            var index = counter.getAndIncrement();
+            val index = counter.getAndIncrement();
             if (index == 0)
                 return seed1;
             if (index == 1)
@@ -611,7 +611,7 @@ public interface StreamPlus<DATA>
     /** @return a spliterator of this streamable. */
     @Override
     public default Spliterator<DATA> spliterator() {
-        var iterator = iterator();
+        val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     

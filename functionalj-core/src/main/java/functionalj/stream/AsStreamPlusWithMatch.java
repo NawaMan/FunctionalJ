@@ -27,8 +27,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.stream.makers.Sequential;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 
 
 public interface AsStreamPlusWithMatch<DATA> {
@@ -40,7 +40,7 @@ public interface AsStreamPlusWithMatch<DATA> {
     @Sequential
     public default Optional<DATA> findFirst(
             Predicate<? super DATA> predicate) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(predicate)
                 .findFirst();
@@ -50,7 +50,7 @@ public interface AsStreamPlusWithMatch<DATA> {
     @Terminal
     public default Optional<DATA> findAny(
             Predicate<? super DATA> predicate) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(predicate)
                 .findAny();
@@ -62,7 +62,7 @@ public interface AsStreamPlusWithMatch<DATA> {
     public default <T> Optional<DATA> findFirst(
             Function<? super DATA, T> mapper, 
             Predicate<? super T>      theCondition) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(mapper, theCondition)
                 .findFirst();
@@ -73,7 +73,7 @@ public interface AsStreamPlusWithMatch<DATA> {
     public default <T>  Optional<DATA> findAny(
             Function<? super DATA, T> mapper, 
             Predicate<? super T>      theCondition) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(mapper, theCondition)
                 .findAny();

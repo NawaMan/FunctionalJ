@@ -28,6 +28,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import lombok.val;
+
 
 
 public final class ImmutableMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, VALUE> {
@@ -94,7 +96,7 @@ public final class ImmutableMap<KEY, VALUE> extends FuncMapDerived<KEY, VALUE, V
         if (map instanceof TreeMap)
             return this;
         
-        var sortedMap = new TreeMap<KEY, VALUE>();
+        val sortedMap = new TreeMap<KEY, VALUE>();
         entryStream()
             .forEach(e -> sortedMap.put(e.getKey(), e.getValue()));
         return new ImmutableMap<KEY, VALUE>(sortedMap, isLazy());

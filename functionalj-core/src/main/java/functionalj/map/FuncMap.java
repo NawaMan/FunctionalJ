@@ -49,6 +49,7 @@ import functionalj.list.FuncList;
 import functionalj.ref.Ref;
 import functionalj.stream.ZipWithOption;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 
 
 public abstract class FuncMap<KEY, VALUE>
@@ -134,7 +135,7 @@ public abstract class FuncMap<KEY, VALUE>
             if (!(obj instanceof Entry))
                 return false;
             
-            var entry = (Entry<KEY, VALUE>)obj;
+            val entry = (Entry<KEY, VALUE>)obj;
             return Objects.equals(entry.getKey(),   key)
                 && Objects.equals(entry.getValue(), value);
         }
@@ -161,7 +162,7 @@ public abstract class FuncMap<KEY, VALUE>
         return new ImmutableMap<K, V>(map);
     }
     public static <K, V> ImmutableMap<K, V> from(Stream<? extends Map.Entry<? extends K, ? extends V>> stream) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         stream
         .forEach(entry -> map.put(entry.getKey(), entry.getValue()));
         return new ImmutableMap<K, V>(map);
@@ -169,14 +170,14 @@ public abstract class FuncMap<KEY, VALUE>
     
     @SafeVarargs
     public static <K, V> ImmutableMap<K, V> ofEntries(Map.Entry<K, V> ... entries) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         stream(entries)
             .forEach(entry -> map.put(entry.getKey(), entry.getValue()));
         return new ImmutableMap<K, V>(map);
     }
     @SafeVarargs
     public static <K, V> ImmutableMap<K, V> ofTuples(Tuple2<K, V> ... entries) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         stream(entries)
             .forEach(entry -> map.put(entry._1(), entry._2()));
         return new ImmutableMap<K, V>(map);
@@ -184,14 +185,14 @@ public abstract class FuncMap<KEY, VALUE>
     
     public static <K, V> ImmutableMap<K, V> of(
             K key0, V value0) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         return new ImmutableMap<K, V>(map);
     }
     public static <K, V> ImmutableMap<K, V> of(
             K key0, V value0,
             K key1, V value1) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         return new ImmutableMap<K, V>(map);
@@ -200,7 +201,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key0, V value0,
             K key1, V value1,
             K key2, V value2) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -211,7 +212,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key1, V value1,
             K key2, V value2,
             K key3, V value3) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -224,7 +225,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key2, V value2,
             K key3, V value3,
             K key4, V value4) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -239,7 +240,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key3, V value3,
             K key4, V value4,
             K key5, V value5) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -256,7 +257,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key4, V value4,
             K key5, V value5,
             K key6, V value6) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -275,7 +276,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key5, V value5,
             K key6, V value6,
             K key7, V value7) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -296,7 +297,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key6, V value6,
             K key7, V value7,
             K key8, V value8) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -319,7 +320,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key7, V value7,
             K key8, V value8,
             K key9, V value9) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -344,7 +345,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key8, V value8,
             K key9, V value9,
             K key10, V value10) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -375,14 +376,14 @@ public abstract class FuncMap<KEY, VALUE>
     
     public static <K, V> ImmutableMap<K, V> mapOf(
             K key0, V value0) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         return new ImmutableMap<K, V>(map);
     }
     public static <K, V> ImmutableMap<K, V> mapOf(
             K key0, V value0,
             K key1, V value1) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         return new ImmutableMap<K, V>(map);
@@ -391,7 +392,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key0, V value0,
             K key1, V value1,
             K key2, V value2) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -402,7 +403,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key1, V value1,
             K key2, V value2,
             K key3, V value3) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -415,7 +416,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key2, V value2,
             K key3, V value3,
             K key4, V value4) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -430,7 +431,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key3, V value3,
             K key4, V value4,
             K key5, V value5) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -447,7 +448,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key4, V value4,
             K key5, V value5,
             K key6, V value6) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -466,7 +467,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key5, V value5,
             K key6, V value6,
             K key7, V value7) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -487,7 +488,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key6, V value6,
             K key7, V value7,
             K key8, V value8) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -510,7 +511,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key7, V value7,
             K key8, V value8,
             K key9, V value9) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -535,7 +536,7 @@ public abstract class FuncMap<KEY, VALUE>
             K key8, V value8,
             K key9, V value9,
             K key10, V value10) {
-        var map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
+        val map = underlineMap.orElse(UnderlineMap.HashMap).<K, V>newMap();
         map.put(key0, value0);
         map.put(key1, value1);
         map.put(key2, value2);
@@ -643,7 +644,7 @@ public abstract class FuncMap<KEY, VALUE>
     public Func1<KEY, VALUE> toFunction(VALUE elseValue) {
         return key -> {
             try {
-                var value = this.get(key);
+                val value = this.get(key);
                 return (value == null) ? elseValue : value;
             } catch (Exception e) {
                 return elseValue;
@@ -654,7 +655,7 @@ public abstract class FuncMap<KEY, VALUE>
     public Func1<KEY, VALUE> toFunction(Func0<VALUE> elseSupplier) {
         return key -> {
             try {
-                var value = this.get(key);
+                val value = this.get(key);
                 return (value == null) ? elseSupplier.get() : value;
             } catch (Exception e) {
                 return elseSupplier.get();
@@ -665,7 +666,7 @@ public abstract class FuncMap<KEY, VALUE>
     public Func1<KEY, VALUE> toFunction(Func1<KEY, VALUE> elseProvider) {
         return key -> {
             try {
-                var value = this.get(key);
+                val value = this.get(key);
                 return (value == null) ? elseProvider.apply(key) : value;
             } catch (Exception e) {
                 return elseProvider.apply(key);
@@ -676,7 +677,7 @@ public abstract class FuncMap<KEY, VALUE>
     public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, VALUE elseValue) {
         return key -> {
             try {
-                var value = this.get(key);
+                val value = this.get(key);
                 if (value == null)
                     action.accept(key);
                 
@@ -690,7 +691,7 @@ public abstract class FuncMap<KEY, VALUE>
     public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, Func0<VALUE> elseSupplier) {
         return key -> {
             try {
-                var value = this.get(key);
+                val value = this.get(key);
                 if (value == null)
                     action.accept(key);
                 
@@ -704,7 +705,7 @@ public abstract class FuncMap<KEY, VALUE>
     public Func1<KEY, VALUE> toFunction(FuncUnit1<KEY> action, Func1<KEY, VALUE> elseProvider) {
         return key -> {
             try {
-                var value = this.get(key);
+                val value = this.get(key);
                 if (value == null)
                     action.accept(key);
                 
@@ -739,13 +740,13 @@ public abstract class FuncMap<KEY, VALUE>
     }
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public <IN, OUT> FuncMap<KEY, OUT> zipWith(Map<KEY, IN> anotherMap, ZipWithOption option, Func2<VALUE, IN, OUT> merger) {
-        var keys1 = this.keys();
-        var keys2 = FuncList.from(anotherMap.keySet());
-        var map   = keys1.appendAll(keys2.excludeIn(keys1))
+        val keys1 = this.keys();
+        val keys2 = FuncList.from(anotherMap.keySet());
+        val map   = keys1.appendAll(keys2.excludeIn(keys1))
         .filter(key -> !(option == RequireBoth) || (this.containsKey(key) && anotherMap.containsKey(key)))
         .toMap(it(), key -> {
-            var v1 = this.get(key);
-            var v2 = anotherMap.get(key);
+            val v1 = this.get(key);
+            val v2 = anotherMap.get(key);
             return merger.apply(v1, v2);
         });
         return (FuncMap)map;
@@ -770,22 +771,22 @@ public abstract class FuncMap<KEY, VALUE>
         if (!(o instanceof Map))
             return false;
         
-        var thatMap = (Map<KEY, VALUE>)o;
+        val thatMap = (Map<KEY, VALUE>)o;
         if (thatMap.size() != size())
             return false;
         
-        var keyExist = ((Predicate<KEY>)((Map)o)::containsKey).negate();
-        var hasMissingKey = keys().anyMatch(keyExist);
+        val keyExist = ((Predicate<KEY>)((Map)o)::containsKey).negate();
+        val hasMissingKey = keys().anyMatch(keyExist);
         if (hasMissingKey)
             return false;
         
-        var matchEntry = (Predicate<? super Map.Entry<KEY, VALUE>>)(t -> {
-            var key       = t.getKey();
-            var thatValue = this.get(key);
-            var thisValue = t.getValue();
+        val matchEntry = (Predicate<? super Map.Entry<KEY, VALUE>>)(t -> {
+            val key       = t.getKey();
+            val thatValue = this.get(key);
+            val thisValue = t.getValue();
             return Objects.equals(thatValue, thisValue);
         });
-        var allMatchValue 
+        val allMatchValue 
                 = thatMap
                 .entrySet().stream()
                 .allMatch(matchEntry);

@@ -36,6 +36,7 @@ import functionalj.function.Func1;
 import functionalj.function.ToLongBiLongFunction;
 import functionalj.lens.lenses.java.time.InstantAccess;
 import functionalj.lens.lenses.java.time.LocalDateTimeAccess;
+import lombok.val;
 
 
 public interface LongAccess<HOST> 
@@ -54,25 +55,25 @@ public interface LongAccess<HOST>
         
         if (accessToValue instanceof ToLongFunction) {
             @SuppressWarnings("unchecked")
-            var func1  = (ToLongFunction<H>)accessToValue;
-            var access = ofPrimitive(func1);
+            val func1  = (ToLongFunction<H>)accessToValue;
+            val access = ofPrimitive(func1);
             return access;
         }
         
         if (accessToValue instanceof Func1) {
-            var func1  = (Func1<H, Long>)accessToValue;
-            var access = (LongAccessBoxed<H>)func1::applyUnsafe;
+            val func1  = (Func1<H, Long>)accessToValue;
+            val access = (LongAccessBoxed<H>)func1::applyUnsafe;
             return access;
         }
         
-        var func   = (Function<H, Long>)accessToValue;
-        var access = (LongAccessBoxed<H>)(host -> func.apply(host));
+        val func   = (Function<H, Long>)accessToValue;
+        val access = (LongAccessBoxed<H>)(host -> func.apply(host));
         return access;
     }
     
     public static <H> LongAccess<H> ofPrimitive(ToLongFunction<H> accessToValue) {
         requireNonNull(accessToValue);
-        var access = (LongAccessPrimitive<H>)accessToValue::applyAsLong;
+        val access = (LongAccessPrimitive<H>)accessToValue::applyAsLong;
         return access;
     }
     
@@ -100,8 +101,8 @@ public interface LongAccess<HOST>
     
     public default LocalDateTimeAccess<HOST> toLocalDateTime(ZoneId zone) {
         return host -> {
-            var timestampMilliSecond = apply(host);
-            var instant = Instant.ofEpochMilli(timestampMilliSecond);
+            val timestampMilliSecond = apply(host);
+            val instant = Instant.ofEpochMilli(timestampMilliSecond);
             return LocalDateTime.ofInstant(instant, zone);
         };
     }
@@ -237,7 +238,7 @@ public interface LongAccess<HOST>
     }
     
     public default BooleanAccessPrimitive<HOST> bitAt(long bitIndex) {
-        var p = (int)Math.pow(2, bitIndex);
+        val p = (int)Math.pow(2, bitIndex);
         return host -> {
             long longValue = applyAsLong(host);
             return (longValue & p) != 0;
@@ -247,7 +248,7 @@ public interface LongAccess<HOST>
         return host -> {
             long longValue = applyAsLong(host);
             long value     = anotherSupplier.getAsLong();
-            var p          = (int)Math.pow(2, value);
+            val p          = (int)Math.pow(2, value);
             return (longValue & p) != 0;
         };
     }
@@ -255,7 +256,7 @@ public interface LongAccess<HOST>
         return host -> {
             long longValue = applyAsLong(host);
             long value     = anotherAccess.applyAsLong(host);
-            var p          = (int)Math.pow(2, value);
+            val p          = (int)Math.pow(2, value);
             return (longValue & p) != 0;
         };
     }
@@ -263,7 +264,7 @@ public interface LongAccess<HOST>
         return host -> {
             long longValue = applyAsLong(host);
             long value     = anotherFunction.applyAsLong(host, longValue);
-            var p          = (int)Math.pow(2, value);
+            val p          = (int)Math.pow(2, value);
             return (longValue & p) != 0;
         };
     }

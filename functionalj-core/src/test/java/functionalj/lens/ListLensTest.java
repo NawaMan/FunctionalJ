@@ -39,6 +39,7 @@ import functionalj.lens.LensTest.Car;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.lenses.ListLens;
 import functionalj.lens.lenses.ObjectLensImpl;
+import lombok.val;
 
 
 public class ListLensTest {
@@ -78,9 +79,9 @@ public class ListLensTest {
     
     @Test
     public void testListLens() {
-        var listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
+        val listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
         
-        var withCars = new WithCars(asList(new Car("Blue")));
+        val withCars = new WithCars(asList(new Car("Blue")));
         assertEquals("WithCars [cars=[Car(color=Blue)]]",  withCars.toString());
         assertEquals("Car(color=Blue)",                    listLens.first().apply(withCars).toString());
         assertEquals("Car(color=Blue)",                    listLens.first().toNullable().get().apply(withCars).toString());
@@ -89,10 +90,10 @@ public class ListLensTest {
         assertTrue(listLens.first().toNullable().isPresent().apply(withCars));
         assertEquals("Car(color=Blue)", listLens.first().toNullable().get().asString().apply(withCars));
         
-        var withNoCars = new WithCars(asList());
+        val withNoCars = new WithCars(asList());
         assertFalse(listLens.first().toNullable().isPresent().apply(withNoCars));
         
-        var withTwoCars = new WithCars(asList(new Car("Blue"), new Car("Green")));
+        val withTwoCars = new WithCars(asList(new Car("Blue"), new Car("Green")));
         assertEquals("WithCars [cars=[Car(color=Blue), Car(color=Green)]]",   withTwoCars.toString());
         assertEquals("WithCars [cars=[Car(color=Yellow), Car(color=Green)]]", listLens.first().withColor("Yellow").apply(withTwoCars).toString());
         assertEquals("WithCars [cars=[Car(color=Blue), Car(color=Red)]]",     listLens.last() .withColor("Red").apply(withTwoCars).toString());
@@ -102,10 +103,10 @@ public class ListLensTest {
     
     @Test
     public void testListLensChangeTo() {
-        var withTwoCars = new WithCars(asList(new Car("Blue"), new Car("Green")));
+        val withTwoCars = new WithCars(asList(new Car("Blue"), new Car("Green")));
         assertEquals("WithCars [cars=[Car(color=Blue), Car(color=Green)]]", withTwoCars.toString());
         
-        var listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
+        val listLens = ListLens.of(WithCars::cars, WithCars::withCars, Car.CarLens::new);
         assertEquals("WithCars [cars=[Car(color=Red), Car(color=Green)]]", 
                 listLens.changeTo(
                         theCar.color.thatIs("Blue"), 

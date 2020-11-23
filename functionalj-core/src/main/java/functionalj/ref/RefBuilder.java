@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func0;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class RefBuilder<DATA> {
@@ -64,21 +65,21 @@ public class RefBuilder<DATA> {
     
     public Ref<DATA> defaultToNull() {
         @SuppressWarnings("unchecked")
-        var result = (Result<DATA>)Result.ofNull();
-        var ref    = new RefOf.FromResult<>(dataClass, result, elseSupplier);
+        val result = (Result<DATA>)Result.ofNull();
+        val ref    = new RefOf.FromResult<>(dataClass, result, elseSupplier);
         return ref;
     }
     public Ref<DATA> defaultTo(DATA value) {
-        var result = Result.valueOf(value);
-        var ref    = new RefOf.FromResult<>(dataClass, result, elseSupplier);
+        val result = Result.valueOf(value);
+        val ref    = new RefOf.FromResult<>(dataClass, result, elseSupplier);
         return ref;
     }
     public Ref<DATA> defaultFrom(Ref<DATA> anotherRef) {
-        var ref = new RefOf.FromRef<DATA>(dataClass, anotherRef, elseSupplier);
+        val ref = new RefOf.FromRef<DATA>(dataClass, anotherRef, elseSupplier);
         return ref;
     }
     public Ref<DATA> defaultFrom(Func0<DATA> supplier) {
-        var ref = new RefOf.FromSupplier<DATA>(dataClass, supplier, elseSupplier);
+        val ref = new RefOf.FromSupplier<DATA>(dataClass, supplier, elseSupplier);
         return ref;
     }
     public Ref<DATA> defaultToTypeDefault() {
@@ -88,15 +89,15 @@ public class RefBuilder<DATA> {
     
     
     public Ref<DATA> dictateToNull() {
-        var ref = defaultToNull();
+        val ref = defaultToNull();
         return ref.dictate();
     }
     public Ref<DATA> dictateTo(DATA value) {
-        var ref = defaultTo(value);
+        val ref = defaultTo(value);
         return ref.dictate();
     }
     public Ref<DATA> dictateFrom(Func0<DATA> supplier) {
-        var ref = defaultFrom(supplier);
+        val ref = defaultFrom(supplier);
         return ref.dictate();
     }
     

@@ -32,6 +32,7 @@ import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
+import lombok.val;
 
 
 class IntFuncListDerivedFromIntStreamable
@@ -63,7 +64,7 @@ class IntFuncListDerivedFromIntStreamable
     
     @Override
     public IntFuncList eager() {
-        var data = this.toArray();
+        val data = this.toArray();
         return new ImmutableIntFuncList(data, false);
     }
     
@@ -82,7 +83,7 @@ class IntFuncListDerivedFromIntStreamable
         if (hashCode() != o.hashCode())
             return false;
         
-        var anotherList = (IntFuncList)o;
+        val anotherList = (IntFuncList)o;
         if (size() != anotherList.size())
             return false;
         

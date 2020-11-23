@@ -35,6 +35,7 @@ import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamProcessor;
+import lombok.val;
 
 
 public interface IntStreamableWithGroupingBy extends IntStreamableWithMapToTuple {
@@ -52,7 +53,7 @@ public interface IntStreamableWithGroupingBy extends IntStreamableWithMapToTuple
                 
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
-            var key = keyMapper.apply(each);
+            val key = keyMapper.apply(each);
             map.compute(key, (k, a)->{
                 if (a == null) {
                     a = collectorSupplier.get();
@@ -62,7 +63,7 @@ public interface IntStreamableWithGroupingBy extends IntStreamableWithMapToTuple
             });
         };
         combiner = (map1, map2) -> map1.putAll(map2);
-        var theMap = intStream().boxed().collect(supplier, accumulator, combiner);
+        val theMap = intStream().boxed().collect(supplier, accumulator, combiner);
         return ImmutableMap
                     .from    (theMap)
                     .mapValue(toStreamable);

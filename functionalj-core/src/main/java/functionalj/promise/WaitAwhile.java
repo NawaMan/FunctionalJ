@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 import functionalj.environments.AsyncRunner;
 import functionalj.function.Func0;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public abstract class WaitAwhile extends Wait {
@@ -88,7 +89,7 @@ public abstract class WaitAwhile extends Wait {
         
         @Override
         public WaitSession newSession() {
-            var session = new WaitSession();
+            val session = new WaitSession();
             AsyncRunner.run(asyncRunner, ()->{
                 // TODO - Once scheduling is available, use it.
                 try {

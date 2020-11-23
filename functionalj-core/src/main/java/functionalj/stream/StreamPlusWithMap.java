@@ -39,11 +39,11 @@ public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
     public default StreamPlus<DATA> mapOnly(
             Predicate<? super DATA>      condition, 
             Function<? super DATA, DATA> mapper) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .map(value -> {
-                    var isTrue = condition.test(value);
-                    var mapped = isTrue
+                    val isTrue = condition.test(value);
+                    val mapped = isTrue
                             ? mapper.apply(value)
                             : value;
                     return mapped;
@@ -55,11 +55,11 @@ public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
             Predicate<? super DATA>   condition, 
             Function<? super DATA, T> mapper,
             Function<? super DATA, T> elseMapper) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .mapToObj(value -> {
-                    var isTrue = condition.test(value);
-                    var mapped = isTrue 
+                    val isTrue = condition.test(value);
+                    val mapped = isTrue 
                             ? mapper    .apply(value) 
                             : elseMapper.apply(value);
                     return mapped;

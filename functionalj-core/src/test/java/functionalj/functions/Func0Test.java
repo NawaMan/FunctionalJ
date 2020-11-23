@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import functionalj.function.Func0;
+import lombok.val;
 
 
 public class Func0Test {
@@ -36,8 +37,8 @@ public class Func0Test {
     @Test
     @SuppressWarnings("null")
     public void testElseUse() throws Exception {
-        var str  = (String)null;
-        var func = (Func0<Integer>)(()->{
+        val str  = (String)null;
+        val func = (Func0<Integer>)(()->{
             return str.length();
         });
         assertTrue  (func.getSafely().isException());

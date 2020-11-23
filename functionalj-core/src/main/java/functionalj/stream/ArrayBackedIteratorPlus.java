@@ -116,7 +116,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
                 if (this.closeHandler == null) {
                     this.closeHandler = closeHandler;
                 } else {
-                    var thisCloseHandler = this.closeHandler;
+                    val thisCloseHandler = this.closeHandler;
                     this.closeHandler = new Runnable() {
                         @Override
                         public void run() {
@@ -140,7 +140,7 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     }
     
     public AutoCloseableResult<IteratorPlus<DATA>> pullNext(int count) {
-        var oldIndex = current.getAndAccumulate(count, (o, n) -> o + n) + 1;
+        val oldIndex = current.getAndAccumulate(count, (o, n) -> o + n) + 1;
         int newIndex = current.get();
         if ((newIndex >= end) && (count != 0))
             return AutoCloseableResult.from(Result.ofNoMore());
@@ -149,20 +149,20 @@ public class ArrayBackedIteratorPlus<DATA> implements IteratorPlus<DATA> {
     }
     
     public <TARGET> Result<TARGET> mapNext(int count, Func1<StreamPlus<DATA>, TARGET> mapper) {
-        var old = current.getAndAccumulate(count, (o, n) -> o + n) + 1;
+        val old = current.getAndAccumulate(count, (o, n) -> o + n) + 1;
         if ((current.get() >= end) && (count != 0))
             return Result.ofNoMore();
         
         try (var iterator = new ArrayBackedIteratorPlus<DATA>(array, old, old + count)){
-            var stream = iterator.stream();
-            var value = mapper.apply(stream);
+            val stream = iterator.stream();
+            val value = mapper.apply(stream);
             return Result.valueOf(value);
         }
     }
     
     public Streamable<DATA> streamable() {
         return (Streamable<DATA>)(()->{
-            var iterable = (Iterable<DATA>)()->newIterator();
+            val iterable = (Iterable<DATA>)()->newIterator();
             return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
         });
     }

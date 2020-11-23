@@ -49,6 +49,7 @@ import functionalj.map.MapAction.Mapping;
 import functionalj.map.MapAction.With;
 import functionalj.stream.StreamPlus;
 import functionalj.streamable.Streamable;
+import lombok.val;
 
 
 public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
@@ -88,7 +89,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     @SuppressWarnings("unchecked")
     StreamPlus<Map.Entry<KEY, VALUE>> entryStream() {
         if (action instanceof With) {
-            var with = (With<KEY, VALUE>)action;
+            val with = (With<KEY, VALUE>)action;
             Stream<Map.Entry<KEY, VALUE>> entries 
                     = originalEntryStream()
                         .filter  (e -> !Objects.equals(e.getKey(), with.key))
@@ -98,17 +99,17 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
                 Stream.of(FuncMap.Entry.of(with.key, with.value))
             );
             if (map instanceof TreeMap) {
-                var comparator = ((TreeMap<KEY, SOURCE>)map).comparator();
+                val comparator = ((TreeMap<KEY, SOURCE>)map).comparator();
                 combined = combined.sorted((a, b) -> {
-                    var aKey = a.getKey();
-                    var bKey = b.getKey();
+                    val aKey = a.getKey();
+                    val bKey = b.getKey();
                     return comparator.compare(aKey, bKey);
                 });
             }
             return StreamPlus.from(combined);
         }
         if (action instanceof FilterKey) {
-            var filter = (FilterKey<KEY, VALUE>)action;
+            val filter = (FilterKey<KEY, VALUE>)action;
             Stream<Map.Entry<KEY, VALUE>> entries
                     =  originalEntryStream()
                         .filter  (e -> filter.keyCheck.test(e.getKey()))
@@ -116,8 +117,8 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
             return StreamPlus.from(entries);
         }
         if (action instanceof FilterBoth) {
-            var filter = (FilterBoth<KEY, VALUE>)action;
-            var check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
             Stream<Map.Entry<KEY, VALUE>> entries
                     = originalEntryStream()
                        .map     (e -> (Map.Entry<KEY, VALUE>)e)
@@ -125,20 +126,20 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
             return StreamPlus.from(entries);
         }
         if (action instanceof Mapping) {
-            var mapper = (Mapping<KEY, SOURCE, VALUE>)action;
+            val mapper = (Mapping<KEY, SOURCE, VALUE>)action;
             Stream<Map.Entry<KEY, VALUE>> entries
                     = originalEntryStream()
                        .map(e -> {
-                           var key = e.getKey();
-                           var orgValue = e.getValue();
-                           var newValue = mapper.mapper.apply(key, orgValue);
-                           var newEntry = FuncMap.Entry.of(key, newValue);
+                           val key = e.getKey();
+                           val orgValue = e.getValue();
+                           val newValue = mapper.mapper.apply(key, orgValue);
+                           val newEntry = FuncMap.Entry.of(key, newValue);
                            return newEntry;
                        });
             return StreamPlus.from(entries);
         }
         
-        var source 
+        val source 
                 = originalEntryStream()
                 .map(e -> (Map.Entry<KEY, VALUE>)e);
         return StreamPlus.from(source);
@@ -148,19 +149,19 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     @SuppressWarnings("unchecked")
     public int size() {
         if (action instanceof With) {
-            var with = (With<KEY,SOURCE>)action;
+            val with = (With<KEY,SOURCE>)action;
             if (map.containsKey(with.key))
                 return map.size();
             
             return map.size() + 1;
         }
         if (action instanceof FilterKey) {
-            var filter = (FilterKey<KEY, SOURCE>)action;
+            val filter = (FilterKey<KEY, SOURCE>)action;
             return (int)map.keySet().stream().filter(filter.keyCheck).count();
         }
         if (action instanceof FilterBoth) {
-            var filter = (FilterBoth<KEY, SOURCE>)action;
-            var check  = (Predicate<? super Map.Entry<KEY, SOURCE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            val filter = (FilterBoth<KEY, SOURCE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, SOURCE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
             return (int)originalEntryStream()
                     .filter(check)
                     .count();
@@ -200,19 +201,19 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
         
         // TODO - not efficient
         // Try to use: entryStream()
-        var thisMap = toImmutableMap();
+        val thisMap = toImmutableMap();
         
-        var keyExist = ((Predicate<KEY>)((Map)o)::containsKey).negate();
-        var hasMissingKey = thisMap.keys().anyMatch(keyExist);
+        val keyExist = ((Predicate<KEY>)((Map)o)::containsKey).negate();
+        val hasMissingKey = thisMap.keys().anyMatch(keyExist);
         if (hasMissingKey)
             return false;
         
-        var thatMap = ImmutableMap.from((Map)o);
+        val thatMap = ImmutableMap.from((Map)o);
         if (thatMap.size() != thisMap.size())
             return false;
         
-        var matchEntry = (Predicate<? super Map.Entry<KEY, VALUE>>)(t -> Objects.equals(thatMap.get(t.getKey()), t.getValue()));
-        var allMatchValue 
+        val matchEntry = (Predicate<? super Map.Entry<KEY, VALUE>>)(t -> Objects.equals(thatMap.get(t.getKey()), t.getValue()));
+        val allMatchValue 
                 = thisMap
                 .entries()
                 .allMatch(matchEntry);
@@ -223,20 +224,20 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     @Override
     public boolean hasKey(Predicate<? super KEY> keyCheck) {
         if (action instanceof With) {
-            var with = (With<KEY,VALUE>)action;
+            val with = (With<KEY,VALUE>)action;
             if (keyCheck.test(with.key))
                 return true;
         }
         if (action instanceof FilterKey) {
-            var filter = (FilterKey<KEY, VALUE>)action;
+            val filter = (FilterKey<KEY, VALUE>)action;
             return map
                     .keySet  ().stream()
                     .filter  (filter.keyCheck)
                     .anyMatch(keyCheck);
         }
         if (action instanceof FilterBoth) {
-            var filter = (FilterBoth<KEY, VALUE>)action;
-            var check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
             return originalEntryStream()
                     .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
                     .anyMatch(e -> keyCheck.test(e.getKey()));
@@ -251,18 +252,18 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     @Override
     public boolean hasKey(KEY key) {
         if (action instanceof With) {
-            var with = (With<KEY,VALUE>)action;
+            val with = (With<KEY,VALUE>)action;
             if (Objects.equals(key, with.key))
                 return true;
         }
         if (action instanceof FilterKey) {
-            var filter = (FilterKey<KEY, VALUE>)action;
+            val filter = (FilterKey<KEY, VALUE>)action;
             if (!filter.keyCheck.test(key))
                 return false;
         }
         if (action instanceof FilterBoth) {
-            var filter = (FilterBoth<KEY, VALUE>)action;
-            var check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
             return originalEntryStream()
                     .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
                     .anyMatch(e -> Objects.equals(e.getKey(), key));
@@ -281,27 +282,27 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     @Override
     public boolean hasValue(Predicate<? super VALUE> valueCheck) {
         if (action instanceof With) {
-            var with = (With<KEY,VALUE>)action;
+            val with = (With<KEY,VALUE>)action;
             if (valueCheck.test(with.value))
                 return true;
         }
         
         if (action instanceof FilterKey) {
-            var filter = (FilterKey<KEY, SOURCE>)action;
+            val filter = (FilterKey<KEY, SOURCE>)action;
             return originalEntryStream()
                     .filter  (e -> filter.keyCheck.test(e.getKey()))
                     .anyMatch(e -> valueCheck.test((VALUE)e.getValue()));
         }
         if (action instanceof FilterBoth) {
-            var filter = (FilterBoth<KEY, VALUE>)action;
-            var check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
             return originalEntryStream()
                     .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
                     .anyMatch(e -> valueCheck.test((VALUE)e.getValue()));
         }
         if (action instanceof Mapping) {
-            var mapping = (Mapping<KEY, SOURCE, VALUE>)action;
-            var mpapper = mapping.mapper;
+            val mapping = (Mapping<KEY, SOURCE, VALUE>)action;
+            val mpapper = mapping.mapper;
             return originalEntryStream()
                     .map     (e -> mpapper.apply(e.getKey(), e.getValue()))
                     .anyMatch(v -> valueCheck.test(v));
@@ -328,42 +329,42 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     @Override
     public Optional<VALUE> findBy(KEY key) {
         if (action instanceof With) {
-            var with = (With<KEY,VALUE>)action;
+            val with = (With<KEY,VALUE>)action;
             if (Objects.equals(key, with.key))
                 return Optional.ofNullable(with.value);
         }
         if (action instanceof FilterKey) {
-            var filter = (FilterKey<KEY, VALUE>)action;
+            val filter = (FilterKey<KEY, VALUE>)action;
             if (!filter.keyCheck.test(key))
                 return Optional.empty();
         }
         if (action instanceof FilterBoth) {
-            var filter = (FilterBoth<KEY, VALUE>)action;
-            var check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
             
-            var hasKey = originalEntryStream()
+            val hasKey = originalEntryStream()
                     .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
                     .anyMatch(e -> Objects.equals(e.getKey(), key));
             if (!hasKey)
                 return Optional.empty();
         }
         if (action instanceof Mapping) {
-            var mapping = (Mapping<KEY, SOURCE, VALUE>)action;
-            var mapper  = mapping.mapper;
+            val mapping = (Mapping<KEY, SOURCE, VALUE>)action;
+            val mapper  = mapping.mapper;
             
-            var orgValue = map.get(key);
+            val orgValue = map.get(key);
             if (orgValue == null) {
                 return Optional.empty();
             }
             
-            var newValue = mapper.apply(key, orgValue);
+            val newValue = mapper.apply(key, orgValue);
             if (newValue == null) {
                 return Optional.empty();
             }
             return Optional.of(newValue);
         }
         
-        var value = map.get(key);
+        val value = map.get(key);
         return Optional
                 .ofNullable((VALUE)value);
     }
@@ -373,42 +374,42 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     public VALUE get(Object keyObj) {
         KEY key = (KEY)keyObj;
         if (action instanceof With) {
-            var with = (With<KEY,VALUE>)action;
+            val with = (With<KEY,VALUE>)action;
             if (Objects.equals(key, with.key))
                 return with.value;
         }
         if (action instanceof FilterKey) {
-            var filter = (FilterKey<KEY, VALUE>)action;
+            val filter = (FilterKey<KEY, VALUE>)action;
             if (!filter.keyCheck.test((KEY)key))
                 return null;
         }
         if (action instanceof FilterBoth) {
-            var filter = (FilterBoth<KEY, VALUE>)action;
-            var check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
             
-            var hasKey = originalEntryStream()
+            val hasKey = originalEntryStream()
                     .filter  (e -> check.test((Map.Entry<KEY, VALUE>)e))
                     .anyMatch(e -> Objects.equals(e.getKey(), key));
             if (!hasKey)
                 return null;
         }
         if (action instanceof Mapping) {
-            var mapping = (Mapping<KEY, SOURCE, VALUE>)action;
-            var mapper  = mapping.mapper;
+            val mapping = (Mapping<KEY, SOURCE, VALUE>)action;
+            val mapper  = mapping.mapper;
             
-            var orgValue = map.get(key);
+            val orgValue = map.get(key);
             if (orgValue == null) {
                 return null;
             }
             
-            var newValue = mapper.apply(key, orgValue);
+            val newValue = mapper.apply(key, orgValue);
             if (newValue == null) {
                 return null;
             }
             return newValue;
         }
         
-        var value = (VALUE)map.get(key);
+        val value = (VALUE)map.get(key);
         return value;
     }
     
@@ -438,39 +439,39 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     @Override
     public FuncMap<KEY, VALUE> with(KEY key, VALUE value) {
-        var action = new With<KEY, VALUE>(key, value);
+        val action = new With<KEY, VALUE>(key, value);
         return new FuncMapDerived<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
     public FuncMap<KEY, VALUE> withAll(Map<? extends KEY, ? extends VALUE> entries) {
         // TODO: Find the way to do it
-        var newMap = new HashMap<>(this.toMap());
+        val newMap = new HashMap<>(this.toMap());
         newMap.putAll(entries);
         return ImmutableMap.from(newMap);
     }
     
     @Override
     public FuncMap<KEY, VALUE> exclude(KEY key) {
-        var action = new FilterKey<KEY, VALUE>(k -> !Objects.equals(k, key));
+        val action = new FilterKey<KEY, VALUE>(k -> !Objects.equals(k, key));
         return new FuncMapDerived<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
     public FuncMap<KEY, VALUE> filter(Predicate<? super KEY> keyCheck) {
-        var action = new FilterKey<KEY, VALUE>(keyCheck);
+        val action = new FilterKey<KEY, VALUE>(keyCheck);
         return new FuncMapDerived<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
     public FuncMap<KEY, VALUE> filter(BiPredicate<? super KEY, ? super VALUE> entryCheck) {
-        var action = new FilterBoth<KEY, VALUE>(entryCheck);
+        val action = new FilterBoth<KEY, VALUE>(entryCheck);
         return new FuncMapDerived<KEY, VALUE, VALUE>(this, action);
     }
     
     @Override
     public FuncMap<KEY, VALUE> filterByEntry(Predicate<? super Map.Entry<? super KEY, ? super VALUE>> entryCheck) {
-        var action = new FilterBoth<KEY, VALUE>((k, v) -> entryCheck.test(FuncMap.Entry.of(k,  v)));
+        val action = new FilterBoth<KEY, VALUE>((k, v) -> entryCheck.test(FuncMap.Entry.of(k,  v)));
         return new FuncMapDerived<KEY, VALUE, VALUE>(this, action);
     }
     
@@ -478,16 +479,16 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     @Override
     public FuncList<KEY> keys() {
         if (action instanceof With) {
-            var with   = (With<KEY,VALUE>)action;
-            var source = Streamable.from(()->{
+            val with   = (With<KEY,VALUE>)action;
+            val source = Streamable.from(()->{
                 StreamPlus<KEY> stream = StreamPlus.concat(
                     map.keySet().stream()
                        .filter(k -> !Objects.equals(k, with.key)),
                    Stream.of(with.key)
                 );
                 if (map instanceof TreeMap) {
-                    var treeMap    = (TreeMap<KEY, SOURCE>)map;
-                    var comparator = treeMap.comparator();
+                    val treeMap    = (TreeMap<KEY, SOURCE>)map;
+                    val comparator = treeMap.comparator();
                     stream = stream.sorted(comparator);
                 }
                 return stream;
@@ -495,14 +496,14 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
             return FuncListDerived.from(source);
         }
         if (action instanceof FilterKey) {
-            var filter = (FilterKey<KEY, VALUE>)action;
-            var source = (Streamable<KEY>)(()->StreamPlus.from(map.keySet().stream().filter(filter.keyCheck)));
+            val filter = (FilterKey<KEY, VALUE>)action;
+            val source = (Streamable<KEY>)(()->StreamPlus.from(map.keySet().stream().filter(filter.keyCheck)));
             return FuncListDerived.from(source);
         }
         if (action instanceof FilterBoth) {
-            var filter = (FilterBoth<KEY, VALUE>)action;
-            var check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
-            var source = (Streamable<KEY>)(()->{
+            val filter = (FilterBoth<KEY, VALUE>)action;
+            val check  = (Predicate<? super Map.Entry<KEY, VALUE>>)(e -> filter.check.test(e.getKey(), e.getValue()));
+            val source = (Streamable<KEY>)(()->{
                 
                 return StreamPlus.from(
                         originalEntryStream()
@@ -550,7 +551,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     @Override
     public FuncMap<KEY, VALUE> sorted() {
-        var map = new TreeMap<KEY, VALUE>();
+        val map = new TreeMap<KEY, VALUE>();
         entryStream()
             .forEach(e -> map.put(e.getKey(), e.getValue()));
         return new ImmutableMap<KEY, VALUE>(map, isLazy());
@@ -558,7 +559,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     @Override
     public FuncMap<KEY, VALUE> sorted(Comparator<? super Map.Entry<KEY, VALUE>> comparator) {
-        var map = new LinkedHashMap<KEY, VALUE>();
+        val map = new LinkedHashMap<KEY, VALUE>();
         this
         .entryStream()
         .sorted (comparator)
@@ -568,7 +569,7 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     @Override
     public FuncMap<KEY, VALUE> sortedByKey(Comparator<? super KEY> comparator) {
-        var map = new TreeMap<KEY, VALUE>(comparator);
+        val map = new TreeMap<KEY, VALUE>(comparator);
         entryStream()
         .forEach(e -> map.put(e.getKey(), e.getValue()));
         return new ImmutableMap<KEY, VALUE>(map, isLazy());
@@ -581,9 +582,9 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     @Override
     public <TARGET> FuncMap<KEY, TARGET> mapEntry(BiFunction<? super KEY, ? super VALUE, ? extends TARGET> mapper) {
-        var mapFunc = Func2.from(mapper);
-        var mapping = new MapAction.Mapping<KEY, VALUE, TARGET>(mapFunc);
-        var mapped  = new FuncMapDerived<KEY, VALUE, TARGET>(this, mapping);
+        val mapFunc = Func2.from(mapper);
+        val mapping = new MapAction.Mapping<KEY, VALUE, TARGET>(mapFunc);
+        val mapped  = new FuncMapDerived<KEY, VALUE, TARGET>(this, mapping);
         if (isEager()) {
             return mapped.toImmutableMap();
         }
@@ -594,8 +595,8 @@ public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     public void forEach(BiConsumer<? super KEY, ? super VALUE> action) {
         entryStream()
         .forEach(entry -> {
-            var key   = entry.getKey();
-            var value = entry.getValue();
+            val key   = entry.getKey();
+            val value = entry.getValue();
             action.accept(key, value);
         });
     }

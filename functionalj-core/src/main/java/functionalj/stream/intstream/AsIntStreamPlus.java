@@ -36,9 +36,9 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Sequential;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 
 
 /**
@@ -78,7 +78,7 @@ public interface AsIntStreamPlus
     
     /** @return a spliterator of this streamable. */
     public default Spliterator.OfInt spliterator() {
-        var iterator = iterator();
+        val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     

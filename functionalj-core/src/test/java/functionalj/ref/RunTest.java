@@ -28,28 +28,30 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import lombok.val;
+
 
 
 public class RunTest {
 
     @Test
     public void testWith() {
-        var ref = Ref.ofValue(42);
-        var orgValue = ref.value();
-        var newValue = With(ref.butWith(45)).run(()->ref.value());
+        val ref = Ref.ofValue(42);
+        val orgValue = ref.value();
+        val newValue = With(ref.butWith(45)).run(()->ref.value());
         assertEquals(42, orgValue.intValue());
         assertEquals(45, newValue.intValue());
     }
     
     @Test
     public void testSubstitutions() {
-        var refA = Ref.ofValue("A");
-        var refB = Ref.ofValue("B");
-        var refC = Ref.ofValue("C");
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
         
         assertEquals("ABC", refA.get() + refB.get() + refC.get());
         
-        var subs =
+        val subs =
                 With(refA.butWith("a"))
                 .and (refB.butWith("b"))
                 .and (refC.butWith("c"))
@@ -61,11 +63,11 @@ public class RunTest {
     
     @Test
     public void testSelectiveWith() {
-        var refA = Ref.ofValue("A");
-        var refB = Ref.ofValue("B");
-        var refC = Ref.ofValue("C");
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
         
-        var subs =
+        val subs =
                 With(refB.butWith("b"))
                 .and(refC.butWith("c"))
                 .run(()->Substitution.getCurrentSubstitutions());
@@ -76,9 +78,9 @@ public class RunTest {
     
     @Test
     public void testAsyncWithSubstitution() {
-        var refA = Ref.ofValue("A");
-        var refB = Ref.ofValue("B");
-        var refC = Ref.ofValue("C");
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
         With(refB.butWith("b").withinThisThread())
         .run(()->{
             assertEquals("AbC", refA.get() + refB.get() + refC.get());
@@ -94,9 +96,9 @@ public class RunTest {
     
     @Test
     public void testAsyncWithSubstitution_localThread() {
-        var refA = Ref.ofValue("A");
-        var refB = Ref.ofValue("B");
-        var refC = Ref.ofValue("C");
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
         With(refB.butWith("b").withinThisThread(true))
         .run(()->{
             assertEquals("AbC", refA.get() + refB.get() + refC.get());
@@ -112,9 +114,9 @@ public class RunTest {
     
     @Test
     public void testAsyncWithSubstitution_default_crossThread() {
-        var refA = Ref.ofValue("A");
-        var refB = Ref.ofValue("B");
-        var refC = Ref.ofValue("C");
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
         With(refB.butWith("b"))
         .run(()->{
             assertEquals("AbC", refA.get() + refB.get() + refC.get());
@@ -130,9 +132,9 @@ public class RunTest {
     
     @Test
     public void testAsyncWithSubstitution_crossThread() {
-        var refA = Ref.ofValue("A");
-        var refB = Ref.ofValue("B");
-        var refC = Ref.ofValue("C");
+        val refA = Ref.ofValue("A");
+        val refB = Ref.ofValue("B");
+        val refC = Ref.ofValue("C");
         With(refB.butWith("b").withinThisThread(false))
         .run(()->{
             assertEquals("AbC", refA.get() + refB.get() + refC.get());

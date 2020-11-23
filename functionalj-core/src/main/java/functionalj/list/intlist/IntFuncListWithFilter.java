@@ -35,6 +35,7 @@ import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
 import functionalj.function.IntBiPredicatePrimitive;
+import lombok.val;
 
 
 public interface IntFuncListWithFilter extends AsIntFuncList {
@@ -65,7 +66,7 @@ public interface IntFuncListWithFilter extends AsIntFuncList {
             IntFunction<T>       mapper,
             Predicate<? super T> predicate) {
         IntPredicate newMapper = value -> {
-            var newValue = mapper.apply(value);
+            val newValue = mapper.apply(value);
             return predicate.test(newValue);
         };
         return deriveFrom(this, stream -> stream.filter(newMapper));

@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import functionalj.function.Func1;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class Subscription<DATA> {
@@ -54,7 +55,7 @@ public class Subscription<DATA> {
         
         // TODO - Add scheduling here.
         try {
-            var cancellation = subscriber.apply(next);
+            val cancellation = subscriber.apply(next);
             if (Subscription.Cancel.equals(cancellation))
                 unsubcribe();
         } catch (Exception e) {

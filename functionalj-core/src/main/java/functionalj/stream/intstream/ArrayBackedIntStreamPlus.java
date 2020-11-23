@@ -37,25 +37,25 @@ public class ArrayBackedIntStreamPlus implements IntStreamPlus {
     
     @SafeVarargs
     public static IntStreamPlus of(int ... array) {
-        var iterator = ArrayBackedIntIteratorPlus.of(array);
-        var stream   = new ArrayBackedIntStreamPlus(iterator);
+        val iterator = ArrayBackedIntIteratorPlus.of(array);
+        val stream   = new ArrayBackedIntStreamPlus(iterator);
         return stream;
     }
     public static IntStreamPlus from(int[] array) {
-        var iterator = ArrayBackedIntIteratorPlus.of(array);
-        var stream   = new ArrayBackedIntStreamPlus(iterator);
+        val iterator = ArrayBackedIntIteratorPlus.of(array);
+        val stream   = new ArrayBackedIntStreamPlus(iterator);
         return stream;
     }
     public static IntStreamPlus from(int[] array, int start, int length) {
-        var iterator = (ArrayBackedIntIteratorPlus)ArrayBackedIntIteratorPlus.from(array, start, length);
-        var stream   = new ArrayBackedIntStreamPlus(iterator);
+        val iterator = (ArrayBackedIntIteratorPlus)ArrayBackedIntIteratorPlus.from(array, start, length);
+        val stream   = new ArrayBackedIntStreamPlus(iterator);
         return stream;
     }
     
     ArrayBackedIntStreamPlus(ArrayBackedIntIteratorPlus iterator) {
         this.iterator = iterator;
         
-        var iterable = (IntIterable)()->iterator;
+        val iterable = (IntIterable)()->iterator;
         this.stream  = IntStreamPlus.from(StreamSupport.intStream(iterable.spliterator(), false));
     }
     

@@ -52,7 +52,7 @@ public interface IntCollectorPlus<ACCUMULATED, RESULT>
     
     
     default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, RESULT> of(ToIntFunction<SOURCE> mapper) {
-        var collector = new CollectorFromInt<>(this, mapper);
+        val collector = new CollectorFromInt<>(this, mapper);
         return CollectorPlus.from(collector);
     }
 }
@@ -105,9 +105,9 @@ class CollectorFromInt<SOURCE, ACCUMULATED, RESULT>
     }
     @Override
     public BiConsumer<ACCUMULATED, SOURCE> accumulator() {
-        var accumulator = collector.accumulator();
+        val accumulator = collector.accumulator();
         return (a, s)->{
-            var d = mapper.applyAsInt(s);
+            val d = mapper.applyAsInt(s);
             accumulator.accept(a, d);
         };
     }

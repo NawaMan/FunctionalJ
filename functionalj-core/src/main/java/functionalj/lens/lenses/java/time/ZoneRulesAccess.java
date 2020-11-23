@@ -12,6 +12,7 @@ import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.ListAccess;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -29,20 +30,20 @@ public interface ZoneRulesAccess<HOST>
     
     public default BooleanAccessPrimitive<HOST> isFixedOffset() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isFixedOffset();
         };
     }
     public default ZoneOffsetAccess<HOST> getOffset(Instant instant) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getOffset(instant);
         };
     }
     
     public default ZoneOffsetAccess<HOST> getOffset(LocalDateTime localDateTime) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getOffset(localDateTime);
         };
     }
@@ -55,43 +56,43 @@ public interface ZoneRulesAccess<HOST>
 
     public default ZoneOffsetTransitionAccess<HOST> getTransition(LocalDateTime localDateTime) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getTransition(localDateTime);
         };
     }
     public default ZoneOffsetAccess<HOST> getStandardOffset(Instant instant) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getStandardOffset(instant);
         };
     }
     public default DurationAccess<HOST> getDaylightSavings(Instant instant) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getDaylightSavings(instant);
         };
     }
     public default BooleanAccessPrimitive<HOST> isDaylightSavings(Instant instant) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isDaylightSavings(instant);
         };
     }
     public default BooleanAccessPrimitive<HOST> isValidOffset(LocalDateTime localDateTime, ZoneOffset offset) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isValidOffset(localDateTime, offset);
         };
     }
     public default ZoneOffsetTransitionAccess<HOST> nextTransition(Instant instant) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.nextTransition(instant);
         };
     }
     public default ZoneOffsetTransitionAccess<HOST> previousTransition(Instant instant) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.previousTransition(instant);
         };
     }

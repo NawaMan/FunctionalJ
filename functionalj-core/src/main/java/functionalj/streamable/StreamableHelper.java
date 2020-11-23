@@ -29,14 +29,15 @@ import java.util.List;
 
 import functionalj.list.FuncList;
 import functionalj.stream.StreamPlus;
+import lombok.val;
 
 
 public class StreamableHelper {
     
     // TODO - Change to DoubleFuncList
     static <D> FuncList<FuncList<D>> segmentByPercentiles(FuncList<D> list, Collection<Double> percentiles) {
-        var size    = list.size();
-        var indexes = FuncList.from(percentiles)
+        val size    = list.size();
+        val indexes = FuncList.from(percentiles)
                 .append(100.0)
                 .sorted()
                 .map   (d -> (int)Math.round(d*size/100))
@@ -44,7 +45,7 @@ public class StreamableHelper {
         if (indexes.get(indexes.size() - 1) != size) {
             indexes.add(size);
         }
-        var lists   = new ArrayList<List<D>>();
+        val lists   = new ArrayList<List<D>>();
         for (int i = 0; i < indexes.size(); i++) {
             lists.add(new ArrayList<D>());
         }
@@ -53,8 +54,8 @@ public class StreamableHelper {
             if (i >= indexes.get(idx)) {
                 idx++;
             }
-            var l = lists.get(idx);
-            var element = list.get(i);
+            val l = lists.get(idx);
+            val element = list.get(i);
             l.add(element);
         }
         return FuncList.from(

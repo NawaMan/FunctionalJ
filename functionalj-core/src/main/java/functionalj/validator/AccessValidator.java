@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import functionalj.function.Func4;
 import functionalj.result.Result;
 import functionalj.result.ValidationException;
+import lombok.val;
 
 
 public interface AccessValidator<DATA, TARGET> extends Validator<DATA> {
@@ -39,13 +40,13 @@ public interface AccessValidator<DATA, TARGET> extends Validator<DATA> {
     
     public default Result<DATA> validate(DATA data) {
         return Result.of(()->{
-            var mapper  = access();
-            var target  = mapper.apply(data);
-            var checker = checker();
+            val mapper  = access();
+            val target  = mapper.apply(data);
+            val checker = checker();
             if (checker.test(target))
                 return data;
                 
-            var exception = createException(data, target);
+            val exception = createException(data, target);
             throw exception;
         });
     }

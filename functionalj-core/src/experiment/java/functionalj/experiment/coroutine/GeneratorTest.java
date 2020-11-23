@@ -81,7 +81,7 @@ public class GeneratorTest {
         }
         
         public Iterable<D> iterable() {
-            var iterator = new GeneratorIterator<>(newInstance());
+            val iterator = new GeneratorIterator<>(newInstance());
             return () -> iterator;
         }
         
@@ -97,7 +97,7 @@ public class GeneratorTest {
         public D applyUnsafe() throws Exception {
             if (nextEntryRef.get() == null) {
                 if (finish.isUseValue()) {
-                    var returnValue = finish.asUseValue().value().returnValue();
+                    val returnValue = finish.asUseValue().value().returnValue();
                     prevRef.set(returnValue);
                 } else if (finish.isStop()) {
                     prevRef.set(null);
@@ -106,20 +106,20 @@ public class GeneratorTest {
                 return prevRef.get();
             }
             
-            var entry = nextEntryRef.get().apply(prevRef.get());
+            val entry = nextEntryRef.get().apply(prevRef.get());
             return Switch(entry)
                     .next((Next<D> n) -> {
-                        var value = n.body().apply();
+                        val value = n.body().apply();
                         prevRef.set(value);
                         
-                        var nextE = n.more();
+                        val nextE = n.more();
                         nextEntryRef.set(nextE);
                         if (nextE == null)
                             doAfterLast(n);
                         return value;
                     })
                     .last((Last<D> l) -> {
-                        var value = l.body().apply();
+                        val value = l.body().apply();
                         prevRef.set(value);
                         
                         doAfterLast(l);
@@ -177,11 +177,11 @@ public class GeneratorTest {
     
     @Test
     public void test() {
-        var g1 = new Generator<String>(
+        val g1 = new Generator<String>(
                 e(()->"Last"));
         assertEquals("Last", g1.get());
         
-        var g2 = new Generator<String>(
+        val g2 = new Generator<String>(
                    e(()-> "First" ,               ()
                 -> e(()-> "Second",               second
                 -> e(()-> second + "-Last"))));
@@ -191,7 +191,7 @@ public class GeneratorTest {
     }
 //    @Test
 //    public void testUseLast() {
-//        var g = new Generator<Integer>(
+//        val g = new Generator<Integer>(
 //                e(()-> 1,            first
 //                -> e(()-> first + 1, prev
 //                -> e(()-> prev  + 1))),

@@ -14,6 +14,7 @@ import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -32,39 +33,39 @@ public interface InstantAccess<HOST>
     
     public default LongAccessPrimitive<HOST> getEpochSecond() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getEpochSecond();
         };
     }
     public default IntegerAccessPrimitive<HOST> getNano() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getNano();
         };
     }
     
     public default InstantAccess<HOST> with(TemporalAdjuster adjuster) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.with(adjuster);
         };
     }
     public default InstantAccess<HOST> with(TemporalField field, long newValue) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.with(field, newValue);
         };
     }
     public default InstantAccess<HOST> truncatedTo(TemporalUnit unit) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.truncatedTo(unit);
         };
     }
     @Override
     public default InstantAccess<HOST> plus(TemporalAmount amountToAdd) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.plus(amountToAdd);
         };
     }
@@ -72,82 +73,82 @@ public interface InstantAccess<HOST>
     @Override
     public default InstantAccess<HOST> plus(long amountToAdd, TemporalUnit unit) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.plus(amountToAdd, unit);
         };
     }
     public default InstantAccess<HOST> plusSeconds(long secondsToAdd) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.plusSeconds(secondsToAdd);
         };
     }
     public default InstantAccess<HOST> plusMillis(long millisToAdd) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.plusMillis(millisToAdd);
         };
     }
     public default InstantAccess<HOST> plusNanos(long nanosToAdd) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.plusNanos(nanosToAdd);
         };
     }
     public default InstantAccess<HOST> minus(TemporalAmount amountToSubtract) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.minus(amountToSubtract);
         };
     }
     public default InstantAccess<HOST> minus(long amountToSubtract, TemporalUnit unit) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.minus(amountToSubtract, unit);
         };
     }
     public default InstantAccess<HOST> minusSeconds(long secondsToSubtract) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.minusSeconds(secondsToSubtract);
         };
     }
     public default InstantAccess<HOST> minusMillis(long millisToSubtract) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.minusMillis(millisToSubtract);
         };
     }
     public default InstantAccess<HOST> minusNanos(long nanosToSubtract) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.minusNanos(nanosToSubtract);
         };
     }
     
     public default OffsetDateTimeAccess<HOST> atOffset(ZoneOffset offset) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.atOffset(offset);
         };
     }
     public default ZonedDateTimeAccess<HOST> atZone(ZoneId zone) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.atZone(zone);
         };
     }
     
     public default LongAccessPrimitive<HOST> toEpochMilli() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.toEpochMilli();
         };
     }
     
     public default IntegerAccessPrimitive<HOST> compareTo(Instant other) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.compareTo(other);
         };
     }
@@ -166,13 +167,13 @@ public interface InstantAccess<HOST>
     
     public default BooleanAccessPrimitive<HOST> thatIsAfter(Instant other) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isAfter(other);
         };
     }
     public default BooleanAccessPrimitive<HOST> thatIsBefore(Instant other) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isBefore(other);
         };
     }

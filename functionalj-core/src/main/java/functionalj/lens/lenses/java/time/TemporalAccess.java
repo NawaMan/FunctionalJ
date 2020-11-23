@@ -10,6 +10,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -23,50 +24,50 @@ public interface TemporalAccess<HOST, TEMPORAL extends Temporal>
     
     public default BooleanAccessPrimitive<HOST> thatIsSupported(TemporalUnit unit) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isSupported(unit);
         };
     }
     public default TemporalAccess<HOST, ? extends Temporal> with(TemporalAdjuster adjuster) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.with(adjuster);
         };
     }
     public default TemporalAccess<HOST, ? extends Temporal> with(TemporalField field, long newValue) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.with(field, newValue);
         };
     }
     public default TemporalAccess<HOST, ? extends Temporal> plus(TemporalAmount amountToAdd) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.plus(amountToAdd);
         };
     }
     public default TemporalAccess<HOST, ? extends Temporal> plus(long amountToAdd, TemporalUnit unit) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.plus(amountToAdd, unit);
         };
     }
     public default TemporalAccess<HOST, ? extends Temporal> minus(TemporalAmount amountToSubtract) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.minus(amountToSubtract);
         };
     }
     public default TemporalAccess<HOST, ? extends Temporal> minus(long amountToSubtract, TemporalUnit unit) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.minus(amountToSubtract, unit);
         };
     }
     
     public default LongAccessPrimitive<HOST> until(Temporal endExclusive, TemporalUnit unit) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.until(endExclusive, unit);
         };
     }

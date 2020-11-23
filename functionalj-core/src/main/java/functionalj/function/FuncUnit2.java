@@ -31,6 +31,7 @@ import functionalj.functions.ThrowFuncs;
 import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -94,7 +95,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
         requireNonNull(supplier);
         return (input1, input2) -> {
             acceptUnsafe(input1, input2);
-            var value = supplier.applyUnsafe();
+            val value = supplier.applyUnsafe();
             return value;
         };
     }
@@ -109,8 +110,8 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
     
     public default FuncUnit1<Tuple2<INPUT1, INPUT2>> wholly() {
         return tuple -> {
-            var _1 = tuple._1();
-            var _2 = tuple._2();
+            val _1 = tuple._1();
+            val _2 = tuple._2();
             acceptUnsafe(_1, _2);
         };
     }
@@ -124,7 +125,7 @@ public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
     }
     public default Func2<HasPromise<INPUT1>, HasPromise<INPUT2>, Promise<Object>> defer() {
         return (promise1, promise2) -> {
-            var func0 = this.thenReturnNull();
+            val func0 = this.thenReturnNull();
             return Promise.from(
                     input1 -> promise1,
                     input2 -> promise2,

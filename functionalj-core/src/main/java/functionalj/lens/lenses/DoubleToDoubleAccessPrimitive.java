@@ -28,6 +28,7 @@ import java.util.function.DoubleUnaryOperator;
 
 import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.function.ToDoubleBiDoubleFunction;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -44,7 +45,7 @@ public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, Doub
     }
     
     public static double apply(DoubleAccess<Double> access, double value) {
-        var resValue 
+        val resValue 
             = (access instanceof DoubleToDoubleAccessPrimitive)
             ? ((DoubleToDoubleAccessPrimitive)access).applyDoubleToDouble(value)
             : access.applyAsDouble(value);

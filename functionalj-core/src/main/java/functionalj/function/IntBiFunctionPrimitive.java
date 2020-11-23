@@ -26,6 +26,8 @@ package functionalj.function;
 import java.util.function.BiFunction;
 import java.util.function.IntBinaryOperator;
 
+import lombok.val;
+
 
 
 @FunctionalInterface
@@ -62,7 +64,7 @@ public interface IntBiFunctionPrimitive extends ToIntBiIntFunction<Integer> {
         if (function instanceof IntBiFunctionPrimitive)
             return ((IntBiFunctionPrimitive)function).applyAsIntAndInt(value, anotherValue);
         
-        var resValue = function.applyAsInt(value, anotherValue);
+        val resValue = function.applyAsInt(value, anotherValue);
         return resValue;
     }
 }

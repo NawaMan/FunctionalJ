@@ -29,12 +29,13 @@ import functionalj.environments.Log;
 import functionalj.function.Func1;
 import functionalj.function.FunctionInvocationException;
 import functionalj.ref.Ref;
+import lombok.val;
 
 
 public interface ThrowFuncs {
     
     public static final Ref<Func1<Exception, RuntimeException>> exceptionTransformer = Ref.ofValue(e -> {
-        var throwable = (e instanceof RuntimeException) 
+        val throwable = (e instanceof RuntimeException) 
                 ? (RuntimeException)e 
                 : new FunctionInvocationException(e);
         return throwable;
@@ -54,7 +55,7 @@ public interface ThrowFuncs {
     }
     
     public static void handleThrowRuntime(Exception exception) {
-        var throwable = exceptionTransformer.value().apply(exception);
+        val throwable = exceptionTransformer.value().apply(exception);
         handleNoThrow(throwable);
         throw throwable;
     }

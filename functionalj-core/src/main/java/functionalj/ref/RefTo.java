@@ -26,6 +26,7 @@ package functionalj.ref;
 import defaultj.api.IProvideDefault;
 import functionalj.function.Func0;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class RefTo<DATA> extends Ref<DATA> {
@@ -44,10 +45,10 @@ public class RefTo<DATA> extends Ref<DATA> {
     
     @Override
     protected Result<DATA> findResult() {
-        var result = Result.of(()->{
-            var provider = defaultProvider.value();
-            var dataType = getDataType();
-            var value    = provider.get(dataType);
+        val result = Result.of(()->{
+            val provider = defaultProvider.value();
+            val dataType = getDataType();
+            val value    = provider.get(dataType);
             return (DATA)value;
         });
         return result;
@@ -71,7 +72,7 @@ public class RefTo<DATA> extends Ref<DATA> {
             return false;
         
         @SuppressWarnings("unchecked")
-        var anotherRef = (RefOf<DATA>)another;
+        val anotherRef = (RefOf<DATA>)another;
         if (!anotherRef.getDataType().equals(this.getDataType()))
             return false;
         

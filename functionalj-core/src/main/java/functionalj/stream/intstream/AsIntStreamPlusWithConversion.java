@@ -43,8 +43,8 @@ import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Terminal;
 
 
 public interface AsIntStreamPlusWithConversion {
@@ -57,8 +57,8 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default byte[] toByteArray(IntToByteFunction toByte) {
-        var streamPlus = intStreamPlus();
-        var byteArray  = new ByteArrayOutputStream();
+        val streamPlus = intStreamPlus();
+        val byteArray  = new ByteArrayOutputStream();
         streamPlus
         .forEach(d -> {
             byte b = toByte.apply(d);
@@ -72,7 +72,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default int[] toIntArray(IntUnaryOperator toInt) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .map(toInt)
                 .toArray ();
@@ -82,7 +82,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default long[] toLongArray(IntToLongFunction toLong) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToLong(toLong)
                 .toArray  ();
@@ -92,7 +92,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default double[] toDoubleArray(IntToDoubleFunction toDouble) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToDouble(toDouble)
                 .toArray    ();
@@ -107,8 +107,8 @@ public interface AsIntStreamPlusWithConversion {
         //TODO - This is not efficient but without knowing the size, it is not so easy to do efficiently
         //       The proper solution for this is to have the stream itself contain the marker if it knows its size.
         //       May be by using peekSize() method to check the size and the forEach to populate it.
-        var streamPlus = intStreamPlus();
-        var javaList = streamPlus.boxed().toJavaList();
+        val streamPlus = intStreamPlus();
+        val javaList = streamPlus.boxed().toJavaList();
         return new ArrayList<Integer>(javaList);
     }
 
@@ -116,7 +116,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default IntFuncList toFuncList() {
-//        var streamPlus = streamPlus();
+//        val streamPlus = streamPlus();
 //        return streamPlus
 //                .boxed()
 //                .toImmutableList();
@@ -127,7 +127,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default ImmutableIntFuncList toImmutableList() {
-//        var streamPlus = streamPlus();
+//        val streamPlus = streamPlus();
 //        return ImmutableList.from(streamPlus.boxed());
         return null;
     }
@@ -136,7 +136,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default List<Integer> toJavaList() {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(Integer::valueOf)
                 .collect(Collectors.toList());
@@ -146,7 +146,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default FuncList<Integer> toList() {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return ImmutableList.from(
                 streamPlus.boxed());
     }
@@ -164,7 +164,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default String join() {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(StrFuncs::toStr)
                 .collect (Collectors.joining());
@@ -174,7 +174,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default String join(String delimiter) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(StrFuncs::toStr)
                 .collect (Collectors.joining(delimiter));
@@ -186,8 +186,8 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default String toListString() {
-        var streamPlus = intStreamPlus();
-        var strValue
+        val streamPlus = intStreamPlus();
+        val strValue
                 = streamPlus
                 .mapToObj(String::valueOf)
                 .collect (Collectors.joining(", "));
@@ -203,8 +203,8 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default <KEY> FuncMap<KEY, Integer> toMap(IntFunction<KEY> keyMapper) {
-        var streamPlus = intStreamPlus();
-        var theMap     = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> i));
+        val streamPlus = intStreamPlus();
+        val theMap     = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> i));
         return ImmutableMap.from(theMap);
     }
 
@@ -217,8 +217,8 @@ public interface AsIntStreamPlusWithConversion {
     public default <KEY, VALUE> FuncMap<KEY, VALUE> toMap(
             IntFunction<KEY>   keyMapper,
             IntFunction<VALUE> valueMapper) {
-        var streamPlus = intStreamPlus();
-        var theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i)));
+        val streamPlus = intStreamPlus();
+        val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i)));
         return ImmutableMap.from(theMap);
     }
 
@@ -232,8 +232,8 @@ public interface AsIntStreamPlusWithConversion {
             IntFunction<KEY>      keyMapper,
             IntFunction<VALUE>    valueMapper,
             BinaryOperator<VALUE> mergeFunction) {
-        var streamPlus = intStreamPlus();
-        var theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i), mergeFunction));
+        val streamPlus = intStreamPlus();
+        val theMap = streamPlus.boxed().collect(Collectors.toMap(i -> keyMapper.apply(i), i -> valueMapper.apply(i), mergeFunction));
         return ImmutableMap.from(theMap);
     }
 
@@ -246,8 +246,8 @@ public interface AsIntStreamPlusWithConversion {
     public default <KEY> FuncMap<KEY, Integer> toMap(
             IntFunction<KEY>  keyMapper,
             IntBinaryOperator mergeFunction) {
-        var streamPlus = intStreamPlus();
-        var theMap = streamPlus
+        val streamPlus = intStreamPlus();
+        val theMap = streamPlus
                 .boxed()
                 .collect(Collectors.toMap(
                         i -> keyMapper.apply(i),
@@ -262,7 +262,7 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default Set<Integer> toSet() {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus.boxed().collect(Collectors.toSet());
     }
 

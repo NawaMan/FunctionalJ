@@ -38,25 +38,25 @@ public interface IntStreamPlusWithMapWithPrev {
     
     /** @return  the stream of  each previous value and each current value. */
     public default StreamPlus<ObjIntTuple<OptionalInt>> mapWithPrev() {
-        var prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
-        var streamPlus = intStreamPlus();
+        val prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(element -> {
-                    var prevValue = prev.get();
+                    val prevValue = prev.get();
                     prev.set(OptionalInt.of(element));
-                    var result = ObjIntTuple.of(prevValue, element);
+                    val result = ObjIntTuple.of(prevValue, element);
                     return result;
                 });
     }
     
     public default <TARGET> StreamPlus<TARGET> mapWithPrev(
             ObjIntBiFunction<OptionalInt, ? extends TARGET> mapper) {
-        var prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
-        var streamPlus = intStreamPlus();
+        val prev = new AtomicReference<OptionalInt>(OptionalInt.empty());
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(element -> {
-                    var prevValue = prev.get();
-                    var newValue  = mapper.apply(prevValue, element);
+                    val prevValue = prev.get();
+                    val newValue  = mapper.apply(prevValue, element);
                     prev.set(OptionalInt.of(element));
                     return newValue;
                 });

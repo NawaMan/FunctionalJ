@@ -24,6 +24,7 @@
 package functionalj.lens.lenses;
 
 import functionalj.functions.ThrowFuncs;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -31,7 +32,7 @@ public interface CharacterAccessBoxed<HOST> extends CharacterAccess<HOST> {
     
     public default char applyAsChar(HOST host) {
         try {
-            var character = applyUnsafe(host);
+            val character = applyUnsafe(host);
             return character.charValue();
         } catch (RuntimeException e) {
             throw e;

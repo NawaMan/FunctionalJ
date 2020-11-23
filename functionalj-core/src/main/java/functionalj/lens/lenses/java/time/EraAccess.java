@@ -8,6 +8,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -26,13 +27,13 @@ public interface EraAccess<HOST, ERA extends Era>
     
     public default IntegerAccessPrimitive<HOST> getValue() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getValue();
         };
     }
     public default StringAccess<HOST> getDisplayName(TextStyle style, Locale locale) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getDisplayName(style, locale);
         };
     }

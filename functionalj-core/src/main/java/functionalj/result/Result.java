@@ -54,6 +54,7 @@ import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import functionalj.validator.SimpleValidator;
 import functionalj.validator.Validator;
+import lombok.val;
 import nullablej.nullable.Nullable;
 
 public abstract class Result<DATA>
@@ -107,7 +108,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofNull() {
         @SuppressWarnings("unchecked")
-        var nullResult = (Result<D>)NULL;
+        val nullResult = (Result<D>)NULL;
         return nullResult;
     }
     
@@ -119,7 +120,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofNotExist() {
         @SuppressWarnings("unchecked")
-        var notAvailableResult = (Result<D>)Result.ofException(new ResultNotExistException());
+        val notAvailableResult = (Result<D>)Result.ofException(new ResultNotExistException());
         return notAvailableResult;
     }
     /**
@@ -131,7 +132,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofNotExist(String message) {
         @SuppressWarnings("unchecked")
-        var exceptionResult = (Result<D>)Result.ofException(new ResultNotExistException(message, null));
+        val exceptionResult = (Result<D>)Result.ofException(new ResultNotExistException(message, null));
         return exceptionResult;
     }
     /**
@@ -144,7 +145,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofNotExist(String message, Exception cause) {
         @SuppressWarnings("unchecked")
-        var exceptionResult = (Result<D>)Result.ofException(new ResultNotExistException(message, cause));
+        val exceptionResult = (Result<D>)Result.ofException(new ResultNotExistException(message, cause));
         return exceptionResult;
     }
     
@@ -156,7 +157,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofNoMore() {
         @SuppressWarnings("unchecked")
-        var notAvailableResult = (Result<D>)Result.ofException(new NoMoreResultException());
+        val notAvailableResult = (Result<D>)Result.ofException(new NoMoreResultException());
         return notAvailableResult;
     }
     /**
@@ -168,7 +169,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofNoMore(String message) {
         @SuppressWarnings("unchecked")
-        var exceptionResult = (Result<D>)Result.ofException(new NoMoreResultException(message, null));
+        val exceptionResult = (Result<D>)Result.ofException(new NoMoreResultException(message, null));
         return exceptionResult;
     }
     /**
@@ -181,7 +182,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofNoMore(String message, Exception cause) {
         @SuppressWarnings("unchecked")
-        var exceptionResult = (Result<D>)Result.ofException(new NoMoreResultException(message, cause));
+        val exceptionResult = (Result<D>)Result.ofException(new NoMoreResultException(message, cause));
         return exceptionResult;
     }
     
@@ -193,7 +194,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofNotReady() {
         @SuppressWarnings("unchecked")
-        var notReady = (Result<D>)Result.ofException(new ResultNotReadyException());
+        val notReady = (Result<D>)Result.ofException(new ResultNotReadyException());
         return notReady;
     }
     /**
@@ -205,7 +206,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofNotReady(String message) {
         @SuppressWarnings("unchecked")
-        var exceptionResult = (Result<D>)Result.ofException(new ResultNotReadyException(message, null));
+        val exceptionResult = (Result<D>)Result.ofException(new ResultNotReadyException(message, null));
         return exceptionResult;
     }
     /**
@@ -218,7 +219,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofNotReady(String message, Exception cause) {
         @SuppressWarnings("unchecked")
-        var exceptionResult = (Result<D>)Result.ofException(new ResultNotReadyException(message, cause));
+        val exceptionResult = (Result<D>)Result.ofException(new ResultNotReadyException(message, cause));
         return exceptionResult;
     }
     
@@ -230,7 +231,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofCancelled() {
         @SuppressWarnings("unchecked")
-        var cancelledResult = (Result<D>)Result.ofException(new ResultCancelledException());
+        val cancelledResult = (Result<D>)Result.ofException(new ResultCancelledException());
         return cancelledResult;
     }
     /**
@@ -242,7 +243,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofCancelled(String message) {
         @SuppressWarnings("unchecked")
-        var cancelledResult = (Result<D>)Result.ofException(new ResultCancelledException(message, null));
+        val cancelledResult = (Result<D>)Result.ofException(new ResultCancelledException(message, null));
         return cancelledResult;
     }
     /**
@@ -255,7 +256,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofCancelled(String message, Exception cause) {
         @SuppressWarnings("unchecked")
-        var cancelledResult = (Result<D>)Result.ofException(new ResultCancelledException(message, cause));
+        val cancelledResult = (Result<D>)Result.ofException(new ResultCancelledException(message, cause));
         return cancelledResult;
     }
     
@@ -268,7 +269,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofInvalid(String message) {
         @SuppressWarnings("unchecked")
-        var invalidResult = (Result<D>)Result.ofException(new ValidationException(message, null));
+        val invalidResult = (Result<D>)Result.ofException(new ValidationException(message, null));
         return invalidResult;
     }
     /**
@@ -281,7 +282,7 @@ public abstract class Result<DATA>
      */
     public static <D> Result<D> ofInvalid(String message, Exception cause) {
         @SuppressWarnings("unchecked")
-        var invalidResult = (Result<D>)Result.ofException(new ValidationException(message, cause));
+        val invalidResult = (Result<D>)Result.ofException(new ValidationException(message, cause));
         return invalidResult;
     }
     
@@ -303,7 +304,7 @@ public abstract class Result<DATA>
                  return Result.valueOf((D)((Func0)supplier).applyUnsafe());
             else return Result.valueOf(supplier.get());
         } catch (FunctionInvocationException e) {
-            var cause = e.getCause();
+            val cause = e.getCause();
             if (cause instanceof Exception)
                  return Result.ofException((Exception)cause);
             else return Result.ofException(e);
@@ -338,11 +339,11 @@ public abstract class Result<DATA>
         if (result == null)
             return Result.ofNull();
         
-        var data = result.__valueData();
+        val data = result.__valueData();
         
         @SuppressWarnings("unchecked")
-        var value     = (data instanceof ExceptionHolder) ? null                                   : (D)data;
-        var exception = (data instanceof ExceptionHolder) ? ((ExceptionHolder)data).getException() : null;
+        val value     = (data instanceof ExceptionHolder) ? null                                   : (D)data;
+        val exception = (data instanceof ExceptionHolder) ? ((ExceptionHolder)data).getException() : null;
         if (exception != null)
             return Result.ofException(exception);
             
@@ -354,7 +355,7 @@ public abstract class Result<DATA>
             T2 value2,
             BiFunction<T1, T2, D> merger) {
         return Result.of(Func0.of(()->{
-            var value = Func.applyUnsafe(merger, value1, value2);
+            val value = Func.applyUnsafe(merger, value1, value2);
             return value;
         }));
     }
@@ -365,7 +366,7 @@ public abstract class Result<DATA>
             T3 value3,
             Func3<T1, T2, T3, D> merger) {
         return Result.of(Func0.of(()->{
-            var value = merger.applyUnsafe(value1, value2, value3);
+            val value = merger.applyUnsafe(value1, value2, value3);
             return value;
         }));
     }
@@ -377,7 +378,7 @@ public abstract class Result<DATA>
             T4 value4,
             Func4<T1, T2, T3, T4, D> merger) {
         return Result.of(Func0.of(()->{
-            var value = merger.applyUnsafe(value1, value2, value3, value4);
+            val value = merger.applyUnsafe(value1, value2, value3, value4);
             return value;
         }));
     }
@@ -390,7 +391,7 @@ public abstract class Result<DATA>
             T5 value5,
             Func5<T1, T2, T3, T4, T5, D> merger) {
         return Result.of(Func0.of(()->{
-            var value = merger.applyUnsafe(value1, value2, value3, value4, value5);
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5);
             return value;
         }));
     }
@@ -404,7 +405,7 @@ public abstract class Result<DATA>
             T6 value6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
         return Result.of(Func0.of(()->{
-            var value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6);
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6);
             return value;
         }));
     }
@@ -497,9 +498,9 @@ public abstract class Result<DATA>
             HasResult<T2> result2,
             BiFunction<T1, T2, D> merger) {
         return Result.of(Func0.of(()->{
-            var value1 = result1.getResult().orThrow();
-            var value2 = result2.getResult().orThrow();
-            var value = Func.applyUnsafe(merger, value1, value2);
+            val value1 = result1.getResult().orThrow();
+            val value2 = result2.getResult().orThrow();
+            val value = Func.applyUnsafe(merger, value1, value2);
             return value;
         }));
     }
@@ -510,10 +511,10 @@ public abstract class Result<DATA>
             HasResult<T3> result3,
             Func3<T1, T2, T3, D> merger) {
         return Result.of(Func0.of(()->{
-            var value1 = result1.getResult().orThrow();
-            var value2 = result2.getResult().orThrow();
-            var value3 = result3.getResult().orThrow();
-            var value = merger.applyUnsafe(value1, value2, value3);
+            val value1 = result1.getResult().orThrow();
+            val value2 = result2.getResult().orThrow();
+            val value3 = result3.getResult().orThrow();
+            val value = merger.applyUnsafe(value1, value2, value3);
             return value;
         }));
     }
@@ -525,11 +526,11 @@ public abstract class Result<DATA>
             HasResult<T4> result4,
             Func4<T1, T2, T3, T4, D> merger) {
         return Result.of(Func0.of(()->{
-            var value1 = result1.getResult().orThrow();
-            var value2 = result2.getResult().orThrow();
-            var value3 = result3.getResult().orThrow();
-            var value4 = result4.getResult().orThrow();
-            var value = merger.applyUnsafe(value1, value2, value3, value4);
+            val value1 = result1.getResult().orThrow();
+            val value2 = result2.getResult().orThrow();
+            val value3 = result3.getResult().orThrow();
+            val value4 = result4.getResult().orThrow();
+            val value = merger.applyUnsafe(value1, value2, value3, value4);
             return value;
         }));
     }
@@ -542,12 +543,12 @@ public abstract class Result<DATA>
             HasResult<T5> result5,
             Func5<T1, T2, T3, T4, T5, D> merger) {
         return Result.of(Func0.of(()->{
-            var value1 = result1.getResult().orThrow();
-            var value2 = result2.getResult().orThrow();
-            var value3 = result3.getResult().orThrow();
-            var value4 = result4.getResult().orThrow();
-            var value5 = result5.getResult().orThrow();
-            var value = merger.applyUnsafe(value1, value2, value3, value4, value5);
+            val value1 = result1.getResult().orThrow();
+            val value2 = result2.getResult().orThrow();
+            val value3 = result3.getResult().orThrow();
+            val value4 = result4.getResult().orThrow();
+            val value5 = result5.getResult().orThrow();
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5);
             return value;
         }));
     }
@@ -561,13 +562,13 @@ public abstract class Result<DATA>
             HasResult<T6> result6,
             Func6<T1, T2, T3, T4, T5, T6, D> merger) {
         return Result.of(Func0.of(()->{
-            var value1 = result1.getResult().orThrow();
-            var value2 = result2.getResult().orThrow();
-            var value3 = result3.getResult().orThrow();
-            var value4 = result4.getResult().orThrow();
-            var value5 = result5.getResult().orThrow();
-            var value6 = result6.getResult().orThrow();
-            var value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6);
+            val value1 = result1.getResult().orThrow();
+            val value2 = result2.getResult().orThrow();
+            val value3 = result3.getResult().orThrow();
+            val value4 = result4.getResult().orThrow();
+            val value5 = result5.getResult().orThrow();
+            val value6 = result6.getResult().orThrow();
+            val value = merger.applyUnsafe(value1, value2, value3, value4, value5, value6);
             return value;
         }));
     }
@@ -592,10 +593,10 @@ public abstract class Result<DATA>
     @SuppressWarnings("unchecked")
     public <T> T mapData(Func1<Exception, T> exceptionGet, Func2<DATA, Exception, T> processor) {
         try {
-            var data      = __valueData();
-            var isValue   = ((data == null) || !(data instanceof ExceptionHolder));
-            var value     = isValue ? (DATA)data : null;
-            var exception = isValue ? null       : ((ExceptionHolder)data).getException();
+            val data      = __valueData();
+            val isValue   = ((data == null) || !(data instanceof ExceptionHolder));
+            val value     = isValue ? (DATA)data : null;
+            val exception = isValue ? null       : ((ExceptionHolder)data).getException();
             assert !((value != null) && (exception != null));
             
             return processor.applyUnsafe(value, exception);
@@ -608,13 +609,13 @@ public abstract class Result<DATA>
     public <T> Result<T> mapValue(Func2<DATA, Exception, Result<T>> processor) {
         return new DerivedResult<T>(this, org-> {
             try {
-                var data      = org.__valueData();
-                var isValue   = ((data == null) || !(data instanceof ExceptionHolder));
-                var value     = isValue ? (DATA)data : null;
-                var exception = isValue ? null       : ((ExceptionHolder)data).getException();
+                val data      = org.__valueData();
+                val isValue   = ((data == null) || !(data instanceof ExceptionHolder));
+                val value     = isValue ? (DATA)data : null;
+                val exception = isValue ? null       : ((ExceptionHolder)data).getException();
                 assert !((value != null) && (exception != null));
                 
-                var newValue = processor.applyUnsafe(value, exception);
+                val newValue = processor.applyUnsafe(value, exception);
                 return newValue;
             } catch (Exception cause) {
                 return newException(cause);
@@ -705,7 +706,7 @@ public abstract class Result<DATA>
                     if (value == null)
                         return (Result<TARGET>)this;
                     
-                    var newValue = mapper.applyUnsafe(value);
+                    val newValue = mapper.applyUnsafe(value);
                     return Result.valueOf(newValue);
                 }
         );
@@ -721,7 +722,7 @@ public abstract class Result<DATA>
                     if (exception == null)
                         return this;
                     
-                    var newException = mapper.applyUnsafe(exception);
+                    val newException = mapper.applyUnsafe(exception);
                     return newException(newException);
                 }
         );
@@ -744,7 +745,7 @@ public abstract class Result<DATA>
                     if (value == null)
                         return (Result<TARGET>)this;
                     
-                    var monad = (Result<TARGET>)mapper.applyUnsafe(value);
+                    val monad = (Result<TARGET>)mapper.applyUnsafe(value);
                     return monad;
                 }
         );
@@ -754,7 +755,7 @@ public abstract class Result<DATA>
         return mapValue(
                 (value, exception) -> {
                     if (value != null) {
-                        var isPass = theCondition.test(value);
+                        val isPass = theCondition.test(value);
                         if (!isPass)
                             return Result.ofNull();
                     }
@@ -888,10 +889,10 @@ public abstract class Result<DATA>
                         if (validChecker.test(value))
                             return this;
                         
-                        var validationException = SimpleValidator.exceptionFor(stringFormat).apply(value, (Predicate)validChecker);
+                        val validationException = SimpleValidator.exceptionFor(stringFormat).apply(value, (Predicate)validChecker);
                         return (Result<DATA>)newException(validationException);
                     } catch (Exception cause) {
-                        var validationException = SimpleValidator.exceptionFor(stringFormat, cause).apply(value, (Predicate)validChecker);
+                        val validationException = SimpleValidator.exceptionFor(stringFormat, cause).apply(value, (Predicate)validChecker);
                         return (Result<DATA>)newException(validationException);
                     }
                 }
@@ -906,15 +907,15 @@ public abstract class Result<DATA>
                     if (value == null) 
                         return this;
                     try {
-                        var target = mapper.applyUnsafe(value);
+                        val target = mapper.applyUnsafe(value);
                         if (validChecker.test(target))
                             return this;
                         
-                        var validationException = SimpleValidator.exceptionFor(stringFormat).apply(value, (Predicate)validChecker);
+                        val validationException = SimpleValidator.exceptionFor(stringFormat).apply(value, (Predicate)validChecker);
                         return (Result<DATA>)newException(validationException);
                         
                     } catch (Exception cause) {
-                        var validationException = SimpleValidator.exceptionFor(stringFormat, cause).apply(value, (Predicate)validChecker);
+                        val validationException = SimpleValidator.exceptionFor(stringFormat, cause).apply(value, (Predicate)validChecker);
                         return (Result<DATA>)newException(validationException);
                     }
                 });
@@ -943,7 +944,7 @@ public abstract class Result<DATA>
                     if (exception != null)
                         return (Result<Tuple2<DATA, FuncList<ValidationException>>>)this;
                     
-                    var exceptions = FuncList.from(validators)
+                    val exceptions = FuncList.from(validators)
                         .map   (validator -> validator.validate(value))
                         .filter(result    -> !result.isValue())
                         .map   (result    -> result.getException())
@@ -1056,7 +1057,7 @@ public abstract class Result<DATA>
             DATA orThrowRuntimeException(Function<Exception, RUNTIMEEXCEPTION> toRuntimeException) {
         return mapData(
                 e -> {
-                    var exception = toRuntimeException.apply(e);
+                    val exception = toRuntimeException.apply(e);
                     if (exception instanceof RuntimeException)
                         throw (RuntimeException)exception;
                     throw new RuntimeException(exception);
@@ -1109,15 +1110,15 @@ public abstract class Result<DATA>
     @Override
     public final String toString() {
         @SuppressWarnings("rawtypes")
-        var clss = (Class)this.getClass();
-        var clssName = ((clss == ImmutableResult.class) || (clss == DerivedResult.class))
+        val clss = (Class)this.getClass();
+        val clssName = ((clss == ImmutableResult.class) || (clss == DerivedResult.class))
                 ? "Result"
                 : clss.getSimpleName();
         return clssName
               + mapData(
                 e -> ":{ Exception: " + e  + " }",
                 (value, exception) -> {
-                    var msg = ((exception != null) && (exception.getMessage() != null)) ? ": " + exception.getMessage() : "";
+                    val msg = ((exception != null) && (exception.getMessage() != null)) ? ": " + exception.getMessage() : "";
                     if (exception == null)
                         return ":{ Value: "     + value      + " }";
                     else if (exception instanceof NoMoreResultException)

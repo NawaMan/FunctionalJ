@@ -41,6 +41,7 @@ import functionalj.lens.lenses.java.time.LocalDateAccess;
 import functionalj.lens.lenses.java.time.LocalDateTimeAccess;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -56,7 +57,7 @@ public interface StringAccess<HOST>
     
     public default CharacterAccessPrimitive<HOST> charAt(int index) {
         return host -> {
-            var  strValue  = apply(host);
+            val  strValue  = apply(host);
             char charValue = strValue.charAt(index);
             return charValue;
         };
@@ -80,7 +81,7 @@ public interface StringAccess<HOST>
     
     public default StringAccess<HOST> concat(Object ... suffixes) {
         return stringAccess("", str -> {
-            var eachToString = __internal__.stringFrom(str);
+            val eachToString = __internal__.stringFrom(str);
             String suffix = Stream.of(suffixes).map(eachToString).collect(joining());
             return str + suffix;
         });
@@ -88,21 +89,21 @@ public interface StringAccess<HOST>
     
     public default StringAccess<HOST> withPrefix(Object ... prefixes) {
         return stringAccess("", str -> {
-            var eachToString = __internal__.stringFrom(str);
+            val eachToString = __internal__.stringFrom(str);
             String prefix = Stream.of(prefixes).map(eachToString).collect(joining());
             return prefix + str;
         });
     }
     public default StringAccess<HOST> withSuffix(Object ... suffixes) {
         return stringAccess("", str -> {
-            var eachToString = __internal__.stringFrom(str);
+            val eachToString = __internal__.stringFrom(str);
             String prefix = Stream.of(suffixes).map(eachToString).collect(joining());
             return str + prefix;
         });
     }
     public default StringAccess<HOST> wrapBy(Object prefix, Object suffix) {
         return stringAccess("", str -> { 
-            var eachToString = __internal__.stringFrom(str);
+            val eachToString = __internal__.stringFrom(str);
             String prefixStr = eachToString.apply(prefix);
             String suffixStr = eachToString.apply(suffix);
             return prefixStr + str + suffixStr;
@@ -132,8 +133,8 @@ public interface StringAccess<HOST>
     
 	public default StringAccess<HOST> format(String format, Object... args) {
         return stringAccess(null, str->{
-            var eachToString = __internal__.stringFrom(str);
-            var argStrs      = Stream.of(args).map(eachToString).toArray();
+            val eachToString = __internal__.stringFrom(str);
+            val argStrs      = Stream.of(args).map(eachToString).toArray();
             return String.format(format, (Object[])argStrs);
         });
     }
@@ -218,7 +219,7 @@ public interface StringAccess<HOST>
     
     public default FuncListAccess<HOST, String, StringAccess<HOST>> split(String regex) {
         return FuncListAccess.of(host -> {
-            var strValue = StringAccess.this.apply(host);
+            val strValue = StringAccess.this.apply(host);
             return FuncList.from(strValue.split(regex));
         }, func -> StringAccess.this.newAccess(func));
     }
@@ -260,160 +261,160 @@ public interface StringAccess<HOST>
     
     public default IntegerAccessPrimitive<HOST> toInteger() {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Integer.parseInt(valueStr);
         };
     }
     
     public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> asInteger() {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->Integer.parseInt(valueStr));
         }, func -> (IntegerAccessBoxed<HOST>)(func::apply));
     }
     
     public default IntegerAccessPrimitive<HOST> toInteger(int radix) {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Integer.parseInt(valueStr, radix);
         };
     }
     
     public default ResultAccess<HOST, Integer, IntegerAccess<HOST>> asInteger(int radix) {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->Integer.parseInt(valueStr, radix));
         }, func -> (IntegerAccessBoxed<HOST>)(func::apply));
     }
     
     public default LongAccessPrimitive<HOST> toLong() {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Long.parseLong(valueStr);
         };
     }
     
     public default ResultAccess<HOST, Long, LongAccess<HOST>> asLong() {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->Long.parseLong(valueStr));
         }, func -> (LongAccessBoxed<HOST>)(func::apply));
     }
     
     public default LongAccessPrimitive<HOST> toLong(int radix) {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Long.parseLong(valueStr, radix);
         };
     }
     public default ResultAccess<HOST, Long, LongAccess<HOST>> asLong(int radix) {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->Long.parseLong(valueStr, radix));
         }, func -> (LongAccessBoxed<HOST>)(func::apply));
     }
     
     public default DoubleAccessPrimitive<HOST> toDouble() {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Double.parseDouble(valueStr);
         };
     }
     
     public default ResultAccess<HOST, Double, DoubleAccess<HOST>> asDouble() {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->Double.parseDouble(valueStr));
         }, func -> (DoubleAccessBoxed<HOST>)(func::apply));
     }
     
     public default BigIntegerAccess<HOST> toBigInteger() {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return new BigInteger(valueStr);
         };
     }
     
     public default ResultAccess<HOST, BigInteger, BigIntegerAccess<HOST>> asBigInteger() {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->new BigInteger(valueStr));
         }, func -> (BigIntegerAccess<HOST>)(func::apply));
     }
     
     public default BigDecimalAccess<HOST> toBigDecimal() {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return new BigDecimal(valueStr);
         };
     }
     
     public default ResultAccess<HOST, BigDecimal, BigDecimalAccess<HOST>> asBigDecimal() {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->new BigDecimal(valueStr));
         }, func -> (BigDecimalAccess<HOST>)(func::apply));
     }
     
     public default LocalDateAccess<HOST> toLocalDate() {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return LocalDate.parse(valueStr);
         };
     }
     
     public default ResultAccess<HOST, LocalDate, LocalDateAccess<HOST>> asLocalDate() {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->LocalDate.parse(valueStr));
         }, func -> (LocalDateAccess<HOST>)(func::apply));
     }
     
     public default LocalDateAccess<HOST> toLocalDate(DateTimeFormatter formatter) {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return LocalDate.parse(valueStr, formatter);
         };
     }
     
     public default ResultAccess<HOST, LocalDate, LocalDateAccess<HOST>> asLocalDate(DateTimeFormatter formatter) {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->LocalDate.parse(valueStr, formatter));
         }, func -> (LocalDateAccess<HOST>)(func::apply));
     }
     
     public default LocalDateTimeAccess<HOST> toLocalDateTime() {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return LocalDateTime.parse(valueStr);
         };
     }
     
     public default ResultAccess<HOST, LocalDateTime, LocalDateTimeAccess<HOST>> asLocalDateTime() {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->LocalDateTime.parse(valueStr));
         }, func -> (LocalDateTimeAccess<HOST>)(func::apply));
     }
     
     public default LocalDateTimeAccess<HOST> toLocalDateTime(DateTimeFormatter formatter) {
         return host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return LocalDateTime.parse(valueStr, formatter);
         };
     }
     
     public default ResultAccess<HOST, LocalDateTime, LocalDateTimeAccess<HOST>> asLocalDateTime(DateTimeFormatter formatter) {
         return ResultAccess.of(host -> {
-            var valueStr = apply(host);
+            val valueStr = apply(host);
             return Result.from(()->LocalDateTime.parse(valueStr, formatter));
         }, func -> (LocalDateTimeAccess<HOST>)(func::apply));
     }
     
     public static StringAccess<String> $(Object ... objs) {
         return str -> {
-            var eachToString = __internal__.stringFrom(str);
+            val eachToString = __internal__.stringFrom(str);
             return Stream.of(objs).map(eachToString).collect(joining());
         };
     }

@@ -74,7 +74,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
     
     @Override
     public default boolean hasNext() {
-        var hasNext = asIterator().hasNext();
+        val hasNext = asIterator().hasNext();
         if (!hasNext) {
             close();
         }
@@ -87,7 +87,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
     }
     
     public default StreamPlus<DATA> stream() {
-        var iterable = (Iterable<DATA>)()->this;
+        val iterable = (Iterable<DATA>)()->this;
         return StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     
@@ -108,13 +108,13 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
             return AutoCloseableResult.from(Result.ofNoMore());
         
         @SuppressWarnings("resource")
-        var iterator = (ArrayBackedIteratorPlus<DATA>)new ArrayBackedIteratorPlus<Object>(array);
+        val iterator = (ArrayBackedIteratorPlus<DATA>)new ArrayBackedIteratorPlus<Object>(array);
         return AutoCloseableResult.valueOf(iterator);
     }
     
     public default IteratorPlus<DATA> useNext(FuncUnit1<DATA> usage) {
         if (hasNext()) {
-            var next = next();
+            val next = next();
             usage.accept(next);
         }
         
@@ -126,7 +126,7 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
         Object[] array = stream().limit(count).toArray();
         if ((array.length != 0) || count == 0) {
             try (var iterator = (ArrayBackedIteratorPlus<DATA>)new ArrayBackedIteratorPlus<Object>(array)) {
-                var stream   = iterator.stream();
+                val stream   = iterator.stream();
                 usage.accept(stream);
             }
         }
@@ -136,8 +136,8 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
     
     public default <TARGET> Result<TARGET> mapNext(Func1<DATA, TARGET> mapper) {
         if (hasNext()) {
-            var next  = next();
-            var value = mapper.apply(next);
+            val next  = next();
+            val value = mapper.apply(next);
             return Result.valueOf(value);
         } else {
             return Result.ofNoMore();
@@ -145,14 +145,14 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
     }
     
     public default <TARGET> Result<TARGET> mapNext(int count, Func1<StreamPlus<DATA>, TARGET> mapper) {
-        var array = stream().limit(count).toArray();
+        val array = stream().limit(count).toArray();
         if ((array.length == 0) && (count != 0))
             return Result.ofNoMore();
         
         @SuppressWarnings("unchecked")
-        var input  = (IteratorPlus<DATA>)ArrayBackedIteratorPlus.from(array);
-        var stream = input.stream();
-        var value = mapper.apply(stream);
+        val input  = (IteratorPlus<DATA>)ArrayBackedIteratorPlus.from(array);
+        val stream = input.stream();
+        val value = mapper.apply(stream);
         return Result.valueOf(value);
     }
     

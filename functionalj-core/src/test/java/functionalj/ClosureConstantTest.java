@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import lombok.val;
+
 
 
 public class ClosureConstantTest {
@@ -92,18 +94,18 @@ public class ClosureConstantTest {
     
     @Test
     public void testLazy() throws InterruptedException {
-        var threadCount = 10;
-        var callPerThread = 50;
+        val threadCount = 10;
+        val callPerThread = 50;
         
-        var c = new AtomicInteger();
-        var counter = lazy(()->{
+        val c = new AtomicInteger();
+        val counter = lazy(()->{
             return c.incrementAndGet();
         });
         sleep5();
         // Ensure no running before first call to the counter.
         assertEquals(0, c.intValue());
         
-        var latch = new CountDownLatch(threadCount);
+        val latch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             new Thread(()->{
                 for (int l = 0; l < callPerThread; l++) {

@@ -46,6 +46,7 @@ import functionalj.promise.DeferActionBuilder;
 import functionalj.promise.Promise;
 import functionalj.promise.RaceResult;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class Tasks {
@@ -84,7 +85,7 @@ public class Tasks {
         }
         @Override
         public DeferAction<DATA> createAction() {
-            var action = DeferAction.of((Class<DATA>)null);
+            val action = DeferAction.of((Class<DATA>)null);
             action.start();
             if (result.isValue())
                  action.complete(result.getValue());
@@ -103,14 +104,14 @@ public class Tasks {
         }
         @Override
         public DeferAction<DATA> createAction() {
-            var action = DeferAction.of((Class<DATA>)null, ()->{
+            val action = DeferAction.of((Class<DATA>)null, ()->{
                 if (promise != null)
                     promise.start();
             });
             if (promise != null) {
                 promise
                 .eavesdrop(result -> {
-                    var pendingAction = action.start();
+                    val pendingAction = action.start();
                     if (result.isValue())
                          pendingAction.complete(result.getValue());
                     else pendingAction.fail    (result.getException());
@@ -183,12 +184,12 @@ public class Tasks {
         @SuppressWarnings("unchecked")
         @Override
         public DeferAction<DATA> createAction() {
-            var ioDefer   = source.createAction().map(mapper);
-            var ioPromise = ioDefer.getPromise();
-            var action    = (DeferAction<DATA>)DeferAction.createNew(()->ioPromise.start());
+            val ioDefer   = source.createAction().map(mapper);
+            val ioPromise = ioDefer.getPromise();
+            val action    = (DeferAction<DATA>)DeferAction.createNew(()->ioPromise.start());
             ioPromise
             .subscribe(io -> {
-                var pendindAction = action.start();
+                val pendindAction = action.start();
                 io
                 .createAction()
                 .start()
@@ -250,9 +251,9 @@ public class Tasks {
         }
         @Override
         public DeferAction<DATA> createAction() {
-            var act = actionRef.get();
-            var ctx = contxtRef.get();
-            var newRef = contextSupplier.get();
+            val act = actionRef.get();
+            val ctx = contxtRef.get();
+            val newRef = contextSupplier.get();
             if (staleChecker.test(ctx, newRef) || (act == null)) {
                 actionRef.compareAndSet(act, source.createAction());
                 contxtRef.set(newRef);
@@ -279,9 +280,9 @@ public class Tasks {
         }
         @Override
         public DeferAction<DATA> createAction() {
-            var action1 = input1.createAction();
-            var action2 = input2.createAction();
-            var action  = DeferAction.from(action1, action2, merger);
+            val action1 = input1.createAction();
+            val action2 = input2.createAction();
+            val action  = DeferAction.from(action1, action2, merger);
             return action;
         }
         @Override
@@ -303,10 +304,10 @@ public class Tasks {
         }
         @Override
         public DeferAction<DATA> createAction() {
-            var action1 = input1.createAction();
-            var action2 = input2.createAction();
-            var action3 = input3.createAction();
-            var action  = DeferAction.from(action1, action2, action3, merger);
+            val action1 = input1.createAction();
+            val action2 = input2.createAction();
+            val action3 = input3.createAction();
+            val action  = DeferAction.from(action1, action2, action3, merger);
             return action;
         }
         @Override
@@ -330,11 +331,11 @@ public class Tasks {
         }
         @Override
         public DeferAction<DATA> createAction() {
-            var action1 = input1.createAction();
-            var action2 = input2.createAction();
-            var action3 = input3.createAction();
-            var action4 = input4.createAction();
-            var action  = DeferAction.from(action1, action2, action3, action4, merger);
+            val action1 = input1.createAction();
+            val action2 = input2.createAction();
+            val action3 = input3.createAction();
+            val action4 = input4.createAction();
+            val action  = DeferAction.from(action1, action2, action3, action4, merger);
             return action;
         }
         @Override
@@ -360,12 +361,12 @@ public class Tasks {
         }
         @Override
         public DeferAction<DATA> createAction() {
-            var action1 = input1.createAction();
-            var action2 = input2.createAction();
-            var action3 = input3.createAction();
-            var action4 = input4.createAction();
-            var action5 = input5.createAction();
-            var action  = DeferAction.from(action1, action2, action3, action4, action5, merger);
+            val action1 = input1.createAction();
+            val action2 = input2.createAction();
+            val action3 = input3.createAction();
+            val action4 = input4.createAction();
+            val action5 = input5.createAction();
+            val action  = DeferAction.from(action1, action2, action3, action4, action5, merger);
             return action;
         }
         @Override
@@ -393,13 +394,13 @@ public class Tasks {
         }
         @Override
         public DeferAction<DATA> createAction() {
-            var action1 = input1.createAction();
-            var action2 = input2.createAction();
-            var action3 = input3.createAction();
-            var action4 = input4.createAction();
-            var action5 = input5.createAction();
-            var action6 = input6.createAction();
-            var action  = DeferAction.from(action1, action2, action3, action4, action5, action6, merger);
+            val action1 = input1.createAction();
+            val action2 = input2.createAction();
+            val action3 = input3.createAction();
+            val action4 = input4.createAction();
+            val action5 = input5.createAction();
+            val action6 = input6.createAction();
+            val action  = DeferAction.from(action1, action2, action3, action4, action5, action6, merger);
             return action;
         }
         @Override
@@ -416,17 +417,17 @@ public class Tasks {
         }
         @Override
         public DeferAction<D> createAction() {
-            var actions    = list.map(io -> io.createAction());
-            var raceResult = RaceResult.from(actions);
-            var promise    = raceResult.getResultPromise();
-            var action     = DeferAction.of((Class<D>)null, ()->{
+            val actions    = list.map(io -> io.createAction());
+            val raceResult = RaceResult.from(actions);
+            val promise    = raceResult.getResultPromise();
+            val action     = DeferAction.of((Class<D>)null, ()->{
                 if (promise != null)
                     promise.start();
             });
             if (promise != null) {
                 promise
                 .eavesdrop(result -> {
-                    var pendingAction = action.start();
+                    val pendingAction = action.start();
                     if (result.isValue())
                          pendingAction.complete(result.getValue());
                     else pendingAction.fail    (result.getException());
@@ -450,20 +451,20 @@ public class Tasks {
         }
         @Override
         public DeferAction<D> createAction() {
-            var actionRef = new AtomicReference<DeferAction<D>>();
-            var action = DeferAction.of((Class<D>)null, ()->{
+            val actionRef = new AtomicReference<DeferAction<D>>();
+            val action = DeferAction.of((Class<D>)null, ()->{
                 doBody(actionRef);
             });
             actionRef.set(action);
             return action;
         }
         private void doBody(AtomicReference<DeferAction<D>> actionRef) {
-            var bodyAction = body.createAction();
+            val bodyAction = body.createAction();
             // Ummm not sure if subscribe is good here
             bodyAction.onComplete(result -> {
-                var isToBreak = breakCheck.test(result);
+                val isToBreak = breakCheck.test(result);
                 if (isToBreak) {
-                    var action = actionRef.get().start();
+                    val action = actionRef.get().start();
                     if (result.isValue())
                          action.complete(result.value());
                     else action.fail    (result.exception());

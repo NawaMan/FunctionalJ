@@ -5,6 +5,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
+import lombok.val;
 
 
 public interface TemporalAdjusterAccess<HOST, TEMPORAL_ADJUSTER extends TemporalAdjuster>
@@ -16,7 +17,7 @@ public interface TemporalAdjusterAccess<HOST, TEMPORAL_ADJUSTER extends Temporal
     
     public default TemporalAccess<HOST, Temporal> adjustInto(Temporal temporal) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.adjustInto(temporal);
         };
     }

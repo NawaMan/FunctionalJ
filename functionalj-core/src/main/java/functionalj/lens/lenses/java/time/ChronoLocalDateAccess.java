@@ -19,6 +19,7 @@ import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -34,88 +35,88 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
     @SuppressWarnings("unchecked")
     public default <CHRONOLOGY extends Chronology> ChronologyAccess<HOST, CHRONOLOGY> getChronology() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return (CHRONOLOGY)value.getChronology();
         };
     }
     
     public default EraAccess<HOST, Era> getEra() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getEra();
         };
     }
     public default BooleanAccessPrimitive<HOST> thatIsLeapYear() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isLeapYear();
         };
     }
     public default IntegerAccessPrimitive<HOST> lengthOfMonth() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.lengthOfMonth();
         };
     }
     public default IntegerAccessPrimitive<HOST> lengthOfYear() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.lengthOfYear();
         };
     }
     @SuppressWarnings("unchecked")
     public default ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE> with(TemporalAdjuster adjuster) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return (CHRONO_LOCAL_DATE) value.with(adjuster);
         };
     }
     @SuppressWarnings("unchecked")
     public default ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE> with(TemporalField field, long newValue) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return (CHRONO_LOCAL_DATE) value.with(field, newValue);
         };
     }
     @SuppressWarnings("unchecked")
     public default ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE> plus(TemporalAmount amount) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return (CHRONO_LOCAL_DATE) value.plus(amount);
         };
     }
     @SuppressWarnings("unchecked")
     public default ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE> plus(long amountToAdd, TemporalUnit unit) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return (CHRONO_LOCAL_DATE) value.plus(amountToAdd, unit);
         };
     }
     @SuppressWarnings("unchecked")
     public default ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE> minus(TemporalAmount amount) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return (CHRONO_LOCAL_DATE) value.minus(amount);
         };
     }
     @SuppressWarnings("unchecked")
     public default ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE> minus(long amountToSubtract, TemporalUnit unit) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return (CHRONO_LOCAL_DATE) value.minus(amountToSubtract, unit);
         };
     }
     
     public default ChronoPeriodAccess<HOST, ? extends ChronoPeriod> until(ChronoLocalDate endDateExclusive) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.until(endDateExclusive);
         };
     }
     
     public default StringAccess<HOST> format(DateTimeFormatter formatter) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.format(formatter);
         };
     }
@@ -123,21 +124,21 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
     public default ChronoLocalDateTimeAccess<HOST, ? extends ChronoLocalDateTime<? extends ChronoLocalDate>>
                     atTime(LocalTime localTime) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.atTime(localTime);
         };
     }
     
     public default LongAccessPrimitive<HOST> toEpochDay() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.toEpochDay();
         };
     }
     
     public default IntegerAccessPrimitive<HOST> compareTo(ChronoLocalDate other) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.compareTo(other);
         };
     }
@@ -156,19 +157,19 @@ public interface ChronoLocalDateAccess<HOST, CHRONO_LOCAL_DATE extends ChronoLoc
     
     public default BooleanAccessPrimitive<HOST> thatIsAfter(ChronoLocalDate other) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isAfter(other);
         };
     }
     public default BooleanAccessPrimitive<HOST> thatIsBefore(ChronoLocalDate other) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isBefore(other);
         };
     }
     public default BooleanAccessPrimitive<HOST> thatIsEqual(ChronoLocalDate other) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isEqual(other);
         };
     }

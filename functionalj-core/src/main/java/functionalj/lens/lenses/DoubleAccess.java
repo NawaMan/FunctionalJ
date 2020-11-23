@@ -31,6 +31,7 @@ import java.util.function.ToDoubleFunction;
 
 import functionalj.function.Func1;
 import functionalj.function.ToDoubleBiDoubleFunction;
+import lombok.val;
 
 
 public interface DoubleAccess<HOST> 
@@ -48,25 +49,25 @@ public interface DoubleAccess<HOST>
         
         if (accessToValue instanceof ToDoubleFunction) {
             @SuppressWarnings("unchecked")
-            var func1  = (ToDoubleFunction<H>)accessToValue;
-            var access = ofPrimitive(func1);
+            val func1  = (ToDoubleFunction<H>)accessToValue;
+            val access = ofPrimitive(func1);
             return access;
         }
         
         if (accessToValue instanceof Func1) {
-            var func1  = (Func1<H, Double>)accessToValue;
-            var access = (DoubleAccessBoxed<H>)func1::applyUnsafe;
+            val func1  = (Func1<H, Double>)accessToValue;
+            val access = (DoubleAccessBoxed<H>)func1::applyUnsafe;
             return access;
         }
         
-        var func   = (Function<H, Double>)accessToValue;
-        var access = (DoubleAccessBoxed<H>)(host -> func.apply(host));
+        val func   = (Function<H, Double>)accessToValue;
+        val access = (DoubleAccessBoxed<H>)(host -> func.apply(host));
         return access;
     }
     
     public static <H> DoubleAccess<H> ofPrimitive(ToDoubleFunction<H> accessToValue) {
         requireNonNull(accessToValue);
-        var access = (DoubleAccessPrimitive<H>)accessToValue::applyAsDouble;
+        val access = (DoubleAccessPrimitive<H>)accessToValue::applyAsDouble;
         return access;
     }
     

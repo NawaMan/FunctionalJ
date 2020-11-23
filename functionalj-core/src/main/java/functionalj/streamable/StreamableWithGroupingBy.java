@@ -35,6 +35,7 @@ import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamProcessor;
+import lombok.val;
 
 
 public interface StreamableWithGroupingBy<DATA>
@@ -53,7 +54,7 @@ public interface StreamableWithGroupingBy<DATA>
         
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
-            var key = keyMapper.apply(each);
+            val key = keyMapper.apply(each);
             map.compute(key, (k, a)->{
                 if (a == null) {
                     a = collectorSupplier.get();
@@ -63,7 +64,7 @@ public interface StreamableWithGroupingBy<DATA>
             });
         };
         combiner = (map1, map2) -> map1.putAll(map2);
-        var theMap = streamPlus().collect(supplier, accumulator, combiner);
+        val theMap = streamPlus().collect(supplier, accumulator, combiner);
         return ImmutableMap
                     .from    (theMap)
                     .mapValue(toStreamable);

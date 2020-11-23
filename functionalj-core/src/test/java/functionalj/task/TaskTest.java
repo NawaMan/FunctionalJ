@@ -37,22 +37,23 @@ import functionalj.function.Func;
 import functionalj.promise.DeferAction;
 import functionalj.promise.DeferActionBuilder;
 import functionalj.result.Result;
+import lombok.val;
 
 
 //@Ignore("Still has problems")
 public class TaskTest {
     @Test
     public void testValue() {
-        var task   = Task.ofValue("Hello!");
-        var action = task.createAction();
+        val task   = Task.ofValue("Hello!");
+        val action = task.createAction();
         assertEquals("Result:{ Value: Hello! }", action.getResult().toString());
     }
     @Test
     public void testSupplier() {
-        var counter = new AtomicInteger(0);
-        var task    = Task.from(counter::getAndIncrement);
-        var action1 = task.createAction();
-        var action2 = task.createAction();
+        val counter = new AtomicInteger(0);
+        val task    = Task.from(counter::getAndIncrement);
+        val action1 = task.createAction();
+        val action2 = task.createAction();
         assertEquals("Result:{ Value: 0 }", action1.getResult().toString());
         assertEquals("Result:{ Value: 0 }", action1.getResult().toString());
         assertEquals("Result:{ Value: 1 }", action2.getResult().toString());
@@ -60,30 +61,30 @@ public class TaskTest {
     }
     @Test
     public void testResult() {
-        var task = Task.from(Result.ofNotExist());
+        val task = Task.from(Result.ofNotExist());
         assertEquals("Result:{ NotExist }", task.createAction().getResult().toString());
         assertEquals("Result:{ NotExist }", task.createAction().getResult().toString());
     }
     @Test
     public void testPromise() {
-        var counter = new AtomicInteger(0);
-        var action  = DeferAction.from(counter::getAndIncrement);
-        var task    = Task.from(action.getPromise());
+        val counter = new AtomicInteger(0);
+        val action  = DeferAction.from(counter::getAndIncrement);
+        val task    = Task.from(action.getPromise());
         assertEquals("Result:{ Value: 0 }", task.createAction().getResult().toString());
         assertEquals("Result:{ Value: 0 }", task.createAction().getResult().toString());
     }
     
     @Test
     public void testMap() {
-        var logs    = new ArrayList<String>();
-        var counter = new AtomicInteger(0);
-        var action  = DeferActionBuilder.from(f("Action1", ()-> { 
+        val logs    = new ArrayList<String>();
+        val counter = new AtomicInteger(0);
+        val action  = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter.getAndIncrement());
             logs.add(s); return s;
         }));
         
-        var action2 = action
+        val action2 = action
                 .map(f("prefix-with-dash","-"::concat))
                 .map(f("suffix-with-dash", $S.concat("-")));
         logs.add("Result: " + action2.createAction().getResult());
@@ -107,16 +108,16 @@ public class TaskTest {
     
     @Test
     public void testFlatMap() {
-        var logs     = new ArrayList<String>();
-        var counter1 = new AtomicInteger(0);
-        var action1  = DeferActionBuilder.from(f("Action1", ()-> { 
+        val logs     = new ArrayList<String>();
+        val counter1 = new AtomicInteger(0);
+        val action1  = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
-        var counter2 = new AtomicInteger(0);
+        val counter2 = new AtomicInteger(0);
         
-        var action2 = action1.flatMap(f("FM", (String t) -> {
+        val action2 = action1.flatMap(f("FM", (String t) -> {
             return DeferActionBuilder.from(f("Action2", ()-> { 
                 logs.add("Action2 runs!");
                 String s = t + " - " + (char)('a' + counter2.getAndIncrement());
@@ -139,9 +140,9 @@ public class TaskTest {
     
     @Test
     public void testFilter() {
-        var logs    = new ArrayList<String>();
-        var counter = new AtomicInteger(0);
-        var action  = DeferActionBuilder.from(()-> counter.getAndIncrement()).filter(i -> (i % 2) == 0);
+        val logs    = new ArrayList<String>();
+        val counter = new AtomicInteger(0);
+        val action  = DeferActionBuilder.from(()-> counter.getAndIncrement()).filter(i -> (i % 2) == 0);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
@@ -160,9 +161,9 @@ public class TaskTest {
     
     @Test
     public void testMapError() {
-        var logs    = new ArrayList<String>();
-        var counter = new AtomicInteger(0);
-        var action  = DeferActionBuilder.from(()-> { 
+        val logs    = new ArrayList<String>();
+        val counter = new AtomicInteger(0);
+        val action  = DeferActionBuilder.from(()-> { 
             logs.add("Action1 runs!");
             int count = counter.getAndIncrement();
             if (count % 2 == 0)
@@ -172,7 +173,7 @@ public class TaskTest {
             return s;
         });
         
-        var action2 = action.map("-"::concat).map($S.concat("-"));
+        val action2 = action.map("-"::concat).map($S.concat("-"));
         logs.add("Result: " + action2.createAction().getResult());
         logs.add("Result: " + action2.createAction().getResult());
         logs.add("Result: " + action2.createAction().getResult());
@@ -187,17 +188,17 @@ public class TaskTest {
     
     @Test
     public void testReuseable() {
-        var logs    = new ArrayList<String>();
-        var ref     = new AtomicInteger(0);
-        var counter = new AtomicInteger(0);
-        var action  = DeferActionBuilder.from(()-> { 
+        val logs    = new ArrayList<String>();
+        val ref     = new AtomicInteger(0);
+        val counter = new AtomicInteger(0);
+        val action  = DeferActionBuilder.from(()-> { 
             logs.add("Action1 runs!");
             int count = counter.getAndIncrement();
             String s = "" + (char)('A' + count);
             logs.add(s); return s;
         }).cached(ref::get);
         
-        var action2 = action.map("-"::concat).map($S.concat("-"));
+        val action2 = action.map("-"::concat).map($S.concat("-"));
         logs.add("Result: " + action2.createAction().getResult());
         logs.add("Result: " + action2.createAction().getResult());
         ref.incrementAndGet();
@@ -217,22 +218,22 @@ public class TaskTest {
     
     @Test
     public void testMerge() {
-        var logs     = new ArrayList<String>();
-        var counter1 = new AtomicInteger(0);
-        var task1    = DeferActionBuilder.from(f("Action1", ()-> { 
+        val logs     = new ArrayList<String>();
+        val counter1 = new AtomicInteger(0);
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
-        var counter2 = new AtomicInteger(0);
-        var task2    = DeferActionBuilder.from(f("Action2", ()-> { 
+        val counter2 = new AtomicInteger(0);
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(10);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
         }));
-        var merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
-        var action = Task.from(task1, task2, merger);
+        val merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
+        val action = Task.from(task1, task2, merger);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
@@ -246,22 +247,22 @@ public class TaskTest {
     
     @Test
     public void testMerge_ioUsedMultipleTime() {
-        var logs     = new ArrayList<String>();
-        var counter1 = new AtomicInteger(0);
-        var task1    = DeferActionBuilder.from(f("Action1", ()-> { 
+        val logs     = new ArrayList<String>();
+        val counter1 = new AtomicInteger(0);
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
-        var counter2 = new AtomicInteger(0);
-        var task2    = DeferActionBuilder.from(f("Action2", ()-> { 
+        val counter2 = new AtomicInteger(0);
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(50);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
         }));
-        var merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
-        var action = Task.from(task1, Task.from(task1, task2, merger), merger);
+        val merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
+        val action = Task.from(task1, Task.from(task1, task2, merger), merger);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
@@ -275,23 +276,23 @@ public class TaskTest {
     
     @Test
     public void testMerge3_reusable() {
-        var logs     = new ArrayList<String>();
-        var counter1 = new AtomicInteger(0);
-        var task1    = DeferActionBuilder.from(f("Action1", ()-> { 
+        val logs     = new ArrayList<String>();
+        val counter1 = new AtomicInteger(0);
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
-        var counter2 = new AtomicInteger(0);
-        var task2    = DeferActionBuilder.from(f("Action2", ()-> { 
+        val counter2 = new AtomicInteger(0);
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(10);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
         }));
-        var w1  = task1.cached();
-        var merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
-        var action = Task.from(w1, Task.from(w1, task2, merger), merger);
+        val w1  = task1.cached();
+        val merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
+        val action = Task.from(w1, Task.from(w1, task2, merger), merger);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
@@ -309,24 +310,24 @@ public class TaskTest {
     
     @Test
     public void testMerge4_reusable_withRef() {
-        var logs     = new ArrayList<String>();
-        var counter1 = new AtomicInteger(0);
-        var task1    = DeferActionBuilder.from(f("Action1", ()-> { 
+        val logs     = new ArrayList<String>();
+        val counter1 = new AtomicInteger(0);
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
-        var counter2 = new AtomicInteger(0);
-        var task2    = DeferActionBuilder.from(f("Action2", ()-> { 
+        val counter2 = new AtomicInteger(0);
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(10);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
         }));
-        var ref = new AtomicInteger(0);
-        var w1  = task1.cached(f("get-ref", ref::get));
-        var merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
-        var action = Task.from(w1, Task.from(w1, task2, merger), merger);
+        val ref = new AtomicInteger(0);
+        val w1  = task1.cached(f("get-ref", ref::get));
+        val merger = f("merge", (String s1, String s2) -> s1 + "-" + s2);
+        val action = Task.from(w1, Task.from(w1, task2, merger), merger);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
@@ -349,21 +350,21 @@ public class TaskTest {
     
     @Test
     public void testRace_complete_UpperCaseDoneFirst() {
-        var logs     = new ArrayList<String>();
-        var counter1 = new AtomicInteger(0);
-        var task1    = DeferActionBuilder.from(f("Action1", ()-> { 
+        val logs     = new ArrayList<String>();
+        val counter1 = new AtomicInteger(0);
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             String s = "" + (char)('A' + counter1.getAndIncrement());
             logs.add(s); return s;
         }));
-        var counter2 = new AtomicInteger(0);
-        var task2    = DeferActionBuilder.from(f("Action2", ()-> { 
+        val counter2 = new AtomicInteger(0);
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(10);
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s); return s;
         }));
-        var action = Task.firstOf(task1, task2);
+        val action = Task.firstOf(task1, task2);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
@@ -383,9 +384,9 @@ public class TaskTest {
     
     @Test
     public void testRace_complete_LowerCaseDoneFirst() throws InterruptedException {
-        var logs     = new ArrayList<String>();
-        var counter1 = new AtomicInteger(0);
-        var task1    = DeferActionBuilder.from(f("Action1", ()-> { 
+        val logs     = new ArrayList<String>();
+        val counter1 = new AtomicInteger(0);
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             // Action1 will start a little late.
             Thread.sleep(70);
             logs.add("Action1 runs!");
@@ -393,14 +394,14 @@ public class TaskTest {
             logs.add(s);
             return s;
         }));
-        var counter2 = new AtomicInteger(0);
-        var task2    = DeferActionBuilder.from(f("Action2", ()-> { 
+        val counter2 = new AtomicInteger(0);
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             logs.add("Action2 runs!");
             String s = "" + (char)('a' + counter2.getAndIncrement());
             logs.add(s);
             return s;
         }));
-        var action = Task.firstOf(task1, task2);
+        val action = Task.firstOf(task1, task2);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
@@ -424,9 +425,9 @@ public class TaskTest {
     
     @Test
     public void testRace_complete_bothFail() {
-        var logs     = new ArrayList<String>();
-        var counter1 = new AtomicInteger(0);
-        var task1    = DeferActionBuilder.from(f("Action1", ()-> { 
+        val logs     = new ArrayList<String>();
+        val counter1 = new AtomicInteger(0);
+        val task1    = DeferActionBuilder.from(f("Action1", ()-> { 
             logs.add("Action1 runs!");
             int currentCount = counter1.getAndIncrement();
             if (currentCount >= 1)
@@ -435,8 +436,8 @@ public class TaskTest {
             logs.add(s);
             return s;
         }));
-        var counter2 = new AtomicInteger(0);
-        var task2    = DeferActionBuilder.from(f("Action2", ()-> { 
+        val counter2 = new AtomicInteger(0);
+        val task2    = DeferActionBuilder.from(f("Action2", ()-> { 
             Thread.sleep(10);
             logs.add("Action2 runs!");
             int currentCount = counter2.getAndIncrement();
@@ -446,7 +447,7 @@ public class TaskTest {
             logs.add(s);
             return s;
         }));
-        var action = Task.firstOf(task1, task2);
+        val action = Task.firstOf(task1, task2);
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
         logs.add("Result: " + action.createAction().getResult());
@@ -475,16 +476,16 @@ public class TaskTest {
     
     @Test
     public void testDoUntil() {
-        var logs    = new ArrayList<String>();
-        var counter = new AtomicInteger(0);
-        var task    = DeferActionBuilder.from(f("Action", ()-> { 
+        val logs    = new ArrayList<String>();
+        val counter = new AtomicInteger(0);
+        val task    = DeferActionBuilder.from(f("Action", ()-> { 
             logs.add("Action runs!");
             int currentCount = counter.getAndIncrement();
             String s = "" + (char)('A' + currentCount);
             logs.add(s);
             return s;
         }));
-        var loop = Task.doUntil(task, Func.from("is-C", result -> result.filter("C"::equals).isPresent()));
+        val loop = Task.doUntil(task, Func.from("is-C", result -> result.filter("C"::equals).isPresent()));
         logs.add("Result: " + loop.createAction().getResult());
         assertEquals("DoUntil(do: Task#F0::Action, util: Predicate::is-C)", loop.toString());
         assertEquals(

@@ -50,11 +50,11 @@ public interface IntStreamPlusWithFilter {
     public default IntStreamPlus filterAsInt(
             IntUnaryOperator mapper,
             IntPredicate     predicate) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(value -> {
-                    var target = mapper.applyAsInt(value);
-                    var isPass = predicate.test(target);
+                    val target = mapper.applyAsInt(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
@@ -63,11 +63,11 @@ public interface IntStreamPlusWithFilter {
     public default IntStreamPlus filterAsLong(
             IntToLongFunction mapper,
             LongPredicate     predicate) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(value -> {
-                    var target = mapper.applyAsLong(value);
-                    var isPass = predicate.test(target);
+                    val target = mapper.applyAsLong(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
@@ -76,11 +76,11 @@ public interface IntStreamPlusWithFilter {
     public default IntStreamPlus filterAsDouble(
             IntToDoubleFunction mapper,
             DoublePredicate     predicate) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(value -> {
-                    var target = mapper.applyAsDouble(value);
-                    var isPass = predicate.test(target);
+                    val target = mapper.applyAsDouble(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
@@ -89,11 +89,11 @@ public interface IntStreamPlusWithFilter {
     public default <T> IntStreamPlus filterAsObject(
             IntFunction<T>       mapper,
             Predicate<? super T> predicate) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(value -> {
-                    var target = mapper.apply(value);
-                    var isPass = predicate.test(target);
+                    val target = mapper.apply(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
@@ -101,11 +101,11 @@ public interface IntStreamPlusWithFilter {
     public default <T> IntStreamPlus filterAsObject(
             Function<Integer, ? extends T> mapper,
             Predicate<? super T>           predicate) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(value -> {
-                    var target = mapper.apply(value);
-                    var isPass = predicate.test(target);
+                    val target = mapper.apply(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
@@ -114,11 +114,11 @@ public interface IntStreamPlusWithFilter {
     public default <T> IntStreamPlus filter(
             IntUnaryOperator mapper,
             IntPredicate     predicate) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(value -> {
-                    var target = mapper.applyAsInt(value);
-                    var isPass = predicate.test(target);
+                    val target = mapper.applyAsInt(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
@@ -126,11 +126,11 @@ public interface IntStreamPlusWithFilter {
     /** Filter value with its index. */
     public default IntStreamPlus filterWithIndex(
             IntBiPredicatePrimitive predicate) {
-        var index = new AtomicInteger();
-        var streamPlus = intStreamPlus();
+        val index = new AtomicInteger();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(each -> {
-                    var i = index.getAndIncrement();
+                    val i = index.getAndIncrement();
                     return predicate.testIntInt(i, each);
                 });
     }
@@ -142,11 +142,11 @@ public interface IntStreamPlusWithFilter {
     
     /** Map the value to another object and filter the one that is not null. */
     public default <T> IntStreamPlus excludeNull(IntFunction<T> mapper) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(value -> {
-                    var mapped    = mapper.apply(value);
-                    var isNotNull = Objects.nonNull(mapped);
+                    val mapped    = mapper.apply(value);
+                    val isNotNull = Objects.nonNull(mapped);
                     return isNotNull;
                 });
     }
@@ -156,7 +156,7 @@ public interface IntStreamPlusWithFilter {
         if ((items == null) || (items.length == 0))
             return IntStreamPlus.empty();
         
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(i -> binarySearch(items, i) != -1);
     }
@@ -169,7 +169,7 @@ public interface IntStreamPlusWithFilter {
         if (collection.isEmpty())
             return IntStreamPlus.empty();
         
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(data -> collection.contains(data));
     }
@@ -182,7 +182,7 @@ public interface IntStreamPlusWithFilter {
         if (collection.isEmpty())
             return IntStreamPlus.empty();
         
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus.filter(data -> collection.contains(data));
     }
     
@@ -191,14 +191,14 @@ public interface IntStreamPlusWithFilter {
         if (predicate == null)
             return IntStreamPlus.empty();
         
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(data -> !predicate.test(data));
     }
     
     /** Filter out any value that is in the given items. */
     public default IntStreamPlus excludeIn(int ... items) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(i -> binarySearch(items, i) == -1);
     }
@@ -208,7 +208,7 @@ public interface IntStreamPlusWithFilter {
         if (collection == null)
             return IntStreamPlus.empty();
         
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         if (collection.isEmpty())
             return streamPlus;
         
@@ -224,7 +224,7 @@ public interface IntStreamPlusWithFilter {
         if (collection.isEmpty())
             return IntStreamPlus.empty();
         
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .filter(data -> !collection.contains(data));
     }

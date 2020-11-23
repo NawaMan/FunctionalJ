@@ -30,6 +30,7 @@ import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
 import functionalj.result.Result;
+import lombok.val;
 
 
 // TODO This is made quickly to accommodate Lens for Choice type. It is not complete in anyway.
@@ -40,7 +41,7 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
                             AccessParameterized<HOST, Result<TYPE>, TYPE, SUBACCESS>  {
     
     public static <H, T, A extends AnyAccess<H, T>> ResultAccess<H, T, A> of(Function<H, Result<T>> read, Function<Function<H, T>, A> createAccess) {
-        var accessParameterized = new AccessParameterized<H, Result<T>, T, A>() {
+        val accessParameterized = new AccessParameterized<H, Result<T>, T, A>() {
             @Override
             public Result<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
@@ -74,7 +75,7 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
     
     public default <TARGET> 
         ResultAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenMap(Function<TYPE, TARGET> mapper) {
-        var accessWithSub = new AccessParameterized<HOST, Result<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
+        val accessWithSub = new AccessParameterized<HOST, Result<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Result<TARGET> applyUnsafe(HOST host) throws Exception {
                 Result<TYPE> result = ResultAccess.this.apply(host);
@@ -96,7 +97,7 @@ public interface ResultAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE
     
     public default <TARGET> 
         ResultAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenFlatMap(Function<TYPE, Result<TARGET>> mapper) {
-        var accessWithSub = new AccessParameterized<HOST, Result<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
+        val accessWithSub = new AccessParameterized<HOST, Result<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Result<TARGET> applyUnsafe(HOST host) throws Exception {
                 return ResultAccess.this.apply(host).flatMap(Func1.from(mapper));

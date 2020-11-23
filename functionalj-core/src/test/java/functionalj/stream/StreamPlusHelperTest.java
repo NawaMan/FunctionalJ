@@ -15,13 +15,13 @@ public class StreamPlusHelperTest {
     
     @Test
     public void testSequential() {
-        var stream = IntStreamPlus.infinite().limit(1000).boxed();
+        val stream = IntStreamPlus.infinite().limit(1000).boxed();
         
-        var s1 = stream.parallel();
+        val s1 = stream.parallel();
         assertTrue(s1.isParallel());
         
-        var ss = new AtomicReference<Stream<Integer>>();
-        var s2 = StreamPlusHelper.sequential(stream, s -> {
+        val ss = new AtomicReference<Stream<Integer>>();
+        val s2 = StreamPlusHelper.sequential(stream, s -> {
             ss.set(s);
             assertFalse(s.isParallel());
             return s;

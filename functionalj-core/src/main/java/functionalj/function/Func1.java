@@ -43,6 +43,7 @@ import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.task.Task;
+import lombok.val;
 import nullablej.nullable.Nullable;
 
 /**
@@ -81,8 +82,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             Func1<I, I1> input1,
             Func1<I, I2> input2) {
         return source -> {
-            var i1 = input1.apply(source);
-            var i2 = input2.apply(source);
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
             return func.apply(i1, i2);
         };
     }
@@ -92,9 +93,9 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             Func1<I, I2> input2,
             Func1<I, I3> input3) {
         return source -> {
-            var i1 = input1.apply(source);
-            var i2 = input2.apply(source);
-            var i3 = input3.apply(source);
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            val i3 = input3.apply(source);
             return func.apply(i1, i2, i3);
         };
     }
@@ -105,10 +106,10 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             Func1<I, I3> input3,
             Func1<I, I4> input4) {
         return source -> {
-            var i1 = input1.apply(source);
-            var i2 = input2.apply(source);
-            var i3 = input3.apply(source);
-            var i4 = input4.apply(source);
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            val i3 = input3.apply(source);
+            val i4 = input4.apply(source);
             return func.apply(i1, i2, i3, i4);
         };
     }
@@ -120,11 +121,11 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             Func1<I, I4> input4,
             Func1<I, I5> input5) {
         return source -> {
-            var i1 = input1.apply(source);
-            var i2 = input2.apply(source);
-            var i3 = input3.apply(source);
-            var i4 = input4.apply(source);
-            var i5 = input5.apply(source);
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            val i3 = input3.apply(source);
+            val i4 = input4.apply(source);
+            val i5 = input5.apply(source);
             return func.apply(i1, i2, i3, i4, i5);
         };
     }
@@ -137,12 +138,12 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
             Func1<I, I5> input5,
             Func1<I, I6> input6) {
         return source -> {
-            var i1 = input1.apply(source);
-            var i2 = input2.apply(source);
-            var i3 = input3.apply(source);
-            var i4 = input4.apply(source);
-            var i5 = input5.apply(source);
-            var i6 = input6.apply(source);
+            val i1 = input1.apply(source);
+            val i2 = input2.apply(source);
+            val i3 = input3.apply(source);
+            val i4 = input4.apply(source);
+            val i5 = input5.apply(source);
+            val i6 = input6.apply(source);
             return func.apply(i1, i2, i3, i4, i5, i6);
         };
     }
@@ -208,7 +209,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
 
     public default Result<OUTPUT> applySafely(INPUT input) {
         try {
-            var output = applyUnsafe(input);
+            val output = applyUnsafe(input);
             return Result.valueOf(output);
         } catch (Exception exception) {
             return Result.ofException(exception);
@@ -247,7 +248,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> ifException(Consumer<Exception> exceptionHandler) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
+                val outputValue = this.applyUnsafe(input);
                 return outputValue;
             } catch (Exception e) {
                 exceptionHandler.accept(e);
@@ -258,7 +259,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> ifExceptionThenPrint() {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
+                val outputValue = this.applyUnsafe(input);
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -269,7 +270,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> ifExceptionThenPrint(PrintStream printStream) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
+                val outputValue = this.applyUnsafe(input);
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace(printStream);
@@ -280,7 +281,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> ifExceptionThenPrint(PrintWriter printWriter) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
+                val outputValue = this.applyUnsafe(input);
                 return outputValue;
             } catch (Exception e) {
                 e.printStackTrace(printWriter);
@@ -292,8 +293,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> whenAbsentUse(OUTPUT defaultValue) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
-                var returnValue
+                val outputValue = this.applyUnsafe(input);
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : defaultValue;
@@ -306,8 +307,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> whenAbsentGet(Supplier<OUTPUT> defaultSupplier) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
-                var returnValue
+                val outputValue = this.applyUnsafe(input);
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : defaultSupplier.get();
@@ -320,8 +321,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> whenAbsentApply(Func1<Exception, OUTPUT> exceptionMapper) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
-                var returnValue
+                val outputValue = this.applyUnsafe(input);
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(null);
@@ -334,8 +335,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> whenAbsentApply(Func2<INPUT, Exception, OUTPUT> exceptionMapper) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
-                var returnValue
+                val outputValue = this.applyUnsafe(input);
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(input, null);
@@ -349,8 +350,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> whenAbsentUse(Consumer<Exception> exceptionHandler, OUTPUT defaultValue) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
-                var returnValue
+                val outputValue = this.applyUnsafe(input);
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : defaultValue;
@@ -363,8 +364,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> whenAbsentGet(Consumer<Exception> exceptionHandler, Supplier<OUTPUT> defaultSupplier) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
-                var returnValue
+                val outputValue = this.applyUnsafe(input);
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : defaultSupplier.get();
@@ -377,8 +378,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func1<Exception, OUTPUT> exceptionMapper) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
-                var returnValue
+                val outputValue = this.applyUnsafe(input);
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(null);
@@ -391,8 +392,8 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
     public default Func1<INPUT, OUTPUT> whenAbsentApply(Consumer<Exception> exceptionHandler, Func2<INPUT, Exception, OUTPUT> exceptionMapper) {
         return (input)->{
             try {
-                var outputValue = this.applyUnsafe(input);
-                var returnValue
+                val outputValue = this.applyUnsafe(input);
+                val returnValue
                         = (outputValue != null)
                         ? outputValue
                         : exceptionMapper.apply(input, null);
@@ -427,7 +428,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
 
     public default Func1<INPUT, Promise<OUTPUT>> async() {
         return input -> {
-            var supplier = (Func0<OUTPUT>)()->{
+            val supplier = (Func0<OUTPUT>)()->{
                 return this.applyUnsafe(input);
             };
             return DeferAction.from(supplier)
@@ -446,7 +447,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return toPredicate(Boolean.TRUE::equals);
     }
     public default Predicate<INPUT> toPredicate(Func1<OUTPUT, Boolean> converter) {
-        var converted = this.then(converter);
+        val converted = this.then(converter);
         return Func.toPredicate(converted);
     }
 

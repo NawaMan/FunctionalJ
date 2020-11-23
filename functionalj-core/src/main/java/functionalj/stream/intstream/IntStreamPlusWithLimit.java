@@ -31,7 +31,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 import java.util.stream.StreamSupport;
 
-import functionalj.stream.makers.Sequential;
+import functionalj.stream.markers.Sequential;
 
 
 public interface IntStreamPlusWithLimit {
@@ -40,7 +40,7 @@ public interface IntStreamPlusWithLimit {
     
     /** Limit the size of the stream to the given size. */
     public default IntStreamPlus limit(Long maxSize) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return ((maxSize == null) || (maxSize.longValue() < 0))
                 ? streamPlus
                 : IntStreamPlus.from(
@@ -50,7 +50,7 @@ public interface IntStreamPlusWithLimit {
     
     /** Skip to the given offset position. */
     public default IntStreamPlus skip(Long offset) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return ((offset == null) || (offset.longValue() < 0))
                 ? streamPlus
                 : IntStreamPlus.from(
@@ -61,9 +61,9 @@ public interface IntStreamPlusWithLimit {
     /** Skip any value while the condition is true. */
     @Sequential
     public default IntStreamPlus skipWhile(IntPredicate condition) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
-            var isStillTrue = new AtomicBoolean(true);
+            val isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
@@ -79,9 +79,9 @@ public interface IntStreamPlusWithLimit {
     /** Skip any value until the condition is true. */
     @Sequential
     public default IntStreamPlus skipUntil(IntPredicate condition) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
-            var isStillTrue = new AtomicBoolean(true);
+            val isStillTrue = new AtomicBoolean(true);
             return stream.filter(e -> {
                 if (!isStillTrue.get())
                     return true;
@@ -98,9 +98,9 @@ public interface IntStreamPlusWithLimit {
 //    @Sequential
 //    public default IntStreamPlus takeWhile(IntPredicate condition) {
 //        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
-//        var streamPlus = intStreamPlus();
+//        val streamPlus = intStreamPlus();
 //        return sequential(streamPlus, stream -> {
-//            var splitr = stream.spliterator();
+//            val splitr = stream.spliterator();
 //            return IntStreamPlus.from(
 //                    StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
 //                        boolean stillGoing = true;
@@ -127,10 +127,10 @@ public interface IntStreamPlusWithLimit {
     /** Accept any value until the condition is true. */
     @Sequential
     public default IntStreamPlus takeUntil(IntPredicate condition) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return sequential(streamPlus, stream -> {
-            var splitr = stream.spliterator();
-            var resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+            val splitr = stream.spliterator();
+            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
                 boolean stillGoing = true;
 
                 @Override

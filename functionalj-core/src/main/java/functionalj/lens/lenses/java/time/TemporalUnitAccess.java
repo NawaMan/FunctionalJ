@@ -7,6 +7,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyAccess;
 import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -19,43 +20,43 @@ public interface TemporalUnitAccess<HOST, TEMPORAL_UNIT extends TemporalUnit>
     
     public default DurationAccess<HOST> getDuration() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getDuration();
         };
     }
     public default BooleanAccessPrimitive<HOST> isDurationEstimated() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isDurationEstimated();
         };
     }
     public default BooleanAccessPrimitive<HOST> isDateBased() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isDateBased();
         };
     }
     public default BooleanAccessPrimitive<HOST> isTimeBased() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isTimeBased();
         };
     }
     public default BooleanAccessPrimitive<HOST> isSupportedBy(Temporal temporal) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isSupportedBy(temporal);
         };
     }
     public default <R extends Temporal> TemporalAccess<HOST, R> addTo(R temporal, long amount) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.addTo(temporal, amount);
         };
     }
     public default LongAccessPrimitive<HOST> between(Temporal temporal1Inclusive, Temporal temporal2Exclusive) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.between(temporal1Inclusive, temporal2Exclusive);
         };
     }

@@ -14,7 +14,7 @@ public class GrowOnlyIntArrayTest {
 
     @Test
     public void testAdd() {
-        var array = new GrowOnlyIntArray();
+        val array = new GrowOnlyIntArray();
         for (int i = 0; i < 1000; i++) {
             array.add(i);
         }
@@ -127,12 +127,12 @@ public class GrowOnlyIntArrayTest {
     
     @Test
     public void testPopulatedGrowOnlyIntArray() {
-        var orgArray = new GrowOnlyIntArray();
+        val orgArray = new GrowOnlyIntArray();
         for (int i = 0; i < 1000; i++) {
             orgArray.add(i);
         }
         
-        var newArray = new GrowOnlyIntArray(orgArray.stream().toArray());
+        val newArray = new GrowOnlyIntArray(orgArray.stream().toArray());
         assertTrue(
                 Arrays.equals(
                     orgArray.stream().toArray(),

@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
+import lombok.val;
 
 
 public interface ResultPeekAddOn<DATA> {
@@ -39,7 +40,7 @@ public interface ResultPeekAddOn<DATA> {
             if (!clzz.isInstance(value))
                 return;
             
-            var target = clzz.cast(value);
+            val target = clzz.cast(value);
             theConsumer.accept(target);
         });
     }
@@ -53,14 +54,14 @@ public interface ResultPeekAddOn<DATA> {
     }
     public default <T> Result<DATA> peek(Func1<? super DATA, T> mapper, FuncUnit1<? super T> theConsumer) {
         return peek(value -> {
-            var target = mapper.apply(value);
+            val target = mapper.apply(value);
             theConsumer.accept(target);
         });
     }
     
     public default <T> Result<DATA> peek(Func1<? super DATA, T> mapper, Predicate<? super T> selector, FuncUnit1<? super T> theConsumer) {
         return peek(value -> {
-            var target = mapper.apply(value);
+            val target = mapper.apply(value);
             if (selector.test(target))
                 theConsumer.accept(target);
         });

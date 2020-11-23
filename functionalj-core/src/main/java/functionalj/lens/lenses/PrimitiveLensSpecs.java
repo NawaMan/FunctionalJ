@@ -7,6 +7,7 @@ import java.util.function.ToLongFunction;
 
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.WriteLens;
+import lombok.val;
 
 
 public class PrimitiveLensSpecs {
@@ -31,7 +32,7 @@ public class PrimitiveLensSpecs {
             return readInt.applyAsInt(value);
         }
         public HOST applyWithInt(HOST host, int newValue) {
-            var writePrimitive = (WriteLens.PrimitiveInt<HOST>)getWrite();
+            val writePrimitive = (WriteLens.PrimitiveInt<HOST>)getWrite();
             return writePrimitive.applyWithInt(host, newValue);
         }
     }
@@ -56,7 +57,7 @@ public class PrimitiveLensSpecs {
             return readLong.applyAsLong(value);
         }
         public HOST applyWithLong(HOST host, long newValue) {
-            var writePrimitive = (WriteLens.PrimitiveLong<HOST>)getWrite();
+            val writePrimitive = (WriteLens.PrimitiveLong<HOST>)getWrite();
             return writePrimitive.applyWithLong(host, newValue);
         }
     }
@@ -81,7 +82,7 @@ public class PrimitiveLensSpecs {
             return readDouble.applyAsDouble(value);
         }
         public HOST applyWithDouble(HOST host, double newValue) {
-            var writePrimitive = (WriteLens.PrimitiveDouble<HOST>)getWrite();
+            val writePrimitive = (WriteLens.PrimitiveDouble<HOST>)getWrite();
             return writePrimitive.applyWithDouble(host, newValue);
         }
     }
@@ -106,7 +107,7 @@ public class PrimitiveLensSpecs {
             return readBoolean.test(value);
         }
         public HOST applyWithBoolean(HOST host, boolean newValue) {
-            var writePrimitive = (WriteLens.PrimitiveBoolean<HOST>)getWrite();
+            val writePrimitive = (WriteLens.PrimitiveBoolean<HOST>)getWrite();
             return writePrimitive.applyWithBoolean(host, newValue);
         }
     }

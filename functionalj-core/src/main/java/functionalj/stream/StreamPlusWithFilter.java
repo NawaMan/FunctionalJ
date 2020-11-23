@@ -48,11 +48,11 @@ public interface StreamPlusWithFilter<DATA> {
     public default StreamPlus<DATA> filterAsInt(
             ToIntFunction<? super DATA> mapper, 
             IntPredicate                predicate) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(value -> {
-                    var target = mapper.applyAsInt(value);
-                    var isPass = predicate.test(target);
+                    val target = mapper.applyAsInt(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
@@ -61,11 +61,11 @@ public interface StreamPlusWithFilter<DATA> {
     public default StreamPlus<DATA> filterAsLong(
             ToLongFunction<? super DATA> mapper, 
             LongPredicate                predicate) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(value -> {
-                    var target = mapper.applyAsLong(value);
-                    var isPass = predicate.test(target);
+                    val target = mapper.applyAsLong(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
@@ -74,11 +74,11 @@ public interface StreamPlusWithFilter<DATA> {
     public default StreamPlus<DATA> filterAsDouble(
             ToDoubleFunction<? super DATA> mapper, 
             DoublePredicate                predicate) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(value -> {
-                    var target = mapper.applyAsDouble(value);
-                    var isPass = predicate.test(target);
+                    val target = mapper.applyAsDouble(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
@@ -87,7 +87,7 @@ public interface StreamPlusWithFilter<DATA> {
     public default <T> StreamPlus<DATA> filterAsObject(
             Function<? super DATA, T> mapper, 
             Predicate<? super T>      predicate) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(mapper, predicate);
     }
@@ -96,18 +96,18 @@ public interface StreamPlusWithFilter<DATA> {
     public default <T> StreamPlus<DATA> filter(
             Function<? super DATA, T> mapper,
             Predicate<? super T>      predicate) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(value -> {
-                    var target = mapper.apply(value);
-                    var isPass = predicate.test(target);
+                    val target = mapper.apply(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
     
     /** Filter the element that is only the specific class. */
     public default <T> StreamPlus<DATA> filter(Class<T> clzz) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(clzz::isInstance);
     }
@@ -119,22 +119,22 @@ public interface StreamPlusWithFilter<DATA> {
     public default <T> StreamPlus<DATA> filter(
             Class<T>             clzz,
             Predicate<? super T> predicate) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(value -> {
                     if (!clzz.isInstance(value))
                         return false;
                     
-                    var target = clzz.cast(value);
-                    var isPass = predicate.test(target);
+                    val target = clzz.cast(value);
+                    val isPass = predicate.test(target);
                     return isPass;
                 });
     }
     
     /** Filter value with its index. */
     public default StreamPlus<DATA> filterWithIndex(IntObjBiFunction<? super DATA, Boolean> predicate) {
-        var index = new AtomicInteger();
-        var streamPlus = streamPlus();
+        val index = new AtomicInteger();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(each -> {
                     return (predicate != null) 
@@ -154,17 +154,17 @@ public interface StreamPlusWithFilter<DATA> {
     
     /** Filter value that is not null. */
     public default StreamPlus<DATA> excludeNull() {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(Objects::nonNull);
     }
     
     /** Map the value to another object and filter the one that is not null. */
     public default <T> StreamPlus<DATA> excludeNull(Function<? super DATA, T> mapper) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus.filter(value -> {
-            var mapped    = mapper.apply(value);
-            var isNotNull = Objects.nonNull(mapped);
+            val mapped    = mapper.apply(value);
+            val isNotNull = Objects.nonNull(mapped);
             return isNotNull;
         });
     }
@@ -183,7 +183,7 @@ public interface StreamPlusWithFilter<DATA> {
         if (collection.isEmpty())
             return StreamPlus.empty();
         
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus.filter(data -> collection.contains(data));
     }
     
@@ -192,7 +192,7 @@ public interface StreamPlusWithFilter<DATA> {
         if (predicate == null)
             return StreamPlus.empty();
         
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .filter(data -> !predicate.test(data));
     }
@@ -200,7 +200,7 @@ public interface StreamPlusWithFilter<DATA> {
     /** Filter out any value that is in the given items. */
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> excludeIn(DATA ... items) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .excludeIn(asList((DATA[])items));
     }
@@ -210,7 +210,7 @@ public interface StreamPlusWithFilter<DATA> {
         if (collection == null)
             return StreamPlus.empty();
         
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         if (collection.isEmpty())
             return streamPlus;
         

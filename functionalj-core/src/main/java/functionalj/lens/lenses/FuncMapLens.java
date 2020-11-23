@@ -39,6 +39,7 @@ import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
 import functionalj.map.FuncMap;
 import functionalj.tuple.ImmutableTuple2;
+import lombok.val;
 
 
 public interface FuncMapLens<HOST, KEY, VALUE, 
@@ -54,7 +55,7 @@ public interface FuncMapLens<HOST, KEY, VALUE,
                     WriteLens<HOST, FuncMap<KEY, VALUE>>           write,
                     Function<LensSpec<HOST, KEY>,   KEYLENS>   keyLensCreator,
                     Function<LensSpec<HOST, VALUE>, VALUELENS> valueLensCreator) {
-        var spec = LensUtils.createFuncMapLensSpec(read, write, keyLensCreator, valueLensCreator);    
+        val spec = LensUtils.createFuncMapLensSpec(read, write, keyLensCreator, valueLensCreator);    
         return ()->spec;
     }
     
@@ -77,7 +78,7 @@ public interface FuncMapLens<HOST, KEY, VALUE,
     
     public default VALUELENS get(KEY key) {
         WriteLens<FuncMap<KEY, VALUE>, VALUE> write = (map, value) -> {
-            var newMap = map.with(key, value);
+            val newMap = map.with(key, value);
             return newMap;
         };
         Function<FuncMap<KEY, VALUE>, VALUE> read = map -> {
@@ -87,24 +88,24 @@ public interface FuncMapLens<HOST, KEY, VALUE,
     }
     
     public default Function<HOST, HOST> changeTo(Predicate<KEY> checker, Function<VALUE, VALUE> mapper) {
-        var mapEntry = Func.from((Map.Entry<KEY, VALUE> each) ->{
-            var key   = each.getKey();
-            var value = each.getValue();
+        val mapEntry = Func.from((Map.Entry<KEY, VALUE> each) ->{
+            val key   = each.getKey();
+            val value = each.getValue();
             if (!checker.test(key)) 
                 return each;
             
-            var newValue = mapper.apply(value);
+            val newValue = mapper.apply(value);
             return (Map.Entry<KEY, VALUE>)new ImmutableTuple2<KEY, VALUE>(key, newValue);
         });
         
-        var newMap = new LinkedHashMap<KEY, VALUE>();
+        val newMap = new LinkedHashMap<KEY, VALUE>();
         Consumer<? super Entry<KEY, VALUE>> transformEntry = entry -> {
-            var key   = entry.getKey();
-            var value = entry.getValue();
+            val key   = entry.getKey();
+            val value = entry.getValue();
             if (!checker.test(key)) 
                 newMap.put(key, value);
             else {
-                var newValue = mapper.apply(value);
+                val newValue = mapper.apply(value);
                 newMap.put(key, newValue);
             }
         };
@@ -112,38 +113,38 @@ public interface FuncMapLens<HOST, KEY, VALUE,
             apply(host).entrySet().stream()
                     .map    (mapEntry)
                     .forEach(transformEntry);
-            var newHost = apply(host, FuncMap.from(newMap));
+            val newHost = apply(host, FuncMap.from(newMap));
             return newHost;
         };
     }
     
     public default Function<HOST, HOST> changeTo(BiPredicate<KEY, VALUE> checker, Function<VALUE, VALUE> mapper) {
-        var mapEntry = Func.from((Map.Entry<KEY, VALUE> each) ->{
-            var key   = each.getKey();
-            var value = each.getValue();
+        val mapEntry = Func.from((Map.Entry<KEY, VALUE> each) ->{
+            val key   = each.getKey();
+            val value = each.getValue();
             if (!checker.test(key, value)) 
                 return each;
             
-            var newValue = mapper.apply(value);
+            val newValue = mapper.apply(value);
             return (Map.Entry<KEY, VALUE>)new ImmutableTuple2<KEY, VALUE>(key, newValue);
         });
         
         return host -> {
-            var newMap = new LinkedHashMap<KEY, VALUE>();
+            val newMap = new LinkedHashMap<KEY, VALUE>();
             Consumer<? super Entry<KEY, VALUE>> transformEntry = entry -> {
-                var key   = entry.getKey();
-                var value = entry.getValue();
+                val key   = entry.getKey();
+                val value = entry.getValue();
                 if (!checker.test(key, value)) 
                     newMap.put(key, value);
                 else {
-                    var newValue = mapper.apply(value);
+                    val newValue = mapper.apply(value);
                     newMap.put(key, newValue);
                 }
             };
             apply(host).entrySet().stream()
                     .map    (mapEntry)
                     .forEach(transformEntry);
-            var newHost = apply(host, FuncMap.from(newMap));
+            val newHost = apply(host, FuncMap.from(newMap));
             return newHost;
         };
     }

@@ -32,29 +32,31 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import lombok.val;
+
 
 
 public class PipeLineTest {
     
     @Test
     public void testBasic() {
-        var pipeLine = PipeLine
+        val pipeLine = PipeLine
                 .from(theString.length())
                 .then(theInteger.time(2))
                 .then(theInteger.asString())
                 .thenReturn();
-        var pipeLine2 = PipeLine
+        val pipeLine2 = PipeLine
                 .from(theString.toUpperCase())
                 .thenReturn();
         
-        var str = Pipeable.of("Test");
+        val str = Pipeable.of("Test");
         assertEquals("8",    pipeLine.apply("Test"));
         assertEquals("TEST", pipeLine2.apply("Test"));
         assertEquals("8",    str.pipeTo(pipeLine));
         assertEquals("TEST", str.pipeTo(pipeLine2));
         assertEquals("8",    str.pipeTo(pipeLine, pipeLine2));
         
-        var strNull = Pipeable.of((String)null);
+        val strNull = Pipeable.of((String)null);
         assertEquals(null, pipeLine.applyToNull());
         assertEquals(null, pipeLine2.applyToNull());
         assertEquals(null, strNull.pipeTo(pipeLine));
@@ -64,19 +66,19 @@ public class PipeLineTest {
     
     @Test
     public void testHandlingNull() {
-        var pipeLine = PipeLine.ofNullable(String.class)
+        val pipeLine = PipeLine.ofNullable(String.class)
                 .then(theString.length())
                 .then(theInteger.time(2))
                 .then(theInteger.asString())
                 .thenReturnOrElse("<none>");
-        var pipeLine2 = PipeLine
+        val pipeLine2 = PipeLine
                 .from(theString.toUpperCase())
                 .thenReturn();
         
         assertEquals("<none>", pipeLine.applyToNull());
         assertEquals(null,     pipeLine2.applyToNull());
         
-        var str = Pipeable.of((String)null);
+        val str = Pipeable.of((String)null);
         assertEquals("<none>", str.pipeTo(pipeLine));
         assertEquals(null,     str.pipeTo(pipeLine2));
         assertEquals("<NONE>", str.pipeTo(pipeLine, pipeLine2));
@@ -84,7 +86,7 @@ public class PipeLineTest {
     
     @Test
     public void testHandlingNullCombine() {
-        var pipeLine = PipeLine.ofNullable(String.class)
+        val pipeLine = PipeLine.ofNullable(String.class)
                 .then($S.length())
                 .then($I.time(2))
                 .then($I.asString())
@@ -94,7 +96,7 @@ public class PipeLineTest {
         
         assertEquals("<NONE>", pipeLine.applyToNull());
         
-        var str = Pipeable.of((String)null);
+        val str = Pipeable.of((String)null);
         assertEquals("<NONE>", str.pipeTo(pipeLine));
     }
     

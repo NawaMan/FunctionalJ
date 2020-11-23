@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.function;
 
-
+import lombok.val;
 
 @FunctionalInterface
 public interface ToLongBiLongFunctionPrimitive extends ToLongBiLongFunction<Long> {
@@ -36,7 +36,7 @@ public interface ToLongBiLongFunctionPrimitive extends ToLongBiLongFunction<Long
     
     
     public static long apply(ToLongBiLongFunction<Long> function, long value, long anotherValue) {
-        var resValue 
+        val resValue 
             = (function instanceof ToLongBiLongFunctionPrimitive)
             ? ((ToLongBiLongFunctionPrimitive)function).applyAsLongAndLong(value, anotherValue)
             : function.applyAsLong(value, anotherValue);

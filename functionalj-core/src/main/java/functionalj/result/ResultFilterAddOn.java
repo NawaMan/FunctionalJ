@@ -26,6 +26,7 @@ package functionalj.result;
 import java.util.function.Predicate;
 
 import functionalj.function.Func1;
+import lombok.val;
 
 
 public interface ResultFilterAddOn<DATA> {
@@ -43,16 +44,16 @@ public interface ResultFilterAddOn<DATA> {
             if (clzz.isInstance(value))
                 return false;
             
-            var target = clzz.cast(value);
-            var isPass = theCondition.test(target);
+            val target = clzz.cast(value);
+            val isPass = theCondition.test(target);
             return isPass;
         });
     }
     
     public default <T> Result<DATA> filter(Func1<? super DATA, T> mapper, Predicate<? super T> theCondition) {
         return filter(value -> {
-            var target = mapper.apply(value);
-            var isPass = theCondition.test(target);
+            val target = mapper.apply(value);
+            val isPass = theCondition.test(target);
             return isPass;
         });
     }

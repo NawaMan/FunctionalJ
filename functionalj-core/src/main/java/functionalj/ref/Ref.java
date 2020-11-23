@@ -35,6 +35,7 @@ import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public abstract class Ref<DATA> {
@@ -51,14 +52,14 @@ public abstract class Ref<DATA> {
     
     public static <D> Ref<D> ofValue(D value) {
         @SuppressWarnings("unchecked")
-        var dataClass = (Class<D>)value.getClass();
-        var result    = Result.valueOf(value);
-        var ref       = new RefOf.FromResult<D>(dataClass, result, null);
+        val dataClass = (Class<D>)value.getClass();
+        val result    = Result.valueOf(value);
+        val ref       = new RefOf.FromResult<D>(dataClass, result, null);
         return ref;
     }
     
     public static <D> Ref<D> dictactedTo(D value) {
-        var ref = ofValue(value);
+        val ref = ofValue(value);
         return ref.dictate();
     }
     
@@ -73,10 +74,10 @@ public abstract class Ref<DATA> {
     abstract Result<DATA> findResult();
     
     Result<DATA> findOverrideResult() {
-        var entry    = refEntry.get();
-        var supplier = entry.findSupplier(this);
+        val entry    = refEntry.get();
+        val supplier = entry.findSupplier(this);
         if (supplier != null) {
-            var result = Result.of(supplier);
+            val result = Result.of(supplier);
             return result;
         }
         
@@ -95,24 +96,24 @@ public abstract class Ref<DATA> {
     }
     
     public final Result<DATA> getResult() {
-        var override = findOverrideResult();
+        val override = findOverrideResult();
         if (override != null) {
             if (override.isPresent() || (whenAbsentSupplier == null))
                 return override;
             if (!override.isPresent() && (whenAbsentSupplier != null)) {
-                var elseValue = whenAbsentSupplier.get();
+                val elseValue = whenAbsentSupplier.get();
                 if (elseValue != null)
                      return Result.valueOf(elseValue);
                 else return Result.ofNotExist();
             }
         }
         
-        var result = findResult();
+        val result = findResult();
         if (result != null) {
             if (result.isPresent() || (whenAbsentSupplier == null))
                 return result;
             if (!result.isPresent() && (whenAbsentSupplier != null)) {
-                var elseValue = Result.from(whenAbsentSupplier);
+                val elseValue = Result.from(whenAbsentSupplier);
                 if (elseValue.isPresent())
                     return elseValue;
                else return Result.ofNotExist();
@@ -122,7 +123,7 @@ public abstract class Ref<DATA> {
         if (whenAbsentSupplier == null)
             return Result.ofNotExist();
         
-        var elseValue = whenAbsentSupplier.get();
+        val elseValue = whenAbsentSupplier.get();
         if (elseValue == null)
             return Result.ofNotExist();
         
@@ -139,14 +140,14 @@ public abstract class Ref<DATA> {
     
     public final Func0<DATA> valueSupplier() {
         return ()->{
-            var value = value();
+            val value = value();
             return value;
         };
     }
     
     public final DATA value() {
-        var result = getResult();
-        var value  = result.value();
+        val result = getResult();
+        val value  = result.value();
         return value;
     }
     public final DATA orElse(DATA elseValue) {
@@ -168,8 +169,8 @@ public abstract class Ref<DATA> {
     
     public final <TARGET> Ref<TARGET> map(Class<TARGET> targetClass, Func1<DATA, TARGET> mapper) {
         return Ref.of(targetClass).defaultFrom(()->{
-            var result = getResult();
-            var target = result.map(mapper);
+            val result = getResult();
+            val target = result.map(mapper);
             return target.get();
         });
     }
@@ -249,7 +250,7 @@ public abstract class Ref<DATA> {
     
     static final <V, E extends Exception>
             V runWith(List<Substitution<?>> substitutions, ComputeBody<V, E> action) throws E {
-        var map = refEntry.get();
+        val map = refEntry.get();
         try {
             if (substitutions != null) {
                 Entry current = map;
@@ -272,7 +273,7 @@ public abstract class Ref<DATA> {
     
     static final <V, E extends Exception>
             void runWith(List<Substitution<?>> substitutions, RunBody<E> action) throws E {
-        var map = refEntry.get();
+        val map = refEntry.get();
         try {
             if (substitutions != null) {
                 Entry currentEntry = map;
@@ -282,7 +283,7 @@ public abstract class Ref<DATA> {
                     if (substitution.ref() instanceof DictatedRef)
                         continue;
                     
-                    var newEntry = new Entry(currentEntry, substitution);
+                    val newEntry = new Entry(currentEntry, substitution);
                     refEntry.set(newEntry);
                     currentEntry = newEntry;
                 }
@@ -295,10 +296,10 @@ public abstract class Ref<DATA> {
     }
     
     public static final FuncList<Ref<?>> getCurrentRefs() {
-        var set = new HashSet<Ref<?>>();
+        val set = new HashSet<Ref<?>>();
         Entry entry = refEntry.get();
         while ((entry != null) && (entry.substitution != null)) {
-            var ref = entry.substitution.ref();
+            val ref = entry.substitution.ref();
             set.add(ref);
             
             entry = entry.parent;
@@ -307,10 +308,10 @@ public abstract class Ref<DATA> {
     }
     
     static final FuncList<Substitution<?>> getSubstitutions() {
-        var map = new HashMap<Ref<?>, Substitution<?>>();
+        val map = new HashMap<Ref<?>, Substitution<?>>();
         Entry entry = refEntry.get();
         while ((entry != null) && (entry.substitution != null)) {
-            var ref = entry.substitution.ref();
+            val ref = entry.substitution.ref();
             map.putIfAbsent(ref, entry.substitution);
             
             entry = entry.parent;

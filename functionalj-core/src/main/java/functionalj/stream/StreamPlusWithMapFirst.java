@@ -49,7 +49,7 @@ class StreamPlusMapAddOnHelper {
         boolean hasNull = false;
         for(var mapper : mappers) {
             try {
-                var res = mapper.apply(d);
+                val res = mapper.apply(d);
                 if (res == null)
                      hasNull = true;
                 else return (T)res;
@@ -80,7 +80,7 @@ public interface StreamPlusWithMapFirst<DATA> {
     public default <T> StreamPlus<T> mapFirst(
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2);
     }
     
@@ -89,7 +89,7 @@ public interface StreamPlusWithMapFirst<DATA> {
             Function<? super DATA, T> mapper1,
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3);
     }
     
@@ -99,7 +99,7 @@ public interface StreamPlusWithMapFirst<DATA> {
             Function<? super DATA, T> mapper2,
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4);
     }
     
@@ -110,7 +110,7 @@ public interface StreamPlusWithMapFirst<DATA> {
             Function<? super DATA, T> mapper3,
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5);
     }
     
@@ -122,7 +122,7 @@ public interface StreamPlusWithMapFirst<DATA> {
             Function<? super DATA, T> mapper4,
             Function<? super DATA, T> mapper5,
             Function<? super DATA, T> mapper6) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return doMapFirst(streamPlus, mapper1, mapper2, mapper3, mapper4, mapper5, mapper6);
     }
     

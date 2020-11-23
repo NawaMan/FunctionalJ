@@ -35,6 +35,7 @@ import org.junit.Test;
 import functionalj.environments.AsyncRunner;
 import functionalj.list.FuncList;
 import functionalj.tuple.Tuple;
+import lombok.val;
 
 
 public class PromiseWaitTest {
@@ -48,8 +49,8 @@ public class PromiseWaitTest {
     
     @Test
     public void testWaitAWhile_complete() throws InterruptedException {
-        var list   = new ArrayList<String>();
-        var action = DeferAction.of(String.class)
+        val list   = new ArrayList<String>();
+        val action = DeferAction.of(String.class)
                 .use(promise -> promise.onComplete(Wait.forMilliseconds(100).orDefaultTo("Not done."), r -> list.add(r.get())))
                 .start();
         
@@ -61,8 +62,8 @@ public class PromiseWaitTest {
     
     @Test
     public void testWaitAWhile_abort() throws InterruptedException {
-        var list   = new ArrayList<String>();
-        var action = DeferAction.of(String.class)
+        val list   = new ArrayList<String>();
+        val action = DeferAction.of(String.class)
                 .use(promise -> promise.onComplete(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get())))
                 .start();
         
@@ -74,7 +75,7 @@ public class PromiseWaitTest {
     
     @Test
     public void testWaitAWhile_neverStart() throws InterruptedException {
-        var list   = new ArrayList<String>();
+        val list   = new ArrayList<String>();
         DeferAction.of(String.class)
                 .onComplete(Wait.forMilliseconds(50).orDefaultTo("Not done."), r -> list.add(r.get()));
         
@@ -84,7 +85,7 @@ public class PromiseWaitTest {
     
     @Test
     public void testWaitAWhile_differentRunners_complete() throws InterruptedException {
-        var runners = FuncList.of(
+        val runners = FuncList.of(
                 Tuple.of("asyncRunnerOnNewThread",        AsyncRunner.onNewThread),
                 Tuple.of("asyncRunnerThreadFactory",      AsyncRunner.threadFactory),
                 Tuple.of("asyncRunnerCompleteableFuture", AsyncRunner.completeableFuture),
@@ -98,8 +99,8 @@ public class PromiseWaitTest {
             );
         runners
         .forEach(tuple -> {
-            var list   = new ArrayList<String>();
-            var action = DeferAction.of(String.class)
+            val list   = new ArrayList<String>();
+            val action = DeferAction.of(String.class)
                     .use(promise -> promise.onComplete(Wait.forMilliseconds(150, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
                     .start();
             
@@ -116,7 +117,7 @@ public class PromiseWaitTest {
     
     @Test
     public void testWaitAWhile_differentRunners_abort() throws InterruptedException {
-        var runners = FuncList.of(
+        val runners = FuncList.of(
                 Tuple.of("asyncRunnerOnNewThread",        AsyncRunner.onNewThread),
                 Tuple.of("asyncRunnerThreadFactory",      AsyncRunner.threadFactory),
                 Tuple.of("asyncRunnerCompleteableFuture", AsyncRunner.completeableFuture),
@@ -130,8 +131,8 @@ public class PromiseWaitTest {
             );
         runners
         .forEach(tuple -> {
-            var list   = new ArrayList<String>();
-            var action = DeferAction.of(String.class)
+            val list   = new ArrayList<String>();
+            val action = DeferAction.of(String.class)
                     .use(promise -> promise.onComplete(Wait.forMilliseconds(50, tuple._2()).orDefaultTo("Not done."), r -> list.add(r.get())))
                     .start();
             
@@ -148,13 +149,13 @@ public class PromiseWaitTest {
     
     @Test
     public void testWaitAWhile_interrupt() throws InterruptedException {
-        var threadRef = new AtomicReference<Thread>();
-        var list      = new ArrayList<String>();
-        var action    = DeferAction.of(String.class)
+        val threadRef = new AtomicReference<Thread>();
+        val list      = new ArrayList<String>();
+        val action    = DeferAction.of(String.class)
                 .use(promise -> {
                         Wait wait = Wait
                             .forMilliseconds(150, runnable-> {
-                                var thread = new Thread(runnable);
+                                val thread = new Thread(runnable);
                                 threadRef.set(thread);
                                 thread.start();
                             })
@@ -176,13 +177,13 @@ public class PromiseWaitTest {
     
     @Test
     public void testWaitAWhile_interrupt_late() throws InterruptedException {
-        var threadRef = new AtomicReference<Thread>();
-        var list      = new ArrayList<String>();
-        var action    = DeferAction.of(String.class)
+        val threadRef = new AtomicReference<Thread>();
+        val list      = new ArrayList<String>();
+        val action    = DeferAction.of(String.class)
                 .use(promise -> {
                         Wait wait = Wait
                             .forMilliseconds(150, runnable-> {
-                                var thread = new Thread(runnable);
+                                val thread = new Thread(runnable);
                                 threadRef.set(thread);
                                 thread.start();;
                             })

@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import functionalj.lens.lenses.StringLens;
+import lombok.val;
 
 
 public class IntTuple2Test {
@@ -43,7 +44,7 @@ public class IntTuple2Test {
     
     @Test
     public void testLensRead() {
-        var tuples = Arrays.asList(
+        val tuples = Arrays.asList(
                 new IntTuple2<>(1, "One"),
                 new IntTuple2<>(2, "Two"),
                 new IntTuple2<>(3, "Three")

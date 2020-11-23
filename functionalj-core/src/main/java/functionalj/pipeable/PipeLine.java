@@ -33,6 +33,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func1;
 import functionalj.list.ImmutableList;
+import lombok.val;
 
 
 public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
@@ -58,7 +59,7 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
         try {
             Object data = input;
             for (int i = 0; i < functions.size(); i++) {
-                var func1 = functions.get(i);
+                val func1 = functions.get(i);
                 data = __internal.apply(func1, data);
             }
             if (catchHandler == null)
@@ -75,16 +76,16 @@ public class PipeLine<INPUT, OUTPUT> implements Func1<INPUT, OUTPUT> {
     }
     
     public static <I> Builder<I, I> of(Class<I> inputType) {
-        var builder = new Builder<I, I>(NULL_UNSAFE);
+        val builder = new Builder<I, I>(NULL_UNSAFE);
         return builder;
     }
     public static <I> Builder<I, I> ofNullable(Class<I> inputType) {
-        var builder = new Builder<I, I>(NULL_SAFE);
+        val builder = new Builder<I, I>(NULL_SAFE);
         return builder;
     }
     
     public static <I, O> Builder<I, O> from(Func1<I, O> func1) {
-        var builder = new Builder<I, O>(NULL_UNSAFE);
+        val builder = new Builder<I, O>(NULL_UNSAFE);
         builder.functions.add(func1);
         return builder;
     }

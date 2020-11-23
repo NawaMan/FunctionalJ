@@ -33,6 +33,7 @@ import functionalj.function.Func1;
 import functionalj.list.FuncList;
 import functionalj.list.FuncListDerived;
 import functionalj.streamable.Streamable;
+import lombok.val;
 
 
 public final class Log {
@@ -103,17 +104,17 @@ public final class Log {
             return log(prefix, value, null);
         }
         public <DATA> DATA log(Object prefix, DATA value, Object suffix) {
-            var prefixStr = (prefix != null) ? String.valueOf(prefix) : "";
-            var suffixStr = (suffix != null) ? String.valueOf(suffix) : "";
-            var line      = prefixStr + value + suffixStr;
+            val prefixStr = (prefix != null) ? String.valueOf(prefix) : "";
+            val suffixStr = (suffix != null) ? String.valueOf(suffix) : "";
+            val line      = prefixStr + value + suffixStr;
             log(line);
             return value;
         }
         
         @SuppressWarnings("unchecked")
         public <DATA> FuncList<DATA> logEach(DATA ... values) {
-            var streamable = Streamable.of((DATA[])values);
-            var list       = FuncListDerived.from(streamable);
+            val streamable = Streamable.of((DATA[])values);
+            val list       = FuncListDerived.from(streamable);
             list.forEach(value -> this.log(value));
             return list;
         }
@@ -122,7 +123,7 @@ public final class Log {
             return logEach(prefix, values, null);
         }
         public <DATA> FuncList<DATA> logEach(String prefix, Collection<DATA> values, String suffix) {
-            var list = FuncListDerived.from(values);
+            val list = FuncListDerived.from(values);
             list.forEach(value -> this.log(prefix, value, suffix));
             return list;
         }
@@ -139,11 +140,11 @@ public final class Log {
             return logErr(prefix, throwable, null);
         }
         public <THROWABLE extends Throwable> THROWABLE logErr(Object prefix, THROWABLE throwable, Object suffix) {
-            var prefixStr = (prefix != null) ? String.valueOf(prefix) + "\n" : "";
-            var suffixStr = (suffix != null) ? String.valueOf(suffix) : "";
-            var buffer = new ByteArrayOutputStream();
+            val prefixStr = (prefix != null) ? String.valueOf(prefix) + "\n" : "";
+            val suffixStr = (suffix != null) ? String.valueOf(suffix) : "";
+            val buffer = new ByteArrayOutputStream();
             throwable.printStackTrace(new PrintStream(buffer));
-            var toPrint = prefixStr + buffer.toString() + suffixStr;
+            val toPrint = prefixStr + buffer.toString() + suffixStr;
             Env.console().errPrintln(toPrint);
             return throwable;
         }

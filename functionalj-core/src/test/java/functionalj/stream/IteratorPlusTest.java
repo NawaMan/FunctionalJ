@@ -42,8 +42,8 @@ public class IteratorPlusTest {
     
     @Test
     public void testPullNext() {
-        var iterator = IteratorPlus.from(IntStreamPlus.infinite().limit(5).iterator());
-        var logs     = new ArrayList<String>();
+        val iterator = IteratorPlus.from(IntStreamPlus.infinite().limit(5).iterator());
+        val logs     = new ArrayList<String>();
         Result<Integer> result;
         while ((result = iterator.pullNext()).isValue()) {
             logs.add("" + result.value());
@@ -53,8 +53,8 @@ public class IteratorPlusTest {
     
     @Test
     public void testPullNext_null() {
-        var iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
-        var logs     = new ArrayList<String>();
+        val iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
+        val logs     = new ArrayList<String>();
         Result<String> result;
         while ((result = iterator.pullNext()).isValue()) {
             logs.add("" + result.value());
@@ -64,7 +64,7 @@ public class IteratorPlusTest {
     
     @Test
     public void testPullNext_multiple() {
-        var iterator = IteratorPlus.from(IntStreamPlus.infinite().limit(10).iterator());
+        val iterator = IteratorPlus.from(IntStreamPlus.infinite().limit(10).iterator());
         assertEquals("[0, 1, 2, 3, 4]", iterator.pullNext(5).get().toList().toString());
         assertEquals("[5]",             iterator.pullNext(1).get().toList().toString());
         assertEquals("[6, 7]",          iterator.pullNext(2).get().toList().toString());
@@ -85,8 +85,8 @@ public class IteratorPlusTest {
     }
     @Test
     public void testUseNext() {
-        var iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
-        var logs     = new ArrayList<String>();
+        val iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
+        val logs     = new ArrayList<String>();
         
         iterator.useNext(logs::add);
         iterator.useNext(logs::add);
@@ -94,8 +94,8 @@ public class IteratorPlusTest {
     }
     @Test
     public void testUseNext_multiple() {
-        var iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
-        var logs     = new ArrayList<String>();
+        val iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
+        val logs     = new ArrayList<String>();
         
         iterator.useNext(3, s -> logs.add(s.toList().toString()));
         iterator.useNext(1, s -> logs.add(s.toList().toString()));
@@ -105,8 +105,8 @@ public class IteratorPlusTest {
     
     @Test
     public void testMapNext() {
-        var iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
-        var logs     = new ArrayList<String>();
+        val iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
+        val logs     = new ArrayList<String>();
         
         iterator.useNext(logs::add);
         iterator.useNext(logs::add);
@@ -114,8 +114,8 @@ public class IteratorPlusTest {
     }
     @Test
     public void testMapNext_multiple() {
-        var iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
-        var logs     = new ArrayList<String>();
+        val iterator = IteratorPlus.from(StreamPlus.of("One", "Two", null, "Three"));
+        val logs     = new ArrayList<String>();
         
         logs.add(iterator.mapNext(3, s -> s.toList().toString()).get());
         logs.add(iterator.mapNext(1, s -> s.toList().toString()).get());
@@ -135,8 +135,8 @@ public class IteratorPlusTest {
     @Test
     public void testUseNext_thenStream() {
         // 5 is pulled out and then used to divide the rest of the value.
-        var stream = StreamPlus.of(5, 10, 15, 20, 25, 30);
-        var firstNumber = stream.iterator().pullNext().value();
+        val stream = StreamPlus.of(5, 10, 15, 20, 25, 30);
+        val firstNumber = stream.iterator().pullNext().value();
         assertEquals(
                 "[2, 3, 4, 5, 6]",
                 stream.map(i -> i / firstNumber).toListString());
@@ -145,8 +145,8 @@ public class IteratorPlusTest {
     @Test
     public void testUseNext_thenStream_empty() {
         // 5 is pulled out and then used to divide the rest of the value.
-        var stream = StreamPlus.<Integer>of();
-        var firstNumber = stream.iterator().pullNext().orElse(1);
+        val stream = StreamPlus.<Integer>of();
+        val firstNumber = stream.iterator().pullNext().orElse(1);
         assertEquals(
                 "[]",
                 stream.map(i -> i / firstNumber).toListString());
@@ -154,8 +154,8 @@ public class IteratorPlusTest {
     
     @Test
     public void testIteratorClose() {
-        var iterator = IteratorPlus.of(2, 3, 5);
-        var isClosed = new AtomicBoolean(false);
+        val iterator = IteratorPlus.of(2, 3, 5);
+        val isClosed = new AtomicBoolean(false);
         // TODO - This is not working at this point.
 //        iterator.onClose(()->isClosed.set(true));
         
@@ -169,12 +169,12 @@ public class IteratorPlusTest {
     
     @Test
     public void testIteratorFromStreamClose() {
-        var stream = StreamPlus.of(2, 3, 5);
-        var isClosed = new AtomicBoolean(false);
+        val stream = StreamPlus.of(2, 3, 5);
+        val isClosed = new AtomicBoolean(false);
         stream.onClose(()->isClosed.set(true));
         assertFalse(isClosed.get());
         
-        var iterator = stream.iterator();
+        val iterator = stream.iterator();
         assertFalse(isClosed.get());
         
         assertEquals("[2, 3, 5]", iterator.pullNext(3).map(IteratorPlus::stream).map(StreamPlus::toListString).get());

@@ -65,6 +65,7 @@ import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.tuple.IntTuple2;
 import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
+import lombok.val;
 import nullablej.nullable.Nullable;
 
 
@@ -561,8 +562,8 @@ public interface FuncList<DATA>
     public static <SOURCE, TARGET> FuncList<TARGET> deriveFrom(
             AsStreamable<SOURCE>                         asStreamable,
             Function<StreamPlus<SOURCE>, Stream<TARGET>> action) {
-        var sourceStream = asStreamable.streamPlus();
-        var targetStream = action.apply(sourceStream);
+        val sourceStream = asStreamable.streamPlus();
+        val targetStream = action.apply(sourceStream);
         return FuncList.from(targetStream);
     }
     
@@ -570,8 +571,8 @@ public interface FuncList<DATA>
     public static <TARGET> FuncList<TARGET> deriveFrom(
             AsIntStreamable                         asStreamable,
             Function<IntStreamPlus, Stream<TARGET>> action) {
-        var sourceStream = asStreamable.intStreamPlus();
-        var targetStream = action.apply(sourceStream);
+        val sourceStream = asStreamable.intStreamPlus();
+        val targetStream = action.apply(sourceStream);
         return FuncList.from(targetStream);
     }
 //    
@@ -579,8 +580,8 @@ public interface FuncList<DATA>
 //    public static <TARGET> FuncList<TARGET> deriveFrom(
 //            AsLongStreamable                         asStreamable,
 //            Function<LongStreamPlus, Stream<TARGET>> action) {
-//        var sourceStream = asStreamable.longStream();
-//        var targetStream = action.apply(sourceStream);
+//        val sourceStream = asStreamable.longStream();
+//        val targetStream = action.apply(sourceStream);
 //        return FuncList.from(targetStream);
 //    }
 //    
@@ -588,8 +589,8 @@ public interface FuncList<DATA>
 //    public static <TARGET> FuncList<TARGET> deriveFrom(
 //            AsDoubleStreamable                         asStreamable,
 //            Function<DoubleStreamPlus, Stream<TARGET>> action) {
-//        var sourceStream = asStreamable.doubleStream();
-//        var targetStream = action.apply(sourceStream);
+//        val sourceStream = asStreamable.doubleStream();
+//        val targetStream = action.apply(sourceStream);
 //        return FuncList.from(targetStream);
 //    }
 //  
@@ -665,7 +666,7 @@ public interface FuncList<DATA>
     
     /** @return a spliterator of this list. */
     public default Spliterator<DATA> spliterator() {
-        var iterator = iterator();
+        val iterator = iterator();
         return Spliterators.spliteratorUnknownSize(iterator, 0);
     }
     
@@ -802,7 +803,7 @@ public interface FuncList<DATA>
         if (a.length != count) {
             a = (T[])Array.newInstance(a.getClass().getComponentType(), count);
         }
-        var array = a;
+        val array = a;
         forEachWithIndex((index, element) -> array[index] = (T)element);
         return array;
     }
@@ -845,7 +846,7 @@ public interface FuncList<DATA>
     
     /** Returns the first element. */
     public default Optional<DATA> first() {
-        var valueRef = new AtomicReference<DATA>();
+        val valueRef = new AtomicReference<DATA>();
         if (!StreamPlusHelper.hasAt(stream(), 0, valueRef))
             return Optional.empty();
         
@@ -854,14 +855,14 @@ public interface FuncList<DATA>
     
     /** Returns the first elements */
     public default FuncList<DATA> first(int count) {
-        var size  = size();
-        var index = Math.max(0, size - count);
+        val size  = size();
+        val index = Math.max(0, size - count);
         return skip(index);
     }
     
     /** Returns the last element. */
     public default Optional<DATA> last() {
-        var size = this.size();
+        val size = this.size();
         if (size <= 0)
             return Optional.empty();
         
@@ -939,7 +940,7 @@ public interface FuncList<DATA>
         if (prefixStreamable == null)
             return this;
         
-        var streamable = Streamable.concat(prefixStreamable, streamable());
+        val streamable = Streamable.concat(prefixStreamable, streamable());
         return from(streamable);
     }
     
@@ -958,7 +959,7 @@ public interface FuncList<DATA>
             throw new IndexOutOfBoundsException(index + " vs " + size());
         
         return from((Streamable<DATA>)(() -> {
-            var i = new AtomicInteger();
+            val i = new AtomicInteger();
             return map(each -> (i.getAndIncrement() == index) ? value : each)
                     .stream();
         }));
@@ -972,7 +973,7 @@ public interface FuncList<DATA>
             throw new IndexOutOfBoundsException(index + " vs " + size());
 
         return from((Streamable<DATA>)(() -> {
-            var i = new AtomicInteger();
+            val i = new AtomicInteger();
             return map(each -> (i.getAndIncrement() == index) ? mapper.apply(each) : each)
                     .stream();
         }));
@@ -984,9 +985,9 @@ public interface FuncList<DATA>
         if ((elements == null) || (elements.length == 0))
             return this;
         
-        var first      = streamable().limit(index);
-        var tail       = streamable().skip(index);
-        var streamable = Streamable.concat(first, Streamable.of(elements), tail);
+        val first      = streamable().limit(index);
+        val tail       = streamable().skip(index);
+        val streamable = Streamable.concat(first, Streamable.of(elements), tail);
         return from(streamable);
     }
     
@@ -995,10 +996,10 @@ public interface FuncList<DATA>
         if ((collection == null) || collection.isEmpty())
             return this;
         
-        var first  = streamable().limit(index);
-        var middle = Streamable.from(collection);
-        var tail   = streamable().skip(index);
-        var streamable = Streamable.concat(first, middle, tail);
+        val first  = streamable().limit(index);
+        val middle = Streamable.from(collection);
+        val tail   = streamable().skip(index);
+        val streamable = Streamable.concat(first, middle, tail);
         return from(streamable);
     }
     
@@ -1007,10 +1008,10 @@ public interface FuncList<DATA>
         if (theStreamable == null)
             return this;
         
-        var first  = streamable().limit(index);
-        var middle = theStreamable.streamable();
-        var tail   = streamable().skip(index);
-        var streamable = Streamable.concat(first, middle, tail);
+        val first  = streamable().limit(index);
+        val middle = theStreamable.streamable();
+        val tail   = streamable().skip(index);
+        val streamable = Streamable.concat(first, middle, tail);
         return from(streamable);
     }
     
@@ -1024,9 +1025,9 @@ public interface FuncList<DATA>
         if (index < 0)
             throw new IndexOutOfBoundsException("index: " + index);
         
-        var first  = streamable().limit(index);
-        var tail   = streamable().skip(index + 1);
-        var streamable = Streamable.concat(first, tail);
+        val first  = streamable().limit(index);
+        val tail   = streamable().skip(index + 1);
+        val streamable = Streamable.concat(first, tail);
         return from(streamable);
     }
     
@@ -1037,9 +1038,9 @@ public interface FuncList<DATA>
         if (count <= 0)
             throw new IndexOutOfBoundsException("count: " + count);
         
-        var first  = streamable().limit(fromIndexInclusive);
-        var tail   = streamable().skip(fromIndexInclusive + count);
-        var streamable = Streamable.concat(first, tail);
+        val first  = streamable().limit(fromIndexInclusive);
+        val tail   = streamable().skip(fromIndexInclusive + count);
+        val streamable = Streamable.concat(first, tail);
         return from(streamable);
     }
     
@@ -1055,35 +1056,35 @@ public interface FuncList<DATA>
         if (fromIndexInclusive == toIndexExclusive)
             return this;
         
-        var first  = streamable().limit(fromIndexInclusive);
-        var tail   = streamable().skip(toIndexExclusive + 1);
+        val first  = streamable().limit(fromIndexInclusive);
+        val tail   = streamable().skip(toIndexExclusive + 1);
         return from(Streamable.concat(first, tail));
     }
     
     /** Returns the sub list from the index starting `fromIndexInclusive` to `toIndexExclusive`. */
     @Override
     public default FuncList<DATA> subList(int fromIndexInclusive, int toIndexExclusive) {
-        var length = toIndexExclusive - fromIndexInclusive;
+        val length = toIndexExclusive - fromIndexInclusive;
         return new FuncListDerived<>(this, stream -> stream.skip(fromIndexInclusive).limit(length));
     }
     
     /** Returns the new list with reverse order of this list. */
     // Note - Eager
     public default FuncList<DATA> reverse() {
-        var temp = this.toMutableList();
+        val temp = this.toMutableList();
         Collections.reverse(temp);
         
-        var list = FuncList.from(temp);
+        val list = FuncList.from(temp);
         return isLazy() ? list.lazy() : list.eager();
     }
     
     /** Returns the new list with random order of this list. */
     // Note - Eager
     public default FuncList<DATA> shuffle() {
-        var temp = this.toMutableList();
+        val temp = this.toMutableList();
         Collections.shuffle(temp);
         
-        var list = FuncList.from(temp);
+        val list = FuncList.from(temp);
         return isLazy() ? list.lazy() : list.eager();
     }
     

@@ -28,6 +28,7 @@ import java.util.function.LongUnaryOperator;
 
 import functionalj.function.LongBiFunctionPrimitive;
 import functionalj.function.ToLongBiLongFunction;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -44,7 +45,7 @@ public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccess
     }
     
     public static long apply(LongAccess<Long> access, long value) {
-        var resValue 
+        val resValue 
             = (access instanceof LongToLongAccessPrimitive)
             ? ((LongToLongAccessPrimitive)access).applyLongToLong(value)
             : access.applyAsLong(value);
@@ -173,7 +174,7 @@ public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccess
     }
     
     public default LongToBooleanAccessPrimitive bitAt(long bitIndex) {
-        var p = (int)Math.pow(2, bitIndex);
+        val p = (int)Math.pow(2, bitIndex);
         return host -> {
             long longValue = applyAsLong(host);
             return (longValue & p) != 0;
@@ -183,7 +184,7 @@ public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccess
         return host -> {
             long longValue = applyAsLong(host);
             long value    = anotherSupplier.getAsLong();
-            var p        = (int)Math.pow(2, value);
+            val p        = (int)Math.pow(2, value);
             return (longValue & p) != 0;
         };
     }
@@ -191,7 +192,7 @@ public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccess
         return host -> {
             long longValue    = applyAsLong(host);
             long anotherValue = LongToLongAccessPrimitive.apply(anotherAccess, host);
-            var p            = (int)Math.pow(2, anotherValue);
+            val p            = (int)Math.pow(2, anotherValue);
             return (longValue & p) != 0;
         };
     }
@@ -199,7 +200,7 @@ public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccess
         return host -> {
             long longValue    = applyAsLong(host);
             long anotherValue = LongBiFunctionPrimitive.apply(anotherFunction, host, longValue);
-            var p        = (int)Math.pow(2, anotherValue);
+            val p        = (int)Math.pow(2, anotherValue);
             return (longValue & p) != 0;
         };
     }

@@ -65,9 +65,9 @@ public interface StreamPlusWithReshape<DATA> {
      * @return             the stream of sub stream.
      */
     public default StreamPlus<StreamPlus<DATA>> segmentSize(int count, boolean includeTail) {
-        var index = new AtomicInteger(0);
+        val index = new AtomicInteger(0);
         return segment(data -> {
-                    var currentIndex = index.getAndIncrement();
+                    val currentIndex = index.getAndIncrement();
                     return (currentIndex % count) == 0;
                 },
                 includeTail);
@@ -105,18 +105,18 @@ public interface StreamPlusWithReshape<DATA> {
             Predicate<? super DATA> startCondition,
             boolean                 includeIncompletedSegment) {
         // TODO - Find a way to make it fully lazy. Try tryAdvance or iterator.
-        var newStorage = (Supplier<ArrayList<DATA>>)ArrayList::new;
-        var toStreamPlus = Func1.<ArrayList<DATA>, Stream<DATA>>of(ArrayList::stream).then(StreamPlus::from);
+        val newStorage = (Supplier<ArrayList<DATA>>)ArrayList::new;
+        val toStreamPlus = Func1.<ArrayList<DATA>, Stream<DATA>>of(ArrayList::stream).then(StreamPlus::from);
         
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return sequentialToObj(streamPlus, stream -> {
-            var list = new AtomicReference<>(newStorage.get());
-            var adding = new AtomicBoolean(false);
+            val list = new AtomicReference<>(newStorage.get());
+            val adding = new AtomicBoolean(false);
             
-            var streamOrNull = (Function<DATA, StreamPlus<DATA>>)((DATA data) ->{
+            val streamOrNull = (Function<DATA, StreamPlus<DATA>>)((DATA data) ->{
                 if (startCondition.test(data)) {
                     adding.set(true);
-                    var resultList = list.getAndUpdate(l -> newStorage.get());
+                    val resultList = list.getAndUpdate(l -> newStorage.get());
                     list.get().add(data);
                     return resultList.isEmpty() ? null : toStreamPlus.apply(resultList);
                 }
@@ -125,13 +125,13 @@ public interface StreamPlusWithReshape<DATA> {
                 }
                 return null;
             });
-            var mainStream = StreamPlus.from(stream.mapToObj(streamOrNull)).filterNonNull();
+            val mainStream = StreamPlus.from(stream.mapToObj(streamOrNull)).filterNonNull();
             if (!includeIncompletedSegment)
                 return mainStream;
             
-            var mainSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->mainStream;
-            var tailSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->StreamPlus.of(toStreamPlus.apply(list.get()));
-            var resultStream
+            val mainSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->mainStream;
+            val tailSupplier = (Supplier<StreamPlus<StreamPlus<DATA>>>)()->StreamPlus.of(toStreamPlus.apply(list.get()));
+            val resultStream
                     = StreamPlus.of(mainSupplier, tailSupplier)
                     .flatMap(Supplier::get);
             
@@ -157,7 +157,7 @@ public interface StreamPlusWithReshape<DATA> {
             Predicate<? super DATA> startCondition,
             Predicate<? super DATA> endCondition,
             IncompletedSegment incompletedSegment) {
-        var includeIncompletedSegment = incompletedSegment == IncompletedSegment.included;
+        val includeIncompletedSegment = incompletedSegment == IncompletedSegment.included;
         return segment(startCondition, endCondition, includeIncompletedSegment);
     }
     
@@ -166,20 +166,20 @@ public interface StreamPlusWithReshape<DATA> {
             Predicate<? super DATA> startCondition,
             Predicate<? super DATA> endCondition,
             boolean                 includeIncompletedSegment) {
-        var newStorage   = (Supplier<ArrayList<DATA>>)ArrayList::new;
-        var toStreamPlus = Func1.<ArrayList<DATA>, Stream<DATA>>of(ArrayList::stream).then(StreamPlus::from);
+        val newStorage   = (Supplier<ArrayList<DATA>>)ArrayList::new;
+        val toStreamPlus = Func1.<ArrayList<DATA>, Stream<DATA>>of(ArrayList::stream).then(StreamPlus::from);
         
         // TODO - Find a way to make it fully lazy. Try tryAdvance.
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         StreamPlus<StreamPlus<DATA>> returnStream = sequentialToObj(streamPlus, stream -> {
-            var list         = new AtomicReference<>(newStorage.get());
-            var adding       = new AtomicBoolean(false);
+            val list         = new AtomicReference<>(newStorage.get());
+            val adding       = new AtomicBoolean(false);
             
             StreamPlus<StreamPlus<DATA>> resultStream 
                 = StreamPlus.from(
                     stream
                     .mapToObj(i -> {
-                        var shouldStart = startCondition.test(i);
+                        val shouldStart = startCondition.test(i);
                         if (shouldStart) {
                             adding.set(true);
                         }
@@ -189,7 +189,7 @@ public interface StreamPlusWithReshape<DATA> {
                         
                         if (endCondition.test(i)) {
                             adding.set(shouldStart);
-                            var resultList = list.getAndUpdate(l -> newStorage.get());
+                            val resultList = list.getAndUpdate(l -> newStorage.get());
                             return toStreamPlus.apply(resultList);
                         }
                         
@@ -215,23 +215,23 @@ public interface StreamPlusWithReshape<DATA> {
      * If the segmentSize function return 0, an empty stream is returned.
      */
     public default StreamPlus<StreamPlus<DATA>> segmentSize(Func1<? super DATA, Integer> segmentSize) {
-        var newStorage   = (Supplier<ArrayList<DATA>>)ArrayList::new;
-        var toStreamPlus = Func1.<ArrayList<DATA>, Stream<DATA>>of(ArrayList::stream).then(StreamPlus::from);
-        var emptyStream  = (Supplier<StreamPlus<DATA>>)StreamPlus::empty;
-        var singleStream = (Function<DATA, StreamPlus<DATA>>)(data -> StreamPlus.of(data));
+        val newStorage   = (Supplier<ArrayList<DATA>>)ArrayList::new;
+        val toStreamPlus = Func1.<ArrayList<DATA>, Stream<DATA>>of(ArrayList::stream).then(StreamPlus::from);
+        val emptyStream  = (Supplier<StreamPlus<DATA>>)StreamPlus::empty;
+        val singleStream = (Function<DATA, StreamPlus<DATA>>)(data -> StreamPlus.of(data));
         
         // TODO - Find a way to make it fully lazy. Try tryAdvance.
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return sequentialToObj(streamPlus, stream -> {
-            var listRef = new AtomicReference<>(newStorage.get());
-            var leftRef = new AtomicInteger(-1);
+            val listRef = new AtomicReference<>(newStorage.get());
+            val leftRef = new AtomicInteger(-1);
             
-            var head 
+            val head 
                 = stream
                 .mapToObj(each -> {
                     int left = leftRef.get();
                     if (left == -1) {
-                        var newSize = segmentSize.apply(each);
+                        val newSize = segmentSize.apply(each);
                         if (newSize == null) {
                             return null;
                         } else if (newSize == 0) {
@@ -239,19 +239,19 @@ public interface StreamPlusWithReshape<DATA> {
                         } else if (newSize == 1) {
                             return singleStream.apply(each);
                         } else {
-                            var list = listRef.get();
+                            val list = listRef.get();
                             list.add(each);
                             leftRef.set(newSize - 1);
                         }
                     } else if (left == 1) {
-                        var list = listRef.getAndSet(newStorage.get());
+                        val list = listRef.getAndSet(newStorage.get());
                         list.add(each);
                         
                         leftRef.set(-1);
                         return toStreamPlus.apply(list);
                         
                     } else {
-                        var list = listRef.get();
+                        val list = listRef.get();
                         list.add(each);
                         leftRef.decrementAndGet();
                     }
@@ -260,7 +260,7 @@ public interface StreamPlusWithReshape<DATA> {
                 .filterNonNull()
                 ;
             
-            var resultStream 
+            val resultStream 
                 = StreamPlus.of(
                     f(()-> head),
                     f(()-> StreamPlus.of(toStreamPlus.apply(listRef.get())))
@@ -282,7 +282,7 @@ public interface StreamPlusWithReshape<DATA> {
         Object dummy = StreamPlusHelper.dummy;
         DATA first = null;
         
-        var iterator = streamPlus().iterator();
+        val iterator = streamPlus().iterator();
         
         if (!iterator.hasNext()) {
             return empty();
@@ -293,16 +293,16 @@ public interface StreamPlusWithReshape<DATA> {
             return empty();
         }
         
-        var prev = new AtomicReference<Object>(first);
+        val prev = new AtomicReference<Object>(first);
         StreamPlus<DATA> resultStream = generateWith(()->{
             if (prev.get() == dummy)
                 throw new NoMoreResultException();
             
             while(true) {
                 DATA next;
-                var prevValue = (DATA)prev.get();
+                val prevValue = (DATA)prev.get();
                 if (!iterator.hasNext()) {
-                    var yield = prevValue;
+                    val yield = prevValue;
                     prev.set(dummy);
                     return yield;
                 }
@@ -310,15 +310,15 @@ public interface StreamPlusWithReshape<DATA> {
                 try {
                     next = iterator.next();
                 } catch (NoSuchElementException e) {
-                    var yield = prevValue;
+                    val yield = prevValue;
                     prev.set(dummy);
                     return yield;
                 }
                 if (conditionToCollapse.test(next)) {
-                    var newValue = combinator.apply(prevValue, next);
+                    val newValue = combinator.apply(prevValue, next);
                     prev.set(newValue);
                 } else {
-                    var yield = prevValue;
+                    val yield = prevValue;
                     prev.set(next);
                     return yield;
                 }
@@ -339,9 +339,9 @@ public interface StreamPlusWithReshape<DATA> {
             Func2<? super DATA, ? super DATA, DATA> combinator) {
         Object dummy = StreamPlusHelper.dummy;
         
-        var firstObj = new Object();
-        var iterator = streamPlus().iterator();
-        var prev = new AtomicReference<Object>(firstObj);
+        val firstObj = new Object();
+        val iterator = streamPlus().iterator();
+        val prev = new AtomicReference<Object>(firstObj);
         StreamPlus<DATA> resultStream = generateWith(()->{
             if (prev.get() == dummy)
                 throw new NoMoreResultException();
@@ -355,7 +355,7 @@ public interface StreamPlusWithReshape<DATA> {
                     if (prevValue == firstObj)
                         throw new NoMoreResultException();
                     
-                    var yield = (DATA)prev.get();
+                    val yield = (DATA)prev.get();
                     prev.set(dummy);
                     return yield;
                 }
@@ -376,13 +376,13 @@ public interface StreamPlusWithReshape<DATA> {
                         DATA newValue = combinator.apply((DATA)prev.get(), next);
                         prev.set(newValue);
                     } catch (NoSuchElementException e) {
-                        var yield = prev.get();
+                        val yield = prev.get();
                         prev.set(dummy);
                         return (DATA)yield;
                     }
                 }
                 
-                var yield = (DATA)prev.get();
+                val yield = (DATA)prev.get();
                 prev.set(firstObj);
                 return yield;
             }
@@ -402,11 +402,11 @@ public interface StreamPlusWithReshape<DATA> {
             Func1<DATA, Integer>          segmentSize, 
             Func1<DATA, TARGET>           mapper, 
             Func2<TARGET, TARGET, TARGET> combinator) {
-        var dummy = StreamPlusHelper.dummy;
+        val dummy = StreamPlusHelper.dummy;
         
-        var firstObj = new Object();
-        var iterator = streamPlus().iterator();
-        var prev = new AtomicReference<Object>(firstObj);
+        val firstObj = new Object();
+        val iterator = streamPlus().iterator();
+        val prev = new AtomicReference<Object>(firstObj);
         StreamPlus<TARGET> resultStream = StreamPlus.generateWith(()->{
             if (prev.get() == dummy)
                 throw new NoMoreResultException();
@@ -419,7 +419,7 @@ public interface StreamPlusWithReshape<DATA> {
                     if (prev.get() == firstObj)
                         throw new NoMoreResultException();
                     
-                    var yield = prev.get();
+                    val yield = prev.get();
                     prev.set(StreamPlusHelper.dummy);
                     return (TARGET)yield;
                 }
@@ -430,7 +430,7 @@ public interface StreamPlusWithReshape<DATA> {
                 }
                 
                 if (newSize == 1) {
-                    var target = (TARGET)mapper.apply((DATA)next);
+                    val target = (TARGET)mapper.apply((DATA)next);
                     return target;
                 }
                 
@@ -440,17 +440,17 @@ public interface StreamPlusWithReshape<DATA> {
                     try {
                         next   = iterator.next();
                         target = (TARGET)mapper.apply((DATA)next);
-                        var prevValue = (TARGET)prev.get();
-                        var newValue  = combinator.apply(prevValue, target);
+                        val prevValue = (TARGET)prev.get();
+                        val newValue  = combinator.apply(prevValue, target);
                         prev.set(newValue);
                     } catch (NoSuchElementException e) {
-                        var yield = prev.get();
+                        val yield = prev.get();
                         prev.set(StreamPlusHelper.dummy);
                         return (TARGET)yield;
                     }
                 }
                 
-                var yield = prev.get();
+                val yield = prev.get();
                 prev.set(firstObj);
                 return (TARGET)yield;
             }

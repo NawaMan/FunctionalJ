@@ -31,6 +31,7 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.LensSpecParameterized;
 import functionalj.lens.core.WriteLens;
+import lombok.val;
 import nullablej.nullable.Nullable;
 
 @FunctionalInterface
@@ -43,10 +44,10 @@ public interface NullableLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
         NullableLens<HOST, TYPE, SUBLENS> of(
             LensSpec<HOST, Nullable<TYPE>> nullableLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        var read  = nullableLensSpec.getRead();
-        var write = nullableLensSpec.getWrite();
-        var spec  = createLensSpecParameterized(read, write, subCreator);
-        var nullableLens = (NullableLens<HOST, TYPE, SUBLENS>)()->spec;
+        val read  = nullableLensSpec.getRead();
+        val write = nullableLensSpec.getWrite();
+        val spec  = createLensSpecParameterized(read, write, subCreator);
+        val nullableLens = (NullableLens<HOST, TYPE, SUBLENS>)()->spec;
         return nullableLens;
     }
     

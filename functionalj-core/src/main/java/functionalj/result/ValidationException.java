@@ -23,7 +23,7 @@
 // ============================================================================
 package functionalj.result;
 
-
+import lombok.val;
 
 public class ValidationException extends RuntimeException {
     
@@ -52,17 +52,17 @@ public class ValidationException extends RuntimeException {
     }
     
     public static <DATA> void ensure(boolean checkResult, DATA data) {
-        var exception = ValidationException.from(checkResult, data);
+        val exception = ValidationException.from(checkResult, data);
         if (exception != null)
             throw exception;
     }
     public static <DATA> void ensure(boolean checkResult, String template, DATA data) {
-        var exception = ValidationException.from(checkResult, template, data);
+        val exception = ValidationException.from(checkResult, template, data);
         if (exception != null)
             throw exception;
     }
     public static <DATA> void ensure(String template, DATA data) {
-        var exception = ValidationException.from(template, data);
+        val exception = ValidationException.from(template, data);
         if (exception != null)
             throw exception;
     }
@@ -89,9 +89,9 @@ public class ValidationException extends RuntimeException {
     
     @Override
     public String toString() {
-        var msg = this.getMessage();
-        var cause = getCause();
-        var causeMsg = ((msg != null) || (cause == null)) ? "" : ": " + cause.toString();
+        val msg = this.getMessage();
+        val cause = getCause();
+        val causeMsg = ((msg != null) || (cause == null)) ? "" : ": " + cause.toString();
         return super.toString() + causeMsg;
     }
     

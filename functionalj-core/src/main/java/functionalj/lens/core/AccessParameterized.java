@@ -26,6 +26,7 @@ package functionalj.lens.core;
 import java.util.function.Function;
 
 import functionalj.lens.lenses.AnyAccess;
+import lombok.val;
 
 
 public interface AccessParameterized<HOST, TYPE, PARAMETER, PARAMETERACCESS extends AnyAccess<HOST, PARAMETER>>
@@ -37,8 +38,8 @@ public interface AccessParameterized<HOST, TYPE, PARAMETER, PARAMETERACCESS exte
     
     public default PARAMETERACCESS createSubAccess(Function<TYPE, PARAMETER> accessToParameter) {
         return createSubAccessFromHost(host -> {
-            var list  = apply(host);
-            var value = accessToParameter.apply(list);
+            val list  = apply(host);
+            val value = accessToParameter.apply(list);
             return value;
         });
     }

@@ -32,6 +32,7 @@ import java.util.function.Predicate;
 import functionalj.environments.Env;
 import functionalj.function.Func0;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
@@ -58,21 +59,21 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
     
     @Override
     protected Result<DATA> findResult() {
-        var oldData    = data.get();
-        var noData     = Objects.equals(oldData, NONE);
-        var requireNew = !stillValid();
+        val oldData    = data.get();
+        val noData     = Objects.equals(oldData, NONE);
+        val requireNew = !stillValid();
         if (noData || requireNew) {
-            var newResult = sourceRef.asResult().getResult();
+            val newResult = sourceRef.asResult().getResult();
             data.set(oldData, newResult);
         }
         
         @SuppressWarnings("unchecked")
-        var currentData = (Result<DATA>)data.get();
+        val currentData = (Result<DATA>)data.get();
         return currentData;
     }
     
     final Ref<DATA> whenAbsent(Func0<DATA> defaultSupplier) {
-        var newSourceRef = sourceRef.whenAbsentGet(defaultSupplier);
+        val newSourceRef = sourceRef.whenAbsentGet(defaultSupplier);
         if (newSourceRef == sourceRef)
             return this;
         
@@ -116,15 +117,15 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
             return new WhileBuilder<>(sourceRef, stateSupplier, isLocal);
         }
         public <STATE> RetainedRef<DATA> when(Ref<STATE> stateSupplier, BiPredicate<STATE, STATE> whenStateChange) {
-            var updateOnChange  = new RetainChecker.UpdateOnChanged<STATE>();
-            var valueSupplier   = stateSupplier.valueSupplier();
-            var checker         = new SuppliedValueCheck<STATE>(
+            val updateOnChange  = new RetainChecker.UpdateOnChanged<STATE>();
+            val valueSupplier   = stateSupplier.valueSupplier();
+            val checker         = new SuppliedValueCheck<STATE>(
                                         isLocal,
                                         valueSupplier,
                                         valueSupplier,
                                         whenStateChange,
                                         updateOnChange);
-            var ref = new RetainedRef<>(sourceRef, checker, isLocal);
+            val ref = new RetainedRef<>(sourceRef, checker, isLocal);
             return ref;
         }
         public ForPeriodBuilder<DATA> withIn(long period) {
@@ -149,42 +150,42 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
             this.isLocal       = isLocal;
         }
         public RetainedRef<DATA> same() {
-            var whenStateChange = new RetainChecker.WhenNotSame<STATE>();
-            var updateOnChange  = new RetainChecker.UpdateOnChanged<STATE>();
-            var valueSupplier   = stateSupplier.valueSupplier();
-            var checker         = new SuppliedValueCheck<STATE>(
+            val whenStateChange = new RetainChecker.WhenNotSame<STATE>();
+            val updateOnChange  = new RetainChecker.UpdateOnChanged<STATE>();
+            val valueSupplier   = stateSupplier.valueSupplier();
+            val checker         = new SuppliedValueCheck<STATE>(
                                         isLocal,
                                         valueSupplier,
                                         valueSupplier,
                                         whenStateChange,
                                         updateOnChange);
-            var ref = new RetainedRef<>(sourceRef, checker, isLocal);
+            val ref = new RetainedRef<>(sourceRef, checker, isLocal);
             return ref;
         }
         public RetainedRef<DATA> equals() {
-            var whenStateChange = new RetainChecker.WhenNotEqual<STATE>();
-            var updateOnChange  = new RetainChecker.UpdateOnChanged<STATE>();
-            var valueSupplier   = stateSupplier.valueSupplier();
-            var checker         = new SuppliedValueCheck<STATE>(
+            val whenStateChange = new RetainChecker.WhenNotEqual<STATE>();
+            val updateOnChange  = new RetainChecker.UpdateOnChanged<STATE>();
+            val valueSupplier   = stateSupplier.valueSupplier();
+            val checker         = new SuppliedValueCheck<STATE>(
                                         isLocal,
                                         valueSupplier,
                                         valueSupplier,
                                         whenStateChange,
                                         updateOnChange);
-            var ref = new RetainedRef<>(sourceRef, checker, isLocal);
+            val ref = new RetainedRef<>(sourceRef, checker, isLocal);
             return ref;
         }
         public RetainedRef<DATA> match(Predicate<STATE> matcher) {
-            var whenStateChange = (BiPredicate<STATE, STATE>)((STATE oldState, STATE newState) -> !matcher.test(newState));
-            var updateOnChange  = new RetainChecker.UpdateOnChanged<STATE>();
-            var valueSupplier   = stateSupplier.valueSupplier();
-            var checker         = new SuppliedValueCheck<STATE>(
+            val whenStateChange = (BiPredicate<STATE, STATE>)((STATE oldState, STATE newState) -> !matcher.test(newState));
+            val updateOnChange  = new RetainChecker.UpdateOnChanged<STATE>();
+            val valueSupplier   = stateSupplier.valueSupplier();
+            val checker         = new SuppliedValueCheck<STATE>(
                                         isLocal,
                                         valueSupplier,
                                         valueSupplier,
                                         whenStateChange,
                                         updateOnChange);
-            var ref = new RetainedRef<>(sourceRef, checker, isLocal);
+            val ref = new RetainedRef<>(sourceRef, checker, isLocal);
             return ref;
         }
     }
@@ -218,20 +219,20 @@ public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
             return milliSeconds(period * 7 * 24 * 60 * 60 * 1000L);
         }
         private <STATE> RetainedRef<DATA> milliSeconds(long milliSeconds) {
-            var whenStateChange = (BiPredicate<Long, Long>)((Long oldState, Long newState) -> {
+            val whenStateChange = (BiPredicate<Long, Long>)((Long oldState, Long newState) -> {
                 long oldTime = (oldState == null) ? 0 : oldState.longValue();
                 long newTime = (newState == null) ? 0 : newState.longValue();
                 return oldTime + milliSeconds <= newTime;
             });
-            var updateOnChange = new RetainChecker.UpdateOnChanged<Long>();
-            var valueSupplier  = (Func0<Long>)Env.time()::currentMilliSecond;
-            var checker        = new SuppliedValueCheck<Long>(
+            val updateOnChange = new RetainChecker.UpdateOnChanged<Long>();
+            val valueSupplier  = (Func0<Long>)Env.time()::currentMilliSecond;
+            val checker        = new SuppliedValueCheck<Long>(
                                         isLocal,
                                         valueSupplier,
                                         valueSupplier,
                                         whenStateChange,
                                         updateOnChange);
-            var ref = new RetainedRef<>(sourceRef, checker, isLocal);
+            val ref = new RetainedRef<>(sourceRef, checker, isLocal);
             return ref;
         }
     }

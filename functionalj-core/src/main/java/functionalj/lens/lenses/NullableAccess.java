@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 import functionalj.function.Func1;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
+import lombok.val;
 import nullablej.nullable.Nullable;
 
 @FunctionalInterface
@@ -38,7 +39,7 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
                 AccessParameterized<HOST, Nullable<TYPE>, TYPE, SUBACCESS> {
     
     public static <H, T, A extends AnyAccess<H, T>> NullableAccess<H, T, A> of(Function<H, Nullable<T>> read, Function<Function<H, T>, A> createAccess) {
-        var accessParameterized = new AccessParameterized<H, Nullable<T>, T, A>() {
+        val accessParameterized = new AccessParameterized<H, Nullable<T>, T, A>() {
             @Override
             public Nullable<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
@@ -71,7 +72,7 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     
     public default <TARGET> 
     NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenMap(Function<TYPE, TARGET> mapper) {
-        var accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
+        val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Nullable<TARGET> applyUnsafe(HOST host) throws Exception {
                 Nullable<TYPE> nullable = NullableAccess.this.apply(host);
@@ -93,7 +94,7 @@ public interface NullableAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     
     public default <TARGET> 
     NullableAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenFlatMap(Function<TYPE, Nullable<TARGET>> mapper) {
-        var accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
+        val accessWithSub = new AccessParameterized<HOST, Nullable<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Nullable<TARGET> applyUnsafe(HOST host) throws Exception {
                 return NullableAccess.this.apply(host).flatMap(mapper);

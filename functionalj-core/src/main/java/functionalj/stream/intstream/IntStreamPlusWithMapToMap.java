@@ -39,7 +39,7 @@ public interface IntStreamPlusWithMapToMap {
     /** Put mapped value and put it in the map with specific keys. */
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key, IntFunction<? extends VALUE> mapper) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(key, mapper.apply(data)));
     }
@@ -48,7 +48,7 @@ public interface IntStreamPlusWithMapToMap {
     public default <KEY, VALUE> StreamPlus<FuncMap<KEY, VALUE>> mapToMap(
             KEY key1, IntFunction<? extends VALUE> mapper1,
             KEY key2, IntFunction<? extends VALUE> mapper2) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -60,7 +60,7 @@ public interface IntStreamPlusWithMapToMap {
             KEY key1, IntFunction<? extends VALUE> mapper1,
             KEY key2, IntFunction<? extends VALUE> mapper2,
             KEY key3, IntFunction<? extends VALUE> mapper3) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -74,7 +74,7 @@ public interface IntStreamPlusWithMapToMap {
             KEY key2, IntFunction<? extends VALUE> mapper2,
             KEY key3, IntFunction<? extends VALUE> mapper3,
             KEY key4, IntFunction<? extends VALUE> mapper4) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -90,7 +90,7 @@ public interface IntStreamPlusWithMapToMap {
             KEY key3, IntFunction<? extends VALUE> mapper3,
             KEY key4, IntFunction<? extends VALUE> mapper4,
             KEY key5, IntFunction<? extends VALUE> mapper5) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(data -> ImmutableMap.of(
                     key1, mapper1.apply(data),
@@ -108,7 +108,7 @@ public interface IntStreamPlusWithMapToMap {
             KEY key4, IntFunction<? extends VALUE> mapper4,
             KEY key5, IntFunction<? extends VALUE> mapper5,
             KEY key6, IntFunction<? extends VALUE> mapper6) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -128,7 +128,7 @@ public interface IntStreamPlusWithMapToMap {
             KEY key5, IntFunction<? extends VALUE> mapper5,
             KEY key6, IntFunction<? extends VALUE> mapper6,
             KEY key7, IntFunction<? extends VALUE> mapper7) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -150,7 +150,7 @@ public interface IntStreamPlusWithMapToMap {
             KEY key6, IntFunction<? extends VALUE> mapper6,
             KEY key7, IntFunction<? extends VALUE> mapper7,
             KEY key8, IntFunction<? extends VALUE> mapper8) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -174,7 +174,7 @@ public interface IntStreamPlusWithMapToMap {
             KEY key7, IntFunction<? extends VALUE> mapper7,
             KEY key8, IntFunction<? extends VALUE> mapper8,
             KEY key9, IntFunction<? extends VALUE> mapper9) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),
@@ -200,7 +200,7 @@ public interface IntStreamPlusWithMapToMap {
             KEY key8, IntFunction<? extends VALUE> mapper8,
             KEY key9, IntFunction<? extends VALUE> mapper9,
             KEY key10, IntFunction<? extends VALUE> mapper10) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(data -> mapOf(
                     key1, mapper1.apply(data),

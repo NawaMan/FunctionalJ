@@ -38,8 +38,8 @@ public class StreamableHelperTest {
     
     @Test
     public void at() {
-        var list     = Arrays.asList("One", "Two", "Three");
-        var valueRef = new AtomicReference<String>();
+        val list     = Arrays.asList("One", "Two", "Three");
+        val valueRef = new AtomicReference<String>();
         
         assertTrue(StreamPlusHelper.hasAt(list.stream(), 0, valueRef));
         assertEquals("One", valueRef.get());

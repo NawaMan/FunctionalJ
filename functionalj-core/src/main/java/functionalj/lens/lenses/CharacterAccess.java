@@ -31,6 +31,7 @@ import functionalj.function.CharSupplier;
 import functionalj.function.Func1;
 import functionalj.function.ToCharBiCharFunction;
 import functionalj.function.ToCharFunction;
+import lombok.val;
 
 
 
@@ -49,25 +50,25 @@ public interface CharacterAccess<HOST>
         
         if (accessToValue instanceof ToCharFunction) {
             @SuppressWarnings("unchecked")
-            var func1  = (ToCharFunction<H>)accessToValue;
-            var access = ofPrimitive(func1);
+            val func1  = (ToCharFunction<H>)accessToValue;
+            val access = ofPrimitive(func1);
             return access;
         }
         
         if (accessToValue instanceof Func1) {
-            var func1  = (Func1<H, Character>)accessToValue;
-            var access = (CharacterAccessBoxed<H>)func1::applyUnsafe;
+            val func1  = (Func1<H, Character>)accessToValue;
+            val access = (CharacterAccessBoxed<H>)func1::applyUnsafe;
             return access;
         }
         
-        var func   = (Function<H, Character>)accessToValue;
-        var access = (CharacterAccessBoxed<H>)(host -> func.apply(host));
+        val func   = (Function<H, Character>)accessToValue;
+        val access = (CharacterAccessBoxed<H>)(host -> func.apply(host));
         return access;
     }
     
     public static <H> CharacterAccess<H> ofPrimitive(ToCharFunction<H> accessToValue) {
         requireNonNull(accessToValue);
-        var access = (CharacterAccessPrimitive<H>)accessToValue::applyAsChar;
+        val access = (CharacterAccessPrimitive<H>)accessToValue::applyAsChar;
         return access;
     }
     

@@ -30,6 +30,7 @@ import java.util.stream.IntStream;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.IntStreamable;
+import lombok.val;
 
 
 public class ImmutableIntFuncList implements IntFuncList {
@@ -53,7 +54,7 @@ public class ImmutableIntFuncList implements IntFuncList {
        if ((source == null) || source.length == 0)
             return emptyList;
 
-        var newArray = source.clone();
+        val newArray = source.clone();
         return new ImmutableIntFuncList(newArray, true);
     }
 
@@ -63,8 +64,8 @@ public class ImmutableIntFuncList implements IntFuncList {
         if (list instanceof ImmutableIntFuncList)
             return (ImmutableIntFuncList)list;
 
-        var data = list.toArray();
-        var isLazy = list.isLazy();
+        val data = list.toArray();
+        val isLazy = list.isLazy();
         return new ImmutableIntFuncList(data, isLazy);
     }
 
@@ -165,7 +166,7 @@ public class ImmutableIntFuncList implements IntFuncList {
         if (hashCode() != o.hashCode())
             return false;
 
-        var anotherList = (IntFuncList)o;
+        val anotherList = (IntFuncList)o;
         if (size() != anotherList.size())
             return false;
 

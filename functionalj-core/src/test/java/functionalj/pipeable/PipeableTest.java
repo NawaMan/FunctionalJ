@@ -37,25 +37,26 @@ import java.util.Collections;
 import org.junit.Test;
 
 import functionalj.function.FunctionInvocationException;
+import lombok.val;
 import nullablej.nullable.Nullable;
 
 public class PipeableTest {
     
     @Test
     public void testBasic() {
-        var str1 = (Pipeable<String>)()->"Test";
+        val str1 = (Pipeable<String>)()->"Test";
         assertEquals((Integer)4, str1.pipeTo(String::length));
     }
     
     @Test
     public void testBasicNull() {
-        var str1 = (Pipeable<String>)()->null;
+        val str1 = (Pipeable<String>)()->null;
         assertEquals(null, str1.pipeTo(String::length));
     }
     
     @Test
     public void testNullSelf() {
-        var str1 = (Pipeable<String>)()->null;
+        val str1 = (Pipeable<String>)()->null;
         assertEquals("0", "" + str1
                 .pipeTo(
                     NullSafeOperator.of(str -> Nullable.of(str).map(String::length).orElse(0))
@@ -65,8 +66,8 @@ public class PipeableTest {
     @SuppressWarnings("null")
     @Test
     public void testRuntimeException() {
-        var src1 = (String)null;
-        var str1 = (Pipeable<String>)()->src1.toUpperCase();
+        val src1 = (String)null;
+        val str1 = (Pipeable<String>)()->src1.toUpperCase();
         try {
             assertEquals(4, str1.pipeTo(String::length).intValue());
             fail();
@@ -77,7 +78,7 @@ public class PipeableTest {
     
     @Test
     public void testException() {
-        var str1 = (Pipeable<String>)(()-> { throw new IOException(); });
+        val str1 = (Pipeable<String>)(()-> { throw new IOException(); });
         try {
             assertEquals(4, str1.pipeTo(String::length).intValue());
         } catch (FunctionInvocationException e) {
@@ -87,7 +88,7 @@ public class PipeableTest {
     
     @Test
     public void testToResult() {
-        var str1 = (Pipeable<String>)(()-> "Test");
+        val str1 = (Pipeable<String>)(()-> "Test");
         assertEquals("Result:{ Value: 4 }", 
                 str1
                 .pipeTo(
@@ -95,7 +96,7 @@ public class PipeableTest {
                     toResult()
                 ) + "");
         
-        var str2 = (Pipeable<String>)(()-> null);
+        val str2 = (Pipeable<String>)(()-> null);
         assertEquals("Result:{ Value: null }", 
                 str2
                 .pipeTo(
@@ -103,7 +104,7 @@ public class PipeableTest {
                     toResult()
                 ) + "");
         
-        var str3 = (Pipeable<String>)(()-> { throw new IOException(); });
+        val str3 = (Pipeable<String>)(()-> { throw new IOException(); });
         assertEquals("Result:{ Exception: java.io.IOException }", 
                 str3
                 .pipeTo(
@@ -128,7 +129,7 @@ public class PipeableTest {
     
     @Test
     public void testOrElse_Catch() {
-        var str1 = (Pipeable<String>)(()-> "Test");
+        val str1 = (Pipeable<String>)(()-> "Test");
         assertEquals("4", 
                 str1
                 .pipeTo(
@@ -136,7 +137,7 @@ public class PipeableTest {
                     Catch.thenReturn(0)
                 ) + "");
         
-        var str2 = (Pipeable<String>)(()-> null);
+        val str2 = (Pipeable<String>)(()-> null);
         assertEquals("0", 
                 str2
                 .pipeTo(
@@ -144,7 +145,7 @@ public class PipeableTest {
                     Catch.thenReturn(0)
                 ) + "");
         
-        var str3 = (Pipeable<String>)(()-> { throw new IOException(); });
+        val str3 = (Pipeable<String>)(()-> { throw new IOException(); });
         assertEquals("0", 
                 str3
                 .pipeTo(
@@ -155,7 +156,7 @@ public class PipeableTest {
     
     @Test
     public void testOrElseGet() {
-        var str1 = (Pipeable<String>)(()-> "Test");
+        val str1 = (Pipeable<String>)(()-> "Test");
         assertEquals("4", 
                 str1
                 .pipeTo(
@@ -163,7 +164,7 @@ public class PipeableTest {
                     Catch.thenGet(()->0)
                 ) + "");
         
-        var str2 = (Pipeable<String>)(()-> null);
+        val str2 = (Pipeable<String>)(()-> null);
         assertEquals("0", 
                 str2
                 .pipeTo(
@@ -171,7 +172,7 @@ public class PipeableTest {
                     Catch.thenGet(()->0)
                 ) + "");
         
-        var str3 = (Pipeable<String>)(()-> { throw new IOException(); });
+        val str3 = (Pipeable<String>)(()-> { throw new IOException(); });
         assertEquals("0", 
                 str3
                 .pipeTo(
@@ -181,8 +182,8 @@ public class PipeableTest {
     }
     @Test
     public void testAll() {
-        var str = (Pipeable<String>)(()-> "Four");
-        var map = Collections.singletonMap(4, "Four");
+        val str = (Pipeable<String>)(()-> "Four");
+        val map = Collections.singletonMap(4, "Four");
         assertEquals("4", "" + str
                 .pipeTo(
                     String::length

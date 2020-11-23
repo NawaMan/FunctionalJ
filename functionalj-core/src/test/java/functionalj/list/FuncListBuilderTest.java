@@ -10,7 +10,7 @@ public class FuncListBuilderTest {
     
     @Test
     public void testListBuilder() {
-        var map = FuncList.newList()
+        val map = FuncList.newList()
                 .with("A")
                 .with("B")
                 .with("C")

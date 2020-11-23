@@ -34,13 +34,13 @@ public interface IntStreamPlusWithPipe {
     
     /** @return the pipeable of this stream. */
     public default Pipeable<? extends IntStreamPlus> pipable() {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return Pipeable.of(streamPlus);
     }
     
     /** Pipe this stream plus through the given function. */
     public default <T> T pipeTo(Function<? super IntStreamPlus, T> function) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return function.apply(streamPlus);
     }
     

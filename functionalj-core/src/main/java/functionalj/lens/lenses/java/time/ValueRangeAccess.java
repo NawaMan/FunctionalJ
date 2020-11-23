@@ -9,6 +9,7 @@ import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
+import lombok.val;
 
 
 public interface ValueRangeAccess<HOST>
@@ -25,37 +26,37 @@ public interface ValueRangeAccess<HOST>
     
     public default BooleanAccessPrimitive<HOST> isFixed() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isFixed();
         };
     }
     public default LongAccessPrimitive<HOST> getMinimum() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getMinimum();
         };
     }
     public default LongAccessPrimitive<HOST> getLargestMinimum() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getLargestMinimum();
         };
     }
     public default LongAccessPrimitive<HOST> getSmallestMaximum() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getSmallestMaximum();
         };
     }
     public default LongAccessPrimitive<HOST> getMaximum() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.getMaximum();
         };
     }
     public default BooleanAccessPrimitive<HOST> isIntValue() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isIntValue();
         };
     }

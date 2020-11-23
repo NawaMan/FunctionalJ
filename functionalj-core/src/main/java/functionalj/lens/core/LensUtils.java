@@ -49,6 +49,7 @@ import functionalj.lens.lenses.ResultLens;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import functionalj.result.Result;
+import lombok.val;
 import nullablej.nullable.Nullable;
 
 public class LensUtils {
@@ -58,8 +59,8 @@ public class LensUtils {
             Function<DATA, SUB>                    readSub,
             WriteLens<DATA, SUB>                   writeSub,
             Function<LensSpec<HOST, SUB>, SUBLENS> subLensCreator) {
-        var lensSpec    = dataLens.lensSpec();
-        var hostSubSpec = lensSpec.then(LensSpec.of(readSub, writeSub, lensSpec.isNullSafe()));
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.then(LensSpec.of(readSub, writeSub, lensSpec.isNullSafe()));
         return subLensCreator.apply(hostSubSpec);
     }
     
@@ -67,8 +68,8 @@ public class LensUtils {
             ObjectLens<HOST, DATA>       dataLens,
             ToIntFunction<DATA>          readSubInt,
             WriteLens.PrimitiveInt<DATA> writeSubInt) {
-        var lensSpec    = dataLens.lensSpec();
-        var hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubInt, writeSubInt));
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubInt, writeSubInt));
         return (IntegerLens<HOST>)()->hostSubSpec;
     }
     
@@ -76,8 +77,8 @@ public class LensUtils {
             ObjectLens<HOST, DATA>        dataLens,
             ToLongFunction<DATA>          readSubLong,
             WriteLens.PrimitiveLong<DATA> writeSubLong) {
-        var lensSpec    = dataLens.lensSpec();
-        var hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubLong, writeSubLong));
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubLong, writeSubLong));
         return (LongLens<HOST>)()->hostSubSpec;
     }
     
@@ -85,8 +86,8 @@ public class LensUtils {
             ObjectLens<HOST, DATA>           dataLens,
             ToDoubleFunction<DATA>           readSubDouble,
             WriteLens.PrimitiveDouble<DATA> writeSubDouble) {
-        var lensSpec    = dataLens.lensSpec();
-        var hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubDouble, writeSubDouble));
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubDouble, writeSubDouble));
         return (DoubleLens<HOST>)()->hostSubSpec;
     }
     
@@ -94,8 +95,8 @@ public class LensUtils {
             ObjectLens<HOST, DATA>           dataLens,
             Predicate<DATA>                  readSubBoolean,
             WriteLens.PrimitiveBoolean<DATA> writeSubBoolean) {
-        var lensSpec    = dataLens.lensSpec();
-        var hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubBoolean, writeSubBoolean));
+        val lensSpec    = dataLens.lensSpec();
+        val hostSubSpec = lensSpec.thenPrimitive(LensSpec.ofPrimitive(readSubBoolean, writeSubBoolean));
         return (BooleanLens<HOST>)()->hostSubSpec;
     }
     
@@ -104,11 +105,11 @@ public class LensUtils {
             Function<DATA, SUB>  readSub, 
             BooleanSupplier      isNullSafe) {
         return host ->{
-            var value = readValue.apply(host);
+            val value = readValue.apply(host);
             if (isNullSafe.getAsBoolean() && (value == null))
                 return null;
             
-            var subValue = readSub.apply(value);
+            val subValue = readSub.apply(value);
             return subValue;
         };
     }
@@ -139,8 +140,8 @@ public class LensUtils {
             Function<HOST, DATA> readValue,
             ToIntFunction<DATA>  readSub) {
         return host ->{
-            var value    = readValue.apply(host);
-            var subValue = readSub.applyAsInt(value);
+            val value    = readValue.apply(host);
+            val subValue = readSub.applyAsInt(value);
             return subValue;
         };
     }
@@ -150,9 +151,9 @@ public class LensUtils {
             WriteLens<HOST, DATA>        writeValue,
             WriteLens.PrimitiveInt<DATA> writeSub) {
         return (host, newSubValue)->{
-            var oldValue = readValue.apply(host);
-            var newValue = writeSub.apply(oldValue, newSubValue);
-            var newHost  = writeValue.apply(host, newValue);
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
             return newHost;
         };
     }
@@ -163,8 +164,8 @@ public class LensUtils {
             Function<HOST, DATA> readValue,
             ToLongFunction<DATA> readSub) {
         return host ->{
-            var value    = readValue.apply(host);
-            var subValue = readSub.applyAsLong(value);
+            val value    = readValue.apply(host);
+            val subValue = readSub.applyAsLong(value);
             return subValue;
         };
     }
@@ -174,9 +175,9 @@ public class LensUtils {
             WriteLens<HOST, DATA>         writeValue,
             WriteLens.PrimitiveLong<DATA> writeSub) {
         return (host, newSubValue)->{
-            var oldValue = readValue.apply(host);
-            var newValue = writeSub.apply(oldValue, newSubValue);
-            var newHost  = writeValue.apply(host, newValue);
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
             return newHost;
         };
     }
@@ -187,8 +188,8 @@ public class LensUtils {
             Function<HOST, DATA>   readValue,
             ToDoubleFunction<DATA> readSub) {
         return host ->{
-            var value    = readValue.apply(host);
-            var subValue = readSub.applyAsDouble(value);
+            val value    = readValue.apply(host);
+            val subValue = readSub.applyAsDouble(value);
             return subValue;
         };
     }
@@ -198,9 +199,9 @@ public class LensUtils {
             WriteLens<HOST, DATA>           writeValue,
             WriteLens.PrimitiveDouble<DATA> writeSub) {
         return (host, newSubValue)->{
-            var oldValue = readValue.apply(host);
-            var newValue = writeSub.apply(oldValue, newSubValue);
-            var newHost  = writeValue.apply(host, newValue);
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
             return newHost;
         };
     }
@@ -211,8 +212,8 @@ public class LensUtils {
             Function<HOST, DATA> readValue,
             Predicate<DATA>      readSub) {
         return host ->{
-            var value    = readValue.apply(host);
-            var subValue = readSub.test(value);
+            val value    = readValue.apply(host);
+            val subValue = readSub.test(value);
             return subValue;
         };
     }
@@ -222,21 +223,21 @@ public class LensUtils {
             WriteLens<HOST, DATA>            writeValue,
             WriteLens.PrimitiveBoolean<DATA> writeSub) {
         return (host, newSubValue)->{
-            var oldValue = readValue.apply(host);
-            var newValue = writeSub.apply(oldValue, newSubValue);
-            var newHost  = writeValue.apply(host, newValue);
+            val oldValue = readValue.apply(host);
+            val newValue = writeSub.apply(oldValue, newSubValue);
+            val newHost  = writeValue.apply(host, newValue);
             return newHost;
         };
     }
     
     private static <DATA, HOST, SUB> HOST performWrite(Function<HOST, DATA> readValue, WriteLens<HOST, DATA> writeValue,
             WriteLens<DATA, SUB> writeSub, BooleanSupplier isNullSafe, HOST host, SUB newSubValue) {
-        var oldValue = readValue.apply(host);
+        val oldValue = readValue.apply(host);
         if (isNullSafe.getAsBoolean() && (oldValue == null))
             return host;
         
-        var newValue = writeSub.apply(oldValue, newSubValue);
-        var newHost  = writeValue.apply(host, newValue);
+        val newValue = writeSub.apply(oldValue, newSubValue);
+        val newHost  = writeValue.apply(host, newValue);
         return newHost;
     }
     
@@ -247,7 +248,7 @@ public class LensUtils {
             Function<HOST, TYPE>                   read,
             WriteLens<HOST, TYPE>                  write,
             Function<LensSpec<HOST, SUB>, SUBLENS> subCreator) {
-        var spec = new LensSpecParameterized<HOST, TYPE, SUB, SUBLENS>() {
+        val spec = new LensSpecParameterized<HOST, TYPE, SUB, SUBLENS>() {
             @Override
             public LensSpec<HOST, TYPE> getSpec() {
                 return LensSpec.of(read, write);
@@ -267,8 +268,8 @@ public class LensUtils {
             Function<HOST, Nullable<TYPE>>          read,
             WriteLens<HOST, Nullable<TYPE>>         write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        var spec = createLensSpecParameterized(read, write, subCreator);
-        var lens = (NullableLens<HOST, TYPE, SUBLENS>)()->spec;
+        val spec = createLensSpecParameterized(read, write, subCreator);
+        val lens = (NullableLens<HOST, TYPE, SUBLENS>)()->spec;
         return lens;
     }
     
@@ -276,7 +277,7 @@ public class LensUtils {
         createNullableLens(
             LensSpec<HOST, Nullable<TYPE>> nullableLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        var lens = createNullableLens(nullableLensSpec.getRead(), nullableLensSpec.getWrite(), subCreator);
+        val lens = createNullableLens(nullableLensSpec.getRead(), nullableLensSpec.getWrite(), subCreator);
         return lens;
     }
     
@@ -287,8 +288,8 @@ public class LensUtils {
             Function<HOST, Result<TYPE>>          read,
             WriteLens<HOST, Result<TYPE>>         write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        var spec = createLensSpecParameterized(read, write, subCreator);
-        var lens = (ResultLens<HOST, TYPE, SUBLENS>)()->spec;
+        val spec = createLensSpecParameterized(read, write, subCreator);
+        val lens = (ResultLens<HOST, TYPE, SUBLENS>)()->spec;
         return lens;
     }
     
@@ -296,7 +297,7 @@ public class LensUtils {
         createResultLens(
             LensSpec<HOST, Result<TYPE>> resultLensSpec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        var lens = createResultLens(resultLensSpec.getRead(), resultLensSpec.getWrite(), subCreator);
+        val lens = createResultLens(resultLensSpec.getRead(), resultLensSpec.getWrite(), subCreator);
         return lens;
     }
     
@@ -307,8 +308,8 @@ public class LensUtils {
             Function<HOST, Optional<TYPE>>          read,
             WriteLens<HOST, Optional<TYPE>>         write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        var spec = createLensSpecParameterized(read, write, subCreator);
-        var lens = (OptionalLens<HOST, TYPE, SUBLENS>)()->spec;
+        val spec = createLensSpecParameterized(read, write, subCreator);
+        val lens = (OptionalLens<HOST, TYPE, SUBLENS>)()->spec;
         return lens;
     }
     
@@ -316,7 +317,7 @@ public class LensUtils {
         createOptionalLens(
             LensSpec<HOST, Optional<TYPE>> spec,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        var lens = createOptionalLens(spec.getRead(), spec.getWrite(), subCreator);
+        val lens = createOptionalLens(spec.getRead(), spec.getWrite(), subCreator);
         return lens;
     }
     
@@ -327,8 +328,8 @@ public class LensUtils {
             Function<HOST, List<TYPE>>              read,
             WriteLens<HOST, List<TYPE>>             write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        var spec = createLensSpecParameterized(read, write, subCreator);
-        var listLens = ListLens.of(spec);
+        val spec = createLensSpecParameterized(read, write, subCreator);
+        val listLens = ListLens.of(spec);
         return listLens;
     }
     
@@ -337,7 +338,7 @@ public class LensUtils {
                 LensSpec<HOST, List<TYPE>>                              spec,
                 LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS> specParameterized,
                 Function<HOST, List<TYPE>>                              read) {
-        var newSpec = new LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS>() {
+        val newSpec = new LensSpecParameterized<HOST, List<TYPE>, TYPE, TYPELENS>() {
             @Override
             public LensSpec<HOST, List<TYPE>> getSpec() {
                 return new LensSpec<>(read, spec.getWrite(), spec.getIsNullSafe());
@@ -395,8 +396,8 @@ public class LensUtils {
             Function<HOST,  FuncList<TYPE>>   read,
             WriteLens<HOST, FuncList<TYPE>>   write,
             Function<LensSpec<HOST, TYPE>, SUBLENS> subCreator) {
-        var spec = createLensSpecParameterized(read, write, subCreator);
-        var listLens = FuncListLens.of(spec);
+        val spec = createLensSpecParameterized(read, write, subCreator);
+        val listLens = FuncListLens.of(spec);
         return listLens;
     }
     
@@ -405,7 +406,7 @@ public class LensUtils {
                 LensSpec<HOST, FuncList<TYPE>>                              spec,
                 LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS> specParameterized,
                 Function<HOST, FuncList<TYPE>>                              read) {
-        var newSpec = new LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS>() {
+        val newSpec = new LensSpecParameterized<HOST, FuncList<TYPE>, TYPE, TYPELENS>() {
             @Override
             public LensSpec<HOST, FuncList<TYPE>> getSpec() {
                 return new LensSpec<>(read, spec.getWrite(), spec.getIsNullSafe());

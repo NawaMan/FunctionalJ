@@ -36,6 +36,7 @@ import org.junit.Test;
 import functionalj.function.Func;
 import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.validator.Validator;
+import lombok.val;
 
 
 public class ResultTest {
@@ -68,7 +69,7 @@ public class ResultTest {
     }
     @Test
     public void testResult_value() {
-        var result = Result.valueOf("VALUE");
+        val result = Result.valueOf("VALUE");
         assertEquals("Result:{ Value: VALUE }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -78,7 +79,7 @@ public class ResultTest {
     
     @Test
     public void testResult_null() {
-        var result = Result.valueOf(null);
+        val result = Result.valueOf(null);
         assertEquals("Result:{ Value: null }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -88,7 +89,7 @@ public class ResultTest {
     
     @Test
     public void testResult_exception() {
-        var result = Result.valueOf((String)null).ensureNotNull();
+        val result = Result.valueOf((String)null).ensureNotNull();
         assertEquals("Result:{ Exception: java.lang.NullPointerException }", "" + result);
         assertFalse(result.isValue());
         assertTrue (result.isException());
@@ -98,7 +99,7 @@ public class ResultTest {
     
     @Test
     public void testResult_map() {
-        var result = Result.valueOf("VALUE").map(str -> str.length());
+        val result = Result.valueOf("VALUE").map(str -> str.length());
         assertEquals("Result:{ Value: 5 }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -108,7 +109,7 @@ public class ResultTest {
     
     @Test
     public void testResult_failableMap() {
-        var result = Result.valueOf("VALUE").map(str -> new UnsupportedOperationException("Not support."));
+        val result = Result.valueOf("VALUE").map(str -> new UnsupportedOperationException("Not support."));
         assertEquals("Result:{ Value: java.lang.UnsupportedOperationException: Not support. }", "" + result);
         assertTrue (result.isValue());
         assertFalse(result.isException());
@@ -118,14 +119,14 @@ public class ResultTest {
     
     @Test
     public void testResult_map_null() {
-        var result = Result.valueOf("VALUE").map(str -> (String)null).map(String::length);
+        val result = Result.valueOf("VALUE").map(str -> (String)null).map(String::length);
         assertEquals("Result:{ Value: null }", "" + result);
     }
     @Test
     public void testResult_validate() {
-        var validator1 = Validator.of((String s) -> s.toUpperCase().equals(s), "Not upper case");
-        var validator2 = Validator.of((String s) -> s.matches("^.*[A-Z].*$"),  "No upper case");
-        var validator3 = Validator.of((String s) -> !s.isEmpty(),              "Empty");
+        val validator1 = Validator.of((String s) -> s.toUpperCase().equals(s), "Not upper case");
+        val validator2 = Validator.of((String s) -> s.matches("^.*[A-Z].*$"),  "No upper case");
+        val validator3 = Validator.of((String s) -> !s.isEmpty(),              "Empty");
         assertEquals("Result:{ Value: (VALUE,[]) }", "" + Result.valueOf("VALUE").validate(validator1, validator2));
         assertEquals("Result:{ Value: (value,["
                 +   "functionalj.result.ValidationException: Not upper case, "
@@ -235,8 +236,8 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst() {
-        var nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
-        var guess
+        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
+        val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
                     .mapFirst(
@@ -256,8 +257,8 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_Exception() {
-        var nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
-        var guess
+        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
+        val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
                     .mapFirst(
@@ -277,8 +278,8 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_AllNull() {
-        var nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
-        var guess
+        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
+        val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
                     .mapFirst(
@@ -294,8 +295,8 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_AllException() {
-        var nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
-        var guess
+        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
+        val guess
                 = nums
                 .map(num -> (String)Result.valueOf(num)
                     .mapFirst(
@@ -325,8 +326,8 @@ public class ResultTest {
     
     @Test
     public void testResultMapFirst_OneNullAllException() {
-        var nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
-        var guess = nums
+        val nums = IntStreamable.loop(13).map(i -> i*i*i).boxed().toList();
+        val guess = nums
         .map(num -> (String)Result.valueOf(num)
                     .mapFirst(
                         i -> null,
@@ -342,8 +343,8 @@ public class ResultTest {
     // TODO - Fail gradle build - Put this back.
 //    @Test
 //    public void testResultMapFirst_Mix() {
-//        var nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
-//        var guess
+//        val nums = StreamPlus.loop(13).map(i -> i*i*i).toList();
+//        val guess
 //                = nums
 //                .map(num -> Result.value(num)
 //                    .mapFirst(
@@ -361,7 +362,7 @@ public class ResultTest {
 //    //        Seems to goes away after upgrade Eclipse to 2018-12 ... but no time to deal with it now.
 //    @Test
 //    public void testResultFor() {
-//        var res1 = FuncList.of(1, 2, 3, 4);
+//        val res1 = FuncList.of(1, 2, 3, 4);
 //        
 //        System.out.println(res1.flatMap(s1 -> {
 //            return StreamPlus.infiniteInt().limit(s1).toList().flatMap(s2 -> {

@@ -35,6 +35,7 @@ import functionalj.function.FuncUnit0;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
 import functionalj.task.Task;
+import lombok.val;
 
 
 public class DeferActionBuilder<DATA> implements Task<DATA> {
@@ -102,12 +103,12 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
         if (configs == null)
             return this;
         
-        var configList = FuncList.of(configs).filterNonNull();
-        var current    = new AtomicReference<>(this);
+        val configList = FuncList.of(configs).filterNonNull();
+        val current    = new AtomicReference<>(this);
         configList.forEach(config -> {
-            var curBuilder = current.get();
-            var newBuilder = config.apply((DeferActionBuilder)curBuilder);
-            var nextBuilder
+            val curBuilder = current.get();
+            val newBuilder = config.apply((DeferActionBuilder)curBuilder);
+            val nextBuilder
                     = (newBuilder == null)
                     ? curBuilder
                     : (DeferActionBuilder<DATA>)newBuilder;
@@ -241,37 +242,37 @@ public class DeferActionBuilder<DATA> implements Task<DATA> {
         }
         
         public DeferActionBuilder<DATA> milliseconds() {
-            var retry = new Retry<DATA>(times, period);
+            val retry = new Retry<DATA>(times, period);
             actionBuilder.retry = retry;
             return actionBuilder;
         }
         
         public DeferActionBuilder<DATA> seconds() {
-            var retry = new Retry<DATA>(times, period * 1000);
+            val retry = new Retry<DATA>(times, period * 1000);
             actionBuilder.retry = retry;
             return actionBuilder;
         }
         
         public DeferActionBuilder<DATA> minutes() {
-            var retry = new Retry<DATA>(times, period * 1000 * 60);
+            val retry = new Retry<DATA>(times, period * 1000 * 60);
             actionBuilder.retry = retry;
             return actionBuilder;
         }
         
         public DeferActionBuilder<DATA> hours() {
-            var retry = new Retry<DATA>(times, period * 1000 * 60 * 60);
+            val retry = new Retry<DATA>(times, period * 1000 * 60 * 60);
             actionBuilder.retry = retry;
             return actionBuilder;
         }
         
         public DeferActionBuilder<DATA> days() {
-            var retry = new Retry<DATA>(times, period * 1000 * 60 * 60 * 24);
+            val retry = new Retry<DATA>(times, period * 1000 * 60 * 60 * 24);
             actionBuilder.retry = retry;
             return actionBuilder;
         }
         
         public DeferActionBuilder<DATA> weeks() {
-            var retry = new Retry<DATA>(times, period * 1000 * 60 * 60 * 24);
+            val retry = new Retry<DATA>(times, period * 1000 * 60 * 60 * 24);
             actionBuilder.retry = retry;
             return actionBuilder;
         }

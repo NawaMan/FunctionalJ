@@ -58,7 +58,7 @@ public interface CollectorPlus<DATA, ACCUMULATED, TARGET>
     }
     
     public default <SOURCE> CollectorPlus<SOURCE, ACCUMULATED, TARGET> of(Func1<SOURCE, DATA> mapper) {
-        var collector = new DerivedCollectorPlus<>(this, mapper);
+        val collector = new DerivedCollectorPlus<>(this, mapper);
         return CollectorPlus.from(collector);
     }
 }
@@ -81,9 +81,9 @@ class DerivedCollectorPlus<SOURCE, DATA, ACCUMULATED, RESULT>
     }
     @Override
     public BiConsumer<ACCUMULATED, SOURCE> accumulator() {
-        var accumulator = collector.accumulator();
+        val accumulator = collector.accumulator();
         return (a, s)->{
-            var d = mapper.apply(s);
+            val d = mapper.apply(s);
             accumulator.accept(a, d);
         };
     }

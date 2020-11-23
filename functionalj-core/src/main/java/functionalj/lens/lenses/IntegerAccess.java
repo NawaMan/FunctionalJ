@@ -31,6 +31,7 @@ import java.util.function.ToIntFunction;
 
 import functionalj.function.Func1;
 import functionalj.function.ToIntBiIntFunction;
+import lombok.val;
 
 
 public interface IntegerAccess<HOST> 
@@ -48,25 +49,25 @@ public interface IntegerAccess<HOST>
         
         if (accessToValue instanceof ToIntFunction) {
             @SuppressWarnings("unchecked")
-            var func1  = (ToIntFunction<H>)accessToValue;
-            var access = ofPrimitive(func1);
+            val func1  = (ToIntFunction<H>)accessToValue;
+            val access = ofPrimitive(func1);
             return access;
         }
         
         if (accessToValue instanceof Func1) {
-            var func1  = (Func1<H, Integer>)accessToValue;
-            var access = (IntegerAccessBoxed<H>)func1::applyUnsafe;
+            val func1  = (Func1<H, Integer>)accessToValue;
+            val access = (IntegerAccessBoxed<H>)func1::applyUnsafe;
             return access;
         }
         
-        var func   = (Function<H, Integer>)accessToValue;
-        var access = (IntegerAccessBoxed<H>)(host -> func.apply(host));
+        val func   = (Function<H, Integer>)accessToValue;
+        val access = (IntegerAccessBoxed<H>)(host -> func.apply(host));
         return access;
     }
     
     public static <H> IntegerAccess<H> ofPrimitive(ToIntFunction<H> accessToValue) {
         requireNonNull(accessToValue);
-        var access = (IntegerAccessPrimitive<H>)accessToValue::applyAsInt;
+        val access = (IntegerAccessPrimitive<H>)accessToValue::applyAsInt;
         return access;
     }
     
@@ -242,7 +243,7 @@ public interface IntegerAccess<HOST>
     }
     
     public default BooleanAccessPrimitive<HOST> bitAt(int bitIndex) {
-        var p = (int)Math.pow(2, bitIndex);
+        val p = (int)Math.pow(2, bitIndex);
         return host -> {
             int intValue = applyAsInt(host);
             return (intValue & p) != 0;
@@ -252,7 +253,7 @@ public interface IntegerAccess<HOST>
         return host -> {
             int intValue = applyAsInt(host);
             int value    = anotherSupplier.getAsInt();
-            var p        = (int)Math.pow(2, value);
+            val p        = (int)Math.pow(2, value);
             return (intValue & p) != 0;
         };
     }
@@ -260,7 +261,7 @@ public interface IntegerAccess<HOST>
         return host -> {
             int intValue = applyAsInt(host);
             int value    = anotherAccess.applyAsInt(host);
-            var p        = (int)Math.pow(2, value);
+            val p        = (int)Math.pow(2, value);
             return (intValue & p) != 0;
         };
     }
@@ -268,7 +269,7 @@ public interface IntegerAccess<HOST>
         return host -> {
             int intValue = applyAsInt(host);
             int value    = anotherFunction.applyAsInt(host, intValue);
-            var p        = (int)Math.pow(2, value);
+            val p        = (int)Math.pow(2, value);
             return (intValue & p) != 0;
         };
     }

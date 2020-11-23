@@ -71,7 +71,7 @@ public class GuaranteeCoreAnnotationsDependencyTest {
     }
     
     private void assertAllChecked() {
-        var allCores = new TreeSet<Core>(asList(Core.values()));
+        val allCores = new TreeSet<Core>(asList(Core.values()));
         assertEquals(allCores.toString(), checkedCores.toString());
     }
     

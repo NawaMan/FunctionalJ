@@ -68,7 +68,7 @@ public class BlockingQueueIteratorPlus<DATA> implements IteratorPlus<DATA> {
     }
     
     public StreamPlus<DATA> remainingValues() {
-        var list = new ArrayList<DATA>();
+        val list = new ArrayList<DATA>();
         queue.drainTo(list);
         return StreamPlus.from(list.stream()).exclude(endData::equals);
     }

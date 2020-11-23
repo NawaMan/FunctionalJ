@@ -27,13 +27,15 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import lombok.val;
+
 
 
 public class NamedTest {
 
     @Test
     public void test() {
-        var namedSupplier = Named.Supplier("GetWord", ()->"Hello");
+        val namedSupplier = Named.Supplier("GetWord", ()->"Hello");
         assertEquals("Supplier::GetWord", namedSupplier.toString());
     }
 

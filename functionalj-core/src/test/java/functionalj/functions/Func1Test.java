@@ -37,17 +37,18 @@ import functionalj.function.Func;
 import functionalj.promise.Promise;
 import functionalj.result.Result;
 import functionalj.streamable.Streamable;
+import lombok.val;
 
 
 public class Func1Test {
     
     @Test
     public void testElevate() {
-        var concat = Func.of(String::concat);
-        var appendSpace       = concat.elevateWith(" ");
-        var appendWorld       = concat.elevateWith("World");
-        var appendExclamation = concat.bind(__, "!");
-        var str = StartWtih("Hello")
+        val concat = Func.of(String::concat);
+        val appendSpace       = concat.elevateWith(" ");
+        val appendWorld       = concat.elevateWith("World");
+        val appendExclamation = concat.bind(__, "!");
+        val str = StartWtih("Hello")
                 .pipeTo(
                     appendSpace,
                     appendWorld,
@@ -58,13 +59,13 @@ public class Func1Test {
     
     @Test
     public void testDefer() {
-        var startTime = System.currentTimeMillis();
+        val startTime = System.currentTimeMillis();
         
-        var length =   Sleep(50).then(String::valueOf).async().apply("Hello!").getPromise()
+        val length =   Sleep(50).then(String::valueOf).async().apply("Hello!").getPromise()
                 .chain(Sleep(50).then(String::length ).async())
                 .getResult();
         
-        var duration = System.currentTimeMillis() - startTime;
+        val duration = System.currentTimeMillis() - startTime;
         assertEquals(6, length.get().intValue());
         
         assertTrue(duration > 100);
@@ -72,14 +73,14 @@ public class Func1Test {
     
     @Test
     public void testApply() {
-        var result   = Result.valueOf("Hello");
-        var promise  = Promise.of("Hello");
-        var stream   = f(()->Streamable.infiniteInt().streamPlus().limit(5).map($I.asString()));
-        var list     = Streamable.infiniteInt().streamPlus().limit(5).map($I.asString()).toList();
-        var map      = Streamable.infiniteInt().streamPlus().limit(5).toMap($I, $I.asString());
-        var supplier = f(()   -> "Hello");
-        var function = f(name -> "Hello " + name + "!");
-        var func     = f(String::length);
+        val result   = Result.valueOf("Hello");
+        val promise  = Promise.of("Hello");
+        val stream   = f(()->Streamable.infiniteInt().streamPlus().limit(5).map($I.asString()));
+        val list     = Streamable.infiniteInt().streamPlus().limit(5).map($I.asString()).toList();
+        val map      = Streamable.infiniteInt().streamPlus().limit(5).toMap($I, $I.asString());
+        val supplier = f(()   -> "Hello");
+        val function = f(name -> "Hello " + name + "!");
+        val func     = f(String::length);
         assertEquals("Result:{ Value: Hello }",   "" + result);
         assertEquals("Result:{ Value: Hello }",   "" + promise.getResult());
         assertEquals("0, 1, 2, 3, 4",             "" + stream.get().join(", "));

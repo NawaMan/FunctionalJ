@@ -79,9 +79,9 @@ public class ImmutableMapTest {
     
     @Test
     public void testWith_Full() {
-        var orgMap = FuncMap.of("1", "One", "2", "Two");
-        var newMap = orgMap.with("3", "Three");
-        var repMap = orgMap.with("2", "Du");
+        val orgMap = FuncMap.of("1", "One", "2", "Two");
+        val newMap = orgMap.with("3", "Three");
+        val repMap = orgMap.with("2", "Du");
         
         assertEquals("{1:One, 2:Two}",          orgMap.toString());
         assertEquals("{1:One, 2:Two, 3:Three}", newMap.toString());
@@ -152,8 +152,8 @@ public class ImmutableMapTest {
         assertEquals("Du",    "" + repMap.getOrDefault("2", "N/A"));
         assertEquals("N/A",   "" + repMap.getOrDefault("3", "N/A"));
         
-        var OneTwo   = FuncList.of("1", "2");
-        var TwoThree = FuncList.of("2", "3");
+        val OneTwo   = FuncList.of("1", "2");
+        val TwoThree = FuncList.of("2", "3");
         
         assertEquals("[One, Two]",   "" + orgMap.select(OneTwo::contains));
         assertEquals("[Two]",        "" + orgMap.select(TwoThree::contains));
@@ -197,8 +197,8 @@ public class ImmutableMapTest {
     
     @Test
     public void testFilterKey_Full() {
-        var orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
-        var newMap = orgMap.filter(k -> !"3".equals(k));
+        val orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
+        val newMap = orgMap.filter(k -> !"3".equals(k));
         
         assertEquals("{1:One, 2:Two, 3:Three}", orgMap.toString());
         assertEquals("{1:One, 2:Two}",          newMap.toString());
@@ -250,8 +250,8 @@ public class ImmutableMapTest {
         assertEquals("Two",   "" + newMap.getOrDefault("2", "N/A"));
         assertEquals("N/A",   "" + newMap.getOrDefault("3", "N/A"));
         
-        var OneTwo   = FuncList.of("1", "2");
-        var TwoThree = FuncList.of("2", "3");
+        val OneTwo   = FuncList.of("1", "2");
+        val TwoThree = FuncList.of("2", "3");
         
         assertEquals("[One, Two]",   "" + orgMap.select(OneTwo::contains));
         assertEquals("[Two, Three]", "" + orgMap.select(TwoThree::contains));
@@ -277,9 +277,9 @@ public class ImmutableMapTest {
     
     @Test
     public void testFilterBoth_Full() {
-        var orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
-        var revMap = orgMap.filter((k, v) -> !(Objects.equals(k, "2") && Objects.equals(v, "Two")));
-        var newMap = orgMap.filter((k, v) -> !(Objects.equals(k, "2") && Objects.equals(v, "Du")));
+        val orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
+        val revMap = orgMap.filter((k, v) -> !(Objects.equals(k, "2") && Objects.equals(v, "Two")));
+        val newMap = orgMap.filter((k, v) -> !(Objects.equals(k, "2") && Objects.equals(v, "Du")));
         
         assertEquals("{1:One, 2:Two, 3:Three}", orgMap.toString());
         assertEquals("{1:One, 3:Three}",        revMap.toString());
@@ -350,8 +350,8 @@ public class ImmutableMapTest {
         assertEquals("Two",   "" + newMap.getOrDefault("2", "N/A"));
         assertEquals("Three", "" + newMap.getOrDefault("3", "N/A"));
         
-        var OneTwo   = FuncList.of("1", "2");
-        var TwoThree = FuncList.of("2", "3");
+        val OneTwo   = FuncList.of("1", "2");
+        val TwoThree = FuncList.of("2", "3");
         
         assertEquals("[One, Two]",   "" + orgMap.select(OneTwo::contains));
         assertEquals("[Two, Three]", "" + orgMap.select(TwoThree::contains));
@@ -395,8 +395,8 @@ public class ImmutableMapTest {
     
     @Test
     public void testMap_Full() {
-        var orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
-        var mapMap = orgMap.map((k,v) -> ("2".equals(k) ? "Du" : v));
+        val orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
+        val mapMap = orgMap.map((k,v) -> ("2".equals(k) ? "Du" : v));
         
         assertEquals("{1:One, 2:Two, 3:Three}", orgMap.toString());
         assertEquals("{1:One, 2:Du, 3:Three}",  mapMap.toString());
@@ -434,8 +434,8 @@ public class ImmutableMapTest {
         assertEquals("Two", "" + orgMap.getOrDefault("2", "N/A"));
         assertEquals("Du",  "" + mapMap.getOrDefault("2", "N/A"));
         
-        var OneTwo   = FuncList.of("1", "2");
-        var TwoThree = FuncList.of("2", "3");
+        val OneTwo   = FuncList.of("1", "2");
+        val TwoThree = FuncList.of("2", "3");
         
         assertEquals("[One, Two]",   "" + orgMap.select(OneTwo::contains));
         assertEquals("[Two, Three]", "" + orgMap.select(TwoThree::contains));
@@ -467,8 +467,8 @@ public class ImmutableMapTest {
     
     @Test
     public void testMap_thenFilter() {
-        var orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
-        var newMap = orgMap
+        val orgMap = FuncMap.of("1", "One", "2", "Two", "3", "Three");
+        val newMap = orgMap
                         .map   ((k, v) -> ("Two".equals(v) ? "Du" : v))
                         .filter((k, v) -> Objects.equals(k, "2") && Objects.equals(v, "Du"));
         
@@ -508,8 +508,8 @@ public class ImmutableMapTest {
         assertEquals("Two", "" + orgMap.getOrDefault("2", "N/A"));
         assertEquals("Du",  "" + newMap.getOrDefault("2", "N/A"));
         
-        var OneTwo   = FuncList.of("1", "2");
-        var TwoThree = FuncList.of("2", "3");
+        val OneTwo   = FuncList.of("1", "2");
+        val TwoThree = FuncList.of("2", "3");
         
         assertEquals("[One, Two]",   "" + orgMap.select(OneTwo::contains));
         assertEquals("[Two, Three]", "" + orgMap.select(TwoThree::contains));

@@ -17,6 +17,7 @@ import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.ListAccess;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -35,91 +36,91 @@ public interface IsoChronologyAccess<HOST>
     
     public default LocalDateAccess<HOST> date(Era era, int yearOfEra, int month, int dayOfMonth) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.date(era, yearOfEra, month, dayOfMonth);
         };
     }
     public default LocalDateAccess<HOST> date(int prolepticYear, int month, int dayOfMonth) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.date(prolepticYear, month, dayOfMonth);
         };
     }
     public default LocalDateAccess<HOST> dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.dateYearDay(era, yearOfEra, dayOfYear);
         };
     }
     public default LocalDateAccess<HOST> dateYearDay(int prolepticYear, int dayOfYear) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.dateYearDay(prolepticYear, dayOfYear);
         };
     }
     public default LocalDateAccess<HOST> dateEpochDay(long epochDay) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.dateEpochDay(epochDay);
         };
     }
     public default LocalDateAccess<HOST> date(TemporalAccessor temporal) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.date(temporal);
         };
     }
     public default LocalDateTimeAccess<HOST> localDateTime(TemporalAccessor temporal) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.localDateTime(temporal);
         };
     }
     public default ZonedDateTimeAccess<HOST> zonedDateTime(TemporalAccessor temporal) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.zonedDateTime(temporal);
         };
     }
     public default ZonedDateTimeAccess<HOST>  zonedDateTime(Instant instant, ZoneId zone) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.zonedDateTime(instant, zone);
         };
     }
     public default LocalDateAccess<HOST> dateNow() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.dateNow();
         };
     }
     public default LocalDateAccess<HOST> dateNow(ZoneId zone) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.dateNow(zone);
         };
     }
     public default LocalDateAccess<HOST> dateNow(Clock clock) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.dateNow(clock);
         };
     }
     public default BooleanAccessPrimitive<HOST> isLeapYear(long prolepticYear) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.isLeapYear(prolepticYear);
         };
     }
     public default IntegerAccessPrimitive<HOST> prolepticYear(Era era, int yearOfEra) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.prolepticYear(era, yearOfEra);
         };
     }
     public default IsoEraAccess<HOST> eraOf(int eraValue) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.eraOf(eraValue);
         };
     }
@@ -128,19 +129,19 @@ public interface IsoChronologyAccess<HOST>
     }
     public default LocalDateAccess<HOST> resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.resolveDate(fieldValues, resolverStyle);
         };
     }
     public default ValueRangeAccess<HOST> range(ChronoField field) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.range(field);
         };
     }
     public default PeriodAccess<HOST> period(int years, int months, int days) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.period(years, months, days);
         };
     }

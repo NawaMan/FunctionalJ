@@ -66,11 +66,11 @@ public interface StreamPlusWithCombine<DATA> {
      *   Result stream:  [A, 1, B, 2, C, 3, 4, 5] <br>
      */
     public default StreamPlus<DATA> mergeWith(Stream<DATA> anotherStream) {
-        var streamPlus = streamPlus();
-        var iteratorA  = streamPlus.iterator();
-        var iteratorB  = StreamPlus.from(anotherStream).iterator();
+        val streamPlus = streamPlus();
+        val iteratorA  = streamPlus.iterator();
+        val iteratorB  = StreamPlus.from(anotherStream).iterator();
         
-        var resultStream 
+        val resultStream 
                 = StreamPlusHelper
                 .doMerge(iteratorA, iteratorB);
         
@@ -143,8 +143,8 @@ public interface StreamPlusWithCombine<DATA> {
             Stream<B>         anotherStream, 
             ZipWithOption     option,
             Func2<DATA, B, C> combinator) {
-        var iteratorA = streamPlus().iterator();
-        var iteratorB = StreamPlus.from(anotherStream).iterator();
+        val iteratorA = streamPlus().iterator();
+        val iteratorB = StreamPlus.from(anotherStream).iterator();
         return StreamPlusHelper.doZipWith(option, combinator, iteratorA, iteratorB);
     }
     
@@ -181,15 +181,15 @@ public interface StreamPlusWithCombine<DATA> {
             Func2<DATA, DATA, Boolean> selectThisNotAnother) {
         return zipWith(anotherStream, option)
                 .map(t -> {
-                    var _1 = t._1();
-                    var _2 = t._2();
+                    val _1 = t._1();
+                    val _2 = t._2();
                     if ((_1 != null) && _2 == null)
                         return _1;
                     if ((_1 == null) && _2 != null)
                         return _2;
                     if ((_1 == null) && _2 == null)
                         return null;
-                    var which = selectThisNotAnother.applyTo(t);
+                    val which = selectThisNotAnother.applyTo(t);
                     return which ? _1 : _2;
                 })
                 .filterNonNull();

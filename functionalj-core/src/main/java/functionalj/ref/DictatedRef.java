@@ -27,6 +27,7 @@ import static java.util.Objects.requireNonNull;
 
 import functionalj.function.Func0;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class DictatedRef<DATA> extends Ref<DATA> {
@@ -67,7 +68,7 @@ public class DictatedRef<DATA> extends Ref<DATA> {
             return true;
         if (obj instanceof DictatedRef) {
             @SuppressWarnings("rawtypes")
-            var dictatedRef = (DictatedRef)obj;
+            val dictatedRef = (DictatedRef)obj;
             if (ref.equals(dictatedRef.ref))
                 return true;
             if (this.equals(dictatedRef.ref))

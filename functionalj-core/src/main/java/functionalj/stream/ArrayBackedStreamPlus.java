@@ -38,26 +38,26 @@ public class ArrayBackedStreamPlus<DATA> implements StreamPlus<DATA> {
     
     @SafeVarargs
     public static <DATA> StreamPlus<DATA> of(DATA ... array) {
-        var iterator = ArrayBackedIteratorPlus.of(array);
-        var stream   = new ArrayBackedStreamPlus<>(iterator);
+        val iterator = ArrayBackedIteratorPlus.of(array);
+        val stream   = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
     public static <DATA> StreamPlus<DATA> from(DATA[] array) {
-        var iterator = ArrayBackedIteratorPlus.of(array);
-        var stream   = new ArrayBackedStreamPlus<>(iterator);
+        val iterator = ArrayBackedIteratorPlus.of(array);
+        val stream   = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
     public static <DATA> StreamPlus<DATA> from(DATA[] array, int start, int length) {
         @SuppressWarnings("unchecked")
-        var iterator = (ArrayBackedIteratorPlus<DATA>)ArrayBackedIteratorPlus.of(array, start, length);
-        var stream   = new ArrayBackedStreamPlus<>(iterator);
+        val iterator = (ArrayBackedIteratorPlus<DATA>)ArrayBackedIteratorPlus.of(array, start, length);
+        val stream   = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }
     
     ArrayBackedStreamPlus(ArrayBackedIteratorPlus<DATA> iterator) {
         this.iterator = iterator;
         
-        var iterable = (Iterable<DATA>)()->iterator;
+        val iterable = (Iterable<DATA>)()->iterator;
         this.stream  = StreamPlus.from(StreamSupport.stream(iterable.spliterator(), false));
     }
     

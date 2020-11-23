@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -38,7 +39,7 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
                 AccessParameterized<HOST, Optional<TYPE>, TYPE, SUBACCESS> {
     
     public static <H, T, A extends AnyAccess<H, T>> OptionalAccess<H, T, A> of(Function<H, Optional<T>> read, Function<Function<H, T>, A> createAccess) {
-        var accessParameterized = new AccessParameterized<H, Optional<T>, T, A>() {
+        val accessParameterized = new AccessParameterized<H, Optional<T>, T, A>() {
             @Override
             public Optional<T> applyUnsafe(H host) throws Exception {
                 return read.apply(host);
@@ -71,7 +72,7 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     
     public default <TARGET> 
     OptionalAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenMap(Function<TYPE, TARGET> mapper) {
-        var accessWithSub = new AccessParameterized<HOST, Optional<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
+        val accessWithSub = new AccessParameterized<HOST, Optional<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Optional<TARGET> applyUnsafe(HOST host) throws Exception {
                 Optional<TYPE> optional = OptionalAccess.this.apply(host);
@@ -93,7 +94,7 @@ public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TY
     
     public default <TARGET> 
     OptionalAccess<HOST, TARGET, AnyAccess<HOST, TARGET>> thenFlatMap(Function<TYPE, Optional<TARGET>> mapper) {
-        var accessWithSub = new AccessParameterized<HOST, Optional<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
+        val accessWithSub = new AccessParameterized<HOST, Optional<TARGET>, TARGET, AnyAccess<HOST,TARGET>>() {
             @Override
             public Optional<TARGET> applyUnsafe(HOST host) throws Exception {
                 return OptionalAccess.this.apply(host).flatMap(mapper);

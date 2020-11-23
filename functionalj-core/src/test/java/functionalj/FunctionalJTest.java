@@ -46,6 +46,7 @@ import org.junit.Test;
 
 import functionalj.function.Func;
 import lombok.Value;
+import lombok.val;
 
 
 public class FunctionalJTest {
@@ -58,8 +59,8 @@ public class FunctionalJTest {
             private String name;
         }
         
-        var persons = asList(new Person("John"), new Person("Jack"), new Person("Jim"));
-        var startsWithTerm = (BiPredicate<String, String>)String::startsWith;
+        val persons = asList(new Person("John"), new Person("Jack"), new Person("Jim"));
+        val startsWithTerm = (BiPredicate<String, String>)String::startsWith;
         assertEquals("[Person(name=John)]", 
                 persons.stream()
                 .filter(only(Person::getName, startsWithTerm, "Jo"))
@@ -159,14 +160,14 @@ public class FunctionalJTest {
     
     @Test
     public void testF3() {
-        var add3  = Func.of(FunctionalJTest::add3);
-        var add_5 = add3.bind(__, 5, __);
+        val add3  = Func.of(FunctionalJTest::add3);
+        val add_5 = add3.bind(__, 5, __);
         assertEquals(8, add_5.apply(1, 2).intValue());
     }
     
     @Test
     public void testWithIndexTuple() {
-        var list = asList("One", "Two", "Three");
+        val list = asList("One", "Two", "Three");
         assertEquals("0: One,1: Two,2: Three", 
                 list.stream()
                 .map(withIndex(item->{
@@ -178,7 +179,7 @@ public class FunctionalJTest {
     
     @Test
     public void testCheckWithIndexTuple() {
-        var list = asList("One", "Two", "Three");
+        val list = asList("One", "Two", "Three");
         assertEquals("One,Three", 
                 list.stream()
                 .filter(only(withIndex(item-> item.index() != 1)))
@@ -187,7 +188,7 @@ public class FunctionalJTest {
     
     @Test
     public void testMapCheckWithIndexTuple() {
-        var list = asList("One", "Two", "Three");
+        val list = asList("One", "Two", "Three");
         assertEquals("0: One,2: Three", 
                 list.stream()
                 .map(withIndex())
@@ -198,7 +199,7 @@ public class FunctionalJTest {
     
     @Test
     public void testDelimitWith() {
-        var list = asList("One", "Two", "Three");
+        val list = asList("One", "Two", "Three");
         assertEquals("One-:-Two-:-Three", 
                 list.stream()
                 .flatMap(delimitWith(":"))

@@ -23,8 +23,7 @@
 // ============================================================================
 package functionalj.function;
 
-
-
+import lombok.val;
 
 @FunctionalInterface
 public interface DoubleDoubletoIntFunctionPrimitive extends ToIntBiDoubleFunction<Double> {
@@ -36,7 +35,7 @@ public interface DoubleDoubletoIntFunctionPrimitive extends ToIntBiDoubleFunctio
     }
     
     public static double apply(ToDoubleBiDoubleFunction<Double> function, double value, double anotherValue) {
-        var resValue 
+        val resValue 
             = (function instanceof DoubleDoubletoIntFunctionPrimitive)
             ? ((DoubleDoubletoIntFunctionPrimitive)function).applyAsDoubleAndDouble(value, anotherValue)
             : function.applyAsDouble(value, anotherValue);

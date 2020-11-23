@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 
 import functionalj.function.Func0;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public abstract class RefOf<DATA> extends Ref<DATA> {
@@ -56,7 +57,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
             return false;
         
         @SuppressWarnings("unchecked")
-        var anotherRef = (RefOf<DATA>)another;
+        val anotherRef = (RefOf<DATA>)another;
         if (!anotherRef.getDataType().equals(this.getDataType()))
             return false;
         
@@ -103,7 +104,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         
         @Override
         protected final Result<DATA> findResult() {
-            var result = Result.of(supplier);
+            val result = Result.of(supplier);
             return result;
         }
         
@@ -124,7 +125,7 @@ public abstract class RefOf<DATA> extends Ref<DATA> {
         
         @Override
         protected final Result<DATA> findResult() {
-            var result = Result.of(anotherRef.valueSupplier()).whenAbsentGet(whenAbsentSupplier);
+            val result = Result.of(anotherRef.valueSupplier()).whenAbsentGet(whenAbsentSupplier);
             return result;
         }
         

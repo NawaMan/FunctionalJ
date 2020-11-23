@@ -24,7 +24,7 @@ public class IntStepTest {
     // TODO - Must uncomment this.
     @Test
     public void testAsRange() {
-        var step = step(10);
+        val step = step(10);
         assertEquals(
                 "[0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]", 
                 Streamable

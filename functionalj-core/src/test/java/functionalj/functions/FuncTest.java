@@ -37,6 +37,7 @@ import functionalj.function.Func2;
 import functionalj.function.Func4;
 import functionalj.function.FunctionInvocationException;
 import functionalj.promise.Promise;
+import lombok.val;
 
 
 public class FuncTest {
@@ -86,7 +87,7 @@ public class FuncTest {
     
     @Test
     public void testAutoCurry() throws Exception {
-        var sum4 = f((a, b, c, d) -> "" + a + b + c + d);
+        val sum4 = f((a, b, c, d) -> "" + a + b + c + d);
         assertEquals("5432", 
                 sum4
                 .applyTo(5)
@@ -103,24 +104,24 @@ public class FuncTest {
     
     @Test
     public void testDefer() {
-        var func = ((Func2<Integer, Integer, Integer>)(a, b) -> a+b).defer();
-        var a    = Promise.of(5);
-        var b    = Promise.of(7);
-        var c    = func.apply(a, b);
+        val func = ((Func2<Integer, Integer, Integer>)(a, b) -> a+b).defer();
+        val a    = Promise.of(5);
+        val b    = Promise.of(7);
+        val c    = func.apply(a, b);
         assertEquals(12, c.getResult().value().intValue());
     }
     
     @Test
     public void testWhenAbsent() {
-        var divide     = Func.F((Integer a, Integer b) -> a/b);
-        var safeDivide1 = divide.whenAbsentUse(Integer.MAX_VALUE);
-        var safeDivide2 = divide.whenAbsentGet(()->Integer.MAX_VALUE);
-        var safeDivide3 = divide.whenAbsentApply(exception ->{
+        val divide     = Func.F((Integer a, Integer b) -> a/b);
+        val safeDivide1 = divide.whenAbsentUse(Integer.MAX_VALUE);
+        val safeDivide2 = divide.whenAbsentGet(()->Integer.MAX_VALUE);
+        val safeDivide3 = divide.whenAbsentApply(exception ->{
             if (exception instanceof ArithmeticException)
                 return Integer.MAX_VALUE;
             throw exception;
         });
-        var safeDivide4 = divide.whenAbsentApply((a, b, exception) ->{
+        val safeDivide4 = divide.whenAbsentApply((a, b, exception) ->{
             if (b == 0) {
                 if (a > 0) return Integer.MAX_VALUE;
                 if (a < 0) return Integer.MIN_VALUE;
@@ -128,7 +129,7 @@ public class FuncTest {
             }
             throw exception;
         });
-        var safeDivide5 = divide.whenAbsentApply((t, exception) ->{
+        val safeDivide5 = divide.whenAbsentApply((t, exception) ->{
             if (t._2() == 0) {
                 if (t._1() > 0) return Integer.MAX_VALUE;
                 if (t._1() < 0) return Integer.MIN_VALUE;

@@ -50,6 +50,7 @@ import functionalj.list.FuncList;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.streamable.Streamable;
+import lombok.val;
 
 
 // TODO - Should only contains methods that return functions or constance of functions
@@ -207,8 +208,8 @@ public class StrFuncs {
     
     public static <I> Func1<I, String> withPattern(Pattern pattern, String defaultValue) {
         return input -> {
-            var inputStr = String.valueOf(input);
-            var matcher  = pattern.matcher(inputStr);
+            val inputStr = String.valueOf(input);
+            val matcher  = pattern.matcher(inputStr);
             return matcher.find()
                     ? matcher.group()
                     : defaultValue;
@@ -216,8 +217,8 @@ public class StrFuncs {
     }
     public static <I> Func1<I, String> withPattern(Pattern pattern, Supplier<String> defaultValueSupplier) {
         return input -> {
-            var inputStr = String.valueOf(input);
-            var matcher  = pattern.matcher(inputStr);
+            val inputStr = String.valueOf(input);
+            val matcher  = pattern.matcher(inputStr);
             return matcher.find()
                     ? matcher.group()
                     : defaultValueSupplier.get();
@@ -225,8 +226,8 @@ public class StrFuncs {
     }
     public static <I> Func1<I, String> withPattern(Pattern pattern, Function<String, String> defaultValueFunction) {
         return input -> {
-            var inputStr = String.valueOf(input);
-            var matcher  = pattern.matcher(inputStr);
+            val inputStr = String.valueOf(input);
+            val matcher  = pattern.matcher(inputStr);
             return matcher.find()
                     ? matcher.group()
                     : defaultValueFunction.apply(inputStr);
@@ -234,8 +235,8 @@ public class StrFuncs {
     }
     public static <I> Func1<I, String> withPath(Pattern pattern, BiFunction<String, Matcher, String> defaultValueFunction) {
         return input -> {
-            var inputStr = String.valueOf(input);
-            var matcher  = pattern.matcher(inputStr);
+            val inputStr = String.valueOf(input);
+            val matcher  = pattern.matcher(inputStr);
             return matcher.find()
                     ? matcher.group()
                     : defaultValueFunction.apply(inputStr, matcher);
@@ -297,7 +298,7 @@ public class StrFuncs {
     public static String repeat(char chr, int count) {
         if (count <= 0)
             return "";
-        var buffer = new StringBuffer();
+        val buffer = new StringBuffer();
         for (int i = 0; i < count; i++)
             buffer.append(chr);
         return buffer.toString();
@@ -305,7 +306,7 @@ public class StrFuncs {
     public static String repeat(String str, int count) {
         if (count <= 0)
             return "";
-        var buffer = new StringBuffer();
+        val buffer = new StringBuffer();
         for (int i = 0; i < count; i++)
             buffer.append(str);
         return buffer.toString();
@@ -330,17 +331,17 @@ public class StrFuncs {
         if (str == null || (str.length() == 0))
             return StreamPlus.empty();
         
-        var pattern = (flags < 0) ? Pattern.compile(regexDelimiter) : Pattern.compile(regexDelimiter, flags);
-        var matcher = pattern.matcher(str);
-        var offset  = new AtomicInteger(0);
-        var isLast  = new AtomicReference<Boolean>(null);
+        val pattern = (flags < 0) ? Pattern.compile(regexDelimiter) : Pattern.compile(regexDelimiter, flags);
+        val matcher = pattern.matcher(str);
+        val offset  = new AtomicInteger(0);
+        val isLast  = new AtomicReference<Boolean>(null);
         Iterable<String> iterable = new Iterable<String>() {
             @Override
             public Iterator<String> iterator() {
                 return new Iterator<String>() {
                     @Override
                     public boolean hasNext() {
-                        var find = matcher.find();
+                        val find = matcher.find();
                         if (!find) {
                             if (isLast.get() == null) {
                                 isLast.set(true);
@@ -353,16 +354,16 @@ public class StrFuncs {
                     }
                     @Override
                     public String next() {
-                        var isLastBoolean = isLast.get();
+                        val isLastBoolean = isLast.get();
                         if (isLastBoolean == null) {
-                            var start = matcher.start();
-                            var end   = matcher.end();
-                            var next  = str.subSequence(offset.get(), start);
+                            val start = matcher.start();
+                            val end   = matcher.end();
+                            val next  = str.subSequence(offset.get(), start);
                             offset.set(end);
                             return next.toString();
                         }
                         if (isLastBoolean == true) {
-                            var next  = str.subSequence(offset.get(), str.length());
+                            val next  = str.subSequence(offset.get(), str.length());
                             return next.toString();
                         }
                         return null;
@@ -413,9 +414,9 @@ public class StrFuncs {
     }
     
     public static FuncList<String> grab(CharSequence strValue, String regex, int patternFlags) {
-        var pattern  = Pattern.compile(regex, patternFlags);
+        val pattern  = Pattern.compile(regex, patternFlags);
         return FuncList.from(Streamable.from(()->{
-            var matcher  = pattern.matcher(strValue);
+            val matcher  = pattern.matcher(strValue);
             try (var iterator = createMatchIterator(matcher)) {
                 return iterator.stream();
             }
@@ -459,10 +460,10 @@ public class StrFuncs {
         if (str == null || (str.length() == 0))
             return RegExMatchResultStream.empty;
         
-        var pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
-        var matcher = pattern.matcher(str);
-        var source  = Func.lazy(()->str.toString());
-        var index   = new AtomicInteger();
+        val pattern = (flags < 0) ? Pattern.compile(regex) : Pattern.compile(regex, flags);
+        val matcher = pattern.matcher(str);
+        val source  = Func.lazy(()->str.toString());
+        val index   = new AtomicInteger();
         
         Iterable<RegExMatchResult> iterable = new Iterable<RegExMatchResult>() {
             @Override
@@ -491,13 +492,13 @@ public class StrFuncs {
             return "";
         
         StringBuffer buffer = new StringBuffer();
-        var flags   = 0;
-        var pattern = Pattern.compile("\\$[a-zA-Z0-9_]++", flags);
-        var matcher = pattern.matcher(str);
+        val flags   = 0;
+        val pattern = Pattern.compile("\\$[a-zA-Z0-9_]++", flags);
+        val matcher = pattern.matcher(str);
         while (matcher.find()) {
-            var group       = matcher.group();
-            var name        = group.substring(1, group.length());
-            var replacement = String.valueOf(replacer.apply(name));
+            val group       = matcher.group();
+            val name        = group.substring(1, group.length());
+            val replacement = String.valueOf(replacer.apply(name));
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);

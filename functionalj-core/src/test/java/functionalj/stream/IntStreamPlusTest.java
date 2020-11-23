@@ -79,10 +79,10 @@ public class IntStreamPlusTest {
     
     @Test
     public void testOf() {
-        var intArray  = new int[] {1, 1, 2, 3, 5, 8};
+        val intArray  = new int[] {1, 1, 2, 3, 5, 8};
         assertEquals("[1, 1, 2, 3, 5, 8]", IntStreamPlus.of(intArray).toListString());
         
-        var stream = IntStreamPlus.of(intArray);
+        val stream = IntStreamPlus.of(intArray);
         intArray[0] = 0;
         assertEquals("[1, 1, 2, 3, 5, 8]", stream.toListString());
         // NOICE ------^  The value are not changed after.
@@ -171,10 +171,10 @@ public class IntStreamPlusTest {
     
     @Test
     public void testIterate() {
-        var intStream = IntStreamPlus.iterate(1, a -> a + 1);
+        val intStream = IntStreamPlus.iterate(1, a -> a + 1);
         assertEquals("[6, 7, 8, 9, 10]", intStream.skip(5).limit(5).toListString());
         
-        var intStream2 = IntStreamPlus.iterate(1, 1, (a, b) -> a + b);
+        val intStream2 = IntStreamPlus.iterate(1, 1, (a, b) -> a + b);
         assertEquals("[1, 1, 2, 3, 5, 8, 13]", intStream2.limit(7).toListString());
     }
     
@@ -235,7 +235,7 @@ public class IntStreamPlusTest {
     
     @Test
     public void testMap() {
-        var intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
+        val intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
         assertEquals(
                 "[2, 2, 4, 6, 10, 16]", 
                 intStream
@@ -245,7 +245,7 @@ public class IntStreamPlusTest {
     
     @Test
     public void testMapToInt() {
-        var intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
+        val intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
         assertEquals(
                 "[2, 2, 4, 6, 10, 16]", 
                 intStream
@@ -255,7 +255,7 @@ public class IntStreamPlusTest {
 //    
 //    @Test
 //    public void testMapToLong() {
-//        var intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
+//        val intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
 //        assertEquals(
 //                "[2, 2, 4, 6, 10, 16]", 
 //                intStream
@@ -265,7 +265,7 @@ public class IntStreamPlusTest {
 //    
 //    @Test @Ignore
 //    public void testMapToDouble() {
-//        var intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
+//        val intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
 //        assertEquals(
 //                "[2.0, 2.0, 4.0, 6.0, 10.0, 16.0]", 
 //                intStream
@@ -275,7 +275,7 @@ public class IntStreamPlusTest {
     
     @Test
     public void testMapToObj() {
-        var intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
+        val intStream = IntStreamPlus.of(1, 1, 2, 3, 5, 8);
         assertEquals(
                 "['1', '1', '2', '3', '5', '8']", 
                 intStream
@@ -285,7 +285,7 @@ public class IntStreamPlusTest {
     
     @Test
     public void testFlatMap() {
-        var intStream = IntStreamPlus.of(1, 2, 3, 5);
+        val intStream = IntStreamPlus.of(1, 2, 3, 5);
         assertEquals(
                 "[1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 5]", 
                 intStream
@@ -295,7 +295,7 @@ public class IntStreamPlusTest {
     
     @Test
     public void testFlatMapToObj() {
-        var intStream = IntStreamPlus.of(1, 2, 3, 5);
+        val intStream = IntStreamPlus.of(1, 2, 3, 5);
         IntFunction<? extends Stream<String>> mapper = i -> Stream.of(cycle(i).limit(i).toListString());
         assertEquals(
                 "[[1], [2, 2], [3, 3, 3], [5, 5, 5, 5, 5]]", 
@@ -335,7 +335,7 @@ public class IntStreamPlusTest {
     
     @Test
     public void testPeek() {
-        var list = new ArrayList<String>();
+        val list = new ArrayList<String>();
         assertEquals(
                 "[0, 1, 2, 3, 4]", 
                 loop(5)
@@ -498,7 +498,7 @@ public class IntStreamPlusTest {
     
     @Test
     public void testForEachOrdered() {
-        var list = new ArrayList<Integer>();
+        val list = new ArrayList<Integer>();
         ints(1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89)
         .map(i -> Math.abs(i - 30))
         .forEachOrdered(list::add);
@@ -1663,8 +1663,8 @@ public class IntStreamPlusTest {
     
     @Test
     public void testCalculate() {
-        var sum = new Sum();
-        var max = new Max();
+        val sum = new Sum();
+        val max = new Max();
         
         assertEquals("45", 
                      "" + range(0, 10).calculate(sum));
@@ -1823,7 +1823,7 @@ public class IntStreamPlusTest {
     @Test
     public void testPeekMore() {
         {
-            var lines = new ArrayList<String>();
+            val lines = new ArrayList<String>();
             assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
                     "" + range(0, 10)
                         .peekBy(theInteger.thatIsEven(), i -> lines.add("" + i))
@@ -1835,7 +1835,7 @@ public class IntStreamPlusTest {
         }
 //        
 //        {
-//            var lines = new ArrayList<String>();
+//            val lines = new ArrayList<String>();
 //            assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
 //                    "" + range(0, 10)
 //                        .peek((int    i) -> "--> " + i + ";", 
@@ -1848,7 +1848,7 @@ public class IntStreamPlusTest {
 //        }
 //        
 //        {
-//            var lines = new ArrayList<String>();
+//            val lines = new ArrayList<String>();
 //            assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", 
 //                    "" + range(0, 10)
 //                        .peek((int    i) -> "--> " + i + ";", 
@@ -1904,7 +1904,7 @@ public class IntStreamPlusTest {
     
     @Test
     public void testForEachWithIndex() {
-        var lines = new ArrayList<String>();
+        val lines = new ArrayList<String>();
         range(0, 10)
         .forEachWithIndex((i, v) -> lines.add(i + ": " + v));
         

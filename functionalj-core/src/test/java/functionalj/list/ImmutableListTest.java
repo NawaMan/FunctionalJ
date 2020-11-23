@@ -71,7 +71,7 @@ public class ImmutableListTest {
     }
     @Test
     public void testSplit_ensurePredicateGotCalledOncePerItem() {
-        var processedStrings = new ArrayList<String>();
+        val processedStrings = new ArrayList<String>();
         assertEquals("([One, Two],[Four, Five],[Three])", 
                 ImmutableList.of("One", "Two", "Three", "Four", "Five")
                 .split($S.length().thatEquals(3),

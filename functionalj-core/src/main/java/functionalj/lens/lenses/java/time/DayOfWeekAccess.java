@@ -8,6 +8,7 @@ import functionalj.lens.lenses.BooleanAccess;
 import functionalj.lens.lenses.BooleanAccessPrimitive;
 import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
+import lombok.val;
 
 
 @FunctionalInterface
@@ -27,63 +28,63 @@ public interface DayOfWeekAccess<HOST>
     
     public default BooleanAccessPrimitive<HOST> isMonday() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value == DayOfWeek.MONDAY;
         };
     }
     public default BooleanAccessPrimitive<HOST> isTuesday() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value == DayOfWeek.TUESDAY;
         };
     }
     public default BooleanAccessPrimitive<HOST> isWednesday() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value == DayOfWeek.WEDNESDAY;
         };
     }
     public default BooleanAccessPrimitive<HOST> isThursday() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value == DayOfWeek.THURSDAY;
         };
     }
     public default BooleanAccessPrimitive<HOST> isFriday() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value == DayOfWeek.FRIDAY;
         };
     }
     public default BooleanAccessPrimitive<HOST> isSaturday() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value == DayOfWeek.SATURDAY;
         };
     }
     public default BooleanAccessPrimitive<HOST> isSunday() {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value == DayOfWeek.SUNDAY;
         };
     }
     
     public default DayOfWeekAccess<HOST> plus(long days) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.plus(days);
         };
     }
     public default DayOfWeekAccess<HOST> minus(long days) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.minus(days);
         };
     }
     
     public default IntegerAccessPrimitive<HOST> compareTo(DayOfWeek other) {
         return host -> {
-            var value = apply(host);
+            val value = apply(host);
             return value.compareTo(other);
         };
     }

@@ -33,6 +33,7 @@ import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
+import lombok.val;
 
 
 public interface FuncListWithSplit<DATA>
@@ -56,15 +57,15 @@ public interface FuncListWithSplit<DATA>
      */
     public default Tuple2<FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate) {
-        var temp 
+        val temp 
             = streamPlus()
             .mapToTuple(
                     it -> predicate.test(it) ? 0 : 1,
                     it -> it
             )
             .toImmutableList();
-        var list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        var list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
         return Tuple.of(
                 list1,
                 list2);
@@ -82,7 +83,7 @@ public interface FuncListWithSplit<DATA>
     public default Tuple3<FuncList<DATA>, FuncList<DATA>, FuncList<DATA>> split(
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2) {
-        var temp 
+        val temp 
             = streamPlus()
             .mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -91,9 +92,9 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        var list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        var list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        var list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
         return Tuple.of(
                 list1,
                 list2,
@@ -114,7 +115,7 @@ public interface FuncListWithSplit<DATA>
             Predicate<? super DATA> predicate1,
             Predicate<? super DATA> predicate2,
             Predicate<? super DATA> predicate3) {
-        var temp 
+        val temp 
             = streamPlus()
             .mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -124,10 +125,10 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        var list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        var list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        var list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        var list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
         return Tuple.of(
                 list1,
                 list2,
@@ -151,7 +152,7 @@ public interface FuncListWithSplit<DATA>
             Predicate<? super DATA> predicate2,
             Predicate<? super DATA> predicate3,
             Predicate<? super DATA> predicate4) {
-        var temp 
+        val temp 
             = streamPlus()
             .mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -162,11 +163,11 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        var list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        var list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        var list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        var list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
-        var list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
+        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
         return Tuple.of(
                 list1,
                 list2,
@@ -193,7 +194,7 @@ public interface FuncListWithSplit<DATA>
             Predicate<? super DATA> predicate3,
             Predicate<? super DATA> predicate4,
             Predicate<? super DATA> predicate5) {
-        var temp 
+        val temp 
             = streamPlus()
             .mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -205,12 +206,12 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        var list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
-        var list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
-        var list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
-        var list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
-        var list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
-        var list6 = temp.filter(it -> it._1() == 5).map(it -> it._2());
+        val list1 = temp.filter(it -> it._1() == 0).map(it -> it._2());
+        val list2 = temp.filter(it -> it._1() == 1).map(it -> it._2());
+        val list3 = temp.filter(it -> it._1() == 2).map(it -> it._2());
+        val list4 = temp.filter(it -> it._1() == 3).map(it -> it._2());
+        val list5 = temp.filter(it -> it._1() == 4).map(it -> it._2());
+        val list6 = temp.filter(it -> it._1() == 5).map(it -> it._2());
         return Tuple.of(
                 list1,
                 list2,
@@ -228,15 +229,15 @@ public interface FuncListWithSplit<DATA>
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate,
             KEY key2) {
-        var temp 
+        val temp 
             = streamPlus()
             .mapToTuple(
                 it -> predicate.test(it) ? 0 : 1,
                 it -> it
             )
             .toImmutableList();
-        var list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
                 key1, list1, 
                 key2, list2);
@@ -251,7 +252,7 @@ public interface FuncListWithSplit<DATA>
             KEY key1, Predicate<? super DATA> predicate1,
             KEY key2, Predicate<? super DATA> predicate2,
             KEY key3) {
-        var temp 
+        val temp 
             = streamPlus()
             .mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -260,9 +261,9 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        var list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
                 key1, list1, 
                 key2, list2, 
@@ -279,7 +280,7 @@ public interface FuncListWithSplit<DATA>
             KEY key2, Predicate<? super DATA> predicate2,
             KEY key3, Predicate<? super DATA> predicate3,
             KEY key4) {
-        var temp 
+        val temp 
             = streamPlus()
             .mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -289,10 +290,10 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        var list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
                 key1, list1, 
                 key2, list2, 
@@ -311,7 +312,7 @@ public interface FuncListWithSplit<DATA>
             KEY key3, Predicate<? super DATA> predicate3,
             KEY key4, Predicate<? super DATA> predicate4,
             KEY key5) {
-        var temp 
+        val temp 
             = streamPlus()
             .mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -322,11 +323,11 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        var list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
                 key1, list1, 
                 key2, list2, 
@@ -347,7 +348,7 @@ public interface FuncListWithSplit<DATA>
             KEY key4, Predicate<? super DATA> predicate4,
             KEY key5, Predicate<? super DATA> predicate5,
             KEY key6) {
-        var temp 
+        val temp 
             = streamPlus()
             .mapToTuple(
                 it -> predicate1.test(it) ? 0
@@ -359,12 +360,12 @@ public interface FuncListWithSplit<DATA>
                 it -> it
             )
             .toImmutableList();
-        var list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
-        var list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list1 = (key1 != null) ? temp.filter(it -> it._1() == 0).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list2 = (key2 != null) ? temp.filter(it -> it._1() == 1).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list3 = (key3 != null) ? temp.filter(it -> it._1() == 2).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list4 = (key4 != null) ? temp.filter(it -> it._1() == 3).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list5 = (key5 != null) ? temp.filter(it -> it._1() == 4).map(it -> it._2()) : FuncList.<DATA>empty();
+        val list6 = (key6 != null) ? temp.filter(it -> it._1() == 5).map(it -> it._2()) : FuncList.<DATA>empty();
         return FuncMap.of(
                 key1, list1, 
                 key2, list2, 

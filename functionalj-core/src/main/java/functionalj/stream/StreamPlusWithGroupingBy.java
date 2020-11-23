@@ -28,8 +28,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 import functionalj.map.FuncMap;
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Terminal;
 import functionalj.streamable.Streamable;
 
 public interface StreamPlusWithGroupingBy<DATA> {

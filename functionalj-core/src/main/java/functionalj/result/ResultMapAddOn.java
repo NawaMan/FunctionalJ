@@ -39,6 +39,7 @@ import functionalj.tuple.Tuple3;
 import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
+import lombok.val;
 
 
 class ResultMapAddOnHelper {
@@ -52,7 +53,7 @@ class ResultMapAddOnHelper {
             boolean hasNull = false;
             for(var mapper : mappers) {
                 try {
-                    var res = mapper.apply(d);
+                    val res = mapper.apply(d);
                     if (res == null)
                          hasNull = true;
                     else return (T)res;
@@ -189,9 +190,9 @@ public interface ResultMapAddOn<DATA> {
                 Func1<? super DATA, ? extends T2> mapper2,
                 Func2<T1, T2, T> function) {
         return map(each -> {
-            var v1 = mapper1.apply(each);
-            var v2 = mapper2.apply(each);
-            var v  = function.apply(v1, v2);
+            val v1 = mapper1.apply(each);
+            val v2 = mapper2.apply(each);
+            val v  = function.apply(v1, v2);
             return v;
         });
     }
@@ -202,10 +203,10 @@ public interface ResultMapAddOn<DATA> {
                 Func1<? super DATA, ? extends T3> mapper3,
                 Func3<T1, T2, T3, T> function) {
         return map(each -> {
-            var v1 = mapper1.apply(each);
-            var v2 = mapper2.apply(each);
-            var v3 = mapper3.apply(each);
-            var v  = function.apply(v1, v2, v3);
+            val v1 = mapper1.apply(each);
+            val v2 = mapper2.apply(each);
+            val v3 = mapper3.apply(each);
+            val v  = function.apply(v1, v2, v3);
             return v;
         });
     }
@@ -217,11 +218,11 @@ public interface ResultMapAddOn<DATA> {
                 Func1<? super DATA, ? extends T4> mapper4,
                 Func4<T1, T2, T3, T4, T> function) {
         return map(each -> {
-            var v1 = mapper1.apply(each);
-            var v2 = mapper2.apply(each);
-            var v3 = mapper3.apply(each);
-            var v4 = mapper4.apply(each);
-            var v  = function.apply(v1, v2, v3, v4);
+            val v1 = mapper1.apply(each);
+            val v2 = mapper2.apply(each);
+            val v3 = mapper3.apply(each);
+            val v4 = mapper4.apply(each);
+            val v  = function.apply(v1, v2, v3, v4);
             return v;
         });
     }
@@ -234,12 +235,12 @@ public interface ResultMapAddOn<DATA> {
                 Func1<? super DATA, ? extends T5> mapper5,
                 Func5<T1, T2, T3, T4, T5, T> function) {
         return map(each -> {
-            var v1 = mapper1.apply(each);
-            var v2 = mapper2.apply(each);
-            var v3 = mapper3.apply(each);
-            var v4 = mapper4.apply(each);
-            var v5 = mapper5.apply(each);
-            var v  = function.apply(v1, v2, v3, v4, v5);
+            val v1 = mapper1.apply(each);
+            val v2 = mapper2.apply(each);
+            val v3 = mapper3.apply(each);
+            val v4 = mapper4.apply(each);
+            val v5 = mapper5.apply(each);
+            val v  = function.apply(v1, v2, v3, v4, v5);
             return v;
         });
     }
@@ -253,13 +254,13 @@ public interface ResultMapAddOn<DATA> {
                 Func1<? super DATA, ? extends T6> mapper6,
                 Func6<T1, T2, T3, T4, T5, T6, T> function) {
         return map(each -> {
-            var v1 = mapper1.apply(each);
-            var v2 = mapper2.apply(each);
-            var v3 = mapper3.apply(each);
-            var v4 = mapper4.apply(each);
-            var v5 = mapper5.apply(each);
-            var v6 = mapper6.apply(each);
-            var v  = function.apply(v1, v2, v3, v4, v5, v6);
+            val v1 = mapper1.apply(each);
+            val v2 = mapper2.apply(each);
+            val v3 = mapper3.apply(each);
+            val v4 = mapper4.apply(each);
+            val v5 = mapper5.apply(each);
+            val v6 = mapper6.apply(each);
+            val v  = function.apply(v1, v2, v3, v4, v5, v6);
             return v;
         });
     }

@@ -114,7 +114,7 @@ public class IntStep implements IntUnaryOperator, IntFunction<Integer>, Function
     
     @Override
     public IntStreamPlus intStreamPlus() {
-        var num = new AtomicInteger(start);
+        val num = new AtomicInteger(start);
         return IntStreamPlus.generate(()->num.getAndUpdate(i -> i + size));
     }
     

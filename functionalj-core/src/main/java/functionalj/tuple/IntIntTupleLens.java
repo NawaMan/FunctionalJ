@@ -33,6 +33,7 @@ import functionalj.lens.core.LensUtils;
 import functionalj.lens.core.WriteLens;
 import functionalj.lens.lenses.IntegerLens;
 import functionalj.lens.lenses.ObjectLens;
+import lombok.val;
 
 
 
@@ -71,64 +72,64 @@ public interface IntIntTupleLens<HOST>
     
     public default Function<HOST, HOST> change1To(int _1value) {
         return host -> {
-            var newTuple = new IntIntTuple(_1value, apply(host)._2);
+            val newTuple = new IntIntTuple(_1value, apply(host)._2);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change2To(int _2value) {
         return host -> {
-            var newTuple = new IntIntTuple(apply(host)._1, _2value);
+            val newTuple = new IntIntTuple(apply(host)._1, _2value);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change1By(IntSupplier _1valueSupplier) {
         return host -> {
-            var newTuple = new IntIntTuple(_1valueSupplier.getAsInt(), apply(host)._2);
+            val newTuple = new IntIntTuple(_1valueSupplier.getAsInt(), apply(host)._2);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change2By(IntSupplier _2valueSupplier) {
         return host -> {
-            var newTuple = new IntIntTuple(apply(host)._1, _2valueSupplier.getAsInt());
+            val newTuple = new IntIntTuple(apply(host)._1, _2valueSupplier.getAsInt());
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change1By(IntUnaryOperator _1valueTransformer) {
         return host -> {
-            var oldTuple = apply(host);
-            var new_1    = _1valueTransformer.applyAsInt(oldTuple._1);
-            var newTuple = new IntIntTuple(new_1, oldTuple._2);
+            val oldTuple = apply(host);
+            val new_1    = _1valueTransformer.applyAsInt(oldTuple._1);
+            val newTuple = new IntIntTuple(new_1, oldTuple._2);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change2By(IntUnaryOperator _2valueTransformer) {
         return host -> {
-            var oldTuple = apply(host);
-            var new_2    = _2valueTransformer.applyAsInt(oldTuple._2);
-            var newTuple = new IntIntTuple(oldTuple._1, new_2);
+            val oldTuple = apply(host);
+            val new_2    = _2valueTransformer.applyAsInt(oldTuple._2);
+            val newTuple = new IntIntTuple(oldTuple._1, new_2);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change1By(IntBiFunctionPrimitive _1valueTransformer) {
         return host -> {
-            var oldTuple = apply(host);
-            var new_1    = _1valueTransformer.applyAsIntAndInt(oldTuple._1, oldTuple._2);
-            var newTuple = new IntIntTuple(new_1, oldTuple._2);
+            val oldTuple = apply(host);
+            val new_1    = _1valueTransformer.applyAsIntAndInt(oldTuple._1, oldTuple._2);
+            val newTuple = new IntIntTuple(new_1, oldTuple._2);
             return apply(host, newTuple);
         };
     }
     
     public default Function<HOST, HOST> change2By(IntBiFunctionPrimitive _2valueTransformer) {
         return host -> {
-            var oldTuple = apply(host);
-            var new_2    = _2valueTransformer.applyAsIntAndInt(oldTuple._1, oldTuple._2);
-            var newTuple = new IntIntTuple(oldTuple._1, new_2);
+            val oldTuple = apply(host);
+            val new_2    = _2valueTransformer.applyAsIntAndInt(oldTuple._1, oldTuple._2);
+            val newTuple = new IntIntTuple(oldTuple._1, new_2);
             return apply(host, newTuple);
         };
     }

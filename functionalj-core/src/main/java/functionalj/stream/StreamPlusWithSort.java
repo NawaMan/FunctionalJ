@@ -27,7 +27,7 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Function;
 
-import functionalj.stream.makers.Eager;
+import functionalj.stream.markers.Eager;
 
 
 public interface StreamPlusWithSort<DATA> {
@@ -37,7 +37,7 @@ public interface StreamPlusWithSort<DATA> {
     /** Sort the values by the mapped value. */
     @Eager
     public default <T extends Comparable<? super T>> StreamPlus<DATA> sortedBy(Function<? super DATA, T> mapper) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .sorted((a, b) -> {
                     T vA = mapper.apply(a);
@@ -51,7 +51,7 @@ public interface StreamPlusWithSort<DATA> {
     public default <T> StreamPlus<DATA> sortedBy(
             Function<? super DATA, T> mapper, 
             Comparator<T>             comparator) {
-        var streamPlus = streamPlus();
+        val streamPlus = streamPlus();
         return streamPlus
                 .sorted((a, b) -> {
                     T vA = mapper.apply(a);

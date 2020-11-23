@@ -38,6 +38,7 @@ import org.junit.Test;
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.StringAccess;
+import lombok.val;
 
 
 public class ListAccessTest {
@@ -62,7 +63,7 @@ public class ListAccessTest {
     
     @Test
     public void testListAccess() {
-        var accSub = new AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>>() {
+        val accSub = new AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>>() {
             @Override
             public List<String> applyUnsafe(WithNames input) throws Exception {
                 return input.names();
@@ -72,7 +73,7 @@ public class ListAccessTest {
                 return accessToParameter::apply;
             }
         };
-        var listAcc = new ListAccess<WithNames, String, StringAccess<WithNames>>() {
+        val listAcc = new ListAccess<WithNames, String, StringAccess<WithNames>>() {
             @Override
             public AccessParameterized<WithNames, List<String>, String, StringAccess<WithNames>> accessParameterized() {
                 return accSub;

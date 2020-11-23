@@ -34,6 +34,7 @@ import functionalj.function.FuncUnit1;
 import functionalj.function.FuncUnit2;
 import functionalj.list.FuncList;
 import functionalj.result.Result;
+import lombok.val;
 
 
 public class Topic<DATA> {
@@ -50,7 +51,7 @@ public class Topic<DATA> {
     boolean publish(DATA data) {
         boolean stillActive = isActive.get();
         if (stillActive) {
-            var result = Result.valueOf(data);
+            val result = Result.valueOf(data);
             notifySubscription(result);
         }
         return stillActive;
@@ -77,7 +78,7 @@ public class Topic<DATA> {
     }
     
     private <TOPIC> Topic<TOPIC> newSubTopic(FuncUnit2<Result<DATA>, Topic<TOPIC>> resultConsumer) {
-        var topic = new SubTopic<TOPIC>(this, resultConsumer);
+        val topic = new SubTopic<TOPIC>(this, resultConsumer);
         return topic;
     }
     
@@ -85,7 +86,7 @@ public class Topic<DATA> {
     public <TARGET> Topic<TARGET> map(Func1<? super DATA, ? extends TARGET> mapper) {
         requireNonNull(mapper);
         return (Topic<TARGET>)newSubTopic((Result<DATA> r, Topic<TARGET> targetTopic) -> {
-            var result = r.map(mapper);
+            val result = r.map(mapper);
             targetTopic.notifySubscription((Result<TARGET>)result);
         });
     }
@@ -94,14 +95,14 @@ public class Topic<DATA> {
     public <TARGET> Topic<TARGET> mapResult(Func1<Result<? super DATA>, Result<? extends TARGET>> mapper) {
         requireNonNull(mapper);
         return (Topic<TARGET>)newSubTopic((Result<DATA> r, Topic<TARGET> targetTopic) -> {
-            var result = mapper.apply(r);
+            val result = mapper.apply(r);
             targetTopic.notifySubscription((Result<TARGET>)result);
         });
     }
     public Topic<DATA> filter(Predicate<? super DATA> filter) {
         requireNonNull(filter);
         return (Topic<DATA>)newSubTopic((Result<DATA> r, Topic<DATA> targetTopic) -> {
-            var result = r.filter(filter);
+            val result = r.filter(filter);
             targetTopic.notifySubscription((Result<DATA>)result);
         });
     }
@@ -109,7 +110,7 @@ public class Topic<DATA> {
     public Topic<DATA> filterResult(Predicate<Result<? super DATA>> filter) {
         requireNonNull(filter);
         return (Topic<DATA>)newSubTopic((Result<DATA> r, Topic<DATA> targetTopic) -> {
-            var result = r.flatMap(d -> filter.test(r) ? r : Result.ofNull());
+            val result = r.flatMap(d -> filter.test(r) ? r : Result.ofNull());
             targetTopic.notifySubscription((Result<DATA>)result);
         });
     }
@@ -128,7 +129,7 @@ public class Topic<DATA> {
     }
     public Subscription<DATA> onNext(Func1<Result<DATA>, Cancellation> subscribe) {
         requireNonNull(subscribe);
-        var subscription = new Subscription<DATA>(this, subscribe);
+        val subscription = new Subscription<DATA>(this, subscribe);
         subscriptions.getAndUpdate(subs -> {
             if (subs.isEmpty() && !isActive.get()) {
                 unsubcribe(subscription);
@@ -142,7 +143,7 @@ public class Topic<DATA> {
     void unsubcribe(Subscription<DATA> subscription) {
         subscription.notifyNext(Result.ofNoMore());
         subscriptions.getAndUpdate(subs -> {
-            var newSub = subs.exclude(subscription).toImmutableList();
+            val newSub = subs.exclude(subscription).toImmutableList();
             if (newSub.isEmpty())
                 done();
             return newSub;

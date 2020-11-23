@@ -37,7 +37,7 @@ public interface IntStreamPlusWithMap {
     
     /** Map the value using the mapper. */
     public default <T> StreamPlus<T> mapToObj(IntFunction<? extends T> mapper) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus.mapToObj(mapper);
     }
     
@@ -45,11 +45,11 @@ public interface IntStreamPlusWithMap {
     public default IntStreamPlus mapOnly(
             IntPredicate     condition, 
             IntUnaryOperator mapper) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .map(value -> {
-                    var isTrue = condition.test(value);
-                    var mapped = isTrue
+                    val isTrue = condition.test(value);
+                    val mapped = isTrue
                             ? mapper.applyAsInt(value)
                             : value;
                     return mapped;
@@ -61,11 +61,11 @@ public interface IntStreamPlusWithMap {
             IntPredicate     condition, 
             IntUnaryOperator mapper, 
             IntUnaryOperator elseMapper) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .map(value -> {
-                    var isTrue = condition.test(value);
-                    var mapped = isTrue 
+                    val isTrue = condition.test(value);
+                    val mapped = isTrue 
                             ? mapper    .applyAsInt(value) 
                             : elseMapper.applyAsInt(value);
                     return mapped;
@@ -77,11 +77,11 @@ public interface IntStreamPlusWithMap {
             IntPredicate   condition, 
             IntFunction<T> mapper, 
             IntFunction<T> elseMapper) {
-        var streamPlus = intStreamPlus();
+        val streamPlus = intStreamPlus();
         return streamPlus
                 .mapToObj(value -> {
-                    var isTrue = condition.test(value);
-                    var mapped = isTrue 
+                    val isTrue = condition.test(value);
+                    val mapped = isTrue 
                             ? mapper    .apply(value) 
                             : elseMapper.apply(value);
                     return mapped;
