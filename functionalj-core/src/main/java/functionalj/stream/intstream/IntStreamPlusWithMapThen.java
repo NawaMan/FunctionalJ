@@ -33,6 +33,7 @@ import functionalj.function.Func6;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
+
 public interface IntStreamPlusWithMapThen {
     
     public IntStreamPlus intStreamPlus();

@@ -28,6 +28,7 @@ import java.util.function.ToDoubleFunction;
 import functionalj.lens.core.LensSpec;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface DoubleLens<HOST>
         extends

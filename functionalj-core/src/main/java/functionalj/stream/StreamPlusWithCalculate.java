@@ -35,6 +35,7 @@ import functionalj.tuple.Tuple6;
 import lombok.val;
 
 
+
 public interface StreamPlusWithCalculate<DATA> {
 
     public void forEach(Consumer<? super DATA> action);

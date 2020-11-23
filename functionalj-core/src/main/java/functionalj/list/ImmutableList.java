@@ -38,6 +38,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
+
 public final class ImmutableList<DATA> implements FuncList<DATA> {
     
     private final static ImmutableList<?> EMPTY = new ImmutableList<>(Collections.emptyList());

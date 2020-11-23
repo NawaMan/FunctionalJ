@@ -32,13 +32,14 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import functionalj.list.FuncList;
+import functionalj.result.ValidationException;
 import functionalj.types.DefaultTo;
 import functionalj.types.DefaultValue;
 import functionalj.types.Nullable;
 import functionalj.types.Struct;
-import functionalj.list.FuncList;
-import functionalj.result.ValidationException;
 import lombok.val;
+
 
 public class StructTypeExamples {
     

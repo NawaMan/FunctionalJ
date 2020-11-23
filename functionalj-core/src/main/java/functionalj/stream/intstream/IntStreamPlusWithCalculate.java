@@ -34,6 +34,7 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
+
 public interface IntStreamPlusWithCalculate {
 
      public void forEach(IntConsumer action);

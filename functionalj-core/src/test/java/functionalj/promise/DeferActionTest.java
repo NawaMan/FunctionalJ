@@ -65,6 +65,7 @@ import functionalj.ref.Substitution;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
+
 public class DeferActionTest {
     
     private void assertStrings(String str, Object obj) {

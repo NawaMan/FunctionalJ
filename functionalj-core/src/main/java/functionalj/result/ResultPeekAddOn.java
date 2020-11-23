@@ -30,6 +30,7 @@ import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import lombok.val;
 
+
 public interface ResultPeekAddOn<DATA> {
     
     public Result<DATA> peek(Consumer<? super DATA> consumer);

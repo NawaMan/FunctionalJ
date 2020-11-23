@@ -29,6 +29,7 @@ import functionalj.function.Func;
 import functionalj.function.Func0;
 import lombok.val;
 
+
 class WhenAbsent {
     
     static <D> Func0<D> Use(D defaultValue) {

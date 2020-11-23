@@ -31,6 +31,7 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface OptionalAccess<HOST, TYPE, SUBACCESS extends AnyAccess<HOST, TYPE>> 
             extends

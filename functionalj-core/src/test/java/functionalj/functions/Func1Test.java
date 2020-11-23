@@ -39,6 +39,7 @@ import functionalj.result.Result;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
+
 public class Func1Test {
     
     @Test

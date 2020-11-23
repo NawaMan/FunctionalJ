@@ -40,6 +40,7 @@ import functionalj.map.ImmutableMap;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
+
 public interface Tuple2<T1, T2> extends Pipeable<Tuple2<T1, T2>> {
     
     public static <T1, T2> Tuple2<T1, T2> of(Map.Entry<? extends T1, ? extends T2> entry) {

@@ -9,6 +9,7 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.WriteLens;
 import lombok.val;
 
+
 public class PrimitiveLensSpecs {
     
     public static class IntegerLensSpecPrimitive<HOST> extends LensSpec<HOST, Integer> {

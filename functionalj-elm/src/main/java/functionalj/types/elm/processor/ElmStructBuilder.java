@@ -41,6 +41,7 @@ import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.ILines;
 import lombok.val;
 
+
 /**
  * This class generate Elm structure type.
  * 

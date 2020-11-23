@@ -35,6 +35,7 @@ import functionalj.lens.lenses.MapLens;
 import functionalj.lens.lenses.StringLens;
 import lombok.val;
 
+
 public class MapLensTest {
     
     @Test

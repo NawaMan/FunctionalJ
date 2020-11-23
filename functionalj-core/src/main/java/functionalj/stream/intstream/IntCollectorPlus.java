@@ -34,6 +34,7 @@ import java.util.stream.Collector;
 import functionalj.stream.CollectorPlus;
 import lombok.val;
 
+
 public interface IntCollectorPlus<ACCUMULATED, RESULT> 
         extends
             CollectorPlus<Integer, ACCUMULATED, RESULT>,

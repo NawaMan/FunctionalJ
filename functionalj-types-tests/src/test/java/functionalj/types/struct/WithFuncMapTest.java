@@ -25,7 +25,6 @@ package functionalj.types.struct;
 
 import functionalj.map.FuncMap;
 import functionalj.types.Struct;
-import functionalj.types.struct.Child;
 
 public class WithFuncMapTest {
 

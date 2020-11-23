@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class SubscriptionRecord<DATA> implements HasPromise<DATA> {
     
     public static enum SubscriptionStatus {

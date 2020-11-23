@@ -11,6 +11,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
+
 public class StreamPlusIteratorPlusExamples {
     
     enum Hand {

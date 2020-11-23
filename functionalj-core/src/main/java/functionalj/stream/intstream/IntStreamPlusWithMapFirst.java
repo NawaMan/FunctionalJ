@@ -35,6 +35,7 @@ import functionalj.stream.StreamPlus;
 import lombok.val;
 
 
+
 class IntStreamPlusMapFirstAddOnHelper {
     
     @SafeVarargs

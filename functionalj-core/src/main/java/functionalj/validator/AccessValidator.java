@@ -31,6 +31,7 @@ import functionalj.result.Result;
 import functionalj.result.ValidationException;
 import lombok.val;
 
+
 public interface AccessValidator<DATA, TARGET> extends Validator<DATA> {
 
     public Function<DATA, TARGET>    access();

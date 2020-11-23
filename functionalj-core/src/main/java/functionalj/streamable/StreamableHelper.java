@@ -31,6 +31,7 @@ import functionalj.list.FuncList;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
+
 public class StreamableHelper {
     
     // TODO - Change to DoubleFuncList

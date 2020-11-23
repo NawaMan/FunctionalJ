@@ -34,6 +34,7 @@ import functionalj.function.Func1;
 import lombok.val;
 
 
+
 public interface CollectorPlus<DATA, ACCUMULATED, TARGET> 
             extends
                 CollectorExtensible<DATA, ACCUMULATED, TARGET>,

@@ -40,7 +40,7 @@ package functionalj.list.intlist;
 //import functionalj.stream.Streamable;
 //import functionalj.stream.intstream.IntStreamPlus;
 //import functionalj.stream.intstream.IntStreamable;
-//import lombok.val;
+//
 
 public class IntFuncListTest {
 //    

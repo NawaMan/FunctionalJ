@@ -28,6 +28,8 @@ import java.util.function.Predicate;
 
 import lombok.val;
 
+
+
 public interface StreamPlusWithMap<DATA> extends AsStreamPlus<DATA> {
     
     /** Map the value using the mapper. */

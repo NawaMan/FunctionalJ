@@ -48,6 +48,7 @@ import functionalj.promise.RaceResult;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class Tasks {
     
     public static class TaskValue<DATA> implements Task<DATA> {

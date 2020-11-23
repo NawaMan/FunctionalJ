@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -44,9 +44,10 @@ import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.StructSpec;
 import lombok.val;
 
+
 /**
  * Representation of Struct class.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public class GenStruct implements ILines {
@@ -71,7 +72,7 @@ public class GenStruct implements ILines {
     
     /**
      * Construct a GenStruct with the data object spec.
-     * 
+     *
      * @param dataObjSpec  the spec.
      */
     public GenStruct(SourceSpec sourceSpec, StructSpec dataObjSpec) {
@@ -80,12 +81,12 @@ public class GenStruct implements ILines {
     }
     
     public Stream<String> lines() {
-        val importList = importListLines();
-        val imports    = importList.map(wrapWith("import ", ";")).collect(toList());
-        String packageName = dataClass.type().packageName();
-        String packageDef = "package " + packageName + ";";
-        ILines dataObjDef = dataClass.getClassSpec().toDefinition(packageName);
-        ILines lines
+        val importList  = importListLines();
+        val imports     = importList.map(wrapWith("import ", ";")).collect(toList());
+        val packageName = dataClass.type().packageName();
+        val packageDef  = "package " + packageName + ";";
+        val dataObjDef  = dataClass.getClassSpec().toDefinition(packageName);
+        val lines
                 = linesOf(Stream.of(
                     line(packageDef),
                     line(imports),

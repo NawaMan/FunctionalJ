@@ -23,7 +23,9 @@
 // ============================================================================
 package example.functionalj.list;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,7 @@ import functionalj.function.Func;
 import functionalj.list.FuncList;
 import functionalj.map.FuncMap;
 import lombok.val;
+
 
 public class ListMapExamples {
     

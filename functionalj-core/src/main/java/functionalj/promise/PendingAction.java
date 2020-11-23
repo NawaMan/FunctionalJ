@@ -33,6 +33,7 @@ import functionalj.pipeable.Pipeable;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class PendingAction<DATA> extends UncompletedAction<DATA> implements Pipeable<HasPromise<DATA>> {
     
     PendingAction(Promise<DATA> promise) {

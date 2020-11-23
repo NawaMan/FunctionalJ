@@ -16,6 +16,7 @@ import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface InstantAccess<HOST>
                     extends TemporalAccess        <HOST, Instant>

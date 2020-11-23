@@ -12,6 +12,7 @@ import org.junit.Test;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class ResultExample {
     
     @Test

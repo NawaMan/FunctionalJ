@@ -31,6 +31,7 @@ import java.util.function.Predicate;
 import functionalj.function.Func1;
 import lombok.val;
 
+
 public interface BooleanAccess<HOST> 
         extends 
             AnyAccess<HOST, Boolean>, 

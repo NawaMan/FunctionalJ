@@ -37,6 +37,7 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessParameterized2;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface MapAccess<HOST, KEY, VALUE, 
                             KEYACCESS extends AnyAccess<HOST,KEY>, 

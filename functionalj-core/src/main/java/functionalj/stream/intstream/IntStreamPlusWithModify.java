@@ -39,9 +39,10 @@ import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
-import functionalj.stream.makers.Sequential;
+import functionalj.stream.markers.Sequential;
 import functionalj.tuple.IntTuple2;
 import lombok.val;
+
 
 public interface IntStreamPlusWithModify {
     

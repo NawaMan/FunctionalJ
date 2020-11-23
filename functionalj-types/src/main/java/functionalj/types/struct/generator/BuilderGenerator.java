@@ -23,13 +23,16 @@ import lombok.val;
 
 
 abstract class BuilderInterface {
+    
     static class BuilderGetter extends BuilderInterface {
         private final Getter getter;
         public BuilderGetter(Getter getter) { this.getter = getter; }
         public Getter getter() { return getter; }
     }
+    
     static class BuilderReady extends BuilderInterface {
     }
+    
 }
 
 public class BuilderGenerator {
@@ -42,25 +45,25 @@ public class BuilderGenerator {
     
     /**
      * Build the class.
-     * 
+     *
      * @return  the generated class.
      */
     public GenClass build() {
-        List<BuilderInterface> builderInterfaces = 
+        val builderInterfaces =
                 Stream.concat(
                         sourceSpec.getGetters().stream().map(BuilderInterface.BuilderGetter::new),
                         Stream.of(new BuilderInterface.BuilderReady())
                 )
                 .collect(toList());
-        String typeName = sourceSpec.getTargetClassName();
+        val typeName = sourceSpec.getTargetClassName();
         return generateBuilderCode(typeName, builderInterfaces);
     }
     
     private List<GenClass> generateSubInterfaces(
             String                 typeName,
             List<BuilderInterface> builderInterfaces) {
-        int interfaceCount = builderInterfaces.size();
-        List<GenClass> interfaces = new ArrayList<GenClass>();
+        val interfaceCount = builderInterfaces.size();
+        val interfaces     = new ArrayList<GenClass>();
         for (int i = 1; i < interfaceCount; i++) {
             GenClass code = generateSubInterface(typeName, builderInterfaces, i);
             interfaces.add(code);
@@ -69,9 +72,9 @@ public class BuilderGenerator {
     }
     
     private GenClass generateSubInterface(String typeName, List<BuilderInterface> builderInterfaces, int i) {
-        BuilderInterface builderInterface = builderInterfaces.get(i);
-        boolean isGetter = (builderInterface instanceof BuilderInterface.BuilderGetter);
-        GenClass  builderInterfaceCode 
+        val builderInterface = builderInterfaces.get(i);
+        val isGetter = (builderInterface instanceof BuilderInterface.BuilderGetter);
+        val builderInterfaceCode
                 = isGetter
                 ? generateGetterInterface(typeName, builderInterfaces, i)
                 : generateReadyInterface (typeName);
@@ -79,14 +82,14 @@ public class BuilderGenerator {
     }
     
     private GenClass generateGetterInterface(String typeName, List<BuilderInterface> builderInterfaces, int i) {
-        BuilderInterface builderInterface = builderInterfaces.get(i);
-        Getter           getter           = ((BuilderInterface.BuilderGetter) builderInterface).getter();
-        String           getterName       = getter.getName();
-        String           getterType       = getter.getType().simpleNameWithGeneric();
+        val builderInterface = builderInterfaces.get(i);
+        val getter           = ((BuilderInterface.BuilderGetter) builderInterface).getter();
+        val getterName       = getter.getName();
+        val getterType       = getter.getType().simpleNameWithGeneric();
         
         val interfaceName = format("%1$sBuilder_without%2$s", typeName, capitalize(getterName));
         val packageName = sourceSpec.getPackageName();
-        val methodType 
+        val methodType
                 = getterAt(builderInterfaces, i + 1)
                 .map      (nextGetter -> typeName + "Builder_without" + capitalize(nextGetter.getName()))
                 .orElseGet(()         -> typeName + "Builder_ready");
@@ -111,47 +114,47 @@ public class BuilderGenerator {
     }
     
     private Optional<Getter> getterAt(List<BuilderInterface> builderInterfaces, int i) {
-        int     interfaceCount   = builderInterfaces.size();
-        boolean isThisLastGetter = (i == (interfaceCount - 1));
+        val interfaceCount   = builderInterfaces.size();
+        val isThisLastGetter = (i == (interfaceCount - 1));
         
         if (isThisLastGetter)
             return Optional.empty();
         
-        BuilderInterface buildInterface = builderInterfaces.get(i);
+        val buildInterface = builderInterfaces.get(i);
         if (!(buildInterface instanceof BuilderInterface.BuilderGetter))
             return Optional.empty();
         
-        Getter getter = ((BuilderInterface.BuilderGetter) buildInterface).getter();
+        val getter = ((BuilderInterface.BuilderGetter) buildInterface).getter();
         return Optional.of(getter);
     }
     
     private List<String> generateExtraMethods(String typeName, List<BuilderInterface> builderInterfaces,
             int interfaceIndx, boolean isDefault) {
         
-        BuilderInterface builderInterface = builderInterfaces.get(interfaceIndx);
-        Getter          getter           = ((BuilderInterface.BuilderGetter) builderInterface).getter();
+        val builderInterface = builderInterfaces.get(interfaceIndx);
+        val getter           = ((BuilderInterface.BuilderGetter) builderInterface).getter();
         
-        int interfaceCount = builderInterfaces.size();
-        List<String> lines = new ArrayList<String>();
+        val interfaceCount = builderInterfaces.size();
+        val lines          = new ArrayList<String>();
         lines.add("");
         
         if (getter.isNullable()) {
             for (int n = interfaceIndx + 1; n < interfaceCount; n++) {
                 BuilderInterface bc = builderInterfaces.get(n);
                 if (bc instanceof BuilderInterface.BuilderGetter) {
-                    Getter bg = ((BuilderInterface.BuilderGetter) bc).getter();
-                    String bgName = bg.getName();
-                    String bgType = bg.getType().simpleNameWithGeneric();
+                    val bg = ((BuilderInterface.BuilderGetter) bc).getter();
+                    val bgName = bg.getName();
+                    val bgType = bg.getType().simpleNameWithGeneric();
                     
-                    String methodType 
+                    val methodType
                             = getterAt(builderInterfaces, n + 1)
                             .map      (nextGetter -> typeName + "Builder_without" + capitalize(nextGetter.getName()))
                             .orElseGet(()         -> typeName + "Builder_ready");
                     
-                    String mthDef = format("%1$s(%2$s %1$s)", bgName, bgType);
+                    val mthDef = format("%1$s(%2$s %1$s)", bgName, bgType);
                     lines.add("public " + (isDefault ? "default " : "") + methodType + " " + mthDef + "{");
                     
-                    StringBuffer returnLine = new StringBuffer();
+                    val returnLine = new StringBuffer();
                     returnLine.append("    return ");
                     for (int c = interfaceIndx; c < n; c++) {
                         BuilderInterface bcc = builderInterfaces.get(c);
@@ -161,10 +164,10 @@ public class BuilderGenerator {
                             returnLine.append(call);
                         }
                     }
-                    BuilderInterface bcc = builderInterfaces.get(n);
+                    val bcc = builderInterfaces.get(n);
                     if (bcc instanceof BuilderInterface.BuilderGetter) {
-                        Getter bgc  = ((BuilderInterface.BuilderGetter)bcc).getter();
-                        String call = bgc.getName() + "(" + bgc.getName() + ")";
+                        val bgc  = ((BuilderInterface.BuilderGetter)bcc).getter();
+                        val call = bgc.getName() + "(" + bgc.getName() + ")";
                         returnLine.append(call);
                     } else {
                         returnLine.append("");
@@ -180,10 +183,10 @@ public class BuilderGenerator {
                 } else {
                     lines.add("public " + (isDefault ? "default " : "") + typeName + " build() {");
                     
-                    StringBuffer returnLine = new StringBuffer();
+                    val returnLine = new StringBuffer();
                     returnLine.append("    return ");
                     for (int c = interfaceIndx; c < n; c++) {
-                        BuilderInterface bcc = builderInterfaces.get(c);
+                        val bcc = builderInterfaces.get(c);
                         if (bcc instanceof BuilderInterface.BuilderGetter) {
                             Getter bgc = ((BuilderInterface.BuilderGetter)bcc).getter();
                             returnLine.append(bgc.getName() + "(");
@@ -278,8 +281,8 @@ public class BuilderGenerator {
     }
     
     private GenClass generateBuilderClass(String typeName, List<BuilderInterface> builderInterfaces) {
-        Getter           firstBuilder  = ((BuilderInterface.BuilderGetter)builderInterfaces.get(0)).getter();
-        BuilderInterface secondBuilder = builderInterfaces.get(1);
+        val firstBuilder  = ((BuilderInterface.BuilderGetter)builderInterfaces.get(0)).getter();
+        val secondBuilder = builderInterfaces.get(1);
         
         val pckgName = sourceSpec.getPackageName();
         val mthdBody = builderBody(typeName, builderInterfaces);
@@ -324,8 +327,8 @@ public class BuilderGenerator {
     }
     
     private Stream<String> builderBody(String typeName, List<BuilderInterface> builderInterfaces) {
-        String packageName = sourceSpec.getPackageName();
-        Stream<String> returns = 
+        val packageName = sourceSpec.getPackageName();
+        val returns =
                 builderInterfaces.stream()
                 .skip(1)
                 .map(builderClass -> {
@@ -341,24 +344,24 @@ public class BuilderGenerator {
                     }
                 });
         
-        String newType = String.format("    return new %1$s(", typeName);
+        val newType = String.format("    return new %1$s(", typeName);
         
-        List<String> paramList = builderInterfaces.stream()
+        val paramList = builderInterfaces.stream()
                 .filter (b -> b instanceof BuilderInterface.BuilderGetter)
                 .map    (b -> ((BuilderInterface.BuilderGetter)b).getter().getName())
                 .map    (n -> "        " + n)
                 .collect(toList());
-        Stream<String> params = Stream.concat(
+        val params = Stream.concat(
             paramList.stream().limit(paramList.size() - 1).map(p -> p + ","),
             paramList.stream().skip (paramList.size() - 1)
         );
         
-        Stream<String> closes = builderInterfaces.stream()
+        val closes = builderInterfaces.stream()
         .skip(1)
         .map(builderClass -> "};")
         ;
         
-        Stream<String> body = Stream.of(
+        val body = Stream.of(
                 returns,
                 Stream.of(newType),
                 params,
@@ -383,7 +386,7 @@ public class BuilderGenerator {
     }
     
     private static String capitalize(String name) {
-        char first = Character.toUpperCase(name.charAt(0));
+        val first = Character.toUpperCase(name.charAt(0));
         if (name.length() == 1)
             return "" + first;
         

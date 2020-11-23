@@ -28,6 +28,7 @@ import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class RefTo<DATA> extends Ref<DATA> {
     
     public static final Ref<IProvideDefault> defaultProvider

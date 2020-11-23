@@ -13,6 +13,7 @@ import functionalj.result.Result;
 import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
+
 public class ArrayBackedIntIteratorPlus implements IntIteratorPlus, PrimitiveIterator.OfInt {
     
     private final int[] array;

@@ -43,9 +43,10 @@ import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Terminal;
 import lombok.val;
+
 
 public interface AsIntStreamPlusWithConversion {
 

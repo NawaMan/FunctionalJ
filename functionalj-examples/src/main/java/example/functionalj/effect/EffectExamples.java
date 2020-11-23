@@ -21,6 +21,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.task.Task;
 import lombok.val;
 
+
 public class EffectExamples {
     
     @Test

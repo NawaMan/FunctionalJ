@@ -1,6 +1,7 @@
 package functionalj.stream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
@@ -9,6 +10,7 @@ import org.junit.Test;
 
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
+
 
 public class StreamPlusHelperTest {
     

@@ -30,6 +30,7 @@ import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.ToIntBiIntFunction;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface IntegerToIntegerAccessPrimitive extends IntUnaryOperator, IntegerAccessPrimitive<Integer> {
     

@@ -31,6 +31,7 @@ import functionalj.promise.Promise;
 import functionalj.tuple.Tuple3;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface FuncUnit3<INPUT1, INPUT2, INPUT3> {
     

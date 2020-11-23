@@ -38,6 +38,7 @@ import functionalj.list.FuncList;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> 
         extends CollectionAccess<HOST, FuncList<TYPE>, TYPE, TYPEACCESS> {

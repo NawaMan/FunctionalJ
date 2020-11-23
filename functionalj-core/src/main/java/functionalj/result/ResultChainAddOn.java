@@ -41,6 +41,7 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
+
 class ResultChainAddOnHelper {
     @SafeVarargs
     public static final <D, T> Result<T> chainAny(

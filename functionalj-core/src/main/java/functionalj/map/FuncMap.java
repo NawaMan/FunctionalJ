@@ -51,6 +51,7 @@ import functionalj.stream.ZipWithOption;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
+
 public abstract class FuncMap<KEY, VALUE>
                     implements
                         ReadOnlyMap<KEY, VALUE> {

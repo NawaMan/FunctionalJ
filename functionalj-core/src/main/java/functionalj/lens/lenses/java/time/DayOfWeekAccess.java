@@ -10,6 +10,7 @@ import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface DayOfWeekAccess<HOST>
                     extends AnyAccess             <HOST, DayOfWeek>

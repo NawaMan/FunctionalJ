@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 import functionalj.types.Type;
 import lombok.val;
 
+
 /**
  * This utility class help mapping Java type to Elm type.
  * 

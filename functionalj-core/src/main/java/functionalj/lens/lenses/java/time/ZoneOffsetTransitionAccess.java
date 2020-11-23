@@ -12,6 +12,7 @@ import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface ZoneOffsetTransitionAccess<HOST>
                     extends AnyAccess      <HOST, ZoneOffsetTransition>

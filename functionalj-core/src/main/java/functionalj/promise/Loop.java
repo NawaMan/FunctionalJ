@@ -34,6 +34,7 @@ import functionalj.function.FuncUnit1;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class Loop<DATA> extends Retry<DATA> {
     
     private final Integer                      count;

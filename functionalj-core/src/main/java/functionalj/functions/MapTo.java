@@ -34,6 +34,7 @@ import functionalj.tuple.ToTuple2Func;
 import functionalj.tuple.Tuple;
 import lombok.val;
 
+
 public class MapTo {
     
     public static <T> Func1<T, T> only(Predicate<? super T> checker) {

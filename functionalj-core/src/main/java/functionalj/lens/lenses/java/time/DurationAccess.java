@@ -13,6 +13,7 @@ import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface DurationAccess<HOST>
                     extends AnyAccess           <HOST, Duration>

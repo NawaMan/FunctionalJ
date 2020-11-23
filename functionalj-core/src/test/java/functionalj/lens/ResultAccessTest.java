@@ -40,6 +40,7 @@ import functionalj.lens.lenses.StringLens;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class ResultAccessTest {
 
     public static interface CarSpec {

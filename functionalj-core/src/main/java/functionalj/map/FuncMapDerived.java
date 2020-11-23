@@ -51,6 +51,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
+
 public class FuncMapDerived<KEY, SOURCE, VALUE> extends FuncMap<KEY, VALUE> {
     
     final Map<KEY, SOURCE> map;

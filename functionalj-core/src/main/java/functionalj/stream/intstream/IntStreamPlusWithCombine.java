@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,6 +38,7 @@ import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.IntTuple2;
 import lombok.val;
 
+
 public interface IntStreamPlusWithCombine {
     
     public IntStreamPlus intStreamPlus();
@@ -53,7 +54,7 @@ public interface IntStreamPlusWithCombine {
     /**
      * Merge this with another stream by alternatively picking value from the each stream.
      * If one stream ended before another one, the rest of the value will be appended.
-     * 
+     *
      * For an example: <br>
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
@@ -64,7 +65,7 @@ public interface IntStreamPlusWithCombine {
         val iteratorA  = IntIteratorPlus.from(thisStream   .iterator());
         val iteratorB  = IntIteratorPlus.from(anotherStream.iterator());
         
-        val resultStream 
+        val resultStream
                 = IntStreamPlusHelper
                 .doMergeInt(iteratorA, iteratorB);
         
@@ -81,7 +82,7 @@ public interface IntStreamPlusWithCombine {
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * The combination stops when any of the stream ended.
-     * 
+     *
      * For an example: <br>
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
@@ -96,7 +97,7 @@ public interface IntStreamPlusWithCombine {
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
-     * 
+     *
      * For an example with ZipWithOption.AllowUnpaired: <br>
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
@@ -113,7 +114,7 @@ public interface IntStreamPlusWithCombine {
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * The combination stops when any of the stream ended.
-     * 
+     *
      * For an example: <br>
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
@@ -121,7 +122,7 @@ public interface IntStreamPlusWithCombine {
      *   Result stream:  [A-1, B-2, C-3] <br>
      */
     public default <ANOTHER, TARGET> StreamPlus<TARGET> zipWith(
-            Stream<ANOTHER>                   anotherStream, 
+            Stream<ANOTHER>                   anotherStream,
             IntObjBiFunction<ANOTHER, TARGET> merger) {
         IntIteratorPlus       iteratorA = intStreamPlus().iterator();
         IteratorPlus<ANOTHER> iteratorB = StreamPlus.from(anotherStream).iterator();
@@ -163,7 +164,7 @@ public interface IntStreamPlusWithCombine {
     }
     
     public default IntStreamPlus zipWith(
-            IntStream              anotherStream, 
+            IntStream              anotherStream,
             IntBiFunctionPrimitive merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
@@ -171,7 +172,7 @@ public interface IntStreamPlusWithCombine {
     }
     
     public default IntStreamPlus zipWith(
-            IntStream              anotherStream, 
+            IntStream              anotherStream,
             int                    defaultValue,
             IntBiFunctionPrimitive merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
@@ -180,7 +181,7 @@ public interface IntStreamPlusWithCombine {
     }
     
     public default IntStreamPlus zipWith(
-            IntStream              anotherStream, 
+            IntStream              anotherStream,
             int                    defaultValue1,
             int                    defaultValue2,
             IntBiFunctionPrimitive merger) {
@@ -190,7 +191,7 @@ public interface IntStreamPlusWithCombine {
     }
     
     public default <T> StreamPlus<T> zipToObjWith(
-            IntStream           anotherStream, 
+            IntStream           anotherStream,
             IntIntBiFunction<T> merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
         IntIteratorPlus iteratorB = IntStreamPlus.from(anotherStream).iterator();
@@ -198,7 +199,7 @@ public interface IntStreamPlusWithCombine {
     }
     
     public default <T> StreamPlus<T> zipToObjWith(
-            IntStream           anotherStream, 
+            IntStream           anotherStream,
             int                 defaultValue,
             IntIntBiFunction<T> merger) {
         IntIteratorPlus iteratorA = intStreamPlus().iterator();
@@ -207,7 +208,7 @@ public interface IntStreamPlusWithCombine {
     }
     
     public default <T> StreamPlus<T> zipToObjWith(
-            IntStream           anotherStream, 
+            IntStream           anotherStream,
             int                 defaultValue1,
             int                 defaultValue2,
             IntIntBiFunction<T> merger) {
@@ -220,7 +221,7 @@ public interface IntStreamPlusWithCombine {
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.
      * The value from the longer stream is automatically used after the shorter stream ended.
-     * 
+     *
      * For an example with ZipWithOption.AllowUnpaired: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>

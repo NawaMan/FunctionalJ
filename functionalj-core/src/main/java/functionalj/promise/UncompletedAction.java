@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public abstract class UncompletedAction<DATA> extends StartableAction<DATA> implements HasPromise<DATA> {
     
     protected final Promise<DATA> promise;

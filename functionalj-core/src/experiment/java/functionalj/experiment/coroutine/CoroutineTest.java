@@ -33,7 +33,7 @@ import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.map.FuncMap;
 import functionalj.promise.Promise;
-import lombok.val;
+
 
 // This is an experiment to see if we can simulate coroutine the kind that help with async/await
 public class CoroutineTest {

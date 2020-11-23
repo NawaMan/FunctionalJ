@@ -31,6 +31,7 @@ import java.util.function.Function;
 import functionalj.validator.Validator;
 import lombok.val;
 
+
 public class Specs {
     
 //    @functionalj.types.Choice

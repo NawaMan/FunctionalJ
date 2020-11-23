@@ -17,6 +17,7 @@ import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface LocalDateAccess<HOST>
                     extends AnyAccess             <HOST, LocalDate>

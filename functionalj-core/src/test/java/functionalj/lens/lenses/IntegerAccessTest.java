@@ -9,6 +9,7 @@ import org.junit.Test;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
+
 public class IntegerAccessTest {
     
     @SuppressWarnings("unused")

@@ -30,10 +30,11 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import functionalj.function.Func1;
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Terminal;
 import functionalj.tuple.Tuple2;
 import lombok.val;
+
 
 public interface AsStreamPlusWithStatistic<DATA> {
     

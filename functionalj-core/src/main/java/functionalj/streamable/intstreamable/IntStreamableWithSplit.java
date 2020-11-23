@@ -24,9 +24,9 @@
 package functionalj.streamable.intstreamable;
 
 
-import java.util.function.IntPredicate;
-
 import static functionalj.streamable.intstreamable.AsIntStreamable.streamableOf;
+
+import java.util.function.IntPredicate;
 
 import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
@@ -37,6 +37,7 @@ import functionalj.tuple.Tuple4;
 import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
+
 
 public interface IntStreamableWithSplit extends IntStreamableWithMapToTuple {
     

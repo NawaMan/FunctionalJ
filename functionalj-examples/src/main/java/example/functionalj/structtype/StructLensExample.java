@@ -34,6 +34,7 @@ import functionalj.map.FuncMap;
 import functionalj.types.Struct;
 import lombok.val;
 
+
 public class StructLensExample {
     
     @Struct

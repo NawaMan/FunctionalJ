@@ -30,6 +30,7 @@ import functionalj.result.Result;
 import functionalj.result.ValidationException;
 import lombok.val;
 
+
 public interface SimpleValidator<DATA> extends Validator<DATA> {
     
     public static <D> 

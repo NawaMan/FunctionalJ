@@ -38,6 +38,7 @@ import functionalj.lens.lenses.java.time.InstantAccess;
 import functionalj.lens.lenses.java.time.LocalDateTimeAccess;
 import lombok.val;
 
+
 public interface LongAccess<HOST> 
         extends 
             NumberAccess<HOST, Long, LongAccess<HOST>>, 

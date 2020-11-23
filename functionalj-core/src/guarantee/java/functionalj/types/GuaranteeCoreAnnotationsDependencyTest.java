@@ -38,7 +38,7 @@ import functionalj.lens.IntegerLens;
 import functionalj.lens.LensSpec;
 import functionalj.lens.ObjectLensImpl;
 import functionalj.lens.StringLens;
-import lombok.val;
+
 
 /**
  * This test helps to guarantee that the core class names that the annotation project uses still matches.

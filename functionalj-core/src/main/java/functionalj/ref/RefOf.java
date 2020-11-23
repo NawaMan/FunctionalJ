@@ -30,6 +30,7 @@ import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public abstract class RefOf<DATA> extends Ref<DATA> {
     
     private static final Random random = new Random();

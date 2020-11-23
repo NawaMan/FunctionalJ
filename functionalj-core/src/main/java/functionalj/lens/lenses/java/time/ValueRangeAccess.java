@@ -11,6 +11,7 @@ import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
+
 public interface ValueRangeAccess<HOST>
                     extends AnyAccess<HOST, ValueRange>
                     ,       ConcreteAccess<HOST, ValueRange, ValueRangeAccess<HOST>> {

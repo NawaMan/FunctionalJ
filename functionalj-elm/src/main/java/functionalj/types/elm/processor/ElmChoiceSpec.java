@@ -32,6 +32,7 @@ import functionalj.types.choice.generator.model.SourceSpec;
 import functionalj.types.elm.Elm;
 import lombok.val;
 
+
 public class ElmChoiceSpec {
     
     private final SourceSpec sourceSpec;

@@ -32,6 +32,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
+
 public class ImmutableIntFuncList implements IntFuncList {
 
     private static final IntBiFunctionPrimitive zeroForEquals = (int i1, int i2) -> i1 == i2 ? 0 : 1;

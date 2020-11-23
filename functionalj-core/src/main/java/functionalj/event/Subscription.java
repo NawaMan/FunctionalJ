@@ -29,6 +29,7 @@ import functionalj.function.Func1;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class Subscription<DATA> {
     
     public static final Cancellation Continue = Cancellation.Continue;

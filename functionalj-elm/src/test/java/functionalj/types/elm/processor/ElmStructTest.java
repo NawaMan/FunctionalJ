@@ -14,6 +14,7 @@ import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import lombok.val;
 
+
 public class ElmStructTest {
     
     private Configurations configures = new Configurations();

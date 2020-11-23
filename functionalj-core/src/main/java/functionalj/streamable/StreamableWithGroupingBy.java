@@ -37,6 +37,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamProcessor;
 import lombok.val;
 
+
 public interface StreamableWithGroupingBy<DATA>
     extends StreamableWithMapToTuple<DATA> {
     

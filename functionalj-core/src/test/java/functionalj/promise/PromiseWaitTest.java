@@ -37,6 +37,7 @@ import functionalj.list.FuncList;
 import functionalj.tuple.Tuple;
 import lombok.val;
 
+
 public class PromiseWaitTest {
     
     private void assertStrings(String str, Object obj) {

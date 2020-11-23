@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import functionalj.function.Func;
 import lombok.val;
 
+
 public class RegExFlag {
     
     private int flags = 0;

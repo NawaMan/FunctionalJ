@@ -29,6 +29,7 @@ import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class DictatedRef<DATA> extends Ref<DATA> {
     
     private final Ref<DATA> ref;

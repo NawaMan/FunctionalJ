@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,7 +30,7 @@ import functionalj.types.Type;
  * So that the user of the annotation project does not have to include the core in the annotation processing.
  * At the same time provide the safety net check (at least for a developer and as a early alarm)
  *   that there is a mismatch of class names needed by the annotation processor.
- * 
+ *
  * The mechanism is to have this class that list all full name of classes (in the core project)
  *   that this project thinks suppose to be like.
  * Then, a test in the core project confirm that assumption.
@@ -39,11 +39,11 @@ import functionalj.types.Type;
  * But some check is better than nothing.
  * And if that happens (the class name change),
  *   it will be a broken change which should be communicate differently.
- * 
+ *
  * This whole mess is from the fact that the interface in the core (those lens classes)
  *   which is support to just define the possible operation and data type now contains the implementation.
  * Until the better solution comes along, Let's do this for now.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public enum Core {

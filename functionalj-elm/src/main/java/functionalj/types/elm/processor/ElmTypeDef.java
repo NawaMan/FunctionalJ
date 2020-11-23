@@ -26,6 +26,7 @@ package functionalj.types.elm.processor;
 import functionalj.types.struct.generator.ILines;
 import lombok.val;
 
+
 /**
  * Classes implementing this interface can create type definition in Elm.
  * 

@@ -33,6 +33,7 @@ import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
 
+
 @SuppressWarnings("rawtypes")
 public class CombineResult<D> {
     

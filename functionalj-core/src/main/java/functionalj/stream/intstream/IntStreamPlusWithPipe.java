@@ -28,6 +28,7 @@ import java.util.function.Function;
 import functionalj.pipeable.Pipeable;
 import lombok.val;
 
+
 public interface IntStreamPlusWithPipe {
     
     public IntStreamPlus intStreamPlus();

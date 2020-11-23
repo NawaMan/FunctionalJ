@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -58,6 +58,7 @@ import functionalj.types.struct.generator.Getter;
 import functionalj.types.struct.generator.SourceSpec;
 import functionalj.types.struct.generator.SourceSpec.Configurations;
 import lombok.val;
+
 
 public class StructSpec {
     
@@ -214,13 +215,12 @@ public class StructSpec {
         }
     }
     
-
-    
     private String extractPackageNameType(Element element) {
         val type        = (TypeElement)element;
         val packageName = input.elementUtils().getPackageOf(type).getQualifiedName().toString();
         return packageName;
     }
+    
     private String extractPackageNameMethod(Element element) {
         val method      = (ExecutableElement)element;
         val type        = (TypeElement)(method.getEnclosingElement());
@@ -331,7 +331,7 @@ public class StructSpec {
         val typeStr = typeMirror.toString();
         if (typeMirror instanceof PrimitiveType)
             return Type.primitiveTypes.get(typeStr);
-            
+        
         if (typeMirror instanceof DeclaredType) {
             val typeElement = ((TypeElement)((DeclaredType)typeMirror).asElement());
             val typeName = typeElement.getSimpleName().toString();

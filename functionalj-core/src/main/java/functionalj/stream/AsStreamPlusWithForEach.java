@@ -26,9 +26,10 @@ package functionalj.stream;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import functionalj.function.IntObjBiConsumer;
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Terminal;
 import lombok.val;
+
 
 public interface AsStreamPlusWithForEach<DATA> {
     

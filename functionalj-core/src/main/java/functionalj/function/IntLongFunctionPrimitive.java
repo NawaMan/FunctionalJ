@@ -28,6 +28,8 @@ import java.util.function.IntBinaryOperator;
 
 import lombok.val;
 
+
+
 @FunctionalInterface
 public interface IntLongFunctionPrimitive extends ToIntBiIntFunction<Integer> {
     

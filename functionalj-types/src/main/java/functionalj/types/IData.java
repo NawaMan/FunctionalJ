@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import functionalj.types.choice.ChoiceTypes;
@@ -38,9 +39,15 @@ import functionalj.types.struct.Core;
 import functionalj.types.struct.generator.Getter;
 import lombok.val;
 
+
 public interface IData {
     
     public Map<String, Object> __toMap();
+    
+    
+    public static <DATA extends IData> Optional<DATA> fromMap(Map<String, Object> map, Class<DATA> clazz) {
+        return Optional.ofNullable(IData.$utils.fromMap(map, clazz));
+    }
     
     
     public static class $utils {
@@ -73,14 +80,14 @@ public interface IData {
                         .collect(toList());
             }
             
-            return (data instanceof IData) 
-                    ? ((IData)data).__toMap() 
+            return (data instanceof IData)
+                    ? ((IData)data).__toMap()
                     : data;
         }
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
         public static <T> T fromMapValue(
-                Object           obj, 
+                Object           obj,
                 Class<T>         clzz,
                 DefaultValue     defaultValue,
                 Supplier<Object> defaultValueSupplier) {
@@ -244,4 +251,5 @@ public interface IData {
             return ((a == null) && (b == null)) || Objects.equals(a, b);
         }
     }
+    
 }

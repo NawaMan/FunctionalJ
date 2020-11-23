@@ -34,6 +34,7 @@ import functionalj.lens.core.WriteLens;
 import functionalj.result.Result;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface ResultLens<HOST, TYPE, SUBLENS extends AnyLens<HOST, TYPE>>
         extends 

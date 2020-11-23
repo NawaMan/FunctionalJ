@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -57,10 +57,11 @@ import functionalj.types.common;
 import functionalj.types.choice.generator.model.Case;
 import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.choice.generator.model.Method;
-import functionalj.types.choice.generator.model.Method.Kind;
+//import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.MethodParam;
 import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.val;
+
 
 public class ChoiceSpec {
     
@@ -174,7 +175,7 @@ public class ChoiceSpec {
     }
     
     private Method createMethodFromMethodElement(Type targetType, ExecutableElement mthd) {
-        val kind       = mthd.isDefault() ? Kind.DEFAULT : Kind.STATIC;
+        val kind       = mthd.isDefault() ? Method.Kind.DEFAULT : Method.Kind.STATIC;
         val name       = mthd.getSimpleName().toString();
         
         val type       = typeOf(targetType, mthd.getReturnType());
@@ -186,11 +187,13 @@ public class ChoiceSpec {
     }
     
     private List<MethodParam> extractParameters(Type targetType, ExecutableElement mthd) {
-        return mthd.getParameters().stream().map(p -> {
-            val paramName = p.getSimpleName().toString();
-            val paramType = typeOf(targetType, p.asType());
-            return new MethodParam(paramName, paramType);
-        }).collect(toList());
+        return mthd
+                .getParameters().stream()
+                .map(p -> {
+                    val paramName = p.getSimpleName().toString();
+                    val paramType = typeOf(targetType, p.asType());
+                    return new MethodParam(paramName, paramType);
+                }).collect(toList());
     }
     
     private boolean isPublicOrPackage(ExecutableElement mthd) {
@@ -224,7 +227,7 @@ public class ChoiceSpec {
                     return typeNameOf;
                 }).collect(joining(" & "));
         return new Generic(
-                paramName, 
+                paramName,
                 paramName + boundAsString,
                 boundTypes);
     }
@@ -277,14 +280,18 @@ public class ChoiceSpec {
     }
     
     private Case createChoiceFromMethod(Type targetType, ExecutableElement method, List<? extends Element> elements) {
-        String methodName = method.getSimpleName().toString();
-        List<CaseParam> params = method.getParameters().stream().map(p -> {
-            val name       = p.getSimpleName().toString();
-            val type       = typeOf(targetType, p.asType());
-            val isNullable = (p.getAnnotation(Nullable.class) != null) ? false : true;
-            val defValue   = (p.getAnnotation(DefaultTo.class) != null) ? p.getAnnotation(DefaultTo.class).value() : null;
-            return new CaseParam(name, type, isNullable, defValue);
-        }).collect(toList());
+        val methodName = method.getSimpleName().toString();
+        
+        List<CaseParam> params
+            = method
+            .getParameters().stream()
+            .map(p -> {
+                val name       = p.getSimpleName().toString();
+                val type       = typeOf(targetType, p.asType());
+                val isNullable = (p.getAnnotation(Nullable.class) != null) ? false : true;
+                val defValue   = (p.getAnnotation(DefaultTo.class) != null) ? p.getAnnotation(DefaultTo.class).value() : null;
+                return new CaseParam(name, type, isNullable, defValue);
+            }).collect(toList());
         
         val validateMethodName = "__validate" + methodName;
         val hasValidator = elements.stream()
@@ -302,7 +309,10 @@ public class ChoiceSpec {
                 .findFirst()
                 .isPresent();
         
-        Case choice = hasValidator ? new Case(methodName, validateMethodName, params) : new Case(methodName, params);
+        Case choice
+                = hasValidator
+                ? new Case(methodName, validateMethodName, params)
+                : new Case(methodName, params);
         return choice;
     }
     

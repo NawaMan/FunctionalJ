@@ -31,6 +31,7 @@ import functionalj.function.Func0;
 import functionalj.list.FuncList;
 import lombok.val;
 
+
 public abstract class Substitution<DATA> {
     
     public static <D> Substitution<D> of(Ref<D> ref, D value) {

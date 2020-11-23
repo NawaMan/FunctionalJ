@@ -35,6 +35,7 @@ import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipeable<IteratorPlus<DATA>> {
     

@@ -59,6 +59,7 @@ import functionalj.result.Result;
 import lombok.val;
 
 
+
 // TODO - Find a way to make toString more useful ... like giving this a name.
 // TODO - Should extract important stuff to PromiseBase ... so it is not flooded with the less important things.
 public class Promise<DATA> implements HasPromise<DATA>, HasResult<DATA>, Pipeable<HasPromise<DATA>> {

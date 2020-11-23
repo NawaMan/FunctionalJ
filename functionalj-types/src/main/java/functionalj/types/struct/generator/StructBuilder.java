@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -68,9 +68,10 @@ import functionalj.types.struct.generator.model.Modifiability;
 import functionalj.types.struct.generator.model.Scope;
 import lombok.val;
 
+
 /**
  * Builder for a data object.
- * 
+ *
  * @author NawaMan -- nawa@nawaman.net
  */
 public class StructBuilder {
@@ -79,7 +80,7 @@ public class StructBuilder {
     
     /**
      * Constructor for the data object builder.
-     * 
+     *
      * @param sourceSpec  the source spec.
      */
     public StructBuilder(SourceSpec sourceSpec) {
@@ -88,7 +89,7 @@ public class StructBuilder {
     
     /**
      * Build the data object.
-     * 
+     *
      * @return  the data object.
      **/
     public StructSpec build() {
@@ -177,7 +178,7 @@ public class StructBuilder {
                 "equals",
                 asList(new GenParam("another", Type.of(Object.class))),
                 line("return (another == this) || ((another != null) && (getClass().equals(another.getClass())) && java.util.Objects.equals(toString(), another.toString()));"));
-                
+        
         val fields = listOf(
                     Stream.of(theField, eachField),
                     getterFields,
@@ -193,7 +194,7 @@ public class StructBuilder {
         val getterHasGeneric
                 = sourceSpec
                 .getGetters().stream()
-                .anyMatch(g -> 
+                .anyMatch(g ->
                         !g
                         .getType()
                         .generics()
@@ -447,7 +448,7 @@ public class StructBuilder {
                     getterToWitherMethodFunction(  sourceSpec, withMethodName, getter),
                     getterToWitherMethodBiFunction(sourceSpec, withMethodName, getter)
                 );
-        val isList 
+        val isList
                 =  getter.getType().isList()
                 || getter.getType().isFuncList();
         if (!isList)
@@ -463,17 +464,17 @@ public class StructBuilder {
     
     private GenMethod getterToWitherMethodArray(SourceSpec sourceSpec,
             Function<Getter, String> withMethodName, Getter getter) {
-        val listName = getter.getName(); 
+        val listName = getter.getName();
         val name = withMethodName.apply(getter);
         val type = sourceSpec.getTargetType();
         val params = asList(new GenParam(getter.getName(), getter.getType().generics().get(0).toType()));
         val isFList = getter.getType().isFuncList();
         val newArray = isFList ? "functionalj.list.ImmutableList.of" : Arrays.class.getCanonicalName() + ".asList";
-        val paramCall 
+        val paramCall
                 = sourceSpec
                 .getGetters()
                 .stream()
-                .map(g -> listName.equals(g.getName()) 
+                .map(g -> listName.equals(g.getName())
                         ? newArray + "(" + g.getName() + ")"
                         : g.getName())
                 .collect(joining(", "));
@@ -541,5 +542,5 @@ public class StructBuilder {
         val method = new GenMethod(PUBLIC, INSTANCE, MODIFIABLE, type, name, params, line(body));
         return method;
     }
-    
+
 }

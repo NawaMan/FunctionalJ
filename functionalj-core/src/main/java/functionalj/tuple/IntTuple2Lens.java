@@ -41,6 +41,7 @@ import functionalj.lens.lenses.ObjectLens;
 import lombok.val;
 
 
+
 public interface IntTuple2Lens<HOST, T2, T2LENS extends AnyLens<HOST,T2>>
         extends
             ObjectLens<HOST, IntTuple2<T2>>,

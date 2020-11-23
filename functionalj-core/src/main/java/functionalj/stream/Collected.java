@@ -36,6 +36,7 @@ import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
 
+
 public interface Collected<DATA, ACCUMULATED, RESULT> {
     
     public static <D, A, R> Collected<D, A, R> collectedOf(

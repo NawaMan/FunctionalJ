@@ -32,6 +32,7 @@ import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface ListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, TYPE>> 
         extends CollectionAccess<HOST, List<TYPE>, TYPE, TYPEACCESS> {

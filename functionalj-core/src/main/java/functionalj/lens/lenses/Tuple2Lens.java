@@ -37,6 +37,7 @@ import functionalj.tuple.ImmutableTuple2;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface Tuple2Lens<HOST, T1, T2, T1LENS extends AnyLens<HOST,T1>, T2LENS extends AnyLens<HOST,T2>>
         extends

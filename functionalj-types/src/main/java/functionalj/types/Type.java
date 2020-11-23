@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import functionalj.types.struct.Core;
 import lombok.val;
 
+
 public class Type implements IRequireTypes {
     
     /** char AbstractType */
@@ -157,7 +158,7 @@ public class Type implements IRequireTypes {
         this.simpleName  = simpleName;
         this.packageName = packageName;
         this.isVirtual   = false;
-        this.generics    
+        this.generics
                 = asList(generics)
                 .stream()
                 .map(generic->new Generic(generic))
@@ -179,10 +180,10 @@ public class Type implements IRequireTypes {
         List<Generic> genericList = (generics == null)
                             ? null
                             : generics.stream().filter(Objects::nonNull).collect(toList());
-        this.generics 
+        this.generics
                 = Collections.unmodifiableList(
-                        ((genericList == null) || genericList.isEmpty()) 
-                        ? new ArrayList<Generic>() 
+                        ((genericList == null) || genericList.isEmpty())
+                        ? new ArrayList<Generic>()
                         : new ArrayList<Generic>(generics));
     }
     
@@ -216,7 +217,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Create a type of the given class.
-     * 
+     *
      * @param clzz      the class.
      * @param generics  the generic for this type.
      * @return      the type.
@@ -281,14 +282,14 @@ public class Type implements IRequireTypes {
     @Override
     public Stream<Type> requiredTypes() {
         return Stream.concat(
-                Stream.of(this), 
+                Stream.of(this),
                 this.generics()
                     .stream()
                     .flatMap(generic -> generic.boundTypes.stream())
                     .filter(type -> !((type.packageName() == null) && (type.encloseName() == null))));
     }
     
-    private static ConcurrentHashMap<Type, Object> classCache = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<Type, Object> classCache = new ConcurrentHashMap<Type, Object>();
     
     @SuppressWarnings("unchecked")
     public <T> Class<T> toClass()  {
@@ -341,7 +342,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the full type name without the generic without the package name opt-out when same package.
-     * 
+     *
      * @return  the full name.
      */
     public String fullName() {
@@ -349,7 +350,7 @@ public class Type implements IRequireTypes {
     }
     /**
      * Returns the full type name without the generic.
-     * 
+     *
      * @param currentPackage  the current package so that the package can be opt-out or null if it should never.
      * @return  the full name.
      */
@@ -362,7 +363,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the full type name with the generic.
-     * 
+     *
      * @param currentPackage  the current package.
      * @return  the full name.
      */
@@ -372,7 +373,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the declared type of this class (in case of non-primitive, declared type is the type).
-     * 
+     *
      * @return  the declared type.
      */
     public Type declaredType() {
@@ -381,7 +382,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the default value - to be used in the declaration of fields.
-     * 
+     *
      * @return  the default value.
      */
     public Object defaultValue() {
@@ -421,7 +422,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the lens type of this type.
-     * 
+     *
      * @return  the lens type.
      */
     public Type lensType(String packageName, String encloseName, List<String> localTypeWithLens) {
@@ -464,10 +465,10 @@ public class Type implements IRequireTypes {
         
         return null;
     }
-
+    
     /**
      * Check if this lens is custom lens.
-     * 
+     *
      * @return {@code true} if this lens is a custom lens.
      */
     public boolean isCustomLens() {
@@ -480,7 +481,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a list type.
-     * 
+     *
      * @return {@code true} if this type is a list.
      */
     public boolean isList() {
@@ -489,7 +490,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a map type.
-     * 
+     *
      * @return {@code true} if this type is a map.
      */
     public boolean isMap() {
@@ -498,7 +499,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a functional list type.
-     * 
+     *
      * @return {@code true} if this type is a functional list.
      */
     public boolean isFuncList() {
@@ -507,7 +508,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a functional map type.
-     * 
+     *
      * @return {@code true} if this type is a functional map.
      */
     public boolean isFuncMap() {
@@ -516,7 +517,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a nullable type.
-     * 
+     *
      * @return {@code true} if this type is a nullable.
      */
     public boolean isNullable() {
@@ -525,7 +526,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a Optional type.
-     * 
+     *
      * @return {@code true} if this type is a Optional.
      */
     public boolean isOptional() {
@@ -534,7 +535,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Check if this type is a Optional type.
-     * 
+     *
      * @return {@code true} if this type is a Optional.
      */
     public boolean isObject() {
@@ -542,7 +543,7 @@ public class Type implements IRequireTypes {
     }
     
     // These are lens types that are in the main lens package.
-    private static final Map<Type, Type> lensTypes = new HashMap<>();
+    private static final Map<Type, Type> lensTypes = new HashMap<Type, Type>();
     static {
         lensTypes.put(OBJECT,     Core.ObjectLens    .type());
         lensTypes.put(INT,        Core.IntegerLens   .type());
@@ -655,7 +656,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the simple name without the generic.
-     * 
+     *
      * @return  the simple name.
      */
     public String simpleNameWithGeneric() {
@@ -664,7 +665,7 @@ public class Type implements IRequireTypes {
     
     /**
      * Returns the simple name without the generic.
-     * 
+     *
      * @param currentPackage  the current package.
      * @return  the simple name.
      */

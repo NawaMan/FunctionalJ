@@ -10,6 +10,7 @@ import java.util.List;
 
 import lombok.val;
 
+
 public class Generic {
     
     public final String name;

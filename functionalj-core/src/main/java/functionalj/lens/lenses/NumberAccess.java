@@ -34,6 +34,7 @@ import functionalj.lens.core.AccessCreator;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public interface NumberAccess<HOST, TYPE extends Comparable<TYPE>, NUMACCESS extends NumberAccess<HOST, TYPE, ?>> 
         extends ComparableAccess<HOST, TYPE> {
     

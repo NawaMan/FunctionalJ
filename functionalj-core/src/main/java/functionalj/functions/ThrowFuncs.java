@@ -31,6 +31,7 @@ import functionalj.function.FunctionInvocationException;
 import functionalj.ref.Ref;
 import lombok.val;
 
+
 public interface ThrowFuncs {
     
     public static final Ref<Func1<Exception, RuntimeException>> exceptionTransformer = Ref.ofValue(e -> {

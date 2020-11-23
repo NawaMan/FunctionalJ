@@ -36,6 +36,7 @@ import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class Topic<DATA> {
     
     private final AtomicReference<FuncList<Subscription<DATA>>> subscriptions 

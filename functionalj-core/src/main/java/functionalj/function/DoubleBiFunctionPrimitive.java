@@ -25,7 +25,6 @@ package functionalj.function;
 
 import lombok.val;
 
-
 @FunctionalInterface
 public interface DoubleBiFunctionPrimitive extends ToDoubleBiDoubleFunction<Double> {
     

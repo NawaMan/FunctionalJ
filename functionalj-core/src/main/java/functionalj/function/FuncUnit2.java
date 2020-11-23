@@ -33,6 +33,7 @@ import functionalj.promise.Promise;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface FuncUnit2<INPUT1, INPUT2> extends BiConsumer<INPUT1, INPUT2> {
     

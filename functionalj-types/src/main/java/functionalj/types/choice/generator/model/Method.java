@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -63,7 +63,7 @@ public class Method {
     public final List<Type>        exceptions;
     
     public Method(Kind kind, String name, Type returnType, List<MethodParam> params) {
-        this(kind, name, returnType, params, new ArrayList<>(), new ArrayList<>());
+        this(kind, name, returnType, params, new ArrayList<Generic>(), new ArrayList<Type>());
     }
     public Method(Kind kind, String name, Type returnType, List<MethodParam> params, List<Generic> generics, List<Type> exceptions) {
         this.kind       = kind;
@@ -72,13 +72,13 @@ public class Method {
         this.params     = params;
         this.generics   = generics;
         this.exceptions = exceptions;
-        this.signature  = 
+        this.signature  =
                 (Kind.STATIC.equals(kind) ? "static " : "")
                 + returnType.toString() + " " + toString(param -> param.type.toString());
     }
     
     public String definition() {
-        return returnType.toString() + " " + 
+        return returnType.toString() + " " +
                 toString(param -> param.type.toString() + " " + param.name) +
                 (exceptions.isEmpty() ? "" : " throws " + exceptions.stream().map(e -> e.toString()).collect(joining(",")));
     }
@@ -109,7 +109,7 @@ public class Method {
     }
     
     public String toString(Function<? super MethodParam, ? extends String> paramMapper) {
-        val paramsStr 
+        val paramsStr
                 = params.stream()
                 .map    (paramMapper)
                 .filter (Objects::nonNull)
@@ -130,4 +130,5 @@ public class Method {
                 + parameters.stream().collect(joining(", "))
                 + ")";
     }
+    
 }

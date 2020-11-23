@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.stream.makers;
+package functionalj.stream.markers;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,17 +29,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Method with this marker is forced to be sequential.
- * The parallelism is only applied with in the method and it will be restored afterward.
+ * Method with this marker is eager.
+ * That means all the elements will be iterated through; thus, an error will thrown if the stream is infinite.
  * 
  * @author NawaMan -- nawa@nawaman.net
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Sequential {
+public @interface Eager {
     
     /**
-     * This flag indicates that the implementation is know to NOT be sequential for some reason
+     * This flag indicates that the implementation is know to NOT be eager for some reason
      *   and it is planned to be fixed at later point.
      **/
     boolean knownIssue() default false;

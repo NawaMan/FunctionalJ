@@ -52,6 +52,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
+
 // TODO - Should only contains methods that return functions or constance of functions
 
 public class StrFuncs {

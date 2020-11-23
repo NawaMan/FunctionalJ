@@ -38,6 +38,7 @@ import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import lombok.val;
 
+
 public interface FuncListLens<HOST, TYPE, TYPELENS extends AnyLens<HOST, TYPE>>
         extends
             ObjectLens<HOST, FuncList<TYPE>>,

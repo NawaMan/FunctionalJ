@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import functionalj.function.Func1;
 import lombok.val;
 
+
 public interface ResultFilterAddOn<DATA> {
     
     public Result<DATA> asResult();

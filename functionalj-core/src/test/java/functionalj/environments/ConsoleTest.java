@@ -37,6 +37,7 @@ import functionalj.promise.DeferAction;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
+
 public class ConsoleTest {
     
     @Test

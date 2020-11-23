@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,7 +34,7 @@ import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.Value;
 
 
-// TODO 
+// TODO
 // - Proper import - when params requires extra type.
 
 @Value
@@ -46,9 +46,11 @@ public class Generator implements Lines {
     public Generator(String targetName, Type sourceType, List<Case> choices) {
         this(targetName, sourceType, null, true, null, new ArrayList<Generic>(), choices, new ArrayList<Method>(), new ArrayList<String>());
     }
+    
     public Generator(String targetName, Type sourceType, String specObjName, boolean publicFields, String tagMapKeyName, List<Generic> generics, List<Case> choices, List<Method> methods, List<String> localTypeWithLens) {
         this(new SourceSpec(targetName, sourceType, specObjName, publicFields, tagMapKeyName, generics, choices, methods, localTypeWithLens));
     }
+    
     public Generator(SourceSpec sourceSpec) {
         this.sourceSpec  = sourceSpec;
         this.targetClass = new TargetClass(sourceSpec);

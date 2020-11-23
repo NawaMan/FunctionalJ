@@ -37,6 +37,7 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
+
 public interface StreamableWithSplit<DATA> extends StreamableWithMapToTuple<DATA> {
     
     // The most important thing here is to only evaluate the value once.

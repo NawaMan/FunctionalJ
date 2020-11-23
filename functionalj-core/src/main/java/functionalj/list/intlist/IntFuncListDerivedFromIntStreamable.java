@@ -34,6 +34,7 @@ import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
 
+
 class IntFuncListDerivedFromIntStreamable
                 implements IntFuncList {
     

@@ -10,6 +10,7 @@ import functionalj.lens.lenses.IntegerAccessPrimitive;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface EraAccess<HOST, ERA extends Era>
                     extends AnyAccess             <HOST, ERA>

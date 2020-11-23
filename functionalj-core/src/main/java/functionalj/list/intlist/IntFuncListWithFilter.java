@@ -35,8 +35,8 @@ import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
 import functionalj.function.IntBiPredicatePrimitive;
-import functionalj.list.intlist.IntFuncList;
 import lombok.val;
+
 
 public interface IntFuncListWithFilter extends AsIntFuncList {
     

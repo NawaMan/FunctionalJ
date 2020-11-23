@@ -32,6 +32,7 @@ import functionalj.types.elm.Elm;
 import functionalj.types.struct.generator.SourceSpec;
 import lombok.val;
 
+
 /**
  * This class represents The spec for an Elm structure type.
  * 

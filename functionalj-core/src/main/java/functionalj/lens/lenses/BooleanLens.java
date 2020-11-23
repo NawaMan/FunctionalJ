@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import functionalj.lens.core.LensSpec;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface BooleanLens<HOST>
         extends

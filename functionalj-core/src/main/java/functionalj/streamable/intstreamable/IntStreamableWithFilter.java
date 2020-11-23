@@ -38,6 +38,7 @@ import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.list.intlist.IntFuncList;
 import lombok.val;
 
+
 public interface IntStreamableWithFilter extends AsIntStreamable {
     
     /** Map each value to an int and used it to filter the value. */

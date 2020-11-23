@@ -40,6 +40,7 @@ import functionalj.ref.RunBody;
 import functionalj.ref.Substitution;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface AsyncRunner extends FuncUnit1<Runnable> {
     

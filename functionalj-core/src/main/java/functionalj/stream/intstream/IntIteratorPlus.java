@@ -38,6 +38,7 @@ import functionalj.result.AutoCloseableResult;
 import functionalj.result.Result;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable, Pipeable<IntIteratorPlus>  {
     

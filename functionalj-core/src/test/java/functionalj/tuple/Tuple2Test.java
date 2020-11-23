@@ -36,6 +36,7 @@ import functionalj.lens.lenses.Tuple2Lens;
 import functionalj.list.ImmutableList;
 import lombok.val;
 
+
 public class Tuple2Test {
     
     // Do not like this one bit. - Find the way to improve this!

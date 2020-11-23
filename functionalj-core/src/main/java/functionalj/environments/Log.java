@@ -35,6 +35,7 @@ import functionalj.list.FuncListDerived;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
+
 public final class Log {
     
     private Log() {

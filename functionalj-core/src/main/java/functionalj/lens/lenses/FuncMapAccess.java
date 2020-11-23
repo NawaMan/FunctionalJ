@@ -34,6 +34,7 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 
+
 @FunctionalInterface
 public interface FuncMapAccess<HOST, KEY, VALUE, 
                             KEYACCESS extends AnyAccess<HOST,KEY>, 

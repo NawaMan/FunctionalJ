@@ -37,6 +37,7 @@ import functionalj.ref.ComputeBody;
 import functionalj.result.Result;
 import lombok.val;
 
+
 /**
  * Function of zeroth parameter - a supplier.
  * 

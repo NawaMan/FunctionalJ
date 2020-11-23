@@ -32,6 +32,7 @@ import functionalj.promise.HasPromise;
 import functionalj.promise.Promise;
 import lombok.val;
 
+
 public interface FuncUnit1<INPUT> extends Consumer<INPUT> {
     
     public static <D> FuncUnit1<D> doNothing() {

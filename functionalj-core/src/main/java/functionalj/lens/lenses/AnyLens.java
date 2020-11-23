@@ -33,6 +33,7 @@ import functionalj.lens.core.LensSpec;
 import functionalj.lens.core.WriteLens;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface AnyLens<HOST, DATA> extends AnyAccess<HOST, DATA>, WriteLens<HOST, DATA> {
     

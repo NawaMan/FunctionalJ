@@ -38,7 +38,7 @@ import functionalj.functions.Func;
 import functionalj.functions.Func2;
 import functionalj.types.list.FuncList;
 import functionalj.types.result.Result;
-import lombok.val;
+
 
 public class TupleMapGenMain {
     

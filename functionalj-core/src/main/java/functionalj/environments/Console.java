@@ -52,6 +52,7 @@ import functionalj.stream.BlockingQueueIteratorPlus;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
+
 public final class Console {
     
     private Console() {

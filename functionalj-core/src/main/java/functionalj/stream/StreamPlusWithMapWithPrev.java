@@ -32,6 +32,7 @@ import functionalj.tuple.Tuple2;
 import lombok.val;
 
 
+
 public interface StreamPlusWithMapWithPrev<DATA> {
     
     public StreamPlus<DATA> streamPlus();

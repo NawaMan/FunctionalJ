@@ -17,6 +17,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.ZipWithOption;
 import lombok.val;
 
+
 public class IntStreamPlusHelper {
     
     static final Object dummy = new Object();
@@ -86,7 +87,7 @@ public class IntStreamPlusHelper {
     
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipIntWith(
             IntObjBiFunction<B, TARGET> merger,
-            IntIteratorPlus             iteratorA, 
+            IntIteratorPlus             iteratorA,
             IteratorPlus<B>             iteratorB) {
         
         val targetIterator = new Iterator<TARGET>() {
@@ -121,7 +122,7 @@ public class IntStreamPlusHelper {
     static <DATA, B, TARGET> StreamPlus<TARGET> doZipIntWith(
             int                         defaultValue,
             IntObjBiFunction<B, TARGET> merger,
-            IntIteratorPlus             iteratorA, 
+            IntIteratorPlus             iteratorA,
             IteratorPlus<B>             iteratorB) {
         
         val targetIterator = new Iterator<TARGET>() {
@@ -151,7 +152,7 @@ public class IntStreamPlusHelper {
     
     static IntStreamPlus doZipIntIntWith(
             IntBiFunctionPrimitive merger,
-            IntIteratorPlus        iteratorA, 
+            IntIteratorPlus        iteratorA,
             IntIteratorPlus        iteratorB) {
         
         val iterator = new PrimitiveIterator.OfInt() {
@@ -187,7 +188,7 @@ public class IntStreamPlusHelper {
     
     static <TARGET> StreamPlus<TARGET> doZipIntIntObjWith(
             IntIntBiFunction<TARGET> merger,
-            IntIteratorPlus          iteratorA, 
+            IntIteratorPlus          iteratorA,
             IntIteratorPlus          iteratorB) {
         
         val iterator = new Iterator<TARGET>() {
@@ -223,7 +224,7 @@ public class IntStreamPlusHelper {
     
     static <TARGET> StreamPlus<TARGET> doZipIntIntObjWith(
             IntIntBiFunction<TARGET> merger,
-            IntIteratorPlus          iteratorA, 
+            IntIteratorPlus          iteratorA,
             IntIteratorPlus          iteratorB,
             int                      defaultValue) {
         
@@ -268,7 +269,7 @@ public class IntStreamPlusHelper {
     
     static IntStreamPlus doZipIntIntWith(
             IntBiFunctionPrimitive merger,
-            IntIteratorPlus        iteratorA, 
+            IntIteratorPlus        iteratorA,
             IntIteratorPlus        iteratorB,
             int                    defaultValue) {
         
@@ -315,7 +316,7 @@ public class IntStreamPlusHelper {
     
     static <TARGET> StreamPlus<TARGET> doZipIntIntObjWith(
             IntIntBiFunction<TARGET> merger,
-            IntIteratorPlus          iteratorA, 
+            IntIteratorPlus          iteratorA,
             IntIteratorPlus          iteratorB,
             int                      defaultValueA,
             int                      defaultValueB) {
@@ -363,7 +364,7 @@ public class IntStreamPlusHelper {
     
     static IntStreamPlus doZipIntIntWith(
             IntBiFunctionPrimitive merger,
-            IntIteratorPlus        iteratorA, 
+            IntIteratorPlus        iteratorA,
             IntIteratorPlus        iteratorB,
             int                    defaultValueA,
             int                    defaultValueB) {
@@ -410,7 +411,7 @@ public class IntStreamPlusHelper {
     }
     
     static IntStreamPlus doMergeInt(
-            IntIteratorPlus iteratorA, 
+            IntIteratorPlus iteratorA,
             IntIteratorPlus iteratorB) {
         @SuppressWarnings("resource")
         val iterator = new IntIteratorPlus() {
@@ -451,9 +452,9 @@ public class IntStreamPlusHelper {
     }
     
     static IntStreamPlus doChoiceWith(
-            ZipWithOption          option, 
+            ZipWithOption          option,
             IntBiFunctionPrimitive merger,
-            IntIteratorPlus        iteratorA, 
+            IntIteratorPlus        iteratorA,
             IntIteratorPlus        iteratorB) {
         
         val iterator = new PrimitiveIterator.OfInt() {

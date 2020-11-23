@@ -39,6 +39,7 @@ import functionalj.function.FunctionInvocationException;
 import functionalj.promise.Promise;
 import lombok.val;
 
+
 public class FuncTest {
     
     @Test

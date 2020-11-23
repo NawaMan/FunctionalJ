@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import functionalj.types.choice.generator.model.Case;
 import lombok.val;
 
+
 public class SubFromMapBuilder implements Lines {
     
     private final Case choice;
@@ -41,5 +42,5 @@ public class SubFromMapBuilder implements Lines {
             .flatMap(allLines -> allLines)
             .collect(toList());
     }
-
+    
 }

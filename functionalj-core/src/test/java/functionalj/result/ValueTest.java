@@ -33,6 +33,8 @@ import org.junit.Test;
 
 import lombok.val;
 
+
+
 public class ValueTest {
     
     private static final Result<String> value = Result.valueOf("Test");

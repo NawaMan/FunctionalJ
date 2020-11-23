@@ -3,6 +3,7 @@ package functionalj.stream;
 import functionalj.function.Func1;
 import lombok.val;
 
+
 public interface StreamProcessor<DATA, TARGET> {
     
     public static <D, T> StreamProcessor<D, T> from(Func1<? super StreamPlus<? extends D>, T> mapper) {

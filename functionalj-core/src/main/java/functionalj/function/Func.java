@@ -48,6 +48,7 @@ import functionalj.supportive.CallerId;
 import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
 
+
 public interface Func {
     
     //== Provide different name for more readability ==

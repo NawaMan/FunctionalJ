@@ -43,6 +43,7 @@ import functionalj.list.FuncList;
 import functionalj.result.Result;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface StringAccess<HOST> 
         extends 

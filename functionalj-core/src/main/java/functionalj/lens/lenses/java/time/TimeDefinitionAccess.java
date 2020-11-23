@@ -12,6 +12,7 @@ import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface TimeDefinitionAccess<HOST>
                     extends AnyAccess     <HOST, TimeDefinition>

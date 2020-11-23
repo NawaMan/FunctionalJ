@@ -28,6 +28,7 @@ import java.util.function.Function;
 import functionalj.lens.lenses.AnyLens;
 import lombok.val;
 
+
 public interface LensSpecParameterized2<HOST, TYPE, SUB1, SUB2,
                                          SUBLENS1 extends AnyLens<HOST, SUB1>,
                                          SUBLENS2 extends AnyLens<HOST, SUB2>>

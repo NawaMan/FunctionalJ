@@ -41,6 +41,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
+
 public interface IntStreamableWithReshape extends AsIntStreamable {
     
     /**

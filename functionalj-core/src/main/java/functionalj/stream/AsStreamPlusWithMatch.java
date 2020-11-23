@@ -27,9 +27,10 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import functionalj.stream.makers.Sequential;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 import lombok.val;
+
 
 public interface AsStreamPlusWithMatch<DATA> {
     

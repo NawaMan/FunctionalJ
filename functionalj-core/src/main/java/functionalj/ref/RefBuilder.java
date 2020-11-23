@@ -31,6 +31,7 @@ import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class RefBuilder<DATA> {
     
     private final Class<DATA>    dataClass;

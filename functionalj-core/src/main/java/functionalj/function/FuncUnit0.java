@@ -30,6 +30,7 @@ import functionalj.promise.DeferAction;
 import functionalj.ref.RunBody;
 import lombok.val;
 
+
 public interface FuncUnit0 extends Runnable, RunBody<RuntimeException> {
     
     public static FuncUnit0 doNothing = () -> {};

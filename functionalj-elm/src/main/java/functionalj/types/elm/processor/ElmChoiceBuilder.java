@@ -43,6 +43,7 @@ import functionalj.types.choice.generator.model.CaseParam;
 import functionalj.types.struct.generator.ILines;
 import lombok.val;
 
+
 /**
  * This class generate Elm choice type.
  * 

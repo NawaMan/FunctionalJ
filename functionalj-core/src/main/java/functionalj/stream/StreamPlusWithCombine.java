@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,6 +35,7 @@ import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
+
 public interface StreamPlusWithCombine<DATA> {
     
     public StreamPlus<DATA> streamPlus();
@@ -50,7 +51,7 @@ public interface StreamPlusWithCombine<DATA> {
     @SuppressWarnings("unchecked")
     public default StreamPlus<DATA> concatWith(Stream<DATA> tail) {
         return StreamPlus.concat(
-                StreamPlus.of(this), 
+                StreamPlus.of(this),
                 StreamPlus.of(tail)
                )
                .flatMap(s -> (StreamPlus<DATA>)s);
@@ -59,7 +60,7 @@ public interface StreamPlusWithCombine<DATA> {
     /**
      * Merge this with another stream by alternatively picking value from the each stream.
      * If one stream ended before another one, the rest of the value will be appended.
-     * 
+     *
      * For an example: <br>
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
@@ -70,7 +71,7 @@ public interface StreamPlusWithCombine<DATA> {
         val iteratorA  = streamPlus.iterator();
         val iteratorB  = StreamPlus.from(anotherStream).iterator();
         
-        val resultStream 
+        val resultStream
                 = StreamPlusHelper
                 .doMerge(iteratorA, iteratorB);
         
@@ -87,7 +88,7 @@ public interface StreamPlusWithCombine<DATA> {
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * The combination stops when any of the stream ended.
-     * 
+     *
      * For an example: <br>
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
@@ -100,7 +101,7 @@ public interface StreamPlusWithCombine<DATA> {
     /**
      * Combine this stream with another stream into a stream of tuple pair.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
-     * 
+     *
      * For an example with ZipWithOption.AllowUnpaired: <br>
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
@@ -115,7 +116,7 @@ public interface StreamPlusWithCombine<DATA> {
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * The combination stops when any of the stream ended.
-     * 
+     *
      * For an example: <br>
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
@@ -131,7 +132,7 @@ public interface StreamPlusWithCombine<DATA> {
     /**
      * Combine this stream with another stream using the combinator to create the result value one by one.
      * Depending on the given ZipWithOption, the combination may ended when one ended or continue with null as value.
-     * 
+     *
      * For an example with ZipWithOption.AllowUnpaired: <br>
      *   This stream:    [A, B, C] <br>
      *   Another stream: [1, 2, 3, 4, 5] <br>
@@ -140,7 +141,7 @@ public interface StreamPlusWithCombine<DATA> {
      */
     // https://stackoverflow.com/questions/24059837/iterate-two-java-8-streams-together?noredirect=1&lq=1
     public default <B, C> StreamPlus<C> zipWith(
-            Stream<B>         anotherStream, 
+            Stream<B>         anotherStream,
             ZipWithOption     option,
             Func2<DATA, B, C> combinator) {
         val iteratorA = streamPlus().iterator();
@@ -151,7 +152,7 @@ public interface StreamPlusWithCombine<DATA> {
     /**
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when any of the stream ended.
-     * 
+     *
      * For an example: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>
@@ -168,7 +169,7 @@ public interface StreamPlusWithCombine<DATA> {
      * Create a new stream by choosing value from each stream suing the selector.
      * The combine stream ended when both stream ended.
      * The value from the longer stream is automatically used after the shorter stream ended.
-     * 
+     *
      * For an example with ZipWithOption.AllowUnpaired: <br>
      *   This stream:    [10, 1, 9, 2] <br>
      *   Another stream: [ 5, 5, 5, 5, 5, 5, 5] <br>

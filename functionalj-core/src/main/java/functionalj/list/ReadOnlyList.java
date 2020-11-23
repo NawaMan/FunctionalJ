@@ -42,6 +42,7 @@ import functionalj.stream.StreamPlusHelper;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface ReadOnlyList<DATA> 
                     extends List<DATA> {

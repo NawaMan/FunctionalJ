@@ -9,6 +9,7 @@ import functionalj.lens.lenses.ConcreteAccess;
 import functionalj.lens.lenses.IntegerAccessPrimitive;
 import lombok.val;
 
+
 public interface ZoneOffsetTransitionRuleAccess<HOST>
                     extends AnyAccess      <HOST, ZoneOffsetTransitionRule>
                     ,       ConcreteAccess <HOST, ZoneOffsetTransitionRule, ZoneOffsetTransitionRuleAccess<HOST>> {

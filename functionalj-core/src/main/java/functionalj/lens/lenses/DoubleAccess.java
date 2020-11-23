@@ -33,6 +33,7 @@ import functionalj.function.Func1;
 import functionalj.function.ToDoubleBiDoubleFunction;
 import lombok.val;
 
+
 public interface DoubleAccess<HOST> 
                     extends 
                         NumberAccess<HOST, Double, DoubleAccess<HOST>>, 

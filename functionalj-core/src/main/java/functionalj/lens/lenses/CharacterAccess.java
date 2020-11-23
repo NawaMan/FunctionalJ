@@ -34,6 +34,7 @@ import functionalj.function.ToCharFunction;
 import lombok.val;
 
 
+
 public interface CharacterAccess<HOST>
         extends 
             ObjectAccess<HOST, Character>,

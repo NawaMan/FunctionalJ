@@ -39,7 +39,7 @@ import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
-import lombok.val;
+
 
 // 2018-11-14 - WIP - `Finish` is not done.
 public class GeneratorTest {

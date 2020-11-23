@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,7 +36,8 @@ import functionalj.types.Type;
 import functionalj.types.choice.ChoiceTypeSwitch;
 import functionalj.types.choice.IChoice;
 import functionalj.types.choice.Self;
-import functionalj.types.choice.generator.model.Method.Kind;
+import functionalj.types.choice.generator.model.Method;
+//import functionalj.types.choice.generator.model.Method.Kind;
 import functionalj.types.choice.generator.model.SourceSpec;
 import lombok.Value;
 import lombok.val;
@@ -44,6 +45,7 @@ import lombok.val;
 
 @Value
 public class TargetClass implements Lines {
+    
     public final SourceSpec spec;
     public final Type       type;
     
@@ -73,10 +75,10 @@ public class TargetClass implements Lines {
         
         String selfDef = "";
         List<String> specObj = null;
-        if (spec.methods.stream().anyMatch(m -> Kind.DEFAULT.equals(m.kind))) {
+        if (spec.methods.stream().anyMatch(m -> Method.Kind.DEFAULT.equals(m.kind))) {
             // TODO - move this to $utils ?
             imports.add("nullablej.utils.reflection.UProxy");
-            specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);", 
+            specObj = asList(format("    private final %1$s __spec = UProxy.createDefaultProxy(%2$s.class);",
                     spec.sourceType.fullName() + spec.sourceType.genericsString(),
                     spec.sourceType.fullName()));
             
@@ -114,8 +116,8 @@ public class TargetClass implements Lines {
                 .filter(Objects::nonNull)
                 .map("    "::concat)
                 .collect(toList());;
-        
-        val subClassConstructors 
+                
+        val subClassConstructors
                 = spec.choices.stream()
                 .flatMap(choice -> new SubClassConstructor(this, choice).lines().stream())
                 .filter(Objects::nonNull)
@@ -140,7 +142,7 @@ public class TargetClass implements Lines {
                 .lines().stream()
                 .map("    "::concat)
                 .collect(toList());
-        val fromMapMethod 
+        val fromMapMethod
                 = new FromMapBuilder(this)
                 .lines().stream()
                 .map("    "::concat)
@@ -207,4 +209,5 @@ public class TargetClass implements Lines {
             .flatMap(List::stream)
             .collect(toList());
     }
+    
 }

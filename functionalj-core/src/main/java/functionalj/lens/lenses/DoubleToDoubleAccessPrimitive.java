@@ -30,6 +30,7 @@ import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.function.ToDoubleBiDoubleFunction;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface DoubleToDoubleAccessPrimitive extends DoubleUnaryOperator, DoubleAccessPrimitive<Double> {
     

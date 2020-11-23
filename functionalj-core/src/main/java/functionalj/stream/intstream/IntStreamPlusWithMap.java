@@ -30,6 +30,7 @@ import java.util.function.IntUnaryOperator;
 import functionalj.stream.StreamPlus;
 import lombok.val;
 
+
 public interface IntStreamPlusWithMap {
     
     public IntStreamPlus intStreamPlus();

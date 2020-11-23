@@ -48,6 +48,7 @@ import functionalj.result.Result;
 import functionalj.tuple.Tuple;
 import lombok.val;
 
+
 public class FunctionExamples {
     
     public int toInt(String str) {

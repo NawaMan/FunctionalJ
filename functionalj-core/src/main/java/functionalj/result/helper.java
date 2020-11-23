@@ -34,6 +34,7 @@ import functionalj.function.Func2;
 import functionalj.function.FuncUnit2;
 import lombok.val;
 
+
 class helper {
     
     static <DATA> Func2<DATA, Exception, Boolean> processIs(Predicate<ResultStatus> statusCheck) {

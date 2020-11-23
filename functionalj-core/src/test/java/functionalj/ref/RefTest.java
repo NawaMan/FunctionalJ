@@ -39,6 +39,7 @@ import functionalj.result.Result;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
+
 public class RefTest {
 
     @Test

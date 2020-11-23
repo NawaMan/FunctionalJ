@@ -37,6 +37,7 @@ import functionalj.function.Func;
 import functionalj.types.Choice;
 import lombok.val;
 
+
 public class ChoiceTypeExamples {
     
     @Choice

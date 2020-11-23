@@ -38,6 +38,7 @@ import functionalj.function.Func;
 import functionalj.pipeable.PipeLine;
 import lombok.val;
 
+
 public class PromiseTest {
     
     private void assertStrings(String str, Object obj) {

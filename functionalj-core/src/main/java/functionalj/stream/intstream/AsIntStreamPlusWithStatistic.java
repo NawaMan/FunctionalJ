@@ -35,11 +35,12 @@ import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Terminal;
 import functionalj.tuple.IntIntTuple;
 import functionalj.tuple.Tuple2;
 import lombok.val;
+
 
 public interface AsIntStreamPlusWithStatistic {
     

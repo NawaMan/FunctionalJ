@@ -8,6 +8,7 @@ import functionalj.tuple.Tuple;
 import functionalj.tuple.Tuple2;
 import lombok.val;
 
+
 public class FuncMapBuilder<K, V> {
     private final List<Tuple2<K, V>> entries;
     

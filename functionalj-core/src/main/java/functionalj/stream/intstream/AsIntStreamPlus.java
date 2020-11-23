@@ -36,10 +36,11 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import functionalj.stream.makers.Eager;
-import functionalj.stream.makers.Sequential;
-import functionalj.stream.makers.Terminal;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 import lombok.val;
+
 
 /**
  * Classes implementing this interface can provider a StreamPlus instance of itself.

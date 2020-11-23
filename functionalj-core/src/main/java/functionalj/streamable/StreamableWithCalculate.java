@@ -35,6 +35,7 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
+
 public interface StreamableWithCalculate<DATA> extends AsStreamable<DATA> {
     
     /** Perform the calculation using the data of this streamable */

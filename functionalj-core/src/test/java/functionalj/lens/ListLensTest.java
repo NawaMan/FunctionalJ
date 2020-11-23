@@ -41,6 +41,7 @@ import functionalj.lens.lenses.ListLens;
 import functionalj.lens.lenses.ObjectLensImpl;
 import lombok.val;
 
+
 public class ListLensTest {
 
     

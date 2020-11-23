@@ -38,6 +38,7 @@ import functionalj.stream.StreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import lombok.val;
 
+
 public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
     
     /**

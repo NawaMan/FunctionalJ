@@ -27,6 +27,8 @@ import java.util.Optional;
 
 import lombok.val;
 
+
+
 public class Either<VALUE, ERROR> extends ImmutableResult<VALUE> {
     
     public static <V, E> Either<V, E> ofValue(V value) {

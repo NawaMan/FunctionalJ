@@ -30,6 +30,7 @@ import functionalj.function.LongBiFunctionPrimitive;
 import functionalj.function.ToLongBiLongFunction;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface LongToLongAccessPrimitive extends LongUnaryOperator, LongAccessPrimitive<Long> {
     

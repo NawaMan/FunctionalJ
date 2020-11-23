@@ -13,6 +13,7 @@ import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
+
 @FunctionalInterface
 public interface PeriodAccess<HOST>
                     extends AnyAccess<HOST, Period>

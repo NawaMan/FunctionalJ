@@ -32,6 +32,7 @@ import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public abstract class WaitAwhile extends Wait {
     
     @SuppressWarnings("rawtypes")

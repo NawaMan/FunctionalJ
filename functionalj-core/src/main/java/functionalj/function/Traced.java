@@ -26,6 +26,7 @@ package functionalj.function;
 import functionalj.supportive.CallerId;
 import lombok.val;
 
+
 public interface Traced {
     
     /**

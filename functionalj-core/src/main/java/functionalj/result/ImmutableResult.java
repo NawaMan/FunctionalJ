@@ -27,6 +27,7 @@ import functionalj.list.FuncList;
 import functionalj.validator.Validator;
 import lombok.val;
 
+
 public class ImmutableResult<DATA> extends Result<DATA> {
     
     private final Object data;

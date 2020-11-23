@@ -9,8 +9,6 @@ dependencies {
     compile project(':functionalj-types')
     annotationProcessor project(':functionalj-types')
     
-    compile 'junit:junit:4.12'
-    
     compileOnly         'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     

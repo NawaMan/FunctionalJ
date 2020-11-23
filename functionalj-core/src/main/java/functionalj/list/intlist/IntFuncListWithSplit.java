@@ -34,6 +34,7 @@ import functionalj.tuple.Tuple5;
 import functionalj.tuple.Tuple6;
 import lombok.val;
 
+
 public interface IntFuncListWithSplit extends IntFuncListWithMapToTuple {
     
     // The most important thing here is to only evaluate the value once.

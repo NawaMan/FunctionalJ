@@ -38,6 +38,7 @@ import functionalj.lens.lenses.MapAccess;
 import functionalj.lens.lenses.StringAccess;
 import lombok.val;
 
+
 public class MapAccessTest {
     
     @Test

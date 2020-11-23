@@ -25,8 +25,8 @@ package functionalj.types.struct.generator;
 
 import java.util.stream.Stream;
 
-import functionalj.types.Type;
 import functionalj.types.IRequireTypes;
+import functionalj.types.Type;
 
 /**
  * Classes implementing this interface as a term in code.

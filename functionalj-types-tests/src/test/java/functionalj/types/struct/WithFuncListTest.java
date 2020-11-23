@@ -31,8 +31,6 @@ import org.junit.Test;
 import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.types.Struct;
-import functionalj.types.struct.Child;
-import functionalj.types.struct.ParentWithFuncList;
 
 public class WithFuncListTest {
 

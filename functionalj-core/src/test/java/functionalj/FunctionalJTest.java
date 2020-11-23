@@ -48,6 +48,7 @@ import functionalj.function.Func;
 import lombok.Value;
 import lombok.val;
 
+
 public class FunctionalJTest {
     
     @Test

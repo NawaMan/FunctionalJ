@@ -40,6 +40,7 @@ import functionalj.lens.core.WriteLens;
 import functionalj.tuple.ImmutableTuple2;
 import lombok.val;
 
+
 public interface MapLens<HOST, KEY, VALUE, 
                             KEYLENS   extends AnyLens<HOST,KEY>, 
                             VALUELENS extends AnyLens<HOST,VALUE>>

@@ -11,6 +11,7 @@ import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
 import lombok.val;
 
+
 public class StreamPlusHelper {
     
     static final Object dummy = new Object();

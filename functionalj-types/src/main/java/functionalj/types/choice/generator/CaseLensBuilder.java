@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -50,6 +50,7 @@ import functionalj.types.struct.generator.model.GenField;
 import functionalj.types.struct.generator.model.GenParam;
 import lombok.val;
 
+
 public class CaseLensBuilder {
     
     private final SourceSpec sourceSpec;
@@ -68,10 +69,9 @@ public class CaseLensBuilder {
                 null,
                 choiceCase.name + "Lens",
                 asList(new Generic("HOST")));
-        val superType = ObjectLensImpl.type();
         
-        val lensFields = choiceCase.params.stream().map(getter -> getterToLensField(getter, dataObjClassName, sourceSpec)).collect(toList());
-        
+        val superType    = ObjectLensImpl.type();
+        val lensFields   = choiceCase.params.stream().map(getter -> getterToLensField(getter, dataObjClassName, sourceSpec)).collect(toList());
         val lensSpecType = new Type(
                 Core.LensSpec.type().packageName(),
                 null,
@@ -96,7 +96,7 @@ public class CaseLensBuilder {
     
     /**
      * Generate the Lens field ("theXxx" field).
-     * 
+     *
      * @return the generated field.
      */
     public GenField generateTheLensField() {
@@ -172,12 +172,12 @@ public class CaseLensBuilder {
         val field        = new GenField(PUBLIC, FINAL, INSTANCE, name, lensTypeDef, value);
         return field;
     }
-
+    
     private String lensFieldValue(
-            String  dataObjName, 
-            String  name, 
+            String  dataObjName,
+            String  name,
             String  withName,
-            Type    type, 
+            Type    type,
             boolean isPrimitive,
             Type    lensType,
             Type    lensTypeDef,
@@ -251,7 +251,7 @@ public class CaseLensBuilder {
         val valueGeneric = type.generics().get(1);
         val keyType      = keyGeneric.toType();
         val valueType    = valueGeneric.toType();
-        val lensGenerics = asList(new Generic("HOST"), 
+        val lensGenerics = asList(new Generic("HOST"),
                                 keyGeneric, valueGeneric,
                                 new Generic(keyType  .lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))),
                                 new Generic(valueType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));
@@ -286,7 +286,7 @@ public class CaseLensBuilder {
         val valueGeneric = type.generics().get(1);
         val keyType      = keyGeneric.toType();
         val valueType    = valueGeneric.toType();
-        val lensGenerics = asList(new Generic("HOST"), 
+        val lensGenerics = asList(new Generic("HOST"),
                                  keyGeneric, valueGeneric,
                                  new Generic(keyType  .lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))),
                                  new Generic(valueType.lensType(packageName, encloseName, withLens).withGenerics(asList(new Generic("HOST")))));

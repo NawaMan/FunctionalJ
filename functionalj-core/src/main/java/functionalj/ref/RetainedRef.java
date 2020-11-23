@@ -34,6 +34,7 @@ import functionalj.function.Func0;
 import functionalj.result.Result;
 import lombok.val;
 
+
 public class RetainedRef<DATA> extends RefOf<DATA> implements RetainChecker {
     
     private static final Object NONE = new Object();

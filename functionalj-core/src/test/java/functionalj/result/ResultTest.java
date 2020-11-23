@@ -38,6 +38,7 @@ import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.validator.Validator;
 import lombok.val;
 
+
 public class ResultTest {
     
     private static final Result<String> result = Result.valueOf("Test");

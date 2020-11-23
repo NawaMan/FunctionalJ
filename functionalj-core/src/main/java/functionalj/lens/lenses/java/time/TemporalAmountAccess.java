@@ -10,6 +10,7 @@ import functionalj.lens.lenses.ListAccess;
 import functionalj.lens.lenses.LongAccessPrimitive;
 import lombok.val;
 
+
 public interface TemporalAmountAccess<HOST, TEMPORAL_AMOUNT extends TemporalAmount>
                     extends AnyAccess<HOST, TEMPORAL_AMOUNT> {
     
