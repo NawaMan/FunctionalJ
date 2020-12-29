@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -98,11 +98,11 @@ public abstract class Result<DATA>
     }
     
     @SuppressWarnings("rawtypes")
-	private static final Result NULL = new ImmutableResult<>(null);
+    private static final Result NULL = new ImmutableResult<>(null);
     
     /**
      * Returns the Null result.
-     * 
+     *
      * @param  <D>  the data type of the result.
      * @return the Result containing null value.
      */
@@ -114,7 +114,7 @@ public abstract class Result<DATA>
     
     /**
      * Returns the NotExist result.
-     * 
+     *
      * @param  <D>  the data type of the result.
      * @return the Result that is the result does not exist.
      */
@@ -125,7 +125,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotExist result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  <D>      the data type of the result.
      * @return the Result that is the result is not available.
@@ -137,7 +137,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotExist result with message and cause.
-     * 
+     *
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>      the data type of the result.
@@ -151,7 +151,7 @@ public abstract class Result<DATA>
     
     /**
      * Returns the NoMore result.
-     * 
+     *
      * @param  <D>  the data type of the result.
      * @return the Result that is the result does not exist.
      */
@@ -162,7 +162,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NoMore result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  <D>      the data type of the result.
      * @return the Result that is the result is not available.
@@ -174,7 +174,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NoMore result with message and cause.
-     * 
+     *
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>      the data type of the result.
@@ -188,7 +188,7 @@ public abstract class Result<DATA>
     
     /**
      * Returns the NotReady result.
-     * 
+     *
      * @param  <D>  the data type of the result.
      * @return the Result that is the result is not ready.
      */
@@ -199,7 +199,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotReady result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  <D>      the data type of the result.
      * @return the Result that is the result is not ready.
@@ -211,7 +211,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the NotReady result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>      the data type of the result.
@@ -225,7 +225,7 @@ public abstract class Result<DATA>
     
     /**
      * Returns the Cancelled result.
-     * 
+     *
      * @param  <D>  the data type of the result.
      * @return the Result that is the result is cancelled.
      */
@@ -236,7 +236,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the Cancelled result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  <D>       the data type of the result.
      * @return the Result that is the result is cancelled.
@@ -248,7 +248,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the Cancelled result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>       the data type of the result.
@@ -262,7 +262,7 @@ public abstract class Result<DATA>
     
     /**
      * Returns the Invalid result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  <D>       the data type of the result.
      * @return the Result that is the result is invalid.
@@ -274,7 +274,7 @@ public abstract class Result<DATA>
     }
     /**
      * Returns the Invalid result with message.
-     * 
+     *
      * @param  message  the exception message.
      * @param  cause    the exception cause.
      * @param  <D>       the data type of the result.
@@ -637,7 +637,7 @@ public abstract class Result<DATA>
         );
     }
     public final DATA getValue() {
-    	return value();
+        return value();
     }
     
     public final Exception exception() {
@@ -652,7 +652,7 @@ public abstract class Result<DATA>
         );
     }
     public final Exception getException() {
-    	return exception();
+        return exception();
     }
     
     public final <T extends Result<DATA>> T castTo(Class<T> clzz) {
@@ -729,9 +729,9 @@ public abstract class Result<DATA>
     }
     
     public final <OPERANT, TARGET> Result<TARGET> mapWith(
-            Func2<? super DATA, ? super OPERANT, ? extends TARGET> func, 
+            Func2<? super DATA, ? super OPERANT, ? extends TARGET> func,
             Result<OPERANT> operantResult) {
-        return flatMap(data -> { 
+        return flatMap(data -> {
             return operantResult.map(operant -> {
                 return func.apply(data, operant);
             });
@@ -883,7 +883,7 @@ public abstract class Result<DATA>
         return mapData(
                 returnValueException(),
                 (value, exception)->{
-                    if (value == null) 
+                    if (value == null)
                         return this;
                     try {
                         if (validChecker.test(value))
@@ -904,7 +904,7 @@ public abstract class Result<DATA>
         return mapData(
                 returnValueException(),
                 (value, exception)->{
-                    if (value == null) 
+                    if (value == null)
                         return this;
                     try {
                         val target = mapper.applyUnsafe(value);
@@ -924,7 +924,7 @@ public abstract class Result<DATA>
         return mapData(
                 returnValueException(),
                 (value, exception)->{
-                    if (value == null) 
+                    if (value == null)
                         return this;
                     
                     return validator.validate(value);
@@ -1041,7 +1041,7 @@ public abstract class Result<DATA>
                 }
         );
     }
-    public final <EXCEPTION extends Exception> DATA orThrow(Func1<Exception, EXCEPTION> toException) 
+    public final <EXCEPTION extends Exception> DATA orThrow(Func1<Exception, EXCEPTION> toException)
             throws EXCEPTION {
         return mapData(
                 e -> { throw toException.applyUnsafe(e); },
@@ -1053,7 +1053,7 @@ public abstract class Result<DATA>
                 }
         );
     }
-    public final <RUNTIMEEXCEPTION extends RuntimeException> 
+    public final <RUNTIMEEXCEPTION extends RuntimeException>
             DATA orThrowRuntimeException(Function<Exception, RUNTIMEEXCEPTION> toRuntimeException) {
         return mapData(
                 e -> {

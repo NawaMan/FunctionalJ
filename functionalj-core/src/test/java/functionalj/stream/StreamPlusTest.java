@@ -69,7 +69,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import functionalj.function.Func0;
@@ -361,11 +360,11 @@ public class StreamPlusTest {
 //        assertStrings("11", stream.mapToLong(String::length).sum());
 //    }
 //
-    @Test @Ignore
-    public void testMapToDouble() {
-        val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("11.0", stream.mapToDouble(s -> s.length()*1.0).sum());
-    }
+//    @Test
+//    public void testMapToDouble() {
+//        val stream = StreamPlus.of("One", "Two", "Three");
+//        assertStrings("11.0", stream.mapToDouble(s -> s.length()*1.0).sum());
+//    }
     
     //-- FlatMap --
     
@@ -381,17 +380,17 @@ public class StreamPlusTest {
         assertStrings("[3, 3, 5]", stream.flatMapToInt(s -> IntStreamPlus.of(s.length())).toList());
     }
     
-    @Test @Ignore
-    public void testFlatMapToLong() {
+//    @Test
+//    public void testFlatMapToLong() {
 //        val stream = StreamPlus.of("One", "Two", "Three");
 //        assertStrings("[3, 3, 5]", stream.flatMapToLong(s -> LongStreamPlus.of((long)s.length())).toList()));
-    }
+//    }
     
-    @Test @Ignore
-    public void testFlatMapToDouble() {
+//    @Test
+//    public void testFlatMapToDouble() {
 //        val stream = StreamPlus.of("One", "Two", "Three");
 //        assertStrings("[3, 3, 5]", stream.flatMapToDouble(s -> DoubleStreamPlus.of((double)s.length())).toList());
-    }
+//    }
     
     //-- Filter --
     
@@ -559,11 +558,11 @@ public class StreamPlusTest {
 //        assertStrings("[65, 66, 67, 68]", Arrays.toString(stream.toLongArray(c -> (long)c)));
 //    }
     
-    @Test @Ignore
-    public void testToDoubleArray() {
-        val stream = StreamPlus.of('A', 'B', 'C', 'D');
-        assertStrings("[65.0, 66.0, 67.0, 68.0]", Arrays.toString(stream.toDoubleArray(c -> (double)(int)c)));
-    }
+//    @Test
+//    public void testToDoubleArray() {
+//        val stream = StreamPlus.of('A', 'B', 'C', 'D');
+//        assertStrings("[65.0, 66.0, 67.0, 68.0]", Arrays.toString(stream.toDoubleArray(c -> (double)(int)c)));
+//    }
     
     @Test
     public void testToArrayList() {
@@ -1227,6 +1226,32 @@ public class StreamPlusTest {
         assertStrings("[(One), [3], [5]]", stream.flatMapToObjIf(str -> str.toLowerCase().startsWith("t"), s -> Stream.of("[" + s.length() + "]"), s -> Stream.of("(" + s + ")")).toList());
     }
     
+    //-- StreamPlusWithGroupBy --
+    
+    @Test
+    public void testGroupByKey() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
+        assertStrings(
+                "{3:[One, Two, Six], 4:[Four, Five], 5:[Three]}",
+                stream.groupingBy(str -> str.length()).sorted().mapValue(s -> s.toListString()));
+    }
+    
+    @Test
+    public void testGroupByKey_aggregate() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
+        assertStrings(
+                "{3:[One, Two, Six], 4:[Four, Five], 5:[Three]}",
+                stream.groupingBy(str -> str.length(), s -> s.toListString()).sorted());
+    }
+    
+    @Test
+    public void testGroupByKey_collector() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
+        assertStrings(
+                "{3:[One, Two, Six], 4:[Four, Five], 5:[Three]}",
+                stream.groupingBy(str -> str.length()).sorted().mapValue(s -> s.collect(toList())));
+    }
+    
     //-- StreamPlusWithLimit --
     
     @Test
@@ -1262,30 +1287,35 @@ public class StreamPlusTest {
     @Test
     public void testTakeWhile() {
         val list = new ArrayList<Integer>();
-        assertStrings("[1, 2, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeWhile(i -> i < 4).peek(list::add).toList());
-        assertStrings("[1, 2, 3]", list);
+        assertStrings("[1, 2, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeWhile(i -> i < 4).toList());
+        assertStrings("[1, 2, 3, 4]", list);
+        //                       ^--- Because it needs 4 to do the check in `takeWhile`
         
         list.clear();
-        assertStrings("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeWhile(i -> i > 4).peek(list::add).toList());
-        assertStrings("[]", list);
+        assertStrings("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeWhile(i -> i > 4).toList());
+        assertStrings("[1]", list);
+        //              ^--- Because it needs 1 to do the check in `takeWhile`
     }
     
     @Test
     public void testTakeUtil() {
         val list = new ArrayList<Integer>();
-        assertStrings("[1, 2, 3, 4]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeUntil(i -> i > 4).peek(list::add).toList());
-        assertStrings("[1, 2, 3, 4]", list);
+        assertStrings("[1, 2, 3, 4]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeUntil(i -> i > 4).toList());
+        assertStrings("[1, 2, 3, 4, 5]", list);
+        //                          ^--- Because it needs 5 to do the check in `takeUntil`
         
         list.clear();
-        assertStrings("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).takeUntil(i -> i < 4).peek(list::add).toList());
-        assertStrings("[]", list);
+        assertStrings("[]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).takeUntil(i -> i < 4).toList());
+        assertStrings("[1]", list);
+        //              ^--- Because it needs 1 to do the check in `takeUntil`
     }
     
     @Test
     public void testSkipTake() {
         val list = new ArrayList<Integer>();
-        assertStrings("[3, 4, 5, 4, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).skipWhile(i -> i < 3).takeUntil(i -> i < 3).peek(list::add).toList());
-        assertStrings("[3, 4, 5, 4, 3]", list);
+        assertStrings("[3, 4, 5, 4, 3]", StreamPlus.of(1, 2, 3, 4, 5, 4, 3, 2, 1).peek(list::add).skipWhile(i -> i < 3).takeUntil(i -> i < 3).toList());
+        assertStrings("[1, 2, 3, 4, 5, 4, 3, 2]", list);
+        //              ^--^-----------------^--- Because it needs these number to do the check in `skipWhile` and `takeWhile`
     }
     
     //-- StreamPlusWithMap --
@@ -1412,9 +1442,9 @@ public class StreamPlusTest {
     
     @Test
     public void testMapThen_4() {
-        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "None", "Ten", "Eleven", "Twelve");
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
         assertStrings(
-                "[T-h-r-e, F-o-u-r, F-i-v-e, S-e-v-e, E-i-g-h, N-o-n-e, E-l-e-v, T-w-e-l]",
+                "[T-h-r-e, F-o-u-r, F-i-v-e, S-e-v-e, E-i-g-h, N-i-n-e, E-l-e-v, T-w-e-l]",
                 stream
                     .filter($S.length().thatGreaterThanOrEqualsTo(4))
                     .mapThen(
@@ -1427,7 +1457,7 @@ public class StreamPlusTest {
     
     @Test
     public void testMapThen_5() {
-        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "None", "Ten", "Eleven", "Twelve");
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
         assertStrings(
                 "[T-h-r-e-e, S-e-v-e-n, E-i-g-h-t, E-l-e-v-e, T-w-e-l-v]",
                 stream
@@ -1443,7 +1473,7 @@ public class StreamPlusTest {
     
     @Test
     public void testMapThen_6() {
-        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "None", "Ten", "Eleven", "Twelve");
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve");
         assertStrings(
                 "[E-l-e-v-e-n, T-w-e-l-v-e]",
                 stream
@@ -1662,6 +1692,29 @@ public class StreamPlusTest {
                         "<8>", $S.charAt(7),
                         "<9>", $S.charAt(8),
                         "<10>", $S.charAt(9))
+                .map(map -> map.sorted())
+                .toListString());
+    }
+    
+    @Test
+    public void testMapToMap_11() {
+        val stream = StreamPlus.of("One", "Three", "Five", "Seven", "Eleven", "Thirteen", "Seventeen", "Nineteen", "Twenty-three");
+        assertStrings(
+                "[{<10>:r, <11>:e, <1>:T, <2>:w, <3>:e, <4>:n, <5>:t, <6>:y, <7>:-, <8>:t, <9>:h}]",
+                stream
+                .filter($S.length().thatGreaterThanOrEqualsTo(11))
+                .mapToMap(
+                        "<1>", $S.charAt(0),
+                        "<2>", $S.charAt(1),
+                        "<3>", $S.charAt(2),
+                        "<4>", $S.charAt(3),
+                        "<5>", $S.charAt(4),
+                        "<6>", $S.charAt(5),
+                        "<7>", $S.charAt(6),
+                        "<8>", $S.charAt(7),
+                        "<9>", $S.charAt(8),
+                        "<10>", $S.charAt(9),
+                        "<11>", $S.charAt(10))
                 .map(map -> map.sorted())
                 .toListString());
     }
@@ -2057,9 +2110,10 @@ public class StreamPlusTest {
         
         assertEquals("[[53, 54, 55, 56], " +
                       "[63, 64, 65, 66], " +
-                      "[73, 74, 75, 76]]",
+                      "[73, 74]]",
                 IntStreamable
                 .infiniteInt()
+                .limit(75)
                 .boxed  ()
                 .stream ()
                 .segment(startCondition, endCondition)
@@ -2070,9 +2124,10 @@ public class StreamPlusTest {
         
         assertEquals("[[53, 54, 55, 56], " +
                       "[63, 64, 65, 66], " +
-                      "[73, 74, 75, 76]]",
+                      "[73, 74]]",
                 IntStreamable
                 .infiniteInt()
+                .limit(75)
                 .boxed  ()
                 .stream ()
                 .segment(startCondition, endCondition, true)
@@ -2081,11 +2136,11 @@ public class StreamPlusTest {
                 .map    (StreamPlus::toListString)
                 .toListString());
         
-        assertEquals("[[53, 54, 55], " +
-                      "[63, 64, 65], " +
-                      "[73, 74, 75]]",
+        assertEquals("[[53, 54, 55, 56], " +
+                      "[63, 64, 65, 66]]",
                 IntStreamable
                 .infiniteInt()
+                .limit(75)
                 .boxed  ()
                 .stream ()
                 .segment(startCondition, endCondition, false)
@@ -2096,9 +2151,10 @@ public class StreamPlusTest {
         
         assertEquals("[[53, 54, 55, 56], " +
                       "[63, 64, 65, 66], " +
-                      "[73, 74, 75, 76]]",
+                      "[73, 74]]",
                 IntStreamable
                 .infiniteInt()
+                .limit(75)
                 .boxed  ()
                 .stream ()
                 .segment(startCondition, endCondition, IncompletedSegment.included)
@@ -2107,11 +2163,11 @@ public class StreamPlusTest {
                 .map    (StreamPlus::toListString)
                 .toListString());
         
-        assertEquals("[[53, 54, 55], " +
-                      "[63, 64, 65], " +
-                      "[73, 74, 75]]",
+        assertEquals("[[53, 54, 55, 56], " +
+                      "[63, 64, 65, 66]]",
                 IntStreamable
                 .infiniteInt()
+                .limit(75)
                 .boxed  ()
                 .stream ()
                 .segment(startCondition, endCondition, IncompletedSegment.excluded)
@@ -2122,7 +2178,7 @@ public class StreamPlusTest {
     }
     
     @Test
-    public void testCollapse() {
+    public void testCollapseWhen() {
         val stream1 = StreamPlus.of(1, 2, 3, 4, 5, 6);
         // Because 3 and 6 do match the condition to collapse ... so they are merged with the one before them.
         assertEquals(
@@ -2151,7 +2207,7 @@ public class StreamPlusTest {
     
     @Test
     public void testCollapseSize() {
-        val stream1 = IntStreamable.infiniteInt().limit(20).boxed();
+        val stream1 = IntStreamable.infiniteInt().limit(20).boxed().stream();
         assertEquals(
                 "1, 5, 22, 92, 70",
                 stream1.collapseSize(
@@ -2159,7 +2215,7 @@ public class StreamPlusTest {
                         (a,b)->a+b
                     ).join(", "));
         
-        val stream2 = IntStreamable.infiniteInt().limit(20).boxed();
+        val stream2 = IntStreamable.infiniteInt().limit(20).boxed().stream();
         assertEquals(
                 "1, 2-3, 4-5-6-7, 8-9-10-11-12-13-14-15, 16-17-18-19",
                 stream2.collapseSize(
@@ -2283,6 +2339,188 @@ public class StreamPlusTest {
                     streamPlusToList,
                     streamPlusToList,
                     streamPlusToList)
+                .toString());
+    }
+    
+    @Test
+    public void testSplit_3() {
+        Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
+        val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        assertStrings("("
+                + "[0, 2, 4, 6, 8, 10, 12, 14],"
+                + "[3, 9, 15],"
+                + "[5],"
+                + "[1, 7, 11, 13]"
+                + ")",
+                stream
+                .split(
+                    i -> i%2 == 0,
+                    i -> i%3 == 0,
+                    i -> i%5 == 0)
+                .map(
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList)
+                .toString());
+    }
+    
+    @Test
+    public void testSplit_4() {
+        Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
+        val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        assertStrings("("
+                + "[0, 2, 4, 6, 8, 10, 12, 14],"
+                + "[3, 9, 15],"
+                + "[5],"
+                + "[7],"
+                + "[1, 11, 13]"
+                + ")",
+                stream
+                .split(
+                    i -> i%2 == 0,
+                    i -> i%3 == 0,
+                    i -> i%5 == 0,
+                    i -> i%7 == 0)
+                .map(
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList)
+                .toString());
+    }
+    
+    @Test
+    public void testSplit_5() {
+        Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
+        val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        assertStrings("("
+                + "[0, 2, 4, 6, 8, 10, 12, 14],"
+                + "[3, 9, 15],"
+                + "[5],"
+                + "[7],"
+                + "[11],"
+                + "[1, 13])",
+                stream
+                .split(
+                    i -> i%2 == 0,
+                    i -> i%3 == 0,
+                    i -> i%5 == 0,
+                    i -> i%7 == 0,
+                    i -> i%11 == 0)
+                .map(
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList,
+                    streamPlusToList)
+                .toString());
+    }
+    
+    @Test
+    public void testSplit_map_2() {
+        Function<StreamPlus<String>, FuncList<String>> streamPlusToList = s -> s.toImmutableList();
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six");
+        assertStrings("{"
+                + "Others:[Three, Four, Five], "
+                + "Three:[One, Two, Six]"
+                + "}",
+                stream
+                .split(
+                    "Three", s -> s.length() == 3,
+                    "Others")
+                .sorted()
+                .mapValue(streamPlusToList)
+                .toString());
+    }
+    
+    @Test
+    public void testSplit_map_3() {
+        Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
+        val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        assertStrings("{"
+                + "Others:[1, 5, 7, 11, 13], "
+                + "Three:[3, 9, 15], "
+                + "Two:[0, 2, 4, 6, 8, 10, 12, 14]"
+                + "}",
+                stream
+                .split(
+                    "Two",   i -> i%2 == 0,
+                    "Three", i -> i%3 == 0,
+                    "Others")
+                .sorted()
+                .mapValue(streamPlusToList)
+                .toString());
+    }
+    
+    @Test
+    public void testSplit_map_4() {
+        Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
+        val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        assertStrings("{"
+                + "Five:[5], "
+                + "Others:[1, 7, 11, 13], "
+                + "Three:[3, 9, 15], "
+                + "Two:[0, 2, 4, 6, 8, 10, 12, 14]"
+                + "}",
+                stream
+                .split(
+                    "Two",   i -> i%2 == 0,
+                    "Three", i -> i%3 == 0,
+                    "Five",  i -> i%5 == 0,
+                    "Others")
+                .sorted()
+                .mapValue(streamPlusToList)
+                .toString());
+    }
+    
+    @Test
+    public void testSplit_map_5() {
+        Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
+        val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        assertStrings("{"
+                + "Five:[5], "
+                + "Others:[1, 11, 13], "
+                + "Seven:[7], "
+                + "Three:[3, 9, 15], "
+                + "Two:[0, 2, 4, 6, 8, 10, 12, 14]"
+                + "}",
+                stream
+                .split(
+                    "Two",   i -> i%2 == 0,
+                    "Three", i -> i%3 == 0,
+                    "Five",  i -> i%5 == 0,
+                    "Seven", i -> i%7 == 0,
+                    "Others")
+                .sorted()
+                .mapValue(streamPlusToList)
+                .toString());
+    }
+    
+    @Test
+    public void testSplit_map_6() {
+        Function<StreamPlus<Integer>, FuncList<String>> streamPlusToList = s -> s.mapToObj(String::valueOf).toImmutableList();
+        val stream = StreamPlus.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        assertStrings("{"
+                + "Eleven:[11], "
+                + "Five:[5], "
+                + "Others:[1, 13], "
+                + "Seven:[7], "
+                + "Three:[3, 9, 15], "
+                + "Two:[0, 2, 4, 6, 8, 10, 12, 14]"
+                + "}",
+                stream
+                .split(
+                    "Two",    i -> i%2  == 0,
+                    "Three",  i -> i%3  == 0,
+                    "Five",   i -> i%5  == 0,
+                    "Seven",  i -> i%7  == 0,
+                    "Eleven", i -> i%11 == 0,
+                    "Others")
+                .sorted()
+                .mapValue(streamPlusToList)
                 .toString());
     }
     

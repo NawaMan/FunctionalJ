@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -54,6 +54,7 @@ import functionalj.stream.intstream.IntIterable;
 import functionalj.stream.intstream.IntIteratorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamPlusHelper;
+import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
@@ -192,11 +193,11 @@ public interface IntFuncList
 //    public static <T> FuncListBuilder<T> newFuncList() {
 //        return new FuncListBuilder<T>();
 //    }
-//    
+//
 //    public static <T> FuncListBuilder<T> newList() {
 //        return new FuncListBuilder<T>();
 //    }
-//    
+//
 //    public static <T> FuncListBuilder<T> newBuilder() {
 //        return new FuncListBuilder<T>();
 //    }
@@ -278,16 +279,16 @@ public interface IntFuncList
     
     /** Create a Streamable from the given Streamable. */
     public static <SOURCE> IntFuncList deriveFrom(
-            FuncList<SOURCE>                        list,
+            AsStreamable<SOURCE>                    asStreamable,
             Function<StreamPlus<SOURCE>, IntStream> action) {
-        return IntFuncList.from(IntStreamable.deriveFrom(list, action));
+        return IntFuncList.from(IntStreamable.deriveFrom(asStreamable, action));
     }
     
     /** Create a Streamable from the given IntStreamable. */
     public static <TARGET> IntFuncList deriveFrom(
-            AsIntFuncList                      list,
+            AsIntStreamable                    asStreamable,
             Function<IntStreamPlus, IntStream> action) {
-        return IntFuncList.from(IntStreamable.deriveFrom(list, action));
+        return IntFuncList.from(IntStreamable.deriveFrom(asStreamable, action));
     }
     
 //    /** Create a Streamable from the given LongStreamable. */
@@ -301,7 +302,7 @@ public interface IntFuncList
 //        };
 //    }
     
-//    /** Create a Streamable from the given LongStreamable. */
+//    /** Create a Streamable from the given DoubleStreamable. */
 //    public static <TARGET> IntStreamable deriveFrom(
 //            AsDoubleStreamable                    asStreamable,
 //            Function<DoubleStreamPlus, IntStream> action) {
@@ -313,10 +314,10 @@ public interface IntFuncList
 //    }
     
     /** Create a Streamable from another streamable. */
-    public static <SOURCE> IntFuncList deriveToInt(
-            AsIntFuncList                      list,
+    public static IntFuncList deriveToInt(
+            AsIntStreamable                    asStreamable,
             Function<IntStreamPlus, IntStream> action) {
-        return IntFuncList.from(IntStreamable.deriveFrom(list, action));
+        return IntFuncList.from(IntStreamable.deriveFrom(asStreamable, action));
     }
     
 //    /** Create a Streamable from another streamable. */
@@ -333,6 +334,13 @@ public interface IntFuncList
 ////        return DoubleStreamable.deriveFrom(asStreamable, action);
 //        return null;
 //    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <TARGET> FuncList<TARGET> deriveToObj(
+            AsIntStreamable                         asStreamable,
+            Function<IntStreamPlus, Stream<TARGET>> action) {
+        return FuncList.from(Streamable.deriveFrom(asStreamable, action));
+    }
     
     /** Test if the data is in the list */
     @Override
@@ -386,7 +394,7 @@ public interface IntFuncList
 //    public default LongFuncList asLongFuncList() {
 //        return deriveToLong(this, stream -> stream.mapToLong(i -> (long)i));
 //    }
-//    
+//
 //    /** Returns the streamable value in this stream as double */
 //    public default DoubleFuncList asDoubleFuncList() {
 //        return deriveToDouble(this, stream -> stream.mapToDouble(i -> (long)i));
@@ -426,7 +434,7 @@ public interface IntFuncList
 //    public default LongFuncList mapToLong(IntToLongFunction mapper) {
 //        return deriveToLong(this, stream -> stream.mapToLong(mapper));
 //    }
-//    
+//
 //    /** Map each value into a double value using the function. */
 //    public default DoubleFuncList mapToDouble(IntToDoubleFunction mapper) {
 //        return deriveToDouble(this, stream -> stream.mapToDouble(mapper));
@@ -452,7 +460,7 @@ public interface IntFuncList
 //    public default LongFuncList flatMapToLong(IntFunction<? extends AsLongStreamable> mapper) {
 //        return LongFuncList.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
 //    }
-//    
+//
 //    /** Map a value into a double streamable and then flatten that streamable */
 //    public default DoubleFuncList flatMapToDouble(IntFunction<? extends AsDoubleStreamable> mapper) {
 //        return DoubleFuncList.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
@@ -719,7 +727,7 @@ public interface IntFuncList
 //        if (supplier == null) {
 //            return this;
 //        }
-//        
+//
 //        val streamable = IntStreamable.concat(streamable(), (IntStreamable)() -> supplier.get());
 //        return from(streamable);
 //    }

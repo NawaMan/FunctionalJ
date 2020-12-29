@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,45 +41,45 @@ public interface StreamableWithFillNull<DATA>
     
     /** Replace sub element that is null (accessed with the given lens) with the given replacement. */
     public default <VALUE> Streamable<DATA> fillNull(
-            AnyLens<DATA, VALUE> lens, 
+            AnyLens<DATA, VALUE> lens,
             VALUE                replacement) {
         return deriveFrom(this, stream -> stream.fillNull(lens, replacement));
     }
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the given replacement. */
     public default <VALUE> Streamable<DATA> fillNull(
-            Func1<DATA, VALUE>       getter, 
-            Func2<DATA, VALUE, DATA> setter, 
+            Func1<DATA, VALUE>       getter,
+            Func2<DATA, VALUE, DATA> setter,
             VALUE                    replacement) {
         return deriveFrom(this, stream -> stream.fillNull(getter, setter, replacement));
     }
     
     /** Replace sub element that is null (accessed with the given lens) with the replacement value from the supplier. */
-    public default <VALUE> Streamable<DATA> fillNull(
-            AnyLens<DATA, VALUE> lens, 
+    public default <VALUE> Streamable<DATA> fillNullWith(
+            AnyLens<DATA, VALUE> lens,
             Supplier<VALUE>      replacementSupplier) {
         return deriveFrom(this, stream -> stream.fillNullWith(lens, replacementSupplier));
     }
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier. */
-    public default <VALUE> Streamable<DATA> fillNull(
-            Func1<DATA, VALUE>       getter, 
-            Func2<DATA, VALUE, DATA> setter, 
+    public default <VALUE> Streamable<DATA> fillNullWith(
+            Func1<DATA, VALUE>       getter,
+            Func2<DATA, VALUE, DATA> setter,
             Supplier<VALUE>          replacementSupplier) {
         return deriveFrom(this, stream -> stream.fillNullWith(getter, setter, replacementSupplier));
     }
     
     /** Replace sub element that is null (accessed with the given lens) with the replacement value from the function. */
-    public default <VALUE> Streamable<DATA> fillNull(
-            AnyLens<DATA, VALUE> lens, 
+    public default <VALUE> Streamable<DATA> fillNullBy(
+            AnyLens<DATA, VALUE> lens,
             Func1<DATA, VALUE>   replacementFunction) {
         return deriveFrom(this, stream -> stream.fillNullBy(lens, replacementFunction));
     }
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function. */
-    public default <VALUE> Streamable<DATA> fillNull(
-            Func1<DATA, VALUE>       getter, 
-            Func2<DATA, VALUE, DATA> setter, 
+    public default <VALUE> Streamable<DATA> fillNullBy(
+            Func1<DATA, VALUE>       getter,
+            Func2<DATA, VALUE, DATA> setter,
             Func1<DATA, VALUE>       replacementFunction) {
         return deriveFrom(this, stream -> stream.fillNullBy(getter, setter, replacementFunction));
     }

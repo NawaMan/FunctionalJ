@@ -159,7 +159,7 @@ public interface IntStreamPlusWithFilter {
         
         val streamPlus = intStreamPlus();
         return streamPlus
-                .filter(i -> binarySearch(items, i) != -1);
+                .filter(i -> binarySearch(items, i) >= 0);
     }
     
     /** Filter only the value that is in the given collections. */
@@ -201,7 +201,7 @@ public interface IntStreamPlusWithFilter {
     public default IntStreamPlus excludeIn(int ... items) {
         val streamPlus = intStreamPlus();
         return streamPlus
-                .filter(i -> binarySearch(items, i) == -1);
+                .filter(i -> binarySearch(items, i) < 0);
     }
     
     /** Filter out any value that is in the given collection. */

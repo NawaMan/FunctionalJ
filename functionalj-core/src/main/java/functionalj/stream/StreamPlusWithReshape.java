@@ -26,6 +26,7 @@ package functionalj.stream;
 import static functionalj.function.Func.f;
 import static functionalj.stream.StreamPlus.empty;
 import static functionalj.stream.StreamPlus.generateWith;
+import static functionalj.stream.StreamPlus.streamOf;
 import static functionalj.stream.StreamPlusHelper.sequentialToObj;
 
 import java.util.ArrayList;
@@ -100,7 +101,6 @@ public interface StreamPlusWithReshape<DATA> {
         return segment(startCondition, (incompletedSegment == IncompletedSegment.included));
     }
     
-    
     /** Segment the stream into sub stream whenever the start condition is true. */
     public default StreamPlus<StreamPlus<DATA>> segment(
             Predicate<? super DATA> startCondition,
@@ -169,44 +169,51 @@ public interface StreamPlusWithReshape<DATA> {
             boolean                 includeIncompletedSegment) {
         val newStorage   = (Supplier<ArrayList<DATA>>)ArrayList::new;
         val toStreamPlus = Func1.<ArrayList<DATA>, Stream<DATA>>of(ArrayList::stream).then(StreamPlus::from);
+        val list         = new AtomicReference<ArrayList<DATA>>(null);
         
-        // TODO - Find a way to make it fully lazy. Try tryAdvance.
         val streamPlus = streamPlus();
-        StreamPlus<StreamPlus<DATA>> returnStream = sequentialToObj(streamPlus, stream -> {
-            val list         = new AtomicReference<>(newStorage.get());
-            val adding       = new AtomicBoolean(false);
-            
-            StreamPlus<StreamPlus<DATA>> resultStream
-                = StreamPlus.from(
-                    stream
-                    .mapToObj(i -> {
-                        val shouldStart = startCondition.test(i);
-                        if (shouldStart) {
-                            adding.set(true);
-                        }
-                        if (includeIncompletedSegment && adding.get()) {
-                            list.get().add(i);
-                        }
-                        
-                        if (endCondition.test(i)) {
-                            adding.set(shouldStart);
-                            val resultList = list.getAndUpdate(l -> newStorage.get());
-                            return toStreamPlus.apply(resultList);
-                        }
-                        
-                        if (!includeIncompletedSegment && adding.get()) {
-                            list.get().add(i);
-                        }
+        val head = (Supplier<StreamPlus<StreamPlus<DATA>>>)() -> {
+            return sequentialToObj(streamPlus, stream -> {
+                return stream.mapToObj(i -> {
+                    boolean canStart = startCondition.test(i);
+                    boolean canEnd   = endCondition.test(i);
+                    val theList = list.get();
+                    
+                    // Add if the list is already there
+                    if (!canStart && theList != null) {
+                        theList.add(i);
+                    }
+                    // If end, remove list.
+                    if (canEnd && (theList != null)) {
+                        list.set(null);
+                    }
+                    // If start added list.
+                    if (canStart && (theList == null)) {
+                        list.set(newStorage.get());
+                    }
+                    // If start, make sure to add this one.
+                    if (canStart) {
+                        list.get().add(i);
+                    }
+                    
+                    if (!canEnd || (theList == null))
                         return null;
-                    }))
-                    .filterNonNull();
-            
-            resultStream
-            .onClose(()->stream.close());
-            
-            return resultStream;
-        });
-        return returnStream;
+                    
+                    return toStreamPlus.apply(theList);
+                })
+                .filterNonNull();
+            });
+        };
+        val tail = (Supplier<StreamPlus<StreamPlus<DATA>>>)() -> {
+            val theList = list.get();
+            return (includeIncompletedSegment && (theList != null) && !theList.isEmpty())
+                    ? streamOf(toStreamPlus.apply(theList))
+                    : null;
+        };
+        
+        return streamOf(head, tail)
+                .flatMap(supplier -> supplier.get())
+                .filterNonNull();
     }
     
     /**

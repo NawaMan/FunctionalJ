@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,35 +41,35 @@ public interface StreamableWithFilter<DATA> extends AsStreamable<DATA> {
     
     /** Map each value to an int and used it to filter the value. */
     public default Streamable<DATA> filterAsInt(
-            ToIntFunction<? super DATA> mapper, 
+            ToIntFunction<? super DATA> mapper,
             IntPredicate                predicate) {
         return deriveFrom(this, stream -> stream.filterAsInt(mapper, predicate));
     }
     
     /** Map each value to a long and used it to filter the value. */
     public default Streamable<DATA> filterAsLong(
-            ToLongFunction<? super DATA> mapper, 
+            ToLongFunction<? super DATA> mapper,
             LongPredicate                predicate) {
         return deriveFrom(this, stream -> stream.filterAsLong(mapper, predicate));
     }
     
     /** Map each value to a double and used it to filter the value. */
     public default Streamable<DATA> filterAsDouble(
-            ToDoubleFunction<? super DATA> mapper, 
+            ToDoubleFunction<? super DATA> mapper,
             DoublePredicate                predicate) {
         return deriveFrom(this, stream -> stream.filterAsDouble(mapper, predicate));
     }
     
     /** Map each value to another object and used it to filter the value. */
     public default <T> Streamable<DATA> filterAsObject(
-            Function<? super DATA, T> mapper, 
+            Function<? super DATA, T> mapper,
             Predicate<? super T>      predicate) {
         return filter(mapper, predicate);
     }
     
     /** Map each value to another object and used it to filter the value. */
     public default <T> Streamable<DATA> filter(
-            Function<? super DATA, T> mapper, 
+            Function<? super DATA, T> mapper,
             Predicate<? super T>      predicate) {
         return deriveFrom(this, stream -> stream.filter(mapper, predicate));
     }
@@ -84,7 +84,7 @@ public interface StreamableWithFilter<DATA> extends AsStreamable<DATA> {
      * If the value is not of the type (null included), it will be filtered out.
      */
     public default <T> Streamable<DATA> filter(
-            Class<T>             clzz, 
+            Class<T>             clzz,
             Predicate<? super T> theCondition) {
         return deriveFrom(this, stream -> stream.filter(clzz, theCondition));
     }
@@ -133,6 +133,12 @@ public interface StreamableWithFilter<DATA> extends AsStreamable<DATA> {
     /** Filter out any value that is in the given collection. */
     public default Streamable<DATA> excludeIn(Collection<? super DATA> collection) {
         return deriveFrom(this, stream -> stream.excludeIn(collection));
+    }
+    
+    /** Filter out any value that is in the given collection. */
+    @SuppressWarnings("unchecked")
+    public default Streamable<DATA> excludeIn(DATA ... items) {
+        return deriveFrom(this, stream -> stream.excludeIn(items));
     }
     
 }

@@ -1,10 +1,12 @@
 package functionalj.stream;
 
+import static functionalj.stream.intstream.IntStep.from;
 import static functionalj.stream.intstream.IntStep.step;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import functionalj.stream.intstream.IntStep;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
@@ -13,12 +15,12 @@ public class IntStepTest {
     
     @Test
     public void testAsStream() {
-//        assertEquals("[0, 7, 14, 21, 28, 35, 42, 49, 56, 63]", IntStep.of(7).limit(10).toList().toString());
+        assertEquals("[0, 7, 14, 21, 28, 35, 42, 49, 56, 63]", IntStep.of(7).limit(10).toList().toString());
     }
     
     @Test
     public void testAsStream_withFrom() {
-//        assertEquals("[2, 9, 16, 23, 30, 37, 44, 51, 58, 65]", step(7, from(2)).limit(10).toList().toString());
+        assertEquals("[2, 9, 16, 23, 30, 37, 44, 51, 58, 65]", step(7, from(2)).limit(10).toList().toString());
     }
     
     
@@ -27,7 +29,7 @@ public class IntStepTest {
     public void testAsRange() {
         val step = step(10);
         assertEquals(
-                "[0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]", 
+                "[0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]",
                 Streamable
                 .infiniteInt()
                 .limit(25)

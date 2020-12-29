@@ -128,9 +128,8 @@ public interface AsIntStreamPlusWithConversion {
     @Eager
     @Terminal
     public default ImmutableIntFuncList toImmutableList() {
-//        val streamPlus = streamPlus();
-//        return ImmutableList.from(streamPlus.boxed());
-        return null;
+        val streamPlus = intStreamPlus();
+        return ImmutableIntFuncList.from(streamPlus);
     }
 
     /** @return an Java list containing the elements. */

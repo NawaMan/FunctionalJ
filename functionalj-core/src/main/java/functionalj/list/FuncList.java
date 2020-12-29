@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -47,6 +47,7 @@ import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import functionalj.function.Func0;
@@ -352,7 +353,7 @@ public interface FuncList<DATA>
             Func2<T1, T2, TARGET> merger) {
         return FuncList.from(Streamable.zipOf(Streamable.from(list1), Streamable.from(list2), merger));
     }
-//    
+//
 //    /**
 //     * Zip integers from two IntStreamables and combine it into another object.
 //     * The result stream has the size of the shortest streamable.
@@ -368,7 +369,7 @@ public interface FuncList<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /** Zip integers from two IntStreamables and combine it into another object. */
 //    public static <TARGET> Streamable<TARGET> zipOf(
 //            IntStreamable            streamable1,
@@ -383,7 +384,7 @@ public interface FuncList<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /** Zip integers from two IntStreams and combine it into another object. */
 //    public static <TARGET> Streamable<TARGET> zipOf(
 //            IntStreamable            streamable1,
@@ -398,7 +399,7 @@ public interface FuncList<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /**
 //     * Zip integers from an int stream and another object stream and combine it into another object.
 //     * The result stream has the size of the shortest stream.
@@ -414,7 +415,7 @@ public interface FuncList<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /**
 //     * Zip integers from an int stream and another object stream and combine it into another object.
 //     * The default value will be used if the first stream ended first and null will be used if the second stream ended first.
@@ -431,7 +432,7 @@ public interface FuncList<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /**
 //     * Zip longs from two LongStreams and combine it into another object.
 //     * The result stream has the size of the shortest stream.
@@ -447,7 +448,7 @@ public interface FuncList<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /** Zip longs from two LongStreamables and combine it into another object. */
 //    public static <T> Streamable<T> zipOf(
 //            LongStreamable       streamable1,
@@ -462,7 +463,7 @@ public interface FuncList<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /**
 //     * Zip values from a long streamable and another object streamable and combine it into another object.
 //     * The result stream has the size of the shortest stream.
@@ -480,7 +481,7 @@ public interface FuncList<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /**
 //     * Zip values from a long streamable and another object streamable and combine it into another object.
 //     * The result stream has the size of the shortest stream.
@@ -496,7 +497,7 @@ public interface FuncList<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /**
 //     * Zip values from an long streamable and another object streamable and combine it into another object.
 //     * The default value will be used if the first streamable ended first and null will be used if the second stream ended first.
@@ -562,20 +563,16 @@ public interface FuncList<DATA>
     public static <SOURCE, TARGET> FuncList<TARGET> deriveFrom(
             AsStreamable<SOURCE>                         asStreamable,
             Function<StreamPlus<SOURCE>, Stream<TARGET>> action) {
-        val sourceStream = asStreamable.streamPlus();
-        val targetStream = action.apply(sourceStream);
-        return FuncList.from(targetStream);
+        return FuncList.from(Streamable.deriveFrom(asStreamable, action));
     }
     
     /** Create a Streamable from the given IntStreamable. */
     public static <TARGET> FuncList<TARGET> deriveFrom(
             AsIntStreamable                         asStreamable,
             Function<IntStreamPlus, Stream<TARGET>> action) {
-        val sourceStream = asStreamable.intStreamPlus();
-        val targetStream = action.apply(sourceStream);
-        return FuncList.from(targetStream);
+        return FuncList.from(Streamable.deriveFrom(asStreamable, action));
     }
-//    
+//
 //    /** Create a Streamable from the given LongStreamable. */
 //    public static <TARGET> FuncList<TARGET> deriveFrom(
 //            AsLongStreamable                         asStreamable,
@@ -584,7 +581,7 @@ public interface FuncList<DATA>
 //        val targetStream = action.apply(sourceStream);
 //        return FuncList.from(targetStream);
 //    }
-//    
+//
 //    /** Create a Streamable from the given LongStreamable. */
 //    public static <TARGET> FuncList<TARGET> deriveFrom(
 //            AsDoubleStreamable                         asStreamable,
@@ -593,23 +590,21 @@ public interface FuncList<DATA>
 //        val targetStream = action.apply(sourceStream);
 //        return FuncList.from(targetStream);
 //    }
-//  
-//    /** Create a Streamable from another streamable. */
-//    public static <SOURCE> IntFuncList deriveToInt(
-//            AsStreamable<SOURCE>                    asStreamable,
-//            Function<StreamPlus<SOURCE>, IntStream> action) {
-////        return IntFuncList.deriveFrom(asStreamable, action);
-//        return null;
-//    }
-//  
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE> IntFuncList deriveToInt(
+            AsStreamable<SOURCE>                    asStreamable,
+            Function<StreamPlus<SOURCE>, IntStream> action) {
+        return IntFuncList.deriveFrom(asStreamable, action);
+    }
+//
 //    /** Create a Streamable from another streamable. */
 //    public static <SOURCE> LongFuncList deriveToLong(
 //            AsStreamable<SOURCE>                     asStreamable,
 //            Function<StreamPlus<SOURCE>, LongStream> action) {
-////        return LongFuncList.deriveFrom(asStreamable, action);
-//        return null;
+//        return LongFuncList.deriveFrom(asStreamable, action);
 //    }
-//  
+//
 //    /** Create a Streamable from another streamable. */
 //    public static <SOURCE> DoubleFuncList deriveToDouble(
 //            AsStreamable<SOURCE>                       asStreamable,
@@ -617,13 +612,13 @@ public interface FuncList<DATA>
 ////        return DoubleFuncList.deriveFrom(asStreamable, action);
 //        return null;
 //    }
-//    
-//    /** Create a Streamable from another streamable. */
-//    public static <SOURCE, TARGET> FuncList<TARGET> deriveToObj(
-//            AsStreamable<SOURCE>                         asStreamable,
-//            Function<StreamPlus<SOURCE>, Stream<TARGET>> action) {
-//        return deriveFrom(asStreamable, action);
-//    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE, TARGET> FuncList<TARGET> deriveToObj(
+            AsStreamable<SOURCE>                         asStreamable,
+            Function<StreamPlus<SOURCE>, Stream<TARGET>> action) {
+        return deriveFrom(asStreamable, action);
+    }
     
     /** Test if the data is in the list */
     @Override
@@ -686,7 +681,7 @@ public interface FuncList<DATA>
 //    public default LongFuncList mapToLong(ToLongFunction<? super DATA> mapper) {
 //        return LongFuncList.deriveFrom(this, stream -> stream.mapToLong(mapper));
 //    }
-//  
+//
 //    /** Map each value into a double value using the function. */
 //    public default DoubleFuncList mapToDouble(ToDoubleFunction<? super DATA> mapper) {
 //        return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(mapper));
@@ -711,7 +706,7 @@ public interface FuncList<DATA>
 //    public default LongFuncList flatMapToLong(Function<? super DATA, ? extends LongFuncList> mapper) {
 //        return LongStreamable.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
 //    }
-//  
+//
 //    /** Map a value into a double list and then flatten that list */
 //    public default DoubleFuncList flatMapToDouble(Function<? super DATA, ? extends DoubleFuncList> mapper) {
 //        return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));

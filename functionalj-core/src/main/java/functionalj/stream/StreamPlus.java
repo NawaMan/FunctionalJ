@@ -58,8 +58,6 @@ import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
-import functionalj.function.LongLongBiFunction;
-import functionalj.function.LongObjBiFunction;
 import functionalj.result.NoMoreResultException;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Eager;
@@ -110,6 +108,7 @@ public interface StreamPlus<DATA>
             StreamPlusWithFillNull<DATA>,
             StreamPlusWithFilter<DATA>,
             StreamPlusWithFlatMap<DATA>,
+            StreamPlusWithGroupingBy<DATA>,
             StreamPlusWithLimit<DATA>,
             StreamPlusWithMap<DATA>,
             StreamPlusWithMapFirst<DATA>,
@@ -422,71 +421,71 @@ public interface StreamPlus<DATA>
                 .zipWith(defaultValue, stream2, merger);
     }
     
-    /**
-     * Zip longs from two LongStreams and combine it into another object.
-     * The result stream has the size of the shortest stream.
-     **/
-    public static <TARGET> StreamPlus<TARGET> zipOf(
-            LongStream stream1,
-            LongStream stream2,
-            LongLongBiFunction<TARGET> merger) {
-//        return LongStreamPlus.from(stream1)
-//                .zipToObjWith(stream2, merger);
-        return null;
-    }
-    
-    /** Zip longs from two LongStreams and combine it into another object. */
-    public static <TARGET> StreamPlus<TARGET> zipOf(
-            LongStream                 stream1,
-            LongStream                 stream2,
-            long                       defaultValue,
-            LongLongBiFunction<TARGET> merger) {
-        return null;
-//        return LongStreamPlus.from(stream1)
-//                .zipToObjWith(stream2, defaultValue, merger);
-    }
-    
-    /**
-     * Zip values from a long stream and another object stream and combine it into another object.
-     * The result stream has the size of the shortest stream.
-     */
-    public static <TARGET> StreamPlus<TARGET> zipOf(
-            LongStream                stream1,
-            long                      defaultValue1,
-            LongStream                stream2,
-            long                      defaultValue2,
-            LongLongBiFunction<TARGET> merger) {
-        return null;
-//        return LongStreamPlus.from(stream1)
-//                .zipToObjWith(stream2, defaultValue1, defaultValue2, merger);
-    }
-    
-    /**
-     * Zip values from a long stream and another object stream and combine it into another object.
-     * The result stream has the size of the shortest stream.
-     */
-    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
-            LongStream                         stream1,
-            Stream<ANOTHER>                    stream2,
-            LongObjBiFunction<ANOTHER, TARGET> merger) {
-        return null;
-//        return LongStreamPlus.from(stream1)
-//                .zipWith(stream2, merger);
-    }
-    
-    /**
-     * Zip values from an long stream and another object stream and combine it into another object.
-     * The default value will be used if the first stream ended first and null will be used if the second stream ended first.
-     */
-    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
-            LongStream                         stream1,
-            long                               defaultValue,
-            Stream<ANOTHER>                    stream2,
-            LongObjBiFunction<ANOTHER, TARGET> merger) {
-        return null;
-//        return LongStreamPlus.from(stream1)
-//                .zipWith(defaultValue, stream2, merger);
-    }
+//    /**
+//     * Zip longs from two LongStreams and combine it into another object.
+//     * The result stream has the size of the shortest stream.
+//     **/
+//    public static <TARGET> StreamPlus<TARGET> zipOf(
+//            LongStream stream1,
+//            LongStream stream2,
+//            LongLongBiFunction<TARGET> merger) {
+////        return LongStreamPlus.from(stream1)
+////                .zipToObjWith(stream2, merger);
+//        return null;
+//    }
+//
+//    /** Zip longs from two LongStreams and combine it into another object. */
+//    public static <TARGET> StreamPlus<TARGET> zipOf(
+//            LongStream                 stream1,
+//            LongStream                 stream2,
+//            long                       defaultValue,
+//            LongLongBiFunction<TARGET> merger) {
+//        return null;
+////        return LongStreamPlus.from(stream1)
+////                .zipToObjWith(stream2, defaultValue, merger);
+//    }
+//
+//    /**
+//     * Zip values from a long stream and another object stream and combine it into another object.
+//     * The result stream has the size of the shortest stream.
+//     */
+//    public static <TARGET> StreamPlus<TARGET> zipOf(
+//            LongStream                stream1,
+//            long                      defaultValue1,
+//            LongStream                stream2,
+//            long                      defaultValue2,
+//            LongLongBiFunction<TARGET> merger) {
+//        return null;
+////        return LongStreamPlus.from(stream1)
+////                .zipToObjWith(stream2, defaultValue1, defaultValue2, merger);
+//    }
+//
+//    /**
+//     * Zip values from a long stream and another object stream and combine it into another object.
+//     * The result stream has the size of the shortest stream.
+//     */
+//    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
+//            LongStream                         stream1,
+//            Stream<ANOTHER>                    stream2,
+//            LongObjBiFunction<ANOTHER, TARGET> merger) {
+//        return null;
+////        return LongStreamPlus.from(stream1)
+////                .zipWith(stream2, merger);
+//    }
+//
+//    /**
+//     * Zip values from an long stream and another object stream and combine it into another object.
+//     * The default value will be used if the first stream ended first and null will be used if the second stream ended first.
+//     */
+//    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
+//            LongStream                         stream1,
+//            long                               defaultValue,
+//            Stream<ANOTHER>                    stream2,
+//            LongObjBiFunction<ANOTHER, TARGET> merger) {
+//        return null;
+////        return LongStreamPlus.from(stream1)
+////                .zipWith(defaultValue, stream2, merger);
+//    }
     
     //== Core ==
     

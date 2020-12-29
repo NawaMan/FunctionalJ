@@ -12,7 +12,7 @@ import lombok.val;
 
 
 public class GrowOnlyIntArrayTest {
-
+    
     @Test
     public void testAdd() {
         val array = new GrowOnlyIntArray();
@@ -139,5 +139,5 @@ public class GrowOnlyIntArrayTest {
                     orgArray.stream().toArray(),
                     newArray.stream().toArray()));
     }
-
+    
 }
