@@ -2452,7 +2452,7 @@ public class StreamableTest {
     public void testFizzBuzz() {
         Function<Streamable<Integer>, FuncList<Integer>> streamableToList = s -> s.toImmutableList();
         run(infiniteInt().limit(20).boxed(), streamable -> {
-            val toString = With(FuncMap.underlineMap.butWith(FuncMap.UnderlineMap.LinkedHashMap))
+            String toString = With(FuncMap.underlineMap.butWith(FuncMap.UnderlineMap.LinkedHashMap))
             .run(() -> {
                 FuncMap<String, Streamable<Integer>> splited
                         = streamable
