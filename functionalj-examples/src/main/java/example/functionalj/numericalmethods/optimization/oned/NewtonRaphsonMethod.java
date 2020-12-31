@@ -1,4 +1,4 @@
-package example.functionalj.stream.numericalmethods.oned;
+package example.functionalj.numericalmethods.optimization.oned;
 
 import static functionalj.function.Apply.$;
 import static functionalj.streamable.Streamable.iterate;
