@@ -153,6 +153,16 @@ public interface StreamPlus<DATA>
         return StreamPlus.of(data);
     }
     
+    /** Create a StreamPlus from the given data. */
+    public static <TARGET> StreamPlus<TARGET> of(TARGET[] data, int start, int length) {
+        return ArrayBackedStreamPlus.from(data, start, length);
+    }
+    
+    /** Create a StreamPlus from the given data */
+    public static <TARGET> StreamPlus<TARGET> streamOf(TARGET[] data, int start, int length) {
+        return StreamPlus.of(data, start, length);
+    }
+    
     /** Create a StreamPlus from the given stream. */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <TARGET> StreamPlus<TARGET> from(Stream<TARGET> stream) {

@@ -1846,6 +1846,47 @@ public class StreamPlusTest {
         assertStrings("3, 6, 8", stream.mapWithPrev((prev, element) -> prev.orElse("").length() + element.length()).join(", "));
     }
     
+    @Test
+    public void testMapWithPrevCount() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten");
+        assertStrings(
+                  "[One, Two, Three], "
+                + "[Two, Three, Four], "
+                + "[Three, Four, Five], "
+                + "[Four, Five, Six], "
+                + "[Five, Six, Seven], "
+                + "[Six, Seven, Eight], "
+                + "[Seven, Eight, Nine], "
+                + "[Eight, Nine, Ten]",
+                stream
+                .mapWithPrev(3)
+                .map(s -> s.toListString()).join(", "));
+    }
+    
+    @Test
+    public void testMapWithPrevCombiner() {
+        val stream = StreamPlus.of("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten");
+        assertStrings(
+                  "[One, Two, Three], "
+                + "[Two, Three, Four], "
+                + "[Three, Four, Five], "
+                + "[Four, Five, Six], "
+                + "[Five, Six, Seven], "
+                + "[Six, Seven, Eight], "
+                + "[Seven, Eight, Nine], "
+                + "[Eight, Nine, Ten]",
+                stream
+                .mapWithPrev(3, s -> s.toListString()).join(", "));
+    }
+    
+    @Test
+    public void testMapWithPrevCount_notEnough() {
+        val stream = StreamPlus.of("One", "Two");
+        assertStrings(
+                  "[One, Two]",
+                stream.mapWithPrev(3).map(s -> s.toListString()).join(", "));
+    }
+    
     //-- StreamPlusWithModify --
     
     @Test
