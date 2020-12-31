@@ -25,6 +25,7 @@ package functionalj.streamable;
 
 import static functionalj.streamable.Streamable.deriveFrom;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 public interface StreamableWithLimit<DATA> extends AsStreamable<DATA> {
@@ -48,15 +49,35 @@ public interface StreamableWithLimit<DATA> extends AsStreamable<DATA> {
     public default Streamable<DATA> skipUntil(Predicate<? super DATA> condition) {
         return deriveFrom(this, stream -> stream.skipUntil(condition));
     }
-
+    
     /** Accept any value while the condition is true. */
     public default Streamable<DATA> takeWhile(Predicate<? super DATA> condition) {
         return deriveFrom(this, stream -> stream.takeWhile(condition));
     }
-
+    
+    /** Accept any value while the condition is true. */
+    public default Streamable<DATA> takeWhile(BiPredicate<? super DATA, ? super DATA> condition) {
+        return deriveFrom(this, stream -> stream.takeWhile(condition));
+    }
+    
     /** Accept any value until the condition is true. */
     public default Streamable<DATA> takeUntil(Predicate<? super DATA> condition) {
         return deriveFrom(this, stream -> stream.takeUntil(condition));
+    }
+    
+    /** Accept any value until the condition is true. */
+    public default Streamable<DATA> takeUntil(BiPredicate<? super DATA, ? super DATA> condition) {
+        return deriveFrom(this, stream -> stream.takeUntil(condition));
+    }
+    
+    /** Accept any value until the condition is false - include the item that the condition is false. */
+    public default Streamable<DATA> dropAfter(Predicate<? super DATA> condition) {
+        return deriveFrom(this, stream -> stream.dropAfter(condition));
+    }
+    
+    /** Accept any value until the condition is false - include the item that the condition is false. */
+    public default Streamable<DATA> dropAfter(BiPredicate<? super DATA, ? super DATA> condition) {
+        return deriveFrom(this, stream -> stream.dropAfter(condition));
     }
 
 }

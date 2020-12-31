@@ -57,6 +57,8 @@ import functionalj.validator.Validator;
 import lombok.val;
 import nullablej.nullable.Nullable;
 
+// TODO - Make Result lazy.
+
 public abstract class Result<DATA>
         implements
             AsResult<DATA>,
@@ -286,6 +288,10 @@ public abstract class Result<DATA>
         return invalidResult;
     }
     
+    public static <D> Result<D> ofValue(D value) {
+        return valueOf(value);
+    }
+    
     public static <D> Result<D> valueOf(D value) {
         if (value == null)
             return Result.ofNull();
@@ -300,9 +306,7 @@ public abstract class Result<DATA>
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> Result<D> of(Func0<? extends D> supplier) {
         try {
-            if (supplier instanceof Func0)
-                 return Result.valueOf((D)((Func0)supplier).applyUnsafe());
-            else return Result.valueOf(supplier.get());
+            return Result.valueOf((D)((Func0)supplier).applyUnsafe());
         } catch (FunctionInvocationException e) {
             val cause = e.getCause();
             if (cause instanceof Exception)
@@ -313,15 +317,8 @@ public abstract class Result<DATA>
         }
     }
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <D> Result<D> Try(Func0<? extends D> supplier) {
-        try {
-            if (supplier instanceof Func0)
-                 return Result.valueOf((D)((Func0)supplier).applyUnsafe());
-            else return Result.valueOf(supplier.get());
-        } catch (Exception e) {
-            return Result.ofException(e);
-        }
+        return of(supplier);
     }
     
     public static <D> Result<D> ofException(String exceptionMsg) {
@@ -333,11 +330,11 @@ public abstract class Result<DATA>
     }
     
     public static <D> Result<D> ofResult(Result<D> result) {
+        if (result == null)
+            return Result.ofNotExist();
+        
         if (result instanceof Result)
             return (Result<D>)result;
-        
-        if (result == null)
-            return Result.ofNull();
         
         val data = result.__valueData();
         

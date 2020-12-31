@@ -31,6 +31,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 import java.util.stream.StreamSupport;
 
+import functionalj.function.IntBiPredicatePrimitive;
 import functionalj.stream.markers.Sequential;
 import lombok.val;
 
@@ -125,6 +126,43 @@ public interface IntStreamPlusWithLimit {
         });
     }
     
+    /** Accept any value while the condition is true. */
+    @Sequential
+    public default IntStreamPlus takeWhile(IntBiPredicatePrimitive condition) {
+        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
+        val streamPlus = intStreamPlus();
+        return sequential(streamPlus, stream -> {
+            val splitr = stream.spliterator();
+            return IntStreamPlus.from(
+                    StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+                        boolean stillGoing = true;
+                        boolean isFirst    = true;
+                        int     prevValue  = -1;
+                        @Override
+                        public boolean tryAdvance(IntConsumer consumer) {
+                            if (stillGoing) {
+                                IntConsumer action = elem -> {
+                                    if (!isFirst) {
+                                        if (condition.test(prevValue, elem)) {
+                                            consumer.accept(elem);
+                                        } else {
+                                            stillGoing = false;
+                                        }
+                                    } else {
+                                        isFirst = false;
+                                    }
+                                    prevValue = elem;
+                                };
+                                boolean hadNext = splitr.tryAdvance(action);
+                                return hadNext && stillGoing;
+                            }
+                            return false;
+                        }
+                    }, false)
+                );
+        });
+    }
+    
     /** Accept any value until the condition is true. */
     @Sequential
     public default IntStreamPlus takeUntil(IntPredicate condition) {
@@ -133,7 +171,6 @@ public interface IntStreamPlusWithLimit {
             val splitr = stream.spliterator();
             val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
                 boolean stillGoing = true;
-                
                 @Override
                 public boolean tryAdvance(IntConsumer consumer) {
                     if (stillGoing) {
@@ -151,6 +188,77 @@ public interface IntStreamPlusWithLimit {
                 }
             }, false);
             return IntStreamPlus.from(resultStream);
+        });
+    }
+    
+    /** Accept any value until the condition is true. */
+    @Sequential
+    public default IntStreamPlus takeUntil(IntBiPredicatePrimitive condition) {
+        val streamPlus = intStreamPlus();
+        return sequential(streamPlus, stream -> {
+            val splitr = stream.spliterator();
+            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                boolean isFirst    = true;
+                int     prevValue  = -1;
+                @Override
+                public boolean tryAdvance(IntConsumer consumer) {
+                    if (stillGoing) {
+                        IntConsumer action = elem -> {
+                            if (!isFirst) {
+                                if (!condition.test(prevValue, elem)) {
+                                    consumer.accept(elem);
+                                } else {
+                                    stillGoing = false;
+                                }
+                            } else {
+                                isFirst = false;
+                            }
+                            prevValue = elem;
+                        };
+                        boolean hadNext = splitr.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+            return IntStreamPlus.from(resultStream);
+        });
+    }
+    
+    /** Accept any value while the condition is true. */
+    @Sequential
+    public default IntStreamPlus dropAfter(IntBiPredicatePrimitive condition) {
+        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
+        val streamPlus = intStreamPlus();
+        return sequential(streamPlus, stream -> {
+            val splitr = stream.spliterator();
+            return IntStreamPlus.from(
+                    StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+                        boolean stillGoing = true;
+                        boolean isFirst    = true;
+                        int     prevValue  = -1;
+                        @Override
+                        public boolean tryAdvance(IntConsumer consumer) {
+                            if (stillGoing) {
+                                IntConsumer action = elem -> {
+                                    if (!isFirst) {
+                                        consumer.accept(elem);
+                                        if (condition.test(prevValue, elem)) {
+                                            stillGoing = false;
+                                        }
+                                    } else {
+                                        isFirst = false;
+                                    }
+                                    prevValue = elem;
+                                };
+                                boolean hadNext = splitr.tryAdvance(action);
+                                return hadNext && stillGoing;
+                            }
+                            return false;
+                        }
+                    }, false)
+                );
         });
     }
     

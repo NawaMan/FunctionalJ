@@ -45,7 +45,6 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -59,6 +58,7 @@ import functionalj.function.Func2;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.result.NoMoreResultException;
+import functionalj.result.Result;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
@@ -239,9 +239,9 @@ public interface StreamPlus<DATA>
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> StreamPlus<TARGET> iterate(
-            TARGET                seed,
-            UnaryOperator<TARGET> compounder) {
-        return StreamPlus.from(Stream.iterate(seed, compounder));
+            TARGET                   seed,
+            Function<TARGET, TARGET> compounder) {
+        return StreamPlus.from(Stream.iterate(seed, compounder::apply));
     }
     
     /**
@@ -260,8 +260,8 @@ public interface StreamPlus<DATA>
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> StreamPlus<TARGET> compound(
-            TARGET                seed,
-            UnaryOperator<TARGET> compounder) {
+            TARGET                   seed,
+            Function<TARGET, TARGET> compounder) {
         return iterate(seed, compounder);
     }
     
@@ -282,9 +282,9 @@ public interface StreamPlus<DATA>
      **/
     // TODO - Make it a throwable version of BinaryOperator
     public static <TARGET> StreamPlus<TARGET> iterate(
-            TARGET                 seed1,
-            TARGET                 seed2,
-            BinaryOperator<TARGET> compounder) {
+            TARGET                             seed1,
+            TARGET                             seed2,
+            BiFunction<TARGET, TARGET, TARGET> compounder) {
         // TODO - Remove the hacky 'counter' - may create iterator instead - let's experiment.
         AtomicInteger      counter = new AtomicInteger(0);
         AtomicReference<TARGET> d1      = new AtomicReference<TARGET>(seed1);
@@ -321,9 +321,9 @@ public interface StreamPlus<DATA>
      **/
     // TODO - Make it a throwable version of BinaryOperator
     public static <TARGET> StreamPlus<TARGET> compound(
-            TARGET                 seed1,
-            TARGET                 seed2,
-            BinaryOperator<TARGET> compounder) {
+            TARGET                             seed1,
+            TARGET                             seed2,
+            BiFunction<TARGET, TARGET, TARGET> compounder) {
         return iterate(seed1, seed2, compounder);
     }
     
@@ -870,6 +870,45 @@ public interface StreamPlus<DATA>
         return terminate(this, stream -> {
             return stream
                     .findAny();
+        });
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Sequential
+    @Terminal
+    public default Optional<DATA> findLast() {
+        return terminate(this, stream -> {
+            Object dummy = new Object();
+            AtomicReference<Object> dataRef = new AtomicReference<>(dummy);
+            stream.forEach(dataRef::set);
+            Object last = dataRef.get();
+            return (dataRef.get() == dummy) ? Optional.empty() : Optional.ofNullable((DATA)last);
+        });
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Sequential
+    @Terminal
+    public default Result<DATA> firstResult() {
+        return terminate(this, stream -> {
+            Object dummy = new Object();
+            AtomicReference<Object> dataRef = new AtomicReference<>(dummy);
+            stream.limit(1).forEach(dataRef::set);
+            Object last = dataRef.get();
+            return (dataRef.get() == dummy) ? Result.ofNotExist() : Result.valueOf((DATA)last);
+        });
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Sequential
+    @Terminal
+    public default Result<DATA> lastResult() {
+        return terminate(this, stream -> {
+            Object dummy = new Object();
+            AtomicReference<Object> dataRef = new AtomicReference<>(dummy);
+            stream.forEach(dataRef::set);
+            Object last = dataRef.get();
+            return (dataRef.get() == dummy) ? Result.ofNotExist() : Result.valueOf((DATA)last);
         });
     }
     

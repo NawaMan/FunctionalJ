@@ -27,6 +27,7 @@ import static functionalj.stream.StreamPlusHelper.sequential;
 
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
@@ -92,7 +93,7 @@ public interface StreamPlusWithLimit<DATA> {
             });
         });
     }
-
+    
     /** Accept any value while the condition is true. */
     @Sequential
     public default StreamPlus<DATA> takeWhile(Predicate<? super DATA> condition) {
@@ -112,6 +113,43 @@ public interface StreamPlusWithLimit<DATA> {
                                     } else {
                                         stillGoing = false;
                                     }
+                                };
+                                boolean hadNext = splitr.tryAdvance(action);
+                                return hadNext && stillGoing;
+                            }
+                            return false;
+                        }
+                    }, false)
+                );
+        });
+    }
+    
+    /** Accept any value while the condition is true. */
+    @Sequential
+    public default StreamPlus<DATA> takeWhile(BiPredicate<? super DATA, ? super DATA> condition) {
+        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
+        val streamPlus = streamPlus();
+        return sequential(streamPlus, stream -> {
+            val splitr = stream.spliterator();
+            return StreamPlus.from(
+                    StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+                        boolean stillGoing = true;
+                        boolean isFirst    = true;
+                        DATA    prevValue  = null;
+                        @Override
+                        public boolean tryAdvance(Consumer<? super DATA> consumer) {
+                            if (stillGoing) {
+                                Consumer<? super DATA> action = elem -> {
+                                    if (!isFirst) {
+                                        if (condition.test(prevValue, elem)) {
+                                            consumer.accept(elem);
+                                        } else {
+                                            stillGoing = false;
+                                        }
+                                    } else {
+                                        isFirst = false;
+                                    }
+                                    prevValue = elem;
                                 };
                                 boolean hadNext = splitr.tryAdvance(action);
                                 return hadNext && stillGoing;
@@ -144,6 +182,102 @@ public interface StreamPlusWithLimit<DATA> {
                         };
                         boolean hadNext = splitr.tryAdvance(action);
                         return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+            return StreamPlus.from(resultStream);
+        });
+    }
+    /** Accept any value until the condition is true. */
+    @Sequential
+    public default StreamPlus<DATA> takeUntil(BiPredicate<? super DATA, ? super DATA> condition) {
+        val streamPlus = streamPlus();
+        return sequential(streamPlus, stream -> {
+            val splitr = stream.spliterator();
+            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                boolean isFirst    = true;
+                DATA    prevValue  = null;
+                @Override
+                public boolean tryAdvance(Consumer<? super DATA> consumer) {
+                    if (stillGoing) {
+                        Consumer<? super DATA> action = elem -> {
+                            if (!isFirst) {
+                                if (!condition.test(prevValue, elem)) {
+                                    consumer.accept(elem);
+                                } else {
+                                    stillGoing = false;
+                                }
+                            } else {
+                                isFirst = false;
+                            }
+                            prevValue = elem;
+                        };
+                        boolean hadNext = splitr.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+            return StreamPlus.from(resultStream);
+        });
+    }
+    
+    /** Accept any value until the condition is false - include the item that the condition is false. */
+    @Sequential
+    public default StreamPlus<DATA> dropAfter(Predicate<? super DATA> condition) {
+        val streamPlus = streamPlus();
+        return sequential(streamPlus, stream -> {
+            val splitr = stream.spliterator();
+            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                
+                @Override
+                public boolean tryAdvance(Consumer<? super DATA> consumer) {
+                    if (stillGoing) {
+                        Consumer<? super DATA> action = elem -> {
+                            consumer.accept(elem);
+                            if (condition.test(elem)) {
+                                stillGoing = false;
+                            }
+                        };
+                        boolean hadNext = splitr.tryAdvance(action);
+                        return hadNext;
+                    }
+                    return false;
+                }
+            }, false);
+            return StreamPlus.from(resultStream);
+        });
+    }
+    
+    /** Accept any value until the condition is false - include the item that the condition is false. */
+    @Sequential
+    public default StreamPlus<DATA> dropAfter(BiPredicate<? super DATA, ? super DATA> condition) {
+        val streamPlus = streamPlus();
+        return sequential(streamPlus, stream -> {
+            val splitr = stream.spliterator();
+            val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<DATA>(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                boolean isFirst    = true;
+                DATA    prevValue  = null;
+                @Override
+                public boolean tryAdvance(Consumer<? super DATA> consumer) {
+                    if (stillGoing) {
+                        Consumer<? super DATA> action = elem -> {
+                            if (!isFirst) {
+                                consumer.accept(elem);
+                                if (condition.test(prevValue, elem)) {
+                                    stillGoing = false;
+                                }
+                            } else {
+                                isFirst = false;
+                            }
+                            prevValue = elem;
+                        };
+                        boolean hadNext = splitr.tryAdvance(action);
+                        return hadNext;
                     }
                     return false;
                 }

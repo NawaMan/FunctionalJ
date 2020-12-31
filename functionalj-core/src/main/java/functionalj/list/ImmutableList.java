@@ -2,17 +2,17 @@
 // Copyright(c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net)
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,7 +34,10 @@ import java.util.ListIterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.markers.Sequential;
+import functionalj.stream.markers.Terminal;
 import functionalj.streamable.Streamable;
 import lombok.val;
 
@@ -202,6 +205,27 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
     @Override
     public int hashCode() {
         return this.data.hashCode();
+    }
+    
+    // -- Short cut --
+    
+    @Sequential
+    @Terminal
+    @Override
+    public Result<DATA> firstResult() {
+        return this.data.isEmpty()
+                ? Result.ofNotExist()
+                : Result.ofValue(this.data.get(0));
+    }
+    
+    @Sequential
+    @Terminal
+    @Override
+    public Result<DATA> lastResult() {
+        int size = this.data.size();
+        return (size == 0)
+                ? Result.ofNotExist()
+                : Result.ofValue(this.data.get(size - 1));
     }
     
 }

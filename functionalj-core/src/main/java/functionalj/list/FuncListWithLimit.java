@@ -25,9 +25,11 @@ package functionalj.list;
 
 import static functionalj.list.FuncList.deriveFrom;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import functionalj.streamable.AsStreamable;
+import functionalj.streamable.Streamable;
 
 public interface FuncListWithLimit<DATA> extends AsStreamable<DATA> {
     
@@ -56,9 +58,29 @@ public interface FuncListWithLimit<DATA> extends AsStreamable<DATA> {
         return deriveFrom(this, stream -> stream.takeWhile(condition));
     }
     
+    /** Accept any value while the condition is true. */
+    public default FuncList<DATA> takeWhile(BiPredicate<? super DATA, ? super DATA> condition) {
+        return deriveFrom(this, stream -> stream.takeWhile(condition));
+    }
+    
     /** Accept any value until the condition is true. */
     public default FuncList<DATA> takeUntil(Predicate<? super DATA> condition) {
         return deriveFrom(this, stream -> stream.takeUntil(condition));
+    }
+    
+    /** Accept any value until the condition is true. */
+    public default FuncList<DATA> takeUntil(BiPredicate<? super DATA, ? super DATA> condition) {
+        return deriveFrom(this, stream -> stream.takeUntil(condition));
+    }
+    
+    /** Accept any value until the condition is false - include the item that the condition is false. */
+    public default FuncList<DATA> dropAfter(Predicate<? super DATA> condition) {
+        return deriveFrom(this, stream -> stream.dropAfter(condition));
+    }
+    
+    /** Accept any value until the condition is false - include the item that the condition is false. */
+    public default FuncList<DATA> dropAfter(BiPredicate<? super DATA, ? super DATA> condition) {
+        return deriveFrom(this, stream -> stream.dropAfter(condition));
     }
     
 }

@@ -2,17 +2,17 @@
 // Copyright (c) 2017-2020 Nawapunth Manusitthipol (NawaMan - http://nawaman.net).
 // ----------------------------------------------------------------------------
 // MIT License
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,12 +26,11 @@ package functionalj.streamable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.function.BinaryOperator;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
-import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -179,8 +178,8 @@ public interface Streamable<DATA>
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> Streamable<TARGET> iterate(
-            TARGET                seed,
-            UnaryOperator<TARGET> compounder) {
+            TARGET                   seed,
+            Function<TARGET, TARGET> compounder) {
         return ()->StreamPlus.iterate(seed, compounder);
     }
     
@@ -200,8 +199,8 @@ public interface Streamable<DATA>
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> Streamable<TARGET> compound(
-            TARGET                seed,
-            UnaryOperator<TARGET> compounder) {
+            TARGET                   seed,
+            Function<TARGET, TARGET> compounder) {
         return ()->StreamPlus.compound(seed, compounder);
     }
     
@@ -222,9 +221,9 @@ public interface Streamable<DATA>
      **/
     // TODO - Make it a throwable version of BinaryOperator
     public static <TARGET> Streamable<TARGET> iterate(
-            TARGET                 seed1,
-            TARGET                 seed2,
-            BinaryOperator<TARGET> compounder) {
+            TARGET                             seed1,
+            TARGET                             seed2,
+            BiFunction<TARGET, TARGET, TARGET> compounder) {
         return ()->StreamPlus.iterate(seed1, seed2, compounder);
     }
     
@@ -245,9 +244,9 @@ public interface Streamable<DATA>
      **/
     // TODO - Make it a throwable version of BinaryOperator
     public static <TARGET> Streamable<TARGET> compound(
-            TARGET                 seed1,
-            TARGET                 seed2,
-            BinaryOperator<TARGET> compounder) {
+            TARGET                             seed1,
+            TARGET                             seed2,
+            BiFunction<TARGET, TARGET, TARGET> compounder) {
         return ()->StreamPlus.compound(seed1, seed2, compounder);
     }
     
@@ -427,7 +426,7 @@ public interface Streamable<DATA>
                     merger);
         };
     }
-//    
+//
 //    /**
 //     * Zip longs from two LongStreams and combine it into another object.
 //     * The result stream has the size of the shortest stream.
@@ -443,7 +442,7 @@ public interface Streamable<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /** Zip longs from two LongStreamables and combine it into another object. */
 //    public static <T> Streamable<T> zipOf(
 //            LongStreamable       streamable1,
@@ -458,7 +457,7 @@ public interface Streamable<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /**
 //     * Zip values from a long streamable and another object streamable and combine it into another object.
 //     * The result stream has the size of the shortest stream.
@@ -476,7 +475,7 @@ public interface Streamable<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /**
 //     * Zip values from a long streamable and another object streamable and combine it into another object.
 //     * The result stream has the size of the shortest stream.
@@ -492,7 +491,7 @@ public interface Streamable<DATA>
 //                    merger);
 //        };
 //    }
-//    
+//
 //    /**
 //     * Zip values from an long streamable and another object streamable and combine it into another object.
 //     * The default value will be used if the first streamable ended first and null will be used if the second stream ended first.
@@ -548,7 +547,7 @@ public interface Streamable<DATA>
             return StreamPlus.from(targetStream);
         };
     }
-//    
+//
 //    /** Create a Streamable from the given LongStreamable. */
 //    public static <TARGET> Streamable<TARGET> deriveFrom(
 //            AsLongStreamable                         asStreamable,
@@ -559,7 +558,7 @@ public interface Streamable<DATA>
 //            return StreamPlus.from(targetStream);
 //        };
 //    }
-//    
+//
 //    /** Create a Streamable from the given LongStreamable. */
 //    public static <TARGET> Streamable<TARGET> deriveFrom(
 //            AsDoubleStreamable                         asStreamable,
@@ -577,14 +576,14 @@ public interface Streamable<DATA>
             Function<StreamPlus<SOURCE>, IntStream> action) {
         return IntStreamable.deriveFrom(asStreamable, action);
     }
-//    
+//
 //    /** Create a Streamable from another streamable. */
 //    public static <SOURCE> LongStreamable deriveToLong(
 //            AsStreamable<SOURCE>                     asStreamable,
 //            Function<StreamPlus<SOURCE>, LongStream> action) {
 //        return LongStreamable.deriveFrom(asStreamable, action);
 //    }
-//    
+//
 //    /** Create a Streamable from another streamable. */
 //    public static <SOURCE> DoubleStreamable deriveToDouble(
 //            AsStreamable<SOURCE>                       asStreamable,
@@ -674,12 +673,12 @@ public interface Streamable<DATA>
     public default IntStreamable mapToInt(ToIntFunction<? super DATA> mapper) {
         return IntStreamable.deriveFrom(this, stream -> stream.mapToInt(mapper));
     }
-//    
+//
 //    /** Map each value into a long value using the function. */
 //    public default LongStreamable mapToLong(ToLongFunction<? super DATA> mapper) {
 //        return LongStreamable.deriveFrom(this, stream -> stream.mapToLong(mapper));
 //    }
-//    
+//
 //    /** Map each value into a double value using the function. */
 //    public default DoubleStreamable mapToDouble(ToDoubleFunction<? super DATA> mapper) {
 ////        return DoubleStreamable.deriveFrom(this, stream -> stream.mapToDouble(mapper));
@@ -697,12 +696,12 @@ public interface Streamable<DATA>
     public default IntStreamable flatMapToInt(Function<? super DATA, ? extends IntStreamable> mapper) {
         return IntStreamable.deriveFrom(this, stream -> stream.flatMapToInt(value -> mapper.apply(value).intStream()));
     }
-//    
+//
 //    /** Map a value into a long streamable and then flatten that streamable */
 //    public default LongStreamable flatMapToLong(Function<? super DATA, ? extends LongStreamable> mapper) {
 //        return LongStreamable.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
 //    }
-//    
+//
 //    /** Map a value into a double streamable and then flatten that streamable */
 //    public default DoubleStreamable flatMapToDouble(Function<? super DATA, ? extends DoubleStreamable> mapper) {
 //        return DoubleStreamable.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
