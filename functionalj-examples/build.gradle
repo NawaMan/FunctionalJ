@@ -7,11 +7,14 @@ repositories {
 
 dependencies {
     compile             project(':functionalj-all')
+    compile             project(':functionalj-types')
     annotationProcessor project(':functionalj-types')
     annotationProcessor project(':functionalj-elm')
     
     compileOnly         'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    
+    compile 'org.knowm.xchart:xchart:3.8.0'
     
     compile 'junit:junit:4.12'
     
