@@ -23,6 +23,8 @@
 // ============================================================================
 package functionalj.stream.intstream;
 
+import static functionalj.function.Func.itself;
+
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.OptionalDouble;
@@ -52,6 +54,7 @@ import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
@@ -415,7 +418,6 @@ public interface IntStreamPlus
     }
     
     @Override
-//    public default LongStreamPlus asLongStream() {
     public default LongStream asLongStream() {
         return mapToLong(i -> i);
     }
@@ -564,16 +566,16 @@ public interface IntStreamPlus
     
     @Override
     public default LongStream mapToLong(IntToLongFunction mapper) {
-//    public default LongStreamPlus mapToLong(IntToLongFunction mapper) {
-//        return LongStreamPlus.from(intStream().mapToLong(mapper));
         return null;
     }
     
+    public default DoubleStreamPlus mapToDouble() {
+        return mapToDouble(i -> (double)i);
+    }
+    
     @Override
-    public default DoubleStream mapToDouble(IntToDoubleFunction mapper) {
-//    public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
-//        return DoubleStreamPlus.from(stream().mapToDouble(mapper));
-        return null;
+    public default DoubleStreamPlus mapToDouble(IntToDoubleFunction mapper) {
+        return DoubleStreamPlus.from(intStream().mapToDouble(mapper));
     }
     
     @Override
@@ -594,14 +596,14 @@ public interface IntStreamPlus
     
     public default LongStream flatMapToLong(IntFunction<? extends LongStream> mapper) {
         return null;
-//    public default LongStreamPlus flatMapToLong(IntFunction<? extends LongStream> mapper) {
-//        return mapToObj(mapper).flatMapToLong(itself());
     }
     
-    public default DoubleStream flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {
-//    public default DoubleStreamPlus flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {
-//        return mapToObj(mapper).flatMapToDouble(itself());
-        return null;
+    public default DoubleStreamPlus flatMapToDouble(IntFunction<? extends DoubleStream> mapper) {
+        return DoubleStreamPlus.from(mapToObj(mapper).flatMapToDouble(itself()));
+    }
+    
+    public default <T> StreamPlus<T> flatMapToObj(IntFunction<? extends Stream<T>> mapper) {
+        return StreamPlus.from(mapToObj(mapper).flatMap(itself()));
     }
     
     //-- Filter --
@@ -812,6 +814,23 @@ public interface IntStreamPlus
         return terminate(stream -> {
             return stream
                     .findAny();
+        });
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalInt firstResult() {
+        return findFirst();
+    }
+    
+    @Sequential
+    @Terminal
+    public default OptionalInt lastResult() {
+        return terminate(stream -> {
+            boolean[] isAdded = new boolean[] { false };
+            int[]     dataRef = new int[0];
+            stream.peek(i -> isAdded[0] = true).forEach(i -> dataRef[0] = i);
+            return isAdded[0] ? OptionalInt.of(dataRef[0]) : OptionalInt.empty();
         });
     }
     

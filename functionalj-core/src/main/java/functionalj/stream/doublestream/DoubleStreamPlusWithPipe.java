@@ -21,24 +21,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.function;
+package functionalj.stream.doublestream;
 
+import java.util.function.Function;
+
+import functionalj.pipeable.Pipeable;
 import lombok.val;
 
-@FunctionalInterface
-public interface DoubleDoubletoIntFunctionPrimitive extends ToIntBiDoubleFunction<Double> {
+
+public interface DoubleStreamPlusWithPipe {
     
-    public int applyAsDoubleAndDouble(double data, double doubleValue);
+    public DoubleStreamPlus doubleStreamPlus();
     
-    public default int applyAsInt(Double data, double doubleValue) {
-        return applyAsDoubleAndDouble(data, doubleValue);
+    /** @return the pipeable of this stream. */
+    public default Pipeable<? extends DoubleStreamPlus> pipable() {
+        val streamPlus = doubleStreamPlus();
+        return Pipeable.of(streamPlus);
     }
     
-    public static double apply(ToDoubleBiDoubleFunction<Double> function, double value, double anotherValue) {
-        val resValue 
-            = (function instanceof DoubleDoubletoIntFunctionPrimitive)
-            ? ((DoubleDoubletoIntFunctionPrimitive)function).applyAsDoubleAndDouble(value, anotherValue)
-            : function.applyAsDouble(value, anotherValue);
-        return resValue;
+    /** Pipe this stream plus through the given function. */
+    public default <T> T pipeTo(Function<? super DoubleStreamPlus, T> function) {
+        val streamPlus = doubleStreamPlus();
+        return function.apply(streamPlus);
     }
+    
 }

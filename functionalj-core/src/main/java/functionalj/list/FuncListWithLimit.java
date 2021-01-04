@@ -29,7 +29,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import functionalj.streamable.AsStreamable;
-import functionalj.streamable.Streamable;
 
 public interface FuncListWithLimit<DATA> extends AsStreamable<DATA> {
     

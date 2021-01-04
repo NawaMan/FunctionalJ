@@ -44,24 +44,29 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
+import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.list.intlist.ImmutableIntFuncList;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.result.Result;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.StreamPlusHelper;
+import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
+import functionalj.streamable.doublestreamable.AsDoubleStreamable;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.tuple.IntTuple2;
 import functionalj.tuple.Tuple;
@@ -85,10 +90,10 @@ public interface FuncList<DATA>
             FuncListWithMap<DATA>,
             FuncListWithMapFirst<DATA>,
             FuncListWithMapThen<DATA>,
+            FuncListWithMapGroup<DATA>,
             FuncListWithMapToMap<DATA>,
             FuncListWithMapToTuple<DATA>,
             FuncListWithMapWithIndex<DATA>,
-            FuncListWithMapWithPrev<DATA>,
             FuncListWithModify<DATA>,
             FuncListWithPeek<DATA>,
             FuncListWithPipe<DATA>,
@@ -581,15 +586,15 @@ public interface FuncList<DATA>
 //        val targetStream = action.apply(sourceStream);
 //        return FuncList.from(targetStream);
 //    }
-//
-//    /** Create a Streamable from the given LongStreamable. */
-//    public static <TARGET> FuncList<TARGET> deriveFrom(
-//            AsDoubleStreamable                         asStreamable,
-//            Function<DoubleStreamPlus, Stream<TARGET>> action) {
-//        val sourceStream = asStreamable.doubleStream();
-//        val targetStream = action.apply(sourceStream);
-//        return FuncList.from(targetStream);
-//    }
+    
+    /** Create a Streamable from the given LongStreamable. */
+    public static <TARGET> FuncList<TARGET> deriveFrom(
+            AsDoubleStreamable                         asStreamable,
+            Function<DoubleStreamPlus, Stream<TARGET>> action) {
+        val sourceStream = asStreamable.doubleStream();
+        val targetStream = action.apply(sourceStream);
+        return FuncList.from(targetStream);
+    }
     
     /** Create a Streamable from another streamable. */
     public static <SOURCE> IntFuncList deriveToInt(
@@ -604,14 +609,13 @@ public interface FuncList<DATA>
 //            Function<StreamPlus<SOURCE>, LongStream> action) {
 //        return LongFuncList.deriveFrom(asStreamable, action);
 //    }
-//
-//    /** Create a Streamable from another streamable. */
-//    public static <SOURCE> DoubleFuncList deriveToDouble(
-//            AsStreamable<SOURCE>                       asStreamable,
-//            Function<StreamPlus<SOURCE>, DoubleStream> action) {
-////        return DoubleFuncList.deriveFrom(asStreamable, action);
-//        return null;
-//    }
+    
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE> DoubleFuncList deriveToDouble(
+            AsStreamable<SOURCE>                       asStreamable,
+            Function<StreamPlus<SOURCE>, DoubleStream> action) {
+        return DoubleFuncList.deriveFrom(asStreamable, action);
+    }
     
     /** Create a Streamable from another streamable. */
     public static <SOURCE, TARGET> FuncList<TARGET> deriveToObj(
@@ -681,11 +685,11 @@ public interface FuncList<DATA>
 //    public default LongFuncList mapToLong(ToLongFunction<? super DATA> mapper) {
 //        return LongFuncList.deriveFrom(this, stream -> stream.mapToLong(mapper));
 //    }
-//
-//    /** Map each value into a double value using the function. */
-//    public default DoubleFuncList mapToDouble(ToDoubleFunction<? super DATA> mapper) {
-//        return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(mapper));
-//    }
+    
+    /** Map each value into a double value using the function. */
+    public default DoubleFuncList mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+        return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(mapper));
+    }
     
     public default <TARGET> FuncList<TARGET> mapToObj(Function<? super DATA, ? extends TARGET> mapper) {
         return map(mapper);

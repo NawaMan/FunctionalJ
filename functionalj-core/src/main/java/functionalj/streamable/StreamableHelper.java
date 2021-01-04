@@ -24,27 +24,24 @@
 package functionalj.streamable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import functionalj.list.FuncList;
-import functionalj.stream.StreamPlus;
+import functionalj.list.ImmutableList;
+import functionalj.list.doublelist.DoubleFuncList;
 import lombok.val;
 
 
 public class StreamableHelper {
     
-    // TODO - Change to DoubleFuncList
-    static <D> FuncList<FuncList<D>> segmentByPercentiles(FuncList<D> list, Collection<Double> percentiles) {
+    static <D> FuncList<FuncList<D>> segmentByPercentiles(FuncList<D> list, DoubleFuncList percentiles) {
         val size    = list.size();
-        val indexes = FuncList.from(percentiles)
+        DoubleFuncList indexes = percentiles
                 .append(100.0)
                 .sorted()
                 .map   (d -> (int)Math.round(d*size/100))
                 .toImmutableList();
-        if (indexes.get(indexes.size() - 1) != size) {
-            indexes.add(size);
-        }
+        
         val lists   = new ArrayList<List<D>>();
         for (int i = 0; i < indexes.size(); i++) {
             lists.add(new ArrayList<D>());
@@ -58,10 +55,8 @@ public class StreamableHelper {
             val element = list.get(i);
             l.add(element);
         }
-        return FuncList.from(
-                lists
-                .stream()
-                .map(each -> (FuncList<D>)StreamPlus.from(each.stream()).toImmutableList()));
+        
+        return FuncList.from(lists.stream().map(each -> ImmutableList.from(each.stream())));
     }
     
 }

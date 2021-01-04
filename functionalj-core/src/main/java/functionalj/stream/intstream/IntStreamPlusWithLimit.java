@@ -191,6 +191,35 @@ public interface IntStreamPlusWithLimit {
         });
     }
     
+    /** Accept any value while the condition is true. */
+    @Sequential
+    public default IntStreamPlus dropAfter(IntPredicate condition) {
+        // https://stackoverflow.com/questions/32290278/picking-elements-of-a-list-until-condition-is-met-with-java-8-lambdas
+        val streamPlus = intStreamPlus();
+        return sequential(streamPlus, stream -> {
+            val splitr = stream.spliterator();
+            return IntStreamPlus.from(
+                    StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+                        boolean stillGoing = true;
+                        @Override
+                        public boolean tryAdvance(IntConsumer consumer) {
+                            if (stillGoing) {
+                                IntConsumer action = elem -> {
+                                    consumer.accept(elem);
+                                    if (condition.test(elem)) {
+                                        stillGoing = false;
+                                    }
+                                };
+                                boolean hadNext = splitr.tryAdvance(action);
+                                return hadNext && stillGoing;
+                            }
+                            return false;
+                        }
+                    }, false)
+                );
+        });
+    }
+    
     /** Accept any value until the condition is true. */
     @Sequential
     public default IntStreamPlus takeUntil(IntBiPredicatePrimitive condition) {

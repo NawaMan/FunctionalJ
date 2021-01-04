@@ -28,6 +28,8 @@ import static functionalj.list.intlist.IntFuncList.deriveToInt;
 
 import java.util.function.IntPredicate;
 
+import functionalj.function.IntBiPredicatePrimitive;
+
 public interface IntFuncListWithLimit extends AsIntFuncList {
     
     /** Limit the size of the stream to the given size. */
@@ -49,15 +51,30 @@ public interface IntFuncListWithLimit extends AsIntFuncList {
     public default IntFuncList skipUntil(IntPredicate condition) {
         return deriveToInt(this, stream -> stream.skipUntil(condition));
     }
-//
-//    /** Accept any value while the condition is true. */
-//    public default IntFuncList takeWhile(IntPredicate condition) {
-//        return deriveToInt(this, stream -> stream.takeWhile(condition));
-//    }
-//
-//    /** Accept any value until the condition is true. */
-//    public default IntFuncList takeUntil(IntPredicate condition) {
-//        return deriveToInt(this, stream -> stream.takeUntil(condition));
-//    }
-//
+    
+    /** Accept any value while the condition is true. */
+    public default IntFuncList takeWhile(IntPredicate condition) {
+        return deriveToInt(this, stream -> stream.takeWhile(condition));
+    }
+    
+    /** Accept any value until the condition is true. */
+    public default IntFuncList takeUntil(IntPredicate condition) {
+        return deriveToInt(this, stream -> stream.takeUntil(condition));
+    }
+    
+    /** Accept any value until the condition is true. */
+    public default IntFuncList takeUntil(IntBiPredicatePrimitive condition) {
+        return deriveToInt(this, stream -> stream.takeUntil(condition));
+    }
+    
+    /** Accept any value while the condition is true. */
+    public default IntFuncList dropAfter(IntPredicate condition) {
+        return deriveToInt(this, stream -> stream.dropAfter(condition));
+    }
+    
+    /** Accept any value while the condition is true. */
+    public default IntFuncList dropAfter(IntBiPredicatePrimitive condition) {
+        return deriveToInt(this, stream -> stream.dropAfter(condition));
+    }
+    
 }

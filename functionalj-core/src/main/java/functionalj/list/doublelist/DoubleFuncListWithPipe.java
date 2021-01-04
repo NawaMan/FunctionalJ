@@ -21,47 +21,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.list.doublelist;
 
-import java.util.ArrayList;
+import java.util.function.Function;
 
-import functionalj.list.FuncList;
-import functionalj.list.doublelist.DoubleFuncList;
-import functionalj.list.intlist.IntFuncList;
-import functionalj.stream.intstream.GrowOnlyIntArray;
-import lombok.val;
+import functionalj.pipeable.Pipeable;
 
-
-class IntStreamableUtils {
+public interface DoubleFuncListWithPipe {
     
-    // TODO - Change to DoubleFuncList
-    static <D> FuncList<IntFuncList> segmentByPercentiles(IntFuncList list, DoubleFuncList percentiles) {
-        val size = list.size();
-        DoubleFuncList indexes = percentiles
-                .append(100.0)
-                .sorted()
-                .map   (d -> (int)Math.round(d*size/100))
-                .toImmutableList();
-        if (indexes.get(indexes.size() - 1) != size) {
-            indexes.add(size);
-        }
-        val lists = new ArrayList<GrowOnlyIntArray>();
-        for (int i = 0; i < indexes.size(); i++) {
-            lists.add(new GrowOnlyIntArray());
-        }
-        int idx = 0;
-        for (int i = 0; i < size; i++) {
-            if (i >= indexes.get(idx)) {
-                idx++;
-            }
-            val l = lists.get(idx);
-            val element = list.get(i);
-            l.add(element);
-        }
-        return FuncList.from(
-                lists
-                .stream()
-                .map(each -> each.stream().toImmutableList()));
+    public DoubleFuncList toFuncList();
+    
+    /** @return the pipeable of this stream. */
+    public default <T> Pipeable<DoubleFuncList> pipable() {
+        return Pipeable.of(this.toFuncList());
+    }
+    
+    /** Pipe this stream plus through the given function. */
+    public default <T> T pipe(Function<? super DoubleFuncList, T> piper) {
+        return piper.apply(this.toFuncList());
     }
     
 }

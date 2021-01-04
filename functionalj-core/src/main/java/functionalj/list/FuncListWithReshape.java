@@ -25,13 +25,13 @@ package functionalj.list;
 
 import static functionalj.list.FuncList.deriveFrom;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import functionalj.function.Func1;
 import functionalj.function.Func2;
+import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.StreamPlus;
 import functionalj.streamable.AsStreamable;
 
@@ -147,7 +147,7 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
     }
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(FuncList<Double> percentiles) {
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(DoubleFuncList percentiles) {
         return FuncList.from(streamable().segmentByPercentiles(percentiles));
     }
     
@@ -184,7 +184,7 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(
             Function<? super DATA, T> mapper,
-            Collection<Double>        percentiles) {
+            DoubleFuncList            percentiles) {
         return FuncList.from(streamable().segmentByPercentiles(mapper, percentiles));
     }
     
@@ -192,7 +192,7 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
     public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(
             Function<? super DATA, T> mapper,
             Comparator<T>             comparator,
-            Collection<Double>        percentiles) {
+            DoubleFuncList            percentiles) {
         return FuncList.from(streamable().segmentByPercentiles(mapper, comparator, percentiles));
     }
     

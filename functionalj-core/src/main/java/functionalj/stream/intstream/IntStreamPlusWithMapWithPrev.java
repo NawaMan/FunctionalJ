@@ -62,5 +62,92 @@ public interface IntStreamPlusWithMapWithPrev {
                     return newValue;
                 });
     }
+//  
+//  /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
+//  public default <TARGET> StreamPlus<TARGET> mapWithPrev(
+//          IntIntBiFunction<? extends TARGET> combinator) {
+//      int count      = 2;
+//      val streamPlus = intStreamPlus();
+//      return (streamPlus, stream -> {
+//          val splitr = stream.spliterator();
+//          val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<TARGET>(splitr.estimateSize(), 0) {
+//              Object[] array = new Object[count*10];
+//              int      start = 0;
+//              int      end   = 0;
+//              @Override
+//              public boolean tryAdvance(Consumer<? super TARGET> consumer) {
+//                  Consumer<? super DATA> action = elem -> {
+//                      array[end] = elem;
+//                      end++;
+//                      int length = end - start;
+//                      if (length >= count) {
+//                          val prev  = (DATA)array[start];
+//                          val curr  = (DATA)array[start + 1];
+//                          val value = combinator.apply(prev, curr);
+//                          consumer.accept(value);
+//                          start++;
+//                      }
+//                      if (end >= array.length) {
+//                          System.arraycopy(array, start, array, 0, length - 1);
+//                          start = 0;
+//                          end   = length - 1;
+//                      }
+//                  };
+//                  boolean hasNext = splitr.tryAdvance(action);
+//                  return hasNext;
+//              }
+//          }, false);
+//          return StreamPlus.from(resultStream);
+//      });
+//  }
+//  
+//  /** @return  the stream of  each previous value and each current value. */
+//  public default StreamPlus<StreamPlus<? super DATA>> mapWithPrev(int count) {
+//      val streamPlus = streamPlus();
+//      return sequential(streamPlus, stream -> {
+//          val splitr = stream.spliterator();
+//          val resultStream = StreamSupport.stream(new Spliterators.AbstractSpliterator<StreamPlus<? super DATA>>(splitr.estimateSize(), 0) {
+//              Object[] array = new Object[count*10];
+//              int      start = 0;
+//              int      end   = 0;
+//              boolean  used  = false;
+//              @Override
+//              public boolean tryAdvance(Consumer<? super StreamPlus<? super DATA>> consumer) {
+//                  Consumer<? super DATA> action = elem -> {
+//                      array[end] = elem;
+//                      end++;
+//                      int length = end - start;
+//                      if (length >= count) {
+//                          val iterator   = new ArrayBackedIteratorPlus<>(array, start, length);
+//                          val streamPlus = new ArrayBackedStreamPlus<>(iterator);
+//                          consumer.accept(streamPlus);
+//                          used = true;
+//                          start++;
+//                      }
+//                      if (end >= array.length) {
+//                          System.arraycopy(array, start, array, 0, length - 1);
+//                          start = 0;
+//                          end   = length - 1;
+//                      }
+//                  };
+//                  boolean hasNext = splitr.tryAdvance(action);
+//                  if (!hasNext && !used) {
+//                      val iterator   = new ArrayBackedIteratorPlus<>(array, start, end - start);
+//                      val streamPlus = new ArrayBackedStreamPlus<>(iterator);
+//                      consumer.accept(streamPlus);
+//                  }
+//                  return hasNext;
+//              }
+//          }, false);
+//          return StreamPlus.from(resultStream);
+//      });
+//  }
+//  
+//  /** @return  the stream of  each previous value and each current value. */
+//  public default <TARGET> StreamPlus<TARGET> mapWithPrev(int count, Func1<? super StreamPlus<? super DATA>, ? extends TARGET> combinator) {
+//      return mapWithPrev(count)
+//              .map(combinator);
+//  }
+//  
     
 }

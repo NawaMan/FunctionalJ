@@ -58,7 +58,7 @@ import lombok.val;
 public class StrFuncs {
     
     @SuppressWarnings("unused")
-	private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
+    private static final Map<Integer, String> indentTabs = new ConcurrentHashMap<>();
     
     /**
      * Return the string representation of the given object or null if the object is null.
@@ -243,27 +243,27 @@ public class StrFuncs {
         };
     }
     
-    public static <I1> Func1<I1, String> formatWith1(String template) {
+    public static <I1> Func1<I1, Object> formatWith1(String template) {
         return (i1) -> String.format(template, i1);
     }
     
-    public static <I1, I2> Func2<I1, I2, String> formatWith2(String template) {
+    public static <I1, I2> Func2<I1, I2, Object> formatWith2(String template) {
         return (i1, i2) -> String.format(template, i1, i2);
     }
     
-    public static <I1, I2, I3> Func3<I1, I2, I3, String> formatWith3(String template) {
+    public static <I1, I2, I3> Func3<I1, I2, I3, Object> formatWith3(String template) {
         return (i1, i2, i3) -> String.format(template, i1, i2, i3);
     }
     
-    public static <I1, I2, I3, I4> Func4<I1, I2, I3, I4, String> formatWith4(String template) {
+    public static <I1, I2, I3, I4> Func4<I1, I2, I3, I4, Object> formatWith4(String template) {
         return (i1, i2, i3, i4) -> String.format(template, i1, i2, i3, i4);
     }
     
-    public static <I1, I2, I3, I4, I5> Func5<I1, I2, I3, I4, I5, String> formatWith5(String template) {
+    public static <I1, I2, I3, I4, I5> Func5<I1, I2, I3, I4, I5, Object> formatWith5(String template) {
         return (i1, i2, i3, i4, i5) -> String.format(template, i1, i2, i3, i4, i5);
     }
     
-    public static <I1, I2, I3, I4, I5, I6> Func6<I1, I2, I3, I4, I5, I6, String> formatWith6(String template) {
+    public static <I1, I2, I3, I4, I5, I6> Func6<I1, I2, I3, I4, I5, I6, Object> formatWith6(String template) {
         return (i1, i2, i3, i4, i5, i6) -> String.format(template, i1, i2, i3, i4, i5, i6);
     }
     

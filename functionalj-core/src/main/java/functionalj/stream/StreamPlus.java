@@ -59,6 +59,7 @@ import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
 import functionalj.result.NoMoreResultException;
 import functionalj.result.Result;
+import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.markers.Eager;
 import functionalj.stream.markers.Sequential;
@@ -112,11 +113,11 @@ public interface StreamPlus<DATA>
             StreamPlusWithLimit<DATA>,
             StreamPlusWithMap<DATA>,
             StreamPlusWithMapFirst<DATA>,
+            StreamPlusWithMapGroup<DATA>,
             StreamPlusWithMapThen<DATA>,
             StreamPlusWithMapToMap<DATA>,
             StreamPlusWithMapToTuple<DATA>,
             StreamPlusWithMapWithIndex<DATA>,
-            StreamPlusWithMapWithPrev<DATA>,
             StreamPlusWithModify<DATA>,
             StreamPlusWithReshape<DATA>,
             StreamPlusWithPeek<DATA>,
@@ -638,17 +639,17 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-//    public default LongStreamPlus mapToLong(ToLongFunction<? super DATA> mapper) {
-//        return LongStreamPlus.from(stream().mapToLong(mapper));
     public default LongStream mapToLong(ToLongFunction<? super DATA> mapper) {
         return null;
     }
     
     @Override
-    public default DoubleStream mapToDouble(ToDoubleFunction<? super DATA> mapper) {
-//    public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
-//        return DoubleStreamPlus.from(stream().mapToDouble(mapper));
-        return null;
+    public default DoubleStreamPlus mapToDouble(ToDoubleFunction<? super DATA> mapper) {
+        return DoubleStreamPlus.from(stream().mapToDouble(mapper));
+    }
+    
+    public default <T> StreamPlus<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
+        return StreamPlus.from(stream().map(mapper));
     }
     
     //-- FlatMap --
@@ -664,17 +665,18 @@ public interface StreamPlus<DATA>
     }
     
     @Override
-//    public default LongStreamPlus flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
-//        return LongStreamPlus.from(stream().flatMapToLong(mapper));
     public default LongStream flatMapToLong(Function<? super DATA, ? extends LongStream> mapper) {
         return null;
     }
     
     @Override
-    public default DoubleStream flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
-//    public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
-//        return DoubleStreamPlus.from(stream().flatMapToDouble(mapper));
-        return null;
+    public default DoubleStreamPlus flatMapToDouble(Function<? super DATA, ? extends DoubleStream> mapper) {
+        return DoubleStreamPlus.from(stream().flatMapToDouble(mapper));
+    }
+    
+    @Override
+    public default <T> StreamPlus<T> flatMapToObj(Function<? super DATA, ? extends Stream<? extends T>> mapper) {
+        return StreamPlus.from(stream().flatMap(mapper));
     }
     
     //-- Filter --

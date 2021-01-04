@@ -1834,16 +1834,15 @@ public class StreamPlusTest {
     public void testMapWithPrev() {
         val stream = StreamPlus.of("One", "Two", "Three");
         assertStrings(
-                "(Result:{ NotExist },One), "
-                + "(Result:{ Value: One },Two), "
-                + "(Result:{ Value: Two },Three)",
-                stream.mapWithPrev().join(", "));
+                  "(One,Two), "
+                + "(Two,Three)",
+                stream.mapTwo().join(", "));
     }
     
     @Test
-    public void testMapWithPrev_combine() {
+    public void testMapGroup_combine() {
         val stream = StreamPlus.of("One", "Two", "Three");
-        assertStrings("3, 6, 8", stream.mapWithPrev((prev, element) -> prev.orElse("").length() + element.length()).join(", "));
+        assertStrings("6, 8", stream.mapGroup((prev, element) -> prev.length() + element.length()).join(", "));
     }
     
     @Test
@@ -1859,8 +1858,8 @@ public class StreamPlusTest {
                 + "[Seven, Eight, Nine], "
                 + "[Eight, Nine, Ten]",
                 stream
-                .mapWithPrev(3)
-                .map(s -> s.toListString()).join(", "));
+                .mapGroup(3)
+                .map     (s -> s.toListString()).join(", "));
     }
     
     @Test
@@ -1876,15 +1875,15 @@ public class StreamPlusTest {
                 + "[Seven, Eight, Nine], "
                 + "[Eight, Nine, Ten]",
                 stream
-                .mapWithPrev(3, s -> s.toListString()).join(", "));
+                .mapGroup(3, s -> s.toListString()).join(", "));
     }
     
     @Test
-    public void testMapWithPrevCount_notEnough() {
+    public void testMapGroupCount_notEnough() {
         val stream = StreamPlus.of("One", "Two");
         assertStrings(
                   "[One, Two]",
-                stream.mapWithPrev(3).map(s -> s.toListString()).join(", "));
+                stream.mapGroup(3).map(s -> s.toListString()).join(", "));
     }
     
     //-- StreamPlusWithModify --

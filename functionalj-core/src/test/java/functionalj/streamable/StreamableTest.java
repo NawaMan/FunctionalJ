@@ -1910,23 +1910,22 @@ public class StreamableTest {
         });
     }
     
-    //-- StreamPlusWithMapWithPrev --
+    //-- StreamPlusWithMapGroup --
     
     @Test
-    public void testMapWithPrev() {
+    public void testMapGroup() {
         run(Streamable.of("One", "Two", "Three"), streamable -> {
             assertStrings(
-                    "(Result:{ NotExist },One), "
-                    + "(Result:{ Value: One },Two), "
-                    + "(Result:{ Value: Two },Three)",
-                    streamable.mapWithPrev().join(", "));
+                      "(One,Two), "
+                    + "(Two,Three)",
+                    streamable.mapTwo().join(", "));
         });
     }
     
     @Test
-    public void testMapWithPrev_combine() {
+    public void testMapGroup_combine() {
         run(Streamable.of("One", "Two", "Three"), streamable -> {
-            assertStrings("3, 6, 8", streamable.mapWithPrev((prev, element) -> prev.orElse("").length() + element.length()).join(", "));
+            assertStrings("6, 8", streamable.mapGroup((prev, element) -> prev.length() + element.length()).join(", "));
         });
     }
     
@@ -2499,10 +2498,10 @@ public class StreamableTest {
     }
     
     @Test
-    public void testMapWithPrev_each_prior() {
+    public void testMapGroup_each_prior() {
         // Check if mapWithPrev is "Each-Prior" adverb in Q
-        val stream = Streamable.infiniteInt().limit(5).mapWithPrev((prev, element) -> element - prev.orElse(0));
-        assertEquals("0, 1, 1, 1, 1", stream.join(", "));
+        val stream = Streamable.infiniteInt().limit(5).mapGroup((prev, element) -> element - prev);
+        assertEquals("1, 1, 1, 1", stream.join(", "));
     }
     
     @Test

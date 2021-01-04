@@ -48,9 +48,9 @@ import lombok.val;
 
 
 public interface IntStreamPlusWithReshape extends AsIntStreamPlus {
-
+    
     public IntStreamPlus intStreamPlus();
-
+    
     /**
      * Segment the stream into sub stream with the fix length of count.
      * The last portion may be shorter.

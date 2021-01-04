@@ -136,7 +136,7 @@ public class IntStreamPlusHelper {
             }
             public TARGET next() {
                 int nextA = hasNextA ? iteratorA.nextInt() : defaultValue;
-                val nextB = hasNextB ? iteratorB.next()    : null;
+                B   nextB = hasNextB ? iteratorB.next()    : null;
                 return merger.apply(nextA, nextB);
             }
         };

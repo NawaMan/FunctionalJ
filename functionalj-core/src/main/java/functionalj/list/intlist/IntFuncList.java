@@ -40,22 +40,28 @@ import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
+import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.list.FuncList;
+import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntIterable;
 import functionalj.stream.intstream.IntIteratorPlus;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.stream.intstream.IntStreamPlusHelper;
 import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
+import functionalj.streamable.doublestreamable.AsDoubleStreamable;
+import functionalj.streamable.doublestreamable.DoubleStreamable;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.tuple.IntIntTuple;
@@ -302,16 +308,12 @@ public interface IntFuncList
 //        };
 //    }
     
-//    /** Create a Streamable from the given DoubleStreamable. */
-//    public static <TARGET> IntStreamable deriveFrom(
-//            AsDoubleStreamable                    asStreamable,
-//            Function<DoubleStreamPlus, IntStream> action) {
-//        return () -> {
-//            val sourceStream = asStreamable.doubleStream();
-//            val targetStream = action.apply(sourceStream);
-//            return IntStreamPlus.from(targetStream);
-//        };
-//    }
+    /** Create a Streamable from the given DoubleStreamable. */
+    public static <TARGET> IntFuncList deriveFrom(
+            AsDoubleStreamable                       asStreamable,
+            Function<DoubleStreamPlus, IntStream> action) {
+        return IntFuncList.from(IntStreamable.deriveFrom(asStreamable, action));
+    }
     
     /** Create a Streamable from another streamable. */
     public static IntFuncList deriveToInt(
@@ -327,13 +329,12 @@ public interface IntFuncList
 //        return LongStreamable.deriveFrom(asStreamable, action);
 //    }
     
-//    /** Create a Streamable from another streamable. */
-//    public static <SOURCE> DoubleStreamable deriveToDouble(
-//            AsIntStreamable                       asStreamable,
-//            Function<IntStreamPlus, DoubleStream> action) {
-////        return DoubleStreamable.deriveFrom(asStreamable, action);
-//        return null;
-//    }
+    /** Create a Streamable from another streamable. */
+    public static DoubleStreamable deriveToDouble(
+            AsIntStreamable                       asStreamable,
+            Function<IntStreamPlus, DoubleStream> action) {
+        return DoubleStreamable.deriveFrom(asStreamable, action);
+    }
     
     /** Create a Streamable from another streamable. */
     public static <TARGET> FuncList<TARGET> deriveToObj(
@@ -394,11 +395,11 @@ public interface IntFuncList
 //    public default LongFuncList asLongFuncList() {
 //        return deriveToLong(this, stream -> stream.mapToLong(i -> (long)i));
 //    }
-//
-//    /** Returns the streamable value in this stream as double */
-//    public default DoubleFuncList asDoubleFuncList() {
-//        return deriveToDouble(this, stream -> stream.mapToDouble(i -> (long)i));
-//    }
+    
+    /** Returns the streamable value in this stream as double */
+    public default DoubleFuncList asDoubleFuncList() {
+        return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(i -> (double)i));
+    }
     
     //-- Iterator --
     
@@ -434,11 +435,16 @@ public interface IntFuncList
 //    public default LongFuncList mapToLong(IntToLongFunction mapper) {
 //        return deriveToLong(this, stream -> stream.mapToLong(mapper));
 //    }
-//
-//    /** Map each value into a double value using the function. */
-//    public default DoubleFuncList mapToDouble(IntToDoubleFunction mapper) {
-//        return deriveToDouble(this, stream -> stream.mapToDouble(mapper));
-//    }
+    
+    /** Map each value into a double value using the function. */
+    public default DoubleFuncList mapToDouble() {
+        return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(i -> i));
+    }
+    
+    /** Map each value into a double value using the function. */
+    public default DoubleFuncList mapToDouble(IntToDoubleFunction mapper) {
+        return DoubleFuncList.deriveFrom(this, stream -> stream.mapToDouble(mapper));
+    }
     
     public default <TARGET> FuncList<TARGET> mapToObj(IntFunction<? extends TARGET> mapper) {
         return FuncList.deriveFrom(this, stream -> stream.mapToObj(mapper));
@@ -460,11 +466,11 @@ public interface IntFuncList
 //    public default LongFuncList flatMapToLong(IntFunction<? extends AsLongStreamable> mapper) {
 //        return LongFuncList.deriveFrom(this, stream -> stream.flatMapToLong(value -> mapper.apply(value).longStream()));
 //    }
-//
-//    /** Map a value into a double streamable and then flatten that streamable */
-//    public default DoubleFuncList flatMapToDouble(IntFunction<? extends AsDoubleStreamable> mapper) {
-//        return DoubleFuncList.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
-//    }
+    
+    /** Map a value into a double streamable and then flatten that streamable */
+    public default DoubleFuncList flatMapToDouble(IntFunction<? extends AsDoubleStreamable> mapper) {
+        return DoubleFuncList.deriveFrom(this, stream -> stream.flatMapToDouble(value -> mapper.apply(value).doubleStream()));
+    }
     
     //-- Filter --
     

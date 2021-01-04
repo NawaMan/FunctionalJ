@@ -27,6 +27,8 @@ import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
 
 import java.util.function.IntPredicate;
 
+import functionalj.function.IntBiPredicatePrimitive;
+
 public interface IntStreamableWithLimit extends AsIntStreamable {
     
     /** Limit the size of the stream to the given size. */
@@ -48,15 +50,30 @@ public interface IntStreamableWithLimit extends AsIntStreamable {
     public default IntStreamable skipUntil(IntPredicate condition) {
         return deriveFrom(this, stream -> stream.skipUntil(condition));
     }
-//
-//    /** Accept any value while the condition is true. */
-//    public default IntStreamable takeWhile(IntPredicate condition) {
-//        return deriveFrom(this, stream -> stream.takeWhile(condition));
-//    }
-//
-//    /** Accept any value until the condition is true. */
-//    public default IntStreamable takeUntil(IntPredicate condition) {
-//        return deriveFrom(this, stream -> stream.takeUntil(condition));
-//    }
+    
+    /** Accept any value while the condition is true. */
+    public default IntStreamable takeWhile(IntPredicate condition) {
+        return deriveFrom(this, stream -> stream.takeWhile(condition));
+    }
+    
+    /** Accept any value until the condition is true. */
+    public default IntStreamable takeUntil(IntPredicate condition) {
+        return deriveFrom(this, stream -> stream.takeUntil(condition));
+    }
+    
+    /** Accept any value until the condition is true. */
+    public default IntStreamable takeUntil(IntBiPredicatePrimitive condition) {
+        return deriveFrom(this, stream -> stream.takeUntil(condition));
+    }
+    
+    /** Accept any value while the condition is true. */
+    public default IntStreamable dropAfter(IntPredicate condition) {
+        return deriveFrom(this, stream -> stream.dropAfter(condition));
+    }
+    
+    /** Accept any value while the condition is true. */
+    public default IntStreamable dropAfter(IntBiPredicatePrimitive condition) {
+        return deriveFrom(this, stream -> stream.dropAfter(condition));
+    }
     
 }
