@@ -685,7 +685,18 @@ public class DeferActionTest {
         assertTrue (creator.logs.contains("End #1: 1"));
         assertFalse(creator.logs.contains("END #3: 3"));
         assertFalse(creator.logs.contains("End #4: 4"));
-        System.out.println(creator.logs);
+        assertStrings(
+                "["
+                + "New defer action: 0, "
+                + "New defer action: 1, "
+                + "New defer action: 2, "
+                + "New defer action: 3, "
+                + "Start #0: , "
+                + "End #0: 0, "
+                + "Start #1: , "
+                + "End #1: 1"
+                + "]",
+                creator.logs.toString());
     }
     
     @Test

@@ -27,10 +27,13 @@ import static functionalj.stream.doublestream.DoubleStreamPlusHelper.sequentialT
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.function.DoubleObjBiFunction;
@@ -67,23 +70,26 @@ public interface DoubleStreamPlusWithModify {
      */
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default DoubleStreamPlus accumulate(DoubleBiFunctionPrimitive accumulator) {
-        val streamPlus = doubleStreamPlus();
-        val iterator   = streamPlus.iterator();
-        if (!iterator.hasNext())
-            return DoubleStreamPlus.empty();
-        
-        val prev = new double[] { iterator.nextDouble() };
-        return DoubleStreamPlus
-                .concat(
-                        DoubleStreamPlus.of(prev[0]),
-                        iterator
-                        .stream()
-                        .map(n -> {
-                            val next = accumulator.applyAsDoubleAndDouble(n, prev[0]);
-                            prev[0] = next;
-                            return next;
-                        })
-                 );
+        val splitr = doubleStreamPlus().spliterator();
+        val spliterator = new Spliterators.AbstractDoubleSpliterator(splitr.estimateSize(), 0) {
+            double  acc  = 0;
+            boolean used = false;
+            @Override
+            public boolean tryAdvance(DoubleConsumer consumer) {
+                DoubleConsumer action = elem -> {
+                    if (!used) {
+                        acc = elem;
+                    } else {
+                        acc = accumulator.applyAsDoubleAndDouble(acc, elem);
+                    }
+                    
+                    used = true;
+                    consumer.accept(acc);
+                };
+                return splitr.tryAdvance(action);
+            }
+        };
+        return DoubleStreamPlus.from(StreamSupport.doubleStream(spliterator, false));
     }
     
     /**

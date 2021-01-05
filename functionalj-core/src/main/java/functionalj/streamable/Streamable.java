@@ -32,6 +32,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -587,14 +588,13 @@ public interface Streamable<DATA>
 //            Function<StreamPlus<SOURCE>, LongStream> action) {
 //        return LongStreamable.deriveFrom(asStreamable, action);
 //    }
-//
-//    /** Create a Streamable from another streamable. */
-//    public static <SOURCE> DoubleStreamable deriveToDouble(
-//            AsStreamable<SOURCE>                       asStreamable,
-//            Function<StreamPlus<SOURCE>, DoubleStream> action) {
-////        return DoubleStreamable.deriveFrom(asStreamable, action);
-//        return null;
-//    }
+
+    /** Create a Streamable from another streamable. */
+    public static <SOURCE> DoubleStreamable deriveToDouble(
+            AsStreamable<SOURCE>                       asStreamable,
+            Function<StreamPlus<SOURCE>, DoubleStream> action) {
+        return DoubleStreamable.deriveFrom(asStreamable, action);
+    }
     
     /** Create a Streamable from another streamable. */
     public static <SOURCE, TARGET> Streamable<TARGET> deriveToObj(

@@ -21,27 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.intstreamable;
+package functionalj.function;
 
-import static functionalj.streamable.Streamable.deriveFrom;
-
-import java.util.OptionalInt;
-
-import functionalj.function.ObjIntBiFunction;
-import functionalj.streamable.Streamable;
-import functionalj.tuple.ObjIntTuple;
-
-public interface IntStreamableWithMapWithPrev extends AsIntStreamable {
+@FunctionalInterface
+public interface ToDoubleBiIntFunction<DATA> {
     
-    /** @return  the stream of  each previous value and each current value. */
-    public default <TARGET> Streamable<TARGET> mapWithPrev(
-            ObjIntBiFunction<OptionalInt, ? extends TARGET> mapper) {
-        return deriveFrom(this, stream -> stream.mapWithPrev(mapper));
-    }
-    
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default Streamable<ObjIntTuple<OptionalInt>> mapWithPrev() {
-        return deriveFrom(this, stream -> stream.mapWithPrev());
-    }
+    public double applyAsDouble(DATA data, int intValue);
     
 }

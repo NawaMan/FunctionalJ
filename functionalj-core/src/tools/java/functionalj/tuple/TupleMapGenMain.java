@@ -84,10 +84,6 @@ public class TupleMapGenMain {
                 generate(6, FuncList.of(true, false, true, true, true, true)));
     }
     
-    public static void main(String[] args) {
-        System.out.println(generate(6));
-    }
-    
     private static String generate(int tupleSize, FuncList<Boolean> flags) {
         val typeParamDefs  = flags.mapWithIndex(generateEach(typeParamDefTemplates)).filter(Objects::nonNull).joining(", ");
         val tupleParamDefs = flags.mapWithIndex(generateEach(tupleParamDefTemplates)).filter(Objects::nonNull).joining(", ");

@@ -123,7 +123,7 @@ class StreamPlusWithMapGroupHelper {
                 };
                 boolean hasNext = splitr.tryAdvance(action);
                 if (!hasNext && !used && (processTail != null)) {
-                    processNormal.apply(array, start, end, consumer);
+                    processTail.apply(array, start, end, consumer);
                 }
                 return hasNext;
             }
@@ -161,7 +161,7 @@ class StreamPlusWithMapGroupHelper {
                 };
                 boolean hasNext = splitr.tryAdvance(action);
                 if (!hasNext && !used && (processTail != null)) {
-                    processNormal.apply(array, start, end, consumer);
+                    processTail.apply(array, start, end, consumer);
                 }
                 return hasNext;
             }

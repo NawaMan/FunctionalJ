@@ -54,7 +54,13 @@ public interface IntIteratorPlus extends PrimitiveIterator.OfInt, AutoCloseable,
     public static IntIteratorPlus from(PrimitiveIterator.OfInt iterator) {
         if (iterator instanceof IntIteratorPlus)
              return (IntIteratorPlus)iterator;
-        else return (IntIteratorPlus)(()->iterator);
+        else return new IntIteratorPlus() {
+            @Override
+            public OfInt asIterator() {
+                return iterator;
+            }
+            
+        };
     }
     
     public default IntIteratorPlus __data() throws Exception {

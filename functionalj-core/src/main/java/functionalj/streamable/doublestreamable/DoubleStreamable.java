@@ -76,11 +76,11 @@ public interface DoubleStreamable
             DoubleStreamableWithLimit,
             DoubleStreamableWithMap,
             DoubleStreamableWithMapFirst,
+            DoubleStreamableWithMapGroup,
             DoubleStreamableWithMapThen,
             DoubleStreamableWithMapToMap,
             DoubleStreamableWithMapToTuple,
             DoubleStreamableWithMapWithIndex,
-            DoubleStreamableWithMapWithPrev,
             DoubleStreamableWithModify,
             DoubleStreamableWithPeek,
             DoubleStreamableWithPipe,
@@ -555,7 +555,7 @@ public interface DoubleStreamable
     /** @return a iterator of this streamable. */
     @Override
     public default DoubleIteratorPlus iterator() {
-        return () -> iterator();
+        return () -> doubleStream().doubleStream().iterator();
     }
     
     /** @return a spliterator of this streamable. */

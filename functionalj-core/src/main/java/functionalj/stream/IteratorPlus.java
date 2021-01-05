@@ -52,7 +52,12 @@ public interface IteratorPlus<DATA> extends Iterator<DATA>, AutoCloseable, Pipea
     public static <D> IteratorPlus<D> from(Iterator<D> iterator) {
         if (iterator instanceof IteratorPlus)
              return (IteratorPlus<D>)iterator;
-        else return (IteratorPlus<D>)(()->iterator);
+        else return new IteratorPlus<D>() {
+            @Override
+            public Iterator<D> asIterator() {
+                return iterator;
+            }
+        };
     }
     
     public default IteratorPlus<DATA> __data() throws Exception {

@@ -21,27 +21,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable.doublestreamable;
+package functionalj.function;
 
-import static functionalj.streamable.Streamable.deriveFrom;
 
-import java.util.OptionalDouble;
-
-import functionalj.function.ObjDoubleBiFunction;
-import functionalj.streamable.Streamable;
-import functionalj.tuple.ObjDoubleTuple;
-
-public interface DoubleStreamableWithMapWithPrev extends AsDoubleStreamable {
+@FunctionalInterface
+public interface IntIntToDoubleFunctionPrimitive extends ToDoubleBiIntFunction<Integer> {
     
-    /** @return  the stream of  each previous value and each current value. */
-    public default <TARGET> Streamable<TARGET> mapWithPrev(
-            ObjDoubleBiFunction<OptionalDouble, ? extends TARGET> mapper) {
-        return deriveFrom(this, stream -> stream.mapWithPrev(mapper));
+    public int applyAsIntAndInt(int data, int doubleValue);
+    
+    public default double applyAsDouble(Integer data, int doubleValue) {
+        return applyAsIntAndInt(data, doubleValue);
     }
     
-    /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default Streamable<ObjDoubleTuple<OptionalDouble>> mapWithPrev() {
-        return deriveFrom(this, stream -> stream.mapWithPrev());
+    public static double apply(ToDoubleBiIntFunction<Integer> function, int value, int anotherValue) {
+        return (function instanceof IntIntToDoubleFunctionPrimitive)
+                ? ((IntIntToDoubleFunctionPrimitive)function).applyAsIntAndInt(value, anotherValue)
+                : function.applyAsDouble(value, anotherValue);
     }
-    
 }

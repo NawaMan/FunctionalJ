@@ -63,15 +63,6 @@ public class IntegerAccessTest {
         long afterUsedMem5 = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         long delta5 = Math.round((afterUsedMem5 - beforeUsedMem - actualUsedMem) / 1000000.0);
         
-        System.out.println("Mem2: " + delta2);
-        System.out.println("Mem3: " + delta3);
-        System.out.println("Mem4: " + delta4);
-        System.out.println("Mem5: " + delta5);
-        
-        System.out.println(str2);
-        System.out.println(str3);
-        System.out.println(str4);
-        System.out.println(str5);
         assertTrue(delta3 < delta4);
         assertEquals(delta2, delta3);
         assertEquals(delta4, delta5);

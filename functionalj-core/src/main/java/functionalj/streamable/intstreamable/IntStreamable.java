@@ -64,6 +64,7 @@ import lombok.val;
 //TODO - Use this for byte, short and char
 //TODO - Add intersect (retain) - but might want to do it after sort.
 
+@FunctionalInterface
 public interface IntStreamable
         extends
             AsIntStreamable,
@@ -76,11 +77,11 @@ public interface IntStreamable
             IntStreamableWithLimit,
             IntStreamableWithMap,
             IntStreamableWithMapFirst,
+            IntStreamableWithMapGroup,
             IntStreamableWithMapThen,
             IntStreamableWithMapToMap,
             IntStreamableWithMapToTuple,
             IntStreamableWithMapWithIndex,
-            IntStreamableWithMapWithPrev,
             IntStreamableWithModify,
             IntStreamableWithPeek,
             IntStreamableWithPipe,

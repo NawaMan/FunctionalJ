@@ -61,13 +61,11 @@ import functionalj.stream.intstream.IntStreamPlusHelper;
 import functionalj.streamable.AsStreamable;
 import functionalj.streamable.Streamable;
 import functionalj.streamable.doublestreamable.AsDoubleStreamable;
-import functionalj.streamable.doublestreamable.DoubleStreamable;
 import functionalj.streamable.intstreamable.AsIntStreamable;
 import functionalj.streamable.intstreamable.IntStreamable;
 import functionalj.tuple.IntIntTuple;
 import lombok.val;
 import nullablej.nullable.Nullable;
-
 
 // TODO - Use this for byte, short and char
 
@@ -84,11 +82,11 @@ public interface IntFuncList
             IntFuncListWithLimit,
             IntFuncListWithMap,
             IntFuncListWithMapFirst,
+            IntFuncListWithMapGroup,
             IntFuncListWithMapThen,
             IntFuncListWithMapToMap,
             IntFuncListWithMapToTuple,
             IntFuncListWithMapWithIndex,
-            IntFuncListWithMapWithPrev,
             IntFuncListWithModify,
             IntFuncListWithPeek,
             IntFuncListWithPipe,
@@ -330,10 +328,10 @@ public interface IntFuncList
 //    }
     
     /** Create a Streamable from another streamable. */
-    public static DoubleStreamable deriveToDouble(
+    public static DoubleFuncList deriveToDouble(
             AsIntStreamable                       asStreamable,
             Function<IntStreamPlus, DoubleStream> action) {
-        return DoubleStreamable.deriveFrom(asStreamable, action);
+        return DoubleFuncList.deriveFrom(asStreamable, action);
     }
     
     /** Create a Streamable from another streamable. */

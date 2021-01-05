@@ -53,7 +53,12 @@ public interface DoubleIteratorPlus extends PrimitiveIterator.OfDouble, AutoClos
     public static DoubleIteratorPlus from(PrimitiveIterator.OfDouble iterator) {
         if (iterator instanceof DoubleIteratorPlus)
              return (DoubleIteratorPlus)iterator;
-        else return (DoubleIteratorPlus)(()->iterator);
+        else return new DoubleIteratorPlus() {
+            @Override
+            public OfDouble asIterator() {
+                return iterator;
+            }
+        };
     }
     
     public default DoubleIteratorPlus __data() throws Exception {

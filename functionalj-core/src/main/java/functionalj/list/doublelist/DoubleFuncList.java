@@ -90,7 +90,7 @@ public interface DoubleFuncList
             DoubleFuncListWithMapToMap,
             DoubleFuncListWithMapToTuple,
             DoubleFuncListWithMapWithIndex,
-            DoubleFuncListWithMapWithPrev,
+            DoubleFuncListWithMapGroup,
             DoubleFuncListWithModify,
             DoubleFuncListWithPeek,
             DoubleFuncListWithPipe,

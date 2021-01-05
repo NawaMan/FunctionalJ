@@ -27,10 +27,13 @@ import static functionalj.stream.intstream.IntStreamPlusHelper.sequentialToObj;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
@@ -67,23 +70,26 @@ public interface IntStreamPlusWithModify {
      */
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default IntStreamPlus accumulate(IntBiFunctionPrimitive accumulator) {
-        val streamPlus = intStreamPlus();
-        val iterator   = streamPlus.iterator();
-        if (!iterator.hasNext())
-            return IntStreamPlus.empty();
-        
-        val prev = new int[] { iterator.nextInt() };
-        return IntStreamPlus
-                .concat(
-                    IntStreamPlus.of(prev[0]),
-                    iterator
-                    .stream()
-                    .map(n -> {
-                        val next = accumulator.applyAsIntAndInt(n, prev[0]);
-                        prev[0] = next;
-                        return next;
-                    })
-                 );
+        val splitr = intStreamPlus().spliterator();
+        val spliterator = new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+            int     acc  = 0;
+            boolean used = false;
+            @Override
+            public boolean tryAdvance(IntConsumer consumer) {
+                IntConsumer action = elem -> {
+                    if (!used) {
+                        acc = elem;
+                    } else {
+                        acc = accumulator.applyAsIntAndInt(acc, elem);
+                    }
+                    
+                    used = true;
+                    consumer.accept(acc);
+                };
+                return splitr.tryAdvance(action);
+            }
+        };
+        return IntStreamPlus.from(StreamSupport.intStream(spliterator, false));
     }
     
     /**

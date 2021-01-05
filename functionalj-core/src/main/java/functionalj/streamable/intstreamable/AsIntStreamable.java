@@ -41,6 +41,11 @@ public interface AsIntStreamable extends AsIntStreamPlus {
     /** @return  the stream plus instance of this object. */
     public IntStreamPlus intStream();
     
+    /** @return  the stream plus instance of this object. */
+    public default IntStreamPlus intStreamPlus() {
+        return intStream();
+    }
+    
     public default IntStreamable intStreamable() {
         return ()->intStreamPlus();
     }
