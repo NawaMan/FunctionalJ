@@ -47,6 +47,7 @@ import functionalj.function.Func4;
 import functionalj.function.Func5;
 import functionalj.function.Func6;
 import functionalj.list.FuncList;
+import functionalj.stream.AsStreamPlus;
 import functionalj.stream.IteratorPlus;
 import functionalj.stream.StreamPlus;
 import functionalj.streamable.Streamable;
@@ -97,6 +98,14 @@ public class StrFuncs {
         return str -> (str != null) && !str.isEmpty();
     }
     
+    public static <I> Func1<AsStreamPlus<I>, String> concat(Class<I> clz) {
+        return concat();
+    }
+    
+    public static <I> Func1<AsStreamPlus<I>, String> concat() {
+        return strings -> strings.streamPlus().map(StrFuncs::toStr).join();
+    }
+    
     public static <I1, I2> Func2<I1, I2, String> concat2() {
         return (i1, i2) -> toStr(i1) + toStr(i2);
     }
@@ -111,6 +120,14 @@ public class StrFuncs {
     }
     public static <I1, I2, I3, I4, I5, I6> Func6<I1, I2, I3, I4, I5, I6, String> concat6() {
         return (i1, i2, i3, i4, i5, i6) -> toStr(i1) + toStr(i2) + toStr(i3) + toStr(i4) + toStr(i5) + toStr(i6);
+    }
+    
+    public static <I> Func1<AsStreamPlus<I>, String> join(Class<I> clz, String delimiter) {
+        return join(delimiter);
+    }
+    
+    public static <I> Func1<AsStreamPlus<I>, String> join(String delimiter) {
+        return strings -> strings.streamPlus().map(StrFuncs::toStr).join(delimiter);
     }
     
     public static <I1, I2> Func2<I1, I2, String> join2(String delimiter) {

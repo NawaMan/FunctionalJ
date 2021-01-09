@@ -26,7 +26,6 @@ package functionalj.streamable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -36,7 +35,10 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import functionalj.function.DoubleDoubleBiFunction;
+import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.Func0;
+import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.function.IntIntBiFunction;
 import functionalj.function.IntObjBiFunction;
@@ -74,7 +76,6 @@ public interface Streamable<DATA>
             StreamableWithFilter<DATA>,
             StreamableWithFlatMap<DATA>,
             StreamableWithForEach<DATA>,
-            StreamableWithGroupingBy<DATA>,
             StreamableWithLimit<DATA>,
             StreamableWithMap<DATA>,
             StreamableWithMapFirst<DATA>,
@@ -136,7 +137,7 @@ public interface Streamable<DATA>
     
     /** Concatenate all the given streams. */
     @SafeVarargs
-    public static <TARGET> Streamable<TARGET> concat(Streamable<? extends TARGET> ... streams) {
+    public static <TARGET> Streamable<TARGET> concat(AsStreamable<? extends TARGET> ... streams) {
         return ()->StreamPlus.of(streams).flatMap(s -> s.stream());
     }
     
@@ -147,7 +148,7 @@ public interface Streamable<DATA>
      *   but allowing static import without colliding with {@link String#concat(String)}.
      **/
     @SafeVarargs
-    public static <TARGET> Streamable<TARGET> combine(Streamable<TARGET> ... streams) {
+    public static <TARGET> Streamable<TARGET> combine(AsStreamable<TARGET> ... streams) {
         return ()->StreamPlus.of(streams).flatMap(s -> s.stream());
     }
     
@@ -183,8 +184,8 @@ public interface Streamable<DATA>
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> Streamable<TARGET> iterate(
-            TARGET                   seed,
-            Function<TARGET, TARGET> compounder) {
+            TARGET                seed,
+            Func1<TARGET, TARGET> compounder) {
         return ()->StreamPlus.iterate(seed, compounder);
     }
     
@@ -204,8 +205,8 @@ public interface Streamable<DATA>
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> Streamable<TARGET> compound(
-            TARGET                   seed,
-            Function<TARGET, TARGET> compounder) {
+            TARGET                seed,
+            Func1<TARGET, TARGET> compounder) {
         return ()->StreamPlus.compound(seed, compounder);
     }
     
@@ -226,9 +227,9 @@ public interface Streamable<DATA>
      **/
     // TODO - Make it a throwable version of BinaryOperator
     public static <TARGET> Streamable<TARGET> iterate(
-            TARGET                             seed1,
-            TARGET                             seed2,
-            BiFunction<TARGET, TARGET, TARGET> compounder) {
+            TARGET                        seed1,
+            TARGET                        seed2,
+            Func2<TARGET, TARGET, TARGET> compounder) {
         return ()->StreamPlus.iterate(seed1, seed2, compounder);
     }
     
@@ -247,12 +248,16 @@ public interface Streamable<DATA>
      *
      * Note: this is an alias of iterate()
      **/
-    // TODO - Make it a throwable version of BinaryOperator
     public static <TARGET> Streamable<TARGET> compound(
-            TARGET                             seed1,
-            TARGET                             seed2,
-            BiFunction<TARGET, TARGET, TARGET> compounder) {
+            TARGET                        seed1,
+            TARGET                        seed2,
+            Func2<TARGET, TARGET, TARGET> compounder) {
         return ()->StreamPlus.compound(seed1, seed2, compounder);
+    }
+    
+    /** Create a Streamable that contains infinite number of null. */
+    public static <TARGET> Streamable<TARGET> nulls() {
+        return cycle((TARGET)null);
     }
     
     /** Create a Streamable that is the repeat of the given array of data. */
@@ -290,15 +295,14 @@ public interface Streamable<DATA>
     }
     
     /** Create a Streamable that for an infinite loop - the value is boolean true */
-    public static Streamable<Boolean> loop() {
-        return ()-> {
-            return StreamPlus.from(Stream.generate(() -> Boolean.TRUE));
-        };
+    public static <TARGET> Streamable<TARGET> loop() {
+        return ()-> StreamPlus.from(Stream.generate(() -> (TARGET)null));
     }
     
     /** Create a Streamable that for a loop with the number of time given - the value is the index of the loop. */
-    public static Streamable<Boolean> loop(int time) {
-        return Streamable.loop().limit(time);
+    public static <TARGET> Streamable<TARGET> loop(int time) {
+        Streamable<TARGET> nulls = nulls();
+        return nulls.limit(time);
     }
     
     /** Create a Streamable that for an infinite loop - the value is the index of the loop. */
@@ -369,36 +373,6 @@ public interface Streamable<DATA>
         };
     }
     
-    /** Zip integers from two IntStreamables and combine it into another object. */
-    public static <TARGET> Streamable<TARGET> zipOf(
-            IntStreamable            streamable1,
-            IntStreamable            streamable2,
-            int                      defaultValue,
-            IntIntBiFunction<TARGET> merger) {
-        return ()->{
-            return StreamPlus.zipOf(
-                    streamable1.intStream(),
-                    streamable2.intStream(),
-                    defaultValue,
-                    merger);
-        };
-    }
-    
-    /** Zip integers from two IntStreams and combine it into another object. */
-    public static <TARGET> Streamable<TARGET> zipOf(
-            IntStreamable            streamable1,
-            int                      defaultValue1,
-            IntStreamable            streamable2,
-            int                      defaultValue2,
-            IntIntBiFunction<TARGET> merger) {
-        return ()->{
-            return StreamPlus.zipOf(
-                    streamable1.intStream(), defaultValue1,
-                    streamable2.intStream(), defaultValue2,
-                    merger);
-        };
-    }
-    
     /**
      * Zip integers from an int stream and another object stream and combine it into another object.
      * The result stream has the size of the shortest stream.
@@ -416,103 +390,36 @@ public interface Streamable<DATA>
     }
     
     /**
-     * Zip integers from an int stream and another object stream and combine it into another object.
-     * The default value will be used if the first stream ended first and null will be used if the second stream ended first.
+     * Zip integers from two IntStreamables and combine it into another object.
+     * The result stream has the size of the shortest streamable.
      */
-    public static <ANOTHER, TARGET> Streamable<TARGET> zipOf(
-            IntStreamable                     streamable1,
-            int                               defaultValue,
-            Streamable<ANOTHER>               streamable2,
-            IntObjBiFunction<ANOTHER, TARGET> merger) {
+    public static <T1, T2, TARGET> Streamable<TARGET> zipOf(
+            DoubleStreamable               streamable1,
+            DoubleStreamable               streamable2,
+            DoubleDoubleBiFunction<TARGET> merger) {
         return ()->{
             return StreamPlus.zipOf(
-                    streamable1.intStream(),
+                    streamable1.doubleStream(),
+                    streamable2.doubleStream(),
+                    merger);
+        };
+    }
+    
+    /**
+     * Zip integers from an int stream and another object stream and combine it into another object.
+     * The result stream has the size of the shortest stream.
+     */
+    public static <ANOTHER, TARGET> Streamable<TARGET> zipOf(
+            DoubleStreamable                     streamable1,
+            Streamable<ANOTHER>                  streamable2,
+            DoubleObjBiFunction<ANOTHER, TARGET> merger) {
+        return ()->{
+            return StreamPlus.zipOf(
+                    streamable1.doubleStream(),
                     streamable2.stream(),
                     merger);
         };
     }
-//
-//    /**
-//     * Zip longs from two LongStreams and combine it into another object.
-//     * The result stream has the size of the shortest stream.
-//     */
-//    public static <TARGET> Streamable<TARGET> zipOf(
-//            LongStreamable       streamable1,
-//            LongStreamable       streamable2,
-//            LongLongBiFunction<TARGET> merger) {
-//        return ()->{
-//            return StreamPlus.zipOf(
-//                    streamable1.longStream(),
-//                    streamable2.longStream(),
-//                    merger);
-//        };
-//    }
-//
-//    /** Zip longs from two LongStreamables and combine it into another object. */
-//    public static <T> Streamable<T> zipOf(
-//            LongStreamable       streamable1,
-//            LongStreamable       streamable2,
-//            int                 defaultValue,
-//            LongLongBiFunction<T> merger) {
-//        return ()->{
-//            return StreamPlus.zipOf(
-//                    streamable1.longStream(),
-//                    streamable2.longStream(),
-//                    defaultValue,
-//                    merger);
-//        };
-//    }
-//
-//    /**
-//     * Zip values from a long streamable and another object streamable and combine it into another object.
-//     * The result stream has the size of the shortest stream.
-//     */
-//    public static <TARGET> Streamable<TARGET> zipOf(
-//            LongStreamable             streamable1,
-//            long                       defaultValue1,
-//            LongStreamable             streamable2,
-//            long                       defaultValue2,
-//            LongLongBiFunction<TARGET> merger) {
-//        return ()->{
-//            return StreamPlus.zipOf(
-//                    streamable1.longStream(), defaultValue1,
-//                    streamable2.longStream(), defaultValue2,
-//                    merger);
-//        };
-//    }
-//
-//    /**
-//     * Zip values from a long streamable and another object streamable and combine it into another object.
-//     * The result stream has the size of the shortest stream.
-//     */
-//    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
-//            LongStreamable                     streamable1,
-//            Streamable<ANOTHER>                streamable2,
-//            LongObjBiFunction<ANOTHER, TARGET> merger) {
-//        return ()->{
-//            return StreamPlus.zipOf(
-//                    streamable1.longStream(),
-//                    streamable2.stream(),
-//                    merger);
-//        };
-//    }
-//
-//    /**
-//     * Zip values from an long streamable and another object streamable and combine it into another object.
-//     * The default value will be used if the first streamable ended first and null will be used if the second stream ended first.
-//     */
-//    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
-//            LongStreamable                     streamable1,
-//            long                               defaultValue,
-//            Streamable<ANOTHER>                streamable2,
-//            LongObjBiFunction<ANOTHER, TARGET> merger) {
-//        return ()->{
-//            return StreamPlus.zipOf(
-//                    streamable1.longStream(), defaultValue,
-//                    streamable2.stream(),
-//                    merger);
-//        };
-//    }
     
     //== Core ==
     

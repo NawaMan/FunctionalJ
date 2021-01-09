@@ -35,7 +35,7 @@ public abstract class Acceptable<DATA> extends ImmutableResult<DATA> {
         super(data, validators);
     }
     protected Acceptable(DATA data, FuncList<Validator<? super DATA>> validators, Validation<DATA> validating) {
-        super(data, FuncList.from(validators).append(validating.toValidator()));
+        super(data, validators.append(validating.toValidator()));
     }
     
 }

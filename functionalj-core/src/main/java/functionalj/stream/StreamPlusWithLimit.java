@@ -147,6 +147,7 @@ public interface StreamPlusWithLimit<DATA> {
                                             stillGoing = false;
                                         }
                                     } else {
+                                        consumer.accept(elem);
                                         isFirst = false;
                                     }
                                     prevValue = elem;
@@ -210,6 +211,7 @@ public interface StreamPlusWithLimit<DATA> {
                                     stillGoing = false;
                                 }
                             } else {
+                                consumer.accept(elem);
                                 isFirst = false;
                             }
                             prevValue = elem;
@@ -272,6 +274,7 @@ public interface StreamPlusWithLimit<DATA> {
                                     stillGoing = false;
                                 }
                             } else {
+                                consumer.accept(elem);
                                 isFirst = false;
                             }
                             prevValue = elem;

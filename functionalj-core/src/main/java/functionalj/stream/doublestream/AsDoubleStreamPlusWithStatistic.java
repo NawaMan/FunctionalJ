@@ -55,6 +55,13 @@ public interface AsDoubleStreamPlusWithStatistic {
                 .count();
     }
     
+    /** @return the product of all the number */
+    @Eager
+    @Terminal
+    public default OptionalDouble product() {
+        return doubleStreamPlus().reduce((a, b) -> a*b);
+    }
+    
     /** Return the value whose mapped value is the smallest. */
     @Eager
     @Terminal

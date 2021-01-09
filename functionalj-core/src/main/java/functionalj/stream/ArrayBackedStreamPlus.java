@@ -50,8 +50,7 @@ public class ArrayBackedStreamPlus<DATA> implements StreamPlus<DATA> {
         return stream;
     }
     public static <DATA> StreamPlus<DATA> from(DATA[] array, int start, int length) {
-        @SuppressWarnings("unchecked")
-        val iterator = (ArrayBackedIteratorPlus<DATA>)ArrayBackedIteratorPlus.of(array, start, length);
+        val iterator = (ArrayBackedIteratorPlus<DATA>)ArrayBackedIteratorPlus.from(array, start, length);
         val stream   = new ArrayBackedStreamPlus<>(iterator);
         return stream;
     }

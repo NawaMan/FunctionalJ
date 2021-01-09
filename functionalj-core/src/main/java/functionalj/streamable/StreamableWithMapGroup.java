@@ -24,6 +24,7 @@
 package functionalj.streamable;
 
 import static functionalj.streamable.Streamable.deriveFrom;
+import static functionalj.streamable.Streamable.deriveToDouble;
 import static functionalj.streamable.Streamable.deriveToInt;
 import static functionalj.streamable.Streamable.deriveToObj;
 
@@ -50,27 +51,27 @@ import functionalj.tuple.Tuple6;
 public interface StreamableWithMapGroup<DATA> extends AsStreamable<DATA> {
     
     /** @return  the stream of  each previous value and each current value. */
-    public default Streamable<Tuple2<? super DATA, ? super DATA>> mapTwo() {
+    public default Streamable<Tuple2<DATA, DATA>> mapTwo() {
         return deriveToObj(this, stream -> stream.mapTwo());
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default Streamable<Tuple3<? super DATA, ? super DATA, ? super DATA>> mapThree() {
+    public default Streamable<Tuple3<DATA, DATA, DATA>> mapThree() {
         return deriveToObj(this, stream -> stream.mapThree());
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default Streamable<Tuple4<? super DATA, ? super DATA, ? super DATA, ? super DATA>> mapFour() {
+    public default Streamable<Tuple4<DATA, DATA, DATA, DATA>> mapFour() {
         return deriveToObj(this, stream -> stream.mapFour());
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default Streamable<Tuple5<? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA>> mapFive() {
+    public default Streamable<Tuple5<DATA, DATA, DATA, DATA, DATA>> mapFive() {
         return deriveToObj(this, stream -> stream.mapFive());
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default Streamable<Tuple6<? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA>> mapSix() {
+    public default Streamable<Tuple6<DATA, DATA, DATA, DATA, DATA, DATA>> mapSix() {
         return deriveToObj(this, stream -> stream.mapSix());
     }
     
@@ -100,12 +101,12 @@ public interface StreamableWithMapGroup<DATA> extends AsStreamable<DATA> {
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default Streamable<StreamPlus<? super DATA>> mapGroup(int count) {
+    public default Streamable<StreamPlus<DATA>> mapGroup(int count) {
         return deriveToObj(this, stream -> stream.mapGroup(count));
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default <TARGET> Streamable<TARGET> mapGroup(int count, Func1<? super StreamPlus<? super DATA>, ? extends TARGET> combinator) {
+    public default <TARGET> Streamable<TARGET> mapGroup(int count, Func1<? super StreamPlus<? extends DATA>, ? extends TARGET> combinator) {
         return deriveToObj(this, stream -> stream.mapGroup(count, combinator));
     }
     
@@ -117,7 +118,7 @@ public interface StreamableWithMapGroup<DATA> extends AsStreamable<DATA> {
     }
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default IntStreamable mapGroupToInt(int count, ToIntFunction<? super StreamPlus<? super DATA>> combinator) {
+    public default IntStreamable mapGroupToInt(int count, ToIntFunction<? super StreamPlus<? extends DATA>> combinator) {
         return deriveToInt(this, stream -> stream.mapGroupToInt(count, combinator));
     }
     
@@ -125,12 +126,12 @@ public interface StreamableWithMapGroup<DATA> extends AsStreamable<DATA> {
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
     public default DoubleStreamable mapTwoToDouble(ObjectObjectToDoubleFunctionPrimitive<? super DATA, ? super DATA> combinator) {
-        return Streamable.deriveToDouble(this, stream -> stream.mapTwoToDouble(combinator));
+        return deriveToDouble(this, stream -> stream.mapTwoToDouble(combinator));
     }
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default DoubleStreamable mapGroupToDouble(int count, ToDoubleFunction<? super StreamPlus<? super DATA>> combinator) {
-        return Streamable.deriveToDouble(this, stream -> stream.mapGroupToDouble(count, combinator));
+    public default DoubleStreamable mapGroupToDouble(int count, ToDoubleFunction<? super StreamPlus<? extends DATA>> combinator) {
+        return deriveToDouble(this, stream -> stream.mapGroupToDouble(count, combinator));
     }
     
 }

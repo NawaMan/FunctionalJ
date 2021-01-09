@@ -27,14 +27,12 @@ import static functionalj.streamable.intstreamable.IntStreamable.deriveFrom;
 import static functionalj.streamable.intstreamable.IntStreamable.deriveToObj;
 
 import java.util.function.IntFunction;
-import java.util.function.UnaryOperator;
 
+import functionalj.function.Func1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.intstream.IntIteratorPlus;
-import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.Streamable;
 import functionalj.tuple.IntTuple2;
 import lombok.val;
@@ -82,32 +80,29 @@ public interface IntStreamableWithModify extends AsIntStreamable {
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
      **/
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default IntStreamable restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
-        val func = (UnaryOperator<IntTuple2<IntStreamPlus>>)((IntTuple2<IntStreamPlus> pair) -> {
-            val stream = pair._2();
-            if (stream == null)
+    public default IntStreamable restate(IntObjBiFunction<IntStreamable, IntStreamable> restater) {
+        Func1<IntTuple2<IntStreamable>, IntTuple2<IntStreamable>> func = pair -> {
+            val streamable = pair._2();
+            if (streamable == null)
                 return null;
             
-            val iterator = stream.iterator();
+            val iterator = streamable.iterator();
             if (!iterator.hasNext())
                 return null;
             
             val head = new int[] { iterator.nextInt() };
-            val tail = IntObjBiFunction.apply(restater, head[0], IntIteratorPlus.from(iterator).stream());
+            val tail = restater.apply(head[0], streamable.skip(1));
             if (tail == null)
                 return null;
             
-            return IntTuple2.<IntStreamPlus>of(head[0], tail);
-        });
-        val seed = IntTuple2.<IntStreamPlus>of(0, intStreamPlus());
-        val endStream
-            = Streamable
-            .iterate  (seed, (UnaryOperator)func)
-            .takeUntil(t -> t == null)
-            .skip     (1)
-            .mapToInt (t -> ((IntTuple2)t)._1());
-        return endStream;
+            return IntTuple2.of(head[0], tail);
+        };
+        val seed = IntTuple2.of(0, this.intStreamable());
+        return Streamable
+                .iterate  (seed, func)
+                .takeUntil(t -> t == null)
+                .skip     (1)
+                .mapToInt (t -> t._1());
     }
     
     //== Spawn ==

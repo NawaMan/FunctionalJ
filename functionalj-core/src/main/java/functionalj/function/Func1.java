@@ -195,7 +195,7 @@ public interface Func1<INPUT, OUTPUT> extends Function<INPUT, OUTPUT> {
         return FuncMap.from(input).map(this);
     }
     public default FuncList<OUTPUT> applyTo(FuncList<INPUT> input) {
-        return FuncList.from(input).map(this);
+        return input.map(this);
     }
     public default <KEY> FuncMap<KEY, OUTPUT> applyTo(FuncMap<KEY, INPUT> input) {
         return FuncMap.from(input).map(this);

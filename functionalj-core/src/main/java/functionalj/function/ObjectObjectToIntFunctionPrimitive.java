@@ -29,7 +29,7 @@ public interface ObjectObjectToIntFunctionPrimitive<INPUT1, INPUT2> extends Func
     public int applyToInt(INPUT1 input1, INPUT2 input2)  throws Exception;
     
     public default Integer applyUnsafe(INPUT1 input1, INPUT2 input2) throws Exception {
-        return apply(input1, input2);
+        return applyToInt(input1, input2);
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })

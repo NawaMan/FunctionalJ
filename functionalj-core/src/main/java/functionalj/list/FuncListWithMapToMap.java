@@ -192,4 +192,31 @@ public interface FuncListWithMapToMap<DATA>
                 key10, mapper10));
     }
     
+    /** Put mapped value and put it in the map with specific keys. */
+    public default <KEY, VALUE> FuncList<FuncMap<KEY, VALUE>> mapToMap(
+            KEY key1, Function<? super DATA, VALUE> mapper1,
+            KEY key2, Function<? super DATA, VALUE> mapper2,
+            KEY key3, Function<? super DATA, VALUE> mapper3,
+            KEY key4, Function<? super DATA, VALUE> mapper4,
+            KEY key5, Function<? super DATA, VALUE> mapper5,
+            KEY key6, Function<? super DATA, VALUE> mapper6,
+            KEY key7, Function<? super DATA, VALUE> mapper7,
+            KEY key8, Function<? super DATA, VALUE> mapper8,
+            KEY key9, Function<? super DATA, VALUE> mapper9,
+            KEY key10, Function<? super DATA, VALUE> mapper10,
+            KEY key11, Function<? super DATA, VALUE> mapper11) {
+        return deriveFrom(this, stream -> stream.mapToMap(
+                key1, mapper1,
+                key2, mapper2,
+                key3, mapper3,
+                key4, mapper4,
+                key5, mapper5,
+                key6, mapper6,
+                key7, mapper7,
+                key8, mapper8,
+                key9, mapper9,
+                key10, mapper10,
+                key11, mapper11));
+    }
+    
 }

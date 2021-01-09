@@ -32,12 +32,6 @@ import functionalj.streamable.AsStreamable;
 
 public interface FuncListWithMap<DATA> extends AsStreamable<DATA> {
     
-    
-    /** Map the value using the mapper. */
-    public default <T> FuncList<T> mapToObj(Function<? super DATA, ? extends T> mapper) {
-        return deriveFrom(this, stream -> stream.mapToObj(mapper));
-    }
-    
     /** Map the value using the mapper only when the condition is true. */
     public default FuncList<DATA> mapOnly(
             Predicate<? super DATA>      checker, 

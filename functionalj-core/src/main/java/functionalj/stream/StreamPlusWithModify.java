@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import functionalj.function.Func1;
+import functionalj.function.Func2;
 import functionalj.function.FuncUnit1;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
@@ -103,15 +103,15 @@ public interface StreamPlusWithModify<DATA> {
      *     ...
      **/
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default StreamPlus<DATA> restate(BiFunction<? super DATA, StreamPlus<DATA>, StreamPlus<DATA>> restater) {
-        val func = (UnaryOperator<Tuple2<DATA, StreamPlus<DATA>>>)((Tuple2<DATA, StreamPlus<DATA>> pair) -> {
+    @SuppressWarnings({ "unchecked" })
+    public default StreamPlus<DATA> restate(Func2<? super DATA, StreamPlus<DATA>, StreamPlus<DATA>> restater) {
+        Func1<Tuple2<DATA, StreamPlus<DATA>>, Tuple2<DATA, StreamPlus<DATA>>> func = ((Tuple2<DATA, StreamPlus<DATA>> pair) -> {
             val stream = pair._2();
             if (stream == null)
                 return null;
             
-            Object[] head     = new Object[] { null };
-            val      iterator = stream.iterator();
+            val head     = new Object[] { null };
+            val iterator = stream.iterator();
             if (!iterator.hasNext())
                 return null;
             
@@ -122,16 +122,14 @@ public interface StreamPlusWithModify<DATA> {
             
             return Tuple2.of((DATA)head[0], tail);
         });
-        val seed = Tuple2.of((DATA)null, this);
+        val seed = Tuple2.of((DATA)null, this.streamPlus());
         
-        // NOTE: The reason for the using untyped-generic is becuase "DATA" of this class is not seen as compatible with StreamPlus's.
-        val endStream 
-            = StreamPlus
-            .iterate  (seed, (UnaryOperator)func)
-            .takeUntil(t -> t == null)
-            .skip     (1)
-            .map      (t -> ((Tuple2)t)._1());
-        return endStream;
+        // NOTE: The reason for the using untyped-generic is because "DATA" of this class is not seen as compatible with StreamPlus's.
+        return StreamPlus
+                .iterate  (seed, func)
+                .takeUntil(t -> t == null)
+                .skip     (1)
+                .map      (t -> t._1());
     }
     
     /**

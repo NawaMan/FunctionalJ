@@ -78,7 +78,6 @@ public interface IntFuncList
             IntFuncListWithCombine,
             IntFuncListWithFilter,
             IntFuncListWithFlatMap,
-            IntFuncListWithGroupingBy,
             IntFuncListWithLimit,
             IntFuncListWithMap,
             IntFuncListWithMapFirst,
@@ -180,8 +179,17 @@ public interface IntFuncList
         return IntFuncList.from(IntStreamable.ones(count));
     }
     
+    public static IntFuncList naturalNumbers() {
+        return naturalNumbers(Integer.MAX_VALUE);
+    }
+    
     public static IntFuncList naturalNumbers(int count) {
         return IntFuncList.from(IntStreamable.naturalNumbers().limit(count));
+    }
+    
+    /** Returns the infinite streams of wholes numbers -- 0, 1, 2, 3, .... */
+    public static IntFuncList wholeNumbers() {
+        return wholeNumbers(Integer.MAX_VALUE);
     }
     
     /** Returns the infinite streams of wholes numbers -- 0, 1, 2, 3, .... */

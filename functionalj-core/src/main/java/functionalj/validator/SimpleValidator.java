@@ -33,24 +33,16 @@ import lombok.val;
 
 public interface SimpleValidator<DATA> extends Validator<DATA> {
     
-    public static <D> 
-            Func2<
-                D, 
-                Predicate<? super D>, 
-                ValidationException> exceptionFor(String template) {
+    public static <D> Func2<D,Predicate<? super D>,ValidationException> exceptionFor(String template) {
         return (d, p) -> new ValidationException(String.format(template, d, p));
     }
-    public static <D> 
-            Func2<
-                D, 
-                Predicate<? super D>, 
-                ValidationException> exceptionFor(String template, Exception cause) {
+    public static <D> Func2<D,Predicate<? super D>,ValidationException> exceptionFor(String template, Exception cause) {
         return (d, p) -> new ValidationException(String.format(template, d, p), cause);
     }
     
     public Predicate<? super DATA> checker();
     public ValidationException     createException(DATA data);
-
+    
     public default Result<DATA> validate(DATA data) {
         return Result.of(()->{
             val checker = checker();

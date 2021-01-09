@@ -51,27 +51,27 @@ import functionalj.tuple.Tuple6;
 public interface FuncListWithMapGroup<DATA> extends AsStreamable<DATA> {
     
     /** @return  the stream of  each previous value and each current value. */
-    public default FuncList<Tuple2<? super DATA, ? super DATA>> mapTwo() {
+    public default FuncList<Tuple2<DATA, DATA>> mapTwo() {
         return deriveToObj(this, stream -> stream.mapTwo());
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default FuncList<Tuple3<? super DATA, ? super DATA, ? super DATA>> mapThree() {
+    public default FuncList<Tuple3<DATA, DATA, DATA>> mapThree() {
         return deriveToObj(this, stream -> stream.mapThree());
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default FuncList<Tuple4<? super DATA, ? super DATA, ? super DATA, ? super DATA>> mapFour() {
+    public default FuncList<Tuple4<DATA, DATA, DATA, DATA>> mapFour() {
         return deriveToObj(this, stream -> stream.mapFour());
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default FuncList<Tuple5<? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA>> mapFive() {
+    public default FuncList<Tuple5<DATA, DATA, DATA, DATA, DATA>> mapFive() {
         return deriveToObj(this, stream -> stream.mapFive());
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default FuncList<Tuple6<? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA>> mapSix() {
+    public default FuncList<Tuple6<DATA, DATA, DATA, DATA, DATA, DATA>> mapSix() {
         return deriveToObj(this, stream -> stream.mapSix());
     }
     
@@ -101,12 +101,12 @@ public interface FuncListWithMapGroup<DATA> extends AsStreamable<DATA> {
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default FuncList<StreamPlus<? super DATA>> mapGroup(int count) {
+    public default FuncList<StreamPlus<DATA>> mapGroup(int count) {
         return deriveToObj(this, stream -> stream.mapGroup(count));
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default <TARGET> FuncList<TARGET> mapGroup(int count, Func1<? super StreamPlus<? super DATA>, ? extends TARGET> combinator) {
+    public default <TARGET> FuncList<TARGET> mapGroup(int count, Func1<? super StreamPlus<? extends DATA>, ? extends TARGET> combinator) {
         return deriveToObj(this, stream -> stream.mapGroup(count, combinator));
     }
     
@@ -118,7 +118,7 @@ public interface FuncListWithMapGroup<DATA> extends AsStreamable<DATA> {
     }
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default IntFuncList mapGroupToInt(int count, ToIntFunction<? super StreamPlus<? super DATA>> combinator) {
+    public default IntFuncList mapGroupToInt(int count, ToIntFunction<? super StreamPlus<? extends DATA>> combinator) {
         return deriveToInt(this, stream -> stream.mapGroupToInt(count, combinator));
     }
     
@@ -130,7 +130,7 @@ public interface FuncListWithMapGroup<DATA> extends AsStreamable<DATA> {
     }
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default DoubleFuncList mapGroupToDouble(int count, ToDoubleFunction<? super StreamPlus<? super DATA>> combinator) {
+    public default DoubleFuncList mapGroupToDouble(int count, ToDoubleFunction<? super StreamPlus<? extends DATA>> combinator) {
         return deriveToDouble(this, stream -> stream.mapGroupToDouble(count, combinator));
     }
     

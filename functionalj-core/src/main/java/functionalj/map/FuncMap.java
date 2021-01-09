@@ -368,7 +368,7 @@ public abstract class FuncMap<KEY, VALUE>
         return mapEntry((k, v)->mapper.apply(k, v));
     }
     
-    public <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, ? extends TARGET> mapper) {
+    public <TARGET> FuncMap<KEY, TARGET> mapValue(Function<? super VALUE, TARGET> mapper) {
         return map((k, v)->mapper.apply(v));
     }
     

@@ -71,7 +71,7 @@ public final class Time {
 //        public <DATA, EXECUTION extends Exception> 
 //                Promise<Object> schedule(ComputeBody<DATA, EXECUTION> callable, long delay, TimeUnit unit) {
 //        }
-        // Schedule that start with absulote time
+        // Schedule that start with absolute time
         
         // Schedule periodic tasks.
     }

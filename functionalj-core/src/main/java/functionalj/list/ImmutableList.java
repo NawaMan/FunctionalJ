@@ -25,6 +25,7 @@ package functionalj.list;
 
 import static java.util.Collections.unmodifiableList;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,7 +39,7 @@ import functionalj.result.Result;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.markers.Sequential;
 import functionalj.stream.markers.Terminal;
-import functionalj.streamable.Streamable;
+import functionalj.streamable.AsStreamable;
 import lombok.val;
 
 
@@ -51,6 +52,20 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return (ImmutableList<T>)EMPTY;
     }
     
+    @SafeVarargs
+    public static <T> ImmutableList<T> of(T ... data) {
+        return new ImmutableList<>(Arrays.asList(data));
+    }
+    
+    @SafeVarargs
+    public static <T> ImmutableList<T> listOf(T ... data) {
+        return new ImmutableList<T>(Arrays.asList(data));
+    }
+    
+    public static <T> ImmutableList<T> from(T[] datas) {
+        return new ImmutableList<>(Arrays.asList(datas));
+    }
+    
     public static <T> ImmutableList<T> from(Collection<T> data) {
         if (data instanceof ImmutableList)
             return (ImmutableList<T>)data;
@@ -60,20 +75,19 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return new ImmutableList<T>(data);
     }
     
-    @SafeVarargs
-    public static <T> ImmutableList<T> of(T ... data) {
-        return new ImmutableList<>(Arrays.asList(data));
-    }
-    
-    public static <T> ImmutableList<T> from(T[] datas) {
-        return new ImmutableList<>(Arrays.asList(datas));
-    }
-    
-    public static <T> ImmutableList<T> from(Streamable<T> streamable) {
+    public static <T> ImmutableList<T> from(AsStreamable<T> streamable) {
         if (streamable == null)
             return ImmutableList.empty();
         
         return new ImmutableList<T>(streamable.toJavaList());
+    }
+    
+    public static <T> ImmutableList<T> from(boolean isLazy, AsStreamable<T> streamable) {
+        if (streamable == null)
+            return ImmutableList.empty();
+        
+        val newList = new ImmutableList<T>(streamable.toJavaList(), isLazy);
+        return newList;
     }
     
     public static <T> ImmutableList<T> from(Stream<T> stream) {
@@ -96,10 +110,6 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
             return ImmutableList.empty();
         
         return new ImmutableList<T>(funcList.toJavaList());
-    }
-    @SafeVarargs
-    public static <T> ImmutableList<T> listOf(T ... data) {
-        return new ImmutableList<T>(Arrays.asList(data));
     }
     
     private final List<DATA> data;
@@ -162,8 +172,13 @@ public final class ImmutableList<DATA> implements FuncList<DATA> {
         return data.isEmpty();
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public <TARGET> TARGET[] toArray(TARGET[] seed) {
+        int count = size();
+        if (seed.length != count) {
+            seed = (TARGET[])Array.newInstance(seed.getClass().getComponentType(), count);
+        }
         return data.toArray(seed);
     }
     

@@ -12,6 +12,10 @@ import lombok.val;
 
 public class IntegerAccessTest {
     
+    /**
+     * The aim of this test is to check if IntegerAccess perform boxing or not.
+     * If the boxing is done, large amount of memory will be used as we are running 100000 ints.
+     **/
     @SuppressWarnings("unused")
     @Test
     public void test() {
@@ -63,7 +67,7 @@ public class IntegerAccessTest {
         long afterUsedMem5 = Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
         long delta5 = Math.round((afterUsedMem5 - beforeUsedMem - actualUsedMem) / 1000000.0);
         
-        assertTrue(delta3 < delta4);
+        assertTrue(Math.abs(delta5 - delta4) < 100);
         assertEquals(delta2, delta3);
         assertEquals(delta4, delta5);
     }

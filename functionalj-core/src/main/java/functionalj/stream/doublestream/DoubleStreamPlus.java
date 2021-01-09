@@ -76,7 +76,6 @@ public interface DoubleStreamPlus
             DoubleStreamPlusWithCombine,
             DoubleStreamPlusWithFilter,
             DoubleStreamPlusWithFlatMap,
-            DoubleStreamPlusWithGroupingBy,
             DoubleStreamPlusWithLimit,
             DoubleStreamPlusWithMap,
             DoubleStreamPlusWithMapFirst,

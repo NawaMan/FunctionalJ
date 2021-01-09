@@ -46,6 +46,7 @@ import java.util.stream.Stream;
 
 import functionalj.function.Func0;
 import functionalj.function.IntBiFunctionPrimitive;
+import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
 import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
@@ -73,7 +74,6 @@ public interface IntStreamable
             IntStreamableWithCombine,
             IntStreamableWithFilter,
             IntStreamableWithFlatMap,
-            IntStreamableWithGroupingBy,
             IntStreamableWithLimit,
             IntStreamableWithMap,
             IntStreamableWithMapFirst,
@@ -171,10 +171,9 @@ public interface IntStreamable
      *
      * Note: this is an alias of compound()
      **/
-    // TODO - Make it a throwable version of UnaryOperator
     public static IntStreamable iterate(
-            int              seed,
-            IntUnaryOperator compounder) {
+            int                             seed,
+            IntegerToIntegerAccessPrimitive compounder) {
         return ()->IntStreamPlus.iterate(seed, compounder);
     }
     
@@ -194,8 +193,8 @@ public interface IntStreamable
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static IntStreamable compound(
-            int              seed,
-            IntUnaryOperator compounder) {
+            int                             seed,
+            IntegerToIntegerAccessPrimitive compounder) {
         return ()->IntStreamPlus.compound(seed, compounder);
     }
     

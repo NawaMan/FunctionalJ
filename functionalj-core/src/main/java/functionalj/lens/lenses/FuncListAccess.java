@@ -29,8 +29,6 @@ import static functionalj.lens.lenses.FuncListAccess.__internal__.subList;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import functionalj.lens.core.AccessParameterized;
 import functionalj.lens.core.AccessUtils;
@@ -111,7 +109,7 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
     public default FuncListAccess<HOST, TYPE, TYPEACCESS> rest() {
         return subList(this, host -> {
             return apply(host)
-                    .rest();
+                    .tail();
         });
     }
     
@@ -125,7 +123,7 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         });
     }
     
-	public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(TYPE[] data) {
+    public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(TYPE[] data) {
         return subList(this, host -> {
             return apply(host)
                     .appendAll(data);
@@ -139,10 +137,10 @@ public interface FuncListAccess<HOST, TYPE, TYPEACCESS extends AnyAccess<HOST, T
         });
     }
     
-    public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(Supplier<Stream<? extends TYPE>> supplier) {
+    public default FuncListAccess<HOST, TYPE, TYPEACCESS> appendAll(Streamable<? extends TYPE> streamable) {
         return subList(this, host -> {
             return apply(host)
-                    .appendAll(supplier);
+                    .appendAll(streamable);
         });
     }
     

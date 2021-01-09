@@ -26,10 +26,10 @@ package functionalj.function;
 @FunctionalInterface
 public interface ObjectObjectToDoubleFunctionPrimitive<INPUT1, INPUT2> extends Func2<INPUT1, INPUT2, Double> {
     
-    public int applyToDouble(INPUT1 input1, INPUT2 input2)  throws Exception;
+    public double applyToDouble(INPUT1 input1, INPUT2 input2)  throws Exception;
     
     public default Double applyUnsafe(INPUT1 input1, INPUT2 input2) throws Exception {
-        return apply(input1, input2);
+        return applyToDouble(input1, input2);
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })

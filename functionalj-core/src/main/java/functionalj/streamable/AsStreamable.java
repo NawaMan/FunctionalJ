@@ -23,9 +23,15 @@
 // ============================================================================
 package functionalj.streamable;
 
+import java.util.ArrayList;
+
+import functionalj.list.FuncList;
 import functionalj.stream.AsStreamPlus;
 import functionalj.stream.IterablePlus;
 import functionalj.stream.StreamPlus;
+import functionalj.stream.markers.Eager;
+import functionalj.stream.markers.Terminal;
+import lombok.val;
 
 /**
  * Classes implementing this interface can act like a streamable.
@@ -53,6 +59,21 @@ public interface AsStreamable<DATA> extends AsStreamPlus<DATA> {
     /** @return the iterable of this streamable. */
     public default IterablePlus<DATA> iterable() {
         return () -> iterator();
+    }
+    
+    /** @return the array list containing the elements. */
+    @Eager
+    @Terminal
+    public default ArrayList<DATA> toArrayList() {
+        val list = new ArrayList<DATA>(streamable().size());
+        stream().forEach(list::add);
+        return list;
+    }
+    
+    /** Return function that represent this streamable. */
+    @Terminal
+    public default FuncList<DATA> toFuncList() {
+        return FuncList.from(this);
     }
     
 }

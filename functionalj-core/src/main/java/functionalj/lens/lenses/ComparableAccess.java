@@ -23,7 +23,10 @@
 // ============================================================================
 package functionalj.lens.lenses;
 
-public interface ComparableAccess<HOST, TYPE extends Comparable<TYPE>> extends AnyAccess<HOST, TYPE> {
+import java.util.Comparator;
+import java.util.Objects;
+
+public interface ComparableAccess<HOST, TYPE extends Comparable<TYPE>> extends AnyAccess<HOST, TYPE>, Comparator<HOST> {
     
     public default IntegerAccess<HOST> compareTo(TYPE anotherValue) {
         return intPrimitiveAccess(Integer.MIN_VALUE, any -> any.compareTo(anotherValue));
@@ -39,6 +42,13 @@ public interface ComparableAccess<HOST, TYPE extends Comparable<TYPE>> extends A
     }
     public default BooleanAccess<HOST> thatLessThanOrEqualsTo(TYPE anotherValue) {
         return booleanAccess(false, any -> any.compareTo(anotherValue) <= 0);
+    }
+    
+    @Override
+    public default int compare(HOST host1, HOST host2) {
+        TYPE value1 = apply(host1);
+        TYPE value2 = apply(host2);
+        return Objects.compare(value1, value2, (v1, v2) -> v1.compareTo(v2));
     }
     
 }

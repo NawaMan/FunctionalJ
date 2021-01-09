@@ -34,6 +34,7 @@ import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
+import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
@@ -181,6 +182,12 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
     }
     
     /** Split the stream into segment based on the given percentiles. **/
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(IntFuncList percentiles) {
+        val list = streamPlus().sorted().toImmutableList();
+        return StreamableHelper.segmentByPercentiles(list, percentiles.mapToDouble());
+    }
+    
+    /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(DoubleFuncList percentiles) {
         val list = streamPlus().sorted().toImmutableList();
         return StreamableHelper.segmentByPercentiles(list, percentiles);
@@ -218,6 +225,23 @@ public interface StreamableWithReshape<DATA> extends AsStreamable<DATA> {
             double ...                percentiles) {
         val percentileList = DoubleStreamPlus.of(percentiles).toImmutableList();
         return segmentByPercentiles(mapper, comparator, percentileList);
+    }
+    
+    /** Split the stream into segment based on the given percentiles. **/
+    public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(
+            Function<? super DATA, T> mapper,
+            IntFuncList               percentiles) {
+        val list = streamPlus().sortedBy(mapper).toImmutableList();
+        return StreamableHelper.segmentByPercentiles(list, percentiles.mapToDouble());
+    }
+    
+    /** Split the stream into segment based on the given percentiles. **/
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(
+            Function<? super DATA, T> mapper,
+            Comparator<T>             comparator,
+            IntFuncList               percentiles) {
+        val list = streamPlus().sortedBy(mapper, comparator).toImmutableList();
+        return StreamableHelper.segmentByPercentiles(list, percentiles.mapToDouble());
     }
     
     /** Split the stream into segment based on the given percentiles. **/

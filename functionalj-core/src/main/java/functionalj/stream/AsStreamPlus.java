@@ -23,7 +23,11 @@
 // ============================================================================
 package functionalj.stream;
 
+import static functionalj.stream.StreamPlus.streamOf;
+
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -56,6 +60,7 @@ public interface AsStreamPlus<DATA>
                     extends
                         AsStreamPlusWithConversion<DATA>,
                         AsStreamPlusWithForEach<DATA>,
+                        AsStreamPlusWithGroupingBy<DATA>,
                         AsStreamPlusWithMatch<DATA>,
                         AsStreamPlusWithStatistic<DATA> {
     
@@ -178,6 +183,29 @@ public interface AsStreamPlus<DATA>
     @Terminal
     public default Result<DATA> lastResult() {
         return streamFrom(this).lastResult();
+    }
+    
+    //== Contains ==
+    
+    /** Check if the list contains all the given values */
+    @SuppressWarnings("unchecked")
+    public default boolean containsAllOf(DATA ... values) {
+        val set = new HashSet<DATA>(values.length);
+        for (val value : values) {
+            set.add(value);
+        }
+        stream().peek(set::remove).anyMatch(__ -> set.isEmpty());
+        return set.isEmpty();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default boolean containsAnyOf(DATA ... values) {
+        return anyMatch(each -> streamOf(values).anyMatch(o -> Objects.equals(each, o)));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public default boolean containsNoneOf(DATA ... values) {
+        return noneMatch(each -> streamOf(values).anyMatch(o -> Objects.equals(each, o)));
     }
     
     //== Conversion ==

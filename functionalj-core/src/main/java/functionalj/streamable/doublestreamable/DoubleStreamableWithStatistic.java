@@ -39,6 +39,11 @@ public interface DoubleStreamableWithStatistic extends AsDoubleStreamable {
         return (int)doubleStream().count();
     }
     
+    /** @return the product of all the number */
+    public default OptionalDouble product() {
+        return doubleStreamPlus().product();
+    }
+    
     /** Return the value whose mapped value is the smallest. */
     public default <D extends Comparable<D>> OptionalDouble minBy(
             DoubleFunction<D> mapper) {

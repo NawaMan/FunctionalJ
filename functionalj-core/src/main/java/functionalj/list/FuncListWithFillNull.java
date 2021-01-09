@@ -55,14 +55,14 @@ public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
     }
     
     /** Replace sub element that is null (accessed with the given lens) with the replacement value from the supplier. */
-    public default <VALUE> FuncList<DATA> fillNull(
+    public default <VALUE> FuncList<DATA> fillNullWith(
             AnyLens<DATA, VALUE> lens, 
             Supplier<VALUE>      replacementSupplier) {
         return deriveFrom(this, stream -> stream.fillNullWith(lens, replacementSupplier));
     }
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the supplier. */
-    public default <VALUE> FuncList<DATA> fillNull(
+    public default <VALUE> FuncList<DATA> fillNullWith(
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
             Supplier<VALUE>          replacementSupplier) {
@@ -70,14 +70,14 @@ public interface FuncListWithFillNull<DATA> extends AsStreamable<DATA> {
     }
     
     /** Replace sub element that is null (accessed with the given lens) with the replacement value from the function. */
-    public default <VALUE> FuncList<DATA> fillNull(
+    public default <VALUE> FuncList<DATA> fillNullBy(
             AnyLens<DATA, VALUE> lens, 
             Func1<DATA, VALUE>   replacementFunction) {
         return deriveFrom(this, stream -> stream.fillNullBy(lens, replacementFunction));
     }
     
     /** Replace sub element that is null (accessed with the given getter and setter) with the replacement value from the function. */
-    public default <VALUE> FuncList<DATA> fillNull(
+    public default <VALUE> FuncList<DATA> fillNullBy(
             Func1<DATA, VALUE>       getter, 
             Func2<DATA, VALUE, DATA> setter, 
             Func1<DATA, VALUE>       replacementFunction) {

@@ -31,10 +31,10 @@ import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
 import functionalj.function.IntObjBiFunction;
@@ -111,8 +111,7 @@ public interface IntStreamPlusWithModify {
      **/
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default IntStreamPlus restate(IntObjBiFunction<IntStreamPlus, IntStreamPlus> restater) {
-        val streamPlus = intStreamPlus();
-        val func = (UnaryOperator<IntTuple2<IntStreamPlus>>)((IntTuple2<IntStreamPlus> pair) -> {
+        Func1<IntTuple2<IntStreamPlus>, IntTuple2<IntStreamPlus>> func = ((IntTuple2<IntStreamPlus> pair) -> {
             val stream = pair._2();
             if (stream == null)
                 return null;
@@ -126,16 +125,16 @@ public interface IntStreamPlusWithModify {
             if (tail == null)
                 return null;
             
-            return IntTuple2.<IntStreamPlus>of(head[0], tail);
+            return IntTuple2.of(head[0], tail);
         });
-        val seed = IntTuple2.<IntStreamPlus>of(0, streamPlus);
-        IntStreamPlus endStream 
-            = StreamPlus
-            .iterate  (seed, func)
-            .takeUntil(t -> t == null)
-            .skip     (1)
-            .mapToInt (t -> t._1());
-        return endStream;
+        val seed = IntTuple2.of(0, this.intStreamPlus());
+        
+        // NOTE: The reason for the using untyped-generic is because "DATA" of this class is not seen as compatible with StreamPlus's.
+        return StreamPlus
+                .iterate  (seed, func)
+                .takeUntil(t -> t == null)
+                .skip     (1)
+                .mapToInt (t -> t._1());
     }
     
     /**

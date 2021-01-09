@@ -39,6 +39,11 @@ public interface IntStreamableWithStatistic extends AsIntStreamable {
         return (int)intStream().count();
     }
     
+    /** @return the product of all the number */
+    public default OptionalInt product() {
+        return intStream().product();
+    }
+    
     /** Return the value whose mapped value is the smallest. */
     public default <D extends Comparable<D>> OptionalInt minBy(
             IntFunction<D> mapper) {

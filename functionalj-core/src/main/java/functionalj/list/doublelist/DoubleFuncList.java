@@ -82,7 +82,6 @@ public interface DoubleFuncList
             DoubleFuncListWithCombine,
             DoubleFuncListWithFilter,
             DoubleFuncListWithFlatMap,
-            DoubleFuncListWithGroupingBy,
             DoubleFuncListWithLimit,
             DoubleFuncListWithMap,
             DoubleFuncListWithMapFirst,

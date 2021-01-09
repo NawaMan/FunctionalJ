@@ -31,6 +31,7 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -53,6 +54,7 @@ import java.util.stream.StreamSupport;
 import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.function.IntBiFunctionPrimitive;
+import functionalj.lens.lenses.IntegerToIntegerAccessPrimitive;
 import functionalj.stream.StreamPlus;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.markers.Eager;
@@ -74,7 +76,6 @@ public interface IntStreamPlus
             IntStreamPlusWithCombine,
             IntStreamPlusWithFilter,
             IntStreamPlusWithFlatMap,
-            IntStreamPlusWithGroupingBy,
             IntStreamPlusWithLimit,
             IntStreamPlusWithMap,
             IntStreamPlusWithMapFirst,
@@ -258,8 +259,8 @@ public interface IntStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static IntStreamPlus iterate(int seed, IntUnaryOperator f) {
-        return IntStreamPlus.from(IntStream.iterate(seed, f));
+    public static IntStreamPlus iterate(int seed, IntegerToIntegerAccessPrimitive compounder) {
+        return IntStreamPlus.from(IntStream.iterate(seed, compounder));
     }
     
     /**
@@ -276,8 +277,8 @@ public interface IntStreamPlus
      *
      * Note: this is an alias of iterate()
      **/
-    public static IntStreamPlus compound(int seed, IntUnaryOperator f) {
-        return iterate(seed, f);
+    public static IntStreamPlus compound(int seed, IntegerToIntegerAccessPrimitive compounder) {
+        return iterate(seed, compounder);
     }
     
     /**
@@ -295,22 +296,34 @@ public interface IntStreamPlus
      *
      * Note: this is an alias of compound()
      **/
-    public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator f) {
-        val counter = new AtomicInteger(0);
-        val int1    = new AtomicInteger(seed1);
-        val int2    = new AtomicInteger(seed2);
-        return IntStreamPlus.generate(()->{
-            if (counter.getAndIncrement() == 0)
-                return seed1;
-            if (counter.getAndIncrement() == 2)
-                return seed2;
-            
-            int i2 = int2.get();
-            int i1 = int1.getAndSet(i2);
-            int i  = f.applyAsInt(i1, i2);
-            int2.set(i);
-            return i;
-        });
+    public static IntStreamPlus iterate(int seed1, int seed2, IntBinaryOperator compounder) {
+        return IntStreamPlus.from(StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(Long.MAX_VALUE, 0) {
+            private final    AtomicInteger first  = new AtomicInteger(seed1);
+            private final    AtomicInteger second = new AtomicInteger(seed2);
+            private volatile AtomicBoolean isInOrder = null;
+            @Override
+            public boolean tryAdvance(IntConsumer action) {
+                if (isInOrder == null) {
+                    action.accept(seed1);
+                    action.accept(seed2);
+                    isInOrder = new AtomicBoolean(true);
+                }
+                
+                boolean inOrder = isInOrder.get();
+                if (inOrder) {
+                    int next = compounder.applyAsInt(first.get(), second.get());
+                    action.accept(next);
+                    first.set(next);
+                } else {
+                    int next = compounder.applyAsInt(second.get(), first.get());
+                    action.accept(next);
+                    second.set(next);
+                }
+                isInOrder.set(!inOrder);
+                return true;
+            }
+        }, false));
+    
     }
     
     /**

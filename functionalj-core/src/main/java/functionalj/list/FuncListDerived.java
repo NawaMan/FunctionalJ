@@ -37,13 +37,13 @@ import functionalj.streamable.AsStreamable;
 
 public class FuncListDerived<SOURCE, DATA>
                 implements FuncList<DATA> {
-
+    
     @SuppressWarnings("rawtypes")
     private static final Function noAction = Function.identity();
-
+    
     private final Object                                 source;
     private final Function<Stream<SOURCE>, Stream<DATA>> action;
-
+    
     public static <DATA> FuncListDerived<DATA, DATA> from(FuncList<DATA> funcList) {
         return new FuncListDerived<>(funcList);
     }
@@ -55,12 +55,12 @@ public class FuncListDerived<SOURCE, DATA>
     public static <DATA> FuncListDerived<DATA, DATA> from(AsStreamable<DATA> streamable) {
         return new FuncListDerived<>(streamable, noAction);
     }
-
+    
     @SuppressWarnings("unchecked")
     public static <DATA> FuncListDerived<DATA, DATA> from(Collection<DATA> streamable) {
         return new FuncListDerived<>(streamable, noAction);
     }
-
+    
     public FuncListDerived(Iterable<SOURCE> collection, Function<Stream<SOURCE>, Stream<DATA>> action) {
         this.action = Objects.requireNonNull(action);
         this.source = collection;

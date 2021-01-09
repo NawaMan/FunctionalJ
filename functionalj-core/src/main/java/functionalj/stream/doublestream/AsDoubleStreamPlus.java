@@ -51,6 +51,7 @@ public interface AsDoubleStreamPlus
                     extends
                         AsDoubleStreamPlusWithConversion,
                         AsDoubleStreamPlusWithForEach,
+                        AsDoubleStreamPlusWithGroupingBy,
                         AsDoubleStreamPlusWithMatch,
                         AsDoubleStreamPlusWithStatistic {
     
@@ -111,6 +112,16 @@ public interface AsDoubleStreamPlus
             Supplier<R>          supplier,
             ObjDoubleConsumer<R> accumulator,
             BiConsumer<R, R>     combiner) {
+        return streamFrom(this).collect(supplier, accumulator, combiner);
+    }
+    
+    @Eager
+    @Terminal
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public default <R> R collect(DoubleCollectorPlus<?, R> collector) {
+        Supplier<R>          supplier    = (Supplier)         collector.supplier();
+        ObjDoubleConsumer<R> accumulator = (ObjDoubleConsumer)collector.accumulator();
+        BiConsumer<R, R>     combiner    = (BiConsumer)       collector.combiner();
         return streamFrom(this).collect(supplier, accumulator, combiner);
     }
     

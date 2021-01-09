@@ -35,7 +35,6 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleUnaryOperator;
 
-import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.stream.intstream.IntStreamPlus;
@@ -167,17 +166,17 @@ public interface DoubleStreamableWithReshape extends AsDoubleStreamable {
     /** Split the stream into segment based on the given percentiles. **/
     public default <T> Streamable<DoubleFuncList> segmentByPercentiles(double ... percentiles) {
         val percentileList = DoubleStreamPlus.of(percentiles).toImmutableList();
-        return segmentByPercentiles(percentileList).streamable();
+        return segmentByPercentiles(percentileList);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<DoubleFuncList> segmentByPercentiles(DoubleFuncList percentiles) {
+    public default <T> Streamable<DoubleFuncList> segmentByPercentiles(DoubleFuncList percentiles) {
         val list = doubleStreamPlus().sorted().toImmutableList();
         return DoubleStreamableHelper.segmentByPercentiles(list, percentiles);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T extends Comparable<? super T>> FuncList<DoubleFuncList> segmentByPercentiles(
+    public default <T extends Comparable<? super T>> Streamable<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
             int ...           percentiles) {
         val percentileList = IntStreamPlus.of(percentiles).mapToDouble(i -> i).toImmutableList();
@@ -185,7 +184,7 @@ public interface DoubleStreamableWithReshape extends AsDoubleStreamable {
     }
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<DoubleFuncList> segmentByPercentiles(
+    public default <T> Streamable<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
             Comparator<T>     comparator,
             int ...           percentiles) {
@@ -194,7 +193,7 @@ public interface DoubleStreamableWithReshape extends AsDoubleStreamable {
     }
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T extends Comparable<? super T>> FuncList<DoubleFuncList> segmentByPercentiles(
+    public default <T extends Comparable<? super T>> Streamable<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
             double ...        percentiles) {
         val percentileList = DoubleStreamPlus.of(percentiles).toImmutableList();
@@ -202,7 +201,7 @@ public interface DoubleStreamableWithReshape extends AsDoubleStreamable {
     }
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<DoubleFuncList> segmentByPercentiles(
+    public default <T> Streamable<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
             Comparator<T>     comparator,
             double ...        percentiles) {
@@ -211,7 +210,7 @@ public interface DoubleStreamableWithReshape extends AsDoubleStreamable {
     }
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T extends Comparable<? super T>> FuncList<DoubleFuncList> segmentByPercentiles(
+    public default <T extends Comparable<? super T>> Streamable<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
             DoubleFuncList    percentiles) {
         val list = doubleStreamPlus().sortedBy(mapper).toImmutableList();
@@ -219,7 +218,7 @@ public interface DoubleStreamableWithReshape extends AsDoubleStreamable {
     }
     
     /** Split the stream into segment based on the given percentiles. **/
-    public default <T> FuncList<DoubleFuncList> segmentByPercentiles(
+    public default <T> Streamable<DoubleFuncList> segmentByPercentiles(
             DoubleFunction<T> mapper,
             Comparator<T>     comparator,
             DoubleFuncList    percentiles) {

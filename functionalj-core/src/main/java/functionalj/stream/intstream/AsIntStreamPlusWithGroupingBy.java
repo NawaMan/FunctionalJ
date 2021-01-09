@@ -21,35 +21,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // ============================================================================
-package functionalj.streamable;
+package functionalj.stream.intstream;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
+import functionalj.list.intlist.IntFuncList;
 import functionalj.map.FuncMap;
 import functionalj.map.ImmutableMap;
-import functionalj.stream.StreamPlus;
-import functionalj.stream.StreamProcessor;
 import lombok.val;
 
-
-public interface StreamableWithGroupingBy<DATA>
-    extends StreamableWithMapToTuple<DATA> {
+public interface AsIntStreamPlusWithGroupingBy {
+    
+    public IntStreamPlus intStreamPlus();
     
     /** Group the elements by determining the grouping keys */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public default <KEY> FuncMap<KEY, Streamable<? super DATA>> groupingBy(Function<? super DATA, KEY> keyMapper) {
-        Supplier  <Map<KEY, ArrayList<? super DATA>>>                                    supplier;
-        BiConsumer<Map<KEY, ArrayList<? super DATA>>, ? super DATA>                      accumulator;
-        BiConsumer<Map<KEY, ArrayList<? super DATA>>, Map<KEY, ArrayList<? super DATA>>> combiner;
+    public default <KEY> FuncMap<KEY, IntFuncList> groupingBy(IntFunction<KEY> keyMapper) {
+        Supplier  <Map<KEY, GrowOnlyIntArray>>                              supplier;
+        BiConsumer<Map<KEY, GrowOnlyIntArray>, Integer>                     accumulator;
+        BiConsumer<Map<KEY, GrowOnlyIntArray>, Map<KEY, GrowOnlyIntArray>>  combiner;
         
-        Supplier<ArrayList<? super DATA>> collectorSupplier = ArrayList::new;
-        Function<ArrayList<? super DATA>, Streamable<? super DATA>> toStreamable
-                = array -> (Streamable)(()->StreamPlus.from(array.stream()));
+        Supplier<GrowOnlyIntArray>              collectorSupplier = GrowOnlyIntArray::new;
+        Function<GrowOnlyIntArray, IntFuncList> toFuncList         = array -> array.toFuncList();
         
         supplier = LinkedHashMap::new;
         accumulator = (map, each) -> {
@@ -63,20 +60,40 @@ public interface StreamableWithGroupingBy<DATA>
             });
         };
         combiner = (map1, map2) -> map1.putAll(map2);
-        val theMap = streamPlus().collect(supplier, accumulator, combiner);
+        val theMap = intStreamPlus().boxed().collect(supplier, accumulator, combiner);
         return ImmutableMap
                     .from    (theMap)
-                    .mapValue(toStreamable);
+                    .mapValue(toFuncList);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            IntFunction<KEY>             keyMapper,
+            Function<IntFuncList, VALUE> aggregate) {
+        FuncMap<KEY, IntFuncList> groupingBy = groupingBy(keyMapper);
+        return (FuncMap<KEY, VALUE>) groupingBy.mapValue((Function)aggregate);
+    }
+    
+    /** Group the elements by determining the grouping keys and aggregate the result */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public default <KEY, ACCUMULATED, VALUE> FuncMap<KEY, VALUE> groupingBy(
+            IntFunction<KEY>                               keyMapper,
+            Supplier<IntCollectorPlus<ACCUMULATED, VALUE>> collectorSupplier) {
+        FuncMap<KEY, IntFuncList>    groupingBy = groupingBy(keyMapper);
+        Function<IntFuncList, VALUE> aggregate  = stream -> stream.collect(collectorSupplier.get());
+        FuncMap<KEY, VALUE> mapValue = groupingBy.mapValue((Function)aggregate);
+        return (FuncMap<KEY, VALUE>) mapValue;
     }
     
     /** Group the elements by determining the grouping keys and aggregate the result */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public default <KEY, VALUE> FuncMap<KEY, VALUE> groupingBy(
-            Function<? super DATA, KEY>          keyMapper,
-            StreamProcessor<? super DATA, VALUE> processor) {
-        FuncMap<KEY, Streamable<? super DATA>> groupingBy = groupingBy(keyMapper);
+            IntFunction<KEY>          keyMapper,
+            IntStreamProcessor<VALUE> processor) {
+        FuncMap<KEY, IntFuncList> groupingBy = groupingBy(keyMapper);
         return (FuncMap<KEY, VALUE>) groupingBy
-                .mapValue(stream -> stream.calculate((StreamProcessor) processor));
+                .mapValue(stream -> stream.calculate((IntStreamProcessor) processor.asIntStreamProcessor()));
     }
     
 }

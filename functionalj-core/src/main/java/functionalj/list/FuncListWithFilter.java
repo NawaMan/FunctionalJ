@@ -131,6 +131,12 @@ public interface FuncListWithFilter<DATA> extends AsStreamable<DATA> {
         return deriveFrom(this, stream -> stream.exclude(predicate));
     }
     
+    /** Filter out any value that is in the given items. */
+    @SuppressWarnings("unchecked")
+    public default FuncList<DATA> excludeIn(DATA ... items) {
+        return deriveFrom(this, stream -> stream.excludeIn(items));
+    }
+    
     /** Filter out any value that is in the given collection. */
     public default FuncList<DATA> excludeIn(Collection<? super DATA> collection) {
         return deriveFrom(this, stream -> stream.excludeIn(collection));

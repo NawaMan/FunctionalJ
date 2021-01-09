@@ -24,16 +24,18 @@
 package functionalj.streamable.doublestreamable;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import functionalj.list.FuncList;
 import functionalj.list.doublelist.DoubleFuncList;
 import functionalj.stream.doublestream.GrowOnlyDoubleArray;
+import functionalj.streamable.Streamable;
 import lombok.val;
 
 
 class DoubleStreamableHelper {
     
-    static <D> FuncList<DoubleFuncList> segmentByPercentiles(DoubleFuncList list, DoubleFuncList percentiles) {
+    static <D> Streamable<DoubleFuncList> segmentByPercentiles(DoubleFuncList list, DoubleFuncList percentiles) {
         val size = list.size();
         DoubleFuncList indexes = percentiles
                 .append(100.0)
@@ -54,10 +56,11 @@ class DoubleStreamableHelper {
             val element = list.get(i);
             l.add(element);
         }
-        return FuncList.from(
-                lists
-                .stream()
-                .map(each -> each.stream().toImmutableList()));
+        List<DoubleFuncList> doubleList 
+                = lists.stream()
+                .map(each -> each.stream().toImmutableList())
+                .collect(Collectors.toList());
+        return Streamable.from(doubleList);
     }
     
 }

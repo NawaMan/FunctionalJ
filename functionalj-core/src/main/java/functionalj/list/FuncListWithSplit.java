@@ -224,7 +224,7 @@ public interface FuncListWithSplit<DATA>
     /**
      * Split the stream using the predicate and return as part of a map.
      * 
-     * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
      */
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate,
@@ -246,7 +246,7 @@ public interface FuncListWithSplit<DATA>
     /**
      * Split the stream using the predicate and return as part of a map.
      * 
-     * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
      */
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -273,7 +273,7 @@ public interface FuncListWithSplit<DATA>
     /**
      * Split the stream using the predicate and return as part of a map.
      * 
-     * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
      */
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -304,7 +304,7 @@ public interface FuncListWithSplit<DATA>
     /**
      * Split the stream using the predicate and return as part of a map.
      * 
-     * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
      */
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,
@@ -339,7 +339,7 @@ public interface FuncListWithSplit<DATA>
     /**
      * Split the stream using the predicate and return as part of a map.
      * 
-     * The predicate will be checked one by one and when match the element will be used as part of the value with theat associated key.
+     * The predicate will be checked one by one and when match the element will be used as part of the value with the associated key.
      */
     public default <KEY> FuncMap<KEY, FuncList<DATA>> split(
             KEY key1, Predicate<? super DATA> predicate1,

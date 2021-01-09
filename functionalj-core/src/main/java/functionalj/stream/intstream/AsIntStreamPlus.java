@@ -51,6 +51,7 @@ import lombok.val;
 public interface AsIntStreamPlus
                     extends
                         AsIntStreamPlusWithConversion,
+                        AsIntStreamPlusWithGroupingBy,
                         AsIntStreamPlusWithForEach,
                         AsIntStreamPlusWithMatch,
                         AsIntStreamPlusWithStatistic {
@@ -112,6 +113,16 @@ public interface AsIntStreamPlus
             Supplier<R>       supplier,
             ObjIntConsumer<R> accumulator,
             BiConsumer<R, R>  combiner) {
+        return streamFrom(this).collect(supplier, accumulator, combiner);
+    }
+    
+    @Eager
+    @Terminal
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public default <R> R collect(IntCollectorPlus<?, R> collector) {
+        Supplier<R>       supplier    = (Supplier)      collector.supplier();
+        ObjIntConsumer<R> accumulator = (ObjIntConsumer)collector.accumulator();
+        BiConsumer<R, R>  combiner    = (BiConsumer)    collector.combiner();
         return streamFrom(this).collect(supplier, accumulator, combiner);
     }
     

@@ -31,12 +31,12 @@ import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.function.DoubleObjBiFunction;
+import functionalj.function.Func1;
 import functionalj.function.FuncUnit1;
 import functionalj.promise.DeferAction;
 import functionalj.promise.UncompletedAction;
@@ -111,8 +111,7 @@ public interface DoubleStreamPlusWithModify {
      **/
     @Sequential(knownIssue = true, comment = "Need to enforce the sequential.")
     public default DoubleStreamPlus restate(DoubleObjBiFunction<DoubleStreamPlus, DoubleStreamPlus> restater) {
-        val streamPlus = doubleStreamPlus();
-        val func = (UnaryOperator<DoubleTuple2<DoubleStreamPlus>>)((DoubleTuple2<DoubleStreamPlus> pair) -> {
+        Func1<DoubleTuple2<DoubleStreamPlus>, DoubleTuple2<DoubleStreamPlus>> func = pair -> {
             val stream = pair._2();
             if (stream == null)
                 return null;
@@ -126,9 +125,10 @@ public interface DoubleStreamPlusWithModify {
             if (tail == null)
                 return null;
             
-            return DoubleTuple2.<DoubleStreamPlus>of(head[0], tail);
-        });
-        val seed = DoubleTuple2.<DoubleStreamPlus>of(0, streamPlus);
+            return DoubleTuple2.of(head[0], tail);
+        };
+        val seed = DoubleTuple2.of(0, this.doubleStreamPlus());
+        
         return StreamPlus
                 .iterate    (seed, func)
                 .takeUntil  (t -> t == null)

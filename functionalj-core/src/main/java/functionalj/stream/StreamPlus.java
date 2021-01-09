@@ -32,7 +32,7 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -52,6 +52,8 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import functionalj.function.DoubleDoubleBiFunction;
+import functionalj.function.DoubleObjBiFunction;
 import functionalj.function.Func0;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
@@ -109,7 +111,6 @@ public interface StreamPlus<DATA>
             StreamPlusWithFillNull<DATA>,
             StreamPlusWithFilter<DATA>,
             StreamPlusWithFlatMap<DATA>,
-            StreamPlusWithGroupingBy<DATA>,
             StreamPlusWithLimit<DATA>,
             StreamPlusWithMap<DATA>,
             StreamPlusWithMapFirst<DATA>,
@@ -155,13 +156,8 @@ public interface StreamPlus<DATA>
     }
     
     /** Create a StreamPlus from the given data. */
-    public static <TARGET> StreamPlus<TARGET> of(TARGET[] data, int start, int length) {
+    public static <TARGET> StreamPlus<TARGET> from(TARGET[] data, int start, int length) {
         return ArrayBackedStreamPlus.from(data, start, length);
-    }
-    
-    /** Create a StreamPlus from the given data */
-    public static <TARGET> StreamPlus<TARGET> streamOf(TARGET[] data, int start, int length) {
-        return StreamPlus.of(data, start, length);
     }
     
     /** Create a StreamPlus from the given stream. */
@@ -250,8 +246,8 @@ public interface StreamPlus<DATA>
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> StreamPlus<TARGET> iterate(
-            TARGET                   seed,
-            Function<TARGET, TARGET> compounder) {
+            TARGET                seed,
+            Func1<TARGET, TARGET> compounder) {
         return StreamPlus.from(Stream.iterate(seed, compounder::apply));
     }
     
@@ -271,8 +267,8 @@ public interface StreamPlus<DATA>
      **/
     // TODO - Make it a throwable version of UnaryOperator
     public static <TARGET> StreamPlus<TARGET> compound(
-            TARGET                   seed,
-            Function<TARGET, TARGET> compounder) {
+            TARGET                seed,
+            Func1<TARGET, TARGET> compounder) {
         return iterate(seed, compounder);
     }
     
@@ -291,28 +287,37 @@ public interface StreamPlus<DATA>
      *
      * Note: this is an alias of compound()
      **/
-    // TODO - Make it a throwable version of BinaryOperator
+    @Sequential
     public static <TARGET> StreamPlus<TARGET> iterate(
             TARGET                             seed1,
             TARGET                             seed2,
             BiFunction<TARGET, TARGET, TARGET> compounder) {
-        // TODO - Remove the hacky 'counter' - may create iterator instead - let's experiment.
-        AtomicInteger      counter = new AtomicInteger(0);
-        AtomicReference<TARGET> d1      = new AtomicReference<TARGET>(seed1);
-        AtomicReference<TARGET> d2      = new AtomicReference<TARGET>(seed2);
-        return StreamPlus.generate(()->{
-            val index = counter.getAndIncrement();
-            if (index == 0)
-                return seed1;
-            if (index == 1)
-                return seed2;
-            
-            TARGET i2 = d2.get();
-            TARGET i1 = d1.getAndSet(i2);
-            TARGET i  = compounder.apply(i1, i2);
-            d2.set(i);
-            return i;
-        });
+        return StreamPlus.from(StreamSupport.stream(new Spliterators.AbstractSpliterator<TARGET>(Long.MAX_VALUE, 0) {
+            private final    AtomicReference<TARGET> first     = new AtomicReference<>(seed1);
+            private final    AtomicReference<TARGET> second    = new AtomicReference<>(seed2);
+            private volatile AtomicBoolean           isInOrder = null;
+            @Override
+            public boolean tryAdvance(Consumer<? super TARGET> action) {
+                if (isInOrder == null) {
+                    action.accept(seed1);
+                    action.accept(seed2);
+                    isInOrder = new AtomicBoolean(true);
+                }
+                
+                boolean inOrder = isInOrder.get();
+                if (inOrder) {
+                    TARGET next = compounder.apply(first.get(), second.get());
+                    action.accept(next);
+                    first.set(next);
+                } else {
+                    TARGET next = compounder.apply(second.get(), first.get());
+                    action.accept(next);
+                    second.set(next);
+                }
+                isInOrder.set(!inOrder);
+                return true;
+            }
+        }, false));
     }
     
     /**
@@ -386,27 +391,6 @@ public interface StreamPlus<DATA>
                 .zipToObjWith(stream2, merger);
     }
     
-    /** Zip integers from two IntStreams and combine it into another object. */
-    public static <TARGET> StreamPlus<TARGET> zipOf(
-            IntStream                stream1,
-            IntStream                stream2,
-            int                      defaultValue,
-            IntIntBiFunction<TARGET> merger) {
-        return IntStreamPlus.from(stream1)
-                .zipToObjWith(stream2, defaultValue, merger);
-    }
-    
-    /** Zip integers from two IntStreams and combine it into another object. */
-    public static <TARGET> StreamPlus<TARGET> zipOf(
-            IntStream                stream1,
-            int                      defaultValue1,
-            IntStream                stream2,
-            int                      defaultValue2,
-            IntIntBiFunction<TARGET> merger) {
-        return IntStreamPlus.from(stream1)
-                .zipToObjWith(stream2, defaultValue1, defaultValue2, merger);
-    }
-    
     /**
      * Zip integers from an int stream and another object stream and combine it into another object.
      * The result stream has the size of the shortest stream.
@@ -420,83 +404,28 @@ public interface StreamPlus<DATA>
     }
     
     /**
-     * Zip integers from an int stream and another object stream and combine it into another object.
-     * The default value will be used if the first stream ended first and null will be used if the second stream ended first.
+     * Zip integers from two IntStreams and combine it into another object.
+     * The result stream has the size of the shortest stream.
      */
-    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
-            IntStream                         stream1,
-            int                               defaultValue,
-            Stream<ANOTHER>                   stream2,
-            IntObjBiFunction<ANOTHER, TARGET> merger) {
-        return IntStreamPlus.from(stream1)
-                .zipWith(defaultValue, stream2, merger);
+    public static <TARGET> StreamPlus<TARGET> zipOf(
+            DoubleStream                   stream1,
+            DoubleStream                   stream2,
+            DoubleDoubleBiFunction<TARGET> merger) {
+        return DoubleStreamPlus.from(stream1)
+                .zipToObjWith(stream2, merger);
     }
     
-//    /**
-//     * Zip longs from two LongStreams and combine it into another object.
-//     * The result stream has the size of the shortest stream.
-//     **/
-//    public static <TARGET> StreamPlus<TARGET> zipOf(
-//            LongStream stream1,
-//            LongStream stream2,
-//            LongLongBiFunction<TARGET> merger) {
-////        return LongStreamPlus.from(stream1)
-////                .zipToObjWith(stream2, merger);
-//        return null;
-//    }
-//
-//    /** Zip longs from two LongStreams and combine it into another object. */
-//    public static <TARGET> StreamPlus<TARGET> zipOf(
-//            LongStream                 stream1,
-//            LongStream                 stream2,
-//            long                       defaultValue,
-//            LongLongBiFunction<TARGET> merger) {
-//        return null;
-////        return LongStreamPlus.from(stream1)
-////                .zipToObjWith(stream2, defaultValue, merger);
-//    }
-//
-//    /**
-//     * Zip values from a long stream and another object stream and combine it into another object.
-//     * The result stream has the size of the shortest stream.
-//     */
-//    public static <TARGET> StreamPlus<TARGET> zipOf(
-//            LongStream                stream1,
-//            long                      defaultValue1,
-//            LongStream                stream2,
-//            long                      defaultValue2,
-//            LongLongBiFunction<TARGET> merger) {
-//        return null;
-////        return LongStreamPlus.from(stream1)
-////                .zipToObjWith(stream2, defaultValue1, defaultValue2, merger);
-//    }
-//
-//    /**
-//     * Zip values from a long stream and another object stream and combine it into another object.
-//     * The result stream has the size of the shortest stream.
-//     */
-//    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
-//            LongStream                         stream1,
-//            Stream<ANOTHER>                    stream2,
-//            LongObjBiFunction<ANOTHER, TARGET> merger) {
-//        return null;
-////        return LongStreamPlus.from(stream1)
-////                .zipWith(stream2, merger);
-//    }
-//
-//    /**
-//     * Zip values from an long stream and another object stream and combine it into another object.
-//     * The default value will be used if the first stream ended first and null will be used if the second stream ended first.
-//     */
-//    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
-//            LongStream                         stream1,
-//            long                               defaultValue,
-//            Stream<ANOTHER>                    stream2,
-//            LongObjBiFunction<ANOTHER, TARGET> merger) {
-//        return null;
-////        return LongStreamPlus.from(stream1)
-////                .zipWith(defaultValue, stream2, merger);
-//    }
+    /**
+     * Zip integers from an int stream and another object stream and combine it into another object.
+     * The result stream has the size of the shortest stream.
+     */
+    public static <ANOTHER, TARGET> StreamPlus<TARGET> zipOf(
+            DoubleStream                         stream1,
+            Stream<ANOTHER>                      stream2,
+            DoubleObjBiFunction<ANOTHER, TARGET> merger) {
+        return DoubleStreamPlus.from(stream1)
+                .zipWith(stream2, merger);
+    }
     
     //== Core ==
     

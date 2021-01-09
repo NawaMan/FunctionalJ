@@ -72,7 +72,6 @@ public interface DoubleStreamable
             DoubleStreamableWithCombine,
             DoubleStreamableWithFilter,
             DoubleStreamableWithFlatMap,
-            DoubleStreamableWithGroupingBy,
             DoubleStreamableWithLimit,
             DoubleStreamableWithMap,
             DoubleStreamableWithMapFirst,

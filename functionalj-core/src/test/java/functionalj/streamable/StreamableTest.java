@@ -217,10 +217,10 @@ public class StreamableTest {
     @Test
     public void testLoop() {
         run(Streamable.loop().limit(5), streamable -> {
-            assertStrings("[true, true, true, true, true]", streamable.toListString());
+            assertStrings("[null, null, null, null, null]", streamable.toListString());
         });
         run(Streamable.loop(6), streamable -> {
-            assertStrings("[true, true, true, true, true, true]", streamable.toListString());
+            assertStrings("[null, null, null, null, null, null]", streamable.toListString());
         });
     }
     
@@ -1324,6 +1324,13 @@ public class StreamableTest {
     }
     
     @Test
+    public void testTakeWhile_previous() {
+        run(Streamable.of(1, 2, 3, 4, 6, 4, 3, 2, 1), streamable -> {
+            assertStrings("[1, 2, 3, 4]", streamable.takeWhile((a, b) -> b == a + 1).toListString());
+        });
+    }
+    
+    @Test
     public void testTakeUtil() {
         run(Streamable.of(1, 2, 3, 4, 5, 4, 3, 2, 1), streamable -> {
             val list = new ArrayList<Integer>();
@@ -1335,6 +1342,29 @@ public class StreamableTest {
             assertStrings("[]",  streamable.peek(list::add).takeUntil(i -> i < 4).toList());
             assertStrings("[1]", list);
             //              ^--- Because it needs 1 to do the check in `takeUntil`
+        });
+    }
+    
+    @Test
+    public void testTakeUntil_previous() {
+        run(Streamable.of(1, 2, 3, 4, 6, 4, 3, 2, 1), streamable -> {
+            assertStrings("[1, 2, 3, 4]", streamable.takeUntil((a, b) -> b > a + 1).toListString());
+        });
+    }
+    
+    @Test
+    public void testDropAfter() {
+        run(Streamable.of(1, 2, 3, 4, 5, 4, 3, 2, 1), streamable -> {
+            assertStrings("[1, 2, 3, 4]", streamable.dropAfter(i -> i == 4).toListString());
+            //                       ^--- Include 4
+        });
+    }
+    
+    @Test
+    public void testDropAfter_previous() {
+        run(Streamable.of(1, 2, 3, 4, 5, 4, 3, 2, 1), streamable -> {
+            assertStrings("[1, 2, 3, 4, 5, 4]", streamable.dropAfter((a, b) -> b < a).toListString());
+            //                             ^--- Include 4
         });
     }
     

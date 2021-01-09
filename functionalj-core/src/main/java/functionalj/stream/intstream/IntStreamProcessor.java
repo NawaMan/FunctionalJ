@@ -1,9 +1,13 @@
 package functionalj.stream.intstream;
 
-public interface IntStreamProcessor<TARGET> {
+public interface IntStreamProcessor<TARGET> extends AsIntStreamProcessor<TARGET> {
     
     public TARGET process(IntStreamPlus stream);
     
+    
+    public default IntStreamProcessor<TARGET> asIntStreamProcessor() {
+        return this;
+    }
     
     // TODO - uncomment this
 //    default StreamProcessor<? super Integer, TARGET> ofInteger() {

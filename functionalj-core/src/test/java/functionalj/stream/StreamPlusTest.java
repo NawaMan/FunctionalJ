@@ -77,7 +77,6 @@ import functionalj.list.FuncList;
 import functionalj.list.ImmutableList;
 import functionalj.map.FuncMap;
 import functionalj.promise.DeferAction;
-import functionalj.result.NoMoreResultException;
 import functionalj.stream.intstream.IntStreamPlus;
 import functionalj.streamable.intstreamable.IntStreamable;
 import lombok.val;
@@ -107,6 +106,14 @@ public class StreamPlusTest {
     @Test
     public void testStreamOf() {
         assertStrings("[One, Two, Three]", StreamPlus.streamOf("One", "Two", "Three").toList());
+    }
+    
+    @Test
+    public void testFrom_range() {
+        assertStrings(
+                "[Two, Three, Four]",
+                StreamPlus.from(new String[] {"One", "Two", "Three", "Four", "Five"}, 1, 3)
+                .toList());
     }
     
     @Test
@@ -165,11 +172,11 @@ public class StreamPlusTest {
     @Test
     public void testGenerate() {
         val counter = new AtomicInteger();
-        val stream  = StreamPlus.generateWith(()->{
+        val stream  = StreamPlus.generate(()->{
             int count = counter.getAndIncrement();
             if (count < 5)
                 return count;
-            throw new NoMoreResultException();
+            return StreamPlus.noMoreElement();
         });
         assertStrings("[0, 1, 2, 3, 4]", stream.toListString());
         
@@ -214,31 +221,6 @@ public class StreamPlusTest {
         assertStrings("[5, 8, 9, 8, 5]",
                 zipOf(IntStream.of(1, 2, 3, 4, 5),
                       IntStream.of(5, 4, 3, 2, 1),
-                      (a, b) -> a*b)
-                .toListString());
-    }
-    
-    @Test
-    public void testZipOf_merge_int_with_default() {
-        assertStrings("[5, 8, 9, 8, 5, 0, 0, 0]",
-                zipOf(IntStream.of(1, 2, 3, 4, 5, 6, 7, 8),
-                      IntStream.of(5, 4, 3, 2, 1),
-                      0,
-                      (a, b) -> a*b)
-                .toListString());
-    }
-    
-    @Test
-    public void testZipOf_merge_int_with_defaults() {
-        assertStrings("[5, 8, 9, 8, 5, 0, 0, 0]",
-                zipOf(IntStream.of(1, 2, 3, 4, 5, 6, 7, 8), 1,
-                      IntStream.of(5, 4, 3, 2, 1), 0,
-                      (a, b) -> a*b)
-                .toListString());
-        
-        assertStrings("[5, 8, 9, 8, 5, 6, 7, 8]",
-                zipOf(IntStream.of(1, 2, 3, 4, 5), 1,
-                      IntStream.of(5, 4, 3, 2, 1, 6, 7, 8), 0,
                       (a, b) -> a*b)
                 .toListString());
     }

@@ -27,14 +27,12 @@ import static functionalj.streamable.doublestreamable.DoubleStreamable.deriveFro
 import static functionalj.streamable.doublestreamable.DoubleStreamable.deriveToObj;
 
 import java.util.function.DoubleFunction;
-import java.util.function.UnaryOperator;
 
 import functionalj.function.DoubleBiFunctionPrimitive;
 import functionalj.function.DoubleObjBiFunction;
+import functionalj.function.Func1;
 import functionalj.promise.UncompletedAction;
 import functionalj.result.Result;
-import functionalj.stream.doublestream.DoubleIteratorPlus;
-import functionalj.stream.doublestream.DoubleStreamPlus;
 import functionalj.streamable.Streamable;
 import functionalj.tuple.DoubleTuple2;
 import lombok.val;
@@ -82,32 +80,29 @@ public interface DoubleStreamableWithModify extends AsDoubleStreamable {
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
      **/
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public default DoubleStreamable restate(DoubleObjBiFunction<DoubleStreamPlus, DoubleStreamPlus> restater) {
-        val func = (UnaryOperator<DoubleTuple2<DoubleStreamPlus>>)((DoubleTuple2<DoubleStreamPlus> pair) -> {
-            val stream = pair._2();
-            if (stream == null)
+    public default DoubleStreamable restate(DoubleObjBiFunction<DoubleStreamable, DoubleStreamable> restater) {
+        Func1<DoubleTuple2<DoubleStreamable>, DoubleTuple2<DoubleStreamable>> func = pair -> {
+            val streamable = pair._2();
+            if (streamable == null)
                 return null;
             
-            val iterator = stream.iterator();
+            val iterator = streamable.iterator();
             if (!iterator.hasNext())
                 return null;
             
-            val head = new double[] { iterator.nextDouble() };
-            val tail = DoubleObjBiFunction.apply(restater, head[0], DoubleIteratorPlus.from(iterator).stream());
+            val head = new double[] { iterator.next() };
+            val tail = restater.apply(head[0], streamable.skip(1));
             if (tail == null)
                 return null;
             
-            return DoubleTuple2.<DoubleStreamPlus>of(head[0], tail);
-        });
-        val seed = DoubleTuple2.<DoubleStreamPlus>of(0, doubleStreamPlus());
-        val endStream
-            = Streamable
-            .iterate    (seed, (UnaryOperator)func)
-            .takeUntil  (t -> t == null)
-            .skip       (1)
-            .mapToDouble(t -> ((DoubleTuple2)t)._1());
-        return endStream;
+            return DoubleTuple2.of(head[0], tail);
+        };
+        val seed = DoubleTuple2.of(0.0, this.doubleStreamable());
+        return Streamable
+                .iterate    (seed, func)
+                .takeUntil  (t -> t == null)
+                .skip       (1)
+                .mapToDouble(t -> t._1());
     }
     
     //== Spawn ==

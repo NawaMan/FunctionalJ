@@ -25,6 +25,7 @@ package functionalj.stream.intstream;
 
 import java.util.OptionalInt;
 
+import functionalj.list.intlist.IntFuncList;
 import functionalj.stream.StreamPlus;
 
 // TODO - This is NOT thread safe (not even try to be).
@@ -88,6 +89,10 @@ public final class GrowOnlyIntArray {
                             : IntStreamPlus.of(arrays[aCount]).limit(residue);
         IntStreamPlus total = head.concatWith(tail);
         return total;
+    }
+    
+    public IntFuncList toFuncList() {
+        return IntFuncList.from(stream());
     }
     
     public int get(int i) {

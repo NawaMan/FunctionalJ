@@ -27,7 +27,6 @@ import static functionalj.streamable.Streamable.deriveFrom;
 import static functionalj.streamable.Streamable.deriveToObj;
 
 import java.util.function.BiFunction;
-import java.util.function.UnaryOperator;
 
 import functionalj.function.Func1;
 import functionalj.promise.UncompletedAction;
@@ -78,15 +77,15 @@ public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
      *     output2 = head2 with rest3 = head2 ~ rest2 and head3 = head of rest3
      *     ...
      **/
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     public default Streamable<DATA> restate(BiFunction<? super DATA, Streamable<DATA>, Streamable<DATA>> restater) {
-        val func = (UnaryOperator<Tuple2<DATA, Streamable<DATA>>>)((Tuple2<DATA, Streamable<DATA>> pair) -> {
+        Func1<Tuple2<DATA, Streamable<DATA>>, Tuple2<DATA, Streamable<DATA>>> func = ((Tuple2<DATA, Streamable<DATA>> pair) -> {
             val streamable = pair._2();
             if (streamable == null)
                 return null;
             
-            Object[] head     = new Object[] { null };
-            val      iterator = streamable.stream().iterator();
+            val head     = new Object[] { null };
+            val iterator = streamable.iterator();
             if (!iterator.hasNext())
                 return null;
             
@@ -97,16 +96,12 @@ public interface StreamableWithModify<DATA> extends AsStreamable<DATA> {
             
             return Tuple2.of((DATA)head[0], tail);
         });
-        val seed = Tuple2.of((DATA)null, this);
-        
-        // NOTE: The reason for the using untyped-generic is because "DATA" of this class is not seen as compatible with StreamPlus's.
-        val endStream
-            = Streamable
-            .iterate  (seed, (UnaryOperator)func)
-            .takeUntil(t -> t == null)
-            .skip     (1)
-            .map      (t -> ((Tuple2)t)._1());
-        return endStream;
+        val seed = Tuple2.of((DATA)null, this.streamable());
+        return Streamable
+                .iterate  (seed, func)
+                .takeUntil(t -> t == null)
+                .skip     (1)
+                .map      (t -> t._1());
     }
     
     //== Spawn ==

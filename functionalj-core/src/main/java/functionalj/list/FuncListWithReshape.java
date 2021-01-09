@@ -32,6 +32,8 @@ import java.util.function.Predicate;
 import functionalj.function.Func1;
 import functionalj.function.Func2;
 import functionalj.list.doublelist.DoubleFuncList;
+import functionalj.list.intlist.IntFuncList;
+import functionalj.stream.IncompletedSegment;
 import functionalj.stream.StreamPlus;
 import functionalj.streamable.AsStreamable;
 
@@ -61,6 +63,19 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
     }
     
     /**
+     * Segment the stream into sub stream with the fix length of count.
+     * Depending on the includeTail flag, the last sub stream may not be included if its length is not `count`.
+     *
+     * @param count        the element count of the sub stream.
+     * @param includeTail  the option indicating if the last sub stream that does not have count element is to be included
+     *                       as opposed to thrown away.
+     * @return             the stream of sub stream.
+     */
+    public default FuncList<StreamPlus<DATA>> segmentSize(int count, IncompletedSegment incompletedSegment) {
+        return segmentSize(count, (incompletedSegment == IncompletedSegment.included));
+    }
+    
+    /**
      * Segment the stream into sub stream whenever the start condition is true.
      * The tail sub stream will always be included.
      */
@@ -73,6 +88,11 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
             Predicate<DATA> startCondition, 
             boolean         includeIncompletedSegment) {
         return deriveFrom(this, stream -> stream.segment(startCondition, includeIncompletedSegment));
+    }
+    
+    /** Segment the stream into sub stream whenever the start condition is true. */
+    public default FuncList<StreamPlus<DATA>> segment(Predicate<? super DATA> startCondition, IncompletedSegment incompletedSegment) {
+        return deriveFrom(this, stream -> stream.segment(startCondition, incompletedSegment));
     }
     
     /**
@@ -91,6 +111,14 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
             Predicate<DATA> endCondition, 
             boolean         includeIncompletedSegment) {
         return deriveFrom(this, stream -> stream.segment(startCondition, endCondition, includeIncompletedSegment));
+    }
+    
+    /** Segment the stream into sub stream whenever the start condition is true and ended when the end condition is true. */
+    public default FuncList<StreamPlus<DATA>> segment(
+            Predicate<DATA> startCondition,
+            Predicate<DATA> endCondition,
+            IncompletedSegment incompletedSegment) {
+        return deriveFrom(this, stream -> stream.segment(startCondition, endCondition, incompletedSegment));
     }
     
     /**
@@ -147,15 +175,20 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
     }
     
     /** Split the stream into segment based on the given percentiles. **/
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(IntFuncList percentiles) {
+        return streamable().segmentByPercentiles(percentiles);
+    }
+    
+    /** Split the stream into segment based on the given percentiles. **/
     public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(DoubleFuncList percentiles) {
-        return FuncList.from(streamable().segmentByPercentiles(percentiles));
+        return streamable().segmentByPercentiles(percentiles);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(
             Function<? super DATA, T> mapper,
             int ...                   percentiles) {
-        return FuncList.from(streamable().segmentByPercentiles(percentiles));
+        return streamable().segmentByPercentiles(mapper, percentiles);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -163,14 +196,14 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, T> mapper,
             Comparator<T>             comparator,
             int ...                   percentiles) {
-        return FuncList.from(streamable().segmentByPercentiles(mapper, comparator, percentiles));
+        return streamable().segmentByPercentiles(mapper, comparator, percentiles);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(
             Function<? super DATA, T> mapper,
             double ...                percentiles) {
-        return FuncList.from(streamable().segmentByPercentiles(mapper, percentiles));
+        return streamable().segmentByPercentiles(mapper, percentiles);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -178,14 +211,29 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, T> mapper,
             Comparator<T>             comparator,
             double ...                percentiles) {
-        return FuncList.from(streamable().segmentByPercentiles(mapper, comparator, percentiles));
+        return streamable().segmentByPercentiles(mapper, comparator, percentiles);
+    }
+    
+    /** Split the stream into segment based on the given percentiles. **/
+    public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(
+            Function<? super DATA, T> mapper,
+            IntFuncList               percentiles) {
+        return streamable().segmentByPercentiles(mapper, percentiles);
+    }
+    
+    /** Split the stream into segment based on the given percentiles. **/
+    public default <T> FuncList<FuncList<DATA>> segmentByPercentiles(
+            Function<? super DATA, T> mapper,
+            Comparator<T>             comparator,
+            IntFuncList               percentiles) {
+        return streamable().segmentByPercentiles(mapper, comparator, percentiles);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
     public default <T extends Comparable<? super T>> FuncList<FuncList<DATA>> segmentByPercentiles(
             Function<? super DATA, T> mapper,
             DoubleFuncList            percentiles) {
-        return FuncList.from(streamable().segmentByPercentiles(mapper, percentiles));
+        return streamable().segmentByPercentiles(mapper, percentiles);
     }
     
     /** Split the stream into segment based on the given percentiles. **/
@@ -193,7 +241,7 @@ public interface FuncListWithReshape<DATA> extends AsStreamable<DATA> {
             Function<? super DATA, T> mapper,
             Comparator<T>             comparator,
             DoubleFuncList            percentiles) {
-        return FuncList.from(streamable().segmentByPercentiles(mapper, comparator, percentiles));
+        return streamable().segmentByPercentiles(mapper, comparator, percentiles);
     }
     
 }

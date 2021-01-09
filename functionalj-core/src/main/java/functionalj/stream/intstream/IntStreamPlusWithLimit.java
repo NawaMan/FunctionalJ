@@ -149,6 +149,7 @@ public interface IntStreamPlusWithLimit {
                                             stillGoing = false;
                                         }
                                     } else {
+                                        consumer.accept(elem);
                                         isFirst = false;
                                     }
                                     prevValue = elem;
@@ -191,6 +192,42 @@ public interface IntStreamPlusWithLimit {
         });
     }
     
+    /** Accept any value until the condition is true. */
+    @Sequential
+    public default IntStreamPlus takeUntil(IntBiPredicatePrimitive condition) {
+        val streamPlus = intStreamPlus();
+        return sequential(streamPlus, stream -> {
+            val splitr = stream.spliterator();
+            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
+                boolean stillGoing = true;
+                boolean isFirst    = true;
+                int     prevValue  = -1;
+                @Override
+                public boolean tryAdvance(IntConsumer consumer) {
+                    if (stillGoing) {
+                        IntConsumer action = elem -> {
+                            if (!isFirst) {
+                                if (!condition.test(prevValue, elem)) {
+                                    consumer.accept(elem);
+                                } else {
+                                    stillGoing = false;
+                                }
+                            } else {
+                                consumer.accept(elem);
+                                isFirst = false;
+                            }
+                            prevValue = elem;
+                        };
+                        boolean hadNext = splitr.tryAdvance(action);
+                        return hadNext && stillGoing;
+                    }
+                    return false;
+                }
+            }, false);
+            return IntStreamPlus.from(resultStream);
+        });
+    }
+    
     /** Accept any value while the condition is true. */
     @Sequential
     public default IntStreamPlus dropAfter(IntPredicate condition) {
@@ -220,41 +257,6 @@ public interface IntStreamPlusWithLimit {
         });
     }
     
-    /** Accept any value until the condition is true. */
-    @Sequential
-    public default IntStreamPlus takeUntil(IntBiPredicatePrimitive condition) {
-        val streamPlus = intStreamPlus();
-        return sequential(streamPlus, stream -> {
-            val splitr = stream.spliterator();
-            val resultStream = StreamSupport.intStream(new Spliterators.AbstractIntSpliterator(splitr.estimateSize(), 0) {
-                boolean stillGoing = true;
-                boolean isFirst    = true;
-                int     prevValue  = -1;
-                @Override
-                public boolean tryAdvance(IntConsumer consumer) {
-                    if (stillGoing) {
-                        IntConsumer action = elem -> {
-                            if (!isFirst) {
-                                if (!condition.test(prevValue, elem)) {
-                                    consumer.accept(elem);
-                                } else {
-                                    stillGoing = false;
-                                }
-                            } else {
-                                isFirst = false;
-                            }
-                            prevValue = elem;
-                        };
-                        boolean hadNext = splitr.tryAdvance(action);
-                        return hadNext && stillGoing;
-                    }
-                    return false;
-                }
-            }, false);
-            return IntStreamPlus.from(resultStream);
-        });
-    }
-    
     /** Accept any value while the condition is true. */
     @Sequential
     public default IntStreamPlus dropAfter(IntBiPredicatePrimitive condition) {
@@ -277,6 +279,7 @@ public interface IntStreamPlusWithLimit {
                                             stillGoing = false;
                                         }
                                     } else {
+                                        consumer.accept(elem);
                                         isFirst = false;
                                     }
                                     prevValue = elem;

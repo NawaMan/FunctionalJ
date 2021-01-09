@@ -177,7 +177,7 @@ public interface StreamPlusWithMapGroup<DATA> {
     
     /** @return  the stream of  each previous value and each current value. */
     @SuppressWarnings("unchecked")
-    public default StreamPlus<Tuple2<? super DATA, ? super DATA>> mapTwo() {
+    public default StreamPlus<Tuple2<DATA, DATA>> mapTwo() {
         val streamPlus = streamPlus();
         return StreamPlusWithMapGroupHelper.mapGroup(
                 streamPlus, 2, 
@@ -192,7 +192,7 @@ public interface StreamPlusWithMapGroup<DATA> {
     
     /** @return  the stream of  each previous value and each current value. */
     @SuppressWarnings("unchecked")
-    public default StreamPlus<Tuple3<? super DATA, ? super DATA, ? super DATA>> mapThree() {
+    public default StreamPlus<Tuple3<DATA, DATA, DATA>> mapThree() {
         val streamPlus = streamPlus();
         return StreamPlusWithMapGroupHelper.mapGroup(
                 streamPlus, 3, 
@@ -208,7 +208,7 @@ public interface StreamPlusWithMapGroup<DATA> {
     
     /** @return  the stream of  each previous value and each current value. */
     @SuppressWarnings("unchecked")
-    public default StreamPlus<Tuple4<? super DATA, ? super DATA, ? super DATA, ? super DATA>> mapFour() {
+    public default StreamPlus<Tuple4<DATA, DATA, DATA, DATA>> mapFour() {
         val streamPlus = streamPlus();
         return StreamPlusWithMapGroupHelper.mapGroup(
                 streamPlus, 4, 
@@ -225,7 +225,7 @@ public interface StreamPlusWithMapGroup<DATA> {
     
     /** @return  the stream of  each previous value and each current value. */
     @SuppressWarnings("unchecked")
-    public default StreamPlus<Tuple5<? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA>> mapFive() {
+    public default StreamPlus<Tuple5<DATA, DATA, DATA, DATA, DATA>> mapFive() {
         val streamPlus = streamPlus();
         return StreamPlusWithMapGroupHelper.mapGroup(
                 streamPlus, 5, 
@@ -243,7 +243,7 @@ public interface StreamPlusWithMapGroup<DATA> {
     
     /** @return  the stream of  each previous value and each current value. */
     @SuppressWarnings("unchecked")
-    public default StreamPlus<Tuple6<? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA, ? super DATA>> mapSix() {
+    public default StreamPlus<Tuple6<DATA, DATA, DATA, DATA, DATA, DATA>> mapSix() {
         val streamPlus = streamPlus();
         return StreamPlusWithMapGroupHelper.mapGroup(
                 streamPlus, 6, 
@@ -350,25 +350,26 @@ public interface StreamPlusWithMapGroup<DATA> {
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default StreamPlus<StreamPlus<? super DATA>> mapGroup(int count) {
-        return StreamPlusWithMapGroupHelper.<DATA, StreamPlus<? super DATA>>mapGroup(
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public default StreamPlus<StreamPlus<DATA>> mapGroup(int count) {
+        return StreamPlusWithMapGroupHelper.<DATA, StreamPlus<DATA>>mapGroup(
                 streamPlus(), count, 
                 (array, start, end, consumer) -> {
                     val iterator   = new ArrayBackedIteratorPlus<>(array, start, count);
                     val streamPlus = new ArrayBackedStreamPlus<>(iterator);
-                    consumer.accept(streamPlus);
+                    consumer.accept((StreamPlus<DATA>)(StreamPlus)streamPlus);
                     return (Void)null;
                 },
                 (array, start, end, consumer) -> {
                     val iterator   = new ArrayBackedIteratorPlus<>(array, start, end - start);
                     val streamPlus = new ArrayBackedStreamPlus<>(iterator);
-                    consumer.accept(streamPlus);
+                    consumer.accept((StreamPlus<DATA>)(StreamPlus)streamPlus);
                     return (Void)null;
                 });
     }
     
     /** @return  the stream of  each previous value and each current value. */
-    public default <TARGET> StreamPlus<TARGET> mapGroup(int count, Func1<? super StreamPlus<? super DATA>, ? extends TARGET> combinator) {
+    public default <TARGET> StreamPlus<TARGET> mapGroup(int count, Func1<? super StreamPlus<? extends DATA>, ? extends TARGET> combinator) {
         return mapGroup(count)
                 .map(combinator);
     }
@@ -392,20 +393,21 @@ public interface StreamPlusWithMapGroup<DATA> {
     }
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default IntStreamPlus mapGroupToInt(int count, ToIntFunction<? super StreamPlus<? super DATA>> combinator) {
+    @SuppressWarnings("unchecked")
+    public default IntStreamPlus mapGroupToInt(int count, ToIntFunction<? super StreamPlus<? extends DATA>> combinator) {
         return StreamPlusWithMapGroupHelper.mapGroupToInt(
                 streamPlus(), count, 
                 (array, start, end, consumer) -> {
                     val iterator   = new ArrayBackedIteratorPlus<>(array, start, count);
                     val streamPlus = new ArrayBackedStreamPlus<>(iterator);
-                    val value      = combinator.applyAsInt(streamPlus);
+                    val value      = combinator.applyAsInt((StreamPlus<? extends DATA>) streamPlus);
                     consumer.accept(value);
                     return (Void)null;
                 },
                 (array, start, end, consumer) -> {
                     val iterator   = new ArrayBackedIteratorPlus<>(array, start, end - start);
                     val streamPlus = new ArrayBackedStreamPlus<>(iterator);
-                    val value      = combinator.applyAsInt(streamPlus);
+                    val value      = combinator.applyAsInt((StreamPlus<? extends DATA>) streamPlus);
                     consumer.accept(value);
                     return (Void)null;
                 });
@@ -430,20 +432,21 @@ public interface StreamPlusWithMapGroup<DATA> {
     }
     
     /** Create a stream whose value is the combination between the previous value and the current value of this stream. */
-    public default DoubleStreamPlus mapGroupToDouble(int count, ToDoubleFunction<? super StreamPlus<? super DATA>> combinator) {
+    @SuppressWarnings("unchecked")
+    public default DoubleStreamPlus mapGroupToDouble(int count, ToDoubleFunction<? super StreamPlus<? extends DATA>> combinator) {
         return StreamPlusWithMapGroupHelper.mapGroupToDouble(
                 streamPlus(), count, 
                 (array, start, end, consumer) -> {
                     val iterator   = new ArrayBackedIteratorPlus<>(array, start, count);
                     val streamPlus = new ArrayBackedStreamPlus<>(iterator);
-                    val value      = combinator.applyAsDouble(streamPlus);
+                    val value      = combinator.applyAsDouble((StreamPlus<? extends DATA>) streamPlus);
                     consumer.accept(value);
                     return (Void)null;
                 },
                 (array, start, end, consumer) -> {
                     val iterator   = new ArrayBackedIteratorPlus<>(array, start, end - start);
                     val streamPlus = new ArrayBackedStreamPlus<>(iterator);
-                    val value      = combinator.applyAsDouble(streamPlus);
+                    val value      = combinator.applyAsDouble((StreamPlus<? extends DATA>) streamPlus);
                     consumer.accept(value);
                     return (Void)null;
                 });
